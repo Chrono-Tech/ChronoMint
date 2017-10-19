@@ -5,6 +5,7 @@ import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-
 import BackButton from '../BackButton/BackButton'
 import { clearErrors, loading } from 'redux/network/actions'
 import { Translate } from 'react-redux-i18n'
+import SaveKeyCheck from '../SaveKeyCheck/SaveKeyCheck'
 import styles from '../stylesLoginPage'
 import './LoginWithWallet.scss'
 
@@ -26,6 +27,8 @@ class LoginWithWallet extends Component {
     onGenerate: PropTypes.func.isRequired,
     onLogin: PropTypes.func.isRequired,
     clearErrors: PropTypes.func,
+    onSaveKeyCheck: PropTypes.func,
+    isSaveKey: PropTypes.bool,
     loading: PropTypes.func
   }
 
@@ -151,6 +154,8 @@ class LoginWithWallet extends Component {
         {isLoading && <div styleName='tip'>
           <em>{<Translate value='LoginWithWallet.bePatient'/>}</em>
         </div>}
+
+        <SaveKeyCheck />
 
         <div styleName='actions'>
           <div styleName='action'>

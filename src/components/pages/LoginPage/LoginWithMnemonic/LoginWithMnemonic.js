@@ -7,6 +7,7 @@ import styles from '../stylesLoginPage'
 import MnemonicGenerateIcon from 'assets/img/mnemonic-key-color.svg'
 import BackButton from '../BackButton/BackButton'
 import { Translate } from 'react-redux-i18n'
+import SaveKeyCheck from '../SaveKeyCheck/SaveKeyCheck'
 import './LoginWithMnemonic.scss'
 
 const mapStateToProps = (state) => ({
@@ -20,6 +21,8 @@ class LoginWithMnemonic extends Component {
     onLogin: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,
     onGenerate: PropTypes.func.isRequired,
+    isSaveKey: PropTypes.bool,
+    onSaveKeyCheck: PropTypes.func,
     isLoading: PropTypes.bool
   }
 
@@ -80,6 +83,7 @@ class LoginWithMnemonic extends Component {
             disabled={isLoading}
             {...styles.textField} />
         </div>
+        <SaveKeyCheck />
         <div styleName='actions'>
           <div styleName='action'>
             <FlatButton

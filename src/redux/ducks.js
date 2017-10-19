@@ -15,6 +15,7 @@ import * as watcher from './watcher/'
 import * as market from './market/'
 import * as monitor from './monitor/'
 import * as ledger from './ledger/'
+import * as sensitive from './sensitive/'
 
 export {
   ui,
@@ -33,5 +34,6 @@ export {
   watcher,
   market,
   monitor,
-  ledger
+  ledger,
+  sensitive
 }

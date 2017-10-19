@@ -1,0 +1,52 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.pinContainer {
+  padding: 16px 0;
+  max-width: 640px;
+  align-self: center;
+  position: relative;
+}
+
+.loaderContainer {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.pinDescription {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.dotsContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.dot {
+  width: 4px;
+  height: 4px;
+  background-color: white;
+  border-radius: 2px;
+  margin: 16px;
+}
+
+.digitButton {
+  height: 200px;
+}
+
+.digit {
+  font-size: 24px;
+  color: white;
+}
+
+.fingerprint {
+  width: 32px;
+  height: 32px;
+  fill: white;
+}

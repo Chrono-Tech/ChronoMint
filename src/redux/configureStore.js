@@ -1,12 +1,13 @@
 import thunk from 'redux-thunk'
 import Immutable from 'immutable'
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import { reducer as formReducer } from 'redux-form/immutable'
 import moment from 'moment'
+import { composeWithDevTools } from 'remote-redux-devtools'
 
 import routingReducer from './routing'
 import * as ducks from './ducks'
@@ -57,14 +58,11 @@ const configureStore = () => {
   }
 
   //noinspection JSUnresolvedVariable,JSUnresolvedFunction
-  const createStoreWithMiddleware = compose(
+  const createStoreWithMiddleware = composeWithDevTools(
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine)
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : (f) => f
+    )
   )(createStore)
 
   return createStoreWithMiddleware(
@@ -93,5 +91,5 @@ const locale = ls.getLocale()
 moment.locale(locale)
 
 store.dispatch(loadTranslations(require('../i18n/')))
+
 store.dispatch(setLocale(locale))
-/** <<< i18n END */

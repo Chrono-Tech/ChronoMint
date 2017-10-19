@@ -10,6 +10,8 @@ import Warning from '../Warning/Warning'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+import { addWallet } from '../../../../redux/sensitive/actions'
+import connectRN from '../../../../connectReactNative'
 import './GenerateWallet.scss'
 
 const initialState = {
@@ -21,13 +23,22 @@ const initialState = {
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  clearErrors: () => dispatch(clearErrors())
+  clearErrors: () => dispatch(clearErrors()),
+  addWallet: (wallet) => dispatch(addWallet(wallet))
 })
 
-@connect(null, mapDispatchToProps)
+const mapStateToProps = (state) => ({
+  selectedProviderId: state.get('network').selectedProviderId,
+  selectedNetworkId: state.get('network').selectedNetworkId
+})
+
+@connect(mapStateToProps, mapDispatchToProps)
 class GenerateWallet extends Component {
   static propTypes = {
+    selectedProviderId: PropTypes.number,
+    selectedNetworkId: PropTypes.number,
     onBack: PropTypes.func.isRequired,
+    onBackToOptions: PropTypes.func,
     addError: PropTypes.func,
     clearErrors: PropTypes.func
   }
@@ -60,7 +71,14 @@ class GenerateWallet extends Component {
       }
 
       const wallet = this.state.walletJSON
-      download(JSON.stringify(wallet), `${wallet.id}.dat`)
+
+      if (window.isMobile) {
+        connectRN.postMessage('saveWallet', { wallet })
+      } else {
+        download(JSON.stringify(wallet), `${wallet.id}.dat`)
+      }
+
+
       this.setState({
         isDownloaded: true
       })

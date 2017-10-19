@@ -54,10 +54,12 @@ export default {
   drawer: {
     item: {
       style: {
-        color: variables.colorPrimary1
+        color: variables.colorPrimary1,
+        textOverflow: 'ellipsis'
       },
       styleDisabled: {
-        color: variables.disabledColor2
+        color: variables.disabledColor2,
+        textOverflow: 'ellipsis'
       },
       innerDivStyle: {
         paddingLeft: 60,

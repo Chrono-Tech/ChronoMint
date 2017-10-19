@@ -20,6 +20,10 @@ import LoginWithPrivateKey from '../LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginLedger from '../LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithWallet from '../LoginWithWallet/LoginWithWallet'
+import LoginWithPinCode from '../LoginWithPinCode/LoginWithPinCode'
+import connectReactNative from '../../../../connectReactNative'
+import { getPrivateKeyFromWallet } from '../../../../network/walletProvider'
+import { getPrivateKeyFromMnemonic } from '../../../../network/mnemonicProvider'
 import './LoginWithOptions.scss'
 
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -31,23 +35,43 @@ const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
 const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
+const STEP_SET_PINCODE = 'step/SET_PINCODE'
 
 const loginOptions = [{
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: 'LoginWithOptions.mnemonicKey'
+  title: 'Mnemonic key',
+  devices: ['web', 'desktop', 'mobile']
 }, {
   nextStep: STEP_LOGIN_WITH_WALLET,
-  title: 'LoginWithOptions.walletFile'
+  title: 'Wallet file',
+  devices: ['web', 'desktop', 'mobile']
 }, {
   nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: 'LoginWithOptions.privateKey'
+  title: 'Private key',
+  devices: ['web', 'desktop', 'mobile']
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: 'LoginWithOptions.ledgerNano'
+  title: 'Ledger Nano',
+  devices: ['web', 'desktop']
 }]
+
+const filterByDevice = (device) =>
+  (item) =>
+    item.devices.some((item) => item === device)
+
+const isProviderOrNetworkChanded = (props, nextProps) => !!(
+  (
+    props.selectedProviderId !== nextProps.selectedProviderId ||
+    props.selectedNetworkId !== nextProps.selectedNetworkId
+  ) &&
+  (
+    nextProps.selectedProviderId && nextProps.selectedNetworkId
+  )
+)
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
+  selectedProviderId: state.get('network').selectedProviderId,
   accounts: state.get('network').accounts
 })
 
@@ -75,6 +99,7 @@ class LoginWithOptions extends Component {
     clearErrors: PropTypes.func,
     onToggleProvider: PropTypes.func,
     selectedNetworkId: PropTypes.number,
+    selectedProviderId: PropTypes.number,
     loading: PropTypes.func,
     loginLedger: PropTypes.func
   }
@@ -82,11 +107,21 @@ class LoginWithOptions extends Component {
   constructor () {
     super()
     this.state = {
-      step: STEP_SELECT_NETWORK
+      step: STEP_SELECT_NETWORK,
+      isSaveKey: true,
+      isPinCodeChecking: false
     }
   }
 
-  setupAndLogin ({ ethereum, btc, bcc }) {
+  componentWillReceiveProps (nextProps) {
+    const { selectedNetworkId, selectedProviderId } = nextProps
+
+    if (isProviderOrNetworkChanded(this.props, nextProps)) {
+      this.hasStoredKey(selectedProviderId, selectedNetworkId)
+    }
+  }
+
+  setupAndLogin ({ ethereum, bcc, btc }) {
 
     // setup
     const web3 = new Web3()
@@ -107,7 +142,14 @@ class LoginWithOptions extends Component {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
+
+    if (window.isMobile) {
+      this.setKey(getPrivateKeyFromMnemonic(mnemonicKey))
+      return
+    }
+    
     const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
+
     this.setupAndLogin(provider)
   }
 
@@ -115,7 +157,13 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
+      if (window.isMobile) {
+        this.setKey(privateKey)
+        return
+      }
+
       const provider = privateKeyProvider(privateKey, this.props.getProviderSettings())
+
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -139,7 +187,13 @@ class LoginWithOptions extends Component {
     this.props.loading()
     this.props.clearErrors()
     try {
+      if (window.isMobile) {
+        this.setKey(getPrivateKeyFromWallet(wallet, password))
+        return
+      }
+
       const provider = walletProvider(wallet, password, this.props.getProviderSettings())
+
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -171,8 +225,113 @@ class LoginWithOptions extends Component {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
+  hasStoredKey = async (provider, network) => {
+    const { hasKey } = await connectReactNative.postMessage('hasKey', {
+      provider, network
+    })
+
+    this.setState({ hasKey })
+  }
+  
+  handlePinCodeLogin = async (pinCode) => {
+    this.props.clearErrors()
+
+    this.setState({ isPinCodeChecking: true })
+
+    try {
+      const { key, error } = await connectReactNative.postMessage('getKey', {
+        pinCode,
+        provider: this.props.selectedProviderId,
+        network: this.props.selectedNetworkId
+      })
+
+      if (error || !key) {
+        this.props.addError(error)
+        return
+      }
+
+      const provider = privateKeyProvider(key, this.props.getProviderSettings())
+      
+      this.setupAndLogin(provider)
+    }
+    catch (e) {
+      this.setState({ pinCode: '', isPinCodeChecking: false })
+      this.props.addError(e.message)
+    }
+  }
+
+  handlePinCodeSet = async (nextPinCode) => {
+    this.props.clearErrors()
+    const { pinCode, privateKey } = this.state
+
+    if (pinCode) {
+      if (pinCode === nextPinCode) {
+        this.setState({ pinCode: '' })
+        
+        await connectReactNative.postMessage('setPinCode', {
+          pinCode
+        })
+
+        this.addKey(privateKey)
+        return
+      }
+      this.props.addError('Pin-codes do not match. Try again.')
+      this.setState({ pinCode: '' })
+      return
+    }
+
+    this.setState({ pinCode: nextPinCode })
+  }
+
+  handleBackToOptions = () => {
+    const { selectedProviderId, selectedNetworkId } = this.props
+
+    this.hasStoredKey(selectedProviderId, selectedNetworkId)
+    this.handleChangeOption(STEP_SELECT_OPTION)
+  }
+
+  setKey = (privateKey) => {
+    this.setStep(STEP_SET_PINCODE)
+    this.setState({ privateKey })
+  }
+
+  addKey = async (key) => {
+    this.setState({ step: STEP_SET_PINCODE })
+    
+    const { error } = await connectReactNative.postMessage('addKey', {
+      key,
+      provider: this.props.selectedProviderId,
+      network: this.props.selectedNetworkId
+    })
+
+    if (error) {
+      this.props.addError(error)
+      return
+    }
+
+    this.handleBackToOptions()
+  }
+
+  handleFingerprint = () => {
+    connectReactNative.postMessage('scanFingerprint', {
+      description: 'Scan fingerprint to login',
+      provider: this.props.selectedProviderId,
+      network: this.props.selectedNetworkId
+    })
+      .then(({ key }) => {
+        const provider = privateKeyProvider(key, this.props.getProviderSettings())
+        
+        this.setupAndLogin(provider)
+      })
+      .catch(error => {
+        this.props.addError(error)
+      })
+  }
+
   renderOptions () {
-    return loginOptions.map((item, id) => (
+    const byDevice = filterByDevice(window.isMobile ? 'mobile' : 'desktop')
+    
+    return loginOptions.filter(byDevice).map((item, id) => (
       <div
         key={id}
         styleName='optionBox'
@@ -186,14 +345,38 @@ class LoginWithOptions extends Component {
 
   render () {
     const {selectedNetworkId} = this.props
-    const {step} = this.state
+    const {step, storedWallet, hasKey, pinCode, isPinCodeChecking } = this.state
 
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
+    const isPinCode = window.isMobile && hasKey && step === STEP_SELECT_OPTION
+    const isPinCodeSetFirst = step === STEP_SET_PINCODE && !pinCode
+    const isPinCodeSetSecond = step === STEP_SET_PINCODE && pinCode
 
     return (
       <div>
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+        { isPinCode && (
+          <LoginWithPinCode
+            onLogin={this.handlePinCodeLogin}
+            isPinCodeChecking={isPinCodeChecking}
+            isFingerprintEnabled
+            onFingerprint={this.handleFingerprint}
+            label='Enter pin code or press fingerprint button to scan:'
+          />
+        )}
+        { isPinCodeSetFirst && (
+          <LoginWithPinCode
+            onLogin={this.handlePinCodeSet}
+            label='Enter pin-code. Warning! Your previous wallet and pin will be overwritten!'
+          />
+        ) }
+        { isPinCodeSetSecond && (
+          <LoginWithPinCode
+            onLogin={this.handlePinCodeSet}
+            label='Confirm your new pin-code. Warning! Your previous wallet and pin will be overwritten!'
+          />
+        ) }
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
             <NetworkStatus />
@@ -207,12 +390,15 @@ class LoginWithOptions extends Component {
             onLogin={this.handleMnemonicLogin}
             onGenerate={() => this.handleChangeOption(STEP_GENERATE_MNEMONIC)}
             onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+            onSaveKeyCheck={this.handleSaveKeyCheck}
+            isSaveKey={this.state.isSa}
           />
         )}
 
         {step === STEP_LOGIN_WITH_WALLET && (
           <LoginWithWallet
             onLogin={this.handleWalletUpload}
+            wallet={storedWallet}
             onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
             onGenerate={() => this.handleChangeOption(STEP_GENERATE_WALLET)}
           />
@@ -226,6 +412,7 @@ class LoginWithOptions extends Component {
 
         {step === STEP_GENERATE_WALLET && (
           <GenerateWallet
+            onBackToOptions={this.handleBackToOptions}
             onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_WALLET)}
           />
         )}

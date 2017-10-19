@@ -7,6 +7,8 @@ import router from './router'
 import { store } from './redux/configureStore'
 import { bootstrap } from './redux/bootstrap/actions'
 import injectTapEventPlugin from 'react-tap-event-plugin'
+import './connectReactNative'
+import './mobile'
 
 class App {
   start () {
