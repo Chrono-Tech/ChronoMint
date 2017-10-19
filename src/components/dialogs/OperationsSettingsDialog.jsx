@@ -1,42 +1,40 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { Field, reduxForm } from 'redux-form/immutable'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import ModalDialog from 'components/dialogs/ModalDialog'
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
-
-import { setRequiredSignatures } from 'redux/operations/actions'
 import { modalsClose } from 'redux/modals/actions'
+import { setRequiredSignatures } from 'redux/operations/actions'
+
+import ErrorList from 'components/forms/ErrorList'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import validator from 'components/forms/validator'
 
 import './FormDialog.scss'
 
 export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'
 
 function prefix (token) {
-  return 'components.dialogs.OperationsSettingsDialog.' + token
+  return `components.dialogs.OperationsSettingsDialog.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
   form: FORM_OPERATION_SETTINGS,
-  validate: (values) => { // TODO async validate
+  validate: values => { // TODO async validate
     const errors = {}
     errors.requiredSigns = ErrorList.toTranslate(validator.positiveInt(values.get('requiredSigns')))
     if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
       errors.requiredSigns = ErrorList.toTranslate('operations.errors.requiredSigns')
     }
     return errors
-  }
+  },
 })
 export default class OperationsSettingsDialog extends Component {
-
   static propTypes = {
     adminCount: PropTypes.number,
     initialValues: PropTypes.object,
@@ -45,7 +43,7 @@ export default class OperationsSettingsDialog extends Component {
     name: PropTypes.string,
     handleSubmit: PropTypes.func,
     onSubmit: PropTypes.func,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
   }
 
   render () {
@@ -55,7 +53,8 @@ export default class OperationsSettingsDialog extends Component {
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog
           onClose={() => this.props.onClose()}
         >
@@ -67,7 +66,8 @@ export default class OperationsSettingsDialog extends Component {
               <div>
                 <p>{<Translate value='operations.adminCount' />}: <b>{this.props.adminCount}</b></p>
               </div>
-              <Field component={TextField}
+              <Field
+                component={TextField}
                 name='requiredSigns'
                 fullWidth
                 floatingLabelText={<Translate value='operations.requiredSigns' />}
@@ -90,17 +90,18 @@ function mapStateToProps (state) {
     adminCount: operations.adminCount,
     initialValues: {
       requiredSigns: operations.required,
-      adminCount: operations.adminCount
-    }
+      adminCount: operations.adminCount,
+    },
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(setRequiredSignatures(parseInt(values.get('requiredSigns'), 10)))
-    }
+    },
   }
 }
+

@@ -9,7 +9,7 @@ export default {
     amount: 'Amount',
     withFee: 'With fee',
     feePercent: 'Fee percent',
-    startWithCrowdsale: 'Start with crowdsale'
+    startWithCrowdsale: 'Start with crowdsale',
   },
   ru: {
     dialogTitle: 'Добавить токен',
@@ -21,6 +21,6 @@ export default {
     amount: 'Сумма',
     withFee: 'С коммиссией',
     feePercent: 'Процент коммиссии',
-    startWithCrowdsale: 'Начать с crowdsale'
+    startWithCrowdsale: 'Начать с crowdsale',
   },
 }

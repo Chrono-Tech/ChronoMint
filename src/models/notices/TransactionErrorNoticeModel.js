@@ -1,16 +1,16 @@
-import React from 'react'
-import type TxExecModel from '../TxExecModel'
-import { TxError } from '../../dao/AbstractContractDAO'
-
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
+import { TxError } from '../../dao/AbstractContractDAO'
+import type TxExecModel from '../TxExecModel'
 
 export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,
-  error: null
+  error: null,
 }) {
   constructor (tx: TxExecModel, error: TxError) {
-    super({tx, error})
+    super({ tx, error })
   }
 
   tx (): TxExecModel {
@@ -26,20 +26,20 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = 'errorCodes.' + this.error().code
+    const message = `errorCodes.${this.error().code}`
     return I18n.t(message)
   }
 
   details () {
     const details = [
       { label: 'Operation', value: I18n.t(this.tx().func()) },
-      ...this.tx().details()
+      ...this.tx().details(),
     ]
     const hash = this.tx().hash()
     if (hash) {
       details.push({
         label: 'Hash',
-        value: hash
+        value: hash,
       })
     }
     return details
@@ -55,8 +55,8 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
     return (
       <div>
         {this._error()}
-        {this.tx().description(false, {marginTop: '10px'})}
-        <p style={{marginBottom: '0'}}>
+        {this.tx().description(false, { marginTop: '10px' })}
+        <p style={{ marginBottom: '0' }}>
           <small>{this.date()}</small>
         </p>
       </div>

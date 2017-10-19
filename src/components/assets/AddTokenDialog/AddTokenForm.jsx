@@ -1,21 +1,24 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import { TextField, Checkbox } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { modalsClose } from 'redux/modals/actions'
-import './AddTokenForm.scss'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
-import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { IPFSImage, TokenValue } from 'components'
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField, Checkbox } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { modalsClose } from 'redux/modals/actions'
+
+import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+
+import './AddTokenForm.scss'
 
 const ICON = require('assets/img/icn-lhau.svg')
 
 function prefix (token) {
-  return 'Assets.AddTokenForm.' + token
+  return `Assets.AddTokenForm.${token}`
 }
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
@@ -23,7 +26,7 @@ export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 function mapStateToProps (state) {
   const form = state.get('form')
   return {
-    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values')
+    formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
   }
 }
 
@@ -32,24 +35,24 @@ function mapDispatchToProps (dispatch) {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
-    }
+    },
   }
 }
 
-const validate = (values) => {
-  let tokenSymbolErrors = new ErrorList()
+const validate = values => {
+  const tokenSymbolErrors = new ErrorList()
   tokenSymbolErrors.add(validator.address(values.get('tokenSymbol'), true))
 
-  let smallestUnitErrors = new ErrorList()
+  const smallestUnitErrors = new ErrorList()
   smallestUnitErrors.add(validator.positiveNumber(values.get('smallestUnit')))
 
-  let amountErrors = new ErrorList()
+  const amountErrors = new ErrorList()
   if (values.get('reissuable')) {
     amountErrors.add(validator.positiveNumber(values.get('amount')))
     amountErrors.add(validator.required(values.get('amount')))
   }
 
-  let feePercentErrors = new ErrorList()
+  const feePercentErrors = new ErrorList()
   if (values.get('withFee')) {
     feePercentErrors.add(validator.positiveNumber(values.get('feePercent')))
     feePercentErrors.add(validator.required(values.get('feePercent')))
@@ -59,17 +62,17 @@ const validate = (values) => {
     tokenSymbol: tokenSymbolErrors.getErrors(),
     smallestUnit: smallestUnitErrors.getErrors(),
     amount: amountErrors.getErrors(),
-    feePercent: feePercentErrors.getErrors()
+    feePercent: feePercentErrors.getErrors(),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate})
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate })
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    formValues: PropTypes.object
+    formValues: PropTypes.object,
   }
 
   render () {
@@ -92,9 +95,9 @@ export default class AddPlatformForm extends React.Component {
             <div styleName='info'>
               <div styleName='name'>MEGATOKEN</div>
               <TokenValue
-                style={{fontSize: '16px', lineHeight: '30px'}}
+                style={{ fontSize: '16px', lineHeight: '30px' }}
                 value={new BigNumber(1324123)}
-                symbol={'MGTKN'}
+                symbol='MGTKN'
               />
               <div styleName='platform'>
                 <div styleName='subTitle'>
@@ -111,13 +114,15 @@ export default class AddPlatformForm extends React.Component {
             component={TextField}
             name='tokenSymbol'
             fullWidth
-            floatingLabelText={<Translate value={prefix('tokenSymbol')} />} />
+            floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+          />
 
           <Field
             component={TextField}
             name='description'
             fullWidth
-            floatingLabelText={<Translate value={prefix('description')} />} />
+            floatingLabelText={<Translate value={prefix('description')} />}
+          />
 
           <div className='AddTokenForm__grid'>
             <div className='row'>
@@ -126,7 +131,8 @@ export default class AddPlatformForm extends React.Component {
                   component={TextField}
                   name='smallestUnit'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('smallestUnit')} />} />
+                  floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                />
               </div>
             </div>
             <div className='row'>
@@ -134,25 +140,29 @@ export default class AddPlatformForm extends React.Component {
                 <Field
                   component={Checkbox}
                   name='reissuable'
-                  label={<Translate value={prefix('reissuable')} />} />
+                  label={<Translate value={prefix('reissuable')} />}
+                />
                 <Field
                   disabled={!reissuable}
                   component={TextField}
                   name='amount'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('amount')} />} />
+                  floatingLabelText={<Translate value={prefix('amount')} />}
+                />
               </div>
               <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={Checkbox}
                   name='withFee'
-                  label={<Translate value={prefix('withFee')} />} />
+                  label={<Translate value={prefix('withFee')} />}
+                />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feePercent'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feePercent')} />} />
+                  floatingLabelText={<Translate value={prefix('feePercent')} />}
+                />
               </div>
             </div>
           </div>
@@ -161,11 +171,13 @@ export default class AddPlatformForm extends React.Component {
             styleName='checkboxField'
             component={Checkbox}
             name='startWithCrowdsale'
-            label={<Translate value={prefix('startWithCrowdsale')} />} />
+            label={<Translate value={prefix('startWithCrowdsale')} />}
+          />
 
         </div>
         <div
-          styleName='dialogFooter'>
+          styleName='dialogFooter'
+        >
           <RaisedButton
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

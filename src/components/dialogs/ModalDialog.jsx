@@ -1,15 +1,14 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import classnames from 'classnames'
 
 import './ModalDialog.scss'
 
 export class ModalDialog extends React.Component {
-
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
-    onClose: PropTypes.func
+    onClose: PropTypes.func,
   }
 
   handleBackdropTap (e) {
@@ -20,24 +19,33 @@ export class ModalDialog extends React.Component {
 
   render () {
     return (
-      <div styleName='root' className={classnames('ModalDialog__backdrop', this.props.className)}
-        onTouchTap={(e) => {
+      <div
+        styleName='root'
+        className={classnames('ModalDialog__backdrop', this.props.className)}
+        onTouchTap={e => {
           e.stopPropagation()
           this.handleBackdropTap(e)
         }}
       >
-        <div styleName='dialog' className='ModalDialog__dialog'
-          onTouchTap={(e) => {
+        <div
+          styleName='dialog'
+          className='ModalDialog__dialog'
+          onTouchTap={e => {
             e.stopPropagation()
           }}
         >
           <div styleName='content' className='ModalDialog__content'>
             {this.props.children}
           </div>
-          <a styleName='close' className='ModalDialog__close' onTouchTap={(e) => {
-            e.stopPropagation()
-            this.handleBackdropTap(e)
-          }}><i className='material-icons'>close</i></a>
+          <a
+            styleName='close'
+            className='ModalDialog__close'
+            onTouchTap={e => {
+              e.stopPropagation()
+              this.handleBackdropTap(e)
+            }}
+          ><i className='material-icons'>close</i>
+          </a>
         </div>
       </div>
     )

@@ -1,20 +1,21 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import TxExecModel, { ARGS_TREATED } from './TxExecModel'
 import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
+import TxExecModel, { ARGS_TREATED } from './TxExecModel'
 
 class OperationModel extends abstractFetchingModel({
   remained: null,
   completed: null,
   tx: null,
   isConfirmed: false,
-  isDone: false
+  isDone: false,
 }) {
   constructor (data) {
     super({
       ...data,
-      tx: data.tx instanceof TxExecModel ? data.tx : new TxExecModel(data.tx)
+      tx: data.tx instanceof TxExecModel ? data.tx : new TxExecModel(data.tx),
     })
   }
 
@@ -61,9 +62,9 @@ class OperationModel extends abstractFetchingModel({
   summary () {
     const a = this.tx().args()
     const b = {
-      operation: <Translate value={this.tx().func()} />
+      operation: <Translate value={this.tx().func()} />,
     }
-    for (let i in a) {
+    for (const i in a) {
       if (a.hasOwnProperty(i)) {
         b[this.tx().i18nFunc() + i] = a[i]
       }

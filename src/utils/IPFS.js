@@ -1,13 +1,14 @@
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-import FileModel from '../models/FileSelect/FileModel'
-import { fileConfig } from '../components/common/FileSelect/FileSelect'
+
 import FileCollection from '../models/FileSelect/FileCollection'
+import { fileConfig } from '../components/common/FileSelect/FileSelect'
+import FileModel from '../models/FileSelect/FileModel'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.infura.io',
   port: 5001,
-  protocol: 'https'
+  protocol: 'https',
 }
 
 type webkitURL = {
@@ -15,7 +16,6 @@ type webkitURL = {
 }
 
 class IPFS {
-
   constructor (config) {
     this._api = ipfsAPI(config || DEFAULT_CONFIG)
   }
@@ -33,7 +33,7 @@ class IPFS {
     return new Promise((resolve, reject) => {
       const putValue = value ? {
         Data: Buffer.from(JSON.stringify(value)),
-        Links: []
+        Links: [],
       } : ''
       this.getAPI().object.put(putValue, (err, response) => {
         if (err) {
@@ -59,7 +59,7 @@ class IPFS {
       return null
     }
 
-    return new Promise(async (resolve) => {
+    return new Promise(async resolve => {
       try {
         // TODO @bshevchenko: this is temporarily, to limit time of data downloading
         setTimeout(() => {
@@ -70,7 +70,6 @@ class IPFS {
         const result = response.toJSON()
 
         resolve(JSON.parse(Buffer.from(result.data).toString()))
-
       } catch (e) {
         // eslint-disable-next-line
         console.warn('IPFS get error', e, 'hash', hash)
@@ -87,13 +86,13 @@ class IPFS {
       img.onload = () => {
         resolve({
           width: img.width,
-          height: img.height
+          height: img.height,
         })
       }
       img.onerror = () => {
         resolve({
           width: 0,
-          height: 0
+          height: 0,
         })
       }
       img.src = URL.createObjectURL(file.file())
@@ -104,7 +103,7 @@ class IPFS {
     const errors = []
 
     // parse dimensions
-    const {width, height} = await this.getImageDimensions(file)
+    const { width, height } = await this.getImageDimensions(file)
     if (width === 0 || height === 0) {
       errors.push('Wrong image dimensions')
     } else {
@@ -115,7 +114,7 @@ class IPFS {
           value: 'Wrong image aspect ratio (Limit from 1:2 to 2:1)',
           // TODO @dkchv: !!!
           min: '1:2',
-          max: '2:1'
+          max: '2:1',
         })
       }
     }
@@ -137,7 +136,7 @@ class IPFS {
     if (file.size() > config.maxFileSize) {
       errors.push({
         value: 'max file size',
-        limit: config.maxFileSize
+        limit: config.maxFileSize,
       })
     }
 
@@ -173,7 +172,7 @@ class IPFS {
     const content: Buffer = await this.getRawData(file)
     const putValue = Buffer.from(JSON.stringify({
       path: file.path(),
-      content
+      content,
     }))
 
     try {
@@ -191,7 +190,7 @@ class IPFS {
       if (links.length === 0) {
         return fileCollection.uploaded(false).uploading(false).hash(null)
       }
-      const response = await this._api.object.put(Buffer.from(JSON.stringify({links})))
+      const response = await this._api.object.put(Buffer.from(JSON.stringify({ links })))
       const hash = response.toJSON().multihash
       return fileCollection.uploading(false).uploaded(true).hash(hash)
     } catch (e) {
@@ -213,9 +212,7 @@ class IPFS {
 
   async uploadCollection (fileCollection: FileCollection, config, callback) {
     let updatedCollection = fileCollection
-    const files = fileCollection.files().filter(item => {
-      return !(item.uploaded() || item.hasErrors())
-    })
+    const files = fileCollection.files().filter(item => !(item.uploaded() || item.hasErrors()))
     const promises = []
     files.forEach(file => promises.push(this.uploadFile(file, config, callback)))
     const result = promises

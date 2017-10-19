@@ -1,26 +1,28 @@
-import React, { Component } from 'react'
+import { Paper, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
+import { connect } from 'react-redux'
+import styles from 'layouts/partials/styles'
+
 import { modalsOpen } from 'redux/modals/actions'
+
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
-import styles from 'layouts/partials/styles'
-import { Paper, RaisedButton } from 'material-ui'
+import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
+import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
+import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
 
 import './AssetManager.scss'
-import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
-import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
 
 function prefix (token) {
-  return 'Assets.AssetManager.' + token
+  return `Assets.AssetManager.${token}`
 }
 
 export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
-    handleAddTokenDialog: PropTypes.func
+    handleAddTokenDialog: PropTypes.func,
   }
 
   constructor (props) {
@@ -28,12 +30,11 @@ export class AssetManager extends Component {
 
     this.state = {
       selectedToken: null,
-      selectedPlatform: null
+      selectedPlatform: null,
     }
   }
 
   render () {
-
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -124,13 +125,13 @@ export class AssetManager extends Component {
   }
 
   handleSelectToken (token) {
-    this.setState({selectedToken: token})
+    this.setState({ selectedToken: token })
   }
 
   handleSelectPlatform (platformId) {
     this.setState({
       selectedPlatform: this.state.selectedPlatform === platformId ? null : platformId,
-      selectedToken: null
+      selectedToken: null,
     })
   }
 
@@ -142,15 +143,17 @@ export class AssetManager extends Component {
             <div className='row'>
               <div className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformsList
-                  handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
+                  handleSelectPlatform={platform => this.handleSelectPlatform(platform)}
                   selectedPlatform={this.state.selectedPlatform}
-                  handleSelectToken={(token) => this.handleSelectToken(token)}
-                  selectedToken={this.state.selectedToken} />
+                  handleSelectToken={token => this.handleSelectToken(token)}
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
               <div styleName='PlatformInfoWrap' className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformInfo
                   selectedPlatform={this.state.selectedPlatform}
-                  selectedToken={this.state.selectedToken} />
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
             </div>
           </div>
@@ -170,18 +173,18 @@ export class AssetManager extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog
+      component: AddPlatformDialog,
     })),
     handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog
-    }))
+      component: AddTokenDialog,
+    })),
   }
 }
 

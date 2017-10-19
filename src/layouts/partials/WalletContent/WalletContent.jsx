@@ -1,21 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import * as actions from 'redux/wallet/actions'
-import { isTestingNetwork } from 'network/settings'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
+
+import { isTestingNetwork } from 'network/settings'
+
+import * as actions from 'redux/wallet/actions'
+
+import Preloader from 'components/common/Preloader/Preloader'
+
 import './WalletContent.scss'
 
 function prefix (token) {
-  return 'layouts.partials.WalletContent.' + token
+  return `layouts.partials.WalletContent.${token}`
 }
 
 export class WalletContent extends Component {
-
   static propTypes = {
     getTransactions: PropTypes.func,
     tokens: PropTypes.object,
@@ -26,7 +29,7 @@ export class WalletContent extends Component {
     endOfList: PropTypes.bool,
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number
+    selectedProviderId: PropTypes.number,
   }
 
   constructor (props) {
@@ -74,7 +77,7 @@ export class WalletContent extends Component {
         </div>
         <div className='col-sm-6 col-md-3 col-lg-3 col-xl-4'>
           <div styleName='instructions'>
-            <h3><Translate {...{value: prefix('howToMakeTime')}} /></h3>
+            <h3><Translate {...{ value: prefix('howToMakeTime') }} /></h3>
             <div styleName='instructionsDescription'>
               {!this.props.isTesting ?
                 <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
@@ -135,7 +138,6 @@ export class WalletContent extends Component {
   }
 
   renderSendTokens () {
-
     return (
       <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='headLight'>
         {this.props.tokensFetched
@@ -176,8 +178,7 @@ export class WalletContent extends Component {
         <div className='row'>
           <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2'>
             {this.renderWalletChanger()}
-            <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='spacer'>
-            </div>
+            <div className='col-xs-6 col-sm-6 col-md-3 col-lg-3 col-xl-2' styleName='spacer' />
             {this.renderSendTokens()}
           </div>
           {this.renderPendingTransfers()}
@@ -227,15 +228,15 @@ function mapStateToProps (state) {
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
-    isMultisig: wallet.isMultisig
+    isMultisig: wallet.isMultisig,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    getTransactions: (tokens) => {
+    getTransactions: tokens => {
       dispatch(actions.getAccountTransactions(tokens))
-    }
+    },
   }
 }
 

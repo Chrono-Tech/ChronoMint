@@ -30,10 +30,12 @@
     "cross-env": "^5.0.0",
     "css-loader": "0.28.1",
     "enzyme": "^2.8.2",
-    "eslint": "^4.2.0",
+    "eslint": "^4.9.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-html-reporter": "^0.5.2",
     "eslint-plugin-async-await": "0.0.0",
-    "eslint-plugin-chronobank": "chronobank/eslint-plugin-chronobank",
-    "eslint-plugin-chronobank-react": "chronobank/eslint-plugin-chronobank-react",
+    "eslint-plugin-chronobank": "Laiff/eslint-plugin-chronobank#MINT-588",
+    "eslint-plugin-chronobank-react": "Laiff/eslint-plugin-chronobank-react#MINT-588",
     "eslint-plugin-flowtype": "^2.33.0",
     "eslint-plugin-react": "^7.1.0",
     "ethereum-bridge": "github:oraclize/ethereum-bridge",
@@ -44,6 +46,8 @@
     "font-awesome": "4.7.0",
     "html-webpack-plugin": "2.28.0",
     "http-server": "^0.10.0",
+    "import-sort": "^3.3.0",
+    "import-sort-parser-babylon": "^3.2.0",
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.1",
     "jest": "20.0.3",
@@ -122,8 +126,11 @@
   },
   "scripts": {
     "dev": "node ./scripts/start.js",
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix src",
-    "lint:test": "./node_modules/eslint/bin/eslint.js --ext .js,.jsx src",
+    "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx --fix .",
+    "lint:pr": "bash -c \"node node_modules/eslint/bin/eslint --format node_modules/eslint-friendly-formatter/index.js --ext .js,.jsx `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
+    "lint:report": "bash -c \"node ./node_modules/eslint/bin/eslint --format node_modules/eslint-html-reporter/reporter-team-city.js --output-file ./report/eslint-report-`date +%F`.html --ext .js,.jsx .\"",
+    "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
+    "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
     "start": "npm run dev",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
@@ -138,7 +145,7 @@
     "hs": "hs build -a localhost -o"
   },
   "pre-commit": [
-    "lint"
+    "lint:pr"
   ],
   "jest": {
     "testURL": "http://example.com",

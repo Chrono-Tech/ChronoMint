@@ -1,8 +1,8 @@
 export default {
   en: {
-    platform: 'Platform'
+    platform: 'Platform',
   },
   ru: {
-    platform: 'Платформа'
+    platform: 'Платформа',
   },
 }

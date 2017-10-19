@@ -1,14 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from 'components/dialogs/ModalDialog'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from 'components/dialogs/ModalDialog'
+
 import AddTokenForm from './AddTokenForm'
 
 const TRANSITION_TIMEOUT = 250
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
@@ -18,7 +21,7 @@ function mapDispatchToProps (dispatch) {
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -32,7 +35,7 @@ export default class AddPlatformDialog extends React.Component {
   }
 
 
-  handleSubmitSuccess = (values) => {
+  handleSubmitSuccess = values => {
     this.props.closeModal()
     // eslint-disable-next-line
     console.log('onSubmit', values)
@@ -45,7 +48,8 @@ export default class AddPlatformDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddTokenForm
             handleSubmit={this.handleSubmitSuccess}

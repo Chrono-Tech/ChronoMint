@@ -10,7 +10,7 @@ export default {
     crowdsaleInfo: 'crowdsale info',
     send: 'Send to exchange',
     selectPlatform: 'Select a platform',
-    selectToken: 'Select a token'
+    selectToken: 'Select a token',
   },
   ru: {
     reissue: 'Переиздать',
@@ -23,6 +23,6 @@ export default {
     crowdsaleInfo: 'Информация о crowdsale',
     send: 'Обменять',
     selectPlatform: 'Выберите платформу',
-    selectToken: 'Выберите токен'
+    selectToken: 'Выберите токен',
   },
 }

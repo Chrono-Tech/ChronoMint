@@ -1,5 +1,6 @@
-import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const ADDED = 'notices.locs.added'
@@ -17,15 +18,14 @@ export const statuses = {
   STATUS_UPDATED,
   ISSUED,
   REVOKED,
-  FAILED
+  FAILED,
 }
 
 export default class LOCNoticeModel extends abstractNoticeModel({
   action: null,
   name: null,
-  amount: null
+  amount: null,
 }) {
-
   icon () {
     return (<i className='material-icons'>group</i>)
   }
@@ -39,14 +39,14 @@ export default class LOCNoticeModel extends abstractNoticeModel({
     const amount = this.get('amount')
     return amount
       ? [
-        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` }
+        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` },
       ]
       : null
   }
 
   message () {
     return I18n.t(this.get('action'), {
-      name: this.get('name')
+      name: this.get('name'),
     })
   }
 }

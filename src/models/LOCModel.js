@@ -1,8 +1,9 @@
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import { dateFormatOptions } from '../config'
-import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
+import moment from 'moment'
+
+import { abstractFetchingModel } from './AbstractFetchingModel'
+import { dateFormatOptions } from '../config'
 
 export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 
@@ -15,24 +16,24 @@ export const STATUS_INACTIVE = 4
 const statusesMeta = {
   [STATUS_MAINTENANCE]: {
     token: 'locs.status.maintenance',
-    styleName: 'maintenance'
+    styleName: 'maintenance',
   },
   [STATUS_ACTIVE]: {
     token: 'locs.status.active',
-    styleName: 'active'
+    styleName: 'active',
   },
   [STATUS_SUSPENDED]: {
     token: 'locs.status.suspended',
-    styleName: 'suspended'
+    styleName: 'suspended',
   },
   [STATUS_BANKRUPT]: {
     token: 'locs.status.bankrupt',
-    styleName: 'bankrupt'
+    styleName: 'bankrupt',
   },
   [STATUS_INACTIVE]: {
     token: 'locs.status.inactive',
-    styleName: 'inactive'
-  }
+    styleName: 'inactive',
+  },
 }
 
 class LOCModel extends abstractFetchingModel({
@@ -49,7 +50,7 @@ class LOCModel extends abstractFetchingModel({
   isPending: true,
   isFailed: false, // for dryrun
   isNew: true,
-  token: null
+  token: null,
 }) {
   name (value) {
     return value === undefined ? this.get('name') : this.set('name', value)
@@ -119,17 +120,15 @@ class LOCModel extends abstractFetchingModel({
   isPending (value) {
     if (value === undefined) {
       return this.get('isPending')
-    } else {
-      return this.set('isFailed', false).set('isPending', value)
     }
+    return this.set('isFailed', false).set('isPending', value)
   }
 
   isFailed (value) {
     if (value === undefined) {
       return this.get('isFailed')
-    } else {
-      return this.set('isFailed', value).set('isPending', false)
     }
+    return this.set('isFailed', value).set('isPending', false)
   }
 
   isNew () {
@@ -150,7 +149,7 @@ class LOCModel extends abstractFetchingModel({
       website: this.website(),
       expDate: new Date(this.get('expDate')),
       issueLimit: this.issueLimit(),
-      publishedHash: this.publishedHash()
+      publishedHash: this.publishedHash(),
     }
   }
 }
