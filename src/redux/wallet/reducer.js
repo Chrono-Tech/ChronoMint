@@ -54,7 +54,7 @@ export default (state = initialState, action) => {
     case a.WALLET_TIME_DEPOSIT:
       return {
         ...state,
-        timeDeposit: state.timeDeposit !== null && action.isCredited !== null  ?
+        timeDeposit: state.timeDeposit !== null && action.isCredited !== null ?
           state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
           action.amount
       }
@@ -122,6 +122,10 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAddNotEdit: action.isAddNotEdit
+      }
+    case a.WALLET_MULTISIG_CREATED:
+      return {
+        ...state
       }
     default:
       return state

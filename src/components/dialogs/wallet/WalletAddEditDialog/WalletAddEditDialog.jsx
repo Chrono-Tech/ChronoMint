@@ -25,7 +25,7 @@ function mapDispatchToProps (dispatch) {
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    addWallet: (wallet: WalletModel) => dispatch(actions.addWallet(wallet)),
+    createWalletByModel: (wallet: WalletModel) => dispatch(actions.createWalletByModel(wallet)),
     updateWallet: (wallet: WalletModel) => dispatch(actions.updateWallet(wallet)),
     closeModal: () => dispatch(modalsClose())
   }
@@ -38,12 +38,11 @@ export default class WalletAddEditDialog extends React.Component {
   /** @namespace PropTypes.string */
   /** @namespace PropTypes.object */
   static propTypes = {
-    handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
     submitting: PropTypes.bool,
     isEditMultisig: PropTypes.bool,
     isAddNotEdit: PropTypes.bool,
-    addWallet: PropTypes.func,
+    createWalletByModel: PropTypes.func,
     updateWallet: PropTypes.func,
     closeModal: PropTypes.func,
     wallet: PropTypes.object
@@ -58,10 +57,13 @@ export default class WalletAddEditDialog extends React.Component {
   handleSubmitSuccess = (wallet: WalletModel) => {
     this.props.closeModal()
     if (this.props.isAddNotEdit) {
-      this.props.addWallet(wallet)
+      this.props.createWalletByModel(wallet)
     } else {
       this.props.updateWallet(wallet)
     }
+  }
+
+  handleSubmitFail = () => {
   }
 
   render () {
@@ -76,6 +78,7 @@ export default class WalletAddEditDialog extends React.Component {
           <WalletAddEditForm
             wallet={this.props.wallet}
             onSubmitSuccess={this.handleSubmitSuccess}
+            onSubmitFail={this.handleSubmitFail}
           />
         </ModalDialog>
       </CSSTransitionGroup>

@@ -127,6 +127,8 @@ export const watchInitWallet = () => async (dispatch, getState) => {
       dispatch(notify(notice.setToken(token)))
     })
   }
+
+  await watchWalletsManagerDAOexternalEvents(dispatch)
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
@@ -258,20 +260,42 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 }
 
 export const WALLET_MULTISIG_WALLETS = 'wallet/MULTISIG_WALLETS'
+export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
+export const WALLET_MULTISIG_CREATE_ERROR = 'wallet/MULTISIG_CREATE_ERROR'
+export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
+export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
+export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
+
+export const watchWalletsManagerDAOexternalEvents = async (dispatch) => {
+  const dao = await contractsManagerDAO.getWalletsManagerDAO()
+  dao.emitter.on(dao.constructor.events.WALLET_CREATED, payload => dispatch({type: WALLET_MULTISIG_CREATED, payload}))
+  dao.emitter.on(dao.constructor.events.ERROR, payload => dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload}))
+}
+
 export const getWallets = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
   const wallets = await dao.getWallets()
   dispatch({type: WALLET_MULTISIG_WALLETS, wallets})
+  return true
 }
 
-export const WALLET_MULTISIG_CREATED = 'wallet/MULTISIG_CREATED'
 export const createWallet = (walletOwners, requiredSignaturesNum, walletName) => async (dispatch) => {
   const dao = await contractsManagerDAO.getWalletsManagerDAO()
-  const created = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
-  dispatch({type: WALLET_MULTISIG_CREATED, created})
+  try {
+    const payload = await dao.createWallet(walletOwners, requiredSignaturesNum, walletName)
+    dispatch({type: WALLET_MULTISIG_CREATED, payload})
+  } catch (payload) {
+    dispatch({type: WALLET_MULTISIG_CREATE_ERROR, payload})
+  }
 }
 
-export const WALLET_MULTISIG_TURN = 'wallet/MULTISIG_TURN'
+export const createWalletByModel = (wallet) => {
+  const owners = wallet.owners().toArray().map(owner => owner.get('address'))
+  const requiredSignaturesNum = wallet.requiredSignatures()
+  const walletName = wallet.walletName()
+  return createWallet(owners, requiredSignaturesNum, walletName)
+}
+
 export const turnMultisig = () => async (dispatch) => {
   dispatch({type: WALLET_MULTISIG_TURN, isMultisig: true})
 }
@@ -279,7 +303,6 @@ export const turnMain = () => async (dispatch) => {
   dispatch({type: WALLET_MULTISIG_TURN, isMultisig: false})
 }
 
-export const WALLET_EDIT_MULTISIG_TURN = 'wallet/EDIT_MULTISIG_TURN'
 export const turnEditMultisig = () => async (dispatch) => {
   dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: true})
 }
@@ -287,7 +310,6 @@ export const turnEditMain = () => async (dispatch) => {
   dispatch({type: WALLET_EDIT_MULTISIG_TURN, isEditMultisig: false})
 }
 
-export const WALLET_ADD_NOT_EDIT_TURN = 'wallet/ADD_NOT_EDIT_TURN'
 export const turnAddNotEdit = () => async (dispatch) => {
   dispatch({type: WALLET_ADD_NOT_EDIT_TURN, isAddNotEdit: true})
 }
