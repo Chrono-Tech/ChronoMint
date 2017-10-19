@@ -1,13 +1,11 @@
-import React, { Component } from 'react'
 import { Paper } from 'material-ui'
-
+import React, { Component } from 'react'
 import { Tokens, CBEAddresses } from 'components'
-
 import styles from 'layouts/partials/styles'
+
 import './SettingsContent.scss'
 
 export default class SettingsContent extends Component {
-
   render () {
     return (
       <div styleName='root'>
@@ -27,3 +25,4 @@ export default class SettingsContent extends Component {
     )
   }
 }
+

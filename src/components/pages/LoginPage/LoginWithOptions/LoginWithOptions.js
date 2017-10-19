@@ -1,25 +1,29 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import Web3 from 'web3'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import web3Provider from 'network/Web3Provider'
-import web3Utils from 'network/Web3Utils'
+import Web3 from 'web3'
+import { connect } from 'react-redux'
+
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-import mnemonicProvider  from 'network/mnemonicProvider'
+import ledgerProvider from 'network/LedgerProvider'
+import mnemonicProvider from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
 import walletProvider from 'network/walletProvider'
-import ledgerProvider from 'network/LedgerProvider'
+import web3Provider from 'network/Web3Provider'
+import web3Utils from 'network/Web3Utils'
+
 import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading, getProviderSettings } from 'redux/network/actions'
 import { loginLedger } from 'redux/ledger/actions'
+
 import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
-import NetworkSelector from '../NetworkSelector/NetworkSelector'
-import NetworkStatus from '../NetworkStatus/NetworkStatus'
-import LoginWithPrivateKey from '../LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginLedger from '../LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../LoginWithMnemonic/LoginWithMnemonic'
+import LoginWithPrivateKey from '../LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginWithWallet from '../LoginWithWallet/LoginWithWallet'
+import NetworkSelector from '../NetworkSelector/NetworkSelector'
+import NetworkStatus from '../NetworkStatus/NetworkStatus'
+
 import './LoginWithOptions.scss'
 
 export const STEP_SELECT_OPTION = 'step/SELECT_OPTION'
@@ -34,32 +38,32 @@ const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 
 const loginOptions = [{
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: 'LoginWithOptions.mnemonicKey'
+  title: 'LoginWithOptions.mnemonicKey',
 }, {
   nextStep: STEP_LOGIN_WITH_WALLET,
-  title: 'LoginWithOptions.walletFile'
+  title: 'LoginWithOptions.walletFile',
 }, {
   nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: 'LoginWithOptions.privateKey'
+  title: 'LoginWithOptions.privateKey',
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: 'LoginWithOptions.ledgerNano'
+  title: 'LoginWithOptions.ledgerNano',
 }]
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
-  accounts: state.get('network').accounts
+  accounts: state.get('network').accounts,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  addError: (error) => dispatch(addError(error)),
+const mapDispatchToProps = dispatch => ({
+  addError: error => dispatch(addError(error)),
   loadAccounts: () => dispatch(loadAccounts()),
-  selectAccount: (value) => dispatch(selectAccount(value)),
+  selectAccount: value => dispatch(selectAccount(value)),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => dispatch(getProviderURL()),
   getProviderSettings: () => dispatch(getProviderSettings()),
   loading: () => dispatch(loading()),
-  loginLedger: () => dispatch(loginLedger())
+  loginLedger: () => dispatch(loginLedger()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -76,18 +80,17 @@ class LoginWithOptions extends Component {
     onToggleProvider: PropTypes.func,
     selectedNetworkId: PropTypes.number,
     loading: PropTypes.func,
-    loginLedger: PropTypes.func
+    loginLedger: PropTypes.func,
   }
 
   constructor () {
     super()
     this.state = {
-      step: STEP_SELECT_NETWORK
+      step: STEP_SELECT_NETWORK,
     }
   }
 
   setupAndLogin ({ ethereum, btc, bcc }) {
-
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -99,19 +102,19 @@ class LoginWithOptions extends Component {
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
       this.props.onLogin()
-    }).catch((e) => {
+    }).catch(e => {
       this.props.addError(e.message)
     })
   }
 
-  handleMnemonicLogin = (mnemonicKey) => {
+  handleMnemonicLogin = mnemonicKey => {
     this.props.loading()
     this.props.clearErrors()
     const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
-  handlePrivateKeyLogin = (privateKey) => {
+  handlePrivateKeyLogin = privateKey => {
     this.props.loading()
     this.props.clearErrors()
     try {
@@ -163,7 +166,7 @@ class LoginWithOptions extends Component {
   }
 
   setStep (step) {
-    this.setState({step})
+    this.setState({ step })
     this.handleToggleProvider(step)
   }
 
@@ -178,15 +181,15 @@ class LoginWithOptions extends Component {
         styleName='optionBox'
         onTouchTap={() => this.handleChangeOption(item.nextStep)}
       >
-        <div styleName='optionName'><Translate value={item.title}/></div>
+        <div styleName='optionName'><Translate value={item.title} /></div>
         <div className='material-icons' styleName='arrow'>arrow_forward</div>
       </div>
     ))
   }
 
   render () {
-    const {selectedNetworkId} = this.props
-    const {step} = this.state
+    const { selectedNetworkId } = this.props
+    const { step } = this.state
 
     const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
@@ -197,7 +200,7 @@ class LoginWithOptions extends Component {
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
             <NetworkStatus />
-            <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption'/>}</div>
+            <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption' />}</div>
             <div>{this.renderOptions()}</div>
           </div>
         )}

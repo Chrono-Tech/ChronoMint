@@ -1,4 +1,5 @@
 import { getMuiTheme } from 'material-ui/styles'
+
 import variables from './variables'
 
 export default getMuiTheme({
@@ -7,6 +8,6 @@ export default getMuiTheme({
     textColor: variables.colorPrimary0,
     primary1Color: variables.colorPrimary1,
     borderColor: variables.colorPrimary0Alter2,
-    disabledColor: variables.colorPrimary0Alter1
-  }
+    disabledColor: variables.colorPrimary0Alter1,
+  },
 })

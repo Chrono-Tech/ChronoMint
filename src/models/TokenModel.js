@@ -1,10 +1,13 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import Immutable from 'immutable'
+
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
+
+import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -15,7 +18,7 @@ export default class TokenModel extends abstractFetchingModel({
   balance: new BigNumber(0),
   allowance: new Immutable.Map(),
   url: null,
-  icon: null
+  icon: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
@@ -88,7 +91,7 @@ export default class TokenModel extends abstractFetchingModel({
       symbol: this.symbol(),
       url: this.url(),
       icon: this.icon(),
-      isApproveRequired: this.isApproveRequired()
+      isApproveRequired: this.isApproveRequired(),
     }
   }
 }

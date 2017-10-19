@@ -1,27 +1,29 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
-import walletGenerator from '../../../../network/walletGenerator'
-import download from 'react-file-download'
-import { addError, clearErrors } from '../../../../redux/network/actions'
-import theme from '../../../../styles/themes/default'
-import Warning from '../Warning/Warning'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import download from 'react-file-download'
+
+import { addError, clearErrors } from '../../../../redux/network/actions'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
+import theme from '../../../../styles/themes/default'
+import walletGenerator from '../../../../network/walletGenerator'
+import Warning from '../Warning/Warning'
+
 import './GenerateWallet.scss'
 
 const initialState = {
   password: '',
   isWarningSuppressed: false,
   walletJSON: null,
-  isDownloaded: false
+  isDownloaded: false,
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  addError: (error) => dispatch(addError(error)),
-  clearErrors: () => dispatch(clearErrors())
+const mapDispatchToProps = dispatch => ({
+  addError: error => dispatch(addError(error)),
+  clearErrors: () => dispatch(clearErrors()),
 })
 
 @connect(null, mapDispatchToProps)
@@ -29,22 +31,22 @@ class GenerateWallet extends Component {
   static propTypes = {
     onBack: PropTypes.func.isRequired,
     addError: PropTypes.func,
-    clearErrors: PropTypes.func
+    clearErrors: PropTypes.func,
   }
 
   constructor () {
     super()
     this.state = {
-      ...initialState
+      ...initialState,
     }
   }
 
   handlePasswordChange = (target, value) => {
-    this.setState({password: value})
+    this.setState({ password: value })
   }
 
   handleWarningCheck = (target, value) => {
-    this.setState({isWarningSuppressed: value})
+    this.setState({ isWarningSuppressed: value })
   }
 
   handleGenerateWalletClick = async () => {
@@ -55,14 +57,14 @@ class GenerateWallet extends Component {
         const walletJSON = await walletGenerator(this.state.password)
         this.setState({
           walletJSON,
-          password: ''
+          password: '',
         })
       }
 
       const wallet = this.state.walletJSON
       download(JSON.stringify(wallet), `${wallet.id}.dat`)
       this.setState({
-        isDownloaded: true
+        isDownloaded: true,
       })
     } catch (e) {
       this.props.addError(e.message)
@@ -70,7 +72,7 @@ class GenerateWallet extends Component {
   }
 
   render () {
-    const {password, isWarningSuppressed, isDownloaded} = this.state
+    const { password, isWarningSuppressed, isDownloaded } = this.state
     const isPasswordValid = password.length > 8
 
     return (
@@ -83,24 +85,25 @@ class GenerateWallet extends Component {
           <div styleName='root'>
             {!isDownloaded ? (
               <div>
-                <div styleName='hint'><Translate value='GenerateWallet.enterPassword'/></div>
+                <div styleName='hint'><Translate value='GenerateWallet.enterPassword' /></div>
                 <TextField
-                  floatingLabelText={<Translate value='GenerateWallet.password'/>}
+                  floatingLabelText={<Translate value='GenerateWallet.password' />}
                   onChange={this.handlePasswordChange}
                   type='password'
                   value={password}
-                  errorText={!isPasswordValid && <Translate value='GenerateWallet.passwordWarning'/>}
-                  fullWidth/>
-                <Warning/>
+                  errorText={!isPasswordValid && <Translate value='GenerateWallet.passwordWarning' />}
+                  fullWidth
+                />
+                <Warning />
               </div>
             ) : (
-              <div styleName='hint'><Translate value='GenerateWallet.walletSuccess'/></div>
+              <div styleName='hint'><Translate value='GenerateWallet.walletSuccess' /></div>
             )}
             <div styleName='actions'>
               {!isDownloaded && (
                 <div styleName='actionConfirm'>
                   <Checkbox
-                    label={<Translate value='GenerateWallet.iUnderstand'/>}
+                    label={<Translate value='GenerateWallet.iUnderstand' />}
                     onCheck={this.handleWarningCheck}
                     checked={isWarningSuppressed}
                     {...styles.checkbox}
@@ -108,7 +111,7 @@ class GenerateWallet extends Component {
                 </div>
               )}
               <RaisedButton
-                label={<Translate value='GenerateWallet.continue'/>}
+                label={<Translate value='GenerateWallet.continue' />}
                 primary
                 disabled={!isDownloaded && (!isWarningSuppressed || !isPasswordValid)}
                 onTouchTap={this.handleGenerateWalletClick}

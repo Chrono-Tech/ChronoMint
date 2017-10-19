@@ -3,7 +3,7 @@ import validator from '../../components/forms/validator'
 
 class OwnerModel extends abstractModel({
   address: null,
-  editing: false
+  editing: false,
 }) {
   address () {
     return this.get('address')

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
-import validator from 'components/forms/validator'
+
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
 
 export default (values, props) => {
   const sendAmount = values.get('sendAmount')
@@ -17,6 +18,6 @@ export default (values, props) => {
   }
 
   return {
-    sendAmount: errorsSendAmount.getErrors()
+    sendAmount: errorsSendAmount.getErrors(),
   }
 }

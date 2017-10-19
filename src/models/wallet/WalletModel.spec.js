@@ -1,5 +1,5 @@
-import WalletModel from './WalletModel'
 import OwnerModel from './OwnerModel'
+import WalletModel from './WalletModel'
 
 const ADDRESS = '0x1234567890123456789012345678901234567890'
 const WALLET_NAME = 'Test Wallet'
@@ -14,7 +14,7 @@ describe('Wallet model', () => {
       isNew: false,
       walletName: WALLET_NAME,
       dayLimit: DAY_LIMIT,
-      requiredSignatures: REQUIRED_SIGNATURES
+      requiredSignatures: REQUIRED_SIGNATURES,
     })
   })
 
@@ -37,12 +37,11 @@ describe('Wallet model', () => {
   it('should add owner', () => {
     walletModel = walletModel.addOwner(new OwnerModel({
       address: ADDRESS,
-      editing: true
+      editing: true,
     }))
   })
 
   it('should get one owner', () => {
     expect(walletModel.owners().toArray().length).toEqual(1)
   })
-
 })

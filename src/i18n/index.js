@@ -3,5 +3,5 @@ import ru from './ru'
 
 export default {
   en,
-  ru
+  ru,
 }

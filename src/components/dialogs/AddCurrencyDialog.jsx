@@ -1,26 +1,25 @@
+import { CSSTransitionGroup } from 'react-transition-group'
+import Immutable from 'immutable'
+import PropTypes from 'prop-types'
+import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import classnames from 'classnames'
-import { CSSTransitionGroup } from 'react-transition-group'
+import { connect } from 'react-redux'
 
-import Immutable from 'immutable'
-
-import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
-
-import type TokenModel from 'models/TokenModel'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
+import type TokenModel from 'models/TokenModel'
 
-import ModalDialog from './ModalDialog'
-import AddTokenDialog from './AddTokenDialog'
-import Points from 'components/common/Points/Points'
-import IPFSImage from  'components/common/IPFSImage/IPFSImage'
-
-import { watchInitWallet } from 'redux/wallet/actions'
-import { updateUserProfile } from 'redux/session/actions'
 import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import { updateUserProfile } from 'redux/session/actions'
+import { watchInitWallet } from 'redux/wallet/actions'
+
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import Points from 'components/common/Points/Points'
+
+import AddTokenDialog from './AddTokenDialog'
+import ModalDialog from './ModalDialog'
 
 import './AddCurrencyDialog.scss'
 
@@ -29,15 +28,14 @@ const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
   BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg')
+  TIME: require('assets/img/icn-time.svg'),
 }
 
 function prefix (token) {
-  return 'components.dialogs.AddCurrencyDialog.' + token
+  return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
 export class AddCurrencyDialog extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -46,14 +44,14 @@ export class AddCurrencyDialog extends React.Component {
     loadTokens: PropTypes.func,
     handleAddToken: PropTypes.func,
     handleClose: PropTypes.func,
-    handleSave: PropTypes.func
+    handleSave: PropTypes.func,
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      items: this.props.tokens.valueSeq().toArray()
+      items: this.props.tokens.valueSeq().toArray(),
     }
   }
 
@@ -65,7 +63,7 @@ export class AddCurrencyDialog extends React.Component {
 
   componentWillReceiveProps (nextProps) {
     this.setState({
-      items: nextProps.tokens.valueSeq().toArray()
+      items: nextProps.tokens.valueSeq().toArray(),
     })
   }
 
@@ -74,28 +72,28 @@ export class AddCurrencyDialog extends React.Component {
       return
     }
 
-    const items = [ ...this.state.items ]
+    const items = [...this.state.items]
     const index = items.indexOf(item)
     if (index >= 0) {
       items.splice(index, 1, {
         ...item,
-        selected: value
+        selected: value,
       })
       this.setState({
-        items
+        items,
       })
     }
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
           <div styleName='content'>
             <div styleName='header'>
@@ -117,10 +115,10 @@ export class AddCurrencyDialog extends React.Component {
                 {this.props.isTokensLoaded
                   ? (
                     <div styleName='table'>
-                      { this.state.items.map((item) => this.renderRow(item)) }
+                      { this.state.items.map(item => this.renderRow(item)) }
                     </div>
                   )
-                  : (<CircularProgress style={{marginTop: '25px'}} size={24} thickness={1.5} />)
+                  : (<CircularProgress style={{ marginTop: '25px' }} size={24} thickness={1.5} />)
                 }
               </div>
               <div styleName='column'>
@@ -150,8 +148,9 @@ export class AddCurrencyDialog extends React.Component {
                 primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
-                  this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
-                )} />
+                  this.state.items.filter(item => item.selected && !item.disabled).map(item => item.token.address())
+                )}
+              />
               <RaisedButton
                 styleName='action'
                 label={<Translate value={prefix('close')} />}
@@ -165,14 +164,15 @@ export class AddCurrencyDialog extends React.Component {
   }
 
   renderRow (item) {
-
     const token: TokenModel | AbstractFetchingModel = item.token
     const symbol = token.symbol().toUpperCase()
     const balance = token.balance().toString(10)
-    const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
+    const [balance1, balance2] = balance ? balance.split('.') : [null, null]
 
     return (
-      <div key={item.token.id()} styleName={classnames('row', { 'rowSelected': item.selected })}
+      <div
+        key={item.token.id()}
+        styleName={classnames('row', { rowSelected: item.selected })}
         onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
       >
         <div styleName='cell'>
@@ -197,7 +197,7 @@ export class AddCurrencyDialog extends React.Component {
           { item.disabled || token.isFetching() ? null : (
             <Checkbox checked={item.selected} />
           )}
-          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{marginRight: '17px'}} /> : ''}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{ marginRight: '17px' }} /> : ''}
         </div>
       </div>
     )
@@ -212,14 +212,14 @@ function mapStateToProps (state) {
   // Have no balances
   const sharedTokens = settings.list.map(token => ({
     selected: false,
-    token
+    token,
   }))
 
   // Have balances
   const walletTokens = wallet.tokens.map(token => ({
     selected: true,
     disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
-    token
+    token,
   }))
 
   return {
@@ -227,7 +227,7 @@ function mapStateToProps (state) {
     profile: session.profile,
     tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
     walletTokens: wallet.tokens,
-    isTokensLoaded: settings.isFetched && !wallet.tokensFetching
+    isTokensLoaded: settings.isFetched && !wallet.tokensFetching,
   }
 }
 
@@ -237,20 +237,18 @@ function mapDispatchToProps (dispatch) {
     loadTokens: () => dispatch(listTokens()),
 
     handleAddToken: () => dispatch(modalsOpen({
-      component: AddTokenDialog
+      component: AddTokenDialog,
     })),
     handleClose: () => dispatch(modalsClose()),
     handleSave: async (profile, tokens) => {
-
       dispatch(modalsClose())
 
-      await dispatch(updateUserProfile(
-        profile.set('tokens', new Immutable.Set(tokens))
-      ))
+      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
 
       dispatch(watchInitWallet())
-    }
+    },
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddCurrencyDialog)
+

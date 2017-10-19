@@ -1,27 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-
+import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
+import React, { Component } from 'react'
 import { RewardsPeriod } from 'components'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import styles from 'layouts/partials/styles'
 
 import type RewardsModel from 'models/RewardsModel'
 
 import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
 
-import styles from 'layouts/partials/styles'
-
 import './RewardsContent.scss'
 
 function prefix (token) {
-  return 'layouts.partials.RewardsContent.' + token
+  return `layouts.partials.RewardsContent.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
-
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -33,11 +30,10 @@ export default class RewardsContent extends Component {
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
-    handleClosePeriod: PropTypes.func
+    handleClosePeriod: PropTypes.func,
   }
 
   componentWillMount () {
-
     if (!this.props.isFetched) {
       this.props.watchInitRewards()
     }
@@ -79,7 +75,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
-                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewardsData.periodLength()}/></span>
+                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewardsData.periodLength()} /></span>
                 </div>
               </div>
               <div className='col-sm-1'>
@@ -119,7 +115,7 @@ export default class RewardsContent extends Component {
                       label={<Translate value={prefix('depositOfWithdrawTime')} />}
                       styleName='action'
                       containerElement={
-                        <Link activeClassName={'active'} to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
+                        <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
                     {rewardsData.accountRewards().gt(0)
@@ -154,7 +150,7 @@ export default class RewardsContent extends Component {
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
-            {this.props.rewardsData.periods().valueSeq().map((item) => (
+            {this.props.rewardsData.periods().valueSeq().map(item => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
                   <Paper style={styles.content.paper.style}>
@@ -181,7 +177,7 @@ function mapStateToProps (state) {
     timeDeposit: wallet.timeDeposit,
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,
-    isCBE: session.isCBE
+    isCBE: session.isCBE,
   }
 }
 
@@ -190,6 +186,6 @@ function mapDispatchToProps (dispatch) {
     getRewardsData: () => dispatch(getRewardsData()),
     watchInitRewards: () => dispatch(watchInitRewards()),
     handleClosePeriod: () => dispatch(closePeriod()),
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue())
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
   }
 }

@@ -1,5 +1,5 @@
-import { providerMap, getNetworksByProvider } from '../../network/settings'
 import * as actions from './actions'
+import { providerMap, getNetworksByProvider } from '../../network/settings'
 
 const initialState = {
   isLoading: false,
@@ -12,11 +12,11 @@ const initialState = {
     providerMap.infura,
     providerMap.metamask,
     providerMap.uport,
-    providerMap.local
+    providerMap.local,
   ],
   selectedProviderId: null,
   networks: [],
-  selectedNetworkId: null
+  selectedNetworkId: null,
 }
 
 export default (state = initialState, action) => {
@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_LOADING:
       return {
         ...state,
-        isLoading: action.isLoading
+        isLoading: action.isLoading,
       }
     case actions.NETWORK_SET_TEST_RPC:
       return {
@@ -33,10 +33,9 @@ export default (state = initialState, action) => {
         providers: state.providers.map(item => item.id === providerMap.local.id
           ? {
             ...item,
-            disabled: false
+            disabled: false,
           }
-          : item
-        )
+          : item),
       }
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
@@ -44,30 +43,29 @@ export default (state = initialState, action) => {
         providers: state.providers.map(item => item.id === providerMap.metamask.id
           ? {
             ...item,
-            disabled: false
+            disabled: false,
           }
-          : item
-        )
+          : item),
       }
     case actions.NETWORK_SET_NETWORK:
-      return {...state, selectedNetworkId: action.selectedNetworkId}
+      return { ...state, selectedNetworkId: action.selectedNetworkId }
     case actions.NETWORK_SET_PROVIDER:
       return {
         ...state,
         selectedProviderId: action.selectedProviderId,
-        networks: getNetworksByProvider(action.selectedProviderId, state.isLocal)
+        networks: getNetworksByProvider(action.selectedProviderId, state.isLocal),
       }
     case actions.NETWORK_SET_ACCOUNTS:
-      return {...state, accounts: action.accounts}
+      return { ...state, accounts: action.accounts }
     case actions.NETWORK_SELECT_ACCOUNT:
-      return {...state, selectedAccount: action.selectedAccount}
+      return { ...state, selectedAccount: action.selectedAccount }
     case actions.NETWORK_CLEAR_ERRORS:
-      return {...state, errors: []}
+      return { ...state, errors: [] }
     case actions.NETWORK_ADD_ERROR:
       return {
         ...state,
         isLoading: false,
-        errors: [...state.errors, action.error]
+        errors: [...state.errors, action.error],
       }
     default:
       return state

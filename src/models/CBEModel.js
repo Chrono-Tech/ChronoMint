@@ -1,20 +1,19 @@
 import React from 'react'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
-
-import ProfileModel from './ProfileModel'
 import ErrorList from '../components/forms/ErrorList'
-
+import ProfileModel from './ProfileModel'
 import validator from '../components/forms/validator'
 
 class CBEModel extends abstractFetchingModel({
   address: null,
   name: null,
-  user: null
+  user: null,
 }) {
   constructor (data = {}) {
     super({
       ...data,
-      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user)
+      user: data.user instanceof ProfileModel ? data.user : new ProfileModel(data.user),
     })
   }
 
@@ -45,3 +44,4 @@ export const validate = values => {
 }
 
 export default CBEModel
+

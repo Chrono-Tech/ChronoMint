@@ -1,27 +1,25 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
-import { modalsOpen } from 'redux/modals/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
-import VoteDialog from 'components/dialogs/VoteDialog'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import Moment, { SHORT_DATE } from 'components/common/Moment'
+import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
+import VoteDialog from 'components/dialogs/VoteDialog'
 
 import './Poll.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
 
 function prefix (token) {
-  return 'components.dashboard.Poll.' + token
+  return `components.dashboard.Poll.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends React.Component {
-
   static propTypes = {
     model: PropTypes.object,
     isCBE: PropTypes.bool,
@@ -29,11 +27,10 @@ export default class Poll extends React.Component {
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
     handlePollActivate: PropTypes.func,
-    handlePollEnd: PropTypes.func
+    handlePollEnd: PropTypes.func,
   }
 
   render () {
-
     const { model, isCBE } = this.props
     const poll = model.poll()
 
@@ -46,7 +43,7 @@ export default class Poll extends React.Component {
             <div styleName='layer layerHead'>
               <div styleName='entry entryDate'>
                 <div styleName='entryTitle'>{details.daysLeft}</div>
-                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10 } /></div>
+                <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10} /></div>
               </div>
               {details.status
                 ? (
@@ -70,26 +67,34 @@ export default class Poll extends React.Component {
                 <div styleName='entryLabel'><Translate value={prefix('finished')} /></div>
               </div>
               <div styleName='chart chart1'>
-                <DoughnutChart key={details} weight={0.08} items={[
-                  { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
-                  { value: details.daysLeft, fill: 'transparent' }
-                ]} />
+                <DoughnutChart
+                  key={details}
+                  weight={0.08}
+                  items={[
+                    { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
+                    { value: details.daysLeft, fill: 'transparent' },
+                  ]}
+                />
               </div>
               <div styleName='chart chart2'>
-                <DoughnutChart key={details} weight={0.20} items={[
-                  { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
-                  { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
-                ]} />
+                <DoughnutChart
+                  key={details}
+                  weight={0.20}
+                  items={[
+                    { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
+                    { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' },
+                  ]}
+                />
               </div>
             </div>
             <div styleName='layer layerEntries'>
               <div styleName='entry entryPublished'>
                 <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
-                <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
+                <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE} /> || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
               <div styleName='entry entryFinished'>
                 <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
-                <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE}/> || (<i><Translate value={prefix('no')} /></i>)}</div>
+                <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (<i><Translate value={prefix('no')} /></i>)}</div>
               </div>
               <div styleName='entry entryRequired'>
                 <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
@@ -185,7 +190,7 @@ export default class Poll extends React.Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   return {
-    isCBE: session.isCBE
+    isCBE: session.isCBE,
   }
 }
 
@@ -194,17 +199,18 @@ function mapDispatchToProps (dispatch, op) {
     handleVote: () => dispatch(modalsOpen({
       component: VoteDialog,
       props: {
-        model: op.model
-      }
+        model: op.model,
+      },
     })),
     handlePollDetails: () => dispatch(modalsOpen({
       component: PollDetailsDialog,
       props: {
-        model: op.model
-      }
+        model: op.model,
+      },
     })),
     handlePollRemove: () => dispatch(removePoll(op.model)),
     handlePollActivate: () => dispatch(activatePoll(op.model)),
-    handlePollEnd: () => dispatch(endPoll(op.model))
+    handlePollEnd: () => dispatch(endPoll(op.model)),
   }
 }
+

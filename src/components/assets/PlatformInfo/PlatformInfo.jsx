@@ -1,16 +1,18 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { Translate } from 'react-redux-i18n'
-import { TextField } from 'redux-form-material-ui'
-import { IPFSImage, TokenValue } from 'components'
 import Avatar from 'material-ui/Avatar'
-import { RaisedButton, FlatButton } from 'material-ui'
 import BigNumber from 'bignumber.js'
+import { Field, reduxForm } from 'redux-form/immutable'
+import { IPFSImage, TokenValue } from 'components'
+import PropTypes from 'prop-types'
+import { RaisedButton, FlatButton } from 'material-ui'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { modalsOpen } from 'redux/modals/actions'
+
 import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assets/AssetManagerDialog/AssetManagerDialog'
-import { modalsOpen } from 'redux/modals/actions'
 
 import './PlatformInfo.scss'
 
@@ -21,17 +23,16 @@ const ICON_OVERRIDES = {
 }
 
 function prefix (token) {
-  return 'Assets.PlatformInfo.' + token
+  return `Assets.PlatformInfo.${token}`
 }
 
-@reduxForm({form: 'REISSUE_FORM'})
+@reduxForm({ form: 'REISSUE_FORM' })
 export class PlatformInfo extends Component {
-
   static propTypes = {
     selectedToken: PropTypes.number,
     selectedPlatform: PropTypes.number,
     handleCrowdsaleDialog: PropTypes.func,
-    handleAddManagerDialog: PropTypes.func
+    handleAddManagerDialog: PropTypes.func,
   }
 
   handleSubmit () {
@@ -39,7 +40,7 @@ export class PlatformInfo extends Component {
   }
 
   render () {
-    const {selectedToken, selectedPlatform} = this.props
+    const { selectedToken, selectedPlatform } = this.props
 
     if (!selectedPlatform) {
       return (
@@ -78,9 +79,9 @@ export class PlatformInfo extends Component {
               <div styleName='balance'>
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
-                  style={{fontSize: '24px', lineHeight: '24px'}}
+                  style={{ fontSize: '24px', lineHeight: '24px' }}
                   value={new BigNumber(1324123)}
-                  symbol={'usd'}
+                  symbol='usd'
                 />
               </div>
               <div styleName='fee'>
@@ -99,7 +100,7 @@ export class PlatformInfo extends Component {
                   component={TextField}
                   fullWidth
                   name='reissue'
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   floatingLabelText={<Translate value={prefix('reissueAmount')} />}
                 />
               </div>
@@ -168,14 +169,14 @@ export class PlatformInfo extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
+function mapStateToProps (/* state */) {
   return {}
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog
+      component: CrowdsaleDialog,
     })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog

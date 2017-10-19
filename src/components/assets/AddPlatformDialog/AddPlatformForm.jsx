@@ -1,17 +1,20 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import { TextField, Checkbox } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField, Checkbox } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { modalsClose } from 'redux/modals/actions'
-import './AddPlatformForm.scss'
-import validator from 'components/forms/validator'
+
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+
+import './AddPlatformForm.scss'
 
 function prefix (token) {
-  return 'Assets.AddPlatformForm.' + token
+  return `Assets.AddPlatformForm.${token}`
 }
 
 export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
@@ -19,7 +22,7 @@ export const FORM_ADD_PLATFORM_DIALOG = 'AddPlatformDialog'
 function mapStateToProps (state) {
   const form = state.get('form')
   return {
-    formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values')
+    formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values'),
   }
 }
 
@@ -28,19 +31,19 @@ function mapDispatchToProps (dispatch) {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
-    }
+    },
   }
 }
 
-const validate = (values) => {
+const validate = values => {
   if (values.get('alreadyHave')) {
     return {}
   }
 
-  let platformNameErrors = new ErrorList()
+  const platformNameErrors = new ErrorList()
   platformNameErrors.add(validator.name(values.get('platformName'), true))
 
-  let platformAddressErrors = new ErrorList()
+  const platformAddressErrors = new ErrorList()
   platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
 
   return {
@@ -50,12 +53,12 @@ const validate = (values) => {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate})
+@reduxForm({ form: FORM_ADD_PLATFORM_DIALOG, validate })
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    formValues: PropTypes.object
+    formValues: PropTypes.object,
   }
 
   render () {
@@ -77,13 +80,15 @@ export default class AddPlatformForm extends React.Component {
             component={TextField}
             name='platformName'
             fullWidth
-            floatingLabelText={<Translate value={prefix('platformName')} />} />
+            floatingLabelText={<Translate value={prefix('platformName')} />}
+          />
 
           <Field
             styleName='checkboxField'
             component={Checkbox}
             name='alreadyHave'
-            label={<Translate value={prefix('alreadyHave')} />} />
+            label={<Translate value={prefix('alreadyHave')} />}
+          />
 
           {
             !alreadyHave
@@ -91,13 +96,15 @@ export default class AddPlatformForm extends React.Component {
                 component={TextField}
                 name='platformAddress'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('platformAddress')} />} />
+                floatingLabelText={<Translate value={prefix('platformAddress')} />}
+              />
               : null
           }
 
         </div>
         <div
-          styleName='dialogFooter'>
+          styleName='dialogFooter'
+        >
           <RaisedButton
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

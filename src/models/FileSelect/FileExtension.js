@@ -4,44 +4,44 @@
 // @see https://www.sitepoint.com/mime-types-complete-list/
 
 export const DOC_MIME_TYPE = [
-  'application/msword', //doc
+  'application/msword', // doc
   // 'application/msword', //dot
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // docx
   // 'application/vnd.openxmlformats-officedocument.wordprocessingml.template', //dotx
   // 'application/vnd.ms-word.document.macroEnabled.12', //docm
   // 'application/vnd.ms-word.template.macroEnabled.12' //dotm
-  'OpenDocument text document	application/vnd.oasis.opendocument.text', //.odt
-  'application/rtf', //.rtf
+  'OpenDocument text document	application/vnd.oasis.opendocument.text', // .odt
+  'application/rtf', // .rtf
   'text/plain',
-  'text/*'
+  'text/*',
 ]
 
 export const XLS_MIME_TYPE = [
   'application/vnd.ms-excel', // xls
-  'application/vnd.ms-excel', //xlt
+  'application/vnd.ms-excel', // xlt
   // 'application/vnd.ms-excel', //xla
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', //xlsx
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // xlsx
   // 'application/vnd.openxmlformats-officedocument.spreadsheetml.template', //.xltx
-  'application/vnd.ms-excel.sheet.macroEnabled.12', //.xlsm
-  'application/vnd.ms-excel.template.macroEnabled.12', //.xltm
+  'application/vnd.ms-excel.sheet.macroEnabled.12', // .xlsm
+  'application/vnd.ms-excel.template.macroEnabled.12', // .xltm
   // 'application/vnd.ms-excel.addin.macroEnabled.12', //.xlam
-  'application/vnd.ms-excel.sheet.binary.macroEnabled.12', //.xlsb
-  'application/vnd.oasis.opendocument.spreadsheet' //.ods
+  'application/vnd.ms-excel.sheet.binary.macroEnabled.12', // .xlsb
+  'application/vnd.oasis.opendocument.spreadsheet', // .ods
 ]
 
 export const PPT_MIME_TYPE = [
-  'application/vnd.ms-powerpoint', //.ppt
+  'application/vnd.ms-powerpoint', // .ppt
   // 'application/vnd.ms-powerpoint', //.pot
-  'application/vnd.ms-powerpoint', //.pps
+  'application/vnd.ms-powerpoint', // .pps
   // 'application/vnd.ms-powerpoint', //.ppa
-  'application/vnd.openxmlformats-officedocument.presentationml.presentation', //.pptx
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation', // .pptx
   // 'application/vnd.openxmlformats-officedocument.presentationml.template', //.potx
-  'application/vnd.openxmlformats-officedocument.presentationml.slideshow', //.ppsx
+  'application/vnd.openxmlformats-officedocument.presentationml.slideshow', // .ppsx
   // 'application/vnd.ms-powerpoint.addin.macroEnabled.12', //.ppam
   // 'application/vnd.ms-powerpoint.presentation.macroEnabled.12', //.pptm
   // 'application/vnd.ms-powerpoint.template.macroEnabled.12', //.potm
   // 'application/vnd.ms-powerpoint.slideshow.macroEnabled.12', //.ppsm,
-  'application/vnd.oasis.opendocument.presentation', //.odp
+  'application/vnd.oasis.opendocument.presentation', // .odp
   'application/vnd.oasis.opendocument.text', // odt
   // 'application/vnd.oasis.opendocument.text-template', // ott
   // 'application/vnd.oasis.opendocument.text-web', // oth
@@ -55,22 +55,22 @@ export const PPT_MIME_TYPE = [
   'application/vnd.oasis.opendocument.chart', // odc
   // 'application/vnd.oasis.opendocument.formula', // odf
   // 'application/vnd.oasis.opendocument.database', // odb
-  'application/vnd.oasis.opendocument.image' // odi
+  'application/vnd.oasis.opendocument.image', // odi
 ]
 
 export const PDF_MIME_TYPE = [
-  'application/pdf'
+  'application/pdf',
 ]
 
 export const IMAGE_MIME_TYPE = [
   'image/jpeg',
   'image/jpg',
   'image/gif',
-  'image/png'
+  'image/png',
 ]
 
 const SVG_MIME_TYPE = [
-  'image/svg+xml'
+  'image/svg+xml',
 ]
 
 // presets
@@ -84,11 +84,11 @@ export const ACCEPT_DOCS = [].concat(DOC_MIME_TYPE, XLS_MIME_TYPE, PPT_MIME_TYPE
   '.ppt',
   '.pptx',
   '.pps',
-  '.ppsx'
+  '.ppsx',
 ])
 export const ACCEPT_IMAGES = [].concat(IMAGE_MIME_TYPE, SVG_MIME_TYPE, [
-  'image/*'
+  'image/*',
 ])
 export const ACCEPT_ALL = ACCEPT_DOCS.concat(ACCEPT_IMAGES, [
-  '*/*'
+  '*/*',
 ])

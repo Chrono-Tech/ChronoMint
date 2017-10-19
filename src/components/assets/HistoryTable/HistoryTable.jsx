@@ -1,27 +1,28 @@
-import React from 'react'
+import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import BigNumber from 'bignumber.js'
 
-function prefix (token) {
-  return 'Assets.HistoryTable.' + token
-}
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './HistoryTable.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+
+function prefix (token) {
+  return `Assets.HistoryTable.${token}`
+}
+
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
 @connect(mapStateToProps)
 export default class HistoryTable extends React.Component {
-
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
@@ -31,7 +32,7 @@ export default class HistoryTable extends React.Component {
     endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
@@ -41,23 +42,23 @@ export default class HistoryTable extends React.Component {
         type: 'issue',
         manager: 'admin',
         value: new BigNumber(1231),
-        symbol: 'LHT'
+        symbol: 'LHT',
       },
       {
         date: new Date(),
         type: 'revoke',
         manager: '0x9876f6477iocc4757q22dfg3333nmk1111v234x0',
         value: new BigNumber(423),
-        symbol: 'LHT'
+        symbol: 'LHT',
       },
       {
         date: new Date(),
         type: 'revoke',
         manager: '0xr4lk2jr3lj1111v234x0',
         value: new BigNumber(423111),
-        symbol: 'LHT'
-      }
-    ]
+        symbol: 'LHT',
+      },
+    ],
   }
 
   render () {
@@ -96,7 +97,7 @@ export default class HistoryTable extends React.Component {
     )
   }
 
-  renderRow ({item, timeTitle}, index) {
+  renderRow ({ item, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -142,7 +143,7 @@ export default class HistoryTable extends React.Component {
         data[groupBy] = data[groupBy] || {
           dateBy: moment(item.date).format('YYYY-MM-DD'),
           dateTitle: <Moment date={item.date} format={SHORT_DATE} />,
-          items: []
+          items: [],
         }
         data[groupBy].items.push({
           item,
@@ -154,11 +155,10 @@ export default class HistoryTable extends React.Component {
 
     return Object.values(groups)
       .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-      .map((group) => ({
+      .map(group => ({
         ...group,
-        items: group.items.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy)
+        items: group.items.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
       }))
   }
 }
-
 

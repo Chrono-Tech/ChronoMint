@@ -1,21 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from '../../ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import * as actions from 'redux/wallet/actions'
+import { modalsClose } from 'redux/modals/actions'
 
+import ModalDialog from '../../ModalDialog'
 import WalletAddEditForm from './WalletAddEditForm'
-
 import WalletModel from '../../../../models/wallet/WalletModel'
 
 const TRANSITION_TIMEOUT = 250
 
 function mapStateToProps (state) {
   return {
-    isAddNotEdit: state.get('wallet').isAddNotEdit
+    isAddNotEdit: state.get('wallet').isAddNotEdit,
   }
 }
 
@@ -27,7 +26,7 @@ function mapDispatchToProps (dispatch) {
     },
     addWallet: (wallet: WalletModel) => dispatch(actions.addWallet(wallet)),
     updateWallet: (wallet: WalletModel) => dispatch(actions.updateWallet(wallet)),
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -46,13 +45,13 @@ export default class WalletAddEditDialog extends React.Component {
     addWallet: PropTypes.func,
     updateWallet: PropTypes.func,
     closeModal: PropTypes.func,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
   }
 
   static defaultProps = {
     isAddNotEdit: true,
     isEditMultisig: true,
-    wallet: new WalletModel()
+    wallet: new WalletModel(),
   }
 
   handleSubmitSuccess = (wallet: WalletModel) => {
@@ -71,7 +70,8 @@ export default class WalletAddEditDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <WalletAddEditForm
             wallet={this.props.wallet}
@@ -82,3 +82,4 @@ export default class WalletAddEditDialog extends React.Component {
     )
   }
 }
+

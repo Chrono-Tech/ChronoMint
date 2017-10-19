@@ -8,7 +8,6 @@ export const SYNC_STATUS_SYNCING = 'SYNCING'
 export const SYNC_STATUS_SYNCED = 'SYNCED'
 
 export default class MonitorService extends EventEmitter {
-
   // Monitor service should be instantiated in web3Provider
   constructor (web3Provider) {
     super()
@@ -30,11 +29,11 @@ export default class MonitorService extends EventEmitter {
     this._instance++
     this._syncStatus = {
       status: SYNC_STATUS_SYNCING,
-      progress: 0
+      progress: 0,
     }
     this._networkStatus = {
       status: NETWORK_STATUS_UNKNOWN,
-      connected: false
+      connected: false,
     }
   }
 
@@ -67,7 +66,7 @@ export default class MonitorService extends EventEmitter {
             return
           }
           // stop all app activity
-          if(sync === true) {
+          if (sync === true) {
             this._setSyncStatus(SYNC_STATUS_SYNCING, 0)
           } else if (sync) {
             this._setSyncStatus(SYNC_STATUS_SYNCING, (sync.currentBlock - sync.startingBlock) / (sync.highestBlock - sync.startingBlock))
@@ -98,7 +97,7 @@ export default class MonitorService extends EventEmitter {
     if (this._syncStatus.status !== status || this._syncStatus.progress !== progress) {
       this._syncStatus = {
         status,
-        progress
+        progress,
       }
       this.emit('sync', status, progress)
     }
@@ -108,7 +107,7 @@ export default class MonitorService extends EventEmitter {
     if (this._networkStatus.status !== status || this._networkStatus.connected !== connected) {
       this._networkStatus = {
         status,
-        connected
+        connected,
       }
       this.emit('network', status)
     }

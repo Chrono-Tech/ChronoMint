@@ -1,26 +1,27 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
-import { MuiThemeProvider } from 'material-ui'
-import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack, Snackbar } from 'components'
-import ModalContainer from 'components/modals/Modal'
-import { closeNotifier } from 'redux/notifier/actions'
-
+import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
 import theme from 'styles/themes/default.js'
 
-// import 'styles/globals/index.global.css'
+import { closeNotifier } from 'redux/notifier/actions'
+
+import ModalContainer from 'components/modals/Modal'
+
+import { HeaderPartial, DrawerPartial } from './partials'
 
 import './Markup.scss'
 
-export class Markup extends React.Component {
+// import 'styles/globals/index.global.css'
 
+
+export class Markup extends React.Component {
   static propTypes = {
     isCBE: PropTypes.bool,
     notice: PropTypes.object,
     handleCloseNotifier: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
   }
 
   render () {
@@ -51,7 +52,7 @@ export class Markup extends React.Component {
               {this.props.children}
             </div>
           </div>
-          <div styleName='middleBottom'/>
+          <div styleName='middleBottom' />
           <ModalStack />
           <ModalContainer />
         </div>
@@ -65,13 +66,13 @@ function mapStateToProps (state) {
   const notifier = state.get('notifier')
   return {
     isCBE: session.isCBE,
-    notice: notifier.notice /** @see null | AbstractNoticeModel */
+    notice: notifier.notice, /** @see null | AbstractNoticeModel */
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleCloseNotifier: () => dispatch(closeNotifier())
+    handleCloseNotifier: () => dispatch(closeNotifier()),
   }
 }
 

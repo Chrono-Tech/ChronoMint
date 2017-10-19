@@ -1,13 +1,15 @@
 import BigNumber from 'bignumber.js'
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-import TxModel from 'models/TxModel'
+
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TxModel from 'models/TxModel'
+
+import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+
 import { bitcoinAddress } from 'components/forms/validator'
 
 const EVENT_TX = 'tx'
 
 export class BitcoinDAO {
-
   constructor (name, symbol, bitcoinProvider) {
     this._name = name
     this._symbol = symbol
@@ -43,10 +45,8 @@ export class BitcoinDAO {
   }
 
   _createTxModel (tx, account): TxModel {
-    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-    const to = tx.vout.map(
-      (output) => output.scriptPubKey.addresses.join(',')
-    ).join(',')
+    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map(input => input.addr).join(',')
+    const to = tx.vout.map(output => output.scriptPubKey.addresses.join(',')).join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.vout) {
@@ -64,8 +64,8 @@ export class BitcoinDAO {
       to,
       value,
       fee: new BigNumber(tx.fees),
-      credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
-      symbol: this.getSymbol()
+      credited: tx.isCoinBase || !tx.vin.filter(input => input.addr === account).length,
+      symbol: this.getSymbol(),
     })
     return txmodel
   }
@@ -75,7 +75,7 @@ export class BitcoinDAO {
     return {
       balance: new BigNumber(balance0 || balance6),
       balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6)
+      balance6: new BigNumber(balance6),
     }
   }
 
@@ -92,16 +92,14 @@ export class BitcoinDAO {
 
   // eslint-disable-next-line no-unused-vars
   async watchTransfer (callback) {
-    this._bitcoinProvider.addListener(EVENT_TX, async (result) => {
+    this._bitcoinProvider.addListener(EVENT_TX, async result => {
       const tx = await this._bitcoinProvider.getTransactionInfo(result.tx.txid)
       const account = this.getAccount()
-      callback(
-        new TransferNoticeModel({
-          account,
-          time: result.time / 1000,
-          tx: this._createTxModel(tx, account)
-        })
-      )
+      callback(new TransferNoticeModel({
+        account,
+        time: result.time / 1000,
+        tx: this._createTxModel(tx, account),
+      }))
     })
   }
 

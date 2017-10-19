@@ -1,6 +1,4 @@
-export const required = (value) => {
-  return !value ? 'errors.required' : null
-}
+export const required = value => !value ? 'errors.required' : null
 
 export const address = (value, required = true) => {
   if ((!value && required) || (value && !/^0x[0-9a-f]{40}$/i.test(value))) {
@@ -52,39 +50,32 @@ export const between = (value, min, max, required = true) => {
     return null
   }
   if (isNaN(value) || value < min || value > max) {
-    return {value: 'errors.between', min, max}
+    return { value: 'errors.between', min, max }
   }
   return null
 }
 
-export const positiveNumber = value => {
-  return isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
-}
+export const positiveNumber = value => isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
 
-export const positiveNumberOrZero = value => {
-  return isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
-}
+export const positiveNumberOrZero = value => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 
-export const validIpfsFileList = value => {
-  return (value != null && value.indexOf('!') === 0)
-    ? 'errors.validIpfsFileList' // '!' marks partially uploaded or inconsistent objects
-    : null
-}
+export const validIpfsFileList = value => (value != null && value.indexOf('!') === 0)
+  ? 'errors.validIpfsFileList' // '!' marks partially uploaded or inconsistent objects
+  : null
 
 export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
-    const matcher = new RegExp('^\\d+' + (decimals > 0 ? '(\\.\\d{1,' + decimals + '})?' : '') + '$')
+    const matcher = new RegExp(`^\\d+${decimals > 0 ? `(\\.\\d{1,${decimals}})?` : ''}$`)
     return !matcher.test(value) ? 'errors.invalidCurrencyNumber' : null
-  } else {
-    return invalidPositiveNumber
   }
+  return invalidPositiveNumber
 }
 
 export function lowerThan (value, limit) {
   return value > limit ? {
     value: 'errors.lowerThan',
-    limit
+    limit,
   } : null
 }
 
@@ -100,5 +91,5 @@ export default {
   positiveNumberOrZero,
   currencyNumber,
   lowerThan,
-  validIpfsFileList
+  validIpfsFileList,
 }
