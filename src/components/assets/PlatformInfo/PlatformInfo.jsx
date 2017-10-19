@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 
 import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
+import AssetManagerDialog from 'components/assets/AssetManagerDialog/AssetManagerDialog'
 
 import './PlatformInfo.scss'
 
@@ -31,6 +32,7 @@ export class PlatformInfo extends Component {
     selectedToken: PropTypes.number,
     selectedPlatform: PropTypes.number,
     handleCrowdsaleDialog: PropTypes.func,
+    handleAddManagerDialog: PropTypes.func,
   }
 
   handleSubmit () {
@@ -132,8 +134,14 @@ export class PlatformInfo extends Component {
                 />
               </div>
               <div styleName='addManager'>
-                <i className='material-icons'>add_circle</i>
-                Add/edit manager
+                <FlatButton
+                  onTouchTap={() => this.props.handleAddManagerDialog()}
+                  styleName='addManagerButton'
+                  label={<span>
+                    <i className='material-icons'>add_circle</i>
+                    <Translate value={prefix('addManagers')} />
+                  </span>}
+                />
               </div>
             </div>
           </div>
@@ -170,6 +178,9 @@ function mapDispatchToProps (dispatch) {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
       component: CrowdsaleDialog,
     })),
+    handleAddManagerDialog: () => dispatch(modalsOpen({
+      component: AssetManagerDialog
+    }))
   }
 }
 

@@ -185,9 +185,6 @@
     }
     display: flex;
     align-items: center;
-    font-size: 14px;
-    font-weight: 600;
-    color: #2962ff;
   }
 }
 
@@ -204,5 +201,15 @@
       margin: 10px 0 0;
       width: calc(100% - 32px);
     }
+  }
+}
+
+.addManagerButton {
+  span {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2962ff;
   }
 }

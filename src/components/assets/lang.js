@@ -1,6 +1,7 @@
 import * as AddPlatformForm from './AddPlatformDialog/lang'
 import * as AddTokenForm from './AddTokenDialog/lang'
 import * as AssetManager from './AssetManager/lang'
+import * as AssetManagerForm from './AssetManagerDialog/lang'
 import * as CrowdsaleForm from './CrowdsaleDialog/lang'
 import * as HistoryTable from './HistoryTable/lang'
 import * as PlatformInfo from './PlatformInfo/lang'
@@ -15,6 +16,7 @@ export default {
     AddTokenForm: AddTokenForm.en,
     HistoryTable: HistoryTable.en,
     CrowdsaleForm: CrowdsaleForm.en,
+    AssetManagerForm: AssetManagerForm.en,
   },
   ru: {
     AssetManager: AssetManager.ru,
@@ -24,5 +26,6 @@ export default {
     AddTokenForm: AddTokenForm.ru,
     HistoryTable: HistoryTable.ru,
     CrowdsaleForm: CrowdsaleForm.ru,
+    AssetManagerForm: AssetManagerForm.ru,
   },
 }
