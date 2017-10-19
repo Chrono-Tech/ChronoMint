@@ -72,7 +72,9 @@ class AccountSelector extends Component {
               fullWidth
               onTouchTap={() => this.props.onSelectAccount()}
               disabled={!selectedAccount || isLoading}
-              style={styles.primaryButton} />
+              style={styles.primaryButton}
+              labelStyle={styles.primaryButtonLabel}
+            />
           </div>
         </div>
       </div>

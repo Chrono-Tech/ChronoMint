@@ -6,6 +6,7 @@ import VotingPage from './VotingPage'
 import OperationsPage from './OperationsPage'
 import SettingsPage from './SettingsPage'
 import LOCPage from './LOCPage'
+import AssetsPage from './AssetsPage'
 
 export {
   DashboardPage,
@@ -15,7 +16,8 @@ export {
   VotingPage,
   OperationsPage,
   SettingsPage,
-  LOCPage
+  LOCPage,
+  AssetsPage
 }
 
 export default {
@@ -26,5 +28,6 @@ export default {
   VotingPage,
   OperationsPage,
   SettingsPage,
-  LOCPage
+  LOCPage,
+  AssetsPage
 }

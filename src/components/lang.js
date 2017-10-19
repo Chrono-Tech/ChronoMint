@@ -15,6 +15,7 @@ import * as AccountSelector from 'components/pages/LoginPage/AccountSelector/lan
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as Timer from 'components/common/Timer/lang'
 import * as Dashboard from 'components/dashboard/lang'
+import * as Assets from 'components/assets/lang'
 
 
 export default {
@@ -35,7 +36,8 @@ export default {
     AccountSelector: AccountSelector.en,
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
-    Dashboard: Dashboard.en
+    Dashboard: Dashboard.en,
+    Assets: Assets.en
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -54,6 +56,7 @@ export default {
     AccountSelector: AccountSelector.ru,
     UserActiveDialog: UserActiveDialog.ru,
     Timer: Timer.ru,
-    Dashboard: Dashboard.ru
+    Dashboard: Dashboard.ru,
+    Assets: Assets.ru
   }
 }

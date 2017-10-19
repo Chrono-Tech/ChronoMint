@@ -83,7 +83,9 @@ const styles = {
   primaryButton: {
     backgroundColor: colors.colorAccent2,
     color: colors.colorWhite,
-    fontWeight: 300,
+    fontWeight: 300
+  },
+  primaryButtonLabel: {
     whiteSpace: 'nowrap',
     lineHeight: 1.2
   },

@@ -30,6 +30,7 @@ import './SendTokens.scss'
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
+  BCC: require('assets/img/icn-bitcoin-cash.svg'),
   TIME: require('assets/img/icn-time.svg')
 }
 
