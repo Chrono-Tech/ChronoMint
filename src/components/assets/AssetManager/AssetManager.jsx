@@ -30,7 +30,7 @@ export class AssetManager extends Component {
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
     tokensMap: PropTypes.object,
-    assets: PropTypes.object
+    assets: PropTypes.object,
   }
 
   constructor (props) {
@@ -38,7 +38,7 @@ export class AssetManager extends Component {
 
     this.state = {
       selectedToken: null,
-      selectedPlatform: null
+      selectedPlatform: null,
     }
   }
 
@@ -151,7 +151,7 @@ export class AssetManager extends Component {
   handleSelectPlatform (platformId) {
     this.setState({
       selectedPlatform: this.state.selectedPlatform === platformId ? null : platformId,
-      selectedToken: null
+      selectedToken: null,
     })
   }
 
@@ -166,15 +166,17 @@ export class AssetManager extends Component {
                   platformsList={this.props.platformsList}
                   tokensMap={this.props.tokensMap}
                   assets={this.props.assets}
-                  handleSelectPlatform={(platform) => this.handleSelectPlatform(platform)}
+                  handleSelectPlatform={platform => this.handleSelectPlatform(platform)}
                   selectedPlatform={this.state.selectedPlatform}
-                  handleSelectToken={(token) => this.handleSelectToken(token)}
-                  selectedToken={this.state.selectedToken} />
+                  handleSelectToken={token => this.handleSelectToken(token)}
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
               <div styleName='PlatformInfoWrap' className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformInfo
                   selectedPlatform={this.state.selectedPlatform}
-                  selectedToken={this.state.selectedToken} />
+                  selectedToken={this.state.selectedToken}
+                />
               </div>
             </div>
           </div>
@@ -203,7 +205,7 @@ function mapStateToProps (state) {
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
     platformsList: assetsManager.platformsList,
     tokensMap: assetsManager.tokensMap,
-    assets: assetsManager.assets
+    assets: assetsManager.assets,
   }
 }
 
@@ -213,11 +215,11 @@ function mapDispatchToProps (dispatch) {
     createPlatform: () => dispatch(createPlatform()),
     getTokens: () => dispatch(getTokens()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog
+      component: AddPlatformDialog,
     })),
     handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog
-    }))
+      component: AddTokenDialog,
+    })),
   }
 }
 

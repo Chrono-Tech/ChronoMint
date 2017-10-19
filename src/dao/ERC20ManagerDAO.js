@@ -63,7 +63,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
-        additionalData: additionalData[address]
+        additionalData: additionalData[address],
       })
       map = map.set(token.id(), token)
     }

@@ -32,16 +32,16 @@ function mapStateToProps (state) {
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.platformsList
+    platformsList: assetsManager.platformsList,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog
+      component: AddPlatformDialog,
     })),
-    createAsset: (values) => dispatch(createAsset(values))
+    createAsset: values => dispatch(createAsset(values)),
   }
 }
 
@@ -71,7 +71,7 @@ export default class AddPlatformForm extends React.Component {
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
-    accept: PropTypes.array
+    accept: PropTypes.array,
   }
 
   constructor (props) {
@@ -84,8 +84,8 @@ export default class AddPlatformForm extends React.Component {
         accept: props.accept || ACCEPT_ALL,
         maxFileSize: props.maxFileSize || DEFAULT_MAX_FILE_SIZE,
         aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
-        maxFiles: props.maxFiles || DEFAULT_MAX_FILES
-      }
+        maxFiles: props.maxFiles || DEFAULT_MAX_FILES,
+      },
 
     }
   }
@@ -98,7 +98,7 @@ export default class AddPlatformForm extends React.Component {
   async handleFileUploaded (file) {
     this.setState({
       isUploading: false,
-      isUploaded: true
+      isUploaded: true,
     })
     this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'tokenImg', file.hash()))
   }
@@ -109,18 +109,18 @@ export default class AddPlatformForm extends React.Component {
       return
     }
     this.setState({
-      isUploading: true
+      isUploading: true,
     })
     await ipfs.uploadFile(
       new FileModel({file, uploading: true}),
       this.state.config,
-      (file) => this.handleFileUploaded(file))
+      file => this.handleFileUploaded(file))
   }
 
   renderFileInput () {
     const {isUploading, isUploaded} = this.state
     const tokenImg = this.props.formValues && this.props.formValues.get('tokenImg')
-    return <div styleName='tokenImgWrap'>
+    return (<div styleName='tokenImgWrap'>
       {
         !isUploading && !isUploaded && (
           <div styleName='upload' onTouchTap={() => this.walletFileUploadInput.click()}>
@@ -134,7 +134,8 @@ export default class AddPlatformForm extends React.Component {
           <CircularProgress
             size={16}
             color={colors.colorPrimary1}
-            thickness={1.5} />
+            thickness={1.5}
+          />
           <span styleName='progressText'>{<Translate value={prefix('uploading')} />}</span>
         </div>
       )}
@@ -143,16 +144,17 @@ export default class AddPlatformForm extends React.Component {
       <IPFSImage
         styleName='tokenImg'
         onTouchTap={() => this.walletFileUploadInput.click()}
-        multihash={tokenImg} />
+        multihash={tokenImg}
+      />
       }
 
       <input
-        onChange={(e) => this.handleUploadFile(e)}
-        ref={(input) => this.walletFileUploadInput = input}
+        onChange={e => this.handleUploadFile(e)}
+        ref={input => this.walletFileUploadInput = input}
         type='file'
         styleName='hide'
       />
-    </div>
+            </div>)
   }
 
   renderPlatformsList () {
@@ -176,11 +178,12 @@ export default class AddPlatformForm extends React.Component {
         <div styleName='platformsList'>
           {
             platformsList
-              .map((platform) => {
-                return <div
+              .map(platform => {
+                return (<div
                   styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
                   onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
-                  key={platform.address}>
+                  key={platform.address}
+                >
                   <div styleName='icon'>
                     <img src={require('assets/img/assets1.svg')} alt='' />
                   </div>
@@ -188,7 +191,7 @@ export default class AddPlatformForm extends React.Component {
                     <small>{platform.address}</small>
                     )
                   </div>
-                </div>
+                        </div>)
               })
           }
         </div>
@@ -250,19 +253,22 @@ export default class AddPlatformForm extends React.Component {
             component={SelectField}
             fullWidth
             floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('choosePlatform')} />}>
+            floatingLabelText={<Translate value={prefix('choosePlatform')} />}
+          >
             {
               platformsList
                 .map(platform => {
-                  return <MenuItem
-                    key={platform.address} value={platform}
+                  return (<MenuItem
+                    key={platform.address}
+                    value={platform}
                     primaryText={<span styleName='platformSelectorItem'>
                       <span>
                         <img src={require('assets/img/folder-multiple.svg')} alt='' />
                         {platform.name}&nbsp;(<small>{platform.address}</small>)
                       </span>
-                    </span>
-                    } />
+                                 </span>
+                    }
+                  />)
                 })}
           </Field>
           {this.renderPlatformsList()}
@@ -270,13 +276,15 @@ export default class AddPlatformForm extends React.Component {
             component={TextField}
             name='tokenSymbol'
             fullWidth
-            floatingLabelText={<Translate value={prefix('tokenSymbol')} />} />
+            floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+          />
 
           <Field
             component={TextField}
             name='description'
             fullWidth
-            floatingLabelText={<Translate value={prefix('description')} />} />
+            floatingLabelText={<Translate value={prefix('description')} />}
+          />
 
           <div className='AddTokenForm__grid'>
             <div className='row'>
@@ -285,7 +293,8 @@ export default class AddPlatformForm extends React.Component {
                   component={TextField}
                   name='smallestUnit'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('smallestUnit')} />} />
+                  floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                />
               </div>
             </div>
             <div className='row'>
@@ -293,30 +302,35 @@ export default class AddPlatformForm extends React.Component {
                 <Field
                   component={Checkbox}
                   name='reissuable'
-                  label={<Translate value={prefix('reissuable')} />} />
+                  label={<Translate value={prefix('reissuable')} />}
+                />
                 <Field
                   component={TextField}
                   name='amount'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('amount')} />} />
+                  floatingLabelText={<Translate value={prefix('amount')} />}
+                />
               </div>
               <div className='col-xs-12 col-sm-6'>
                 <Field
                   component={Checkbox}
                   name='withFee'
-                  label={<Translate value={prefix('withFee')} />} />
+                  label={<Translate value={prefix('withFee')} />}
+                />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feeAddress'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feeAddress')} />} />
+                  floatingLabelText={<Translate value={prefix('feeAddress')} />}
+                />
                 <Field
                   disabled={!withFee}
                   component={TextField}
                   name='feePercent'
                   fullWidth
-                  floatingLabelText={<Translate value={prefix('feePercent')} />} />
+                  floatingLabelText={<Translate value={prefix('feePercent')} />}
+                />
               </div>
             </div>
           </div>
@@ -325,11 +339,13 @@ export default class AddPlatformForm extends React.Component {
             styleName='checkboxField'
             component={Checkbox}
             name='startWithCrowdsale'
-            label={<Translate value={prefix('startWithCrowdsale')} />} />
+            label={<Translate value={prefix('startWithCrowdsale')} />}
+          />
 
         </div>
         <div
-          styleName='dialogFooter'>
+          styleName='dialogFooter'
+        >
           <RaisedButton
             onTouchTap={() => {
               this.setState({showPlatformError: !!this.props.formErrors.platform})

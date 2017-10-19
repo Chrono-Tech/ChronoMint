@@ -15,7 +15,7 @@ function mapStateToProps (/*state*/) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 
@@ -41,7 +41,8 @@ export default class AssetManagerDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <AssetManagerForm
             onSubmitSuccess={this.handleSubmitSuccess}

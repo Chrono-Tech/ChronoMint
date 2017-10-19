@@ -8,7 +8,7 @@ const initialState = {
   platformsList: [],
   tokensMap: new Map(),
   managersList: [],
-  assets: {}
+  assets: {},
 }
 
 export default (state = initialState, action) => {
@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
       return {
         ...initialState,
         ...state,
-        platformsCount: action.payload.platformCount
+        platformsCount: action.payload.platformCount,
       }
     case GET_ASSETS_MANAGER_COUNTS:
       return {
@@ -28,14 +28,14 @@ export default (state = initialState, action) => {
         managersCount: action.payload.managers.length,
         assets: action.payload.assets,
         managersList: action.payload.managers,
-        platformsList: action.payload.platforms
+        platformsList: action.payload.platforms,
       }
     case GET_PLATFORMS:
       return {
         ...initialState,
         ...state,
         platformsCount: action.payload.platforms.length,
-        platformsList: action.payload.platforms
+        platformsList: action.payload.platforms,
       }
 
     case GET_TOKENS:
@@ -44,7 +44,7 @@ export default (state = initialState, action) => {
         ...state,
         tokensCount: action.payload.tokensMap.size,
         tokensMap: action.payload.tokensMap,
-        assets: action.payload.assets
+        assets: action.payload.assets,
       }
 
     default:

@@ -23,7 +23,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       assetsList[assets[0][i]] = {
         address: assets[0][i],
         platform: currentPlatform,
-        totalSupply: assets[2][i]
+        totalSupply: assets[2][i],
       }
     }
     return assetsList

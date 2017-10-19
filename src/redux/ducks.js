@@ -35,5 +35,5 @@ export {
   market,
   monitor,
   ledger,
-  assetsManager
+  assetsManager,
 }

@@ -34,6 +34,6 @@ export default function validate (values) {
     smallestUnit: smallestUnitErrors.getErrors(),
     amount: amountErrors.getErrors(),
     feePercent: feePercentErrors.getErrors(),
-    feeAddress: feeAddressErrors.getErrors()
+    feeAddress: feeAddressErrors.getErrors(),
   }
 }

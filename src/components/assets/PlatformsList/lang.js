@@ -1,10 +1,10 @@
 export default {
   en: {
     platform: 'Platform',
-    detachPlatform: 'detach platform'
+    detachPlatform: 'detach platform',
   },
   ru: {
     platform: 'Платформа',
-    detachPlatform: 'отсоединить платформу'
+    detachPlatform: 'отсоединить платформу',
   },
 }

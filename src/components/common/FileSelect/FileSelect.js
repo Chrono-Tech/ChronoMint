@@ -151,7 +151,8 @@ class FileSelect extends Component {
         <FileItem
           onRemove={this.handleFileRemove}
           key={item.id()}
-          file={item} />
+          file={item}
+        />
       ))
       .toArray()
     return files.length > 0 && <div styleName='files'>{files}</div>
@@ -262,7 +263,7 @@ class FileSelect extends Component {
         <input
           ref={input => this.input = input}
           type='file'
-          onChange={(e) => this.handleChange(e)}
+          onChange={e => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
           accept={config.accept.join(', ')}

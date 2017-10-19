@@ -17,7 +17,7 @@ function mapDispatchToProps (dispatch) {
     onClose: () => dispatch(modalsClose()),
     onSubmitSuccess: () => {
       dispatch(modalsClose())
-    }
+    },
   }
 }
 
@@ -26,7 +26,7 @@ export default class AddPlatformDialog extends React.Component {
   static propTypes = {
     onSubmitSuccess: PropTypes.func,
     onClose: PropTypes.func,
-    closeModal: PropTypes.func
+    closeModal: PropTypes.func,
   }
 
   render () {
@@ -36,7 +36,8 @@ export default class AddPlatformDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <AddPlatformForm
             onSubmitSuccess={this.props.onSubmitSuccess}

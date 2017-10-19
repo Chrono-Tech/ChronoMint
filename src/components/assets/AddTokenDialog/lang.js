@@ -14,7 +14,7 @@ export default {
     choosePlatform: 'Choose platform',
     feeAddress: 'Fee address',
     addNewPlatform: 'Add new platform',
-    platformError: 'Choose platform'
+    platformError: 'Choose platform',
   },
   ru: {
     dialogTitle: 'Добавить токен',
@@ -31,6 +31,6 @@ export default {
     choosePlatform: 'Выберите платформу',
     feeAddress: 'Адресс для коммиссии',
     addNewPlatform: 'Добавить новую платформу',
-    platformError: 'Выберите платформу'
-  }
+    platformError: 'Выберите платформу',
+  },
 }

@@ -22,22 +22,23 @@ export class PlatformsList extends Component {
     platformsList: PropTypes.array,
     detachPlatform: PropTypes.func,
     tokensMap: PropTypes.object,
-    assets: PropTypes.object
+    assets: PropTypes.object,
   }
 
   renderTokenList () {
     const filteredTokens = this.props.tokensMap.toArray()
-      .filter((token) => token.additionalData().platform === this.props.selectedPlatform)
+      .filter(token => token.additionalData().platform === this.props.selectedPlatform)
     return (
       <div styleName='tokensList'>
 
         {
           filteredTokens
-            .map((token) => {
-              return <div
+            .map(token => {
+              return (<div
                 key={token.address()}
                 styleName={classnames('tokenItem', {'selected': this.props.selectedToken === token.address()})}
-                onTouchTap={() => this.props.handleSelectToken(token.address())}>
+                onTouchTap={() => this.props.handleSelectToken(token.address())}
+              >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
@@ -49,7 +50,7 @@ export class PlatformsList extends Component {
                     symbol={token.symbol()}
                   />
                 </div>
-              </div>
+                      </div>)
             })
         }
 
@@ -67,7 +68,8 @@ export class PlatformsList extends Component {
               <div styleName={classnames('platformHeader', {'selected': selectedPlatform === address})}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => this.props.handleSelectPlatform(address)}>
+                  onTouchTap={() => this.props.handleSelectPlatform(address)}
+                >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   <div styleName='platformTitle'>{name}&nbsp;(
@@ -113,7 +115,7 @@ function mapStateToProps (/*state*/) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    detachPlatform: (platform) => dispatch(detachPlatform(platform))
+    detachPlatform: platform => dispatch(detachPlatform(platform)),
   }
 }
 

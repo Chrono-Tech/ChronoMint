@@ -32,7 +32,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
       for (let i = 0; i < platformsList[0].length; i++) {
         formatPlatformsList.push({
           address: platformsList[0][i],
-          name: web3Converter.bytesToString(platformsList[1][i])
+          name: web3Converter.bytesToString(platformsList[1][i]),
         })
       }
     }
@@ -50,7 +50,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   watchCreatePlatform (account) {
-    this._watch('PlatformRequested', async (result) => {
+    this._watch('PlatformRequested', async result => {
       // eslint-disable-next-line
       // console.log('PlatformRequested', result)
     }, {from: account})

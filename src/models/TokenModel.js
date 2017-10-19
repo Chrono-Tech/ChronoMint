@@ -19,7 +19,7 @@ export default class TokenModel extends abstractFetchingModel({
   allowance: new Immutable.Map(),
   url: null,
   icon: null,
-  additionalData: {}
+  additionalData: {},
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
@@ -97,7 +97,7 @@ export default class TokenModel extends abstractFetchingModel({
       url: this.url(),
       icon: this.icon(),
       isApproveRequired: this.isApproveRequired(),
-      additionalData: this.additionalData()
+      additionalData: this.additionalData(),
     }
   }
 }

@@ -20,11 +20,11 @@ function mapStateToProps (state) {
   const form = state.get('form')
   return {
     formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values'),
-    formErrors: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('syncErrors')
+    formErrors: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('syncErrors'),
   }
 }
 
-const validate = (values) => {
+const validate = values => {
   let result = {}
 
   let platformNameErrors = new ErrorList()
@@ -54,7 +54,7 @@ export default class AddPlatformForm extends React.Component {
     formValues: PropTypes.object,
     formErrors: PropTypes.object,
     onSubmitFunc: PropTypes.func,
-    onSubmitSuccess: PropTypes.func
+    onSubmitSuccess: PropTypes.func,
   }
 
   render () {
@@ -76,13 +76,15 @@ export default class AddPlatformForm extends React.Component {
             component={TextField}
             name='platformName'
             fullWidth
-            floatingLabelText={<Translate value={prefix('platformName')} />} />
+            floatingLabelText={<Translate value={prefix('platformName')} />}
+          />
 
           <Field
             styleName='checkboxField'
             component={Checkbox}
             name='alreadyHave'
-            label={<Translate value={prefix('alreadyHave')} />} />
+            label={<Translate value={prefix('alreadyHave')} />}
+          />
 
           {
             alreadyHave
@@ -90,13 +92,15 @@ export default class AddPlatformForm extends React.Component {
                 component={TextField}
                 name='platformAddress'
                 fullWidth
-                floatingLabelText={<Translate value={prefix('platformAddress')} />} />
+                floatingLabelText={<Translate value={prefix('platformAddress')} />}
+              />
               : null
           }
 
         </div>
         <div
-          styleName='dialogFooter'>
+          styleName='dialogFooter'
+        >
           <RaisedButton
             disabled={!!this.props.formErrors}
             styleName='action'

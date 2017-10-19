@@ -21,7 +21,7 @@ export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 function mapStateToProps (state) {
   const form = state.get('form')
   return {
-    formValues: form.get(FORM_ASSET_MANAGER) && form.get(FORM_ASSET_MANAGER).get('values')
+    formValues: form.get(FORM_ASSET_MANAGER) && form.get(FORM_ASSET_MANAGER).get('values'),
   }
 }
 
@@ -34,7 +34,7 @@ function mapDispatchToProps (dispatch) {
     handleAddManager: () => {
     },
     handleRemoveManager: () => {
-    }
+    },
 
   }
 }
@@ -51,14 +51,14 @@ export default class AssetManagerForm extends React.Component {
     onClose: PropTypes.func,
     formValues: PropTypes.object,
     handleAddManager: PropTypes.func,
-    handleRemoveManager: PropTypes.func
+    handleRemoveManager: PropTypes.func,
   }
 
   constructor () {
     super(...arguments)
 
     this.state = {
-      selectedManagers: {}
+      selectedManagers: {},
     }
   }
 
@@ -70,9 +70,10 @@ export default class AssetManagerForm extends React.Component {
 
   renderManagersList () {
     const {selectedManagers} = this.state
-    return <div styleName='managersList'>
+    return (<div styleName='managersList'>
       <div
-        styleName='managersListFieldRow'>
+        styleName='managersListFieldRow'
+      >
         <div styleName='managersListFieldAddress'>
           <div styleName={classnames('managersListIcon', 'xs-hide')}>
             <i className='material-icons'>account_circle</i>
@@ -82,14 +83,16 @@ export default class AssetManagerForm extends React.Component {
             component={TextField}
             name='managerAddress'
             fullWidth
-            hintText={<Translate value={prefix('managerAddress')} />} />
+            hintText={<Translate value={prefix('managerAddress')} />}
+          />
         </div>
         <div styleName='managersListAction'>
           <FloatingActionButton
             mini
             styleName={classnames('addManagerButton', 'xs-show')}
             onTouchTap={() => {
-            }}>
+            }}
+          >
             <i className='material-icons'>add</i>
           </FloatingActionButton>
           <FlatButton
@@ -105,7 +108,8 @@ export default class AssetManagerForm extends React.Component {
             <div key={item} styleName={classnames('managersListRow', {'selected': selectedManagers[item]})}>
               <div
                 onTouchTap={() => this.handleSelectManager(item)}
-                styleName='managersListAddress'>
+                styleName='managersListAddress'
+              >
                 <div styleName='managersListIcon'>
                   <i className='material-icons'>account_circle</i>
                 </div>
@@ -123,7 +127,7 @@ export default class AssetManagerForm extends React.Component {
         )
       }
 
-    </div>
+            </div>)
 
   }
 

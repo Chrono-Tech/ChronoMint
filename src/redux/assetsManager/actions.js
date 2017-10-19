@@ -42,7 +42,7 @@ export const getTokens = () => async (dispatch, getState) => {
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
 }
 
-export const createPlatform = (values) => async (dispatch) => {
+export const createPlatform = values => async dispatch => {
 
   try {
     const dao = await contractManager.getPlatformManagerDAO()
@@ -65,7 +65,7 @@ export const createPlatform = (values) => async (dispatch) => {
 }
 
 
-export const detachPlatform = (platform) => async (dispatch) => {
+export const detachPlatform = platform => async dispatch => {
   const dao = await contractManager.getPlatformManagerDAO()
   const result = await dao.detachPlatform(platform)
 
@@ -75,14 +75,14 @@ export const detachPlatform = (platform) => async (dispatch) => {
   }
 }
 
-export const watchAssetManager = (account) => async () => {
+export const watchAssetManager = account => async () => {
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO()
   platformManagerDAO.watchCreatePlatform(account)
   tokenManagementExtensionDAO.watchToken(account)
 }
 
-export const createAsset = (values) => async (dispatch) => {
+export const createAsset = values => async dispatch => {
   try {
     const {
       amount,
@@ -94,7 +94,7 @@ export const createAsset = (values) => async (dispatch) => {
       tokenSymbol,
       withFee = false,
       feeAddress,
-      tokenImg
+      tokenImg,
     } = values.toObject()
     const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
     let result

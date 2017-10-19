@@ -349,14 +349,14 @@ export default {
     },
     PlatformsManager: {
       [platformsManager.TX_CREATE_PLATFORM]: {
-        title: 'Confirm create platform'
+        title: 'Confirm create platform',
       },
       [platformsManager.TX_ATTACH_PLATFORM]: {
-        title: 'Confirm attach platform'
+        title: 'Confirm attach platform',
       },
       [platformsManager.TX_DETACH_PLATFORM]: {
-        title: 'Confirm detach platform'
-      }
+        title: 'Confirm detach platform',
+      },
     },
     LOCManager: {
       [loc.standardFuncs.ADD_LOC]: {
