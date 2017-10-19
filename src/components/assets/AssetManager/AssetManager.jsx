@@ -1,17 +1,17 @@
+import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
+import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
+import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
+import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
 import styles from 'layouts/partials/styles'
 import { Paper, RaisedButton } from 'material-ui'
 import './AssetManager.scss'
-import PlatformInfo from 'components/assets/PlatformInfo/PlatformInfo'
-import HistoryTable from 'components/assets/HistoryTable/HistoryTable'
-import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.AssetManager.${token}`
@@ -45,28 +45,6 @@ export class AssetManager extends Component {
   componentDidMount () {
     this.props.getAssetsManagerData()
     this.props.getTokens()
-  }
-
-  render () {
-
-    return (
-      <div styleName='root'>
-        <div styleName='content'>
-          <Paper style={styles.content.paper.style}>
-            {this.renderHead()}
-            {
-              this.props.platformsList.length
-                ? this.renderBody()
-                : null
-            }
-          </Paper>
-          <div styleName='delimiter' />
-          <Paper style={styles.content.paper.style}>
-            {this.renderTable()}
-          </Paper>
-        </div>
-      </div>
-    )
   }
 
   renderHead () {
@@ -174,6 +152,7 @@ export class AssetManager extends Component {
               </div>
               <div styleName='PlatformInfoWrap' className='col-xs-2 col-sm-2 col-md-1 col-lg-1 col-xl-1'>
                 <PlatformInfo
+                  tokensMap={this.props.tokensMap}
                   selectedPlatform={this.state.selectedPlatform}
                   selectedToken={this.state.selectedToken}
                 />
@@ -190,6 +169,27 @@ export class AssetManager extends Component {
       <div styleName='table'>
         <div styleName='tableInner'>
           <HistoryTable />
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    return (
+      <div styleName='root'>
+        <div styleName='content'>
+          <Paper style={styles.content.paper.style}>
+            {this.renderHead()}
+            {
+              this.props.platformsList.length
+                ? this.renderBody()
+                : null
+            }
+          </Paper>
+          <div styleName='delimiter' />
+          <Paper style={styles.content.paper.style}>
+            {this.renderTable()}
+          </Paper>
         </div>
       </div>
     )

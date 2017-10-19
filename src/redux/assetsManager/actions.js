@@ -37,7 +37,7 @@ export const getTokens = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assets = await assetsManagerDao.getAssetsForOwner(account)
-  const tokensMap = await ERC20ManagerDAO.getTokens(Object.keys(assets), assets)
+  const tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), true, assets)
 
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
 }
@@ -94,7 +94,7 @@ export const createAsset = values => async dispatch => {
       tokenSymbol,
       withFee = false,
       feeAddress,
-      tokenImg,
+      tokenImg
     } = values.toObject()
     const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
     let result

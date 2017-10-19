@@ -1,3 +1,4 @@
+import { detachPlatform } from 'redux/assetsManager/actions'
 import React, { Component } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
@@ -7,7 +8,6 @@ import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import { detachPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
@@ -16,28 +16,27 @@ function prefix (token) {
 export class PlatformsList extends Component {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
-    selectedToken: PropTypes.string,
+    selectedToken: PropTypes.object,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
     detachPlatform: PropTypes.func,
     tokensMap: PropTypes.object,
-    assets: PropTypes.object,
+    assets: PropTypes.object
   }
 
   renderTokenList () {
     const filteredTokens = this.props.tokensMap.toArray()
-      .filter(token => token.additionalData().platform === this.props.selectedPlatform)
+      .filter(token => token.platform() === this.props.selectedPlatform)
     return (
       <div styleName='tokensList'>
-
         {
           filteredTokens
             .map(token => {
               return (<div
                 key={token.address()}
-                styleName={classnames('tokenItem', {'selected': this.props.selectedToken === token.address()})}
-                onTouchTap={() => this.props.handleSelectToken(token.address())}
+                styleName={classnames('tokenItem', {'selected': this.props.selectedToken && this.props.selectedToken.address() === token.address()})}
+                onTouchTap={() => this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
@@ -50,7 +49,7 @@ export class PlatformsList extends Component {
                     symbol={token.symbol()}
                   />
                 </div>
-                      </div>)
+              </div>)
             })
         }
 
@@ -115,7 +114,7 @@ function mapStateToProps (/*state*/) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    detachPlatform: platform => dispatch(detachPlatform(platform)),
+    detachPlatform: platform => dispatch(detachPlatform(platform))
   }
 }
 

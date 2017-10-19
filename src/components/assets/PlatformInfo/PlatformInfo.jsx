@@ -16,31 +16,37 @@ import AssetManagerDialog from 'components/assets/AssetManagerDialog/AssetManage
 
 import './PlatformInfo.scss'
 
-const ICON_OVERRIDES = {
-  LHAU: require('assets/img/icn-lhau.svg'),
-  LHEU: require('assets/img/icn-lheu.svg'),
-  LHUS: require('assets/img/icn-lhus.png'),
-}
-
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-@reduxForm({ form: 'REISSUE_FORM' })
+@reduxForm({form: 'REISSUE_FORM'})
 export class PlatformInfo extends Component {
   static propTypes = {
-    selectedToken: PropTypes.string,
+    selectedToken: PropTypes.object,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
-    handleAddManagerDialog: PropTypes.func,
+    handleAddManagerDialog: PropTypes.func
   }
+
+  // constructor () {
+  //   super(...arguments)
+  //   this.state = {
+  //     totalSupply: null
+  //   }
+  // }
+
+  // componentWillReceiveProps (newProps) {
+  //   newProps.selectedToken && newProps.selectedToken.totalSupply()
+  //     .then(totalSupply => this.setState({totalSupply}))
+  // }
 
   handleSubmit () {
 
   }
 
   render () {
-    const { selectedToken, selectedPlatform } = this.props
+    const {selectedToken, selectedPlatform} = this.props
 
     if (!selectedPlatform) {
       return (
@@ -73,23 +79,26 @@ export class PlatformInfo extends Component {
             <div styleName='status'>
               <Translate value={prefix('onCrowdsale')} />
             </div>
-            <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHAU} />
-            <div styleName='title'>LHUS</div>
+            <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} />
+            <div styleName='title'>{selectedToken.symbol()}</div>
             <div styleName='balanceWrap'>
               <div styleName='balance'>
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
-                  style={{ fontSize: '24px', lineHeight: '24px' }}
-                  value={new BigNumber(1324123)}
-                  symbol='usd'
+                  style={{fontSize: '24px'}}
+                  value={new BigNumber(selectedToken.totalSupply())}
+                  symbol={selectedToken.symbol()}
                 />
               </div>
-              <div styleName='fee'>
-                <div styleName='title'><Translate value={prefix('fee')} />:</div>
-                <div styleName='value'>
-                  1.5<span>%</span>
+              {
+                selectedToken.fee() &&
+                <div styleName='fee'>
+                  <div styleName='title'><Translate value={prefix('fee')} />:</div>
+                  <div styleName='value'>
+                    1.5<span>%</span>
+                  </div>
                 </div>
-              </div>
+              }
             </div>
           </div>
 
@@ -100,7 +109,7 @@ export class PlatformInfo extends Component {
                   component={TextField}
                   fullWidth
                   name='reissue'
-                  style={{ width: '100%' }}
+                  style={{width: '100%'}}
                   floatingLabelText={<Translate value={prefix('reissueAmount')} />}
                 />
               </div>
@@ -176,11 +185,11 @@ function mapStateToProps (/* state */) {
 function mapDispatchToProps (dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog,
+      component: CrowdsaleDialog
     })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog,
-    })),
+      component: AssetManagerDialog
+    }))
   }
 }
 

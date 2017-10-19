@@ -50,7 +50,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens (tokenAddresses: Array<String> = [], additionalData = {}): Immutable.Map<TokenModel> {
+  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
     let map = new Immutable.Map()
 
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
@@ -63,7 +63,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
-        additionalData: additionalData[address],
       })
       map = map.set(token.id(), token)
     }
@@ -74,7 +73,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
-  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
+  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true, additionalData = {}): Immutable.Map<TokenModel> {
     let timeDAO,
       promises
     if (isWithObligatory) {
@@ -153,6 +152,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
         balance: balances[i],
+        platform: additionalData[address] && additionalData[address].platform,
+        totalSupply: additionalData[address] && additionalData[address].totalSupply,
       })
 
       if (token.symbol() === TIME) {
