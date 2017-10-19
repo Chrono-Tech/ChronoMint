@@ -145,8 +145,6 @@ export class AssetManager extends Component {
   }
 
   handleSelectToken (token) {
-    // eslint-disable-next-line
-    console.log('--AssetManager#handleSelectToken: token', token)
     this.setState({selectedToken: token})
   }
 

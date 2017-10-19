@@ -51,7 +51,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
+  async getTokens (tokenAddresses: Array<String> = [], additionalData = {}): Immutable.Map<TokenModel> {
 
     let map = new Immutable.Map()
 
@@ -64,7 +64,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         symbol: symbols[i],
         url: urls[i],
         decimals: decimalsArr[i],
-        icon: ipfsHashes[i]
+        icon: ipfsHashes[i],
+        additionalData: additionalData[address]
       })
       map = map.set(token.id(), token)
     }
@@ -164,7 +165,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         ])
 
         token = token
-          .setAllowance(timeHolderAddress, timeHolderAllowance )
+          .setAllowance(timeHolderAddress, timeHolderAllowance)
           .setAllowance(timeHolderWalletAddress, timeHolderWalletAllowance)
       }
 

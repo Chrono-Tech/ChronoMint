@@ -198,7 +198,6 @@ export default class AddPlatformForm extends React.Component {
 
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
-    const reissuable = this.props.formValues && this.props.formValues.get('reissuable')
     const tokenSymbol = this.props.formValues && this.props.formValues.get('tokenSymbol')
     const smallestUnit = this.props.formValues && this.props.formValues.get('smallestUnit')
     const description = this.props.formValues && this.props.formValues.get('description')
@@ -296,7 +295,6 @@ export default class AddPlatformForm extends React.Component {
                   name='reissuable'
                   label={<Translate value={prefix('reissuable')} />} />
                 <Field
-                  disabled={!reissuable}
                   component={TextField}
                   name='amount'
                   fullWidth

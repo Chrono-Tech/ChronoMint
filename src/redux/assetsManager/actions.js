@@ -37,7 +37,7 @@ export const getTokens = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assets = await assetsManagerDao.getAssetsForOwner(account)
-  const tokensMap = await ERC20ManagerDAO.getTokens(Object.keys(assets))
+  const tokensMap = await ERC20ManagerDAO.getTokens(Object.keys(assets), assets)
 
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
 }
@@ -87,22 +87,25 @@ export const createAsset = (values) => async (dispatch) => {
     const {
       amount,
       description = '',
-      feePercent = 0,
+      feePercent,
       platform,
       reissuable = false,
-      smallestUnit = 0,
+      smallestUnit,
       tokenSymbol,
       withFee = false,
-      feeAddress = '',
-      tokenImg = ''
+      feeAddress,
+      tokenImg
     } = values.toObject()
     const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
-
     let result
+    const tokenImgBytes32 = tokenImg ? Web3Converter.ipfsHashToBytes32(tokenImg) : ''
+
     if (withFee) {
-      result = await tokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent, Web3Converter.ipfsHashToBytes32(tokenImg))
+      result = await tokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent, tokenImgBytes32)
     } else {
-      result = await tokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, Web3Converter.ipfsHashToBytes32(tokenImg))
+      // eslint-disable-next-line
+      console.log('tokenSymbol=', tokenSymbol, 'tokenSymbol=', tokenSymbol, 'description=', description, 'amount=', amount, 'smallestUnit=', smallestUnit, 'reissuable=', reissuable, 'tokenImgBytes32=', JSON.stringify(tokenImgBytes32))
+      result = await tokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, tokenImgBytes32)
     }
     if (result) {
       dispatch(getTokens())

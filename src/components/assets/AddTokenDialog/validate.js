@@ -16,10 +16,8 @@ export default function validate (values) {
   smallestUnitErrors.add(validator.required(values.get('smallestUnit')))
 
   let amountErrors = new ErrorList()
-  if (values.get('reissuable')) {
-    amountErrors.add(validator.positiveNumber(values.get('amount')))
-    amountErrors.add(validator.required(values.get('amount')))
-  }
+  amountErrors.add(validator.positiveNumber(values.get('amount')))
+  amountErrors.add(validator.required(values.get('amount')))
 
   let feePercentErrors = new ErrorList()
   let feeAddressErrors = new ErrorList()

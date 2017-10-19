@@ -26,11 +26,13 @@ export class PlatformsList extends Component {
   }
 
   renderTokenList () {
+    const filteredTokens = this.props.tokensMap.toArray()
+      .filter((token) => token.additionalData().platform === this.props.selectedPlatform)
     return (
       <div styleName='tokensList'>
 
         {
-          this.props.tokensMap.toArray()
+          filteredTokens
             .map((token) => {
               return <div
                 key={token.address()}

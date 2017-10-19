@@ -16,10 +16,14 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const assets = await this._call('getAssetsForOwner', [owner, owner])
 
     let assetsList = {}
+    let currentPlatform
     for (let i = 0; i < assets[0].length; i++) {
-      assetsList[assets[1][i]] = {
-        symbol: web3Converter.bytesToString(assets[0][i]),
-        address: assets[1][i],
+
+      if (assets[1][i] !== '0x0000000000000000000000000000000000000000') currentPlatform = assets[1][i]
+
+      assetsList[assets[0][i]] = {
+        address: assets[0][i],
+        platform: currentPlatform,
         totalSupply: assets[2][i]
       }
     }
