@@ -11,8 +11,8 @@ import { connect } from 'react-redux'
 
 import { modalsOpen } from 'redux/modals/actions'
 
-import CrowdsaleDialog from 'components/assets/CrowdsaleDialog/CrowdsaleDialog'
-import AssetManagerDialog from 'components/assets/AssetManagerDialog/AssetManagerDialog'
+import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
+import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 
 import './PlatformInfo.scss'
 
