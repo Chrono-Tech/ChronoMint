@@ -5,6 +5,11 @@ export const GET_PLATFORMS_COUNT = 'AssetsManager/GET_PLATFORMS_COUNT'
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
 export const GET_TOKENS = 'AssetsManager/GET_TOKENS'
 export const GET_ASSETS_MANAGER_COUNTS = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS'
+export const GET_MANAGERS_FOR_TOKEN = 'AssetsManager/GET_MANAGERS_FOR_TOKEN'
+export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
+export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
+export const GET_MANAGERS_FOR_TOKEN_LOADING = 'AssetsManager/GET_MANAGERS_FOR_TOKEN_LOADING'
+
 
 export const getPlatformsCount = () => async (dispatch, getState) => {
   const dao = await contractManager.getPlatformManagerDAO()
@@ -37,7 +42,7 @@ export const getTokens = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assets = await assetsManagerDao.getAssetsForOwner(account)
-  const tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), true, assets)
+  const tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), false, assets)
 
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
 }
@@ -94,7 +99,7 @@ export const createAsset = values => async dispatch => {
       tokenSymbol,
       withFee = false,
       feeAddress,
-      tokenImg
+      tokenImg,
     } = values.toObject()
     const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
     let result
@@ -103,8 +108,6 @@ export const createAsset = values => async dispatch => {
     if (withFee) {
       result = await tokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent, tokenImgBytes32)
     } else {
-      // eslint-disable-next-line
-      console.log('tokenSymbol=', tokenSymbol, 'tokenSymbol=', tokenSymbol, 'description=', description, 'amount=', amount, 'smallestUnit=', smallestUnit, 'reissuable=', reissuable, 'tokenImgBytes32=', JSON.stringify(tokenImgBytes32))
       result = await tokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, tokenImgBytes32)
     }
     if (result) {
@@ -115,4 +118,12 @@ export const createAsset = values => async dispatch => {
     // eslint-disable-next-line
     console.error(e.message)
   }
+}
+
+export const getManagersForAssetSymbol = symbol => async (dispatch) => {
+  dispatch({type: GET_MANAGERS_FOR_TOKEN_LOADING})
+  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const managersForAssetSymbol = await assetsManagerDAO.getManagersForAssetSymbol(symbol)
+
+  dispatch({type: GET_MANAGERS_FOR_TOKEN, payload: {symbol, managersForAssetSymbol: managersForAssetSymbol}})
 }

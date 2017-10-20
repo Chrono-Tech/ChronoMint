@@ -170,12 +170,17 @@
   }
   .avatarsRow {
     padding-left: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     @include xs-only {
       margin-bottom: 10px;
     }
-    img {
-      margin-left: -10px;
+    > div {
+      > i {
+        font-size: 30px;
+      }
+      display: inline-flex;
+      margin-left: -15px;
+      color: $color-primary-1;
     }
   }
   .addManager {
@@ -210,6 +215,10 @@
     align-items: center;
     font-size: 14px;
     font-weight: 600;
-    color: #2962ff;
+    color: $color-secondary;
   }
+}
+
+.avatarsPreLoader {
+  width: 100px;
 }

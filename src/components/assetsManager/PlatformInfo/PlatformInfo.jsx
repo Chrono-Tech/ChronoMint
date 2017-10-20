@@ -1,16 +1,15 @@
-import Avatar from 'material-ui/Avatar'
+import Preloader from 'components/common/Preloader/Preloader'
 import BigNumber from 'bignumber.js'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { IPFSImage, TokenValue } from 'components'
+import {Field, reduxForm} from 'redux-form/immutable'
+import {IPFSImage, TokenValue} from 'components'
 import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton } from 'material-ui'
-import React, { Component } from 'react'
-import { TextField } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-
-import { modalsOpen } from 'redux/modals/actions'
-
+import {RaisedButton, FlatButton} from 'material-ui'
+import React, {Component} from 'react'
+import {TextField} from 'redux-form-material-ui'
+import {Translate} from 'react-redux-i18n'
+import {connect} from 'react-redux'
+import {getManagersForAssetSymbol} from 'redux/assetsManager/actions'
+import {modalsOpen} from 'redux/modals/actions'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 
@@ -23,32 +22,28 @@ function prefix (token) {
 @reduxForm({form: 'REISSUE_FORM'})
 export class PlatformInfo extends Component {
   static propTypes = {
-    selectedToken: PropTypes.object,
+    tokensMap: PropTypes.object,
+    selectedToken: PropTypes.string,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
-    handleAddManagerDialog: PropTypes.func
+    handleAddManagerDialog: PropTypes.func,
+    getManagersForAssetSymbol: PropTypes.func,
+    managersForTokenLoading: PropTypes.bool,
   }
 
-  // constructor () {
-  //   super(...arguments)
-  //   this.state = {
-  //     totalSupply: null
-  //   }
-  // }
-
-  // componentWillReceiveProps (newProps) {
-  //   newProps.selectedToken && newProps.selectedToken.totalSupply()
-  //     .then(totalSupply => this.setState({totalSupply}))
-  // }
+  componentWillReceiveProps (newProps) {
+    if ((newProps.selectedToken && !this.props.selectedToken) ||
+      (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
+      this.props.getManagersForAssetSymbol(newProps.selectedToken)
+    }
+  }
 
   handleSubmit () {
 
   }
 
-  render () {
-    const {selectedToken, selectedPlatform} = this.props
-
-    if (!selectedPlatform) {
+  renderInstructions () {
+    if (!this.props.selectedPlatform) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -60,7 +55,7 @@ export class PlatformInfo extends Component {
       )
     }
 
-    if (!selectedToken) {
+    if (!this.props.selectedToken) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -71,6 +66,50 @@ export class PlatformInfo extends Component {
         </div>
       )
     }
+  }
+
+  renderManagers (managersList) {
+    return (
+      <div styleName='managersRow'>
+        {
+          this.props.managersForTokenLoading
+            ? <div styleName='avatarsPreLoader'><Preloader /></div>
+            : (
+              <div styleName='title'>
+                {(managersList || 0).length}&nbsp;<Translate value={prefix('managers')} />
+                <div styleName='avatarsRow'>
+                  {
+                    managersList && managersList
+                      .map(manager => <div key={manager}><i className='material-icons'>account_circle</i></div>)
+                  }
+                </div>
+
+                <div styleName='addManager'>
+                  <FlatButton
+                    onTouchTap={() => this.props.handleAddManagerDialog()}
+                    styleName='addManagerButton'
+                    label={(
+                      <span>
+                        <i className='material-icons'>add_circle</i>
+                        <Translate value={prefix('addManagers')} />
+                      </span>
+                    )}
+                  />
+                </div>
+              </div>
+            )
+
+        }
+      </div>
+
+
+    )
+  }
+
+  render () {
+    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
+
+    if (!this.props.selectedPlatform || !this.props.selectedToken) return this.renderInstructions()
 
     return (
       <div styleName='root'>
@@ -95,7 +134,7 @@ export class PlatformInfo extends Component {
                 <div styleName='fee'>
                   <div styleName='title'><Translate value={prefix('fee')} />:</div>
                   <div styleName='value'>
-                    1.5<span>%</span>
+                    {selectedToken.fee()}<span>%</span>
                   </div>
                 </div>
               }
@@ -121,39 +160,9 @@ export class PlatformInfo extends Component {
             </form>
           </div>
 
-          <div styleName='managersRow'>
-            <div styleName='title'>
-              5&nbsp;<Translate value={prefix('managers')} />
-              <div styleName='avatarsRow'>
-                <Avatar
-                  src={require('assets/img/icn-eth.png')}
-                  size={24}
-                />
-                <Avatar
-                  src={require('assets/img/icn-eth.png')}
-                  size={24}
-                />
-                <Avatar
-                  src={require('assets/img/icn-eth.png')}
-                  size={24}
-                />
-                <Avatar
-                  src={require('assets/img/icn-eth.png')}
-                  size={24}
-                />
-              </div>
-              <div styleName='addManager'>
-                <FlatButton
-                  onTouchTap={() => this.props.handleAddManagerDialog()}
-                  styleName='addManagerButton'
-                  label={<span>
-                    <i className='material-icons'>add_circle</i>
-                    <Translate value={prefix('addManagers')} />
-                  </span>}
-                />
-              </div>
-            </div>
-          </div>
+          {
+            this.renderManagers(selectedToken.managersList())
+          }
 
           <div styleName='actions'>
             <FlatButton
@@ -178,18 +187,25 @@ export class PlatformInfo extends Component {
   }
 }
 
-function mapStateToProps (/* state */) {
-  return {}
+function mapStateToProps (state) {
+  const assetsManager = state.get('assetsManager')
+  return {
+    selectedToken: assetsManager.selectedToken,
+    selectedPlatform: assetsManager.selectedPlatform,
+    managersForTokenLoading: assetsManager.managersForTokenLoading,
+    tokensMap: assetsManager.tokensMap,
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog
+      component: CrowdsaleDialog,
     })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog
-    }))
+      component: AssetManagerDialog,
+    })),
+    getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
   }
 }
 

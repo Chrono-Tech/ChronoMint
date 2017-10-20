@@ -22,6 +22,7 @@ export default class TokenModel extends abstractFetchingModel({
   fee: null,
   platform: null,
   totalSupply: new BigNumber(0),
+  managersList: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
@@ -37,6 +38,10 @@ export default class TokenModel extends abstractFetchingModel({
 
   setSymbol (v): TokenModel {
     return this.set('symbol', v)
+  }
+
+  managersList (): Array {
+    return this.get('managersList')
   }
 
   id () {

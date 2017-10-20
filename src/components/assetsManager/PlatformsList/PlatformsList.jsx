@@ -1,13 +1,14 @@
-import { detachPlatform } from 'redux/assetsManager/actions'
-import React, { Component } from 'react'
+import {detachPlatform} from 'redux/assetsManager/actions'
+import React, {Component} from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { FlatButton } from 'material-ui'
-import { IPFSImage, TokenValue } from 'components'
+import {connect} from 'react-redux'
+import {FlatButton} from 'material-ui'
+import {IPFSImage, TokenValue} from 'components'
 import BigNumber from 'bignumber.js'
-import { Translate } from 'react-redux-i18n'
+import {Translate} from 'react-redux-i18n'
 import './PlatformsList.scss'
+import {SELECT_PLATFORM, SELECT_TOKEN} from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
@@ -16,13 +17,17 @@ function prefix (token) {
 export class PlatformsList extends Component {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
-    selectedToken: PropTypes.object,
+    selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
     detachPlatform: PropTypes.func,
     tokensMap: PropTypes.object,
-    assets: PropTypes.object
+    assets: PropTypes.object,
+  }
+
+  handleSelectPlatform (platformAddress) {
+    this.props.handleSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
   }
 
   renderTokenList () {
@@ -35,8 +40,8 @@ export class PlatformsList extends Component {
             .map(token => {
               return (<div
                 key={token.address()}
-                styleName={classnames('tokenItem', {'selected': this.props.selectedToken && this.props.selectedToken.address() === token.address()})}
-                onTouchTap={() => this.props.handleSelectToken(token)}
+                styleName={classnames('tokenItem', {'selected': this.props.selectedToken === token.symbol()})}
+                onTouchTap={() => this.props.handleSelectToken(token.symbol())}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
@@ -67,7 +72,7 @@ export class PlatformsList extends Component {
               <div styleName={classnames('platformHeader', {'selected': selectedPlatform === address})}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => this.props.handleSelectPlatform(address)}
+                  onTouchTap={() => this.handleSelectPlatform(address)}
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
@@ -108,13 +113,24 @@ export class PlatformsList extends Component {
   }
 }
 
-function mapStateToProps (/*state*/) {
-  return {}
+function mapStateToProps (state) {
+  const assetsManager = state.get('assetsManager')
+  return {
+    platformsList: assetsManager.platformsList,
+    tokensMap: assetsManager.tokensMap,
+    assets: assetsManager.assets,
+    selectedToken: assetsManager.selectedToken,
+    selectedPlatform: assetsManager.selectedPlatform,
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    detachPlatform: platform => dispatch(detachPlatform(platform))
+    detachPlatform: platform => dispatch(detachPlatform(platform)),
+    handleSelectPlatform: platformAddress => {
+      dispatch({type: SELECT_PLATFORM, payload: {platformAddress}})
+    },
+    handleSelectToken: symbol => dispatch({type: SELECT_TOKEN, payload: {symbol}}),
   }
 }
 

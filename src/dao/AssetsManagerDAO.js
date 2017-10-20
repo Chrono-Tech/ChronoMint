@@ -1,7 +1,6 @@
-// import contractManager from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContractDAO'
-import web3Converter from 'utils/Web3Converter'
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/AssetsManager.json'), at)
@@ -18,7 +17,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     let currentPlatform
     for (let i = 0; i < assets[0].length; i++) {
 
-      if (assets[1][i] !== '0x0000000000000000000000000000000000000000') currentPlatform = assets[1][i]
+      if (assets[1][i] !== ZERO_ADDRESS) currentPlatform = assets[1][i]
 
       assetsList[assets[0][i]] = {
         address: assets[0][i],
@@ -33,11 +32,23 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const managersList = await this._call('getManagers', [owner])
     let formatManagersList = {}
     managersList.map(manager => {
-      if (manager !== '0x0000000000000000000000000000000000000000' && !formatManagersList[manager]) {
+      if (manager !== ZERO_ADDRESS && !formatManagersList[manager]) {
         formatManagersList[manager] = manager
       }
     })
 
+    return Object.keys(formatManagersList)
+  }
+
+  async getManagersForAssetSymbol (symbol) {
+    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [symbol])
+
+    let formatManagersList = {}
+    managersListForSymbol.map(manager => {
+      if (manager !== ZERO_ADDRESS && !formatManagersList[manager]) {
+        formatManagersList[manager] = manager
+      }
+    })
     return Object.keys(formatManagersList)
   }
 }

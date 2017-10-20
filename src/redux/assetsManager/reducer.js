@@ -1,6 +1,17 @@
-import { GET_ASSETS_MANAGER_COUNTS, GET_PLATFORMS, GET_PLATFORMS_COUNT, GET_TOKENS } from './actions'
+import {
+  GET_ASSETS_MANAGER_COUNTS,
+  GET_MANAGERS_FOR_TOKEN,
+  GET_PLATFORMS,
+  GET_PLATFORMS_COUNT,
+  GET_TOKENS,
+  SELECT_PLATFORM,
+  SELECT_TOKEN,
+  GET_MANAGERS_FOR_TOKEN_LOADING,
+} from './actions'
 
 const initialState = {
+  selectedToken: null,
+  selectedPlatform: null,
   platformsCount: 0,
   tokensCount: 0,
   managersCount: 0,
@@ -9,6 +20,7 @@ const initialState = {
   tokensMap: new Map(),
   managersList: [],
   assets: {},
+  managersForTokenLoading: false,
 }
 
 export default (state = initialState, action) => {
@@ -37,7 +49,24 @@ export default (state = initialState, action) => {
         platformsCount: action.payload.platforms.length,
         platformsList: action.payload.platforms,
       }
-
+    case GET_MANAGERS_FOR_TOKEN_LOADING :
+      return {
+        ...initialState,
+        ...state,
+        managersForTokenLoading: true,
+      }
+    case SELECT_TOKEN:
+      return {
+        ...initialState,
+        ...state,
+        selectedToken: action.payload.symbol,
+      }
+    case SELECT_PLATFORM:
+      return {
+        ...initialState,
+        ...state,
+        selectedPlatform: action.payload.platformAddress,
+      }
     case GET_TOKENS:
       return {
         ...initialState,
@@ -46,7 +75,13 @@ export default (state = initialState, action) => {
         tokensMap: action.payload.tokensMap,
         assets: action.payload.assets,
       }
-
+    case GET_MANAGERS_FOR_TOKEN:
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersForAssetSymbol),
+        managersForTokenLoading: false,
+      }
     default:
       return state
   }
