@@ -1,5 +1,7 @@
 import AbstractContractDAO from './AbstractContractDAO'
 import web3Converter from 'utils/Web3Converter'
+import {getPlatforms} from 'redux/assetsManager/actions'
+import contractManager from 'dao/ContractsManagerDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -24,16 +26,18 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async getPlatformsMetadataForUser (account) {
-
+  async getPlatformsMetadataForUser (account, dispatch) {
     const platformsList = await this._call('getPlatformsMetadataForUser', [account])
     let formatPlatformsList = []
     if (platformsList.length) {
       for (let i = 0; i < platformsList[0].length; i++) {
         formatPlatformsList.push({
           address: platformsList[0][i],
-          name: web3Converter.bytesToString(platformsList[1][i])
+          name: web3Converter.bytesToString(platformsList[1][i]),
         })
+        // TODO @abdulov optimize watchers
+        const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO(platformsList[0][i])
+        tokenManagementExtensionDAO.watchCreateAsset(account, dispatch)
       }
     }
     return formatPlatformsList
@@ -49,15 +53,13 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  watchCreatePlatform (account) {
-    this._watch('PlatformRequested', async (/*result*/) => {
-      // eslint-disable-next-line
-      // console.log('PlatformRequested', result)
+  watchCreatePlatform (account, dispatch) {
+    this._watch('PlatformRequested', () => {
+      dispatch(getPlatforms())
     }, {from: account})
 
-    this._watch('PlatformAttached', (/*result*/) => {
-      // eslint-disable-next-line
-      // console.log('PlatformAttached', result)
+    this._watch('PlatformAttached', () => {
+      dispatch(getPlatforms())
     }, {from: account})
   }
 }

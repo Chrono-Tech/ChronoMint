@@ -7,6 +7,7 @@ import ERC20ManagerDAO from './ERC20ManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
+import ChronoBankAssetOwnershipManagerDAO from './ChronoBankAssetOwnershipManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import RewardsDAO from './RewardsDAO'
@@ -29,6 +30,7 @@ const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
 const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
+const DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER = 'ChronoBankAssetOwnershipManagerDAO'
 const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
@@ -46,6 +48,7 @@ const daoMap = {
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
   [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
+  [DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER]: ChronoBankAssetOwnershipManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
   [DAO_ERC20]: ERC20DAO,
 }
@@ -97,6 +100,13 @@ class ContractsManagerDAO extends AbstractContractDAO {
   // noinspection JSUnusedGlobalSymbols
   async getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
     return this._getDAO(DAO_PLATFORMS_MANAGER)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getChronoBankAssetOwnershipManagerDAO (tokenPlatform: String): Promise<ChronoBankAssetOwnershipManagerDAO> {
+    const tokenManagementExtension = await this.getTokenManagementExtensionDAO(tokenPlatform)
+    const assetOwnershipManager =  await tokenManagementExtension._call('getAssetOwnershipManager')
+    return this._getDAO(DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER, assetOwnershipManager)
   }
 
   // noinspection JSUnusedGlobalSymbols

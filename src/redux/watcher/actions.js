@@ -9,7 +9,7 @@ import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitMarket } from 'redux/market/action'
-import { watchAssetManager } from 'redux/assetsManager/actions'
+import { watchPlatformManager } from 'redux/assetsManager/actions'
 import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitPolls } from 'redux/voting/actions'
@@ -74,7 +74,7 @@ export const globalWatcher = () => async dispatch => {
 
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
-  dispatch(watchAssetManager(getState().get('session').account))
+  dispatch(watchPlatformManager(getState().get('session').account))
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())

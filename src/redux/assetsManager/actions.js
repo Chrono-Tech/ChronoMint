@@ -1,5 +1,6 @@
 import contractManager from 'dao/ContractsManagerDAO'
 import Web3Converter from 'utils/Web3Converter'
+import TokenModel from '../../models/TokenModel'
 
 export const GET_PLATFORMS_COUNT = 'AssetsManager/GET_PLATFORMS_COUNT'
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
@@ -21,7 +22,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const platformManagerDao = await contractManager.getPlatformManagerDAO()
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await platformManagerDao.getPlatformsMetadataForUser(account)
+  const platforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch)
 
   const assets = await assetsManagerDao.getAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
@@ -33,7 +34,8 @@ export const getPlatforms = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const dao = await contractManager.getPlatformManagerDAO()
 
-  const platforms = await dao.getPlatformsMetadataForUser(account)
+  const platforms = await dao.getPlatformsMetadataForUser(account, dispatch)
+
   dispatch({type: GET_PLATFORMS, payload: {platforms}})
 }
 
@@ -43,7 +45,6 @@ export const getTokens = () => async (dispatch, getState) => {
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assets = await assetsManagerDao.getAssetsForOwner(account)
   const tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), false, assets)
-
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
 }
 
@@ -69,7 +70,6 @@ export const createPlatform = values => async dispatch => {
   }
 }
 
-
 export const detachPlatform = platform => async dispatch => {
   const dao = await contractManager.getPlatformManagerDAO()
   const result = await dao.detachPlatform(platform)
@@ -80,11 +80,9 @@ export const detachPlatform = platform => async dispatch => {
   }
 }
 
-export const watchAssetManager = account => async () => {
+export const watchPlatformManager = account => async (dispatch) => {
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
-  const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO()
-  platformManagerDAO.watchCreatePlatform(account)
-  tokenManagementExtensionDAO.watchToken(account)
+  platformManagerDAO.watchCreatePlatform(account, dispatch)
 }
 
 export const createAsset = values => async dispatch => {
@@ -120,10 +118,39 @@ export const createAsset = values => async dispatch => {
   }
 }
 
-export const getManagersForAssetSymbol = symbol => async (dispatch) => {
+export const getManagersForAssetSymbol = symbol => async dispatch => {
   dispatch({type: GET_MANAGERS_FOR_TOKEN_LOADING})
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const managersForAssetSymbol = await assetsManagerDAO.getManagersForAssetSymbol(symbol)
-
   dispatch({type: GET_MANAGERS_FOR_TOKEN, payload: {symbol, managersForAssetSymbol: managersForAssetSymbol}})
+}
+
+export const removeManager = (token: TokenModel, manager: String) => async dispatch => {
+  try {
+    const chronoBankAssetOwnershipManagerDAO = await contractManager.getChronoBankAssetOwnershipManagerDAO(token.platform())
+    const result = await chronoBankAssetOwnershipManagerDAO.removeAssetPartOwner(token.symbol(), manager)
+    if (result) {
+      dispatch(getManagersForAssetSymbol(token.symbol()))
+      dispatch(getAssetsManagerData())
+    }
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+}
+
+export const addManager = (token: TokenModel, manager: String) => async dispatch => {
+  try {
+    const chronoBankAssetOwnershipManagerDAO = await contractManager.getChronoBankAssetOwnershipManagerDAO(token.platform())
+    const result = await chronoBankAssetOwnershipManagerDAO.addAssetPartOwner(token.symbol(), manager)
+    if (result) {
+      dispatch(getManagersForAssetSymbol(token.symbol()))
+      dispatch(getAssetsManagerData())
+    }
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
 }

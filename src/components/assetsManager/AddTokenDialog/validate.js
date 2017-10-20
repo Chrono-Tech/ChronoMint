@@ -12,8 +12,7 @@ export default function validate (values) {
   descriptionErrors.add(validator.required(values.get('description')))
 
   let smallestUnitErrors = new ErrorList()
-  smallestUnitErrors.add(validator.positiveNumber(values.get('smallestUnit')))
-  smallestUnitErrors.add(validator.required(values.get('smallestUnit')))
+  smallestUnitErrors.add(validator.between(values.get('smallestUnit'), 0, 20, true))
 
   let amountErrors = new ErrorList()
   amountErrors.add(validator.positiveNumber(values.get('amount')))

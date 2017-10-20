@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { CSSTransitionGroup } from 'react-transition-group'
+import {connect} from 'react-redux'
+import {CSSTransitionGroup} from 'react-transition-group'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
+import {modalsClose} from 'redux/modals/actions'
 import AssetManagerForm from './AssetManagerForm'
 
 const TRANSITION_TIMEOUT = 250
@@ -28,10 +28,8 @@ export default class AssetManagerDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (/*values*/) => {
+  handleSubmitSuccess = () => {
     this.props.closeModal()
-    // eslint-disable-next-line
-    // console.log('handleSubmitSuccess', values)
   }
 
   render () {

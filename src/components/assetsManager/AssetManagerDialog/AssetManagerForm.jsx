@@ -9,6 +9,7 @@ import {modalsClose} from 'redux/modals/actions'
 import './AssetManagerForm.scss'
 import validate from './validate'
 import classnames from 'classnames'
+import {addManager, removeManager} from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return 'Assets.AssetManagerForm.' + token
@@ -26,22 +27,17 @@ function mapStateToProps (state) {
   }
 }
 
+const onSubmit = (values, dispatch, props) => {
+  dispatch(addManager(props.tokensMap.get(props.selectedToken), values.get('managerAddress')))
+}
+
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
-      dispatch(modalsClose())
+    handleRemoveManager: (token, manager) => {
+      dispatch(removeManager(token, manager))
     },
-    handleAddManager: () => {
-    },
-    handleRemoveManager: () => {
-    },
-
   }
-}
-
-const onSubmit = (/*values, dispatch*/) => {
-  // dispatch(createPlatform(values))
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -101,7 +97,7 @@ export default class AssetManagerForm extends React.Component {
               <i className='material-icons'>add</i>
             </FloatingActionButton>
             <FlatButton
-              onTouchTap={() => this.props.handleAddManager()}
+              type='submit'
               styleName={classnames('addManagerButton', 'xs-hide')}
               label={<Translate value={prefix('addManagersButton')} />}
             />
@@ -122,7 +118,13 @@ export default class AssetManagerForm extends React.Component {
                     <div>{item}</div>
                   </div>
                 </div>
-                <div onTouchTap={() => this.props.handleRemoveManager(item)} styleName='managersListAction'>
+                <div
+                  onTouchTap={() => {
+                    this.props.onClose()
+                    this.props.handleRemoveManager(selectedToken, item)
+                  }}
+                  styleName='managersListAction'
+                >
                   <i className='material-icons'>delete</i>
                 </div>
               </div>
