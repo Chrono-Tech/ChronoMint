@@ -1,25 +1,22 @@
 import Preloader from 'components/common/Preloader/Preloader'
 import BigNumber from 'bignumber.js'
-import {Field, reduxForm} from 'redux-form/immutable'
 import {IPFSImage, TokenValue} from 'components'
 import PropTypes from 'prop-types'
 import {RaisedButton, FlatButton} from 'material-ui'
 import React, {Component} from 'react'
-import {TextField} from 'redux-form-material-ui'
 import {Translate} from 'react-redux-i18n'
 import {connect} from 'react-redux'
 import {getManagersForAssetSymbol} from 'redux/assetsManager/actions'
 import {modalsOpen} from 'redux/modals/actions'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-
 import './PlatformInfo.scss'
+import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
 
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-@reduxForm({form: 'REISSUE_FORM'})
 export class PlatformInfo extends Component {
   static propTypes = {
     tokensMap: PropTypes.object,
@@ -29,6 +26,7 @@ export class PlatformInfo extends Component {
     handleAddManagerDialog: PropTypes.func,
     getManagersForAssetSymbol: PropTypes.func,
     managersForTokenLoading: PropTypes.bool,
+    reissueAsset: PropTypes.func,
   }
 
   componentWillReceiveProps (newProps) {
@@ -36,10 +34,6 @@ export class PlatformInfo extends Component {
       (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
       this.props.getManagersForAssetSymbol(newProps.selectedToken)
     }
-  }
-
-  handleSubmit () {
-
   }
 
   renderInstructions () {
@@ -115,9 +109,9 @@ export class PlatformInfo extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='balanceRow'>
-            <div styleName='status'>
+            {/*<div styleName='status'>
               <Translate value={prefix('onCrowdsale')} />
-            </div>
+            </div>*/}
             <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} />
             <div styleName='title'>{selectedToken.symbol()}</div>
             <div styleName='balanceWrap'>
@@ -140,41 +134,22 @@ export class PlatformInfo extends Component {
               }
             </div>
           </div>
-
-          <div styleName='reissueRow'>
-            <form onSubmit={this.handleSubmit}>
-              <div styleName='input'>
-                <Field
-                  component={TextField}
-                  fullWidth
-                  name='reissue'
-                  style={{width: '100%'}}
-                  floatingLabelText={<Translate value={prefix('reissueAmount')} />}
-                />
-              </div>
-              <RaisedButton
-                primary
-                label={<Translate value={prefix('reissue')} />}
-                styleName='action'
-              />
-            </form>
-          </div>
-
+          <ReissueAssetForm />
           {
             this.renderManagers(selectedToken.managersList())
           }
 
           <div styleName='actions'>
-            <FlatButton
+            {/*<FlatButton
               styleName='action'
               label={<Translate value={prefix('send')} />}
-            />
+            />*/}
 
-            <FlatButton
+            {/*<FlatButton
               styleName='action'
               label={<Translate value={prefix('crowdsaleInfo')} />}
               onTouchTap={() => this.props.handleCrowdsaleDialog()}
-            />
+            />*/}
 
             <RaisedButton
               label={<Translate value={prefix('revoke')} />}

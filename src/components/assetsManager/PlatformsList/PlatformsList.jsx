@@ -1,9 +1,7 @@
-import {detachPlatform} from 'redux/assetsManager/actions'
 import React, {Component} from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {FlatButton} from 'material-ui'
 import {IPFSImage, TokenValue} from 'components'
 import BigNumber from 'bignumber.js'
 import {Translate} from 'react-redux-i18n'
@@ -21,7 +19,6 @@ export class PlatformsList extends Component {
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    detachPlatform: PropTypes.func,
     tokensMap: PropTypes.object,
     assets: PropTypes.object,
   }
@@ -81,12 +78,6 @@ export class PlatformsList extends Component {
                     )
                   </div>
                 </div>
-                <div styleName='platformActions'>
-                  <FlatButton
-                    label={<Translate value={prefix('detachPlatform')} />}
-                    onTouchTap={() => detachPlatform(address)}
-                  />
-                </div>
               </div>
               {
                 selectedPlatform === address
@@ -126,7 +117,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    detachPlatform: platform => dispatch(detachPlatform(platform)),
     handleSelectPlatform: platformAddress => {
       dispatch({type: SELECT_PLATFORM, payload: {platformAddress}})
     },

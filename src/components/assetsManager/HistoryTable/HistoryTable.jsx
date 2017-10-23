@@ -1,11 +1,10 @@
-import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
+import {Translate} from 'react-redux-i18n'
+import {connect} from 'react-redux'
 import moment from 'moment'
-
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import {getTransactions} from 'redux/assetsManager/actions'
+import Moment, {SHORT_DATE} from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './HistoryTable.scss'
@@ -18,10 +17,17 @@ function prefix (token) {
 function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
+    transactionsList: state.get('assetsManager').transactionsList,
   }
 }
 
-@connect(mapStateToProps)
+function mapDispatchToProps (dispatch) {
+  return {
+    getTransactions: () => dispatch(getTransactions()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class HistoryTable extends React.Component {
   static propTypes = {
     tokens: PropTypes.object,
@@ -33,36 +39,16 @@ export default class HistoryTable extends React.Component {
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
+    getTransactions: PropTypes.func,
+    transactionsList: PropTypes.array,
   }
 
-  static defaultProps = {
-    historyItems: [
-      {
-        date: new Date(),
-        type: 'issue',
-        manager: 'admin',
-        value: new BigNumber(1231),
-        symbol: 'LHT',
-      },
-      {
-        date: new Date(),
-        type: 'revoke',
-        manager: '0x9876f6477iocc4757q22dfg3333nmk1111v234x0',
-        value: new BigNumber(423),
-        symbol: 'LHT',
-      },
-      {
-        date: new Date(),
-        type: 'revoke',
-        manager: '0xr4lk2jr3lj1111v234x0',
-        value: new BigNumber(423111),
-        symbol: 'LHT',
-      },
-    ],
+  componentDidMount () {
+    this.props.getTransactions()
   }
 
   render () {
-    const data = this.buildTableData(this.props.historyItems, this.props.locale)
+    const data = this.buildTableData(this.props.transactionsList, this.props.locale)
 
     return (
       <div styleName='root'>
@@ -87,7 +73,7 @@ export default class HistoryTable extends React.Component {
               </div>
               <div styleName='table'>
                 <div styleName='table-body'>
-                  {group.items.map((item, index) => this.renderRow(item, index))}
+                  {group.transactions.map((item, index) => this.renderRow(item, index))}
                 </div>
               </div>
             </div>
@@ -97,7 +83,7 @@ export default class HistoryTable extends React.Component {
     )
   }
 
-  renderRow ({ item, timeTitle }, index) {
+  renderRow ({trx, timeTitle}, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -108,26 +94,26 @@ export default class HistoryTable extends React.Component {
 
         <div styleName='col-type'>
           <div styleName='property'>
-            {item.type === 'issue'
-              ? (<span styleName='badge-in'>issue</span>)
-              : (<span styleName='badge-out'>revoke</span>)
-            }
+            <span styleName='badge-in'>{trx.type()}</span>
           </div>
         </div>
 
         <div styleName='col-manager'>
           <div styleName='property'>
-            <div styleName='text-faded'>{item.manager}</div>
+            <div styleName='text-faded'>{trx.from()}</div>
           </div>
         </div>
 
         <div styleName='col-value'>
           <div styleName='property'>
             <div styleName='value'>
-              <TokenValue
-                value={item.value}
-                symbol={item.symbol}
-              />
+              {
+                trx.value() && trx.symbol() &&
+                <TokenValue
+                  value={trx.value()}
+                  symbol={trx.symbol()}
+                />
+              }
             </div>
           </div>
         </div>
@@ -138,17 +124,17 @@ export default class HistoryTable extends React.Component {
   buildTableData (historyItems, locale) {
     moment.locale(locale)
     const groups = historyItems
-      .reduce((data, item) => {
-        const groupBy = moment(item.date).format('YYYY-MM-DD')
+      .reduce((data, trx) => {
+        const groupBy = trx.date('YYYY-MM-DD')
         data[groupBy] = data[groupBy] || {
-          dateBy: moment(item.date).format('YYYY-MM-DD'),
-          dateTitle: <Moment date={item.date} format={SHORT_DATE} />,
-          items: [],
+          dateBy: trx.date('YYYY-MM-DD'),
+          dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
+          transactions: [],
         }
-        data[groupBy].items.push({
-          item,
-          timeBy: moment(item.date).format('HH:mm:ss'),
-          timeTitle: moment(item.date).format('HH:mm'),
+        data[groupBy].transactions.push({
+          trx,
+          timeBy: trx.date('HH:mm:ss'),
+          timeTitle: trx.date('HH:mm'),
         })
         return data
       }, {})
@@ -157,7 +143,7 @@ export default class HistoryTable extends React.Component {
       .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
       .map(group => ({
         ...group,
-        items: group.items.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
+        transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
       }))
   }
 }

@@ -173,7 +173,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, a, b, s) {
+function mapDispatchToProps (dispatch) {
   return {
     getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     createPlatform: () => dispatch(createPlatform()),

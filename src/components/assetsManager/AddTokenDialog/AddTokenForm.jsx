@@ -1,23 +1,23 @@
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import {Translate} from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
-import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
-import { modalsOpen } from 'redux/modals/actions'
+import {connect} from 'react-redux'
+import {CircularProgress, RaisedButton, MenuItem} from 'material-ui'
+import {TextField, Checkbox, SelectField} from 'redux-form-material-ui'
+import {modalsOpen} from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import { Field, reduxForm, change } from 'redux-form/immutable'
-import { createAsset } from 'redux/assetsManager/actions'
+import {Field, reduxForm, change} from 'redux-form/immutable'
+import {createAsset} from 'redux/assetsManager/actions'
 import './AddTokenForm.scss'
 import validate from './validate'
-import { TokenValue } from 'components'
+import {TokenValue} from 'components'
 import BigNumber from 'bignumber.js'
 import colors from 'styles/themes/variables'
 import classnames from 'classnames'
 import ipfs from 'utils/IPFS'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import FileModel from 'models/FileSelect/FileModel'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import {ACCEPT_ALL} from 'models/FileSelect/FileExtension'
 
 
 function prefix (token) {
@@ -154,7 +154,7 @@ export default class AddPlatformForm extends React.Component {
         type='file'
         styleName='hide'
       />
-            </div>)
+    </div>)
   }
 
   renderPlatformsList () {
@@ -191,7 +191,7 @@ export default class AddPlatformForm extends React.Component {
                     <small>{platform.address}</small>
                     )
                   </div>
-                        </div>)
+                </div>)
               })
           }
         </div>
@@ -335,12 +335,12 @@ export default class AddPlatformForm extends React.Component {
             </div>
           </div>
 
-          <Field
+          {/*<Field
             styleName='checkboxField'
             component={Checkbox}
             name='startWithCrowdsale'
             label={<Translate value={prefix('startWithCrowdsale')} />}
-          />
+          />*/}
 
         </div>
         <div

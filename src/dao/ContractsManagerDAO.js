@@ -6,6 +6,7 @@ import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
+import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import ChronoBankAssetOwnershipManagerDAO from './ChronoBankAssetOwnershipManagerDAO'
 import LOCManagerDAO from './LOCManagerDAO'
@@ -29,6 +30,7 @@ const DAO_VOTING_ACTOR = 'VoteActor'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
+const DAO_CHRONOBANK_PLATFORM = 'ChronoBankPlatformDAO'
 const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
 const DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER = 'ChronoBankAssetOwnershipManagerDAO'
 const DAO_TIME_HOLDER = 'TimeHolder'
@@ -47,6 +49,7 @@ const daoMap = {
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
+  [DAO_CHRONOBANK_PLATFORM]: ChronoBankPlatformDAO,
   [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
   [DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER]: ChronoBankAssetOwnershipManagerDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
@@ -103,9 +106,14 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
+  async getChronoBankPlatformDAO (platformAddress): Promise<ChronoBankPlatformDAO> {
+    return this._getDAO(DAO_CHRONOBANK_PLATFORM, platformAddress)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
   async getChronoBankAssetOwnershipManagerDAO (tokenPlatform: String): Promise<ChronoBankAssetOwnershipManagerDAO> {
     const tokenManagementExtension = await this.getTokenManagementExtensionDAO(tokenPlatform)
-    const assetOwnershipManager =  await tokenManagementExtension._call('getAssetOwnershipManager')
+    const assetOwnershipManager = await tokenManagementExtension._call('getAssetOwnershipManager')
     return this._getDAO(DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER, assetOwnershipManager)
   }
 

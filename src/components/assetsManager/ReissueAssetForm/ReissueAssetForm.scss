@@ -1,0 +1,30 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.reissueRow {
+  form {
+    display: flex;
+    align-items: flex-start;
+    @include xs-only {
+      flex-direction: column;
+    }
+  }
+  .input {
+    padding-left: 16px;
+    padding-right: 20px;
+    @include xs-only {
+      padding-right: 16px;
+      padding-bottom: 20px;
+      width: 100%;
+    }
+  }
+  .action {
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    @include xs-only {
+      margin-top: 0;
+      width: calc(100% - 40px);
+    }
+  }
+}

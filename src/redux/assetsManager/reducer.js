@@ -6,7 +6,8 @@ import {
   GET_TOKENS,
   SELECT_PLATFORM,
   SELECT_TOKEN,
-  GET_MANAGERS_FOR_TOKEN_LOADING,
+  GET_MANAGERS_FOR_TOKEN_LOADING, SET_WATCHERS,
+  SET_TOTAL_SUPPLY, GET_TRANSACTIONS
 } from './actions'
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
   managersList: [],
   assets: {},
   managersForTokenLoading: false,
+  watchers: {},
+  transactionsList: [],
 }
 
 export default (state = initialState, action) => {
@@ -81,6 +84,37 @@ export default (state = initialState, action) => {
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersForAssetSymbol),
         managersForTokenLoading: false,
+      }
+    case SET_WATCHERS:
+      return {
+        ...initialState,
+        ...state,
+        watchers: {
+          ...state.watchers,
+          ...action.payload.watchers,
+        },
+      }
+    case SET_TOTAL_SUPPLY:
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: state.tokensMap.setIn([action.payload.symbol, 'totalSupply'], action.payload.totalSupply),
+        assets: {
+          ...state.assets,
+          [state.tokensMap.get(action.payload.symbol).address()]: {
+            ...state.assets[action.payload.symbol],
+            totalSupply: action.payload.totalSupply,
+          },
+        },
+      }
+    case GET_TRANSACTIONS:
+      return {
+        ...initialState,
+        ...state,
+        transactionsList: [
+          ...state.transactionsList,
+          ...action.payload.transactionsList,
+        ],
       }
     default:
       return state
