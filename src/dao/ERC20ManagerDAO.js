@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -258,5 +256,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
+  }
+
+  watchAddToken (callback) {
+    return this._watch('LogAddToken', callback)
   }
 }

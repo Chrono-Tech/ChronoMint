@@ -7,7 +7,7 @@ import {
   SELECT_PLATFORM,
   SELECT_TOKEN,
   GET_MANAGERS_FOR_TOKEN_LOADING, SET_WATCHERS,
-  SET_TOTAL_SUPPLY, GET_TRANSACTIONS
+  SET_TOTAL_SUPPLY, GET_TRANSACTIONS, GET_TRANSACTIONS_START, GET_TRANSACTIONS_DONE, SET_TOKEN
 } from './actions'
 
 const initialState = {
@@ -24,6 +24,8 @@ const initialState = {
   managersForTokenLoading: false,
   watchers: {},
   transactionsList: [],
+  transactionsFetched: false,
+  transactionsFetching: false,
 }
 
 export default (state = initialState, action) => {
@@ -78,6 +80,14 @@ export default (state = initialState, action) => {
         tokensMap: action.payload.tokensMap,
         assets: action.payload.assets,
       }
+    case SET_TOKEN:
+      return {
+        ...initialState,
+        ...state,
+        tokensCount: state.tokensMap.concat(action.payload.tokensMap).size,
+        tokensMap: state.tokensMap.concat(action.payload.tokensMap),
+        assets: action.payload.assets,
+      }
     case GET_MANAGERS_FOR_TOKEN:
       return {
         ...initialState,
@@ -107,7 +117,15 @@ export default (state = initialState, action) => {
           },
         },
       }
-    case GET_TRANSACTIONS:
+    case GET_TRANSACTIONS_START:
+      return {
+        ...initialState,
+        ...state,
+        transactionsList: [],
+        transactionsFetched: false,
+        transactionsFetching: true,
+      }
+    case GET_TRANSACTIONS_DONE:
       return {
         ...initialState,
         ...state,
@@ -115,6 +133,8 @@ export default (state = initialState, action) => {
           ...state.transactionsList,
           ...action.payload.transactionsList,
         ],
+        transactionsFetched: true,
+        transactionsFetching: false,
       }
     default:
       return state

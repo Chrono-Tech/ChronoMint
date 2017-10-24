@@ -3,10 +3,9 @@ import React from 'react'
 import {Translate} from 'react-redux-i18n'
 import {connect} from 'react-redux'
 import moment from 'moment'
-import {getTransactions} from 'redux/assetsManager/actions'
 import Moment, {SHORT_DATE} from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
+import {CircularProgress} from 'material-ui'
 import './HistoryTable.scss'
 
 function prefix (token) {
@@ -18,33 +17,21 @@ function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
     transactionsList: state.get('assetsManager').transactionsList,
+    transactionsFetching: state.get('assetsManager').transactionsFetching,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    getTransactions: () => dispatch(getTransactions()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class HistoryTable extends React.Component {
   static propTypes = {
-    tokens: PropTypes.object,
-    onLoadMore: PropTypes.func,
-    isFetching: PropTypes.bool,
-    transactions: PropTypes.object,
-    historyItems: PropTypes.array,
-    endOfList: PropTypes.bool,
-    selectedNetworkId: PropTypes.number,
-    selectedProviderId: PropTypes.number,
-    locale: PropTypes.string,
-    getTransactions: PropTypes.func,
     transactionsList: PropTypes.array,
-  }
-
-  componentDidMount () {
-    this.props.getTransactions()
+    transactionsFetched: PropTypes.bool,
+    transactionsFetching: PropTypes.bool,
   }
 
   render () {
@@ -79,6 +66,16 @@ export default class HistoryTable extends React.Component {
             </div>
           ))}
         </div>
+        {
+          this.props.transactionsFetching &&
+          <div styleName='footer'>
+            <CircularProgress
+              style={{verticalAlign: 'middle', marginTop: -2}}
+              size={24}
+              thickness={1.5}
+            />
+          </div>
+        }
       </div>
     )
   }

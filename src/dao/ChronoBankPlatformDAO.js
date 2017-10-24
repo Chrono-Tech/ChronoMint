@@ -1,10 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
-import web3Converter from 'utils/Web3Converter'
-import {setTotalSupply} from 'redux/assetsManager/actions'
 
-export const TX_CREATE_PLATFORM = 'createPlatform'
-export const TX_ATTACH_PLATFORM = 'attachPlatform'
-export const TX_DETACH_PLATFORM = 'detachPlatform'
 export const TX_REISSUE_ASSET = 'reissueAsset'
 
 export default class ChronoBankPlatform extends AbstractContractDAO {
@@ -22,9 +17,7 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
     return tx.tx
   }
 
-  watchAssets (account, dispatch) {
-    this._watch('Issue', res => {
-      dispatch(setTotalSupply(web3Converter.bytesToString(res.args.symbol), res.args.value))
-    }, {from: account})
+  watchAssets (callback) {
+    return this._watch('Issue', callback)
   }
 }

@@ -1,8 +1,7 @@
-import AbstractContractDAO from './AbstractContractDAO'
+import {getPlatforms, getPlatformsCount, setTx, SET_WATCHERS} from 'redux/assetsManager/actions'
 import web3Converter from 'utils/Web3Converter'
-import {getPlatforms, getPlatformsCount} from 'redux/assetsManager/actions'
 import contractManager from 'dao/ContractsManagerDAO'
-import {SET_WATCHERS} from 'redux/assetsManager/actions'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -44,7 +43,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
         })
       }
     }
-    this.watchAssets(formatPlatformsList, account, dispatch, state)
+    // this.watchAssets(formatPlatformsList, account, dispatch, state)
     return formatPlatformsList
   }
 
@@ -59,12 +58,14 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   watchCreatePlatform (account, dispatch) {
-    this._watch('PlatformRequested', () => {
+    this._watch('PlatformRequested', tx => {
+      dispatch(setTx(tx))
       dispatch(getPlatformsCount())
       dispatch(getPlatforms())
     }, {from: account})
 
-    this._watch('PlatformAttached', () => {
+    this._watch('PlatformAttached', tx => {
+      dispatch(setTx(tx))
       dispatch(getPlatformsCount())
       dispatch(getPlatforms())
     }, {from: account})
@@ -74,9 +75,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     const watchers = {...state['watchers']}
     for (let platform of platformList) {
       if (!watchers[platform.address]) {
-        const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO(platform.address)
         const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform.address)
-        tokenManagementExtensionDAO.watchAssets(account, dispatch)
         chronoBankPlatformDAO.watchAssets(account, dispatch)
 
         watchers[platform.address] = true

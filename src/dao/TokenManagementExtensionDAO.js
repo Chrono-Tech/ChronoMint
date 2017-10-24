@@ -1,4 +1,3 @@
-import {getTokens} from 'redux/assetsManager/actions'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
@@ -17,12 +16,5 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
   createAssetWithoutFee (symbol, name, description, value, decimals, isMint, tokenImg) {
     return this._tx('createAssetWithoutFee', [symbol, name, description, value, decimals, isMint, tokenImg])
-
-  }
-
-  watchAssets (account, dispatch) {
-    this._watch('AssetCreated', () => {
-      dispatch(getTokens())
-    }, {from: account})
   }
 }
