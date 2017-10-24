@@ -43,7 +43,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchDeposit (callback) {
-    return this._watch('Deposit', callback)
+    return this._watch('Deposit', result => {
+      callback(result.args.value)
+    })
   }
 
   getName () {

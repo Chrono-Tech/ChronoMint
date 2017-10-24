@@ -11,33 +11,12 @@ export const MULTISIG_FETCHING = 'multisig/FETCHING'
 export const MULTISIG_FETCHED = 'multisig/FETCHED'
 
 export const MULTISIG_UPDATE = 'multisigWallet/UPDATE'
-export const MULTISIG_UPDATE_TOKEN = 'multisigWallet/UPDATE_TOKEN'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'
 export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 
-const handleWPendingTxUpdate = (id: string, pendingTx: MultisigWalletPendingTxModel, notice: WalletNoticeModel) => (dispatch, getState) => {
-  const wallet = getState().get('multisigWallet').list().get(id)
-  let pendingTxList = wallet.pendingTxList().set(pendingTx.id(), pendingTx)
-  dispatch({type: MULTISIG_UPDATE, wallet: wallet.pendingTxList(pendingTxList)})
-  dispatch(notify(notice))
-}
-
 const watchMultisigWallets = (wallet: MultisigWalletModel) => async (dispatch) => {
-  const callbackPendingTxUpdate = (id: string, pendingTx: MultisigWalletPendingTxModel, notice: WalletNoticeModel) => dispatch(handleWPendingTxUpdate(id, pendingTx, notice))
-
   try {
     await multisigWalletService.subscribeToWalletDAO(wallet.address())
-
-    const dao = await multisigWalletService.getWalletDAO(wallet.address())
-
-    await Promise.all([
-      dao.watchOwnerRemoved(),
-      // dao.watchConfirmationNeeded(wallet.id(), callbackPendingTxUpdate),
-      dao.watchMultiTransact(),
-      dao.watchSingleTransact(),
-      // dao.watchDeposit()
-    ])
-
   } catch (e) {
     // eslint-disable-next-line
     console.error('watch error', e.message)
@@ -50,7 +29,7 @@ const handleWalletCreate = (wallet: MultisigWalletModel, notice: WalletNoticeMod
   watchMultisigWallets(wallet)
   const wallets = getState().get('multisigWallet')
   if (wallets.size === 1) {
-    dispatch(selectWallet(wallets.first().id()))
+    dispatch(selectMultisigWallet(wallets.first()))
   }
 }
 
@@ -60,23 +39,36 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   await dao.watchWalletCreate(updateCallback)
 
   // TODO @dkchv: !!!
+  // multisig wallet events
+  multisigWalletService.on('OwnerRemoved', (walletId, result) => {
+    console.log('--actions#', result)
+  })
+
+  multisigWalletService.on('MultiTransact', (walletId, result) => {
+    console.log('--actions#', result)
+  })
+
+  multisigWalletService.on('SingleTransact', (walletId, result) => {
+    console.log('--actions#', result)
+  })
+
   multisigWalletService.on('ConfirmationNeeded', (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
     const wallet: MultisigWalletModel = getState().get('multisigWallet').list().get(walletId)
     const pendingTxList = wallet.pendingTxList()
     dispatch({type: MULTISIG_UPDATE, wallet: wallet.pendingTxList(pendingTxList.set(pendingTxModel.id(), pendingTxModel))})
-    console.log('--actions#', 5555, result)
   })
+
   multisigWalletService.on('Deposit', (walletId, tokenId, amount) => {
     const wallet: MultisigWalletModel = getState().get('multisigWallet').list().get(walletId)
     const token: TokenModel = wallet.tokens().get(tokenId)
     const updatedWallet = wallet.tokens().set(token.id(), token.updateBalance(true, amount))
     dispatch({type: MULTISIG_UPDATE, wallet: updatedWallet})
+    // dispatch(notify(notice))
   })
-
 }
 
-export const selectWallet = (address: string) => (dispatch) => {
-  dispatch({type: MULTISIG_SELECT, address})
+export const selectMultisigWallet = (wallet: MultisigWalletModel) => (dispatch) => {
+  dispatch({type: MULTISIG_SELECT, wallet})
 }
 
 export const getWallets = () => async (dispatch) => {
@@ -92,7 +84,7 @@ export const getWallets = () => async (dispatch) => {
 
   dispatch({type: MULTISIG_FETCHED, wallets})
   if (wallets.first()) {
-    dispatch(selectWallet(wallets.first().id()))
+    dispatch(selectMultisigWallet(wallets.first()))
   }
 }
 

@@ -22,6 +22,7 @@ function mapStateToProps (state) {
   return {
     isMultisig: getCurrentWallet(state).isMultisig(),
     account: state.get('session').account,
+    mainWallet: state.get('mainWallet'),
     multisigWallet: state.get('multisigWallet')
   }
 }
@@ -44,12 +45,12 @@ function mapDispatchToProps (dispatch) {
 export default class WalletChanger extends React.Component {
   static propTypes = {
     isMultisig: PropTypes.bool,
+    mainWallet: PropTypes.object,
     multisigWallet: PropTypes.object,
     walletSelectDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     getWallets: PropTypes.func,
-    switchWallet: PropTypes.func,
-    account: PropTypes.string,
+    switchWallet: PropTypes.func
   }
 
   componentWillMount () {
@@ -63,7 +64,7 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMainWallet () {
-    const {isMultisig, account, multisigWallet} = this.props
+    const {isMultisig, mainWallet, multisigWallet} = this.props
     return (
       <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
         <Paper style={globalStyles.content.paper.style}>
@@ -71,7 +72,7 @@ export default class WalletChanger extends React.Component {
             <img styleName='headerIcon' src={WalletMainBigSVG} />
             <div styleName='headerInfo'>
               <div styleName='headerTitle'><Translate value='wallet.mainWallet' /></div>
-              <div styleName='headerSubtitle'>{account}</div>
+              <div styleName='headerSubtitle'>{mainWallet.address()}</div>
             </div>
           </div>
 
@@ -103,7 +104,7 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMultisigWallet () {
-    const {multisigWallet} = this.props
+    const {multisigWallet, mainWallet} = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
     const owners = selectedWallet.owners()
 
@@ -150,7 +151,7 @@ export default class WalletChanger extends React.Component {
                       <Translate value='wallet.switchToMainWallet' />
                     </span>
                   )}
-                  onTouchTap={() => this.props.switchWallet(false)}
+                  onTouchTap={() => this.props.switchWallet(mainWallet)}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>

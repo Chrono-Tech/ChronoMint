@@ -12,10 +12,11 @@ import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
-import { addOwner, removeWallet, selectWallet, multisigTransfer } from 'redux/multisigWallet/actions'
+import { addOwner, removeWallet, selectMultisigWallet, multisigTransfer } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import './WalletSelectDialog.scss'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { switchWallet } from 'redux/wallet/actions'
 
 const TRANSITION_TIMEOUT = 250
 
@@ -32,7 +33,7 @@ function mapDispatchToProps (dispatch) {
       props: {wallet: new MultisigWalletModel()}
     })),
     handleClose: () => dispatch(modalsClose()),
-    selectWallet: (id) => dispatch(selectWallet(id)),
+    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
     removeWallet: (wallet) => dispatch(removeWallet(wallet)),
     addOwner: (wallet) => dispatch(addOwner(wallet)),
     transfer: (wallet) => dispatch(multisigTransfer(wallet))
@@ -45,15 +46,15 @@ export default class WalletSelectDialog extends React.Component {
     multisigWallet: PropTypes.object,
     handleClose: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
-    selectWallet: PropTypes.func,
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
-    addOwner: PropTypes.func
+    addOwner: PropTypes.func,
+    switchWallet: PropTypes.func
   }
 
-  selectWallet (id) {
+  selectMultisigWallet (wallet) {
     this.props.handleClose()
-    this.props.selectWallet(id)
+    this.props.switchWallet(wallet)
   }
 
   render () {
@@ -129,12 +130,12 @@ export default class WalletSelectDialog extends React.Component {
             onTouchTap={() => this.props.transfer(wallet)}
           />
         </div>
-        <div styleName='cell' onTouchTap={() => !isSelected && this.selectWallet(wallet.id())}>
+        <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div>
             <img styleName='bigIcon' src={WalletMultiBigSVG} />
           </div>
         </div>
-        <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectWallet(wallet.id())}>
+        <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div styleName='symbol'>{wallet.name()}</div>
           <div>
             <span styleName='ownersNum'>

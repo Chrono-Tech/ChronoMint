@@ -1,3 +1,5 @@
+import { selectMultisigWallet } from 'redux/multisigWallet/actions'
+
 export const WALLET_SWITCH_WALLET = 'WALLET/switch_wallet'
 
 export const initWallet = () => (dispatch) => {
@@ -7,6 +9,9 @@ export const initWallet = () => (dispatch) => {
 export const switchWallet = (wallet) => async (dispatch) => {
   console.log('--actions#', wallet.address(), wallet.isMultisig())
   dispatch({type: WALLET_SWITCH_WALLET, wallet})
+  if (wallet.isMultisig()) {
+    dispatch(selectMultisigWallet(wallet))
+  }
 }
 
 export const getCurrentWallet = (state) => {
