@@ -1,15 +1,16 @@
 import Immutable from 'immutable'
-import { abstractFetchingModel } from './AbstractFetchingModel'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import ls from 'utils/LocalStorage'
 
-class WalletModel extends abstractFetchingModel({
-  address: null,
+export default class MultisigWalletModel extends abstractFetchingModel({
+  address: null, //
+  tokens: null, //
+  isMultisig: true, //
   owners: new Immutable.List(ls.getAccount()),
   name: null,
   requiredSignatures: null,
   dao: null,
-  pendingTxList: new Immutable.List(),
-  tokens: null
+  pendingTxList: new Immutable.List()
 }) {
 
   id () {
@@ -53,6 +54,10 @@ class WalletModel extends abstractFetchingModel({
     return this.get('tokens')
   }
 
+  isMultisig () {
+    return this.get('isMultisig')
+  }
+
   txSummary () {
     return {
       owners: this.owners(),
@@ -66,4 +71,3 @@ class WalletModel extends abstractFetchingModel({
   }
 }
 
-export default WalletModel

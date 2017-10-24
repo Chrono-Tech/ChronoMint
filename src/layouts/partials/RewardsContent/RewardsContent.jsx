@@ -173,12 +173,12 @@ export default class RewardsContent extends Component {
 function mapStateToProps (state) {
   const rewards = state.get('rewards')
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     rewardsData: rewards.data,
     // just to subscribe RewardsContent on time deposit updates
-    timeDeposit: wallet.timeDeposit,
+    timeDeposit: wallet.timeDeposit(),
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,
     isCBE: session.isCBE

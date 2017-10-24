@@ -9,7 +9,7 @@ import { MuiThemeProvider, SelectField, MenuItem, TextField, RaisedButton, Slide
 
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
-import { transfer, approve } from 'redux/wallet/actions'
+import { transfer, approve } from 'redux/mainWallet/actions'
 
 import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
@@ -22,9 +22,11 @@ import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 
 import styles from '../styles'
 import inversedTheme from 'styles/themes/inversed'
-import { ETH } from 'redux/wallet/actions'
+import { ETH } from 'redux/mainWallet/actions'
 
 import './SendTokens.scss'
+import { getCurrentWallet } from 'redux/wallet/actions'
+import Preloader from 'components/common/Preloader/Preloader'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -43,7 +45,8 @@ export class SendTokens extends React.Component {
   static propTypes = {
     title: PropTypes.object, // Translate object
     account: PropTypes.string,
-    tokens: PropTypes.object,
+    // tokens: PropTypes.object,
+    wallet: PropTypes.object,
     currency: PropTypes.string,
     // The power of 2 from -2 to 2.
     // This multiplier would be used to determine gas price.
@@ -91,7 +94,7 @@ export class SendTokens extends React.Component {
 
     this.state = {
       token: {
-        value: props.tokens.get(props.currency)
+        value: props.wallet.tokens().get(props.currency)
       },
       recipient: {
         value: '',
@@ -166,7 +169,7 @@ export class SendTokens extends React.Component {
     const name = this.state.token.value.symbol()
     this.setState({
       token: {
-        value: nextProps.tokens.get(name || nextProps.currency) || nextProps.tokens.get(nextProps.currency)
+        value: nextProps.wallet.tokens().get(name || nextProps.currency) || nextProps.wallet.tokens().get(nextProps.currency)
       }
     })
   }
@@ -185,7 +188,6 @@ export class SendTokens extends React.Component {
 
   renderHead ({token}) {
     const symbol = token.symbol().toUpperCase()
-    const tokens = this.props.tokens.entrySeq().toArray()
 
     return (
       <div>
@@ -210,7 +212,7 @@ export class SendTokens extends React.Component {
                 value={token.symbol()}
                 onChange={(e, i, value) => this.handleChangeCurrency(value)}
               >
-                {tokens.map(([name]) => (
+                {this.props.wallet.tokens().entrySeq().toArray().map(([name]) => (
                   <MenuItem key={name} value={name} primaryText={name.toUpperCase()} />
                 ))}
               </SelectField>
@@ -218,7 +220,7 @@ export class SendTokens extends React.Component {
           </div>
         </IconSection>
         <div styleName='balance'>
-          <div styleName='label'><Translate value={prefix('balance')}/>:</div>
+          <div styleName='label'><Translate value={prefix('balance')} />:</div>
           <div styleName='value'>
             <TokenValue
               isInvert
@@ -235,12 +237,13 @@ export class SendTokens extends React.Component {
     const dao = this.state.token.value.dao()
     return (
       <div styleName='form'>
+        <div>from: {this.props.wallet.address()}</div>
         <div>
           <TextField
             fullWidth
             onChange={(event, value) => this.handleRecipientChanged(value)}
             value={this.state.recipient.value}
-            floatingLabelText={<Translate value={prefix('recipientAddress')}/>}
+            floatingLabelText={<Translate value={prefix('recipientAddress')} />}
             errorText={this.state.recipient.dirty && this.state.recipient.errors}
           />
         </div>
@@ -250,7 +253,7 @@ export class SendTokens extends React.Component {
               fullWidth
               onChange={(event, value) => this.handleAmountChanged(value)}
               value={this.state.amount.value}
-              floatingLabelText={<Translate value={prefix('amount')}/>}
+              floatingLabelText={<Translate value={prefix('amount')} />}
               errorText={this.state.amount.dirty && this.state.amount.errors}
             />
           </div>
@@ -258,7 +261,7 @@ export class SendTokens extends React.Component {
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton
-              label={<Translate value={prefix('send')}/>}
+              label={<Translate value={prefix('send')} />}
               primary
               style={{float: 'right', marginTop: '20px'}}
               disabled={!this.state.valid}
@@ -266,7 +269,7 @@ export class SendTokens extends React.Component {
             />
             {dao.isApproveRequired() && (
               <RaisedButton
-                label={<Translate value={prefix('approve')}/>}
+                label={<Translate value={prefix('approve')} />}
                 primary
                 style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
                 disabled={!this.state.valid || !this.state.isApprove}
@@ -366,7 +369,7 @@ export class SendTokens extends React.Component {
 
   handleChangeCurrency (currency) {
 
-    const token = this.props.tokens.get(currency)
+    const token = this.props.wallet.tokens().get(currency)
     this.setState({
       token: {
         value: token
@@ -486,21 +489,9 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  let session = state.get('session')
-  let wallet = state.get('wallet')
-
-  if (wallet.isMultisig) {
-    const {selected, wallets} = state.get('multisigWallet')
-    const wallet = wallets.get(selected)
-    return {
-      account: wallet.address(),
-      tokens: wallet.tokens()
-    }
-  }
-
   return {
-    account: session.account,
-    tokens: wallet.tokens
+    account: state.get('session').account,
+    wallet: getCurrentWallet(state)
   }
 }
 

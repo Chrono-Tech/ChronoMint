@@ -58,7 +58,7 @@ describe('operations actions', () => {
   it('should revoke operation', async () => {
     await store.dispatch(a.revokeOperation(operation))
     expect(store.getActions()).toEqual([
-      {type: a.OPERATIONS_SET, operation: operation.fetching()}
+      {type: a.OPERATIONS_SET, operation: operation.isFetching(true)}
     ])
   })
 

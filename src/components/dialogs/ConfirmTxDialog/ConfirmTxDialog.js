@@ -6,13 +6,13 @@ import { Translate } from 'react-redux-i18n'
 import ModalDialog from '../ModalDialog'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { modalsClose } from 'redux/modals/actions'
-import { ETH } from 'redux/wallet/actions'
+import { ETH } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Moment, { FULL_DATE } from 'components/common/Moment/index'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
-  balance: state.get('wallet').tokens.get(ETH).balance(),
+  balance: state.get('mainWallet').tokens().get(ETH).balance(),
   tx: state.get('watcher').confirmTx
 })
 

@@ -9,6 +9,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import './InfoPartial.scss'
 import classnames from 'classnames'
+import { getCurrentWallet } from 'redux/wallet/actions'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -35,13 +36,15 @@ export class InfoPartial extends React.Component {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
-    tokens: PropTypes.object,
-    isTokensLoaded: PropTypes.bool,
+    // tokens: PropTypes.object,
+    // isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
-    isMultisig: PropTypes.bool
+    // isMultisig: PropTypes.bool,
+    isInited: PropTypes.bool,
+    wallet: PropTypes.object
   }
 
   constructor (props) {
@@ -70,10 +73,10 @@ export class InfoPartial extends React.Component {
   }
 
   render () {
-    if (!this.props.isTokensLoaded) {
+    if (!this.props.isInited) {
       return null
     }
-    const tokens = this.props.tokens.entrySeq().toArray()
+    const tokens = this.props.wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({
       token,
       name
@@ -90,7 +93,7 @@ export class InfoPartial extends React.Component {
         <div styleName='wrapper'>
           <div styleName='gallery' style={{transform: `translateX(${-280 * this.state.slideIndex}px)`}}>
             {items.map((item) => this.renderItem(item))}
-            {!this.props.isMultisig && withBigButton && this.renderAction()}
+            {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
           </div>
         </div>
         {!withBigButton && (
@@ -178,7 +181,7 @@ export class InfoPartial extends React.Component {
   }
 
   handleSlide (diff) {
-    const count = this.props.tokens.count()
+    const count = this.props.wallet.tokens().count()
     const total = count + 1 <= this.state.visibleCount ? count + 1 : count
     const cells = (total % this.state.visibleCount === 0)
       ? total
@@ -205,30 +208,14 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   const session = state.get('session')
-  const wallet = state.get('wallet')
   const market = state.get('market')
   const ui = state.get('ui')
-
-  if (wallet.isMultisig) {
-    const {selected, wallets} = state.get('multisigWallet')
-    const wallet = wallets.get(selected)
-    return {
-      account: wallet.address(),
-      profile: session.profile,
-      // TODO @dkchv: !!!
-      isTokensLoaded: true,
-      tokens: wallet.tokens(),
-      isMultisig: true,
-      selectedCoin: market.selectedCoin,
-      open: ui.open
-    }
-  }
 
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: wallet.tokensFetched,
-    tokens: wallet.tokens,
+    isInited: state.get('wallet').isInited,
+    wallet: getCurrentWallet(state),
     selectedCoin: market.selectedCoin,
     open: ui.open
   }

@@ -17,7 +17,7 @@ import AddTokenDialog from './AddTokenDialog'
 import Points from 'components/common/Points/Points'
 import IPFSImage from  'components/common/IPFSImage/IPFSImage'
 
-import { watchInitWallet } from 'redux/wallet/actions'
+import { watchInitWallet } from 'redux/mainWallet/actions'
 import { updateUserProfile } from 'redux/session/actions'
 import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
@@ -206,7 +206,7 @@ export class AddCurrencyDialog extends React.Component {
 
 function mapStateToProps (state) {
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   const settings = state.get('settingsERC20Tokens')
 
   // Have no balances
@@ -216,7 +216,7 @@ function mapStateToProps (state) {
   }))
 
   // Have balances
-  const walletTokens = wallet.tokens.map(token => ({
+  const walletTokens = wallet.tokens().map(token => ({
     selected: true,
     disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
     token
@@ -226,8 +226,8 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
-    walletTokens: wallet.tokens,
-    isTokensLoaded: settings.isFetched && !wallet.tokensFetching
+    walletTokens: wallet.tokens(),
+    isTokensLoaded: settings.isFetched && !wallet.isFetched()
   }
 }
 

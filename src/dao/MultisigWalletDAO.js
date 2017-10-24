@@ -1,9 +1,9 @@
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
 import BigNumber from 'bignumber.js'
-import WalletPendingTxModel from 'models/WalletPendingTxModel'
+import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
-import WalletModel from 'models/WalletModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 
 const CODE_CONFIRMATION_NEEDED = 4
 
@@ -20,44 +20,30 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     ]
   }
 
-  watchOwnerRemoved () {
-    return this._watch('OwnerRemoved', (result) => {
-      // eslint-disable-next-line
-      console.log('--MultisigWalletDAO#', result)
-    })
+  watchOwnerRemoved (callback) {
+    return this._watch('OwnerRemoved', callback)
   }
 
-  watchConfirmationNeeded (walletId: string, callback) {
+  watchConfirmationNeeded (callback) {
     return this._watch('ConfirmationNeeded', (result) => {
-      const pendingTx = new WalletPendingTxModel({
+      const pendingTx = new MultisigWalletPendingTxModel({
         ...result.args,
         symbol: this._c.bytesToString(result.args.symbol),
       })
-      // eslint-disable-next-line
-      console.log('--MultisigWalletDAO#ConfirmationNeeded', result.args, pendingTx.toJS())
-      callback(walletId, pendingTx)
+      callback(pendingTx)
     })
   }
 
-  watchMultiTransact () {
-    return this._watch('MultiTransact', (result) => {
-      // eslint-disable-next-line
-      console.log('--MultisigWalletDAO#MultiTransact', result)
-    })
+  watchMultiTransact (callback) {
+    return this._watch('MultiTransact', callback)
   }
 
-  watchSingleTransact () {
-    return this._watch('SingleTransact', (result) => {
-      // eslint-disable-next-line
-      console.log('--MultisigWalletDAO#SingleTransact', result)
-    })
+  watchSingleTransact (callback) {
+    return this._watch('SingleTransact', callback)
   }
 
-  watchDeposit () {
-    return this._watch('Deposit', (result) => {
-      // eslint-disable-next-line
-      console.log('--MultisigWalletDAO#Deposit', result)
-    })
+  watchDeposit (callback) {
+    return this._watch('Deposit', callback)
   }
 
   getName () {
@@ -103,7 +89,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: WalletModel, token: TokenModel, amount, to) {
+  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to) {
     const value = token.dao().addDecimals(new BigNumber(amount))
     const result = await this._tx('transfer', [
       to,

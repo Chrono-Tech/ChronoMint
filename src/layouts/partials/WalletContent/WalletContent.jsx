@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
-import * as actions from 'redux/wallet/actions'
+import * as actions from 'redux/mainWallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import styles from 'layouts/partials/styles'
 import { Translate } from 'react-redux-i18n'
@@ -83,7 +83,7 @@ export class WalletContent extends Component {
   }
 
   renderSendTokens () {
-    return !this.props.ready ? null : (
+    return !this.props.isFetched ? null : (
       <Paper style={styles.content.paper.style}>
         <SendTokens title={<Translate value={prefix('sendTokens')} />} />
       </Paper>
@@ -151,8 +151,6 @@ export class WalletContent extends Component {
                 <TransactionsTable
                   tokens={this.props.tokens}
                   transactions={this.props.transactions}
-                  isFetching={this.props.isFetching}
-                  endOfList={this.props.endOfList}
                   selectedNetworkId={this.props.selectedNetworkId}
                   selectedProviderId={this.props.selectedProviderId}
                   onLoadMore={() => this.props.getTransactions(this.props.tokens)}
@@ -167,18 +165,16 @@ export class WalletContent extends Component {
 }
 
 function mapStateToProps (state) {
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   const network = state.get('network')
   return {
-    ready: wallet.tokensFetched,
-    tokens: wallet.tokens,
-    transactions: wallet.transactions.list,
-    isFetching: wallet.transactions.isFetching,
-    endOfList: wallet.transactions.endOfList,
+    isFetched: wallet.isFetched(),
+    tokens: wallet.tokens(),
+    isMultisig: wallet.isMultisig(),
+    transactions: wallet.transactions(),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
-    isMultisig: wallet.isMultisig
   }
 }
 

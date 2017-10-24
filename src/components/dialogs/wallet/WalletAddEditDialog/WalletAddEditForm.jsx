@@ -5,7 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import { RaisedButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, FieldArray } from 'redux-form/immutable'
-import WalletModel from '../../../../models/WalletModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import { modalsClose } from 'redux/modals/actions'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import validate from './validate'
@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 const onSubmit = (values, dispatch, props) => {
-  return new WalletModel({
+  return new MultisigWalletModel({
     ...props.initialValues.toJS(),
     ...values.toJS(),
     owners: values.get('owners').toArray().map(item => item.get('address'))

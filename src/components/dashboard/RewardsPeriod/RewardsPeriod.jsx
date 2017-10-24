@@ -7,7 +7,7 @@ import moment from 'moment'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import { TIME } from 'redux/wallet/actions'
+import { TIME } from 'redux/mainWallet/actions'
 
 import './RewardsPeriod.scss'
 import Moment, { SHORT_DATE } from 'components/common/Moment'

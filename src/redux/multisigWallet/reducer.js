@@ -1,42 +1,23 @@
-import Immutable from 'immutable'
 import * as a from './actions'
+import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
 
-const initialState = {
-  wallets: new Immutable.Map(),
-  isFetching: false,
-  isFetched: false,
-  selected: null //address
-}
+const initialState = new MultisigWalletCollection()
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case a.MULTISIG_FETCHING:
-      return {
-        ...state,
-        isFetching: true
-      }
+      return state.isFetching(true)
     case a.MULTISIG_FETCHED:
-      return {
-        ...state,
-        isFetching: false,
-        isFetched: true,
-        wallets: action.wallets
-      }
+      return state
+        .list(action.wallets)
+        .isFetched(true)
+        .isFetching(false)
     case a.MULTISIG_UPDATE:
-      return {
-        ...state,
-        wallets: state.wallets.set(action.wallet.id(), action.wallet)
-      }
+      return state.list(state.list().set(action.wallet.id(), action.wallet))
     case a.MULTISIG_SELECT:
-      return {
-        ...state,
-        selected: action.address
-      }
+      return state.selected(action.address)
     case a.MULTISIG_REMOVE:
-      return {
-        ...state,
-        wallets: state.wallets.remove(action.wallet.id())
-      }
+      return state.list(state.list().remove(action.wallet.id()))
     default:
       return state
   }

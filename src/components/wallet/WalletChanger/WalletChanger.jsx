@@ -8,21 +8,21 @@ import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/W
 import { modalsOpen } from 'redux/modals/actions'
 import * as actions from 'redux/multisigWallet/actions'
 import classNames from 'classnames'
-import walletMain from 'assets/img/icn-wallet-main.svg'
-import walletMainBig from 'assets/img/icn-wallet-main-big.svg'
-import walletMulti from 'assets/img/icn-wallet-multi.svg'
-import walletMultiBig from 'assets/img/icn-wallet-multi-big.svg'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
+import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import globalStyles from 'layouts/partials/styles'
-import WalletModel from 'models/WalletModel'
-import './WalletChanger.scss'
-import { switchWallet } from 'redux/wallet/actions'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
+import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
+import './WalletChanger.scss'
 
 function mapStateToProps (state) {
   return {
-    isMultisig: state.get('wallet').isMultisig,
+    isMultisig: getCurrentWallet(state).isMultisig(),
     account: state.get('session').account,
-    ...state.get('multisigWallet')
+    multisigWallet: state.get('multisigWallet')
   }
 }
 
@@ -33,10 +33,10 @@ function mapDispatchToProps (dispatch) {
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: {wallet: new WalletModel()}
+      props: {wallet: new MultisigWalletModel()}
     })),
     getWallets: () => dispatch(actions.getWallets()),
-    switchWallet: (isMultisig) => dispatch(switchWallet(isMultisig))
+    switchWallet: (wallet) => dispatch(switchWallet(wallet))
   }
 }
 
@@ -44,19 +44,16 @@ function mapDispatchToProps (dispatch) {
 export default class WalletChanger extends React.Component {
   static propTypes = {
     isMultisig: PropTypes.bool,
-    wallets: PropTypes.object,
+    multisigWallet: PropTypes.object,
     walletSelectDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     getWallets: PropTypes.func,
     switchWallet: PropTypes.func,
     account: PropTypes.string,
-    isFetching: PropTypes.bool,
-    isFetched: PropTypes.bool,
-    selected: PropTypes.string
   }
 
   componentWillMount () {
-    if (!this.props.isFetched || !this.props.isFetching) {
+    if (!this.props.multisigWallet.isFetched() || !this.props.multisigWallet.isFetching()) {
       this.props.getWallets()
     }
   }
@@ -66,12 +63,12 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMainWallet () {
-    const {isMultisig, account, wallets, isFetching} = this.props
+    const {isMultisig, account, multisigWallet} = this.props
     return (
       <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
         <Paper style={globalStyles.content.paper.style}>
           <div styleName='header'>
-            <img styleName='headerIcon' src={walletMainBig} />
+            <img styleName='headerIcon' src={WalletMainBigSVG} />
             <div styleName='headerInfo'>
               <div styleName='headerTitle'><Translate value='wallet.mainWallet' /></div>
               <div styleName='headerSubtitle'>{account}</div>
@@ -83,18 +80,18 @@ export default class WalletChanger extends React.Component {
               <div styleName='action' />
               <div styleName='action'>
                 <FlatButton
-                  label={isFetching
+                  label={multisigWallet.isFetching()
                     ? <Preloader />
                     : (
                       <span styleName='buttonLabel'>
-                        <img styleName='buttonIcon' src={walletMulti} />
-                        <Translate value={wallets.size > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
+                        <img styleName='buttonIcon' src={WalletMultiSVG} />
+                        <Translate value={multisigWallet.list().size > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
                       </span>
                     )}
-                  onTouchTap={wallets.size > 0
-                    ? () => this.props.switchWallet(true)
+                  onTouchTap={multisigWallet.list().size > 0
+                    ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.handleCreateWallet()}
-                  disabled={isFetching}
+                  disabled={multisigWallet.isFetching()}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>
@@ -106,16 +103,15 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMultisigWallet () {
-    const {wallets, selected} = this.props
-
-    const selectedWallet = wallets.get(selected)
+    const {multisigWallet} = this.props
+    const selectedWallet: MultisigWalletModel = multisigWallet.selected()
     const owners = selectedWallet.owners()
 
     return (
       <div styleName='walletBox'>
         <Paper style={globalStyles.content.paper.style}>
           <div styleName='header'>
-            <img styleName='headerIcon' src={walletMultiBig} />
+            <img styleName='headerIcon' src={WalletMultiBigSVG} />
             <div styleName='headerInfo'>
               <div styleName='headerTitle'>{selectedWallet.name() || 'No name'}</div>
               <div styleName='headerSubtitle'>Multisignature wallet</div>
@@ -141,7 +137,7 @@ export default class WalletChanger extends React.Component {
           <div styleName='body'>
             <div><Translate value='wallet.youHave' />:</div>
             <div>
-              <span styleName='walletsCount'>{wallets.size}</span>
+              <span styleName='walletsCount'>{multisigWallet.list().size}</span>
               <span styleName='walletsCountType'><Translate value='wallet.multisignatureWallets' /></span>
             </div>
 
@@ -150,7 +146,7 @@ export default class WalletChanger extends React.Component {
                 <FlatButton
                   label={(
                     <span styleName='buttonLabel'>
-                      <img styleName='buttonIcon' src={walletMain} />
+                      <img styleName='buttonIcon' src={WalletMainSVG} />
                       <Translate value='wallet.switchToMainWallet' />
                     </span>
                   )}
@@ -162,7 +158,7 @@ export default class WalletChanger extends React.Component {
                 <FlatButton
                   label={(
                     <span styleName='buttonLabel'>
-                      <img styleName='buttonIcon' src={walletMulti} />
+                      <img styleName='buttonIcon' src={WalletMultiSVG} />
                       <Translate value='wallet.changeMultisignatureWallet' />
                     </span>
                   )}
@@ -181,7 +177,7 @@ export default class WalletChanger extends React.Component {
     return (
       <div styleName={classNames('root', {'isMultisig': this.props.isMultisig})}>
         {this.renderMainWallet()}
-        {this.props.selected && this.renderMultisigWallet()}
+        {this.props.multisigWallet.hasSelected() && this.renderMultisigWallet()}
       </div>
     )
   }

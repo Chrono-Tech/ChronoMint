@@ -13,17 +13,15 @@ import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
 import { addOwner, removeWallet, selectWallet, multisigTransfer } from 'redux/multisigWallet/actions'
-import type WalletModel from 'models/WalletModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import './WalletSelectDialog.scss'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 const TRANSITION_TIMEOUT = 250
 
 function mapStateToProps (state) {
-  const {wallets, selected} = state.get('multisigWallet')
   return {
-    wallets,
-    selected
+    multisigWallet: state.get('multisigWallet')
   }
 }
 
@@ -31,7 +29,7 @@ function mapDispatchToProps (dispatch) {
   return {
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: {wallet: new WalletModel()}
+      props: {wallet: new MultisigWalletModel()}
     })),
     handleClose: () => dispatch(modalsClose()),
     selectWallet: (id) => dispatch(selectWallet(id)),
@@ -44,12 +42,11 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletSelectDialog extends React.Component {
   static propTypes = {
+    multisigWallet: PropTypes.object,
     handleClose: PropTypes.func,
-    wallets: PropTypes.object,
     walletAddEditDialog: PropTypes.func,
     selectWallet: PropTypes.func,
     removeWallet: PropTypes.func,
-    selected: PropTypes.string,
     transfer: PropTypes.func,
     addOwner: PropTypes.func
   }
@@ -60,7 +57,8 @@ export default class WalletSelectDialog extends React.Component {
   }
 
   render () {
-    const {wallets} = this.props
+    const wallets = this.props.multisigWallet.list()
+    const selected = this.props.multisigWallet.selected().address()
 
     return (
       <CSSTransitionGroup
@@ -92,7 +90,7 @@ export default class WalletSelectDialog extends React.Component {
                   value={'wallet.walletSelectDialog.' + (wallets.size ? 'yourWallets' : 'youHaveNoWallets')} />
                 </h5>
                 <div styleName='table'>
-                  {wallets.map(item => this.renderRow(item))}
+                  {wallets.map(item => this.renderRow(item, selected === item.address))}
                 </div>
               </div>
               <div styleName='column'>
@@ -114,11 +112,9 @@ export default class WalletSelectDialog extends React.Component {
     )
   }
 
-  renderRow (wallet: WalletModel) {
-
+  renderRow (wallet: MultisigWalletModel, isSelected: boolean) {
     const time = wallet.tokens().get('TIME')
 
-    const isSelected = this.props.selected === wallet.address()
     return (
       <div key={wallet.id()} styleName={classNames('row', {'rowSelected': isSelected})}>
         <div>
@@ -158,9 +154,12 @@ export default class WalletSelectDialog extends React.Component {
           {wallet.isPending()
             ? <Preloader />
             : <div>
-              <i className='material-icons' styleName='controlItem' onTouchTap={() => {
-                this.props.walletAddEditDialog()
-              }}>edit</i>
+              <i
+                className='material-icons'
+                styleName='controlItem'
+                onTouchTap={() => {this.props.walletAddEditDialog()}}>
+                edit
+              </i>
               <i
                 className='material-icons'
                 styleName='controlItem'

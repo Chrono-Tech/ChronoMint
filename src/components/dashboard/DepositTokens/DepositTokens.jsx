@@ -4,17 +4,18 @@ import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
-import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
+import { depositTIME, withdrawTIME, approve, TIME } from 'redux/mainWallet/actions'
 import IconSection from '../IconSection/IconSection'
 import ColoredSection from '../ColoredSection/ColoredSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
+import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
 import { isTestingNetwork } from 'network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
 import globalStyles from 'layouts/partials/styles'
 import { Translate } from 'react-redux-i18n'
 import './DepositTokens.scss'
+import type MainWallet from 'models/Wallet/MainWalletModel'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const TIME_ICON = require('assets/img/icn-time.svg')
@@ -232,16 +233,16 @@ export class DepositTokens extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const {tokens, timeDeposit, isTIMERequired, timeAddress} = state.get('wallet')
-  const token: TokenModel = tokens.get(TIME)
+  const wallet: MainWallet = state.get('mainWallet')
+  const token: TokenModel = wallet.tokens().get(TIME)
   const {selectedNetworkId, selectedProviderId} = state.get('network')
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
 
   return {
     token,
-    deposit: timeDeposit,
-    isShowTIMERequired: isTesting && !isTIMERequired && token && token.balance().eq(0),
-    timeAddress,
+    deposit: wallet.timeDeposit(),
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired() && token && token.balance().eq(0),
+    timeAddress: wallet.timeAddress(),
     isTesting
   }
 }

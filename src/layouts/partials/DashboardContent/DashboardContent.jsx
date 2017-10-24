@@ -89,15 +89,15 @@ export class DashboardContent extends Component {
 }
 
 function mapStateToProps (state) {
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   const rewards = state.get('rewards')
   const voting = state.get('voting')
 
   return {
-    ready: !wallet.tokensFetching,
+    ready: !wallet.isFetched(),
     rewardsData: rewards.data,
     isRewardsFetched: rewards.isFetched,
-    isVotingFetched: voting.isFetched && wallet.tokensFetched
+    isVotingFetched: voting.isFetched && wallet.isFetched()
   }
 }
 

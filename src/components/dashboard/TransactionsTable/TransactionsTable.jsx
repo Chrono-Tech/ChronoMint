@@ -24,16 +24,18 @@ export default class TransactionsTable extends React.Component {
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
-    isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string
   }
 
   render () {
-    const data = buildTableData(this.props.transactions, this.props.locale)
+    const { transactions, locale} = this.props
+    const size = transactions.list().size
+    const endOfList = transactions.endOfList()
+    const isFetching = transactions.isFetching()
+    const data = buildTableData(transactions.list(), locale)
 
     return (
       <Paper style={globalStyles.content.paper.style}>
@@ -42,7 +44,7 @@ export default class TransactionsTable extends React.Component {
             <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
           </div>
           <div styleName='content'>
-            {this.props.transactions.size ? <div styleName='table'>
+            {size ? <div styleName='table'>
               <div styleName='table-head'>
                 <div styleName='row'>
                   <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
@@ -55,12 +57,12 @@ export default class TransactionsTable extends React.Component {
                 </div>
               </div>
             </div> : ''}
-            {!this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
+            {!size && endOfList ? <div styleName='section'>
               <div styleName='section-header'>
                 <h5 styleName='no-transactions'>No transactions found.</h5>
               </div>
             </div> : ''}
-            {!this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
+            {!size && !endOfList ? <div styleName='section'>
               <div styleName='section-header'>
                 <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
               </div>
@@ -78,14 +80,14 @@ export default class TransactionsTable extends React.Component {
               </div>
             ))}
           </div>
-          {this.props.endOfList || !this.props.transactions.size ? null : (
+          {endOfList || !size ? null : (
             <div styleName='footer'>
               <RaisedButton
-                label={this.props.isFetching ? <CircularProgress
+                label={isFetching ? <CircularProgress
                   style={{verticalAlign: 'middle', marginTop: -2}} size={24}
                   thickness={1.5} /> : 'Load More'}
                 primary
-                disabled={this.props.isFetching}
+                disabled={isFetching}
                 onTouchTap={() => this.props.onLoadMore()} />
             </div>
           )}

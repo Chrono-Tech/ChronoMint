@@ -8,7 +8,7 @@ import PollModel from 'models/PollModel'
 import { modalsOpen } from 'redux/modals/actions'
 import { listPolls } from 'redux/voting/actions'
 import { getStatistics } from 'redux/voting/getters'
-import { initTIMEDeposit } from 'redux/wallet/actions'
+import { initTIMEDeposit } from 'redux/mainWallet/actions'
 
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import { Poll, PollDialog } from 'components'
@@ -183,13 +183,13 @@ export default class VotingContent extends Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   const voting = state.get('voting')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   return {
     list: voting.list,
-    timeDeposit: wallet.timeDeposit,
+    timeDeposit: wallet.timeDeposit(),
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
-    isFetched: voting.isFetched && wallet.tokensFetched,
+    isFetched: voting.isFetched && wallet.isFetched(),
     isFetching: voting.isFetching && !voting.isFetched
   }
 }

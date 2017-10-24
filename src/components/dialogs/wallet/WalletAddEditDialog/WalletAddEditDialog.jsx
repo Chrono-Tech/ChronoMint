@@ -6,7 +6,7 @@ import ModalDialog from '../../ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { createWallet, updateWallet } from 'redux/multisigWallet/actions'
 import WalletAddEditForm from './WalletAddEditForm'
-import WalletModel from 'models/WalletModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 
 const TRANSITION_TIMEOUT = 250
 
@@ -16,8 +16,8 @@ function mapDispatchToProps (dispatch) {
     onSubmit: () => {
       dispatch(modalsClose())
     },
-    createWallet: (wallet: WalletModel) => dispatch(createWallet(wallet)),
-    updateWallet: (wallet: WalletModel) => dispatch(updateWallet(wallet)),
+    createWallet: (wallet: MultisigWalletModel) => dispatch(createWallet(wallet)),
+    updateWallet: (wallet: MultisigWalletModel) => dispatch(updateWallet(wallet)),
     closeModal: () => dispatch(modalsClose())
   }
 }
@@ -33,7 +33,7 @@ export default class WalletAddEditDialog extends React.Component {
     wallet: PropTypes.object
   }
 
-  handleSubmitSuccess = (wallet: WalletModel) => {
+  handleSubmitSuccess = (wallet: MultisigWalletModel) => {
     this.props.closeModal()
     wallet.isNew()
       ? this.props.createWallet(wallet)

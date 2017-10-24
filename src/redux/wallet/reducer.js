@@ -1,111 +1,18 @@
-import BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
-import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 import * as a from './actions'
 
 const initialState = {
-  tokensFetching: true,
-  tokensFetched: false,
-  tokens: new Immutable.Map(), /** @see TokenModel */
-  transactions: {
-    list: new Immutable.Map(),
-    isFetching: false,
-    endOfList: false
-  },
-  btcAddress: null,
-  bccAddress: null,
-  timeDeposit: new BigNumber(0),
-  timeAddress: '',
-  isTIMERequired: true,
-  isMultisig: false
+  current: null, // address
+  isMultisig: false,
+  isInited: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.WALLET_TOKENS_FETCH:
+    case a.WALLET_SWITCH_WALLET:
       return {
         ...state,
-        tokensFetching: true
-      }
-    case a.WALLET_TOKENS:
-      return {
-        ...state,
-        tokens: action.tokens,
-        tokensFetching: false,
-        tokensFetched: true,
-      }
-    case a.WALLET_BALANCE:
-      return {
-        ...state,
-        tokens: state.tokens.set(
-          action.token.id(),
-          state.tokens.get(action.token.id()).updateBalance(action.isCredited, action.amount)
-        )
-      }
-    case a.WALLET_ALLOWANCE:
-      return {
-        ...state,
-        tokens: state.tokens.set(
-          action.token.id(),
-          state.tokens.get(action.token.id()).setAllowance(action.spender, action.value)
-        )
-      }
-    case a.WALLET_TIME_DEPOSIT:
-      return {
-        ...state,
-        timeDeposit: state.timeDeposit !== null && action.isCredited !== null ?
-          state.timeDeposit[action.isCredited ? 'plus' : 'minus'](action.amount) :
-          action.amount
-      }
-    case a.WALLET_TIME_ADDRESS:
-      return {
-        ...state,
-        timeAddress: action.address
-      }
-    case a.WALLET_BTC_ADDRESS:
-      return {
-        ...state,
-        btcAddress: action.address
-      }
-    case a.WALLET_BCC_ADDRESS:
-      return {
-        ...state,
-        bccAddress: action.address
-      }
-    case a.WALLET_TRANSACTIONS_FETCH:
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          isFetching: true
-        }
-      }
-    case a.WALLET_TRANSACTION:
-      return {
-        ...state,
-        transactions: {
-          ...state.transactions,
-          list: state.transactions.list.set(action.tx.id(), action.tx)
-        }
-      }
-    case a.WALLET_TRANSACTIONS:
-      return {
-        ...state,
-        transactions: {
-          isFetching: false,
-          list: state.transactions.list.merge(action.map),
-          endOfList: action.map.size < TXS_PER_PAGE
-        }
-      }
-    case a.WALLET_IS_TIME_REQUIRED:
-      return {
-        ...state,
-        isTIMERequired: action.value
-      }
-    case a.WALLET_SWITCH_MULTISIG_WALLET:
-      return {
-        ...state,
-        isMultisig: action.isMultisig
+        current: action.wallet.address(),
+        isMultisig: action.wallet.isMultisig()
       }
     default:
       return state

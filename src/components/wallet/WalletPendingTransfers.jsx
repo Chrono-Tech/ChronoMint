@@ -4,15 +4,15 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
 import globalStyles from 'layouts/partials/styles'
-import type WalletModel from 'models/WalletModel'
-import type WalletPendingTxModel from 'models/WalletPendingTxModel'
+import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
   let pendingTxList
-  const {selected, wallets} = state.get('multisigWallet')
-  const wallet: WalletModel = wallets.get(selected)
+  const wallet: MultisigWalletModel = state.get('multisigWallet').selected()
+
   if (wallet) {
     pendingTxList = wallet.pendingTxList()
   }
@@ -27,7 +27,7 @@ export default class WalletPendingTransfers extends React.Component {
     pendingTxList: PropTypes.object
   }
 
-  renderRow (item: WalletPendingTxModel) {
+  renderRow (item: MultisigWalletPendingTxModel) {
     return (
       <div styleName='transfer' key={item.id()}>
         <div styleName='left'>

@@ -117,7 +117,7 @@ function mapStateToProps (state) {
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     address: selector(state, 'address'),
@@ -126,8 +126,8 @@ function mapStateToProps (state) {
 
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens
+    isTokensLoaded: !wallet.isFetching(),
+    tokens: wallet.tokens()
   }
 }
 

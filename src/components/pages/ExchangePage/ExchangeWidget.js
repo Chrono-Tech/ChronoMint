@@ -13,9 +13,9 @@ import { exchangeCurrency } from '../../../redux/exchange/actions'
 
 const mapStateToProps = (state) => {
   const exchange = state.get('exchange')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   return {
-    isFetched: exchange.rates.isFetched && exchange.eth.isFetched && exchange.lht.isFetched && wallet.eth.isFetched && wallet.lht.isFetched,
+    isFetched: exchange.rates.isFetched && exchange.eth.isFetched && exchange.lht.isFetched && wallet.tokens().get('ETH').isFetched() && wallet.tokens().get('LHT').isFetched(),
     rates: exchange.rates.rates
   }
 }

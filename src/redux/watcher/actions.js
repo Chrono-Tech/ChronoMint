@@ -10,7 +10,7 @@ import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitOperations } from 'redux/operations/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/wallet/actions'
+import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/mainWallet/actions'
 
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
@@ -49,14 +49,14 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    const token = getState().get('wallet').tokens.get(ETH)
+    const token = getState().get('mainWallet').tokens().get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
     dispatch({type: WATCHER_TX_SET, tx})
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-    const token = getState().get('wallet').tokens.get(ETH)
+    const token = getState().get('mainWallet').tokens().get(ETH)
 
     if (!tx.isGasUsed()) {
       dispatch(balancePlus(tx.gas(), token))

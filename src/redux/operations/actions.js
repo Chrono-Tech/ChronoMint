@@ -54,7 +54,7 @@ export const loadMoreCompletedOperations = () => async (dispatch) => {
 }
 
 export const confirmOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setOperation(operation.fetching()))
+  dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
     await dao.confirm(operation)
@@ -64,7 +64,7 @@ export const confirmOperation = (operation: OperationModel | AbstractFetchingMod
 }
 
 export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setOperation(operation.fetching()))
+  dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
     await dao.revoke(operation)

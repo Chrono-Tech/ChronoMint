@@ -5,6 +5,7 @@ import { accounts } from 'specsInit'
 import reducer from './reducer'
 import TokenModel from 'models/TokenModel'
 import TxModel from 'models/TxModel'
+import MainWallet from 'models/Wallet/MainWalletModel'
 
 const token1 = new TokenModel({symbol: 'TK1'})
 const token2 = new TokenModel({symbol: 'TK2'})
@@ -19,6 +20,7 @@ describe('settings wallet reducer', () => {
     expect(
       reducer(undefined, {})
     ).toEqual({
+      mainWallet: new MainWallet(),
       tokensFetching: true,
       tokensFetched: false,
       tokens: new Immutable.Map(),

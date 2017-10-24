@@ -1,8 +1,9 @@
 import Immutable from 'immutable'
-import WalletModel from 'models/WalletModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import MultisigWalletDAO from './MultisigWalletDAO'
+import multisigWalletService from 'services/MultisigWalletService'
 
 const functions = {
   GET_WALLETS: 'getWallets',
@@ -68,8 +69,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async _createWalletModel (address, transactionHash) {
-
-    const walletDAO = new MultisigWalletDAO(address)
+    const walletDAO = multisigWalletService.getWalletDAO(address)
     const [name, owners, requiredSignatures, tokens] = await Promise.all([
       await walletDAO.getName(),
       await walletDAO.getOwners(),
@@ -77,7 +77,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       await walletDAO.getTokens()
     ])
 
-    return new WalletModel({
+    return new MultisigWalletModel({
       name: this._c.bytesToString(name),
       owners: new Immutable.List(owners),
       address,
@@ -88,7 +88,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     })
   }
 
-  async createWallet (wallet: WalletModel) {
+  async createWallet (wallet: MultisigWalletModel) {
     const result = await this._tx(functions.CREATE_WALLET, [
       wallet.owners(),
       wallet.requiredSignatures(),

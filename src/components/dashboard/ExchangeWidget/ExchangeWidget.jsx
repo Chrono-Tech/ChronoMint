@@ -4,7 +4,7 @@ import { Translate } from 'react-redux-i18n'
 import SwipeableViews from 'react-swipeable-views'
 import PropTypes from 'prop-types'
 
-import { ETH, LHT } from 'redux/wallet/actions'
+import { ETH, LHT } from 'redux/mainWallet/actions'
 import { search } from 'redux/exchange/actions'
 
 import { SelectField, MenuItem, RaisedButton } from 'material-ui'

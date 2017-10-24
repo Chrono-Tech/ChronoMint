@@ -59,7 +59,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
     timeDAO
   })
   try {
-    dispatch(handlePollCreated(stub.fetching()))
+    dispatch(handlePollCreated(stub.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingDAO()
     const transactionHash = await dao.createPoll(poll)
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
@@ -90,7 +90,7 @@ export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
 
 export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
   try {
-    dispatch(handlePollUpdated(poll.fetching()))
+    dispatch(handlePollUpdated(poll.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingActorDAO()
     await dao.vote(poll.poll().id(), choice)
   } catch (e) {
@@ -104,7 +104,7 @@ export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
     dispatch(handlePollUpdated(
       poll
         .set('poll', poll.poll().set('active', true))
-        .fetching()
+        .isFetching(true)
     ))
     const dao = await contractsManagerDAO.getVotingDAO()
     await dao.activatePoll(poll.poll().id())
@@ -121,7 +121,7 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
           .set('active', false)
           .set('status', false)
         )
-        .fetching()
+        .isFetching(true)
     ))
     const dao = await contractsManagerDAO.getVotingDAO()
     await dao.endPoll(poll.poll().id())

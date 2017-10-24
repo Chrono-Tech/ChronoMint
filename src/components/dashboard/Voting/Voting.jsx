@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { initTIMEDeposit } from 'redux/wallet/actions'
+import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -141,12 +141,12 @@ class Voting extends React.Component {
 
 function mapStateToProps (state) {
   const voting = state.get('voting')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     list: voting.list,
-    timeDeposit: wallet.timeDeposit,
-    isFetched: voting.isFetched && wallet.tokensFetched,
+    timeDeposit: wallet.timeDeposit(),
+    isFetched: voting.isFetched && wallet.isFetched(),
     isFetching: voting.isFetching && !voting.isFetched
   }
 }
