@@ -4,7 +4,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
   constructor (at = null) {
     super(
-      require('chronobank-smart-contracts/build/contracts/TokenManagementExtension.json'),
+      require('chronobank-smart-contracts/build/contracts/TokenManagementInterface.json'),
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )

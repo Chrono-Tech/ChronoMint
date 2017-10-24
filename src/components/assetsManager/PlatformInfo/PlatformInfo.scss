@@ -159,8 +159,8 @@
 }
 
 .managersRow {
+  height: 150px;
   padding: 16px;
-  margin-top: 50px;
   @include xs-only {
     margin-top: 10px;
   }

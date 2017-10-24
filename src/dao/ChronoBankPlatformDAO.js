@@ -1,6 +1,8 @@
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
+export const TX_REVOKE_ASSET = 'revokeAsset'
+export const TX_IS_REISSUABLE = 'isReissuable'
 
 export default class ChronoBankPlatform extends AbstractContractDAO {
 
@@ -17,7 +19,20 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
     return tx.tx
   }
 
-  watchAssets (callback) {
+  async revokeAsset (symbol, amount) {
+    const tx = await this._tx(TX_REVOKE_ASSET, [symbol, amount])
+    return tx.tx
+  }
+
+  async isReissuable (symbol) {
+    return await this._call(TX_IS_REISSUABLE, [symbol])
+  }
+
+  watchIssue (callback) {
     return this._watch('Issue', callback)
+  }
+
+  watchRevoke (callback) {
+    return this._watch('Revoke', callback)
   }
 }

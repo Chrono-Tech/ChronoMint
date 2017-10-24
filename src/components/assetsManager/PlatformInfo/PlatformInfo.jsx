@@ -1,13 +1,14 @@
 import Preloader from 'components/common/Preloader/Preloader'
+import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import BigNumber from 'bignumber.js'
-import {IPFSImage, TokenValue} from 'components'
+import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
-import {RaisedButton, FlatButton} from 'material-ui'
-import React, {Component} from 'react'
-import {Translate} from 'react-redux-i18n'
-import {connect} from 'react-redux'
-import {getManagersForAssetSymbol} from 'redux/assetsManager/actions'
-import {modalsOpen} from 'redux/modals/actions'
+import { RaisedButton, FlatButton } from 'material-ui'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
+import { modalsOpen } from 'redux/modals/actions'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import './PlatformInfo.scss'
@@ -27,12 +28,20 @@ export class PlatformInfo extends Component {
     getManagersForAssetSymbol: PropTypes.func,
     managersForTokenLoading: PropTypes.bool,
     reissueAsset: PropTypes.func,
+    handleRevokeDialog: PropTypes.func,
+    isReissuable: PropTypes.func,
   }
 
   componentWillReceiveProps (newProps) {
     if ((newProps.selectedToken && !this.props.selectedToken) ||
       (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
+
       this.props.getManagersForAssetSymbol(newProps.selectedToken)
+
+      if (newProps.tokensMap.get(newProps.selectedToken).isReissuable() === null) {
+        this.props.isReissuable(newProps.tokensMap.get(newProps.selectedToken))
+      }
+
     }
   }
 
@@ -134,10 +143,8 @@ export class PlatformInfo extends Component {
               }
             </div>
           </div>
-          <ReissueAssetForm />
-          {
-            this.renderManagers(selectedToken.managersList())
-          }
+          {selectedToken.isReissuable() && <ReissueAssetForm />}
+          {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
             {/*<FlatButton
@@ -152,6 +159,7 @@ export class PlatformInfo extends Component {
             />*/}
 
             <RaisedButton
+              onTouchTap={() => this.props.handleRevokeDialog()}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'
             />
@@ -181,6 +189,10 @@ function mapDispatchToProps (dispatch) {
       component: AssetManagerDialog,
     })),
     getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
+    isReissuable: symbol => dispatch(isReissuable(symbol)),
+    handleRevokeDialog: () => dispatch(modalsOpen({
+      component: RevokeDialog,
+    })),
   }
 }
 

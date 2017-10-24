@@ -7,7 +7,11 @@ import {
   SELECT_PLATFORM,
   SELECT_TOKEN,
   GET_MANAGERS_FOR_TOKEN_LOADING, SET_WATCHERS,
-  SET_TOTAL_SUPPLY, GET_TRANSACTIONS, GET_TRANSACTIONS_START, GET_TRANSACTIONS_DONE, SET_TOKEN
+  SET_TOTAL_SUPPLY,
+  GET_TRANSACTIONS_START,
+  GET_TRANSACTIONS_DONE,
+  SET_TOKEN,
+  SET_IS_REISSUABLE,
 } from './actions'
 
 const initialState = {
@@ -116,6 +120,12 @@ export default (state = initialState, action) => {
             totalSupply: action.payload.totalSupply,
           },
         },
+      }
+    case SET_IS_REISSUABLE:
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: state.tokensMap.setIn([action.payload.symbol, 'isReissuable'], action.payload.isReissuable),
       }
     case GET_TRANSACTIONS_START:
       return {

@@ -1,11 +1,11 @@
-import {Field, reduxForm} from 'redux-form/immutable'
+import { Field, reduxForm, reset } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import {RaisedButton} from 'material-ui'
-import React, {Component} from 'react'
-import {TextField} from 'redux-form-material-ui'
-import {Translate} from 'react-redux-i18n'
-import {connect} from 'react-redux'
-import {reissueAsset} from 'redux/assetsManager/actions'
+import { RaisedButton } from 'material-ui'
+import React, { Component } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { reissueAsset } from 'redux/assetsManager/actions'
 
 import './ReissueAssetForm.scss'
 import validate from './validate'
@@ -26,6 +26,7 @@ function mapStateToProps (state) {
 
 const onSubmit = (values, dispatch, props) => {
   dispatch(reissueAsset(props.tokensMap.get(props.selectedToken), values.get('amount')))
+  dispatch(reset(FORM_REISSUE_FORM))
 }
 
 @connect(mapStateToProps)

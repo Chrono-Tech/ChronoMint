@@ -15,6 +15,7 @@ export const SET_WATCHERS = 'AssetsManager/SET_WATCHERS'
 export const SET_TOTAL_SUPPLY = 'AssetsManager/SET_TOTAL_SUPPLY'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
+export const SET_IS_REISSUABLE = 'AssetsManager/SET_IS_REISSUABLE'
 
 export const getPlatformsCount = () => async (dispatch, getState) => {
   const dao = await contractManager.getPlatformManagerDAO()
@@ -155,10 +156,39 @@ export const reissueAsset = (token: TokenModel, amount: number) => async dispatc
   }
 }
 
-export const setTotalSupply = (symbol, value) => (dispatch, getState) => {
+export const revokeAsset = (token: TokenModel, amount: number) => async dispatch => {
+  try {
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
+    await chronoBankPlatformDAO.revokeAsset(token.symbol(), amount)
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+}
+
+
+export const isReissuable = (token: TokenModel) => async dispatch => {
+  try {
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
+    const res = await chronoBankPlatformDAO.isReissuable(token.symbol())
+    dispatch({type: SET_IS_REISSUABLE, payload: {symbol: token.symbol(), isReissuable: res}})
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+}
+
+export const setTotalSupply = tx => (dispatch, getState) => {
+  const symbol = Web3Converter.bytesToString(tx.args.symbol)
+  const value = tx.args.value
+  const event = tx.event
   const totalSupply = getState().get('assetsManager').tokensMap.getIn([symbol, 'totalSupply'])
-  if (totalSupply) {
+  if (totalSupply && event === 'Issue') {
     dispatch({type: SET_TOTAL_SUPPLY, payload: {symbol, totalSupply: totalSupply.plus(value)}})
+  } else if (totalSupply && event === 'Revoke') {
+    dispatch({type: SET_TOTAL_SUPPLY, payload: {symbol, totalSupply: totalSupply.minus(value)}})
   }
 }
 
@@ -196,13 +226,14 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
   const issueCallback = tx => {
-    dispatch(setTotalSupply(Web3Converter.bytesToString(tx.args.symbol), tx.args.value))
+    dispatch(setTotalSupply(tx))
     dispatch(setTx(tx))
   }
 
 
   return Promise.all([
     ERC20ManagerDAO.watchAddToken(callback),
-    chronoBankPlatformDAO.watchAssets(issueCallback),
+    chronoBankPlatformDAO.watchIssue(issueCallback),
+    chronoBankPlatformDAO.watchRevoke(issueCallback),
   ])
 }

@@ -6,6 +6,7 @@ import * as CrowdsaleForm from './CrowdsaleDialog/lang'
 import * as HistoryTable from './HistoryTable/lang'
 import * as PlatformInfo from './PlatformInfo/lang'
 import * as PlatformsList from './PlatformsList/lang'
+import * as RevokeForm from './RevokeDialog/lang'
 
 export default {
   en: {
@@ -17,6 +18,7 @@ export default {
     HistoryTable: HistoryTable.en,
     CrowdsaleForm: CrowdsaleForm.en,
     AssetManagerForm: AssetManagerForm.en,
+    RevokeForm: RevokeForm.en,
   },
   ru: {
     AssetManager: AssetManager.ru,
@@ -27,5 +29,6 @@ export default {
     HistoryTable: HistoryTable.ru,
     CrowdsaleForm: CrowdsaleForm.ru,
     AssetManagerForm: AssetManagerForm.ru,
+    RevokeForm: RevokeForm.ru,
   },
 }

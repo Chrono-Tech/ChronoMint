@@ -8,6 +8,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 const TX_PLATFORM_REQUESTED = 'PlatformRequested'
 const TX_PLATFORM_ATTACHED = 'PlatformAttached'
 const TX_ISSUE = 'Issue'
+const TX_REVOKE = 'Revoke'
 const TX_LOG_ADD_TOKEN = 'LogAddToken'
 const TXS_PER_PAGE = 10
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -103,6 +104,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {from: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {from: account}, TXS_PER_PAGE))
     /*for (let platform of  platforms) {
       const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO(platform.address)
       transactionsPromises.push(tokenManagementExtensionDAO._get('AssetCreated', 0, 'latest', {}, TXS_PER_PAGE))
