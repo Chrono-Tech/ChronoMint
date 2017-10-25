@@ -69,7 +69,7 @@ class ConfirmTxDialog extends Component {
       const arg = args[key]
       let value
 
-      if (arg === null) {
+      if (arg === null || arg === undefined) {
         return
       }
       // parse value
@@ -90,6 +90,9 @@ class ConfirmTxDialog extends Component {
           } else {
             return this.getKeyValueRows(arg, tokenBase)
           }
+          break
+        case 'Boolean':
+          value = <Translate value={arg.toString()} />
           break
         default:
           value = arg

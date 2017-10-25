@@ -15,6 +15,7 @@ import * as ui from './ui/'
 import * as voting from './voting/'
 import * as wallet from './wallet/'
 import * as watcher from './watcher/'
+import * as assetsManager from './assetsManager/'
 
 export {
   ui,
@@ -34,4 +35,5 @@ export {
   market,
   monitor,
   ledger,
+  assetsManager,
 }
