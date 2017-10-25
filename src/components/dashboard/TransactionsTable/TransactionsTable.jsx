@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types'
-import { RaisedButton, CircularProgress } from 'material-ui'
+import {RaisedButton, CircularProgress} from 'material-ui'
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
+import {Translate} from 'react-redux-i18n'
+import {connect} from 'react-redux'
 import moment from 'moment'
 
-import { getEtherscanUrl } from 'network/settings'
+import {getEtherscanUrl} from 'network/settings'
 
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import Moment, {SHORT_DATE} from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import { integerWithDelimiter } from 'utils/formatter'
+import {integerWithDelimiter} from 'utils/formatter'
 
 import './TransactionsTable.scss'
 
@@ -82,7 +82,7 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
+                style={{verticalAlign: 'middle', marginTop: -2}}
                 size={24}
                 thickness={1.5}
               /> : 'Load More'}
@@ -96,7 +96,7 @@ export default class TransactionsTable extends React.Component {
     )
   }
 
-  renderRow ({ timeTitle, trx }, index) {
+  renderRow ({timeTitle, trx}, index) {
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
