@@ -1,12 +1,9 @@
+import * as platformsManager from 'dao/PlatformsManagerDAO'
 import { ru as layouts } from 'layouts/lang'
-
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-
 import { ru as LoginPage } from 'pages/LoginPage/lang'
-
 import { ru as components } from 'components/lang'
-
 import * as assetDonator from '../dao/AssetDonatorDAO'
 import * as erc20 from '../dao/ERC20DAO'
 import * as exchange from '../dao/ExchangeDAO'
@@ -19,6 +16,8 @@ import * as voting from '../dao/VotingDAO'
 
 export default {
   title: 'Рус',
+  true: 'да',
+  false: 'нет',
   LoginPage,
   ...components,
   layouts,
@@ -346,6 +345,17 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Требуется TIME',
+      },
+    },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform',
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform',
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform',
       },
     },
     LOCManager: {

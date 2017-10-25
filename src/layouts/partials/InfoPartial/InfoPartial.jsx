@@ -5,7 +5,6 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { SET_SELECTED_COIN } from 'redux/market/action'

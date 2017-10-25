@@ -90,7 +90,7 @@ class FileSelect extends Component {
 
   async uploadCollection (files: FileCollection, config: fileConfig) {
     const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
-    this.setState({ fileCollection })
+    this.setState({fileCollection})
     this.props.input.onChange(fileCollection.hasErrors()
       ? `!${fileCollection.hash()}`
       : fileCollection.hash())
@@ -100,12 +100,12 @@ class FileSelect extends Component {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
-  handleChange = async e => {
+  handleChange = async function (e) {
     if (!e.target.files.length) {
       return
     }
-    const { config } = this.state
-    const { multiple } = this.props
+    const {config} = this.state
+    const {multiple} = this.props
     let fileCollection = multiple
       ? this.state.fileCollection
       : new FileCollection()
@@ -119,7 +119,7 @@ class FileSelect extends Component {
       })
       fileCollection = fileCollection.add(fileModel)
     }
-    this.setState({ fileCollection })
+    this.setState({fileCollection})
     await this.uploadCollection(fileCollection, config)
   }
 
@@ -159,7 +159,7 @@ class FileSelect extends Component {
   }
 
   renderStatus () {
-    const { fileCollection } = this.state
+    const {fileCollection} = this.state
     if (fileCollection.hasErrors()) {
       return <AlertError color={globalStyles.colors.error} />
     }
@@ -173,8 +173,8 @@ class FileSelect extends Component {
   }
 
   renderMultiple () {
-    const { config, fileCollection } = this.state
-    const { meta } = this.props
+    const {config, fileCollection} = this.state
+    const {meta} = this.props
 
     return (
       <div>
@@ -193,7 +193,7 @@ class FileSelect extends Component {
               onTouchTap={this.handleOpenFileDialog}
               label={<Translate value='fileSelect.addAttachments' />}
               secondary
-              style={{ color: globalStyles.colors.blue }}
+              style={{color: globalStyles.colors.blue}}
               icon={<img src={IconAttach} styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
             />
@@ -227,7 +227,7 @@ class FileSelect extends Component {
   }
 
   renderIcon () {
-    const { fileCollection } = this.state
+    const {fileCollection} = this.state
     return (
       <div styleName='iconWrapper'>
         {fileCollection.uploading()
@@ -250,8 +250,8 @@ class FileSelect extends Component {
   }
 
   render () {
-    const { config } = this.state
-    const { multiple } = this.props
+    const {config} = this.state
+    const {multiple} = this.props
 
     return (
       <div>
@@ -263,7 +263,7 @@ class FileSelect extends Component {
         <input
           ref={input => this.input = input}
           type='file'
-          onChange={this.handleChange}
+          onChange={e => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
           accept={config.accept.join(', ')}
