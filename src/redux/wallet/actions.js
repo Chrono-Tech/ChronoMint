@@ -134,16 +134,22 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 }
 
 export const transfer = (token: TokenModel, amount: string, recipient) => async dispatch => {
-  amount = new BigNumber(amount)
-
-  dispatch(balanceMinus(amount, token))
+  console.log(token, amount, recipient)
+  const a = new BigNumber(amount)
+  console.log('t1')
+  dispatch(balanceMinus(a, token))
   // TODO @bshevchenko: sub balances with values of outcome pending transactions
+  console.log('t2')
   try {
+    console.log('t3')
     const dao = await token.dao()
-    await dao.transfer(recipient, amount)
+    console.log('t4')
+    await dao.transfer(recipient, a)
   } finally {
+    console.log('t5')
     // compensation for update in watchTransfer
-    dispatch(balancePlus(amount, token))
+    dispatch(balancePlus(a, token))
+    console.log('t6')
   }
 }
 

@@ -1,4 +1,4 @@
-import type BigNumber from 'BigNumber.js'
+import type BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import { networks } from 'bitcoinjs-lib'
 

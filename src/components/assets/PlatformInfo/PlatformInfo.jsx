@@ -179,8 +179,8 @@ function mapDispatchToProps (dispatch) {
       component: CrowdsaleDialog,
     })),
     handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog
-    }))
+      component: AssetManagerDialog,
+    })),
   }
 }
 
