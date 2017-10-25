@@ -51,11 +51,14 @@ class LoginPage extends Component {
     selectedAccount: PropTypes.string,
     selectedProviderId: PropTypes.number,
     selectedNetworkId: PropTypes.number,
-    errors: PropTypes.array,
+    errors: PropTypes.arrayOf(PropTypes.string),
   }
 
-  constructor () {
-    super()
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleLogin = this.handleLogin.bind(this)
     this.state = {
       isShowProvider: true,
     }

@@ -45,8 +45,14 @@ class FileSelect extends Component {
     maxFiles: PropTypes.number,
   }
 
-  constructor (props) {
-    super(props)
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFileRemove = this.handleFileRemove.bind(this)
+    this.handleReset = this.handleReset.bind(this)
+
     this.state = {
       files: new Immutable.Map(),
       fileCollection: new FileCollection(),
@@ -100,7 +106,7 @@ class FileSelect extends Component {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
-  handleChange = async function (e) {
+  async handleChange (e) {
     if (!e.target.files.length) {
       return
     }
@@ -127,7 +133,7 @@ class FileSelect extends Component {
     this.input.click()
   }
 
-  handleFileRemove = async id => {
+  async handleFileRemove(id) {
     const fileCollection = this.state.fileCollection.remove(id)
     this.setState({
       files: this.state.files.remove(id),
@@ -136,7 +142,7 @@ class FileSelect extends Component {
     await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  handleReset = async () => {
+  async handleReset () {
     const fileCollection = new FileCollection()
     this.setState({
       fileCollection,
