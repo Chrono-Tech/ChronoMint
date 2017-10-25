@@ -1,21 +1,25 @@
 import {
   GET_ASSETS_MANAGER_COUNTS,
+  GET_ASSETS_MANAGER_COUNTS_START,
   GET_MANAGERS_FOR_TOKEN,
+  GET_MANAGERS_FOR_TOKEN_LOADING,
   GET_PLATFORMS,
   GET_PLATFORMS_COUNT,
   GET_TOKENS,
+  GET_TRANSACTIONS_DONE,
+  GET_TRANSACTIONS_START,
   SELECT_PLATFORM,
   SELECT_TOKEN,
-  GET_MANAGERS_FOR_TOKEN_LOADING, SET_WATCHERS,
-  SET_TOTAL_SUPPLY,
-  GET_TRANSACTIONS_START,
-  GET_TRANSACTIONS_DONE,
-  SET_TOKEN,
+  SET_FEE,
   SET_IS_REISSUABLE,
   SET_NEW_MANAGERS_LIST,
+  SET_TOKEN,
+  SET_TOTAL_SUPPLY,
+  SET_WATCHERS,
 } from './actions'
 
 const initialState = {
+  assetsManagerCountsLoading: false,
   selectedToken: null,
   selectedPlatform: null,
   platformsCount: 0,
@@ -41,10 +45,17 @@ export default (state = initialState, action) => {
         ...state,
         platformsCount: action.payload.platformCount,
       }
+    case GET_ASSETS_MANAGER_COUNTS_START:
+      return {
+        ...initialState,
+        ...state,
+        assetsManagerCountsLoading: true,
+      }
     case GET_ASSETS_MANAGER_COUNTS:
       return {
         ...initialState,
         ...state,
+        assetsManagerCountsLoading: false,
         platformsCount: action.payload.platforms.length,
         tokensCount: Object.keys(action.payload.assets).length,
         managersCount: action.payload.managers.length,
@@ -127,6 +138,14 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'isReissuable'], action.payload.isReissuable),
+      }
+    case SET_FEE:
+      let newTokensMap = state.tokensMap.setIn([action.payload.symbol, 'fee'], action.payload.fee)
+      newTokensMap = newTokensMap.setIn([action.payload.symbol, 'withFee'], action.payload.withFee)
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: newTokensMap,
       }
     case SET_NEW_MANAGERS_LIST:
       return {

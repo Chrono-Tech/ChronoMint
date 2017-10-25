@@ -1,23 +1,22 @@
 import React from 'react'
-import {Translate} from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {CircularProgress, RaisedButton, MenuItem} from 'material-ui'
-import {TextField, Checkbox, SelectField} from 'redux-form-material-ui'
-import {modalsOpen} from 'redux/modals/actions'
+import { connect } from 'react-redux'
+import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
+import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
+import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import {Field, reduxForm, change} from 'redux-form/immutable'
-import {createAsset} from 'redux/assetsManager/actions'
+import { Field, reduxForm, change } from 'redux-form/immutable'
+import { createAsset } from 'redux/assetsManager/actions'
 import './AddTokenForm.scss'
 import validate from './validate'
-import {TokenValue} from 'components'
 import BigNumber from 'bignumber.js'
 import colors from 'styles/themes/variables'
 import classnames from 'classnames'
 import ipfs from 'utils/IPFS'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import FileModel from 'models/FileSelect/FileModel'
-import {ACCEPT_ALL} from 'models/FileSelect/FileExtension'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 
 
 function prefix (token) {
@@ -199,13 +198,49 @@ export default class AddPlatformForm extends React.Component {
     )
   }
 
-  render () {
-    const withFee = this.props.formValues && this.props.formValues.get('withFee')
+  renderTokenInfo () {
     const tokenSymbol = this.props.formValues && this.props.formValues.get('tokenSymbol')
     const smallestUnit = this.props.formValues && this.props.formValues.get('smallestUnit')
+    const amount = this.props.formValues && this.props.formValues.get('amount')
     const description = this.props.formValues && this.props.formValues.get('description')
     const platform = this.props.formValues && this.props.formValues.get('platform')
-    const {formErrors, platformsList} = this.props
+    return (
+      <div styleName='tokenInfoRow'>
+        {this.renderFileInput()}
+        <div styleName='info'>
+          <div styleName='name'>
+            {
+              description ||
+              <Translate value={prefix('description')} />}&nbsp;(
+            {
+              tokenSymbol ||
+              <Translate value={prefix('tokenSymbol')} />
+            })
+          </div>
+          <div>
+            <span styleName='layer'>{new BigNumber(amount || 0).toFixed(smallestUnit || 0)}</span>
+            <span styleName='symbol'>{tokenSymbol || <Translate value={prefix('tokenSymbol')} />}</span>
+          </div>
+          <div styleName='platform'>
+            <div styleName='subTitle'>
+              <Translate value={prefix('platformName')} />
+            </div>
+            <div styleName='number'>
+              {
+                platform
+                  ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
+                  : <Translate value={prefix('PlatformNotSelected')} />
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    const withFee = this.props.formValues && this.props.formValues.get('withFee')
+    const {platformsList} = this.props
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
@@ -218,34 +253,7 @@ export default class AddPlatformForm extends React.Component {
         </div>
         <div styleName='dialogBody'>
 
-          <div styleName='tokenInfoRow'>
-            {this.renderFileInput()}
-            <div styleName='info'>
-              <div styleName='name'>
-                {description || <Translate value={prefix('description')} />}
-              </div>
-              {
-                tokenSymbol && !formErrors.tokenSymbol && smallestUnit && !formErrors.smallestUnit
-                  ? <TokenValue
-                    style={{fontSize: '16px', lineHeight: '30px'}}
-                    value={new BigNumber(smallestUnit)}
-                    symbol={tokenSymbol}
-                  />
-                  : null
-              }
-
-              {
-                platform && <div styleName='platform'>
-                  <div styleName='subTitle'>
-                    <Translate value={prefix('platformName')} />
-                  </div>
-                  <div styleName='number'>
-                    <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
+          {this.renderTokenInfo()}
 
           <Field
             styleName='xs-show'
@@ -261,12 +269,13 @@ export default class AddPlatformForm extends React.Component {
                   return (<MenuItem
                     key={platform.address}
                     value={platform}
-                    primaryText={<span styleName='platformSelectorItem'>
-                      <span>
-                        <img src={require('assets/img/folder-multiple.svg')} alt='' />
-                        {platform.name}&nbsp;(<small>{platform.address}</small>)
+                    primaryText={
+                      <span styleName='platformSelectorItem'>
+                        <span>
+                          <img src={require('assets/img/folder-multiple.svg')} alt='' />
+                          {platform.name}&nbsp;(<small>{platform.address}</small>)
+                        </span>
                       </span>
-                                 </span>
                     }
                   />)
                 })}

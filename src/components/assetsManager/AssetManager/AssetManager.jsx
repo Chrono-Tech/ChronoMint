@@ -1,3 +1,4 @@
+import Preloader from 'components/common/Preloader/Preloader'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
@@ -23,20 +24,19 @@ export class AssetManager extends Component {
     handleAddTokenDialog: PropTypes.func,
     getAssetsManagerData: PropTypes.func,
     platformsCount: PropTypes.number,
-    platformsList: PropTypes.array,
     getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
+    assetsManagerCountsLoading: PropTypes.bool,
   }
 
   componentDidMount () {
-    this.props.getAssetsManagerData()
     this.props.getTokens()
   }
 
   renderHead () {
-    const {platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount} = this.props
+    const {platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading} = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -51,7 +51,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
-                      <span styleName='entry2'>{platformsCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : platformsCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsCompleted'>
@@ -60,7 +62,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
-                      <span styleName='entry2'>{tokensCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -69,7 +73,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
-                      <span styleName='entry2'>{managersCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : managersCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -78,7 +84,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
-                      <span styleName='entry2'>{tokensOnCrowdsaleCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensOnCrowdsaleCount}
+                      </span>
                     </div>
                   </div>
 
@@ -145,11 +153,7 @@ export class AssetManager extends Component {
         <div styleName='content'>
           <Paper style={styles.content.paper.style}>
             {this.renderHead()}
-            {
-              this.props.platformsList.length
-                ? this.renderBody()
-                : null
-            }
+            {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
           <Paper style={styles.content.paper.style}>
@@ -168,8 +172,8 @@ function mapStateToProps (state) {
     tokensCount: assetsManager.tokensCount,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    platformsList: assetsManager.platformsList,
     selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
   }
 }
 

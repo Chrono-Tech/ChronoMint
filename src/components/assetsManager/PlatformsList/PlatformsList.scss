@@ -20,6 +20,19 @@
   }
 }
 
+.preloaderWrap {
+  :global {
+    .Preloader__root {
+      height: 75px;
+      justify-content: center;
+    }
+  }
+  @include xs-only {
+    width: calc(100vw - 40px);
+    overflow: hidden;
+  }
+}
+
 .platformHeader {
   display: flex;
   justify-content: space-between;

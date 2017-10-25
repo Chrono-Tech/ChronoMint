@@ -8,6 +8,7 @@ export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
 export const GET_TOKENS = 'AssetsManager/GET_TOKENS'
 export const SET_TOKEN = 'AssetsManager/SET_TOKEN'
 export const GET_ASSETS_MANAGER_COUNTS = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS'
+export const GET_ASSETS_MANAGER_COUNTS_START = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS_START'
 export const GET_MANAGERS_FOR_TOKEN = 'AssetsManager/GET_MANAGERS_FOR_TOKEN'
 export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
 export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
@@ -18,6 +19,7 @@ export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
 export const SET_IS_REISSUABLE = 'AssetsManager/SET_IS_REISSUABLE'
 export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
+export const SET_FEE = 'AssetsManager/SET_FEE'
 
 export const getPlatformsCount = () => async (dispatch, getState) => {
   const dao = await contractManager.getPlatformManagerDAO()
@@ -26,6 +28,7 @@ export const getPlatformsCount = () => async (dispatch, getState) => {
 }
 
 export const getAssetsManagerData = () => async (dispatch, getState) => {
+  dispatch({type: GET_ASSETS_MANAGER_COUNTS_START})
   const account = getState().get('session').account
   const platformManagerDao = await contractManager.getPlatformManagerDAO()
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
@@ -207,25 +210,34 @@ export const setTx = tx => async (dispatch, getState) => {
 }
 
 export const setManagers = tx => async (dispatch, getState) => {
-  const tokensMap = getState().get('assetsManager').tokensMap
-  const account = getState().get('session').account
-  const symbol = Web3Converter.bytesToString(tx.args.symbol)
-  const from = tx.args.from
-  const to = tx.args.to
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const managers = await assetsManagerDao.getManagers(account)
-  let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
-  if (from === ZERO_ADDRESS) {
-    if (managersList.indexOf(to) < 0) {
-      managersList.push(to)
+  try {
+    const tokensMap = getState().get('assetsManager').tokensMap
+    const symbol = Web3Converter.bytesToString(tx.args.symbol)
+    if (!tokensMap.get(symbol)) {
+      return
     }
-  } else {
-    managersList = managersList.filter(manager => manager !== from)
+    const account = getState().get('session').account
+    const from = tx.args.from
+    const to = tx.args.to
+    const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+    const managers = await assetsManagerDao.getManagers(account)
+    let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
+    if (from === ZERO_ADDRESS) {
+      if (managersList.indexOf(to) < 0) {
+        managersList.push(to)
+      }
+    } else {
+      managersList = managersList.filter(manager => manager !== from)
+    }
+    dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
+  } catch (e) {
+    // eslint-disable-next-line
+    console.log(e)
   }
-  dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
+  dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
@@ -255,10 +267,12 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   ])
 }
 
-export const getLatestVersion = (token: TokenModel) => async (dispatch, getState) => {
-  // const account = getState().get('session').account
-  // const dao = await contractManager.getChronoBankAssetProxyDAO(token.address())
-  // const res = await dao.getLatestVersion()
-  // eslint-disable-next-line
-  // console.log('--actions#: res', res)
+export const getFee = (token: TokenModel) => async dispatch => {
+  try {
+    const feeInterfaceDAO = await contractManager.getFeeInterfaceDAO(token.address())
+    const res = await feeInterfaceDAO.getFeePercent()
+    dispatch({type: SET_FEE, payload: {symbol: token.symbol(), fee: res / 100, withFee: true}})
+  } catch (e) {
+    dispatch({type: SET_FEE, payload: {symbol: token.symbol(), fee: null, withFee: false}})
+  }
 }

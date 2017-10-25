@@ -1,12 +1,13 @@
-import React, {Component} from 'react'
+import Preloader from 'components/common/Preloader/Preloader'
+import React, { Component } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {IPFSImage, TokenValue} from 'components'
+import { connect } from 'react-redux'
+import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
-import {Translate} from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import {SELECT_PLATFORM, SELECT_TOKEN} from 'redux/assetsManager/actions'
+import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
@@ -21,6 +22,7 @@ export class PlatformsList extends Component {
     platformsList: PropTypes.array,
     tokensMap: PropTypes.object,
     assets: PropTypes.object,
+    assetsManagerCountsLoading: PropTypes.bool,
   }
 
   handleSelectPlatform (platformAddress) {
@@ -95,9 +97,11 @@ export class PlatformsList extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-
-          {this.renderPlatformsList()}
-
+          {
+            this.props.assetsManagerCountsLoading
+              ? <div styleName='preloaderWrap'><Preloader /></div>
+              : this.renderPlatformsList()
+          }
         </div>
       </div>
     )
@@ -112,6 +116,7 @@ function mapStateToProps (state) {
     assets: assetsManager.assets,
     selectedToken: assetsManager.selectedToken,
     selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
   }
 }
 
