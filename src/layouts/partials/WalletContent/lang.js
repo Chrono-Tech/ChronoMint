@@ -15,7 +15,7 @@ export default {
     enterTheAddressYouWouldLikeToSendTo: 'Enter the address you would like to send to in the “Recipient address” field.',
     enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
     checkValuesAndPressSend: 'Check values and press SEND.',
-    ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.'
+    ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.',
   },
   ru: {
     youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
@@ -33,7 +33,7 @@ export default {
     enterTheAddressYouWouldLikeToSendTo: 'Введите адрес на который вы хотите осуществить перевод в поле "Адрес получателя".',
     enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
     checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
-    ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.'
+    ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.',
   },
 }
 

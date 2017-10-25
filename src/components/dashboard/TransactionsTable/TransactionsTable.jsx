@@ -1,25 +1,27 @@
-import React from 'react'
 import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress } from 'material-ui'
-import { integerWithDelimiter } from 'utils/formatter'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { getEtherscanUrl } from 'network/settings'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
-import './TransactionsTable.scss'
+import { getEtherscanUrl } from 'network/settings'
+
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import { integerWithDelimiter } from 'utils/formatter'
+
+import './TransactionsTable.scss'
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
 @connect(mapStateToProps)
 export default class TransactionsTable extends React.Component {
-
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
@@ -28,7 +30,7 @@ export default class TransactionsTable extends React.Component {
     endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   render () {
@@ -80,19 +82,22 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Load More'}
+                style={{ verticalAlign: 'middle', marginTop: -2 }}
+                size={24}
+                thickness={1.5}
+              /> : 'Load More'}
               primary
               disabled={this.props.isFetching}
-              onTouchTap={() => this.props.onLoadMore()} />
+              onTouchTap={() => this.props.onLoadMore()}
+            />
           </div>
         )}
       </div>
     )
   }
 
-  renderRow ({timeTitle, trx}, index) {
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+  renderRow ({ timeTitle, trx }, index) {
+    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -163,20 +168,20 @@ function buildTableData (transactions, locale) {
       data[groupBy] = data[groupBy] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
-        transactions: []
+        transactions: [],
       }
       data[groupBy].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
-        timeTitle: trx.date('HH:mm')
+        timeTitle: trx.date('HH:mm'),
       })
       return data
     }, {})
 
   return Object.values(groups)
     .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-    .map((group) => ({
+    .map(group => ({
       ...group,
-      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy)
+      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
     }))
 }

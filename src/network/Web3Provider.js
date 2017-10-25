@@ -1,4 +1,5 @@
 import promisify from 'promisify-node-callback'
+
 import MonitorService from './MonitorService'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
@@ -18,11 +19,10 @@ const promisifyFunctions = [
   'getTransactionReceipt',
   'getCode',
   'getGasPrice',
-  'estimateGas'
+  'estimateGas',
 ]
 
 export class Web3Provider {
-
   _web3Promise = null
   _web3instance = null
   _resolveCallback = null
@@ -36,7 +36,7 @@ export class Web3Provider {
     this._web3Promise = this._getWeb3Promise()
     // for redux-devtool
     Object.defineProperty(this, '_web3instance', {
-      enumerable: false
+      enumerable: false,
     })
     if (withMonitor) {
       // Just a plugin to Web3Provider
@@ -119,8 +119,8 @@ export class Web3Provider {
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
-    this._resetCallbacks.forEach((callback) => callback())
-    this._permanentResetCallbacks.forEach((callback) => callback())
+    this._resetCallbacks.forEach(callback => callback())
+    this._permanentResetCallbacks.forEach(callback => callback())
     this._resetCallbacks = []
   }
 }

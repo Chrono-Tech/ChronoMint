@@ -7,9 +7,8 @@ class FileModel extends abstractModel({
   uploading: false,
   uploaded: false,
   error: [],
-  hash: null
+  hash: null,
 }) {
-
   static createFromLink (link) {
     return new FileModel({
       hash: link.hash,
@@ -18,8 +17,8 @@ class FileModel extends abstractModel({
         type: link.type,
         size: link.size,
         name: link.name,
-        lastModified: 0
-      }
+        lastModified: 0,
+      },
     })
   }
 
@@ -87,16 +86,13 @@ class FileModel extends abstractModel({
   error (value: any) {
     if (value === undefined) {
       return this.get('error')
-    } else {
-      if (value === null) {
-        // clear
-        return this.set('error', [])
-      } else {
-        // concat
-        const errors = this.get('error')
-        return this.set('error', errors.concat(value))
-      }
+    } else if (value === null) {
+      // clear
+      return this.set('error', [])
     }
+    // concat
+    const errors = this.get('error')
+    return this.set('error', errors.concat(value))
   }
 
   hasErrors () {

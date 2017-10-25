@@ -14,7 +14,7 @@ export class UserMonitorService extends EventEmitter {
 
   _status () {
     return {
-      active: this._active
+      active: this._active,
     }
   }
 
@@ -61,7 +61,6 @@ export class UserMonitorService extends EventEmitter {
       this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
     }
   }
-
 }
 
 export default new UserMonitorService()

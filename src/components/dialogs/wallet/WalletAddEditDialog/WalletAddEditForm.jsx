@@ -1,31 +1,28 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-//noinspection JSUnresolvedVariable
+// noinspection JSUnresolvedVariable
 import { Field, reduxForm } from 'redux-form/immutable'
-
-import OwnerItem from '../../../wallet/OwnerItem'
-import OwnersCount from '../../../wallet/OwnersCount'
-
-import WalletModel from '../../../../models/wallet/WalletModel'
-
-import { modalsClose } from 'redux/modals/actions'
-
-import './WalletAddEditForm.scss'
-
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import icnCirclePlus from 'assets/img/icn-circle-plus.svg'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 
 import OwnerModel from 'models/wallet/OwnerModel'
 
+import { modalsClose } from 'redux/modals/actions'
+
+import ErrorList from '../../../forms/ErrorList'
+import OwnerItem from '../../../wallet/OwnerItem'
+import OwnersCount from '../../../wallet/OwnersCount'
+import validator from '../../../forms/validator'
+import WalletModel from '../../../../models/wallet/WalletModel'
+
+import './WalletAddEditForm.scss'
+
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
 
-import validator from '../../../forms/validator'
-import ErrorList from '../../../forms/ErrorList'
 
 function mapStateToProps (state) {
   return {
@@ -39,11 +36,11 @@ function mapDispatchToProps (dispatch) {
     onClose: () => dispatch(modalsClose()),
     onSubmit: () => {
       dispatch(modalsClose())
-    }
+    },
   }
 }
 
-const validate = (values) => {
+const validate = values => {
   const walletNameErrors = new ErrorList()
   walletNameErrors.add(validator.required(values.get('walletName')))
   walletNameErrors.add((typeof values.get('walletName') === 'string') ? null : 'errors.wallet.walletName.haveToBeString')
@@ -59,20 +56,18 @@ const validate = (values) => {
     walletName: walletNameErrors.getErrors(),
     dayLimit: dayLimitErrors.getErrors(),
     requiredSignatures: requiredSignaturesErrors.getErrors(),
-    ownersCount: ownersCountErrors.getErrors()
+    ownersCount: ownersCountErrors.getErrors(),
   }
   return errors
 }
 
-const onSubmit = (values, dispatch, props) => {
-  return new WalletModel({
-    ...props.wallet.toJS(),
-    ...values.toJS()
-  })
-}
+const onSubmit = (values, dispatch, props) => new WalletModel({
+  ...props.wallet.toJS(),
+  ...values.toJS(),
+})
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit})
+@reduxForm({ form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit })
 export default class WalletAddEditForm extends React.Component {
   constructor (props) {
     super(props)
@@ -81,8 +76,8 @@ export default class WalletAddEditForm extends React.Component {
         isNew: true,
         walletName: null,
         dayLimit: null,
-        requiredSignatures: null
-      })
+        requiredSignatures: null,
+      }),
     }
   }
 
@@ -96,41 +91,41 @@ export default class WalletAddEditForm extends React.Component {
     submitting: PropTypes.bool,
     isEditMultisig: PropTypes.bool,
     isAddNotEdit: PropTypes.bool,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     isAddNotEdit: true,
-    isEditMultisig: true
+    isEditMultisig: true,
   }
 
   componentWillMount () {
-    this.setState({owners: [], edit: null})
+    this.setState({ owners: [], edit: null })
   }
 
   addOwnerToCollection = () => {
     this.setState({
       wallet: this.state.wallet.addOwner(new OwnerModel({
-        ...OwnerModel.genSymbol()
-      }))
+        ...OwnerModel.genSymbol(),
+      })),
     })
   }
 
-  deleteOwnerFromCollection = (symbol) => {
+  deleteOwnerFromCollection = symbol => {
     this.setState({
-      wallet: this.state.wallet.removeOwner(symbol)
+      wallet: this.state.wallet.removeOwner(symbol),
     })
   }
 
-  editOwner = (owner) => {
+  editOwner = owner => {
     this.setState({
-      wallet: this.state.wallet.updateOwner(owner.set('editing', true))
+      wallet: this.state.wallet.updateOwner(owner.set('editing', true)),
     })
   }
 
-  editOwnerDone = (owner) => {
+  editOwnerDone = owner => {
     this.setState({
-      wallet: this.state.wallet.updateOwner(owner.set('editing', false))
+      wallet: this.state.wallet.updateOwner(owner.set('editing', false)),
     })
   }
 
@@ -142,50 +137,69 @@ export default class WalletAddEditForm extends React.Component {
             <img styleName='dialogHeaderIcon' src={icnWalletDialogWhite} />
             <div styleName='dialogHeaderTitle'>
               <Translate
-                value={('wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'newWallet' : 'editWallet'))}
+                value={(`wallet.walletAddEditDialog.${this.props.isAddNotEdit ? 'newWallet' : 'editWallet'}`)}
               />
             </div>
           </div>
         </div>
         {this.props.isEditMultisig ?
           <div styleName='dialogBody'>
-            <Field component={TextField} name='walletName' fullWidth
-              floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />} />
-            <Field component={TextField} name='dayLimit' fullWidth
-              floatingLabelText={<Translate value='wallet.walletAddEditDialog.dayLimit' />} />
-            <Field component={TextField} name='requiredSignatures' fullWidth
-              floatingLabelText={<Translate value='wallet.walletAddEditDialog.requiredSignatures' /> } />
+            <Field
+              component={TextField}
+              name='walletName'
+              fullWidth
+              floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />}
+            />
+            <Field
+              component={TextField}
+              name='dayLimit'
+              fullWidth
+              floatingLabelText={<Translate value='wallet.walletAddEditDialog.dayLimit' />}
+            />
+            <Field
+              component={TextField}
+              name='requiredSignatures'
+              fullWidth
+              floatingLabelText={<Translate value='wallet.walletAddEditDialog.requiredSignatures' />}
+            />
             <Field
               component={OwnersCount}
               name='ownersCount'
-              props={{count: this.state.wallet.ownersCount()}}
+              props={{ count: this.state.wallet.ownersCount() }}
             />
-            <div styleName='addOwner' onTouchTap={() => {this.addOwnerToCollection()}}>
+            <div styleName='addOwner' onTouchTap={() => { this.addOwnerToCollection() }}>
               <img styleName='addOwnerIcon' src={icnCirclePlus} />
               <div styleName='addOwnerTitle'><Translate value='wallet.walletAddEditDialog.addOwner' /></div>
             </div>
-            {this.state.wallet.owners().toArray().map(owner => <Field
+            {this.state.wallet.owners().toArray().map(owner => (<Field
               component={OwnerItem}
-              name={'ownerAddress_' + owner.symbol()}
+              name={`ownerAddress_${owner.symbol()}`}
               owner={owner}
               key={owner.symbol()}
               editOwner={this.editOwner}
               editOwnerDone={this.editOwnerDone}
               deleteOwnerFromCollection={this.deleteOwnerFromCollection}
-            />)}
+            />))}
           </div>
           :
           <div styleName='dialogBody'>
-            <Field component={TextField} name='walletName' fullWidth
-              floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />} />
+            <Field
+              component={TextField}
+              name='walletName'
+              fullWidth
+              floatingLabelText={<Translate value='wallet.walletAddEditDialog.walletName' />}
+            />
           </div>
         }
         <div
-          styleName='dialogFooter'>
+          styleName='dialogFooter'
+        >
           <RaisedButton
             styleName='action'
-            label={<Translate value={'wallet.walletAddEditDialog.' + (this.props.isAddNotEdit ? 'addWallet' : 'save')} />}
-            type='submit' primary disabled={this.props.submitting}
+            label={<Translate value={`wallet.walletAddEditDialog.${this.props.isAddNotEdit ? 'addWallet' : 'save'}`} />}
+            type='submit'
+            primary
+            disabled={this.props.submitting}
           />
         </div>
       </form>

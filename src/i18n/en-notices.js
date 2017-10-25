@@ -4,15 +4,15 @@ export default {
     message: '%{value} %{symbol} approved to transfer for %{contractName} contract',
     details: {
       contractName: 'Contract Name',
-      value: 'Value'
-    }
+      value: 'Value',
+    },
   },
   arbitrary: {
-    title: 'Notice'
+    title: 'Notice',
   },
   cbe: {
     added: 'CBE %{address} was added',
-    removed: 'CBE %{address} was removed'
+    removed: 'CBE %{address} was removed',
   },
   locs: {
     title: 'LOC',
@@ -24,22 +24,22 @@ export default {
     revoked: '\'%{name}\' redeemed tokens.',
     failed: '\'%{name}\' is failed.',
     details: {
-      amount: 'Amount'
-    }
+      amount: 'Amount',
+    },
   },
   polls: {
     title: 'Polls',
     created: 'Poll created',
     updated: 'Poll updated',
-    removed: 'Poll removed'
+    removed: 'Poll removed',
   },
   transfer: {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',
-    sentTo: '%{value} %{symbol} sent to %{address}'
+    sentTo: '%{value} %{symbol} sent to %{address}',
   },
   profile: {
-    copyIcon: 'Your address has been copied to the clipboard.'
+    copyIcon: 'Your address has been copied to the clipboard.',
   },
   operations: {
     title: 'Pending Operations',
@@ -49,8 +49,8 @@ export default {
     done: 'Operation complete',
     details: {
       hash: 'Hash',
-      operation: 'Operation'
-    }
+      operation: 'Operation',
+    },
   },
   settings: {
     title: 'Settings',
@@ -58,13 +58,13 @@ export default {
       tokens: {
         isAdded: 'Token "%{symbol} – %{name}" was added.',
         isModified: 'Token "%{symbol} – %{name}" was modified.',
-        isRemoved: 'Token "%{symbol} – %{name}" was removed.'
-      }
-    }
+        isRemoved: 'Token "%{symbol} – %{name}" was removed.',
+      },
+    },
   },
   downloads: {
     started: '%{name}: Download started',
     failed: '%{name}: Download failed, check your network connection',
-    completed: '%{name}: Download completed'
-  }
+    completed: '%{name}: Download completed',
+  },
 }

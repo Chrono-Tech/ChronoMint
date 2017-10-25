@@ -7,7 +7,7 @@ describe('Owner model', () => {
   it('should construct and return data', () => {
     ownerModel = new OwnerModel({
       address: ADDRESS,
-      editing: true
+      editing: true,
     })
   })
 
@@ -18,5 +18,4 @@ describe('Owner model', () => {
   it('should get editing', () => {
     expect(ownerModel.editing()).toEqual(true)
   })
-
 })

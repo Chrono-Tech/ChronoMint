@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
-import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
+
+import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -12,7 +13,6 @@ const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
 
 export default class ERC20DAO extends AbstractTokenDAO {
-
   constructor (at, json) {
     super(json || defaultJSON, at)
   }
@@ -38,7 +38,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   setDecimals (n: number) {
     if (n < 0 || n > 20) {
-      throw new Error('invalid decimals ' + n)
+      throw new Error(`invalid decimals ${n}`)
     }
     this._decimals = n
   }
@@ -68,7 +68,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     try {
       const [symbol, decimals] = await Promise.all([
         this._call('symbol'),
-        this._callNum('decimals')
+        this._callNum('decimals'),
       ])
       this.setSymbol(symbol)
       this.setDecimals(decimals)
@@ -92,20 +92,19 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   approve (account, amount: BigNumber) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], {account, amount, currency: this.getSymbol()})
+    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], { account, amount, currency: this.getSymbol() })
   }
 
   transfer (account, amount: BigNumber) {
     return this._tx(TX_TRANSFER, [account, this.addDecimals(amount)], {
       account,
       amount,
-      currency: this.getSymbol()
+      currency: this.getSymbol(),
     })
   }
 
   /** @private */
   _createTxModel (tx, account, block, time): TxModel {
-
     const gasPrice = new BigNumber(tx.gasPrice)
     const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
 
@@ -122,7 +121,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       credited: tx.args.to === account,
-      symbol: this.getSymbol()
+      symbol: this.getSymbol(),
     })
   }
 
@@ -148,9 +147,9 @@ export default class ERC20DAO extends AbstractTokenDAO {
       callback(new ApprovalNoticeModel({
         value: this.removeDecimals(result.args.value),
         spender: result.args.spender,
-        time
+        time,
       }))
-    }, {from: this.getAccount()})
+    }, { from: this.getAccount() })
   }
 
   /** @inheritDoc */
@@ -159,18 +158,18 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
-        callback(new TransferNoticeModel({tx, account, time}))
+        callback(new TransferNoticeModel({ tx, account, time }))
       }
     }
     await Promise.all([
-      this._watch(EVENT_TRANSFER, internalCallback, {from: account}),
-      this._watch(EVENT_TRANSFER, internalCallback, {to: account})
+      this._watch(EVENT_TRANSFER, internalCallback, { from: account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { to: account }),
     ])
   }
 
   async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
-    const result = await this._get(EVENT_TRANSFER, 0, 'latest', {from: account}, TXS_PER_PAGE, id + '-in')
-    const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', {to: account}, TXS_PER_PAGE, id + '-out')
+    const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
+    const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
 
     const callback = tx => promises.push(this._getTxModel(tx, account))
     const promises = []
@@ -182,204 +181,204 @@ export default class ERC20DAO extends AbstractTokenDAO {
 }
 
 const defaultJSON = {
-  'contract_name': 'ERC20Interface',
-  'abi': [
+  contract_name: 'ERC20Interface',
+  abi: [
     {
-      'constant': false,
-      'inputs': [
+      constant: false,
+      inputs: [
         {
-          'name': '_spender',
-          'type': 'address'
+          name: '_spender',
+          type: 'address',
         },
         {
-          'name': '_value',
-          'type': 'uint256'
-        }
+          name: '_value',
+          type: 'uint256',
+        },
       ],
-      'name': 'approve',
-      'outputs': [
+      name: 'approve',
+      outputs: [
         {
-          'name': 'success',
-          'type': 'bool'
-        }
+          name: 'success',
+          type: 'bool',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': true,
-      'inputs': [],
-      'name': 'totalSupply',
-      'outputs': [
+      constant: true,
+      inputs: [],
+      name: 'totalSupply',
+      outputs: [
         {
-          'name': 'supply',
-          'type': 'uint256'
-        }
+          name: 'supply',
+          type: 'uint256',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': false,
-      'inputs': [
+      constant: false,
+      inputs: [
         {
-          'name': '_from',
-          'type': 'address'
+          name: '_from',
+          type: 'address',
         },
         {
-          'name': '_to',
-          'type': 'address'
+          name: '_to',
+          type: 'address',
         },
         {
-          'name': '_value',
-          'type': 'uint256'
-        }
+          name: '_value',
+          type: 'uint256',
+        },
       ],
-      'name': 'transferFrom',
-      'outputs': [
+      name: 'transferFrom',
+      outputs: [
         {
-          'name': 'success',
-          'type': 'bool'
-        }
+          name: 'success',
+          type: 'bool',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': true,
-      'inputs': [],
-      'name': 'decimals',
-      'outputs': [
+      constant: true,
+      inputs: [],
+      name: 'decimals',
+      outputs: [
         {
-          'name': '',
-          'type': 'uint8'
-        }
+          name: '',
+          type: 'uint8',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': true,
-      'inputs': [
+      constant: true,
+      inputs: [
         {
-          'name': '_owner',
-          'type': 'address'
-        }
+          name: '_owner',
+          type: 'address',
+        },
       ],
-      'name': 'balanceOf',
-      'outputs': [
+      name: 'balanceOf',
+      outputs: [
         {
-          'name': 'balance',
-          'type': 'uint256'
-        }
+          name: 'balance',
+          type: 'uint256',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': true,
-      'inputs': [],
-      'name': 'symbol',
-      'outputs': [
+      constant: true,
+      inputs: [],
+      name: 'symbol',
+      outputs: [
         {
-          'name': '',
-          'type': 'string'
-        }
+          name: '',
+          type: 'string',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': false,
-      'inputs': [
+      constant: false,
+      inputs: [
         {
-          'name': '_to',
-          'type': 'address'
+          name: '_to',
+          type: 'address',
         },
         {
-          'name': '_value',
-          'type': 'uint256'
-        }
+          name: '_value',
+          type: 'uint256',
+        },
       ],
-      'name': 'transfer',
-      'outputs': [
+      name: 'transfer',
+      outputs: [
         {
-          'name': 'success',
-          'type': 'bool'
-        }
+          name: 'success',
+          type: 'bool',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'constant': true,
-      'inputs': [
+      constant: true,
+      inputs: [
         {
-          'name': '_owner',
-          'type': 'address'
+          name: '_owner',
+          type: 'address',
         },
         {
-          'name': '_spender',
-          'type': 'address'
-        }
+          name: '_spender',
+          type: 'address',
+        },
       ],
-      'name': 'allowance',
-      'outputs': [
+      name: 'allowance',
+      outputs: [
         {
-          'name': 'remaining',
-          'type': 'uint256'
-        }
+          name: 'remaining',
+          type: 'uint256',
+        },
       ],
-      'payable': false,
-      'type': 'function'
+      payable: false,
+      type: 'function',
     },
     {
-      'anonymous': false,
-      'inputs': [
+      anonymous: false,
+      inputs: [
         {
-          'indexed': true,
-          'name': 'from',
-          'type': 'address'
+          indexed: true,
+          name: 'from',
+          type: 'address',
         },
         {
-          'indexed': true,
-          'name': 'to',
-          'type': 'address'
+          indexed: true,
+          name: 'to',
+          type: 'address',
         },
         {
-          'indexed': false,
-          'name': 'value',
-          'type': 'uint256'
-        }
+          indexed: false,
+          name: 'value',
+          type: 'uint256',
+        },
       ],
-      'name': 'Transfer',
-      'type': 'event'
+      name: 'Transfer',
+      type: 'event',
     },
     {
-      'anonymous': false,
-      'inputs': [
+      anonymous: false,
+      inputs: [
         {
-          'indexed': true,
-          'name': 'from',
-          'type': 'address'
+          indexed: true,
+          name: 'from',
+          type: 'address',
         },
         {
-          'indexed': true,
-          'name': 'spender',
-          'type': 'address'
+          indexed: true,
+          name: 'spender',
+          type: 'address',
         },
         {
-          'indexed': false,
-          'name': 'value',
-          'type': 'uint256'
-        }
+          indexed: false,
+          name: 'value',
+          type: 'uint256',
+        },
       ],
-      'name': 'Approval',
-      'type': 'event'
-    }
+      name: 'Approval',
+      type: 'event',
+    },
   ],
-  'unlinked_binary': '0x',
-  'networks': {},
-  'schema_version': '0.0.5',
-  'updated_at': 1500881309403
+  unlinked_binary: '0x',
+  networks: {},
+  schema_version: '0.0.5',
+  updated_at: 1500881309403,
 }

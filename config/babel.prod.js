@@ -2,7 +2,7 @@ module.exports = {
   presets: [
     'babel-preset-env',
     'babel-preset-react',
-    'babel-preset-stage-0'
+    'babel-preset-stage-0',
   ].map(require.resolve),
   plugins: [
     'babel-plugin-transform-decorators-legacy',
@@ -13,6 +13,6 @@ module.exports = {
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     'babel-plugin-transform-class-properties',
-    'babel-plugin-react-css-modules'
-  ].map(require.resolve)
+    'babel-plugin-react-css-modules',
+  ].map(require.resolve),
 }

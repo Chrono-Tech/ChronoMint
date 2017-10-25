@@ -11,13 +11,13 @@ export default class WalletsManagerDAO extends AbstractMultisigContractDAO {
 
   async getWallets () {
     const wallets = await this._call('getWallets')
-    //console.log('getWallets, wallets =', wallets)
+    // console.log('getWallets, wallets =', wallets)
     return wallets
   }
 
   async createWallet (walletOwners, requiredSignaturesNum, walletName) {
     const created = await this._tx('createWallet', [walletOwners, requiredSignaturesNum, walletName])
-    //console.log('createWallet, created =', created)
+    // console.log('createWallet, created =', created)
     return created
   }
 }

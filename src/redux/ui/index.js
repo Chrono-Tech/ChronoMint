@@ -3,5 +3,5 @@ import ui from './reducer'
 
 export {
   modal,
-  ui
+  ui,
 }

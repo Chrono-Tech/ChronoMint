@@ -3,14 +3,13 @@ import { Record as record } from 'immutable'
 
 const HEX_BASE = 16
 
-//noinspection JSUnusedLocalSymbols
+// noinspection JSUnusedLocalSymbols
 export const abstractModel = defaultValues => class AbstractModel extends record({
   ...defaultValues,
   id: null,
   random: null,
-  timestamp: null
+  timestamp: null,
 }) {
-
   id () {
     return this.get('id')
   }
@@ -42,7 +41,7 @@ export const abstractModel = defaultValues => class AbstractModel extends record
   static genSymbol () {
     const random = AbstractModel.genRandom()
     const timestamp = AbstractModel.genTimestamp()
-    return {random, timestamp}
+    return { random, timestamp }
   }
 
   timestamp () {
@@ -54,7 +53,7 @@ export const abstractModel = defaultValues => class AbstractModel extends record
   }
 
   symbol () {
-    return this.random() + '_' + this.timestamp()
+    return `${this.random()}_${this.timestamp()}`
   }
 }
 
