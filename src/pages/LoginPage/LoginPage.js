@@ -17,8 +17,8 @@ import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginW
 import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
 
 import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
-import LoginLocal from '../../components/pages/LoginPage/LoginLocal/LoginLocal'
-import LoginMetamask from '../../components/pages/LoginPage/LoginMetamask/LoginMetamask'
+import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
+import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 
 import './LoginPage.scss'
 
@@ -82,26 +82,26 @@ class LoginPage extends Component {
   }
 
   handleToggleProvider = isShowProvider => {
-    this.setState({ isShowProvider })
+    this.setState({isShowProvider})
   }
 
   render () {
-    const { errors, selectedProviderId } = this.props
+    const {errors, selectedProviderId} = this.props
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>
           <div styleName='title'><Translate value='LoginPage.title' /></div>
           <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
           {this.state.isShowProvider && <ProviderSelector />}
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={() => this.handleLogin()} />}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={() => this.handleLogin()} />}
           {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
             <LoginWithOptions
-              onLogin={this.handleLogin}
+              onLogin={() => this.handleLogin()}
               onToggleProvider={this.handleToggleProvider}
             />
           )}
-          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
 
           {errors && (
             <div styleName='errors'>

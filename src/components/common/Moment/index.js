@@ -22,7 +22,7 @@ class Moment extends React.Component {
     action: PropTypes.string,
   }
   static defaultProps = {
-    format: FULL_DATE
+    format: FULL_DATE,
   }
 
   render () {
