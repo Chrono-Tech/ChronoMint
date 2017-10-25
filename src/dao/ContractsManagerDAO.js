@@ -8,7 +8,7 @@ import AssetsManagerDAO from './AssetsManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
 import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
-import ChronoBankAssetOwnershipManagerDAO from './ChronoBankAssetOwnershipManagerDAO'
+import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import RewardsDAO from './RewardsDAO'
@@ -32,7 +32,7 @@ const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
 const DAO_CHRONOBANK_PLATFORM = 'ChronoBankPlatformDAO'
 const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
-const DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER = 'ChronoBankAssetOwnershipManagerDAO'
+const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
 const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
@@ -51,7 +51,7 @@ const daoMap = {
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
   [DAO_CHRONOBANK_PLATFORM]: ChronoBankPlatformDAO,
   [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
-  [DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER]: ChronoBankAssetOwnershipManagerDAO,
+  [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
   [DAO_ERC20]: ERC20DAO,
 }
@@ -71,7 +71,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     account = account || await this.getContractAddressByType(daoType)
 
-    const key = `${account}-${block}`
+    const key = `${account}-${block}-${daoType}`
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
@@ -111,10 +111,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getChronoBankAssetOwnershipManagerDAO (tokenPlatform: String): Promise<ChronoBankAssetOwnershipManagerDAO> {
-    const tokenManagementExtension = await this.getTokenManagementExtensionDAO(tokenPlatform)
-    const assetOwnershipManager = await tokenManagementExtension._call('getAssetOwnershipManager')
-    return this._getDAO(DAO_CHRONOBANK_ASSET_OWNERSHIP_MANAGER, assetOwnershipManager)
+  async getChronoBankAssetProxyDAO (token: String): Promise<ChronoBankAssetProxyDAO> {
+    return this._getDAO(DAO_CHRONOBANK_ASSET_PROXY, token)
   }
 
   // noinspection JSUnusedGlobalSymbols

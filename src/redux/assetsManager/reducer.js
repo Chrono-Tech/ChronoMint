@@ -12,6 +12,7 @@ import {
   GET_TRANSACTIONS_DONE,
   SET_TOKEN,
   SET_IS_REISSUABLE,
+  SET_NEW_MANAGERS_LIST,
 } from './actions'
 
 const initialState = {
@@ -126,6 +127,14 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'isReissuable'], action.payload.isReissuable),
+      }
+    case SET_NEW_MANAGERS_LIST:
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersList),
+        managersList: action.payload.managers,
+        managersCount: action.payload.managers.length,
       }
     case GET_TRANSACTIONS_START:
       return {

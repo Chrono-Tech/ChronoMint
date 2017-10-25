@@ -1,6 +1,7 @@
 import contractManager from 'dao/ContractsManagerDAO'
 import Web3Converter from 'utils/Web3Converter'
-import TokenModel from '../../models/TokenModel'
+import TokenModel from 'models/TokenModel'
+import { ZERO_ADDRESS } from 'dao/AssetsManagerDAO'
 
 export const GET_PLATFORMS_COUNT = 'AssetsManager/GET_PLATFORMS_COUNT'
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
@@ -16,6 +17,7 @@ export const SET_TOTAL_SUPPLY = 'AssetsManager/SET_TOTAL_SUPPLY'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
 export const SET_IS_REISSUABLE = 'AssetsManager/SET_IS_REISSUABLE'
+export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
 
 export const getPlatformsCount = () => async (dispatch, getState) => {
   const dao = await contractManager.getPlatformManagerDAO()
@@ -117,12 +119,8 @@ export const getManagersForAssetSymbol = symbol => async dispatch => {
 
 export const removeManager = (token: TokenModel, manager: String) => async dispatch => {
   try {
-    const chronoBankAssetOwnershipManagerDAO = await contractManager.getChronoBankAssetOwnershipManagerDAO(token.platform())
-    const result = await chronoBankAssetOwnershipManagerDAO.removeAssetPartOwner(token.symbol(), manager)
-    if (result) {
-      dispatch(getManagersForAssetSymbol(token.symbol()))
-      dispatch(getAssetsManagerData())
-    }
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
+    await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -132,12 +130,8 @@ export const removeManager = (token: TokenModel, manager: String) => async dispa
 
 export const addManager = (token: TokenModel, manager: String) => async dispatch => {
   try {
-    const chronoBankAssetOwnershipManagerDAO = await contractManager.getChronoBankAssetOwnershipManagerDAO(token.platform())
-    const result = await chronoBankAssetOwnershipManagerDAO.addAssetPartOwner(token.symbol(), manager)
-    if (result) {
-      dispatch(getManagersForAssetSymbol(token.symbol()))
-      dispatch(getAssetsManagerData())
-    }
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
+    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), manager)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -166,7 +160,6 @@ export const revokeAsset = (token: TokenModel, amount: number) => async dispatch
     console.error(e.message)
   }
 }
-
 
 export const isReissuable = (token: TokenModel) => async dispatch => {
   try {
@@ -213,6 +206,25 @@ export const setTx = tx => async (dispatch, getState) => {
   dispatch({type: GET_TRANSACTIONS_DONE, payload: {transactionsList: [txModel]}})
 }
 
+export const setManagers = tx => async (dispatch, getState) => {
+  const tokensMap = getState().get('assetsManager').tokensMap
+  const account = getState().get('session').account
+  const symbol = Web3Converter.bytesToString(tx.args.symbol)
+  const from = tx.args.from
+  const to = tx.args.to
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const managers = await assetsManagerDao.getManagers(account)
+  let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
+  if (from === ZERO_ADDRESS) {
+    if (managersList.indexOf(to) < 0) {
+      managersList.push(to)
+    }
+  } else {
+    managersList = managersList.filter(manager => manager !== from)
+  }
+  dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
+}
+
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
@@ -229,11 +241,24 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTotalSupply(tx))
     dispatch(setTx(tx))
   }
+  const managersCallback = tx => {
+    dispatch(setManagers(tx))
+    dispatch(setTx(tx))
+  }
 
 
   return Promise.all([
     ERC20ManagerDAO.watchAddToken(callback),
     chronoBankPlatformDAO.watchIssue(issueCallback),
     chronoBankPlatformDAO.watchRevoke(issueCallback),
+    chronoBankPlatformDAO.watchManagers(managersCallback),
   ])
+}
+
+export const getLatestVersion = (token: TokenModel) => async (dispatch, getState) => {
+  // const account = getState().get('session').account
+  // const dao = await contractManager.getChronoBankAssetProxyDAO(token.address())
+  // const res = await dao.getLatestVersion()
+  // eslint-disable-next-line
+  // console.log('--actions#: res', res)
 }

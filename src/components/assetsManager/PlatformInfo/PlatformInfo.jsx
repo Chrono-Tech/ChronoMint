@@ -7,7 +7,7 @@ import { RaisedButton, FlatButton } from 'material-ui'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
+import { getManagersForAssetSymbol, isReissuable, getLatestVersion } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
@@ -30,6 +30,7 @@ export class PlatformInfo extends Component {
     reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
+    getLatestVersion: PropTypes.func,
   }
 
   componentWillReceiveProps (newProps) {
@@ -40,6 +41,7 @@ export class PlatformInfo extends Component {
 
       if (newProps.tokensMap.get(newProps.selectedToken).isReissuable() === null) {
         this.props.isReissuable(newProps.tokensMap.get(newProps.selectedToken))
+        this.props.getLatestVersion(newProps.tokensMap.get(newProps.selectedToken))
       }
 
     }
@@ -190,6 +192,7 @@ function mapDispatchToProps (dispatch) {
     })),
     getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
     isReissuable: symbol => dispatch(isReissuable(symbol)),
+    getLatestVersion: symbol => dispatch(getLatestVersion(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
       component: RevokeDialog,
     })),
