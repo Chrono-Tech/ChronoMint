@@ -57,7 +57,7 @@ const DEFAULT_MAX_FILES = 10
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
-export default class AddPlatformForm extends React.Component {
+export default class AddTokenForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
     formValues: PropTypes.object,

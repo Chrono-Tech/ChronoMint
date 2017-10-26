@@ -23,8 +23,31 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return this._call('getTokenExtension', [platform])
   }
 
-  async getAssetsForOwner (owner) {
-    const assets = await this._call('getAssetsForOwner', [owner, owner])
+  async getParticipatingPlatformsForUser (account, dispatch, state) {
+    const platformsList = await this._call('getParticipatingPlatformsForUser', [account])
+    let formatPlatformsList = []
+    if (platformsList.length) {
+      for (let platform of platformsList) {
+        formatPlatformsList.push({
+          address: platform,
+          name: platform,
+        })
+      }
+    }
+
+    /*if (platformsList.length) {
+      for (let i = 0; i < platformsList[0].length; i++) {
+        formatPlatformsList.push({
+          address: platformsList[0][i],
+          name: Web3Converter.bytesToString(platformsList[1][i]),
+        })
+      }
+    }*/
+    return formatPlatformsList
+  }
+
+  async getSystemAssetsForOwner (owner) {
+    const assets = await this._call('getSystemAssetsForOwner', [owner])
 
     let assetsList = {}
     let currentPlatform

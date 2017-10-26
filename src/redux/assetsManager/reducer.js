@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,
@@ -27,7 +28,7 @@ const initialState = {
   managersCount: 0,
   tokensOnCrowdsaleCount: 0,
   platformsList: [],
-  tokensMap: new Map(),
+  tokensMap: new Immutable.Map(),
   managersList: [],
   assets: {},
   managersForTokenLoading: false,

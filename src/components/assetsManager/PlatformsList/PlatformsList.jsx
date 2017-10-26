@@ -31,7 +31,7 @@ export class PlatformsList extends Component {
 
   renderTokenList () {
     const filteredTokens = this.props.tokensMap.toArray()
-      .filter(token => token.platform() === this.props.selectedPlatform)
+      .filter(token => token.platform ? token.platform() === this.props.selectedPlatform : false)
     return (
       <div styleName='tokensList'>
         {
@@ -49,7 +49,7 @@ export class PlatformsList extends Component {
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{fontSize: '24px'}}
-                    value={new BigNumber(this.props.assets[token.address()].totalSupply)}
+                    value={new BigNumber(this.props.assets[token.address()] ? this.props.assets[token.address()].totalSupply : 0)}
                     symbol={token.symbol()}
                   />
                 </div>
@@ -62,7 +62,7 @@ export class PlatformsList extends Component {
   }
 
   renderPlatformsList () {
-    const {selectedPlatform, platformsList, detachPlatform} = this.props
+    const {selectedPlatform, platformsList} = this.props
     return (
       <div>
         {

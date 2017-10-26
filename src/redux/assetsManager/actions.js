@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import contractManager from 'dao/ContractsManagerDAO'
 import Web3Converter from 'utils/Web3Converter'
 import TokenModel from 'models/TokenModel'
@@ -32,17 +33,20 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const platformManagerDao = await contractManager.getPlatformManagerDAO()
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
-  const assets = await assetsManagerDao.getAssetsForOwner(account)
+  // const platforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
+  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get('assetsManager'))
+  const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
 
   dispatch({type: GET_ASSETS_MANAGER_COUNTS, payload: {platforms, assets, managers}})
+  return {platforms, assets, managers}
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
   const account = getState().get('session').account
-  const dao = await contractManager.getPlatformManagerDAO()
-  const platforms = await dao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get('assetsManager'))
+  // const platforms = await dao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
   dispatch({type: GET_PLATFORMS, payload: {platforms}})
 }
 
@@ -50,16 +54,20 @@ export const getTokens = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
-  const assets = await assetsManagerDao.getAssetsForOwner(account)
-  const tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), false, assets)
+  const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
+  let tokensMap = new Immutable.Map()
+  if (Object.keys(assets).length) {
+    tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), false, assets)
+  }
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
+  return {tokensMap, assets}
 }
 
 export const createPlatform = values => async dispatch => {
   try {
     const dao = await contractManager.getPlatformManagerDAO()
     if (values.get('alreadyHave')) {
-      await dao.attachPlatform(values.get('platformAddress'))
+      await dao.attachPlatform(values.get('platformAddress'), values.get('platformName'))
     } else {
       await dao.createPlatform(values.get('platformName'))
     }
@@ -192,9 +200,11 @@ export const getTransactions = () => async (dispatch, getState) => {
   dispatch({type: GET_TRANSACTIONS_START})
   let platforms = getState().get('assetsManager')['platformsList']
   const account = getState().get('session').account
-  const platformManagerDao = await contractManager.getPlatformManagerDAO()
+  // const platformManagerDao = await contractManager.getPlatformManagerDAO()
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   if (!platforms.length) {
-    platforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
+    platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get('assetsManager'))
+    // platforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
   }
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const transactionsList = await assetsManagerDAO.getTransactions(platforms, account)
@@ -211,25 +221,31 @@ export const setTx = tx => async (dispatch, getState) => {
 
 export const setManagers = tx => async (dispatch, getState) => {
   try {
-    const tokensMap = getState().get('assetsManager').tokensMap
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
-    if (!tokensMap.get(symbol)) {
-      return
-    }
     const account = getState().get('session').account
-    const from = tx.args.from
-    const to = tx.args.to
-    const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-    const managers = await assetsManagerDao.getManagers(account)
-    let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
-    if (from === ZERO_ADDRESS) {
-      if (managersList.indexOf(to) < 0) {
-        managersList.push(to)
+    let tokensMap = getState().get('assetsManager')['tokensMap']
+    let selectedToken = getState().get('assetsManager')['selectedToken']
+    if (!tokensMap.get(symbol) || tx.args.from === account) {
+      if (selectedToken === symbol) {
+        dispatch({type: SELECT_TOKEN, payload: {selectedToken: null}})
       }
+      dispatch(getAssetsManagerData())
+      dispatch(getTokens())
     } else {
-      managersList = managersList.filter(manager => manager !== from)
+      const from = tx.args.from
+      const to = tx.args.to
+      const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+      const managers = await assetsManagerDao.getManagers(account)
+      let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
+      if (from === ZERO_ADDRESS) {
+        if (managersList.indexOf(to) < 0) {
+          managersList.push(to)
+        }
+      } else {
+        managersList = managersList.filter(manager => manager !== from)
+      }
+      dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
     }
-    dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
   } catch (e) {
     // eslint-disable-next-line
     console.log(e)
@@ -244,8 +260,11 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
   const account = getState().get('session').account
   const callback = async tx => {
-    const assets = await assetsManagerDao.getAssetsForOwner(account)
-    const tokensMap = await ERC20ManagerDAO._getTokensByAddresses([tx.args.token], false, assets)
+    const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
+    let tokensMap = new Immutable.Map()
+    if (Object.keys(assets).length) {
+      tokensMap = await ERC20ManagerDAO._getTokensByAddresses([tx.args.token], false, assets)
+    }
     dispatch({type: SET_TOKEN, payload: {tokensMap, assets}})
     dispatch(setTx(tx))
   }

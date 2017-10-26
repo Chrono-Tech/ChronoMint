@@ -36,17 +36,16 @@ export class PlatformInfo extends Component {
   componentWillReceiveProps (newProps) {
     if ((newProps.selectedToken && !this.props.selectedToken) ||
       (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
-
-      this.props.getManagersForAssetSymbol(newProps.selectedToken)
-
-      if (newProps.tokensMap.get(newProps.selectedToken).isReissuable() === null) {
-        this.props.isReissuable(newProps.tokensMap.get(newProps.selectedToken))
+      const token = newProps.tokensMap.get(newProps.selectedToken)
+      if (token) {
+        this.props.getManagersForAssetSymbol(newProps.selectedToken)
+        if (token.isReissuable() === null) {
+          this.props.isReissuable(token)
+        }
+        if (token.withFee() === null) {
+          this.props.getFee(token)
+        }
       }
-
-      if (newProps.tokensMap.get(newProps.selectedToken).withFee() === null) {
-        this.props.getFee(newProps.tokensMap.get(newProps.selectedToken))
-      }
-
     }
   }
 
@@ -140,7 +139,7 @@ export class PlatformInfo extends Component {
   render () {
     const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
 
-    if (!this.props.selectedPlatform || !this.props.selectedToken) return this.renderInstructions()
+    if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
 
     return (
       <div styleName='root'>

@@ -1,4 +1,4 @@
-import {getPlatforms, getPlatformsCount, setTx, SET_WATCHERS} from 'redux/assetsManager/actions'
+import { getPlatforms, getPlatformsCount, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
 import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -32,7 +32,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async getPlatformsMetadataForUser (account, dispatch, state) {
+  async getPlatformsMetadataForUser (account) {
     const platformsList = await this._call('getPlatformsMetadataForUser', [account])
     let formatPlatformsList = []
     if (platformsList.length) {
@@ -43,17 +43,28 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
         })
       }
     }
-    // this.watchAssets(formatPlatformsList, account, dispatch, state)
     return formatPlatformsList
   }
 
-  async attachPlatform (address) {
-    const tx = await this._tx(TX_ATTACH_PLATFORM, [address])
+  async attachPlatform (address, name) {
+    let tx
+    try {
+      tx = await this._tx(TX_ATTACH_PLATFORM, [address, name])
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error(e.message)
+    }
     return tx.tx
   }
 
   async detachPlatform (address) {
-    const tx = await this._tx(TX_DETACH_PLATFORM, [address])
+    let tx
+    try {
+      tx = await this._tx(TX_DETACH_PLATFORM, [address])
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error(e.message)
+    }
     return tx.tx
   }
 
