@@ -5,8 +5,6 @@ import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
 
-import './AlertDialog.scss'
-
 export class AlertDialog extends React.Component {
   render () {
     return (

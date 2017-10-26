@@ -77,11 +77,11 @@ export class InfoPartial extends React.Component {
     const tokens = wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({ token, name }))
 
-    const tokensCount = this.props.wallet.isMultisig() ? tokens.count() : tokens.count() + 1
+    const tokensCount = this.props.wallet.isMultisig() ? tokens.length : tokens.length + 1
     const withBigButton = tokensCount <= visibleCount
     const showArrows = withBigButton
-      ? tokens.count() + 1 > visibleCount
-      : tokens.count() > visibleCount
+      ? tokensCount + 1 > visibleCount
+      : tokensCount > visibleCount
 
     return (
       <div styleName='root'>

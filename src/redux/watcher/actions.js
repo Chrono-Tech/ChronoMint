@@ -16,6 +16,7 @@ import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/mainWallet/actions'
 import { initWallet } from 'redux/wallet/actions'
+import { watchWalletManager } from 'redux/multisigWallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'

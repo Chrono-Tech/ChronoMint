@@ -71,7 +71,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
-  // TODO @dkchv: !!! merge conflict
   async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
     let timeDAO, promises
     if (isWithObligatory) {

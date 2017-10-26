@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import {RaisedButton, CircularProgress} from 'material-ui'
+import { RaisedButton, CircularProgress, Paper } from 'material-ui'
 import React from 'react'
 import {Translate} from 'react-redux-i18n'
 import {connect} from 'react-redux'
 import moment from 'moment'
-import globalStyles from 'layouts/partials/styles'
 
 import {getEtherscanUrl} from 'network/settings'
 

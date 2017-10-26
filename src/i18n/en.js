@@ -88,19 +88,6 @@ export default {
       selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
       owners: 'owners',
     },
-    // TODO @dkchv: !!! check in lang file
-    walletAddEditDialog: {
-      newWallet: 'New wallet',
-      editWallet: 'Edit wallet',
-      walletName: 'Wallet name',
-      dayLimit: 'Day limit',
-      requiredSignatures: 'Required signatures',
-      walletOwners: 'Wallet owners',
-      addOwner: 'Add owner',
-      addWallet: 'Add wallet',
-      save: 'Save',
-      ownerAddress: 'Owner address',
-    },
   },
   exchange: {
     tokens: 'Exchange tokens',
