@@ -58,7 +58,7 @@ export const getTokens = () => async (dispatch, getState) => {
   return {tokensMap, assets}
 }
 
-export const createPlatform = values => async (dispatch, getState) => {
+export const createPlatform = values => async dispatch => {
   try {
     const dao = await contractManager.getPlatformManagerDAO()
     if (values.get('alreadyHave')) {

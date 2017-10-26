@@ -109,7 +109,7 @@ export default class HistoryTable extends React.Component {
         break
       default:
         // eslint-disable-next-line
-        console.log('--HistoryTable#renderValue: trx', trx)
+        // console.log('--HistoryTable#renderValue: trx', trx)
     }
     return value
   }
