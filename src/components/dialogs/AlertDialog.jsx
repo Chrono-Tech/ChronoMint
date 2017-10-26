@@ -5,7 +5,25 @@ import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
 
-export class AlertDialog extends React.Component {
+@connect(null, mapDispatchToProps)
+export default class AlertDialog extends React.Component {
+  static propTypes = {
+    title: PropTypes.string,
+    message: PropTypes.string,
+    handleClose: PropTypes.func,
+  }
+
+  renderActions () {
+    return [
+      <FlatButton
+        key='close'
+        label='Close'
+        primary
+        onTouchTap={() => this.props.handleClose()}
+      />,
+    ]
+  }
+
   render () {
     return (
       <Dialog
@@ -19,23 +37,6 @@ export class AlertDialog extends React.Component {
       </Dialog>
     )
   }
-
-  renderActions () {
-    return [
-      <FlatButton
-        key='close'
-        label='Close'
-        primary
-        onTouchTap={() => this.props.handleClose()}
-      />,
-    ]
-  }
-}
-
-AlertDialog.propTypes = {
-  title: PropTypes.string,
-  message: PropTypes.string,
-  handleClose: PropTypes.func,
 }
 
 function mapDispatchToProps (dispatch) {
@@ -43,8 +44,3 @@ function mapDispatchToProps (dispatch) {
     handleClose: () => dispatch(modalsClose()),
   }
 }
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(AlertDialog)

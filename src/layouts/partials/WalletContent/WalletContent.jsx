@@ -20,6 +20,9 @@ const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3 col-xl-2'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
+
+  console.log('--WalletContent#mapStateToProps', getCurrentWallet(state).toJS())
+
   return {
     wallet: getCurrentWallet(state),
     selectedNetworkId: network.selectedNetworkId,
@@ -107,7 +110,8 @@ export default class WalletContent extends Component {
                   <div className='row'>
                     <div
                       className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
-                      styleName='headLight'>
+                      styleName='headLight'
+                    >
                       <WalletChanger />
                     </div>
                     {!isMultisig && (
@@ -119,7 +123,8 @@ export default class WalletContent extends Component {
                   <div className='row'>
                     <div
                       className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
-                      styleName='headLight'>
+                      styleName='headLight'
+                    >
                       {wallet.isFetched() ? <SendTokens /> : <Preloader />}
                     </div>
                     {!isMultisig && (

@@ -1,5 +1,5 @@
-import * as a from './actions'
 import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
+import * as a from './actions'
 
 const initialState = new MultisigWalletCollection()
 
@@ -17,7 +17,7 @@ export default (state = initialState, action) => {
     case a.MULTISIG_SELECT:
       return state.selected(action.wallet.id())
     case a.MULTISIG_REMOVE:
-      return state.list(state.list().remove(action.wallet.id()))
+      return state.list(state.list().remove(action.id))
     default:
       return state
   }

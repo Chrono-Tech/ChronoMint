@@ -63,7 +63,9 @@ export default class WalletAddEditForm extends React.Component {
                 component={TextField}
                 name='name'
                 fullWidth
-                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />} />
+                disabled
+                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
+              />
               <Field
                 component={TextField}
                 name='requiredSignatures'

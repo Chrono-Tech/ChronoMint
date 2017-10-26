@@ -42,7 +42,7 @@ export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) 
   type: WALLET_BALANCE,
   token,
   isCredited,
-  amount
+  amount,
 })
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
@@ -50,7 +50,7 @@ export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBala
 export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
   type: WALLET_TIME_DEPOSIT,
   isCredited,
-  amount
+  amount,
 })
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
 export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
@@ -59,7 +59,7 @@ export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
   type: WALLET_ALLOWANCE,
   token,
   value,
-  spender
+  spender,
 })
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
@@ -110,7 +110,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
   const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
     timeHolderDAO.getAddress(),
-    timeHolderDAO.getWalletAddress()
+    timeHolderDAO.getWalletAddress(),
   ])
 
   let contractNames = {}
@@ -161,44 +161,44 @@ export const mainApprove = (token: TokenModel, amount: string, spender) => async
 }
 
 export const depositTIME = (amount: string) => async (dispatch, getState) => {
-  amount = new BigNumber(amount)
+  const amountBN = new BigNumber(amount)
   const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(TIME)
 
-  dispatch(balanceMinus(amount, token))
+  dispatch(balanceMinus(amountBN, token))
 
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.deposit(amount)
+    await dao.deposit(amountBN)
   } finally {
     // compensation for update in watchTransfer
-    dispatch(balancePlus(amount, token))
+    dispatch(balancePlus(amountBN, token))
   }
 }
 
-export const withdrawTIME = (amount: string) => async (dispatch) => {
-  amount = new BigNumber(amount)
+export const withdrawTIME = (amount: string) => async dispatch => {
+  const amountBN = new BigNumber(amount)
 
-  dispatch(depositMinus(amount))
+  dispatch(depositMinus(amountBN))
 
   try {
     const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.withdraw(amount)
+    await dao.withdraw(amountBN)
   } finally {
-    dispatch(depositPlus(amount))
+    dispatch(depositPlus(amountBN))
   }
 }
 
-export const initTIMEDeposit = () => async (dispatch) => {
+export const initTIMEDeposit = () => async dispatch => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance()
   dispatch(updateDeposit(deposit, null))
 }
 
-export const updateIsTIMERequired = () => async (dispatch) => {
+export const updateIsTIMERequired = () => async dispatch => {
   dispatch({type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired()})
 }
 
-export const requireTIME = () => async (dispatch) => {
+export const requireTIME = () => async dispatch => {
   try {
     await assetDonatorDAO.requireTIME()
   } catch (e) {

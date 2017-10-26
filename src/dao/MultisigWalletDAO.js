@@ -12,11 +12,11 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/Wallet.json'),
-      at
+      at,
     )
     this._okCodes = [
       ...this._okCodes,
-      CODE_CONFIRMATION_NEEDED
+      CODE_CONFIRMATION_NEEDED,
     ]
   }
 
@@ -48,10 +48,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  getName () {
-    return this._call('name')
-  }
-
   async getOwners () {
     const counter = await this._callNum('m_numOwners')
     let promises = []
@@ -73,20 +69,20 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async removeWallet (wallet, account: string) {
     const result = await this._multisigTx('kill', [
-      account
+      account,
     ], {
       address: wallet.address(),
-      account
+      account,
     })
     return result.tx
   }
 
   async addOwner (wallet, newOwner) {
     const result = await this._tx('addOwner', [
-      newOwner
+      newOwner,
     ], {
       wallet: wallet.address(),
-      newOwner
+      newOwner,
     })
     return result.tx
   }
@@ -96,12 +92,12 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     const result = await this._tx('transfer', [
       to,
       value,
-      token.symbol()
+      token.symbol(),
     ], {
       from: wallet.address(),
       to,
       symbol: token.symbol(),
-      amount
+      amount,
     })
     return result.tx
   }

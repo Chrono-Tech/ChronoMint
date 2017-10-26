@@ -60,7 +60,7 @@ export const positiveNumber = value => isNaN(value) || !(value > 0) ? 'errors.in
 
 export const positiveNumberOrZero = value => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 
-export const validIpfsFileList = value => (value != null && value.indexOf('!') === 0)
+export const validIpfsFileList = value => (!!value && value.indexOf('!') === 0)
   // '!' marks partially uploaded or inconsistent objects
   ? 'errors.validIpfsFileList'
   : null
@@ -81,7 +81,7 @@ export function lowerThan (value, limit, strict = false) {
   const result = strict ? value >= limit : value > limit
   return result ? {
     value: strict ? 'errors.lowerThanOrEqual' : 'errors.lowerThan',
-    limit
+    limit,
   } : null
 }
 
@@ -89,9 +89,10 @@ export function moreThan (value, limit, strict = false) {
   const result = strict ? value <= limit : value < limit
   return result ? {
     value: strict ? 'errors.moreThanOrEqual' : 'errors.moreThan',
-    limit
+    limit,
   } : null
 }
+
 
 export default {
   required,

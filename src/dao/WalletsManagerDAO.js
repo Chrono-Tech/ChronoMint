@@ -1,13 +1,14 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import MultisigWalletDAO from './MultisigWalletDAO'
 import multisigWalletService from 'services/MultisigWalletService'
+import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 
 const functions = {
   GET_WALLETS: 'getWallets',
-  CREATE_WALLET: 'createWallet'
+  CREATE_WALLET: 'createWallet',
 }
 
 const events = {
@@ -19,15 +20,15 @@ const events = {
 const eventParams = {}
 eventParams[events.ERROR] = {
   SELF: 'self',
-  ERROR_CODE: 'errorCode'
+  ERROR_CODE: 'errorCode',
 }
 eventParams[events.WALLET_ADDED] = {
   SELF: 'self',
-  WALLET: 'wallet'
+  WALLET: 'wallet',
 }
 eventParams[events.WALLET_CREATED] = {
   SELF: 'self',
-  WALLET: 'wallet'
+  WALLET: 'wallet',
 }
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
@@ -36,18 +37,18 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     super(
       require('chronobank-smart-contracts/build/contracts/WalletsManager.json'),
       at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
     )
   }
 
   // ---------- watchers ---------
 
   async watchWalletCreate (callback) {
-    return this._watch(events.WALLET_CREATED, async (result) => {
-      const wallet = await this._createWalletModel(result.args.wallet, result.transactionHash)
+    return this._watch(events.WALLET_CREATED, async result => {
+      const wallet = await this._createWalletModel(result.args.wallet, false, result.transactionHash)
       callback(wallet, new WalletNoticeModel({
         name: wallet.name(),
-        action: statuses.CREATED
+        action: statuses.CREATED,
       }))
     })
   }
@@ -55,12 +56,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async getWallets () {
-    const addresses = await this._call(functions.GET_WALLETS)
+    const [addresses, is2FA] = await this._call(functions.GET_WALLETS)
     let models = new Immutable.Map()
     let promises = []
-    for (let address of addresses) {
-      promises.push(this._createWalletModel(address))
-    }
+    addresses.forEach((address, i) => {
+      promises.push(this._createWalletModel(address, is2FA[i]))
+    })
     const wallets = await Promise.all(promises)
     for (let wallet of wallets) {
       models = models.set(wallet.address(), wallet)
@@ -68,23 +69,22 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     return models
   }
 
-  async _createWalletModel (address, transactionHash) {
-    const walletDAO = multisigWalletService.getWalletDAO(address)
-    const [name, owners, requiredSignatures, tokens] = await Promise.all([
-      await walletDAO.getName(),
+  async _createWalletModel (address, is2FA, transactionHash) {
+    const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(address)
+    const [owners, requiredSignatures, tokens] = await Promise.all([
       await walletDAO.getOwners(),
       await walletDAO.getRequired(),
-      await walletDAO.getTokens()
+      await walletDAO.getTokens(),
     ])
 
     return new MultisigWalletModel({
-      name: this._c.bytesToString(name),
       owners: new Immutable.List(owners),
       address,
       transactionHash,
       requiredSignatures,
       dao: walletDAO,
-      tokens
+      tokens,
+      is2FA,
     })
   }
 
@@ -92,14 +92,14 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     const result = await this._tx(functions.CREATE_WALLET, [
       wallet.owners(),
       wallet.requiredSignatures(),
-      wallet.name()
+      new BigNumber(0),
     ], wallet)
     return result.tx
   }
 
   async removeWallet (wallet) {
     const result = await this._tx('removeWallet', [], {
-      address: wallet.address()
+      address: wallet.address(),
     })
     return result.tx
   }

@@ -9,10 +9,12 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   isMultisig: true, //
   transactions: new TransactionsCollection(),
   owners: new Immutable.List(ls.getAccount()),
-  name: null,
+  // TODO @dkchv: update functional
+  name: 'No name',
   requiredSignatures: null,
   dao: null,
-  pendingTxList: new Immutable.List()
+  pendingTxList: new Immutable.List(),
+  is2FA: false,
 }) {
 
   id () {
@@ -48,7 +50,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       isNew: this.isNew(),
       name: this.name(),
       requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().toArray()
+      owners: this.owners().toArray(),
     }
   }
 
@@ -64,7 +66,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return {
       owners: this.owners(),
       requiredSignatures: this.requiredSignatures(),
-      walletName: this.name()
+      walletName: this.name(),
     }
   }
 

@@ -3,33 +3,29 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { formPropTypes } from 'redux-form'
-import { reduxForm, formValueSelector } from 'redux-form/immutable'
+import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
-import { Field } from 'redux-form/immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { IPFSImage } from 'components'
-import validate from './validate'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
-
-import styles from '../styles'
 import inversedTheme from 'styles/themes/inversed'
-
-import './SendTokensForm.scss'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import TokenModel from 'models/TokenModel'
+import validate from './validate'
+import styles from '../styles'
+import './SendTokensForm.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
   BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg')
+  TIME: require('assets/img/icn-time.svg'),
 }
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
@@ -47,7 +43,7 @@ function mapStateToProps (state) {
 
   return {
     account: state.get('session').account,
-    token: getCurrentWallet(state).tokens().get(symbol)
+    token: getCurrentWallet(state).tokens().get(symbol),
   }
 }
 
@@ -60,13 +56,13 @@ export class SendTokensForm extends React.Component {
     token: PropTypes.object,
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
-    onApprove: PropTypes.func
+    onApprove: PropTypes.func,
   } & formPropTypes
 
   constructor () {
     super(...arguments)
     this.state = {
-      isContract: false
+      isContract: false,
     }
   }
 
@@ -74,21 +70,6 @@ export class SendTokensForm extends React.Component {
   async checkIsContract (address) {
     const isContact = contractsManagerDAO.isContract(address)
     console.log('--SendTokensForm#checkIsContract', isContact)
-  }
-
-  render () {
-    const {token} = this.props
-
-    return (
-      <Paper>
-        <form onSubmit={this.props.handleSubmit}>
-          <ColoredSection
-            head={this.renderHead(token)}
-            body={this.renderBody({token})}
-          />
-        </form>
-      </Paper>
-    )
   }
 
   renderHead (token = new TokenModel()) {
@@ -102,7 +83,8 @@ export class SendTokensForm extends React.Component {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]} />
+              fallback={ICON_OVERRIDES[symbol]}
+            />
           )}
         >
           <MuiThemeProvider theme={inversedTheme}>
@@ -116,7 +98,8 @@ export class SendTokensForm extends React.Component {
                 <MenuItem
                   key={symbol}
                   value={symbol}
-                  primaryText={symbol} />
+                  primaryText={symbol}
+                />
               ))}
             </Field>
           </MuiThemeProvider>
@@ -142,7 +125,12 @@ export class SendTokensForm extends React.Component {
 
     return (
       <div>
-        <div styleName='from'>From: <img styleName='fromIcon' src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG} /> {wallet.address()}</div>
+        <div styleName='from'>From:
+          <img
+            styleName='fromIcon'
+            src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
+          /> {wallet.address()}
+        </div>
         <div>
           <Field
             component={TextField}
@@ -182,6 +170,21 @@ export class SendTokensForm extends React.Component {
           </div>
         </div>
       </div>
+    )
+  }
+
+  render () {
+    const {token} = this.props
+
+    return (
+      <Paper>
+        <form onSubmit={this.props.handleSubmit}>
+          <ColoredSection
+            head={this.renderHead(token)}
+            body={this.renderBody({token})}
+          />
+        </form>
+      </Paper>
     )
   }
 }

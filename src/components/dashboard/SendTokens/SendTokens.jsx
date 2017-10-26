@@ -12,13 +12,13 @@ function mapDispatchToProps (dispatch) {
     multisigTransfer: (wallet, token, amount, recipient) => dispatch(multisigTransfer(wallet, token, amount, recipient)),
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
     mainTransfer: (token, amount, recipient) => dispatch(mainTransfer(token, amount, recipient)),
-    resetForm: () => dispatch(reset(FORM_SEND_TOKENS))
+    resetForm: () => dispatch(reset(FORM_SEND_TOKENS)),
   }
 }
 
 function mapStateToProps (state) {
   return {
-    wallet: getCurrentWallet(state)
+    wallet: getCurrentWallet(state),
   }
 }
 
@@ -29,7 +29,7 @@ class SendTokens extends Component {
     multisigTransfer: PropTypes.func,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
-    resetForm: PropTypes.func
+    resetForm: PropTypes.func,
   }
 
   handleSubmit (values) {

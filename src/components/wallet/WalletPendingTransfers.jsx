@@ -6,8 +6,8 @@ import { Paper, RaisedButton } from 'material-ui'
 import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import './WalletPendingTransfers.scss'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
   let pendingTxList
@@ -17,14 +17,14 @@ function mapStateToProps (state) {
     pendingTxList = wallet.pendingTxList()
   }
   return {
-    pendingTxList
+    pendingTxList,
   }
 }
 
 @connect(mapStateToProps, null)
 export default class WalletPendingTransfers extends React.Component {
   static propTypes = {
-    pendingTxList: PropTypes.object
+    pendingTxList: PropTypes.object,
   }
 
   renderRow (item: MultisigWalletPendingTxModel) {
