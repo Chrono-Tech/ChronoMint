@@ -1,18 +1,20 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import ipfs from 'utils/IPFS'
-import { Translate } from 'react-redux-i18n'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileModel from 'models/FileSelect/FileModel'
-import FileCollection from 'models/FileSelect/FileCollection'
-import FileItem from './FileItem'
-import Immutable from 'immutable'
-import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
 import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
+import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
 import IconAttach from 'assets/file-select/icon-attach.svg'
-
-
+import Immutable from 'immutable'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
+
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileCollection from 'models/FileSelect/FileCollection'
+import FileModel from 'models/FileSelect/FileModel'
+
+import ipfs from 'utils/IPFS'
+
+import FileItem from './FileItem'
+
 import './FileSelect.scss'
 
 export type fileConfig = {
@@ -29,7 +31,6 @@ const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
 class FileSelect extends Component {
-
   static propTypes = {
     value: PropTypes.string,
     textFieldProps: PropTypes.object,
@@ -41,11 +42,17 @@ class FileSelect extends Component {
     maxFileSize: PropTypes.number,
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number
+    maxFiles: PropTypes.number,
   }
 
-  constructor (props) {
-    super(props)
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFileRemove = this.handleFileRemove.bind(this)
+    this.handleReset = this.handleReset.bind(this)
+
     this.state = {
       files: new Immutable.Map(),
       fileCollection: new FileCollection(),
@@ -53,8 +60,8 @@ class FileSelect extends Component {
         accept: props.accept || ACCEPT_ALL,
         maxFileSize: props.maxFileSize || DEFAULT_MAX_FILE_SIZE,
         aspectRatio: props.aspectRatio || DEFAULT_ASPECT_RATIO,
-        maxFiles: props.maxFiles || DEFAULT_MAX_FILES
-      }
+        maxFiles: props.maxFiles || DEFAULT_MAX_FILES,
+      },
     }
   }
 
@@ -68,8 +75,8 @@ class FileSelect extends Component {
   async loadCollection (hash) {
     const data = await ipfs.get(hash)
     let fileCollection = new FileCollection({
-      hash: hash,
-      uploaded: data && data.links.length
+      hash,
+      uploaded: data && data.links.length,
     })
     if (data && data.links) {
       for (const item of data.links) {
@@ -77,31 +84,29 @@ class FileSelect extends Component {
       }
     }
     this.setState({
-      fileCollection
+      fileCollection,
     })
   }
 
   handleFileUpdate = (file: FileModel) => {
-    this.setState((prevState) => ({
-      fileCollection: prevState.fileCollection.update(file)
+    this.setState(prevState => ({
+      fileCollection: prevState.fileCollection.update(file),
     }))
   }
 
   async uploadCollection (files: FileCollection, config: fileConfig) {
     const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
     this.setState({fileCollection})
-    this.props.input.onChange(
-      fileCollection.hasErrors()
-        ? '!' + fileCollection.hash()
-        : fileCollection.hash()
-    )
+    this.props.input.onChange(fileCollection.hasErrors()
+      ? `!${fileCollection.hash()}`
+      : fileCollection.hash())
   }
 
   getFilesLeft () {
     return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
   }
 
-  handleChange = async (e) => {
+  async handleChange (e) {
     if (!e.target.files.length) {
       return
     }
@@ -113,10 +118,10 @@ class FileSelect extends Component {
     fileCollection = fileCollection.uploading(true)
     let fileModel
     const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
-    for (let file of uploadedFiles) {
+    for (const file of uploadedFiles) {
       fileModel = new FileModel({
         file,
-        uploading: true
+        uploading: true,
       })
       fileCollection = fileCollection.add(fileModel)
     }
@@ -128,20 +133,20 @@ class FileSelect extends Component {
     this.input.click()
   }
 
-  handleFileRemove = async (id) => {
-    let fileCollection = this.state.fileCollection.remove(id)
+  async handleFileRemove(id) {
+    const fileCollection = this.state.fileCollection.remove(id)
     this.setState({
       files: this.state.files.remove(id),
-      fileCollection
+      fileCollection,
     })
     await this.uploadCollection(fileCollection, this.state.config)
   }
 
-  handleReset = async () => {
+  async handleReset () {
     const fileCollection = new FileCollection()
     this.setState({
       fileCollection,
-      files: new Immutable.Map()
+      files: new Immutable.Map(),
     })
     await this.uploadCollection(fileCollection, this.state.config)
   }
@@ -152,7 +157,8 @@ class FileSelect extends Component {
         <FileItem
           onRemove={this.handleFileRemove}
           key={item.id()}
-          file={item}/>
+          file={item}
+        />
       ))
       .toArray()
     return files.length > 0 && <div styleName='files'>{files}</div>
@@ -161,19 +167,18 @@ class FileSelect extends Component {
   renderStatus () {
     const {fileCollection} = this.state
     if (fileCollection.hasErrors()) {
-      return <AlertError color={globalStyles.colors.error}/>
+      return <AlertError color={globalStyles.colors.error} />
     }
     if (fileCollection.uploading()) {
-      return <CircularProgress size={16} thickness={1.5}/>
+      return <CircularProgress size={16} thickness={1.5} />
     }
     if (fileCollection.uploaded()) {
-      return <ActionDone color={globalStyles.colors.success}/>
+      return <ActionDone color={globalStyles.colors.success} />
     }
     return null
   }
 
   renderMultiple () {
-
     const {config, fileCollection} = this.state
     const {meta} = this.props
 
@@ -192,10 +197,10 @@ class FileSelect extends Component {
           <div styleName='attachAction'>
             <FlatButton
               onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value='fileSelect.addAttachments'/>}
+              label={<Translate value='fileSelect.addAttachments' />}
               secondary
               style={{color: globalStyles.colors.blue}}
-              icon={<img src={IconAttach} styleName='attachIcon'/>}
+              icon={<img src={IconAttach} styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
             />
           </div>
@@ -217,7 +222,7 @@ class FileSelect extends Component {
             onTouchTap={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value='fileSelect.selectFile'/>}
+            floatingLabelText={<Translate value='fileSelect.selectFile' />}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
@@ -234,7 +239,7 @@ class FileSelect extends Component {
         {fileCollection.uploading()
           ? (
             <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5}/>
+              <CircularProgress size={18} thickness={1.5} />
             </div>
           )
           : (
@@ -242,7 +247,7 @@ class FileSelect extends Component {
               <IconButton
                 onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
-                {fileCollection.uploaded() ? <NavigationClose/> : <EditorAttachFile/>}
+                {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
               </IconButton>
             </div>
           )}
@@ -262,9 +267,9 @@ class FileSelect extends Component {
         }
 
         <input
-          ref={(input) => this.input = input}
+          ref={input => this.input = input}
           type='file'
-          onChange={this.handleChange}
+          onChange={e => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
           accept={config.accept.join(', ')}

@@ -1,17 +1,17 @@
-import HeaderPartial from './HeaderPartial/HeaderPartial'
+import AssetsContent from './AssetsContent/AssetsContent'
 import BrandPartial from './BrandPartial/BrandPartial'
-import InfoPartial from './InfoPartial/InfoPartial'
-import FooterPartial from './FooterPartial/FooterPartial'
-import DrawerPartial from './DrawerPartial/DrawerPartial'
 import DashboardContent from './DashboardContent/DashboardContent'
+import DrawerPartial from './DrawerPartial/DrawerPartial'
 import ExchangeContent from './ExchangeContent/ExchangeContent'
+import FooterPartial from './FooterPartial/FooterPartial'
+import HeaderPartial from './HeaderPartial/HeaderPartial'
+import InfoPartial from './InfoPartial/InfoPartial'
+import LOCContent from './LOCContent/LOCContent'
+import OperationsContent from './OperationsContent/OperationsContent'
 import RewardsContent from './RewardsContent/RewardsContent'
+import SettingsContent from './SettingsContent/SettingsContent'
 import VotingContent from './VotingContent/VotingContent'
 import WalletContent from './WalletContent/WalletContent'
-import OperationsContent from './OperationsContent/OperationsContent'
-import SettingsContent from './SettingsContent/SettingsContent'
-import LOCContent from './LOCContent/LOCContent'
-import AssetsContent from './AssetsContent/AssetsContent'
 
 export {
   HeaderPartial,
@@ -27,7 +27,7 @@ export {
   OperationsContent,
   SettingsContent,
   LOCContent,
-  AssetsContent
+  AssetsContent,
 }
 
 export default {
@@ -44,5 +44,5 @@ export default {
   OperationsContent,
   SettingsContent,
   LOCContent,
-  AssetsContent
+  AssetsContent,
 }

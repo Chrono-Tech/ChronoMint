@@ -1,8 +1,9 @@
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import { dateFormatOptions } from '../config'
-import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
+import moment from 'moment'
+
+import { abstractFetchingModel } from './AbstractFetchingModel'
+import { dateFormatOptions } from '../config'
 
 export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 
@@ -15,24 +16,24 @@ export const STATUS_INACTIVE = 4
 const statusesMeta = {
   [STATUS_MAINTENANCE]: {
     token: 'locs.status.maintenance',
-    styleName: 'maintenance'
+    styleName: 'maintenance',
   },
   [STATUS_ACTIVE]: {
     token: 'locs.status.active',
-    styleName: 'active'
+    styleName: 'active',
   },
   [STATUS_SUSPENDED]: {
     token: 'locs.status.suspended',
-    styleName: 'suspended'
+    styleName: 'suspended',
   },
   [STATUS_BANKRUPT]: {
     token: 'locs.status.bankrupt',
-    styleName: 'bankrupt'
+    styleName: 'bankrupt',
   },
   [STATUS_INACTIVE]: {
     token: 'locs.status.inactive',
-    styleName: 'inactive'
-  }
+    styleName: 'inactive',
+  },
 }
 
 class LOCModel extends abstractFetchingModel({
@@ -47,10 +48,10 @@ class LOCModel extends abstractFetchingModel({
   status: 0,
   securityPercentage: 0,
   isNew: true,
-  token: null
+  token: null,
 }) {
   name (value) {
-    return value === undefined ? this.get('name') : this.set('name', value)
+    return this._getSet('name', value)
   }
 
   website () {
@@ -58,7 +59,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   oldName (value) {
-    return value === undefined ? this.get('oldName') : this.set('oldName', value)
+    return this._getSet('oldName', value)
   }
 
   issueLimit () {
@@ -66,7 +67,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   issued (value: BigNumber): BigNumber {
-    return value === undefined ? this.get('issued') : this.set('issued', value)
+    return this._getSet('issued', value)
   }
 
   expDate () {
@@ -90,7 +91,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   status () {
-    return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE // inactive
+    return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE
   }
 
   statusString (status) {
@@ -107,7 +108,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   token (value) {
-    return (value === undefined) ? this.get('token') : this.set('token', value)
+    return this._getSet('token', value)
   }
 
   publishedHash () {
@@ -132,7 +133,7 @@ class LOCModel extends abstractFetchingModel({
       website: this.website(),
       expDate: new Date(this.get('expDate')),
       issueLimit: this.issueLimit(),
-      publishedHash: this.publishedHash()
+      publishedHash: this.publishedHash(),
     }
   }
 }

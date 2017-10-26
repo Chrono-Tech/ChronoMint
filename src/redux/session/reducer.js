@@ -5,7 +5,7 @@ const initialState = {
   account: null,
   isSession: false,
   profile: new ProfileModel(),
-  isCBE: false
+  isCBE: false,
 }
 
 export default (state = initialState, action) => {
@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         account: action.account,
-        isSession: true
+        isSession: true,
       }
     case a.SESSION_DESTROY: {
       return initialState
@@ -25,12 +25,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         profile: action.profile,
-        isCBE: action.isCBE
+        isCBE: action.isCBE,
       }
     case a.SESSION_PROFILE_UPDATE:
       return {
         ...state,
-        profile: action.profile
+        profile: action.profile,
       }
     default:
       return state

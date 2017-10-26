@@ -1,8 +1,8 @@
 export default {
   en: {
-    depositTime: 'Deposit TIME'
+    depositTime: 'Deposit TIME',
   },
   ru: {
-    depositTime: 'Внести TIME'
+    depositTime: 'Внести TIME',
   },
 }

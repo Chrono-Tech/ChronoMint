@@ -1,13 +1,15 @@
-import React from 'react'
+import BigNumber from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 import Immutable from 'immutable'
-import BigNumber from 'bignumber.js'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import Moment from 'components/common/Moment'
 import moment from 'moment'
-import { abstractModel } from './AbstractModel'
 import uniqid from 'uniqid'
-import { FULL_DATE } from "components/common/Moment/index"
+
+import { FULL_DATE } from 'components/common/Moment/index'
+import Moment from 'components/common/Moment'
+
+import { abstractModel } from './AbstractModel'
 
 /** @see OperationModel.summary */
 export const ARGS_TREATED = '__treated'
@@ -20,12 +22,12 @@ class TxExecModel extends abstractModel({
   gas: new BigNumber(0),
   isGasUsed: false,
   estimateGasLaxity: new BigNumber(0),
-  hash: null
+  hash: null,
 }) {
   constructor (data) {
     super({
-      id: (data && data['id']) || uniqid(),
-      ...data
+      id: (data && data.id) || uniqid(),
+      ...data,
     })
   }
 
@@ -81,15 +83,15 @@ class TxExecModel extends abstractModel({
    * @private
    */
   _i18n () {
-    return 'tx.' + this.get('contract') + '.'
+    return `tx.${this.get('contract')}.`
   }
 
   i18nFunc () {
-    return this._i18n() + this.funcName() + '.'
+    return `${this._i18n() + this.funcName()}.`
   }
 
   func () {
-    return this.i18nFunc() + 'title'
+    return `${this.i18nFunc()}title`
   }
 
   title () {
@@ -97,7 +99,6 @@ class TxExecModel extends abstractModel({
   }
 
   details () {
-
     const args = this.args()
     const list = new Immutable.Map(Object.entries(args))
 
@@ -105,7 +106,7 @@ class TxExecModel extends abstractModel({
       label: I18n.t(this.i18nFunc() + key),
       value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
         ? value.toString(10)
-        : (value == null ? null : '' + value) // force to string if not nil
+        : (value == null ? null : `${value}`), // force to string if not nil
     }))
   }
 
@@ -120,15 +121,17 @@ class TxExecModel extends abstractModel({
       delete args[ARGS_TREATED]
     }
     const list = new Immutable.Map(Object.entries(args))
-    return <div style={{margin: '15px 0', ...style}}>
+    return (<div style={{ margin: '15px 0', ...style }}>
       <Translate value={this.func()} /><br />
       {this.hash() ? <span>{this.hash()}<br /></span> : ''}
       {list.entrySeq().map(([key, value]) =>
-        <span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
-          <b>{value && typeof value === 'object' && value['constructor'] &&
-          value.constructor.name === 'BigNumber' ? value.toString(10) : value}</b><br /></span>)}
-      {withTime ? <small><Moment date={this.time()} format={ FULL_DATE }/></small> : ''}
-    </div>
+        (<span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
+          <b>{value && typeof value === 'object' && value.constructor &&
+          value.constructor.name === 'BigNumber' ? value.toString(10) : value}
+          </b><br />
+        </span>))}
+      {withTime ? <small><Moment date={this.time()} format={FULL_DATE} /></small> : ''}
+            </div>)
   }
 
   // TODO @ipavlenko: Refactor admin pages and remove
@@ -136,8 +139,8 @@ class TxExecModel extends abstractModel({
     return (
       <span>
         {additional}
-        {this.description(false, {margin: 0, lineHeight: '25px'})}
-        <small style={{display: 'block'}}>{date || <Moment date={this.time()} format={ FULL_DATE }/>}</small>
+        {this.description(false, { margin: 0, lineHeight: '25px' })}
+        <small style={{ display: 'block' }}>{date || <Moment date={this.time()} format={FULL_DATE} />}</small>
       </span>
     )
   }

@@ -1,23 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { RaisedButton, FlatButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
+import PropTypes from 'prop-types'
+import { RaisedButton, FlatButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
+import TokenModel, { validate } from 'models/TokenModel'
+
+import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import ModalDialog from './ModalDialog'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import IPFSImage from  'components/common/IPFSImage/IPFSImage'
-
-import TokenModel, { validate } from 'models/TokenModel'
-import { modalsClose } from 'redux/modals/actions'
-import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 
 import './AddTokenDialog.scss'
-import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
@@ -34,12 +35,11 @@ const asyncValidate = (values, dispatch) => {
 }
 
 function prefix (token) {
-  return 'components.dialogs.AddTokenDialog.' + token
+  return `components.dialogs.AddTokenDialog.${token}`
 }
 
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate})
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
 export class AddTokenDialog extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -52,18 +52,18 @@ export class AddTokenDialog extends React.Component {
     icon: PropTypes.string,
 
     submitting: PropTypes.bool,
-    initialValues: PropTypes.object
+    initialValues: PropTypes.object,
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
@@ -127,17 +127,17 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     isTokensLoaded: !wallet.isFetching(),
-    tokens: wallet.tokens()
+    tokens: wallet.tokens,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(addToken(new TokenModel(values)))
-    }
+    },
   }
 }
 

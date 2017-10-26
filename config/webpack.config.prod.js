@@ -12,7 +12,7 @@ module.exports = config.buildConfig(
     output: {
       path: buildPath,
       filename: '[name].js',
-      chunkFilename: '[name].chunk.js'
+      chunkFilename: '[name].chunk.js',
     },
     babel: require('./babel.prod'),
     plugins: [
@@ -30,29 +30,29 @@ module.exports = config.buildConfig(
           keepClosingSlash: true,
           minifyJS: true,
           minifyCSS: true,
-          minifyURLs: true
-        }
+          minifyURLs: true,
+        },
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
-        WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"'
+        WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
         compressor: {
           screw_ie8: true,
-          warnings: false
+          warnings: false,
         },
         mangle: {
-          screw_ie8: true
+          screw_ie8: true,
         },
         output: {
           comments: false,
-          screw_ie8: true
-        }
+          screw_ie8: true,
+        },
       }),
-      new ExtractTextPlugin('[name].[contenthash].css')
-    ]
+      new ExtractTextPlugin('[name].[contenthash].css'),
+    ],
   })
 )

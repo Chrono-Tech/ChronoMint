@@ -1,11 +1,11 @@
 export default {
   en: {
     title: 'Rewards',
-    allPeriods: 'All Periods'
+    allPeriods: 'All Periods',
   },
   ru: {
     title: 'Награды',
-    allPeriods: 'Все периоды'
+    allPeriods: 'Все периоды',
   },
 }
 

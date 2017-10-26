@@ -1,26 +1,29 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import IssueForm from './LOCIssueForm'
-import { issueAsset } from 'redux/locs/actions'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
-import { modalsClose } from 'redux/modals/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { issueAsset } from 'redux/locs/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import IssueForm from './LOCIssueForm'
+
 import './LOCIssueDialog.scss'
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
 class IssueLHModal extends Component {
-
   static propTypes = {
     closeModal: PropTypes.func,
     issueAsset: PropTypes.func,
-    loc: PropTypes.object
+    loc: PropTypes.object,
   }
 
   handleSubmitSuccess = (amount: number) => {
@@ -29,11 +32,11 @@ class IssueLHModal extends Component {
   }
 
   render () {
-    const {loc} = this.props
+    const { loc } = this.props
     const currency = loc.currency()
     return (
       <ModalDialogBase
-        title={{value: 'locs.issueS', asset: currency}}
+        title={{ value: 'locs.issueS', asset: currency }}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>

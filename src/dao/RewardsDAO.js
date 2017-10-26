@@ -1,17 +1,19 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+
 import type ERC20DAO from 'dao/ERC20DAO'
-import AbstractContractDAO from './AbstractContractDAO'
+
 import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
+
+import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export default class RewardsDAO extends AbstractContractDAO {
-
   constructor (at) {
     super(
       require('chronobank-smart-contracts/build/contracts/Rewards.json'),
@@ -117,7 +119,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       timeTotalSupply: values[6],
       periods: values[7],
       currentAccumulated: values[8],
-      accountRewards: values[9]
+      accountRewards: values[9],
     })
   }
 
@@ -146,7 +148,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       this.getPeriodClosedState(id), // 2
       this.getAssetBalanceInPeriod(id), // 3
       this._callNum('periodUnique', [id]), // 4
-      this._callNum('getPeriodStartDate', [id]) // 5
+      this._callNum('getPeriodStartDate', [id]), // 5
     ])
     return new RewardsPeriodModel({
       id,
@@ -156,17 +158,17 @@ export default class RewardsDAO extends AbstractContractDAO {
       assetBalance: values[3],
       uniqueShareholders: values[4],
       startDate: values[5],
-      periodLength
+      periodLength,
     })
   }
 
   async withdraw () {
     const [amount, assetDAO] = await Promise.all([
       await this.getRewardsFor(this.getAccount()),
-      await this.getAssetDAO()
+      await this.getAssetDAO(),
     ])
     const assetAddress = await assetDAO.getAddress()
-    return this._tx(TX_WITHDRAW_REWARD, [assetAddress, assetDAO.addDecimals(amount)], {amount})
+    return this._tx(TX_WITHDRAW_REWARD, [assetAddress, assetDAO.addDecimals(amount)], { amount })
   }
 
   async closePeriod () {

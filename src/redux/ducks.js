@@ -1,22 +1,23 @@
-import * as ui from './ui/'
-import * as modals from './modals/'
 import * as drawer from './drawer/'
-import * as session from './session/'
+import * as exchange from './exchange/'
+import * as ledger from './ledger/'
 import * as locs from './locs/'
-import * as voting from './voting/'
-import * as wallet from './wallet/'
+import * as market from './market/'
 import * as mainWallet from './mainWallet/'
 import * as multisigWallet from './multisigWallet/'
-import * as rewards from './rewards/'
-import * as exchange from './exchange/'
-import * as settings from './settings/'
-import * as notifier from './notifier/'
-import * as network from './network/'
-import * as operations from './operations/'
-import * as watcher from './watcher/'
-import * as market from './market/'
+import * as modals from './modals/'
 import * as monitor from './monitor/'
-import * as ledger from './ledger/'
+import * as network from './network/'
+import * as notifier from './notifier/'
+import * as operations from './operations/'
+import * as rewards from './rewards/'
+import * as session from './session/'
+import * as settings from './settings/'
+import * as ui from './ui/'
+import * as voting from './voting/'
+import * as wallet from './wallet/'
+import * as watcher from './watcher/'
+import * as assetsManager from './assetsManager/'
 
 export {
   ui,
@@ -37,5 +38,6 @@ export {
   watcher,
   market,
   monitor,
-  ledger
+  ledger,
+  assetsManager,
 }

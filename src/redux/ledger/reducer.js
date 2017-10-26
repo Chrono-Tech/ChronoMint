@@ -5,7 +5,7 @@ const initialState = {
   isU2F: false,
   isETHAppOpened: false,
   isFetching: false,
-  isFetched: false
+  isFetched: false,
 }
 
 export default (state = initialState, action) => {
@@ -13,23 +13,23 @@ export default (state = initialState, action) => {
     case a.LEDGER_SET_U2F:
       return {
         ...state,
-        isU2F: action.isU2F
+        isU2F: action.isU2F,
       }
     case a.LEDGER_SET_ETH_APP_OPENED:
       return {
         ...state,
-        isETHAppOpened: action.isETHAppOpened
+        isETHAppOpened: action.isETHAppOpened,
       }
     case a.LEDGER_FETCHING:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       }
     case a.LEDGER_FETCHED:
       return {
         ...state,
         isFetched: action.isFetched,
-        isFetching: false
+        isFetching: false,
       }
     default:
       return state

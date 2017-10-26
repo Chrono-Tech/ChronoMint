@@ -5,7 +5,7 @@ export default {
       loginWithMnemonic: 'Back to login with Mnemonic',
       loginWithWallet: 'Back to login with wallet',
     },
-    back: 'Back'
+    back: 'Back',
   },
   ru: {
     backTo: {
@@ -13,7 +13,7 @@ export default {
       loginWithMnemonic: 'Назад к авторизации',
       loginWithWallet: 'Назад к авторизации',
     },
-    back: 'Назад'
+    back: 'Назад',
   },
 }
 

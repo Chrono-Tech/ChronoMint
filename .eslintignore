@@ -1,0 +1,12 @@
+node_modules/**
+**/node_modules/**
+build/**
+.tmp/**
+mocks/**
+docs/**
+*.json
+*.md
+*.less
+*.scss
+*.svg
+git

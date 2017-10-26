@@ -1,20 +1,20 @@
+import { I18n } from 'react-redux-i18n'
 import React from 'react'
 import moment from 'moment'
 import uniqid from 'uniqid'
+
 import Moment, { FULL_DATE } from 'components/common/Moment'
 
-import { I18n } from 'react-redux-i18n'
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols
 export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({ ...defaultValues }) {
-
   // neither id or time is a default record value
   constructor (data) {
     super({
       id: uniqid(),
       timestamp: Date.now(),
-      ...data
+      ...data,
     })
   }
 
@@ -60,7 +60,7 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return (
       <span>
         {this.message()}
-        <small style={{display: 'block', marginTop: '-25px'}}><Moment date={this.date()} format={FULL_DATE}/></small>
+        <small style={{ display: 'block', marginTop: '-25px' }}><Moment date={this.date()} format={FULL_DATE} /></small>
       </span>
     )
   }
@@ -70,8 +70,8 @@ export const abstractNoticeModel = defaultValues => class AbstractNoticeModel ex
     return (
       <div>
         {this.message()}
-        <p style={{marginBottom: '0'}}>
-          <small><Moment date={this.date()} format={FULL_DATE}/></small>
+        <p style={{ marginBottom: '0' }}>
+          <small><Moment date={this.date()} format={FULL_DATE} /></small>
         </p>
       </div>
     )

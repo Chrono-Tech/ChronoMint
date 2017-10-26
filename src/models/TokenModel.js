@@ -1,10 +1,13 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import Immutable from 'immutable'
+
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
+
+import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -15,7 +18,12 @@ export default class TokenModel extends abstractFetchingModel({
   balance: new BigNumber(0),
   allowance: new Immutable.Map(),
   url: null,
-  icon: null
+  icon: null,
+  fee: null,
+  platform: null,
+  totalSupply: new BigNumber(0),
+  managersList: null,
+  isReissuable: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
@@ -25,8 +33,20 @@ export default class TokenModel extends abstractFetchingModel({
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
+  totalSupply () {
+    return this.get('totalSupply')
+  }
+
+  isReissuable () {
+    return this.get('isReissuable')
+  }
+
   setSymbol (v): TokenModel {
     return this.set('symbol', v)
+  }
+
+  managersList (): Array {
+    return this.get('managersList')
   }
 
   id () {
@@ -35,6 +55,14 @@ export default class TokenModel extends abstractFetchingModel({
 
   name () {
     return this.get('name')
+  }
+
+  platform () {
+    return this.get('platform')
+  }
+
+  fee () {
+    return this.get('fee')
   }
 
   address () {
@@ -88,7 +116,7 @@ export default class TokenModel extends abstractFetchingModel({
       symbol: this.symbol(),
       url: this.url(),
       icon: this.icon(),
-      isApproveRequired: this.isApproveRequired()
+      isApproveRequired: this.isApproveRequired(),
     }
   }
 }

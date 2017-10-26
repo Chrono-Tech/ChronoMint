@@ -1,15 +1,15 @@
-import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
-import { BitcoinEngine } from './BitcoinEngine'
 import type BigNumber from 'BigNumber.js'
-import { networks } from 'bitcoinjs-lib'
 import EventEmitter from 'events'
+import { networks } from 'bitcoinjs-lib'
+
+import { BitcoinEngine } from './BitcoinEngine'
+import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
 
 export class BitcoinProvider extends EventEmitter {
-
   constructor (selectNode) {
     super()
     this._selectNode = selectNode
-    this._handleTransaction = (tx) => this.onTransaction(tx)
+    this._handleTransaction = tx => this.onTransaction(tx)
   }
 
   isInitialized () {
@@ -52,7 +52,7 @@ export class BitcoinProvider extends EventEmitter {
   async transfer (to, amount: BigNumber) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx /*, fee */ } = this._engine.createTransaction(to, amount, utxos)
+    const { tx /* , fee */ } = this._engine.createTransaction(to, amount, utxos)
     return await node.send(tx.toHex())
   }
 
@@ -61,7 +61,7 @@ export class BitcoinProvider extends EventEmitter {
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),
-      tx: tx
+      tx,
     })
     // TODO @ipavlenko: Implement using socket connection to our middleware
   }

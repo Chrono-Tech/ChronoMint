@@ -1,35 +1,39 @@
-import { connect } from 'react-redux'
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import SendToExchangeForm from './SendToExchangeForm'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
-import TokenModel from 'models/TokenModel'
-import { modalsClose } from 'redux/modals/actions'
-import { sendAsset } from 'redux/locs/actions'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+
 import exchangeDAO from 'dao/ExchangeDAO'
 import lhtDAO from 'dao/LHTDAO'
 
-const mapDispatchToProps = (dispatch) => ({
-  send: async (value) => {
+import TokenModel from 'models/TokenModel'
+
+import { modalsClose } from 'redux/modals/actions'
+import { sendAsset } from 'redux/locs/actions'
+
+import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+
+import SendToExchangeForm from './SendToExchangeForm'
+
+const mapDispatchToProps = dispatch => ({
+  send: async value => {
     dispatch(sendAsset(
-      new TokenModel({dao: lhtDAO}),
+      new TokenModel({ dao: lhtDAO }),
       await exchangeDAO.getAddress(),
       value
     ))
   },
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
 class SendToExchangeModal extends Component {
-
   static propTypes = {
     send: PropTypes.func,
     closeModal: PropTypes.func,
-    allowed: PropTypes.object
+    allowed: PropTypes.object,
   }
 
-  handleSubmitSuccess = (value) => {
+  handleSubmitSuccess = value => {
     this.props.closeModal()
     this.props.send(value)
   }

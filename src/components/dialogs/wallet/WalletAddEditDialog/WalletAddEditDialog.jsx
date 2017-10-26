@@ -30,7 +30,7 @@ export default class WalletAddEditDialog extends React.Component {
     createWallet: PropTypes.func,
     updateWallet: PropTypes.func,
     closeModal: PropTypes.func,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
   }
 
   handleSubmitSuccess = (wallet: MultisigWalletModel) => {
@@ -51,7 +51,8 @@ export default class WalletAddEditDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.onClose()}>
           <WalletAddEditForm
             initialValues={this.props.wallet.toFormJS()}

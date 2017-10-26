@@ -1,13 +1,12 @@
+import type BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
-import type BigNumber from 'bignumber.js'
 
 const DECIMALS = 100000000
 const FEE_RATE = 55 // satoshis per byte
 
 
 export class BitcoinEngine {
-
   constructor (wallet, network) {
     this._wallet = wallet
     this._network = network
@@ -27,16 +26,15 @@ export class BitcoinEngine {
    * @param amount BTC amount in BTC with decimals
    */
   createTransaction (to, amount: BigNumber, utxos) {
-
-    let targets = [
+    const targets = [
       {
         address: to,
         // TODO @ipavlenko: Check if the String allowed
-        value: amount.mul(DECIMALS).toNumber()
-      }
+        value: amount.mul(DECIMALS).toNumber(),
+      },
     ]
 
-    const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
+    const { inputs, outputs, fee } = coinselect(utxos.map(output => ({
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,
@@ -66,7 +64,7 @@ export class BitcoinEngine {
 
     return {
       tx: txb.build(),
-      fee
+      fee,
     }
   }
 }
@@ -89,7 +87,6 @@ export class BCCEngine extends BitcoinEngine {
   }
 
   _signInputs (txb, inputs) {
-
     txb.enableBitcoinCash(true)
     txb.setVersion(2)
 

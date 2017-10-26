@@ -1,20 +1,23 @@
-import * as user from '../dao/UserManagerDAO'
-import * as voting from '../dao/VotingDAO'
-import * as erc20 from '../dao/ERC20DAO'
-import * as eth from 'dao/EthereumDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import { ru as layouts } from 'layouts/lang'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as assetDonator from '../dao/AssetDonatorDAO'
-import * as exchange from '../dao/ExchangeDAO'
+import * as eth from 'dao/EthereumDAO'
 import { ru as LoginPage } from 'pages/LoginPage/lang'
 import { ru as components } from 'components/lang'
-import { ru as layouts } from 'layouts/lang'
+import * as assetDonator from '../dao/AssetDonatorDAO'
+import * as erc20 from '../dao/ERC20DAO'
+import * as exchange from '../dao/ExchangeDAO'
+import * as loc from '../dao/LOCManagerDAO'
+import * as operations from '../dao/PendingManagerDAO'
+import * as rewards from '../dao/RewardsDAO'
+import * as time from '../dao/TIMEHolderDAO'
+import * as user from '../dao/UserManagerDAO'
+import * as voting from '../dao/VotingDAO'
 
 export default {
   title: 'Рус',
+  true: 'да',
+  false: 'нет',
   LoginPage,
   ...components,
   layouts,
@@ -24,7 +27,7 @@ export default {
     laborx: 'LaborX',
     team: 'Команда',
     faq: 'Q&A',
-    blog: 'Блог'
+    blog: 'Блог',
   },
   nav: {
     project: 'ChronoMint',
@@ -48,12 +51,12 @@ export default {
     markupWallet: 'Новый Кошелёк',
     newRewards: 'Новые Награды',
     pageNotFound: 'Страница не найдена',
-    backToMain: 'Вернуться на главную'
+    backToMain: 'Вернуться на главную',
   },
   common: {
     name: 'Имя',
     address: 'Адрес',
-    ethAddress: 'Ethereum Адрес'
+    ethAddress: 'Ethereum Адрес',
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -77,13 +80,13 @@ export default {
       addWallet: 'Добавить кошелёк',
       yourWallets: 'Ваши кошельки',
       youHaveNoWallets: 'У вас нет кошельков',
-      howToAddMultisignatureWallet: "Как добавить мульти кошелёк? Это легко!",
+      howToAddMultisignatureWallet: 'Как добавить мульти кошелёк? Это легко!',
       toCreateAMultisigWallet: 'Для создания мультиподписного кошелька',
       clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
       selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
-      owners: 'владельцев'
-    }
+      owners: 'владельцев',
+    },
   },
   exchange: {
     tokens: 'Обмен токенов',
@@ -91,7 +94,7 @@ export default {
     exchange: 'Обменять',
     buyPrice: 'Цена покупки',
     sellPrice: 'Цена продажи',
-    limits: 'Ограничения на обмен'
+    limits: 'Ограничения на обмен',
   },
   // common one-word terms
   terms: {
@@ -122,7 +125,7 @@ export default {
     pending: 'В ожидании',
     failed: 'Не выполнено',
     remove: 'Удалить',
-    modify: 'Изменить'
+    modify: 'Изменить',
   },
   locs: {
     entries: '%{number} записей',
@@ -161,15 +164,15 @@ export default {
       allowedToBeS: 'Ограничение на %{action} от лица %{name}: %{limit} %{currency}',
       actions: {
         issued: 'выпуск',
-        redeemed: 'списание'
-      }
+        redeemed: 'списание',
+      },
     },
     status: {
       maintenance: 'В разработке',
       active: 'Активный',
       suspended: 'Приостановлен',
       bankrupt: 'Банкрот',
-      inactive: 'Неактивный'
+      inactive: 'Неактивный',
     },
     notice: {
       added: 'Добавлен',
@@ -177,8 +180,8 @@ export default {
       updated: 'Обновлен',
       statusUpdated: 'Статус обновлен',
       issued: 'Issued',
-      revoked: 'Отозван'
-    }
+      revoked: 'Отозван',
+    },
   },
   operations: {
     completed: 'Завершенные операции с последних 6000 блоков',
@@ -194,15 +197,15 @@ export default {
     errors: {
       // TODO @bshevchenko: move this duplicate error to the common tx errors list
       duplicate: 'Эта транзакция уже добавлена в список операций, требующих мультиподпись.',
-      requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.'
-    }
+      requiredSigns: 'Кол-во необходимых подписей не должно превышать кол-во CBE.',
+    },
   },
   settings: {
     user: {
       title: 'Пользователь',
       cbeAddresses: {
-        title: 'CBE Адреса'
-      }
+        title: 'CBE Адреса',
+      },
     },
     erc20: {
       title: 'ERC20 токены',
@@ -217,10 +220,10 @@ export default {
         errors: {
           invalidAddress: 'Не могу найти валидный ERC20 контракт по этому адресу',
           symbolInUse: 'Этот символ уже используется',
-          invalidSymbol: 'Символ может содержать только от 2 до 4 букв A-Z'
-        }
-      }
-    }
+          invalidSymbol: 'Символ может содержать только от 2 до 4 букв A-Z',
+        },
+      },
+    },
   },
   notices: require('./ru-notices'),
   tx: {
@@ -235,103 +238,114 @@ export default {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',
         name: 'Имя',
-        address: 'Адрес'
+        address: 'Адрес',
       },
       [user.TX_REVOKE_CBE]: {
         title: 'Отозвать CBE',
         name: 'Имя',
-        address: 'Адрес'
+        address: 'Адрес',
       },
       [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Мультиподпись',
-        _required: 'Кол-во'
+        _required: 'Кол-во',
       },
       [user.TX_SET_OWN_HASH]: {
         title: 'Обновить свой профиль',
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания',
-        tokens: 'Токены'
+        tokens: 'Токены',
       },
       [user.TX_SET_MEMBER_HASH]: {
         title: 'Обновить профиль',
         address: 'Адрес',
         name: 'Имя',
         email: 'E-mail',
-        company: 'Компания'
-      }
+        company: 'Компания',
+      },
     },
     Ethereum: {
       [eth.TX_TRANSFER]: {
-        title: 'Перевод ETH'
-      }
+        title: 'Перевод ETH',
+      },
     },
     ContractsManager: {},
     Vote: {
       [voting.TX_ADMIN_END_POLL]: {
         title: 'Окончить Опрос',
-        id: 'Id'
+        id: 'Id',
       },
       [voting.TX_ACTIVATE_POLL]: {
         title: 'Активировать Опрос',
-        id: 'Id'
-      }
+        id: 'Id',
+      },
     },
     ChronoBankAssetProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Одобить TIME',
         account: 'Аккаунт',
-        amount: 'Объем'
+        amount: 'Объем',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Перевести TIME',
         recipient: 'Получатель',
-        amount: 'Объем'
-      }
+        amount: 'Объем',
+      },
     },
     ChronoBankAssetWithFeeProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Одобрить LHT',
         account: 'Аккаунт',
-        amount: 'Объем'
+        amount: 'Объем',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Перевести LHT',
         recipient: 'Получатель',
-        amount: 'Объем'
-      }
+        amount: 'Объем',
+      },
     },
     PendingManager: {
       [operations.TX_CONFIRM]: {
-        title: 'Подтвердить Операцию'
+        title: 'Подтвердить Операцию',
       },
       [operations.TX_REVOKE]: {
-        title: 'Отозвать Операцию'
-      }
+        title: 'Отозвать Операцию',
+      },
     },
     TimeHolder: {
       [time.TX_DEPOSIT]: {
         title: 'Внести TIME',
-        amount: 'Объем'
+        amount: 'Объем',
       },
       [time.TX_WITHDRAW_SHARES]: {
         title: 'Вывести TIME',
-        amount: 'Объем'
-      }
+        amount: 'Объем',
+      },
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
         title: 'Вывести Вознаграждение',
-        amount: 'Объем'
+        amount: 'Объем',
       },
       [rewards.TX_CLOSE_PERIOD]: {
-        title: 'Закрыть Период Вознаграждений'
-      }
+        title: 'Закрыть Период Вознаграждений',
+      },
     },
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
-        title: 'Требуется TIME'
-      }
+        title: 'Требуется TIME',
+      },
+    },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform',
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform',
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform',
+      },
     },
     LOCManager: {
       [loc.standardFuncs.ADD_LOC]: {
@@ -341,7 +355,7 @@ export default {
         issueLimit: 'Лимит выпуска',
         publishedHash: 'Published Hash',
         expDate: 'Дата экспирации',
-        currency: 'Валюта'
+        currency: 'Валюта',
       },
       [loc.standardFuncs.SET_LOC]: {
         title: 'Обновить LOC',
@@ -349,62 +363,62 @@ export default {
         website: 'Вебсайт',
         issueLimit: 'Лимит выпуска',
         publishedHash: 'Published Hash',
-        expDate: 'Дата экспирации'
+        expDate: 'Дата экспирации',
       },
       [loc.multisigFuncs.REMOVE_LOC]: {
         title: 'Удалить LOC',
-        name: 'Имя'
+        name: 'Имя',
       },
       [loc.multisigFuncs.REISSUE_ASSET]: {
         title: 'Выпустить актив',
         amount: 'Объем',
-        name: 'Имя'
+        name: 'Имя',
       },
       [loc.multisigFuncs.REVOKE_ASSET]: {
         title: 'Отозвать актив',
         amount: 'Объем',
-        name: 'Имя'
+        name: 'Имя',
       },
       [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
         title: 'Обновить статус LOC',
         name: 'Имя',
-        status: 'Статус'
+        status: 'Статус',
       },
       [loc.multisigFuncs.SEND_ASSET]: {
-        title: 'Отправить Ассет'
-      }
+        title: 'Отправить Ассет',
+      },
     },
     ERC20Manager: {
       [erc20Manager.TX_MODIFY_TOKEN]: {
-        title: 'Изменить Токен'
+        title: 'Изменить Токен',
       },
       [erc20Manager.TX_REMOVE_TOKEN]: {
-        title: 'Удаленный Токен'
+        title: 'Удаленный Токен',
       },
       [erc20Manager.TX_ADD_TOKEN]: {
-        title: 'Добавить Токен'
-      }
+        title: 'Добавить Токен',
+      },
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
         title: 'Одрбрить списание TIME',
         account: 'Аккаунт',
-        amount: 'Колическтво'
+        amount: 'Колическтво',
       },
       [erc20.TX_TRANSFER]: {
         title: 'Перевести токены',
         account: 'Аккаунт',
-        amount: 'Сумма'
-      }
+        amount: 'Сумма',
+      },
     },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH'
+        title: 'Buy LHT for ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH'
-      }
-    }
+        title: 'Sell LHT for ETH',
+      },
+    },
   },
   errors: {
     required: 'Обязательное поле',
@@ -436,32 +450,32 @@ export default {
     transactionErrorMessage: 'Произошла ошибка во время транзакции для %{item}. Ошибка [%{code}]: %{message}',
     wallet: {
       walletName: {
-        haveToBeString: 'Должно быть строкой'
+        haveToBeString: 'Должно быть строкой',
       },
       dayLimit: {
-        haveToBeNumber: 'Должно быть числом'
-      }
-    }
+        haveToBeNumber: 'Должно быть числом',
+      },
+    },
   },
   forms: {
     selectFile: 'Пожалуйста выберите файл',
     fileUploading: 'Файл загружается',
     mustBeCoSigned: 'This operation must be co-signed by other CBE key holders before it is executed.',
-    correspondingFee: 'Corresponding fees will be deducted from this amount'
+    correspondingFee: 'Corresponding fees will be deducted from this amount',
   },
   dialogs: {
     copyAddress: {
       title: 'Копирование адреса',
       controlTitle: 'Адрес',
-      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес'
-    }
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес',
+    },
   },
   poll: {
     new: 'Новое Голосование',
-    create: 'Создать Голосование'
+    create: 'Создать Голосование',
   },
   otherContract: {
-    add: 'Добавить другой контракт'
+    add: 'Добавить другой контракт',
   },
   errorCodes: {
     MODIFIER_STOPPED: 'Auth error',
@@ -493,7 +507,7 @@ export default {
     USER_ALREADY_CBE: 'Пользователь уже является CBE',
     USER_NOT_CBE: 'Пользователь не является CBE',
     USER_SAME_HASH: 'User has the same hash',
-    USER_INVALID_REQURED: 'Пользователь: Неправильный требуется',  // TODO: @vlad: what is it?
+    USER_INVALID_REQURED: 'Пользователь: Неправильный требуется', // TODO: @vlad: what is it?
     USER_INVALID_STATE: 'Пользователь: Неправильное состояние',
 
     CROWDFUNDING_INVALID_INVOCATION: 'Краудфандинг: Неправильный вызов',
@@ -584,8 +598,8 @@ export default {
   materialUi: {
     DatePicker: {
       cancelLabel: 'Отмена',
-      okLabel: 'OK'
-    }
+      okLabel: 'OK',
+    },
   },
   components: {
     dashboard: {
@@ -597,7 +611,7 @@ export default {
         hash: 'Хеш',
         from: 'От',
         to: 'На',
-        value: 'Сумма'
+        value: 'Сумма',
       },
       DepositTokens: {
         amount: 'Сумма',
@@ -605,14 +619,14 @@ export default {
         yourSymbolDeposit: 'Ваш депозит %{symbol}',
         symbolHolderAllowance: '%{symbol} allowance держателя',
         requireTime: 'Запросить TIME',
-        withdraw: 'Вывести'
+        withdraw: 'Вывести',
       },
       SendTokens: {
         balance: 'Баланс',
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
         approve: 'Подтвердить',
-        send: 'Отправить'
+        send: 'Отправить',
       },
       RewardsPeriod: {
         rewardsPeriodIndex: 'Наградной период #%{index}',
@@ -627,20 +641,20 @@ export default {
         yourTimeTokensEligible: 'Ваши TIME токены претендующие на вознаграждение за период',
         percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
         dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
-        yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период'
+        yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период',
       },
       ExchangeWidget: {
         exchange: 'Обмен',
         search: 'Поиск',
         currency: 'Валюта',
         buy: 'Купить',
-        sell: 'Продать'
+        sell: 'Продать',
       },
       OrdersTable: {
         orderBook: 'Книга Ордеров',
         trader: 'Трейдер',
         paymentDescription: 'Описание платежа',
-        limits: 'Лимиты'
+        limits: 'Лимиты',
       },
       Poll: {
         new: 'Новое',
@@ -663,21 +677,21 @@ export default {
         activate: 'Активировать',
         vote: 'Проголосовать',
         published: 'Опубликовано',
-        endDate: 'Дата Окончания'
-      }
+        endDate: 'Дата Окончания',
+      },
     },
     locs: {
       PageTitle: {
-        labourOfferingCompanies: 'Компании Предлагающие Труд (LOC)'
-      }
+        labourOfferingCompanies: 'Компании Предлагающие Труд (LOC)',
+      },
     },
     operations: {
       Operations: {
         settings: 'Настройки',
         description: 'Описание',
         signatures: 'Подписи',
-        actions: 'Действия'
-      }
+        actions: 'Действия',
+      },
     },
     settings: {
       Tokens: {
@@ -685,7 +699,7 @@ export default {
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
         actions: 'Действия',
-        addToken: 'Добавить Токен'
+        addToken: 'Добавить Токен',
       },
       CBEAddresses: {
         cbeAddresses: 'Адреса CBE',
@@ -693,19 +707,19 @@ export default {
         name: 'Имя',
         smartContractAddress: 'Адрес Смарт Контракта',
         actions: 'Действия',
-        remove: 'Удалить'
-      }
+        remove: 'Удалить',
+      },
     },
     dialogs: {
       OperationsSettingsDialog: {
         operationsSettings: 'Настройки Операций',
         cancel: 'Отмена',
-        save: 'Сохранить'
+        save: 'Сохранить',
       },
       CBEAddressDialog: {
         addCbeAddress: 'Добавить адрес CBE',
         cancel: 'Отмена',
-        addAddress: 'Добавить Адрес'
+        addAddress: 'Добавить Адрес',
       },
       PollDialog: {
         editPoll: 'Редактировать Голосование',
@@ -719,7 +733,7 @@ export default {
         optionIndex: 'Вариант #%{index}',
         updatePoll: 'Обновить Голосование',
         createPoll: 'Создать Голосование',
-        addOption: 'Добавить Вариант'
+        addOption: 'Добавить Вариант',
       },
       PollDetailsDialog: {
         published: 'Опубликовано',
@@ -740,11 +754,11 @@ export default {
         numberVotes_3: '%{number} голоса',
         numberVotes_4: '%{number} голоса',
         pollOptions: 'Варианты голосования',
-        idxNumber: '№%{number}'
+        idxNumber: '№%{number}',
       },
       AddCurrencyDialog: {
         addToken: 'Добавить Токен',
-        howToAddYourToken: "Как добавить свой токен? Это легко!",
+        howToAddYourToken: 'Как добавить свой токен? Это легко!',
         youCanConnectToYourPersonalWallet: 'Вы можете подсоединить к вашему личному кошельку один из уже добавленых токенов или добавить любой другой ERC20 токен.',
         clickOnThePlusButtonAbove: 'Нажмите кнопку + вверху.',
         fillTheForm: 'Заполните форму, проверьте значения и нажмите СОХРАНИТЬ.',
@@ -752,7 +766,7 @@ export default {
         allTokens: 'Все токены',
         save: 'Сохранить',
         close: 'Закрыть',
-        tokens: 'Токены'
+        tokens: 'Токены',
       },
       AddTokenDialog: {
         tokenContractAddress: 'Адрес контракта токена',
@@ -763,7 +777,7 @@ export default {
         tokenAddressHead: 'Адрес токена',
         projectURL: 'URL проекта',
         save: 'Сохранить',
-        cancel: 'Отменить'
+        cancel: 'Отменить',
       },
       VoteDialog: {
         chooseOption: 'Выберите вариант',
@@ -781,8 +795,8 @@ export default {
         daysLeft_2: 'дня осталось',
         daysLeft_3: 'дня осталось',
         daysLeft_4: 'дня осталось',
-        vote: 'Проголосовать'
-      }
-    }
-  }
+        vote: 'Проголосовать',
+      },
+    },
+  },
 }

@@ -1,11 +1,11 @@
-import Web3 from 'web3'
 import EventEmitter from 'events'
-import ProviderEngine from 'web3-provider-engine'
-import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
-import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
+import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
+import ProviderEngine from 'web3-provider-engine'
+import Web3 from 'web3'
+import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 
-const DEFAULT_DERIVATION_PATH = `44'/60'/0'/0/0`
+const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
 const LEDGER_TTL = 1500
 
 class LedgerProvider extends EventEmitter {
@@ -19,6 +19,10 @@ class LedgerProvider extends EventEmitter {
     this._isInited = false
     this._timer = null
     this._isETHOpened = false
+
+    // TODO replace with async arrow when class properties will work correctly
+    this._syncing = this._syncing.bind(this)
+
   }
 
   async init () {
@@ -67,7 +71,7 @@ class LedgerProvider extends EventEmitter {
     })
   }
 
-  _syncing = async () => {
+  async _syncing () {
     if (this._ledger.connectionOpened) {
       // already busy
       return
@@ -95,7 +99,7 @@ class LedgerProvider extends EventEmitter {
 
   async fetchAccount () {
     return new Promise(resolve => {
-      let timer = setInterval(() => {
+      const timer = setInterval(() => {
         if (this._ledger.connectionOpened) {
           // busy
           return

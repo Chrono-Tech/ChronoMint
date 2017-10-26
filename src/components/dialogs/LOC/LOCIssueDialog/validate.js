@@ -1,5 +1,5 @@
-import validator from '../../../forms/validator'
 import ErrorList from '../../../forms/ErrorList'
+import validator from '../../../forms/validator'
 
 export default (values, props) => {
   const amount = +values.get('amount')
@@ -10,6 +10,6 @@ export default (values, props) => {
     amountErrors.add('errors.greaterThanAllowed')
   }
   return {
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

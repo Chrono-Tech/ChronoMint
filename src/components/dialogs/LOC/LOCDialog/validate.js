@@ -11,7 +11,7 @@ export default (values, props) => {
   if (name !== props.initialValues.get('name') && props.locs.has(name)) {
     nameErrors.add({
       value: 'errors.alreadyExist',
-      what: 'LOC'
+      what: 'LOC',
     })
   }
 
@@ -23,6 +23,6 @@ export default (values, props) => {
 
   return {
     ...errors,
-    name: nameErrors.getErrors()
+    name: nameErrors.getErrors(),
   }
 }

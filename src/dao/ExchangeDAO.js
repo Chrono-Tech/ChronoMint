@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
-import type ERC20DAO from './ERC20DAO'
+
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import lhtDAO from 'dao/LHTDAO'
+
+import type ERC20DAO from './ERC20DAO'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
 
 class ExchangeDAO extends AbstractContractDAO {
-
   constructor (at = null) {
     super(
       require('chronobank-smart-contracts/build/contracts/Exchange.json'),
@@ -58,14 +59,14 @@ class ExchangeDAO extends AbstractContractDAO {
     // TODO @bshevchenko: divide this on two steps
     await this.approveSell(amount)
 
-    return this._tx(TX_SELL, [assetDAO.addDecimals(amount), this._c.toWei(price)], {amount, price: amount.mul(price)})
+    return this._tx(TX_SELL, [assetDAO.addDecimals(amount), this._c.toWei(price)], { amount, price: amount.mul(price) })
   }
 
   async buy (amount: BigNumber, price: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     const amountWithDecimals = assetDAO.addDecimals(amount)
     const priceInWei = this._c.toWei(price)
-    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {amount, price: amount.mul(price)}, amountWithDecimals.mul(priceInWei))
+    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], { amount, price: amount.mul(price) }, amountWithDecimals.mul(priceInWei))
   }
 
   subscribeOnReset () {

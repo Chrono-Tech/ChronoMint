@@ -1,32 +1,32 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { FontIcon, RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
+import { FontIcon, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { connect } from 'react-redux'
 
-import ModalDialog from '../ModalDialog'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
-import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
-
+import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import ProfileModel from 'models/ProfileModel'
-import validate from './validate'
+
 import { modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
 
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import FileSelect from 'components/common/FileSelect/FileSelect'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
+
+import ModalDialog from '../ModalDialog'
+import validate from './validate'
+
 import './UpdateProfileDialog.scss'
-import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 
 @reduxForm({
   form: 'UpdateProfileDialog',
-  validate
+  validate,
 })
 export class UpdateProfileDialog extends React.Component {
-
   static propTypes = {
     account: PropTypes.string,
 
@@ -39,18 +39,18 @@ export class UpdateProfileDialog extends React.Component {
 
     onClose: PropTypes.func,
     handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
   }
 
   render () {
-
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
         transitionAppearTimeout={250}
         transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
+        transitionLeaveTimeout={250}
+      >
         <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
@@ -59,9 +59,16 @@ export class UpdateProfileDialog extends React.Component {
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='content' multihash={this.props.icon}
-                    icon={(<FontIcon style={{fontSize: 96}} color='white'
-                      className='material-icons'>account_circle</FontIcon>)}/>
+                  <IPFSImage
+                    styleName='content'
+                    multihash={this.props.icon}
+                    icon={(<FontIcon
+                      style={{ fontSize: 96 }}
+                      color='white'
+                      className='material-icons'
+                    >account_circle
+                    </FontIcon>)}
+                  />
                 </div>
               </div>
               <div styleName='right'>
@@ -98,7 +105,6 @@ export class UpdateProfileDialog extends React.Component {
 }
 
 function mapStateToProps (state) {
-
   const selector = formValueSelector('UpdateProfileDialog')
   const session = state.get('session')
 
@@ -109,17 +115,17 @@ function mapStateToProps (state) {
     icon: selector(state, 'icon'),
 
     account: session.account,
-    initialValues: session.profile.summary()
+    initialValues: session.profile.summary(),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: (values) => {
+    onSubmit: values => {
       dispatch(modalsClose())
       dispatch(updateUserProfile(new ProfileModel(values.toJS())))
-    }
+    },
   }
 }
 

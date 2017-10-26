@@ -1,13 +1,14 @@
 import Immutable from 'immutable'
-import FileModel from './FileModel'
+
 import { abstractModel } from '../AbstractModel'
+import FileModel from './FileModel'
 
 class FileCollection extends abstractModel({
   files: new Immutable.Map(),
   hash: null,
   uploading: false,
   uploaded: false,
-  error: null
+  error: null,
 }) {
   add (file: FileModel) {
     return this.set('files', this.files().set(file.id(), file))
@@ -44,7 +45,7 @@ class FileCollection extends abstractModel({
       name: file.name(),
       hash: file.hash(),
       size: file.size(),
-      type: file.type()
+      type: file.type(),
     }))
     return links
   }

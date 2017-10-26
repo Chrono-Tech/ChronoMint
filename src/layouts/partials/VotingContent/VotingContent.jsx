@@ -1,28 +1,27 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { connect } from 'react-redux'
+import { Link } from 'react-router'
+import { Poll, PollDialog } from 'components'
+import PropTypes from 'prop-types'
+import { RaisedButton, Paper, CircularProgress } from 'material-ui'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 
 import PollModel from 'models/PollModel'
-import { modalsOpen } from 'redux/modals/actions'
-import { listPolls } from 'redux/voting/actions'
+
 import { getStatistics } from 'redux/voting/getters'
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
-
-import { RaisedButton, Paper, CircularProgress } from 'material-ui'
-import { Poll, PollDialog } from 'components'
+import { listPolls } from 'redux/voting/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
 import './VotingContent.scss'
-import { Link } from 'react-router'
 
 function prefix (token) {
-  return 'layouts.partials.VotingContent.' + token
+  return `layouts.partials.VotingContent.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
-
   static propTypes = {
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
@@ -32,7 +31,7 @@ export default class VotingContent extends Component {
     statistics: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     getList: PropTypes.func,
-    handleNewPoll: PropTypes.func
+    handleNewPoll: PropTypes.func,
   }
 
   componentWillMount () {
@@ -79,8 +78,7 @@ export default class VotingContent extends Component {
   }
 
   renderHead () {
-
-    const {statistics} = this.props
+    const { statistics } = this.props
 
     return (
       <div styleName='head'>
@@ -139,8 +137,7 @@ export default class VotingContent extends Component {
               </div>
               <div className='col-sm-1'>
                 <div styleName='contentAlignRight'>
-                  <div styleName='entries'>
-                  </div>
+                  <div styleName='entries' />
                   <div>
                     <RaisedButton
                       label={<Translate value={prefix('newPoll')} />}
@@ -158,13 +155,12 @@ export default class VotingContent extends Component {
   }
 
   renderBody (polls) {
-
     return (
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map((poll) => (
+              {polls.map(poll => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
                   <Paper>
                     <Poll model={poll} />
@@ -189,7 +185,7 @@ function mapStateToProps (state) {
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
     isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched
+    isFetching: voting.isFetching && !voting.isFetched,
   }
 }
 
@@ -201,8 +197,8 @@ function mapDispatchToProps (dispatch) {
       component: PollDialog,
       props: {
         isModify: false,
-        initialValues: new PollModel()
-      }
-    }))
+        initialValues: new PollModel(),
+      },
+    })),
   }
 }
