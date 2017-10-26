@@ -1,4 +1,4 @@
-import { getPlatforms, getPlatformsCount, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
+import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
 import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -18,10 +18,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     )
   }
 
-  getPlatformsCount (account) {
-    return this._callNum('getPlatformsForUserCount', [account])
-  }
-
   async reissueAsset (symbol, amount) {
     const tx = await this._tx(TX_REISSUE_ASSET, [symbol, amount])
     return tx.tx
@@ -36,10 +32,10 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     const platformsList = await this._call('getPlatformsMetadataForUser', [account])
     let formatPlatformsList = []
     if (platformsList.length) {
-      for (let i = 0; i < platformsList[0].length; i++) {
+      for (let platform of platformsList) {
         formatPlatformsList.push({
-          address: platformsList[0][i],
-          name: web3Converter.bytesToString(platformsList[1][i]),
+          address: platform,
+          name: null,
         })
       }
     }
@@ -71,27 +67,14 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   watchCreatePlatform (account, dispatch) {
     this._watch('PlatformRequested', tx => {
       dispatch(setTx(tx))
-      dispatch(getPlatformsCount())
+      dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
     }, {from: account})
 
     this._watch('PlatformAttached', tx => {
       dispatch(setTx(tx))
-      dispatch(getPlatformsCount())
+      dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
     }, {from: account})
-  }
-
-  async watchAssets (platformList, account, dispatch, state) {
-    const watchers = {...state['watchers']}
-    for (let platform of platformList) {
-      if (!watchers[platform.address]) {
-        const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform.address)
-        chronoBankPlatformDAO.watchAssets(account, dispatch)
-
-        watchers[platform.address] = true
-      }
-    }
-    dispatch({type: SET_WATCHERS, payload: {watchers}})
   }
 }

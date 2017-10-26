@@ -2,7 +2,7 @@ import Preloader from 'components/common/Preloader/Preloader'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
-import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
+import { createPlatform, getTokens } from 'redux/assetsManager/actions'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -22,8 +22,7 @@ export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
-    getAssetsManagerData: PropTypes.func,
-    platformsCount: PropTypes.number,
+    usersPlatformsCount: PropTypes.number,
     getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
@@ -36,7 +35,7 @@ export class AssetManager extends Component {
   }
 
   renderHead () {
-    const {platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading} = this.props
+    const {usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading} = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -52,7 +51,7 @@ export class AssetManager extends Component {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : platformsCount}
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : usersPlatformsCount}
                       </span>
                     </div>
                   </div>
@@ -97,7 +96,7 @@ export class AssetManager extends Component {
                   <div styleName='entries' />
                   <div styleName='actions'>
                     <RaisedButton
-                      disabled={!platformsCount}
+                      disabled={!usersPlatformsCount}
                       onTouchTap={() => this.props.handleAddTokenDialog()}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
@@ -168,7 +167,7 @@ export class AssetManager extends Component {
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
   return {
-    platformsCount: assetsManager.platformsCount,
+    usersPlatformsCount: assetsManager.usersPlatformsCount,
     tokensCount: assetsManager.tokensCount,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
@@ -179,7 +178,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     createPlatform: () => dispatch(createPlatform()),
     getTokens: () => dispatch(getTokens()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({

@@ -7,8 +7,6 @@ import { TextField, Checkbox } from 'redux-form-material-ui'
 import validate from './validate'
 import { Field, reduxForm } from 'redux-form/immutable'
 import './AddPlatformForm.scss'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
 import { createPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
@@ -54,13 +52,6 @@ export default class AddPlatformForm extends React.Component {
           </div>
         </div>
         <div styleName='dialogBody'>
-
-          <Field
-            component={TextField}
-            name='platformName'
-            fullWidth
-            floatingLabelText={<Translate value={prefix('platformName')} />}
-          />
 
           <Field
             styleName='checkboxField'

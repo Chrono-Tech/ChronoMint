@@ -18,6 +18,13 @@
   position: relative;
 }
 
+.instructionCreatePlatform {
+  padding: 16px;
+  @include xs-only {
+    text-align: center;
+  }
+}
+
 .instructionPlatform {
   padding: 16px;
   @include md-plus {

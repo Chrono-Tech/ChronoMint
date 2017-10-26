@@ -31,7 +31,7 @@ function mapStateToProps (state) {
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.platformsList,
+    platformsList: assetsManager.usersPlatforms,
   }
 }
 
@@ -186,10 +186,14 @@ export default class AddTokenForm extends React.Component {
                   <div styleName='icon'>
                     <img src={require('assets/img/assets1.svg')} alt='' />
                   </div>
-                  <div>{platform.name}&nbsp;(
-                    <small>{platform.address}</small>
-                    )
-                  </div>
+                  {
+                    platform.name
+                      ? <div>{platform.name}&nbsp;(
+                        <small>{platform.address}</small>
+                        )
+                      </div>
+                      : <div>{platform.address} </div>
+                  }
                 </div>)
               })
           }
@@ -204,6 +208,11 @@ export default class AddTokenForm extends React.Component {
     const amount = this.props.formValues && this.props.formValues.get('amount')
     const description = this.props.formValues && this.props.formValues.get('description')
     const platform = this.props.formValues && this.props.formValues.get('platform')
+    const renderPlatform = (platform) => {
+      return platform.name
+        ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
+        : <span>{platform.address}</span>
+    }
     return (
       <div styleName='tokenInfoRow'>
         {this.renderFileInput()}
@@ -228,7 +237,7 @@ export default class AddTokenForm extends React.Component {
             <div styleName='number'>
               {
                 platform
-                  ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
+                  ? renderPlatform(platform)
                   : <Translate value={prefix('PlatformNotSelected')} />
               }
             </div>

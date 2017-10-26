@@ -5,10 +5,9 @@ import {
   GET_MANAGERS_FOR_TOKEN,
   GET_MANAGERS_FOR_TOKEN_LOADING,
   GET_PLATFORMS,
-  GET_PLATFORMS_COUNT,
   GET_TOKENS,
   GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START,
+  GET_TRANSACTIONS_START, GET_USER_PLATFORMS,
   SELECT_PLATFORM,
   SELECT_TOKEN,
   SET_FEE,
@@ -20,10 +19,11 @@ import {
 } from './actions'
 
 const initialState = {
+  usersPlatforms: [],
+  usersPlatformsCount: 0,
   assetsManagerCountsLoading: false,
   selectedToken: null,
   selectedPlatform: null,
-  platformsCount: 0,
   tokensCount: 0,
   managersCount: 0,
   tokensOnCrowdsaleCount: 0,
@@ -40,12 +40,6 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_PLATFORMS_COUNT:
-      return {
-        ...initialState,
-        ...state,
-        platformsCount: action.payload.platformCount,
-      }
     case GET_ASSETS_MANAGER_COUNTS_START:
       return {
         ...initialState,
@@ -57,7 +51,6 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         assetsManagerCountsLoading: false,
-        platformsCount: action.payload.platforms.length,
         tokensCount: Object.keys(action.payload.assets).length,
         managersCount: action.payload.managers.length,
         assets: action.payload.assets,
@@ -68,7 +61,6 @@ export default (state = initialState, action) => {
       return {
         ...initialState,
         ...state,
-        platformsCount: action.payload.platforms.length,
         platformsList: action.payload.platforms,
       }
     case GET_MANAGERS_FOR_TOKEN_LOADING :
@@ -174,6 +166,13 @@ export default (state = initialState, action) => {
         ],
         transactionsFetched: true,
         transactionsFetching: false,
+      }
+    case GET_USER_PLATFORMS:
+      return {
+        ...initialState,
+        ...state,
+        usersPlatforms: action.payload.usersPlatforms,
+        usersPlatformsCount: action.payload.usersPlatforms.length
       }
     default:
       return state

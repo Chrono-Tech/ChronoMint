@@ -75,10 +75,13 @@ export class PlatformsList extends Component {
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  <div styleName='platformTitle'>{name}&nbsp;(
-                    <small>{address}</small>
-                    )
-                  </div>
+                  {
+                    name
+                      ? <div styleName='platformTitle'>{name}&nbsp;(
+                        <small>{address}</small>
+                        )</div>
+                      : <div styleName='platformTitle'>{address}</div>
+                  }
                 </div>
               </div>
               {

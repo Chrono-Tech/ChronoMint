@@ -31,6 +31,8 @@ export class PlatformInfo extends Component {
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
     getFee: PropTypes.func,
+    platformsList: PropTypes.array,
+    usersPlatforms: PropTypes.array,
   }
 
   componentWillReceiveProps (newProps) {
@@ -50,6 +52,30 @@ export class PlatformInfo extends Component {
   }
 
   renderInstructions () {
+    if (!this.props.usersPlatforms.length && !this.props.platformsList.length) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionCreatePlatform'>
+              <Translate value={prefix('createPlatform')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    if (this.props.usersPlatforms.length && !this.props.platformsList.length) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionCreatePlatform'>
+              <Translate value={prefix('createToken')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     if (!this.props.selectedPlatform) {
       return (
         <div styleName='root'>
@@ -196,6 +222,8 @@ function mapStateToProps (state) {
     selectedPlatform: assetsManager.selectedPlatform,
     managersForTokenLoading: assetsManager.managersForTokenLoading,
     tokensMap: assetsManager.tokensMap,
+    platformsList: assetsManager.platformsList,
+    usersPlatforms: assetsManager.usersPlatforms,
   }
 }
 

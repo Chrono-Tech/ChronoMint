@@ -76,6 +76,8 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
 
   dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
   const dao = await contractsManagerDAO.getUserManagerDAO()
+  // eslint-disable-next-line
+  console.log('--actions#: account, newProfile', account, newProfile)
   try {
     await dao.setMemberProfile(account, newProfile)
   } catch (e) {

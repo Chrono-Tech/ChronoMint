@@ -12,6 +12,8 @@ export default {
     send: 'Send to exchange',
     selectPlatform: 'Select a platform',
     selectToken: 'Select a token',
+    createPlatform: 'Create Platform',
+    createToken: 'Create Token',
   },
   ru: {
     reissue: 'Переиздать',
@@ -26,5 +28,7 @@ export default {
     send: 'Обменять',
     selectPlatform: 'Выберите платформу',
     selectToken: 'Выберите токен',
+    createPlatform: 'Создайте платформу',
+    createToken: 'Создайте токен',
   },
 }
