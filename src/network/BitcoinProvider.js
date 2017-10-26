@@ -52,18 +52,17 @@ export class BitcoinProvider extends EventEmitter {
   async transfer (to, amount: BigNumber) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx /* , fee */ } = this._engine.createTransaction(to, amount, utxos)
-    return await node.send(tx.toHex())
+    const { tx , fee } = this._engine.createTransaction(to, amount, utxos)
+    console.log('fee', fee)
+    return await node.send(this.getAddress(), tx.toHex())
   }
 
-  // eslint-disable-next-line
   async onTransaction (tx) {
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),
       tx,
     })
-    // TODO @ipavlenko: Implement using socket connection to our middleware
   }
 }
 

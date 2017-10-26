@@ -2,8 +2,8 @@ import type BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
-const DECIMALS = 100000000
-const FEE_RATE = 125 // satoshis per byte
+export const DECIMALS = 100000000
+const FEE_RATE = 75 // satoshis per byte
 
 
 export class BitcoinEngine {

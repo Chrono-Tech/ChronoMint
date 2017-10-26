@@ -1,5 +1,8 @@
+import BigNumber from 'bignumber.js'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
+import TxModel from 'models/TxModel'
+import { DECIMALS } from 'network/BitcoinEngine'
 
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 
@@ -21,7 +24,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           })
           this.executeOrSschedule(() => {
             this._subscriptions[`balance:${address}`] = this._client.subscribe(
-              `${socket.channels.balance}.${address}`,
+              // `${socket.channels.balance}.${address}`,
+              `${socket.channels.balance}.*`,
               message => {
                 this.trace('Address Balance', message.body)
               }
@@ -103,14 +107,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
 
   async getAddressInfo (address) {
     try {
-      // console.log('Call', this)
-      if (this._socket) {
-        // eslint-disable-next-line
-        console.log('balance', await this._api.get(`/addr/${address}/balance`))
-        // eslint-disable-next-line
-        console.log('utxo', await this._api.get(`/addr/${address}/utxo`))
-      }
-
       const res = await this._api.get(`/addr/${address}/balance`)
       const {
         confirmations0,
@@ -138,20 +134,45 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  async send (rawtx) {
+  async send (account, rawtx) {
     try {
       const params = new URLSearchParams()
-      params.append('rawtx', rawtx)
+      params.append('tx', rawtx)
       const res = await this._api.post('/tx/send', params)
-      // TODO @ipavlenko: Temporary emulate event from the socket
-      setTimeout(() => {
-        this.emit('tx', res.data)
-      }, 0)
-
-      return res.data
+      const model = this._createTxModel(res.data, account)
+      setImmediate(() => {
+        this.emit('tx', model)
+      })
+      return model
     } catch (e) {
       this.trace(`send transaction ${rawtx} failed`, e)
       throw e
     }
+  }
+
+  _createTxModel (tx, account): TxModel {
+    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map(input => input.addresses.join(',')).join(',')
+    const to = tx.outputs.map(output => output.scriptPubKey.addresses.join(',')).join(',')
+
+    let value = new BigNumber(0)
+    for (const output of tx.outputs) {
+      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+        value = value.add(new BigNumber(output.value))
+      }
+    }
+    value = value.div(DECIMALS)
+
+    const txmodel = new TxModel({
+      txHash: tx.txid,
+      // blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      from,
+      to,
+      value,
+      fee: new BigNumber(tx.fee),
+      credited: tx.isCoinBase || !tx.inputs.filter(input => input.addresses.indexOf(account) >= 0).length,
+    })
+    return txmodel
   }
 }
