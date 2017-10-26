@@ -3,15 +3,15 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
-import globalStyles from 'layouts/partials/styles'
 import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import './WalletPendingTransfers.scss'
+import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 
 function mapStateToProps (state) {
   let pendingTxList
-  const wallet: MultisigWalletModel = state.get('multisigWallet').selected()
+  const wallet: MultisigWalletModel = state.get(DUCK_MULTISIG_WALLET).selected()
 
   if (wallet) {
     pendingTxList = wallet.pendingTxList()
@@ -86,7 +86,7 @@ export default class WalletPendingTransfers extends React.Component {
 
   render () {
     return (
-      <Paper style={globalStyles.content.paper.style}>
+      <Paper>
         <div styleName='header'>
           <div styleName='title'><Translate value='wallet.pendingTransfers' /></div>
         </div>

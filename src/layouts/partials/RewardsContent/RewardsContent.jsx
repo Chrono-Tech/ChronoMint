@@ -157,7 +157,7 @@ export default class RewardsContent extends Component {
             {this.props.rewardsData.periods().valueSeq().map((item) => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <RewardsPeriod period={item} rewardsData={this.props.rewardsData} />
                   </Paper>
                 </div>

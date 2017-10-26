@@ -1,11 +1,13 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import ls from 'utils/LocalStorage'
+import TransactionsCollection from 'models/Wallet/TransactionsCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
-  tokens: null, //
+  tokens: new Immutable.Map(), //
   isMultisig: true, //
+  transactions: new TransactionsCollection(),
   owners: new Immutable.List(ls.getAccount()),
   name: null,
   requiredSignatures: null,
@@ -50,8 +52,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     }
   }
 
-  tokens () {
-    return this.get('tokens')
+  tokens (value) {
+    return this._getSet('tokens', value)
   }
 
   isMultisig () {
@@ -69,5 +71,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   dao () {
     return this.get('dao')
   }
-}
 
+  transactions (value) {
+    return this._getSet('transactions', value)
+  }
+}

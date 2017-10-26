@@ -12,7 +12,7 @@ import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
-import { addOwner, removeWallet, selectMultisigWallet, multisigTransfer } from 'redux/multisigWallet/actions'
+import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import './WalletSelectDialog.scss'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -22,7 +22,7 @@ const TRANSITION_TIMEOUT = 250
 
 function mapStateToProps (state) {
   return {
-    multisigWallet: state.get('multisigWallet')
+    multisigWallet: state.get(DUCK_MULTISIG_WALLET)
   }
 }
 

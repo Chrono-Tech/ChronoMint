@@ -16,6 +16,10 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
+
+export const DUCK_MAIN_WALLET = 'mainWallet'
 
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
@@ -60,7 +64,7 @@ export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
-  const token: TokenModel = getState().get('mainWallet').tokens().get(tx.symbol())
+  const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(tx.symbol())
 
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
@@ -85,8 +89,9 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
 
 export const watchInitWallet = () => async (dispatch, getState) => {
   const state = getState()
-  const profile: ProfileModel = state.get('session').profile
-  const previous = state.get('mainWallet').tokens()
+
+  const profile: ProfileModel = state.get(DUCK_SESSION).profile
+  const previous = state.get(DUCK_MAIN_WALLET).tokens()
 
   dispatch({type: WALLET_TOKENS_FETCH})
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
@@ -130,10 +135,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 }
 
-export const transfer = (token: TokenModel, amount: string, recipient) => async (dispatch, getState) => {
-  if (getState().get('mainWallet').isMultisig()) {
-    return dispatch(multisigTransfer(token, amount, recipient))
-  }
+export const mainTransfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
   amount = new BigNumber(amount)
 
   dispatch(balanceMinus(amount, token))
@@ -147,7 +149,7 @@ export const transfer = (token: TokenModel, amount: string, recipient) => async 
   }
 }
 
-export const approve = (token: TokenModel, amount: string, spender) => async () => {
+export const mainApprove = (token: TokenModel, amount: string, spender) => async () => {
   try {
     const dao = await token.dao()
     await dao.approve(spender, amount)
@@ -160,7 +162,7 @@ export const approve = (token: TokenModel, amount: string, spender) => async () 
 
 export const depositTIME = (amount: string) => async (dispatch, getState) => {
   amount = new BigNumber(amount)
-  const token: TokenModel = getState().get('mainWallet').tokens().get(TIME)
+  const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(TIME)
 
   dispatch(balanceMinus(amount, token))
 

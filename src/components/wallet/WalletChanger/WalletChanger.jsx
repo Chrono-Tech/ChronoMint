@@ -16,14 +16,18 @@ import globalStyles from 'layouts/partials/styles'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
+import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+
 import './WalletChanger.scss'
 
 function mapStateToProps (state) {
   return {
     isMultisig: getCurrentWallet(state).isMultisig(),
-    account: state.get('session').account,
-    mainWallet: state.get('mainWallet'),
-    multisigWallet: state.get('multisigWallet')
+    account: state.get(DUCK_SESSION).account,
+    mainWallet: state.get(DUCK_MAIN_WALLET),
+    multisigWallet: state.get(DUCK_MULTISIG_WALLET)
   }
 }
 
@@ -67,7 +71,7 @@ export default class WalletChanger extends React.Component {
     const {isMultisig, mainWallet, multisigWallet} = this.props
     return (
       <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
-        <Paper style={globalStyles.content.paper.style}>
+        <Paper>
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMainBigSVG} />
             <div styleName='headerInfo'>
@@ -110,7 +114,7 @@ export default class WalletChanger extends React.Component {
 
     return (
       <div styleName='walletBox'>
-        <Paper style={globalStyles.content.paper.style}>
+        <Paper>
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMultiBigSVG} />
             <div styleName='headerInfo'>

@@ -12,7 +12,6 @@ import { initTIMEDeposit } from 'redux/mainWallet/actions'
 
 import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import { Poll, PollDialog } from 'components'
-import styles from 'layouts/partials/styles'
 
 import './VotingContent.scss'
 import { Link } from 'react-router'
@@ -167,7 +166,7 @@ export default class VotingContent extends Component {
             <div className='row'>
               {polls.map((poll) => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <Poll model={poll} />
                   </Paper>
                 </div>

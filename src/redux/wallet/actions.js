@@ -1,13 +1,14 @@
-import { selectMultisigWallet } from 'redux/multisigWallet/actions'
+import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 
+export const DUCK_WALLET = 'wallet'
 export const WALLET_SWITCH_WALLET = 'WALLET/switch_wallet'
 
-export const initWallet = () => (dispatch) => {
-  console.log('--actions#', 1)
+export const initWallet = () => (dispatch, getState) => {
+  dispatch(switchWallet(getState().get(DUCK_MAIN_WALLET)))
 }
 
 export const switchWallet = (wallet) => async (dispatch) => {
-  console.log('--actions#', wallet.address(), wallet.isMultisig())
   dispatch({type: WALLET_SWITCH_WALLET, wallet})
   if (wallet.isMultisig()) {
     dispatch(selectMultisigWallet(wallet))
@@ -15,13 +16,13 @@ export const switchWallet = (wallet) => async (dispatch) => {
 }
 
 export const getCurrentWallet = (state) => {
-  const {isMultisig, current} = state.get('wallet')
+  const {isMultisig, current} = state.get(DUCK_WALLET)
 
   if (!current) {
-    return state.get('mainWallet')
+    return state.get(DUCK_MAIN_WALLET)
   }
 
   return isMultisig
-    ? state.get('multisigWallet').list().get(current)
-    : state.get('mainWallet')
+    ? state.get(DUCK_MULTISIG_WALLET).list().get(current)
+    : state.get(DUCK_MAIN_WALLET)
 }

@@ -6,7 +6,6 @@ import PlatformsList from 'components/assets/PlatformsList/PlatformsList'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assets/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assets/AddTokenDialog/AddTokenDialog'
-import styles from 'layouts/partials/styles'
 import { Paper, RaisedButton } from 'material-ui'
 
 import './AssetManager.scss'
@@ -37,12 +36,12 @@ export class AssetManager extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <Paper style={styles.content.paper.style}>
+          <Paper>
             {this.renderHead()}
             {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
-          <Paper style={styles.content.paper.style}>
+          <Paper>
             {this.renderTable()}
           </Paper>
         </div>

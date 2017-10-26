@@ -89,9 +89,6 @@ export default {
       link: {
         color: variables.colorWhite
       }
-    },
-    paper: {
-      style: {}
     }
   },
   footer: {

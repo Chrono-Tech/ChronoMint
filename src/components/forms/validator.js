@@ -75,7 +75,10 @@ export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
     const matcher = new RegExp('^\\d+' + (decimals > 0 ? '(\\.\\d{1,' + decimals + '})?' : '') + '$')
-    return !matcher.test(value) ? 'errors.invalidCurrencyNumber' : null
+    return !matcher.test(value) ? {
+      value: 'errors.invalidCurrencyNumber',
+      decimals
+    } : null
   } else {
     return invalidPositiveNumber
   }

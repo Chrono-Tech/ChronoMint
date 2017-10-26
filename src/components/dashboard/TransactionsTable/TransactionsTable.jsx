@@ -38,7 +38,7 @@ export default class TransactionsTable extends React.Component {
     const data = buildTableData(transactions.list(), locale)
 
     return (
-      <Paper style={globalStyles.content.paper.style}>
+      <Paper>
         <div styleName='root'>
           <div styleName='header'>
             <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>

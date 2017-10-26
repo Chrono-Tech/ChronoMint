@@ -17,6 +17,7 @@ import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitMarket } from 'redux/market/action'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
+import { initWallet } from 'redux/wallet/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'

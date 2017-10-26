@@ -4,7 +4,6 @@ import { Paper } from 'material-ui'
 import { Operations } from 'components'
 import { Translate } from 'react-redux-i18n'
 
-import styles from 'layouts/partials/styles'
 import '../SettingsContent/SettingsContent.scss'
 
 function prefix (token) {
@@ -18,12 +17,12 @@ export default class SettingsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='column'>
-            <Paper style={styles.content.paper.style}>
+            <Paper>
               <Operations title={<Translate value={prefix('pendingOperations')} />} showSignatures={true} filterOperations={(o) => !o.isDone()} />
             </Paper>
           </div>
           <div styleName='column'>
-            <Paper style={styles.content.paper.style}>
+            <Paper>
               <Operations title={<Translate value={prefix('completedOperations')} />} showSignatures={false} filterOperations={(o) => o.isDone()} />
             </Paper>
           </div>

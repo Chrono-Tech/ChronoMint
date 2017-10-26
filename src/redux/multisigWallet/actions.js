@@ -6,6 +6,9 @@ import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendi
 import { notify } from 'redux/notifier/actions'
 import multisigWalletService from 'services/MultisigWalletService'
 import TokenModel from 'models/TokenModel'
+import { DUCK_SESSION } from 'redux/session/actions'
+
+export const DUCK_MULTISIG_WALLET = 'multisigWallet'
 
 export const MULTISIG_FETCHING = 'multisig/FETCHING'
 export const MULTISIG_FETCHED = 'multisig/FETCHED'
@@ -16,7 +19,7 @@ export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 
 const watchMultisigWallets = (wallet: MultisigWalletModel) => async (dispatch) => {
   try {
-    await multisigWalletService.subscribeToWalletDAO(wallet.address())
+    await multisigWalletService.subscribeToWalletDAO(wallet)
   } catch (e) {
     // eslint-disable-next-line
     console.error('watch error', e.message)
@@ -27,7 +30,7 @@ const handleWalletCreate = (wallet: MultisigWalletModel, notice: WalletNoticeMod
   dispatch({type: MULTISIG_UPDATE, wallet: wallet.isPending(false)})
   dispatch(notify(notice))
   watchMultisigWallets(wallet)
-  const wallets = getState().get('multisigWallet')
+  const wallets = getState().get(DUCK_MULTISIG_WALLET)
   if (wallets.size === 1) {
     dispatch(selectMultisigWallet(wallets.first()))
   }
@@ -53,21 +56,23 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   })
 
   multisigWalletService.on('ConfirmationNeeded', (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
-    const wallet: MultisigWalletModel = getState().get('multisigWallet').list().get(walletId)
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).list().get(walletId)
     const pendingTxList = wallet.pendingTxList()
     dispatch({type: MULTISIG_UPDATE, wallet: wallet.pendingTxList(pendingTxList.set(pendingTxModel.id(), pendingTxModel))})
   })
 
   multisigWalletService.on('Deposit', (walletId, tokenId, amount) => {
-    const wallet: MultisigWalletModel = getState().get('multisigWallet').list().get(walletId)
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).list().get(walletId)
     const token: TokenModel = wallet.tokens().get(tokenId)
-    const updatedWallet = wallet.tokens().set(token.id(), token.updateBalance(true, amount))
+    const updatedWallet = wallet.tokens(wallet.tokens().set(token.id(), token.updateBalance(true, amount)))
+    console.log('--actions#', updatedWallet.toJS())
     dispatch({type: MULTISIG_UPDATE, wallet: updatedWallet})
     // dispatch(notify(notice))
   })
 }
 
 export const selectMultisigWallet = (wallet: MultisigWalletModel) => (dispatch) => {
+  console.log('--actions#', 1)
   dispatch({type: MULTISIG_SELECT, wallet})
 }
 
@@ -101,7 +106,7 @@ export const createWallet = (wallet: MultisigWalletModel) => async (dispatch) =>
 
 export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, getState) => {
   try {
-    const {account} = getState().get('session')
+    const {account} = getState().get(DUCK_SESSION)
     const dao: MultisigWalletDAO = wallet.dao()
     await dao.removeWallet(wallet, account)
     dispatch({type: MULTISIG_REMOVE, wallet})
@@ -127,8 +132,7 @@ export const addOwner = (wallet) => async () => {
   }
 }
 
-export const multisigTransfer = (token, amount, recipient) => async (dispatch, getState) => {
-  const wallet = getState().get('multisigWallet').selected()
+export const multisigTransfer = (wallet, token, amount, recipient) => async (dispatch, getState) => {
   try {
     const dao: MultisigWalletDAO = wallet.dao()
     await dao.transfer(wallet, token, amount, recipient)

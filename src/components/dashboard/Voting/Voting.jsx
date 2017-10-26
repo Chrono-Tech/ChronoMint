@@ -8,7 +8,6 @@ import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import { Translate } from 'react-redux-i18n'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import { Paper } from 'material-ui'
-import styles from 'layouts/partials/styles'
 import { Link } from 'react-router'
 import { RaisedButton } from 'material-ui'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
@@ -83,7 +82,7 @@ class Voting extends React.Component {
                 const poll = item.poll()
 
                 return <div styleName='votingWrapper' key={item.poll().id()}>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <div styleName='votingInner'>
                       <div styleName='pollTitle'>{poll.title()}</div>
                       <div styleName='layer'>

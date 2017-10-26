@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
-import { Paper } from 'material-ui'
 import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
 import * as actions from 'redux/mainWallet/actions'
 import { isTestingNetwork } from 'network/settings'
-import styles from 'layouts/partials/styles'
 import { Translate } from 'react-redux-i18n'
 import './WalletContent.scss'
+import { DUCK_NETWORK } from 'redux/network/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 
 function prefix (token) {
   return 'layouts.partials.WalletContent.' + token
@@ -83,11 +83,7 @@ export class WalletContent extends Component {
   }
 
   renderSendTokens () {
-    return !this.props.isFetched ? null : (
-      <Paper style={styles.content.paper.style}>
-        <SendTokens title={<Translate value={prefix('sendTokens')} />} />
-      </Paper>
-    )
+    return !this.props.isFetched ? null : <SendTokens />
   }
 
   render () {
@@ -165,8 +161,8 @@ export class WalletContent extends Component {
 }
 
 function mapStateToProps (state) {
-  const wallet = state.get('mainWallet')
-  const network = state.get('network')
+  const wallet = getCurrentWallet(state)
+  const network = state.get(DUCK_NETWORK)
   return {
     isFetched: wallet.isFetched(),
     tokens: wallet.tokens(),

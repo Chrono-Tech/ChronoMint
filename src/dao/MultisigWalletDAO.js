@@ -42,9 +42,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._watch('SingleTransact', callback)
   }
 
-  watchDeposit (callback) {
+  watchDeposit (wallet, callback) {
     return this._watch('Deposit', result => {
-      callback(result.args.value)
+      callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
     })
   }
 

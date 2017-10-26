@@ -12,7 +12,6 @@ import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWa
 import { isTestingNetwork } from 'network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-import globalStyles from 'layouts/partials/styles'
 import { Translate } from 'react-redux-i18n'
 import './DepositTokens.scss'
 import type MainWallet from 'models/Wallet/MainWalletModel'
@@ -66,7 +65,7 @@ export class DepositTokens extends React.Component {
 
   render () {
     return (
-      <Paper style={globalStyles.content.paper.style}>
+      <Paper>
         {this.props.token ? (
           <ColoredSection
             styleName='root'

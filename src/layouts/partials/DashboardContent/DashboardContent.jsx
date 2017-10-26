@@ -5,7 +5,6 @@ import { Paper, CircularProgress } from 'material-ui'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
-import styles from 'layouts/partials/styles'
 import './DashboardContent.scss'
 
 function prefix (token) {
@@ -44,12 +43,10 @@ export class DashboardContent extends Component {
               <div className='DashboardContent__grid'>
                 <div className='row'>
                   <div className='col-md-3 col-lg-2' styleName='headLight'>
-                    <Paper style={styles.content.paper.style}>
-                      <SendTokens title={<Translate value={prefix('sendTokens')}/>}/>
-                    </Paper>
+                    <SendTokens />
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
-                    <Paper style={styles.content.paper.style}>
+                    <Paper>
                       <DepositTokens title={<Translate value={prefix('depositTime')}/>}/>
                     </Paper>
                   </div>
@@ -59,7 +56,7 @@ export class DashboardContent extends Component {
                   : (
                     <div className='row'>
                       <div className='col-xs-6'>
-                        <Paper style={styles.content.paper.style}>
+                        <Paper>
                           <Voting/>
                         </Paper>
                       </div>
@@ -72,7 +69,7 @@ export class DashboardContent extends Component {
                     <div className='row'>
                       {this.props.rewardsData.periods().valueSeq().map((item) => (
                         <div className='col-xs-6' key={item.index()}>
-                          <Paper style={styles.content.paper.style}>
+                          <Paper>
                             <Rewards period={item} rewardsData={this.props.rewardsData}/>
                           </Paper>
                         </div>

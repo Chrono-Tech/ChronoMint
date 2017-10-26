@@ -9,7 +9,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import './InfoPartial.scss'
 import classnames from 'classnames'
-import { getCurrentWallet } from 'redux/wallet/actions'
+import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -42,7 +42,6 @@ export class InfoPartial extends React.Component {
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
-    // isMultisig: PropTypes.bool,
     isInited: PropTypes.bool,
     wallet: PropTypes.object
   }
@@ -214,7 +213,7 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     profile: session.profile,
-    isInited: state.get('wallet').isInited,
+    isInited: !!state.get(DUCK_WALLET).current,
     wallet: getCurrentWallet(state),
     selectedCoin: market.selectedCoin,
     open: ui.open

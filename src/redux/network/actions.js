@@ -16,6 +16,8 @@ import metaMaskResolver from 'network/metaMaskResolver'
 import { createSession, destroySession } from 'redux/session/actions'
 import { getNetworkById } from 'network/settings'
 
+export const DUCK_NETWORK = 'network'
+
 export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'

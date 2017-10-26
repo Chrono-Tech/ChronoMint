@@ -19,8 +19,8 @@ class MultisigWalletService extends EventEmitter {
     return this._cache[address]
   }
 
-  subscribeToWalletDAO (address) {
-    const dao = this.getWalletDAO(address)
+  subscribeToWalletDAO (wallet) {
+    const dao = this.getWalletDAO(wallet.address())
     return Promise.all([
       dao.watchOwnerRemoved((result) => {
         this.emit('OwnerRemoved', result)
@@ -32,10 +32,10 @@ class MultisigWalletService extends EventEmitter {
         this.emit('SingleTransact', result)
       }),
       dao.watchConfirmationNeeded(pendingTxModel => {
-        this.emit('ConfirmationNeeded', address, pendingTxModel)
+        this.emit('ConfirmationNeeded', wallet.address(), pendingTxModel)
       }),
-      dao.watchDeposit(value => {
-        this.emit('Deposit', address, 'ETH', value)
+      dao.watchDeposit(wallet, value => {
+        this.emit('Deposit', wallet.address(), 'ETH', value)
       })
     ])
   }
