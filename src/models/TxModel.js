@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 
-import {abstractModel} from './AbstractModel'
+import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
   txHash: null,
@@ -19,9 +19,14 @@ class TxModel extends abstractModel({
   credited: null,
   symbol: '',
   type: '',
+  args: null,
 }) {
   to () {
     return this.get('to')
+  }
+
+  args () {
+    return this.get('args')
   }
 
   type () {

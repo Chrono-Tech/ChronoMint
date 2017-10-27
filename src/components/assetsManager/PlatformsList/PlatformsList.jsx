@@ -1,12 +1,13 @@
-import React, {Component} from 'react'
+import Preloader from 'components/common/Preloader/Preloader'
+import React, { Component } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {IPFSImage, TokenValue} from 'components'
+import { connect } from 'react-redux'
+import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
-import {Translate} from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import './PlatformsList.scss'
-import {SELECT_PLATFORM, SELECT_TOKEN} from 'redux/assetsManager/actions'
+import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
@@ -21,6 +22,7 @@ export class PlatformsList extends Component {
     platformsList: PropTypes.array,
     tokensMap: PropTypes.object,
     assets: PropTypes.object,
+    assetsManagerCountsLoading: PropTypes.bool,
   }
 
   handleSelectPlatform (platformAddress) {
@@ -29,7 +31,7 @@ export class PlatformsList extends Component {
 
   renderTokenList () {
     const filteredTokens = this.props.tokensMap.toArray()
-      .filter(token => token.platform() === this.props.selectedPlatform)
+      .filter(token => token.platform ? token.platform() === this.props.selectedPlatform : false)
     return (
       <div styleName='tokensList'>
         {
@@ -47,7 +49,7 @@ export class PlatformsList extends Component {
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{fontSize: '24px'}}
-                    value={new BigNumber(this.props.assets[token.address()].totalSupply)}
+                    value={new BigNumber(this.props.assets[token.address()] ? this.props.assets[token.address()].totalSupply : 0)}
                     symbol={token.symbol()}
                   />
                 </div>
@@ -60,7 +62,7 @@ export class PlatformsList extends Component {
   }
 
   renderPlatformsList () {
-    const {selectedPlatform, platformsList, detachPlatform} = this.props
+    const {selectedPlatform, platformsList} = this.props
     return (
       <div>
         {
@@ -73,10 +75,13 @@ export class PlatformsList extends Component {
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  <div styleName='platformTitle'>{name}&nbsp;(
-                    <small>{address}</small>
-                    )
-                  </div>
+                  {
+                    name
+                      ? <div styleName='platformTitle'>{name}&nbsp;(
+                        <small>{address}</small>
+                        )</div>
+                      : <div styleName='platformTitle'>{address}</div>
+                  }
                 </div>
               </div>
               {
@@ -95,9 +100,11 @@ export class PlatformsList extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-
-          {this.renderPlatformsList()}
-
+          {
+            this.props.assetsManagerCountsLoading
+              ? <div styleName='preloaderWrap'><Preloader /></div>
+              : this.renderPlatformsList()
+          }
         </div>
       </div>
     )
@@ -112,6 +119,7 @@ function mapStateToProps (state) {
     assets: assetsManager.assets,
     selectedToken: assetsManager.selectedToken,
     selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
   }
 }
 
