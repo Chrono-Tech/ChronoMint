@@ -5,6 +5,7 @@ import { getEtherscanUrl } from 'Login/network/settings'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
@@ -80,7 +81,7 @@ export default class TransactionsTable extends React.Component {
           <div styleName='footer'>
             <RaisedButton
               label={this.props.isFetching ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
+                style={{verticalAlign: 'middle', marginTop: -2}}
                 size={24}
                 thickness={1.5}
               /> : 'Load More'}
@@ -94,7 +95,7 @@ export default class TransactionsTable extends React.Component {
     )
   }
 
-  renderRow ({ timeTitle, trx }, index) {
+  renderRow ({timeTitle, trx}, index) {
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>

@@ -25,7 +25,14 @@ class LoginUPort extends Component {
     isLoading: PropTypes.bool,
   }
 
-  handleLoginClick = async () => {
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleLoginClick = this.handleLoginClick.bind(this)
+  }
+
+  async handleLoginClick () {
     try {
       await this.props.loginUport()
       this.props.onLogin()

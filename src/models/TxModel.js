@@ -18,9 +18,14 @@ class TxModel extends abstractModel({
   input: null,
   credited: null,
   symbol: '',
+  type: '',
 }) {
   to () {
     return this.get('to')
+  }
+
+  type () {
+    return this.get('type')
   }
 
   from () {

@@ -1,5 +1,5 @@
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
-import * as Assets from 'components/assets/lang'
+import * as Assets from 'components/assetsManager/lang'
 import * as Dashboard from 'components/dashboard/lang'
 import * as Timer from 'components/common/Timer/lang'
 

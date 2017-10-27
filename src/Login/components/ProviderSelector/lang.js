@@ -1,10 +1,6 @@
-export default {
-  en: {
-    provider: 'Provider',
-  },
-  ru: {
-
-    provider: 'Провайдер',
-  },
+export const en = {
+  provider: 'Provider',
 }
-
+export const ru = {
+  provider: 'Провайдер',
+}

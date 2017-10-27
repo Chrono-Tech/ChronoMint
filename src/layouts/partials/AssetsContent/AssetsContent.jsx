@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 // import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import AssetManager from 'components/assets/AssetManager/AssetManager'
+import AssetManager from 'components/assetsManager/AssetManager/AssetManager'
 
 import './AssetsContent.scss'
 

@@ -1,21 +1,24 @@
 import { en as layouts } from 'layouts/lang'
-
-import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-import * as exchange from 'dao/ExchangeDAO'
-import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as rewards from 'dao/RewardsDAO'
 import { en as Login } from 'Login/lang'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as exchange from 'dao/ExchangeDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
+
 import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',
+  true: 'yes',
+  false: 'no',
   ...Login,
   ...components,
   layouts,
@@ -77,7 +80,7 @@ export default {
       addWallet: 'Add wallet',
       yourWallets: 'Your wallets',
       youHaveNoWallets: 'You have no wallets',
-      howToAddMultisignatureWallet: "How to add mulisignature wallet? It's easy!",
+      howToAddMultisignatureWallet: 'How to add mulisignature wallet? It\'s easy!',
       toCreateAMultisigWallet: 'To create a multisig wallet',
       clickPlusButtonAtTheTop: 'Click plus button at the top',
       selectOwnersAtLeastTwo: 'Select owners, at least two',
@@ -340,6 +343,17 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+      },
+    },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform',
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform',
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform',
       },
     },
     LOCManager: {
@@ -766,7 +780,7 @@ export default {
       },
       AddCurrencyDialog: {
         addToken: 'Add Token',
-        howToAddYourToken: "How to add your token? It's easy!",
+        howToAddYourToken: 'How to add your token? It\'s easy!',
         youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
         clickOnThePlusButtonAbove: 'Click on the + plus button above.',
         fillTheForm: 'Fill the form, check values and press SAVE.',

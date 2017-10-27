@@ -1,16 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import networkService, { clearErrors, loading } from 'Login/redux/network/actions'
-import LoginMetamask from 'Login/components/LoginMetamask/LoginMetamask'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import LoginLocal from 'Login/components/LoginLocal/LoginLocal'
-import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
+import LoginMetamask from 'Login/components/LoginMetamask/LoginMetamask'
 import LoginUPort from 'Login/components/LoginUPort/LoginUPort'
+import LoginWithOptions from 'Login/components/LoginWithOptions/LoginWithOptions'
+import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
 import ProviderSelector from 'Login/components/ProviderSelector/ProviderSelector'
-import { providerMap } from 'Login/network/settings'
-import WarningIcon from 'material-ui/svg-icons/alert/warning'
-import { yellow800 } from 'material-ui/styles/colors'
+import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
+import networkService, { loading, clearErrors } from 'Login/redux/network/actions'
+import { connect } from 'react-redux'
+import inverted from 'styles/themes/inversed'
+import { providerMap } from 'Login/network/settings'
+import { yellow800 } from 'material-ui/styles/colors'
+
+import { login } from 'redux/session/actions'
+
 import './LoginPage.scss'
 
 const mapStateToProps = state => {
@@ -25,15 +31,15 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  checkNetwork: () => networkService.checkNetwork(),
-  createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: account => networkService.login(account),
+  checkNetwork: () => dispatch(networkService.checkNetwork()),
+  createNetworkSession: (account, provider, network) => dispatch(networkService.createNetworkSession(account, provider, network)),
+  login: account => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginForm extends Component {
+class LoginPage extends Component {
   static propTypes = {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,
@@ -42,11 +48,14 @@ class LoginForm extends Component {
     selectedAccount: PropTypes.string,
     selectedProviderId: PropTypes.number,
     selectedNetworkId: PropTypes.number,
-    errors: PropTypes.array,
+    errors: PropTypes.arrayOf(PropTypes.string),
   }
 
-  constructor () {
-    super()
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleLogin = this.handleLogin.bind(this)
     this.state = {
       isShowProvider: true,
     }
@@ -74,36 +83,46 @@ class LoginForm extends Component {
   }
 
   render () {
-    const {errors, selectedProviderId} = this.props
+    const {
+      errors,
+      selectedProviderId,
+    } = this.props
 
     return (
-      <div styleName='form'>
-        <div styleName='title'><Translate value='LoginPage.title' /></div>
-        <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
-        {this.state.isShowProvider && <ProviderSelector />}
-        {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={() => this.handleLogin()} />}
-        {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={() => this.handleLogin()} />}
-        {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
-          <LoginWithOptions
-            onLogin={() => this.handleLogin()}
-            onToggleProvider={this.handleToggleProvider}
-          />
-        )}
-        {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
+      <MuiThemeProvider muiTheme={inverted}>
+        <div styleName='form'>
+          <div styleName='title'><Translate value='LoginPage.title' /></div>
+          <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
+          {this.state.isShowProvider && <ProviderSelector />}
+          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
+          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
+            <LoginWithOptions
+              onLogin={this.handleLogin}
+              onToggleProvider={this.handleToggleProvider}
+            />
+          )}
+          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
-        {errors && (
-          <div styleName='errors'>
-            {errors.map((error, index) => (
-              <div styleName='error' key={index}>
-                <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
-                <div styleName='errorText'>{error}</div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+          {errors && (
+            <div styleName='errors'>
+              {errors.map((error, index) => (
+                <div styleName='error' key={index}>
+                  <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
+                  <div styleName='errorText'>{error}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          <ul styleName='actions'>
+            <li>
+              <LocaleDropDown />
+            </li>
+          </ul>
+        </div>
+      </MuiThemeProvider>
     )
   }
 }
 
-export default LoginForm
+export default LoginPage

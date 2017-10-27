@@ -19,6 +19,10 @@ class LedgerProvider extends EventEmitter {
     this._isInited = false
     this._timer = null
     this._isETHOpened = false
+
+    // TODO replace with async arrow when class properties will work correctly
+    this._syncing = this._syncing.bind(this)
+
   }
 
   async init () {
@@ -67,7 +71,7 @@ class LedgerProvider extends EventEmitter {
     })
   }
 
-  _syncing = async () => {
+  async _syncing () {
     if (this._ledger.connectionOpened) {
       // already busy
       return

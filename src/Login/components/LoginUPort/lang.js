@@ -1,9 +1,7 @@
-export default {
-  en: {
-    login: 'Login',
-  },
-  ru: {
-    login: 'Войти',
-  },
+export const en = {
+  login: 'Login',
 }
 
+export const ru = {
+  login: 'Войти',
+}

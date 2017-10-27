@@ -1,9 +1,7 @@
-export default {
-  en: {
-    network: 'Network',
-  },
-  ru: {
-    network: 'Сеть',
-  },
+export const en = {
+  network: 'Network',
 }
 
+export const ru = {
+  network: 'Сеть',
+}

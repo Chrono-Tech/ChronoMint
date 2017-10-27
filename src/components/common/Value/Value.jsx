@@ -9,7 +9,7 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 export default class Value extends React.Component {
   static propTypes = {
     value: PropTypes.any,
-    params: PropTypes.object
+    params: PropTypes.object,
   }
 
   renderValue () {
@@ -32,11 +32,11 @@ export default class Value extends React.Component {
     }
 
     if (value instanceof Amount) {
-      return <TokenValue
+      return (<TokenValue
         value={value}
         symbol={value.symbol()}
         {...params}
-      />
+      />)
     }
 
     if (value instanceof BigNumber) {
