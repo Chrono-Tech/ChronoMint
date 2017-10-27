@@ -1,8 +1,12 @@
-import contractManager from 'dao/ContractsManagerDAO'
-import Web3Converter from 'utils/Web3Converter'
-import TxModel from 'models/TxModel'
-import web3Provider from 'network/Web3Provider'
 import BigNumber from 'bignumber.js'
+import web3Provider from 'Login/network/Web3Provider'
+
+import contractManager from 'dao/ContractsManagerDAO'
+
+import TxModel from 'models/TxModel'
+
+import Web3Converter from 'utils/Web3Converter'
+
 import AbstractContractDAO from './AbstractContractDAO'
 
 const TX_PLATFORM_REQUESTED = 'PlatformRequested'

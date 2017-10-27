@@ -32,8 +32,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  checkNetwork: () => dispatch(networkService.checkNetwork()),
-  createNetworkSession: (account, provider, network) => dispatch(networkService.createNetworkSession(account, provider, network)),
+  checkNetwork: () => networkService.checkNetwork(),
+  createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
   login: account => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
