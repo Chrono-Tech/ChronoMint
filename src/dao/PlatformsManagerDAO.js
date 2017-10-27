@@ -7,6 +7,8 @@ export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
 export const TX_DETACH_PLATFORM = 'detachPlatform'
 export const TX_REISSUE_ASSET = 'reissueAsset'
+export const TX_PLATFORM_REQUESTED = 'PlatformRequested'
+export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
 
 export default class PlatformsManagerDAO extends AbstractContractDAO {
 
@@ -65,16 +67,16 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   watchCreatePlatform (account, dispatch) {
-    this._watch('PlatformRequested', tx => {
+    this._watch(TX_PLATFORM_REQUESTED, tx => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {from: account})
+    }, {by: account})
 
-    this._watch('PlatformAttached', tx => {
+    this._watch(TX_PLATFORM_ATTACHED, tx => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {from: account})
+    }, {by: account})
   }
 }

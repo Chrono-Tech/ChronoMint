@@ -199,7 +199,7 @@ export const getTransactions = () => async (dispatch, getState) => {
     platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get('assetsManager'))
   }
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
-  const transactionsList = await assetsManagerDAO.getTransactions(platforms, account)
+  const transactionsList = await assetsManagerDAO.getTransactions(account)
 
   dispatch({type: GET_TRANSACTIONS_DONE, payload: {transactionsList: transactionsList}})
 }
@@ -252,8 +252,22 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
+  const platformTokenExtensionGatewayManagerEmitterDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
   const account = getState().get('session').account
-  const callback = async tx => {
+  const issueCallback = tx => {
+    const tokens = getState().get('assetsManager').tokensMap.keySeq().toArray()
+    const symbol = Web3Converter.bytesToString(tx.args.symbol)
+    if (tokens.indexOf(symbol) + 1) {
+      dispatch(setTotalSupply(tx))
+      dispatch(setTx(tx))
+    }
+  }
+  const managersCallback = tx => {
+    dispatch(setManagers(tx))
+    if (tx.args.from !== account && tx.args.to !== account) return
+    dispatch(setTx(tx))
+  }
+  const assetCallback = async tx => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
     let tokensMap = new Immutable.Map()
     if (Object.keys(assets).length) {
@@ -262,21 +276,13 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch({type: SET_TOKEN, payload: {tokensMap, assets}})
     dispatch(setTx(tx))
   }
-  const issueCallback = tx => {
-    dispatch(setTotalSupply(tx))
-    dispatch(setTx(tx))
-  }
-  const managersCallback = tx => {
-    dispatch(setManagers(tx))
-    dispatch(setTx(tx))
-  }
 
 
   return Promise.all([
-    ERC20ManagerDAO.watchAddToken(callback),
     chronoBankPlatformDAO.watchIssue(issueCallback),
     chronoBankPlatformDAO.watchRevoke(issueCallback),
     chronoBankPlatformDAO.watchManagers(managersCallback),
+    platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(assetCallback, account),
   ])
 }
 

@@ -86,9 +86,6 @@ export default class HistoryTable extends React.Component {
       case 'Revoke':
         value = <TokenValue value={trx.value()} symbol={trx.symbol()} />
         break
-      case 'LogAddToken':
-        value = trx.symbol()
-        break
       case 'PlatformAttached':
       case 'PlatformRequested':
         value = trx.args().platform
@@ -100,16 +97,23 @@ export default class HistoryTable extends React.Component {
             <div>
               {
                 trx.from() === '0x0000000000000000000000000000000000000000'
-                  ? <span><Translate value={prefix('added')} />: {trx.from()}</span>
-                  : <span><Translate value={prefix('added')} />: {trx.to()}</span>
+                  ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
+                  : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
               }
             </div>
           </div>
         )
         break
+      case'AssetCreated':
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            <div><Translate value={prefix('platform')} />: {trx.args().platform} </div>
+          </div>
+        )
+        break
       default:
-        // eslint-disable-next-line
-        // console.log('--HistoryTable#renderValue: trx', trx)
+        value = ''
     }
     return value
   }
@@ -131,7 +135,7 @@ export default class HistoryTable extends React.Component {
 
         <div styleName='col-manager'>
           <div styleName='property'>
-            <div styleName='text-faded'>{trx.from()}</div>
+            <div styleName='text-faded'>{trx.by()}</div>
           </div>
         </div>
 

@@ -250,15 +250,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
   }
 
-  watchModify (callback) {
-    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
+  watchModify (callback, account) {
+    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), {from: account})
   }
 
-  watchRemove (callback) {
-    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
-  }
-
-  watchAddToken (callback) {
-    return this._watch('LogAddToken', callback)
+  watchRemove (callback, account) {
+    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), {from: account})
   }
 }
