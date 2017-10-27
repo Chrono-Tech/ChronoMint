@@ -37,6 +37,7 @@
     "eslint-plugin-chronobank": "Laiff/eslint-plugin-chronobank#MINT-588",
     "eslint-plugin-chronobank-react": "Laiff/eslint-plugin-chronobank-react#MINT-588",
     "eslint-plugin-flowtype": "^2.33.0",
+    "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.1.0",
     "ethereum-bridge": "github:oraclize/ethereum-bridge",

@@ -50,6 +50,10 @@ const configureStore = () => {
   })
 
   const rootReducer = (state, action) => {
+    // workaround until fix redux devtool
+    // eslint-disable-next-line
+    console.log(`%c ${action.type} `, 'color: #999; background: #333')
+
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
       state = new Immutable.Map()

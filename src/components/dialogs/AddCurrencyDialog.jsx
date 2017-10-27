@@ -35,6 +35,49 @@ function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
+
+function mapStateToProps (state) {
+  const session = state.get('session')
+  const wallet = state.get('mainWallet')
+  const settings = state.get('settingsERC20Tokens')
+
+  // Have no balances
+  const sharedTokens = settings.list.map(token => ({
+    selected: false,
+    token,
+  }))
+
+  // Have balances
+  const walletTokens = wallet.tokens().map(token => ({
+    selected: true,
+    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
+    token,
+  }))
+
+  return {
+    account: session.account,
+    profile: session.profile,
+    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
+    walletTokens: wallet.tokens(),
+    isTokensLoaded: settings.isFetched && wallet.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    loadTokens: () => dispatch(listTokens()),
+    handleAddToken: () => dispatch(modalsOpen({
+      component: AddTokenDialog,
+    })),
+    handleClose: () => dispatch(modalsClose()),
+    handleSave: async (profile, tokens) => {
+      dispatch(modalsClose())
+      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
+      dispatch(watchInitWallet())
+    },
+  }
+}
+
 export class AddCurrencyDialog extends React.Component {
   static propTypes = {
     account: PropTypes.string,
@@ -201,52 +244,6 @@ export class AddCurrencyDialog extends React.Component {
         </div>
       </div>
     )
-  }
-}
-
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-  const settings = state.get('settingsERC20Tokens')
-
-  // Have no balances
-  const sharedTokens = settings.list.map(token => ({
-    selected: false,
-    token,
-  }))
-
-  // Have balances
-  const walletTokens = wallet.tokens().map(token => ({
-    selected: true,
-    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
-    token,
-  }))
-
-  return {
-    account: session.account,
-    profile: session.profile,
-    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
-    walletTokens: wallet.tokens,
-    isTokensLoaded: settings.isFetched && !wallet.isFetched(),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-
-    loadTokens: () => dispatch(listTokens()),
-
-    handleAddToken: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
-    })),
-    handleClose: () => dispatch(modalsClose()),
-    handleSave: async (profile, tokens) => {
-      dispatch(modalsClose())
-
-      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
-
-      dispatch(watchInitWallet())
-    },
   }
 }
 

@@ -12,7 +12,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         current: action.wallet.address(),
-        isMultisig: action.wallet.isMultisig()
+        isMultisig: action.wallet.isMultisig(),
       }
     default:
       return state

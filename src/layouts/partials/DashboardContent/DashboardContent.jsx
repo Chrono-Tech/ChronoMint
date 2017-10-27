@@ -4,17 +4,36 @@ import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import styles from 'layouts/partials/styles'
-
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
-
+import { getCurrentWallet } from 'redux/wallet/actions'
 import './DashboardContent.scss'
 
 function prefix (token) {
   return `layouts.partials.DashboardContent.${token}`
 }
 
-export class DashboardContent extends Component {
+function mapStateToProps (state) {
+  const wallet = getCurrentWallet(state)
+  const rewards = state.get('rewards')
+  const voting = state.get('voting')
+
+  return {
+    ready: wallet.isFetched(),
+    rewardsData: rewards.data,
+    isRewardsFetched: rewards.isFetched,
+    isVotingFetched: voting.isFetched && wallet.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getRewardsData: () => dispatch(getRewardsData()),
+    watchInitRewards: () => dispatch(watchInitRewards()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class DashboardContent extends Component {
   static propTypes = {
     ready: PropTypes.bool,
     rewardsData: PropTypes.object,
@@ -87,24 +106,3 @@ export class DashboardContent extends Component {
   }
 }
 
-function mapStateToProps (state) {
-  const wallet = state.get('mainWallet')
-  const rewards = state.get('rewards')
-  const voting = state.get('voting')
-
-  return {
-    ready: !wallet.isFetched(),
-    rewardsData: rewards.data,
-    isRewardsFetched: rewards.isFetched,
-    isVotingFetched: voting.isFetched && wallet.isFetched(),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent)
