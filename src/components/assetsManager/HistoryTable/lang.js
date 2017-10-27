@@ -8,6 +8,7 @@ export default {
     token: 'Token',
     added: 'Added',
     deleted: 'Deleted',
+    platform: 'Platform',
   },
   ru: {
     title: 'История',
@@ -18,5 +19,6 @@ export default {
     token: 'Токен',
     added: 'Добавлен',
     deleted: 'Удален',
+    platform: 'Платформа',
   },
 }

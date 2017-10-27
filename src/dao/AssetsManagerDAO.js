@@ -4,18 +4,19 @@ import TxModel from 'models/TxModel'
 import web3Provider from 'network/Web3Provider'
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from './AbstractContractDAO'
+import { TX_ISSUE, TX_REVOKE, TX_OWNERSHIP_CHANGE } from './ChronoBankPlatformDAO'
+import { TX_PLATFORM_REQUESTED, TX_PLATFORM_ATTACHED } from './PlatformsManagerDAO'
 
-const TX_PLATFORM_REQUESTED = 'PlatformRequested'
-const TX_PLATFORM_ATTACHED = 'PlatformAttached'
-const TX_ISSUE = 'Issue'
-const TX_REVOKE = 'Revoke'
-const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
-const TX_LOG_ADD_TOKEN = 'LogAddToken'
+const TX_ASSET_CREATED = 'AssetCreated'
 const TXS_PER_PAGE = 10
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(require('chronobank-smart-contracts/build/contracts/AssetsManager.json'), at)
+    super(
+      require('chronobank-smart-contracts/build/contracts/AssetsManager.json'),
+      at,
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+    )
   }
 
   getTokenExtension (platform) {
@@ -24,16 +25,16 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   async getParticipatingPlatformsForUser (account) {
     const platformsList = await this._call('getParticipatingPlatformsForUser', [account])
-    let formatPlatformsList = []
+    let formatPlatformsList = {}
     if (platformsList.length) {
       for (let platform of platformsList) {
-        formatPlatformsList.push({
+        formatPlatformsList[platform] = {
           address: platform,
           name: null,
-        })
+        }
       }
     }
-    return formatPlatformsList
+    return Object.values(formatPlatformsList)
   }
 
   async getSystemAssetsForOwner (owner) {
@@ -87,7 +88,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       blockHash: tx.blockHash,
       blockNumber: block,
       transactionIndex: tx.transactionIndex,
-      from: tx.args.by || account,
+      from: tx.args.from,
+      by: tx.args.by,
       to: tx.args.to,
       value: tx.args.value,
       gas: tx.gas,
@@ -110,29 +112,23 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return this.createTxModel(tx, account, tx.blockNumber, block.timestamp)
   }
 
-  async getTransactions (platforms, account) {
+  async getTransactions (account) {
     const transactionsPromises = []
     const platformManagerDao = await contractManager.getPlatformManagerDAO()
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
-    const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
+    const platformTokenExtensionGatewayManagerDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
+
+    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', {by: account}, TXS_PER_PAGE))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {by: account}, TXS_PER_PAGE, 'test'))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {by: account}, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {by: account}, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {by: account}, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {to: account}))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}))
-    transactionsPromises.push(ERC20ManagerDAO._get(TX_LOG_ADD_TOKEN, 0, 'latest', {from: account}, TXS_PER_PAGE))
     const transactionsLists = await Promise.all(transactionsPromises)
 
     const promises = []
     transactionsLists.map(transactionsList => transactionsList.map(tx => promises.push(this.getTxModel(tx, account))))
     return Promise.all(promises)
-  }
-
-
-  /** @private */
-  _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
-    // eslint-disable-next-line
-    console.log('--AssetsManagerDAO#: result, block, time', result, block, time)
   }
 }
