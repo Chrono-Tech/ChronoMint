@@ -163,7 +163,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
 
   _createTxModel (tx, account): TxModel {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map(input => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map(output => output.scriptPubKey.addresses.join(',')).join(',')
+    const to = tx.outputs.map(output => output.scriptPubKey.addresses.filter(a => a !== account).join(',')).join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.outputs) {

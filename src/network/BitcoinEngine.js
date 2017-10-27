@@ -42,8 +42,6 @@ export class BitcoinEngine {
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 
-    console.log(inputs, outputs, utxos)
-
     // Commented code exists in the example but not really
     // required for the unknown reason. Check it.
 

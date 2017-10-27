@@ -63,7 +63,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   _createTxModel (tx, account): TxModel {
     const from = tx.isCoinBase ? 'coinbase' : tx.vin.map(input => input.addr).join(',')
-    const to = tx.vout.map(output => output.scriptPubKey.addresses.join(',')).join(',')
+    const to = tx.vout.map(output => output.scriptPubKey.addresses.filter(a => a !== account).join(',')).join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.vout) {
