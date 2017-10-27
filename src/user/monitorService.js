@@ -6,7 +6,7 @@ export class UserMonitorService extends EventEmitter {
   constructor () {
     super()
 
-    this._idleInterval = 3 * 60 * 1000 // idle interval, in milliseconds
+    this._idleInterval = 300 * 60 * 1000 // idle interval, in milliseconds
     this._checkTime = Date.now() // date last check
     this._throttlingInterval = 5 * 1000
     this._active = 'active'

@@ -10,6 +10,7 @@ export class BitcoinProvider extends EventEmitter {
     super()
     this._selectNode = selectNode
     this._handleTransaction = tx => this.onTransaction(tx)
+    this._handleBalance = balance => this.onBalance(balance)
   }
 
   isInitialized () {
@@ -20,12 +21,14 @@ export class BitcoinProvider extends EventEmitter {
     const node = this._selectNode(engine)
     node.emit('subscribe', engine.getAddress())
     node.addListener('tx', this._handleTransaction)
+    node.addListener('balance', this._handleBalance)
   }
 
   unsubscribe (engine) {
     const node = this._selectNode(engine)
     node.emit('unsubscribe', engine.getAddress())
     node.removeListener('tx', this._handleTransaction)
+    node.removeListener('balance', this._handleBalance)
   }
 
   setEngine (engine: BitcoinEngine) {
@@ -52,8 +55,7 @@ export class BitcoinProvider extends EventEmitter {
   async transfer (to, amount: BigNumber) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx , fee } = this._engine.createTransaction(to, amount, utxos)
-    console.log('fee', fee)
+    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos)
     return await node.send(this.getAddress(), tx.toHex())
   }
 
@@ -62,6 +64,14 @@ export class BitcoinProvider extends EventEmitter {
       account: this.getAddress(),
       time: new Date().getTime(),
       tx,
+    })
+  }
+
+  async onBalance (balance) {
+    this.emit('balance', {
+      account: this.getAddress(),
+      time: new Date().getTime(),
+      balance,
     })
   }
 }

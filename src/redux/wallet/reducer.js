@@ -45,6 +45,14 @@ export default (state = initialState, action) => {
           state.tokens.get(action.token.id()).updateBalance(action.isCredited, action.amount)
         ),
       }
+    case a.WALLET_BALANCE_SET:
+      return {
+        ...state,
+        tokens: state.tokens.set(
+          action.token.id(),
+          state.tokens.get(action.token.id()).setBalance(action.amount)
+        ),
+      }
     case a.WALLET_ALLOWANCE:
       return {
         ...state,

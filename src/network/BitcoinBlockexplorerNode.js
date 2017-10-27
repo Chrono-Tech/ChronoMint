@@ -50,7 +50,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       params.append('rawtx', rawtx)
       const res = await this._api.post('/tx/send', params)
       const tx = await this.getTransactionInfo(res.data.txid)
-      const model = this._createTxMdel(tx, account)
+      const model = this._createTxModel(tx, account)
       setImmediate(() => {
         this.emit('tx', model)
       })

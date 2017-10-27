@@ -6,7 +6,6 @@ import { DECIMALS } from 'network/BitcoinEngine'
 
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 
-
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ api, socket, trace }) {
     super()
@@ -24,10 +23,22 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           })
           this.executeOrSschedule(() => {
             this._subscriptions[`balance:${address}`] = this._client.subscribe(
-              // `${socket.channels.balance}.${address}`,
-              `${socket.channels.balance}.*`,
+              `${socket.channels.balance}.${address}`,
+              // `${socket.channels.balance}.*`,
               message => {
-                this.trace('Address Balance', message.body)
+                try {
+                  const data = JSON.parse(message.body)
+                  this.trace('Address Balance', data)
+                  const ev = {
+                    address: data.address,
+                    balance0: data.balances.confirmations0,
+                    balance3: data.balances.confirmations3,
+                    balance6: data.balances.confirmations6,
+                  }
+                  this.emit('balance', ev)
+                } catch (e) {
+                  this.trace('Failed to decode message', e)
+                }
               }
             )
           })

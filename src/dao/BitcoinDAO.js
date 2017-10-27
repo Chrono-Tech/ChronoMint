@@ -4,10 +4,11 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
 
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-
 import { bitcoinAddress } from 'components/forms/validator'
+import { DECIMALS } from 'network/BitcoinEngine'
 
 const EVENT_TX = 'tx'
+const EVENT_BALANCE = 'balance'
 
 export class BitcoinDAO {
   constructor (name, symbol, bitcoinProvider) {
@@ -66,16 +67,24 @@ export class BitcoinDAO {
     return []
   }
 
-  // eslint-disable-next-line no-unused-vars
   async watchTransfer (callback) {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
-      // console.log('result', tx)
-      // const tx = await this._bitcoinProvider.getTransactionInfo(result.tx.txid)
       callback(new TransferNoticeModel({
         account,
         time,
         tx: tx.set('symbol', this.getSymbol()),
       }))
+    })
+  }
+
+  async watchBalance (callback) {
+    this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
+      callback({
+        account,
+        time,
+        balance: (new BigNumber(balance.balance0)).div(DECIMALS),
+        symbol: this.getSymbol(),
+      })
     })
   }
 

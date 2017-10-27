@@ -21,6 +21,7 @@ import { addMarketToken } from '../market/action'
 export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'wallet/TOKENS'
 export const WALLET_BALANCE = 'wallet/BALANCE'
+export const WALLET_BALANCE_SET = 'wallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'wallet/ALLOWANCE'
 export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
@@ -35,6 +36,11 @@ export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 
+export const setBalance = (token: TokenModel, amount: BigNumber) => ({
+  type: WALLET_BALANCE_SET,
+  token,
+  amount,
+})
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
   type: WALLET_BALANCE,
   token,
@@ -84,6 +90,11 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   dispatch({ type: WALLET_TRANSACTION, tx })
 }
 
+export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => async (dispatch, getState) => {
+  const token: TokenModel = getState().get('wallet').tokens.get(symbol)
+  dispatch(setBalance(token, balance))
+}
+
 export const watchInitWallet = () => async (dispatch, getState) => {
   const state = getState()
   const profile: ProfileModel = state.get('session').profile
@@ -124,6 +135,9 @@ export const watchInitWallet = () => async (dispatch, getState) => {
     dispatch(addMarketToken(token.symbol()))
     const dao = token.dao()
     await dao.watchTransfer(notice => dispatch(watchTransfer(notice)))
+    if (dao.watchBalance) {
+      await dao.watchBalance(balance => dispatch(watchBalance(balance)))
+    }
     await dao.watchApproval((notice: ApprovalNoticeModel) => {
       dispatch({
         type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender(),
