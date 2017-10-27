@@ -36,11 +36,12 @@ export class PlatformInfo extends Component {
   }
 
   componentWillReceiveProps (newProps) {
-    if ((newProps.selectedToken && !this.props.selectedToken) ||
-      (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
+    if (newProps.selectedToken) {
       const token = newProps.tokensMap.get(newProps.selectedToken)
       if (token) {
-        this.props.getManagersForAssetSymbol(newProps.selectedToken)
+        if (token.managersList() === null) {
+          this.props.getManagersForAssetSymbol(newProps.selectedToken)
+        }
         if (token.isReissuable() === null) {
           this.props.isReissuable(token)
         }

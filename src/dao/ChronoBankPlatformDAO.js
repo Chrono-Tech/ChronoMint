@@ -3,10 +3,11 @@ import AbstractContractDAO from './AbstractContractDAO'
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_REVOKE_ASSET = 'revokeAsset'
 export const TX_IS_REISSUABLE = 'isReissuable'
-export const TX_ADD_PART_OWNER = 'addPartOwner'
-export const TX_REMOVE_PART_OWNER = 'removePartOwner'
 export const TX_ADD_ASSET_PART_OWNER = 'addAssetPartOwner'
 export const TX_REMOVE_ASSET_PART_OWNER = 'removeAssetPartOwner'
+export const TX_ISSUE = 'Issue'
+export const TX_REVOKE = 'Revoke'
+export const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
 
 export default class ChronoBankPlatform extends AbstractContractDAO {
 
@@ -43,14 +44,14 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    return this._watch('Issue', callback)
+    this._watch(TX_ISSUE, callback)
   }
 
   watchRevoke (callback) {
-    return this._watch('Revoke', callback)
+    this._watch(TX_REVOKE, callback)
   }
 
   watchManagers (callback) {
-    return this._watch('OwnershipChange', callback)
+    this._watch(TX_OWNERSHIP_CHANGE, callback)
   }
 }

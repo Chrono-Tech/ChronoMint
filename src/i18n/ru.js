@@ -41,7 +41,7 @@ export default {
     exchange: 'Обмен (demo)',
     voting: 'Голосование',
     rewards: 'Награды',
-    assets: 'Мои активы (demo)',
+    assets: 'Мои активы',
     profile: 'Профайл',
     signOut: 'Выйти',
     search: 'Искать...',

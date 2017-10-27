@@ -41,7 +41,7 @@ export default {
     exchange: 'Exchange (demo)',
     voting: 'Voting',
     rewards: 'Rewards',
-    assets: 'My assets (demo)',
+    assets: 'My assets',
     profile: 'Profile',
     signOut: 'Sign out',
     search: 'Search...',
