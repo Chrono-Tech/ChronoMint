@@ -4,20 +4,19 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import classNames from 'classnames'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { FlatButton, FloatingActionButton, FontIcon } from 'material-ui'
-import ModalDialog from '../ModalDialog'
+import { FloatingActionButton, FontIcon } from 'material-ui'
 import Points from 'components/common/Points/Points'
 import Preloader from 'components/common/Preloader/Preloader'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
-import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
 import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import './WalletSelectDialog.scss'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 import { switchWallet } from 'redux/wallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import './WalletSelectDialog.scss'
+import ModalDialog from '../ModalDialog'
+import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 
 const TRANSITION_TIMEOUT = 250
 
@@ -116,22 +115,8 @@ export default class WalletSelectDialog extends React.Component {
   }
 
   renderRow (wallet: MultisigWalletModel, isSelected: boolean) {
-    const time = wallet.tokens().get('TIME')
-
     return (
       <div key={wallet.id()} styleName={classNames('row', {'rowSelected': isSelected})}>
-        <div>
-          time: <TokenValue value={time.balance()} />
-          tx: {wallet.pendingTxList().size}
-          <FlatButton
-            label='Add owner'
-            onTouchTap={() => this.props.addOwner(wallet)}
-          />
-          <FlatButton
-            label='transfer'
-            onTouchTap={() => this.props.transfer(wallet)}
-          />
-        </div>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div>
             <img styleName='bigIcon' src={WalletMultiBigSVG} />

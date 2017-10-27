@@ -14,7 +14,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     super(
       require('chronobank-smart-contracts/build/contracts/Wallet.json'),
       at,
-      require('chronobank-smart-contracts/build/contracts/WalletEmitter.json'),
+      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
     )
     this._okCodes.push(CODE_CONFIRMATION_NEEDED)
   }
@@ -47,7 +47,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchDeposit (wallet, callback) {
     return this._watch('Deposit', result => {
-      callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
+      if (result.args.self === this.getInitAddress()) {
+        callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
+      }
     })
   }
 

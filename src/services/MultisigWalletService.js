@@ -21,6 +21,7 @@ class MultisigWalletService extends EventEmitter {
 
   subscribeToWalletDAO (wallet) {
     const dao = this.getWalletDAO(wallet.address())
+
     return Promise.all([
       dao.watchOwnerRemoved((result) => {
         this.emit('OwnerRemoved', result)

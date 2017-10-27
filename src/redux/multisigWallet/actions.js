@@ -17,7 +17,7 @@ export const MULTISIG_UPDATE = 'multisigWallet/UPDATE'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'
 export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 
-const updateWallet = (wallet: MultisigWalletModel) => (dispatch, getState) => {
+const updateWallet = (wallet: MultisigWalletModel) => dispatch => {
   let updatedWallet = wallet
   if (!wallet.isNew() && !!wallet.transactionHash()) {
     // address arrived, delete temporary hash
@@ -27,7 +27,7 @@ const updateWallet = (wallet: MultisigWalletModel) => (dispatch, getState) => {
   dispatch({type: MULTISIG_UPDATE, wallet: updatedWallet.isPending(false)})
 }
 
-const watchMultisigWallet = (wallet: MultisigWalletModel) => async dispatch => {
+const watchMultisigWallet = (wallet: MultisigWalletModel) => async () => {
   try {
     await multisigWalletService.subscribeToWalletDAO(wallet)
   } catch (e) {
