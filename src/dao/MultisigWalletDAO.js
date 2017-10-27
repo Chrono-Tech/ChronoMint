@@ -23,14 +23,16 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._watch('OwnerRemoved', callback)
   }
 
-  watchConfirmationNeeded (callback) {
+  watchConfirmationNeeded (wallet, callback) {
     return this._watch('ConfirmationNeeded', result => {
       const {operation, value, to, symbol} = result.args
+      const symbolString = this._c.bytesToString(symbol)
+      const tokenDAO = wallet.tokens().get(symbolString).dao()
       callback(new MultisigWalletPendingTxModel({
-        id: this._c.bytesToString(operation),
-        value,
+        id: operation,
+        value: tokenDAO.removeDecimals(value),
         to,
-        symbol: this._c.bytesToString(symbol),
+        symbol: symbolString,
       }))
     })
   }

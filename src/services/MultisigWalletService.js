@@ -31,7 +31,7 @@ class MultisigWalletService extends EventEmitter {
       dao.watchSingleTransact((result) => {
         this.emit('SingleTransact', result)
       }),
-      dao.watchConfirmationNeeded(pendingTxModel => {
+      dao.watchConfirmationNeeded(wallet, pendingTxModel => {
         this.emit('ConfirmationNeeded', wallet.address(), pendingTxModel)
       }),
       dao.watchDeposit(wallet, value => {

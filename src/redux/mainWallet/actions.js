@@ -15,9 +15,7 @@ import { addMarketToken } from '../market/action'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import { multisigTransfer } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
