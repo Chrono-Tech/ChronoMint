@@ -126,7 +126,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {to: account}))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}))
     const transactionsLists = await Promise.all(transactionsPromises)
-
     const promises = []
     transactionsLists.map(transactionsList => transactionsList.map(tx => promises.push(this.getTxModel(tx, account))))
     return Promise.all(promises)

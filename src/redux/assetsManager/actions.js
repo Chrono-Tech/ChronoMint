@@ -268,7 +268,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
   const assetCallback = async tx => {
-    const selectedToken = getState().get('assetsManager').selectedToken
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
     let tokensMap = new Immutable.Map()
     if (Object.keys(assets).length) {
