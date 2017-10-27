@@ -43,6 +43,10 @@ export default class IPFSImage extends React.Component {
         this.setState({
           imageURL: data.content,
         })
+      } else if (image && image.content) {
+        this.setState({
+          imageURL: image.content,
+        })
       } else {
         this.setState({
           imageURL: null,

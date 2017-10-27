@@ -1,5 +1,5 @@
 import * as AccountSelector from 'components/pages/LoginPage/AccountSelector/lang'
-import * as Assets from 'components/assets/lang'
+import * as Assets from 'components/assetsManager/lang'
 import * as BackButton from 'components/pages/LoginPage/BackButton/lang'
 import * as Dashboard from 'components/dashboard/lang'
 import * as GenerateMnemonic from 'components/pages/LoginPage/GenerateMnemonic/lang'

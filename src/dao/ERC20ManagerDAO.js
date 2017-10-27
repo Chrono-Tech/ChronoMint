@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -73,7 +71,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
-  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
+  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true, additionalData = {}): Immutable.Map<TokenModel> {
     let timeDAO,
       promises
     if (isWithObligatory) {
@@ -115,7 +113,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       map = map.set(ethToken.id(), ethToken)
 
       if (btcDAO.isInitialized()) {
-        const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
+        const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
         const btcToken = new TokenModel({
           dao: btcDAO,
           name: btcDAO.getName(),
@@ -129,7 +127,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       }
 
       if (bccDAO.isInitialized()) {
-        const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
+        const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
         const bccToken = new TokenModel({
           dao: bccDAO,
           name: bccDAO.getName(),
@@ -155,6 +153,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
         balance: balances[i],
+        platform: additionalData[address] && additionalData[address].platform,
+        totalSupply: additionalData[address] && additionalData[address].totalSupply,
       })
 
       if (token.symbol() === TIME) {
@@ -259,5 +259,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
+  }
+
+  watchAddToken (callback) {
+    return this._watch('LogAddToken', callback)
   }
 }

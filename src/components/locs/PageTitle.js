@@ -47,7 +47,14 @@ class PageTitle extends Component {
     showSendToExchangeModal: PropTypes.func,
   }
 
-  handleShowLOCModal = async () => {
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleShowLOCModal = this.handleShowLOCModal.bind(this)
+  }
+
+  async handleShowLOCModal () {
     const locManager = await contractManagerDAO.getLOCManagerDAO()
     const newLOC = new LOCModel({
       token: locManager.getDefaultToken(),

@@ -34,8 +34,12 @@ class GenerateWallet extends Component {
     clearErrors: PropTypes.func,
   }
 
-  constructor () {
-    super()
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleGenerateWalletClick = this.handleGenerateWalletClick.bind(this)
+
     this.state = {
       ...initialState,
     }
@@ -49,7 +53,7 @@ class GenerateWallet extends Component {
     this.setState({ isWarningSuppressed: value })
   }
 
-  handleGenerateWalletClick = async () => {
+  async handleGenerateWalletClick () {
     this.props.clearErrors()
     try {
       if (!this.state.walletJSON) {
