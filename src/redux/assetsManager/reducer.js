@@ -1,29 +1,34 @@
+import Immutable from 'immutable'
 import {
   GET_ASSETS_MANAGER_COUNTS,
+  GET_ASSETS_MANAGER_COUNTS_START,
   GET_MANAGERS_FOR_TOKEN,
+  GET_MANAGERS_FOR_TOKEN_LOADING,
   GET_PLATFORMS,
-  GET_PLATFORMS_COUNT,
   GET_TOKENS,
+  GET_TRANSACTIONS_DONE,
+  GET_TRANSACTIONS_START, GET_USER_PLATFORMS,
   SELECT_PLATFORM,
   SELECT_TOKEN,
-  GET_MANAGERS_FOR_TOKEN_LOADING, SET_WATCHERS,
-  SET_TOTAL_SUPPLY,
-  GET_TRANSACTIONS_START,
-  GET_TRANSACTIONS_DONE,
-  SET_TOKEN,
+  SET_FEE,
   SET_IS_REISSUABLE,
   SET_NEW_MANAGERS_LIST,
+  SET_TOKEN,
+  SET_TOTAL_SUPPLY,
+  SET_WATCHERS,
 } from './actions'
 
 const initialState = {
+  usersPlatforms: [],
+  usersPlatformsCount: 0,
+  assetsManagerCountsLoading: false,
   selectedToken: null,
   selectedPlatform: null,
-  platformsCount: 0,
   tokensCount: 0,
   managersCount: 0,
   tokensOnCrowdsaleCount: 0,
   platformsList: [],
-  tokensMap: new Map(),
+  tokensMap: new Immutable.Map(),
   managersList: [],
   assets: {},
   managersForTokenLoading: false,
@@ -35,17 +40,17 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_PLATFORMS_COUNT:
+    case GET_ASSETS_MANAGER_COUNTS_START:
       return {
         ...initialState,
         ...state,
-        platformsCount: action.payload.platformCount,
+        assetsManagerCountsLoading: true,
       }
     case GET_ASSETS_MANAGER_COUNTS:
       return {
         ...initialState,
         ...state,
-        platformsCount: action.payload.platforms.length,
+        assetsManagerCountsLoading: false,
         tokensCount: Object.keys(action.payload.assets).length,
         managersCount: action.payload.managers.length,
         assets: action.payload.assets,
@@ -56,7 +61,6 @@ export default (state = initialState, action) => {
       return {
         ...initialState,
         ...state,
-        platformsCount: action.payload.platforms.length,
         platformsList: action.payload.platforms,
       }
     case GET_MANAGERS_FOR_TOKEN_LOADING :
@@ -128,6 +132,14 @@ export default (state = initialState, action) => {
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'isReissuable'], action.payload.isReissuable),
       }
+    case SET_FEE:
+      let newTokensMap = state.tokensMap.setIn([action.payload.symbol, 'fee'], action.payload.fee)
+      newTokensMap = newTokensMap.setIn([action.payload.symbol, 'withFee'], action.payload.withFee)
+      return {
+        ...initialState,
+        ...state,
+        tokensMap: newTokensMap,
+      }
     case SET_NEW_MANAGERS_LIST:
       return {
         ...initialState,
@@ -154,6 +166,13 @@ export default (state = initialState, action) => {
         ],
         transactionsFetched: true,
         transactionsFetching: false,
+      }
+    case GET_USER_PLATFORMS:
+      return {
+        ...initialState,
+        ...state,
+        usersPlatforms: action.payload.usersPlatforms,
+        usersPlatformsCount: action.payload.usersPlatforms.length
       }
     default:
       return state
