@@ -16,7 +16,6 @@ const TX_REVOKE = 'Revoke'
 const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
 const TX_LOG_ADD_TOKEN = 'LogAddToken'
 const TXS_PER_PAGE = 10
-export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -27,14 +26,28 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return this._call('getTokenExtension', [platform])
   }
 
-  async getAssetsForOwner (owner) {
-    const assets = await this._call('getAssetsForOwner', [owner, owner])
+  async getParticipatingPlatformsForUser (account) {
+    const platformsList = await this._call('getParticipatingPlatformsForUser', [account])
+    let formatPlatformsList = []
+    if (platformsList.length) {
+      for (let platform of platformsList) {
+        formatPlatformsList.push({
+          address: platform,
+          name: null,
+        })
+      }
+    }
+    return formatPlatformsList
+  }
+
+  async getSystemAssetsForOwner (owner) {
+    const assets = await this._call('getSystemAssetsForOwner', [owner])
 
     let assetsList = {}
     let currentPlatform
     for (let i = 0; i < assets[0].length; i++) {
 
-      if (assets[1][i] !== ZERO_ADDRESS) currentPlatform = assets[1][i]
+      if (!this.isEmptyAddress(assets[1][i])) currentPlatform = assets[1][i]
 
       assetsList[assets[0][i]] = {
         address: assets[0][i],
@@ -49,7 +62,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const managersList = await this._call('getManagers', [owner])
     let formatManagersList = {}
     managersList.map(manager => {
-      if (manager !== ZERO_ADDRESS && !formatManagersList[manager]) {
+      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
         formatManagersList[manager] = manager
       }
     })
@@ -62,7 +75,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
     let formatManagersList = {}
     managersListForSymbol.map(manager => {
-      if (manager !== ZERO_ADDRESS && !formatManagersList[manager]) {
+      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
         formatManagersList[manager] = manager
       }
     })
@@ -72,7 +85,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   createTxModel (tx, account, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
-
     return new TxModel({
       txHash: tx.transactionHash,
       type: tx.event,
@@ -86,6 +98,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gasPrice,
       time,
       symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol),
+      args: tx.args,
     })
   }
 
@@ -104,17 +117,14 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getTransactions (platforms, account) {
     const transactionsPromises = []
     const platformManagerDao = await contractManager.getPlatformManagerDAO()
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {from: account}, TXS_PER_PAGE))
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    /*for (let platform of  platforms) {
-      const tokenManagementExtensionDAO = await contractManager.getTokenManagementExtensionDAO(platform.address)
-      transactionsPromises.push(tokenManagementExtensionDAO._get('AssetCreated', 0, 'latest', {}, TXS_PER_PAGE))
-    }*/
     const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {by: account}, TXS_PER_PAGE, 'test'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {to: account}))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}))
     transactionsPromises.push(ERC20ManagerDAO._get(TX_LOG_ADD_TOKEN, 0, 'latest', {from: account}, TXS_PER_PAGE))
     const transactionsLists = await Promise.all(transactionsPromises)
 

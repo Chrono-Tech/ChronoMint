@@ -1,6 +1,7 @@
 import { FULL_DATE } from 'components/common/Moment'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
@@ -19,9 +20,14 @@ class TxModel extends abstractModel({
   credited: null,
   symbol: '',
   type: '',
+  args: null,
 }) {
   to () {
     return this.get('to')
+  }
+
+  args () {
+    return this.get('args')
   }
 
   type () {
