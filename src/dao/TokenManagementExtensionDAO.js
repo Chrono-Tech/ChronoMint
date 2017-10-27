@@ -11,7 +11,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
   }
 
   createAssetWithFee (symbol, name, description, value, decimals, isMint, feeAddress, feePercent, tokenImg) {
-    return this._tx('createAssetWithFee', [symbol, name, description, value, decimals, isMint, feeAddress, feePercent, tokenImg])
+    return this._tx('createAssetWithFee', [symbol, name, description, value, decimals, isMint, feeAddress, feePercent * 100, tokenImg])
   }
 
   createAssetWithoutFee (symbol, name, description, value, decimals, isMint, tokenImg) {

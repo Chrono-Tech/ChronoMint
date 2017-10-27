@@ -1,7 +1,8 @@
+import Preloader from 'components/common/Preloader/Preloader'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
-import { getAssetsManagerData, createPlatform, getTokens } from 'redux/assetsManager/actions'
+import { createPlatform, getTokens } from 'redux/assetsManager/actions'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -20,22 +21,20 @@ export class AssetManager extends Component {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
-    getAssetsManagerData: PropTypes.func,
-    platformsCount: PropTypes.number,
-    platformsList: PropTypes.array,
+    usersPlatformsCount: PropTypes.number,
     getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
+    assetsManagerCountsLoading: PropTypes.bool,
   }
 
   componentDidMount () {
-    this.props.getAssetsManagerData()
     this.props.getTokens()
   }
 
   renderHead () {
-    const {platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount} = this.props
+    const {usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading} = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -50,7 +49,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
-                      <span styleName='entry2'>{platformsCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : usersPlatformsCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsCompleted'>
@@ -59,7 +60,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
-                      <span styleName='entry2'>{tokensCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -68,7 +71,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
-                      <span styleName='entry2'>{managersCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : managersCount}
+                      </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
@@ -77,7 +82,9 @@ export class AssetManager extends Component {
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
-                      <span styleName='entry2'>{tokensOnCrowdsaleCount}</span>
+                      <span styleName='entry2'>
+                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensOnCrowdsaleCount}
+                      </span>
                     </div>
                   </div>
 
@@ -88,7 +95,7 @@ export class AssetManager extends Component {
                   <div styleName='entries' />
                   <div styleName='actions'>
                     <RaisedButton
-                      disabled={!platformsCount}
+                      disabled={!usersPlatformsCount}
                       onTouchTap={() => this.props.handleAddTokenDialog()}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
@@ -144,11 +151,7 @@ export class AssetManager extends Component {
         <div styleName='content'>
           <Paper>
             {this.renderHead()}
-            {
-              this.props.platformsList.length
-                ? this.renderBody()
-                : null
-            }
+            {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
           <Paper>
@@ -163,18 +166,17 @@ export class AssetManager extends Component {
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
   return {
-    platformsCount: assetsManager.platformsCount,
+    usersPlatformsCount: assetsManager.usersPlatformsCount,
     tokensCount: assetsManager.tokensCount,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    platformsList: assetsManager.platformsList,
     selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     createPlatform: () => dispatch(createPlatform()),
     getTokens: () => dispatch(getTokens()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
