@@ -14,10 +14,10 @@ const mapStateToProps = state => ({
   providers: state.get('network').providers,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  addError: (error) => dispatch(addError(error)),
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
-  loadAccounts: () => networkService.loadAccounts()
+const mapDispatchToProps = dispatch => ({
+  addError: error => dispatch(addError(error)),
+  selectNetwork: networkId => networkService.selectNetwork(networkId),
+  loadAccounts: () => networkService.loadAccounts(),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

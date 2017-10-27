@@ -13,23 +13,23 @@ import { yellow800 } from 'material-ui/styles/colors'
 import { Translate } from 'react-redux-i18n'
 import './LoginPage.scss'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   const network = state.get('network')
   return {
     errors: network.errors,
     selectedAccount: network.selectedAccount,
     selectedProviderId: network.selectedProviderId,
     selectedNetworkId: network.selectedNetworkId,
-    isLoading: network.isLoading
+    isLoading: network.isLoading,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = dispatch => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => networkService.login(account),
+  login: account => networkService.login(account),
   clearErrors: () => dispatch(clearErrors()),
-  loading: () => dispatch(loading())
+  loading: () => dispatch(loading()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -42,13 +42,13 @@ class LoginForm extends Component {
     selectedAccount: PropTypes.string,
     selectedProviderId: PropTypes.number,
     selectedNetworkId: PropTypes.number,
-    errors: PropTypes.array
+    errors: PropTypes.array,
   }
 
   constructor () {
     super()
     this.state = {
-      isShowProvider: true
+      isShowProvider: true,
     }
   }
 
@@ -69,8 +69,8 @@ class LoginForm extends Component {
     }
   }
 
-  handleToggleProvider = (isShowProvider) => {
-    this.setState({isShowProvider})
+  handleToggleProvider = isShowProvider => {
+    this.setState({ isShowProvider })
   }
 
   render () {
@@ -86,7 +86,8 @@ class LoginForm extends Component {
         {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
           <LoginWithOptions
             onLogin={() => this.handleLogin()}
-            onToggleProvider={this.handleToggleProvider} />
+            onToggleProvider={this.handleToggleProvider}
+          />
         )}
         {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
 

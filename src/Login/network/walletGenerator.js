@@ -11,21 +11,21 @@ class WalletGenerator {
       kdfparams: {
         c: 262144,
         dklen: 32,
-        prf: "hmac-sha256"
-      }
+        prf: "hmac-sha256",
+      },
     }
 
     this._params = {
       keyBytes: 32,
-      ivBytes: 16
+      ivBytes: 16,
     }
   }
 
-  getWallet = (password) => {
+  getWallet = password => {
     return new Promise(resolve => {
       // we can't use promisify here, cause first returning argument is result not error
-      keythereum.create(this._params, (dk) => {
-        keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, this._options, (dump) => {
+      keythereum.create(this._params, dk => {
+        keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, this._options, dump => {
           resolve(dump)
         })
       })

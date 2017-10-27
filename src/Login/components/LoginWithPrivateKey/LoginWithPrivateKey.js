@@ -69,7 +69,7 @@ class LoginWithPrivateKey extends Component {
                   style={{ verticalAlign: 'middle', marginTop: -2 }}
                   size={24}
                   thickness={1.5}
-                />: <Translate value='LoginWithPrivateKey.loginWithPrivateKey'/>}
+                />: <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
               fullWidth
               primary
               disabled={!isValidated || isLoading}

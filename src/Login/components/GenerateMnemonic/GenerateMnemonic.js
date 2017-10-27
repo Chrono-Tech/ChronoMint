@@ -51,7 +51,7 @@ class GenerateMnemonic extends Component {
               <div styleName='keyValue'>{mnemonicKey}</div>
             </div>
             <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML /></div>
-            <Warning/>
+            <Warning />
             <div styleName='actions'>
               <div styleName='actionConfirm'>
                 <Checkbox
@@ -66,7 +66,8 @@ class GenerateMnemonic extends Component {
                 primary
                 disabled={!isConfirmed}
                 onTouchTap={() => this.props.onBack()}
-                style={styles.primaryButton} />
+                style={styles.primaryButton}
+              />
             </div>
           </div>
         </MuiThemeProvider>

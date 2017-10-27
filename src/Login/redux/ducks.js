@@ -3,5 +3,5 @@ import * as ledger from './ledger/'
 
 export default {
   network,
-  ledger
+  ledger,
 }

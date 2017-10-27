@@ -13,7 +13,7 @@ export const assets = {
 export const styles = {
   colors,
   inverted,
-  theme
+  theme,
 }
 
 export const utils = {
@@ -22,5 +22,5 @@ export const utils = {
 
 export const constants = {
   SESSION_CREATE,
-  SESSION_DESTROY
+  SESSION_DESTROY,
 }

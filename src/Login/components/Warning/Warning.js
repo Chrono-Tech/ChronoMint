@@ -16,7 +16,7 @@ class Warning extends Component {
     return (
       <div styleName='warningBox'>
         <div styleName='warningIcon'>
-          <WarningIcon style={styles}/>
+          <WarningIcon style={styles} />
         </div>
         <div styleName='warningText'><Translate value='Warning.text' dangerousHTML /></div>
       </div>

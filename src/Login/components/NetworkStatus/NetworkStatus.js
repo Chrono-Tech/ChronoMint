@@ -7,7 +7,7 @@ import {
   NETWORK_STATUS_OFFLINE,
   NETWORK_STATUS_ONLINE,
   SYNC_STATUS_SYNCING,
-  SYNC_STATUS_SYNCED
+  SYNC_STATUS_SYNCED,
 } from 'Login/network/MonitorService'
 import './NetworkStatus.scss'
 
@@ -42,7 +42,7 @@ export default class CopyIcon extends React.Component {
     const status = this.getStatus()
     return (
       <div styleName='root'>
-        <span styleName={`status status-${status}`}/>
+        <span styleName={`status status-${status}`} />
         <Translate value={`networkStatus.${status}`} />
       </div>
     )

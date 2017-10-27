@@ -30,7 +30,7 @@ export default {
     GenerateWallet: GenerateWallet.en,
     Warning: Warning.en,
     LoginUPort: LoginUPort.en,
-    AccountSelector: AccountSelector.en
+    AccountSelector: AccountSelector.en,
   },
   ru: {
     LoginPage: LoginPage.ru,
@@ -47,6 +47,6 @@ export default {
     GenerateWallet: GenerateWallet.ru,
     Warning: Warning.ru,
     LoginUPort: LoginUPort.ru,
-    AccountSelector: AccountSelector.ru
-  }
+    AccountSelector: AccountSelector.ru,
+  },
 }

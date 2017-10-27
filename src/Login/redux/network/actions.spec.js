@@ -38,7 +38,7 @@ describe('network actions', () => {
   it('should check METAMASK is exists', () => {
     window.web3 = new Web3()
     metaMaskResolver
-      .on('resolve', (isMetaMask) => {
+      .on('resolve', isMetaMask => {
         try {
           if (isMetaMask) {
             store.dispatch({type: a.NETWORK_SET_TEST_METAMASK})
@@ -96,7 +96,7 @@ describe('network actions', () => {
           {type: a.NETWORK_LOADING, isLoading: true},
           {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
           {type: a.NETWORK_SET_ACCOUNTS, accounts},
-          {type: a.NETWORK_LOADING, isLoading: false}
+          {type: a.NETWORK_LOADING, isLoading: false},
         ])
       })
   })
@@ -149,7 +149,7 @@ describe('network actions', () => {
       account: accounts[0],
       provider: LOCAL_ID,
       network: LOCAL_ID,
-      dispatch: store.dispatch
+      dispatch: store.dispatch,
     })
     expect(store.getActions()).toEqual([
       { type: SESSION_CREATE, account: accounts[0] },
@@ -180,7 +180,7 @@ describe('network actions', () => {
       account: accounts[0],
       provider: LOCAL_ID,
       network: LOCAL_ID,
-      dispatch: store.dispatch
+      dispatch: store.dispatch,
     })
     store.clearActions()
 

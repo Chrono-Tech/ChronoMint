@@ -13,7 +13,7 @@ class UportProvider {
       uriHandler: this._customOpenQr,
       infuraApiKey: INFURA_TOKEN,
       closeUriHandler: QRUtil.closeQr,
-      clientId: UPORT_ID
+      clientId: UPORT_ID,
     })
   }
 

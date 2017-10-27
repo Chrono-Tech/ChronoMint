@@ -8,7 +8,7 @@ import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
 import networkService from 'Login/redux/network/actions'
 
 const mapDispatchToProps = () => ({
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId)
+  selectNetwork: networkId => networkService.selectNetwork(networkId),
 })
 
 @connect(null, mapDispatchToProps)
@@ -25,7 +25,7 @@ class LoginLocal extends Component {
   }
 
   render () {
-    return <AccountSelector onSelectAccount={this.handleSelectAccount}/>
+    return <AccountSelector onSelectAccount={this.handleSelectAccount} />
   }
 }
 
