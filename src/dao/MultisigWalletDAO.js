@@ -122,5 +122,18 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     })
     return result.tx
   }
-}
 
+  async confirmPendingTx (tx) {
+    const result = await this._tx('confirm', [
+      tx.id(),
+    ])
+    return result.tx
+  }
+
+  async revokePendingTx (tx) {
+    const result = await this._tx('revoke', [
+      tx.id(),
+    ])
+    return result.tx
+  }
+}

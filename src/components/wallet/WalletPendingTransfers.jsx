@@ -3,32 +3,34 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, RaisedButton } from 'material-ui'
-import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import MultisigWalletCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
+import { confirmMultisigTx, DUCK_MULTISIG_WALLET, revokeMultisigTx } from 'redux/multisigWallet/actions'
+import Preloader from 'components/common/Preloader/Preloader'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
-  let pendingTxList = new MultisigWalletCollection()
-  const wallet: MultisigWalletModel = state.get(DUCK_MULTISIG_WALLET).selected()
-
-  if (wallet) {
-    pendingTxList = wallet.pendingTxList()
-  }
   return {
-    pendingTxList,
+    wallet: state.get(DUCK_MULTISIG_WALLET).selected(),
   }
 }
 
-@connect(mapStateToProps, null)
+function mapDispatchToProps (dispatch) {
+  return {
+    revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
+    confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class WalletPendingTransfers extends React.Component {
   static propTypes = {
-    pendingTxList: PropTypes.object,
+    wallet: PropTypes.object,
+    revoke: PropTypes.func,
+    confirm: PropTypes.func,
   }
 
-  renderRow (item: MultisigWalletPendingTxModel) {
+  renderRow (wallet, item: MultisigWalletPendingTxModel) {
     return (
       <div styleName='transfer' key={item.id()}>
         <div styleName='left'>
@@ -47,13 +49,14 @@ export default class WalletPendingTransfers extends React.Component {
           <div styleName='revoke'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
+              onTouchTap={() => this.props.revoke(wallet, item)}
             />
           </div>
           <div styleName='sign'>
             <RaisedButton
               label={<Translate value='wallet.sign' />}
               primary
-              disabled={false}
+              onTouchTap={() => this.props.confirm(wallet, item)}
             />
           </div>
         </div>
@@ -62,6 +65,7 @@ export default class WalletPendingTransfers extends React.Component {
   }
 
   renderTable () {
+    const {wallet} = this.props
     return (
       <div>
         <div styleName='tableHead'>
@@ -77,7 +81,7 @@ export default class WalletPendingTransfers extends React.Component {
             <div styleName='sign' />
           </div>
         </div>
-        {this.props.pendingTxList.items().map(item => this.renderRow(item))}
+        {wallet.pendingTxList().items().map(item => this.renderRow(wallet, item))}
       </div>
     )
   }
@@ -89,9 +93,11 @@ export default class WalletPendingTransfers extends React.Component {
           <div styleName='title'><Translate value='wallet.pendingTransfers' /></div>
         </div>
         <div styleName='body'>
-          {this.props.pendingTxList.size() > 0
-            ? this.renderTable()
-            : 'No transfers'
+          {!this.props.wallet
+            ? <Preloader />
+            : this.props.wallet.pendingTxList().size() > 0
+              ? this.renderTable()
+              : 'No transfers'
           }
         </div>
       </Paper>
