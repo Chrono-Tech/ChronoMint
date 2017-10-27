@@ -13,4 +13,8 @@ export default class ChronoBankAssetProxyDAO extends AbstractContractDAO {
     return this._call('getVersionFor', [address])
   }
 
+  feePercent () {
+    return this._call('feePercent')
+  }
+
 }

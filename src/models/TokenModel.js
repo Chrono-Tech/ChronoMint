@@ -20,6 +20,7 @@ export default class TokenModel extends abstractFetchingModel({
   url: null,
   icon: null,
   fee: null,
+  withFee: null,
   platform: null,
   totalSupply: new BigNumber(0),
   managersList: null,
@@ -63,6 +64,10 @@ export default class TokenModel extends abstractFetchingModel({
 
   fee () {
     return this.get('fee')
+  }
+
+  withFee () {
+    return this.get('withFee')
   }
 
   address () {

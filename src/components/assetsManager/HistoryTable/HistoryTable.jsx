@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import {Translate} from 'react-redux-i18n'
-import {connect} from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import moment from 'moment'
-import Moment, {SHORT_DATE} from 'components/common/Moment/index'
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import {CircularProgress} from 'material-ui'
+import { CircularProgress } from 'material-ui'
 import './HistoryTable.scss'
 
 function prefix (token) {
@@ -22,8 +22,7 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-  }
+  return {}
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -80,6 +79,41 @@ export default class HistoryTable extends React.Component {
     )
   }
 
+  renderValue (trx) {
+    let value
+    switch (trx.type()) {
+      case 'Issue':
+      case 'Revoke':
+        value = <TokenValue value={trx.value()} symbol={trx.symbol()} />
+        break
+      case 'LogAddToken':
+        value = trx.symbol()
+        break
+      case 'PlatformAttached':
+      case 'PlatformRequested':
+        value = trx.args().platform
+        break
+      case'OwnershipChange':
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            <div>
+              {
+                trx.from() === '0x0000000000000000000000000000000000000000'
+                  ? <span><Translate value={prefix('added')} />: {trx.from()}</span>
+                  : <span><Translate value={prefix('added')} />: {trx.to()}</span>
+              }
+            </div>
+          </div>
+        )
+        break
+      default:
+        // eslint-disable-next-line
+        // console.log('--HistoryTable#renderValue: trx', trx)
+    }
+    return value
+  }
+
   renderRow ({trx, timeTitle}, index) {
     return (
       <div styleName='row' key={index}>
@@ -104,13 +138,7 @@ export default class HistoryTable extends React.Component {
         <div styleName='col-value'>
           <div styleName='property'>
             <div styleName='value'>
-              {
-                trx.value() && trx.symbol() &&
-                <TokenValue
-                  value={trx.value()}
-                  symbol={trx.symbol()}
-                />
-              }
+              {this.renderValue(trx)}
             </div>
           </div>
         </div>
