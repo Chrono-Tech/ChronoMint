@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import styles from 'Login/components/stylesLoginPage'
-import networkService, { addError } from 'Login/redux/network/actions'
+
+import networkService, { addError } from '../../redux/network/actions'
+import styles from '../../components/stylesLoginPage'
 
 import './AccountSelector.scss'
 

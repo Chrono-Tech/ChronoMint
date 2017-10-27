@@ -4,9 +4,8 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import networkService,{ clearErrors } from 'Login/redux/network/actions'
-
-import styles from 'Login/components/stylesLoginPage'
+import networkService,{ clearErrors } from '../../redux/network/actions'
+import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = state => {
   const network = state.get('network')
@@ -55,3 +54,4 @@ export default class NetworkSelector extends Component {
     )
   }
 }
+

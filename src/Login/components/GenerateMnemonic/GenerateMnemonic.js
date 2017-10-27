@@ -3,11 +3,13 @@ import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import mnemonicProvider from 'Login/network/mnemonicProvider'
-import Warning from 'Login/components/Warning/Warning'
-import BackButton from 'Login/components/BackButton/BackButton'
-import styles from 'Login/components/stylesLoginPage'
 import theme from 'styles/themes/default'
+
+import BackButton from '../../components/BackButton/BackButton'
+import mnemonicProvider from '../../network/mnemonicProvider'
+import styles from '../../components/stylesLoginPage'
+import Warning from '../../components/Warning/Warning'
+
 import './GenerateMnemonic.scss'
 
 class GenerateMnemonic extends Component {

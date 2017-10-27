@@ -4,11 +4,13 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import download from 'react-file-download'
-import walletGenerator from 'Login/network/walletGenerator'
-import { addError, clearErrors } from 'Login/redux/network/actions'
-import Warning from 'Login/components/Warning/Warning'
-import BackButton from 'Login/components/BackButton/BackButton'
-import styles from 'Login/components/stylesLoginPage'
+
+import { addError, clearErrors } from '../../redux/network/actions'
+import BackButton from '../../components/BackButton/BackButton'
+import styles from '../../components/stylesLoginPage'
+import walletGenerator from '../../network/walletGenerator'
+import Warning from '../../components/Warning/Warning'
+
 import './GenerateWallet.scss'
 
 const initialState = {

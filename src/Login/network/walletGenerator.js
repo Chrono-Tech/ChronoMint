@@ -1,6 +1,5 @@
 import keythereum from 'keythereum'
 
-
 // Note: if options is unspecified, the values in keythereum.constants are used.
 
 class WalletGenerator {
@@ -39,3 +38,4 @@ class WalletGenerator {
 
 
 export default new WalletGenerator()
+

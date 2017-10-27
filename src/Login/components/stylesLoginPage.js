@@ -1,5 +1,4 @@
-import { styles as stylesConfig } from 'Login/settings'
-
+import { styles as stylesConfig } from '../settings'
 
 const commonInputStyles = {
   style: {

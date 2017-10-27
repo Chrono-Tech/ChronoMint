@@ -1,5 +1,5 @@
 import { accounts } from 'specsInit'
-import { providerMap, infuraNetworkMap, infuraLocalNetwork } from 'Login/network/settings'
+import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../network/settings'
 import * as actions from './actions'
 import reducer from './reducer'
 

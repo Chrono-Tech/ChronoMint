@@ -1,8 +1,9 @@
-import hdKey from 'ethereumjs-wallet/hdkey'
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import Web3Utils from './Web3Utils'
+import hdKey from 'ethereumjs-wallet/hdkey'
+
 import { createBCCEngine, createBTCEngine } from './BitcoinUtils'
+import Web3Utils from './Web3Utils'
 
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, {url, network} = {}) {

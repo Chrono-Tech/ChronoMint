@@ -1,4 +1,5 @@
 const WAIT_FOR_METAMASK = 2000 // ms
+
 import EventEmitter from 'events'
 
 class metaMaskResolver extends EventEmitter {

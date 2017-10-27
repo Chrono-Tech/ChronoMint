@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import { TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import { getNetworkById, LOCAL_ID, providerMap } from 'Login/network/settings'
-import web3Provider from 'Login/network/Web3Provider'
-import networkService, { addError } from 'Login/redux/network/actions'
-import AccountSelector from 'Login/components/AccountSelector/AccountSelector'
-import styles from 'Login/components/stylesLoginPage'
+import { connect } from 'react-redux'
+
+import AccountSelector from '../../components/AccountSelector/AccountSelector'
+import { getNetworkById, LOCAL_ID, providerMap } from '../../network/settings'
+import networkService, { addError } from '../../redux/network/actions'
+import styles from '../../components/stylesLoginPage'
+import web3Provider from '../../network/Web3Provider'
 
 const mapStateToProps = state => ({
   selectedNetworkId: state.get('network').selectedNetworkId,

@@ -4,10 +4,10 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import privateKeyProvider from 'Login/network/privateKeyProvider'
+import BackButton from '../../components/BackButton/BackButton'
+import privateKeyProvider from '../../network/privateKeyProvider'
+import styles from '../../components/stylesLoginPage'
 
-import BackButton from 'Login/components/BackButton/BackButton'
-import styles from 'Login/components/stylesLoginPage'
 import './LoginWithPrivateKey.scss'
 
 const mapStateToProps = state => ({

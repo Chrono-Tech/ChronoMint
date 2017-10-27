@@ -1,12 +1,14 @@
+import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
-import { assets } from 'Login/settings'
-import mnemonicProvider from 'Login/network/mnemonicProvider'
-import BackButton from 'Login/components/BackButton/BackButton'
-import styles from 'Login/components/stylesLoginPage'
+
+import { assets } from '../../settings'
+import BackButton from '../../components/BackButton/BackButton'
+import mnemonicProvider from '../../network/mnemonicProvider'
+import styles from '../../components/stylesLoginPage'
+
 import './LoginWithMnemonic.scss'
 
 const mapStateToProps = state => ({

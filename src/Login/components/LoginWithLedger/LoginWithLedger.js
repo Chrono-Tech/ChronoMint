@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { startLedgerSync, stopLedgerSync } from 'Login/redux/ledger/actions'
-import { fetchAccount } from 'Login/redux/ledger/actions'
-import BackButton from 'Login/components/BackButton/BackButton'
+
+import BackButton from '../../components/BackButton/BackButton'
+import { fetchAccount } from '../../redux/ledger/actions'
+import { startLedgerSync, stopLedgerSync } from '../../redux/ledger/actions'
+
 import './LoginWithLedger.scss'
 
 const ledgerStates = [{

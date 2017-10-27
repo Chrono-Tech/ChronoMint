@@ -1,4 +1,4 @@
-import { providerMap, getNetworksByProvider } from 'Login/network/settings'
+import { providerMap, getNetworksByProvider } from '../../network/settings'
 import * as actions from './actions'
 
 const initialState = {
