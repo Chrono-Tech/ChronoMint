@@ -61,13 +61,13 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   })
 
   multisigWalletService.on('ConfirmationNeeded', (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
-    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).list().get(walletId)
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
     const pendingTxList = wallet.pendingTxList()
     dispatch(updateWallet(wallet.pendingTxList(pendingTxList.set(pendingTxModel.id(), pendingTxModel))))
   })
 
   multisigWalletService.on('Deposit', (walletId, tokenId, amount) => {
-    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).list().get(walletId)
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
     const token: TokenModel = wallet.tokens().get(tokenId)
     dispatch(updateWallet(wallet.tokens(wallet.tokens().set(token.id(), token.updateBalance(true, amount)))))
     // dispatch(notify(notice))

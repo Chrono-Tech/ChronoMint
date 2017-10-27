@@ -21,8 +21,6 @@ const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3 col-xl-2'
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
 
-  console.log('--WalletContent#mapStateToProps', getCurrentWallet(state).toJS())
-
   return {
     wallet: getCurrentWallet(state),
     selectedNetworkId: network.selectedNetworkId,

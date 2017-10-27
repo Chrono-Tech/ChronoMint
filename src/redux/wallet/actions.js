@@ -19,5 +19,5 @@ export const getCurrentWallet = state => {
   const {isMultisig, current} = state.get(DUCK_WALLET)
   return !isMultisig || !current
     ? state.get(DUCK_MAIN_WALLET)
-    : state.get(DUCK_MULTISIG_WALLET).list().get(current)
+    : state.get(DUCK_MULTISIG_WALLET).item(current)
 }

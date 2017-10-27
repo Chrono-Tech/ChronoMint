@@ -7,10 +7,11 @@ import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import MultisigWalletCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {
-  let pendingTxList
+  let pendingTxList = new MultisigWalletCollection()
   const wallet: MultisigWalletModel = state.get(DUCK_MULTISIG_WALLET).selected()
 
   if (wallet) {
@@ -36,6 +37,7 @@ export default class WalletPendingTransfers extends React.Component {
           </div>
           <div styleName='issue'>
             <TokenValue
+              noRenderPrice
               value={item.value()}
               symbol={item.symbol()}
             />
@@ -71,15 +73,11 @@ export default class WalletPendingTransfers extends React.Component {
             </div>
           </div>
           <div styleName='right'>
-            <div styleName='revoke'>
-              <RaisedButton label={<Translate value='wallet.revoke' />} />
-            </div>
-            <div styleName='sign'>
-              <RaisedButton label={<Translate value='wallet.sign' />} />
-            </div>
+            <div styleName='revoke' />
+            <div styleName='sign' />
           </div>
         </div>
-        {this.props.pendingTxList.map(item => this.renderRow(item))}
+        {this.props.pendingTxList.items().map(item => this.renderRow(item))}
       </div>
     )
   }
@@ -91,7 +89,7 @@ export default class WalletPendingTransfers extends React.Component {
           <div styleName='title'><Translate value='wallet.pendingTransfers' /></div>
         </div>
         <div styleName='body'>
-          {this.props.pendingTxList.size > 0
+          {this.props.pendingTxList.size() > 0
             ? this.renderTable()
             : 'No transfers'
           }

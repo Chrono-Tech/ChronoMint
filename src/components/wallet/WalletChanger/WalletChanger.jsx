@@ -90,10 +90,10 @@ export default class WalletChanger extends React.Component {
                     : (
                       <span styleName='buttonLabel'>
                         <img styleName='buttonIcon' src={WalletMultiSVG} />
-                        <Translate value={multisigWallet.list().size > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
+                        <Translate value={multisigWallet.size() > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
                       </span>
                     )}
-                  onTouchTap={multisigWallet.list().size > 0
+                  onTouchTap={multisigWallet.size() > 0
                     ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.handleCreateWallet()}
                   disabled={multisigWallet.isFetching()}
@@ -142,7 +142,7 @@ export default class WalletChanger extends React.Component {
           <div styleName='body'>
             <div><Translate value='wallet.youHave' />:</div>
             <div>
-              <span styleName='walletsCount'>{multisigWallet.list().size}</span>
+              <span styleName='walletsCount'>{multisigWallet.size()}</span>
               <span styleName='walletsCountType'><Translate value='wallet.multisignatureWallets' /></span>
             </div>
 

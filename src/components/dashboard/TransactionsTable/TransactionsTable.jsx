@@ -33,7 +33,7 @@ export default class TransactionsTable extends React.Component {
 
   render () {
     const { transactions, locale} = this.props
-    const size = transactions.list().size
+    const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
     const data = buildTableData(transactions.list(), locale)

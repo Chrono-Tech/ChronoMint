@@ -1,11 +1,12 @@
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import contractManagerDAO from './ContractsManagerDAO'
 import BigNumber from 'bignumber.js'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import contractManagerDAO from './ContractsManagerDAO'
+import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 
-const CODE_CONFIRMATION_NEEDED = 4
+const CODE_CONFIRMATION_NEEDED = 14014
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
@@ -13,11 +14,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     super(
       require('chronobank-smart-contracts/build/contracts/Wallet.json'),
       at,
+      require('chronobank-smart-contracts/build/contracts/WalletEmitter.json'),
     )
-    this._okCodes = [
-      ...this._okCodes,
-      CODE_CONFIRMATION_NEEDED,
-    ]
+    this._okCodes.push(CODE_CONFIRMATION_NEEDED)
   }
 
   watchOwnerRemoved (callback) {
@@ -25,12 +24,14 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchConfirmationNeeded (callback) {
-    return this._watch('ConfirmationNeeded', (result) => {
-      const pendingTx = new MultisigWalletPendingTxModel({
-        ...result.args,
-        symbol: this._c.bytesToString(result.args.symbol),
-      })
-      callback(pendingTx)
+    return this._watch('ConfirmationNeeded', result => {
+      const {operation, value, to, symbol} = result.args
+      callback(new MultisigWalletPendingTxModel({
+        id: this._c.bytesToString(operation),
+        value,
+        to,
+        symbol: this._c.bytesToString(symbol),
+      }))
     })
   }
 
@@ -46,6 +47,22 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._watch('Deposit', result => {
       callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
     })
+  }
+
+  async getPendings (tokens) {
+    let pendingTxCollection = new MultisigWalletPendingTxCollection()
+    const [to, value, symbol] = await this._call('getPendings')
+
+    to.forEach((item, i) => {
+      const symbolString = this._c.bytesToString(symbol[i])
+      const tokenDAO = tokens.get(symbolString).dao()
+      pendingTxCollection = pendingTxCollection.add(new MultisigWalletPendingTxModel({
+        to: item,
+        value: tokenDAO.removeDecimals(value[i]),
+        symbol: symbolString,
+      }))
+    })
+    return pendingTxCollection
   }
 
   async getOwners () {

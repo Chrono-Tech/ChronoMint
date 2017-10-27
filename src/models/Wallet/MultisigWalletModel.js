@@ -1,7 +1,8 @@
 import Immutable from 'immutable'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
 import ls from 'utils/LocalStorage'
 import TransactionsCollection from 'models/Wallet/TransactionsCollection'
+import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
@@ -13,7 +14,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   name: 'No name',
   requiredSignatures: null,
   dao: null,
-  pendingTxList: new Immutable.List(),
+  pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
 }) {
 

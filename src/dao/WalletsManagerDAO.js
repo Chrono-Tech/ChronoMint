@@ -77,6 +77,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       await walletDAO.getTokens(),
     ])
 
+    const pendingTxList = await walletDAO.getPendings(tokens)
+
     return new MultisigWalletModel({
       owners: new Immutable.List(owners),
       address,
@@ -85,6 +87,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       dao: walletDAO,
       tokens,
       is2FA,
+      isFetched: true,
+      pendingTxList,
     })
   }
 

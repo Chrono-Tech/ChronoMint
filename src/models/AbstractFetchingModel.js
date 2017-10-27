@@ -6,7 +6,7 @@ export const abstractFetchingModel = defaultValues => class AbstractFetchingMode
   isFetched: false,
   transactionHash: null,
   isPending: false,
-  isFailed: false
+  isFailed: false,
 }) {
   isFetching (value) {
     return this._getSet('isFetching', value)

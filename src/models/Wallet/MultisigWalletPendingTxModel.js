@@ -6,10 +6,10 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
   initiator: null,
   symbol: null,
   to: null,
-  value: new BigNumber(0)
+  value: new BigNumber(0),
 }) {
   id () {
-    return this.get('id')
+    return this.get('id') || Math.random()
   }
 
   to () {

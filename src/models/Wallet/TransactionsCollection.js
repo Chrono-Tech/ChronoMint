@@ -1,15 +1,9 @@
-import { abstractFetchingModel } from '../AbstractFetchingModel'
-import Immutable from 'immutable'
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 
-export default class MainWallet extends abstractFetchingModel({
-  list: new Immutable.Map(),
-  endOfList: false
+export default class MainWallet extends abstractFetchingCollection({
+  endOfList: false,
 }) {
-  list (value) {
-    return this._getSet('list', value)
-  }
-
   endOfList (value) {
     return this._getSet('endOfList', value < TXS_PER_PAGE)
   }
