@@ -1,13 +1,16 @@
 import type Immutable from 'immutable'
-
 import type TokenModel from 'models/TokenModel'
-
 import validator from 'components/forms/validator'
-
 import AbstractContractDAO from './AbstractContractDAO'
-import AssetsManagerDAO from './AssetsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
+import AssetsManagerDAO from './AssetsManagerDAO'
+import PlatformsManagerDAO from './PlatformsManagerDAO'
+import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
+import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
+import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
+import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
+import FeeInterfaceDAO from './FeeInterfaceDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import RewardsDAO from './RewardsDAO'
@@ -28,6 +31,12 @@ const DAO_VOTING_DETAILS = 'PollDetails'
 const DAO_VOTING_ACTOR = 'VoteActor'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
+const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
+const DAO_CHRONOBANK_PLATFORM = 'ChronoBankPlatformDAO'
+const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
+const DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER = 'PlatformTokenExtensionGatewayManagerEmitterDAO'
+const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
+const DAO_FEE_INTERFACE = 'FeeInterfaceDAO'
 const DAO_TIME_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
@@ -43,6 +52,12 @@ const daoMap = {
   [DAO_VOTING_ACTOR]: VotingActorDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
+  [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
+  [DAO_CHRONOBANK_PLATFORM]: ChronoBankPlatformDAO,
+  [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
+  [DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER]: PlatformTokenExtensionGatewayManagerEmitterDAO,
+  [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
+  [DAO_FEE_INTERFACE]: FeeInterfaceDAO,
   [DAO_TIME_HOLDER]: TIMEHolderDAO,
   [DAO_ERC20]: ERC20DAO,
 }
@@ -62,7 +77,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     account = account || await this.getContractAddressByType(daoType)
 
-    const key = `${account}-${block}`
+    const key = `${account}-${block}-${daoType}`
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
@@ -89,6 +104,45 @@ class ContractsManagerDAO extends AbstractContractDAO {
   // noinspection JSUnusedGlobalSymbols
   async getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
     return this._getDAO(DAO_ASSETS_MANAGER)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
+    return this._getDAO(DAO_PLATFORMS_MANAGER)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getChronoBankPlatformDAO (platformAddress): Promise<ChronoBankPlatformDAO> {
+    return this._getDAO(DAO_CHRONOBANK_PLATFORM, platformAddress)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getChronoBankAssetProxyDAO (token: String): Promise<ChronoBankAssetProxyDAO> {
+    return this._getDAO(DAO_CHRONOBANK_ASSET_PROXY, token)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getFeeInterfaceDAO (address: String): Promise<FeeInterfaceDAO> {
+    const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
+    const latestVersion = await chronoBankAssetProxyDAO.getLatestVersion()
+    return this._getDAO(DAO_FEE_INTERFACE, latestVersion)
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getTokenManagementExtensionDAO (platformAddress): Promise<TokenManagementExtensionDAO> {
+    if (platformAddress) {
+      const assetsManager = await this._getDAO(DAO_ASSETS_MANAGER)
+      const tokenExtensionString = await assetsManager.getTokenExtension(platformAddress)
+
+      return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION, tokenExtensionString)
+    } else {
+      return this._getDAO(DAO_TOKEN_MANAGEMENT_EXTENSION)
+    }
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  async getPlatformTokenExtensionGatewayManagerEmitterDAO (): Promise<PlatformTokenExtensionGatewayManagerEmitterDAO> {
+    return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
   }
 
   async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {

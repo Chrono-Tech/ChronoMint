@@ -118,7 +118,7 @@ export default class AbstractContractDAO {
   static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {
     AbstractContractDAO._account = userAccount
     AbstractContractDAO._defaultOkCodes = defaultOkCodes
-    AbstractContractDAO._defaultErrorCodes = { ...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes }
+    AbstractContractDAO._defaultErrorCodes = {...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes}
     AbstractContractDAO._didSetup = true
   }
 
@@ -139,7 +139,7 @@ export default class AbstractContractDAO {
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
   async _initContract (web3 = null) {
     if (this._at !== null && validator.address(this._at) !== null) {
-      throw new Error('invalid address passed')
+      throw new Error(`invalid address passed: ${this._at}`)
     }
     try {
       web3 = web3 || await this._web3Provider.getWeb3()
@@ -237,7 +237,7 @@ export default class AbstractContractDAO {
   async getData (func: string, args: Array = []): string {
     const deployed = await this.contract
     if (!deployed.contract.hasOwnProperty(func)) {
-      throw new Error(`unknown function ${func} in contract ${this.getContractName()}`)
+      throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     return deployed.contract[func].getData.apply(null, args)
   }
@@ -257,11 +257,11 @@ export default class AbstractContractDAO {
     block = block || this._defaultBlock
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw new Error(`unknown function ${func} in contract ${this.getContractName()}`)
+      throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call.apply(null, [...args, block, { from }])
+      return deployed[func].call.apply(null, [...args, block, {from}])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
@@ -283,18 +283,21 @@ export default class AbstractContractDAO {
    * @see EthereumDAO.transfer
    * @throws TxError
    */ // eslint-disable-next-line
-  static txStart = async (tx: TxExecModel) => {}
+  static txStart = async (tx: TxExecModel) => {
+  }
 
   /**
    * Call this function after estimate gas to set tx gas fee
    * @param tx
    */ // eslint-disable-next-line
-  static txGas = (tx: TxExecModel) => {}
+  static txGas = (tx: TxExecModel) => {
+  }
 
   /**
    * Call this function after transaction
    */ // eslint-disable-next-line
-  static txEnd = (tx: TxExecModel, e: TxError = null) => {}
+  static txEnd = (tx: TxExecModel, e: TxError = null) => {
+  }
 
   /**
    * Returns function exec args associated with names from contract ABI
@@ -395,10 +398,8 @@ export default class AbstractContractDAO {
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (
-    func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-    addDryRunFrom = null, addDryRunOkCodes = []
-  ): Object {
+  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
+             addDryRunFrom = null, addDryRunOkCodes = []): Object {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -408,7 +409,7 @@ export default class AbstractContractDAO {
       ? (typeof infoArgs.txSummary === 'function' ? infoArgs.txSummary() : infoArgs)
       : this._argsWithNames(func, args)
 
-    const params = [...args, { from: this.getAccount(), value }]
+    const params = [...args, {from: this.getAccount(), value}]
 
     let tx = new TxExecModel({
       contract: this.getContractName(),
@@ -419,7 +420,7 @@ export default class AbstractContractDAO {
 
     /** ESTIMATE GAS */
     const estimateGas = async () => {
-      const { gasFee, gasLimit } = await this._estimateGas(func, args, value)
+      const {gasFee, gasLimit} = await this._estimateGas(func, args, value)
       tx = tx.setGas(gasFee)
       AbstractContractDAO.txGas(tx)
       return gasLimit
@@ -536,7 +537,7 @@ export default class AbstractContractDAO {
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_estimateGas func not found', func)
     }
-    const params = [...args, { from: this.getAccount(), value }]
+    const params = [...args, {from: this.getAccount(), value}]
 
     // noinspection JSUnresolvedFunction
     let gasLimit = await deployed[func].estimateGas.apply(null, params)
@@ -548,7 +549,7 @@ export default class AbstractContractDAO {
     const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
     const gasFee = this._c.fromWei(gasPrice.mul(gasLimit))
 
-    return { gasLimit, gasFee }
+    return {gasLimit, gasFee}
   }
 
   /**
@@ -567,7 +568,7 @@ export default class AbstractContractDAO {
     }
 
     const startTime = AbstractContractDAO._eventsWatchStartTime
-    const instance = deployed[event](filters, { fromBlock: 'latest', toBlock: 'latest' })
+    const instance = deployed[event](filters, {fromBlock: 'latest', toBlock: 'latest'})
     this._addFilterEvent(instance)
     return instance.watch(async (e, result) => {
       if (e) {
@@ -633,9 +634,10 @@ export default class AbstractContractDAO {
       toBlock = Math.max(i, 0)
       const iFromBlock = Math.max(i - step, 0)
       const result = await new Promise(resolve => {
-        const filter = deployed[event](filters, { fromBlock: iFromBlock, toBlock })
+        const filter = deployed[event](filters, {fromBlock: iFromBlock, toBlock})
         filter.get((e, r) => {
-          filter.stopWatching(() => {})
+          filter.stopWatching(() => {
+          })
           if (e) {
             // eslint-disable-next-line
             console.error('_get error:', e)
@@ -654,7 +656,7 @@ export default class AbstractContractDAO {
     }
 
     if (total > 0) {
-      this._setFilterCache(requestId, { logs: logs.slice(total), toBlock })
+      this._setFilterCache(requestId, {logs: logs.slice(total), toBlock})
       return logs.slice(0, total)
     }
 

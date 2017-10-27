@@ -47,13 +47,11 @@ class LOCModel extends abstractFetchingModel({
   createDate: Date.now(),
   status: 0,
   securityPercentage: 0,
-  isPending: true,
-  isFailed: false, // for dryrun
   isNew: true,
   token: null,
 }) {
   name (value) {
-    return value === undefined ? this.get('name') : this.set('name', value)
+    return this._getSet('name', value)
   }
 
   website () {
@@ -61,7 +59,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   oldName (value) {
-    return value === undefined ? this.get('oldName') : this.set('oldName', value)
+    return this._getSet('oldName', value)
   }
 
   issueLimit () {
@@ -69,7 +67,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   issued (value: BigNumber): BigNumber {
-    return value === undefined ? this.get('issued') : this.set('issued', value)
+    return this._getSet('issued', value)
   }
 
   expDate () {
@@ -93,7 +91,7 @@ class LOCModel extends abstractFetchingModel({
   }
 
   status () {
-    return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE // inactive
+    return this.isNotExpired() ? this.get('status') : STATUS_INACTIVE
   }
 
   statusString (status) {
@@ -110,25 +108,11 @@ class LOCModel extends abstractFetchingModel({
   }
 
   token (value) {
-    return (value === undefined) ? this.get('token') : this.set('token', value)
+    return this._getSet('token', value)
   }
 
   publishedHash () {
     return this.get('publishedHash')
-  }
-
-  isPending (value) {
-    if (value === undefined) {
-      return this.get('isPending')
-    }
-    return this.set('isFailed', false).set('isPending', value)
-  }
-
-  isFailed (value) {
-    if (value === undefined) {
-      return this.get('isFailed')
-    }
-    return this.set('isFailed', value).set('isPending', false)
   }
 
   isNew () {

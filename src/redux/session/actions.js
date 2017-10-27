@@ -9,8 +9,10 @@ import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 import { watchStopMarket } from 'redux/market/action'
-
+import { initWallet } from 'redux/wallet/actions'
 import ls from 'utils/LocalStorage'
+
+export const DUCK_SESSION = 'session'
 
 export const SESSION_CREATE = 'session/CREATE'
 export const SESSION_DESTROY = 'session/DESTROY'
@@ -62,6 +64,7 @@ export const login = account => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+  dispatch(initWallet())
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))

@@ -6,18 +6,15 @@ import React from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
+import { formPropTypes } from 'redux-form'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import TokenModel, { validate } from 'models/TokenModel'
-
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-
+import TokenIcon from 'components/common/TokenIcon/TokenIcon'
 import ModalDialog from './ModalDialog'
-
 import './AddTokenDialog.scss'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
@@ -44,16 +41,10 @@ export class AddTokenDialog extends React.Component {
     account: PropTypes.string,
     profile: PropTypes.object,
     onClose: PropTypes.func,
-    handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func,
-
     address: PropTypes.string,
     name: PropTypes.string,
     icon: PropTypes.string,
-
-    submitting: PropTypes.bool,
-    initialValues: PropTypes.object,
-  }
+  } & formPropTypes
 
   render () {
     return (
@@ -64,12 +55,16 @@ export class AddTokenDialog extends React.Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}
       >
-        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+        <ModalDialog onClose={this.props.onClose} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='iconContent' multihash={this.props.icon} />
+                  <IPFSImage
+                    styleName='iconContent'
+                    multihash={this.props.icon}
+                    fallbackComponent={<TokenIcon token={this.props.name} />}
+                  />
                 </div>
               </div>
               <div styleName='right'>
@@ -117,7 +112,7 @@ function mapStateToProps (state) {
   const selector = formValueSelector('AddTokenDialog')
 
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     address: selector(state, 'address'),
@@ -126,7 +121,7 @@ function mapStateToProps (state) {
 
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
+    isTokensLoaded: !wallet.isFetching(),
     tokens: wallet.tokens,
   }
 }

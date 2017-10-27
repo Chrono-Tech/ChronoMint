@@ -1,23 +1,23 @@
 import { en as layouts } from 'layouts/lang'
-
-import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-import * as exchange from 'dao/ExchangeDAO'
-import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as rewards from 'dao/RewardsDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as exchange from 'dao/ExchangeDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-
 import { en as LoginPage } from 'pages/LoginPage/lang'
-
 import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',
+  true: 'yes',
+  false: 'no',
   LoginPage,
   ...components,
   layouts,
@@ -41,7 +41,7 @@ export default {
     exchange: 'Exchange (demo)',
     voting: 'Voting',
     rewards: 'Rewards',
-    assets: 'My assets (demo)',
+    assets: 'My assets',
     profile: 'Profile',
     signOut: 'Sign out',
     search: 'Search...',
@@ -67,7 +67,9 @@ export default {
     owners: 'owners',
     youHave: 'You have',
     multisignatureWallets: 'Multisignature wallets',
-    switchMultisignatureWallet: 'Switch multisignature wallet',
+    createMultisignatureWallet: 'Create multisignature wallet',
+    changeMultisignatureWallet: 'Change multisignature wallet',
+    switchToMultisignatureWallet: 'Switch to multisignature wallet',
     switchToMainWallet: 'Switch to main wallet',
     pendingTransfers: 'Pending transfers (demo)',
     to: 'To',
@@ -79,24 +81,12 @@ export default {
       addWallet: 'Add wallet',
       yourWallets: 'Your wallets',
       youHaveNoWallets: 'You have no wallets',
-      howToAddMultisignatureWallet: "How to add mulisignature wallet? It's easy!",
+      howToAddMultisignatureWallet: 'How to add mulisignature wallet? It\'s easy!',
       toCreateAMultisigWallet: 'To create a multisig wallet',
       clickPlusButtonAtTheTop: 'Click plus button at the top',
       selectOwnersAtLeastTwo: 'Select owners, at least two',
       selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
       owners: 'owners',
-    },
-    walletAddEditDialog: {
-      newWallet: 'New wallet',
-      editWallet: 'Edit wallet',
-      walletName: 'Wallet name',
-      dayLimit: 'Day limit',
-      requiredSignatures: 'Required signatures',
-      walletOwners: 'Wallet owners',
-      addOwner: 'Add owner',
-      addWallet: 'Add wallet',
-      save: 'Save',
-      ownerAddress: 'Owner address',
     },
   },
   exchange: {
@@ -344,6 +334,17 @@ export default {
         title: 'Require TIME',
       },
     },
+    PlatformsManager: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
+        title: 'Confirm create platform',
+      },
+      [platformsManager.TX_ATTACH_PLATFORM]: {
+        title: 'Confirm attach platform',
+      },
+      [platformsManager.TX_DETACH_PLATFORM]: {
+        title: 'Confirm detach platform',
+      },
+    },
     LOCManager: {
       [loc.standardFuncs.ADD_LOC]: {
         title: 'Add LOC',
@@ -429,6 +430,9 @@ export default {
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
+    lowerThanOrEqual: 'Should be lower or equal than %{limit}',
+    moreThan: 'Should be more than %{limit}',
+    moreThanOrEqual: 'Should be more or equal than %{limit}',
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
@@ -445,16 +449,7 @@ export default {
     transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
     wallet: {
       walletName: {
-        haveToBeString: 'Have to be string',
-      },
-      dayLimit: {
-        haveToBeNumber: 'Have to be number',
-      },
-      requiredSignatures: {
-        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal',
-      },
-      ownersCount: {
-        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal',
+        haveToBeString: 'Have to be string'
       },
     },
   },
@@ -768,7 +763,7 @@ export default {
       },
       AddCurrencyDialog: {
         addToken: 'Add Token',
-        howToAddYourToken: "How to add your token? It's easy!",
+        howToAddYourToken: 'How to add your token? It\'s easy!',
         youCanConnectToYourPersonalWallet: 'You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.',
         clickOnThePlusButtonAbove: 'Click on the + plus button above.',
         fillTheForm: 'Fill the form, check values and press SAVE.',

@@ -30,8 +30,6 @@ const handleLOCRemove = (name: string, notice: LOCNoticeModel) => dispatch => {
 }
 
 const handleError = (e, loc) => dispatch => {
-  // for debug
-  // console.log('--actions#', e)
   if (e.code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
     dispatch({ type: LOC_UPDATE, loc: loc.isPending(false) })
   } else {

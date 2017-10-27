@@ -3,7 +3,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
-import { updateLOCFilter } from '../../redux/locs/actions'
+import { updateLOCFilter } from 'redux/locs/actions'
 import { Translate } from 'react-redux-i18n'
 
 const mapStateToProps = (state) => ({
