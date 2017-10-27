@@ -81,12 +81,6 @@ export default class RewardsContent extends Component {
               <div className='col-sm-1'>
                 <div styleName='alignRight'>
                   <div styleName='entries'>
-                    {/*
-                    <div styleName='entry'>
-                      <span styleName='entry1'>Access of rewards contract to your account is:</span><br />
-                      <span styleName='entry2'><a styleName='highlightGreen'>Enabled</a></span>
-                    </div>
-                    */}
                     {this.props.timeDeposit && this.props.timeDeposit.gt(0)
                       ? <div styleName='entry'>
                         <span styleName='entry1'>
@@ -118,23 +112,21 @@ export default class RewardsContent extends Component {
                         <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
-                    {rewardsData.accountRewards().gt(0)
-                      ? (<RaisedButton
+                    {rewardsData.accountRewards().gt(0) && (
+                      <RaisedButton
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         disabled={!rewardsData.accountRewards().gt(0)}
                         onTouchTap={() => this.props.handleWithdrawRevenue()}
-                      />)
-                      : null
-                    }
-                    {this.props.isCBE
-                      ? (<RaisedButton
+                      />
+                    )}
+                    {this.props.isCBE && (
+                      <RaisedButton
                         label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
                         onTouchTap={() => this.props.handleClosePeriod()}
-                      />)
-                      : null
-                    }
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -153,7 +145,7 @@ export default class RewardsContent extends Component {
             {this.props.rewardsData.periods().valueSeq().map(item => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <RewardsPeriod period={item} rewardsData={this.props.rewardsData} />
                   </Paper>
                 </div>
@@ -169,12 +161,12 @@ export default class RewardsContent extends Component {
 function mapStateToProps (state) {
   const rewards = state.get('rewards')
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     rewardsData: rewards.data,
     // just to subscribe RewardsContent on time deposit updates
-    timeDeposit: wallet.timeDeposit,
+    timeDeposit: wallet.timeDeposit(),
     isFetching: rewards.isFetching,
     isFetched: rewards.isFetched,
     isCBE: session.isCBE,

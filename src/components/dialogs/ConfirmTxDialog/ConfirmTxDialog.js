@@ -5,7 +5,7 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import { ETH } from 'redux/wallet/actions'
+import { ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 
 import Moment, { FULL_DATE } from 'components/common/Moment/index'
@@ -16,7 +16,7 @@ import ModalDialog from '../ModalDialog'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
-  balance: state.get('wallet').tokens.get(ETH).balance(),
+  balance: state.get('mainWallet').tokens().get(ETH).balance(),
   tx: state.get('watcher').confirmTx,
 })
 
@@ -103,7 +103,7 @@ class ConfirmTxDialog extends Component {
           <TableRowColumn style={{ width: '35%' }}>
             <Translate value={tokenBase + key} />
           </TableRowColumn>
-          <TableRowColumn style={{ width: '65%' }}>
+          <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
             {value}
           </TableRowColumn>
         </TableRow>

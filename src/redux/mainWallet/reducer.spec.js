@@ -4,6 +4,7 @@ import { accounts } from 'specsInit'
 
 import TokenModel from 'models/TokenModel'
 import TxModel from 'models/TxModel'
+import MainWallet from 'models/Wallet/MainWalletModel'
 
 import * as a from './actions'
 import reducer from './reducer'
@@ -18,23 +19,7 @@ const tx2 = new TxModel({ txHash: 'hash2', from: 3, to: 4 })
 
 describe('settings wallet reducer', () => {
   it('should return the initial state', () => {
-    expect(reducer(undefined, {})).toEqual({
-      tokensFetching: true,
-      tokensFetched: false,
-      tokens: new Immutable.Map(),
-      transactions: {
-        list: new Immutable.Map(),
-        isFetching: false,
-        endOfList: false,
-      },
-      timeDeposit: new BigNumber(0),
-      timeAddress: '',
-      btcAddress: null,
-      bccAddress: null,
-      isTIMERequired: true,
-      isMultisig: false,
-      wallets: [],
-    })
+    expect(reducer(undefined, {})).toEqual(new MainWallet())
   })
 
   it('should handle WALLET_TOKENS_FETCH', () => {

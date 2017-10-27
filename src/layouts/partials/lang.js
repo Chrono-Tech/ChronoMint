@@ -1,4 +1,3 @@
-import * as ContentPartial from 'layouts/partials/ContentPartial/lang'
 import * as DashboardContent from 'layouts/partials/DashboardContent/lang'
 import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
 import * as InfoPartial from 'layouts/partials/InfoPartial/lang'
@@ -10,7 +9,6 @@ import * as WalletContent from 'layouts/partials/WalletContent/lang'
 export default {
   en: {
     DashboardContent: DashboardContent.en,
-    ContentPartial: ContentPartial.en,
     FooterPartial: FooterPartial.en,
     WalletContent: WalletContent.en,
     InfoPartial: InfoPartial.en,
@@ -20,7 +18,6 @@ export default {
   },
   ru: {
     DashboardContent: DashboardContent.ru,
-    ContentPartial: ContentPartial.ru,
     FooterPartial: FooterPartial.ru,
     WalletContent: WalletContent.ru,
     InfoPartial: InfoPartial.ru,

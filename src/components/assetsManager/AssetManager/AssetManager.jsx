@@ -10,7 +10,6 @@ import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
-import styles from 'layouts/partials/styles'
 import { Paper, RaisedButton } from 'material-ui'
 import './AssetManager.scss'
 
@@ -150,12 +149,12 @@ export class AssetManager extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <Paper style={styles.content.paper.style}>
+          <Paper>
             {this.renderHead()}
             {this.renderBody()}
           </Paper>
           <div styleName='delimiter' />
-          <Paper style={styles.content.paper.style}>
+          <Paper>
             {this.renderTable()}
           </Paper>
         </div>

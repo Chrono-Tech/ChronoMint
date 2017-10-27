@@ -38,5 +38,5 @@ export { default as AlertDialog } from './dialogs/AlertDialog'
 export { default as UpdateProfileDialog } from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
 export { default as CopyDialog } from './dialogs/CopyDialog'
 
-export { default as WalletChanger } from './wallet/WalletChanger'
+export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'

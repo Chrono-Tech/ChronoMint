@@ -1,24 +1,18 @@
-import BigNumber from 'bignumber.js'
-import PropTypes from 'prop-types'
 import React from 'react'
-import { TextField, RaisedButton, FlatButton } from 'material-ui'
-import { Translate } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-
+import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
-
-import { isTestingNetwork } from 'network/settings'
-
-import { depositTIME, withdrawTIME, approve, TIME } from 'redux/wallet/actions'
-import { requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/wallet/actions'
-
-import ErrorList from 'components/forms/ErrorList'
+import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { isTestingNetwork } from 'network/settings'
+import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
-import ColoredSection from '../ColoredSection/ColoredSection'
+import { Translate } from 'react-redux-i18n'
+import type MainWallet from 'models/Wallet/MainWalletModel'
 import IconSection from '../IconSection/IconSection'
-
+import ColoredSection from '../ColoredSection/ColoredSection'
 import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -30,9 +24,35 @@ function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
 }
 
+
+function mapStateToProps (state) {
+  const wallet: MainWallet = state.get('mainWallet')
+  const token: TokenModel = wallet.tokens().get(TIME)
+  const { selectedNetworkId, selectedProviderId } = state.get('network')
+  const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
+
+  return {
+    token,
+    deposit: wallet.timeDeposit(),
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired() && token && token.balance().eq(0),
+    timeAddress: wallet.timeAddress(),
+    isTesting,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
+    updateRequireTIME: () => dispatch(updateIsTIMERequired()),
+    approve: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    depositTIME: amount => dispatch(depositTIME(amount)),
+    withdrawTIME: amount => dispatch(withdrawTIME(amount)),
+    requireTIME: () => dispatch(requireTIME()),
+  }
+}
+
 export class DepositTokens extends React.Component {
   static propTypes = {
-    title: PropTypes.object, // Translate object
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
     approve: PropTypes.func,
@@ -69,15 +89,28 @@ export class DepositTokens extends React.Component {
     this.props.updateRequireTIME()
   }
 
-  render () {
-    return this.props.token ? (
-      <ColoredSection
-        styleName='root'
-        head={this.renderHead()}
-        body={this.renderBody()}
-        foot={this.renderFoot()}
-      />
-    ) : null
+  handleAmountChange (amount) {
+    this.setState({
+      amount,
+      errors: this.validators.amount(amount),
+    })
+  }
+
+  handleApproveTIME = () => {
+    this.props.approve(this.props.token, this.state.amount, this.props.timeAddress)
+    if (Number(this.state.amount) === 0) {
+      this.setState({ amount: '' })
+    }
+  }
+
+  handleDepositTIME = () => {
+    this.props.depositTIME(this.state.amount)
+    this.setState({ amount: '' })
+  }
+
+  handleWithdrawTIME = () => {
+    this.props.withdrawTIME(this.state.amount)
+    this.setState({ amount: '' })
   }
 
   renderHead () {
@@ -87,7 +120,7 @@ export class DepositTokens extends React.Component {
 
     return (
       <div>
-        <IconSection title={this.props.title} icon={TIME_ICON}>
+        <IconSection title={<Translate value={prefix('depositTime')} />} icon={TIME_ICON}>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
             <TokenValue
@@ -136,10 +169,23 @@ export class DepositTokens extends React.Component {
     )
   }
 
+  render () {
+    return (
+      <Paper>
+        {this.props.token ? (
+          <ColoredSection
+            styleName='root'
+            head={this.renderHead()}
+            body={this.renderBody()}
+            foot={this.renderFoot()}
+          />
+        ) : null}
+      </Paper>
+    )
+  }
+
   getIsLockValid () {
-    const {
-      token, isTesting, timeAddress, deposit,
-    } = this.props
+    const { token, isTesting, timeAddress, deposit } = this.props
     const limit = isTesting
       ? BigNumber.min(
         token.balance(),
@@ -209,58 +255,6 @@ export class DepositTokens extends React.Component {
         </span>
       </div>
     )
-  }
-
-  handleAmountChange (amount) {
-    this.setState({
-      amount,
-      errors: this.validators.amount(amount),
-    })
-  }
-
-  handleApproveTIME = () => {
-    this.props.approve(this.props.token, this.state.amount, this.props.timeAddress)
-    if (Number(this.state.amount) === 0) {
-      this.setState({ amount: '' })
-    }
-  }
-
-  handleDepositTIME = () => {
-    this.props.depositTIME(this.state.amount)
-    this.setState({ amount: '' })
-  }
-
-  handleWithdrawTIME = () => {
-    this.props.withdrawTIME(this.state.amount)
-    this.setState({ amount: '' })
-  }
-}
-
-function mapStateToProps (state) {
-  const {
-    tokens, timeDeposit, isTIMERequired, timeAddress,
-  } = state.get('wallet')
-  const token: TokenModel = tokens.get(TIME)
-  const { selectedNetworkId, selectedProviderId } = state.get('network')
-  const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-
-  return {
-    token,
-    deposit: timeDeposit,
-    isShowTIMERequired: isTesting && !isTIMERequired && token && token.balance().eq(0),
-    timeAddress,
-    isTesting,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    updateRequireTIME: () => dispatch(updateIsTIMERequired()),
-    approve: (token, amount, spender) => dispatch(approve(token, amount, spender)),
-    depositTIME: amount => dispatch(depositTIME(amount)),
-    withdrawTIME: amount => dispatch(withdrawTIME(amount)),
-    requireTIME: () => dispatch(requireTIME()),
   }
 }
 

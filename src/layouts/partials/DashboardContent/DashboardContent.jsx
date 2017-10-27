@@ -4,17 +4,36 @@ import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import styles from 'layouts/partials/styles'
-
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
-
+import { getCurrentWallet } from 'redux/wallet/actions'
 import './DashboardContent.scss'
 
 function prefix (token) {
   return `layouts.partials.DashboardContent.${token}`
 }
 
-export class DashboardContent extends Component {
+function mapStateToProps (state) {
+  const wallet = getCurrentWallet(state)
+  const rewards = state.get('rewards')
+  const voting = state.get('voting')
+
+  return {
+    ready: wallet.isFetched(),
+    rewardsData: rewards.data,
+    isRewardsFetched: rewards.isFetched,
+    isVotingFetched: voting.isFetched && wallet.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getRewardsData: () => dispatch(getRewardsData()),
+    watchInitRewards: () => dispatch(watchInitRewards()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class DashboardContent extends Component {
   static propTypes = {
     ready: PropTypes.bool,
     rewardsData: PropTypes.object,
@@ -45,12 +64,10 @@ export class DashboardContent extends Component {
               <div className='DashboardContent__grid'>
                 <div className='row'>
                   <div className='col-md-3 col-lg-2' styleName='headLight'>
-                    <Paper style={styles.content.paper.style}>
-                      <SendTokens title={<Translate value={prefix('sendTokens')} />} />
-                    </Paper>
+                    <SendTokens />
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
-                    <Paper style={styles.content.paper.style}>
+                    <Paper>
                       <DepositTokens title={<Translate value={prefix('depositTime')} />} />
                     </Paper>
                   </div>
@@ -60,7 +77,7 @@ export class DashboardContent extends Component {
                   : (
                     <div className='row'>
                       <div className='col-xs-6'>
-                        <Paper style={styles.content.paper.style}>
+                        <Paper>
                           <Voting />
                         </Paper>
                       </div>
@@ -73,7 +90,7 @@ export class DashboardContent extends Component {
                     <div className='row'>
                       {this.props.rewardsData.periods().valueSeq().map(item => (
                         <div className='col-xs-6' key={item.index()}>
-                          <Paper style={styles.content.paper.style}>
+                          <Paper>
                             <Rewards period={item} rewardsData={this.props.rewardsData} />
                           </Paper>
                         </div>
@@ -89,24 +106,3 @@ export class DashboardContent extends Component {
   }
 }
 
-function mapStateToProps (state) {
-  const wallet = state.get('wallet')
-  const rewards = state.get('rewards')
-  const voting = state.get('voting')
-
-  return {
-    ready: !wallet.tokensFetching,
-    rewardsData: rewards.data,
-    isRewardsFetched: rewards.isFetched,
-    isVotingFetched: voting.isFetched && wallet.tokensFetched,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DashboardContent)

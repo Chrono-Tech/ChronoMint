@@ -1,13 +1,10 @@
-import BigNumber from 'bignumber.js'
 // TODO @bshevchenko: this is intermediate version for demo
 import Immutable from 'immutable'
-
-import ethereumDAO from 'dao/EthereumDAO'
-import exchangeDAO from 'dao/ExchangeDAO'
-
+import BigNumber from 'bignumber.js'
+import { ETH, LHT } from 'redux/mainWallet/actions'
 import ExchangeOrderModel from 'models/ExchangeOrderModel'
-
-import { ETH, LHT } from 'redux/wallet/actions'
+import exchangeDAO from 'dao/ExchangeDAO'
+import ethereumDAO from 'dao/EthereumDAO'
 
 export const EXCHANGE_ORDERS = 'exchange/ORDERS'
 
