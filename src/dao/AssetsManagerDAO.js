@@ -102,10 +102,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const txDetails = await web3Provider.getTransaction(tx.transactionHash)
     tx.gasPrice = txDetails.gasPrice
     tx.gas = txDetails.gas
-    if (tx.event === 'PlatformRequested') {
-      // eslint-disable-next-line
-      console.log('--AssetsManagerDAO#getTxModel: tx', tx)
-    }
 
     if (block && time) {
       return this.createTxModel(tx, account, block, time)
@@ -119,11 +115,12 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const platformManagerDao = await contractManager.getPlatformManagerDAO()
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
     const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {from: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {by: account}, TXS_PER_PAGE, 'test'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {by: account}, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {to: account}))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}))
     transactionsPromises.push(ERC20ManagerDAO._get(TX_LOG_ADD_TOKEN, 0, 'latest', {from: account}, TXS_PER_PAGE))
     const transactionsLists = await Promise.all(transactionsPromises)
 
