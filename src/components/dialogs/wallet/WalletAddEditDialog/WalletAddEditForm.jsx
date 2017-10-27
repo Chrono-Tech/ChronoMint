@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { formPropTypes } from 'redux-form'
 import { Translate } from 'react-redux-i18n'
 import { RaisedButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
@@ -8,15 +9,22 @@ import { Field, reduxForm, FieldArray } from 'redux-form/immutable'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import { modalsClose } from 'redux/modals/actions'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
+import OwnersList from 'components/wallet/OwnersList/OwnersList'
+import { DUCK_SESSION } from 'redux/session/actions'
 import validate from './validate'
 import './WalletAddEditForm.scss'
-import OwnersList from 'components/wallet/OwnersList/OwnersList'
 
-export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditDialog'
+export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose())
+    onClose: () => dispatch(modalsClose()),
+  }
+}
+
+function mapStateToProps (state) {
+  return {
+    account: state.get(DUCK_SESSION).account,
   }
 }
 
@@ -24,21 +32,19 @@ const onSubmit = (values, dispatch, props) => {
   return new MultisigWalletModel({
     ...props.initialValues.toJS(),
     ...values.toJS(),
-    owners: values.get('owners').toArray().map(item => item.get('address'))
+    owners: [
+      props.account,
+      ...values.get('owners').toArray().map(item => item.get('address')),
+    ],
   })
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit})
 export default class WalletAddEditForm extends React.Component {
   static propTypes = {
     onClose: PropTypes.func,
-    isEditMultisig: PropTypes.bool,
-    handleSubmit: PropTypes.func,
-    initialValues: PropTypes.object,
-    pristine: PropTypes.bool,
-    valid: PropTypes.bool
-  }
+  } & formPropTypes
 
   render () {
     const {handleSubmit, pristine, valid, initialValues} = this.props
@@ -70,7 +76,8 @@ export default class WalletAddEditForm extends React.Component {
                 component={TextField}
                 name='requiredSignatures'
                 fullWidth
-                floatingLabelText={<Translate value='WalletAddEditDialog.requiredSignatures' />} />
+                floatingLabelText={<Translate value='WalletAddEditDialog.requiredSignatures' />}
+              />
               <FieldArray
                 component={OwnersList}
                 name='owners'
@@ -83,7 +90,8 @@ export default class WalletAddEditForm extends React.Component {
                 component={TextField}
                 name='name'
                 fullWidth
-                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />} />
+                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
+              />
             </div>
           )
         }

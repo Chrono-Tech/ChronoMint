@@ -17,12 +17,14 @@ import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import './WalletSelectDialog.scss'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { switchWallet } from 'redux/wallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 
 const TRANSITION_TIMEOUT = 250
 
 function mapStateToProps (state) {
   return {
-    multisigWallet: state.get(DUCK_MULTISIG_WALLET)
+    multisigWallet: state.get(DUCK_MULTISIG_WALLET),
+    account: state.get(DUCK_SESSION).account,
   }
 }
 
@@ -30,13 +32,13 @@ function mapDispatchToProps (dispatch) {
   return {
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: {wallet: new MultisigWalletModel()}
+      props: {wallet: new MultisigWalletModel()},
     })),
     handleClose: () => dispatch(modalsClose()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
-    removeWallet: (wallet) => dispatch(removeWallet(wallet)),
-    addOwner: (wallet) => dispatch(addOwner(wallet)),
-    transfer: (wallet) => dispatch(multisigTransfer(wallet))
+    switchWallet: wallet => dispatch(switchWallet(wallet)),
+    removeWallet: wallet => dispatch(removeWallet(wallet)),
+    addOwner: wallet => dispatch(addOwner(wallet)),
+    transfer: wallet => dispatch(multisigTransfer(wallet)),
   }
 }
 
@@ -49,7 +51,7 @@ export default class WalletSelectDialog extends React.Component {
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
     addOwner: PropTypes.func,
-    switchWallet: PropTypes.func
+    switchWallet: PropTypes.func,
   }
 
   selectMultisigWallet (wallet) {
@@ -67,7 +69,8 @@ export default class WalletSelectDialog extends React.Component {
         transitionAppear
         transitionAppearTimeout={TRANSITION_TIMEOUT}
         transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}>
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
+      >
         <ModalDialog onClose={() => this.props.handleClose()}>
           <div styleName='content'>
             <div styleName='header'>
@@ -78,8 +81,7 @@ export default class WalletSelectDialog extends React.Component {
             <div styleName='actions'>
               <div styleName='actionsItems'>
                 <div styleName='actionsItem'>
-                  <FloatingActionButton
-                    onTouchTap={() => this.props.walletAddEditDialog()}>
+                  <FloatingActionButton onTouchTap={() => this.props.walletAddEditDialog()}>
                     <FontIcon className='material-icons'>add</FontIcon>
                   </FloatingActionButton>
                 </div>

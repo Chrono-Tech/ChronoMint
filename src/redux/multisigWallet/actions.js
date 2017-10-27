@@ -17,12 +17,14 @@ export const MULTISIG_UPDATE = 'multisigWallet/UPDATE'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'
 export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 
-const updateWallet = (wallet: MultisigWalletModel) => dispatch => {
+const updateWallet = (wallet: MultisigWalletModel) => (dispatch, getState) => {
+  let updatedWallet = wallet
   if (!wallet.isNew() && !!wallet.transactionHash()) {
     // address arrived, delete temporary hash
     dispatch({type: MULTISIG_REMOVE, id: wallet.transactionHash()})
+    updatedWallet = wallet.transactionHash(null)
   }
-  dispatch({type: MULTISIG_UPDATE, wallet: wallet.isPending(false)})
+  dispatch({type: MULTISIG_UPDATE, wallet: updatedWallet.isPending(false)})
 }
 
 const watchMultisigWallet = (wallet: MultisigWalletModel) => async dispatch => {
@@ -41,7 +43,7 @@ export const watchWalletManager = () => async (dispatch, getState) => {
     dispatch(notify(notice))
     watchMultisigWallet(wallet)
     const wallets = getState().get(DUCK_MULTISIG_WALLET)
-    if (wallets.size === 1) {
+    if (wallets.size() === 1) {
       dispatch(selectMultisigWallet(wallets.first()))
     }
   })

@@ -46,6 +46,10 @@ export const abstractFetchingCollection = defaultValues => class AbstractFetchin
   size () {
     return this.list().size
   }
+
+  first () {
+    return this.list().first()
+  }
 }
 
 export default abstractFetchingCollection()

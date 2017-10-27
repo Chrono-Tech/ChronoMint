@@ -15,7 +15,7 @@ export default (state = initialState, action) => {
     case a.MULTISIG_UPDATE:
       return state.list(state.list().set(action.wallet.id(), action.wallet))
     case a.MULTISIG_SELECT:
-      return state.selected(action.wallet.id())
+      return state.selected(action.wallet.address())
     case a.MULTISIG_REMOVE:
       return state.list(state.list().remove(action.id))
     default:

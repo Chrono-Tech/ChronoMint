@@ -6,7 +6,6 @@ import { FlatButton, Paper } from 'material-ui'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
 import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
 import { modalsOpen } from 'redux/modals/actions'
-import * as actions from 'redux/multisigWallet/actions'
 import classNames from 'classnames'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
@@ -16,7 +15,7 @@ import globalStyles from 'layouts/partials/styles'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import { DUCK_MULTISIG_WALLET, getWallets } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 
@@ -27,21 +26,21 @@ function mapStateToProps (state) {
     isMultisig: getCurrentWallet(state).isMultisig(),
     account: state.get(DUCK_SESSION).account,
     mainWallet: state.get(DUCK_MAIN_WALLET),
-    multisigWallet: state.get(DUCK_MULTISIG_WALLET)
+    multisigWallet: state.get(DUCK_MULTISIG_WALLET),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     walletSelectDialog: () => dispatch(modalsOpen({
-      component: WalletSelectDialog
+      component: WalletSelectDialog,
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: {wallet: new MultisigWalletModel()}
+      props: {wallet: new MultisigWalletModel()},
     })),
-    getWallets: () => dispatch(actions.getWallets()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet))
+    getWallets: () => dispatch(getWallets()),
+    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
   }
 }
 
@@ -54,7 +53,8 @@ export default class WalletChanger extends React.Component {
     walletSelectDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     getWallets: PropTypes.func,
-    switchWallet: PropTypes.func
+    switchWallet: PropTypes.func,
+    account: PropTypes.string,
   }
 
   componentWillMount () {
@@ -63,12 +63,9 @@ export default class WalletChanger extends React.Component {
     }
   }
 
-  handleCreateWallet () {
-    this.props.walletAddEditDialog()
-  }
-
   renderMainWallet () {
     const {isMultisig, mainWallet, multisigWallet} = this.props
+
     return (
       <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
         <Paper>
@@ -95,7 +92,7 @@ export default class WalletChanger extends React.Component {
                     )}
                   onTouchTap={multisigWallet.size() > 0
                     ? () => this.props.switchWallet(multisigWallet.selected())
-                    : () => this.handleCreateWallet()}
+                    : () => this.props.walletAddEditDialog()}
                   disabled={multisigWallet.isFetching()}
                   {...globalStyles.buttonWithIconStyles}
                 />

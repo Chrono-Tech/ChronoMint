@@ -11,7 +11,7 @@ import './OwnersList.scss'
 
 function mapStateToProps (state) {
   return {
-    account: state.get('session').account
+    account: state.get('session').account,
   }
 }
 
@@ -20,7 +20,7 @@ class OwnersList extends Component {
   static propTypes = {
     account: PropTypes.string,
     meta: PropTypes.object,
-    fields: PropTypes.object
+    fields: PropTypes.object,
   }
 
   renderOwners (fields) {
@@ -69,7 +69,8 @@ class OwnersList extends Component {
     return (
       <div>
         <div styleName='counterBox'>
-          <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span styleName='counter'>{fields.length + 1}</span>
+          <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
+          styleName='counter'>{fields.length + 1}</span>
         </div>
         <div styleName='counterError'>{this.props.meta.error}</div>
 

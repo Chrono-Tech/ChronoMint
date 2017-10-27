@@ -103,7 +103,7 @@ class ConfirmTxDialog extends Component {
           <TableRowColumn style={{ width: '35%' }}>
             <Translate value={tokenBase + key} />
           </TableRowColumn>
-          <TableRowColumn style={{ width: '65%' }}>
+          <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
             {value}
           </TableRowColumn>
         </TableRow>

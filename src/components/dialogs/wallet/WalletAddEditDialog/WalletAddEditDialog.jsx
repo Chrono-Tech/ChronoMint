@@ -45,6 +45,7 @@ export default class WalletAddEditDialog extends React.Component {
   }
 
   render () {
+    console.log('--WalletAddEditDialog#render', this.props.wallet.toJS())
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -55,7 +56,7 @@ export default class WalletAddEditDialog extends React.Component {
       >
         <ModalDialog onClose={() => this.props.onClose()}>
           <WalletAddEditForm
-            initialValues={this.props.wallet.toFormJS()}
+            initialValues={this.props.wallet.toAddEditFormJS()}
             onSubmitSuccess={this.handleSubmitSuccess}
             onSubmitFail={this.handleSubmitFail}
           />

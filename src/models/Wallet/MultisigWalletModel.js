@@ -4,12 +4,14 @@ import TransactionsCollection from 'models/Wallet/TransactionsCollection'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
+window.ls = ls
+
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
   tokens: new Immutable.Map(), //
   isMultisig: true, //
   transactions: new TransactionsCollection(),
-  owners: new Immutable.List(ls.getAccount()),
+  owners: new Immutable.List(),
   // TODO @dkchv: update functional
   name: 'No name',
   requiredSignatures: null,
@@ -46,12 +48,12 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this._getSet('pendingTxList', value)
   }
 
-  toFormJS () {
+  toAddEditFormJS () {
     return {
       isNew: this.isNew(),
       name: this.name(),
       requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().toArray(),
+      owners: this.owners().map(address => ({address})),
     }
   }
 
