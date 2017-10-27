@@ -34,12 +34,13 @@
   background-color: $color-panel-bg-0;
   border-radius: 50%;
   overflow: hidden;
+  line-height: 0;
 }
 
 .iconContent {
-  width: 54px;
-  height: 54px;
-  margin: 5px;
+  width: 64px;
+  height: 64px;
+  margin: 0;
   background: transparent none no-repeat center center;
   background-size: contain;
 }

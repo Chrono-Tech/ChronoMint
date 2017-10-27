@@ -138,6 +138,11 @@
 
 .head {
   padding: 24px 16px;
+  :global {
+    .Preloader__root {
+      justify-content: flex-start;
+    }
+  }
   @include xs-only {
     padding-bottom: 16px;
   }

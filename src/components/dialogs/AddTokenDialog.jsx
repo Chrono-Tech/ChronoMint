@@ -15,6 +15,7 @@ import { modalsClose } from 'redux/modals/actions'
 
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import TokenIcon from 'components/common/TokenIcon/TokenIcon'
 
 import ModalDialog from './ModalDialog'
 
@@ -64,12 +65,16 @@ export class AddTokenDialog extends React.Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}
       >
-        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+        <ModalDialog onClose={this.props.onClose} styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
               <div styleName='left'>
                 <div styleName='icon'>
-                  <IPFSImage styleName='iconContent' multihash={this.props.icon} />
+                  <IPFSImage
+                    styleName='iconContent'
+                    multihash={this.props.icon}
+                    fallbackComponent={<TokenIcon token={this.props.name} />}
+                  />
                 </div>
               </div>
               <div styleName='right'>

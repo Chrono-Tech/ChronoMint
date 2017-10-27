@@ -9,7 +9,7 @@ import { integerWithDelimiter } from 'utils/formatter'
 import './TokenValue.scss'
 
 const mapStateToProps = state => {
-  const { isInited, prices, selectedCurrency } = state.get('market')
+  const {isInited, prices, selectedCurrency} = state.get('market')
   return {
     isInited,
     prices,
