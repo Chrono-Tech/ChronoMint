@@ -20,7 +20,7 @@ const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistor
 const getNestedReducers = ducks => {
   let reducers = {}
   Object.keys(ducks).forEach(r => {
-    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
+    reducers = {...reducers, ...(typeof (ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
   })
   return reducers
 }
@@ -39,6 +39,22 @@ const createSelectLocationState = () => {
   }
 }
 
+// add noised action here
+const IGNORED_ACTIONS = [
+  'market/UPDATE_RATES',
+  'market/UPDATE_LAST_MARKET',
+]
+
+let logActions = process.env.NODE_ENV === 'development'
+  ? function (action) {
+    if (IGNORED_ACTIONS.includes(action.type)) {
+      return
+    }
+    // eslint-disable-next-line
+    console.log(`%c ${action.type} `, 'color: #999; background: #333')
+  }
+  : function () {}
+
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
@@ -51,8 +67,7 @@ const configureStore = () => {
 
   const rootReducer = (state, action) => {
     // workaround until fix redux devtool
-    // eslint-disable-next-line
-    // console.log(`%c ${action.type} `, 'color: #999; background: #333', ...action)
+    logActions(action)
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
@@ -66,16 +81,16 @@ const configureStore = () => {
   const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
-      routerMiddleware(historyEngine)
+      routerMiddleware(historyEngine),
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : f => f
+      : f => f,
   )(createStore)
 
   return createStoreWithMiddleware(
     rootReducer,
-    initialState
+    initialState,
   )
 }
 

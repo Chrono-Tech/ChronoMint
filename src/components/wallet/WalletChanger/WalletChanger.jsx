@@ -58,7 +58,7 @@ export default class WalletChanger extends React.Component {
   }
 
   componentWillMount () {
-    if (!this.props.multisigWallet.isFetched() || !this.props.multisigWallet.isFetching()) {
+    if (!this.props.multisigWallet.isFetched() && !this.props.multisigWallet.isFetching()) {
       this.props.getWallets()
     }
   }
@@ -120,14 +120,15 @@ export default class WalletChanger extends React.Component {
               <div styleName='headerSubtitle'>{selectedWallet.address()}</div>
               <div>
                 <div styleName='ownersNum'>
-                  {owners.size + 1} <Translate value='wallet.owners' />:
+                  {owners.size} <Translate value='wallet.owners' />:
                 </div>
                 <div styleName='owners'>
-                  <div key='account' styleName='iconHolder'>
-                    <i className='material-icons'>account_circle</i>
-                  </div>
                   {owners.map((owner, idx) => (
-                    <div key={idx} styleName='iconHolder'>
+                    <div
+                      key={idx}
+                      styleName='iconHolder'
+                      title={owner}
+                    >
                       <i className='material-icons'>account_circle</i>
                     </div>
                   ))}
