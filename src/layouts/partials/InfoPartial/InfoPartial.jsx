@@ -5,10 +5,10 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { SET_SELECTED_COIN } from 'redux/market/action'
+import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
 
 import Preloader from 'components/common/Preloader/Preloader'
 
@@ -38,12 +38,12 @@ export class InfoPartial extends React.Component {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
-    tokens: PropTypes.object,
-    isTokensLoaded: PropTypes.bool,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
+    isInited: PropTypes.bool,
+    wallet: PropTypes.object
   }
 
   constructor (props) {
@@ -72,27 +72,26 @@ export class InfoPartial extends React.Component {
   }
 
   render () {
-    const { isTokensLoaded, tokens } = this.props
+    const { isInited, wallet } = this.props
     const { visibleCount } = this.state
-    const items = tokens.entrySeq().toArray().map(([name, token]) => ({
-      token,
-      name,
-    }))
+    const tokens = wallet.tokens().entrySeq().toArray()
+    const items = tokens.map(([name, token]) => ({ token, name }))
 
-    const withBigButton = tokens.count() + 1 <= visibleCount
+    const tokensCount = this.props.wallet.isMultisig() ? tokens.length : tokens.length + 1
+    const withBigButton = tokensCount <= visibleCount
     const showArrows = withBigButton
-      ? tokens.count() + 1 > visibleCount
-      : tokens.count() > visibleCount
+      ? tokensCount + 1 > visibleCount
+      : tokensCount > visibleCount
 
     return (
       <div styleName='root'>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {isTokensLoaded
+            {isInited
               ? items.map(item => this.renderItem(item))
               : <Preloader />
             }
-            {withBigButton && this.renderAction()}
+            {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
           </div>
         </div>
         {!withBigButton && (
@@ -124,9 +123,7 @@ export class InfoPartial extends React.Component {
       <div
         styleName={classnames('outer', { selected: selectedCoin === symbol && open })}
         key={token.id()}
-        onTouchTap={() => {
-          this.handleChangeSelectedCoin(symbol)
-        }}
+        onTouchTap={() => this.handleChangeSelectedCoin(symbol)}
       >
         <Paper zDepth={1} style={{ background: 'transparent' }}>
           <div styleName='inner'>
@@ -152,9 +149,7 @@ export class InfoPartial extends React.Component {
       <div
         key='action'
         styleName='outer'
-        onTouchTap={() => {
-          this.props.addCurrency()
-        }}
+        onTouchTap={() => this.props.addCurrency()}
       >
         <Paper zDepth={1}>
           <div styleName='innerAction'>
@@ -185,7 +180,7 @@ export class InfoPartial extends React.Component {
   }
 
   handleSlide (diff) {
-    const count = this.props.tokens.count()
+    const count = this.props.wallet.tokens().count()
     const total = count + 1 <= this.state.visibleCount ? count + 1 : count
     const cells = (total % this.state.visibleCount === 0)
       ? total
@@ -212,15 +207,14 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   const session = state.get('session')
-  const wallet = state.get('wallet')
   const market = state.get('market')
   const ui = state.get('ui')
 
   return {
     account: session.account,
     profile: session.profile,
-    isTokensLoaded: wallet.tokensFetched,
-    tokens: wallet.tokens,
+    isInited: !!state.get(DUCK_WALLET).current,
+    wallet: getCurrentWallet(state),
     selectedCoin: market.selectedCoin,
     open: ui.open,
   }

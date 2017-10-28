@@ -1,0 +1,217 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$cell-padding: 24px 0px;
+
+.root {
+  margin-top: 24px;
+
+  .header {
+    padding: 24px 24px 115px 24px;
+    background-color: $color-panel-bg-3;
+
+    @include md-only {
+      padding: 24px 24px;
+    }
+
+    h3 {
+      color: $color-white;
+      font-size: 34px;
+      font-weight: 300;
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .content {
+    padding: 0 8px;
+    color: $color-primary-0;
+
+    .table {
+      display: table;
+      width: 100%;
+      position: relative;
+      table-layout: fixed;
+
+      @include md-only {
+        display: block;
+        overflow-x: scroll;
+      }
+
+      .table-head {
+
+        display: table-row-group;
+        opacity: 0.5;
+        font-size: 16px;
+
+        .row {
+
+          display: table-row;
+
+          .col-time, .col-type, .col-manager, .col-value {
+            display: table-cell;
+            padding: $cell-padding;
+            padding-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+          }
+        }
+      }
+
+      .table-body {
+
+        display: table-row-group;
+        font-size: 14px;
+        font-weight: 400;
+
+        .row {
+
+          display: table-row;
+
+          .col-time, .col-block, .col-type, .col-manager, .col-value {
+            display: table-cell;
+            padding: $cell-padding;
+            position: relative;
+            overflow: hidden;
+          }
+
+          .label {
+            display: none;
+          }
+
+          .property {
+          }
+        }
+      }
+
+      .col-time {
+        width: 10%;
+      }
+      .col-type {
+        width: 20%;
+      }
+      .col-manager {
+        width: 30%;
+      }
+      .col-value {
+        width: 40%;
+      }
+
+      .value {
+        :global(.TokenValue__root) {
+          font-size: 16px;
+        }
+      }
+
+      .text-normal, .text-faded, .text-light {
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-right: 20px;
+
+        @include md-only {
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .text-normal a {
+        color: $color-primary-0;
+      }
+
+      .text-faded {
+        opacity: 0.5;
+      }
+
+      .text-light {
+        color: $color-primary-1;
+      }
+
+      .badge-in {
+        @include badge($color-white, $badge-green);
+      }
+
+      .badge-out {
+        @include badge($color-white, $badge-red);
+      }
+
+    }
+
+    @include md-only {
+
+      .section {
+        margin: 10px 0px;
+      }
+
+      .table {
+        display: block;
+        .table-head {
+          display: none;
+        }
+        .table-body {
+          margin: 5px 5px;
+          display: table;
+          width: 100%;
+          table-layout: fixed;
+
+          margin-top: 10px;
+          .row {
+            display: table-row-group;
+            padding: 0;
+            .col-time, .col-block, .col-type, .col-manager, .col-value {
+              display: table-row;
+            }
+            .label {
+              width: 70px;
+              display: table-cell;
+            }
+            .property {
+              display: table-cell;
+            }
+
+            .col-value {
+              .property {
+                padding-bottom: 20px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .section {
+
+      .section-header {
+
+        background-color: $color-panel-bg-4;
+
+        h5 {
+          display: block;
+          opacity: 0.6;
+          font-size: 16px;
+          line-height: 32px;
+          font-weight: 300;
+          text-align: center;
+          margin: 0;
+          padding: 0;
+        }
+
+        .no-transactions {
+          line-height: 100px
+        }
+
+        .txs-loading {
+          text-align: center;
+          padding: 25px;
+        }
+      }
+    }
+  }
+
+  .footer {
+    padding: 24px 16px;
+    text-align: center;
+  }
+}

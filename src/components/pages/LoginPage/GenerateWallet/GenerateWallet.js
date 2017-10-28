@@ -5,11 +5,11 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import download from 'react-file-download'
 
-import { addError, clearErrors } from '../../../../redux/network/actions'
+import { addError, clearErrors } from 'redux/network/actions'
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
-import theme from '../../../../styles/themes/default'
-import walletGenerator from '../../../../network/walletGenerator'
+import theme from 'styles/themes/default'
+import walletGenerator from 'network/walletGenerator'
 import Warning from '../Warning/Warning'
 
 import './GenerateWallet.scss'
@@ -34,8 +34,12 @@ class GenerateWallet extends Component {
     clearErrors: PropTypes.func,
   }
 
-  constructor () {
-    super()
+  constructor (props, context, updater) {
+    super(props, context, updater)
+
+    // TODO replace with async arrow when class properties will work correctly
+    this.handleGenerateWalletClick = this.handleGenerateWalletClick.bind(this)
+
     this.state = {
       ...initialState,
     }
@@ -49,7 +53,7 @@ class GenerateWallet extends Component {
     this.setState({ isWarningSuppressed: value })
   }
 
-  handleGenerateWalletClick = async () => {
+  async handleGenerateWalletClick () {
     this.props.clearErrors()
     try {
       if (!this.state.walletJSON) {

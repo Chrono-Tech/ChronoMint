@@ -33,7 +33,7 @@ describe('settings cbe actions', () => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(notice => {
       expect(store.getActions()).toEqual([
-        { type: a.CBE_SET, cbe: cbe.fetching() },
+        { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])
 
       expect(notice.isRevoked()).toBeFalsy()
@@ -69,7 +69,7 @@ describe('settings cbe actions', () => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.watchCBE(notice => {
       expect(store.getActions()).toEqual([
-        { type: a.CBE_SET, cbe: cbe.fetching() },
+        { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])
 
       expect(notice.isRevoked()).toBeTruthy()

@@ -51,7 +51,7 @@ function style(styleApi) {
     { separator: true },
 
     // import something "foo"
-    { match: and(hasMember, isAbsoluteModule, not(isDao), not(isModels), not(isNetwork), not(isRedux), not(isComponent), not(isPage), not(isUtils),), sort: member(unicode) },
+    { match: and(hasMember, isAbsoluteModule, not(isDao), not(isModels), not(isNetwork), not(isRedux), not(isComponent), not(isPage), not(isUtils)), sort: member(unicode) },
     { separator: true },
 
     // DAO > Models > Actions > Components > Utils  > Other > Styles

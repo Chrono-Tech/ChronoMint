@@ -10,6 +10,7 @@ class TxModel extends abstractModel({
   transactionIndex: null,
   from: null,
   to: null,
+  by: null,
   value: new BigNumber(0),
   time: null,
   gasPrice: null,
@@ -18,9 +19,23 @@ class TxModel extends abstractModel({
   input: null,
   credited: null,
   symbol: '',
+  type: '',
+  args: null,
 }) {
   to () {
     return this.get('to')
+  }
+
+  by () {
+    return this.get('by')
+  }
+
+  args () {
+    return this.get('args')
+  }
+
+  type () {
+    return this.get('type')
   }
 
   from () {

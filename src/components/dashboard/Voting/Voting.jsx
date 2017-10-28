@@ -5,9 +5,8 @@ import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import styles from 'layouts/partials/styles'
 
-import { initTIMEDeposit } from 'redux/wallet/actions'
+import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
 
@@ -84,7 +83,7 @@ class Voting extends React.Component {
                 const poll = item.poll()
 
                 return (<div styleName='votingWrapper' key={item.poll().id()}>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <div styleName='votingInner'>
                       <div styleName='pollTitle'>{poll.title()}</div>
                       <div styleName='layer'>
@@ -107,12 +106,19 @@ class Voting extends React.Component {
                             key={details}
                             weight={0.20}
                             items={[
-                              { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
+                              {
+                                value: details.votedCount.toNumber(),
+                                fillFrom: '#311b92',
+                                fillTo: '#d500f9'
+                              },
                               {
                                 value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
                                 fill: 'transparent',
                               },
-                              { value: 0.0001, fill: 'transparent' },
+                              {
+                                value: 0.0001,
+                                fill: 'transparent'
+                              },
                             ]}
                           />
                         </div>
@@ -121,18 +127,14 @@ class Voting extends React.Component {
                       <div styleName='layer layerEntries'>
                         <div styleName='entry'>
                           <div><Translate value={prefix('published')} />:&nbsp;</div>
-                          <div><b>{
-                            details.published && <Moment date={details.published} action='fromNow' />
-                          }
-                               </b>
+                          <div>
+                            <b>{details.published && <Moment date={details.published} action='fromNow' />}</b>
                           </div>
                         </div>
                         <div styleName='entry'>
                           <div><Translate value={prefix('process')} />:&nbsp;</div>
-                          <div><b>{
-                            details.endDate && <Moment date={details.endDate} action='fromNow' />
-                          }
-                               </b>
+                          <div>
+                            <b>{details.endDate && <Moment date={details.endDate} action='fromNow' />}</b>
                           </div>
                         </div>
                       </div>
@@ -142,7 +144,7 @@ class Voting extends React.Component {
 
                     </div>
                   </Paper>
-                        </div>)
+                </div>)
               })
             }
           </div>
@@ -154,12 +156,12 @@ class Voting extends React.Component {
 
 function mapStateToProps (state) {
   const voting = state.get('voting')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
 
   return {
     list: voting.list,
-    timeDeposit: wallet.timeDeposit,
-    isFetched: voting.isFetched && wallet.tokensFetched,
+    timeDeposit: wallet.timeDeposit(),
+    isFetched: voting.isFetched && wallet.isFetched(),
     isFetching: voting.isFetching && !voting.isFetched,
   }
 }

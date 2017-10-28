@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -73,9 +71,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
-  async _getTokensByAddresses (addresses: Array = [], isWithObligatory = true): Immutable.Map<TokenModel> {
-    let timeDAO,
-      promises
+  async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
+    let timeDAO, promises
     if (isWithObligatory) {
       // add TIME address to filters
       timeDAO = await contractsManagerDAO.getTIMEDAO()
@@ -95,7 +92,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     promises = []
     for (const i of Object.keys(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-      promises.push(daos[i].getAccountBalance())
+      promises.push(daos[i].getAccountBalance(account))
     }
     const balances = await Promise.all(promises)
 
@@ -107,12 +104,12 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const ethToken = new TokenModel({
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
-        balance: await ethereumDAO.getAccountBalance(),
+        balance: await ethereumDAO.getAccountBalance(account),
       })
       map = map.set(ethToken.id(), ethToken)
 
       if (btcDAO.isInitialized()) {
-        const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
+        const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
         const btcToken = new TokenModel({
           dao: btcDAO,
           name: btcDAO.getName(),
@@ -126,7 +123,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       }
 
       if (bccDAO.isInitialized()) {
-        const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
+        const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
         const bccToken = new TokenModel({
           dao: bccDAO,
           name: bccDAO.getName(),
@@ -152,6 +149,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
         balance: balances[i],
+        platform: additionalData[address] && additionalData[address].platform,
+        totalSupply: additionalData[address] && additionalData[address].totalSupply,
       })
 
       if (token.symbol() === TIME) {
@@ -177,7 +176,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * With ETH, TIME (because they are obligatory) and balances for each token.
    */
   getUserTokens (addresses: Array = []) {
-    return this._getTokensByAddresses(addresses, true)
+    return this.getTokensByAddresses(addresses, true)
   }
 
   async getTokenAddressBySymbol (symbol: string): string | null {
@@ -228,7 +227,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   async getLOCTokens () {
     // TODO @dkchv: for now LHT only
     const lhtAddress = await lhtDAO.getAddress()
-    return this._getTokensByAddresses([lhtAddress], false)
+    return this.getTokensByAddresses([lhtAddress], false)
   }
 
   /** @private */
@@ -250,11 +249,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
   }
 
-  watchModify (callback) {
-    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false))
+  watchModify (callback, account) {
+    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), {from: account})
   }
 
-  watchRemove (callback) {
-    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true))
+  watchRemove (callback, account) {
+    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), {from: account})
   }
 }

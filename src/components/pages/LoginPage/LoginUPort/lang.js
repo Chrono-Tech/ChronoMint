@@ -4,6 +4,6 @@ export default {
   },
   ru: {
     login: 'Войти',
-  },
+  }
 }
 
