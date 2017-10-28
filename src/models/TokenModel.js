@@ -113,7 +113,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   // noinspection JSUnusedGlobalSymbols
-  summary () {
+  txSummary () {
     return {
       address: this.address(),
       decimals: this.decimals(),

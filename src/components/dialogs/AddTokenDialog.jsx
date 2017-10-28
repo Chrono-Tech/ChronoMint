@@ -14,6 +14,7 @@ import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenIcon from 'components/common/TokenIcon/TokenIcon'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import ModalDialog from './ModalDialog'
 import './AddTokenDialog.scss'
 
@@ -33,6 +34,33 @@ const asyncValidate = (values, dispatch) => {
 
 function prefix (token) {
   return `components.dialogs.AddTokenDialog.${token}`
+}
+
+
+function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_ADD_TOKEN_DIALOG)
+  const {account, profile} = state.get('session')
+  const wallet = state.get(DUCK_MAIN_WALLET)
+
+  return {
+    address: selector(state, 'address'),
+    name: selector(state, 'name'),
+    icon: selector(state, 'icon'),
+    account: account,
+    profile: profile,
+    isTokensLoaded: !wallet.isFetching(),
+    tokens: wallet.tokens(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onClose: () => dispatch(modalsClose()),
+    onSubmit: values => {
+      dispatch(modalsClose())
+      dispatch(addToken(new TokenModel(values)))
+    },
+  }
 }
 
 @reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
@@ -105,34 +133,6 @@ export class AddTokenDialog extends React.Component {
         </ModalDialog>
       </CSSTransitionGroup>
     )
-  }
-}
-
-function mapStateToProps (state) {
-  const selector = formValueSelector('AddTokenDialog')
-
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-
-  return {
-    address: selector(state, 'address'),
-    name: selector(state, 'name'),
-    icon: selector(state, 'icon'),
-
-    account: session.account,
-    profile: session.profile,
-    isTokensLoaded: !wallet.isFetching(),
-    tokens: wallet.tokens,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
-      dispatch(modalsClose())
-      dispatch(addToken(new TokenModel(values)))
-    },
   }
 }
 
