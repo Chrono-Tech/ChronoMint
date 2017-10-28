@@ -58,7 +58,7 @@ export default class WalletChanger extends React.Component {
   }
 
   componentWillMount () {
-    if (!this.props.multisigWallet.isFetched() || !this.props.multisigWallet.isFetching()) {
+    if (!this.props.multisigWallet.isFetched() && !this.props.multisigWallet.isFetching()) {
       this.props.getWallets()
     }
   }

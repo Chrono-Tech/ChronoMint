@@ -23,13 +23,13 @@ class MultisigWalletService extends EventEmitter {
     const dao = this.getWalletDAO(wallet.address())
 
     return Promise.all([
-      dao.watchOwnerRemoved((result) => {
+      dao.watchOwnerRemoved(wallet, result => {
         this.emit('OwnerRemoved', result)
       }),
-      dao.watchMultiTransact((result) => {
+      dao.watchMultiTransact(wallet, result => {
         this.emit('MultiTransact', result)
       }),
-      dao.watchSingleTransact((result) => {
+      dao.watchSingleTransact(wallet, result => {
         this.emit('SingleTransact', result)
       }),
       dao.watchConfirmationNeeded(wallet, pendingTxModel => {
@@ -37,7 +37,7 @@ class MultisigWalletService extends EventEmitter {
       }),
       dao.watchDeposit(wallet, value => {
         this.emit('Deposit', wallet.address(), 'ETH', value)
-      })
+      }),
     ])
   }
 }

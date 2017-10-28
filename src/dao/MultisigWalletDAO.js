@@ -19,8 +19,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     this._okCodes.push(CODE_CONFIRMATION_NEEDED)
   }
 
-  watchOwnerRemoved (callback) {
-    return this._watch('OwnerRemoved', callback)
+  watchOwnerRemoved (wallet, callback) {
+    return this._watch('OwnerRemoved', callback, { self: wallet.address() })
   }
 
   watchConfirmationNeeded (wallet, callback) {
@@ -34,23 +34,21 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         to,
         symbol: symbolString,
       }))
-    })
+    }, { self: wallet.address() })
   }
 
-  watchMultiTransact (callback) {
-    return this._watch('MultiTransact', callback)
+  watchMultiTransact (wallet, callback) {
+    return this._watch('MultiTransact', callback, { self: wallet.address() })
   }
 
-  watchSingleTransact (callback) {
-    return this._watch('SingleTransact', callback)
+  watchSingleTransact (wallet, callback) {
+    return this._watch('SingleTransact', callback, { self: wallet.address() })
   }
 
   watchDeposit (wallet, callback) {
     return this._watch('Deposit', result => {
-      if (result.args.self === this.getInitAddress()) {
-        callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
-      }
-    })
+      callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
+    }, { self: wallet.address() })
   }
 
   async getPendings (tokens) {
