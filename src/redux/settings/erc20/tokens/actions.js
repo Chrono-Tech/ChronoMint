@@ -10,6 +10,8 @@ import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
 
+export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
+
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_SET = 'settings/TOKENS_SET'
 export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE'

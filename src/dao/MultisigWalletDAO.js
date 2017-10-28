@@ -20,11 +20,11 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchOwnerRemoved (wallet, callback) {
-    return this._watch('OwnerRemoved', callback, { self: wallet.address() })
+    return this._watch('MultisigWalletOwnerRemoved', callback, { self: wallet.address() })
   }
 
   watchConfirmationNeeded (wallet, callback) {
-    return this._watch('ConfirmationNeeded', result => {
+    return this._watch('MultisigWalletConfirmationNeeded', result => {
       const {operation, value, to, symbol} = result.args
       const symbolString = this._c.bytesToString(symbol)
       const tokenDAO = wallet.tokens().get(symbolString).dao()
@@ -39,27 +39,27 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchMultiTransact (wallet, callback) {
-    return this._watch('MultiTransact', callback, { self: wallet.address() })
+    return this._watch('MultisigWalletMultiTransact', callback, { self: wallet.address() })
   }
 
   watchSingleTransact (wallet, callback) {
-    return this._watch('SingleTransact', callback, { self: wallet.address() })
+    return this._watch('MultisigWalletSingleTransact', callback, { self: wallet.address() })
   }
 
   watchDeposit (wallet, callback) {
-    return this._watch('Deposit', result => {
+    return this._watch('MultisigWalletDeposit', result => {
       callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
     }, { self: wallet.address() })
   }
 
   watchRevoke (wallet, callback) {
-    return this._watch('Revoke', result => {
+    return this._watch('MultisigWalletRevoke', result => {
       callback(result.args.operation)
     }, { self: wallet.address() })
   }
 
   watchConfirmation (wallet, callback) {
-    return this._watch('Confirmation', result => {
+    return this._watch('MultisigWalletConfirmation', result => {
       // TODO @dkchv: something wrong with contract
       if (result.args.owner === '0x') {
         return
@@ -105,7 +105,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async removeWallet (wallet, account: string) {
-    const result = await this._multisigTx('removeWallet', [
+    const result = await this._tx('removeWallet', [
       account,
     ], {
       address: wallet.address(),

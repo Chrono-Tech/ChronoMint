@@ -17,6 +17,8 @@ const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
+
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
@@ -61,6 +63,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
       })
       map = map.set(token.id(), token)
     }
