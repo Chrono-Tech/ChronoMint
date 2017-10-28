@@ -38,6 +38,12 @@ class MultisigWalletService extends EventEmitter {
       dao.watchDeposit(wallet, value => {
         this.emit('Deposit', wallet.address(), 'ETH', value)
       }),
+      dao.watchRevoke(wallet, id => {
+        this.emit('Revoke', wallet.address(), id)
+      }),
+      dao.watchConfirmation(wallet, (id, owner) => {
+        this.emit('Confirmation', wallet.address(), id, owner)
+      }),
     ])
   }
 }

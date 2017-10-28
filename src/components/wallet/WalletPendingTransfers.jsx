@@ -49,14 +49,16 @@ export default class WalletPendingTransfers extends React.Component {
           <div styleName='revoke'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
+              disabled={item.isRevoked()}
               onTouchTap={() => this.props.revoke(wallet, item)}
             />
           </div>
           <div styleName='sign'>
             <RaisedButton
               label={<Translate value='wallet.sign' />}
-              primary
+              disabled={item.isSigned()}
               onTouchTap={() => this.props.confirm(wallet, item)}
+              primary
             />
           </div>
         </div>

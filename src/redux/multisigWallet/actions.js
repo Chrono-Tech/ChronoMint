@@ -62,6 +62,31 @@ export const watchWalletManager = () => async (dispatch, getState) => {
     console.log('--actions#', result)
   })
 
+  multisigWalletService.on('Revoke', (walletId, id) => {
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+    const pendingTxList = wallet.pendingTxList()
+    const pendingTx = pendingTxList.item(id).isRevoked(true)
+    dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
+  })
+
+  multisigWalletService.on('Confirmation', (walletId, id, owner) => {
+    if (owner !== getState().get(DUCK_SESSION).account) {
+      return
+    }
+
+    const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+    const pendingTxList = wallet.pendingTxList()
+    let pendingTx = pendingTxList.item(id)
+    if (!pendingTx) {
+      return
+    }
+    console.log('--actions#', pendingTx.toJS())
+    pendingTx = pendingTx.isSign(true)
+    dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
+    console.log('--actions#', getState().get(DUCK_MULTISIG_WALLET).toJS())
+  })
+
+
   multisigWalletService.on('ConfirmationNeeded', (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
     const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
     const pendingTxList = wallet.pendingTxList()

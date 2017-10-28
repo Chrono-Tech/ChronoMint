@@ -33,6 +33,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         value: tokenDAO.removeDecimals(value),
         to,
         symbol: symbolString,
+        isSigned: true,
       }))
     }, { self: wallet.address() })
   }
@@ -51,9 +52,25 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     }, { self: wallet.address() })
   }
 
+  watchRevoke (wallet, callback) {
+    return this._watch('Revoke', result => {
+      callback(result.args.operation)
+    }, { self: wallet.address() })
+  }
+
+  watchConfirmation (wallet, callback) {
+    return this._watch('Confirmation', result => {
+      // TODO @dkchv: something wrong with contract
+      if (result.args.owner === '0x') {
+        return
+      }
+      callback(result.args.operation, result.args.owner)
+    }, { self: wallet.address() })
+  }
+
   async getPendings (tokens) {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [to, value, symbol] = await this._call('getPendings')
+    const [to, value, symbol, id] = await this._call('getPendings')
 
     to.forEach((item, i) => {
       const symbolString = this._c.bytesToString(symbol[i])
@@ -62,6 +79,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         to: item,
         value: tokenDAO.removeDecimals(value[i]),
         symbol: symbolString,
+        id: id[i],
       }))
     })
     return pendingTxCollection
@@ -87,7 +105,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async removeWallet (wallet, account: string) {
-    const result = await this._multisigTx('kill', [
+    const result = await this._multisigTx('removeWallet', [
       account,
     ], {
       address: wallet.address(),
@@ -131,7 +149,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   async revokePendingTx (tx) {
     const result = await this._tx('revoke', [
       tx.id(),
-    ])
+    ], tx.txRevokeSummary())
     return result.tx
   }
 }
