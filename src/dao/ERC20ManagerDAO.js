@@ -64,6 +64,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
       map = map.set(token.id(), token)
     }
@@ -108,6 +109,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
         balance: await ethereumDAO.getAccountBalance(account),
+        isOptional: false,
+        isFetched: true,
       })
       map = map.set(ethToken.id(), ethToken)
 
@@ -121,6 +124,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
           balance,
           balance0,
           balance6,
+          isOptional: false,
+          isFetched: true,
         })
         map = map.set(btcToken.id(), btcToken)
       }
@@ -135,6 +140,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
           balance,
           balance0,
           balance6,
+          isOptional: false,
+          isFetched: true,
         })
         map = map.set(bccToken.id(), bccToken)
       }
@@ -154,6 +161,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: balances[i],
         platform: additionalData[address] && additionalData[address].platform,
         totalSupply: additionalData[address] && additionalData[address].totalSupply,
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
 
       if (token.symbol() === TIME) {

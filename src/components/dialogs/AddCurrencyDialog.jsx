@@ -6,6 +6,7 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import type TokenModel from 'models/TokenModel'
 import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
@@ -31,22 +32,15 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const {account, profile} = state.get(DUCK_SESSION)
+  const {profile} = state.get(DUCK_SESSION)
   const wallet = state.get(DUCK_MAIN_WALLET)
   const settings = state.get(DUCK_SETTINGS_ERC20_TOKENS)
 
-  // Have no balances
-  const sharedTokens = settings.list
-
-  // Have balances
-  const walletTokens = wallet.tokens()
-
   return {
-    account,
     profile,
-    tokens: sharedTokens.merge(walletTokens).sortBy(token => token.symbol()),
-    walletTokens: wallet.tokens(),
-    isFetched: settings.isFetched && wallet.isFetched(),
+    wallet,
+    tokens: settings.list.merge(wallet.tokens()).sortBy(token => token.symbol()),
+    isFetched: settings.isFetched && !wallet.isFetching() && wallet.isFetched(),
   }
 }
 
@@ -57,24 +51,21 @@ function mapDispatchToProps (dispatch) {
       component: AddTokenDialog,
     })),
     handleClose: () => dispatch(modalsClose()),
-    handleSave: async (profile, tokens) => {
-      dispatch(modalsClose())
-      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
-      dispatch(watchInitWallet())
-    },
+    updateUserProfile: profile => dispatch(updateUserProfile(profile)),
+    initWallet: () => dispatch(watchInitWallet),
   }
 }
 
 export class AddCurrencyDialog extends React.Component {
   static propTypes = {
-    account: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isFetched: PropTypes.bool,
     loadTokens: PropTypes.func,
     handleAddToken: PropTypes.func,
     handleClose: PropTypes.func,
-    handleSave: PropTypes.func,
+    updateUserProfile: PropTypes.func,
+    initWallet: PropTypes.func,
   }
 
   constructor () {
@@ -91,39 +82,35 @@ export class AddCurrencyDialog extends React.Component {
     }
   }
 
-  // componentWillReceiveProps (nextProps) {
-  //   this.setState({
-  //     items: nextProps.tokens.valueSeq().toArray(),
-  //   })
-  // }
+  handleCurrencyChecked (symbol, isSelect) {
+    const {selectedTokens} = this.state
 
-  handleCurrencyChecked (item, value) {
-    if (item.disabled) {
-      return
-    }
-
-    const items = [...this.state.items]
-    const index = items.indexOf(item)
-    if (index >= 0) {
-      items.splice(index, 1, {
-        ...item,
-        selected: value,
-      })
-      this.setState({
-        items,
-      })
-    }
+    this.setState({
+      ...this.state,
+      selectedTokens: isSelect
+        ? selectedTokens.concat(symbol)
+        : selectedTokens.filter(item => item !== symbol),
+    })
   }
 
-  renderRow (token) {
-    const symbol = token.symbol()
+  async handleSave () {
+    const tokens = this.props.tokens.filter(item => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
+    const tokensAddresses = tokens.toArray().map(item => item.address())
+    const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
+
+    this.props.handleClose()
+    await this.props.updateUserProfile(profile)
+    this.props.initWallet()
+  }
+
+  renderRow (token: TokenModel, symbol) {
     const isSelected = this.state.selectedTokens.includes(token.symbol())
 
     return (
       <div
         key={token.id()}
         styleName={classnames('row', {rowSelected: isSelected})}
-        onTouchTap={() => this.handleCurrencyChecked(token, isSelected)}
+        onTouchTap={() => this.handleCurrencyChecked(token.symbol(), !isSelected)}
       >
         <div styleName='cell'>
           <div styleName='icon'>
@@ -137,7 +124,7 @@ export class AddCurrencyDialog extends React.Component {
             <TokenValue
               value={token.balance()}
               symbol={token.symbol()}
-              isLoading={token.isFetched()}
+              isLoading={!token.isFetched()}
             />
           </div>
         </div>
@@ -168,7 +155,7 @@ export class AddCurrencyDialog extends React.Component {
             <div styleName='actions'>
               <div styleName='items'>
                 <div styleName='item'>
-                  <FloatingActionButton onTouchTap={() => { this.props.handleAddToken() }}>
+                  <FloatingActionButton onTouchTap={() => this.props.handleAddToken()}>
                     <FontIcon className='material-icons'>add</FontIcon>
                   </FloatingActionButton>
                 </div>
@@ -180,7 +167,7 @@ export class AddCurrencyDialog extends React.Component {
                 {this.props.isFetched
                   ? (
                     <div styleName='table'>
-                      {this.props.tokens.map(item => this.renderRow(item))}
+                      {this.props.tokens.entrySeq().toArray().map(([symbol, item]) => this.renderRow(item, symbol))}
                     </div>
                   )
                   : <Preloader />
@@ -211,10 +198,7 @@ export class AddCurrencyDialog extends React.Component {
                 styleName='action'
                 label={<Translate value={prefix('save')} />}
                 primary
-                onTouchTap={() => this.props.handleSave(
-                  this.props.profile,
-                  this.state.items.filter(item => item.selected && !item.disabled).map(item => item.token.address()),
-                )}
+                onTouchTap={() => this.handleSave()}
               />
               <RaisedButton
                 styleName='action'

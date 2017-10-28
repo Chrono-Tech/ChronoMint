@@ -72,9 +72,9 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(address)
     const [owners, requiredSignatures, tokens] = await Promise.all([
-      await walletDAO.getOwners(),
-      await walletDAO.getRequired(),
-      await walletDAO.getTokens(),
+      walletDAO.getOwners(),
+      walletDAO.getRequired(),
+      walletDAO.getTokens(),
     ])
 
     const pendingTxList = await walletDAO.getPendings(tokens)
