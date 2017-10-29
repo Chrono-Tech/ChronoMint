@@ -52,7 +52,7 @@ function mapDispatchToProps (dispatch) {
     })),
     handleClose: () => dispatch(modalsClose()),
     updateUserProfile: profile => dispatch(updateUserProfile(profile)),
-    initWallet: () => dispatch(watchInitWallet),
+    initWallet: () => dispatch(watchInitWallet()),
   }
 }
 
@@ -72,7 +72,6 @@ export class AddCurrencyDialog extends React.Component {
     super(...arguments)
     this.state = {
       selectedTokens: [],
-      items: this.props.tokens.valueSeq().toArray(),
     }
   }
 
