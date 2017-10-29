@@ -1,75 +1,9 @@
-import EventEmitter from 'events'
 import axios from 'axios'
 
-// TODO @ipavlenko: Rename to BlockexplorerNode when add another Node implementation
-export class BitcoinNode extends EventEmitter {
-  constructor ({ api, trace }) {
-    super()
-    this._api = api
-    this._trace = trace
-    // TODO @ipavlenko: Instantiate here permanent socket connection to the bitcoin Node
-  }
+import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
+import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 
-  trace () {
-    if (this._trace) {
-      // eslint-disable-next-line
-      console.log.apply(console, arguments)
-    }
-  }
-
-  async getTransactionInfo (txid) {
-    try {
-      const res = await this._api.get(`/tx/${txid}`)
-      return res.data
-    } catch (e) {
-      this.trace(`getTransactionInfo ${txid} failed`, e)
-      throw e
-    }
-  }
-
-  async getAddressInfo (address) {
-    try {
-      const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
-      const { balance, unconfirmedBalance } = res.data
-      return {
-        balance0: balance + unconfirmedBalance,
-        balance6: balance,
-      }
-    } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
-      throw e
-    }
-  }
-
-  async getAddressUTXOS (address) {
-    try {
-      const res = await this._api.get(`/addr/${address}/utxo`)
-      return res.data
-    } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
-      throw e
-    }
-  }
-
-  async send (rawtx) {
-    try {
-      const params = new URLSearchParams()
-      params.append('rawtx', rawtx)
-      const res = await this._api.post('/tx/send', params)
-      // TODO @ipavlenko: Temporary emulate event from the socket
-      setTimeout(() => {
-        this.emit('tx', res.data)
-      }, 0)
-
-      return res.data
-    } catch (e) {
-      this.trace(`send transaction ${rawtx} failed`, e)
-      throw e
-    }
-  }
-}
-
-export const MAINNET = new BitcoinNode({
+export const MAINNET = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://blockexplorer.com/api/',
     timeout: 4000,
@@ -77,15 +11,28 @@ export const MAINNET = new BitcoinNode({
   trace: false,
 })
 
-export const TESTNET = new BitcoinNode({
+export const TESTNET = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://testnet.blockexplorer.com/api/',
+    // baseURL: 'http://35.185.102.79:8080',
+    baseURL: 'http://54.149.244.28:8080',
     timeout: 4000,
   }),
+  socket: {
+    // baseURL: 'http://35.185.102.79:8081/stomp',
+    baseURL: 'http://54.218.43.230:15674/stomp',
+    // user: 'rabbitmq_user',
+    // password: '38309100024',
+    user: 'test',
+    password: 'test123',
+    channels: {
+      // balance: '/exchange/events/app_testnet-bitcoin-middleware-chronobank-io_balance',
+      balance: '/exchange/events/app_bitcoin_balance',
+    },
+  },
   trace: true,
 })
 
-export const MAINNET_BCC = new BitcoinNode({
+export const MAINNET_BCC = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://bitcoincash.blockexplorer.com/api/',
     timeout: 4000,
@@ -93,7 +40,7 @@ export const MAINNET_BCC = new BitcoinNode({
   trace: false,
 })
 
-export const TESTNET_BCC = new BitcoinNode({
+export const TESTNET_BCC = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'http://tbcc.blockdozer.com/insight-api/',
     timeout: 4000,

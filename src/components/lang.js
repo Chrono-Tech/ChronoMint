@@ -16,6 +16,7 @@ import * as ProviderSelector from 'components/pages/LoginPage/ProviderSelector/l
 import * as Timer from 'components/common/Timer/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as Warning from 'components/pages/LoginPage/Warning/lang'
+import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
 
 export default {
   en: {
@@ -37,6 +38,7 @@ export default {
     Timer: Timer.en,
     Dashboard: Dashboard.en,
     Assets: Assets.en,
+    WalletAddEditForm: WalletAddEditForm.en,
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -57,6 +59,6 @@ export default {
     Timer: Timer.ru,
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
+    WalletAddEditForm: WalletAddEditForm.ru
   },
 }
-

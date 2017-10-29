@@ -6,19 +6,16 @@ import React from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
+import { formPropTypes } from 'redux-form'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import TokenModel, { validate } from 'models/TokenModel'
-
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenIcon from 'components/common/TokenIcon/TokenIcon'
-
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import ModalDialog from './ModalDialog'
-
 import './AddTokenDialog.scss'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
@@ -39,22 +36,43 @@ function prefix (token) {
   return `components.dialogs.AddTokenDialog.${token}`
 }
 
+
+function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_ADD_TOKEN_DIALOG)
+  const {account, profile} = state.get('session')
+  const wallet = state.get(DUCK_MAIN_WALLET)
+
+  return {
+    address: selector(state, 'address'),
+    name: selector(state, 'name'),
+    icon: selector(state, 'icon'),
+    account: account,
+    profile: profile,
+    isTokensLoaded: !wallet.isFetching(),
+    tokens: wallet.tokens(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onClose: () => dispatch(modalsClose()),
+    onSubmit: values => {
+      dispatch(modalsClose())
+      dispatch(addToken(new TokenModel(values)))
+    },
+  }
+}
+
 @reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
 export class AddTokenDialog extends React.Component {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
     onClose: PropTypes.func,
-    handleSubmit: PropTypes.func,
-    onSubmit: PropTypes.func,
-
     address: PropTypes.string,
     name: PropTypes.string,
     icon: PropTypes.string,
-
-    submitting: PropTypes.bool,
-    initialValues: PropTypes.object,
-  }
+  } & formPropTypes
 
   render () {
     return (
@@ -115,34 +133,6 @@ export class AddTokenDialog extends React.Component {
         </ModalDialog>
       </CSSTransitionGroup>
     )
-  }
-}
-
-function mapStateToProps (state) {
-  const selector = formValueSelector('AddTokenDialog')
-
-  const session = state.get('session')
-  const wallet = state.get('wallet')
-
-  return {
-    address: selector(state, 'address'),
-    name: selector(state, 'name'),
-    icon: selector(state, 'icon'),
-
-    account: session.account,
-    profile: session.profile,
-    isTokensLoaded: !wallet.tokensFetching,
-    tokens: wallet.tokens,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
-      dispatch(modalsClose())
-      dispatch(addToken(new TokenModel(values)))
-    },
   }
 }
 

@@ -41,7 +41,7 @@ export default {
     exchange: 'Exchange (demo)',
     voting: 'Voting',
     rewards: 'Rewards',
-    assets: 'My assets (demo)',
+    assets: 'My assets',
     profile: 'Profile',
     signOut: 'Sign out',
     search: 'Search...',
@@ -67,7 +67,9 @@ export default {
     owners: 'owners',
     youHave: 'You have',
     multisignatureWallets: 'Multisignature wallets',
-    switchMultisignatureWallet: 'Switch multisignature wallet',
+    createMultisignatureWallet: 'Create multisignature wallet',
+    changeMultisignatureWallet: 'Change multisignature wallet',
+    switchToMultisignatureWallet: 'Switch to multisignature wallet',
     switchToMainWallet: 'Switch to main wallet',
     pendingTransfers: 'Pending transfers (demo)',
     to: 'To',
@@ -85,18 +87,6 @@ export default {
       selectOwnersAtLeastTwo: 'Select owners, at least two',
       selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
       owners: 'owners',
-    },
-    walletAddEditDialog: {
-      newWallet: 'New wallet',
-      editWallet: 'Edit wallet',
-      walletName: 'Wallet name',
-      dayLimit: 'Day limit',
-      requiredSignatures: 'Required signatures',
-      walletOwners: 'Wallet owners',
-      addOwner: 'Add owner',
-      addWallet: 'Add wallet',
-      save: 'Save',
-      ownerAddress: 'Owner address',
     },
   },
   exchange: {
@@ -440,6 +430,9 @@ export default {
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
+    lowerThanOrEqual: 'Should be lower or equal than %{limit}',
+    moreThan: 'Should be more than %{limit}',
+    moreThanOrEqual: 'Should be more or equal than %{limit}',
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
@@ -456,16 +449,7 @@ export default {
     transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
     wallet: {
       walletName: {
-        haveToBeString: 'Have to be string',
-      },
-      dayLimit: {
-        haveToBeNumber: 'Have to be number',
-      },
-      requiredSignatures: {
-        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal',
-      },
-      ownersCount: {
-        haveToBeMoreThanTwoOrEqual: 'Have to be more than to or equal',
+        haveToBeString: 'Have to be string'
       },
     },
   },

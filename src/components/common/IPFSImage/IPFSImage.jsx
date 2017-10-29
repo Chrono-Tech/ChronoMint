@@ -66,7 +66,7 @@ export default class IPFSImage extends React.Component {
         className={this.props.className}
         style={{ backgroundImage: `url("${imageURL}")` }}
       >
-        {this.props.icon}
+        {!imageURL && this.props.icon}
       </div>
     )
   }
@@ -86,7 +86,7 @@ export default class IPFSImage extends React.Component {
     } = this.props
     const imageURL = this.state.imageURL || fallback
 
-    if (imageURL) {
+    if (!fallbackComponent) {
       return this.renderIcon(imageURL)
     }
 

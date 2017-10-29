@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import LOCItemButtons from './LOCItemButtons'
-import TokenValue from '../../common/TokenValue/TokenValue'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './LOCItem.scss'
 

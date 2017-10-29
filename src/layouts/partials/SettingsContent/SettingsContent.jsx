@@ -1,7 +1,6 @@
 import { Paper } from 'material-ui'
 import React, { Component } from 'react'
 import { Tokens, CBEAddresses } from 'components'
-import styles from 'layouts/partials/styles'
 
 import './SettingsContent.scss'
 
@@ -11,12 +10,12 @@ export default class SettingsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='column'>
-            <Paper style={styles.content.paper.style}>
+            <Paper>
               <Tokens />
             </Paper>
           </div>
           <div styleName='column'>
-            <Paper style={styles.content.paper.style}>
+            <Paper>
               <CBEAddresses />
             </Paper>
           </div>
@@ -25,4 +24,3 @@ export default class SettingsContent extends Component {
     )
   }
 }
-

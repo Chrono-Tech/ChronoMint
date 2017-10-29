@@ -6,12 +6,11 @@ import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import styles from 'layouts/partials/styles'
 
 import PollModel from 'models/PollModel'
 
 import { getStatistics } from 'redux/voting/getters'
-import { initTIMEDeposit } from 'redux/wallet/actions'
+import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
 
@@ -163,7 +162,7 @@ export default class VotingContent extends Component {
             <div className='row'>
               {polls.map(poll => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <Poll model={poll} />
                   </Paper>
                 </div>
@@ -179,13 +178,13 @@ export default class VotingContent extends Component {
 function mapStateToProps (state) {
   const session = state.get('session')
   const voting = state.get('voting')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   return {
     list: voting.list,
-    timeDeposit: wallet.timeDeposit,
+    timeDeposit: wallet.timeDeposit(),
     statistics: getStatistics(voting),
     isCBE: session.isCBE,
-    isFetched: voting.isFetched && wallet.tokensFetched,
+    isFetched: voting.isFetched && wallet.isFetched(),
     isFetching: voting.isFetching && !voting.isFetched,
   }
 }

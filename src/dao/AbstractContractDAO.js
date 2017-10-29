@@ -139,7 +139,7 @@ export default class AbstractContractDAO {
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
   async _initContract (web3 = null) {
     if (this._at !== null && validator.address(this._at) !== null) {
-      throw new Error('invalid address passed')
+      throw new Error(`invalid address passed: ${this._at}`)
     }
     try {
       web3 = web3 || await this._web3Provider.getWeb3()
@@ -237,7 +237,7 @@ export default class AbstractContractDAO {
   async getData (func: string, args: Array = []): string {
     const deployed = await this.contract
     if (!deployed.contract.hasOwnProperty(func)) {
-      throw new Error(`unknown function ${func} in contract ${this.getContractName()}`)
+      throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     return deployed.contract[func].getData.apply(null, args)
   }
@@ -257,7 +257,7 @@ export default class AbstractContractDAO {
     block = block || this._defaultBlock
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw new Error(`unknown function ${func} in contract ${this.getContractName()}`)
+      throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     try {
       const from = this.getAccount()

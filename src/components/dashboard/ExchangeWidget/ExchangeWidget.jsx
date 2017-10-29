@@ -5,7 +5,7 @@ import SwipeableViews from 'react-swipeable-views'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import { ETH, LHT } from 'redux/wallet/actions'
+import { ETH, LHT } from 'redux/mainWallet/actions'
 import { search } from 'redux/exchange/actions'
 
 import './ExchangeWidget.scss'

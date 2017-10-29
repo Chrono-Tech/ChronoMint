@@ -4,10 +4,6 @@ import React from 'react'
 import './ColoredSection.scss'
 
 class ColoredSection extends React.Component {
-  constructor (props) {
-    super(props)
-  }
-
   render () {
     return (
       <div styleName='root' className='ColoredSection__root'>
