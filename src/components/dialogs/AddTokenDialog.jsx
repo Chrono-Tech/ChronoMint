@@ -51,6 +51,7 @@ export class AddTokenDialog extends React.Component {
     address: PropTypes.string,
     name: PropTypes.string,
     icon: PropTypes.string,
+    symbol: PropTypes.string,
 
     submitting: PropTypes.bool,
     initialValues: PropTypes.object,
@@ -73,7 +74,7 @@ export class AddTokenDialog extends React.Component {
                   <IPFSImage
                     styleName='iconContent'
                     multihash={this.props.icon}
-                    fallbackComponent={<TokenIcon token={this.props.name} />}
+                    fallbackComponent={<TokenIcon token={this.props.symbol} />}
                   />
                 </div>
               </div>
@@ -101,7 +102,7 @@ export class AddTokenDialog extends React.Component {
               <FlatButton
                 styleName='action'
                 label={<Translate value={prefix('cancel')} />}
-                onTouchTap={() => this.props.onClose()}
+                onTouchTap={this.props.onClose}
               />
               <RaisedButton
                 styleName='action'
@@ -127,6 +128,7 @@ function mapStateToProps (state) {
   return {
     address: selector(state, 'address'),
     name: selector(state, 'name'),
+    symbol: selector(state, 'symbol'),
     icon: selector(state, 'icon'),
 
     account: session.account,
