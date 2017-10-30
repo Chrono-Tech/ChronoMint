@@ -14,7 +14,7 @@ function prefix (token) {
   return `Assets.ReissueAssetForm.${token}`
 }
 
-const FORM_REISSUE_FORM = 'reissueForm'
+const FORM_REISSUE_DIALOG = 'AssetsManagerReissueDialog'
 
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
@@ -26,11 +26,11 @@ function mapStateToProps (state) {
 
 const onSubmit = (values, dispatch, props) => {
   dispatch(reissueAsset(props.tokensMap.get(props.selectedToken), values.get('amount')))
-  dispatch(reset(FORM_REISSUE_FORM))
+  dispatch(reset(FORM_REISSUE_DIALOG))
 }
 
 @connect(mapStateToProps)
-@reduxForm({form: FORM_REISSUE_FORM, validate, onSubmit})
+@reduxForm({form: FORM_REISSUE_DIALOG, validate, onSubmit})
 export default class ReissueAssetForm extends Component {
   static propTypes = {
     tokensMap: PropTypes.object,

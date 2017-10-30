@@ -23,7 +23,7 @@ function prefix (token) {
   return `Assets.AddTokenForm.${token}`
 }
 
-export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
+export const FORM_ADD_TOKEN_DIALOG = 'AssetsManagerAddTokenDialog'
 
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')

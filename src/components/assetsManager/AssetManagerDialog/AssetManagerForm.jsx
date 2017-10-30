@@ -15,7 +15,7 @@ function prefix (token) {
   return 'Assets.AssetManagerForm.' + token
 }
 
-export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
+export const FORM_ASSET_MANAGER_DIALOG = 'AssetManagerDialog'
 
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
@@ -25,7 +25,7 @@ function mapStateToProps (state) {
     selectedToken: assetsManager.selectedToken,
     account,
     tokensMap: assetsManager.tokensMap,
-    formValues: form.get(FORM_ASSET_MANAGER) && form.get(FORM_ASSET_MANAGER).get('values'),
+    formValues: form.get(FORM_ASSET_MANAGER_DIALOG) && form.get(FORM_ASSET_MANAGER_DIALOG).get('values'),
   }
 }
 
@@ -43,7 +43,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
+@reduxForm({form: FORM_ASSET_MANAGER_DIALOG, validate, onSubmit})
 export default class AssetManagerForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
