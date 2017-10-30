@@ -1,3 +1,4 @@
+
 export const required = value => !value ? 'errors.required' : null
 
 export const address = (value, required = true) => {
@@ -59,25 +60,39 @@ export const positiveNumber = value => isNaN(value) || !(value > 0) ? 'errors.in
 
 export const positiveNumberOrZero = value => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 
-export const validIpfsFileList = value => (value != null && value.indexOf('!') === 0)
-  ? 'errors.validIpfsFileList' // '!' marks partially uploaded or inconsistent objects
+export const validIpfsFileList = value => (!!value && value.indexOf('!') === 0)
+  // '!' marks partially uploaded or inconsistent objects
+  ? 'errors.validIpfsFileList'
   : null
 
 export const currencyNumber = (value, decimals) => {
   const invalidPositiveNumber = positiveNumber(value)
   if (!invalidPositiveNumber) {
     const matcher = new RegExp(`^\\d+${decimals > 0 ? `(\\.\\d{1,${decimals}})?` : ''}$`)
-    return !matcher.test(value) ? 'errors.invalidCurrencyNumber' : null
+    return !matcher.test(value) ? {
+      value: 'errors.invalidCurrencyNumber',
+      decimals,
+    } : null
   }
   return invalidPositiveNumber
 }
 
-export function lowerThan (value, limit) {
-  return value > limit ? {
-    value: 'errors.lowerThan',
+export function lowerThan (value, limit, strict = false) {
+  const result = strict ? value >= limit : value > limit
+  return result ? {
+    value: strict ? 'errors.lowerThanOrEqual' : 'errors.lowerThan',
     limit,
   } : null
 }
+
+export function moreThan (value, limit, strict = false) {
+  const result = strict ? value <= limit : value < limit
+  return result ? {
+    value: strict ? 'errors.moreThanOrEqual' : 'errors.moreThan',
+    limit,
+  } : null
+}
+
 
 export default {
   required,
@@ -91,5 +106,6 @@ export default {
   positiveNumberOrZero,
   currencyNumber,
   lowerThan,
+  moreThan,
   validIpfsFileList,
 }

@@ -46,13 +46,13 @@ export const getPlatforms = () => async (dispatch, getState) => {
 }
 
 export const getTokens = () => async (dispatch, getState) => {
-  const account = getState().get('session').account
+  const { account } = getState().get('session')
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   let tokensMap = new Immutable.Map()
   if (Object.keys(assets).length) {
-    tokensMap = await ERC20ManagerDAO._getTokensByAddresses(Object.keys(assets), false, assets)
+    tokensMap = await ERC20ManagerDAO.getTokensByAddresses(Object.keys(assets), false, account, assets)
   }
   dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
   return {tokensMap, assets}
@@ -271,7 +271,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
     let tokensMap = new Immutable.Map()
     if (Object.keys(assets).length) {
-      tokensMap = await ERC20ManagerDAO._getTokensByAddresses([tx.args.token], false, assets)
+      tokensMap = await ERC20ManagerDAO.getTokensByAddresses([tx.args.token], false, account, assets)
     }
     dispatch({type: SET_TOKEN, payload: {tokensMap, assets}})
     dispatch(setTx(tx))

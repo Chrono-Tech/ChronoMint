@@ -13,7 +13,7 @@ import type TokenModel from 'models/TokenModel'
 import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
-import { watchInitWallet } from 'redux/wallet/actions'
+import { watchInitWallet } from 'redux/mainWallet/actions'
 
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
@@ -35,6 +35,48 @@ function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
+function mapStateToProps (state) {
+  const {account, profile} = state.get('session')
+  const wallet = state.get('mainWallet')
+  const settings = state.get('settingsERC20Tokens')
+
+  // Have no balances
+  const sharedTokens = settings.list.map(token => ({
+    selected: false,
+    token,
+  }))
+
+  // Have balances
+  const walletTokens = wallet.tokens().map(token => ({
+    selected: true,
+    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
+    token,
+  }))
+
+  return {
+    account,
+    profile,
+    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
+    walletTokens: wallet.tokens(),
+    isTokensLoaded: settings.isFetched && wallet.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    loadTokens: () => dispatch(listTokens()),
+    handleAddToken: () => dispatch(modalsOpen({
+      component: AddTokenDialog,
+    })),
+    handleClose: () => dispatch(modalsClose()),
+    handleSave: async (profile, tokens) => {
+      dispatch(modalsClose())
+      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
+      dispatch(watchInitWallet())
+    },
+  }
+}
+
 export class AddCurrencyDialog extends React.Component {
   static propTypes = {
     account: PropTypes.string,
@@ -47,9 +89,8 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
+  constructor () {
+    super(...arguments)
     this.state = {
       items: this.props.tokens.valueSeq().toArray(),
     }
@@ -83,6 +124,46 @@ export class AddCurrencyDialog extends React.Component {
         items,
       })
     }
+  }
+
+  renderRow (item) {
+    const token: TokenModel | AbstractFetchingModel = item.token
+    const symbol = token.symbol().toUpperCase()
+    const balance = token.balance().toString(10)
+    const [balance1, balance2] = balance ? balance.split('.') : [null, null]
+
+    return (
+      <div
+        key={item.token.id()}
+        styleName={classnames('row', { rowSelected: item.selected })}
+        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
+      >
+        <div styleName='cell'>
+          <div styleName='icon'>
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <div styleName='label'>{symbol}</div>
+          </div>
+        </div>
+        <div styleName='cell cellAuto'>
+          <div styleName='symbol'>{symbol}</div>
+          {!balance ? null : (
+            <div styleName='value'>
+              <span styleName='value1'>{balance1}</span>
+              {!balance2 ? null : (
+                <span styleName='value2'>.{balance2}</span>
+              )}&nbsp;
+              <span styleName='value3'>{symbol}</span>
+            </div>
+          )}
+        </div>
+        <div styleName='cell'>
+          { item.disabled || token.isFetching() ? null : (
+            <Checkbox checked={item.selected} />
+          )}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{ marginRight: '17px' }} /> : ''}
+        </div>
+      </div>
+    )
   }
 
   render () {
@@ -161,92 +242,6 @@ export class AddCurrencyDialog extends React.Component {
         </ModalDialog>
       </CSSTransitionGroup>
     )
-  }
-
-  renderRow (item) {
-    const token: TokenModel | AbstractFetchingModel = item.token
-    const symbol = token.symbol().toUpperCase()
-    const balance = token.balance().toString(10)
-    const [balance1, balance2] = balance ? balance.split('.') : [null, null]
-
-    return (
-      <div
-        key={item.token.id()}
-        styleName={classnames('row', { rowSelected: item.selected })}
-        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
-      >
-        <div styleName='cell'>
-          <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-            <div styleName='label'>{symbol}</div>
-          </div>
-        </div>
-        <div styleName='cell cellAuto'>
-          <div styleName='symbol'>{symbol}</div>
-          {!balance ? null : (
-            <div styleName='value'>
-              <span styleName='value1'>{balance1}</span>
-              {!balance2 ? null : (
-                <span styleName='value2'>.{balance2}</span>
-              )}&nbsp;
-              <span styleName='value3'>{symbol}</span>
-            </div>
-          )}
-        </div>
-        <div styleName='cell'>
-          { item.disabled || token.isFetching() ? null : (
-            <Checkbox checked={item.selected} />
-          )}
-          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{ marginRight: '17px' }} /> : ''}
-        </div>
-      </div>
-    )
-  }
-}
-
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('wallet')
-  const settings = state.get('settingsERC20Tokens')
-
-  // Have no balances
-  const sharedTokens = settings.list.map(token => ({
-    selected: false,
-    token,
-  }))
-
-  // Have balances
-  const walletTokens = wallet.tokens.map(token => ({
-    selected: true,
-    disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
-    token,
-  }))
-
-  return {
-    account: session.account,
-    profile: session.profile,
-    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
-    walletTokens: wallet.tokens,
-    isTokensLoaded: settings.isFetched && !wallet.tokensFetching,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-
-    loadTokens: () => dispatch(listTokens()),
-
-    handleAddToken: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
-    })),
-    handleClose: () => dispatch(modalsClose()),
-    handleSave: async (profile, tokens) => {
-      dispatch(modalsClose())
-
-      await dispatch(updateUserProfile(profile.set('tokens', new Immutable.Set(tokens))))
-
-      dispatch(watchInitWallet())
-    },
   }
 }
 

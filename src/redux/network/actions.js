@@ -16,6 +16,8 @@ import { createSession, destroySession } from 'redux/session/actions'
 import ls from 'utils/LocalStorage'
 import web3Converter from 'utils/Web3Converter'
 
+export const DUCK_NETWORK = 'network'
+
 export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'

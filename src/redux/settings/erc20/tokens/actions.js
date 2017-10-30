@@ -8,7 +8,7 @@ import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
 import { notify } from 'redux/notifier/actions'
-import { watchInitWallet, TIME } from 'redux/wallet/actions'
+import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_SET = 'settings/TOKENS_SET'
@@ -94,8 +94,8 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
-  dispatch(setToken(token.fetching()))
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+  dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.addToken(token)
@@ -104,23 +104,23 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async dis
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async dispatch => {
-  dispatch(setToken(oldToken.fetching()))
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
+  dispatch(setToken(oldToken.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.modifyToken(oldToken, newToken)
     dispatch(removeToken(oldToken))
   } catch (e) {
-    dispatch(setToken(oldToken.notFetching()))
+    dispatch(setToken(oldToken.isFetching(false)))
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
-  dispatch(setToken(token.fetching()))
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+  dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
     await dao.removeToken(token)
   } catch (e) {
-    dispatch(setToken(token.notFetching()))
+    dispatch(setToken(token.isFetching(false)))
   }
 }

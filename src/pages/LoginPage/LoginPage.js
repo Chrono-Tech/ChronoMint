@@ -81,7 +81,7 @@ class LoginPage extends Component {
     }
   }
 
-  handleToggleProvider = isShowProvider => {
+  handleToggleProvider (isShowProvider) {
     this.setState({isShowProvider})
   }
 
@@ -90,16 +90,15 @@ class LoginPage extends Component {
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>
-          <div styleName='title'><Translate value='LoginPage.title' /></div>
-          <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
-          {this.state.isShowProvider && <ProviderSelector />}
+          <div styleName='title'><Translate value='LoginPage.title'/></div>
+          <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
+          {this.state.isShowProvider && <ProviderSelector/>}
           {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={() => this.handleLogin()} />}
           {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={() => this.handleLogin()} />}
           {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
             <LoginWithOptions
               onLogin={() => this.handleLogin()}
-              onToggleProvider={this.handleToggleProvider}
-            />
+              onToggleProvider={() => this.handleToggleProvider()}/>
           )}
           {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
 

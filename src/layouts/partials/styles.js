@@ -90,9 +90,6 @@ export default {
         color: variables.colorWhite,
       },
     },
-    paper: {
-      style: {},
-    },
   },
   footer: {
     form: {
@@ -103,6 +100,20 @@ export default {
         color: 'rgba(255, 255, 255, 0.6)',
         // opacity: 0.6
       },
+    },
+  },
+  buttonWithIconStyles: {
+    style: {
+      height: 'auto',
+      padding: 10,
+      overflow: 'visible',
+      lineHeight: 1.2,
+      textAlign: 'left',
+    },
+    labelStyle: {
+      padding: 0,
+      display: 'block',
+      color: variables.colorPrimary1,
     },
   },
 }

@@ -1,22 +1,18 @@
-import {
-  Paper,
-  Divider,
-  CircularProgress,
-} from 'material-ui'
+import { Paper, Divider, CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import { exchangeCurrency } from '../../../redux/exchange/actions'
+import { exchangeCurrency } from 'redux/exchange/actions'
 import ExchangeForm from './ExchangeForm'
 import globalStyles from '../../../styles'
 
 const mapStateToProps = state => {
   const exchange = state.get('exchange')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   return {
-    isFetched: exchange.rates.isFetched && exchange.eth.isFetched && exchange.lht.isFetched && wallet.eth.isFetched && wallet.lht.isFetched,
+    isFetched: exchange.rates.isFetched && exchange.eth.isFetched && exchange.lht.isFetched && wallet.tokens().get('ETH').isFetched() && wallet.tokens().get('LHT').isFetched(),
     rates: exchange.rates.rates,
   }
 }
@@ -27,6 +23,12 @@ const mapDispatchToProps = dispatch => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class ExchangeWidget extends Component {
+  static propTypes = {
+    exchangeCurrency: PropTypes.func,
+    rates: PropTypes.object,
+    isFetched: PropTypes.bool,
+  }
+
   handleSubmit = values => {
     const currency = values.get('currency')
     const operation = values.get('buy')
@@ -54,12 +56,6 @@ class ExchangeWidget extends Component {
       </Paper>
     )
   }
-}
-
-ExchangeWidget.propTypes = {
-  exchangeCurrency: PropTypes.func,
-  rates: PropTypes.object,
-  isFetched: PropTypes.bool,
 }
 
 export default ExchangeWidget
