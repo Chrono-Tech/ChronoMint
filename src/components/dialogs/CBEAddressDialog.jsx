@@ -2,7 +2,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -25,7 +25,7 @@ function prefix (token) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_CBE_ADDRESS, validate })
-export default class CBEAddressDialog extends Component {
+export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
     initialValues: PropTypes.object,
     handleAddressChange: PropTypes.func,

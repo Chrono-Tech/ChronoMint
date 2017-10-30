@@ -1,6 +1,6 @@
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import download from 'react-file-download'
@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class GenerateWallet extends Component {
+class GenerateWallet extends PureComponent {
   static propTypes = {
     onBack: PropTypes.func.isRequired,
     addError: PropTypes.func,

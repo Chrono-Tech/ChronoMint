@@ -1,7 +1,7 @@
 import { ActionDelete, FileFileDownload } from 'material-ui/svg-icons'
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import globalStyles from 'styles'
@@ -18,7 +18,7 @@ import FileIcon from './FileIcon'
 
 import './FileItem.scss'
 
-class FileItem extends Component {
+class FileItem extends PureComponent {
   static propTypes = {
     file: PropTypes.instanceOf(FileModel),
     onRemove: PropTypes.func.isRequired,

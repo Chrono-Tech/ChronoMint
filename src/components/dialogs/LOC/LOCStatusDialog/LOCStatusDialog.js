@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
@@ -14,7 +14,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class IssueLHModal extends Component {
+class IssueLHModal extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     closeModal: PropTypes.func,

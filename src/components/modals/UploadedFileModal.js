@@ -1,6 +1,6 @@
 // TODO MINT-266 New LOC
 /* eslint-disable */
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { FlatButton } from 'material-ui'
 import FileDownload from 'material-ui/svg-icons/file/file-download'
 import ModalBase from './ModalBase/ModalBase'
@@ -12,7 +12,7 @@ const MIMETypesToShow = [
   'image/'
 ]
 
-class UploadedFileModal extends Component {
+class UploadedFileModal extends PureComponent {
   handleClose = () => {
     this.props.hideModal()
   }

@@ -1,6 +1,6 @@
 import { CircularProgress, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -16,7 +16,7 @@ const mapStateToProps = state => ({
 })
 
 @connect(mapStateToProps, null)
-class LoginWithPrivateKey extends Component {
+class LoginWithPrivateKey extends PureComponent {
   static propTypes = {
     isLoading: PropTypes.bool,
     onBack: PropTypes.func.isRequired,

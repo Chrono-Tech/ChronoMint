@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
@@ -23,7 +23,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class SendTokens extends Component {
+class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     multisigTransfer: PropTypes.func,

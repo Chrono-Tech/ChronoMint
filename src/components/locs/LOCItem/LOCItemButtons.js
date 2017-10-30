@@ -1,6 +1,6 @@
 import FlatButton from 'material-ui/FlatButton'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class Buttons extends Component {
+class Buttons extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     showUploadedFileModal: PropTypes.func,

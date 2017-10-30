@@ -1,6 +1,6 @@
 import { CircularProgress, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import LOCItemButtons from './LOCItemButtons'
@@ -15,7 +15,7 @@ const warningStyle = {
   top: 8,
 }
 
-class LOCItem extends Component {
+class LOCItem extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
   }

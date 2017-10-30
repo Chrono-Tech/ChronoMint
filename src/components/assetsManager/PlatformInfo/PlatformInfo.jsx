@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { getManagersForAssetSymbol, isReissuable, getFee } from 'redux/assetsManager/actions'
@@ -18,7 +18,7 @@ function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-export class PlatformInfo extends Component {
+export class PlatformInfo extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
     selectedToken: PropTypes.string,

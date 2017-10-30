@@ -3,7 +3,7 @@ import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
 import { createPlatform, getTokens } from 'redux/assetsManager/actions'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -17,7 +17,7 @@ function prefix (token) {
   return `Assets.AssetManager.${token}`
 }
 
-export class AssetManager extends Component {
+export class AssetManager extends PureComponent {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
