@@ -35,9 +35,8 @@ function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
-
 function mapStateToProps (state) {
-  const session = state.get('session')
+  const {account, profile} = state.get('session')
   const wallet = state.get('mainWallet')
   const settings = state.get('settingsERC20Tokens')
 
@@ -55,8 +54,8 @@ function mapStateToProps (state) {
   }))
 
   return {
-    account: session.account,
-    profile: session.profile,
+    account,
+    profile,
     tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
     walletTokens: wallet.tokens(),
     isTokensLoaded: settings.isFetched && wallet.isFetched(),
@@ -90,9 +89,8 @@ export class AddCurrencyDialog extends React.Component {
     handleSave: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
+  constructor () {
+    super(...arguments)
     this.state = {
       items: this.props.tokens.valueSeq().toArray(),
     }
@@ -126,6 +124,46 @@ export class AddCurrencyDialog extends React.Component {
         items,
       })
     }
+  }
+
+  renderRow (item) {
+    const token: TokenModel | AbstractFetchingModel = item.token
+    const symbol = token.symbol().toUpperCase()
+    const balance = token.balance().toString(10)
+    const [balance1, balance2] = balance ? balance.split('.') : [null, null]
+
+    return (
+      <div
+        key={item.token.id()}
+        styleName={classnames('row', { rowSelected: item.selected })}
+        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
+      >
+        <div styleName='cell'>
+          <div styleName='icon'>
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <div styleName='label'>{symbol}</div>
+          </div>
+        </div>
+        <div styleName='cell cellAuto'>
+          <div styleName='symbol'>{symbol}</div>
+          {!balance ? null : (
+            <div styleName='value'>
+              <span styleName='value1'>{balance1}</span>
+              {!balance2 ? null : (
+                <span styleName='value2'>.{balance2}</span>
+              )}&nbsp;
+              <span styleName='value3'>{symbol}</span>
+            </div>
+          )}
+        </div>
+        <div styleName='cell'>
+          { item.disabled || token.isFetching() ? null : (
+            <Checkbox checked={item.selected} />
+          )}
+          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{ marginRight: '17px' }} /> : ''}
+        </div>
+      </div>
+    )
   }
 
   render () {
@@ -203,46 +241,6 @@ export class AddCurrencyDialog extends React.Component {
           </div>
         </ModalDialog>
       </CSSTransitionGroup>
-    )
-  }
-
-  renderRow (item) {
-    const token: TokenModel | AbstractFetchingModel = item.token
-    const symbol = token.symbol().toUpperCase()
-    const balance = token.balance().toString(10)
-    const [balance1, balance2] = balance ? balance.split('.') : [null, null]
-
-    return (
-      <div
-        key={item.token.id()}
-        styleName={classnames('row', { rowSelected: item.selected })}
-        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
-      >
-        <div styleName='cell'>
-          <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-            <div styleName='label'>{symbol}</div>
-          </div>
-        </div>
-        <div styleName='cell cellAuto'>
-          <div styleName='symbol'>{symbol}</div>
-          {!balance ? null : (
-            <div styleName='value'>
-              <span styleName='value1'>{balance1}</span>
-              {!balance2 ? null : (
-                <span styleName='value2'>.{balance2}</span>
-              )}&nbsp;
-              <span styleName='value3'>{symbol}</span>
-            </div>
-          )}
-        </div>
-        <div styleName='cell'>
-          { item.disabled || token.isFetching() ? null : (
-            <Checkbox checked={item.selected} />
-          )}
-          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{ marginRight: '17px' }} /> : ''}
-        </div>
-      </div>
     )
   }
 }
