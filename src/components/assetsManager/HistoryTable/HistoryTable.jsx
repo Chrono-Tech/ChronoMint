@@ -84,11 +84,11 @@ export default class HistoryTable extends React.Component {
     switch (trx.type()) {
       case 'Issue':
       case 'Revoke':
-        value = <TokenValue value={trx.value()} symbol={trx.symbol()} />
+        value = <div><TokenValue value={trx.value()} symbol={trx.symbol()} /></div>
         break
       case 'PlatformAttached':
       case 'PlatformRequested':
-        value = trx.args().platform
+        value = <div>{trx.args().platform}</div>
         break
       case'OwnershipChange':
         value = (
