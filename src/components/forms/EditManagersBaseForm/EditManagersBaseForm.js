@@ -6,7 +6,6 @@ import { FlatButton, FloatingActionButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
-import classnames from 'classnames'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import validate from './validate'
@@ -46,77 +45,60 @@ export default class EditManagersBase extends React.Component {
   static propTypes = {
     account: PropTypes.string,
     onClose: PropTypes.func,
-    handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,
     selectedToken: PropTypes.string,
     tokensMap: PropTypes.object,
   } & formPropTypes
 
-  renderManagersList () {
-    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
-    return (
-      <div styleName='managersList'>
-        <div
-          styleName='managersListFieldRow'
-        >
-          <div styleName='managersListFieldAddress'>
-            <div styleName={classnames('managersListIcon', 'xs-hide')}>
-              <i className='material-icons'>account_circle</i>
-            </div>
-            <Field
-              styleName='managerAddress'
-              component={TextField}
-              name='managerAddress'
-              fullWidth
-              hintText={<Translate value={prefix('managerAddress')} />}
-            />
-          </div>
-          <div styleName='managersListAction'>
-            <FlatButton
-              type='submit'
-              styleName='addManagerButton'
-              label={<Translate value={prefix('addManagersButton')} />}
-            />
-          </div>
-        </div>
-        {
-          (selectedToken.managersList() || []).map(
-            item => (
-              <div key={item} styleName='managersListRow'>
-                <div styleName='managersListAddress'>
-                  <div styleName='managersListIcon'>
-                    <i className='material-icons'>account_circle</i>
-                  </div>
-                  <div styleName='ellipsis'>
-                    <div>{item}</div>
-                  </div>
-                </div>
-                {
-                  this.props.account !== item &&
-                  <div
-                    onTouchTap={() => {
-                      this.props.onClose()
-                      this.props.handleRemoveManager(selectedToken, item)
-                    }}
-                    styleName='managersListAction'
-                  >
-                    <i className='material-icons'>delete</i>
-                  </div>
-                }
-              </div>
-            )
-          )
-        }
-      </div>)
-
-  }
-
   render () {
+    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
+
     return (
-      <form styleName='content' onSubmit={this.props.handleSubmit}>
+      <form styleName='root' onSubmit={this.props.handleSubmit}>
         <div styleName='header'><Translate value={prefix('dialogTitle')} /></div>
-        <div styleName='dialogBody'>
-          {this.renderManagersList()}
+        <div styleName='content'>
+          <div styleName='row'>
+            <div styleName='iconBox'>
+              <i styleName='icon' className='material-icons'>account_circle</i>
+            </div>
+            <div styleName='address'>
+              <Field
+                component={TextField}
+                name='managerAddress'
+                fullWidth
+                hintText={<Translate value={prefix('managerAddress')} />}
+              />
+            </div>
+            <div styleName='action'>
+              <FlatButton
+                type='submit'
+                label={<Translate value={prefix('addManagersButton')} />}
+              />
+            </div>
+          </div>
+          {
+            (selectedToken.managersList() || []).map(
+              item => (
+                <div key={item} styleName='row'>
+                  <div styleName='iconBox'>
+                    <i styleName='icon' className='material-icons'>account_circle</i>
+                  </div>
+                  <div styleName='address'>{item}</div>
+                  {this.props.account !== item && (
+                    <div
+                      onTouchTap={() => {
+                        this.props.onClose()
+                        this.props.handleRemoveManager(selectedToken, item)
+                      }}
+                      styleName='action'
+                    >
+                      <i className='material-icons'>delete</i>
+                    </div>
+                  )}
+                </div>
+              ),
+            )
+          }
         </div>
       </form>
     )
