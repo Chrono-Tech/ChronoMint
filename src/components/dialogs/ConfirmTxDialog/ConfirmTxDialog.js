@@ -1,7 +1,7 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { ETH } from 'redux/mainWallet/actions'
@@ -24,7 +24,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ConfirmTxDialog extends Component {
+class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     callback: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,

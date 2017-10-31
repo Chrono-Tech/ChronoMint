@@ -1,9 +1,9 @@
 // TODO new voting
 /* eslint-disable */
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { FlatButton } from 'material-ui'
 
-class Options extends Component {
+class Options extends PureComponent {
   render () {
     const {options, pollKey, onVote} = this.props
     return (

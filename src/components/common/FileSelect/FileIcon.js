@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import './FileIcon.scss'
 
-export default class FileIcon extends Component {
+export default class FileIcon extends PureComponent {
   static propTypes = {
     type: PropTypes.string,
   }

@@ -3,7 +3,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 
@@ -27,7 +27,7 @@ export const FORM_CBE_TOKEN = 'CBETokenDialog'
   asyncValidate: (token, dispatch) => formTokenLoadMetaData(token, dispatch, FORM_CBE_TOKEN),
   asyncBlurFields: ['address', 'symbol'],
 })
-export default class CBETokenDialog extends Component {
+export default class CBETokenDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     isFetching: PropTypes.bool,

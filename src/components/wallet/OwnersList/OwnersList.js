@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
@@ -16,7 +16,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-class OwnersList extends Component {
+class OwnersList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     meta: PropTypes.object,

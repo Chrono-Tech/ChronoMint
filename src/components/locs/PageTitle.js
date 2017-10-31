@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton'
 // TODO @dkchv: not finished due to old design mockup
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -41,7 +41,7 @@ function prefix (token) {
 }
 
 @connect(null, mapDispatchToProps)
-class PageTitle extends Component {
+class PageTitle extends PureComponent {
   static propTypes = {
     showCreateLOCModal: PropTypes.func,
     showSendToExchangeModal: PropTypes.func,

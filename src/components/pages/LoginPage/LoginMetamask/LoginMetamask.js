@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginMetamask extends Component {
+class LoginMetamask extends PureComponent {
   componentWillMount () {
     web3Provider.setWeb3(window.web3)
     web3Provider.setProvider(window.web3.currentProvider)
