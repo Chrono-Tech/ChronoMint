@@ -1,4 +1,3 @@
-import { CSSTransitionGroup } from 'react-transition-group'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
@@ -56,7 +55,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class AddCurrencyDialog extends React.Component {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AddCurrencyDialog extends React.Component {
   static propTypes = {
     profile: PropTypes.object,
     tokens: PropTypes.object,
@@ -138,79 +138,68 @@ export class AddCurrencyDialog extends React.Component {
 
   render () {
     return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
-      >
-        <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <div styleName='content'>
-            <div styleName='header'>
-              <h3><Translate value={prefix('tokens')} /></h3>
-              <div styleName='subtitle'><Translate value={prefix('addToken')} /></div>
-            </div>
-            <div styleName='actions'>
-              <div styleName='items'>
-                <div styleName='item'>
-                  <FloatingActionButton onTouchTap={() => this.props.handleAddToken()}>
-                    <FontIcon className='material-icons'>add</FontIcon>
-                  </FloatingActionButton>
-                </div>
+      <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
+        <div styleName='content'>
+          <div styleName='header'>
+            <h3><Translate value={prefix('tokens')} /></h3>
+            <div styleName='subtitle'><Translate value={prefix('addToken')} /></div>
+          </div>
+          <div styleName='actions'>
+            <div styleName='items'>
+              <div styleName='item'>
+                <FloatingActionButton onTouchTap={() => this.props.handleAddToken()}>
+                  <FontIcon className='material-icons'>add</FontIcon>
+                </FloatingActionButton>
               </div>
-            </div>
-            <div styleName='body'>
-              <div styleName='column'>
-                <h5><Translate value={prefix('allTokens')} /></h5>
-                {this.props.isFetched
-                  ? (
-                    <div styleName='table'>
-                      {this.props.tokens.entrySeq().toArray().map(([symbol, item]) => this.renderRow(item, symbol))}
-                    </div>
-                  )
-                  : <Preloader />
-                }
-              </div>
-              <div styleName='column'>
-                <h5><Translate value={prefix('howToAddYourToken')} /></h5>
-                <div styleName='description'>
-                  <p>
-                    <Translate value={prefix('youCanConnectToYourPersonalWallet')} />
-                  </p>
-                </div>
-                <Points>
-                  <span>
-                    <Translate value={prefix('clickOnThePlusButtonAbove')} />
-                  </span>
-                  <span>
-                    <Translate value={prefix('fillTheForm')} />
-                  </span>
-                  <span>
-                    <Translate value={prefix('waitUntilYourToken')} />
-                  </span>
-                </Points>
-              </div>
-            </div>
-            <div styleName='footer'>
-              <RaisedButton
-                styleName='action'
-                label={<Translate value={prefix('save')} />}
-                primary
-                onTouchTap={() => this.handleSave()}
-              />
-              <RaisedButton
-                styleName='action'
-                label={<Translate value={prefix('close')} />}
-                onTouchTap={() => this.props.handleClose()}
-              />
             </div>
           </div>
-        </ModalDialog>
-      </CSSTransitionGroup>
+          <div styleName='body'>
+            <div styleName='column'>
+              <h5><Translate value={prefix('allTokens')} /></h5>
+              {this.props.isFetched
+                ? (
+                  <div styleName='table'>
+                    {this.props.tokens.entrySeq().toArray().map(([symbol, item]) => this.renderRow(item, symbol))}
+                  </div>
+                )
+                : <Preloader />
+              }
+            </div>
+            <div styleName='column'>
+              <h5><Translate value={prefix('howToAddYourToken')} /></h5>
+              <div styleName='description'>
+                <p>
+                  <Translate value={prefix('youCanConnectToYourPersonalWallet')} />
+                </p>
+              </div>
+              <Points>
+                <span>
+                  <Translate value={prefix('clickOnThePlusButtonAbove')} />
+                </span>
+                <span>
+                  <Translate value={prefix('fillTheForm')} />
+                </span>
+                <span>
+                  <Translate value={prefix('waitUntilYourToken')} />
+                </span>
+              </Points>
+            </div>
+          </div>
+          <div styleName='footer'>
+            <RaisedButton
+              styleName='action'
+              label={<Translate value={prefix('save')} />}
+              primary
+              onTouchTap={() => this.handleSave()}
+            />
+            <RaisedButton
+              styleName='action'
+              label={<Translate value={prefix('close')} />}
+              onTouchTap={() => this.props.handleClose()}
+            />
+          </div>
+        </div>
+      </ModalDialog>
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddCurrencyDialog)
-
