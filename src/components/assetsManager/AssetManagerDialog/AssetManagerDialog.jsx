@@ -15,9 +15,7 @@ function mapDispatchToProps (dispatch) {
 @connect(null, mapDispatchToProps)
 export default class AssetManagerDialog extends React.Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
-    submitting: PropTypes.bool,
     closeModal: PropTypes.func,
   }
 

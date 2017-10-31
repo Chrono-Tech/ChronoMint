@@ -4,20 +4,19 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { FlatButton, FloatingActionButton } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import classnames from 'classnames'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import validate from './validate'
-import './AssetManagerForm.scss'
-import EditManagersBase from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
+import './EditManagersBaseForm.scss'
+
+export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
 function prefix (token) {
   return 'Assets.AssetManagerForm.' + token
 }
-
-export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
 function mapStateToProps (state) {
   const {selectedToken, tokensMap} = state.get(DUCK_ASSETS_MANAGER)
@@ -43,15 +42,15 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
-export default class AssetManagerForm extends React.Component {
+export default class EditManagersBase extends React.Component {
   static propTypes = {
-    handleSubmit: PropTypes.func,
+    account: PropTypes.string,
     onClose: PropTypes.func,
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,
     selectedToken: PropTypes.string,
     tokensMap: PropTypes.object,
-  }
+  } & formPropTypes
 
   renderManagersList () {
     const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
@@ -73,17 +72,9 @@ export default class AssetManagerForm extends React.Component {
             />
           </div>
           <div styleName='managersListAction'>
-            <FloatingActionButton
-              mini
-              styleName={classnames('addManagerButton', 'xs-show')}
-              onTouchTap={() => {
-              }}
-            >
-              <i className='material-icons'>add</i>
-            </FloatingActionButton>
             <FlatButton
               type='submit'
-              styleName={classnames('addManagerButton', 'xs-hide')}
+              styleName='addManagerButton'
               label={<Translate value={prefix('addManagersButton')} />}
             />
           </div>
@@ -120,26 +111,14 @@ export default class AssetManagerForm extends React.Component {
 
   }
 
-  // render () {
-  //   return (
-  //     <form styleName='content' onSubmit={this.props.handleSubmit}>
-  //       <div styleName='dialogHeader'>
-  //         <div styleName='dialogHeaderStuff'>
-  //           <div styleName='dialogHeaderTitle'>
-  //             <Translate value={prefix('dialogTitle')} />
-  //           </div>
-  //         </div>
-  //       </div>
-  //       <div styleName='dialogBody'>
-  //         {this.renderManagersList()}
-  //       </div>
-  //     </form>
-  //   )
-  // }
-
   render () {
     return (
-      <EditManagersBase />
+      <form styleName='content' onSubmit={this.props.handleSubmit}>
+        <div styleName='header'><Translate value={prefix('dialogTitle')} /></div>
+        <div styleName='dialogBody'>
+          {this.renderManagersList()}
+        </div>
+      </form>
     )
   }
 }
