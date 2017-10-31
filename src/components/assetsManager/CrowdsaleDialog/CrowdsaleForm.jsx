@@ -33,7 +33,7 @@ function prefix (token) {
   return `Assets.CrowdsaleForm.${token}`
 }
 
-export const FORM_CROWDSALE_DIALOG = 'CrowdsaleDialog'
+export const FORM_CROWDSALE_DIALOG = 'AssetsManagerCrowdsaleDialog'
 
 function mapStateToProps (state) {
   const form = state.get('form')

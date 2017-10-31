@@ -13,13 +13,13 @@ function prefix (token) {
   return `Assets.RevokeForm.${token}`
 }
 
-export const FORM_NAME = 'RevokeDialog'
+export const FORM_REVOKE_DIALOG = 'AssetsManagerRevokeDialog'
 
 function mapStateToProps (state) {
   const form = state.get('form')
   const assetsManager = state.get('assetsManager')
   return {
-    formErrors: form.get(FORM_NAME) && form.get(FORM_NAME).get('syncErrors'),
+    formErrors: form.get(FORM_REVOKE_DIALOG) && form.get(FORM_REVOKE_DIALOG).get('syncErrors'),
     selectedToken: assetsManager.selectedToken,
     tokensMap: assetsManager.tokensMap,
   }
@@ -30,7 +30,7 @@ const onSubmit = (values, dispatch, props) => {
 }
 
 @connect(mapStateToProps)
-@reduxForm({form: FORM_NAME, validate, onSubmit})
+@reduxForm({form: FORM_REVOKE_DIALOG, validate, onSubmit})
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
