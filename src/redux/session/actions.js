@@ -45,7 +45,7 @@ export const logout = () => async dispatch => {
 }
 
 export const login = account => async (dispatch, getState) => {
-  if (!getState().get('session').isSession) {
+  if (!getState().get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }

@@ -12,8 +12,9 @@ import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitUserMonitor } from 'redux/userMonitor/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/mainWallet/actions'
+import { watchInitWallet, balanceMinus, balancePlus, ETH, DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -47,14 +48,14 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    const token = getState().get('mainWallet').tokens().get(ETH)
+    const token = getState().get(DUCK_MAIN_WALLET).tokens().get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
     dispatch({type: WATCHER_TX_SET, tx})
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({type: WATCHER_TX_END, tx})
-    const token = getState().get('mainWallet').tokens().get(ETH)
+    const token = getState().get(DUCK_MAIN_WALLET).tokens().get(ETH)
 
     if (!tx.isGasUsed()) {
       dispatch(balancePlus(tx.gas(), token))
@@ -75,7 +76,7 @@ export const globalWatcher = () => async dispatch => {
 
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
-  dispatch(watchPlatformManager(getState().get('session').account))
+  dispatch(watchPlatformManager(getState().get(DUCK_SESSION).account))
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())

@@ -108,7 +108,7 @@ export class SendTokensForm extends React.Component {
           <div styleName='value'>
             <TokenValue
               isInvert
-              isLoading={token.isFetched()}
+              isLoading={!token.isFetched()}
               value={token.balance()}
               symbol={token.symbol()}
             />
