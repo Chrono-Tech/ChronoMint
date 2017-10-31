@@ -1,29 +1,40 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { SelectField, MenuItem, RaisedButton } from 'material-ui'
+import { MenuItem, RaisedButton } from 'material-ui'
+import { TextField, SelectField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import SwipeableViews from 'react-swipeable-views'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
 import { ETH, LHT } from 'redux/mainWallet/actions'
 import { search } from 'redux/exchange/actions'
+import validate from './validate'
 
 import './ExchangeWidget.scss'
 
 const MODES = [
-  { index: 0, name: 'BUY', title: <Translate value={prefix('buy')} /> },
-  { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
+  {index: 0, name: 'BUY', title: <Translate value={prefix('buy')} />},
+  {index: 1, name: 'SELL', title: <Translate value={prefix('sell')} />},
 ]
+
+export const FORM_EXCHANGE = 'ExchangeForm'
 
 const mapDispatchToProps = dispatch => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
 
 function prefix (token) {
-  return `components.dashboard.ExchangeWidget.${token}`
+  return `components.exchange.ExchangeWidget.${token}`
+}
+
+const onSubmit = (values, dispatch) => {
+  // eslint-disable-next-line
+  console.log('--ExchangeWidget#onSubmit filter', )
 }
 
 @connect(null, mapDispatchToProps)
+@reduxForm({form: FORM_EXCHANGE, validate, onSubmit})
 export default class ExchangeWidget extends React.Component {
   static propTypes = {
     search: PropTypes.func,
@@ -78,7 +89,7 @@ export default class ExchangeWidget extends React.Component {
         <div styleName='header'>
           <h3><Translate value={prefix('exchange')} /></h3>
           <ul>
-            { MODES.map((el, index) => (
+            {MODES.map((el, index) => (
               <li
                 key={el.name}
                 className={el.name === this.state.mode.name ? 'active' : null}
@@ -89,7 +100,7 @@ export default class ExchangeWidget extends React.Component {
                   <span>{el.title}</span>
                 </a>
               </li>
-            )) }
+            ))}
           </ul>
         </div>
         <div styleName='content'>
@@ -97,41 +108,30 @@ export default class ExchangeWidget extends React.Component {
             index={this.state.mode.index}
             onChangeIndex={index => this.handleChangeMode(index)}
           >
-            { MODES.map(el => (
+            {MODES.map(el => (
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
-                    {/* <div className='col-sm-2 col-md-1'>
-                      <TextField
-                        style={{ width: '100%' }}
-                        floatingLabelText='Amount'
-                        onChange={(e, i, value) => this.handleChangeAmount(value)}
-                      />
-                    </div> */}
                     <div className='col-sm-2 col-md-1'>
-                      <SelectField
-                        style={{ width: '100%' }}
-                        floatingLabelText={<Translate value={prefix('currency')} />}
-                        value={this.state.currency}
-                        onChange={(e, i, value) => this.handleChangeCurrency(value)}
+                      <Field
+                        component={TextField}
+                        name='amount'
+                        fullWidth
+                        floatingLabelText={<Translate value={prefix('amount')} />}
+                      />
+                    </div>
+                    <div className='col-sm-2 col-md-1'>
+                      <Field
+                        name='token'
+                        component={SelectField}
+                        fullWidth
+                        floatingLabelFixed
+                        floatingLabelText={<Translate value={prefix('token')} />}
                       >
                         <MenuItem value={ETH} primaryText={ETH} />
                         <MenuItem value={LHT} primaryText={LHT} />
-                      </SelectField>
+                      </Field>
                     </div>
-                    {/*
-                    <div className='col-sm-2 col-md-1'>
-                      <SelectField
-                        style={{ width: '100%' }}
-                        floatingLabelText='Offer'
-                        value={this.state.offer}
-                        onChange={(e, i, value) => this.handleChangeOffer(value)}
-                      >
-                        <MenuItem value='Offer1' primaryText='Offer 1' />
-                        <MenuItem value='Offer2' primaryText='Offer 2' />
-                      </SelectField>
-                    </div>
-                    */}
                     <div className='col-sm-2 col-md-1'>
                       <div styleName='actions'>
                         <RaisedButton
@@ -145,19 +145,9 @@ export default class ExchangeWidget extends React.Component {
                       </div>
                     </div>
                   </div>
-                  {/*
-                  <div className='row'>
-                    <div className='col-sm-2 col-md-1'>
-                      <Checkbox label='Filter checkbox 1' />
-                    </div>
-                    <div className='col-sm-2 col-md-1'>
-                      <Checkbox label='Filter checkbox 2' />
-                    </div>
-                  </div>
-                  */}
                 </div>
               </div>
-            )) }
+            ))}
           </SwipeableViews>
         </div>
       </div>
