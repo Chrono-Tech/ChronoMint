@@ -16,15 +16,9 @@ export default class ExchangeContent extends Component {
                   <div styleName='exchangeBox'>
                     <Paper>
                       <ExchangeWidget />
+                      <OrdersTable />
                     </Paper>
                   </div>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='col-xs-6'>
-                  <Paper>
-                    <OrdersTable />
-                  </Paper>
                 </div>
               </div>
             </div>

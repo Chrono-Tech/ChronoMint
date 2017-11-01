@@ -9,12 +9,6 @@
   display: table;
   width: 100%;
   background-color: $color-white;
-
-  :global {
-    .ExchangeWidget__grid {
-      @include grid(3, 50px, 50px, center);
-    }
-  }
 }
 
 .slide {
@@ -68,7 +62,7 @@ li.tab {
   box-sizing: border-box;
   border-bottom: solid 4px transparent;
   @include sm-only {
-    width:100%;
+    width: 100%;
   }
 
   &:hover {
@@ -92,4 +86,12 @@ li.tab {
   &:hover {
     opacity: 1;
   }
+}
+
+.wrapper {
+  max-width: 620px;
+}
+
+.item {
+
 }

@@ -30,7 +30,7 @@ function prefix (token) {
 
 const onSubmit = (values, dispatch) => {
   // eslint-disable-next-line
-  console.log('--ExchangeWidget#onSubmit filter', )
+  console.log('--ExchangeWidget#onSubmit filter',)
 }
 
 @connect(null, mapDispatchToProps)
@@ -91,38 +91,36 @@ export default class ExchangeWidget extends React.Component {
           >
             {MODES.map(el => (
               <div styleName='slide' key={el.name}>
-                <div className='ExchangeWidget__grid'>
-                  <div className='row'>
-                    <div className='col-sm-3 col-md-1'>
-                      <Field
-                        component={TextField}
-                        name='amount'
-                        fullWidth
-                        floatingLabelText={<Translate value={prefix('amount')} />}
+                <div styleName='wrapper'>
+                  <div styleName='item'>
+                    <Field
+                      component={TextField}
+                      name='amount'
+                      fullWidth
+                      floatingLabelText={<Translate value={prefix('amount')} />}
+                    />
+                  </div>
+                  <div styleName='item'>
+                    <Field
+                      name='token'
+                      component={SelectField}
+                      fullWidth
+                      floatingLabelText={<Translate value={prefix('token')} />}
+                    >
+                      <MenuItem value={ETH} primaryText={ETH} />
+                      <MenuItem value={LHT} primaryText={LHT} />
+                    </Field>
+                  </div>
+                  <div styleName='item'>
+                    <div styleName='actions'>
+                      <RaisedButton
+                        label={<Translate value={prefix('search')} />}
+                        onTouchTap={e => {
+                          e.stopPropagation()
+                          this.handleSearch()
+                        }}
+                        primary
                       />
-                    </div>
-                    <div className='col-sm-3 col-md-1'>
-                      <Field
-                        name='token'
-                        component={SelectField}
-                        fullWidth
-                        floatingLabelText={<Translate value={prefix('token')} />}
-                      >
-                        <MenuItem value={ETH} primaryText={ETH} />
-                        <MenuItem value={LHT} primaryText={LHT} />
-                      </Field>
-                    </div>
-                    <div className='col-sm-3 col-md-1'>
-                      <div styleName='actions'>
-                        <RaisedButton
-                          label={<Translate value={prefix('search')} />}
-                          onTouchTap={e => {
-                            e.stopPropagation()
-                            this.handleSearch()
-                          }}
-                          primary
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
