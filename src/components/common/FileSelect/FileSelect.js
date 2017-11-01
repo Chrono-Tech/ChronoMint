@@ -3,7 +3,7 @@ import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui
 import IconAttach from 'assets/file-select/icon-attach.svg'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
 
@@ -30,7 +30,7 @@ const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
-class FileSelect extends Component {
+class FileSelect extends PureComponent {
   static propTypes = {
     value: PropTypes.string,
     textFieldProps: PropTypes.object,

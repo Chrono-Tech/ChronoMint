@@ -12,7 +12,7 @@ import {
   TableRowColumn,
 } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -26,7 +26,7 @@ const mapStateToProps = state => ({
 })
 
 @connect(mapStateToProps, null)
-class Transactions extends Component {
+class Transactions extends PureComponent {
   render () {
     const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     const { transactions, isFetching, endOfList } = this.props

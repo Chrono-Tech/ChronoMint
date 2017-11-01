@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { addLOC, updateLOC } from 'redux/locs/actions'
@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class LOCDialog extends Component {
+class LOCDialog extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     addLOC: PropTypes.func,

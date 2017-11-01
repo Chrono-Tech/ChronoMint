@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
@@ -67,7 +67,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginWithOptions extends Component {
+class LoginWithOptions extends PureComponent {
   static propTypes = {
     loadAccounts: PropTypes.func,
     accounts: PropTypes.array,

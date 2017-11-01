@@ -1,5 +1,5 @@
 import Preloader from 'components/common/Preloader/Preloader'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -13,7 +13,7 @@ function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
-export class PlatformsList extends Component {
+export class PlatformsList extends PureComponent {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
