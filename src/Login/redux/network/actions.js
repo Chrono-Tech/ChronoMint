@@ -13,6 +13,8 @@ import web3Provider, { Web3Provider } from '../../network/Web3Provider'
 
 const { web3Converter } = utils
 
+export const DUCK_NETWORK = 'network'
+
 export const NETWORK_LOADING = 'network/LOADING'
 export const NETWORK_SET_ACCOUNTS = 'network/SET_ACCOUNTS'
 export const NETWORK_SELECT_ACCOUNT = 'network/SELECT_ACCOUNT'

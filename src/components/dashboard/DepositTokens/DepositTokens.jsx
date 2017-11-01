@@ -10,7 +10,8 @@ import { isTestingNetwork } from 'Login/network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
 
-import { Translate } from 'react-redux-i18n'import type MainWallet from 'models/Wallet/MainWalletModel'
+import { Translate } from 'react-redux-i18n'
+import type MainWallet from 'models/Wallet/MainWalletModel'
 import IconSection from '../IconSection/IconSection'
 import ColoredSection from '../ColoredSection/ColoredSection'
 

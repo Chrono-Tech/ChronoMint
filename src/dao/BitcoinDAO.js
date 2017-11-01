@@ -5,7 +5,7 @@ import type TxModel from 'models/TxModel'
 
 import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
 import { bitcoinAddress } from 'components/forms/validator'
-import { DECIMALS } from 'network/BitcoinEngine'
+import { DECIMALS } from 'Login/network/BitcoinEngine'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
