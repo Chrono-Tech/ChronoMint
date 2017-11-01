@@ -447,22 +447,22 @@ class HeaderPartial extends React.Component {
 
 function mapStateToProps (state) {
   const session = state.get('session')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   const notifier = state.get('notifier')
   const watcher = state.get('watcher')
   const monitor = state.get('monitor')
   return {
     i18n: state.get('i18n'), // force update I18n.t
-    btcAddress: wallet.btcAddress,
+    btcAddress: wallet.btcAddress(),
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
     unreadNotices: notifier.unreadNotices,
     transactionsList: watcher.pendingTxs,
     network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
-    isTokensLoaded: !wallet.tokensFetching,
+    isTokensLoaded: !wallet.isFetching(),
     isCBE: session.isCBE,
-    tokens: wallet.tokens,
+    tokens: wallet.tokens(),
     networkStatus: monitor.network,
     syncStatus: monitor.sync,
   }

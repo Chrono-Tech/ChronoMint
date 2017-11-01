@@ -1,6 +1,6 @@
 // TODO new exchange
 /* eslint-disable */
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { SelectField, TextField } from 'redux-form-material-ui'
@@ -20,7 +20,7 @@ const styles = {
 
 const mapStateToProps = (state) => {
   const exchange = state.get('exchange')
-  const wallet = state.get('wallet')
+  const wallet = state.get('mainWallet')
   return {
     account: state.get('session').account,
     platformBalances: {
@@ -28,9 +28,9 @@ const mapStateToProps = (state) => {
       LHT: exchange.lht.balance
     },
     accountBalances: {
-      TIME: wallet.time.balance,
-      LHT: wallet.lht.balance,
-      ETH: wallet.eth.balance
+      TIME: wallet.tokens().get('TIME').balance(),
+      LHT: wallet.tokens().get('LHT').balance(),
+      ETH: wallet.tokens().get('ETH').balance()
     },
     rates: exchange.rates.rates,
     initialValues: {
@@ -50,7 +50,7 @@ const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custo
 
 @connect(mapStateToProps, null)
 @reduxForm({form: 'sendForm', validate})
-class ExchangeForm extends Component {
+class ExchangeForm extends PureComponent {
   render () {
     const {handleSubmit, rates, valid} = this.props
 

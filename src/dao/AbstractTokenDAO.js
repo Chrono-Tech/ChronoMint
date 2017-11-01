@@ -42,11 +42,11 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   addDecimals (amount: BigNumber): BigNumber {
-    return new BigNumber(amount.toString(10))
+    return amount
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
-    return new BigNumber(amount.toString(10))
+    return amount
   }
 
   getSymbol () {

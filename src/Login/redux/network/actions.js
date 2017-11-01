@@ -5,12 +5,11 @@ import resultCodes from 'chronobank-smart-contracts/common/errors'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
-import {getNetworkById, getScannerById} from '../../network/settings'
-import {LOCAL_ID} from '../../network/settings'
+import { getNetworkById, getScannerById, LOCAL_ID } from '../../network/settings'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import uportProvider, {UPortAddress} from '../../network/uportProvider'
-import {utils} from '../../settings'
-import web3Provider, {Web3Provider} from '../../network/Web3Provider'
+import uportProvider, { UPortAddress } from '../../network/uportProvider'
+import { utils } from '../../settings'
+import web3Provider, { Web3Provider } from '../../network/Web3Provider'
 
 const { web3Converter } = utils
 
@@ -60,7 +59,7 @@ class NetworkService extends EventEmitter {
 
     web3Provider.resolve()
 
-    AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
+    AbstractContractDAO.setup(account, [ resultCodes.OK, true ], resultCodes)
 
     // sync with session state
     // this unlock login
@@ -139,7 +138,7 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
+    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [ address ] })
     this.selectAccount(address)
   }
 
@@ -154,7 +153,7 @@ class NetworkService extends EventEmitter {
       }
       dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
       if (accounts.length === 1) {
-        this.selectAccount(accounts[0])
+        this.selectAccount(accounts[ 0 ])
       }
       dispatch(loading(false))
       return accounts

@@ -1,6 +1,6 @@
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -16,7 +16,7 @@ const mapStateToProps = state => ({
 })
 
 @connect(mapStateToProps, null)
-class LoginWithMnemonic extends Component {
+class LoginWithMnemonic extends PureComponent {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     onBack: PropTypes.func.isRequired,

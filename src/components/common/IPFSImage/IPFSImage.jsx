@@ -9,6 +9,7 @@ export default class IPFSImage extends React.Component {
   static propTypes = {
     multihash: PropTypes.string,
     fallback: PropTypes.string,
+    fallbackComponent: PropTypes.node,
     className: PropTypes.string,
     icon: PropTypes.object,
     timeout: PropTypes.number,
@@ -58,17 +59,45 @@ export default class IPFSImage extends React.Component {
     }
   }
 
-  render () {
-    const { icon } = this.props
-    const imageURL = this.state.imageURL || this.props.fallback
-
+  renderIcon (imageURL) {
     return (
       <div
         styleName='root'
         className={this.props.className}
         style={{ backgroundImage: `url("${imageURL}")` }}
-      >{!imageURL && icon}
+      >
+        {!imageURL && this.props.icon}
       </div>
     )
+  }
+
+  renderFallback () {
+    return React.cloneElement(this.props.fallbackComponent, {
+      className: this.props.className,
+    })
+  }
+
+  render () {
+    const {
+      icon,
+      multihash,
+      fallback,
+      fallbackComponent,
+    } = this.props
+    const imageURL = this.state.imageURL || fallback
+
+    if (!fallbackComponent) {
+      return this.renderIcon(imageURL)
+    }
+
+    if (!icon && !multihash && fallbackComponent) {
+      return this.renderFallback()
+    }
+
+    if (!icon && !multihash && !fallback && !fallbackComponent) {
+      return <span>No icon</span>
+    }
+
+    return null
   }
 }

@@ -1,5 +1,2 @@
 import wallet from './reducer'
-
-export {
-  wallet,
-}
+export { wallet }

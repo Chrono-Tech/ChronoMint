@@ -8,7 +8,7 @@ import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 
-import { TIME } from 'redux/wallet/actions'
+import { TIME } from 'redux/mainWallet/actions'
 
 import * as a from './actions'
 
@@ -51,7 +51,7 @@ describe('settings erc20 actions', () => {
       // eslint-disable-next-line
       console.log('Handled!!!', notice)
 
-      expect(store.getActions()[0].token).toEqual(token.fetching())
+      expect(store.getActions()[0].token).toEqual(token.isFetching(true))
 
       expect(notice.isRemoved()).toBeFalsy()
       // eslint-disable-next-line
@@ -84,7 +84,7 @@ describe('settings erc20 actions', () => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchModify((notice: TokenNoticeModel) => {
       expect(store.getActions()).toEqual([
-        { type: a.TOKENS_SET, token: token.fetching() },
+        { type: a.TOKENS_SET, token: token.isFetching(true) },
         { type: a.TOKENS_REMOVE, token },
       ])
 
@@ -101,7 +101,7 @@ describe('settings erc20 actions', () => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
       expect(store.getActions()).toEqual([
-        { type: a.TOKENS_SET, token: newToken.fetching() },
+        { type: a.TOKENS_SET, token: newToken.isFetching(true) },
       ])
 
       expect(notice.isRemoved()).toBeTruthy()

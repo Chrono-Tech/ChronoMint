@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { integerWithDelimiter } from 'utils/formatter'
@@ -9,7 +9,7 @@ import { integerWithDelimiter } from 'utils/formatter'
 import './TokenValue.scss'
 
 const mapStateToProps = state => {
-  const { isInited, prices, selectedCurrency } = state.get('market')
+  const {isInited, prices, selectedCurrency} = state.get('market')
   return {
     isInited,
     prices,
@@ -18,7 +18,7 @@ const mapStateToProps = state => {
 }
 
 @connect(mapStateToProps, null)
-class TokenValue extends Component {
+class TokenValue extends PureComponent {
   static propTypes = {
     value: PropTypes.object,
     symbol: PropTypes.string,

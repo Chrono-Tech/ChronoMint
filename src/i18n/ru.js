@@ -43,7 +43,7 @@ export default {
     exchange: 'Обмен (demo)',
     voting: 'Голосование',
     rewards: 'Награды',
-    assets: 'Мои активы (demo)',
+    assets: 'Мои активы',
     profile: 'Профайл',
     signOut: 'Выйти',
     search: 'Искать...',
@@ -69,7 +69,8 @@ export default {
     owners: 'владельцев',
     youHave: 'Вы имеете',
     multisignatureWallets: 'Мульти кошельков',
-    switchMultisignatureWallet: 'Переключить мульти кошелёк',
+    switchMultisignatureWallet: 'Сменить мульти кошелёк',
+    switchToMultisignatureWallet: 'Переключить на мульти кошелёк',
     switchToMainWallet: 'Переключить на основной кошелёк',
     pendingTransfers: 'Проводимые переводы (demo)',
     to: 'Кому',
@@ -87,18 +88,6 @@ export default {
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
       selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
       owners: 'владельцев',
-    },
-    walletAddEditDialog: {
-      newWallet: 'Новый кошелёк',
-      editWallet: 'Редактировать кошелёк',
-      walletName: 'Название кошелька',
-      dayLimit: 'Суточный лимит',
-      requiredSignatures: 'Необходимо подписей',
-      walletOwners: 'Владельцев',
-      addOwner: 'Добавить владельца',
-      addWallet: 'Добавить кошелёк',
-      save: 'Сохранить',
-      ownerAddress: 'Адрес владельца',
     },
   },
   exchange: {
@@ -445,6 +434,9 @@ export default {
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
+    lowerThanOrEqual: 'Должно быть меньше или равно %{limit}',
+    moreThan: 'Должно быть больше чем %{limit}',
+    moreThanOrEqual: 'Должно быть больше или равно %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
@@ -464,12 +456,6 @@ export default {
       },
       dayLimit: {
         haveToBeNumber: 'Должно быть числом',
-      },
-      requiredSignatures: {
-        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум',
-      },
-      ownersCount: {
-        haveToBeMoreThanTwoOrEqual: 'Должно быть больше или равно двум',
       },
     },
   },

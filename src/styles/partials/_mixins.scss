@@ -43,17 +43,15 @@ $media-sizes: (
 
   display: block;
   position: relative;
-  box-sizing: border-box;
   margin: -($row-spacing / 2) 0;
 
   > .#{$row} {
 
     display: flex;
     position: relative;
-    box-sizing: border-box;
     flex-wrap: wrap;
     justify-content: $justify;
-    margin: 0px (-$column-spacing / 2);
+    margin: 0 (-$column-spacing / 2);
 
     @each $name, $size in $media-sizes {
 
@@ -62,7 +60,6 @@ $media-sizes: (
         > .#{$col}-#{$name}-#{$i} {
           flex: 0 #{$i} auto;
           position: relative;
-          box-sizing: border-box;
           width: 100%;
           padding: ($row-spacing / 2) ($column-spacing / 2);
         }

@@ -4,10 +4,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
 import { TextField, Checkbox } from 'redux-form-material-ui'
+import validate from './validate'
 import { Field, reduxForm } from 'redux-form/immutable'
 import './AddPlatformForm.scss'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
 import { createPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
@@ -22,23 +21,6 @@ function mapStateToProps (state) {
     formValues: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_PLATFORM_DIALOG) && form.get(FORM_ADD_PLATFORM_DIALOG).get('syncErrors'),
   }
-}
-
-const validate = values => {
-  let result = {}
-
-  let platformNameErrors = new ErrorList()
-  !values.get('alreadyHave') && platformNameErrors.add(validator.name(values.get('platformName'), true))
-  if (platformNameErrors.getErrors()) {
-    result.platformName = platformNameErrors.getErrors()
-  }
-
-  let platformAddressErrors = new ErrorList()
-  values.get('alreadyHave') && platformAddressErrors.add(validator.address(values.get('platformAddress'), true))
-  if (platformAddressErrors.getErrors()) {
-    result.platformAddress = platformAddressErrors.getErrors()
-  }
-  return result
 }
 
 const onSubmit = (values, dispatch) => {
@@ -70,14 +52,6 @@ export default class AddPlatformForm extends React.Component {
           </div>
         </div>
         <div styleName='dialogBody'>
-
-          <Field
-            disabled={alreadyHave}
-            component={TextField}
-            name='platformName'
-            fullWidth
-            floatingLabelText={<Translate value={prefix('platformName')} />}
-          />
 
           <Field
             styleName='checkboxField'

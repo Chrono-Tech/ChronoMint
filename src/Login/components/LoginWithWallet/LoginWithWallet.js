@@ -1,6 +1,6 @@
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -20,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginWithWallet extends Component {
+class LoginWithWallet extends PureComponent {
   static propTypes = {
     isLoading: PropTypes.bool,
     onBack: PropTypes.func.isRequired,

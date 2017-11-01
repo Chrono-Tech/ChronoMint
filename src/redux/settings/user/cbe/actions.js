@@ -34,7 +34,7 @@ export const formCBELoadName = account => async dispatch => {
 }
 
 export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async dispatch => {
-  dispatch(setCBE(cbe.fetching()))
+  dispatch(setCBE(cbe.isFetching(true)))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
     await dao.addCBE(cbe)
@@ -44,7 +44,7 @@ export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async dispatch 
 }
 
 export const revokeCBE = (cbe: CBEModel | AbstractFetchingModel) => async dispatch => {
-  dispatch(setCBE(cbe.fetching()))
+  dispatch(setCBE(cbe.isFetching(true)))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
     await dao.revokeCBE(cbe)

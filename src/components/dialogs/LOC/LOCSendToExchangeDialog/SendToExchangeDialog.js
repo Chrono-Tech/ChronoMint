@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import exchangeDAO from 'dao/ExchangeDAO'
@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class SendToExchangeModal extends Component {
+class SendToExchangeModal extends PureComponent {
   static propTypes = {
     send: PropTypes.func,
     closeModal: PropTypes.func,

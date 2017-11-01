@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
 
@@ -13,7 +13,7 @@ const mapDispatchToProps = () => ({
 })
 
 @connect(null, mapDispatchToProps)
-class LoginLocal extends Component {
+class LoginLocal extends PureComponent {
   componentWillMount () {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)

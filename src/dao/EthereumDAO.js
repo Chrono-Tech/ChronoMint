@@ -25,6 +25,14 @@ export class EthereumDAO extends AbstractTokenDAO {
     return 18
   }
 
+  addDecimals (amount: BigNumber): BigNumber {
+    return amount.mul(Math.pow(10, this.getDecimals()))
+  }
+
+  removeDecimals (amount: BigNumber): BigNumber {
+    return amount.div(Math.pow(10, this.getDecimals()))
+  }
+
   getSymbol () {
     return 'ETH'
   }

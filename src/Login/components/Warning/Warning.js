@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import WarningIcon from 'material-ui/svg-icons/alert/error'
 
@@ -12,7 +12,7 @@ const styles = {
   color: stylesConfig.colors.warningColor,
 }
 
-class Warning extends Component {
+class Warning extends PureComponent {
   render () {
     return (
       <div styleName='warningBox'>

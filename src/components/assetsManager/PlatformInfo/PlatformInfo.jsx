@@ -4,10 +4,10 @@ import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { getManagersForAssetSymbol, isReissuable, getLatestVersion } from 'redux/assetsManager/actions'
+import { getManagersForAssetSymbol, isReissuable, getFee } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
@@ -18,7 +18,7 @@ function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-export class PlatformInfo extends Component {
+export class PlatformInfo extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
     selectedToken: PropTypes.string,
@@ -30,24 +30,53 @@ export class PlatformInfo extends Component {
     reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
-    getLatestVersion: PropTypes.func,
+    getFee: PropTypes.func,
+    platformsList: PropTypes.array,
+    usersPlatforms: PropTypes.array,
   }
 
   componentWillReceiveProps (newProps) {
-    if ((newProps.selectedToken && !this.props.selectedToken) ||
-      (this.props.selectedToken && this.props.selectedToken !== newProps.selectedToken)) {
-
-      this.props.getManagersForAssetSymbol(newProps.selectedToken)
-
-      if (newProps.tokensMap.get(newProps.selectedToken).isReissuable() === null) {
-        this.props.isReissuable(newProps.tokensMap.get(newProps.selectedToken))
-        this.props.getLatestVersion(newProps.tokensMap.get(newProps.selectedToken))
+    if (newProps.selectedToken) {
+      const token = newProps.tokensMap.get(newProps.selectedToken)
+      if (token) {
+        if (token.managersList() === null) {
+          this.props.getManagersForAssetSymbol(newProps.selectedToken)
+        }
+        if (token.isReissuable() === null) {
+          this.props.isReissuable(token)
+        }
+        if (token.withFee() === null) {
+          this.props.getFee(token)
+        }
       }
-
     }
   }
 
   renderInstructions () {
+    if (!this.props.usersPlatforms.length && !this.props.platformsList.length) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionCreatePlatform'>
+              <Translate value={prefix('createPlatform')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    if (this.props.usersPlatforms.length && !this.props.platformsList.length) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='instructionCreatePlatform'>
+              <Translate value={prefix('createToken')} />
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     if (!this.props.selectedPlatform) {
       return (
         <div styleName='root'>
@@ -111,10 +140,33 @@ export class PlatformInfo extends Component {
     )
   }
 
+  renderFee () {
+    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
+    let value
+    switch (selectedToken.withFee()) {
+      case true:
+        value = <span>{selectedToken.fee()}<span>%</span></span>
+        break
+      case false:
+        value = <Translate value={prefix('withoutFee')} />
+        break
+      default:
+        value = <div styleName='preloader'><Preloader /></div>
+    }
+    return (
+      <div styleName='fee'>
+        <div styleName='title'><Translate value={prefix('fee')} />:</div>
+        <div styleName='value'>
+          {value}
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
 
-    if (!this.props.selectedPlatform || !this.props.selectedToken) return this.renderInstructions()
+    if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
 
     return (
       <div styleName='root'>
@@ -134,15 +186,7 @@ export class PlatformInfo extends Component {
                   symbol={selectedToken.symbol()}
                 />
               </div>
-              {
-                selectedToken.fee() &&
-                <div styleName='fee'>
-                  <div styleName='title'><Translate value={prefix('fee')} />:</div>
-                  <div styleName='value'>
-                    {selectedToken.fee()}<span>%</span>
-                  </div>
-                </div>
-              }
+              {this.renderFee()}
             </div>
           </div>
           {selectedToken.isReissuable() && <ReissueAssetForm />}
@@ -179,6 +223,8 @@ function mapStateToProps (state) {
     selectedPlatform: assetsManager.selectedPlatform,
     managersForTokenLoading: assetsManager.managersForTokenLoading,
     tokensMap: assetsManager.tokensMap,
+    platformsList: assetsManager.platformsList,
+    usersPlatforms: assetsManager.usersPlatforms,
   }
 }
 
@@ -192,7 +238,7 @@ function mapDispatchToProps (dispatch) {
     })),
     getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
     isReissuable: symbol => dispatch(isReissuable(symbol)),
-    getLatestVersion: symbol => dispatch(getLatestVersion(symbol)),
+    getFee: symbol => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
       component: RevokeDialog,
     })),

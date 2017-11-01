@@ -3,6 +3,8 @@ import * as drawer from './drawer/'
 import * as exchange from './exchange/'
 import * as locs from './locs/'
 import * as market from './market/'
+import * as mainWallet from './mainWallet/'
+import * as multisigWallet from './multisigWallet/'
 import * as modals from './modals/'
 import * as monitor from './monitor/'
 import * as notifier from './notifier/'
@@ -24,6 +26,8 @@ export default {
   locs,
   voting,
   wallet,
+  mainWallet,
+  multisigWallet,
   rewards,
   exchange,
   settings,
