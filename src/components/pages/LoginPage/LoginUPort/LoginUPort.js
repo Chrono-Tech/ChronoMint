@@ -8,13 +8,13 @@ import { loginUport, addError } from '../../../../redux/network/actions'
 
 import './LoginUPort.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   loginUport: () => dispatch(loginUport()),
-  addError: e => dispatch(addError(e)),
+  addError: (e) => dispatch(addError(e)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

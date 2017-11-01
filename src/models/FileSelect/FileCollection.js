@@ -28,7 +28,7 @@ class FileCollection extends abstractModel({
   }
 
   hasErrors () {
-    return this.files().some(file => file.hasErrors())
+    return this.files().some((file) => file.hasErrors())
   }
 
   files () {
@@ -41,7 +41,7 @@ class FileCollection extends abstractModel({
 
   links () {
     const links = []
-    this.files().forEach(file => links.push({
+    this.files().forEach((file) => links.push({
       name: file.name(),
       hash: file.hash(),
       size: file.size(),

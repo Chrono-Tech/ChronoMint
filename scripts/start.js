@@ -12,7 +12,7 @@ const config = require('../config/webpack.config.dev')
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
 let handleCompile
-const isSmokeTest = process.argv.some(arg =>
+const isSmokeTest = process.argv.some((arg) =>
   arg.indexOf('--smoke-test') > -1
 )
 if (isSmokeTest) {
@@ -68,13 +68,13 @@ compiler.plugin('done', function (stats) {
   const hasErrors = stats.hasErrors()
   const hasWarnings = stats.hasWarnings()
   if (!hasErrors && !hasWarnings) {
-    let showStats = process.argv.some(arg =>
+    let showStats = process.argv.some((arg) =>
       arg.indexOf('--stats') > -1
     )
     if (showStats) {
-      let decycle = obj => {
+      let decycle = (obj) => {
         let pathArr = []
-        let recurs = obj => {
+        let recurs = (obj) => {
           pathArr.push(obj)
           for (let o in obj) {
             if (obj.hasOwnProperty(o)) {
@@ -100,7 +100,6 @@ compiler.plugin('done', function (stats) {
     console.log('The layout is running at http://localhost:3000/')
     console.log()
 
-
     // print local addresses
     console.log('External access:')
 
@@ -117,10 +116,10 @@ compiler.plugin('done', function (stats) {
   }
 
   const json = stats.toJson()
-  let formattedErrors = json.errors.map(message =>
+  let formattedErrors = json.errors.map((message) =>
     'Error in ' + formatMessage(message)
   )
-  const formattedWarnings = json.warnings.map(message =>
+  const formattedWarnings = json.warnings.map((message) =>
     'Warning in ' + formatMessage(message)
   )
 
@@ -133,7 +132,7 @@ compiler.plugin('done', function (stats) {
       // preceding a much more useful Babel syntax error.
       formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
     }
-    formattedErrors.forEach(message => {
+    formattedErrors.forEach((message) => {
       console.log(message)
       console.log()
     })
@@ -144,7 +143,7 @@ compiler.plugin('done', function (stats) {
   if (hasWarnings) {
     console.log(chalk.yellow('Compiled with warnings.'))
     console.log()
-    formattedWarnings.forEach(message => {
+    formattedWarnings.forEach((message) => {
       console.log(message)
       console.log()
     })

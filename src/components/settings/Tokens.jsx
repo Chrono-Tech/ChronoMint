@@ -134,7 +134,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listTokens()),
-    remove: token => dispatch(revokeToken(token)),
+    remove: (token) => dispatch(revokeToken(token)),
     form: (token, isModify) => dispatch(modalsOpen({
       component: CBETokenDialog,
       props: {

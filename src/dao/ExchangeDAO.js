@@ -55,7 +55,6 @@ class ExchangeDAO extends AbstractContractDAO {
   async sell (amount: BigNumber, price: BigNumber) {
     const assetDAO = await this.getAssetDAO()
 
-
     // TODO @bshevchenko: divide this on two steps
     await this.approveSell(amount)
 

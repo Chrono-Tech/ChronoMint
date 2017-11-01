@@ -10,8 +10,8 @@ describe('IPFS DAO', () => {
     expect(JSON.stringify(IPFS.getAPI())).toEqual(JSON.stringify(ipfs))
   })
 
-  it('should put and get value', () => IPFS.put(value).then(hash => {
-    IPFS.get(hash).then(result => {
+  it('should put and get value', () => IPFS.put(value).then((hash) => {
+    IPFS.get(hash).then((result) => {
       expect(result).toEqual(value)
     })
   }))

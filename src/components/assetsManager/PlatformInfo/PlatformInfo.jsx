@@ -114,7 +114,7 @@ export class PlatformInfo extends PureComponent {
                 <div styleName='avatarsRow'>
                   {
                     managersList && managersList
-                      .map(manager => <div key={manager}><i className='material-icons'>account_circle</i></div>)
+                      .map((manager) => <div key={manager}><i className='material-icons'>account_circle</i></div>)
                   }
                 </div>
 
@@ -135,7 +135,6 @@ export class PlatformInfo extends PureComponent {
 
         }
       </div>
-
 
     )
   }
@@ -181,7 +180,7 @@ export class PlatformInfo extends PureComponent {
               <div styleName='balance'>
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
-                  style={{fontSize: '24px'}}
+                  style={{ fontSize: '24px' }}
                   value={new BigNumber(selectedToken.totalSupply())}
                   symbol={selectedToken.symbol()}
                 />
@@ -236,9 +235,9 @@ function mapDispatchToProps (dispatch) {
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog,
     })),
-    getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
-    isReissuable: symbol => dispatch(isReissuable(symbol)),
-    getFee: symbol => dispatch(getFee(symbol)),
+    getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
+    isReissuable: (symbol) => dispatch(isReissuable(symbol)),
+    getFee: (symbol) => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
       component: RevokeDialog,
     })),

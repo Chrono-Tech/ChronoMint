@@ -14,8 +14,8 @@ import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 
 import SendToExchangeForm from './SendToExchangeForm'
 
-const mapDispatchToProps = dispatch => ({
-  send: async value => {
+const mapDispatchToProps = (dispatch) => ({
+  send: async (value) => {
     dispatch(sendAsset(
       new TokenModel({ dao: lhtDAO }),
       await exchangeDAO.getAddress(),
@@ -33,7 +33,7 @@ class SendToExchangeModal extends PureComponent {
     allowed: PropTypes.object,
   }
 
-  handleSubmitSuccess = value => {
+  handleSubmitSuccess = (value) => {
     this.props.closeModal()
     this.props.send(value)
   }

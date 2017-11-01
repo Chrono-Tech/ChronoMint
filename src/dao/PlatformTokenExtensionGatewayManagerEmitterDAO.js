@@ -12,6 +12,6 @@ export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends Abst
   }
 
   watchAssetCreate (callback, account) {
-    this._watch(TX_ASSET_CREATED, callback, {by: account})
+    this._watch(TX_ASSET_CREATED, callback, { by: account })
   }
 }

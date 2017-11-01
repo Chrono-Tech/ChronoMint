@@ -61,7 +61,7 @@ class LedgerProvider extends EventEmitter {
   _getAppConfig () {
     // we check for version for define is ETH opened.
     // If its true we get version number in callback
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._ledger.getAppConfig((error, data) => {
         if (error) {
           resolve(false)
@@ -98,7 +98,7 @@ class LedgerProvider extends EventEmitter {
   }
 
   async fetchAccount () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const timer = setInterval(() => {
         if (this._ledger.connectionOpened) {
           // busy

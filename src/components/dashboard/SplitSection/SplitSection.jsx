@@ -49,5 +49,4 @@ SplitSection.propTypes = {
   foot: PropTypes.node,
 }
 
-
 export default SplitSection

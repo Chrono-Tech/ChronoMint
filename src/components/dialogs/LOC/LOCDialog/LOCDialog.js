@@ -9,7 +9,7 @@ import LOCForm from './LOCForm'
 import type LOCModel from '../../../../models/LOCModel'
 import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
   updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
   closeModal: () => dispatch(modalsClose()),

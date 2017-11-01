@@ -121,7 +121,7 @@ export class EthereumDAO extends AbstractTokenDAO {
           AbstractContractDAO.txEnd(tx)
 
           resolve(true)
-        }, e => {
+        }, (e) => {
           throw new TxError(e.message, TX_FRONTEND_ERROR_CODES.FRONTEND_WEB3_FILTER_FAILED)
         })
 
@@ -158,7 +158,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         return
       }
       const txs = block.transactions || []
-      txs.forEach(tx => {
+      txs.forEach((tx) => {
         if (tx.value.toNumber() > 0 && (tx.from === this.getAccount() || tx.to === this.getAccount())) {
           this._transferCallback(new TransferNoticeModel({
             tx: this._getTxModel(tx, this.getAccount()),
@@ -246,7 +246,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       try {
         const block = await this._web3Provider.getBlock(i, true)
         const txs = block.transactions || []
-        txs.forEach(tx => {
+        txs.forEach((tx) => {
           if ((tx.to === account || tx.from === account) && tx.value > 0) {
             result.push(this._getTxModel(tx, account, block.timestamp))
           }

@@ -13,7 +13,7 @@ import IssueForm from './LOCIssueForm'
 
 import './LOCIssueDialog.scss'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })

@@ -15,7 +15,7 @@ const MODES = [
   { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
 ]
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
 
@@ -95,9 +95,9 @@ export default class ExchangeWidget extends React.Component {
         <div styleName='content'>
           <SwipeableViews
             index={this.state.mode.index}
-            onChangeIndex={index => this.handleChangeMode(index)}
+            onChangeIndex={(index) => this.handleChangeMode(index)}
           >
-            { MODES.map(el => (
+            { MODES.map((el) => (
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
@@ -136,7 +136,7 @@ export default class ExchangeWidget extends React.Component {
                       <div styleName='actions'>
                         <RaisedButton
                           label={<Translate value={prefix('search')} />}
-                          onTouchTap={e => {
+                          onTouchTap={(e) => {
                             e.stopPropagation()
                             this.handleSearch()
                           }}

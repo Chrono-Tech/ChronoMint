@@ -142,7 +142,7 @@ export default class RewardsContent extends Component {
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
-            {this.props.rewardsData.periods().valueSeq().map(item => (
+            {this.props.rewardsData.periods().valueSeq().map((item) => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
                   <Paper>

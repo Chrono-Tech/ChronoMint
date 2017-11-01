@@ -28,7 +28,7 @@ const onSubmit = (values, dispatch) => {
 }
 
 @connect(mapStateToProps)
-@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit})
+@reduxForm({ form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit })
 export default class AddPlatformForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,

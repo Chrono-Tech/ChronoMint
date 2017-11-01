@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
-export const abstractFetchingCollection = defaultValues => class AbstractFetchingCollection extends abstractFetchingModel({
+export const abstractFetchingCollection = (defaultValues) => class AbstractFetchingCollection extends abstractFetchingModel({
   ...defaultValues,
   list: new Immutable.Map(),
   selected: null,

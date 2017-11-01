@@ -14,7 +14,7 @@ export default class Value extends React.Component {
   }
 
   renderValue () {
-    const {value, params = {}} = this.props
+    const { value, params = {} } = this.props
 
     if (value === null && value === undefined) { // null/undefined
       return ''

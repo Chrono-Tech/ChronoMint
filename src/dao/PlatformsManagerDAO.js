@@ -67,16 +67,16 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   watchCreatePlatform (account, dispatch) {
-    this._watch(TX_PLATFORM_REQUESTED, tx => {
+    this._watch(TX_PLATFORM_REQUESTED, (tx) => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {by: account})
+    }, { by: account })
 
-    this._watch(TX_PLATFORM_ATTACHED, tx => {
+    this._watch(TX_PLATFORM_ATTACHED, (tx) => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {by: account})
+    }, { by: account })
   }
 }

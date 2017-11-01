@@ -108,7 +108,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false,
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(addCBE(values))
     },

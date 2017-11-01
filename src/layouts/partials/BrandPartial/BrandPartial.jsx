@@ -36,7 +36,7 @@ export default class BrandPartial extends React.Component {
             <div styleName='subtitle'>{require('../../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={locale}>
-            {menu.global.map(item => (
+            {menu.global.map((item) => (
               <li styleName='itemsItem' key={item.key}>
                 <a
                   styleName='itemsLink'
@@ -87,7 +87,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toggleBrandPartial: open => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
+    toggleBrandPartial: (open) => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
   }
 }
 

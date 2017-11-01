@@ -48,12 +48,12 @@ export default class DrawerPartial extends React.Component {
           </div>
           {!menu.user ? null : (
             <List styleName='menu-user'>
-              {menu.user.map(item => this.renderItem(item))}
+              {menu.user.map((item) => this.renderItem(item))}
             </List>
           )}
           {!this.props.isCBE ? null : (
             <List styleName='menu-cbe'>
-              {menu.cbe.map(item => this.renderItem(item))}
+              {menu.cbe.map((item) => this.renderItem(item))}
             </List>
           )}
         </div>

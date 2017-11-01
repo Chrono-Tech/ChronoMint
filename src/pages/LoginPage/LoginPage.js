@@ -22,7 +22,7 @@ import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamas
 
 import './LoginPage.scss'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
     errors: network.errors,
@@ -33,10 +33,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => dispatch(checkNetwork()),
   createNetworkSession: (account, provider, network) => dispatch(createNetworkSession(account, provider, network)),
-  login: account => dispatch(login(account)),
+  login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
 })
@@ -82,23 +82,24 @@ class LoginPage extends Component {
   }
 
   handleToggleProvider (isShowProvider) {
-    this.setState({isShowProvider})
+    this.setState({ isShowProvider })
   }
 
   render () {
-    const {errors, selectedProviderId} = this.props
+    const { errors, selectedProviderId } = this.props
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>
-          <div styleName='title'><Translate value='LoginPage.title'/></div>
-          <div styleName='subtitle'><Translate value='LoginPage.subTitle'/></div>
-          {this.state.isShowProvider && <ProviderSelector/>}
+          <div styleName='title'><Translate value='LoginPage.title' /></div>
+          <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
+          {this.state.isShowProvider && <ProviderSelector />}
           {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={() => this.handleLogin()} />}
           {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={() => this.handleLogin()} />}
           {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
             <LoginWithOptions
               onLogin={() => this.handleLogin()}
-              onToggleProvider={() => this.handleToggleProvider()}/>
+              onToggleProvider={() => this.handleToggleProvider()}
+            />
           )}
           {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={() => this.handleLogin()} />}
 

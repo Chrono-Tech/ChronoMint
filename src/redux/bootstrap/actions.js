@@ -11,7 +11,7 @@ import {
 } from '../network/actions'
 import { login } from '../session/actions'
 
-export const bootstrap = (relogin = true) => async dispatch => {
+export const bootstrap = (relogin = true) => async (dispatch) => {
   dispatch(checkMetaMask())
   dispatch(checkTestRPC())
 

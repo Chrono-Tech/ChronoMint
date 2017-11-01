@@ -8,7 +8,7 @@ import Moment, { FULL_DATE } from 'components/common/Moment'
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols
-export const abstractNoticeModel = defaultValues => class AbstractNoticeModel extends abstractModel({ ...defaultValues }) {
+export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel extends abstractModel({ ...defaultValues }) {
   // neither id or time is a default record value
   constructor (data) {
     super({

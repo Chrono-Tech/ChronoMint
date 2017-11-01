@@ -69,7 +69,6 @@ export class PollDialog extends React.Component {
             <div styleName='body'>
               <div styleName='column'>
 
-
                 <Field component={TextField} name='title' fullWidth floatingLabelText={<Translate value={prefix('pollTitle')} />} />
                 <Field component={TextField} name='description' fullWidth multiLine floatingLabelText={<Translate value={prefix('pollDescription')} />} />
                 <Field
@@ -195,7 +194,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       const voteLimitInTIME = values.voteLimitInTIME()
       const poll = values
         .set('voteLimitInTIME', voteLimitInTIME

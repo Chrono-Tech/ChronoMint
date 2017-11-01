@@ -18,18 +18,18 @@ export const LOC_CREATE = 'loc/CREATE'
 export const LOC_UPDATE = 'loc/UPDATE'
 export const LOC_REMOVE = 'loc/REMOVE'
 
-const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel) => dispatch => {
+const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel) => (dispatch) => {
   dispatch({ type: LOC_REMOVE, name: loc.oldName() })
   dispatch({ type: LOC_UPDATE, loc })
   dispatch(notify(notice))
 }
 
-const handleLOCRemove = (name: string, notice: LOCNoticeModel) => dispatch => {
+const handleLOCRemove = (name: string, notice: LOCNoticeModel) => (dispatch) => {
   dispatch({ type: LOC_REMOVE, name })
   dispatch(notify(notice))
 }
 
-const handleError = (e, loc) => dispatch => {
+const handleError = (e, loc) => (dispatch) => {
   if (e.code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
     dispatch({ type: LOC_UPDATE, loc: loc.isPending(false) })
   } else {
@@ -37,7 +37,7 @@ const handleError = (e, loc) => dispatch => {
   }
 }
 
-export const watchInitLOC = () => async dispatch => {
+export const watchInitLOC = () => async (dispatch) => {
   const updateCallback = (loc, notice) => dispatch(handleLOCUpdate(loc, notice))
   const removeCallback = (name, notice) => dispatch(handleLOCRemove(name, notice))
 
@@ -50,14 +50,14 @@ export const watchInitLOC = () => async dispatch => {
   await locManagerDAO.watchRevoke(updateCallback)
 }
 
-export const getLOCs = () => async dispatch => {
+export const getLOCs = () => async (dispatch) => {
   dispatch({ type: LOCS_LIST_FETCH })
   const locManagerDAO: LOCManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
   const locs = await locManagerDAO.getLOCs()
   dispatch({ type: LOCS_LIST, locs })
 }
 
-export const addLOC = (loc: LOCModel) => async dispatch => {
+export const addLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_CREATE, loc })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -67,7 +67,7 @@ export const addLOC = (loc: LOCModel) => async dispatch => {
   }
 }
 
-export const updateLOC = (loc: LOCModel) => async dispatch => {
+export const updateLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_REMOVE, name: loc.oldName() })
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
 
@@ -79,7 +79,7 @@ export const updateLOC = (loc: LOCModel) => async dispatch => {
   }
 }
 
-export const removeLOC = (loc: LOCModel) => async dispatch => {
+export const removeLOC = (loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -89,7 +89,7 @@ export const removeLOC = (loc: LOCModel) => async dispatch => {
   }
 }
 
-export const issueAsset = (amount: number, loc: LOCModel) => async dispatch => {
+export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -109,7 +109,7 @@ export const sendAsset = (token: TokenModel, to: string, value: string) => async
   }
 }
 
-export const updateStatus = (status: number, loc: LOCModel) => async dispatch => {
+export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -119,7 +119,7 @@ export const updateStatus = (status: number, loc: LOCModel) => async dispatch =>
   }
 }
 
-export const revokeAsset = (amount: number, loc: LOCModel) => async dispatch => {
+export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -129,6 +129,6 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async dispatch => 
   }
 }
 
-export const updateLOCFilter = filter => dispatch => {
+export const updateLOCFilter = (filter) => (dispatch) => {
   dispatch({ type: LOCS_UPDATE_FILTER, filter })
 }

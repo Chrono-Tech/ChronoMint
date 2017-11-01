@@ -23,8 +23,8 @@ const styles = {
   },
 }
 
-const mapDispatchToProps = dispatch => ({
-  showCreateLOCModal: loc => dispatch(modalsOpen({
+const mapDispatchToProps = (dispatch) => ({
+  showCreateLOCModal: (loc) => dispatch(modalsOpen({
     component: LOCDialog,
     props: { loc },
   })),

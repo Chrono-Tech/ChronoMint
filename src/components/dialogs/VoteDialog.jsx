@@ -51,7 +51,7 @@ export class VoteDialog extends React.Component {
         transitionLeaveTimeout={250}
       >
         <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <form styleName='content' onSubmit={e => this.handleSubmit(e)}>
+          <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
             <div styleName='header'>
               <div styleName='column'>
                 <div styleName='inner'>

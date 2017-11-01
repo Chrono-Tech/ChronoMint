@@ -12,7 +12,7 @@ import styles from '../stylesLoginPage'
 
 import './LoginWithMnemonic.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
@@ -69,7 +69,7 @@ class LoginWithMnemonic extends PureComponent {
         />
         <div onTouchTap={() => this.mnemonicKey.focus()}>
           <TextField
-            ref={input => {
+            ref={(input) => {
               this.mnemonicKey = input
             }}
             floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey' />}

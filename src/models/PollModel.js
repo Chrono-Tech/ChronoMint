@@ -78,7 +78,7 @@ class PollModel extends abstractFetchingModel({
   }
 }
 
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
   errors.files = ErrorList.toTranslate(validator.validIpfsFileList(values.get('files')))

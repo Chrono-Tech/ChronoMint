@@ -136,7 +136,7 @@ export default class DoughnutChart extends React.Component {
     }
 
     function arcTween (transition, newAngle) {
-      transition.attrTween('d', d => {
+      transition.attrTween('d', (d) => {
         const interpolate = d3.interpolate(d.endAngle, newAngle)
         return function (t) {
           d.endAngle = interpolate(t)

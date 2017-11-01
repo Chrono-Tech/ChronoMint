@@ -8,7 +8,7 @@ export class ModalStack extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        { this.props.stack.map(modal => (
+        { this.props.stack.map((modal) => (
           <div key={modal.key}>
             <modal.component {...modal.props} />
           </div>

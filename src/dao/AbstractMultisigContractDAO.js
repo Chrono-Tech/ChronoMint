@@ -70,7 +70,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
         return acc
       }
       const name = obj.name
-      const types = obj.inputs.map(x => x.type)
+      const types = obj.inputs.map((x) => x.type)
       const hash = ethABI.methodID(name, types).toString('hex')
 
       if (hash !== methodId) {

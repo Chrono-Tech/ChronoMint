@@ -15,7 +15,7 @@ import LOCRedeemForm from './LOCRedeemForm'
 
 import './LOCRedeemDialog.scss'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })

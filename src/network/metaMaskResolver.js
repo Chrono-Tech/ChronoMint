@@ -1,6 +1,6 @@
 const WAIT_FOR_METAMASK = 2000 // ms
 
-export default () => new Promise(resolve => {
+export default () => new Promise((resolve) => {
   let timer
   let metaMaskInstance
 
@@ -14,7 +14,7 @@ export default () => new Promise(resolve => {
   }
   // wait for metamask
   Object.defineProperty(window, 'web3', {
-    set: web3 => {
+    set: (web3) => {
       timer && clearTimeout(timer)
       metaMaskInstance = web3
       resolve(true)

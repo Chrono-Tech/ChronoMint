@@ -18,7 +18,7 @@ function mapDispatchToProps (dispatch) {
     },
     createWallet: (wallet: MultisigWalletModel) => dispatch(createWallet(wallet)),
     updateWallet: (wallet: MultisigWalletModel) => dispatch(updateWallet(wallet)),
-    closeModal: () => dispatch(modalsClose())
+    closeModal: () => dispatch(modalsClose()),
   }
 }
 

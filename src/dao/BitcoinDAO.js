@@ -45,8 +45,6 @@ export class BitcoinDAO {
     return 8
   }
 
-
-
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {

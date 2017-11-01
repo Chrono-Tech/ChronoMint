@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 import './style.scss'
 import defaultLogo from 'assets/img/marketsLogos/default-logo.svg'
 
-const mapStateToProps = state => {
-  const {selectedCoin, rates} = state.get('market')
+const mapStateToProps = (state) => {
+  const { selectedCoin, rates } = state.get('market')
   return {
     rates: rates[selectedCoin] || {},
     selectedCoin,
@@ -79,14 +79,14 @@ class Rates extends React.Component {
   }
 
   render () {
-    const {rates, selectedCoin} = this.props
+    const { rates, selectedCoin } = this.props
     return (
-      <div style={{width: '100%'}}>
+      <div style={{ width: '100%' }}>
         <div styleName='header'><span>{selectedCoin}</span><span>/USD</span></div>
         <div styleName='wrapper'>
-          <div styleName='track' ref={ref => this.track = ref}>
+          <div styleName='track' ref={(ref) => this.track = ref}>
             {
-              Object.values(rates).map(market => {
+              Object.values(rates).map((market) => {
                 let logoPath
                 try {
                   logoPath = require(`../../../assets/img/marketsLogos/${market.LASTMARKET.toLowerCase()}.png`)

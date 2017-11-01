@@ -9,7 +9,7 @@ import validate from './validate'
 
 import './LOCIssueForm.scss'
 
-const onSubmit = values => +values.get('amount')
+const onSubmit = (values) => +values.get('amount')
 
 @reduxForm({ form: 'IssueForm', validate, onSubmit })
 class LOCIssueForm extends PureComponent {

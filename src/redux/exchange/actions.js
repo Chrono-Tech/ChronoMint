@@ -8,7 +8,7 @@ import ethereumDAO from 'dao/EthereumDAO'
 
 export const EXCHANGE_ORDERS = 'exchange/ORDERS'
 
-export const search = (symbol: string, isBuy: boolean) => async dispatch => {
+export const search = (symbol: string, isBuy: boolean) => async (dispatch) => {
   const isSell = !isBuy
 
   let limitPromise

@@ -11,7 +11,7 @@ import validate from './validate'
 
 import './SendToExchangeForm.scss'
 
-const onSubmit = values => +values.get('sendAmount')
+const onSubmit = (values) => +values.get('sendAmount')
 
 @reduxForm({ form: 'SendToExchangeForm', validate, onSubmit })
 class SendToExchangeForm extends PureComponent {

@@ -24,8 +24,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchConfirmationNeeded (wallet, callback) {
-    return this._watch('ConfirmationNeeded', result => {
-      const {operation, value, to, symbol} = result.args
+    return this._watch('ConfirmationNeeded', (result) => {
+      const { operation, value, to, symbol } = result.args
       const symbolString = this._c.bytesToString(symbol)
       const tokenDAO = wallet.tokens().get(symbolString).dao()
       callback(new MultisigWalletPendingTxModel({
@@ -47,19 +47,19 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchDeposit (wallet, callback) {
-    return this._watch('Deposit', result => {
+    return this._watch('Deposit', (result) => {
       callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
     }, { self: wallet.address() })
   }
 
   watchRevoke (wallet, callback) {
-    return this._watch('Revoke', result => {
+    return this._watch('Revoke', (result) => {
       callback(result.args.operation)
     }, { self: wallet.address() })
   }
 
   watchConfirmation (wallet, callback) {
-    return this._watch('Confirmation', result => {
+    return this._watch('Confirmation', (result) => {
       // TODO @dkchv: something wrong with contract
       if (result.args.owner === '0x') {
         return

@@ -95,7 +95,7 @@ export default class CrowdsaleForm extends React.Component {
             <RadioButton
               value='time'
               label={<Translate value={prefix('timeLimited')} />}
-              onClick={e => {
+              onClick={(e) => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />
@@ -104,7 +104,7 @@ export default class CrowdsaleForm extends React.Component {
               styleName='crowdsaleType'
               value='block'
               label={<Translate value={prefix('blockLimited')} />}
-              onClick={e => {
+              onClick={(e) => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />

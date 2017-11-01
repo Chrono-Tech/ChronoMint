@@ -26,14 +26,14 @@ const reverter = new Reverter(web3provider.getWeb3instance())
 export const mockStore = configureMockStore([thunk])
 export let store = null
 
-beforeAll(done => {
+beforeAll((done) => {
   web3provider.getWeb3().then(() => {
     // noinspection JSUnresolvedFunction
     reverter.snapshot(done)
   })
 })
 
-afterAll(done => {
+afterAll((done) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
 })
@@ -44,7 +44,7 @@ beforeEach(() => {
   store = mockStore()
 })
 
-afterEach(async done => {
+afterEach(async (done) => {
   ls.destroySession()
   await AbstractContractDAO.stopWholeWatching()
   done()

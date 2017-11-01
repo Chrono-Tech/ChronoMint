@@ -41,8 +41,8 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
   }
 }
 
-export const watchInitERC20Tokens = () => async dispatch => {
-  const callback = notice => dispatch(watchToken(notice))
+export const watchInitERC20Tokens = () => async (dispatch) => {
+  const callback = (notice) => dispatch(watchToken(notice))
 
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
 
@@ -53,7 +53,7 @@ export const watchInitERC20Tokens = () => async dispatch => {
   ])
 }
 
-export const listTokens = () => async dispatch => {
+export const listTokens = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   const list = await dao.getTokens()
   dispatch({ type: TOKENS_LIST, list })

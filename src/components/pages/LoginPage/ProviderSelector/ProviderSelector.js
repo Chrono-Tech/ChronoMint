@@ -8,7 +8,7 @@ import { clearErrors, selectProvider } from 'redux/network/actions'
 
 import styles from '../stylesLoginPage'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
     selectedProviderId: network.selectedProviderId,
@@ -17,8 +17,8 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  selectProvider: providerId => dispatch(selectProvider(providerId)),
+const mapDispatchToProps = (dispatch) => ({
+  selectProvider: (providerId) => dispatch(selectProvider(providerId)),
   clearErrors: () => dispatch(clearErrors()),
 })
 
@@ -49,7 +49,7 @@ class ProviderSelector extends PureComponent {
         disabled={isLoading}
         {...styles.selectField}
       >
-        {providers && providers.map(p => (
+        {providers && providers.map((p) => (
           <MenuItem
             key={p.id}
             value={p.id}

@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
   }
 }
 
-export const getRewardsData = (silent = false) => async dispatch => {
+export const getRewardsData = (silent = false) => async (dispatch) => {
   if (!silent) {
     dispatch({ type: REWARDS_FETCH_START })
   }
@@ -39,7 +39,7 @@ export const getRewardsData = (silent = false) => async dispatch => {
   dispatch({ type: REWARDS_DATA, data })
 }
 
-export const withdrawRevenue = () => async dispatch => {
+export const withdrawRevenue = () => async (dispatch) => {
   dispatch({ type: REWARDS_FETCH_START })
   const dao = await contractsManagerDAO.getRewardsDAO()
   try {
@@ -50,7 +50,7 @@ export const withdrawRevenue = () => async dispatch => {
   return dispatch(getRewardsData())
 }
 
-export const closePeriod = () => async dispatch => {
+export const closePeriod = () => async (dispatch) => {
   dispatch({ type: REWARDS_FETCH_START })
   const dao = await contractsManagerDAO.getRewardsDAO()
   try {
@@ -60,7 +60,7 @@ export const closePeriod = () => async dispatch => {
   }
 }
 
-export const watchInitRewards = () => async dispatch => {
+export const watchInitRewards = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getRewardsDAO()
   dao.watchPeriodClosed(() => dispatch(getRewardsData(true)))
 }

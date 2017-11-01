@@ -32,7 +32,7 @@ describe('operations actions', () => {
     expect(store.getActions()[1].adminCount).toBeGreaterThanOrEqual(2)
   })
 
-  it('should produce pending operation', async resolve => {
+  it('should produce pending operation', async (resolve) => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchConfirmation((notice: OperationNoticeModel) => {
       expect(notice.isRevoked()).toBeFalsy()
@@ -62,7 +62,7 @@ describe('operations actions', () => {
     ])
   })
 
-  it('should produce another operation and confirm it', async resolve => {
+  it('should produce another operation and confirm it', async (resolve) => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchDone((operation: OperationModel) => {
       expect(operation.tx().funcName()).toEqual(TX_SET_REQUIRED_SIGNS)

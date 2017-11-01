@@ -27,7 +27,7 @@ export const WATCHER_TX_END = 'watcher/TX_END'
 
 export const txHandlingFlow = () => (dispatch, getState) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel) => {
-    dispatch({type: WATCHER_TX_SET, tx})
+    dispatch({ type: WATCHER_TX_SET, tx })
 
     const isConfirmed = await dispatch(showConfirmTxModal())
     if (!isConfirmed) {
@@ -50,11 +50,11 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
     const token = getState().get('mainWallet').tokens().get(ETH)
     dispatch(balanceMinus(tx.gas(), token))
-    dispatch({type: WATCHER_TX_SET, tx})
+    dispatch({ type: WATCHER_TX_SET, tx })
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
-    dispatch({type: WATCHER_TX_END, tx})
+    dispatch({ type: WATCHER_TX_END, tx })
     const token = getState().get('mainWallet').tokens().get(ETH)
 
     if (!tx.isGasUsed()) {
@@ -70,7 +70,7 @@ export const txHandlingFlow = () => (dispatch, getState) => {
 }
 
 // for all users on all pages
-export const globalWatcher = () => async dispatch => {
+export const globalWatcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())
 }
 
@@ -88,12 +88,12 @@ export const watcher = () => async (dispatch, getState) => {
 
   dispatch(txHandlingFlow())
 
-  dispatch({type: WATCHER})
+  dispatch({ type: WATCHER })
 }
 
 // only for CBE
-export const cbeWatcher = () => async dispatch => {
-  dispatch({type: WATCHER_CBE})
+export const cbeWatcher = () => async (dispatch) => {
+  dispatch({ type: WATCHER_CBE })
 
   // settings
   dispatch(watchInitCBE())

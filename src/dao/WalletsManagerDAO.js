@@ -44,7 +44,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // ---------- watchers ---------
 
   async watchWalletCreate (callback) {
-    return this._watch(events.WALLET_CREATED, async result => {
+    return this._watch(events.WALLET_CREATED, async (result) => {
       const wallet = await this._createWalletModel(result.args.wallet, false, result.transactionHash)
       callback(wallet, new WalletNoticeModel({
         name: wallet.name(),

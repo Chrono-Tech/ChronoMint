@@ -8,7 +8,7 @@ import styles from '../stylesLoginPage'
 
 import './BackButton.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 

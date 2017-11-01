@@ -18,7 +18,7 @@ import {
   showUploadedFileModal,
 } from '../../../redux/ui/modal'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
     component: LOCDialog,
     props: { loc },
@@ -53,7 +53,7 @@ class Buttons extends PureComponent {
     const { loc } = this.props
     IPFS.getAPI().files.cat(loc.publishedHash(), (e, r) => {
       let data = ''
-      r.on('data', d => {
+      r.on('data', (d) => {
         data += d
       })
       r.on('end', () => {

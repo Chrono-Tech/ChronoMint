@@ -297,7 +297,7 @@ export class BuyTokensDialog extends React.Component {
           </div>
         </div>
         <div styleName='tableBody'>
-          { data.map(item => this.renderRatesRow(item)) }
+          { data.map((item) => this.renderRatesRow(item)) }
         </div>
       </div>
     )

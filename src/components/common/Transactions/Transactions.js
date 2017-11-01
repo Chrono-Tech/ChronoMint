@@ -20,7 +20,7 @@ import { getEtherscanUrl } from '../../../network/settings'
 import globalStyles from '../../../styles'
 import styles from './styles'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   selectedProviderId: state.get('network').selectedProviderId,
 })
@@ -28,7 +28,7 @@ const mapStateToProps = state => ({
 @connect(mapStateToProps, null)
 class Transactions extends PureComponent {
   render () {
-    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     const { transactions, isFetching, endOfList } = this.props
 
     return (
@@ -45,10 +45,10 @@ class Transactions extends PureComponent {
             </TableRow>
           </TableHeader>
           <TableBody displayRowCheckbox={false}>
-            {transactions.sortBy(x => x.get('time'))
+            {transactions.sortBy((x) => x.get('time'))
               .reverse()
               .valueSeq()
-              .map(tx => (
+              .map((tx) => (
                 <TableRow key={tx.id()}>
                   <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
                   <TableRowColumn style={styles.columns.hash}>

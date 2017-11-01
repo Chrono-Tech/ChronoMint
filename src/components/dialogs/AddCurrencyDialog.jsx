@@ -36,18 +36,18 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const {account, profile} = state.get('session')
+  const { account, profile } = state.get('session')
   const wallet = state.get('mainWallet')
   const settings = state.get('settingsERC20Tokens')
 
   // Have no balances
-  const sharedTokens = settings.list.map(token => ({
+  const sharedTokens = settings.list.map((token) => ({
     selected: false,
     token,
   }))
 
   // Have balances
-  const walletTokens = wallet.tokens().map(token => ({
+  const walletTokens = wallet.tokens().map((token) => ({
     selected: true,
     disabled: ['ETH', 'TIME', 'BTC', 'BCC'].indexOf(token.symbol().toUpperCase()) >= 0,
     token,
@@ -56,7 +56,7 @@ function mapStateToProps (state) {
   return {
     account,
     profile,
-    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
+    tokens: sharedTokens.merge(walletTokens).sortBy((item) => item.token.symbol()),
     walletTokens: wallet.tokens(),
     isTokensLoaded: settings.isFetched && wallet.isFetched(),
   }
@@ -196,7 +196,7 @@ export class AddCurrencyDialog extends React.Component {
                 {this.props.isTokensLoaded
                   ? (
                     <div styleName='table'>
-                      { this.state.items.map(item => this.renderRow(item)) }
+                      { this.state.items.map((item) => this.renderRow(item)) }
                     </div>
                   )
                   : (<CircularProgress style={{ marginTop: '25px' }} size={24} thickness={1.5} />)
@@ -229,7 +229,7 @@ export class AddCurrencyDialog extends React.Component {
                 primary
                 onTouchTap={() => this.props.handleSave(
                   this.props.profile,
-                  this.state.items.filter(item => item.selected && !item.disabled).map(item => item.token.address())
+                  this.state.items.filter((item) => item.selected && !item.disabled).map((item) => item.token.address())
                 )}
               />
               <RaisedButton

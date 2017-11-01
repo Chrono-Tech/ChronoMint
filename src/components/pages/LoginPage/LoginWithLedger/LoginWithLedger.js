@@ -33,7 +33,7 @@ const ledgerStates = [{
   errorTip: 'LoginWithLedger.isFetched.errorTip',
 }]
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
     ledger: state.get('ledger'),
@@ -42,9 +42,9 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   startLedgerSync: () => dispatch(startLedgerSync()),
-  stopLedgerSync: isReset => dispatch(stopLedgerSync(isReset)),
+  stopLedgerSync: (isReset) => dispatch(stopLedgerSync(isReset)),
   fetchAccount: () => dispatch(fetchAccount()),
 })
 
@@ -83,7 +83,7 @@ class LoginLedger extends PureComponent {
   renderStates () {
     const { ledger } = this.props
 
-    return ledgerStates.map(item => ledger[item.flag]
+    return ledgerStates.map((item) => ledger[item.flag]
       ? (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagDone' className='material-icons'>done</div>

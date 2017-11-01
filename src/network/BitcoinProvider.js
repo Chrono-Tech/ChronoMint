@@ -9,8 +9,8 @@ export class BitcoinProvider extends EventEmitter {
   constructor (selectNode) {
     super()
     this._selectNode = selectNode
-    this._handleTransaction = tx => this.onTransaction(tx)
-    this._handleBalance = balance => this.onBalance(balance)
+    this._handleTransaction = (tx) => this.onTransaction(tx)
+    this._handleBalance = (balance) => this.onBalance(balance)
   }
 
   isInitialized () {

@@ -4,7 +4,7 @@ import wallet from 'ethereumjs-wallet'
 import { createBTCEngine, createBCCEngine } from './BitcoinUtils'
 import Web3Utils from './Web3Utils'
 
-export const createEthereumWallet = privateKey => wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+export const createEthereumWallet = (privateKey) => wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
 
 export const validatePrivateKey = (privateKey: string): boolean => {
   try {

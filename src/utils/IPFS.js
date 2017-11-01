@@ -42,7 +42,7 @@ class IPFS {
         const hash = response.toJSON().multihash
         resolve(hash)
       })
-    }).catch(e => {
+    }).catch((e) => {
       // eslint-disable-next-line
       console.warn('Something wrong with infura, check http://status.infura.io/')
       throw e
@@ -59,7 +59,7 @@ class IPFS {
       return null
     }
 
-    return new Promise(async resolve => {
+    return new Promise(async (resolve) => {
       try {
         // TODO @bshevchenko: this is temporarily, to limit time of data downloading
         setTimeout(() => {
@@ -80,7 +80,7 @@ class IPFS {
 
   // TODO @dkchv: remvoe from ipfs to image validator
   getImageDimensions (file) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const URL: webkitURL = window.URL || window.webkitURL
       const img = new Image()
       img.onload = () => {
@@ -155,7 +155,7 @@ class IPFS {
   }
 
   getRawData (file: FileModel) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       // TODO @dkchv: add timeout
       const reader = new window.FileReader()
       reader.onload = () => resolve(reader.result)
@@ -212,13 +212,13 @@ class IPFS {
 
   async uploadCollection (fileCollection: FileCollection, config, callback) {
     let updatedCollection = fileCollection
-    const files = fileCollection.files().filter(item => !(item.uploaded() || item.hasErrors()))
+    const files = fileCollection.files().filter((item) => !(item.uploaded() || item.hasErrors()))
     const promises = []
-    files.forEach(file => promises.push(this.uploadFile(file, config, callback)))
+    files.forEach((file) => promises.push(this.uploadFile(file, config, callback)))
     const result = promises
       ? await Promise.all(promises)
       : []
-    result.forEach(file => {
+    result.forEach((file) => {
       updatedCollection = updatedCollection.update(file)
     })
 

@@ -29,9 +29,9 @@ describe('settings cbe actions', () => {
     expect(list.get(address).address()).toEqual(accounts[0])
   })
 
-  it('should add CBE', async resolve => {
+  it('should add CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(notice => {
+    await dao.watchCBE((notice) => {
       expect(store.getActions()).toEqual([
         { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])
@@ -65,9 +65,9 @@ describe('settings cbe actions', () => {
       }])
   }))
 
-  it('should revoke CBE', async resolve => {
+  it('should revoke CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(notice => {
+    await dao.watchCBE((notice) => {
       expect(store.getActions()).toEqual([
         { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])

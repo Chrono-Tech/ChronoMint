@@ -110,7 +110,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
       if (btcDAO.isInitialized()) {
         try {
-          const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
+          const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
           const btcToken = new TokenModel({
             dao: btcDAO,
             name: btcDAO.getName(),
@@ -129,7 +129,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
       if (bccDAO.isInitialized()) {
         try {
-          const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
+          const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
           const bccToken = new TokenModel({
             dao: bccDAO,
             name: bccDAO.getName(),
@@ -260,10 +260,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   watchModify (callback, account) {
-    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), {from: account})
+    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), { from: account })
   }
 
   watchRemove (callback, account) {
-    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), {from: account})
+    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
   }
 }

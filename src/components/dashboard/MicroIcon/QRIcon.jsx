@@ -25,7 +25,7 @@ export default class QRIcon extends React.Component {
       <div styleName='root'>
         <a
           styleName='micro'
-          onTouchTap={e => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
+          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
           <i className='material-icons'>center_focus_weak</i>
         </a>

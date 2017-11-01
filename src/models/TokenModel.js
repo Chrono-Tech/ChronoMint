@@ -127,7 +127,7 @@ export default class TokenModel extends abstractFetchingModel({
 }
 
 // TODO @bshevchenko: MINT-315 add max length for bytes32 variables
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))

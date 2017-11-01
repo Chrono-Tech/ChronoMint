@@ -36,7 +36,7 @@ class CBEModel extends abstractFetchingModel({
   }
 }
 
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))

@@ -8,7 +8,7 @@ import { exchangeCurrency } from 'redux/exchange/actions'
 import ExchangeForm from './ExchangeForm'
 import globalStyles from '../../../styles'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const exchange = state.get('exchange')
   const wallet = state.get('mainWallet')
   return {
@@ -17,7 +17,7 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   exchangeCurrency: (operation, amount, currency) => dispatch(exchangeCurrency(operation, amount, currency)),
 })
 
@@ -29,7 +29,7 @@ class ExchangeWidget extends PureComponent {
     isFetched: PropTypes.bool,
   }
 
-  handleSubmit = values => {
+  handleSubmit = (values) => {
     const currency = values.get('currency')
     const operation = values.get('buy')
     const amount = values.get('amount')

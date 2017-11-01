@@ -30,7 +30,6 @@ export default class AddPlatformDialog extends React.Component {
     closeModal: PropTypes.func,
   }
 
-
   handleSubmitSuccess = (/*values*/) => {
     this.props.closeModal()
     // eslint-disable-next-line

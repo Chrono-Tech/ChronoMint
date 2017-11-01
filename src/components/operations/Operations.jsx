@@ -54,8 +54,8 @@ export default class PendingOperations extends PureComponent {
   }
 
   render () {
-    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
-    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
       <div styleName='panel'>
@@ -203,8 +203,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listOperations()),
-    handleConfirm: operation => dispatch(confirmOperation(operation)),
-    handleRevoke: operation => dispatch(revokeOperation(operation)),
+    handleConfirm: (operation) => dispatch(confirmOperation(operation)),
+    handleRevoke: (operation) => dispatch(revokeOperation(operation)),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations()),
     openSettings: async () => {
       await dispatch(setupOperationsSettings())

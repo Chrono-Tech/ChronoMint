@@ -5,7 +5,7 @@ import React from 'react'
 
 import globalStyles from '../styles'
 
-const PageBase = props => {
+const PageBase = (props) => {
   const { title, navigation } = props
 
   return (

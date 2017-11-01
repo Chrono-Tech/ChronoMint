@@ -30,7 +30,6 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     return I18n.t('notices.operations.title')
   }
 
-
   _status () {
     if (this.operation().isCancelled()) {
       return CANCELLED

@@ -82,7 +82,7 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {menu.user.map(item => (
+            {menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'
@@ -112,7 +112,7 @@ class HeaderPartial extends React.Component {
            </IconButton>
           */}
           {this.renderStatus()}
-          <div styleName='actionsEntry' onTouchTap={e => this.handleNotificationsOpen(e)}>
+          <div styleName='actionsEntry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
             {transactionsCount
               ? (
                 <div styleName='entryOverlay'>
@@ -139,7 +139,7 @@ class HeaderPartial extends React.Component {
             }
           </div>
           <Popover
-            ref={el => {
+            ref={(el) => {
               this.profilePopover = el
             }}
             className='popover popover-overflow-x-hidden'
@@ -166,7 +166,7 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='right'>
-          <div styleName='rightIcon' onTouchTap={e => this.handleProfileOpen(e)}>
+          <div styleName='rightIcon' onTouchTap={(e) => this.handleProfileOpen(e)}>
             <IPFSImage
               styleName='rightIconContent'
               multihash={this.props.profile.icon()}
@@ -175,7 +175,7 @@ class HeaderPartial extends React.Component {
             />
           </div>
           <Popover
-            ref={el => {
+            ref={(el) => {
               this.profilePopover = el
             }}
             styleName='popover'
@@ -215,8 +215,8 @@ class HeaderPartial extends React.Component {
   }
 
   renderNotifications () {
-    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
-    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
+    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
 
     return (
       <div styleName='notifications'>
@@ -231,7 +231,7 @@ class HeaderPartial extends React.Component {
               </div>
               <div styleName='sectionBody sectionBodyDark'>
                 <div styleName='bodyTable'>
-                  {transactionsList.map(item => this.renderTransaction(item))}
+                  {transactionsList.map((item) => this.renderTransaction(item))}
                 </div>
               </div>
             </div>
@@ -248,7 +248,7 @@ class HeaderPartial extends React.Component {
               ? (<p style={{ marginBottom: '10px' }}>No notifications</p>)
               : (
                 <div styleName='bodyTable'>
-                  {noticesList.map(item => this.renderNotice(item))}
+                  {noticesList.map((item) => this.renderNotice(item))}
                 </div>
               )
             }
@@ -378,8 +378,8 @@ class HeaderPartial extends React.Component {
             }
             <div styleName='info-balances'>
               {items
-                .filter(item => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
-                .map(item => this.renderBalance(item))}
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>
@@ -485,7 +485,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: data => dispatch(modalsOpen({
+    handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data,
     })),

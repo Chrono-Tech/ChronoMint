@@ -449,7 +449,7 @@ export default {
     transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
     wallet: {
       walletName: {
-        haveToBeString: 'Have to be string'
+        haveToBeString: 'Have to be string',
       },
     },
   },

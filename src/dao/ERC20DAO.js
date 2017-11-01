@@ -79,7 +79,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   totalSupply (): BigNumber {
-    return this._call('totalSupply').then(r => this.removeDecimals(r))
+    return this._call('totalSupply').then((r) => this.removeDecimals(r))
   }
 
   async getAccountBalance (account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
@@ -170,7 +170,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
 
-    const callback = tx => promises.push(this._getTxModel(tx, account))
+    const callback = (tx) => promises.push(this._getTxModel(tx, account))
     const promises = []
     result.forEach(callback)
     result2.forEach(callback)

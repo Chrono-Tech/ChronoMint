@@ -21,8 +21,8 @@ const initialState = {
   isDownloaded: false,
 }
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
   clearErrors: () => dispatch(clearErrors()),
 })
 

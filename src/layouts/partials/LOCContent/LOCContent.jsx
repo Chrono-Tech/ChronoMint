@@ -14,9 +14,9 @@ import Search from 'components/locs/Search'
 
 import './LOCContent.scss'
 
-const mapStateToProps = state => state.get('locs')
+const mapStateToProps = (state) => state.get('locs')
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getLOCs: () => dispatch(getLOCs()),
 })
 
@@ -49,8 +49,8 @@ class LOCContent extends React.Component {
 
           <div styleName='grid'>
             {locs
-              .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
-              .sortBy(loc => -loc.createDate())
+              .filter((loc) => loc.name().toLowerCase().indexOf(filter) > -1)
+              .sortBy((loc) => -loc.createDate())
               .map((loc: LOCModel, key) => (
                 <div key={key} styleName='item'>
                   <LOCItem loc={loc} />

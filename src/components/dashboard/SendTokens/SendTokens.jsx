@@ -33,8 +33,8 @@ class SendTokens extends PureComponent {
   }
 
   handleSubmit (values) {
-    const {wallet, resetForm} = this.props
-    const {action, symbol, amount, recipient} = values.toJS()
+    const { wallet, resetForm } = this.props
+    const { action, symbol, amount, recipient } = values.toJS()
     const token = wallet.tokens().get(symbol)
 
     resetForm()
@@ -50,7 +50,7 @@ class SendTokens extends PureComponent {
   }
 
   render () {
-    const {wallet} = this.props
+    const { wallet } = this.props
     const initialValues = {}
     if (wallet.tokens().size > 0) {
       initialValues.symbol = wallet.tokens().first().symbol()

@@ -22,7 +22,7 @@ export class ModalDialog extends React.Component {
       <div
         styleName='root'
         className={classnames('ModalDialog__backdrop', this.props.className)}
-        onTouchTap={e => {
+        onTouchTap={(e) => {
           e.stopPropagation()
           this.handleBackdropTap(e)
         }}
@@ -30,7 +30,7 @@ export class ModalDialog extends React.Component {
         <div
           styleName='dialog'
           className='ModalDialog__dialog'
-          onTouchTap={e => {
+          onTouchTap={(e) => {
             e.stopPropagation()
           }}
         >
@@ -40,7 +40,7 @@ export class ModalDialog extends React.Component {
           <a
             styleName='close'
             className='ModalDialog__close'
-            onTouchTap={e => {
+            onTouchTap={(e) => {
               e.stopPropagation()
               this.handleBackdropTap(e)
             }}

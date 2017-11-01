@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {connect} from 'react-redux'
-import {CSSTransitionGroup} from 'react-transition-group'
+import { connect } from 'react-redux'
+import { CSSTransitionGroup } from 'react-transition-group'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import {modalsClose} from 'redux/modals/actions'
+import { modalsClose } from 'redux/modals/actions'
 import AssetManagerForm from './AssetManagerForm'
 
 const TRANSITION_TIMEOUT = 250

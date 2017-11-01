@@ -24,7 +24,7 @@ const watchMarket = (dispatch, getState) => async () => {
 export const watchInitMarket = () => (dispatch, getState) => {
   try {
     MarketSocket.init()
-    MarketSocket.on('update', update => {
+    MarketSocket.on('update', (update) => {
       let { rates, lastMarket } = getState().get('market')
       if (!lastMarket || !rates) {
         return
@@ -72,13 +72,13 @@ export const watchInitMarket = () => (dispatch, getState) => {
   }
 }
 
-export const watchStopMarket = () => dispatch => {
+export const watchStopMarket = () => (dispatch) => {
   if (timerId) {
     clearInterval(timerId)
   }
   dispatch({ type: MARKET_INIT, isInited: false })
 }
 
-export const addMarketToken = (symbol: string) => dispatch => {
+export const addMarketToken = (symbol: string) => (dispatch) => {
   dispatch({ type: MARKET_ADD_TOKEN, symbol })
 }

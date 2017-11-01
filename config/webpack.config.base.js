@@ -1,4 +1,3 @@
-
 let path = require('path')
 
 process.traceDeprecation = true
@@ -8,7 +7,7 @@ process.traceDeprecation = true
 let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 let relativePath = isInNodeModules ? '../../..' : '..'
 
-let isInDebugMode = process.argv.some(arg =>
+let isInDebugMode = process.argv.some((arg) =>
   arg.indexOf('--debug-template') > -1
 )
 
@@ -21,7 +20,7 @@ let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
-const buildConfig = factory => {
+const buildConfig = (factory) => {
 
   let {
     entry,

@@ -152,7 +152,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   watchTxEnd (hash): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._watch(EVENT_DONE, () => resolve(true), { hash })
       this._watch(EVENT_CANCELLED, () => resolve(false), { hash })
     })

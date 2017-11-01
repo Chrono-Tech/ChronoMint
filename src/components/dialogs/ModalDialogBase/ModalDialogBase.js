@@ -10,7 +10,7 @@ import ModalDialog from '../ModalDialog'
 
 import './ModalDialogBase.scss'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   closeModal: () => dispatch(modalsClose()),
 })
 

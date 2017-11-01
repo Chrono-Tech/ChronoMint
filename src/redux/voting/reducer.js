@@ -47,7 +47,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         list: state.list
-          .filter(poll => {
+          .filter((poll) => {
             const hash = poll.transactionHash()
             return hash === null || hash !== action.transactionHash
           }),

@@ -15,7 +15,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     this._subscriptions = {}
     this._missedActions = []
 
-    this._handleSubscibe = this.addListener('subscribe', async address => {
+    this._handleSubscibe = this.addListener('subscribe', async (address) => {
       if (this._socket) {
         try {
           await this._api.post('addr', {
@@ -25,7 +25,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             this._subscriptions[`balance:${address}`] = this._client.subscribe(
               `${socket.channels.balance}.${address}`,
               // `${socket.channels.balance}.*`,
-              message => {
+              (message) => {
                 try {
                   const data = JSON.parse(message.body)
                   this.trace('Address Balance', data)
@@ -48,7 +48,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       }
     })
 
-    this._handleUnsubscribe = this.addListener('unsubscribe', async address => {
+    this._handleUnsubscribe = this.addListener('unsubscribe', async (address) => {
       if (this._socket) {
         try {
           await this._api.delete('addr', {
@@ -80,7 +80,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           this.trace('Handle missed')
           this.handleMissed()
         },
-        e => {
+        (e) => {
           this.trace('Failed to connect. Retry after 5 seconds', e)
           setTimeout(() => {
             this.connect()
@@ -162,8 +162,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   _createTxModel (tx, account): TxModel {
-    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map(input => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map(output => output.scriptPubKey.addresses.filter(a => a !== account).join(',')).join(',')
+    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
+    const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
@@ -182,7 +182,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       to,
       value,
       fee: new BigNumber(tx.fee),
-      credited: tx.isCoinBase || !tx.inputs.filter(input => input.addresses.indexOf(account) >= 0).length,
+      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
     })
     return txmodel
   }

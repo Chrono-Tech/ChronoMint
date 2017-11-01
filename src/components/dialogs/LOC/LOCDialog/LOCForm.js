@@ -17,11 +17,11 @@ import validate from './validate'
 
 import './LOCForm.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   locs: state.get('locs').locs,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
   updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
   removeLOC: (loc: LOCModel) => dispatch(removeLOC(loc)),

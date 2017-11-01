@@ -15,5 +15,4 @@ Preloader.propTypes = {
   size: PropTypes.number,
 }
 
-
 export default Preloader

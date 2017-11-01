@@ -51,7 +51,7 @@ describe('wallet actions', () => {
   })
 
   it('should init watch', async () => {
-    const get = (profileTokens = [], tokens = new Immutable.Map()) => key => {
+    const get = (profileTokens = [], tokens = new Immutable.Map()) => (key) => {
       if (key === 'session') {
         return { profile: new ProfileModel({ tokens: profileTokens }) }
       }
@@ -149,7 +149,7 @@ describe('wallet actions', () => {
 
   it('should deposit TIME and init TIME deposit', async () => {
     getStateTIME = {
-      get: key => {
+      get: (key) => {
         if (key === 'wallet') {
           return { tokens: new Immutable.Map({ [a.TIME]: time }) }
         }

@@ -33,5 +33,4 @@ ColoredSection.propTypes = {
   foot: PropTypes.node,
 }
 
-
 export default ColoredSection

@@ -70,7 +70,7 @@ export class Web3Provider {
       : this._web3instance = Web3ClassOrInstance
 
     const web3 = this._web3instance
-    promisifyFunctions.forEach(func => {
+    promisifyFunctions.forEach((func) => {
       this[func] = promisify(web3.eth[func])
     })
     // hack due to web3.isConnected is in sync mode only
@@ -78,7 +78,7 @@ export class Web3Provider {
   }
 
   _getWeb3Promise () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._resolveCallback = () => {
         // for debug
         window.web3instance = this._web3instance
@@ -119,8 +119,8 @@ export class Web3Provider {
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
-    this._resetCallbacks.forEach(callback => callback())
-    this._permanentResetCallbacks.forEach(callback => callback())
+    this._resetCallbacks.forEach((callback) => callback())
+    this._permanentResetCallbacks.forEach((callback) => callback())
     this._resetCallbacks = []
   }
 }

@@ -131,8 +131,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listCBE()),
-    revoke: cbe => dispatch(revokeCBE(cbe)),
-    form: cbe => dispatch(modalsOpen({
+    revoke: (cbe) => dispatch(revokeCBE(cbe)),
+    form: (cbe) => dispatch(modalsOpen({
       component: CBEAddressDialog,
       props: {
         initialValues: cbe || new CBEModel(),

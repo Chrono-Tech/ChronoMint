@@ -10,8 +10,8 @@ import { selectNetwork } from 'redux/network/actions'
 
 import AccountSelector from '../AccountSelector/AccountSelector'
 
-const mapDispatchToProps = dispatch => ({
-  selectNetwork: networkId => dispatch(selectNetwork(networkId)),
+const mapDispatchToProps = (dispatch) => ({
+  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
 })
 
 @connect(null, mapDispatchToProps)

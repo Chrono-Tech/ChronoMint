@@ -41,7 +41,7 @@ export class CopyDialog extends React.Component {
               <div>
                 {this.props.description}
               </div>
-              <TextField ref={el => { this.inputElement = el }} name='value' value={this.props.copyValue} fullWidth floatingLabelText={this.props.controlTitle} />
+              <TextField ref={(el) => { this.inputElement = el }} name='value' value={this.props.copyValue} fullWidth floatingLabelText={this.props.controlTitle} />
             </div>
             <div styleName='footer'>
               <RaisedButton primary label='Close' onTouchTap={() => this.props.onClose()} />

@@ -12,7 +12,7 @@ const customOpenQr = (data, cancel) => {
   QRUtil.openQr(data, cancel)
 }
 
-export const decodeMNIDaddress = mnidAddress => isMNID(mnidAddress) ? decode(mnidAddress) : 'null'
+export const decodeMNIDaddress = (mnidAddress) => isMNID(mnidAddress) ? decode(mnidAddress) : 'null'
 
 const uportProvider = new Connect('ChronoBankTest', {
   uriHandler: customOpenQr,

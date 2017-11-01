@@ -34,7 +34,7 @@ export class AssetManager extends PureComponent {
   }
 
   renderHead () {
-    const {usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading} = this.props
+    const { usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading } = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>

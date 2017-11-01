@@ -18,7 +18,7 @@ export default class MainWallet extends abstractFetchingModel({
   isMultisig: false,
   isMainWallet: true,
   // TODO @dkchv: is a part of wallet ?
-  isTIMERequired: true
+  isTIMERequired: true,
 }) {
 
   address () {

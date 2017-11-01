@@ -30,11 +30,11 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-export const loading = (isLoading = true) => dispatch => {
+export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
 }
 
-export const checkNetwork = () => async dispatch => {
+export const checkNetwork = () => async (dispatch) => {
   dispatch(loading())
   const isDeployed = await contractsManagerDAO.isDeployed()
   if (!isDeployed) {
@@ -50,7 +50,7 @@ export const checkNetwork = () => async dispatch => {
 // think about refactoring and moving activators to monitor/actions
 // and MonitorService, in such case move there also checkNetwork and
 // checkMetaMask actions
-export const checkTestRPC = providerUrl => async dispatch => {
+export const checkTestRPC = (providerUrl) => async (dispatch) => {
   // http only
   if (window.location.protocol === 'https:') {
     return false
@@ -69,7 +69,7 @@ export const checkTestRPC = providerUrl => async dispatch => {
   return true
 }
 
-export const checkMetaMask = () => async dispatch => {
+export const checkMetaMask = () => async (dispatch) => {
   let isMetaMask
   try {
     isMetaMask = await metaMaskResolver()
@@ -101,28 +101,28 @@ export const getProviderSettings = () => (dispatch, getState) => {
   }
 }
 
-export const selectNetwork = selectedNetworkId => dispatch => {
+export const selectNetwork = (selectedNetworkId) => (dispatch) => {
   dispatch({ type: NETWORK_SET_NETWORK, selectedNetworkId })
 }
 
-export const selectProvider = selectedProviderId => dispatch => {
+export const selectProvider = (selectedProviderId) => (dispatch) => {
   dispatch({ type: NETWORK_SET_NETWORK, networkId: null })
   dispatch({ type: NETWORK_SET_PROVIDER, selectedProviderId })
 }
 
-export const addError = error => dispatch => {
+export const addError = (error) => (dispatch) => {
   dispatch({ type: NETWORK_ADD_ERROR, error })
 }
 
-export const clearErrors = () => dispatch => {
+export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
 }
 
-export const selectAccount = selectedAccount => dispatch => {
+export const selectAccount = (selectedAccount) => (dispatch) => {
   dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
 }
 
-export const loadAccounts = () => async dispatch => {
+export const loadAccounts = () => async (dispatch) => {
   dispatch(loading())
   dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
   try {
@@ -138,7 +138,7 @@ export const loadAccounts = () => async dispatch => {
   }
 }
 
-export const loginUport = () => async dispatch => {
+export const loginUport = () => async (dispatch) => {
   dispatch(loading())
   dispatch(clearErrors())
   web3Provider.setWeb3(uportProvider.getWeb3())
@@ -150,14 +150,14 @@ export const loginUport = () => async dispatch => {
   dispatch(selectAccount(address))
 }
 
-export const restoreLocalSession = account => async dispatch => {
+export const restoreLocalSession = (account) => async (dispatch) => {
   dispatch(selectProvider(LOCAL_ID))
   dispatch(selectNetwork(LOCAL_ID))
   await dispatch(loadAccounts())
   dispatch(selectAccount(account))
 }
 
-export const checkLocalSession = (account, providerURL) => async dispatch => {
+export const checkLocalSession = (account, providerURL) => async (dispatch) => {
   const isTestRPC = await dispatch(checkTestRPC(providerURL))
   // testRPC must be exists
   if (!isTestRPC || !account) {
@@ -203,7 +203,7 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
   dispatch(createSession(account))
 }
 
-export const destroyNetworkSession = (lastURL, isReset = true) => async dispatch => {
+export const destroyNetworkSession = (lastURL, isReset = true) => async (dispatch) => {
   ls.setLastURL(lastURL)
   ls.destroySession()
   await AbstractContractDAO.stopWholeWatching()

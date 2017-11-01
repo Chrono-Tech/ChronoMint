@@ -15,7 +15,6 @@ import './Markup.scss'
 
 // import 'styles/globals/index.global.css'
 
-
 export class Markup extends React.Component {
   static propTypes = {
     isCBE: PropTypes.bool,

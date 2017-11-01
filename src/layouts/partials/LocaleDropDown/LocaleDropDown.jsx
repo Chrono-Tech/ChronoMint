@@ -40,7 +40,7 @@ export default class LocaleDropDown extends React.Component {
         value={this.props.locale}
         onChange={(e, i, value) => this.props.handleChangeLocale(value)}
       >
-        {locales.map(item =>
+        {locales.map((item) =>
           <MenuItem value={item.name} key={item.name} primaryText={item.title} />)}
       </DropDownMenu>
     )
@@ -55,7 +55,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleChangeLocale: locale => {
+    handleChangeLocale: (locale) => {
       changeMomentLocale(locale, dispatch)
     },
   }

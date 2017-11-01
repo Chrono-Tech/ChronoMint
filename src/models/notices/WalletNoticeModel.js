@@ -23,7 +23,7 @@ export const statuses = {
 export default class WalletNoticeModel extends abstractNoticeModel({
   action: null,
   name: null,
-  amount: null
+  amount: null,
 }) {
 
   icon () {
@@ -39,14 +39,14 @@ export default class WalletNoticeModel extends abstractNoticeModel({
     const amount = this.get('amount')
     return amount
       ? [
-        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` }
+        { label: I18n.t('notices.locs.details.amount'), value: `${amount}` },
       ]
       : null
   }
 
   message () {
     return I18n.t(this.get('action'), {
-      name: this.get('name')
+      name: this.get('name'),
     })
   }
 }

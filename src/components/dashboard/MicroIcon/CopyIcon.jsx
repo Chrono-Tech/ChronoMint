@@ -26,7 +26,7 @@ export default class CopyIcon extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        <a styleName='micro' onTouchTap={e => { e.preventDefault(); this.handleCopy() }}>
+        <a styleName='micro' onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
           <i className='material-icons'>content_copy</i>
         </a>
       </div>

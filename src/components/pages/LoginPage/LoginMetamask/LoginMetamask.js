@@ -12,14 +12,14 @@ import { addError, loadAccounts, selectNetwork } from 'redux/network/actions'
 import AccountSelector from '../AccountSelector/AccountSelector'
 import styles from '../stylesLoginPage'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   providers: state.get('network').providers,
 })
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
-  selectNetwork: networkId => dispatch(selectNetwork(networkId)),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
+  selectNetwork: (networkId) => dispatch(selectNetwork(networkId)),
   loadAccounts: () => dispatch(loadAccounts()),
 })
 

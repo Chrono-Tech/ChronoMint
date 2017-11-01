@@ -25,7 +25,7 @@ export const getUsersPlatforms = () => async (dispatch, getState) => {
   const account = getState().get('session').account
   const platformManagerDao = await contractManager.getPlatformManagerDAO()
   const usersPlatforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
-  dispatch({type: GET_USER_PLATFORMS, payload: {usersPlatforms}})
+  dispatch({ type: GET_USER_PLATFORMS, payload: { usersPlatforms } })
 }
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   const account = getState().get('session').account
@@ -34,7 +34,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
 
-  dispatch({type: GET_ASSETS_MANAGER_COUNTS, payload: {platforms, assets, managers}})
+  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers } })
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
@@ -42,7 +42,7 @@ export const getPlatforms = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get('assetsManager'))
   // const platforms = await dao.getPlatformsMetadataForUser(account, dispatch, getState().get('assetsManager'))
-  dispatch({type: GET_PLATFORMS, payload: {platforms}})
+  dispatch({ type: GET_PLATFORMS, payload: { platforms } })
 }
 
 export const getTokens = () => async (dispatch, getState) => {
@@ -54,11 +54,11 @@ export const getTokens = () => async (dispatch, getState) => {
   if (Object.keys(assets).length) {
     tokensMap = await ERC20ManagerDAO.getTokensByAddresses(Object.keys(assets), false, account, assets)
   }
-  dispatch({type: GET_TOKENS, payload: {tokensMap, assets}})
-  return {tokensMap, assets}
+  dispatch({ type: GET_TOKENS, payload: { tokensMap, assets } })
+  return { tokensMap, assets }
 }
 
-export const createPlatform = values => async dispatch => {
+export const createPlatform = (values) => async (dispatch) => {
   try {
     const dao = await contractManager.getPlatformManagerDAO()
     if (values.get('alreadyHave')) {
@@ -72,7 +72,7 @@ export const createPlatform = values => async dispatch => {
   }
 }
 
-export const detachPlatform = platform => async dispatch => {
+export const detachPlatform = (platform) => async (dispatch) => {
   const dao = await contractManager.getPlatformManagerDAO()
   const result = await dao.detachPlatform(platform)
 
@@ -81,12 +81,12 @@ export const detachPlatform = platform => async dispatch => {
   }
 }
 
-export const watchPlatformManager = account => async (dispatch) => {
+export const watchPlatformManager = (account) => async (dispatch) => {
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   platformManagerDAO.watchCreatePlatform(account, dispatch)
 }
 
-export const createAsset = values => async dispatch => {
+export const createAsset = (values) => async (dispatch) => {
   try {
     const {
       amount,
@@ -115,14 +115,14 @@ export const createAsset = values => async dispatch => {
   }
 }
 
-export const getManagersForAssetSymbol = symbol => async dispatch => {
-  dispatch({type: GET_MANAGERS_FOR_TOKEN_LOADING})
+export const getManagersForAssetSymbol = (symbol) => async (dispatch) => {
+  dispatch({ type: GET_MANAGERS_FOR_TOKEN_LOADING })
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const managersForAssetSymbol = await assetsManagerDAO.getManagersForAssetSymbol(symbol)
-  dispatch({type: GET_MANAGERS_FOR_TOKEN, payload: {symbol, managersForAssetSymbol: managersForAssetSymbol}})
+  dispatch({ type: GET_MANAGERS_FOR_TOKEN, payload: { symbol, managersForAssetSymbol: managersForAssetSymbol } })
 }
 
-export const removeManager = (token: TokenModel, manager: String) => async dispatch => {
+export const removeManager = (token: TokenModel, manager: String) => async (dispatch) => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
     await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
@@ -133,7 +133,7 @@ export const removeManager = (token: TokenModel, manager: String) => async dispa
   }
 }
 
-export const addManager = (token: TokenModel, manager: String) => async dispatch => {
+export const addManager = (token: TokenModel, manager: String) => async (dispatch) => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
     await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), manager)
@@ -144,7 +144,7 @@ export const addManager = (token: TokenModel, manager: String) => async dispatch
   }
 }
 
-export const reissueAsset = (token: TokenModel, amount: number) => async dispatch => {
+export const reissueAsset = (token: TokenModel, amount: number) => async (dispatch) => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
     await chronoBankPlatformDAO.reissueAsset(token.symbol(), amount)
@@ -155,7 +155,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async dispatc
   }
 }
 
-export const revokeAsset = (token: TokenModel, amount: number) => async dispatch => {
+export const revokeAsset = (token: TokenModel, amount: number) => async (dispatch) => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
     await chronoBankPlatformDAO.revokeAsset(token.symbol(), amount)
@@ -166,11 +166,11 @@ export const revokeAsset = (token: TokenModel, amount: number) => async dispatch
   }
 }
 
-export const isReissuable = (token: TokenModel) => async dispatch => {
+export const isReissuable = (token: TokenModel) => async (dispatch) => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
     const res = await chronoBankPlatformDAO.isReissuable(token.symbol())
-    dispatch({type: SET_IS_REISSUABLE, payload: {symbol: token.symbol(), isReissuable: res}})
+    dispatch({ type: SET_IS_REISSUABLE, payload: { symbol: token.symbol(), isReissuable: res } })
   }
   catch (e) {
     // eslint-disable-next-line
@@ -178,20 +178,20 @@ export const isReissuable = (token: TokenModel) => async dispatch => {
   }
 }
 
-export const setTotalSupply = tx => (dispatch, getState) => {
+export const setTotalSupply = (tx) => (dispatch, getState) => {
   const symbol = Web3Converter.bytesToString(tx.args.symbol)
   const value = tx.args.value
   const event = tx.event
   const totalSupply = getState().get('assetsManager').tokensMap.getIn([symbol, 'totalSupply'])
   if (totalSupply && event === 'Issue') {
-    dispatch({type: SET_TOTAL_SUPPLY, payload: {symbol, totalSupply: totalSupply.plus(value)}})
+    dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.plus(value) } })
   } else if (totalSupply && event === 'Revoke') {
-    dispatch({type: SET_TOTAL_SUPPLY, payload: {symbol, totalSupply: totalSupply.minus(value)}})
+    dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.minus(value) } })
   }
 }
 
 export const getTransactions = () => async (dispatch, getState) => {
-  dispatch({type: GET_TRANSACTIONS_START})
+  dispatch({ type: GET_TRANSACTIONS_START })
   let platforms = getState().get('assetsManager')['platformsList']
   const account = getState().get('session').account
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
@@ -201,17 +201,17 @@ export const getTransactions = () => async (dispatch, getState) => {
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const transactionsList = await assetsManagerDAO.getTransactions(account)
 
-  dispatch({type: GET_TRANSACTIONS_DONE, payload: {transactionsList: transactionsList}})
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: transactionsList } })
 }
 
-export const setTx = tx => async (dispatch, getState) => {
+export const setTx = (tx) => async (dispatch, getState) => {
   const account = getState().get('session').account
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
-  dispatch({type: GET_TRANSACTIONS_DONE, payload: {transactionsList: [txModel]}})
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [txModel] } })
 }
 
-export const setManagers = tx => async (dispatch, getState) => {
+export const setManagers = (tx) => async (dispatch, getState) => {
   try {
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
     const account = getState().get('session').account
@@ -219,7 +219,7 @@ export const setManagers = tx => async (dispatch, getState) => {
     let selectedToken = getState().get('assetsManager')['selectedToken']
     if (!tokensMap.get(symbol) || tx.args.from === account) {
       if (selectedToken === symbol) {
-        dispatch({type: SELECT_TOKEN, payload: {selectedToken: null}})
+        dispatch({ type: SELECT_TOKEN, payload: { selectedToken: null } })
       }
       dispatch(getAssetsManagerData())
       dispatch(getTokens())
@@ -234,9 +234,9 @@ export const setManagers = tx => async (dispatch, getState) => {
           managersList.push(to)
         }
       } else {
-        managersList = managersList.filter(manager => manager !== from)
+        managersList = managersList.filter((manager) => manager !== from)
       }
-      dispatch({type: SET_NEW_MANAGERS_LIST, payload: {managers, symbol, managersList}})
+      dispatch({ type: SET_NEW_MANAGERS_LIST, payload: { managers, symbol, managersList } })
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -245,7 +245,7 @@ export const setManagers = tx => async (dispatch, getState) => {
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
-  dispatch({type: GET_ASSETS_MANAGER_COUNTS_START})
+  dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getUsersPlatforms())
   dispatch(getAssetsManagerData())
   dispatch(getTransactions())
@@ -254,7 +254,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
   const platformTokenExtensionGatewayManagerEmitterDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
   const account = getState().get('session').account
-  const issueCallback = tx => {
+  const issueCallback = (tx) => {
     const tokens = getState().get('assetsManager').tokensMap.keySeq().toArray()
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
     if (tokens.indexOf(symbol) + 1) {
@@ -262,21 +262,20 @@ export const watchInitTokens = () => async (dispatch, getState) => {
       dispatch(setTx(tx))
     }
   }
-  const managersCallback = tx => {
+  const managersCallback = (tx) => {
     dispatch(setManagers(tx))
     if (tx.args.from !== account && tx.args.to !== account) return
     dispatch(setTx(tx))
   }
-  const assetCallback = async tx => {
+  const assetCallback = async (tx) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
     let tokensMap = new Immutable.Map()
     if (Object.keys(assets).length) {
       tokensMap = await ERC20ManagerDAO.getTokensByAddresses([tx.args.token], false, account, assets)
     }
-    dispatch({type: SET_TOKEN, payload: {tokensMap, assets}})
+    dispatch({ type: SET_TOKEN, payload: { tokensMap, assets } })
     dispatch(setTx(tx))
   }
-
 
   return Promise.all([
     chronoBankPlatformDAO.watchIssue(issueCallback),
@@ -286,12 +285,12 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   ])
 }
 
-export const getFee = (token: TokenModel) => async dispatch => {
+export const getFee = (token: TokenModel) => async (dispatch) => {
   try {
     const feeInterfaceDAO = await contractManager.getFeeInterfaceDAO(token.address())
     const res = await feeInterfaceDAO.getFeePercent()
-    dispatch({type: SET_FEE, payload: {symbol: token.symbol(), fee: res / 100, withFee: true}})
+    dispatch({ type: SET_FEE, payload: { symbol: token.symbol(), fee: res / 100, withFee: true } })
   } catch (e) {
-    dispatch({type: SET_FEE, payload: {symbol: token.symbol(), fee: null, withFee: false}})
+    dispatch({ type: SET_FEE, payload: { symbol: token.symbol(), fee: null, withFee: false } })
   }
 }

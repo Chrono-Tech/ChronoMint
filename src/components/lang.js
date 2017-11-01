@@ -59,6 +59,6 @@ export default {
     Timer: Timer.ru,
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
-    WalletAddEditForm: WalletAddEditForm.ru
+    WalletAddEditForm: WalletAddEditForm.ru,
   },
 }

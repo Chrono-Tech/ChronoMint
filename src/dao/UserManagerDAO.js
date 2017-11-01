@@ -29,7 +29,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   usersTotal () {
-    return this._callNum('userCount').then(r => r - 1)
+    return this._callNum('userCount').then((r) => r - 1)
   }
 
   getMemberId (account) {

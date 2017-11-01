@@ -31,7 +31,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getTransactions: tokens => dispatch(getAccountTransactions(tokens)),
+    getTransactions: (tokens) => dispatch(getAccountTransactions(tokens)),
   }
 }
 

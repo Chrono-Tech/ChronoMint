@@ -48,7 +48,7 @@ class Voting extends React.Component {
     const { list, handlePollDetails } = this.props
 
     const polls = this.props.isFetched
-      ? list.reverse().toArray().filter(item => item.poll().active())
+      ? list.reverse().toArray().filter((item) => item.poll().active())
       : []
 
     if (polls.length <= 0) {
@@ -78,7 +78,7 @@ class Voting extends React.Component {
         >
           <div styleName='content'>
             {
-              polls.map(item => {
+              polls.map((item) => {
                 const details = item.details()
                 const poll = item.poll()
 
@@ -109,7 +109,7 @@ class Voting extends React.Component {
                               {
                                 value: details.votedCount.toNumber(),
                                 fillFrom: '#311b92',
-                                fillTo: '#d500f9'
+                                fillTo: '#d500f9',
                               },
                               {
                                 value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
@@ -117,7 +117,7 @@ class Voting extends React.Component {
                               },
                               {
                                 value: 0.0001,
-                                fill: 'transparent'
+                                fill: 'transparent',
                               },
                             ]}
                           />
@@ -170,7 +170,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handlePollDetails: model => dispatch(modalsOpen({
+    handlePollDetails: (model) => dispatch(modalsOpen({
       component: PollDetailsDialog,
       props: { model },
     })),

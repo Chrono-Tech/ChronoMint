@@ -46,7 +46,7 @@ export class OrdersTable extends React.Component {
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.orders.valueSeq().map(order => this.renderRow(order))}
+              {this.props.orders.valueSeq().map((order) => this.renderRow(order))}
             </div>
           </div>
         </div>
@@ -74,7 +74,7 @@ export class OrdersTable extends React.Component {
           <RaisedButton
             label={order.isBuy() ? 'Buy' : 'Sell'}
             disabled={order.limit().lte(0)}
-            onTouchTap={e => {
+            onTouchTap={(e) => {
               e.stopPropagation()
               this.props.openDetails(order)
             }}

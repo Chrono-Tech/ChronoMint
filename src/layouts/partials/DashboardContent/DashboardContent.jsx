@@ -88,7 +88,7 @@ export default class DashboardContent extends Component {
                   ? null
                   : (
                     <div className='row'>
-                      {this.props.rewardsData.periods().valueSeq().map(item => (
+                      {this.props.rewardsData.periods().valueSeq().map((item) => (
                         <div className='col-xs-6' key={item.index()}>
                           <Paper>
                             <Rewards period={item} rewardsData={this.props.rewardsData} />

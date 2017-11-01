@@ -8,7 +8,7 @@ import LOCStatusForm from './LOCStatusForm'
 import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 import { updateStatus } from '../../../../redux/locs/actions'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),
   closeModal: () => dispatch(modalsClose()),
 })

@@ -9,7 +9,7 @@ export default {
     addWallet: 'Add wallet',
     save: 'Save',
     ownerAddress: 'Owner address',
-    you: 'You'
+    you: 'You',
   },
   ru: {
     newWallet: 'Новый кошелёк',
@@ -21,7 +21,7 @@ export default {
     addWallet: 'Добавить кошелёк',
     save: 'Сохранить',
     ownerAddress: 'Адрес владельца',
-    you: 'Вы'
+    you: 'Вы',
   },
 }
 

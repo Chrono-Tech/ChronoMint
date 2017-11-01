@@ -53,7 +53,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       isNew: this.isNew(),
       name: this.name(),
       requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().map(address => ({address})),
+      owners: this.owners().map((address) => ({ address })),
     }
   }
 

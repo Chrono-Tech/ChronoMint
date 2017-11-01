@@ -89,7 +89,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchNewLOC (callback) {
-    return this._watch(events.NEW_LOC, async result => {
+    return this._watch(events.NEW_LOC, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({ name, action: statuses.ADDED }))
@@ -97,14 +97,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   watchRemoveLOC (callback) {
-    return this._watch(events.REMOVE_LOC, async result => {
+    return this._watch(events.REMOVE_LOC, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       callback(name, new LOCNoticeModel({ name, action: statuses.REMOVED }))
     })
   }
 
   async watchUpdateLOC (callback) {
-    return this._watch(events.UPDATE_LOC, async result => {
+    return this._watch(events.UPDATE_LOC, async (result) => {
       const oldLocName = this._c.bytesToString(result.args.locName)
       const name = this._c.bytesToString(result.args.newName)
       const loc: LOCModel = await this.fetchLOC(name)
@@ -113,7 +113,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchUpdateLOCStatus (callback) {
-    return this._watch(events.UPDATE_LOC_STATUS, async result => {
+    return this._watch(events.UPDATE_LOC_STATUS, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       callback(loc, new LOCNoticeModel({ name, action: statuses.STATUS_UPDATED }))
@@ -121,7 +121,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchReissue (callback) {
-    return this._watch(events.REISSUE, async result => {
+    return this._watch(events.REISSUE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
@@ -130,7 +130,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchRevoke (callback) {
-    return this._watch(events.REVOKE, async result => {
+    return this._watch(events.REVOKE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
       const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
@@ -153,8 +153,8 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return Promise.all(locArray.map(async (item, index) => {
       const rawData = await this._call(standardFuncs.GET_LOC_BY_ID, [index])
       return this._createLOCModel(rawData)
-    })).then(values => {
-      values.forEach(item => {
+    })).then((values) => {
+      values.forEach((item) => {
         locsMap = locsMap.set(item.name(), item)
       })
       return locsMap

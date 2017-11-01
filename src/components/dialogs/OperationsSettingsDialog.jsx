@@ -25,7 +25,7 @@ function prefix (token) {
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({
   form: FORM_OPERATION_SETTINGS,
-  validate: values => { // TODO async validate
+  validate: (values) => { // TODO async validate
     const errors = {}
     errors.requiredSigns = ErrorList.toTranslate(validator.positiveInt(values.get('requiredSigns')))
     if (!errors.requiredSigns && parseInt(values.get('requiredSigns'), 10) > parseInt(values.get('adminCount'), 10)) {
@@ -98,7 +98,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(setRequiredSignatures(parseInt(values.get('requiredSigns'), 10)))
     },

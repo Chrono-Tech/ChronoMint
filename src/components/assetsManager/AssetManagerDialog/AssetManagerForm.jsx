@@ -43,7 +43,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
+@reduxForm({ form: FORM_ASSET_MANAGER, validate, onSubmit })
 export default class AssetManagerForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func,
@@ -92,7 +92,7 @@ export default class AssetManagerForm extends React.Component {
         </div>
         {
           (selectedToken.managersList() || []).map(
-            item => (
+            (item) => (
               <div key={item} styleName='managersListRow'>
                 <div styleName='managersListAddress'>
                   <div styleName='managersListIcon'>

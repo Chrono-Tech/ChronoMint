@@ -36,7 +36,7 @@ describe('settings erc20 actions', () => {
     }
   })
 
-  it('should add token', async resolve => {
+  it('should add token', async (resolve) => {
     token = new TokenModel({
       symbol: 'FAKE',
       name: 'Fake',
@@ -78,7 +78,7 @@ describe('settings erc20 actions', () => {
     }
   })
 
-  it('should modify token', async resolve => {
+  it('should modify token', async (resolve) => {
     newToken = token.setSymbol('CAKE')
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
@@ -97,7 +97,7 @@ describe('settings erc20 actions', () => {
     await store.dispatch(a.modifyToken(token, newToken))
   })
 
-  it('should remove token', async resolve => {
+  it('should remove token', async (resolve) => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
       expect(store.getActions()).toEqual([

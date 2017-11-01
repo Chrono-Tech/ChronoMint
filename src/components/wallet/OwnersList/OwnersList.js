@@ -64,13 +64,15 @@ class OwnersList extends PureComponent {
   }
 
   render () {
-    const {account, fields} = this.props
+    const { account, fields } = this.props
 
     return (
       <div>
         <div styleName='counterBox'>
           <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-          styleName='counter'>{fields.length + 1}</span>
+            styleName='counter'
+          >{fields.length + 1}
+          </span>
         </div>
         <div styleName='counterError'>{this.props.meta.error}</div>
 

@@ -11,7 +11,7 @@ import styles from '../stylesLoginPage'
 
 import './LoginWithPrivateKey.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
@@ -49,7 +49,7 @@ class LoginWithPrivateKey extends PureComponent {
           />
         </div>
         <TextField
-          ref={input => { this.privateKey = input }}
+          ref={(input) => { this.privateKey = input }}
           floatingLabelText={<Translate value='LoginWithPrivateKey.privateKey' />}
           value={privateKey}
           onChange={this.handlePrivateKeyChange}
