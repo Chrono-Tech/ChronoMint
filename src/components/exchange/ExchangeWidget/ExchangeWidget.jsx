@@ -106,7 +106,6 @@ export default class ExchangeWidget extends React.Component {
                         name='token'
                         component={SelectField}
                         fullWidth
-                        floatingLabelFixed
                         floatingLabelText={<Translate value={prefix('token')} />}
                       >
                         <MenuItem value={ETH} primaryText={ETH} />

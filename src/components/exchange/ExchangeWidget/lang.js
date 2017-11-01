@@ -5,6 +5,7 @@ export default {
     token: 'Token',
     buy: 'Buy',
     sell: 'Sell',
+    amount: 'Amount',
   },
   ru: {
     exchange: 'Обмен',
@@ -12,5 +13,6 @@ export default {
     token: 'Токен',
     buy: 'Купить',
     sell: 'Продать',
+    amount: 'Сумма',
   },
 }

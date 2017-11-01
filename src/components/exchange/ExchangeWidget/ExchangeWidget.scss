@@ -25,6 +25,9 @@
 .actions {
   text-align: center;
   margin-top: 28px;
+  @include sm-only {
+    margin-top: 0;
+  }
 }
 
 .header {
@@ -64,6 +67,9 @@ li.tab {
   display: inline-block;
   box-sizing: border-box;
   border-bottom: solid 4px transparent;
+  @include sm-only {
+    width:100%;
+  }
 
   &:hover {
     opacity: 1;
@@ -78,6 +84,9 @@ li.tab {
   font-size: 34px;
   font-weight: 300;
   padding: 12px 64px 8px 64px;
+  @include sm-only {
+    padding: 12px 0 8px 0;
+  }
   box-sizing: border-box;
   text-decoration: none;
   &:hover {

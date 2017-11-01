@@ -40,7 +40,10 @@ export default {
     Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
-    exchange: exchange.en,
+    // TODO @Abdulov refactor this
+    components: {
+      exchange: exchange.en,
+    },
   },
   ru: {
     LoginWithLedger: LoginWithLedger.ru,
@@ -62,6 +65,9 @@ export default {
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru,
-    exchange: exchange.ru,
+    // TODO @Abdulov refactor this
+    components: {
+      exchange: exchange.ru,
+    },
   },
 }

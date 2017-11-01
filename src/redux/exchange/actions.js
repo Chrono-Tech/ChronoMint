@@ -2,7 +2,7 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { ETH, LHT } from 'redux/mainWallet/actions'
-import ExchangeOrderModel from 'models/ExchangeOrderModel'
+import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import exchangeDAO from 'dao/ExchangeDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 

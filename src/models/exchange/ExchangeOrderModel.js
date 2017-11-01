@@ -3,10 +3,10 @@ import BigNumber from 'bignumber.js'
 
 import { LHT, ETH } from 'redux/mainWallet/actions'
 
-import { abstractNoticeModel } from './notices/AbstractNoticeModel'
+import { abstractNoticeModel } from 'models/notices/AbstractNoticeModel'
 
 export default class ExchangeOrderModel extends abstractNoticeModel({
-  description: null,
+  trader: null,
   symbol: null,
   limit: new BigNumber(0),
   isBuy: null,
@@ -40,8 +40,8 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
     return this.get('symbol')
   }
 
-  description (): string {
-    return this.get('description')
+  trader (): string {
+    return this.get('trader')
   }
 
   isBuy (): boolean {

@@ -15,7 +15,7 @@ export { default as ColoredSection } from './dashboard/ColoredSection/ColoredSec
 export { default as SplitSection } from './dashboard/SplitSection/SplitSection'
 export { default as ProgressSection } from './dashboard/ProgressSection/ProgressSection'
 export { default as ExchangeWidget } from './exchange/ExchangeWidget/ExchangeWidget'
-export { default as OrdersTable } from './dashboard/OrdersTable/OrdersTable'
+export { default as OrdersTable } from './exchange/OrdersTable/OrdersTable'
 export { default as TransactionsTable } from './dashboard/TransactionsTable/TransactionsTable'
 export { default as TokenValue } from './common/TokenValue/TokenValue'
 export { default as CopyIcon } from './dashboard/MicroIcon/CopyIcon'
