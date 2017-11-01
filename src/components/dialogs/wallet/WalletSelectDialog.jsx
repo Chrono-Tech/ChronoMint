@@ -1,22 +1,27 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import classNames from 'classnames'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { FloatingActionButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Translate } from 'react-redux-i18n'
+import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
+import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
+import classNames from 'classnames'
+import { connect } from 'react-redux'
+
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+
+import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import { switchWallet } from 'redux/wallet/actions'
+
 import Points from 'components/common/Points/Points'
 import Preloader from 'components/common/Preloader/Preloader'
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
-import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
-import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
-import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import { switchWallet } from 'redux/wallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import './WalletSelectDialog.scss'
+
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
+
+import './WalletSelectDialog.scss'
 
 const TRANSITION_TIMEOUT = 250
 

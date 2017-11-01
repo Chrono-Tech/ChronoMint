@@ -1,23 +1,29 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { formPropTypes } from 'redux-form'
-import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
-import { SelectField, TextField } from 'redux-form-material-ui'
-import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 import { IPFSImage } from 'components'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { SelectField, TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import IconSection from 'components/dashboard/IconSection/IconSection'
-import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import { connect } from 'react-redux'
+import { formPropTypes } from 'redux-form'
 import inversedTheme from 'styles/themes/inversed'
-import { getCurrentWallet } from 'redux/wallet/actions'
+import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
+
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+
 import TokenModel from 'models/TokenModel'
-import validate from './validate'
+
+import { getCurrentWallet } from 'redux/wallet/actions'
+
+import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
 import styles from '../styles'
+import validate from './validate'
+
 import './SendTokensForm.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented

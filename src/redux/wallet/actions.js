@@ -1,5 +1,5 @@
-import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet/actions'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet/actions'
 
 export const DUCK_WALLET = 'wallet'
 export const WALLET_SWITCH_WALLET = 'WALLET/switch_wallet'

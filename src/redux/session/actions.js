@@ -7,9 +7,10 @@ import ProfileModel from 'models/ProfileModel'
 import { bootstrap } from 'redux/bootstrap/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
+import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 import { watchStopMarket } from 'redux/market/action'
-import { initWallet } from 'redux/wallet/actions'
+
 import ls from 'utils/LocalStorage'
 
 export const DUCK_SESSION = 'session'

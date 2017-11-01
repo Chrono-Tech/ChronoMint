@@ -1,18 +1,24 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
-import type TokenModel from 'models/TokenModel'
-import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { isTestingNetwork } from 'network/settings'
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import type MainWallet from 'models/Wallet/MainWalletModel'
-import IconSection from '../IconSection/IconSection'
+import type TokenModel from 'models/TokenModel'
+
+import { isTestingNetwork } from 'network/settings'
+
+import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
+
+import ErrorList from 'components/forms/ErrorList'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import validator from 'components/forms/validator'
+
 import ColoredSection from '../ColoredSection/ColoredSection'
+import IconSection from '../IconSection/IconSection'
+
 import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented

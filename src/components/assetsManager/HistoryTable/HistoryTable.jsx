@@ -1,11 +1,13 @@
+import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { CircularProgress } from 'material-ui'
+
 import './HistoryTable.scss'
 
 function prefix (token) {

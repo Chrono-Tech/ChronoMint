@@ -2,9 +2,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import defaultLogo from 'assets/img/marketsLogos/default-logo.svg'
 
 import './style.scss'
-import defaultLogo from 'assets/img/marketsLogos/default-logo.svg'
 
 const mapStateToProps = (state) => {
   const { selectedCoin, rates } = state.get('market')

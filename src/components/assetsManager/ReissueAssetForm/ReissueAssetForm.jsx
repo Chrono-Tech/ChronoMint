@@ -5,10 +5,12 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+
 import { reissueAsset } from 'redux/assetsManager/actions'
 
-import './ReissueAssetForm.scss'
 import validate from './validate'
+
+import './ReissueAssetForm.scss'
 
 function prefix (token) {
   return `Assets.ReissueAssetForm.${token}`

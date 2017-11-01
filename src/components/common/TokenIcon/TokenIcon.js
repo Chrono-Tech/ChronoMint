@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise, no-plusplus */
 
-import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 
 function hashCode (str) {
   let hash = 0

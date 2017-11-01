@@ -12,13 +12,13 @@ import { providerMap } from 'network/settings'
 
 import { login } from 'redux/session/actions'
 
+import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
+import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
 import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
 
 import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
-import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
-import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 
 import './LoginPage.scss'
 

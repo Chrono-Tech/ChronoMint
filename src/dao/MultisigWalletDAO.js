@@ -1,10 +1,12 @@
 import BigNumber from 'bignumber.js'
+
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
-import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 
 const CODE_CONFIRMATION_NEEDED = 14014
 

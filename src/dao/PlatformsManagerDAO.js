@@ -1,6 +1,9 @@
-import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
-import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
+
+import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
+
+import web3Converter from 'utils/Web3Converter'
+
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'

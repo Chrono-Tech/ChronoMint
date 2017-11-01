@@ -1,7 +1,10 @@
 import Immutable from 'immutable'
-import ls from 'utils/LocalStorage'
-import TransactionsCollection from 'models/Wallet/TransactionsCollection'
+
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
+import TransactionsCollection from 'models/Wallet/TransactionsCollection'
+
+import ls from 'utils/LocalStorage'
+
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 window.ls = ls

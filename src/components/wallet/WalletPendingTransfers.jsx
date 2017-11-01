@@ -1,12 +1,16 @@
+import { Paper, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Paper, RaisedButton } from 'material-ui'
+
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+
 import { confirmMultisigTx, DUCK_MULTISIG_WALLET, revokeMultisigTx } from 'redux/multisigWallet/actions'
+
 import Preloader from 'components/common/Preloader/Preloader'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
 import './WalletPendingTransfers.scss'
 
 function mapStateToProps (state) {

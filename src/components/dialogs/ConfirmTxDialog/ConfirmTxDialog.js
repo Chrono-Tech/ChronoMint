@@ -4,12 +4,16 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+
+import Amount from 'models/Amount'
+
 import { ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+
 import ModalDialog from 'components/dialogs/ModalDialog'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import Value from 'components/common/Value/Value'
-import Amount from 'models/Amount'
+
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = (state) => ({

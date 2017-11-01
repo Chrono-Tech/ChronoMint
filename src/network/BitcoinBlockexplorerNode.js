@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
+
 import TxModel from 'models/TxModel'
+
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 
 export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {

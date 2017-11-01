@@ -1,16 +1,19 @@
-import Preloader from 'components/common/Preloader/Preloader'
-import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
-import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
-import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
-import { createPlatform, getTokens } from 'redux/assetsManager/actions'
-import React, { PureComponent } from 'react'
+import { Paper, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
+import { createPlatform, getTokens } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
+
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
-import { Paper, RaisedButton } from 'material-ui'
+import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
+import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
+import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
+import Preloader from 'components/common/Preloader/Preloader'
+
 import './AssetManager.scss'
 
 function prefix (token) {

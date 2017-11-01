@@ -1,22 +1,28 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
-import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
-import { modalsOpen } from 'redux/modals/actions'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import { Field, reduxForm, change } from 'redux-form/immutable'
-import { createAsset } from 'redux/assetsManager/actions'
-import './AddTokenForm.scss'
-import validate from './validate'
 import BigNumber from 'bignumber.js'
-import colors from 'styles/themes/variables'
+import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
+import { Field, reduxForm, change } from 'redux-form/immutable'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
-import ipfs from 'utils/IPFS'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import FileModel from 'models/FileSelect/FileModel'
+import colors from 'styles/themes/variables'
+import { connect } from 'react-redux'
+
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileModel from 'models/FileSelect/FileModel'
+
+import { createAsset } from 'redux/assetsManager/actions'
+import { modalsOpen } from 'redux/modals/actions'
+
+import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+
+import ipfs from 'utils/IPFS'
+
+import validate from './validate'
+
+import './AddTokenForm.scss'
 
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`

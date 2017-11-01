@@ -1,13 +1,16 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import './RevokeForm.scss'
+import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+
 import { revokeAsset } from 'redux/assetsManager/actions'
+
 import validate from './validate'
+
+import './RevokeForm.scss'
 
 function prefix (token) {
   return `Assets.RevokeForm.${token}`

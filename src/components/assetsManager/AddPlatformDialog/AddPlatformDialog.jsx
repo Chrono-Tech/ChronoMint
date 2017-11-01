@@ -1,9 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from 'components/dialogs/ModalDialog'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from 'components/dialogs/ModalDialog'
+
 import AddPlatformForm from './AddPlatformForm'
 
 const TRANSITION_TIMEOUT = 250

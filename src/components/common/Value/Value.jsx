@@ -1,11 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Moment from 'components/common/Moment/index'
-import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
-import TokenValue from 'components/common/TokenValue/TokenValue'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { Translate } from 'react-redux-i18n'
+import moment from 'moment'
+
+import Amount from 'models/Amount'
+
+import Moment from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 export default class Value extends React.Component {
   static propTypes = {

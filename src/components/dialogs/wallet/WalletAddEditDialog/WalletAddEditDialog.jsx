@@ -1,12 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import ModalDialog from '../../ModalDialog'
-import { modalsClose } from 'redux/modals/actions'
-import { createWallet, updateWallet } from 'redux/multisigWallet/actions'
-import WalletAddEditForm from './WalletAddEditForm'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+
+import { createWallet, updateWallet } from 'redux/multisigWallet/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import ModalDialog from '../../ModalDialog'
+import WalletAddEditForm from './WalletAddEditForm'
 
 const TRANSITION_TIMEOUT = 250
 

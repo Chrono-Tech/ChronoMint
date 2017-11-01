@@ -4,12 +4,14 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import download from 'react-file-download'
+import theme from 'styles/themes/default'
+
+import walletGenerator from 'network/walletGenerator'
 
 import { addError, clearErrors } from 'redux/network/actions'
+
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
-import theme from 'styles/themes/default'
-import walletGenerator from 'network/walletGenerator'
 import Warning from '../Warning/Warning'
 
 import './GenerateWallet.scss'

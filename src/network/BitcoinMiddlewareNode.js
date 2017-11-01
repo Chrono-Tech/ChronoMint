@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
+
 import TxModel from 'models/TxModel'
+
 import { DECIMALS } from 'network/BitcoinEngine'
 
 import BitcoinAbstractNode from './BitcoinAbstractNode'

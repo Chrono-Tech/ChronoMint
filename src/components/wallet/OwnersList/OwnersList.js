@@ -1,12 +1,13 @@
-import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
-import { FlatButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-import globalStyles from 'layouts/partials/styles'
-import { Field } from 'redux-form/immutable'
 import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
+import { Field } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import globalStyles from 'layouts/partials/styles'
+
 import './OwnersList.scss'
 
 function mapStateToProps (state) {

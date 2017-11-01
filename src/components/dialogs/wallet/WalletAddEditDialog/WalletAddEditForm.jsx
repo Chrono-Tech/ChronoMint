@@ -1,17 +1,22 @@
-import React from 'react'
+import { Field, reduxForm, FieldArray } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
+import { RaisedButton } from 'material-ui'
+import React from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { formPropTypes } from 'redux-form'
-import { Translate } from 'react-redux-i18n'
-import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-import { Field, reduxForm, FieldArray } from 'redux-form/immutable'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import { modalsClose } from 'redux/modals/actions'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
-import OwnersList from 'components/wallet/OwnersList/OwnersList'
+
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+
 import { DUCK_SESSION } from 'redux/session/actions'
+import { modalsClose } from 'redux/modals/actions'
+
+import OwnersList from 'components/wallet/OwnersList/OwnersList'
+
 import validate from './validate'
+
 import './WalletAddEditForm.scss'
 
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditForm'

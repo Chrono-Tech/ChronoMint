@@ -1,5 +1,3 @@
-import Preloader from 'components/common/Preloader/Preloader'
-import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
@@ -7,12 +5,18 @@ import { RaisedButton, FlatButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+
 import { getManagersForAssetSymbol, isReissuable, getFee } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
+
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import './PlatformInfo.scss'
+import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
+import Preloader from 'components/common/Preloader/Preloader'
+import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
+
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
+
+import './PlatformInfo.scss'
 
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`

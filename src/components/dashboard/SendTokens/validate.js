@@ -1,5 +1,5 @@
-import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
 
 export default (values, props) => {
   const { token, wallet } = props

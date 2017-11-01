@@ -3,19 +3,19 @@ import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/Abstr
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
 
+import { initWallet } from 'redux/wallet/actions'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTxModal } from 'redux/ui/modal'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitLOC } from 'redux/locs/actions'
 import { watchInitMarket } from 'redux/market/action'
-import { watchPlatformManager, watchInitTokens } from 'redux/assetsManager/actions'
 import { watchInitMonitor } from 'redux/monitor/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/mainWallet/actions'
-import { initWallet } from 'redux/wallet/actions'
+import { watchPlatformManager, watchInitTokens } from 'redux/assetsManager/actions'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
 
 // next two actions represents start of the events watching

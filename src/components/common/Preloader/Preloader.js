@@ -1,6 +1,7 @@
 import { CircularProgress } from 'material-ui'
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
+
 import './Preloader.scss'
 
 function Preloader (props) {

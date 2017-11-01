@@ -1,4 +1,5 @@
 import EventEmitter from 'events'
+
 import MultisigWalletDAO from 'dao/MultisigWalletDAO'
 
 class MultisigWalletService extends EventEmitter {

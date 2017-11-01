@@ -1,11 +1,12 @@
+import { Dialog } from 'material-ui'
+import IconButton from 'material-ui/IconButton'
+import NavigationClose from 'material-ui/svg-icons/navigation/close'
 // TODO New Modal Stack
 /* eslint-disable */
 import React from 'react'
-import styles from './ModalBaseStyles'
-import IconButton from 'material-ui/IconButton'
-import NavigationClose from 'material-ui/svg-icons/navigation/close'
-import { Dialog } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
+
+import styles from './ModalBaseStyles'
 
 export default function (props) {
   // true by default

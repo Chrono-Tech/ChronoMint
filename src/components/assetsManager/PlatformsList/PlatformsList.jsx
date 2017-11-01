@@ -1,13 +1,16 @@
-import Preloader from 'components/common/Preloader/Preloader'
-import React, { PureComponent } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
+import { IPFSImage, TokenValue } from 'components'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import './PlatformsList.scss'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
+
 import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
+
+import Preloader from 'components/common/Preloader/Preloader'
+
+import './PlatformsList.scss'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
