@@ -81,7 +81,7 @@ export const detachPlatform = platform => async dispatch => {
   }
 }
 
-export const watchPlatformManager = account => async (dispatch) => {
+export const watchPlatformManager = account => async dispatch => {
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   platformManagerDAO.watchCreatePlatform(account, dispatch)
 }

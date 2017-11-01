@@ -145,7 +145,7 @@ export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, ge
   }
 }
 
-export const addOwner = (wallet) => async () => {
+export const addOwner = wallet => async () => {
   // TODO @dkchv: !!!
   const newOwner = '0xd882e17d712b63e52896109f35fbccc702301e32'
   try {

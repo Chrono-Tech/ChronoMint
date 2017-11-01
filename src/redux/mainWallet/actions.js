@@ -1,6 +1,7 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+import { nemProvider } from 'network/NemProvider'
 
 import type TxModel from 'models/TxModel'
 import type ProfileModel from 'models/ProfileModel'
@@ -28,6 +29,7 @@ export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
 export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
 export const WALLET_BTC_ADDRESS = 'wallet/BTC_ADDRESS'
 export const WALLET_BCC_ADDRESS = 'wallet/BCC_ADDRESS'
+export const WALLET_NEM_ADDRESS = 'wallet/NEM_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
@@ -108,7 +110,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   dispatch({type: WALLET_TOKENS, tokens})
   dispatch(getAccountTransactions(tokens))
 
-  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
+  const toStopArray = previous.filter(k => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
     const dao = token.dao()
     return dao.stopWatching()
   })
@@ -131,12 +133,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   // Decided to manage them independently to simplify further works on multiple wallets. .
   dispatch({type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress()})
   dispatch({type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress()})
+  dispatch({type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress()})
 
-  tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
+  tokens = tokens.filter(k => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
     dispatch(addMarketToken(token.symbol()))
     const dao = token.dao()
-    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+    await dao.watchTransfer(notice => dispatch(watchTransfer(notice)))
     if (dao.watchBalance) {
       await dao.watchBalance(balance => dispatch(watchBalance(balance)))
     }
@@ -147,7 +150,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+export const mainTransfer = (token: TokenModel, amount: string, recipient) => async dispatch => {
   amount = new BigNumber(amount)
 
   dispatch(balanceMinus(amount, token))
@@ -228,7 +231,7 @@ const getTransferId = 'wallet'
 let lastCacheId
 let txsCache = []
 
-export const getAccountTransactions = (tokens) => async (dispatch) => {
+export const getAccountTransactions = tokens => async dispatch => {
   dispatch({type: WALLET_TRANSACTIONS_FETCH})
 
   tokens = tokens.valueSeq().toArray()

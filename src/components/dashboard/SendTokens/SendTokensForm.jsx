@@ -78,7 +78,7 @@ export class SendTokensForm extends React.Component {
     return (
       <div>
         <IconSection
-          title={<Translate value={'wallet.sendTokens'} />}
+          title={<Translate value='wallet.sendTokens' />}
           iconComponent={(
             <IPFSImage
               styleName='content'

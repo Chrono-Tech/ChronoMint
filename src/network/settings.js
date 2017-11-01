@@ -24,6 +24,7 @@ const MAINNET_BASE = {
   name: 'Mainnet (production)',
   scanner: scannerMap.main,
   bitcoin: 'bitcoin',
+  nem: 'Mainnet',
 }
 
 const ROPSTEN_BASE = {
@@ -32,6 +33,7 @@ const ROPSTEN_BASE = {
   name: 'Ropsten (test network)',
   scanner: scannerMap.ropsten,
   bitcoin: 'testnet',
+  nem: 'Testnet',
 }
 
 const RINKEBY_BASE = {
@@ -40,6 +42,7 @@ const RINKEBY_BASE = {
   name: 'Rinkeby (test network)',
   scanner: scannerMap.rinkeby,
   bitcoin: 'testnet',
+  nem: 'Testnet',
 }
 
 const KOVAN_BASE = {
@@ -48,6 +51,7 @@ const KOVAN_BASE = {
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan,
   bitcoin: 'testnet',
+  nem: 'Testnet',
 }
 
 const LOCALHOST_BASE = {
@@ -103,6 +107,7 @@ if (process.env.NODE_ENV === 'development') {
     host: 'private.chronobank.io/',
     name: 'Private (develop network)',
     bitcoin: 'testnet',
+    nem: 'Testnet',
   })
 }
 
@@ -111,6 +116,7 @@ export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
   host: `${location.hostname}:8545`,
   bitcoin: 'testnet',
+  nem: 'Testnet',
 }
 
 export const providerMap = {

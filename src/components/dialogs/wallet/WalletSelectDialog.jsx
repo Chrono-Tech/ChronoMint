@@ -89,7 +89,8 @@ export default class WalletSelectDialog extends React.Component {
             <div styleName='body'>
               <div styleName='column'>
                 <h5 styleName='colName'><Translate
-                  value={'wallet.walletSelectDialog.' + (wallets.size ? 'yourWallets' : 'youHaveNoWallets')} />
+                  value={'wallet.walletSelectDialog.' + (wallets.size ? 'yourWallets' : 'youHaveNoWallets')}
+                />
                 </h5>
                 <div styleName='table'>
                   {wallets.map(item => this.renderRow(item, selected === item.address))}
@@ -129,12 +130,13 @@ export default class WalletSelectDialog extends React.Component {
               {wallet.owners().size} <Translate value='wallet.walletSelectDialog.owners' />
             </span>
             <div>
-              {wallet.owners().map((owner, idx) => <i
+              {wallet.owners().map((owner, idx) => (<i
                 className='material-icons'
                 key={owner}
                 title={owner}
                 styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
-              >account_circle</i>)}
+              >account_circle
+                                                    </i>))}
             </div>
           </div>
         </div>
@@ -145,13 +147,15 @@ export default class WalletSelectDialog extends React.Component {
               <i
                 className='material-icons'
                 styleName='controlItem'
-                onTouchTap={() => {this.props.walletAddEditDialog()}}>
+                onTouchTap={() => {this.props.walletAddEditDialog()}}
+              >
                 edit
               </i>
               <i
                 className='material-icons'
                 styleName='controlItem'
-                onTouchTap={() => this.props.removeWallet(wallet)}>
+                onTouchTap={() => this.props.removeWallet(wallet)}
+              >
                 delete
               </i>
             </div>

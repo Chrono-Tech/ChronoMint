@@ -43,7 +43,7 @@ export class InfoPartial extends React.Component {
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
     isInited: PropTypes.bool,
-    wallet: PropTypes.object
+    wallet: PropTypes.object,
   }
 
   constructor (props) {
