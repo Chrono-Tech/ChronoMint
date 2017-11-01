@@ -46,8 +46,6 @@ export default class ExchangeWidget extends React.Component {
     this.state = {
       mode: MODES[0],
       currency: LHT,
-      offer: null,
-      amount: null,
     }
   }
 
@@ -61,44 +59,27 @@ export default class ExchangeWidget extends React.Component {
     })
   }
 
-  handleChangeCurrency (value) {
-    this.setState({
-      currency: value,
-    })
-  }
-
-  // handleChangeAmount (value) {
-  //   this.setState({
-  //     mode: value
-  //   })
-  // }
-
   handleSearch () {
     this.props.search(this.state.currency, this.state.mode.name === 'BUY')
   }
-
-  // handleChangeOffer (value) {
-  //   this.setState({
-  //     offer: value
-  //   })
-  // }
 
   render () {
     return (
       <div styleName='root'>
         <div styleName='header'>
-          <h3><Translate value={prefix('exchange')} /></h3>
-          <ul>
+          <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
+          <ul styleName='tabs'>
             {MODES.map((el, index) => (
               <li
+                styleName='tab'
                 key={el.name}
                 className={el.name === this.state.mode.name ? 'active' : null}
                 onTouchTap={() => this.handleChangeMode(index)}
               >
-                <a href='#'>
+                <span styleName='tabTitle'>
                   <i className='material-icons'>compare_arrows</i>
                   <span>{el.title}</span>
-                </a>
+                </span>
               </li>
             ))}
           </ul>
@@ -112,7 +93,7 @@ export default class ExchangeWidget extends React.Component {
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
-                    <div className='col-sm-2 col-md-1'>
+                    <div className='col-sm-3 col-md-1'>
                       <Field
                         component={TextField}
                         name='amount'
@@ -120,7 +101,7 @@ export default class ExchangeWidget extends React.Component {
                         floatingLabelText={<Translate value={prefix('amount')} />}
                       />
                     </div>
-                    <div className='col-sm-2 col-md-1'>
+                    <div className='col-sm-3 col-md-1'>
                       <Field
                         name='token'
                         component={SelectField}
@@ -132,7 +113,7 @@ export default class ExchangeWidget extends React.Component {
                         <MenuItem value={LHT} primaryText={LHT} />
                       </Field>
                     </div>
-                    <div className='col-sm-2 col-md-1'>
+                    <div className='col-sm-3 col-md-1'>
                       <div styleName='actions'>
                         <RaisedButton
                           label={<Translate value={prefix('search')} />}
