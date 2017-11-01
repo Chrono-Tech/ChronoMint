@@ -3,7 +3,6 @@ import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-
 import BackButton from '../BackButton/BackButton'
 import { generateMnemonic } from '../../../../network/mnemonicProvider'
 import styles from '../stylesLoginPage'

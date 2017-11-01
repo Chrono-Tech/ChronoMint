@@ -1,9 +1,6 @@
 import Immutable from 'immutable'
-
 import contractManager from 'dao/ContractsManagerDAO'
-
 import TokenModel from 'models/TokenModel'
-
 import Web3Converter from 'utils/Web3Converter'
 
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'

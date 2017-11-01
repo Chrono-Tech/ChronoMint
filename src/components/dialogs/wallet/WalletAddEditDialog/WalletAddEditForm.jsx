@@ -7,14 +7,10 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { formPropTypes } from 'redux-form'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
-
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-
 import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
-
 import validate from './validate'
 
 import './WalletAddEditForm.scss'

@@ -1,7 +1,5 @@
 import type BigNumber from 'bignumber.js'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import ERC20DAO from './ERC20DAO'
 
 /**

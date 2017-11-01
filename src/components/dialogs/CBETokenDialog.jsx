@@ -6,13 +6,10 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
-
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/TokenModel'
-
 import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 

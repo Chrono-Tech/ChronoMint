@@ -5,9 +5,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
-
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './PlatformsList.scss'

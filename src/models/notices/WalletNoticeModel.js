@@ -1,6 +1,5 @@
 import { I18n } from 'react-redux-i18n'
 import React from 'react'
-
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const CREATED = 'notices.wallet.created'

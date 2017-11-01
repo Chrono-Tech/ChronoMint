@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ErrorList from '../components/forms/ErrorList'
 import ProfileModel from './ProfileModel'

@@ -1,13 +1,9 @@
 import BigNumber from 'bignumber.js'
 import truffleContract from 'truffle-contract'
-
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
-
 import web3Provider from 'network/Web3Provider'
-
 import validator from 'components/forms/validator'
-
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 

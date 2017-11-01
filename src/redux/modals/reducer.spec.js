@@ -1,5 +1,4 @@
 import React from 'react'
-
 import * as actions from 'redux/modals/actions'
 import reducer from 'redux/modals/reducer'
 

@@ -5,18 +5,14 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
-
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import ProfileModel from 'models/ProfileModel'
-
 import { modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
-
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
-
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
 

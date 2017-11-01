@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { accounts } from 'specsInit'
-
 import MainWallet from 'models/Wallet/MainWalletModel'
 import TokenModel from 'models/TokenModel'
 import TxModel from 'models/TxModel'
-
 import * as a from './actions'
 import reducer from './reducer'
 

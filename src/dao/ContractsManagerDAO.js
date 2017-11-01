@@ -1,9 +1,6 @@
 import type Immutable from 'immutable'
-
 import type TokenModel from 'models/TokenModel'
-
 import validator from 'components/forms/validator'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'

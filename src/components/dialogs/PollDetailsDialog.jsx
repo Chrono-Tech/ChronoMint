@@ -4,13 +4,10 @@ import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
-
 import ModalDialog from './ModalDialog'
 
 import './PollDetailsDialog.scss'

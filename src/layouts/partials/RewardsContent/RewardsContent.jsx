@@ -6,9 +6,7 @@ import { RewardsPeriod } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
-
 import type RewardsModel from 'models/RewardsModel'
-
 import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
 
 import './RewardsContent.scss'

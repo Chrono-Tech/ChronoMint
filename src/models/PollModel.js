@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({

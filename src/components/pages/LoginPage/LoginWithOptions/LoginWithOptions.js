@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
-
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
 import ledgerProvider from 'network/LedgerProvider'
 import mnemonicProvider from 'network/mnemonicProvider'
@@ -11,10 +10,8 @@ import privateKeyProvider from 'network/privateKeyProvider'
 import walletProvider from 'network/walletProvider'
 import web3Provider from 'network/Web3Provider'
 import web3Utils from 'network/Web3Utils'
-
 import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading, getProviderSettings } from 'redux/network/actions'
 import { loginLedger } from 'redux/ledger/actions'
-
 import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import LoginLedger from '../LoginWithLedger/LoginWithLedger'

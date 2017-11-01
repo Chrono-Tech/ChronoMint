@@ -6,18 +6,14 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
-
 import { listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { updateUserProfile } from 'redux/session/actions'
 import { watchInitWallet } from 'redux/mainWallet/actions'
-
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
-
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
 

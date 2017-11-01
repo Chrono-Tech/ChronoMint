@@ -1,10 +1,8 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import multisigWalletService from 'services/MultisigWalletService'
-
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 

@@ -2,12 +2,9 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-
 import { createWallet, updateWallet } from 'redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialog from '../../ModalDialog'
 import WalletAddEditForm from './WalletAddEditForm'
 

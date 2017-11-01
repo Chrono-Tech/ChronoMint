@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
-
 import { changeMomentLocale } from 'redux/ui/locale'
-
 import styles from './styles'
 
 import './LocaleDropDown.scss'

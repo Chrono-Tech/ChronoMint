@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'

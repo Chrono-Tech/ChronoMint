@@ -7,18 +7,14 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { formPropTypes } from 'redux-form'
-
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import TokenModel, { validate } from 'models/TokenModel'
-
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenIcon from 'components/common/TokenIcon/TokenIcon'
-
 import ModalDialog from './ModalDialog'
 
 import './AddTokenDialog.scss'

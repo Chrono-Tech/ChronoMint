@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { exchangeCurrency } from 'redux/exchange/actions'
-
 import ExchangeForm from './ExchangeForm'
 import globalStyles from '../../../styles'
 

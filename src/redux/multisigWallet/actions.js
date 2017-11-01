@@ -1,13 +1,10 @@
 import multisigWalletService from 'services/MultisigWalletService'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-
 import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
 import type WalletNoticeModel from 'models/notices/WalletNoticeModel'
-
 import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
 

@@ -9,15 +9,12 @@ import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import globalStyles from 'layouts/partials/styles'
-
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET, getWallets } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import Preloader from 'components/common/Preloader/Preloader'
 import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'

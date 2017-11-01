@@ -5,9 +5,7 @@ import React from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { revokeAsset } from 'redux/assetsManager/actions'
-
 import validate from './validate'
 
 import './RevokeForm.scss'

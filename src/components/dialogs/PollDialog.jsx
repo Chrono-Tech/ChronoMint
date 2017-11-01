@@ -8,15 +8,11 @@ import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/PollModel'
-
 import { createPoll, updatePoll } from 'redux/voting/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
-
 import ModalDialog from './ModalDialog'
 
 import './PollDialog.scss'

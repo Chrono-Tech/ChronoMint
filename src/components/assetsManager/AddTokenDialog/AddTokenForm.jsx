@@ -8,18 +8,13 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import colors from 'styles/themes/variables'
 import { connect } from 'react-redux'
-
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
-
 import { createAsset } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-
 import ipfs from 'utils/IPFS'
-
 import validate from './validate'
 
 import './AddTokenForm.scss'

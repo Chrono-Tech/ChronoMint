@@ -3,11 +3,9 @@ import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
 import Splash from 'layouts/Splash/Splash'
-
 import Login from 'pages/LoginPage/LoginPage'
 import NotFoundPage from 'pages/NotFound/NotFound'
 import Pages from 'pages/lib'
-
 import ls from './utils/LocalStorage'
 import { store, history } from './redux/configureStore'
 

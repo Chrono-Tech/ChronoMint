@@ -6,10 +6,8 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { addManager, removeManager } from 'redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import validate from './validate'
 
 import './AssetManagerForm.scss'

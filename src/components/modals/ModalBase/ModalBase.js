@@ -5,7 +5,6 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 /* eslint-disable */
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-
 import styles from './ModalBaseStyles'
 
 export default function (props) {

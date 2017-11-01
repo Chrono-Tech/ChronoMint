@@ -1,22 +1,17 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
-
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import type ProfileModel from 'models/ProfileModel'
 import TokenModel from 'models/TokenModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
-
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-
 import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
-
 import { addMarketToken } from '../market/action'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'

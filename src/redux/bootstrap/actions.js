@@ -1,7 +1,5 @@
 import { LOCAL_ID } from 'network/settings'
-
 import ls from 'utils/LocalStorage'
-
 import {
   checkMetaMask,
   checkLocalSession,

@@ -2,11 +2,8 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialog from 'components/dialogs/ModalDialog'
-
 import CrowdsaleForm from './CrowdsaleForm'
 
 const TRANSITION_TIMEOUT = 250

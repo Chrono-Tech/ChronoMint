@@ -4,11 +4,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import theme from 'styles/themes/default.js'
-
 import { closeNotifier } from 'redux/notifier/actions'
-
 import ModalContainer from 'components/modals/Modal'
-
 import { HeaderPartial, DrawerPartial } from './partials'
 
 import './Markup.scss'

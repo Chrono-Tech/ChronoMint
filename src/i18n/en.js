@@ -1,5 +1,4 @@
 import { en as layouts } from 'layouts/lang'
-
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
@@ -12,9 +11,7 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-
 import { en as LoginPage } from 'pages/LoginPage/lang'
-
 import { en as components } from 'components/lang'
 
 export default {

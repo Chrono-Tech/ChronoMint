@@ -3,11 +3,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-
 import { confirmMultisigTx, DUCK_MULTISIG_WALLET, revokeMultisigTx } from 'redux/multisigWallet/actions'
-
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 

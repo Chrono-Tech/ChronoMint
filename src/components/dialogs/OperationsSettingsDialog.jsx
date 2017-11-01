@@ -6,10 +6,8 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
 import { setRequiredSignatures } from 'redux/operations/actions'
-
 import ErrorList from 'components/forms/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'components/forms/validator'

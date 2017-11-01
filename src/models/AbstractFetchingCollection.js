@@ -1,5 +1,4 @@
 import Immutable from 'immutable'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export const abstractFetchingCollection = (defaultValues) => class AbstractFetchingCollection extends abstractFetchingModel({

@@ -1,5 +1,4 @@
 import Immutable from 'immutable'
-
 import { abstractModel } from '../AbstractModel'
 import FileModel from './FileModel'
 

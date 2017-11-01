@@ -5,11 +5,9 @@ import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'

@@ -7,17 +7,13 @@ import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-
 import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { switchWallet } from 'redux/wallet/actions'
-
 import Points from 'components/common/Points/Points'
 import Preloader from 'components/common/Preloader/Preloader'
-
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 

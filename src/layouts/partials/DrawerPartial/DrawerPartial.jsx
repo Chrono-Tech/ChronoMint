@@ -6,10 +6,8 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
-
 import styles from '../styles'
 
 import './DrawerPartial.scss'

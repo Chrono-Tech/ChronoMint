@@ -5,9 +5,7 @@ import React from 'react'
 import { TextField, Checkbox } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { createPlatform } from 'redux/assetsManager/actions'
-
 import validate from './validate'
 
 import './AddPlatformForm.scss'

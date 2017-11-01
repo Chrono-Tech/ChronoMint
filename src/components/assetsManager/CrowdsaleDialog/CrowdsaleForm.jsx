@@ -12,9 +12,7 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import styles from './styles'
 
 import './CrowdsaleForm.scss'

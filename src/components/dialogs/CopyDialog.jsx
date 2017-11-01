@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
 import React from 'react'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialog from './ModalDialog'
 
 import './CopyDialog.scss'

@@ -6,7 +6,6 @@ import { SelectField, TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
-
 import validate from './ExchangeFormValidate'
 
 const styles = {

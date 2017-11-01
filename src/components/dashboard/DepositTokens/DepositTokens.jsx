@@ -4,18 +4,13 @@ import React from 'react'
 import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type MainWallet from 'models/Wallet/MainWalletModel'
 import type TokenModel from 'models/TokenModel'
-
 import { isTestingNetwork } from 'network/settings'
-
 import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
-
 import ErrorList from 'components/forms/ErrorList'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import validator from 'components/forms/validator'
-
 import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
 

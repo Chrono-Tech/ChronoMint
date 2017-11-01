@@ -1,11 +1,8 @@
 import Immutable from 'immutable'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
-
 import { notify } from 'redux/notifier/actions'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'

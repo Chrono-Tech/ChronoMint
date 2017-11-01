@@ -1,9 +1,6 @@
 import { store } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import LOCModel from 'models/LOCModel'
-
 import * as a from './actions'
 
 const loc1 = new LOCModel({

@@ -3,7 +3,6 @@ import Web3 from 'web3'
 import configureMockStore from 'redux-mock-store'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import thunk from 'redux-thunk'
-
 import AbstractContractDAO from './dao/AbstractContractDAO'
 import { LOCAL_ID } from './network/settings'
 import ls from './utils/LocalStorage'

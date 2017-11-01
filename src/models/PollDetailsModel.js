@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class PollDetailsModel extends abstractFetchingModel({

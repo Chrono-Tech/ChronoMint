@@ -1,13 +1,10 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { store } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import PollModel from 'models/PollModel'
 // import type PollDetailsModel from 'models/PollDetailsModel'
 import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
-
 import { createPoll, removePoll, activatePoll, endPoll, vote } from './actions'
 
 const poll1 = {

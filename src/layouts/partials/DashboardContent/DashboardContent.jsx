@@ -4,7 +4,6 @@ import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { getCurrentWallet } from 'redux/wallet/actions'
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
 

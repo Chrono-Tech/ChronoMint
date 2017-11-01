@@ -1,5 +1,4 @@
 import Immutable from 'immutable'
-
 import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,

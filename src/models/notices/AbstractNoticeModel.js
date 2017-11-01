@@ -2,9 +2,7 @@ import { I18n } from 'react-redux-i18n'
 import React from 'react'
 import moment from 'moment'
 import uniqid from 'uniqid'
-
 import Moment, { FULL_DATE } from 'components/common/Moment'
-
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols

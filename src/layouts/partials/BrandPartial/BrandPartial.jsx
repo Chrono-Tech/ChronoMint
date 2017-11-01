@@ -6,11 +6,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import inversedTheme from 'styles/themes/inversed'
 import menu from 'menu'
-
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-
 import Rates from 'components/common/Rates/index'
-
 import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from '../styles'
 

@@ -6,12 +6,9 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { validate } from 'models/CBEModel'
-
 import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'components/forms/validator'
 

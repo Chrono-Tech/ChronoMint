@@ -5,14 +5,11 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
 import { vote } from 'redux/voting/actions'
-
 import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
-
 import ModalDialog from './ModalDialog'
 
 import './VoteDialog.scss'

@@ -10,17 +10,12 @@ import { connect } from 'react-redux'
 import { formPropTypes } from 'redux-form'
 import inversedTheme from 'styles/themes/inversed'
 import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import TokenModel from 'models/TokenModel'
-
 import { getCurrentWallet } from 'redux/wallet/actions'
-
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import styles from '../styles'
 import validate from './validate'
 

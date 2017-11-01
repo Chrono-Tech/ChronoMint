@@ -3,10 +3,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { createPlatform, getTokens } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
 import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'

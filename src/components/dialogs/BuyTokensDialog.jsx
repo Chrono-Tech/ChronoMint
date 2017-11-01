@@ -5,15 +5,11 @@ import { RaisedButton, TextField } from 'material-ui'
 // TODO @bshevchenko: this is intermediate version for demo
 import React from 'react'
 import { connect } from 'react-redux'
-
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
-
 import { exchange } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 // import RateHistoryChart from '../exchange/RateHistoryChart'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import ModalDialog from './ModalDialog'
 
 import './BuyTokensDialog.scss'
