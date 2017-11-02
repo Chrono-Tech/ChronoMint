@@ -1,9 +1,11 @@
 import { FlatButton } from 'material-ui'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { DUCK_SESSION } from 'redux/session/actions'
 import './EditManagersBaseForm.scss'
 import validate from './validate'
 
@@ -17,10 +19,17 @@ const onSubmit = (values) => {
   return values.get('managerAddress')
 }
 
+function mapStateToProps (state) {
+  return {
+    account: state.get(DUCK_SESSION).account,
+  }
+}
+
+@connect(mapStateToProps, null)
 @reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
 export default class EditManagersBase extends React.Component {
   static propTypes = {
-    account: PropTypes.string.isRequired,
+    account: PropTypes.string,
     managers: PropTypes.array,
   } & formPropTypes
 

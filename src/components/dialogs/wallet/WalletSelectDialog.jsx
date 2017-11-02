@@ -13,6 +13,7 @@ import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from '
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import { switchWallet } from 'redux/wallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import './WalletSelectDialog.scss'
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
@@ -30,6 +31,10 @@ function mapDispatchToProps (dispatch) {
       component: WalletAddEditDialog,
       props: {wallet: new MultisigWalletModel()},
     })),
+    handleEditManagersDialog: (wallet) => dispatch(modalsOpen({
+      component: EditManagersDialog,
+      props: {wallet},
+    })),
     handleClose: () => dispatch(modalsClose()),
     switchWallet: wallet => dispatch(switchWallet(wallet)),
     removeWallet: wallet => dispatch(removeWallet(wallet)),
@@ -43,11 +48,16 @@ export default class WalletSelectDialog extends React.Component {
   static propTypes = {
     multisigWallet: PropTypes.object,
     handleClose: PropTypes.func,
+    handleEditManagersDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
     addOwner: PropTypes.func,
     switchWallet: PropTypes.func,
+  }
+
+  handleEditManagers (wallet: MultisigWalletModel) {
+    this.props.handleEditManagersDialog(wallet)
   }
 
   selectMultisigWallet (wallet) {
@@ -64,13 +74,13 @@ export default class WalletSelectDialog extends React.Component {
           </div>
         </div>
         <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div styleName='symbol'>{wallet.name()}</div>
+          <div styleName='symbol'>{wallet.address()}</div>
           <div>
             <span styleName='ownersNum'>
               {wallet.owners().size} <Translate value='wallet.walletSelectDialog.owners' />
             </span>
             <div>
-              {wallet.owners().map((owner, idx) => (
+              {wallet.owners().valueSeq().toArray().map((owner, idx) => (
                 <i
                   className='material-icons'
                   key={owner}
@@ -89,7 +99,7 @@ export default class WalletSelectDialog extends React.Component {
                 <i
                   className='material-icons'
                   styleName='controlItem'
-                  onTouchTap={() => {this.props.walletAddEditDialog()}}
+                  onTouchTap={() => this.handleEditManagers(wallet)}
                 >edit</i>
                 <i
                   className='material-icons'
@@ -105,8 +115,8 @@ export default class WalletSelectDialog extends React.Component {
   }
 
   render () {
-    const wallets = this.props.multisigWallet.items()
-    const selected = this.props.multisigWallet.selected().address()
+    const wallets: Array = this.props.multisigWallet.items()
+    const selected: string = this.props.multisigWallet.selected().address()
 
     return (
       <ModalDialog onClose={() => this.props.handleClose()}>
@@ -127,8 +137,9 @@ export default class WalletSelectDialog extends React.Component {
           </div>
           <div styleName='body'>
             <div styleName='column'>
-              <h5 styleName='colName'><Translate
-                value={'wallet.walletSelectDialog.' + (wallets.size ? 'yourWallets' : 'youHaveNoWallets')} />
+              <h5 styleName='colName'>
+                <Translate
+                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')} />
               </h5>
               <div styleName='table'>
                 {wallets.map(item => this.renderRow(item, selected === item.address))}

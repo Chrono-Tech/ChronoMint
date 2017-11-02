@@ -4,8 +4,6 @@ import TransactionsCollection from 'models/Wallet/TransactionsCollection'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-window.ls = ls
-
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
   tokens: new Immutable.Map(), //

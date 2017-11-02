@@ -7,28 +7,28 @@ import AssetManagerForm from './AssetManagerForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
-    closeModal: () => dispatch(modalsClose()),
+    handleClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(null, mapDispatchToProps)
 export default class AssetManagerDialog extends React.Component {
   static propTypes = {
-    onClose: PropTypes.func,
-    closeModal: PropTypes.func,
+    handleClose: PropTypes.func,
+  }
+
+  handleClose = () => {
+    this.props.handleClose()
   }
 
   handleSubmitSuccess = () => {
-    this.props.closeModal()
+    this.handleClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
-        <AssetManagerForm
-          onSubmitSuccess={this.handleSubmitSuccess}
-        />
+      <ModalDialog onClose={this.handleClose}>
+        <AssetManagerForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )
   }

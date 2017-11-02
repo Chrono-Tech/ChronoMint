@@ -5,6 +5,7 @@ import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
+import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 
 const CODE_CONFIRMATION_NEEDED = 14014
 
@@ -39,7 +40,18 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchMultiTransact (wallet, callback) {
-    return this._watch('MultisigWalletMultiTransact', callback, { self: wallet.address() })
+    return this._watch('MultisigWalletMultiTransact', result => {
+      const {operation, owner, self, symbol, value} = result.args
+      const symbolString = this._c.bytesToString(symbol)
+      const token = wallet.tokens().get(symbolString)
+      callback(new MultisigTransactionModel({
+        id: operation,
+        owner,
+        wallet: self,
+        symbol: symbolString,
+        value: token.dao().removeDecimals(value),
+      }))
+    }, { self: wallet.address() })
   }
 
   watchSingleTransact (wallet, callback) {
@@ -70,16 +82,23 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async getPendings (tokens) {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [to, value, symbol, id] = await this._call('getPendings')
+    const [to, value, symbol, id, isConfirmed] = await this._call('getPendings')
+
+    console.log('--MultisigWalletDAO#getPendings', isConfirmed)
 
     to.forEach((item, i) => {
       const symbolString = this._c.bytesToString(symbol[i])
+      if (!symbolString) {
+        // TODO @dkchv: something wrong in contract
+        return
+      }
       const tokenDAO = tokens.get(symbolString).dao()
       pendingTxCollection = pendingTxCollection.add(new MultisigWalletPendingTxModel({
         to: item,
         value: tokenDAO.removeDecimals(value[i]),
         symbol: symbolString,
         id: id[i],
+        isConfirmed: isConfirmed[i],
       }))
     })
     return pendingTxCollection
@@ -114,12 +133,22 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async addOwner (wallet, newOwner) {
+  async addOwner (wallet, ownerAddress) {
     const result = await this._tx('addOwner', [
-      newOwner,
+      ownerAddress,
     ], {
       wallet: wallet.address(),
-      newOwner,
+      ownerAddress,
+    })
+    return result.tx
+  }
+
+  async removeOwner (wallet, ownerAddress) {
+    const result = await this._tx('removeOwner', [
+      ownerAddress,
+    ], {
+      wallet: wallet.address(),
+      ownerAddress,
     })
     return result.tx
   }

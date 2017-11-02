@@ -1,11 +1,10 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import { connect } from 'react-redux'
+import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import EditManagersBase from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
-import './AssetManagerForm.scss'
 import { modalsClose } from 'redux/modals/actions'
+import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
   const {selectedToken, tokensMap} = state.get(DUCK_ASSETS_MANAGER)
@@ -13,7 +12,6 @@ function mapStateToProps (state) {
 
   return {
     token,
-    account: state.get(DUCK_SESSION).account,
     managers: token.managersList() || [],
   }
 }
@@ -29,7 +27,6 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AssetManagerForm extends React.Component {
   static propTypes = {
-    account: PropTypes.string,
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,
     handleClose: PropTypes.func,
@@ -42,18 +39,17 @@ export default class AssetManagerForm extends React.Component {
     this.props.handleRemoveManager(this.props.token, address)
   }
 
-  handleSubmitSuccess = (address) => {
+  handleAddManager = (address) => {
     this.props.handleClose()
     this.props.handleAddManager(this.props.token, address)
   }
 
   render () {
     return (
-      <EditManagersBase
+      <EditManagersBaseForm
         managers={this.props.managers}
-        account={this.props.account}
         onRemove={this.handleRemove}
-        onSubmitSuccess={this.handleSubmitSuccess}
+        onSubmitSuccess={this.handleAddManager}
       />
     )
   }
