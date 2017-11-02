@@ -2,7 +2,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -77,7 +77,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class AddCurrencyDialog extends React.Component {
+export class AddCurrencyDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
