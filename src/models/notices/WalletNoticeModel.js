@@ -40,7 +40,7 @@ export default class WalletNoticeModel extends abstractNoticeModel({
 
   message () {
     return I18n.t(this.get('action'), {
-      name: this.get('address'),
+      address: this.get('address'),
     })
   }
 }
