@@ -55,4 +55,8 @@ export default {
       },
     },
   },
+  wallet: {
+    title: 'Мульти-кошелек',
+    create: '%{address}: создан',
+  },
 }

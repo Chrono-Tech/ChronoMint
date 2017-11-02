@@ -19,7 +19,7 @@
   flex-shrink: 0;
   transition: all 1s;
 
-  &:last-child {
+  &:nth-child(2) {
     margin-left: 10px;
   }
 
