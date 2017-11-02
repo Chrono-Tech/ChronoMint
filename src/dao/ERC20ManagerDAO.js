@@ -115,35 +115,45 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       map = map.set(ethToken.id(), ethToken)
 
       if (btcDAO.isInitialized()) {
-        const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
-        const btcToken = new TokenModel({
-          dao: btcDAO,
-          name: btcDAO.getName(),
-          symbol: btcDAO.getSymbol(),
-          isApproveRequired: false,
-          balance,
-          balance0,
-          balance6,
-          isOptional: false,
-          isFetched: true,
-        })
-        map = map.set(btcToken.id(), btcToken)
+        try {
+          const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
+          const btcToken = new TokenModel({
+            dao: btcDAO,
+            name: btcDAO.getName(),
+            symbol: btcDAO.getSymbol(),
+            isApproveRequired: false,
+            balance,
+            balance0,
+            balance6,
+            isOptional: false,
+            isFetched: true,
+          })
+          map = map.set(btcToken.id(), btcToken)
+        } catch (e) {
+          // eslint-disable-next-line
+          console.log('BTC support is not available', e)
+        }
       }
 
       if (bccDAO.isInitialized()) {
-        const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
-        const bccToken = new TokenModel({
-          dao: bccDAO,
-          name: bccDAO.getName(),
-          symbol: bccDAO.getSymbol(),
-          isApproveRequired: false,
-          balance,
-          balance0,
-          balance6,
-          isOptional: false,
-          isFetched: true,
-        })
-        map = map.set(bccToken.id(), bccToken)
+        try {
+          const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
+          const bccToken = new TokenModel({
+            dao: bccDAO,
+            name: bccDAO.getName(),
+            symbol: bccDAO.getSymbol(),
+            isApproveRequired: false,
+            balance,
+            balance0,
+            balance6,
+            isOptional: false,
+            isFetched: true,
+          })
+          map = map.set(bccToken.id(), bccToken)
+        } catch (e) {
+          // eslint-disable-next-line
+          console.log('BCC support is not available', e)
+        }
       }
     }
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()

@@ -5,6 +5,7 @@ import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { Translate } from 'react-redux-i18n'
 
 export default class Value extends React.Component {
   static propTypes = {
@@ -15,8 +16,12 @@ export default class Value extends React.Component {
   renderValue () {
     const {value, params = {}} = this.props
 
-    if (!value) { // null/undefined
+    if (value === null && value === undefined) { // null/undefined
       return ''
+    }
+
+    if (typeof value === 'boolean') {
+      return <Translate value={value.toString()} />
     }
 
     if (typeof value === 'string' || typeof value === 'number') {

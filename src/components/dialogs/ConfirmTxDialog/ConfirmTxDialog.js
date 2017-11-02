@@ -1,14 +1,15 @@
 import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import Moment, { FULL_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import Value from 'components/common/Value/Value'
+import Amount from 'models/Amount'
 import { DUCK_WATCHER } from 'redux/watcher/actions'
-import ModalDialog from '../ModalDialog'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = state => ({
@@ -23,7 +24,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class ConfirmTxDialog extends Component {
+export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     callback: PropTypes.func.isRequired,
     handleClose: PropTypes.func.isRequired,
@@ -64,21 +65,11 @@ export default class ConfirmTxDialog extends Component {
     return Object.keys(args).map(key => {
       const arg = args[key]
       let value
-
-      if (arg === null || arg === undefined) {
-        return
-      }
+      if (arg === null || arg === undefined) return
       // parse value
       switch (arg.constructor.name) {
         case 'BigNumber':
-          // TODO @dkchv: harcoded symbol!
-          value = <TokenValue value={arg} symbol='TIME' />
-          break
-        case 'Date':
-          value = <Moment date={arg} format={FULL_DATE} />
-          break
-        case 'Array':
-          value = arg.join(', ')
+          value = <Value value={new Amount(arg, 'TIME')} />
           break
         case 'Object':
           if (React.isValidElement(arg)) {
@@ -87,11 +78,8 @@ export default class ConfirmTxDialog extends Component {
             return this.getKeyValueRows(arg, tokenBase)
           }
           break
-        case 'Boolean':
-          value = <Translate value={arg.toString()} />
-          break
         default:
-          value = arg
+          value = <Value value={arg} />
       }
 
       return (

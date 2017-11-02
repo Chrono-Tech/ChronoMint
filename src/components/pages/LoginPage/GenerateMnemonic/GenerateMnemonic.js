@@ -1,7 +1,7 @@
 import { Checkbox, RaisedButton } from 'material-ui'
 import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import BackButton from '../BackButton/BackButton'
@@ -12,7 +12,7 @@ import Warning from '../Warning/Warning'
 
 import './GenerateMnemonic.scss'
 
-class GenerateMnemonic extends Component {
+class GenerateMnemonic extends PureComponent {
   static propTypes = {
     onBack: PropTypes.func,
   }

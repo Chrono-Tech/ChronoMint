@@ -1,7 +1,7 @@
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -30,7 +30,7 @@ function prefix (token) {
     return errors
   },
 })
-export default class OperationsSettingsDialog extends Component {
+export default class OperationsSettingsDialog extends PureComponent {
   static propTypes = {
     adminCount: PropTypes.number,
     handleAddressChange: PropTypes.func,

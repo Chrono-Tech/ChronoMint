@@ -44,6 +44,7 @@ function mapStateToProps (state) {
     address: selector(state, 'address'),
     name: selector(state, 'name'),
     icon: selector(state, 'icon'),
+    symbol: selector(state, 'symbol'),
     account: account,
     profile: profile,
     isTokensLoaded: !wallet.isFetching(),
@@ -71,6 +72,7 @@ export class AddTokenDialog extends React.Component {
     address: PropTypes.string,
     name: PropTypes.string,
     icon: PropTypes.string,
+    symbol: PropTypes.string,
   } & formPropTypes
 
   render () {
@@ -83,7 +85,7 @@ export class AddTokenDialog extends React.Component {
                 <IPFSImage
                   styleName='iconContent'
                   multihash={this.props.icon}
-                  fallbackComponent={<TokenIcon token={this.props.name} />}
+                  fallbackComponent={<TokenIcon token={this.props.symbol} />}
                 />
               </div>
             </div>

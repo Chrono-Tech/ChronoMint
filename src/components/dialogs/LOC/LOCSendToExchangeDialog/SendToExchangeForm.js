@@ -1,7 +1,7 @@
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 
@@ -14,7 +14,7 @@ import './SendToExchangeForm.scss'
 const onSubmit = values => +values.get('sendAmount')
 
 @reduxForm({ form: 'SendToExchangeForm', validate, onSubmit })
-class SendToExchangeForm extends Component {
+class SendToExchangeForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     allowed: PropTypes.object,

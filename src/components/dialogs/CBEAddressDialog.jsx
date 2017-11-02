@@ -1,7 +1,7 @@
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -37,7 +37,7 @@ function mapStateToProps (state) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_CBE_ADDRESS, validate })
-export default class CBEAddressDialog extends Component {
+export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
     handleAddressChange: PropTypes.func,
     // You need both handleSubmit and onSubmit

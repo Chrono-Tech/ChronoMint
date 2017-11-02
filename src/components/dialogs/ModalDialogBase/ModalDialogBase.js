@@ -1,6 +1,6 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -17,7 +17,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(null, mapDispatchToProps)
-class ModalDialogBase extends Component {
+class ModalDialogBase extends PureComponent {
   static propTypes = {
     title: PropTypes.any,
     subTitle: PropTypes.any,
