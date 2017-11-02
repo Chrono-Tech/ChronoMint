@@ -1,7 +1,7 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
@@ -10,7 +10,7 @@ import ModalDialog from './ModalDialog'
 
 import './CopyDialog.scss'
 
-export class CopyDialog extends React.Component {
+export class CopyDialog extends PureComponent {
   static propTypes = {
     copyValue: PropTypes.string,
     title: PropTypes.string,

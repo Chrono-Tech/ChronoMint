@@ -1,7 +1,7 @@
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 import { FloatingActionButton, Paper } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -34,7 +34,7 @@ function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
 }
 
-export class InfoPartial extends React.Component {
+export class InfoPartial extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import './ModalStack.scss'
 
-export class ModalStack extends React.Component {
+export class ModalStack extends PureComponent {
   render () {
     return (
       <div styleName='root'>

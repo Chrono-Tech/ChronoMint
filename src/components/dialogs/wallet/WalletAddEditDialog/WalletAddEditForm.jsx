@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { formPropTypes } from 'redux-form'
@@ -41,7 +41,7 @@ const onSubmit = (values, dispatch, props) => {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit})
-export default class WalletAddEditForm extends React.Component {
+export default class WalletAddEditForm extends PureComponent {
   static propTypes = {
     onClose: PropTypes.func,
   } & formPropTypes

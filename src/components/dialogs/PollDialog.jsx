@@ -3,7 +3,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
@@ -28,7 +28,7 @@ function prefix (token) {
 }
 
 @reduxForm({ form: FORM_POLL_DIALOG, validate })
-export class PollDialog extends React.Component {
+export class PollDialog extends PureComponent {
   static propTypes = {
 
     isModify: PropTypes.bool,

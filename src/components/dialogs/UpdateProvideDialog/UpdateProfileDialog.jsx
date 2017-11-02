@@ -2,7 +2,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { Field, reduxForm, formValueSelector } from 'redux-form/immutable'
 import { FontIcon, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 
@@ -26,7 +26,7 @@ import './UpdateProfileDialog.scss'
   form: 'UpdateProfileDialog',
   validate,
 })
-export class UpdateProfileDialog extends React.Component {
+export class UpdateProfileDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
 

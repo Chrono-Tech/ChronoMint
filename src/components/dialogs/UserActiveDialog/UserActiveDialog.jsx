@@ -1,7 +1,7 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import UserMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
@@ -27,7 +27,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class UserActiveDialog extends React.Component {
+export default class UserActiveDialog extends PureComponent {
   static propTypes = {
     handleLogout: PropTypes.func,
     closeModal: PropTypes.func,

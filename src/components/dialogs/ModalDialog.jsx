@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 
 import './ModalDialog.scss'
 
-export class ModalDialog extends React.Component {
+export class ModalDialog extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,

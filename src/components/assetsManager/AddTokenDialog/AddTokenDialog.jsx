@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AddPlatformDialog extends React.Component {
+export default class AddPlatformDialog extends PureComponent {
   static propTypes = {
     onClose: PropTypes.func,
     submitting: PropTypes.bool,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -45,7 +45,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletChanger extends React.Component {
+export default class WalletChanger extends PureComponent {
   static propTypes = {
     isMultisig: PropTypes.bool,
     mainWallet: PropTypes.object,

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
@@ -51,7 +51,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class DepositTokens extends React.Component {
+export class DepositTokens extends PureComponent {
   static propTypes = {
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,

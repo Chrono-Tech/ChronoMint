@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
 // TODO @bshevchenko: this is intermediate version for demo
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
@@ -18,7 +18,7 @@ import ModalDialog from './ModalDialog'
 
 import './BuyTokensDialog.scss'
 
-export class BuyTokensDialog extends React.Component {
+export class BuyTokensDialog extends PureComponent {
   static propTypes = {
     order: PropTypes.object,
     handleClose: PropTypes.func,

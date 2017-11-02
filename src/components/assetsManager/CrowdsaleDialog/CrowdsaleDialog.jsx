@@ -1,6 +1,6 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class CrowdsaleDialog extends React.Component {
+export default class CrowdsaleDialog extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,

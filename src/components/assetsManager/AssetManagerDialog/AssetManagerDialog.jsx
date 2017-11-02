@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {CSSTransitionGroup} from 'react-transition-group'
@@ -20,7 +20,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AssetManagerDialog extends React.Component {
+export default class AssetManagerDialog extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,

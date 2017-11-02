@@ -1,7 +1,7 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -21,7 +21,7 @@ function prefix (token) {
   return `components.dialogs.VoteDialog.${token}`
 }
 
-export class VoteDialog extends React.Component {
+export class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     onClose: PropTypes.func,
