@@ -75,7 +75,12 @@ $cell-padding: 16px 8px;
   padding: $cell-padding;
   padding-bottom: 8px;
   @include sm-only {
-    display: table-row;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+  span:last-child {
+    @include ellipsis;
   }
 }
 
@@ -89,7 +94,8 @@ $cell-padding: 16px 8px;
     padding: $cell-padding;
   }
 }
-.rowTitle{
+
+.rowTitle {
   display: none;
   @include sm-only {
     display: inline;

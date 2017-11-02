@@ -6,7 +6,7 @@ import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 export default class ExchangeModel extends abstractFetchingModel({
   orders: new Immutable.List([
     new ExchangeOrderModel({
-      trader: 'Trader name 1',
+      trader: '0xefadef49b8980cbd9bbe0b46769b83356452f491',
       buyPrice: new BigNumber(123),
       sellPrice: new BigNumber(123),
       isBuy: true,
@@ -14,7 +14,7 @@ export default class ExchangeModel extends abstractFetchingModel({
       symbol: 'ETH',
     }),
     new ExchangeOrderModel({
-      trader: 'Trader name 1',
+      trader: '0xefadef49b8980cbd9bbe0b46769b83356452f491',
       buyPrice: new BigNumber(123),
       sellPrice: new BigNumber(123),
       isBuy: true,
@@ -22,7 +22,7 @@ export default class ExchangeModel extends abstractFetchingModel({
       symbol: 'ETH',
     }),
     new ExchangeOrderModel({
-      trader: 'Trader name 1',
+      trader: '0xefadef49b8980cbd9bbe0b46769b83356452f491',
       buyPrice: new BigNumber(123),
       sellPrice: new BigNumber(123),
       isBuy: false,
@@ -30,7 +30,7 @@ export default class ExchangeModel extends abstractFetchingModel({
       symbol: 'ETH',
     }),
     new ExchangeOrderModel({
-      trader: 'Trader name 1',
+      trader: '0xefadef49b8980cbd9bbe0b46769b83356452f491',
       buyPrice: new BigNumber(123),
       sellPrice: new BigNumber(123),
       isBuy: true,
@@ -38,7 +38,7 @@ export default class ExchangeModel extends abstractFetchingModel({
       symbol: 'ETH',
     }),
     new ExchangeOrderModel({
-      trader: 'Trader name 1',
+      trader: '0xefadef49b8980cbd9bbe0b46769b83356452f491',
       buyPrice: new BigNumber(123),
       sellPrice: new BigNumber(123),
       isBuy: false,

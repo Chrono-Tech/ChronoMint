@@ -3,7 +3,8 @@ import { IPFSImage } from 'components'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { RaisedButton, TextField } from 'material-ui'
+import { RaisedButton } from 'material-ui'
+import { TextField } from 'redux-form-material-ui'
 import React from 'react'
 import { connect } from 'react-redux'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
@@ -148,7 +149,6 @@ export default class BuyTokensDialog extends React.Component {
                             component={TextField}
                             name='sell'
                             fullWidth
-                            floatingLabelFixed
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
                             floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;LHT</span>}
                             value={this.state.main.toString(10)}
@@ -169,7 +169,6 @@ export default class BuyTokensDialog extends React.Component {
                             component={TextField}
                             name='buy'
                             fullWidth
-                            floatingLabelFixed
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
                             floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;ETH</span>}
                             value={this.state.second.toString(10)}

@@ -154,6 +154,7 @@
   font-size: 16px;
   line-height: 20px;
   vertical-align: baseline;
+  @include ellipsis;
 }
 
 .icon {

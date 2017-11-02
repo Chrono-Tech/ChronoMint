@@ -36,7 +36,7 @@ export class OrdersTable extends React.Component {
       <div styleName='row' key={this.orderIndex}>
         <div styleName='colTrader'>
           <span styleName='rowTitle'><Translate value={prefix('trader')} />: </span>
-          {order.trader()}
+          <span>{order.trader()}</span>
         </div>
         <div styleName='colPrice'>
           <span styleName='rowTitle'><Translate value={prefix('price')} />: </span>
