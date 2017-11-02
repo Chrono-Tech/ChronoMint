@@ -124,6 +124,14 @@
       margin-right: 64px;
     }
   }
+  @include lg-plus {
+    &:first-child {
+      margin-right: 64px;
+    }
+    &:last-child {
+      justify-content: center;
+    }
+  }
   @include md-only {
     &:first-child {
       margin-right: 0;
