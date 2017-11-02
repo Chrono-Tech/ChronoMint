@@ -190,8 +190,7 @@ export const multisigTransfer = (wallet, token, amount, recipient) => async (dis
 export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async dispatch => {
   try {
     const dao: MultisigWalletDAO = wallet.dao()
-    const result = await dao.confirmPendingTx(tx)
-    console.log('--actions#', result)
+    await dao.confirmPendingTx(tx)
   } catch (e) {
     // eslint-disable-next-line
     console.error('error', e.message)
@@ -201,8 +200,7 @@ export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => a
 export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async dispatch => {
   try {
     const dao: MultisigWalletDAO = wallet.dao()
-    const result = await dao.revokePendingTx(tx)
-    console.log('--actions#', result)
+    await dao.revokePendingTx(tx)
   } catch (e) {
     // eslint-disable-next-line
     console.error('error', e.message)

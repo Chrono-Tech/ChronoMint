@@ -55,49 +55,33 @@ export default class WalletAddEditForm extends React.Component {
           <div styleName='dialogHeaderStuff'>
             <img styleName='dialogHeaderIcon' src={icnWalletDialogWhite} />
             <div styleName='dialogHeaderTitle'>
-              <Translate
-                value={`WalletAddEditDialog.${isNew ? 'newWallet' : 'editWallet'}`}
-              />
+              <Translate value='WalletAddEditDialog.newWallet' />
             </div>
           </div>
         </div>
-        {isNew
-          ? (
-            <div styleName='dialogBody'>
-              <Field
-                component={TextField}
-                name='name'
-                fullWidth
-                disabled
-                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
-              />
-              <Field
-                component={TextField}
-                name='requiredSignatures'
-                fullWidth
-                floatingLabelText={<Translate value='WalletAddEditDialog.requiredSignatures' />}
-              />
-              <FieldArray
-                component={OwnersList}
-                name='owners'
-              />
-            </div>
-          )
-          : (
-            <div styleName='dialogBody'>
-              <Field
-                component={TextField}
-                name='name'
-                fullWidth
-                floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
-              />
-            </div>
-          )
-        }
+        <div styleName='dialogBody'>
+          <Field
+            component={TextField}
+            name='name'
+            fullWidth
+            disabled
+            floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
+          />
+          <Field
+            component={TextField}
+            name='requiredSignatures'
+            fullWidth
+            floatingLabelText={<Translate value='WalletAddEditDialog.requiredSignatures' />}
+          />
+          <FieldArray
+            component={OwnersList}
+            name='owners'
+          />
+        </div>
         <div styleName='dialogFooter'>
           <RaisedButton
             styleName='action'
-            label={<Translate value={`WalletAddEditDialog.${isNew ? 'addWallet' : 'save'}`} />}
+            label={<Translate value='WalletAddEditDialog.addWallet' />}
             type='submit'
             primary
             disabled={pristine || !valid}

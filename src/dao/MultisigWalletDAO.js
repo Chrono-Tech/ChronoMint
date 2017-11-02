@@ -84,8 +84,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
     const [to, value, symbol, id, isConfirmed] = await this._call('getPendings')
 
-    console.log('--MultisigWalletDAO#getPendings', isConfirmed)
-
     to.forEach((item, i) => {
       const symbolString = this._c.bytesToString(symbol[i])
       if (!symbolString) {
