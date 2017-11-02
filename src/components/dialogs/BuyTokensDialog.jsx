@@ -141,7 +141,7 @@ export default class BuyTokensDialog extends React.Component {
                       <div className='icon'>
                         <div
                           className='content'
-                          style={{background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`,}}
+                          style={{background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`}}
                         />
                       </div>
                     </div>

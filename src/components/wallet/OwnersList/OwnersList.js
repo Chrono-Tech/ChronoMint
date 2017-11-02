@@ -70,7 +70,9 @@ class OwnersList extends PureComponent {
       <div>
         <div styleName='counterBox'>
           <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-          styleName='counter'>{fields.length + 1}</span>
+            styleName='counter'
+          >{fields.length + 1}
+          </span>
         </div>
         <div styleName='counterError'>{this.props.meta.error}</div>
 

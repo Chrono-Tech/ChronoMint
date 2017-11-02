@@ -26,6 +26,6 @@ export default (values, props) => {
       .add(token.dao().getAddressValidator()(recipient))
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

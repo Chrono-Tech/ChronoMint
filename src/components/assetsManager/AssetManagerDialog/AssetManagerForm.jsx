@@ -34,12 +34,12 @@ export default class AssetManagerForm extends React.Component {
     managers: PropTypes.array,
   }
 
-  handleRemove = (address) => {
+  handleRemove = address => {
     this.props.handleClose()
     this.props.handleRemoveManager(this.props.token, address)
   }
 
-  handleAddManager = (address) => {
+  handleAddManager = address => {
     this.props.handleClose()
     this.props.handleAddManager(this.props.token, address)
   }

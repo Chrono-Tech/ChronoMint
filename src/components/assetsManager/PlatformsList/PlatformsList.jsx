@@ -79,7 +79,8 @@ export class PlatformsList extends PureComponent {
                     name
                       ? <div styleName='platformTitle'>{name}&nbsp;(
                         <small>{address}</small>
-                        )</div>
+                        )
+                      </div>
                       : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>

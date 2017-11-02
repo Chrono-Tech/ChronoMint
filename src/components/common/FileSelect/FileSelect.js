@@ -133,7 +133,7 @@ class FileSelect extends PureComponent {
     this.input.click()
   }
 
-  async handleFileRemove(id) {
+  async handleFileRemove (id) {
     const fileCollection = this.state.fileCollection.remove(id)
     this.setState({
       files: this.state.files.remove(id),

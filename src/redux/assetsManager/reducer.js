@@ -172,7 +172,7 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         usersPlatforms: action.payload.usersPlatforms,
-        usersPlatformsCount: action.payload.usersPlatforms.length
+        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     default:
       return state
