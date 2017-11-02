@@ -27,10 +27,6 @@ export const validatePrivateKey = (privateKey: string): boolean => {
   }
 }
 
-export const createNemWallet = (privateKey, network) => {
-  return NemWallet.fromPrivateKey(privateKey, network)
-}
-
 const privateKeyProvider = (privateKey, { url, network } = {}) => {
   const ethereum = createEthereumWallet(privateKey)
   const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[network.bitcoin])
