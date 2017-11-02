@@ -53,6 +53,7 @@
   }
   .info {
     flex: 1;
+    min-width: 1px;
     .name {
       font-weight: 600;
       color: $color-primary-0;
@@ -64,8 +65,10 @@
         color: $color-primary-0;
       }
       .number {
-        @include ellipsis;
-        color: $color-primary-0;
+        div {
+          @include ellipsis;
+          color: $color-primary-0;
+        }
       }
     }
   }

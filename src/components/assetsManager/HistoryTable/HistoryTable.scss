@@ -215,3 +215,10 @@ $cell-padding: 24px 0px;
     text-align: center;
   }
 }
+
+.value {
+  min-width: 1px;
+  div {
+    @include ellipsis
+  }
+}

@@ -208,10 +208,10 @@ export default class AddTokenForm extends React.Component {
     const amount = this.props.formValues && this.props.formValues.get('amount')
     const description = this.props.formValues && this.props.formValues.get('description')
     const platform = this.props.formValues && this.props.formValues.get('platform')
-    const renderPlatform = (platform) => {
+    const renderPlatform = platform => {
       return platform.name
-        ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
-        : <span>{platform.address}</span>
+        ? <div>{platform.name}&nbsp;(<small>{platform.address}</small>)</div>
+        : <div>{platform.address}</div>
     }
     return (
       <div styleName='tokenInfoRow'>
