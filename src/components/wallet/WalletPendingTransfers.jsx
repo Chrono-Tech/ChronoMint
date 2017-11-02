@@ -49,14 +49,14 @@ export default class WalletPendingTransfers extends PureComponent {
           <div styleName='revoke'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
-              disabled={item.isRevoked()}
+              disabled={!item.isConfirmed()}
               onTouchTap={() => this.props.revoke(wallet, item)}
             />
           </div>
           <div styleName='sign'>
             <RaisedButton
               label={<Translate value='wallet.sign' />}
-              disabled={item.isSigned()}
+              disabled={item.isConfirmed()}
               onTouchTap={() => this.props.confirm(wallet, item)}
               primary
             />

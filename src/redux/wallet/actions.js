@@ -8,7 +8,7 @@ export const initWallet = () => (dispatch, getState) => {
   dispatch(switchWallet(getState().get(DUCK_MAIN_WALLET)))
 }
 
-export const switchWallet = (wallet) => async dispatch => {
+export const switchWallet = wallet => dispatch => {
   dispatch({type: WALLET_SWITCH_WALLET, wallet})
   if (wallet.isMultisig()) {
     dispatch(selectMultisigWallet(wallet))

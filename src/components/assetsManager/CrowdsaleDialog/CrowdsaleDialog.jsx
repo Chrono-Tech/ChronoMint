@@ -1,19 +1,9 @@
-import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialog from 'components/dialogs/ModalDialog'
-
 import CrowdsaleForm from './CrowdsaleForm'
-
-const TRANSITION_TIMEOUT = 250
-
-function mapStateToProps (/* state */) {
-  return {}
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -25,7 +15,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class CrowdsaleDialog extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
@@ -34,27 +24,15 @@ export default class CrowdsaleDialog extends PureComponent {
     closeModal: PropTypes.func,
   }
 
-  handleSubmitSuccess = (/*platform*/) => {
+  handleSubmitSuccess = () => {
     this.props.closeModal()
-    // eslint-disable-next-line
-    // console.log(platform)
   }
 
   render () {
     return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={TRANSITION_TIMEOUT}
-        transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}
-      >
-        <ModalDialog onClose={() => this.props.onClose()}>
-          <CrowdsaleForm
-            handleSubmit={this.handleSubmitSuccess}
-          />
-        </ModalDialog>
-      </CSSTransitionGroup>
+      <ModalDialog onClose={() => this.props.onClose()}>
+        <CrowdsaleForm handleSubmit={this.handleSubmitSuccess} />
+      </ModalDialog>
     )
   }
 }

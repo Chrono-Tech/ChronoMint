@@ -9,9 +9,8 @@ import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { SET_SELECTED_COIN } from 'redux/market/action'
 import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
-
+import { DUCK_SESSION } from 'redux/session/actions'
 import Preloader from 'components/common/Preloader/Preloader'
-
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -34,16 +33,44 @@ function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
 }
 
+
+function mapDispatchToProps (dispatch) {
+  return {
+    addCurrency: () => dispatch(modalsOpen({
+      component: AddCurrencyDialog,
+    })),
+    onChangeSelectedCoin: (symbol, open) => {
+      dispatch({ type: SET_SELECTED_COIN, payload: { coin: symbol } })
+      dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } })
+    },
+  }
+}
+
+function mapStateToProps (state) {
+  const {account, profile} = state.get(DUCK_SESSION)
+  const market = state.get('market')
+  const ui = state.get('ui')
+
+  return {
+    account,
+    profile,
+    isInited: !!state.get(DUCK_WALLET).current,
+    wallet: getCurrentWallet(state),
+    selectedCoin: market.selectedCoin,
+    open: ui.open,
+  }
+}
+
 export class InfoPartial extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
+    wallet: PropTypes.object,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
     isInited: PropTypes.bool,
-    wallet: PropTypes.object
   }
 
   constructor (props) {
@@ -190,33 +217,6 @@ export class InfoPartial extends PureComponent {
     this.setState({
       slideIndex: slideIndex % cells,
     })
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    addCurrency: () => dispatch(modalsOpen({
-      component: AddCurrencyDialog,
-    })),
-    onChangeSelectedCoin: (symbol, open) => {
-      dispatch({ type: SET_SELECTED_COIN, payload: { coin: symbol } })
-      dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } })
-    },
-  }
-}
-
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const market = state.get('market')
-  const ui = state.get('ui')
-
-  return {
-    account: session.account,
-    profile: session.profile,
-    isInited: !!state.get(DUCK_WALLET).current,
-    wallet: getCurrentWallet(state),
-    selectedCoin: market.selectedCoin,
-    open: ui.open,
   }
 }
 
