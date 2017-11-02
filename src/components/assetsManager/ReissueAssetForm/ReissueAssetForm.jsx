@@ -1,7 +1,7 @@
 import { Field, reduxForm, reset } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -31,7 +31,7 @@ const onSubmit = (values, dispatch, props) => {
 
 @connect(mapStateToProps)
 @reduxForm({form: FORM_REISSUE_FORM, validate, onSubmit})
-export default class ReissueAssetForm extends Component {
+export default class ReissueAssetForm extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
     handleSubmit: PropTypes.func,

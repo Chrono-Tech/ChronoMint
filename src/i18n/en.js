@@ -71,7 +71,7 @@ export default {
     changeMultisignatureWallet: 'Change multisignature wallet',
     switchToMultisignatureWallet: 'Switch to multisignature wallet',
     switchToMainWallet: 'Switch to main wallet',
-    pendingTransfers: 'Pending transfers (demo)',
+    pendingTransfers: 'Pending transfers',
     to: 'To',
     value: 'Value',
     revoke: 'REVOKE',

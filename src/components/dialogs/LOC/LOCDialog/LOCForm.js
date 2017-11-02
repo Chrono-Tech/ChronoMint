@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import LOCModel from 'models/LOCModel'
@@ -38,7 +38,7 @@ const onSubmit = (values, dispatch, props) => new LOCModel({
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: 'LOCForm', validate, onSubmit })
-class LOCForm extends Component {
+class LOCForm extends PureComponent {
   static propTypes = {
     removeLOC: PropTypes.func,
     pristine: PropTypes.bool,

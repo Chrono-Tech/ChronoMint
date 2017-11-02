@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
 import MultisigWalletDAO from 'dao/MultisigWalletDAO'
+import type MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -26,8 +27,8 @@ class MultisigWalletService extends EventEmitter {
       dao.watchOwnerRemoved(wallet, result => {
         this.emit('OwnerRemoved', result)
       }),
-      dao.watchMultiTransact(wallet, result => {
-        this.emit('MultiTransact', result)
+      dao.watchMultiTransact(wallet, (multisigTransactionModel: MultisigTransactionModel) => {
+        this.emit('MultiTransact', wallet.address(), multisigTransactionModel)
       }),
       dao.watchSingleTransact(wallet, result => {
         this.emit('SingleTransact', result)

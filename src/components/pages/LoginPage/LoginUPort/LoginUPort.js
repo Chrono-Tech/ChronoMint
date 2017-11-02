@@ -1,6 +1,6 @@
 import { CircularProgress, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginUPort extends Component {
+class LoginUPort extends PureComponent {
   static propTypes = {
     addError: PropTypes.func,
     onLogin: PropTypes.func.isRequired,

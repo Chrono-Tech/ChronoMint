@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import './ChronoBankLogo.scss'
 
-class ChronoBankLogo extends Component {
+class ChronoBankLogo extends PureComponent {
   static propTypes = {
     version: PropTypes.string,
   }

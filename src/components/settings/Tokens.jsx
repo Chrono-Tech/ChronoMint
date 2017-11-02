@@ -1,6 +1,6 @@
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -19,7 +19,7 @@ function prefix (token) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Tokens extends Component {
+export default class Tokens extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
     getList: PropTypes.func,

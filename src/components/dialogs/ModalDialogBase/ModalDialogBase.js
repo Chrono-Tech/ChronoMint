@@ -1,6 +1,6 @@
 import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -10,12 +10,14 @@ import ModalDialog from '../ModalDialog'
 
 import './ModalDialogBase.scss'
 
+const TRANSITION_TIMEOUT = 250
+
 const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
-class ModalDialogBase extends Component {
+class ModalDialogBase extends PureComponent {
   static propTypes = {
     title: PropTypes.any,
     subTitle: PropTypes.any,
@@ -30,9 +32,9 @@ class ModalDialogBase extends Component {
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
+        transitionAppearTimeout={TRANSITION_TIMEOUT}
+        transitionEnterTimeout={TRANSITION_TIMEOUT}
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <ModalDialog
           onClose={() => this.props.closeModal()}

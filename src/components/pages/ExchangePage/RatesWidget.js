@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -24,7 +24,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class RatesWidget extends Component {
+class RatesWidget extends PureComponent {
   componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getRates()
