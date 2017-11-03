@@ -2,12 +2,11 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { MenuItem, RaisedButton } from 'material-ui'
 import { TextField, SelectField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, reduxForm, change, formValueSelector } from 'redux-form/immutable'
 import SwipeableViews from 'react-swipeable-views'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
-import { ETH, LHT } from 'redux/mainWallet/actions'
 import { search } from 'redux/exchange/actions'
 import validate from './validate'
 
@@ -20,6 +19,16 @@ const MODES = [
 
 export const FORM_EXCHANGE = 'ExchangeForm'
 
+const mapStateToProps = state => {
+  const exchange = state.get('exchange')
+  const selector = formValueSelector(FORM_EXCHANGE)
+  return {
+    isFetching: exchange.isFetching(),
+    assetSymbols: exchange.assetSymbols(),
+    filterMode: selector(state, 'filterMode'),
+  }
+}
+
 const mapDispatchToProps = dispatch => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
@@ -29,38 +38,25 @@ function prefix (token) {
 }
 
 const onSubmit = (values, dispatch) => {
-  // eslint-disable-next-line
-  console.log('--ExchangeWidget#onSubmit filter',)
+  dispatch(search(values))
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_EXCHANGE, validate, onSubmit})
 export default class ExchangeWidget extends React.Component {
   static propTypes = {
     search: PropTypes.func,
+    assetSymbols: PropTypes.arrayOf(PropTypes.string),
+    handleSubmit: PropTypes.func,
+    dispatch: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      mode: MODES[0],
-      currency: LHT,
-    }
-  }
-
-  componentWillMount () {
-    this.handleSearch()
+  componentDidMount () {
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[0]))
   }
 
   handleChangeMode (value) {
-    this.setState({
-      mode: MODES[value],
-    })
-  }
-
-  handleSearch () {
-    this.props.search(this.state.currency, this.state.mode.name === 'BUY')
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[value]))
   }
 
   render () {
@@ -73,7 +69,7 @@ export default class ExchangeWidget extends React.Component {
               <li
                 styleName='tab'
                 key={el.name}
-                className={el.name === this.state.mode.name ? 'active' : null}
+                className={el === this.props.filterMode ? 'active' : null}
                 onTouchTap={() => this.handleChangeMode(index)}
               >
                 <span styleName='tabTitle'>
@@ -85,48 +81,49 @@ export default class ExchangeWidget extends React.Component {
           </ul>
         </div>
         <div styleName='content'>
-          <SwipeableViews
-            index={this.state.mode.index}
-            onChangeIndex={index => this.handleChangeMode(index)}
-          >
-            {MODES.map(el => (
-              <div styleName='slide' key={el.name}>
-                <div styleName='wrapper'>
-                  <div styleName='item'>
-                    <Field
-                      component={TextField}
-                      name='amount'
-                      fullWidth
-                      floatingLabelText={<Translate value={prefix('amount')} />}
-                    />
-                  </div>
-                  <div styleName='item'>
-                    <Field
-                      name='token'
-                      component={SelectField}
-                      fullWidth
-                      floatingLabelText={<Translate value={prefix('token')} />}
-                    >
-                      <MenuItem value={ETH} primaryText={ETH} />
-                      <MenuItem value={LHT} primaryText={LHT} />
-                    </Field>
-                  </div>
-                  <div styleName='item'>
-                    <div styleName='actions'>
-                      <RaisedButton
-                        label={<Translate value={prefix('search')} />}
-                        onTouchTap={e => {
-                          e.stopPropagation()
-                          this.handleSearch()
-                        }}
-                        primary
+          <form onSubmit={this.props.handleSubmit}>
+            <SwipeableViews
+              index={this.props.filterMode ? this.props.filterMode.index : 0}
+              onChangeIndex={index => this.handleChangeMode(index)}
+            >
+              {MODES.map(el => (
+                <div styleName='slide' key={el.name}>
+                  <div styleName='wrapper'>
+                    <div styleName='item'>
+                      <Field
+                        component={TextField}
+                        name='amount'
+                        fullWidth
+                        floatingLabelText={<Translate value={prefix('amount')} />}
                       />
+                    </div>
+                    <div styleName='item'>
+                      <Field
+                        name='token'
+                        component={SelectField}
+                        fullWidth
+                        floatingLabelText={<Translate value={prefix('token')} />}
+                      >
+                        {
+                          this.props.assetSymbols
+                            .map(symbol => <MenuItem key={symbol} value={symbol} primaryText={symbol} />)
+                        }
+                      </Field>
+                    </div>
+                    <div styleName='item'>
+                      <div styleName='actions'>
+                        <RaisedButton
+                          type='submit'
+                          label={<Translate value={prefix('search')} />}
+                          primary
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </SwipeableViews>
+              ))}
+            </SwipeableViews>
+          </form>
         </div>
       </div>
     )

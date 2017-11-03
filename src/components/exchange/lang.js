@@ -1,5 +1,5 @@
 import * as ExchangeWidget from './ExchangeWidget/lang'
-import * as OrdersTable from './OrdersTable/lang'
+import * as OrdersTable from './ExchangesTable/lang'
 import * as BuyTokensDialog from './BuyTokensDialog/lang'
 
 export default {

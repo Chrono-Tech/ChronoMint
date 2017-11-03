@@ -1,63 +1,24 @@
 // TODO @bshevchenko: this is intermediate version for demo
 import BigNumber from 'bignumber.js'
 
-import { LHT, ETH } from 'redux/mainWallet/actions'
-
 import { abstractNoticeModel } from 'models/notices/AbstractNoticeModel'
 
 export default class ExchangeOrderModel extends abstractNoticeModel({
-  trader: null,
-  symbol: null,
-  limit: new BigNumber(0),
-  isBuy: null,
+  owner: null,
   buyPrice: new BigNumber(0),
   sellPrice: new BigNumber(0),
-  accountBalance: new BigNumber(0),
+  assetBalance: new BigNumber(0),
+  ethBalance: new BigNumber(0),
+  symbol: null,
+  address: null,
 }) {
-  limit (): BigNumber {
-    return this.get('limit')
+
+  address (): string {
+    return this.get('address')
   }
 
-  // TODO @bshevchenko
-  mainSymbol (): string {
-    return LHT
-  }
-
-  // TODO @bshevchenko
-  secondSymbol (): string {
-    return ETH
-  }
-
-  isMainSymbol (): boolean {
-    return this.symbol() === this.mainSymbol()
-  }
-
-  isSecondSymbol (): boolean {
-    return this.symbol() === this.secondSymbol()
-  }
-
-  symbol (): string {
-    return this.get('symbol')
-  }
-
-  trader (): string {
-    return this.get('trader')
-  }
-
-  isBuy (): boolean {
-    return this.get('isBuy')
-  }
-
-  isSell (): boolean {
-    return !this.isBuy()
-  }
-
-  isBuyMain (): boolean {
-    return (this.isBuy() && this.isMainSymbol()) || (this.isSell() && this.isSecondSymbol())
-  }
-
-  isSellMain (): boolean {
-    return !this.isBuyMain()
+  owner (): string {
+    return this.get('owner')
   }
 
   buyPrice (): BigNumber {
@@ -68,11 +29,15 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
     return this.get('sellPrice')
   }
 
-  accountBalance (): BigNumber {
-    return this.get('accountBalance')
+  assetBalance (): BigNumber {
+    return this.get('assetBalance')
   }
 
-  accountBalanceSymbol (): string {
-    return this.isBuyMain() ? this.secondSymbol() : this.mainSymbol()
+  ethBalance (): BigNumber {
+    return this.get('ethBalance')
+  }
+
+  symbol (): string {
+    return this.get('symbol')
   }
 }

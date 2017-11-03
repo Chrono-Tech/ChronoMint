@@ -1,64 +1,79 @@
 import PropTypes from 'prop-types'
+import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import Immutable from 'immutable'
+
 import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
+import ExchangesCollection from 'models/exchange/ExchangesCollection'
 
 import { modalsOpen } from 'redux/modals/actions'
 
 import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import './OrdersTable.scss'
+import './ExchangesTable.scss'
 
 function prefix (token) {
   return `components.exchange.OrdersTable.${token}`
 }
 
-export class OrdersTable extends React.Component {
+function mapStateToProps (state) {
+  const exchange = state.get('exchange')
+  return {
+    exchanges: exchange.exchanges(),
+    filter: exchange.filter(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
+      component: BuyTokensDialog,
+      props: {
+        order,
+      },
+    })),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class ExchangesTable extends React.Component {
   static propTypes = {
-    orders: PropTypes.instanceOf(Immutable.List),
+    exchanges: PropTypes.instanceOf(ExchangesCollection),
     openDetails: PropTypes.func,
+    filter: PropTypes.instanceOf(Immutable.Map),
   }
 
-  constructor (props) {
-    super(props)
-
-    this.orderIndex = 0
-  }
-
-  renderRow (order: ExchangeOrderModel) {
-    this.orderIndex++
-
+  renderRow (exchange: ExchangeOrderModel) {
     return (
-      <div styleName='row' key={this.orderIndex}>
+      <div styleName='row' key={exchange.address()}>
         <div styleName='colTrader'>
           <span styleName='rowTitle'><Translate value={prefix('trader')} />: </span>
-          <span>{order.trader()}</span>
+          <span>{exchange.owner()}</span>
         </div>
         <div styleName='colPrice'>
           <span styleName='rowTitle'><Translate value={prefix('price')} />: </span>
           <TokenValue
-            value={order.buyPrice()}
-            symbol={order.symbol()}
+            value={exchange.buyPrice()}
+            symbol={exchange.symbol()}
           />
         </div>
         <div styleName='colLimits'>
           <span styleName='rowTitle'><Translate value={prefix('limits')} />: </span>
           <TokenValue
-            value={order.limit()}
-            symbol={order.symbol()}
+            value={exchange.assetBalance()}
+            symbol={exchange.symbol()}
           />
         </div>
         <div styleName='colActions'>
           <RaisedButton
-            label={<Translate value={prefix(order.isBuy() ? 'buy' : 'sell')} />}
-            disabled={!order.limit()}
+            label={<Translate value={prefix(exchange.assetBalance().toString() > 0 ? 'buy' : 'sell')} />}
+            disabled={!exchange.assetBalance()}
             onTouchTap={e => {
               e.stopPropagation()
-              this.props.openDetails(order)
+              this.props.openDetails(exchange)
             }}
           />
         </div>
@@ -67,6 +82,14 @@ export class OrdersTable extends React.Component {
   }
 
   render () {
+    let filteredItems = []
+    filteredItems = this.props.filter.size > 0 && this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
+      if (this.props.filter.get('filterMode').name === 'BUY') {
+        return this.props.filter.get('amount') < item.ethBalance()
+      } else {
+        return this.props.filter.get('amount') < item.assetBalance()
+      }
+    })
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -83,34 +106,13 @@ export class OrdersTable extends React.Component {
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.orders.valueSeq().map(order => this.renderRow(order))}
+              {this.props.exchanges.isFetched() && filteredItems.map(exchange => this.renderRow(exchange))}
             </div>
           </div>
         </div>
-        {/* <div styleName='footer'>
-          <RaisedButton label='All Offers' primary />
-        </div> */}
       </div>
     )
   }
 }
 
-function mapStateToProps (state) {
-  return {
-    orders: state.get('exchange').orders(),
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
-      component: BuyTokensDialog,
-      props: {
-        order,
-      },
-    })),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersTable)
 
