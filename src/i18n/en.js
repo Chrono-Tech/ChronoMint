@@ -4,6 +4,7 @@ import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
 import * as exchange from 'dao/ExchangeDAO'
+import { en as Login } from 'Login/lang'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
@@ -11,14 +12,14 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-import { en as LoginPage } from 'pages/LoginPage/lang'
+
 import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',
   true: 'yes',
   false: 'no',
-  LoginPage,
+  ...Login,
   ...components,
   layouts,
   global: {

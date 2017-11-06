@@ -4,9 +4,9 @@ import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, Wa
 import { Translate } from 'react-redux-i18n'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
-import { isTestingNetwork } from 'network/settings'
-import { DUCK_NETWORK } from 'redux/network/actions'
 import { getAccountTransactions } from 'redux/mainWallet/actions'
+import { DUCK_NETWORK } from 'Login/redux/network/actions'
+import { isTestingNetwork } from 'Login/network/settings'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 

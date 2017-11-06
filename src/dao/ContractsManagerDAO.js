@@ -1,5 +1,6 @@
 import type Immutable from 'immutable'
 import type TokenModel from 'models/TokenModel'
+import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
 import validator from 'components/forms/validator'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
@@ -235,4 +236,4 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new ContractsManagerDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
+export default new ContractsManagerDAO(json)

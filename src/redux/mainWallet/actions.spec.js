@@ -9,7 +9,7 @@ import ProfileModel from 'models/ProfileModel'
 import TokenModel from 'models/TokenModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 import { notify } from 'redux/notifier/actions'
 import web3Converter from 'utils/Web3Converter'
 import * as a from './actions'
@@ -60,7 +60,7 @@ describe('wallet actions', () => {
     const tokens = myStore.getActions()[1].tokens
     eth = tokens.get(a.ETH)
     time = tokens.get(a.TIME)
-    lht = tokens.get(lhtDAO.getSymbol())
+    lht = tokens.get(a.LHT)
 
     expect(eth instanceof TokenModel).toBeTruthy()
     expect(time instanceof TokenModel).toBeTruthy()
@@ -200,7 +200,7 @@ describe('wallet actions', () => {
     await store.dispatch(a.getAccountTransactions(new Immutable.Map({
       [a.ETH]: eth,
       [a.TIME]: time,
-      [lhtDAO.getSymbol()]: lht,
+      [a.LHT]: lht,
     })))
 
     const txs: Array<TxModel> = store.getActions()[1].map.valueSeq().toArray()

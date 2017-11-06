@@ -1,14 +1,13 @@
+import Login from 'Login/redux/ducks'
 import * as assetsManager from './assetsManager/'
 import * as drawer from './drawer/'
 import * as exchange from './exchange/'
-import * as ledger from './ledger/'
 import * as locs from './locs/'
 import * as mainWallet from './mainWallet/'
 import * as market from './market/'
 import * as modals from './modals/'
 import * as monitor from './monitor/'
 import * as multisigWallet from './multisigWallet/'
-import * as network from './network/'
 import * as notifier from './notifier/'
 import * as operations from './operations/'
 import * as rewards from './rewards/'
@@ -19,7 +18,7 @@ import * as voting from './voting/'
 import * as wallet from './wallet/'
 import * as watcher from './watcher/'
 
-export {
+export default {
   ui,
   modals,
   drawer,
@@ -33,11 +32,10 @@ export {
   exchange,
   settings,
   notifier,
-  network,
   operations,
   watcher,
   market,
   monitor,
-  ledger,
   assetsManager,
+  ...Login,
 }

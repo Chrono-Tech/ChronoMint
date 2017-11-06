@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import moment from 'moment'
+import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import ls from 'utils/LocalStorage'
@@ -80,6 +81,7 @@ const configureStore = () => {
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine),
+      saveAccountMiddleWare
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()

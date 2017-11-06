@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
+import web3Provider from 'Login/network/Web3Provider'
 import contractManager from 'dao/ContractsManagerDAO'
 import TxModel from 'models/TxModel'
-import web3Provider from 'network/Web3Provider'
 import Web3Converter from 'utils/Web3Converter'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_REVOKE, TX_OWNERSHIP_CHANGE } from './ChronoBankPlatformDAO'

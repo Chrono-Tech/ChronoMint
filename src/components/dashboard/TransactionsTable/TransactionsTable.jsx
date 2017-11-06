@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types'
-import { RaisedButton, CircularProgress, Paper } from 'material-ui'
 import React, { PureComponent } from 'react'
+import { RaisedButton, CircularProgress, Paper } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import { getEtherscanUrl } from 'Login/network/settings'
 import moment from 'moment'
-
-import { getEtherscanUrl } from 'network/settings'
-
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
@@ -169,12 +167,12 @@ function buildTableData (transactions, locale) {
   const groups = transactions.valueSeq().toArray()
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
-      data[groupBy] = data[groupBy] || {
+      data[ groupBy ] = data[ groupBy ] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
         transactions: [],
       }
-      data[groupBy].transactions.push({
+      data[ groupBy ].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
         timeTitle: trx.date('HH:mm'),

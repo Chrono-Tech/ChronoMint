@@ -1,4 +1,4 @@
-import web3Provider from 'network/Web3Provider'
+import web3Provider from 'Login/network/Web3Provider'
 
 export const CHANGE_NETWORK_STATUS = 'monitor/CHANGE_NETWORK_STATUS'
 export const CHANGE_SYNC_STATUS = 'monitor/CHANGE_SYNC_STATUS'

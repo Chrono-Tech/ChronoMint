@@ -15,7 +15,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { getEtherscanUrl } from '../../../network/settings'
+import { getEtherscanUrl } from 'Login/network/settings'
 import globalStyles from '../../../styles'
 import styles from './styles'
 

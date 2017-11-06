@@ -1,22 +1,19 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-import { nemProvider } from 'network/NemProvider'
-
-import type TxModel from 'models/TxModel'
-import type ProfileModel from 'models/ProfileModel'
-import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import TokenModel from 'models/TokenModel'
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
-
-import { notify } from 'redux/notifier/actions'
-import { addMarketToken } from '../market/action'
-
+import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import assetDonatorDAO from 'dao/AssetDonatorDAO'
+import Immutable from 'immutable'
+import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
+import { nemProvider } from 'Login/network/NemProvider'
+import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import type ProfileModel from 'models/ProfileModel'
+import TokenModel from 'models/TokenModel'
+import type TxModel from 'models/TxModel'
+import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { addMarketToken } from '../market/action'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -119,21 +116,21 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
+  const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
     timeHolderDAO.getAddress(),
     timeHolderDAO.getWalletAddress(),
   ])
 
   let contractNames = {}
-  contractNames[timeHolderAddress] = TIME + ' Holder'
+  contractNames[ timeHolderAddress ] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
   dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
 
   // NOTE @ipavlenko: BCC and BTC addresses usually the same.
   // Decided to manage them independently to simplify further works on multiple wallets. .
-  dispatch({type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress()})
-  dispatch({type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress()})
-  dispatch({type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress()})
+  dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
+  dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
+  dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 
   tokens = tokens.filter(k => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
@@ -232,7 +229,7 @@ let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = tokens => async dispatch => {
-  dispatch({type: WALLET_TRANSACTIONS_FETCH})
+  dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
   tokens = tokens.valueSeq().toArray()
 
@@ -259,12 +256,12 @@ export const getAccountTransactions = tokens => async dispatch => {
 
     let newTxs = []
     for (let pack of result) {
-      newTxs = [...newTxs, ...pack]
+      newTxs = [ ...newTxs, ...pack ]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
-    txs = [...txs, ...newTxs]
+    txs = [ ...txs, ...newTxs ]
     txsCache = txs.slice(TXS_PER_PAGE)
     txs = txs.slice(0, TXS_PER_PAGE)
   }

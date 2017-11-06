@@ -7,7 +7,7 @@ export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
 export const SHORT_DATE = 'MMM Do, YYYY'
 
 const mapStateToProps = (state) => ({
-  locale: state.get('i18n').locale,
+  locale: state.get('i18n').locale
 })
 
 @connect(mapStateToProps)
@@ -20,20 +20,23 @@ class Moment extends PureComponent {
     ]),
     format: PropTypes.string,
     action: PropTypes.string,
+    parseFormat: PropTypes.string,
   }
+
   static defaultProps = {
     format: FULL_DATE,
   }
 
   render () {
     const {
-      locale, date, format, action,
+      locale, date, format, action, parseFormat,
     } = this.props
+
     let view
     if (action) {
-      view = moment(date).locale(locale)[action]()
+      view = moment(date, parseFormat).locale(locale)[action]()
     } else {
-      view = moment(date).locale(locale).format(format)
+      view = moment(date, parseFormat).locale(locale).format(format)
     }
 
     return <span>{view}</span>

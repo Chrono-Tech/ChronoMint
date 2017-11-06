@@ -6,10 +6,12 @@ import { render } from 'react-dom'
 import { bootstrap } from './redux/bootstrap/actions'
 import router from './router'
 import { store } from './redux/configureStore'
+import networkService from 'Login/redux/network/actions'
 import themeDefault from './themeDefault'
 
 class App {
   start () {
+    networkService.connectStore(store)
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
       render(

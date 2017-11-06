@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
+import { abstractFetchingModel } from '../AbstractFetchingModel'
+
 class MultisigWalletPendingTxModel extends abstractFetchingModel({
   id: null, // operation hash
   initiator: null,

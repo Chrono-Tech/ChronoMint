@@ -3,6 +3,7 @@ import { FlatButton } from 'material-ui'
 /* eslint-disable */
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+
 import globalStyles from '../../styles'
 import ModalBase from './ModalBase/ModalBase'
 
