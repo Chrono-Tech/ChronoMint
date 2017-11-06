@@ -21,7 +21,9 @@ export default class MonitorService extends EventEmitter {
     // Just check if web3Provider have web3 properly initialized in the callback
     // or do stop/start manually in web3Provider singleton if necessary (but it
     // is needed since a status monitor should monitor network state on all pages)
-    this._interval = setInterval(() => { this.syncing() }, 3000)
+    this._interval = setInterval(() => {
+      this.syncing()
+    }, 3000)
   }
 
   reset () {

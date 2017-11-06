@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import TxModel from 'models/TxModel'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
-import TxModel from 'models/TxModel'
-import { DECIMALS } from './BitcoinEngine'
 import BitcoinAbstractNode from './BitcoinAbstractNode'
+import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ api, socket, trace }) {
@@ -21,7 +21,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             address,
           })
           this.executeOrSschedule(() => {
-            this._subscriptions[`balance:${address}`] = this._client.subscribe(
+            this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
               `${socket.channels.balance}.${address}`,
               // `${socket.channels.balance}.*`,
               (message) => {
@@ -54,9 +54,9 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             address,
           })
           this.executeOrSschedule(() => {
-            const subscription = this._subscriptions[`balance:${address}`]
+            const subscription = this._subscriptions[ `balance:${address}` ]
             if (subscription) {
-              delete this._subscriptions[`balance:${address}`]
+              delete this._subscriptions[ `balance:${address}` ]
               subscription.unsubscribe()
             }
           })

@@ -1,4 +1,4 @@
-import { providerMap, getNetworksByProvider } from '../../network/settings'
+import { getNetworksByProvider, providerMap } from '../../network/settings'
 import * as actions from './actions'
 
 const initialState = {
@@ -65,7 +65,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoading: false,
-        errors: [...state.errors, action.error],
+        errors: [ ...state.errors, action.error ],
       }
     default:
       return state

@@ -1,7 +1,7 @@
-import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
-import ProviderEngine from 'web3-provider-engine'
-import WalletSubprovider from 'web3-provider-engine/subproviders/wallet'
 import Web3 from 'web3'
+import ProviderEngine from 'web3-provider-engine'
+import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
+import WalletSubprovider from 'web3-provider-engine/subproviders/wallet'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 
 export default class Web3Utils {

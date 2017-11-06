@@ -1,14 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import {
-  NETWORK_STATUS_UNKNOWN,
-  NETWORK_STATUS_OFFLINE,
-  NETWORK_STATUS_ONLINE,
-  SYNC_STATUS_SYNCING,
-  SYNC_STATUS_SYNCED,
-} from '../../network/MonitorService'
+import { Translate } from 'react-redux-i18n'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from '../../network/MonitorService'
 
 import './NetworkStatus.scss'
 
@@ -20,7 +14,7 @@ export default class CopyIcon extends PureComponent {
   }
 
   getStatus () {
-    const {networkStatus, syncStatus} = this.props
+    const { networkStatus, syncStatus } = this.props
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
         switch (syncStatus.status) {

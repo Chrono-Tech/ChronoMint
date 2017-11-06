@@ -1,15 +1,15 @@
-import EventEmitter from 'events'
-import Web3 from 'web3'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import EventEmitter from 'events'
+import Web3 from 'web3'
+import metaMaskResolver from '../../network/metaMaskResolver'
 
 import { getNetworkById, getScannerById, LOCAL_ID } from '../../network/settings'
-import metaMaskResolver from '../../network/metaMaskResolver'
 import uportProvider, { UPortAddress } from '../../network/uportProvider'
-import { utils } from '../../settings'
 import web3Provider, { Web3Provider } from '../../network/Web3Provider'
+import { utils } from '../../settings'
 
 const { web3Converter } = utils
 

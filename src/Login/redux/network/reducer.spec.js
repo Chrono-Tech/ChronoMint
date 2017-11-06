@@ -1,9 +1,9 @@
 import { accounts } from 'specsInit'
-import { providerMap, infuraNetworkMap, infuraLocalNetwork } from '../../network/settings'
+import { infuraLocalNetwork, infuraNetworkMap, providerMap } from '../../network/settings'
 import * as actions from './actions'
 import reducer from './reducer'
 
-const selectedAccount = accounts[2]
+const selectedAccount = accounts[ 2 ]
 
 describe('network reducer', () => {
   it('should return initial state', () => {
@@ -30,30 +30,30 @@ describe('network reducer', () => {
   it('should handle NETWORK_SET_TEST_RPC', () => {
     const initialState = {
       isLocal: false,
-      providers: [providerMap.local],
+      providers: [ providerMap.local ],
     }
     expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_RPC }))
       .toEqual({
         isLocal: true,
-        providers: [{
+        providers: [ {
           id: 6,
           name: 'Local',
           disabled: false,
-        }],
+        } ],
       })
   })
 
   it('should handle NETWORK_SET_TEST_METAMASK', () => {
     const initialState = {
-      providers: [providerMap.metamask],
+      providers: [ providerMap.metamask ],
     }
     expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_METAMASK }))
       .toEqual({
-        providers: [{
+        providers: [ {
           id: 1,
           name: 'Metamask/Mist',
           disabled: false,
-        }],
+        } ],
       })
   })
 
@@ -68,7 +68,7 @@ describe('network reducer', () => {
     const initialState = {
       isLocal: false,
       selectedProviderId: null,
-      providers: [providerMap.metamask],
+      providers: [ providerMap.metamask ],
       networks: [],
     }
     expect(reducer(initialState, {
@@ -77,7 +77,7 @@ describe('network reducer', () => {
     })).toEqual({
       isLocal: false,
       selectedProviderId: providerMap.infura.id,
-      providers: [providerMap.metamask],
+      providers: [ providerMap.metamask ],
       networks: infuraNetworkMap,
     })
   })
@@ -85,7 +85,7 @@ describe('network reducer', () => {
   it('should handle NETWORK_SET_PROVIDER with local', () => {
     const initialState = {
       isLocal: true,
-      providers: [providerMap.metamask],
+      providers: [ providerMap.metamask ],
       networks: [],
       selectedProviderId: null,
     }
@@ -98,7 +98,7 @@ describe('network reducer', () => {
       isLocal: true,
       networks: expectedNetworks,
       selectedProviderId: providerMap.infura.id,
-      providers: [providerMap.metamask],
+      providers: [ providerMap.metamask ],
     })
   })
 
@@ -117,16 +117,16 @@ describe('network reducer', () => {
   })
 
   it('should handle NETWORK_ADD_ERROR', () => {
-    const initialState = { errors: ['bug', 'warning'] }
+    const initialState = { errors: [ 'bug', 'warning' ] }
     expect(reducer(initialState, { type: actions.NETWORK_ADD_ERROR, error: 'feature' }))
       .toEqual({
-        errors: ['bug', 'warning', 'feature'],
+        errors: [ 'bug', 'warning', 'feature' ],
         isLoading: false,
       })
   })
 
   it('should handle NETWORK_CLEAR_ERRORS', () => {
-    const initialState = { errors: ['bug', 'warning'] }
+    const initialState = { errors: [ 'bug', 'warning' ] }
     expect(reducer(initialState, { type: actions.NETWORK_CLEAR_ERRORS }))
       .toEqual({
         errors: [],

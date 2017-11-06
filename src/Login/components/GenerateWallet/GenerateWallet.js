@@ -1,14 +1,14 @@
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
 import download from 'react-file-download'
-import { addError, clearErrors } from '../../redux/network/actions'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-import walletGenerator from '../../network/walletGenerator'
 import Warning from '../../components/Warning/Warning'
+import walletGenerator from '../../network/walletGenerator'
+import { addError, clearErrors } from '../../redux/network/actions'
 
 import './GenerateWallet.scss'
 

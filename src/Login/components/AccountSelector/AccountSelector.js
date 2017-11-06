@@ -1,10 +1,10 @@
 import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import networkService, { addError } from '../../redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
+import networkService, { addError } from '../../redux/network/actions'
 
 import './AccountSelector.scss'
 
@@ -38,7 +38,7 @@ class AccountSelector extends PureComponent {
       // autoselect if only one account exists
       const { accounts } = this.props
       if (accounts.length === 1) {
-        this.props.selectAccount(accounts[0])
+        this.props.selectAccount(accounts[ 0 ])
       }
     }).catch((e) => {
       this.props.selectAccount(null)

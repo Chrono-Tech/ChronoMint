@@ -67,7 +67,7 @@ const BASE_NETWORK_MAP = [
 
 // --------- providers
 
-export const infuraNetworkMap = [{
+export const infuraNetworkMap = [ {
   ...MAINNET_BASE,
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
 }, {
@@ -79,9 +79,9 @@ export const infuraNetworkMap = [{
 }, {
   ...KOVAN_BASE,
   host: `kovan.infura.io/${INFURA_TOKEN}`,
-}]
+} ]
 
-const chronoBankMap = [{
+const chronoBankMap = [ {
   ...MAINNET_BASE,
   host: 'mainnet.chronobank.io/',
 }, {
@@ -93,7 +93,7 @@ const chronoBankMap = [{
 }, {
   ...KOVAN_BASE,
   host: 'kovan.chronobank.io/',
-}]
+} ]
 
 // dev only
 if (process.env.NODE_ENV === 'development') {
@@ -145,20 +145,20 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
     case providerMap.uport.id:
     case providerMap.metamask.id: {
-      return [...BASE_NETWORK_MAP]
+      return [ ...BASE_NETWORK_MAP ]
     }
     case providerMap.infura.id: {
-      const networks = [...infuraNetworkMap]
+      const networks = [ ...infuraNetworkMap ]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
     }
     case providerMap.chronoBank.id: {
-      return [...chronoBankMap]
+      return [ ...chronoBankMap ]
     }
     case providerMap.local.id: {
-      return [infuraLocalNetwork]
+      return [ infuraLocalNetwork ]
     }
     default: {
       return []
@@ -174,7 +174,7 @@ export const getNetworkById = (networkId, providerId, withLocal = false) => {
 export const getScannerById = (networkId, providerId, api = false) => {
   let scanner = getNetworkById(networkId, providerId).scanner
   if (Array.isArray(scanner)) {
-    scanner = scanner[api ? 1 : 0]
+    scanner = scanner[ api ? 1 : 0 ]
   }
   return scanner
 }

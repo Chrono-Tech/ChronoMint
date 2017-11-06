@@ -1,11 +1,11 @@
 import { CircularProgress, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
-import privateKeyProvider from '../../network/privateKeyProvider'
 import styles from '../../components/stylesLoginPage'
+import privateKeyProvider from '../../network/privateKeyProvider'
 
 import './LoginWithPrivateKey.scss'
 
@@ -68,7 +68,7 @@ class LoginWithPrivateKey extends PureComponent {
                   style={{ verticalAlign: 'middle', marginTop: -2 }}
                   size={24}
                   thickness={1.5}
-                />: <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
+                /> : <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
               fullWidth
               primary
               disabled={!isValidated || isLoading}

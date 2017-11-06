@@ -1,12 +1,12 @@
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { assets } from '../../settings'
+import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
-import mnemonicProvider from '../../network/mnemonicProvider'
 import styles from '../../components/stylesLoginPage'
+import mnemonicProvider from '../../network/mnemonicProvider'
+import { assets } from '../../settings'
 
 import './LoginWithMnemonic.scss'
 

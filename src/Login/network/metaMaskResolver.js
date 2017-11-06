@@ -9,7 +9,7 @@ class metaMaskResolver extends EventEmitter {
 
     timer = setTimeout(() => {
       timer = null
-      this.emit('resolve',false)
+      this.emit('resolve', false)
     }, WAIT_FOR_METAMASK)
 
     if (window.web3 !== undefined || window.hasOwnProperty('web3')) {

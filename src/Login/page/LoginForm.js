@@ -1,22 +1,22 @@
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider } from 'material-ui'
+import { yellow800 } from 'material-ui/styles/colors'
+import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { Translate } from 'react-redux-i18n'
-import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { connect } from 'react-redux'
-import inverted from 'styles/themes/inversed'
-import { yellow800 } from 'material-ui/styles/colors'
+import { Translate } from 'react-redux-i18n'
 
 import { login } from 'redux/session/actions'
+import inverted from 'styles/themes/inversed'
 
 import LoginLocal from '../components/LoginLocal/LoginLocal'
 import LoginMetamask from '../components/LoginMetamask/LoginMetamask'
 import LoginUPort from '../components/LoginUPort/LoginUPort'
 import LoginWithOptions from '../components/LoginWithOptions/LoginWithOptions'
-import networkService, { loading, clearErrors } from '../redux/network/actions'
-import { providerMap } from '../network/settings'
 import ProviderSelector from '../components/ProviderSelector/ProviderSelector'
+import { providerMap } from '../network/settings'
+import networkService, { clearErrors, loading } from '../redux/network/actions'
 
 import './LoginPage.scss'
 

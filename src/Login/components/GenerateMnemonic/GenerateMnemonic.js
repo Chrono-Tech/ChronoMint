@@ -1,12 +1,12 @@
-import { Checkbox, RaisedButton } from 'material-ui'
-import { MuiThemeProvider } from 'material-ui'
+import { Checkbox, MuiThemeProvider, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import theme from 'styles/themes/default'import BackButton from '../../components/BackButton/BackButton'
-import mnemonicProvider from '../../network/mnemonicProvider'
+import theme from 'styles/themes/default'
+import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-import  Warning from '../../components/Warning/Warning'
+import Warning from '../../components/Warning/Warning'
+import mnemonicProvider from '../../network/mnemonicProvider'
 
 import './GenerateMnemonic.scss'
 

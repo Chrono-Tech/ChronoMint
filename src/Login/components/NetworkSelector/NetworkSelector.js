@@ -1,10 +1,10 @@
 import { MenuItem, SelectField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import networkService,{ clearErrors } from '../../redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
+import networkService, { clearErrors } from '../../redux/network/actions'
 
 const mapStateToProps = (state) => {
   const network = state.get('network')

@@ -1,14 +1,16 @@
-import Immutable from 'immutable'
-import Web3 from 'web3'
-import { store, accounts, mockStore } from 'specsInit'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import Immutable from 'immutable'
 import { createSession, destroySession } from 'redux/session/actions'
-import { constants } from '../../settings'import { LOCAL_ID, providerMap } from '../../network/settings'
+import { accounts, mockStore, store } from 'specsInit'
+import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import networkService from './actions'
+import { LOCAL_ID, providerMap } from '../../network/settings'
 import web3Provider from '../../network/Web3Provider'
-const {SESSION_CREATE, SESSION_DESTROY} = constants
+import { constants } from '../../settings'
+import networkService from './actions'
+
+const { SESSION_CREATE, SESSION_DESTROY } = constants
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
 
@@ -20,13 +22,13 @@ describe('network actions', () => {
     networkService
       .connectStore(store)
     return networkService.checkTestRPC(LOCAL_HOST).then(() => {
-      expect(store.getActions()[0]).toEqual({type: a.NETWORK_SET_TEST_RPC})
+      expect(store.getActions()[ 0 ]).toEqual({ type: a.NETWORK_SET_TEST_RPC })
     })
   })
 
   it('should check TESTRPC is not running', () => {
     return networkService.checkTestRPC(WRONG_LOCAL_HOST).then(() => {
-      expect(store.getActions()[0]).toBeUndefined()
+      expect(store.getActions()[ 0 ]).toBeUndefined()
     })
   })
 
@@ -36,7 +38,7 @@ describe('network actions', () => {
       .on('resolve', isMetaMask => {
         try {
           if (isMetaMask) {
-            store.dispatch({type: a.NETWORK_SET_TEST_METAMASK})
+            store.dispatch({ type: a.NETWORK_SET_TEST_METAMASK })
           }
         } catch (e) {
           // eslint-disable-next-line
@@ -44,7 +46,7 @@ describe('network actions', () => {
         }
       })
       .start()
-    expect(store.getActions()).toEqual([{ type: a.NETWORK_SET_TEST_METAMASK }])
+    expect(store.getActions()).toEqual([ { type: a.NETWORK_SET_TEST_METAMASK } ])
     window.web3 = undefined
   })
 
@@ -88,10 +90,10 @@ describe('network actions', () => {
     return networkService.loadAccounts()
       .then(() => {
         expect(store.getActions()).toEqual([
-          {type: a.NETWORK_LOADING, isLoading: true},
-          {type: a.NETWORK_SET_ACCOUNTS, accounts: []},
-          {type: a.NETWORK_SET_ACCOUNTS, accounts},
-          {type: a.NETWORK_LOADING, isLoading: false},
+          { type: a.NETWORK_LOADING, isLoading: true },
+          { type: a.NETWORK_SET_ACCOUNTS, accounts: [] },
+          { type: a.NETWORK_SET_ACCOUNTS, accounts },
+          { type: a.NETWORK_LOADING, isLoading: false },
         ])
       })
   })
@@ -102,7 +104,7 @@ describe('network actions', () => {
   })
 
   it('should check local session is valid', async () => {
-    const isValid = await networkService.checkLocalSession(accounts[0], LOCAL_HOST)
+    const isValid = await networkService.checkLocalSession(accounts[ 0 ], LOCAL_HOST)
     expect(isValid).toEqual(true)
   })
 
@@ -115,12 +117,12 @@ describe('network actions', () => {
   })
 
   it('should check local session is not valid (wrong url)', async () => {
-    expect(await networkService.checkLocalSession(accounts[0], WRONG_LOCAL_HOST)).toEqual(false)
+    expect(await networkService.checkLocalSession(accounts[ 0 ], WRONG_LOCAL_HOST)).toEqual(false)
   })
 
   it('should restore local session', async () => {
     // setup web3
-    const account = accounts[0]
+    const account = accounts[ 0 ]
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(new web3.providers.HttpProvider(LOCAL_HOST))
@@ -141,13 +143,13 @@ describe('network actions', () => {
       },
     }))
     createSession({
-      account: accounts[0],
+      account: accounts[ 0 ],
       provider: LOCAL_ID,
       network: LOCAL_ID,
       dispatch: store.dispatch,
     })
     expect(store.getActions()).toEqual([
-      { type: SESSION_CREATE, account: accounts[0] },
+      { type: SESSION_CREATE, account: accounts[ 0 ] },
     ])
   })
 
@@ -169,10 +171,11 @@ describe('network actions', () => {
       },
     }))
     const daoLocal = await contractsManagerDAO.getUserManagerDAO()
-    await daoLocal.watchCBE(() => {})
+    await daoLocal.watchCBE(() => {
+    })
     expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
     createSession({
-      account: accounts[0],
+      account: accounts[ 0 ],
       provider: LOCAL_ID,
       network: LOCAL_ID,
       dispatch: store.dispatch,
@@ -180,7 +183,7 @@ describe('network actions', () => {
     store.clearActions()
 
     // test
-    destroySession({dispatch: store.dispatch})
+    destroySession({ dispatch: store.dispatch })
     expect(store.getActions()).toEqual([
       { type: SESSION_DESTROY },
     ])

@@ -1,7 +1,7 @@
 import EventEmitter from 'events'
 
 export default class BitcoinAbstractNode extends EventEmitter {
-  
+
   trace () {
     if (this._trace) {
       // eslint-disable-next-line

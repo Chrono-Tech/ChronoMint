@@ -36,6 +36,5 @@ class WalletGenerator {
   }
 }
 
-
 export default new WalletGenerator()
 

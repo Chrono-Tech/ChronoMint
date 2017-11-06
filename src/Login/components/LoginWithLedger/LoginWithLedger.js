@@ -1,15 +1,14 @@
 import { CircularProgress, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
-import { fetchAccount } from '../../redux/ledger/actions'
-import { startLedgerSync, stopLedgerSync } from '../../redux/ledger/actions'
+import { fetchAccount, startLedgerSync, stopLedgerSync } from '../../redux/ledger/actions'
 
 import './LoginWithLedger.scss'
 
-const ledgerStates = [{
+const ledgerStates = [ {
   flag: 'isHttps',
   successTitle: 'LoginWithLedger.isHttps.successTitle',
   errorTitle: 'LoginWithLedger.isHttps.errorTitle',
@@ -29,7 +28,7 @@ const ledgerStates = [{
   successTitle: 'LoginWithLedger.isFetched.successTitle',
   errorTitle: 'LoginWithLedger.isFetched.errorTitle',
   errorTip: 'LoginWithLedger.isFetched.errorTip',
-}]
+} ]
 
 const mapStateToProps = (state) => {
   const network = state.get('network')
@@ -81,7 +80,7 @@ class LoginLedger extends PureComponent {
   renderStates () {
     const { ledger } = this.props
 
-    return ledgerStates.map((item) => ledger[item.flag]
+    return ledgerStates.map((item) => ledger[ item.flag ]
       ? (
         <div styleName='state' key={item.flag}>
           <div styleName='flag flagDone' className='material-icons'>done</div>

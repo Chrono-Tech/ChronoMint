@@ -1,27 +1,27 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
-import { connect } from 'react-redux'
-
-import {  bccProvider, btcProvider } from '../../network/BitcoinProvider'
 import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
-import ledgerProvider from '../../network/LedgerProvider'
-import { loginLedger } from '../../redux/ledger/actions'
-
 
 import LoginLedger from '../../components/LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
+import NetworkSelector from '../../components/NetworkSelector/NetworkSelector'
+import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
+
+import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
+import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
-importNetworkSelector from '../../components/NetworkSelector/NetworkSelector'
-import networkService, { addError, clearErrors, loading } from '../../redux/network/actions'
-importNetworkStatus from '../../components/NetworkStatus/NetworkStatus'import privateKeyProvider from '../../network/privateKeyProvider'
+import privateKeyProvider from '../../network/privateKeyProvider'
 import walletProvider from '../../network/walletProvider'
 import web3Provider from '../../network/Web3Provider'
 import web3Utils from '../../network/Web3Utils'
+import { loginLedger } from '../../redux/ledger/actions'
+import networkService, { addError, clearErrors, loading } from '../../redux/network/actions'
 
 import './LoginWithOptions.scss'
 
@@ -35,7 +35,7 @@ const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
 const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 
-const loginOptions = [{
+const loginOptions = [ {
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
   title: 'LoginWithOptions.mnemonicKey',
 }, {
@@ -47,7 +47,7 @@ const loginOptions = [{
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
   title: 'LoginWithOptions.ledgerNano',
-}]
+} ]
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
@@ -159,7 +159,7 @@ class LoginWithOptions extends PureComponent {
 
     // login
     this.props.loadAccounts().then(() => {
-      this.props.selectAccount(this.props.accounts[0])
+      this.props.selectAccount(this.props.accounts[ 0 ])
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
       this.props.onLogin()

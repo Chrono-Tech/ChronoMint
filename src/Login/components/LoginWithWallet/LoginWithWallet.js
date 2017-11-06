@@ -1,10 +1,11 @@
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import BackButton from '../../components/BackButton/BackButton'import { clearErrors, loading } from '../../redux/network/actions'
+import { Translate } from 'react-redux-i18n'
+import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
+import { clearErrors, loading } from '../../redux/network/actions'
 
 import './LoginWithWallet.scss'
 
@@ -49,7 +50,7 @@ class LoginWithWallet extends PureComponent {
   }
 
   handleUploadFile = (e) => {
-    const file = e.target.files[0]
+    const file = e.target.files[ 0 ]
     if (!file) {
       return
     }

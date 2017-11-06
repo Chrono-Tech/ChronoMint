@@ -1,4 +1,4 @@
-import { BTCEngine, BCCEngine } from './BitcoinEngine'
+import { BCCEngine, BTCEngine } from './BitcoinEngine'
 
 export function createBTCEngine (wallet, network) {
   return new BTCEngine(wallet, network)
