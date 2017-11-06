@@ -87,11 +87,11 @@ export default class VoteDialog extends PureComponent {
                         {
                           value: details.daysTotal - details.daysLeft,
                           fillFrom: '#fbda61',
-                          fillTo: '#f98019'
+                          fillTo: '#f98019',
                         },
                         {
                           value: details.daysLeft,
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />
@@ -104,11 +104,11 @@ export default class VoteDialog extends PureComponent {
                         {
                           value: details.votedCount.toNumber(),
                           fillFrom: '#311b92',
-                          fillTo: '#d500f9'
+                          fillTo: '#d500f9',
                         },
                         {
                           value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />

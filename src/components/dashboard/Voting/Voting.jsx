@@ -109,7 +109,7 @@ class Voting extends PureComponent {
                               {
                                 value: details.votedCount.toNumber(),
                                 fillFrom: '#311b92',
-                                fillTo: '#d500f9'
+                                fillTo: '#d500f9',
                               },
                               {
                                 value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
@@ -117,7 +117,7 @@ class Voting extends PureComponent {
                               },
                               {
                                 value: 0.0001,
-                                fill: 'transparent'
+                                fill: 'transparent',
                               },
                             ]}
                           />

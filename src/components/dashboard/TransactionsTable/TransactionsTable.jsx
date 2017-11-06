@@ -85,11 +85,14 @@ export default class TransactionsTable extends PureComponent {
             <div styleName='footer'>
               <RaisedButton
                 label={isFetching ? <CircularProgress
-                  style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                  thickness={1.5} /> : 'Load More'}
+                  style={{verticalAlign: 'middle', marginTop: -2}}
+                  size={24}
+                  thickness={1.5}
+                /> : 'Load More'}
                 primary
                 disabled={isFetching}
-                onTouchTap={() => this.props.onLoadMore()} />
+                onTouchTap={() => this.props.onLoadMore()}
+              />
             </div>
           )}
         </div>

@@ -15,7 +15,7 @@ function prefix (token) {
   return 'Assets.AssetManagerForm.' + token
 }
 
-const onSubmit = (values) => {
+const onSubmit = values => {
   return values.get('managerAddress')
 }
 
@@ -33,7 +33,7 @@ export default class EditManagersBase extends PureComponent {
     managers: PropTypes.array,
   } & formPropTypes
 
-  handleRemoveManager = (address) => {
+  handleRemoveManager = address => {
     this.props.onRemove(address)
   }
 

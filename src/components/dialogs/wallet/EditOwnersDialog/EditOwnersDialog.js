@@ -27,12 +27,12 @@ class EditManagersDialog extends PureComponent {
     this.props.handleClose()
   }
 
-  handleRemove = (address) => {
+  handleRemove = address => {
     this.props.handleClose()
     this.props.handleRemoveOwner(this.props.wallet, address)
   }
 
-  handleAdd = (address) => {
+  handleAdd = address => {
     this.props.handleClose()
     this.props.handleAddOwner(this.props.wallet, address)
   }

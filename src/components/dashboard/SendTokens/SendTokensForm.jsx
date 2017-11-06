@@ -68,7 +68,6 @@ export class SendTokensForm extends PureComponent {
   // TODO @dkchv: !!! restore
   async checkIsContract (address) {
     const isContact = contractsManagerDAO.isContract(address)
-    console.log('--SendTokensForm#checkIsContract', isContact)
   }
 
   renderHead (token = new TokenModel()) {
@@ -77,7 +76,7 @@ export class SendTokensForm extends PureComponent {
     return (
       <div>
         <IconSection
-          title={<Translate value={'wallet.sendTokens'} />}
+          title={<Translate value='wallet.sendTokens' />}
           iconComponent={(
             <IPFSImage
               styleName='content'

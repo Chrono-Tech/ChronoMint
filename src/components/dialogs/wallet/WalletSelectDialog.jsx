@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch) {
       component: WalletAddEditDialog,
       props: {wallet: new MultisigWalletModel()},
     })),
-    handleEditManagersDialog: (wallet) => dispatch(modalsOpen({
+    handleEditManagersDialog: wallet => dispatch(modalsOpen({
       component: EditManagersDialog,
       props: {wallet},
     })),
@@ -86,7 +86,8 @@ export default class WalletSelectDialog extends PureComponent {
                   key={owner}
                   title={owner}
                   styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
-                >account_circle</i>
+                >account_circle
+                </i>
               ))}
             </div>
           </div>
@@ -100,12 +101,14 @@ export default class WalletSelectDialog extends PureComponent {
                   className='material-icons'
                   styleName='controlItem'
                   onTouchTap={() => this.handleEditManagers(wallet)}
-                >edit</i>
+                >edit
+                </i>
                 <i
                   className='material-icons'
                   styleName='controlItem'
                   onTouchTap={() => this.props.removeWallet(wallet)}
-                >delete</i>
+                >delete
+                </i>
               </div>
             )
           }
@@ -139,7 +142,8 @@ export default class WalletSelectDialog extends PureComponent {
             <div styleName='column'>
               <h5 styleName='colName'>
                 <Translate
-                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')} />
+                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')}
+                />
               </h5>
               <div styleName='table'>
                 {wallets.map(item => this.renderRow(item, selected === item.address))}
