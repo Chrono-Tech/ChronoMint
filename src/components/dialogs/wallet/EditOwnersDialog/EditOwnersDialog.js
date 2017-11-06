@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
@@ -15,7 +15,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-class EditManagersDialog extends Component {
+class EditManagersDialog extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object.isRequired,
     handleClose: PropTypes.func,

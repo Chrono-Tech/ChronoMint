@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletPendingTransfers extends React.Component {
+export default class WalletPendingTransfers extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     revoke: PropTypes.func,

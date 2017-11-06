@@ -1,6 +1,6 @@
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCContent extends React.Component {
+class LOCContent extends PureComponent {
   static propTypes = {
     locs: PropTypes.object,
     filter: PropTypes.string,

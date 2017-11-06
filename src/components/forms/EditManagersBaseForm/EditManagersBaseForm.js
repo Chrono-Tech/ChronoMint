@@ -1,7 +1,7 @@
 import { FlatButton } from 'material-ui'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
@@ -27,7 +27,7 @@ function mapStateToProps (state) {
 
 @connect(mapStateToProps, null)
 @reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
-export default class EditManagersBase extends React.Component {
+export default class EditManagersBase extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     managers: PropTypes.array,

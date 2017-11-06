@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { SelectField, MenuItem, RaisedButton } from 'material-ui'
 import SwipeableViews from 'react-swipeable-views'
 import { Translate } from 'react-redux-i18n'
@@ -24,7 +24,7 @@ function prefix (token) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class ExchangeWidget extends React.Component {
+export default class ExchangeWidget extends PureComponent {
   static propTypes = {
     search: PropTypes.func,
   }

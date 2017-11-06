@@ -1,7 +1,7 @@
 import { Field, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
 import { FontIcon, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
@@ -42,7 +42,7 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_UPDATE_PROFILE_DIALOG, validate})
-export default class UpdateProfileDialog extends React.Component {
+export default class UpdateProfileDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     name: PropTypes.string,

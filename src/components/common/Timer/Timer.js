@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
-export default class Timer extends React.Component {
+export default class Timer extends PureComponent {
   static propTypes = {
     time: PropTypes.number.isRequired,
     onEndTimeAction: PropTypes.func.isRequired,
