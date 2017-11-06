@@ -40,7 +40,7 @@ function mapDispatchToProps (dispatch) {
       props: { wallet: new MultisigWalletModel() },
     })),
     getWallets: () => dispatch(getWallets()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
+    switchWallet: wallet => dispatch(switchWallet(wallet)),
   }
 }
 
