@@ -4,15 +4,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { validateMnemonic } from 'network/mnemonicProvider'
-
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
 
 import './LoginWithMnemonic.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
@@ -69,7 +67,7 @@ class LoginWithMnemonic extends PureComponent {
         />
         <div onTouchTap={() => this.mnemonicKey.focus()}>
           <TextField
-            ref={input => {
+            ref={(input) => {
               this.mnemonicKey = input
             }}
             floatingLabelText={<Translate value='LoginWithMnemonic.mnemonicKey' />}

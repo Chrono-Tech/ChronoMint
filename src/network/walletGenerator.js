@@ -12,14 +12,14 @@ const options = {
   },
 }
 
-const walletGenerator = password => new Promise(resolve => {
+const walletGenerator = (password) => new Promise((resolve) => {
   // we can't use promisify here, cause first returning argument is result not error
-  keythereum.create(params, dk => {
-    keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, options, dump => {
+  keythereum.create(params, (dk) => {
+    keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, options, (dump) => {
       resolve(dump)
     })
   })
-}).catch(e => {
+}).catch((e) => {
   // eslint-disable-next-line
     console.error('Wallet generate error', e)
 })

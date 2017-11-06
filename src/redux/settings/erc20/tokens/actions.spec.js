@@ -1,15 +1,11 @@
 import { I18n } from 'react-redux-i18n'
 import { store } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import fakeCoinDAO from 'dao/FakeCoinDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
 import { TIME } from 'redux/mainWallet/actions'
-
 import * as a from './actions'
 
 let token: TokenModel | AbstractFetchingModel
@@ -36,7 +32,7 @@ describe('settings erc20 actions', () => {
     }
   })
 
-  it('should add token', async resolve => {
+  it('should add token', async (resolve) => {
     token = new TokenModel({
       symbol: 'FAKE',
       name: 'Fake',
@@ -78,7 +74,7 @@ describe('settings erc20 actions', () => {
     }
   })
 
-  it('should modify token', async resolve => {
+  it('should modify token', async (resolve) => {
     newToken = token.setSymbol('CAKE')
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
@@ -97,7 +93,7 @@ describe('settings erc20 actions', () => {
     await store.dispatch(a.modifyToken(token, newToken))
   })
 
-  it('should remove token', async resolve => {
+  it('should remove token', async (resolve) => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
       expect(store.getActions()).toEqual([

@@ -3,11 +3,8 @@ import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
-
 import { modalsOpen } from 'redux/modals/actions'
-
 import BuyTokensDialog from 'components/dialogs/BuyTokensDialog'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
@@ -46,7 +43,7 @@ export class OrdersTable extends PureComponent {
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.orders.valueSeq().map(order => this.renderRow(order))}
+              {this.props.orders.valueSeq().map((order) => this.renderRow(order))}
             </div>
           </div>
         </div>
@@ -74,7 +71,7 @@ export class OrdersTable extends PureComponent {
           <RaisedButton
             label={order.isBuy() ? 'Buy' : 'Sell'}
             disabled={order.limit().lte(0)}
-            onTouchTap={e => {
+            onTouchTap={(e) => {
               e.stopPropagation()
               this.props.openDetails(order)
             }}

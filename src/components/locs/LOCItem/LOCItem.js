@@ -2,9 +2,8 @@ import { CircularProgress, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-
-import LOCItemButtons from './LOCItemButtons'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import LOCItemButtons from './LOCItemButtons'
 
 import './LOCItem.scss'
 

@@ -6,9 +6,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-
 import { getNetworkById } from 'network/settings'
 import {
   NETWORK_STATUS_UNKNOWN,
@@ -17,16 +15,12 @@ import {
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED,
 } from 'network/MonitorService'
-
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
-
 import Moment, { FULL_DATE } from 'components/common/Moment'
-
 import ls from 'utils/LocalStorage'
-
 import styles from '../styles'
 
 import './HeaderPartial.scss'
@@ -82,7 +76,7 @@ class HeaderPartial extends PureComponent {
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {menu.user.map(item => (
+            {menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'
@@ -112,7 +106,7 @@ class HeaderPartial extends PureComponent {
            </IconButton>
           */}
           {this.renderStatus()}
-          <div styleName='actionsEntry' onTouchTap={e => this.handleNotificationsOpen(e)}>
+          <div styleName='actionsEntry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
             {transactionsCount
               ? (
                 <div styleName='entryOverlay'>
@@ -139,7 +133,7 @@ class HeaderPartial extends PureComponent {
             }
           </div>
           <Popover
-            ref={el => {
+            ref={(el) => {
               this.profilePopover = el
             }}
             className='popover popover-overflow-x-hidden'
@@ -166,7 +160,7 @@ class HeaderPartial extends PureComponent {
           </div>
         </div>
         <div styleName='right'>
-          <div styleName='rightIcon' onTouchTap={e => this.handleProfileOpen(e)}>
+          <div styleName='rightIcon' onTouchTap={(e) => this.handleProfileOpen(e)}>
             <IPFSImage
               styleName='rightIconContent'
               multihash={this.props.profile.icon()}
@@ -175,7 +169,7 @@ class HeaderPartial extends PureComponent {
             />
           </div>
           <Popover
-            ref={el => {
+            ref={(el) => {
               this.profilePopover = el
             }}
             styleName='popover'
@@ -215,8 +209,8 @@ class HeaderPartial extends PureComponent {
   }
 
   renderNotifications () {
-    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
-    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
+    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
 
     return (
       <div styleName='notifications'>
@@ -231,7 +225,7 @@ class HeaderPartial extends PureComponent {
               </div>
               <div styleName='sectionBody sectionBodyDark'>
                 <div styleName='bodyTable'>
-                  {transactionsList.map(item => this.renderTransaction(item))}
+                  {transactionsList.map((item) => this.renderTransaction(item))}
                 </div>
               </div>
             </div>
@@ -248,7 +242,7 @@ class HeaderPartial extends PureComponent {
               ? (<p style={{ marginBottom: '10px' }}>No notifications</p>)
               : (
                 <div styleName='bodyTable'>
-                  {noticesList.map(item => this.renderNotice(item))}
+                  {noticesList.map((item) => this.renderNotice(item))}
                 </div>
               )
             }
@@ -378,8 +372,8 @@ class HeaderPartial extends PureComponent {
             }
             <div styleName='info-balances'>
               {items
-                .filter(item => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
-                .map(item => this.renderBalance(item))}
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>
@@ -485,7 +479,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: data => dispatch(modalsOpen({
+    handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data,
     })),

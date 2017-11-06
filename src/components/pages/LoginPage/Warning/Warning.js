@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import WarningIcon from 'material-ui/svg-icons/alert/error'
-
 import colors from '../../../../styles/themes/variables'
 
 import './Warning.scss'

@@ -5,7 +5,6 @@ import coinselect from 'coinselect'
 export const DECIMALS = 100000000
 const FEE_RATE = 75 // satoshis per byte
 
-
 export class BitcoinEngine {
   constructor (wallet, network) {
     this._wallet = wallet
@@ -34,7 +33,7 @@ export class BitcoinEngine {
       },
     ]
 
-    const { inputs, outputs, fee } = coinselect(utxos.map(output => ({
+    const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,

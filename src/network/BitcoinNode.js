@@ -1,7 +1,6 @@
 import axios from 'axios'
-
-import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
+import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
 export const MAINNET = new BitcoinBlockexplorerNode({
   api: axios.create({

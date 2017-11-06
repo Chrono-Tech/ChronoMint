@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
-
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
-
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-import { bitcoinAddress } from 'components/forms/validator'
 import { DECIMALS } from 'network/BitcoinEngine'
+import { bitcoinAddress } from 'components/forms/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -44,8 +42,6 @@ export class BitcoinDAO {
   getDecimals () {
     return 8
   }
-
-
 
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()

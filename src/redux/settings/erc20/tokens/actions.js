@@ -1,15 +1,12 @@
 import { I18n } from 'react-redux-i18n'
 import { change } from 'redux-form'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
+import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -44,8 +41,8 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
   }
 }
 
-export const watchInitERC20Tokens = () => async dispatch => {
-  const callback = notice => dispatch(watchToken(notice))
+export const watchInitERC20Tokens = () => async (dispatch) => {
+  const callback = (notice) => dispatch(watchToken(notice))
 
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
 
@@ -56,7 +53,7 @@ export const watchInitERC20Tokens = () => async dispatch => {
   ])
 }
 
-export const listTokens = () => async dispatch => {
+export const listTokens = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   const list = await dao.getTokens()
   dispatch({ type: TOKENS_LIST, list })
@@ -97,7 +94,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -107,7 +104,7 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async dis
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async dispatch => {
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
   dispatch(setToken(oldToken.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -118,7 +115,7 @@ export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newTok
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {

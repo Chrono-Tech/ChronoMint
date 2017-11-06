@@ -6,10 +6,8 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
-
 import styles from '../styles'
 
 import './DrawerPartial.scss'
@@ -48,12 +46,12 @@ export default class DrawerPartial extends PureComponent {
           </div>
           {!menu.user ? null : (
             <List styleName='menu-user'>
-              {menu.user.map(item => this.renderItem(item))}
+              {menu.user.map((item) => this.renderItem(item))}
             </List>
           )}
           {!this.props.isCBE ? null : (
             <List styleName='menu-cbe'>
-              {menu.cbe.map(item => this.renderItem(item))}
+              {menu.cbe.map((item) => this.renderItem(item))}
             </List>
           )}
         </div>

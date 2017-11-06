@@ -10,6 +10,7 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import ModalDialog from './ModalDialog'
+
 import './VoteDialog.scss'
 
 function prefix (token) {
@@ -51,7 +52,7 @@ export default class VoteDialog extends PureComponent {
   }
 
   handleSelect (choice) {
-    this.setState({choice})
+    this.setState({ choice })
   }
 
   render () {
@@ -61,7 +62,7 @@ export default class VoteDialog extends PureComponent {
 
     return (
       <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-        <form styleName='content' onSubmit={e => this.handleSubmit(e)}>
+        <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
           <div styleName='header'>
             <div styleName='column'>
               <div styleName='inner'>

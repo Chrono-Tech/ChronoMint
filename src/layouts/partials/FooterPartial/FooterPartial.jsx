@@ -2,7 +2,6 @@ import { RaisedButton, TextField } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import menu from 'menu'
-
 import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from '../styles'
 
@@ -27,7 +26,7 @@ export default class FooterPartial extends PureComponent {
             <div styleName='menu'>
               <h3><Translate value='layouts.partials.FooterPartial.menu' /></h3>
               <ul styleName='menuList'>
-                {menu.global.map(item => (
+                {menu.global.map((item) => (
                   <li key={item.key} styleName='menuListItem'>
                     <a href={item.path} target='_blank' rel='noopener noreferrer'><Translate value={item.title} /></a>
                   </li>

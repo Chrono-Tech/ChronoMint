@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { I18n } from 'react-redux-i18n'
 import moment from 'moment'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { dateFormatOptions } from '../config'
 

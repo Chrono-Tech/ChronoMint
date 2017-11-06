@@ -6,13 +6,10 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
-
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileCollection from 'models/FileSelect/FileCollection'
 import FileModel from 'models/FileSelect/FileModel'
-
 import ipfs from 'utils/IPFS'
-
 import FileItem from './FileItem'
 
 import './FileSelect.scss'
@@ -89,14 +86,14 @@ class FileSelect extends PureComponent {
   }
 
   handleFileUpdate = (file: FileModel) => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       fileCollection: prevState.fileCollection.update(file),
     }))
   }
 
   async uploadCollection (files: FileCollection, config: fileConfig) {
     const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
-    this.setState({fileCollection})
+    this.setState({ fileCollection })
     this.props.input.onChange(fileCollection.hasErrors()
       ? `!${fileCollection.hash()}`
       : fileCollection.hash())
@@ -110,8 +107,8 @@ class FileSelect extends PureComponent {
     if (!e.target.files.length) {
       return
     }
-    const {config} = this.state
-    const {multiple} = this.props
+    const { config } = this.state
+    const { multiple } = this.props
     let fileCollection = multiple
       ? this.state.fileCollection
       : new FileCollection()
@@ -125,7 +122,7 @@ class FileSelect extends PureComponent {
       })
       fileCollection = fileCollection.add(fileModel)
     }
-    this.setState({fileCollection})
+    this.setState({ fileCollection })
     await this.uploadCollection(fileCollection, config)
   }
 
@@ -153,7 +150,7 @@ class FileSelect extends PureComponent {
 
   renderFiles () {
     const files = this.state.fileCollection.files()
-      .map(item => (
+      .map((item) => (
         <FileItem
           onRemove={this.handleFileRemove}
           key={item.id()}
@@ -165,7 +162,7 @@ class FileSelect extends PureComponent {
   }
 
   renderStatus () {
-    const {fileCollection} = this.state
+    const { fileCollection } = this.state
     if (fileCollection.hasErrors()) {
       return <AlertError color={globalStyles.colors.error} />
     }
@@ -179,8 +176,8 @@ class FileSelect extends PureComponent {
   }
 
   renderMultiple () {
-    const {config, fileCollection} = this.state
-    const {meta} = this.props
+    const { config, fileCollection } = this.state
+    const { meta } = this.props
 
     return (
       <div>
@@ -199,7 +196,7 @@ class FileSelect extends PureComponent {
               onTouchTap={this.handleOpenFileDialog}
               label={<Translate value='fileSelect.addAttachments' />}
               secondary
-              style={{color: globalStyles.colors.blue}}
+              style={{ color: globalStyles.colors.blue }}
               icon={<img src={IconAttach} styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
             />
@@ -233,7 +230,7 @@ class FileSelect extends PureComponent {
   }
 
   renderIcon () {
-    const {fileCollection} = this.state
+    const { fileCollection } = this.state
     return (
       <div styleName='iconWrapper'>
         {fileCollection.uploading()
@@ -256,8 +253,8 @@ class FileSelect extends PureComponent {
   }
 
   render () {
-    const {config} = this.state
-    const {multiple} = this.props
+    const { config } = this.state
+    const { multiple } = this.props
 
     return (
       <div>
@@ -267,9 +264,9 @@ class FileSelect extends PureComponent {
         }
 
         <input
-          ref={input => this.input = input}
+          ref={(input) => this.input = input}
           type='file'
-          onChange={e => this.handleChange(e)}
+          onChange={(e) => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
           accept={config.accept.join(', ')}

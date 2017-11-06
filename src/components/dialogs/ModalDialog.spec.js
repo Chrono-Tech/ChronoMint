@@ -1,7 +1,6 @@
 import React from 'react'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import { mount, shallow } from 'enzyme'
-
 import { ModalDialog } from 'components/dialogs/ModalDialog'
 
 injectTapEventPlugin()

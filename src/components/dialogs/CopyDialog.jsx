@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from './ModalDialog'
+
 import './CopyDialog.scss'
 
 function mapDispatchToProps (dispatch) {
@@ -38,7 +39,7 @@ export default class CopyDialog extends PureComponent {
               {this.props.description}
             </div>
             <TextField
-              ref={el => { this.inputElement = el }}
+              ref={(el) => { this.inputElement = el }}
               name='value'
               value={this.props.copyValue}
               fullWidth

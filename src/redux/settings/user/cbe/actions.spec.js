@@ -1,17 +1,12 @@
 import Immutable from 'immutable'
 import { store, accounts } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
-
 import * as notifier from 'redux/notifier/actions'
-
 import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
 import validator from 'components/forms/validator'
-
 import * as a from './actions'
 
 const user = new ProfileModel({ name: Math.random().toString() })
@@ -29,9 +24,9 @@ describe('settings cbe actions', () => {
     expect(list.get(address).address()).toEqual(accounts[0])
   })
 
-  it('should add CBE', async resolve => {
+  it('should add CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(notice => {
+    await dao.watchCBE((notice) => {
       expect(store.getActions()).toEqual([
         { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])
@@ -65,9 +60,9 @@ describe('settings cbe actions', () => {
       }])
   }))
 
-  it('should revoke CBE', async resolve => {
+  it('should revoke CBE', async (resolve) => {
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.watchCBE(notice => {
+    await dao.watchCBE((notice) => {
       expect(store.getActions()).toEqual([
         { type: a.CBE_SET, cbe: cbe.isFetching(true) },
       ])

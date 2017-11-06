@@ -2,18 +2,15 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { issueAsset } from 'redux/locs/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import IssueForm from './LOCIssueForm'
 
 import './LOCIssueDialog.scss'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })

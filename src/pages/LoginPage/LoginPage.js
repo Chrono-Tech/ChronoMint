@@ -7,22 +7,18 @@ import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { connect } from 'react-redux'
 import inverted from 'styles/themes/inversed'
 import { yellow800 } from 'material-ui/styles/colors'
-
 import { providerMap } from 'network/settings'
-
 import { login } from 'redux/session/actions'
-
+import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
+import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
 import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
-
 import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
-import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
-import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 
 import './LoginPage.scss'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
     errors: network.errors,
@@ -33,10 +29,10 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => dispatch(checkNetwork()),
   createNetworkSession: (account, provider, network) => dispatch(createNetworkSession(account, provider, network)),
-  login: account => dispatch(login(account)),
+  login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
 })
@@ -82,11 +78,11 @@ class LoginPage extends PureComponent {
   }
 
   handleToggleProvider (isShowProvider) {
-    this.setState({isShowProvider})
+    this.setState({ isShowProvider })
   }
 
   render () {
-    const {errors, selectedProviderId} = this.props
+    const { errors, selectedProviderId } = this.props
     return (
       <MuiThemeProvider muiTheme={inverted}>
         <div styleName='form'>

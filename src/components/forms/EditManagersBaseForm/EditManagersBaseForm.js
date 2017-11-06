@@ -15,7 +15,7 @@ function prefix (token) {
   return 'Assets.AssetManagerForm.' + token
 }
 
-const onSubmit = values => {
+const onSubmit = (values) => {
   return values.get('managerAddress')
 }
 
@@ -26,14 +26,14 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({form: FORM_ASSET_MANAGER, validate, onSubmit})
+@reduxForm({ form: FORM_ASSET_MANAGER, validate, onSubmit })
 export default class EditManagersBase extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     managers: PropTypes.array,
   } & formPropTypes
 
-  handleRemoveManager = address => {
+  handleRemoveManager = (address) => {
     this.props.onRemove(address)
   }
 
@@ -61,7 +61,7 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
           </div>
-          {this.props.managers.map(item => (
+          {this.props.managers.map((item) => (
             <div key={item} styleName='row'>
               <div styleName='iconBox'>
                 <i styleName='icon' className='material-icons'>account_circle</i>

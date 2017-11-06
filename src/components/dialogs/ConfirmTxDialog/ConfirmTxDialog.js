@@ -3,16 +3,17 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
-import { modalsClose } from 'redux/modals/actions'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import ModalDialog from 'components/dialogs/ModalDialog'
-import Value from 'components/common/Value/Value'
 import Amount from 'models/Amount'
+import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_WATCHER } from 'redux/watcher/actions'
+import { modalsClose } from 'redux/modals/actions'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import Value from 'components/common/Value/Value'
+
 import './ConfirmTxDialog.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   balance: state.get(DUCK_MAIN_WALLET).tokens().get(ETH).balance(),
   tx: state.get(DUCK_WATCHER).confirmTx,
 })
@@ -62,7 +63,7 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   getKeyValueRows (args, tokenBase) {
-    return Object.keys(args).map(key => {
+    return Object.keys(args).map((key) => {
       const arg = args[key]
       let value
       if (arg === null || arg === undefined) return
@@ -84,10 +85,10 @@ export default class ConfirmTxDialog extends PureComponent {
 
       return (
         <TableRow key={key}>
-          <TableRowColumn style={{width: '35%'}}>
+          <TableRowColumn style={{ width: '35%' }}>
             <Translate value={tokenBase + key} />
           </TableRowColumn>
-          <TableRowColumn style={{width: '65%', whiteSpace: 'normal'}}>
+          <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
             {value}
           </TableRowColumn>
         </TableRow>
@@ -96,7 +97,7 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   render () {
-    const {tx, balance} = this.props
+    const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (
       <ModalDialog onClose={() => this.handleClose()}>
@@ -109,10 +110,10 @@ export default class ConfirmTxDialog extends PureComponent {
                   {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
                   <TableRow key='txFee'>
-                    <TableRowColumn style={{width: '35%'}}>
+                    <TableRowColumn style={{ width: '35%' }}>
                       <Translate value='tx.fee' />
                     </TableRowColumn>
-                    <TableRowColumn style={{width: '65%'}}>
+                    <TableRowColumn style={{ width: '65%' }}>
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
@@ -125,10 +126,10 @@ export default class ConfirmTxDialog extends PureComponent {
                   </TableRow>
 
                   <TableRow key='txBalanceAfter'>
-                    <TableRowColumn style={{width: '35%'}}>
+                    <TableRowColumn style={{ width: '35%' }}>
                       <Translate value='tx.balanceAfter' />
                     </TableRowColumn>
-                    <TableRowColumn style={{width: '65%'}}>
+                    <TableRowColumn style={{ width: '65%' }}>
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'

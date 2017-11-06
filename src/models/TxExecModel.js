@@ -5,10 +5,8 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import uniqid from 'uniqid'
-
 import { FULL_DATE } from 'components/common/Moment/index'
 import Moment from 'components/common/Moment'
-
 import { abstractModel } from './AbstractModel'
 
 /** @see OperationModel.summary */

@@ -25,5 +25,4 @@ ProgressSection.propTypes = {
   value: PropTypes.number,
 }
 
-
 export default ProgressSection
