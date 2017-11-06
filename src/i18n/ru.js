@@ -602,6 +602,7 @@ export default {
     },
   },
   components: {
+    ...components.components,
     dashboard: {
       TransactionsTable: {
         latestTransactions: 'Последние транзакции',
@@ -642,19 +643,6 @@ export default {
         percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
         dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
         yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период',
-      },
-      ExchangeWidget: {
-        exchange: 'Обмен',
-        search: 'Поиск',
-        currency: 'Валюта',
-        buy: 'Купить',
-        sell: 'Продать',
-      },
-      OrdersTable: {
-        orderBook: 'Книга Ордеров',
-        trader: 'Трейдер',
-        paymentDescription: 'Описание платежа',
-        limits: 'Лимиты',
       },
       Poll: {
         new: 'Новое',

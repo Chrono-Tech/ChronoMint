@@ -1,0 +1,103 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$cell-padding: 16px 8px;
+
+.root {
+  overflow: hidden;
+}
+
+.content {
+  padding: 24px 8px;
+}
+
+.table {
+  display: table;
+  width: 100%;
+  position: relative;
+}
+
+.tableHead {
+  display: table-row-group;
+  opacity: 0.5;
+  font-size: 16px;
+}
+
+.tableHeadRow {
+  display: table-row;
+  @include sm-only {
+    display: none;
+  }
+}
+
+.tableBody {
+  display: table-row-group;
+  font-size: 14px;
+  font-weight: 400;
+  @include sm-only {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+}
+
+.row {
+  display: table-row;
+  @include sm-only {
+    display: block;
+    position: relative;
+    padding: $cell-padding;
+  }
+  &:nth-child(2n+1) {
+    background: $color-panel-bg-0;
+  }
+}
+
+.footer {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.header {
+  padding: 24px 16px 0 16px;
+}
+
+.title {
+  font-size: 24px;
+  display: block;
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+}
+
+.colTrader, .colPrice, .colLimits, .colActions {
+  display: table-cell;
+  padding: $cell-padding;
+  padding-bottom: 8px;
+  @include sm-only {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+  }
+  span:last-child {
+    @include ellipsis;
+  }
+}
+
+.colActions {
+  text-align: right;
+  @include sm-only {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    margin-top: -34px;
+    padding: $cell-padding;
+  }
+}
+
+.rowTitle {
+  display: none;
+  @include sm-only {
+    display: inline;
+  }
+}

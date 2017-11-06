@@ -655,19 +655,6 @@ export default {
         dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
         yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
       },
-      ExchangeWidget: {
-        exchange: 'Exchange',
-        search: 'Search',
-        currency: 'Currency',
-        buy: 'Buy',
-        sell: 'Sell',
-      },
-      OrdersTable: {
-        orderBook: 'Order Book',
-        trader: 'Trader',
-        paymentDescription: 'Payment description',
-        limits: 'Limits',
-      },
       Poll: {
         new: 'New',
         ongoing: 'Ongoing',

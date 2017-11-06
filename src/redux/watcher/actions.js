@@ -15,6 +15,7 @@ import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH, DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { watchPlatformManager, watchInitTokens } from 'redux/assetsManager/actions'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
+import { watchExchanges } from 'redux/exchange/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -77,6 +78,7 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchPlatformManager(getState().get(DUCK_SESSION).account))
+  dispatch(watchExchanges(getState().get('session').account))
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
