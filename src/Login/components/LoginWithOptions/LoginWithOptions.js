@@ -14,6 +14,7 @@ import NetworkSelector from '../../components/NetworkSelector/NetworkSelector'
 import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
 
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
+import { nemProvider } from 'Login/network/NemProvider'
 import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
@@ -151,7 +152,7 @@ class LoginWithOptions extends PureComponent {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  setupAndLogin ({ ethereum, btc, bcc }) {
+  setupAndLogin ({ ethereum, btc, bcc, nem }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -159,11 +160,12 @@ class LoginWithOptions extends PureComponent {
 
     // login
     this.props.loadAccounts().then(() => {
-      this.props.selectAccount(this.props.accounts[ 0 ])
+      this.props.selectAccount(this.props.accounts[0])
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
+      nemProvider.setEngine(nem)
       this.props.onLogin()
-    }).catch(e => {
+    }).catch((e) => {
       this.props.addError(e.message)
     })
   }

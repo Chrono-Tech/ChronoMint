@@ -63,7 +63,7 @@ export const confirmOperation = (operation: OperationModel | AbstractFetchingMod
   }
 }
 
-export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
+export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {

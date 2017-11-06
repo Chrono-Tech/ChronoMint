@@ -37,6 +37,7 @@ class HeaderPartial extends PureComponent {
     network: PropTypes.string,
     account: PropTypes.string,
     btcAddress: PropTypes.string,
+    nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
@@ -369,6 +370,23 @@ class HeaderPartial extends PureComponent {
               )
               : null
             }
+            {this.props.nemAddress
+              ? (
+                <div>
+                  <div styleName='infoAddress'><b>NEM: </b>{this.props.nemAddress}</div>
+                  <div styleName='info-micros'>
+                    <QRIcon value={this.props.nemAddress} />
+                    <CopyIcon
+                      value={this.props.nemAddress}
+                      onModalOpen={() => {
+                        this.profilePopover.componentClickAway()
+                      }}
+                    />
+                  </div>
+                </div>
+              )
+              : null
+            }
             <div styleName='info-balances'>
               {items
                 .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
@@ -460,6 +478,7 @@ function mapStateToProps (state) {
   return {
     i18n: state.get('i18n'), // force update I18n.t
     btcAddress: wallet.btcAddress(),
+    nemAddress: wallet.nemAddress(),
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
