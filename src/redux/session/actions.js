@@ -45,7 +45,7 @@ export const logout = () => async dispatch => {
 }
 
 export const login = account => async (dispatch, getState) => {
-  if (!getState().get('session').isSession) {
+  if (!getState().get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
@@ -70,18 +70,19 @@ export const login = account => async (dispatch, getState) => {
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
 }
 
-export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {
-  const { isSession, account, profile } = getState().get('session')
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
+  const { isSession, account, profile } = getState().get(DUCK_SESSION)
   if (!isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
-
-  dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
-  const dao = await contractsManagerDAO.getUserManagerDAO()
+  dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   try {
-    await dao.setMemberProfile(account, newProfile)
+    const dao = await contractsManagerDAO.getUserManagerDAO()
+    await dao.setMemberProfile(account, profile)
   } catch (e) {
+    // eslint-disable-next-line
+    console.error('update profile error', e.message)
     dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   }
 }

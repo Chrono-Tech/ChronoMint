@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { formPropTypes } from 'redux-form'
-import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
+import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -49,7 +48,7 @@ function mapStateToProps (state) {
 
 @connect(mapStateToProps, null)
 @reduxForm({form: FORM_SEND_TOKENS, validate})
-export class SendTokensForm extends React.Component {
+export class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
@@ -109,7 +108,7 @@ export class SendTokensForm extends React.Component {
           <div styleName='value'>
             <TokenValue
               isInvert
-              isLoading={token.isFetched()}
+              isLoading={!token.isFetched()}
               value={token.balance()}
               symbol={token.symbol()}
             />

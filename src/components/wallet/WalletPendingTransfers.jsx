@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -23,7 +23,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletPendingTransfers extends React.Component {
+export default class WalletPendingTransfers extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     revoke: PropTypes.func,
@@ -49,14 +49,14 @@ export default class WalletPendingTransfers extends React.Component {
           <div styleName='revoke'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
-              disabled={item.isRevoked()}
+              disabled={!item.isConfirmed()}
               onTouchTap={() => this.props.revoke(wallet, item)}
             />
           </div>
           <div styleName='sign'>
             <RaisedButton
               label={<Translate value='wallet.sign' />}
-              disabled={item.isSigned()}
+              disabled={item.isConfirmed()}
               onTouchTap={() => this.props.confirm(wallet, item)}
               primary
             />

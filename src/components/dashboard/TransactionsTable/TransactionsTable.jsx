@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { RaisedButton, CircularProgress, Paper } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import {Translate} from 'react-redux-i18n'
 import {connect} from 'react-redux'
 import moment from 'moment'
@@ -21,7 +21,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps)
-export default class TransactionsTable extends React.Component {
+export default class TransactionsTable extends PureComponent {
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,

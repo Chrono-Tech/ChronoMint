@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
 })
 
 @connect(mapStateToProps)
-class Moment extends React.Component {
+class Moment extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     date: PropTypes.oneOfType([

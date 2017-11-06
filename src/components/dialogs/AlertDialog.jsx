@@ -1,12 +1,12 @@
 import { Dialog, FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import { modalsClose } from 'redux/modals/actions'
 
 @connect(null, mapDispatchToProps)
-export default class AlertDialog extends React.Component {
+export default class AlertDialog extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     message: PropTypes.string,

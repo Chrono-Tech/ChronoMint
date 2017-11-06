@@ -2,7 +2,7 @@ import { I18n } from 'react-redux-i18n'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import inversedTheme from 'styles/themes/inversed'
 import menu from 'menu'
@@ -17,7 +17,7 @@ import styles from '../styles'
 import './BrandPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class BrandPartial extends React.Component {
+export default class BrandPartial extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     handleChangeLocale: PropTypes.func,
