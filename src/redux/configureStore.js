@@ -101,9 +101,11 @@ export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState(),
 })
 
+export const DUCK_I18N = 'i18n'
+
 // syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
-I18n.setTranslationsGetter(() => store.getState().get('i18n').translations)
-I18n.setLocaleGetter(() => store.getState().get('i18n').locale)
+I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
+I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
 const locale = ls.getLocale()
 // set moment locale

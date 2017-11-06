@@ -25,7 +25,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   }
 
   items () {
-    return this.list().toArray()
+    return this.list().valueSeq().toArray()
   }
 
   item (id) {

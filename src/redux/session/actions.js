@@ -7,10 +7,9 @@ import ProfileModel from 'models/ProfileModel'
 import { bootstrap } from 'redux/bootstrap/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
-import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 import { watchStopMarket } from 'redux/market/action'
-
+import { initWallet } from 'redux/wallet/actions'
 import ls from 'utils/LocalStorage'
 
 export const DUCK_SESSION = 'session'
@@ -24,15 +23,15 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/dashboard'
 export const DEFAULT_CBE_URL = '/dashboard'
 
-export const createSession = (account) => (dispatch) => {
+export const createSession = account => dispatch => {
   dispatch({ type: SESSION_CREATE, account })
 }
 
-export const destroySession = () => (dispatch) => {
+export const destroySession = () => dispatch => {
   dispatch({ type: SESSION_DESTROY })
 }
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async dispatch => {
   try {
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
@@ -45,8 +44,8 @@ export const logout = () => async (dispatch) => {
   }
 }
 
-export const login = (account) => async (dispatch, getState) => {
-  if (!getState().get('session').isSession) {
+export const login = account => async (dispatch, getState) => {
+  if (!getState().get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
@@ -71,18 +70,19 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
 }
 
-export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {
-  const { isSession, account, profile } = getState().get('session')
+export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
+  const { isSession, account, profile } = getState().get(DUCK_SESSION)
   if (!isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
-
-  dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
-  const dao = await contractsManagerDAO.getUserManagerDAO()
+  dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   try {
-    await dao.setMemberProfile(account, newProfile)
+    const dao = await contractsManagerDAO.getUserManagerDAO()
+    await dao.setMemberProfile(account, profile)
   } catch (e) {
+    // eslint-disable-next-line
+    console.error('update profile error', e.message)
     dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   }
 }

@@ -74,7 +74,7 @@ export default {
     switchMultisignatureWallet: 'Сменить мульти кошелёк',
     switchToMultisignatureWallet: 'Переключить на мульти кошелёк',
     switchToMainWallet: 'Переключить на основной кошелёк',
-    pendingTransfers: 'Проводимые переводы (demo)',
+    pendingTransfers: 'Проводимые переводы',
     to: 'Кому',
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',

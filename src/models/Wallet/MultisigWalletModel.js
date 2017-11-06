@@ -7,8 +7,6 @@ import ls from 'utils/LocalStorage'
 
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-window.ls = ls
-
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
   tokens: new Immutable.Map(), //
