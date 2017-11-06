@@ -4,9 +4,9 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 

@@ -37,7 +37,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       const voteLimitInTIME = values.voteLimitInTIME()
       const poll = values
         .set('voteLimitInTIME', voteLimitInTIME
@@ -72,18 +72,18 @@ export class PollDialog extends React.Component {
   }
 
   handleOptionSelect (index) {
-    this.setState({selectedOptionIndex: index})
+    this.setState({ selectedOptionIndex: index })
   }
 
   handleOptionCreate (options) {
     options.push()
-    this.setState({selectedOptionIndex: options.length})
+    this.setState({ selectedOptionIndex: options.length })
   }
 
   handleOptionRemove (options, index) {
     options.remove(index)
     if (this.state.selectedOptionIndex >= options.length) {
-      this.setState({selectedOptionIndex: options.length - 1})
+      this.setState({ selectedOptionIndex: options.length - 1 })
     }
   }
 

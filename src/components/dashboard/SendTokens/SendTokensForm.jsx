@@ -47,7 +47,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({form: FORM_SEND_TOKENS, validate})
+@reduxForm({ form: FORM_SEND_TOKENS, validate })
 export class SendTokensForm extends React.Component {
   static propTypes = {
     account: PropTypes.string,
@@ -77,7 +77,7 @@ export class SendTokensForm extends React.Component {
     return (
       <div>
         <IconSection
-          title={<Translate value={'wallet.sendTokens'} />}
+          title={<Translate value='wallet.sendTokens' />}
           iconComponent={(
             <IPFSImage
               styleName='content'
@@ -93,7 +93,7 @@ export class SendTokensForm extends React.Component {
               fullWidth
               {...styles}
             >
-              {this.props.wallet.tokens().keySeq().toArray().map(symbol => (
+              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
                 <MenuItem
                   key={symbol}
                   value={symbol}
@@ -119,8 +119,8 @@ export class SendTokensForm extends React.Component {
   }
 
   renderBody () {
-    const {invalid, pristine, token, handleSubmit, onSubmit, wallet} = this.props
-    const {isContract} = this.state
+    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
+    const { isContract } = this.state
 
     return (
       <div>
@@ -153,17 +153,17 @@ export class SendTokensForm extends React.Component {
             <RaisedButton
               label={<Translate value={prefix('send')} />}
               primary
-              style={{float: 'right', marginTop: '20px'}}
+              style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid}
-              onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_TRANSFER)))}
+              onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
             />
             {token && token.dao().isApproveRequired() && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
-                style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
+                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_APPROVE)))}
+                onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_APPROVE)))}
               />
             )}
           </div>
@@ -173,14 +173,14 @@ export class SendTokensForm extends React.Component {
   }
 
   render () {
-    const {token} = this.props
+    const { token } = this.props
 
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
             head={this.renderHead(token)}
-            body={this.renderBody({token})}
+            body={this.renderBody({ token })}
           />
         </form>
       </Paper>

@@ -1,4 +1,4 @@
-import { Field, reduxForm, formPropTypes} from 'redux-form/immutable'
+import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
@@ -24,7 +24,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       if (ownProps.isModify) {
         dispatch(modifyToken(ownProps.initialValues, values))

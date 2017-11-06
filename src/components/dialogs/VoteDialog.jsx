@@ -51,7 +51,7 @@ export default class VoteDialog extends React.Component {
   }
 
   handleSelect (choice) {
-    this.setState({choice})
+    this.setState({ choice })
   }
 
   render () {
@@ -61,7 +61,7 @@ export default class VoteDialog extends React.Component {
 
     return (
       <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-        <form styleName='content' onSubmit={e => this.handleSubmit(e)}>
+        <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
           <div styleName='header'>
             <div styleName='column'>
               <div styleName='inner'>
@@ -87,11 +87,11 @@ export default class VoteDialog extends React.Component {
                         {
                           value: details.daysTotal - details.daysLeft,
                           fillFrom: '#fbda61',
-                          fillTo: '#f98019'
+                          fillTo: '#f98019',
                         },
                         {
                           value: details.daysLeft,
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />
@@ -104,11 +104,11 @@ export default class VoteDialog extends React.Component {
                         {
                           value: details.votedCount.toNumber(),
                           fillFrom: '#311b92',
-                          fillTo: '#d500f9'
+                          fillTo: '#d500f9',
                         },
                         {
                           value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />

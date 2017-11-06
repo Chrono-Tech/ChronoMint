@@ -37,7 +37,7 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_TOKEN_DIALOG)
-  const {account, profile} = state.get(DUCK_SESSION)
+  const { account, profile } = state.get(DUCK_SESSION)
   const wallet = state.get(DUCK_MAIN_WALLET)
 
   return {
@@ -55,7 +55,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(addToken(new TokenModel(values)))
     },

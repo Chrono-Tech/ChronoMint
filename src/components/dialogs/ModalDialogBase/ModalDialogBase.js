@@ -10,7 +10,7 @@ import './ModalDialogBase.scss'
 
 const TRANSITION_TIMEOUT = 250
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   closeModal: () => dispatch(modalsClose()),
 })
 

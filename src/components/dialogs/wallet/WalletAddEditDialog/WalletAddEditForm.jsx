@@ -33,20 +33,20 @@ const onSubmit = (values, dispatch, props) => {
     ...values.toJS(),
     owners: [
       props.account,
-      ...values.get('owners').toArray().map(item => item.get('address')),
+      ...values.get('owners').toArray().map((item) => item.get('address')),
     ],
   })
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit})
+@reduxForm({ form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit })
 export default class WalletAddEditForm extends React.Component {
   static propTypes = {
     onClose: PropTypes.func,
   } & formPropTypes
 
   render () {
-    const {handleSubmit, pristine, valid, initialValues} = this.props
+    const { handleSubmit, pristine, valid, initialValues } = this.props
     const isNew = initialValues.get('isNew')
 
     return (

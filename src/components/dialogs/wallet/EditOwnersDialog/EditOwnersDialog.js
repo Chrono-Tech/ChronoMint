@@ -38,7 +38,7 @@ class EditManagersDialog extends Component {
   }
 
   render () {
-    const {wallet} = this.props
+    const { wallet } = this.props
     return (
       <ModalDialog onClose={this.handleClose}>
         <EditManagersBaseForm

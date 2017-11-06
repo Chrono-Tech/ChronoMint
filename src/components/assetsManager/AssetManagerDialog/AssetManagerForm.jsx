@@ -7,7 +7,7 @@ import { modalsClose } from 'redux/modals/actions'
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
-  const {selectedToken, tokensMap} = state.get(DUCK_ASSETS_MANAGER)
+  const { selectedToken, tokensMap } = state.get(DUCK_ASSETS_MANAGER)
   const token = tokensMap.get(selectedToken)
 
   return {

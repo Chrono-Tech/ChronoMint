@@ -31,14 +31,14 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const {profile} = state.get(DUCK_SESSION)
+  const { profile } = state.get(DUCK_SESSION)
   const wallet = state.get(DUCK_MAIN_WALLET)
   const settings = state.get(DUCK_SETTINGS_ERC20_TOKENS)
 
   return {
     profile,
     wallet,
-    tokens: settings.list.merge(wallet.tokens()).sortBy(token => token.symbol()),
+    tokens: settings.list.merge(wallet.tokens()).sortBy((token) => token.symbol()),
     isFetched: settings.isFetched && !wallet.isFetching() && wallet.isFetched(),
   }
 }
@@ -50,7 +50,7 @@ function mapDispatchToProps (dispatch) {
       component: AddTokenDialog,
     })),
     handleClose: () => dispatch(modalsClose()),
-    updateUserProfile: profile => dispatch(updateUserProfile(profile)),
+    updateUserProfile: (profile) => dispatch(updateUserProfile(profile)),
     initWallet: () => dispatch(watchInitWallet()),
   }
 }
@@ -82,19 +82,19 @@ export default class AddCurrencyDialog extends React.Component {
   }
 
   handleCurrencyChecked (symbol, isSelect) {
-    const {selectedTokens} = this.state
+    const { selectedTokens } = this.state
 
     this.setState({
       ...this.state,
       selectedTokens: isSelect
         ? selectedTokens.concat(symbol)
-        : selectedTokens.filter(item => item !== symbol),
+        : selectedTokens.filter((item) => item !== symbol),
     })
   }
 
   async handleSave () {
-    const tokens = this.props.tokens.filter(item => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
-    const tokensAddresses = tokens.toArray().map(item => item.address())
+    const tokens = this.props.tokens.filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
+    const tokensAddresses = tokens.toArray().map((item) => item.address())
     const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
 
     this.props.handleClose()
@@ -108,7 +108,7 @@ export default class AddCurrencyDialog extends React.Component {
     return (
       <div
         key={token.id()}
-        styleName={classnames('row', {rowSelected: isSelected})}
+        styleName={classnames('row', { rowSelected: isSelected })}
         onTouchTap={() => this.handleCurrencyChecked(token.symbol(), !isSelected)}
       >
         <div styleName='cell'>

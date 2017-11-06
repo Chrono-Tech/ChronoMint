@@ -38,7 +38,7 @@ export default class CopyDialog extends React.Component {
               {this.props.description}
             </div>
             <TextField
-              ref={el => { this.inputElement = el }}
+              ref={(el) => { this.inputElement = el }}
               name='value'
               value={this.props.copyValue}
               fullWidth

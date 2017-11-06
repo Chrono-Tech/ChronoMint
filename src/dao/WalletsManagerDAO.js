@@ -50,7 +50,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
         address: wallet.address(),
         action: statuses.CREATED,
       }))
-    }, {by: this.getAccount()})
+    }, { by: this.getAccount() })
   }
 
   // --------- actions ----------

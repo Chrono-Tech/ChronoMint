@@ -33,7 +33,6 @@ function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
 }
 
-
 function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
@@ -47,7 +46,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const {account, profile} = state.get(DUCK_SESSION)
+  const { account, profile } = state.get(DUCK_SESSION)
   const market = state.get('market')
   const ui = state.get('ui')
 
@@ -115,7 +114,7 @@ export class InfoPartial extends React.Component {
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isInited
-              ? items.map(item => this.renderItem(item))
+              ? items.map((item) => this.renderItem(item))
               : <Preloader />
             }
             {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
