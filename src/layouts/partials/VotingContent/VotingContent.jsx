@@ -6,9 +6,7 @@ import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import PollModel from 'models/PollModel'
-
 import { getStatistics } from 'redux/voting/getters'
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
@@ -160,7 +158,7 @@ export default class VotingContent extends Component {
         <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map(poll => (
+              {polls.map((poll) => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
                   <Paper>
                     <Poll model={poll} />

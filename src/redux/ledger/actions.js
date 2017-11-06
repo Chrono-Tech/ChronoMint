@@ -1,6 +1,5 @@
 import ledgerProvider from 'network/LedgerProvider'
 import web3Provider from 'network/Web3Provider'
-
 import { NETWORK_SET_ACCOUNTS } from 'redux/network/actions'
 import { selectAccount, getProviderURL } from 'redux/network/actions'
 
@@ -9,20 +8,20 @@ export const LEDGER_SET_ETH_APP_OPENED = 'ledger/SET_ETH_APP_OPENED'
 export const LEDGER_FETCHING = 'ledger/FETCHING'
 export const LEDGER_FETCHED = 'ledger/FETCHED'
 
-export const initLedger = () => async dispatch => {
+export const initLedger = () => async (dispatch) => {
   const isInited = await ledgerProvider.init()
   dispatch({ type: LEDGER_SET_U2F, isU2F: ledgerProvider.isU2F() })
   dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened: ledgerProvider.isETHAppOpened() })
   return isInited
 }
 
-export const startLedgerSync = () => async dispatch => {
+export const startLedgerSync = () => async (dispatch) => {
   await dispatch(initLedger())
-  ledgerProvider.on('connection', isETHAppOpened => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
+  ledgerProvider.on('connection', (isETHAppOpened) => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
   return ledgerProvider.sync()
 }
 
-export const stopLedgerSync = (isReset = false) => dispatch => {
+export const stopLedgerSync = (isReset = false) => (dispatch) => {
   ledgerProvider.stop()
   if (!isReset) {
     return
@@ -33,7 +32,7 @@ export const stopLedgerSync = (isReset = false) => dispatch => {
   dispatch({ type: LEDGER_FETCHED, isFetched: false })
 }
 
-export const fetchAccount = () => async dispatch => {
+export const fetchAccount = () => async (dispatch) => {
   dispatch({ type: LEDGER_FETCHING })
   const accounts = await ledgerProvider.fetchAccount()
   if (!accounts) {
@@ -47,7 +46,7 @@ export const fetchAccount = () => async dispatch => {
   dispatch(stopLedgerSync())
 }
 
-export const loginLedger = () => dispatch => {
+export const loginLedger = () => (dispatch) => {
   const providerURL = dispatch(getProviderURL())
   ledgerProvider.setupAndStart(providerURL)
   web3Provider.setWeb3(ledgerProvider.getWeb3())

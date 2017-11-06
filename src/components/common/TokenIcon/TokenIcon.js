@@ -1,7 +1,7 @@
 /* eslint-disable no-bitwise, no-plusplus */
 
-import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 
 function hashCode (str) {
   let hash = 0
@@ -107,7 +107,7 @@ class TokenIcon extends PureComponent {
     context.fillText(this.props.token.toUpperCase(), canvasCssWidth / 2, canvasCssHeight / 1.67)
   }
 
-  refCanvas = element => { this.canvas = element }
+  refCanvas = (element) => { this.canvas = element }
 
   renderScaled () {
     const {

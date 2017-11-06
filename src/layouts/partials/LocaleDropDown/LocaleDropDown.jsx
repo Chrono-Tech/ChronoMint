@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
-
 import { changeMomentLocale } from 'redux/ui/locale'
-
 import styles from './styles'
 
 import './LocaleDropDown.scss'
@@ -40,7 +38,7 @@ export default class LocaleDropDown extends PureComponent {
         value={this.props.locale}
         onChange={(e, i, value) => this.props.handleChangeLocale(value)}
       >
-        {locales.map(item =>
+        {locales.map((item) =>
           <MenuItem value={item.name} key={item.name} primaryText={item.title} />)}
       </DropDownMenu>
     )
@@ -55,7 +53,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleChangeLocale: locale => {
+    handleChangeLocale: (locale) => {
       changeMomentLocale(locale, dispatch)
     },
   }

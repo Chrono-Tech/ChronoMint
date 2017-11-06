@@ -1,7 +1,5 @@
 import { store } from 'specsInit'
-
 import ledgerProvider from 'network/LedgerProvider'
-
 import * as a from './actions'
 
 describe('Ledger action', () => {

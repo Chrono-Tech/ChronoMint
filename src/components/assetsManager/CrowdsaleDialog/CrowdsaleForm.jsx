@@ -12,9 +12,7 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import styles from './styles'
 
 import './CrowdsaleForm.scss'
@@ -95,7 +93,7 @@ export default class CrowdsaleForm extends PureComponent {
             <RadioButton
               value='time'
               label={<Translate value={prefix('timeLimited')} />}
-              onClick={e => {
+              onClick={(e) => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />
@@ -104,7 +102,7 @@ export default class CrowdsaleForm extends PureComponent {
               styleName='crowdsaleType'
               value='block'
               label={<Translate value={prefix('blockLimited')} />}
-              onClick={e => {
+              onClick={(e) => {
                 this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))
               }}
             />

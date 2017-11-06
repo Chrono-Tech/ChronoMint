@@ -1,5 +1,4 @@
 import { Map } from 'immutable'
-
 import * as actions from './actions'
 
 export const initialState = {

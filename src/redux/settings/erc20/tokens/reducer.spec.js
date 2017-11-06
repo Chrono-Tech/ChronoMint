@@ -1,7 +1,5 @@
 import Immutable from 'immutable'
-
 import TokenModel from 'models/TokenModel'
-
 import * as a from './actions'
 import reducer from './reducer'
 

@@ -1,3 +1,4 @@
+import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -5,13 +6,12 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { CircularProgress } from 'material-ui'
+
 import './HistoryTable.scss'
 
 function prefix (token) {
   return `Assets.HistoryTable.${token}`
 }
-
 
 function mapStateToProps (state) {
   return {
@@ -69,7 +69,7 @@ export default class HistoryTable extends PureComponent {
           this.props.transactionsFetching &&
           <div styleName='footer'>
             <CircularProgress
-              style={{verticalAlign: 'middle', marginTop: -2}}
+              style={{ verticalAlign: 'middle', marginTop: -2 }}
               size={24}
               thickness={1.5}
             />
@@ -118,7 +118,7 @@ export default class HistoryTable extends PureComponent {
     return value
   }
 
-  renderRow ({trx, timeTitle}, index) {
+  renderRow ({ trx, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -170,7 +170,7 @@ export default class HistoryTable extends PureComponent {
 
     return Object.values(groups)
       .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-      .map(group => ({
+      .map((group) => ({
         ...group,
         transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
       }))

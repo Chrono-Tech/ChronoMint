@@ -147,7 +147,7 @@ export default class WalletSelectDialog extends PureComponent {
                 />
               </h5>
               <div styleName='table'>
-                {wallets.map(item => this.renderRow(item, selected === item.address))}
+                {wallets.map((item) => this.renderRow(item, selected === item.address))}
               </div>
             </div>
             <div styleName='column'>

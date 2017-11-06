@@ -30,7 +30,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLocal: true,
-        providers: state.providers.map(item => item.id === providerMap.local.id
+        providers: state.providers.map((item) => item.id === providerMap.local.id
           ? {
             ...item,
             disabled: false,
@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
         ...state,
-        providers: state.providers.map(item => item.id === providerMap.metamask.id
+        providers: state.providers.map((item) => item.id === providerMap.metamask.id
           ? {
             ...item,
             disabled: false,

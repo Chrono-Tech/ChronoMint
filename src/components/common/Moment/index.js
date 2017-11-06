@@ -6,7 +6,7 @@ import moment from 'moment'
 export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
 export const SHORT_DATE = 'MMM Do, YYYY'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   locale: state.get('i18n').locale,
 })
 

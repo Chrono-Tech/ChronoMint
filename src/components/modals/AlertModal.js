@@ -1,7 +1,7 @@
+import { FlatButton } from 'material-ui'
 // TODO New Modal Stack, but probably we don't need this modal at all
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import { FlatButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from '../../styles'
 import ModalBase from './ModalBase/ModalBase'

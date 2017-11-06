@@ -3,12 +3,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import TokenModel from 'models/TokenModel'
-
 import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import CBETokenDialog from 'components/dialogs/CBETokenDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
@@ -134,7 +131,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listTokens()),
-    remove: token => dispatch(revokeToken(token)),
+    remove: (token) => dispatch(revokeToken(token)),
     form: (token, isModify) => dispatch(modalsOpen({
       component: CBETokenDialog,
       props: {

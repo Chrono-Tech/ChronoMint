@@ -6,22 +6,18 @@ import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import LOCModel from 'models/LOCModel'
-
 import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
-
 import FileSelect from 'components/common/FileSelect/FileSelect'
-
 import validate from './validate'
 
 import './LOCForm.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   locs: state.get('locs').locs,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   addLOC: (loc: LOCModel) => dispatch(addLOC(loc)),
   updateLOC: (loc: LOCModel) => dispatch(updateLOC(loc)),
   removeLOC: (loc: LOCModel) => dispatch(removeLOC(loc)),

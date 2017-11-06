@@ -18,7 +18,6 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import FileModel from 'models/FileSelect/FileModel'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 
-
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`
 }
@@ -40,10 +39,9 @@ function mapDispatchToProps (dispatch) {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
-    createAsset: values => dispatch(createAsset(values)),
+    createAsset: (values) => dispatch(createAsset(values)),
   }
 }
-
 
 const onSubmit = (values, dispatch) => {
   dispatch(createAsset(values))
@@ -56,7 +54,7 @@ const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit })
 export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
@@ -111,13 +109,13 @@ export default class AddTokenForm extends PureComponent {
       isUploading: true,
     })
     await ipfs.uploadFile(
-      new FileModel({file, uploading: true}),
+      new FileModel({ file, uploading: true }),
       this.state.config,
-      file => this.handleFileUploaded(file))
+      (file) => this.handleFileUploaded(file))
   }
 
   renderFileInput () {
-    const {isUploading, isUploaded} = this.state
+    const { isUploading, isUploaded } = this.state
     const tokenImg = this.props.formValues && this.props.formValues.get('tokenImg')
     return (<div styleName='tokenImgWrap'>
       {
@@ -148,8 +146,8 @@ export default class AddTokenForm extends PureComponent {
       }
 
       <input
-        onChange={e => this.handleUploadFile(e)}
-        ref={input => this.walletFileUploadInput = input}
+        onChange={(e) => this.handleUploadFile(e)}
+        ref={(input) => this.walletFileUploadInput = input}
         type='file'
         styleName='hide'
       />
@@ -158,7 +156,7 @@ export default class AddTokenForm extends PureComponent {
 
   renderPlatformsList () {
     const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
-    const {platformsList, dispatch, formErrors} = this.props
+    const { platformsList, dispatch, formErrors } = this.props
     return (
       <div styleName='xs-hide'>
         <div styleName='addNewPlatformTitle'>
@@ -177,9 +175,9 @@ export default class AddTokenForm extends PureComponent {
         <div styleName='platformsList'>
           {
             platformsList
-              .map(platform => {
+              .map((platform) => {
                 return (<div
-                  styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
+                  styleName={classnames('platformItem', { 'selectedPlatform': platform === selectedPlatform })}
                   onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
                   key={platform.address}
                 >
@@ -249,7 +247,7 @@ export default class AddTokenForm extends PureComponent {
 
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
-    const {platformsList} = this.props
+    const { platformsList } = this.props
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
@@ -274,7 +272,7 @@ export default class AddTokenForm extends PureComponent {
           >
             {
               platformsList
-                .map(platform => {
+                .map((platform) => {
                   return (<MenuItem
                     key={platform.address}
                     value={platform}
@@ -366,7 +364,7 @@ export default class AddTokenForm extends PureComponent {
         >
           <RaisedButton
             onTouchTap={() => {
-              this.setState({showPlatformError: !!this.props.formErrors.platform})
+              this.setState({ showPlatformError: !!this.props.formErrors.platform })
             }}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

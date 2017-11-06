@@ -15,8 +15,8 @@ import * as NetworkSelector from 'components/pages/LoginPage/NetworkSelector/lan
 import * as ProviderSelector from 'components/pages/LoginPage/ProviderSelector/lang'
 import * as Timer from 'components/common/Timer/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
-import * as Warning from 'components/pages/LoginPage/Warning/lang'
 import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
+import * as Warning from 'components/pages/LoginPage/Warning/lang'
 
 export default {
   en: {

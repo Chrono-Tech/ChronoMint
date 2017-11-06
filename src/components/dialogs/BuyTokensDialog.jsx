@@ -8,6 +8,7 @@ import { exchange } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from './ModalDialog'
+
 import './BuyTokensDialog.scss'
 
 @connect(null, mapDispatchToProps)
@@ -133,7 +134,7 @@ export default class BuyTokensDialog extends PureComponent {
                       <div className='icon'>
                         <div
                           className='content'
-                          style={{background: `#05326a url(${icons.lht}) no-repeat center center`}}
+                          style={{ background: `#05326a url(${icons.lht}) no-repeat center center` }}
                         />
                       </div>
                     </div>
@@ -141,7 +142,7 @@ export default class BuyTokensDialog extends PureComponent {
                       <div className='icon'>
                         <div
                           className='content'
-                          style={{background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`,}}
+                          style={{ background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center` }}
                         />
                       </div>
                     </div>
@@ -252,7 +253,7 @@ export default class BuyTokensDialog extends PureComponent {
           </div>
         </div>
         <div styleName='tableBody'>
-          { data.map(item => this.renderRatesRow(item)) }
+          { data.map((item) => this.renderRatesRow(item)) }
         </div>
       </div>
     )

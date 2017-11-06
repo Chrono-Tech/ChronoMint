@@ -6,14 +6,15 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import ProfileModel from 'models/ProfileModel'
-import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
+import { modalsClose } from 'redux/modals/actions'
 import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
+
 import './UpdateProfileDialog.scss'
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
@@ -33,7 +34,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(updateUserProfile(new ProfileModel(values.toJS())))
     },
@@ -41,7 +42,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_UPDATE_PROFILE_DIALOG, validate})
+@reduxForm({ form: FORM_UPDATE_PROFILE_DIALOG, validate })
 export default class UpdateProfileDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
@@ -65,7 +66,7 @@ export default class UpdateProfileDialog extends PureComponent {
                   styleName='content'
                   multihash={this.props.icon}
                   icon={(<FontIcon
-                    style={{fontSize: 96}}
+                    style={{ fontSize: 96 }}
                     color='white'
                     className='material-icons'
                   >account_circle

@@ -1,10 +1,8 @@
 import Immutable from 'immutable'
-
 import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
-
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'
@@ -29,7 +27,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   usersTotal () {
-    return this._callNum('userCount').then(r => r - 1)
+    return this._callNum('userCount').then((r) => r - 1)
   }
 
   getMemberId (account) {

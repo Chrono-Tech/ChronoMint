@@ -4,7 +4,6 @@ import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-
 import styles from './ModalBaseStyles'
 
 export default class ModalBase extends PureComponent {
@@ -21,7 +20,7 @@ export default class ModalBase extends PureComponent {
   }
 
   render () {
-    const {modal, title, isNotI18n, onClose, actions, open, children} = this.props
+    const { modal, title, isNotI18n, onClose, actions, open, children } = this.props
     const isModal = modal !== false
     return (
       <Dialog

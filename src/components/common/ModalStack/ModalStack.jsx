@@ -19,7 +19,7 @@ export class ModalStack extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        { this.props.stack.map(modal => (
+        { this.props.stack.map((modal) => (
           <div key={modal.key}>
             <modal.component {...modal.props} />
           </div>

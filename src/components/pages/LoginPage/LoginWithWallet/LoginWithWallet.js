@@ -3,21 +3,19 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { clearErrors, loading } from 'redux/network/actions'
-
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
 
 import './LoginWithWallet.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   clearErrors: () => dispatch(clearErrors()),
-  loading: isLoading => dispatch(loading(isLoading)),
+  loading: (isLoading) => dispatch(loading(isLoading)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -42,7 +40,7 @@ class LoginWithWallet extends PureComponent {
     }
   }
 
-  handleFileUploaded = e => {
+  handleFileUploaded = (e) => {
     this.props.clearErrors()
     this.setState({
       isUploading: false,
@@ -51,7 +49,7 @@ class LoginWithWallet extends PureComponent {
     })
   }
 
-  handleUploadFile = e => {
+  handleUploadFile = (e) => {
     const file = e.target.files[0]
     if (!file) {
       return
@@ -138,7 +136,7 @@ class LoginWithWallet extends PureComponent {
 
           <input
             onChange={this.handleUploadFile}
-            ref={input => this.walletFileUploadInput = input}
+            ref={(input) => this.walletFileUploadInput = input}
             type='file'
             styleName='hide'
           />

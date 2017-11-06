@@ -8,13 +8,14 @@ import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import TokenModel, { validate } from 'models/TokenModel'
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenIcon from 'components/common/TokenIcon/TokenIcon'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
 import ModalDialog from './ModalDialog'
+
 import './AddTokenDialog.scss'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
@@ -37,7 +38,7 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_TOKEN_DIALOG)
-  const {account, profile} = state.get(DUCK_SESSION)
+  const { account, profile } = state.get(DUCK_SESSION)
   const wallet = state.get(DUCK_MAIN_WALLET)
 
   return {
@@ -55,7 +56,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(addToken(new TokenModel(values)))
     },

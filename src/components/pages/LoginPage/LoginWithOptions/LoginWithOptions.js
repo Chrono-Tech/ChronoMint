@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
-
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
 import { nemProvider } from 'network/NemProvider'
 import ledgerProvider from 'network/LedgerProvider'
@@ -12,10 +11,8 @@ import privateKeyProvider from 'network/privateKeyProvider'
 import walletProvider from 'network/walletProvider'
 import web3Provider from 'network/Web3Provider'
 import web3Utils from 'network/Web3Utils'
-
 import { addError, clearErrors, loadAccounts, selectAccount, getProviderURL, loading, getProviderSettings } from 'redux/network/actions'
 import { loginLedger } from 'redux/ledger/actions'
-
 import GenerateMnemonic from '../GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../GenerateWallet/GenerateWallet'
 import LoginLedger from '../LoginWithLedger/LoginWithLedger'
@@ -51,15 +48,15 @@ const loginOptions = [{
   title: 'LoginWithOptions.ledgerNano',
 }]
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
 })
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
   loadAccounts: () => dispatch(loadAccounts()),
-  selectAccount: value => dispatch(selectAccount(value)),
+  selectAccount: (value) => dispatch(selectAccount(value)),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => dispatch(getProviderURL()),
   getProviderSettings: () => dispatch(getProviderSettings()),
@@ -104,19 +101,19 @@ class LoginWithOptions extends PureComponent {
       btcProvider.setEngine(btc)
       nemProvider.setEngine(nem)
       this.props.onLogin()
-    }).catch(e => {
+    }).catch((e) => {
       this.props.addError(e.message)
     })
   }
 
-  handleMnemonicLogin = mnemonicKey => {
+  handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
     const provider = mnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
-  handlePrivateKeyLogin = privateKey => {
+  handlePrivateKeyLogin = (privateKey) => {
     this.props.loading()
     this.props.clearErrors()
     try {

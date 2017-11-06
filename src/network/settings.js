@@ -174,7 +174,7 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
   const networkMap = getNetworksByProvider(providerId, withLocal)
-  return networkMap.find(net => net.id === networkId) || {}
+  return networkMap.find((net) => net.id === networkId) || {}
 }
 
 export const getScannerById = (networkId, providerId, api = false) => {

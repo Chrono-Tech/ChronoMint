@@ -3,15 +3,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { validatePrivateKey } from 'network/privateKeyProvider'
-
 import BackButton from '../BackButton/BackButton'
 import styles from '../stylesLoginPage'
 
 import './LoginWithPrivateKey.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
@@ -49,7 +47,7 @@ class LoginWithPrivateKey extends PureComponent {
           />
         </div>
         <TextField
-          ref={input => { this.privateKey = input }}
+          ref={(input) => { this.privateKey = input }}
           floatingLabelText={<Translate value='LoginWithPrivateKey.privateKey' />}
           value={privateKey}
           onChange={this.handlePrivateKeyChange}

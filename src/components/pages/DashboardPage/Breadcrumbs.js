@@ -1,8 +1,8 @@
 // TODO New Dashboard
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import globalStyles from '../../../styles'
 import { connect } from 'react-redux'
+import globalStyles from '../../../styles'
 
 const mapStateToProps = (state) => ({
   user: state.get('session')

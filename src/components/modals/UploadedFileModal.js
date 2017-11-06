@@ -1,10 +1,10 @@
+import FileDownload from 'material-ui/svg-icons/file/file-download'
+import { FlatButton } from 'material-ui'
 // TODO MINT-266 New LOC
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import { FlatButton } from 'material-ui'
-import FileDownload from 'material-ui/svg-icons/file/file-download'
-import ModalBase from './ModalBase/ModalBase'
 import { Translate } from 'react-redux-i18n'
+import ModalBase from './ModalBase/ModalBase'
 
 const MIMETypesToShow = [
   'application/pdf;',

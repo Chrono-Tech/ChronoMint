@@ -88,7 +88,7 @@ class MarketSocket extends EventEmitter {
     }
   }
 
-  _onSocketUpdate = message => {
+  _onSocketUpdate = (message) => {
     const messageType = message.substring(0, message.indexOf('~'))
 
     if (messageType === this.type) {

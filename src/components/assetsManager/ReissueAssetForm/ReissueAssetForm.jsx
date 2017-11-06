@@ -6,9 +6,9 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { reissueAsset } from 'redux/assetsManager/actions'
+import validate from './validate'
 
 import './ReissueAssetForm.scss'
-import validate from './validate'
 
 function prefix (token) {
   return `Assets.ReissueAssetForm.${token}`
@@ -30,7 +30,7 @@ const onSubmit = (values, dispatch, props) => {
 }
 
 @connect(mapStateToProps)
-@reduxForm({form: FORM_REISSUE_FORM, validate, onSubmit})
+@reduxForm({ form: FORM_REISSUE_FORM, validate, onSubmit })
 export default class ReissueAssetForm extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
@@ -47,7 +47,7 @@ export default class ReissueAssetForm extends PureComponent {
               component={TextField}
               fullWidth
               name='amount'
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               floatingLabelText={<Translate value={prefix('reissueAmount')} />}
             />
           </div>
@@ -62,5 +62,4 @@ export default class ReissueAssetForm extends PureComponent {
     )
   }
 }
-
 

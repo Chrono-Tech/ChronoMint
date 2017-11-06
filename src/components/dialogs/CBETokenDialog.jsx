@@ -1,4 +1,4 @@
-import { Field, reduxForm, formPropTypes} from 'redux-form/immutable'
+import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
@@ -11,6 +11,7 @@ import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
+
 import './FormDialog.scss'
 
 export const FORM_CBE_TOKEN = 'CBETokenDialog'
@@ -24,7 +25,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       dispatch(modalsClose())
       if (ownProps.isModify) {
         dispatch(modifyToken(ownProps.initialValues, values))

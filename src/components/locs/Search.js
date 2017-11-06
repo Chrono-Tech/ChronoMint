@@ -1,10 +1,10 @@
 // TODO MINT-266 New LOC
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
 import TextField from 'material-ui/TextField'
-import { updateLOCFilter } from 'redux/locs/actions'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { updateLOCFilter } from 'redux/locs/actions'
 
 const mapStateToProps = (state) => ({
   filter: state.get('locs').filter

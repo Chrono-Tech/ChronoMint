@@ -3,10 +3,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'

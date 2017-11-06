@@ -5,11 +5,9 @@ import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
@@ -48,7 +46,7 @@ class Voting extends PureComponent {
     const { list, handlePollDetails } = this.props
 
     const polls = this.props.isFetched
-      ? list.reverse().toArray().filter(item => item.poll().active())
+      ? list.reverse().toArray().filter((item) => item.poll().active())
       : []
 
     if (polls.length <= 0) {
@@ -78,7 +76,7 @@ class Voting extends PureComponent {
         >
           <div styleName='content'>
             {
-              polls.map(item => {
+              polls.map((item) => {
                 const details = item.details()
                 const poll = item.poll()
 
@@ -170,7 +168,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handlePollDetails: model => dispatch(modalsOpen({
+    handlePollDetails: (model) => dispatch(modalsOpen({
       component: PollDetailsDialog,
       props: { model },
     })),

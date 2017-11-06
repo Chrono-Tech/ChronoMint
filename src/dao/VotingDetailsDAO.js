@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import FileModel from 'models/FileSelect/FileModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
-
 import ipfs from 'utils/IPFS'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -24,17 +21,17 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       await this.getActivePollIds(),
       await this.getInactivePollIds(),
     ])
-    return await Promise.all([...activeIds, ...inactiveIds].map(id => this.getPollDetails(id)))
+    return await Promise.all([...activeIds, ...inactiveIds].map((id) => this.getPollDetails(id)))
   }
 
   async getActivePollIds () {
     const ids = await this._call('getActivePolls')
-    return ids.map(id => id.toNumber())
+    return ids.map((id) => id.toNumber())
   }
 
   async getInactivePollIds () {
     const ids = await this._call('getInactivePolls')
-    return ids.map(id => id.toNumber())
+    return ids.map((id) => id.toNumber())
   }
 
   async getPoll (pollId): PollDetailsModel {
@@ -91,7 +88,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       totalSupply,
       shareholdersCount,
       files: new Immutable.List((files && files.links || [])
-        .map(item => FileModel.createFromLink(item))),
+        .map((item) => FileModel.createFromLink(item))),
     })
   }
 }

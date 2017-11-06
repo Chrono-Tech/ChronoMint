@@ -1,5 +1,4 @@
-
-export const required = value => !value ? 'errors.required' : null
+export const required = (value) => !value ? 'errors.required' : null
 
 export const address = (value, required = true) => {
   if ((!value && required) || (value && !/^0x[0-9a-f]{40}$/i.test(value))) {
@@ -39,7 +38,7 @@ export const url = (value, required = true) => {
   return null
 }
 
-export const positiveInt = value => {
+export const positiveInt = (value) => {
   if (!/^[1-9][\d]*$/.test(value)) {
     return 'errors.invalidPositiveInt'
   }
@@ -56,11 +55,11 @@ export const between = (value, min, max, required = true) => {
   return null
 }
 
-export const positiveNumber = value => isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
+export const positiveNumber = (value) => isNaN(value) || !(value > 0) ? 'errors.invalidPositiveNumber' : null
 
-export const positiveNumberOrZero = value => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
+export const positiveNumberOrZero = (value) => isNaN(value) || !(value >= 0) ? 'errors.invalidPositiveNumberOrZero' : null
 
-export const validIpfsFileList = value => (!!value && value.indexOf('!') === 0)
+export const validIpfsFileList = (value) => (!!value && value.indexOf('!') === 0)
   // '!' marks partially uploaded or inconsistent objects
   ? 'errors.validIpfsFileList'
   : null
@@ -92,7 +91,6 @@ export function moreThan (value, limit, strict = false) {
     limit,
   } : null
 }
-
 
 export default {
   required,

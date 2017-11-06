@@ -1,7 +1,7 @@
-import * as platformsManager from 'dao/PlatformsManagerDAO'
 import { ru as layouts } from 'layouts/lang'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
 import { ru as LoginPage } from 'pages/LoginPage/lang'
 import { ru as components } from 'components/lang'
 import * as assetDonator from '../dao/AssetDonatorDAO'
