@@ -1,15 +1,13 @@
 import { push, replace } from 'react-router-redux'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
+import networkService from 'Login/redux/network/actions'
 import ProfileModel from 'models/ProfileModel'
-
 import { bootstrap } from 'redux/bootstrap/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { destroyNetworkSession } from 'redux/network/actions'
+import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 import { watchStopMarket } from 'redux/market/action'
-import { initWallet } from 'redux/wallet/actions'
 import ls from 'utils/LocalStorage'
 
 export const DUCK_SESSION = 'session'
@@ -23,19 +21,22 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/dashboard'
 export const DEFAULT_CBE_URL = '/dashboard'
 
-export const createSession = account => dispatch => {
+export const createSession = ({ account, provider, network, dispatch }) => {
+  ls.createSession(account, provider, network)
   dispatch({ type: SESSION_CREATE, account })
 }
 
-export const destroySession = () => dispatch => {
+export const destroySession = ({ lastURL, dispatch }) => {
+  ls.setLastURL(lastURL)
+  ls.destroySession()
   dispatch({ type: SESSION_DESTROY })
 }
 
-export const logout = () => async dispatch => {
+export const logout = () => async (dispatch) => {
   try {
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
-    await dispatch(destroyNetworkSession(`${window.location.pathname}${window.location.search}`))
+    await networkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`)
     await dispatch(push('/'))
     await dispatch(bootstrap(false))
   } catch (e) {
@@ -44,14 +45,14 @@ export const logout = () => async dispatch => {
   }
 }
 
-export const login = account => async (dispatch, getState) => {
+export const login = (account) => async (dispatch, getState) => {
   if (!getState().get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
 
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  const [isCBE, profile, memberId] = await Promise.all([
+  const [ isCBE, profile, memberId ] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account),
     dao.getMemberId(account),

@@ -2,22 +2,19 @@ import { I18n } from 'react-redux-i18n'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import inversedTheme from 'styles/themes/inversed'
 import menu from 'menu'
-
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-
 import Rates from 'components/common/Rates/index'
-
 import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from '../styles'
 
 import './BrandPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class BrandPartial extends React.Component {
+export default class BrandPartial extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     handleChangeLocale: PropTypes.func,
@@ -36,7 +33,7 @@ export default class BrandPartial extends React.Component {
             <div styleName='subtitle'>{require('../../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={locale}>
-            {menu.global.map(item => (
+            {menu.global.map((item) => (
               <li styleName='itemsItem' key={item.key}>
                 <a
                   styleName='itemsLink'
@@ -87,7 +84,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    toggleBrandPartial: open => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
+    toggleBrandPartial: (open) => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
   }
 }
 

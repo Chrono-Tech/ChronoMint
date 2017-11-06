@@ -1,13 +1,13 @@
+import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
-import {CSSTransitionGroup} from 'react-transition-group'
 
 import './ModalDialog.scss'
 
 const TRANSITION_TIMEOUT = 250
 
-export default class ModalDialog extends React.Component {
+export default class ModalDialog extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
@@ -32,7 +32,7 @@ export default class ModalDialog extends React.Component {
         <div
           styleName='root'
           className={classnames('ModalDialog__backdrop', this.props.className)}
-          onTouchTap={e => {
+          onTouchTap={(e) => {
             e.stopPropagation()
             this.handleBackdropTap(e)
           }}
@@ -40,7 +40,7 @@ export default class ModalDialog extends React.Component {
           <div
             styleName='dialog'
             className='ModalDialog__dialog'
-            onTouchTap={e => {
+            onTouchTap={(e) => {
               e.stopPropagation()
             }}
           >
@@ -50,7 +50,7 @@ export default class ModalDialog extends React.Component {
             <a
               styleName='close'
               className='ModalDialog__close'
-              onTouchTap={e => {
+              onTouchTap={(e) => {
                 e.stopPropagation()
                 this.handleBackdropTap(e)
               }}

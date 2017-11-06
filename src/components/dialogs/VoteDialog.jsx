@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -10,6 +10,7 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import ModalDialog from './ModalDialog'
+
 import './VoteDialog.scss'
 
 function prefix (token) {
@@ -27,7 +28,7 @@ function mapDispatchToProps (dispatch, op) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class VoteDialog extends React.Component {
+export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     onClose: PropTypes.func,
@@ -51,7 +52,7 @@ export default class VoteDialog extends React.Component {
   }
 
   handleSelect (choice) {
-    this.setState({choice})
+    this.setState({ choice })
   }
 
   render () {
@@ -61,7 +62,7 @@ export default class VoteDialog extends React.Component {
 
     return (
       <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-        <form styleName='content' onSubmit={e => this.handleSubmit(e)}>
+        <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
           <div styleName='header'>
             <div styleName='column'>
               <div styleName='inner'>
@@ -87,11 +88,11 @@ export default class VoteDialog extends React.Component {
                         {
                           value: details.daysTotal - details.daysLeft,
                           fillFrom: '#fbda61',
-                          fillTo: '#f98019'
+                          fillTo: '#f98019',
                         },
                         {
                           value: details.daysLeft,
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />
@@ -104,11 +105,11 @@ export default class VoteDialog extends React.Component {
                         {
                           value: details.votedCount.toNumber(),
                           fillFrom: '#311b92',
-                          fillTo: '#d500f9'
+                          fillTo: '#d500f9',
                         },
                         {
                           value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
-                          fill: 'transparent'
+                          fill: 'transparent',
                         },
                       ]}
                     />

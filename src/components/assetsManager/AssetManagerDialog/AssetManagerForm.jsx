@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
+import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
+
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
-  const {selectedToken, tokensMap} = state.get(DUCK_ASSETS_MANAGER)
+  const { selectedToken, tokensMap } = state.get(DUCK_ASSETS_MANAGER)
   const token = tokensMap.get(selectedToken)
 
   return {
@@ -25,7 +26,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AssetManagerForm extends React.Component {
+export default class AssetManagerForm extends PureComponent {
   static propTypes = {
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,

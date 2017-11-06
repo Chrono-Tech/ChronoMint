@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 
-class UploadButton extends React.Component {
+class UploadButton extends PureComponent {
   openFileDialog () {
     // TODO Don't use ReactDOM
     // eslint-disable-next-line
@@ -12,12 +12,12 @@ class UploadButton extends React.Component {
   }
 
   handleFile (event) {
-    Object.keys(event.target.files).map(index => {
+    Object.keys(event.target.files).map((index) => {
       const file = event.target.files[index]
 
       if (this.props.passBase64) {
         const reader = new FileReader()
-        reader.onload = upload => {
+        reader.onload = (upload) => {
           const base64 = upload.target.result
           this.props.onUpload(file, base64)
         }
@@ -39,7 +39,7 @@ class UploadButton extends React.Component {
         <input
           type='file'
           multiple={this.props.multi}
-          ref={i => { this.fileInput = i }}
+          ref={(i) => { this.fileInput = i }}
           style={{ display: 'none' }}
           accept={this.props.accept}
           onChange={this.handleFile.bind(this)}

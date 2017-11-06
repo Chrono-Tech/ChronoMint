@@ -1,4 +1,4 @@
-import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'Login/network/settings'
 
 const isW = window.hasOwnProperty('localStorage')
 

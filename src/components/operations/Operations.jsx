@@ -2,15 +2,11 @@ import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-u
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { getEtherscanUrl } from 'Login/network/settings'
 import { connect } from 'react-redux'
-
-import { getEtherscanUrl } from 'network/settings'
-
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-
 import './Operations.scss'
 
 function prefix (token) {
@@ -54,8 +50,8 @@ export default class PendingOperations extends PureComponent {
   }
 
   render () {
-    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
-    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
       <div styleName='panel'>
@@ -203,8 +199,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listOperations()),
-    handleConfirm: operation => dispatch(confirmOperation(operation)),
-    handleRevoke: operation => dispatch(revokeOperation(operation)),
+    handleConfirm: (operation) => dispatch(confirmOperation(operation)),
+    handleRevoke: (operation) => dispatch(revokeOperation(operation)),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations()),
     openSettings: async () => {
       await dispatch(setupOperationsSettings())

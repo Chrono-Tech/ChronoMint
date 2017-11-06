@@ -2,14 +2,12 @@ import { Link } from 'react-router'
 import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
@@ -21,7 +19,7 @@ function prefix (token) {
   return `Dashboard.Voting.${token}`
 }
 
-class Voting extends React.Component {
+class Voting extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -48,7 +46,7 @@ class Voting extends React.Component {
     const { list, handlePollDetails } = this.props
 
     const polls = this.props.isFetched
-      ? list.reverse().toArray().filter(item => item.poll().active())
+      ? list.reverse().toArray().filter((item) => item.poll().active())
       : []
 
     if (polls.length <= 0) {
@@ -78,7 +76,7 @@ class Voting extends React.Component {
         >
           <div styleName='content'>
             {
-              polls.map(item => {
+              polls.map((item) => {
                 const details = item.details()
                 const poll = item.poll()
 
@@ -109,7 +107,7 @@ class Voting extends React.Component {
                               {
                                 value: details.votedCount.toNumber(),
                                 fillFrom: '#311b92',
-                                fillTo: '#d500f9'
+                                fillTo: '#d500f9',
                               },
                               {
                                 value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
@@ -117,7 +115,7 @@ class Voting extends React.Component {
                               },
                               {
                                 value: 0.0001,
-                                fill: 'transparent'
+                                fill: 'transparent',
                               },
                             ]}
                           />
@@ -170,7 +168,7 @@ function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handlePollDetails: model => dispatch(modalsOpen({
+    handlePollDetails: (model) => dispatch(modalsOpen({
       component: PollDetailsDialog,
       props: { model },
     })),

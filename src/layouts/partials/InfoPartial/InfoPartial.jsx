@@ -1,16 +1,17 @@
 import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
 import { FloatingActionButton, Paper } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { SET_SELECTED_COIN } from 'redux/market/action'
-import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
 import Preloader from 'components/common/Preloader/Preloader'
+
 import './InfoPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -33,7 +34,6 @@ function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
 }
 
-
 function mapDispatchToProps (dispatch) {
   return {
     addCurrency: () => dispatch(modalsOpen({
@@ -47,7 +47,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const {account, profile} = state.get(DUCK_SESSION)
+  const { account, profile } = state.get(DUCK_SESSION)
   const market = state.get('market')
   const ui = state.get('ui')
 
@@ -61,7 +61,7 @@ function mapStateToProps (state) {
   }
 }
 
-export class InfoPartial extends React.Component {
+export class InfoPartial extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -115,7 +115,7 @@ export class InfoPartial extends React.Component {
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isInited
-              ? items.map(item => this.renderItem(item))
+              ? items.map((item) => this.renderItem(item))
               : <Preloader />
             }
             {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}

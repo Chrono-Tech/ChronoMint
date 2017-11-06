@@ -1,17 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
 import * as a from 'redux/ui/modal.js'
-
 import AlertModal from './AlertModal'
 import ConfirmTxDialog from '../dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UploadedFileModal from './UploadedFileModal'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   hideModal: () => dispatch(a.hideModal()),
 })
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { open, modalType, modalProps } = state.get('modal')
   return {
     open,

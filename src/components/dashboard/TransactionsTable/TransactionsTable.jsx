@@ -1,16 +1,14 @@
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { RaisedButton, CircularProgress, Paper } from 'material-ui'
-import React from 'react'
-import {Translate} from 'react-redux-i18n'
-import {connect} from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { getEtherscanUrl } from 'Login/network/settings'
 import moment from 'moment'
-
-import {getEtherscanUrl} from 'network/settings'
-
-import Moment, {SHORT_DATE} from 'components/common/Moment/index'
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
-import {integerWithDelimiter} from 'utils/formatter'
+import { integerWithDelimiter } from 'utils/formatter'
 
 import './TransactionsTable.scss'
 
@@ -21,7 +19,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps)
-export default class TransactionsTable extends React.Component {
+export default class TransactionsTable extends PureComponent {
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
@@ -32,7 +30,7 @@ export default class TransactionsTable extends React.Component {
   }
 
   render () {
-    const { transactions, locale} = this.props
+    const { transactions, locale } = this.props
     const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
@@ -85,11 +83,14 @@ export default class TransactionsTable extends React.Component {
             <div styleName='footer'>
               <RaisedButton
                 label={isFetching ? <CircularProgress
-                  style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                  thickness={1.5} /> : 'Load More'}
+                  style={{ verticalAlign: 'middle', marginTop: -2 }}
+                  size={24}
+                  thickness={1.5}
+                /> : 'Load More'}
                 primary
                 disabled={isFetching}
-                onTouchTap={() => this.props.onLoadMore()} />
+                onTouchTap={() => this.props.onLoadMore()}
+              />
             </div>
           )}
         </div>
@@ -97,8 +98,8 @@ export default class TransactionsTable extends React.Component {
     )
   }
 
-  renderRow ({timeTitle, trx}, index) {
-    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+  renderRow ({ timeTitle, trx }, index) {
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -166,12 +167,12 @@ function buildTableData (transactions, locale) {
   const groups = transactions.valueSeq().toArray()
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
-      data[groupBy] = data[groupBy] || {
+      data[ groupBy ] = data[ groupBy ] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
         transactions: [],
       }
-      data[groupBy].transactions.push({
+      data[ groupBy ].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
         timeTitle: trx.date('HH:mm'),
@@ -181,7 +182,7 @@ function buildTableData (transactions, locale) {
 
   return Object.values(groups)
     .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-    .map(group => ({
+    .map((group) => ({
       ...group,
       transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
     }))

@@ -1,20 +1,21 @@
 import type Immutable from 'immutable'
 import type TokenModel from 'models/TokenModel'
+import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
 import validator from 'components/forms/validator'
 import AbstractContractDAO from './AbstractContractDAO'
+import AssetsManagerDAO from './AssetsManagerDAO'
+import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
+import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import ERC20DAO from './ERC20DAO'
 import ERC20ManagerDAO from './ERC20ManagerDAO'
-import AssetsManagerDAO from './AssetsManagerDAO'
-import PlatformsManagerDAO from './PlatformsManagerDAO'
-import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
-import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
-import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
-import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
 import FeeInterfaceDAO from './FeeInterfaceDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
+import PlatformsManagerDAO from './PlatformsManagerDAO'
+import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import RewardsDAO from './RewardsDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
+import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
@@ -235,4 +236,4 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new ContractsManagerDAO(require('chronobank-smart-contracts/build/contracts/ContractsManager.json'))
+export default new ContractsManagerDAO(json)

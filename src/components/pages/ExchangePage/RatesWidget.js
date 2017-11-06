@@ -13,14 +13,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { getRates } from '../../../redux/exchange/actions'
 import globalStyles from '../../../styles'
 
-const mapStateToProps = state => state.get('exchange').rates
+const mapStateToProps = (state) => state.get('exchange').rates
 
-const mapDispatchToProps = dispatch => ({
-  getRates: account => dispatch(getRates(account)),
+const mapDispatchToProps = (dispatch) => ({
+  getRates: (account) => dispatch(getRates(account)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -65,7 +64,7 @@ class RatesWidget extends PureComponent {
               </TableRow>
             </TableHeader>
             <TableBody displayRowCheckbox={false}>
-              {rates.valueSeq().map(asset => (
+              {rates.valueSeq().map((asset) => (
                 <TableRow key={asset.symbol()}>
                   <TableRowColumn>{asset.symbol()}</TableRowColumn>
                   <TableRowColumn

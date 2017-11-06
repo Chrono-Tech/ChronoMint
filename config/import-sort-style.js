@@ -48,41 +48,41 @@ function style(styleApi) {
   return [
     // import "foo"
     { match: and(hasNoMember, isAbsoluteModule) },
-    { separator: true },
+    { separator: false },
 
     // import something "foo"
     { match: and(hasMember, isAbsoluteModule, not(isDao), not(isModels), not(isNetwork), not(isRedux), not(isComponent), not(isPage), not(isUtils)), sort: member(unicode) },
-    { separator: true },
+    { separator: false },
 
     // DAO > Models > Actions > Components > Utils  > Other > Styles
 
     // import something "dao/"
     { match: and(hasMember, isAbsoluteModule, isDao), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "models/"
     { match: and(hasMember, isAbsoluteModule, isModels), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "network/"
     { match: and(hasMember, isAbsoluteModule, isNetwork), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "redux/"
     { match: and(hasMember, isAbsoluteModule, isRedux), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "pages/"
     { match: and(hasMember, isAbsoluteModule, isPage), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "components/"
     { match: and(hasMember, isAbsoluteModule, isComponent), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "utils/"
     { match: and(hasMember, isAbsoluteModule, isUtils), sort: member(naturally) },
-    { separator: true },
+    { separator: false },
 
     // import something "./foo"
     { match: and(hasMember, isRelativeModule, not(isStyle)), sort: member(naturally) },

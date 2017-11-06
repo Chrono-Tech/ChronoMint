@@ -1,4 +1,5 @@
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 
 export default class MainWallet extends abstractFetchingCollection({

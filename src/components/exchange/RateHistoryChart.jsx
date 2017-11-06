@@ -1,9 +1,9 @@
 import { ChartCanvas, Chart, series, scale, axes } from 'react-stockcharts'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { format } from 'd3-format'
 
-export class RateHistoryChart extends React.Component {
+export class RateHistoryChart extends PureComponent {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
@@ -75,27 +75,27 @@ export class RateHistoryChart extends React.Component {
         }}
         type='svg'
         data={data}
-        xAccessor={d => d.date}
+        xAccessor={(d) => d.date}
         xScaleProvider={scale.discontinuousTimeScaleProvider}
         xExtents={[from, to]}
       >
         <Chart
           id={1}
-          yExtents={d => [d.time, d.lht, d.lhus]}
+          yExtents={(d) => [d.time, d.lht, d.lhus]}
         >
           <axes.XAxis axisAt='bottom' orient='bottom' {...xGrid} />
           <axes.YAxis axisAt='right' orient='left' {...yGrid} tickFormat={format('.0%')} />
 
           <series.LineSeries
-            yAccessor={d => d.time}
+            yAccessor={(d) => d.time}
             stroke='#FFFFFF'
           />
           <series.LineSeries
-            yAccessor={d => d.lht}
+            yAccessor={(d) => d.lht}
             stroke='#0039CB'
           />
           <series.LineSeries
-            yAccessor={d => d.lhus}
+            yAccessor={(d) => d.lhus}
             stroke='#50A0F9'
           />
         </Chart>

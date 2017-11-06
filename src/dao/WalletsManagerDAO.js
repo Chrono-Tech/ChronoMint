@@ -1,10 +1,10 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
+import multisigWalletService from 'services/MultisigWalletService'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import multisigWalletService from 'services/MultisigWalletService'
-import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 
 const functions = {
   GET_WALLETS: 'getWallets',
@@ -44,13 +44,13 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // ---------- watchers ---------
 
   async watchWalletCreate (callback) {
-    return this._watch(events.WALLET_CREATED, async result => {
+    return this._watch(events.WALLET_CREATED, async (result) => {
       const wallet = await this._createWalletModel(result.args.wallet, false, result.transactionHash)
       callback(wallet, new WalletNoticeModel({
         address: wallet.address(),
         action: statuses.CREATED,
       }))
-    }, {by: this.getAccount()})
+    }, { by: this.getAccount() })
   }
 
   // --------- actions ----------

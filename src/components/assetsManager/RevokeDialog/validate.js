@@ -1,5 +1,5 @@
-import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
 
 export default function validate (values) {
   let res = {}

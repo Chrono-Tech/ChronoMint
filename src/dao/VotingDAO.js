@@ -1,10 +1,7 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import PollModel from 'models/PollModel'
 import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
-
 import ipfs from 'utils/IPFS'
-
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'
@@ -91,7 +88,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
   }
 
   /** @private */
-  _watchCallback = (callback, status) => async result => {
+  _watchCallback = (callback, status) => async (result) => {
     const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
     const poll = await detailsDAO.getPollDetails(result.args.pollId)
     callback(new PollNoticeModel({

@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Field, FieldArray, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField, DatePicker } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
@@ -10,10 +10,11 @@ import { connect } from 'react-redux'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/PollModel'
 import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
-import { DUCK_SESSION } from 'redux/session/actions'
 import ModalDialog from './ModalDialog'
+
 import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
@@ -37,7 +38,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, op) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmit: values => {
+    onSubmit: (values) => {
       const voteLimitInTIME = values.voteLimitInTIME()
       const poll = values
         .set('voteLimitInTIME', voteLimitInTIME
@@ -55,7 +56,7 @@ function mapDispatchToProps (dispatch, op) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_POLL_DIALOG, validate })
-export class PollDialog extends React.Component {
+export class PollDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,
@@ -72,18 +73,18 @@ export class PollDialog extends React.Component {
   }
 
   handleOptionSelect (index) {
-    this.setState({selectedOptionIndex: index})
+    this.setState({ selectedOptionIndex: index })
   }
 
   handleOptionCreate (options) {
     options.push()
-    this.setState({selectedOptionIndex: options.length})
+    this.setState({ selectedOptionIndex: options.length })
   }
 
   handleOptionRemove (options, index) {
     options.remove(index)
     if (this.state.selectedOptionIndex >= options.length) {
-      this.setState({selectedOptionIndex: options.length - 1})
+      this.setState({ selectedOptionIndex: options.length - 1 })
     }
   }
 

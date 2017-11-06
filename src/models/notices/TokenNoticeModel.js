@@ -1,8 +1,6 @@
 import { I18n } from 'react-redux-i18n'
 import React from 'react'
-
 import type TokenModel from 'models/TokenModel'
-
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_ADDED = 'isAdded'

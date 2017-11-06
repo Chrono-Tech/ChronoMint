@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
@@ -132,7 +129,7 @@ export default class TokenModel extends abstractFetchingModel({
 }
 
 // TODO @bshevchenko: MINT-315 add max length for bytes32 variables
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))

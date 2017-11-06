@@ -13,7 +13,7 @@ export const DUCK_VOTING = 'voting'
 // used to create unique ID for fetching models
 let counter = 0
 
-export const watchPoll = (notice: PollNoticeModel) => async dispatch => {
+export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemovedStub(notice.transactionHash()))
@@ -32,8 +32,8 @@ export const watchPoll = (notice: PollNoticeModel) => async dispatch => {
   dispatch(notify(notice))
 }
 
-export const watchInitPolls = () => async dispatch => {
-  const callback = notice => dispatch(watchPoll(notice))
+export const watchInitPolls = () => async (dispatch) => {
+  const callback = (notice) => dispatch(watchPoll(notice))
 
   const dao = await contractsManagerDAO.getVotingDAO()
   const timeDAO = await contractsManagerDAO.getTIMEDAO()
@@ -49,7 +49,7 @@ export const watchInitPolls = () => async dispatch => {
   ])
 }
 
-export const createPoll = (poll: PollModel) => async dispatch => {
+export const createPoll = (poll: PollModel) => async (dispatch) => {
   const timeDAO = await contractsManagerDAO.getTIMEDAO()
   const stub = new PollDetailsModel({
     poll: poll.set('id', --counter),
@@ -74,7 +74,7 @@ export const updatePoll = (poll: PollModel) => async () => {
   // await dao.updatePoll(poll)
 }
 
-export const removePoll = (poll: PollDetailsModel) => async dispatch => {
+export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollRemoved(poll.poll().id()))
     const dao = await contractsManagerDAO.getVotingDAO()
@@ -85,7 +85,7 @@ export const removePoll = (poll: PollDetailsModel) => async dispatch => {
   }
 }
 
-export const vote = (poll: PollDetailsModel, choice: Number) => async dispatch => {
+export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingActorDAO()
@@ -96,7 +96,7 @@ export const vote = (poll: PollDetailsModel, choice: Number) => async dispatch =
   }
 }
 
-export const activatePoll = (poll: PollDetailsModel) => async dispatch => {
+export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll
       .set('poll', poll.poll().set('active', true))
@@ -108,7 +108,7 @@ export const activatePoll = (poll: PollDetailsModel) => async dispatch => {
   }
 }
 
-export const endPoll = (poll: PollDetailsModel) => async dispatch => {
+export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll
       .set('poll', poll.poll()
@@ -122,27 +122,27 @@ export const endPoll = (poll: PollDetailsModel) => async dispatch => {
   }
 }
 
-export const handleVoteLimit = (voteLimitInTIME: BigNumber) => async dispatch => {
+export const handleVoteLimit = (voteLimitInTIME: BigNumber) => async (dispatch) => {
   dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
 
-export const handlePollCreated = (poll: PollDetailsModel) => async dispatch => {
+export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
   dispatch({ type: POLLS_CREATE, poll })
 }
 
-export const handlePollRemoved = (id: Number) => async dispatch => {
+export const handlePollRemoved = (id: Number) => async (dispatch) => {
   dispatch({ type: POLLS_REMOVE, id })
 }
 
-export const handlePollRemovedStub = (transactionHash: String) => async dispatch => {
+export const handlePollRemovedStub = (transactionHash: String) => async (dispatch) => {
   dispatch({ type: POLLS_REMOVE_STUB, transactionHash })
 }
 
-export const handlePollUpdated = (poll: PollDetailsModel) => async dispatch => {
+export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
   dispatch({ type: POLLS_UPDATE, poll })
 }
 
-export const listPolls = () => async dispatch => {
+export const listPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   let list = []
   try {
