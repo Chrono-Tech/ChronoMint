@@ -4,6 +4,7 @@ import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
 import { btcProvider, bccProvider } from 'network/BitcoinProvider'
+import { nemProvider } from 'network/NemProvider'
 import ledgerProvider from 'network/LedgerProvider'
 import mnemonicProvider from 'network/mnemonicProvider'
 import privateKeyProvider from 'network/privateKeyProvider'
@@ -87,7 +88,7 @@ class LoginWithOptions extends PureComponent {
     }
   }
 
-  setupAndLogin ({ ethereum, btc, bcc }) {
+  setupAndLogin ({ ethereum, btc, bcc, nem }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -98,6 +99,7 @@ class LoginWithOptions extends PureComponent {
       this.props.selectAccount(this.props.accounts[0])
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
+      nemProvider.setEngine(nem)
       this.props.onLogin()
     }).catch((e) => {
       this.props.addError(e.message)
