@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from './ModalDialog'
+
 import './CopyDialog.scss'
 
 function mapDispatchToProps (dispatch) {

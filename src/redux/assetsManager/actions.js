@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
 import contractManager from 'dao/ContractsManagerDAO'
-import Web3Converter from 'utils/Web3Converter'
 import TokenModel from 'models/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
+import Web3Converter from 'utils/Web3Converter'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 

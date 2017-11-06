@@ -20,7 +20,7 @@ export default class ModalBase extends PureComponent {
   }
 
   render () {
-    const {modal, title, isNotI18n, onClose, actions, open, children} = this.props
+    const { modal, title, isNotI18n, onClose, actions, open, children } = this.props
     const isModal = modal !== false
     return (
       <Dialog

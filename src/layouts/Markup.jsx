@@ -12,7 +12,6 @@ import './Markup.scss'
 
 // import 'styles/globals/index.global.css'
 
-
 export class Markup extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,

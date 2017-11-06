@@ -1,9 +1,9 @@
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import { addOwner, removeOwner } from 'redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
+import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import ModalDialog from 'components/dialogs/ModalDialog'
 
 function mapDispatchToProps (dispatch) {
@@ -27,12 +27,12 @@ class EditManagersDialog extends PureComponent {
     this.props.handleClose()
   }
 
-  handleRemove = address => {
+  handleRemove = (address) => {
     this.props.handleClose()
     this.props.handleRemoveOwner(this.props.wallet, address)
   }
 
-  handleAdd = address => {
+  handleAdd = (address) => {
     this.props.handleClose()
     this.props.handleAddOwner(this.props.wallet, address)
   }

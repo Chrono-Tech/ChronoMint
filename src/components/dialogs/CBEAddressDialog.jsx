@@ -10,6 +10,7 @@ import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'components/forms/validator'
+
 import './FormDialog.scss'
 
 export const FORM_CBE_ADDRESS = 'CBEAddressDialog'

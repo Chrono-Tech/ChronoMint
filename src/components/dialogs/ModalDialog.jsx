@@ -1,7 +1,7 @@
+import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
-import { CSSTransitionGroup } from 'react-transition-group'
 
 import './ModalDialog.scss'
 

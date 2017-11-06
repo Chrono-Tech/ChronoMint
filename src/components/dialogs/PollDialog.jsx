@@ -10,10 +10,11 @@ import { connect } from 'react-redux'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/PollModel'
 import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
-import { DUCK_SESSION } from 'redux/session/actions'
 import ModalDialog from './ModalDialog'
+
 import './PollDialog.scss'
 
 export const FORM_POLL_DIALOG = 'PollDialog'

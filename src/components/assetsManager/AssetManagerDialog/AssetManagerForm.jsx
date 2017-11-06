@@ -1,9 +1,10 @@
-import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
+import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
+
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
@@ -34,12 +35,12 @@ export default class AssetManagerForm extends PureComponent {
     managers: PropTypes.array,
   }
 
-  handleRemove = address => {
+  handleRemove = (address) => {
     this.props.handleClose()
     this.props.handleRemoveManager(this.props.token, address)
   }
 
-  handleAddManager = address => {
+  handleAddManager = (address) => {
     this.props.handleClose()
     this.props.handleAddManager(this.props.token, address)
   }

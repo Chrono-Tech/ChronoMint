@@ -10,6 +10,7 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import ModalDialog from './ModalDialog'
+
 import './VoteDialog.scss'
 
 function prefix (token) {

@@ -11,6 +11,7 @@ import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
+
 import './FormDialog.scss'
 
 export const FORM_CBE_TOKEN = 'CBETokenDialog'
