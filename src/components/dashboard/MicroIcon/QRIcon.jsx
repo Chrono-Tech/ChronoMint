@@ -1,12 +1,12 @@
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import promisify from 'promisify-node-callback'
 
 import './MicroIcon.scss'
 
-export default class QRIcon extends React.Component {
+export default class QRIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
   }

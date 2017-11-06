@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import './SplitSection.scss'
 
-class SplitSection extends React.Component {
+class SplitSection extends PureComponent {
   constructor (props) {
     super(props)
   }

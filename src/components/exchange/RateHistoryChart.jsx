@@ -1,9 +1,9 @@
 import { ChartCanvas, Chart, series, scale, axes } from 'react-stockcharts'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { format } from 'd3-format'
 
-export class RateHistoryChart extends React.Component {
+export class RateHistoryChart extends PureComponent {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,

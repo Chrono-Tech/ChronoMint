@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import './Points.scss'
 
-export default class Points extends React.Component {
+export default class Points extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
   }

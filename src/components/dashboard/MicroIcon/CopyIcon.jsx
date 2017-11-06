@@ -1,6 +1,6 @@
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
@@ -15,7 +15,7 @@ import clipboard from 'utils/clipboard'
 import './MicroIcon.scss'
 
 @connect(null, mapDispatchToProps)
-export default class CopyIcon extends React.Component {
+export default class CopyIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
     notify: PropTypes.func,

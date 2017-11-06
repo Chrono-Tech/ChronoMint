@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -57,7 +57,7 @@ const DEFAULT_MAX_FILES = 10
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
-export default class AddTokenForm extends React.Component {
+export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     formValues: PropTypes.object,

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 
-class UploadButton extends React.Component {
+class UploadButton extends PureComponent {
   openFileDialog () {
     // TODO Don't use ReactDOM
     // eslint-disable-next-line

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
@@ -16,7 +16,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class CrowdsaleDialog extends React.Component {
+export default class CrowdsaleDialog extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,
