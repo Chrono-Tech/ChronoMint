@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
@@ -19,7 +19,7 @@ function prefix (token) {
   return `Dashboard.Voting.${token}`
 }
 
-class Voting extends React.Component {
+class Voting extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,

@@ -1,19 +1,18 @@
-import BigNumber from 'bignumber.js'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
-import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
-import { Translate } from 'react-redux-i18n'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-import type MainWallet from 'models/Wallet/MainWalletModel'
+import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
 import type TokenModel from 'models/TokenModel'
-import { isTestingNetwork } from 'network/settings'
 import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
-import ErrorList from 'components/forms/ErrorList'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { isTestingNetwork } from 'network/settings'
+import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-import ColoredSection from '../ColoredSection/ColoredSection'
+import { Translate } from 'react-redux-i18n'
+import type MainWallet from 'models/Wallet/MainWalletModel'
 import IconSection from '../IconSection/IconSection'
-
+import ColoredSection from '../ColoredSection/ColoredSection'
 import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -24,6 +23,7 @@ const DEPOSIT_LIMIT = 1
 function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
 }
+
 
 function mapStateToProps (state) {
   const wallet: MainWallet = state.get('mainWallet')
@@ -45,13 +45,13 @@ function mapDispatchToProps (dispatch) {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     approve: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    depositTIME: (amount) => dispatch(depositTIME(amount)),
-    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
+    depositTIME: amount => dispatch(depositTIME(amount)),
+    withdrawTIME: amount => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
 
-export class DepositTokens extends React.Component {
+export class DepositTokens extends PureComponent {
   static propTypes = {
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
@@ -74,7 +74,7 @@ export class DepositTokens extends React.Component {
       errors: null,
     }
     this.validators = {
-      amount: (amount) =>
+      amount: amount =>
         // TODO @bshevchenko: add decimals length validator, see SendTokens
         new ErrorList()
           .add(validator.required(amount))

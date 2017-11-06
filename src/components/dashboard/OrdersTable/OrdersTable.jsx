@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
@@ -14,7 +14,7 @@ function prefix (token) {
   return `components.dashboard.OrdersTable.${token}`
 }
 
-export class OrdersTable extends React.Component {
+export class OrdersTable extends PureComponent {
   static propTypes = {
     orders: PropTypes.object,
     openDetails: PropTypes.func,

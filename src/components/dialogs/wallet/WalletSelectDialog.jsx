@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch) {
       component: WalletAddEditDialog,
       props: { wallet: new MultisigWalletModel() },
     })),
-    handleEditManagersDialog: (wallet) => dispatch(modalsOpen({
+    handleEditManagersDialog: wallet => dispatch(modalsOpen({
       component: EditManagersDialog,
       props: { wallet },
     })),
@@ -44,7 +44,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletSelectDialog extends React.Component {
+export default class WalletSelectDialog extends PureComponent {
   static propTypes = {
     multisigWallet: PropTypes.object,
     handleClose: PropTypes.func,

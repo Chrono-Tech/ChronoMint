@@ -1,7 +1,7 @@
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -56,7 +56,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AddCurrencyDialog extends React.Component {
+export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
     profile: PropTypes.object,
     tokens: PropTypes.object,

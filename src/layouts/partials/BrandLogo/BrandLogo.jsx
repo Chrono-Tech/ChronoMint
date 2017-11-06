@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import './BrandLogo.scss'
 
-export default class BrandLogo extends React.Component {
+export default class BrandLogo extends PureComponent {
   constructor (props) {
     super(props)
   }

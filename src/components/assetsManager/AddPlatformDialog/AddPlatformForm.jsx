@@ -1,14 +1,13 @@
-import { Field, reduxForm } from 'redux-form/immutable'
-import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
-import React from 'react'
-import { TextField, Checkbox } from 'redux-form-material-ui'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { createPlatform } from 'redux/assetsManager/actions'
+import { RaisedButton } from 'material-ui'
+import { TextField, Checkbox } from 'redux-form-material-ui'
 import validate from './validate'
-
+import { Field, reduxForm } from 'redux-form/immutable'
 import './AddPlatformForm.scss'
+import { createPlatform } from 'redux/assetsManager/actions'
 
 function prefix (token) {
   return `Assets.AddPlatformForm.${token}`
@@ -29,8 +28,8 @@ const onSubmit = (values, dispatch) => {
 }
 
 @connect(mapStateToProps)
-@reduxForm({ form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit })
-export default class AddPlatformForm extends React.Component {
+@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit})
+export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,

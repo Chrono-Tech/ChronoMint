@@ -6,7 +6,7 @@ import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { RaisedButton, DatePicker, FlatButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField, Checkbox } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
@@ -54,7 +54,7 @@ const validate = (/* values */) => ({})
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_CROWDSALE_DIALOG, validate })
-export default class CrowdsaleForm extends React.Component {
+export default class CrowdsaleForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,

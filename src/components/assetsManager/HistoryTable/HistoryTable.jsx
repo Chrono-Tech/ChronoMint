@@ -1,6 +1,6 @@
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class HistoryTable extends React.Component {
+export default class HistoryTable extends PureComponent {
   static propTypes = {
     transactionsList: PropTypes.array,
     transactionsFetched: PropTypes.bool,

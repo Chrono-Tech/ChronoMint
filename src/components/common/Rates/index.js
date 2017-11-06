@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import defaultLogo from 'assets/img/marketsLogos/default-logo.svg'
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 }
 
 @connect(mapStateToProps)
-class Rates extends React.Component {
+class Rates extends PureComponent {
   static propTypes = {
     rates: PropTypes.object,
     selectedCoin: PropTypes.string,

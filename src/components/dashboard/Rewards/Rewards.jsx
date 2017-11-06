@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
@@ -12,7 +12,7 @@ function prefix (token) {
   return `Dashboard.Rewards.${token}`
 }
 
-class Rewards extends React.Component {
+class Rewards extends PureComponent {
   static propTypes = {
     rewardsData: PropTypes.object,
     period: PropTypes.object,

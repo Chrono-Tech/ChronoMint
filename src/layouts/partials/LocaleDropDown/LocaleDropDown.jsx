@@ -1,6 +1,6 @@
 import { DropDownMenu, MenuItem } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
 import { changeMomentLocale } from 'redux/ui/locale'
@@ -9,7 +9,7 @@ import styles from './styles'
 import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class LocaleDropDown extends React.Component {
+export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     handleChangeLocale: PropTypes.func,

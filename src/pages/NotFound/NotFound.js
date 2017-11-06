@@ -1,10 +1,10 @@
 import { Link } from 'react-router'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import './NotFound.scss'
 
-class NotFoundPage extends React.Component {
+class NotFoundPage extends PureComponent {
   render () {
     return (
       <div styleName='root'>

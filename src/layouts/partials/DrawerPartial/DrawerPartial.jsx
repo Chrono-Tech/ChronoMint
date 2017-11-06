@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -13,7 +13,7 @@ import styles from '../styles'
 import './DrawerPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class DrawerPartial extends React.Component {
+export default class DrawerPartial extends PureComponent {
   static propTypes = {
     isDrawerOpen: PropTypes.bool,
     isCBE: PropTypes.bool,

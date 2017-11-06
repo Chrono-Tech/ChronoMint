@@ -1,23 +1,23 @@
-import { FlatButton, Paper } from 'material-ui'
-import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { FlatButton, Paper } from 'material-ui'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
+import { modalsOpen } from 'redux/modals/actions'
+import classNames from 'classnames'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
+import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import globalStyles from 'layouts/partials/styles'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import Preloader from 'components/common/Preloader/Preloader'
+import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
 import { DUCK_MULTISIG_WALLET, getWallets } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
-import { modalsOpen } from 'redux/modals/actions'
-import Preloader from 'components/common/Preloader/Preloader'
-import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
-import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 
 import './WalletChanger.scss'
 
@@ -37,15 +37,15 @@ function mapDispatchToProps (dispatch) {
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: { wallet: new MultisigWalletModel() },
+      props: {wallet: new MultisigWalletModel()},
     })),
     getWallets: () => dispatch(getWallets()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
+    switchWallet: wallet => dispatch(switchWallet(wallet)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletChanger extends React.Component {
+export default class WalletChanger extends PureComponent {
   static propTypes = {
     isMultisig: PropTypes.bool,
     mainWallet: PropTypes.object,
@@ -64,10 +64,10 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMainWallet () {
-    const { isMultisig, mainWallet, multisigWallet } = this.props
+    const {isMultisig, mainWallet, multisigWallet} = this.props
 
     return (
-      <div styleName={classNames('walletBox', { 'isMultisig': isMultisig })}>
+      <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
         <Paper>
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMainBigSVG} />
@@ -105,7 +105,7 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMultisigWallet () {
-    const { multisigWallet, mainWallet } = this.props
+    const {multisigWallet, mainWallet} = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
     const owners = selectedWallet.owners()
 
@@ -178,7 +178,7 @@ export default class WalletChanger extends React.Component {
 
   render () {
     return (
-      <div styleName={classNames('root', { 'isMultisig': this.props.isMultisig })}>
+      <div styleName={classNames('root', {'isMultisig': this.props.isMultisig})}>
         {this.renderMainWallet()}
         {this.props.multisigWallet.hasSelected() && this.renderMultisigWallet()}
       </div>

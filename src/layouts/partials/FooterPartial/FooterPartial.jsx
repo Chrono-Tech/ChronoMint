@@ -1,5 +1,5 @@
 import { RaisedButton, TextField } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import menu from 'menu'
 import BrandLogo from '../BrandLogo/BrandLogo'
@@ -7,7 +7,7 @@ import styles from '../styles'
 
 import './FooterPartial.scss'
 
-export default class FooterPartial extends React.Component {
+export default class FooterPartial extends PureComponent {
   render () {
     return (
       <div styleName='root'>

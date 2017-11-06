@@ -1,23 +1,23 @@
-import BigNumber from 'bignumber.js'
-import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
-import { Field, reduxForm, change } from 'redux-form/immutable'
-import PropTypes from 'prop-types'
-import React from 'react'
-import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import classnames from 'classnames'
-import colors from 'styles/themes/variables'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileModel from 'models/FileSelect/FileModel'
-import { createAsset } from 'redux/assetsManager/actions'
+import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
+import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ipfs from 'utils/IPFS'
-import validate from './validate'
-
+import { Field, reduxForm, change } from 'redux-form/immutable'
+import { createAsset } from 'redux/assetsManager/actions'
 import './AddTokenForm.scss'
+import validate from './validate'
+import BigNumber from 'bignumber.js'
+import colors from 'styles/themes/variables'
+import classnames from 'classnames'
+import ipfs from 'utils/IPFS'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import FileModel from 'models/FileSelect/FileModel'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+
 
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`
@@ -40,9 +40,10 @@ function mapDispatchToProps (dispatch) {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
-    createAsset: (values) => dispatch(createAsset(values)),
+    createAsset: values => dispatch(createAsset(values)),
   }
 }
+
 
 const onSubmit = (values, dispatch) => {
   dispatch(createAsset(values))
@@ -55,8 +56,8 @@ const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit })
-export default class AddTokenForm extends React.Component {
+@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
+export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     formValues: PropTypes.object,
@@ -110,13 +111,13 @@ export default class AddTokenForm extends React.Component {
       isUploading: true,
     })
     await ipfs.uploadFile(
-      new FileModel({ file, uploading: true }),
+      new FileModel({file, uploading: true}),
       this.state.config,
-      (file) => this.handleFileUploaded(file))
+      file => this.handleFileUploaded(file))
   }
 
   renderFileInput () {
-    const { isUploading, isUploaded } = this.state
+    const {isUploading, isUploaded} = this.state
     const tokenImg = this.props.formValues && this.props.formValues.get('tokenImg')
     return (<div styleName='tokenImgWrap'>
       {
@@ -147,8 +148,8 @@ export default class AddTokenForm extends React.Component {
       }
 
       <input
-        onChange={(e) => this.handleUploadFile(e)}
-        ref={(input) => this.walletFileUploadInput = input}
+        onChange={e => this.handleUploadFile(e)}
+        ref={input => this.walletFileUploadInput = input}
         type='file'
         styleName='hide'
       />
@@ -157,7 +158,7 @@ export default class AddTokenForm extends React.Component {
 
   renderPlatformsList () {
     const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
-    const { platformsList, dispatch, formErrors } = this.props
+    const {platformsList, dispatch, formErrors} = this.props
     return (
       <div styleName='xs-hide'>
         <div styleName='addNewPlatformTitle'>
@@ -176,9 +177,9 @@ export default class AddTokenForm extends React.Component {
         <div styleName='platformsList'>
           {
             platformsList
-              .map((platform) => {
+              .map(platform => {
                 return (<div
-                  styleName={classnames('platformItem', { 'selectedPlatform': platform === selectedPlatform })}
+                  styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
                   onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
                   key={platform.address}
                 >
@@ -207,7 +208,7 @@ export default class AddTokenForm extends React.Component {
     const amount = this.props.formValues && this.props.formValues.get('amount')
     const description = this.props.formValues && this.props.formValues.get('description')
     const platform = this.props.formValues && this.props.formValues.get('platform')
-    const renderPlatform = (platform) => {
+    const renderPlatform = platform => {
       return platform.name
         ? <span>{platform.name}&nbsp;(<small>{platform.address}</small>)</span>
         : <span>{platform.address}</span>
@@ -248,7 +249,7 @@ export default class AddTokenForm extends React.Component {
 
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
-    const { platformsList } = this.props
+    const {platformsList} = this.props
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
@@ -273,7 +274,7 @@ export default class AddTokenForm extends React.Component {
           >
             {
               platformsList
-                .map((platform) => {
+                .map(platform => {
                   return (<MenuItem
                     key={platform.address}
                     value={platform}
@@ -365,7 +366,7 @@ export default class AddTokenForm extends React.Component {
         >
           <RaisedButton
             onTouchTap={() => {
-              this.setState({ showPlatformError: !!this.props.formErrors.platform })
+              this.setState({showPlatformError: !!this.props.formErrors.platform})
             }}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

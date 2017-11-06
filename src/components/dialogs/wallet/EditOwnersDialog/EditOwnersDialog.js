@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
@@ -15,7 +15,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-class EditManagersDialog extends Component {
+class EditManagersDialog extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object.isRequired,
     handleClose: PropTypes.func,
@@ -27,12 +27,12 @@ class EditManagersDialog extends Component {
     this.props.handleClose()
   }
 
-  handleRemove = (address) => {
+  handleRemove = address => {
     this.props.handleClose()
     this.props.handleRemoveOwner(this.props.wallet, address)
   }
 
-  handleAdd = (address) => {
+  handleAdd = address => {
     this.props.handleClose()
     this.props.handleAddOwner(this.props.wallet, address)
   }

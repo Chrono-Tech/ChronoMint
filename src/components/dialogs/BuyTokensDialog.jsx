@@ -1,18 +1,17 @@
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
 import { exchange } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from './ModalDialog'
-
 import './BuyTokensDialog.scss'
 
 @connect(null, mapDispatchToProps)
-export default class BuyTokensDialog extends React.Component {
+export default class BuyTokensDialog extends PureComponent {
   static propTypes = {
     order: PropTypes.object,
     handleClose: PropTypes.func,
@@ -134,7 +133,7 @@ export default class BuyTokensDialog extends React.Component {
                       <div className='icon'>
                         <div
                           className='content'
-                          style={{ background: `#05326a url(${icons.lht}) no-repeat center center` }}
+                          style={{background: `#05326a url(${icons.lht}) no-repeat center center`}}
                         />
                       </div>
                     </div>
@@ -142,7 +141,7 @@ export default class BuyTokensDialog extends React.Component {
                       <div className='icon'>
                         <div
                           className='content'
-                          style={{ background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center` }}
+                          style={{background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`}}
                         />
                       </div>
                     </div>

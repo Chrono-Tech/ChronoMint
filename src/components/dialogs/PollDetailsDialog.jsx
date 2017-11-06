@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class VoteDialog extends React.Component {
+export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     palette: PropTypes.array,

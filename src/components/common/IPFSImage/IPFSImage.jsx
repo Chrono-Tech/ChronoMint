@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
+
 import IPFS from 'utils/IPFS'
 
 import './IPFSImage.scss'
 
-export default class IPFSImage extends React.Component {
+export default class IPFSImage extends PureComponent {
   static propTypes = {
     multihash: PropTypes.string,
     fallback: PropTypes.string,
