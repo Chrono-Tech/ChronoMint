@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { addError, loadAccounts, selectAccount } from 'redux/network/actions'
-
 import styles from '../stylesLoginPage'
 
 import './AccountSelector.scss'

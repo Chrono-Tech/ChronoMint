@@ -6,9 +6,7 @@ import { RaisedButton, Paper, CircularProgress } from 'material-ui'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import PollModel from 'models/PollModel'
-
 import { getStatistics } from 'redux/voting/getters'
 import { initTIMEDeposit } from 'redux/mainWallet/actions'
 import { listPolls } from 'redux/voting/actions'

@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({

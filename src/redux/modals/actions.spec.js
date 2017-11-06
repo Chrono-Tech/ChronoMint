@@ -1,5 +1,4 @@
 import { store } from 'specsInit'
-
 import * as actions from 'redux/modals/actions'
 
 describe('modals actions', () => {

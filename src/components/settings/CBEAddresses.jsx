@@ -3,12 +3,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import CBEModel from 'models/CBEModel'
-
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 

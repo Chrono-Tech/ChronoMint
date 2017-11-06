@@ -1,10 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import { addLOC, updateLOC } from 'redux/locs/actions'
 import { modalsClose } from 'redux/modals/actions'
-
 import LOCForm from './LOCForm'
 import type LOCModel from '../../../../models/LOCModel'
 import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'

@@ -7,9 +7,7 @@ import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n
 import moment from 'moment'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-
 import ls from 'utils/LocalStorage'
-
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'

@@ -24,7 +24,6 @@ function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
 }
 
-
 function mapStateToProps (state) {
   const wallet: MainWallet = state.get('mainWallet')
   const token: TokenModel = wallet.tokens().get(TIME)
@@ -45,8 +44,8 @@ function mapDispatchToProps (dispatch) {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     approve: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    depositTIME: amount => dispatch(depositTIME(amount)),
-    withdrawTIME: amount => dispatch(withdrawTIME(amount)),
+    depositTIME: (amount) => dispatch(depositTIME(amount)),
+    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
@@ -74,7 +73,7 @@ export class DepositTokens extends PureComponent {
       errors: null,
     }
     this.validators = {
-      amount: amount =>
+      amount: (amount) =>
         // TODO @bshevchenko: add decimals length validator, see SendTokens
         new ErrorList()
           .add(validator.required(amount))

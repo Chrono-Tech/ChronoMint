@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js'
-
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
-
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_APPROVE = 'approve'

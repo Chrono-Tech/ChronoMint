@@ -10,17 +10,17 @@ export default class Slider extends PureComponent {
   }
 
   render () {
-    const {disabled, cyan, value} = this.props
+    const { disabled, cyan, value } = this.props
     return (
       <div className={'slider editable pinned pressed ' + (disabled ? 'disabled ' : '') + (cyan ? 'cyan ' : '')}>
         <div className='container'>
-          <div className='knob' style={{left: 'calc(' + (value * 100) + '% - 1.6rem)'}}>
+          <div className='knob' style={{ left: 'calc(' + (value * 100) + '% - 1.6rem)' }}>
             <div className='innerknob' data-value={(value * 100) + '%'} />
           </div>
           <div className='progress'>
             <div className='linear innerprogress'>
               <div>
-                <span className='value' style={{transform: 'scaleX(' + value + ')'}} />
+                <span className='value' style={{ transform: 'scaleX(' + value + ')' }} />
               </div>
             </div>
             <div className='snaps'>

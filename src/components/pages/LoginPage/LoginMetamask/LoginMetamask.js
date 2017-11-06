@@ -3,12 +3,9 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { getNetworkById, LOCAL_ID, providerMap } from 'network/settings'
 import web3Provider from 'network/Web3Provider'
-
 import { addError, loadAccounts, selectNetwork } from 'redux/network/actions'
-
 import AccountSelector from '../AccountSelector/AccountSelector'
 import styles from '../stylesLoginPage'
 

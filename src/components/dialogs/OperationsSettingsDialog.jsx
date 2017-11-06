@@ -10,6 +10,7 @@ import { setRequiredSignatures } from 'redux/operations/actions'
 import ErrorList from 'components/forms/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'components/forms/validator'
+
 import './FormDialog.scss'
 
 export const FORM_OPERATION_SETTINGS = 'OperationSettingsDialog'

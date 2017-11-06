@@ -1,10 +1,7 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import PollModel from 'models/PollModel'
 import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
-
 import ipfs from 'utils/IPFS'
-
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'

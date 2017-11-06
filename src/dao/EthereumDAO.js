@@ -1,14 +1,10 @@
 import BigNumber from 'bignumber.js'
 import axios from 'axios'
-
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
-
 import { getScannerById } from 'network/settings'
-
 import ls from 'utils/LocalStorage'
-
 import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 

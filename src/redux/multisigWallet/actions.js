@@ -1,13 +1,10 @@
 import multisigWalletService from 'services/MultisigWalletService'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-
 import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
 import type WalletNoticeModel from 'models/notices/WalletNoticeModel'
-
 import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
 
@@ -158,7 +155,7 @@ export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, ge
   }
 }
 
-export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async dispatch => {
+export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async (dispatch) => {
   dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = wallet.dao()
@@ -169,7 +166,7 @@ export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => a
   }
 }
 
-export const removeOwner = (wallet, ownerAddress) => async dispatch => {
+export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
   dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = wallet.dao()

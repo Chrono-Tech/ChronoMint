@@ -1,23 +1,17 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { mockStore, store, accounts } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import lhtDAO from 'dao/LHTDAO'
 import type TIMEHolderDAO from 'dao/TIMEHolderDAO'
-
 import ProfileModel from 'models/ProfileModel'
 import TokenModel from 'models/TokenModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
-
 import web3Provider from 'network/Web3Provider'
-
 import { notify } from 'redux/notifier/actions'
-
 import web3Converter from 'utils/Web3Converter'
-
 import * as a from './actions'
 
 const account1 = accounts[6]

@@ -4,7 +4,6 @@ import React, { PureComponent } from 'react'
 import TextField from 'material-ui/TextField'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { updateLOCFilter } from 'redux/locs/actions'
 
 const mapStateToProps = (state) => ({

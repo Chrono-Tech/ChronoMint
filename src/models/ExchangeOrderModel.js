@@ -1,8 +1,6 @@
 // TODO @bshevchenko: this is intermediate version for demo
 import BigNumber from 'bignumber.js'
-
 import { LHT, ETH } from 'redux/mainWallet/actions'
-
 import { abstractNoticeModel } from './notices/AbstractNoticeModel'
 
 export default class ExchangeOrderModel extends abstractNoticeModel({

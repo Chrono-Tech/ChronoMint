@@ -1,11 +1,8 @@
 import Immutable from 'immutable'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
-
 import { notify } from 'redux/notifier/actions'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
@@ -66,7 +63,7 @@ export const confirmOperation = (operation: OperationModel | AbstractFetchingMod
   }
 }
 
-export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async dispatch => {
+export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {

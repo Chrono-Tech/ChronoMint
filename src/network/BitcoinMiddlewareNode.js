@@ -5,7 +5,6 @@ import Stomp from 'webstomp-client'
 import TxModel from 'models/TxModel'
 
 import { DECIMALS } from 'network/BitcoinEngine'
-
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {

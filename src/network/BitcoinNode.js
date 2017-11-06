@@ -1,5 +1,4 @@
 import axios from 'axios'
-
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 

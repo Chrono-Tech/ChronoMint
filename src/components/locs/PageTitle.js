@@ -4,15 +4,11 @@ import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import contractManagerDAO from 'dao/ContractsManagerDAO'
 import lhtDAO from 'dao/LHTDAO'
-
 import { modalsOpen } from 'redux/modals/actions'
-
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
-
 import globalStyles from '../../styles'
 import LOCModel from '../../models/LOCModel'
 

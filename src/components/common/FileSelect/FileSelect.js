@@ -6,13 +6,10 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
-
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileCollection from 'models/FileSelect/FileCollection'
 import FileModel from 'models/FileSelect/FileModel'
-
 import ipfs from 'utils/IPFS'
-
 import FileItem from './FileItem'
 
 import './FileSelect.scss'

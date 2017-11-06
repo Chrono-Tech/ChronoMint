@@ -1,8 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import ls from 'utils/LocalStorage'
-
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import TransactionsCollection from './TransactionsCollection'
 

@@ -1,5 +1,4 @@
 import contractManagerDAO from 'dao/ContractsManagerDAO'
-
 import LOCModel, { THE_90_DAYS } from './LOCModel'
 
 describe('LOC model', () => {

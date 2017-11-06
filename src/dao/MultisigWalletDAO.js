@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
+import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import TokenModel from 'models/TokenModel'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
-import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
-import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 
 const CODE_CONFIRMATION_NEEDED = 14014
 
@@ -25,8 +25,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchConfirmationNeeded (wallet, callback) {
-    return this._watch('MultisigWalletConfirmationNeeded', result => {
-      const {operation, value, to, symbol} = result.args
+    return this._watch('MultisigWalletConfirmationNeeded', (result) => {
+      const { operation, value, to, symbol } = result.args
       const symbolString = this._c.bytesToString(symbol)
       if (!symbolString) {
         // eslint-disable-next-line
@@ -45,8 +45,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchMultiTransact (wallet, callback) {
-    return this._watch('MultisigWalletMultiTransact', result => {
-      const {operation, owner, self, symbol, value} = result.args
+    return this._watch('MultisigWalletMultiTransact', (result) => {
+      const { operation, owner, self, symbol, value } = result.args
       const symbolString = this._c.bytesToString(symbol)
       const token = wallet.tokens().get(symbolString)
       callback(new MultisigTransactionModel({
@@ -64,19 +64,19 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchDeposit (wallet, callback) {
-    return this._watch('MultisigWalletDeposit', result => {
+    return this._watch('MultisigWalletDeposit', (result) => {
       callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
     }, { self: wallet.address() })
   }
 
   watchRevoke (wallet, callback) {
-    return this._watch('MultisigWalletRevoke', result => {
+    return this._watch('MultisigWalletRevoke', (result) => {
       callback(result.args.operation)
     }, { self: wallet.address() })
   }
 
   watchConfirmation (wallet, callback) {
-    return this._watch('MultisigWalletConfirmation', result => {
+    return this._watch('MultisigWalletConfirmation', (result) => {
       // TODO @dkchv: something wrong with contract
       if (result.args.owner === '0x') {
         return

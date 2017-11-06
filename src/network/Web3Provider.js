@@ -1,5 +1,4 @@
 import promisify from 'promisify-node-callback'
-
 import MonitorService from './MonitorService'
 
 const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'

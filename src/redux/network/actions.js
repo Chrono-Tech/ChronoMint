@@ -1,18 +1,14 @@
 import Web3 from 'web3'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import { decodeMNIDaddress, UPortAddress } from 'network/uportProvider'
 import { getNetworkById } from 'network/settings'
 import { LOCAL_ID } from 'network/settings'
 import metaMaskResolver from 'network/metaMaskResolver'
 import uportProvider from 'network/uportProvider'
 import web3Provider, { Web3Provider } from 'network/Web3Provider'
-
 import { createSession, destroySession } from 'redux/session/actions'
-
 import ls from 'utils/LocalStorage'
 import web3Converter from 'utils/Web3Converter'
 

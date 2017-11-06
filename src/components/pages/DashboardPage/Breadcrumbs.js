@@ -2,6 +2,7 @@
 /* eslint-disable */
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import globalStyles from '../../../styles'
 
 import globalStyles from '../../../styles'
 

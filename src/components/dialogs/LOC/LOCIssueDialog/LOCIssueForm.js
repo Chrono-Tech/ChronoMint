@@ -4,7 +4,6 @@ import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate, I18n } from 'react-redux-i18n'
-
 import validate from './validate'
 
 import './LOCIssueForm.scss'

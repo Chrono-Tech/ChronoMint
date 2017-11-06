@@ -1,10 +1,8 @@
 import type BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import type TokenModel from 'models/TokenModel'
-
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const standardFuncs = {

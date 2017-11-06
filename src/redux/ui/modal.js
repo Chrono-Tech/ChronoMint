@@ -1,5 +1,4 @@
 import { modalsOpen } from 'redux/modals/actions'
-
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 
 export const MODAL_HIDE = 'modal/HIDE'

@@ -4,9 +4,7 @@ import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import validate from './validate'
 
 import './SendToExchangeForm.scss'

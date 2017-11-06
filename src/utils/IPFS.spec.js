@@ -1,5 +1,4 @@
 import ipfsAPI from 'ipfs-api'
-
 import IPFS from './IPFS'
 
 describe('IPFS DAO', () => {

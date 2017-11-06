@@ -2,14 +2,10 @@ import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
-
 import { modalsOpen } from 'redux/modals/actions'
 import { notify } from 'redux/notifier/actions'
-
 import CopyDialog from 'components/dialogs/CopyDialog'
-
 import clipboard from 'utils/clipboard'
 
 import './MicroIcon.scss'

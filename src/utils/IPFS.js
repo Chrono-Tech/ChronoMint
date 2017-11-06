@@ -1,6 +1,5 @@
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-
 import FileCollection from '../models/FileSelect/FileCollection'
 import { fileConfig } from '../components/common/FileSelect/FileSelect'
 import FileModel from '../models/FileSelect/FileModel'

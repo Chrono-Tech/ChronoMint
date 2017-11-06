@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import FileModel from 'models/FileSelect/FileModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
-
 import ipfs from 'utils/IPFS'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 

@@ -6,9 +6,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-
 import { getNetworkById } from 'network/settings'
 import {
   NETWORK_STATUS_UNKNOWN,
@@ -17,16 +15,12 @@ import {
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED,
 } from 'network/MonitorService'
-
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
-
 import Moment, { FULL_DATE } from 'components/common/Moment'
-
 import ls from 'utils/LocalStorage'
-
 import styles from '../styles'
 
 import './HeaderPartial.scss'

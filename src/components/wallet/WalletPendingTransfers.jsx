@@ -67,7 +67,7 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   renderTable () {
-    const {wallet} = this.props
+    const { wallet } = this.props
     return (
       <div>
         <div styleName='tableHead'>
@@ -83,7 +83,7 @@ export default class WalletPendingTransfers extends PureComponent {
             <div styleName='sign' />
           </div>
         </div>
-        {wallet.pendingTxList().items().map(item => this.renderRow(wallet, item))}
+        {wallet.pendingTxList().items().map((item) => this.renderRow(wallet, item))}
       </div>
     )
   }

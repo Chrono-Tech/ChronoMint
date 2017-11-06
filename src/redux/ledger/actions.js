@@ -1,6 +1,5 @@
 import ledgerProvider from 'network/LedgerProvider'
 import web3Provider from 'network/Web3Provider'
-
 import { NETWORK_SET_ACCOUNTS } from 'redux/network/actions'
 import { selectAccount, getProviderURL } from 'redux/network/actions'
 

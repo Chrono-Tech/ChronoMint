@@ -3,11 +3,8 @@ import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
-
 import { modalsOpen } from 'redux/modals/actions'
-
 import BuyTokensDialog from 'components/dialogs/BuyTokensDialog'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 

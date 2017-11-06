@@ -7,17 +7,13 @@ import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { connect } from 'react-redux'
 import inverted from 'styles/themes/inversed'
 import { yellow800 } from 'material-ui/styles/colors'
-
 import { providerMap } from 'network/settings'
-
 import { login } from 'redux/session/actions'
-
 import LoginLocal from 'components/pages/LoginPage/LoginLocal/LoginLocal'
 import LoginMetamask from 'components/pages/LoginPage/LoginMetamask/LoginMetamask'
 import LoginUPort from 'components/pages/LoginPage/LoginUPort/LoginUPort'
 import LoginWithOptions from 'components/pages/LoginPage/LoginWithOptions/LoginWithOptions'
 import ProviderSelector from 'components/pages/LoginPage/ProviderSelector/ProviderSelector'
-
 import { checkNetwork, clearErrors, createNetworkSession, loading } from '../../redux/network/actions'
 
 import './LoginPage.scss'
