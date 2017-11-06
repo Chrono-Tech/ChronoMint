@@ -1,8 +1,6 @@
 import MainWalletModel from 'models/Wallet/MainWalletModel'
 import * as a from './actions'
 
-import * as a from './actions'
-
 const initialState = new MainWalletModel()
 
 export default (state = initialState, action) => {

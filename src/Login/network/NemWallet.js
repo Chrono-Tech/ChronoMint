@@ -1,5 +1,5 @@
 import bip39 from 'bip39'
-import { KeyPair, Address } from './nem'
+import { KeyPair, Address } from './nem/index'
 
 export default class NemWallet {
   constructor (keyPair, network) {
