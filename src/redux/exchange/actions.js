@@ -44,9 +44,9 @@ export const getExchangesForOwner = (owner: string) => async dispatch => {
 }
 
 export const getAssetSymbols = () => async dispatch => {
-  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const result = await exchangeManagerDAO.getAssetSymbols()
-  dispatch({type: EXCHANGE_GET_ORDERS_FINISH, payload: {exchanges}})
+  // const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  // const result = await exchangeManagerDAO.getAssetSymbols()
+  // dispatch({type: EXCHANGE_GET_ORDERS_FINISH, payload: {exchanges}})
 }
 
 export const getExchangesForSymbol = (symbol: string) => async dispatch => {
@@ -62,3 +62,11 @@ export const getExchangeData = (exchanges: Array<string>) => async dispatch => {
   return await exchangeManagerDAO.getExchangeData(exchanges)
 }
 
+export const createExchange = ({symbol, useTicker, sellPrice, buyPrice}) => async dispatch => {
+  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  exchangeManagerDAO.createExchange(symbol, useTicker, sellPrice, buyPrice)
+}
+export const watchExchanges = account => async (dispatch) => {
+  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  exchangeManagerDAO.watchExchanges(account, dispatch)
+}

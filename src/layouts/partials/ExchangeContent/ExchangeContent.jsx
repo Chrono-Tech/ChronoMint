@@ -7,7 +7,8 @@ import {
   getExchangesForSymbol,
   getAssetSymbols,
   getExchangesForOwner,
-  getExchangeData
+  getExchangeData,
+  createExchange,
 } from 'redux/exchange/actions'
 
 import './ExchangeContent.scss'
@@ -21,6 +22,7 @@ function mapDispatchToProps (dispatch) {
     getExchange: () => dispatch(getExchange()),
     getExchangesForSymbol: (symbol: string) => dispatch(getExchangesForSymbol(symbol)),
     getAssetSymbols: () => dispatch(getAssetSymbols()),
+    createExchange: (values) => dispatch(createExchange(values)),
     getExchangesForOwner: (owner: string) => dispatch(getExchangesForOwner(owner)),
     getExchangeData: (exchanges: Array<string>) => dispatch(getExchangeData(exchanges)),
   }
@@ -43,9 +45,14 @@ export default class ExchangeContent extends Component {
                   <div styleName='exchangeBox'>
                     <Paper>
                       <button onClick={() => this.props.getExchangesForSymbol('LHT')}>getExchangesForSymbol</button>
-                      <button onClick={this.props.getAssetSymbols}>getAssetSymbols</button>
-                      <button onClick={this.props.getExchangesForOwner}>getExchangesForOwner</button>
-                      <button onClick={() => this.props.getExchangeData()}>getExchangeData</button>
+                      <button onClick={() => this.props.createExchange({
+                        symbol: 'LHT',
+                        useTicker: false,
+                        sellPrice: 1,
+                        buyPrice: 2,
+                      })}
+                      >createExchange
+                      </button>
                       <ExchangeWidget />
                       <ExchangesTable />
                     </Paper>

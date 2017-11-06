@@ -17,6 +17,7 @@ import { watchInitUserMonitor } from 'redux/userMonitor/actions'
 import { watchInitWallet, balanceMinus, balancePlus, ETH } from 'redux/mainWallet/actions'
 import { initWallet } from 'redux/wallet/actions'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
+import { watchExchanges } from 'redux/exchange/actions'
 
 // next two actions represents start of the events watching
 export const WATCHER = 'watcher/USER'
@@ -77,6 +78,7 @@ export const globalWatcher = () => async dispatch => {
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchPlatformManager(getState().get('session').account))
+  dispatch(watchExchanges(getState().get('session').account))
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())

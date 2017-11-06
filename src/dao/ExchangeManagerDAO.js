@@ -12,6 +12,11 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     )
   }
 
+  createExchange (symbol, useTicker, sellPrice, buyPrice) {
+    const tx = this._tx('createExchange', [symbol, useTicker, sellPrice, buyPrice])
+    return tx.tx
+  }
+
   getExchangesForOwner (owner: string) {
     return this._call('getExchangesForOwner', [owner])
   }
@@ -47,5 +52,12 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       }))
     })
     return exchangesCollection
+  }
+
+  watchExchanges (account, dispatch) {
+    this._watch('ExchangeCreated', tx => {
+      // eslint-disable-next-line
+      console.log('--ExchangeManagerDAO#tx', tx)
+    }, {by: account})
   }
 }
