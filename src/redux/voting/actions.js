@@ -8,6 +8,8 @@ import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { notify } from 'redux/notifier/actions'
 import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE, POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
 
+export const DUCK_VOTING = 'voting'
+
 // used to create unique ID for fetching models
 let counter = 0
 

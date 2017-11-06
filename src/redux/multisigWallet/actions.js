@@ -54,8 +54,19 @@ export const watchWalletManager = () => async (dispatch, getState) => {
     console.log('--actions#', result)
   })
 
-  multisigWalletService.on('MultiTransact', (walletId, result) => {
-    console.log('--actions#', result)
+  multisigWalletService.on('MultiTransact', (walletId, multisigTransactionModel) => {
+    let wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+    const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
+    const tokens = wallet.tokens()
+    let token:TokenModel = tokens.get(multisigTransactionModel.symbol())
+    if (!token) {
+      // eslint-disable-next-line
+      console.error('token not found', multisigTransactionModel.symbol())
+      return
+    }
+    token = token.updateBalance(false, multisigTransactionModel.value())
+
+    dispatch(updateWallet(wallet.pendingTxList(pendingTxList).tokens(tokens.set(token.id(), token))))
   })
 
   multisigWalletService.on('SingleTransact', (walletId, result) => {
@@ -65,7 +76,7 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   multisigWalletService.on('Revoke', (walletId, id) => {
     const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
     const pendingTxList = wallet.pendingTxList()
-    const pendingTx = pendingTxList.item(id).isRevoked(true)
+    const pendingTx = pendingTxList.item(id).isConfirmed(false)
     dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
   })
 
@@ -80,10 +91,8 @@ export const watchWalletManager = () => async (dispatch, getState) => {
     if (!pendingTx) {
       return
     }
-    console.log('--actions#', pendingTx.toJS())
-    pendingTx = pendingTx.isSign(true)
+    pendingTx = pendingTx.isConfirmed(true)
     dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
-    console.log('--actions#', getState().get(DUCK_MULTISIG_WALLET).toJS())
   })
 
   multisigWalletService.on('ConfirmationNeeded', (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
@@ -144,12 +153,22 @@ export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, ge
   }
 }
 
-export const addOwner = (wallet) => async () => {
-  // TODO @dkchv: !!!
-  const newOwner = '0xd882e17d712b63e52896109f35fbccc702301e32'
+export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async (dispatch) => {
+  dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = wallet.dao()
-    await dao.addOwner(wallet, newOwner)
+    await dao.addOwner(wallet, ownerAddress)
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('error', e.message)
+  }
+}
+
+export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
+  dispatch(updateWallet(wallet.isPending(true)))
+  try {
+    const dao: MultisigWalletDAO = wallet.dao()
+    await dao.removeOwner(wallet, ownerAddress)
   } catch (e) {
     // eslint-disable-next-line
     console.error('error', e.message)
@@ -169,8 +188,7 @@ export const multisigTransfer = (wallet, token, amount, recipient) => async (dis
 export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
   try {
     const dao: MultisigWalletDAO = wallet.dao()
-    const result = await dao.confirmPendingTx(tx)
-    console.log('--actions#', result)
+    await dao.confirmPendingTx(tx)
   } catch (e) {
     // eslint-disable-next-line
     console.error('error', e.message)
@@ -180,8 +198,7 @@ export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => a
 export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
   try {
     const dao: MultisigWalletDAO = wallet.dao()
-    const result = await dao.revokePendingTx(tx)
-    console.log('--actions#', result)
+    await dao.revokePendingTx(tx)
   } catch (e) {
     // eslint-disable-next-line
     console.error('error', e.message)

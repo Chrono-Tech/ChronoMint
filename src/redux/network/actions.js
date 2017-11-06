@@ -81,13 +81,13 @@ export const checkMetaMask = () => async (dispatch) => {
 }
 
 export const getProviderURL = () => (dispatch, getState) => {
-  const { selectedNetworkId, selectedProviderId, isLocal } = getState().get('network')
+  const { selectedNetworkId, selectedProviderId, isLocal } = getState().get(DUCK_NETWORK)
   const { protocol, host } = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
   return protocol ? `${protocol}://${host}` : `//${host}`
 }
 
 export const getProviderSettings = () => (dispatch, getState) => {
-  const { selectedNetworkId, selectedProviderId, isLocal } = getState().get('network')
+  const { selectedNetworkId, selectedProviderId, isLocal } = getState().get(DUCK_NETWORK)
   const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
   const { protocol, host } = network
 
@@ -184,7 +184,7 @@ export const createNetworkSession = (account, provider, network) => (dispatch, g
   if (!account || !provider || !network) {
     throw new Error('Wrong session arguments')
   }
-  const accounts = getState().get('network').accounts || []
+  const accounts = getState().get(DUCK_NETWORK).accounts || []
   if (!accounts.includes(account)) {
     throw new Error('Account not registered')
   }

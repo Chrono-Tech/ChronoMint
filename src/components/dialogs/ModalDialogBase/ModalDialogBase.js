@@ -8,7 +8,9 @@ import ModalDialog from '../ModalDialog'
 
 import './ModalDialogBase.scss'
 
-const mapDispatchToProps = (dispatch) => ({
+const TRANSITION_TIMEOUT = 250
+
+const mapDispatchToProps = dispatch => ({
   closeModal: () => dispatch(modalsClose()),
 })
 
@@ -28,9 +30,9 @@ class ModalDialogBase extends PureComponent {
       <CSSTransitionGroup
         transitionName='transition-opacity'
         transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
+        transitionAppearTimeout={TRANSITION_TIMEOUT}
+        transitionEnterTimeout={TRANSITION_TIMEOUT}
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <ModalDialog
           onClose={() => this.props.closeModal()}

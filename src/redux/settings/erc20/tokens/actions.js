@@ -6,6 +6,9 @@ import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+
+export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
 export const TOKENS_LIST = 'settings/TOKENS_LIST'
 export const TOKENS_SET = 'settings/TOKENS_SET'
@@ -18,7 +21,7 @@ const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
   if (notice.isModified()) {
-    for (const token: TokenModel of getState().get('settingsERC20Tokens').list.valueSeq().toArray()) {
+    for (const token: TokenModel of getState().get(DUCK_SETTINGS_ERC20_TOKENS).list.valueSeq().toArray()) {
       if (token.address() === notice.oldAddress()) {
         dispatch(removeToken(token))
         break
@@ -26,14 +29,14 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
     }
   }
   if (notice.isModified() || notice.isRemoved()) {
-    if (getState().get('session').profile.tokens().toArray().includes(notice.token().address())
+    if (getState().get(DUCK_SESSION).profile.tokens().toArray().includes(notice.token().address())
       || notice.token().symbol() === TIME) {
       dispatch(watchInitWallet())
     }
   }
   dispatch(notice.isRemoved() ?
     removeToken(notice.token()) : setToken(notice.token()))
-  if (getState().get('session').isCBE) {
+  if (getState().get(DUCK_SESSION).isCBE) {
     dispatch(notify(notice))
   }
 }

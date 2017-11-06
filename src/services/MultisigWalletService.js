@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
 import MultisigWalletDAO from 'dao/MultisigWalletDAO'
+import type MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -23,22 +24,22 @@ class MultisigWalletService extends EventEmitter {
     const dao = this.getWalletDAO(wallet.address())
 
     return Promise.all([
-      dao.watchOwnerRemoved(wallet, (result) => {
+      dao.watchOwnerRemoved(wallet, result => {
         this.emit('OwnerRemoved', result)
       }),
-      dao.watchMultiTransact(wallet, (result) => {
-        this.emit('MultiTransact', result)
+      dao.watchMultiTransact(wallet, (multisigTransactionModel: MultisigTransactionModel) => {
+        this.emit('MultiTransact', wallet.address(), multisigTransactionModel)
       }),
-      dao.watchSingleTransact(wallet, (result) => {
+      dao.watchSingleTransact(wallet, result => {
         this.emit('SingleTransact', result)
       }),
-      dao.watchConfirmationNeeded(wallet, (pendingTxModel) => {
+      dao.watchConfirmationNeeded(wallet, pendingTxModel => {
         this.emit('ConfirmationNeeded', wallet.address(), pendingTxModel)
       }),
-      dao.watchDeposit(wallet, (value) => {
+      dao.watchDeposit(wallet, value => {
         this.emit('Deposit', wallet.address(), 'ETH', value)
       }),
-      dao.watchRevoke(wallet, (id) => {
+      dao.watchRevoke(wallet, id => {
         this.emit('Revoke', wallet.address(), id)
       }),
       dao.watchConfirmation(wallet, (id, owner) => {

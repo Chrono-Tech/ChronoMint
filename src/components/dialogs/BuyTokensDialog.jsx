@@ -1,28 +1,25 @@
 import BigNumber from 'bignumber.js'
-// import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
 import { RaisedButton, TextField } from 'material-ui'
-// TODO @bshevchenko: this is intermediate version for demo
 import React from 'react'
 import { connect } from 'react-redux'
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
 import { exchange } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
-// import RateHistoryChart from '../exchange/RateHistoryChart'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from './ModalDialog'
-
 import './BuyTokensDialog.scss'
 
-export class BuyTokensDialog extends React.Component {
+@connect(null, mapDispatchToProps)
+export default class BuyTokensDialog extends React.Component {
   static propTypes = {
     order: PropTypes.object,
     handleClose: PropTypes.func,
     exchange: PropTypes.func,
   }
 
-  constructor (props) {
-    super(props)
+  constructor () {
+    super(...arguments)
 
     this.state = {
       main: new BigNumber(0),
@@ -122,150 +119,112 @@ export class BuyTokensDialog extends React.Component {
     }
 
     return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
-      >
-        <ModalDialog onClose={() => this.props.handleClose()}>
-          <div styleName='root'>
-            <div styleName='header'>
-              <div styleName='row'>
-                <div styleName='col1'>
-                  <h3>{this.order().isBuy() ? 'Buy' : 'Sell'} {this.order().symbol()} Tokens</h3>
-                  {/* <div styleName='balance'>
-                    <div styleName='label'>Balance:</div>
-                    <TokenValue
-                      value={order.limit()}
-                      symbol={order.symbol()}
-                    />
-                  </div> */}
-                </div>
-                <div styleName='col2'>
-                  <div className='ByTokensDialog__icons'>
-                    <div className='row'>
-                      <div className='col-xs-1'>
-                        <div className='icon'>
-                          <div
-                            className='content'
-                            style={{
-                              background: `#05326a url(${icons.lht}) no-repeat center center`,
-                            }}
-                          >
-                            {/* <div className='title'>LHT</div> */}
-                          </div>
-                        </div>
+      <ModalDialog onClose={() => this.props.handleClose()}>
+        <div styleName='root'>
+          <div styleName='header'>
+            <div styleName='row'>
+              <div styleName='col1'>
+                <h3>{this.order().isBuy() ? 'Buy' : 'Sell'} {this.order().symbol()} Tokens</h3>
+              </div>
+              <div styleName='col2'>
+                <div className='ByTokensDialog__icons'>
+                  <div className='row'>
+                    <div className='col-xs-1'>
+                      <div className='icon'>
+                        <div
+                          className='content'
+                          style={{background: `#05326a url(${icons.lht}) no-repeat center center`}}
+                        />
                       </div>
-                      <div className='col-xs-1'>
-                        <div className='icon'>
-                          <div
-                            className='content'
-                            style={{
-                              background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`,
-                            }}
-                          >
-                            {/* <div className='title'>ETH</div> */}
-                          </div>
-                        </div>
+                    </div>
+                    <div className='col-xs-1'>
+                      <div className='icon'>
+                        <div
+                          className='content'
+                          style={{background: `#5c6bc0 url(${icons.ethereum}) no-repeat center center`,}}
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div styleName='content'>
-              <div styleName='row'>
-                <div styleName='col1'>
-                  <div>
-                    <div styleName='property'>
-                      <div styleName='label'>Account:</div>
-                      <div>
-                        <span styleName='value'>
-                          <span className='fa fa-user' />&nbsp;
-                          <span styleName='value1'>ChronoBank</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div styleName='property'>
-                      <div styleName='label'>Trade limits:</div>
-                      <div>
-                        <TokenValue
-                          value={this.order().limit()}
-                          symbol={this.order().symbol()}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div styleName='property'>
-                      <div styleName='label'>Balance:</div>
-                      <div>
-                        <TokenValue
-                          value={this.order().accountBalance()}
-                          symbol={this.order().accountBalanceSymbol()}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div styleName='col2'>
-                  <div className='ByTokensDialog__form'>
-                    <div className='row'>
-                      <div className='col-xs-2'>
-                        <TextField
-                          floatingLabelText='LHT:'
-                          value={this.state.main.toString(10)}
-                          style={{ width: 150 }}
-                          onChange={(e, value) => this.handleChangeMain(value)}
-                        />
-                      </div>
-                      <div className='col-xs-2'>
-                        <TextField
-                          floatingLabelText='ETH:'
-                          value={this.state.second.toString(10)}
-                          style={{ width: 150 }}
-                          onChange={(e, value) => this.handleChangeSecond(value)}
-                        />
-                      </div>
-                    </div>
-                    <div className='row'>
-                      <div className='col-xs-2'>
-                        <div styleName='actions'>
-                          <RaisedButton
-                            label={`${this.order().isBuy() ? 'Buy' : 'Sell'} ${this.order().symbol()}`}
-                            disabled={!this.state.isPossible || this.state.main <= 0}
-                            primary
-                            onTouchTap={() => this.handleExchange()}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* <div styleName='footer'>
-              <div styleName='row'>
-                <div styleName='col1'>
-                  <h3>Rates</h3>
-                  {this.renderRates()}
-                </div>
-                <div styleName='col2'>
-                  <div styleName='chart'>
-                    <div styleName='inner'>
-                      <RateHistoryChart width={500} height={240} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div> */}
           </div>
-        </ModalDialog>
-      </CSSTransitionGroup>
+          <div styleName='content'>
+            <div styleName='row'>
+              <div styleName='col1'>
+                <div>
+                  <div styleName='property'>
+                    <div styleName='label'>Account:</div>
+                    <div>
+                      <span styleName='value'>
+                        <span className='fa fa-user' />&nbsp;
+                        <span styleName='value1'>ChronoBank</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div styleName='property'>
+                    <div styleName='label'>Trade limits:</div>
+                    <div>
+                      <TokenValue
+                        value={this.order().limit()}
+                        symbol={this.order().symbol()}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div styleName='property'>
+                    <div styleName='label'>Balance:</div>
+                    <div>
+                      <TokenValue
+                        value={this.order().accountBalance()}
+                        symbol={this.order().accountBalanceSymbol()}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div styleName='col2'>
+                <div className='ByTokensDialog__form'>
+                  <div className='row'>
+                    <div className='col-xs-2'>
+                      <TextField
+                        floatingLabelText='LHT:'
+                        value={this.state.main.toString(10)}
+                        style={{ width: 150 }}
+                        onChange={(e, value) => this.handleChangeMain(value)}
+                      />
+                    </div>
+                    <div className='col-xs-2'>
+                      <TextField
+                        floatingLabelText='ETH:'
+                        value={this.state.second.toString(10)}
+                        style={{ width: 150 }}
+                        onChange={(e, value) => this.handleChangeSecond(value)}
+                      />
+                    </div>
+                  </div>
+                  <div className='row'>
+                    <div className='col-xs-2'>
+                      <div styleName='actions'>
+                        <RaisedButton
+                          label={`${this.order().isBuy() ? 'Buy' : 'Sell'} ${this.order().symbol()}`}
+                          disabled={!this.state.isPossible || this.state.main <= 0}
+                          primary
+                          onTouchTap={() => this.handleExchange()}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ModalDialog>
     )
   }
 
@@ -345,5 +304,3 @@ function mapDispatchToProps (dispatch) {
     handleClose: () => dispatch(modalsClose()),
   }
 }
-
-export default connect(null, mapDispatchToProps)(BuyTokensDialog)

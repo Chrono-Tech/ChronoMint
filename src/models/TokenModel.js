@@ -22,6 +22,7 @@ export default class TokenModel extends abstractFetchingModel({
   totalSupply: new BigNumber(0),
   managersList: null,
   isReissuable: null,
+  isOptional: true, // used in add token dialog for determine its selectable
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
@@ -37,6 +38,10 @@ export default class TokenModel extends abstractFetchingModel({
 
   isReissuable () {
     return this.get('isReissuable')
+  }
+
+  isOptional () {
+    return this.get('isOptional')
   }
 
   setSymbol (v): TokenModel {

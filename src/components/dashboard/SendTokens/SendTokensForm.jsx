@@ -1,24 +1,22 @@
-import { IPFSImage } from 'components'
-import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
-import PropTypes from 'prop-types'
 import React from 'react'
-import { SelectField, TextField } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { formPropTypes } from 'redux-form'
-import inversedTheme from 'styles/themes/inversed'
-import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
+import { Translate } from 'react-redux-i18n'
+import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
+import { SelectField, TextField } from 'redux-form-material-ui'
+import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TokenModel from 'models/TokenModel'
-import { getCurrentWallet } from 'redux/wallet/actions'
-import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
-import IconSection from 'components/dashboard/IconSection/IconSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import styles from '../styles'
+import { IPFSImage } from 'components'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import inversedTheme from 'styles/themes/inversed'
+import { getCurrentWallet } from 'redux/wallet/actions'
+import TokenModel from 'models/TokenModel'
 import validate from './validate'
-
+import styles from '../styles'
 import './SendTokensForm.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -49,7 +47,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({ form: FORM_SEND_TOKENS, validate })
+@reduxForm({form: FORM_SEND_TOKENS, validate})
 export class SendTokensForm extends React.Component {
   static propTypes = {
     account: PropTypes.string,
@@ -79,7 +77,7 @@ export class SendTokensForm extends React.Component {
     return (
       <div>
         <IconSection
-          title={<Translate value='wallet.sendTokens' />}
+          title={<Translate value={'wallet.sendTokens'} />}
           iconComponent={(
             <IPFSImage
               styleName='content'
@@ -95,7 +93,7 @@ export class SendTokensForm extends React.Component {
               fullWidth
               {...styles}
             >
-              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
+              {this.props.wallet.tokens().keySeq().toArray().map(symbol => (
                 <MenuItem
                   key={symbol}
                   value={symbol}
@@ -110,7 +108,7 @@ export class SendTokensForm extends React.Component {
           <div styleName='value'>
             <TokenValue
               isInvert
-              isLoading={token.isFetched()}
+              isLoading={!token.isFetched()}
               value={token.balance()}
               symbol={token.symbol()}
             />
@@ -121,8 +119,8 @@ export class SendTokensForm extends React.Component {
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
-    const { isContract } = this.state
+    const {invalid, pristine, token, handleSubmit, onSubmit, wallet} = this.props
+    const {isContract} = this.state
 
     return (
       <div>
@@ -155,17 +153,17 @@ export class SendTokensForm extends React.Component {
             <RaisedButton
               label={<Translate value={prefix('send')} />}
               primary
-              style={{ float: 'right', marginTop: '20px' }}
+              style={{float: 'right', marginTop: '20px'}}
               disabled={pristine || invalid}
-              onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
+              onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_TRANSFER)))}
             />
             {token && token.dao().isApproveRequired() && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
-                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
+                style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_APPROVE)))}
+                onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_APPROVE)))}
               />
             )}
           </div>
@@ -175,14 +173,14 @@ export class SendTokensForm extends React.Component {
   }
 
   render () {
-    const { token } = this.props
+    const {token} = this.props
 
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
             head={this.renderHead(token)}
-            body={this.renderBody({ token })}
+            body={this.renderBody({token})}
           />
         </form>
       </Paper>

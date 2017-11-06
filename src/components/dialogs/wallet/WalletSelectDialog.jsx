@@ -1,25 +1,22 @@
-import { CSSTransitionGroup } from 'react-transition-group'
-import { FloatingActionButton, FontIcon } from 'material-ui'
-import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
-import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
-import classNames from 'classnames'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
-import { switchWallet } from 'redux/wallet/actions'
+import classNames from 'classnames'
+import { FloatingActionButton, FontIcon } from 'material-ui'
 import Points from 'components/common/Points/Points'
 import Preloader from 'components/common/Preloader/Preloader'
+import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
+import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
+import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import { switchWallet } from 'redux/wallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import './WalletSelectDialog.scss'
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
-
-import './WalletSelectDialog.scss'
-
-const TRANSITION_TIMEOUT = 250
 
 function mapStateToProps (state) {
   return {
@@ -32,13 +29,17 @@ function mapDispatchToProps (dispatch) {
   return {
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: { wallet: new MultisigWalletModel() },
+      props: {wallet: new MultisigWalletModel()},
+    })),
+    handleEditManagersDialog: (wallet) => dispatch(modalsOpen({
+      component: EditManagersDialog,
+      props: {wallet},
     })),
     handleClose: () => dispatch(modalsClose()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
-    removeWallet: (wallet) => dispatch(removeWallet(wallet)),
-    addOwner: (wallet) => dispatch(addOwner(wallet)),
-    transfer: (wallet) => dispatch(multisigTransfer(wallet)),
+    switchWallet: wallet => dispatch(switchWallet(wallet)),
+    removeWallet: wallet => dispatch(removeWallet(wallet)),
+    addOwner: wallet => dispatch(addOwner(wallet)),
+    transfer: wallet => dispatch(multisigTransfer(wallet)),
   }
 }
 
@@ -47,6 +48,7 @@ export default class WalletSelectDialog extends React.Component {
   static propTypes = {
     multisigWallet: PropTypes.object,
     handleClose: PropTypes.func,
+    handleEditManagersDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
@@ -54,115 +56,110 @@ export default class WalletSelectDialog extends React.Component {
     switchWallet: PropTypes.func,
   }
 
+  handleEditManagers (wallet: MultisigWalletModel) {
+    this.props.handleEditManagersDialog(wallet)
+  }
+
   selectMultisigWallet (wallet) {
     this.props.handleClose()
     this.props.switchWallet(wallet)
   }
 
-  render () {
-    const wallets = this.props.multisigWallet.list()
-    const selected = this.props.multisigWallet.selected().address()
-
-    return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={TRANSITION_TIMEOUT}
-        transitionEnterTimeout={TRANSITION_TIMEOUT}
-        transitionLeaveTimeout={TRANSITION_TIMEOUT}
-      >
-        <ModalDialog onClose={() => this.props.handleClose()}>
-          <div styleName='content'>
-            <div styleName='header'>
-              <h3 styleName='headerTitle'><Translate value='wallet.walletSelectDialog.multisignatureWallets' /></h3>
-              <div styleName='subtitle'><Translate value='wallet.walletSelectDialog.addWallet' /></div>
-              <img styleName='headerBigIcon' src={WalletDialogSVG} />
-            </div>
-            <div styleName='actions'>
-              <div styleName='actionsItems'>
-                <div styleName='actionsItem'>
-                  <FloatingActionButton onTouchTap={() => this.props.walletAddEditDialog()}>
-                    <FontIcon className='material-icons'>add</FontIcon>
-                  </FloatingActionButton>
-                </div>
-              </div>
-            </div>
-            <div styleName='body'>
-              <div styleName='column'>
-                <h5 styleName='colName'><Translate
-                  value={'wallet.walletSelectDialog.' + (wallets.size ? 'yourWallets' : 'youHaveNoWallets')}
-                />
-                </h5>
-                <div styleName='table'>
-                  {wallets.map((item) => this.renderRow(item, selected === item.address))}
-                </div>
-              </div>
-              <div styleName='column'>
-                <h5 styleName='colName'><Translate value='wallet.walletSelectDialog.howToAddMultisignatureWallet' />
-                </h5>
-                <div styleName='description'>
-                  <p><Translate value='wallet.walletSelectDialog.toCreateAMultisigWallet' /></p>
-                </div>
-                <Points>
-                  <Translate value='wallet.walletSelectDialog.clickPlusButtonAtTheTop' />
-                  <Translate value='wallet.walletSelectDialog.selectOwnersAtLeastTwo' />
-                  <Translate value='wallet.walletSelectDialog.selectRequiredNumberOfSignaturesFromOwners' />
-                </Points>
-              </div>
-            </div>
-          </div>
-        </ModalDialog>
-      </CSSTransitionGroup>
-    )
-  }
-
   renderRow (wallet: MultisigWalletModel, isSelected: boolean) {
     return (
-      <div key={wallet.id()} styleName={classNames('row', { 'rowSelected': isSelected })}>
+      <div key={wallet.id()} styleName={classNames('row', {'rowSelected': isSelected})}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div>
             <img styleName='bigIcon' src={WalletMultiBigSVG} />
           </div>
         </div>
         <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div styleName='symbol'>{wallet.name()}</div>
+          <div styleName='symbol'>{wallet.address()}</div>
           <div>
             <span styleName='ownersNum'>
               {wallet.owners().size} <Translate value='wallet.walletSelectDialog.owners' />
             </span>
             <div>
-              {wallet.owners().map((owner, idx) => (<i
-                className='material-icons'
-                key={owner}
-                title={owner}
-                styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
-              >account_circle
-                                                    </i>))}
+              {wallet.owners().valueSeq().toArray().map((owner, idx) => (
+                <i
+                  className='material-icons'
+                  key={owner}
+                  title={owner}
+                  styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
+                >account_circle</i>
+              ))}
             </div>
           </div>
         </div>
         <div styleName='cell control'>
           {wallet.isPending()
             ? <Preloader />
-            : <div>
-              <i
-                className='material-icons'
-                styleName='controlItem'
-                onTouchTap={() => {this.props.walletAddEditDialog()}}
-              >
-                edit
-              </i>
-              <i
-                className='material-icons'
-                styleName='controlItem'
-                onTouchTap={() => this.props.removeWallet(wallet)}
-              >
-                delete
-              </i>
-            </div>
+            : (
+              <div>
+                <i
+                  className='material-icons'
+                  styleName='controlItem'
+                  onTouchTap={() => this.handleEditManagers(wallet)}
+                >edit</i>
+                <i
+                  className='material-icons'
+                  styleName='controlItem'
+                  onTouchTap={() => this.props.removeWallet(wallet)}
+                >delete</i>
+              </div>
+            )
           }
         </div>
       </div>
+    )
+  }
+
+  render () {
+    const wallets: Array = this.props.multisigWallet.items()
+    const selected: string = this.props.multisigWallet.selected().address()
+
+    return (
+      <ModalDialog onClose={() => this.props.handleClose()}>
+        <div styleName='content'>
+          <div styleName='header'>
+            <h3 styleName='headerTitle'><Translate value='wallet.walletSelectDialog.multisignatureWallets' /></h3>
+            <div styleName='subtitle'><Translate value='wallet.walletSelectDialog.addWallet' /></div>
+            <img styleName='headerBigIcon' src={WalletDialogSVG} />
+          </div>
+          <div styleName='actions'>
+            <div styleName='actionsItems'>
+              <div styleName='actionsItem'>
+                <FloatingActionButton onTouchTap={() => this.props.walletAddEditDialog()}>
+                  <FontIcon className='material-icons'>add</FontIcon>
+                </FloatingActionButton>
+              </div>
+            </div>
+          </div>
+          <div styleName='body'>
+            <div styleName='column'>
+              <h5 styleName='colName'>
+                <Translate
+                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')} />
+              </h5>
+              <div styleName='table'>
+                {wallets.map(item => this.renderRow(item, selected === item.address))}
+              </div>
+            </div>
+            <div styleName='column'>
+              <h5 styleName='colName'><Translate value='wallet.walletSelectDialog.howToAddMultisignatureWallet' />
+              </h5>
+              <div styleName='description'>
+                <p><Translate value='wallet.walletSelectDialog.toCreateAMultisigWallet' /></p>
+              </div>
+              <Points>
+                <Translate value='wallet.walletSelectDialog.clickPlusButtonAtTheTop' />
+                <Translate value='wallet.walletSelectDialog.selectOwnersAtLeastTwo' />
+                <Translate value='wallet.walletSelectDialog.selectRequiredNumberOfSignaturesFromOwners' />
+              </Points>
+            </div>
+          </div>
+        </div>
+      </ModalDialog>
     )
   }
 }

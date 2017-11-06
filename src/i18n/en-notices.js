@@ -67,4 +67,8 @@ export default {
     failed: '%{name}: Download failed, check your network connection',
     completed: '%{name}: Download completed',
   },
+  wallet: {
+    title: 'Wallet',
+    create: '%{name}: Created',
+  },
 }

@@ -17,6 +17,8 @@ const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
+
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
@@ -61,6 +63,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
       map = map.set(token.id(), token)
     }
@@ -105,6 +109,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
         balance: await ethereumDAO.getAccountBalance(account),
+        isOptional: false,
+        isFetched: true,
       })
       map = map.set(ethToken.id(), ethToken)
 
@@ -119,6 +125,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance,
             balance0,
             balance6,
+            isOptional: false,
+            isFetched: true,
           })
           map = map.set(btcToken.id(), btcToken)
         } catch (e) {
@@ -138,6 +146,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance,
             balance0,
             balance6,
+            isOptional: false,
+            isFetched: true,
           })
           map = map.set(bccToken.id(), bccToken)
         } catch (e) {
@@ -161,6 +171,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: balances[i],
         platform: additionalData[address] && additionalData[address].platform,
         totalSupply: additionalData[address] && additionalData[address].totalSupply,
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
 
       if (token.symbol() === TIME) {
