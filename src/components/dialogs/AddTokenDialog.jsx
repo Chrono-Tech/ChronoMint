@@ -13,7 +13,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import TokenIcon from 'components/common/TokenIcon/TokenIcon'
+import TokenIcon from 'components/common/HashedIcon/TokenIcon'
 import ModalDialog from './ModalDialog'
 
 import './AddTokenDialog.scss'
@@ -114,7 +114,7 @@ export class AddTokenDialog extends PureComponent {
             <FlatButton
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
-              onTouchTap={() => this.props.onClose()}
+              onTouchTap={this.props.onClose}
             />
             <RaisedButton
               styleName='action'
