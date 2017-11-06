@@ -4,8 +4,9 @@ import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
 import { getCurrentWallet } from 'redux/wallet/actions'
+import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
+
 import './DashboardContent.scss'
 
 function prefix (token) {
@@ -88,7 +89,7 @@ export default class DashboardContent extends Component {
                   ? null
                   : (
                     <div className='row'>
-                      {this.props.rewardsData.periods().valueSeq().map(item => (
+                      {this.props.rewardsData.periods().valueSeq().map((item) => (
                         <div className='col-xs-6' key={item.index()}>
                           <Paper>
                             <Rewards period={item} rewardsData={this.props.rewardsData} />

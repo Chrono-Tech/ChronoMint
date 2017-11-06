@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import {
   NETWORK_STATUS_UNKNOWN,
   NETWORK_STATUS_OFFLINE,
@@ -14,7 +13,7 @@ import {
 import './NetworkStatus.scss'
 
 @connect(mapStateToProps)
-export default class CopyIcon extends React.Component {
+export default class CopyIcon extends PureComponent {
   static propTypes = {
     networkStatus: PropTypes.object,
     syncStatus: PropTypes.object,

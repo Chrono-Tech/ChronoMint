@@ -22,7 +22,7 @@ function transform (file) {
   console.log(file)
 
   const data = fs.readFileSync(file)
-  const fd = fs.openSync(file, 'r+')
+  const fd = fs.openSync(file, 'w')
   const fileText = data.toString()
 
   const result = importSort(fileText, 'import-sort-parser-babylon', style)

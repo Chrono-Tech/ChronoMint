@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import type ERC20DAO from './ERC20DAO'
@@ -51,6 +50,6 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
 
   async getAccountDepositBalance (account = this.getAccount()): BigNumber {
     const assetDAO = await this.getAssetDAO()
-    return this._call('depositBalance', [account]).then(r => assetDAO.removeDecimals(r))
+    return this._call('depositBalance', [account]).then((r) => assetDAO.removeDecimals(r))
   }
 }

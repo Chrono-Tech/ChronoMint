@@ -1,16 +1,16 @@
 import { LOCAL_ID } from 'Login/network/settings'
 import ls from 'utils/LocalStorage'
 import networkService from 'Login/redux/network/actions'
-import {login, createSession, destroySession} from 'redux/session/actions'
+import { login, createSession, destroySession } from 'redux/session/actions'
 
-export const bootstrap = (relogin = true) => async dispatch => {
+export const bootstrap = (relogin = true) => async (dispatch) => {
   networkService.checkMetaMask()
   networkService.checkTestRPC()
   if (networkService) {
     networkService
       .on('createSession', createSession)
       .on('destroySession', destroySession)
-      .on('login', ({account, dispatch}) => dispatch(login(account)))
+      .on('login', ({ account, dispatch }) => dispatch(login(account)))
   }
 
   if (!relogin) {

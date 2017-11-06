@@ -1,12 +1,8 @@
 import BigNumber from 'bignumber.js'
 import web3Provider from 'Login/network/Web3Provider'
-
 import contractManager from 'dao/ContractsManagerDAO'
-
 import TxModel from 'models/TxModel'
-
 import Web3Converter from 'utils/Web3Converter'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_REVOKE, TX_OWNERSHIP_CHANGE } from './ChronoBankPlatformDAO'
 import { TX_PLATFORM_REQUESTED, TX_PLATFORM_ATTACHED } from './PlatformsManagerDAO'
@@ -62,7 +58,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getManagers (owner) {
     const managersList = await this._call('getManagers', [owner])
     let formatManagersList = {}
-    managersList.map(manager => {
+    managersList.map((manager) => {
       if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
         formatManagersList[manager] = manager
       }
@@ -75,14 +71,13 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const managersListForSymbol = await this._call('getManagersForAssetSymbol', [symbol])
 
     let formatManagersList = {}
-    managersListForSymbol.map(manager => {
+    managersListForSymbol.map((manager) => {
       if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
         formatManagersList[manager] = manager
       }
     })
     return Object.keys(formatManagersList)
   }
-
 
   createTxModel (tx, account, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
@@ -122,16 +117,16 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
     const platformTokenExtensionGatewayManagerDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
 
-    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', {by: account}, TXS_PER_PAGE))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', {by: account}, TXS_PER_PAGE, 'test'))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', {by: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', {by: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', {by: account}, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {to: account}))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', {from: account}))
+    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }, TXS_PER_PAGE, 'test'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
-    transactionsLists.map(transactionsList => transactionsList.map(tx => promises.push(this.getTxModel(tx, account))))
+    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
     return Promise.all(promises)
   }
 }

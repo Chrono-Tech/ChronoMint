@@ -4,7 +4,6 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import download from 'react-file-download'
-
 import { addError, clearErrors } from '../../redux/network/actions'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
@@ -20,8 +19,8 @@ const initialState = {
   isDownloaded: false,
 }
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
   clearErrors: () => dispatch(clearErrors()),
 })
 

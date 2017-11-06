@@ -19,19 +19,19 @@ import { DUCK_SESSION } from 'redux/session/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
-export const WALLET_TOKENS_FETCH = 'wallet/TOKENS_FETCH'
-export const WALLET_TOKENS = 'wallet/TOKENS'
-export const WALLET_BALANCE = 'wallet/BALANCE'
-export const WALLET_BALANCE_SET = 'wallet/BALANCE_SET'
-export const WALLET_ALLOWANCE = 'wallet/ALLOWANCE'
-export const WALLET_TIME_DEPOSIT = 'wallet/TIME_DEPOSIT'
-export const WALLET_TIME_ADDRESS = 'wallet/TIME_ADDRESS'
-export const WALLET_BTC_ADDRESS = 'wallet/BTC_ADDRESS'
-export const WALLET_BCC_ADDRESS = 'wallet/BCC_ADDRESS'
-export const WALLET_TRANSACTIONS_FETCH = 'wallet/TRANSACTIONS_FETCH'
-export const WALLET_TRANSACTION = 'wallet/TRANSACTION'
-export const WALLET_TRANSACTIONS = 'wallet/TRANSACTIONS'
-export const WALLET_IS_TIME_REQUIRED = 'wallet/IS_TIME_REQUIRED'
+export const WALLET_TOKENS_FETCH = 'mainWallet/TOKENS_FETCH'
+export const WALLET_TOKENS = 'mainWallet/TOKENS'
+export const WALLET_BALANCE = 'mainWallet/BALANCE'
+export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
+export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
+export const WALLET_TIME_DEPOSIT = 'mainWallet/TIME_DEPOSIT'
+export const WALLET_TIME_ADDRESS = 'mainWallet/TIME_ADDRESS'
+export const WALLET_BTC_ADDRESS = 'mainWallet/BTC_ADDRESS'
+export const WALLET_BCC_ADDRESS = 'mainWallet/BCC_ADDRESS'
+export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
+export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
+export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
+export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -88,7 +88,7 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   }
 
   dispatch(notify(notice))
-  dispatch({type: WALLET_TRANSACTION, tx})
+  dispatch({ type: WALLET_TRANSACTION, tx })
 }
 
 export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => async (dispatch, getState) => {
@@ -102,10 +102,10 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   const profile: ProfileModel = state.get(DUCK_SESSION).profile
   const previous = state.get(DUCK_MAIN_WALLET).tokens()
 
-  dispatch({type: WALLET_TOKENS_FETCH})
+  dispatch({ type: WALLET_TOKENS_FETCH })
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   let tokens = await dao.getUserTokens(profile.tokens().toArray())
-  dispatch({type: WALLET_TOKENS, tokens})
+  dispatch({ type: WALLET_TOKENS, tokens })
   dispatch(getAccountTransactions(tokens))
 
   const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
@@ -125,12 +125,12 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   let contractNames = {}
   contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
-  dispatch({type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress})
+  dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
 
   // NOTE @ipavlenko: BCC and BTC addresses usually the same.
   // Decided to manage them independently to simplify further works on multiple wallets. .
-  dispatch({type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress()})
-  dispatch({type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress()})
+  dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
+  dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
@@ -138,10 +138,10 @@ export const watchInitWallet = () => async (dispatch, getState) => {
     const dao = token.dao()
     await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
     if (dao.watchBalance) {
-      await dao.watchBalance(balance => dispatch(watchBalance(balance)))
+      await dao.watchBalance((balance) => dispatch(watchBalance(balance)))
     }
     await dao.watchApproval((notice: ApprovalNoticeModel) => {
-      dispatch({type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender()})
+      dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
       dispatch(notify(notice.setToken(token)))
     })
   }
@@ -187,7 +187,7 @@ export const depositTIME = (amount: string) => async (dispatch, getState) => {
   }
 }
 
-export const withdrawTIME = (amount: string) => async dispatch => {
+export const withdrawTIME = (amount: string) => async (dispatch) => {
   const amountBN = new BigNumber(amount)
 
   dispatch(depositMinus(amountBN))
@@ -200,17 +200,17 @@ export const withdrawTIME = (amount: string) => async dispatch => {
   }
 }
 
-export const initTIMEDeposit = () => async dispatch => {
+export const initTIMEDeposit = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getTIMEHolderDAO()
   const deposit = await dao.getAccountDepositBalance()
   dispatch(updateDeposit(deposit, null))
 }
 
-export const updateIsTIMERequired = () => async dispatch => {
-  dispatch({type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired()})
+export const updateIsTIMERequired = () => async (dispatch) => {
+  dispatch({ type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired() })
 }
 
-export const requireTIME = () => async dispatch => {
+export const requireTIME = () => async (dispatch) => {
   try {
     await assetDonatorDAO.requireTIME()
   } catch (e) {
@@ -229,7 +229,7 @@ let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = (tokens) => async (dispatch) => {
-  dispatch({type: WALLET_TRANSACTIONS_FETCH})
+  dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
   tokens = tokens.valueSeq().toArray()
 
@@ -271,5 +271,5 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
     map = map.set(tx.id(), tx)
   }
 
-  dispatch({type: WALLET_TRANSACTIONS, map})
+  dispatch({ type: WALLET_TRANSACTIONS, map })
 }

@@ -1,7 +1,8 @@
 import Immutable from 'immutable'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
-export const abstractFetchingCollection = defaultValues => class AbstractFetchingCollection extends abstractFetchingModel({
+export const abstractFetchingCollection = (defaultValues) => class AbstractFetchingCollection extends abstractFetchingModel({
   ...defaultValues,
   list: new Immutable.Map(),
   selected: null,
@@ -24,7 +25,7 @@ export const abstractFetchingCollection = defaultValues => class AbstractFetchin
   }
 
   items () {
-    return this.list().toArray()
+    return this.list().valueSeq().toArray()
   }
 
   item (id) {

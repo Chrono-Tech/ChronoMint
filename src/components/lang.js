@@ -3,6 +3,7 @@ import * as Dashboard from 'components/dashboard/lang'
 import * as Timer from 'components/common/Timer/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
+import * as Warning from 'components/pages/LoginPage/Warning/lang'
 
 export default {
   en: {

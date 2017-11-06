@@ -1,18 +1,13 @@
 import Immutable from 'immutable'
 import Web3 from 'web3'
 import { store, accounts, mockStore } from 'specsInit'
-
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import { createSession, destroySession } from 'redux/session/actions'
-
-import { constants } from '../../settings'
-import { LOCAL_ID, providerMap } from '../../network/settings'
+import { constants } from '../../settings'import { LOCAL_ID, providerMap } from '../../network/settings'
 import metaMaskResolver from '../../network/metaMaskResolver'
 import networkService from './actions'
 import web3Provider from '../../network/Web3Provider'
-
 const {SESSION_CREATE, SESSION_DESTROY} = constants
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'

@@ -3,22 +3,21 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import networkService, { addError } from '../../redux/network/actions'
 import styles from '../../components/stylesLoginPage'
 
 import './AccountSelector.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
   selectedAccount: state.get('network').selectedAccount,
   isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   loadAccounts: () => networkService.loadAccounts(),
-  selectAccount: value => networkService.selectAccount(value),
-  addError: error => dispatch(addError(error)),
+  selectAccount: (value) => networkService.selectAccount(value),
+  addError: (error) => dispatch(addError(error)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -41,7 +40,7 @@ class AccountSelector extends PureComponent {
       if (accounts.length === 1) {
         this.props.selectAccount(accounts[0])
       }
-    }).catch(e => {
+    }).catch((e) => {
       this.props.selectAccount(null)
       this.props.addError(e.message)
     })
@@ -62,7 +61,7 @@ class AccountSelector extends PureComponent {
           fullWidth
           {...styles.selectField}
         >
-          {accounts && accounts.map(a => <MenuItem key={a} value={a} primaryText={a} />)}
+          {accounts && accounts.map((a) => <MenuItem key={a} value={a} primaryText={a} />)}
         </SelectField>
         <div styleName='actions'>
           <div styleName='action'>

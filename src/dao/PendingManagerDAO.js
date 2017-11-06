@@ -1,9 +1,7 @@
 import Immutable from 'immutable'
-
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -152,7 +150,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   watchTxEnd (hash): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._watch(EVENT_DONE, () => resolve(true), { hash })
       this._watch(EVENT_CANCELLED, () => resolve(false), { hash })
     })

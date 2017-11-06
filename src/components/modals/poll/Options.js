@@ -1,7 +1,7 @@
+import { FlatButton } from 'material-ui'
 // TODO new voting
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import { FlatButton } from 'material-ui'
 
 class Options extends PureComponent {
   render () {

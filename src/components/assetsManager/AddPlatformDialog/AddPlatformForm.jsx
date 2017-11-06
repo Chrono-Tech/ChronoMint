@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -28,8 +28,8 @@ const onSubmit = (values, dispatch) => {
 }
 
 @connect(mapStateToProps)
-@reduxForm({form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit})
-export default class AddPlatformForm extends React.Component {
+@reduxForm({ form: FORM_ADD_PLATFORM_DIALOG, validate, onSubmit })
+export default class AddPlatformForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     onClose: PropTypes.func,

@@ -5,15 +5,11 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import globalStyles from 'styles'
-
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import FileModel from 'models/FileSelect/FileModel'
-
 import { download } from 'redux/ui/ipfs'
 import { notify } from 'redux/notifier/actions'
-
 import formatFileSize from 'utils/formatFileSize'
-
 import FileIcon from './FileIcon'
 
 import './FileItem.scss'

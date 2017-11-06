@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { formPropTypes } from 'redux-form'
-import { reduxForm, formValueSelector, Field } from 'redux-form/immutable'
+import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -48,8 +47,8 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-@reduxForm({form: FORM_SEND_TOKENS, validate})
-export class SendTokensForm extends React.Component {
+@reduxForm({ form: FORM_SEND_TOKENS, validate })
+export class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
@@ -69,7 +68,6 @@ export class SendTokensForm extends React.Component {
   // TODO @dkchv: !!! restore
   async checkIsContract (address) {
     const isContact = contractsManagerDAO.isContract(address)
-    console.log('--SendTokensForm#checkIsContract', isContact)
   }
 
   renderHead (token = new TokenModel()) {
@@ -78,7 +76,7 @@ export class SendTokensForm extends React.Component {
     return (
       <div>
         <IconSection
-          title={<Translate value={'wallet.sendTokens'} />}
+          title={<Translate value='wallet.sendTokens' />}
           iconComponent={(
             <IPFSImage
               styleName='content'
@@ -94,7 +92,7 @@ export class SendTokensForm extends React.Component {
               fullWidth
               {...styles}
             >
-              {this.props.wallet.tokens().keySeq().toArray().map(symbol => (
+              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
                 <MenuItem
                   key={symbol}
                   value={symbol}
@@ -109,7 +107,7 @@ export class SendTokensForm extends React.Component {
           <div styleName='value'>
             <TokenValue
               isInvert
-              isLoading={token.isFetched()}
+              isLoading={!token.isFetched()}
               value={token.balance()}
               symbol={token.symbol()}
             />
@@ -120,8 +118,8 @@ export class SendTokensForm extends React.Component {
   }
 
   renderBody () {
-    const {invalid, pristine, token, handleSubmit, onSubmit, wallet} = this.props
-    const {isContract} = this.state
+    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
+    const { isContract } = this.state
 
     return (
       <div>
@@ -154,17 +152,17 @@ export class SendTokensForm extends React.Component {
             <RaisedButton
               label={<Translate value={prefix('send')} />}
               primary
-              style={{float: 'right', marginTop: '20px'}}
+              style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid}
-              onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_TRANSFER)))}
+              onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
             />
             {token && token.dao().isApproveRequired() && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
-                style={{float: 'right', marginTop: '20px', marginRight: '40px'}}
+                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit(values => onSubmit(values.set('action', ACTION_APPROVE)))}
+                onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_APPROVE)))}
               />
             )}
           </div>
@@ -174,14 +172,14 @@ export class SendTokensForm extends React.Component {
   }
 
   render () {
-    const {token} = this.props
+    const { token } = this.props
 
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
             head={this.renderHead(token)}
-            body={this.renderBody({token})}
+            body={this.renderBody({ token })}
           />
         </form>
       </Paper>

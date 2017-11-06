@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
-
 import { TIME } from 'redux/mainWallet/actions'
-
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -23,7 +21,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps)
-export default class RewardsPeriod extends React.Component {
+export default class RewardsPeriod extends PureComponent {
   static propTypes = {
     rewardsData: PropTypes.object,
     period: PropTypes.object,

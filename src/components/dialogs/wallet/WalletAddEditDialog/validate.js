@@ -1,5 +1,5 @@
-import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
 
 const OWNER_LIMIT = 2
 
@@ -15,13 +15,13 @@ export default (values, props) => {
       ? {
         _error: new ErrorList()
           .add(validator.moreThan(owners.size, OWNER_LIMIT, true))
-          .getErrors()
+          .getErrors(),
       }
       : values.get('owners').toArray().map((item) => {
         return {
           address: new ErrorList()
             .add(validator.address(item && item.get('address')))
-            .getErrors()
+            .getErrors(),
         }
       })
   }
@@ -35,6 +35,6 @@ export default (values, props) => {
       .add(validator.required(requiredSignatures))
       .add(validator.moreThan(requiredSignatures, 2))
       .getErrors(),
-    owners: ownersErrors
+    owners: ownersErrors,
   }
 }

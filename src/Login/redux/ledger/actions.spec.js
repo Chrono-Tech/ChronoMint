@@ -1,5 +1,4 @@
 import { store } from 'specsInit'
-
 import * as a from './actions'
 import ledgerProvider from '../../network/LedgerProvider'
 

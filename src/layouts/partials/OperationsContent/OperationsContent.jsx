@@ -19,7 +19,7 @@ export default class SettingsContent extends Component {
               <Operations
                 title={<Translate value={prefix('pendingOperations')} />}
                 showSignatures
-                filterOperations={o => !o.isDone()}
+                filterOperations={(o) => !o.isDone()}
               />
             </Paper>
           </div>
@@ -28,7 +28,7 @@ export default class SettingsContent extends Component {
               <Operations
                 title={<Translate value={prefix('completedOperations')} />}
                 showSignatures={false}
-                filterOperations={o => o.isDone()}
+                filterOperations={(o) => o.isDone()}
               />
             </Paper>
           </div>

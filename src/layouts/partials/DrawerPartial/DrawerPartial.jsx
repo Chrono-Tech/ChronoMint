@@ -1,21 +1,19 @@
 import { Link } from 'react-router'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
-
 import styles from '../styles'
 
 import './DrawerPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class DrawerPartial extends React.Component {
+export default class DrawerPartial extends PureComponent {
   static propTypes = {
     isDrawerOpen: PropTypes.bool,
     isCBE: PropTypes.bool,
@@ -48,12 +46,12 @@ export default class DrawerPartial extends React.Component {
           </div>
           {!menu.user ? null : (
             <List styleName='menu-user'>
-              {menu.user.map(item => this.renderItem(item))}
+              {menu.user.map((item) => this.renderItem(item))}
             </List>
           )}
           {!this.props.isCBE ? null : (
             <List styleName='menu-cbe'>
-              {menu.cbe.map(item => this.renderItem(item))}
+              {menu.cbe.map((item) => this.renderItem(item))}
             </List>
           )}
         </div>

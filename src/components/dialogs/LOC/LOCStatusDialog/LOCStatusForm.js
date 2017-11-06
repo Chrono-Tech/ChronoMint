@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 
 import './LOCStatusForm.scss'
 
-const onSubmit = values => +values.get('status')
+const onSubmit = (values) => +values.get('status')
 
 @reduxForm({ form: 'LOCStatusForm', onSubmit })
 class LOCStatusForm extends PureComponent {

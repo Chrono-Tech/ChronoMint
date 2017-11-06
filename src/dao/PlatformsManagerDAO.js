@@ -1,6 +1,6 @@
+import contractManager from 'dao/ContractsManagerDAO'
 import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
 import web3Converter from 'utils/Web3Converter'
-import contractManager from 'dao/ContractsManagerDAO'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
@@ -67,16 +67,16 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   watchCreatePlatform (account, dispatch) {
-    this._watch(TX_PLATFORM_REQUESTED, tx => {
+    this._watch(TX_PLATFORM_REQUESTED, (tx) => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {by: account})
+    }, { by: account })
 
-    this._watch(TX_PLATFORM_ATTACHED, tx => {
+    this._watch(TX_PLATFORM_ATTACHED, (tx) => {
       dispatch(setTx(tx))
       dispatch(getUsersPlatforms())
       dispatch(getPlatforms())
-    }, {by: account})
+    }, { by: account })
   }
 }

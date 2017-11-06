@@ -1,14 +1,14 @@
 import { en as layouts } from 'layouts/lang'
+import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-import * as operations from 'dao/PendingManagerDAO'
-import * as rewards from 'dao/RewardsDAO'
+import * as exchange from 'dao/ExchangeDAO'
 import { en as Login } from 'Login/lang'
 import * as loc from 'dao/LOCManagerDAO'
-import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
-import * as exchange from 'dao/ExchangeDAO'
+import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
@@ -72,7 +72,7 @@ export default {
     changeMultisignatureWallet: 'Change multisignature wallet',
     switchToMultisignatureWallet: 'Switch to multisignature wallet',
     switchToMainWallet: 'Switch to main wallet',
-    pendingTransfers: 'Pending transfers (demo)',
+    pendingTransfers: 'Pending transfers',
     to: 'To',
     value: 'Value',
     revoke: 'REVOKE',
@@ -450,7 +450,7 @@ export default {
     transactionErrorMessage: 'There are error while processing for %{item}. Error [%{code}]: %{message}',
     wallet: {
       walletName: {
-        haveToBeString: 'Have to be string'
+        haveToBeString: 'Have to be string',
       },
     },
   },

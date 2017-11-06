@@ -3,21 +3,19 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
-import AccountSelector from '../../components/AccountSelector/AccountSelector'
-import { getNetworkById, LOCAL_ID, providerMap } from '../../network/settings'
+import AccountSelector from '../../components/AccountSelector/AccountSelector'import { getNetworkById, LOCAL_ID, providerMap } from '../../network/settings'
 import networkService, { addError } from '../../redux/network/actions'
 import styles from '../../components/stylesLoginPage'
 import web3Provider from '../../network/Web3Provider'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   providers: state.get('network').providers,
 })
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
-  selectNetwork: networkId => networkService.selectNetwork(networkId),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
+  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
   loadAccounts: () => networkService.loadAccounts(),
 })
 

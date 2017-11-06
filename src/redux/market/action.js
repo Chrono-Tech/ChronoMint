@@ -1,6 +1,8 @@
 import MarketSocket from 'market/MarketSocket'
 import get from 'lodash/get'
 
+export const DUCK_MARKET = 'market'
+
 export const MARKET_INIT = 'market/INIT'
 export const MARKET_ADD_TOKEN = 'market/ADD_TOKEN'
 export const MARKET_UPDATE_PRICES = 'market/UPDATE_PRICES'
@@ -12,7 +14,7 @@ const MARKET_REQUEST_DELAY = 30000
 export let timerId
 
 const watchMarket = (dispatch, getState) => async () => {
-  const { tokens, currencies } = getState().get('market')
+  const { tokens, currencies } = getState().get(DUCK_MARKET)
   if (tokens.length === 0 || !currencies.length === 0) {
     return
   }
@@ -24,8 +26,8 @@ const watchMarket = (dispatch, getState) => async () => {
 export const watchInitMarket = () => (dispatch, getState) => {
   try {
     MarketSocket.init()
-    MarketSocket.on('update', update => {
-      let { rates, lastMarket } = getState().get('market')
+    MarketSocket.on('update', (update) => {
+      let { rates, lastMarket } = getState().get(DUCK_MARKET)
       if (!lastMarket || !rates) {
         return
       }
@@ -72,13 +74,13 @@ export const watchInitMarket = () => (dispatch, getState) => {
   }
 }
 
-export const watchStopMarket = () => dispatch => {
+export const watchStopMarket = () => (dispatch) => {
   if (timerId) {
     clearInterval(timerId)
   }
   dispatch({ type: MARKET_INIT, isInited: false })
 }
 
-export const addMarketToken = (symbol: string) => dispatch => {
+export const addMarketToken = (symbol: string) => (dispatch) => {
   dispatch({ type: MARKET_ADD_TOKEN, symbol })
 }

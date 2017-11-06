@@ -2,6 +2,7 @@
 /* eslint-disable */
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+
 import { getTransactions } from '../../../redux/exchange/actions'
 import Transactions from '../../common/Transactions/Transactions'
 

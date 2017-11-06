@@ -1,13 +1,9 @@
 import type Immutable from 'immutable'
-import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
-
 import type TokenModel from 'models/TokenModel'
-
+import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
 import validator from 'components/forms/validator'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
-import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
 import ChronoBankPlatformDAO from './ChronoBankPlatformDAO'
 import ERC20DAO from './ERC20DAO'
@@ -16,6 +12,7 @@ import FeeInterfaceDAO from './FeeInterfaceDAO'
 import LOCManagerDAO from './LOCManagerDAO'
 import PendingManagerDAO from './PendingManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
+import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import RewardsDAO from './RewardsDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
@@ -101,17 +98,17 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return dao
   }
 
-  async getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {
+  getERC20ManagerDAO (): Promise<ERC20ManagerDAO> {
     return this._getDAO(DAO_ERC20_MANAGER)
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
+  getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
   // noinspection JSUnusedGlobalSymbols
-  async getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
+  getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
     return this._getDAO(DAO_PLATFORMS_MANAGER)
   }
 

@@ -2,10 +2,10 @@ import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
 import ls from 'utils/LocalStorage'
 import { LOCAL_ID } from 'Login/network/settings'
-import * as a from './actions'
 import ProfileModel from 'models/ProfileModel'
 import { MARKET_INIT } from 'redux/market/action'
 import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
+import * as a from './actions'
 
 let store
 

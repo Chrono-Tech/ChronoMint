@@ -4,20 +4,21 @@ import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
 
-import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
+import {  bccProvider, btcProvider } from '../../network/BitcoinProvider'
 import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
 import ledgerProvider from '../../network/LedgerProvider'
 import { loginLedger } from '../../redux/ledger/actions'
+
+
 import LoginLedger from '../../components/LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
 import mnemonicProvider from '../../network/mnemonicProvider'
-import NetworkSelector from '../../components/NetworkSelector/NetworkSelector'
+importNetworkSelector from '../../components/NetworkSelector/NetworkSelector'
 import networkService, { addError, clearErrors, loading } from '../../redux/network/actions'
-import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
-import privateKeyProvider from '../../network/privateKeyProvider'
+importNetworkStatus from '../../components/NetworkStatus/NetworkStatus'import privateKeyProvider from '../../network/privateKeyProvider'
 import walletProvider from '../../network/walletProvider'
 import web3Provider from '../../network/Web3Provider'
 import web3Utils from '../../network/Web3Utils'
@@ -48,15 +49,15 @@ const loginOptions = [{
   title: 'LoginWithOptions.ledgerNano',
 }]
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
 })
 
-const mapDispatchToProps = dispatch => ({
-  addError: error => dispatch(addError(error)),
+const mapDispatchToProps = (dispatch) => ({
+  addError: (error) => dispatch(addError(error)),
   loadAccounts: () => networkService.loadAccounts(),
-  selectAccount: value => networkService.selectAccount(value),
+  selectAccount: (value) => networkService.selectAccount(value),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => networkService.getProviderURL(),
   getProviderSettings: () => networkService.getProviderSettings(),
@@ -88,14 +89,14 @@ class LoginWithOptions extends PureComponent {
     }
   }
 
-  handleMnemonicLogin = mnemonicKey => {
+  handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
     const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, this.props.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
-  handlePrivateKeyLogin = privateKey => {
+  handlePrivateKeyLogin = (privateKey) => {
     this.props.loading()
     this.props.clearErrors()
     try {

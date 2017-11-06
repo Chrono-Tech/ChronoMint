@@ -1,21 +1,17 @@
 import { I18n } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
-
 import { modalsOpen } from 'redux/modals/actions'
 import { notify } from 'redux/notifier/actions'
-
 import CopyDialog from 'components/dialogs/CopyDialog'
-
 import clipboard from 'utils/clipboard'
 
 import './MicroIcon.scss'
 
 @connect(null, mapDispatchToProps)
-export default class CopyIcon extends React.Component {
+export default class CopyIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
     notify: PropTypes.func,
@@ -26,7 +22,7 @@ export default class CopyIcon extends React.Component {
   render () {
     return (
       <div styleName='root'>
-        <a styleName='micro' onTouchTap={e => { e.preventDefault(); this.handleCopy() }}>
+        <a styleName='micro' onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
           <i className='material-icons'>content_copy</i>
         </a>
       </div>

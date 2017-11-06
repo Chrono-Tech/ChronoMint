@@ -1,11 +1,11 @@
-import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
-import SendTokensForm, { ACTION_TRANSFER, ACTION_APPROVE, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import { mainTransfer, mainApprove } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
+import SendTokensForm, { ACTION_TRANSFER, ACTION_APPROVE, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -33,8 +33,8 @@ class SendTokens extends PureComponent {
   }
 
   handleSubmit (values) {
-    const {wallet, resetForm} = this.props
-    const {action, symbol, amount, recipient} = values.toJS()
+    const { wallet, resetForm } = this.props
+    const { action, symbol, amount, recipient } = values.toJS()
     const token = wallet.tokens().get(symbol)
 
     resetForm()
@@ -50,7 +50,7 @@ class SendTokens extends PureComponent {
   }
 
   render () {
-    const {wallet} = this.props
+    const { wallet } = this.props
     const initialValues = {}
     if (wallet.tokens().size > 0) {
       initialValues.symbol = wallet.tokens().first().symbol()

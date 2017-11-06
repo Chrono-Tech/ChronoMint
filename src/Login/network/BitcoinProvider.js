@@ -1,7 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import { networks } from 'bitcoinjs-lib'
-
 import { BitcoinEngine } from './BitcoinEngine'
 import { MAINNET, TESTNET, MAINNET_BCC, TESTNET_BCC } from './BitcoinNode'
 
@@ -9,8 +8,8 @@ export class BitcoinProvider extends EventEmitter {
   constructor (selectNode) {
     super()
     this._selectNode = selectNode
-    this._handleTransaction = tx => this.onTransaction(tx)
-    this._handleBalance = balance => this.onBalance(balance)
+    this._handleTransaction = (tx) => this.onTransaction(tx)
+    this._handleBalance = (balance) => this.onBalance(balance)
   }
 
   isInitialized () {

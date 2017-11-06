@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 import * as d3 from 'd3'
 
@@ -7,7 +7,7 @@ import './DoughnutChart.scss'
 
 let COUNTER = 0 // Need to have unique chart id to append styles
 
-export default class DoughnutChart extends React.Component {
+export default class DoughnutChart extends PureComponent {
   static propTypes = {
     weight: PropTypes.number,
     rounded: PropTypes.bool,
@@ -136,7 +136,7 @@ export default class DoughnutChart extends React.Component {
     }
 
     function arcTween (transition, newAngle) {
-      transition.attrTween('d', d => {
+      transition.attrTween('d', (d) => {
         const interpolate = d3.interpolate(d.endAngle, newAngle)
         return function (t) {
           d.endAngle = interpolate(t)

@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+
 import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,
@@ -7,7 +8,8 @@ import {
   GET_PLATFORMS,
   GET_TOKENS,
   GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START, GET_USER_PLATFORMS,
+  GET_TRANSACTIONS_START,
+  GET_USER_PLATFORMS,
   SELECT_PLATFORM,
   SELECT_TOKEN,
   SET_FEE,
@@ -172,7 +174,7 @@ export default (state = initialState, action) => {
         ...initialState,
         ...state,
         usersPlatforms: action.payload.usersPlatforms,
-        usersPlatformsCount: action.payload.usersPlatforms.length
+        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     default:
       return state

@@ -1,13 +1,14 @@
-import Preloader from 'components/common/Preloader/Preloader'
-import React, { PureComponent } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
+import { IPFSImage, TokenValue } from 'components'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import './PlatformsList.scss'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
 import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
+import Preloader from 'components/common/Preloader/Preloader'
+
+import './PlatformsList.scss'
 
 function prefix (token) {
   return `Assets.PlatformsList.${token}`
@@ -31,15 +32,15 @@ export class PlatformsList extends PureComponent {
 
   renderTokenList () {
     const filteredTokens = this.props.tokensMap.toArray()
-      .filter(token => token.platform ? token.platform() === this.props.selectedPlatform : false)
+      .filter((token) => token.platform ? token.platform() === this.props.selectedPlatform : false)
     return (
       <div styleName='tokensList'>
         {
           filteredTokens
-            .map(token => {
+            .map((token) => {
               return (<div
                 key={token.address()}
-                styleName={classnames('tokenItem', {'selected': this.props.selectedToken === token.symbol()})}
+                styleName={classnames('tokenItem', { 'selected': this.props.selectedToken === token.symbol() })}
                 onTouchTap={() => this.props.handleSelectToken(token.symbol())}
               >
                 <div styleName='tokenIcon'>
@@ -48,7 +49,7 @@ export class PlatformsList extends PureComponent {
                 <div styleName='tokenTitle'>{token.symbol()}</div>
                 <div styleName='tokenBalance'>
                   <TokenValue
-                    style={{fontSize: '24px'}}
+                    style={{ fontSize: '24px' }}
                     value={new BigNumber(this.props.assets[token.address()] ? this.props.assets[token.address()].totalSupply : 0)}
                     symbol={token.symbol()}
                   />
@@ -62,13 +63,13 @@ export class PlatformsList extends PureComponent {
   }
 
   renderPlatformsList () {
-    const {selectedPlatform, platformsList} = this.props
+    const { selectedPlatform, platformsList } = this.props
     return (
       <div>
         {
-          platformsList.map(({name, address}) => (
+          platformsList.map(({ name, address }) => (
             <div styleName='platformWrap' key={address}>
-              <div styleName={classnames('platformHeader', {'selected': selectedPlatform === address})}>
+              <div styleName={classnames('platformHeader', { 'selected': selectedPlatform === address })}>
                 <div
                   styleName='platformTitleWrap'
                   onTouchTap={() => this.handleSelectPlatform(address)}
@@ -79,7 +80,8 @@ export class PlatformsList extends PureComponent {
                     name
                       ? <div styleName='platformTitle'>{name}&nbsp;(
                         <small>{address}</small>
-                        )</div>
+                        )
+                      </div>
                       : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
@@ -125,10 +127,10 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleSelectPlatform: platformAddress => {
-      dispatch({type: SELECT_PLATFORM, payload: {platformAddress}})
+    handleSelectPlatform: (platformAddress) => {
+      dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
     },
-    handleSelectToken: symbol => dispatch({type: SELECT_TOKEN, payload: {symbol}}),
+    handleSelectToken: (symbol) => dispatch({ type: SELECT_TOKEN, payload: { symbol } }),
   }
 }
 

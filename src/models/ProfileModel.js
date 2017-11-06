@@ -1,5 +1,4 @@
 import Immutable from 'immutable'
-
 import { abstractModel } from './AbstractModel'
 
 class ProfileModel extends abstractModel({
@@ -43,8 +42,8 @@ class ProfileModel extends abstractModel({
     return this.get('icon')
   }
 
-  tokens (): Immutable.Set {
-    return this.get('tokens')
+  tokens (value): Immutable.Set {
+    return this._getSet('tokens', value)
   }
 
   isEmpty () {

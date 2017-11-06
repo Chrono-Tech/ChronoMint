@@ -1,21 +1,16 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import exchangeDAO from 'dao/ExchangeDAO'
 import lhtDAO from 'dao/LHTDAO'
-
 import TokenModel from 'models/TokenModel'
-
 import { modalsClose } from 'redux/modals/actions'
 import { sendAsset } from 'redux/locs/actions'
-
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
-
 import SendToExchangeForm from './SendToExchangeForm'
 
-const mapDispatchToProps = dispatch => ({
-  send: async value => {
+const mapDispatchToProps = (dispatch) => ({
+  send: async (value) => {
     dispatch(sendAsset(
       new TokenModel({ dao: lhtDAO }),
       await exchangeDAO.getAddress(),
@@ -33,7 +28,7 @@ class SendToExchangeModal extends PureComponent {
     allowed: PropTypes.object,
   }
 
-  handleSubmitSuccess = value => {
+  handleSubmitSuccess = (value) => {
     this.props.closeModal()
     this.props.send(value)
   }

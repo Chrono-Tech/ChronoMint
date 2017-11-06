@@ -3,18 +3,17 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import networkService, { addError } from '../../redux/network/actions'
 
 import './LoginUPort.scss'
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   loginUport: () => networkService.loginUport(),
-  addError: e => dispatch(addError(e)),
+  addError: (e) => dispatch(addError(e)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)

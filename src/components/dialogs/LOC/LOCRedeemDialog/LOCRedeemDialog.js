@@ -2,20 +2,16 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import LOCModel from 'models/LOCModel'
-
 import { modalsClose } from 'redux/modals/actions'
 import { revokeAsset } from 'redux/locs/actions'
-
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import LOCRedeemForm from './LOCRedeemForm'
 
 import './LOCRedeemDialog.scss'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })

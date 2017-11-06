@@ -1,6 +1,6 @@
 import { abstractModel } from './AbstractModel'
 
-export const abstractFetchingModel = defaultValues => class AbstractFetchingModel extends abstractModel({
+export const abstractFetchingModel = (defaultValues) => class AbstractFetchingModel extends abstractModel({
   ...defaultValues,
   isFetching: false,
   isFetched: false,

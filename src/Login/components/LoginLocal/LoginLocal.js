@@ -2,14 +2,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import Web3 from 'web3'
 import { connect } from 'react-redux'
-
 import AccountSelector from '../../components/AccountSelector/AccountSelector'
 import { LOCAL_ID } from '../../network/settings'
 import networkService from '../../redux/network/actions'
 import web3Provider from '../../network/Web3Provider'
 
 const mapDispatchToProps = () => ({
-  selectNetwork: networkId => networkService.selectNetwork(networkId),
+  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
 })
 
 @connect(null, mapDispatchToProps)

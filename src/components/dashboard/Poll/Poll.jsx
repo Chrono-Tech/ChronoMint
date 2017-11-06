@@ -1,12 +1,10 @@
 import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
@@ -19,7 +17,7 @@ function prefix (token) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Poll extends React.Component {
+export default class Poll extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     isCBE: PropTypes.bool,

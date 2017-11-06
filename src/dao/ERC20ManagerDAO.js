@@ -1,6 +1,8 @@
 import Immutable from 'immutable'
+
 import TokenModel from 'models/TokenModel'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
+
 import AbstractContractDAO from './AbstractContractDAO'
 import { btcDAO, bccDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -16,6 +18,8 @@ export const TX_REMOVE_TOKEN = 'removeToken'
 const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
+
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -61,6 +65,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
       map = map.set(token.id(), token)
     }
@@ -105,12 +111,14 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         dao: ethereumDAO,
         name: EthereumDAO.getName(),
         balance: await ethereumDAO.getAccountBalance(account),
+        isOptional: false,
+        isFetched: true,
       })
       map = map.set(ethToken.id(), ethToken)
 
       if (btcDAO.isInitialized()) {
         try {
-          const {balance, balance0, balance6} = await btcDAO.getAccountBalances()
+          const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
           const btcToken = new TokenModel({
             dao: btcDAO,
             name: btcDAO.getName(),
@@ -119,6 +127,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance,
             balance0,
             balance6,
+            isOptional: false,
+            isFetched: true,
           })
           map = map.set(btcToken.id(), btcToken)
         } catch (e) {
@@ -129,7 +139,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
       if (bccDAO.isInitialized()) {
         try {
-          const {balance, balance0, balance6} = await bccDAO.getAccountBalances()
+          const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
           const bccToken = new TokenModel({
             dao: bccDAO,
             name: bccDAO.getName(),
@@ -138,6 +148,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance,
             balance0,
             balance6,
+            isOptional: false,
+            isFetched: true,
           })
           map = map.set(bccToken.id(), bccToken)
         } catch (e) {
@@ -161,6 +173,8 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: balances[i],
         platform: additionalData[address] && additionalData[address].platform,
         totalSupply: additionalData[address] && additionalData[address].totalSupply,
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
       })
 
       if (token.symbol() === TIME) {
@@ -260,10 +274,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   watchModify (callback, account) {
-    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), {from: account})
+    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), { from: account })
   }
 
   watchRemove (callback, account) {
-    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), {from: account})
+    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
   }
 }
