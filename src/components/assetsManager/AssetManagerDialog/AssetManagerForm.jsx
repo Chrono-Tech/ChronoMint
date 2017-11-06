@@ -1,5 +1,5 @@
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import React from 'react'
 import { connect } from 'react-redux'
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
@@ -25,7 +25,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class AssetManagerForm extends React.Component {
+export default class AssetManagerForm extends PureComponent {
   static propTypes = {
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,
@@ -34,12 +34,12 @@ export default class AssetManagerForm extends React.Component {
     managers: PropTypes.array,
   }
 
-  handleRemove = (address) => {
+  handleRemove = address => {
     this.props.handleClose()
     this.props.handleRemoveManager(this.props.token, address)
   }
 
-  handleAddManager = (address) => {
+  handleAddManager = address => {
     this.props.handleClose()
     this.props.handleAddManager(this.props.token, address)
   }

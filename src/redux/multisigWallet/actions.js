@@ -54,6 +54,7 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   // TODO @dkchv: !!!
   // multisig wallet events
   multisigWalletService.on('OwnerRemoved', (walletId, result) => {
+    // eslint-disable-next-line
     console.log('--actions#', result)
   })
 
@@ -73,6 +74,7 @@ export const watchWalletManager = () => async (dispatch, getState) => {
   })
 
   multisigWalletService.on('SingleTransact', (walletId, result) => {
+    // eslint-disable-next-line
     console.log('--actions#', result)
   })
 
@@ -156,7 +158,7 @@ export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, ge
   }
 }
 
-export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async (dispatch) => {
+export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async dispatch => {
   dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = wallet.dao()
@@ -167,7 +169,7 @@ export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => a
   }
 }
 
-export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
+export const removeOwner = (wallet, ownerAddress) => async dispatch => {
   dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = wallet.dao()

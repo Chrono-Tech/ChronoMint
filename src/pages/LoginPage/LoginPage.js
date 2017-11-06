@@ -1,7 +1,7 @@
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import { connect } from 'react-redux'
@@ -42,7 +42,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginPage extends Component {
+class LoginPage extends PureComponent {
   static propTypes = {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,

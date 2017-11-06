@@ -1,8 +1,8 @@
 import { Link } from 'react-router'
 import { NavDrawer, List, ListItem } from 'react-toolbox'
-import React from 'react'
+import React, { PureComponent } from 'react'
 
-export default class LayoutTest extends React.Component {
+export default class LayoutTest extends PureComponent {
   render () {
     return (
       <NavDrawer

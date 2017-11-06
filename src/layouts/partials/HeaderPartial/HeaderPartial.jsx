@@ -2,7 +2,7 @@ import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'mat
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
@@ -38,7 +38,7 @@ const ICON_OVERRIDES = {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class HeaderPartial extends React.Component {
+class HeaderPartial extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     network: PropTypes.string,

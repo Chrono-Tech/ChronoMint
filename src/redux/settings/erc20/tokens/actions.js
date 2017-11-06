@@ -97,7 +97,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -107,7 +107,7 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async (di
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async dispatch => {
   dispatch(setToken(oldToken.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -118,7 +118,7 @@ export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newTok
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {

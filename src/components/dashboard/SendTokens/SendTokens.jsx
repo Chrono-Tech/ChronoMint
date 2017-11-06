@@ -61,7 +61,7 @@ class SendTokens extends PureComponent {
       <SendTokensForm
         initialValues={initialValues}
         wallet={wallet}
-        onSubmit={(values) => this.handleSubmit(values)}
+        onSubmit={values => this.handleSubmit(values)}
       />
     )
   }

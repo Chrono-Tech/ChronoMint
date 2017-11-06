@@ -1,41 +1,54 @@
 import { Dialog } from 'material-ui'
 import IconButton from 'material-ui/IconButton'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
-// TODO New Modal Stack
-/* eslint-disable */
-import React from 'react'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import styles from './ModalBaseStyles'
 
-export default function (props) {
-  // true by default
-  const isModal = props.modal !== false
-  // TODO @dkchv: parse title or set as object {...props.title}
-  return (
-    <Dialog
-      title={
-        <div>
-          {props.isNotI18n ? props.title : <Translate value={props.title} />}
-          <IconButton
-            style={styles.closeIcon}
-            onTouchTap={props.onClose}
-          >
-            <NavigationClose />
-          </IconButton>
-        </div>
-      }
-      actions={props.actions}
-      open={props.open}
+export default class ModalBase extends PureComponent {
+  static propTypes = {
+    modal: PropTypes.bool,
+    isNotI18n: PropTypes.bool,
+    title: PropTypes.string,
+    onClose: PropTypes.func,
+    actions: PropTypes.arrayOf(
+      PropTypes.node
+    ),
+    open: PropTypes.bool,
+    children: PropTypes.node,
+  }
 
-      actionsContainerStyle={styles.actionsContainer}
-      titleStyle={styles.title}
-      contentStyle={styles.content}
+  render () {
+    const {modal, title, isNotI18n, onClose, actions, open, children} = this.props
+    const isModal = modal !== false
+    return (
+      <Dialog
+        title={
+          <div>
+            {isNotI18n ? title : <Translate value={title} />}
+            <IconButton
+              style={styles.closeIcon}
+              onTouchTap={onClose}
+            >
+              <NavigationClose />
+            </IconButton>
+          </div>
+        }
+        actions={actions}
+        open={open}
 
-      modal={isModal}
-      autoScrollBodyContent
-    >
-      {props.children}
-    </Dialog>
-  )
+        actionsContainerStyle={styles.actionsContainer}
+        titleStyle={styles.title}
+        contentStyle={styles.content}
+
+        modal={isModal}
+        autoScrollBodyContent
+      >
+        {children}
+      </Dialog>
+    )
+  }
 }
+

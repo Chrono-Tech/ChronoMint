@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -48,7 +48,7 @@ function mapStateToProps (state) {
 
 @connect(mapStateToProps, null)
 @reduxForm({form: FORM_SEND_TOKENS, validate})
-export class SendTokensForm extends React.Component {
+export class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
@@ -68,7 +68,6 @@ export class SendTokensForm extends React.Component {
   // TODO @dkchv: !!! restore
   async checkIsContract (address) {
     const isContact = contractsManagerDAO.isContract(address)
-    console.log('--SendTokensForm#checkIsContract', isContact)
   }
 
   renderHead (token = new TokenModel()) {
@@ -77,7 +76,7 @@ export class SendTokensForm extends React.Component {
     return (
       <div>
         <IconSection
-          title={<Translate value={'wallet.sendTokens'} />}
+          title={<Translate value='wallet.sendTokens' />}
           iconComponent={(
             <IPFSImage
               styleName='content'

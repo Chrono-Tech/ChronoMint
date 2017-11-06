@@ -1,7 +1,7 @@
 import { Field, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton } from 'material-ui'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -64,7 +64,7 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
-export class AddTokenDialog extends React.Component {
+export class AddTokenDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
