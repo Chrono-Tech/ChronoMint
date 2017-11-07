@@ -3,6 +3,7 @@ import contractManager from 'dao/ContractsManagerDAO'
 import TokenModel from 'models/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Web3Converter from 'utils/Web3Converter'
+import BigNumber from 'bignumber.js'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -88,37 +89,10 @@ export const watchPlatformManager = (account) => async (dispatch) => {
   platformManagerDAO.watchCreatePlatform(account, dispatch)
 }
 
-export const createAsset = (values) => async () => {
+export const createAsset = (token: TokenModel) => async () => {
   try {
-    const {
-      amount,
-      description = '',
-      feePercent,
-      platform,
-      reissuable = false,
-      smallestUnit,
-      tokenSymbol,
-      withFee = false,
-      feeAddress,
-      tokenImg,
-    } = values.toObject()
-    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
-    const tokenImgBytes32 = tokenImg ? Web3Converter.ipfsHashToBytes32(tokenImg) : ''
-    const token = new TokenModel({
-      decimals: smallestUnit,
-      name: description,
-      symbol: tokenSymbol,
-      balance: amount,
-      icon: tokenImgBytes32,
-      fee: feePercent,
-      feeAddress: feeAddress,
-      withFee: withFee,
-      platform: platform,
-      totalSupply: amount,
-      isReissuable: reissuable,
-    })
-
-    if (withFee) {
+    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(token.platform().address)
+    if (token.withFee()) {
       await tokenManagementExtension.createAssetWithFee(token)
     } else {
       await tokenManagementExtension.createAssetWithoutFee(token)
@@ -193,19 +167,20 @@ export const isReissuable = (token: TokenModel) => async (dispatch) => {
   }
 }
 
-export const setTotalSupply = (tx, token) => (dispatch, getState) => {
-  const symbol = Web3Converter.bytesToString(tx.args.symbol)
-  const value = token.dao().removeDecimals(tx.args.value)
-  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([symbol, 'totalSupply'])
+export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) => {
+  const amount = token.dao().removeDecimals(value)
+  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([token.symbol(), 'totalSupply'])
   if (!totalSupply) {
     return
   }
-  switch (tx.event) {
-    case 'Issue':
-      return dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.plus(value) } })
-    case 'Revoke':
-      return dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.minus(value) } })
-  }
+  return dispatch({
+    type: SET_TOTAL_SUPPLY,
+    payload: {
+      token: isIssue
+        ? token.totalSupply(token.totalSupply().plus(amount))
+        : token.totalSupply(token.totalSupply().minus(amount)),
+    },
+  })
 }
 
 export const getTransactions = () => async (dispatch, getState) => {
@@ -267,13 +242,13 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
   ])
-  const issueCallback = (tx) => {
-    const tokens = getState().get(DUCK_ASSETS_MANAGER).tokensMap
-    const symbol = Web3Converter.bytesToString(tx.args.symbol)
-    if (tokens.get(symbol)) {
-      dispatch(setTotalSupply(tx, tokens.get(symbol)))
-      dispatch(setTx(tx))
+  const issueCallback = (symbol, value, isIssue, tx) => {
+    const { tokensMap } = getState().get(DUCK_ASSETS_MANAGER)
+    const token = tokensMap.get(symbol)
+    if (token) {
+      dispatch(setTotalSupply(token, value, isIssue))
     }
+    dispatch(setTx(tx))
   }
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))

@@ -149,10 +149,12 @@ export default class HistoryTable extends PureComponent {
         let tokenDao
         if (trx.symbol() && this.props.tokensMap.size) {
           tokenDao = this.props.tokensMap.get(trx.symbol()).dao()
+          value = (
+            <TokenValue value={tokenDao ? tokenDao.removeDecimals(trx.value()) : trx.value()} symbol={trx.symbol()} />
+          )
+        } else {
+          value = ''
         }
-        value = (
-          <TokenValue value={tokenDao ? tokenDao.removeDecimals(trx.value()) : trx.value()} symbol={trx.symbol()} />
-        )
         break
       case 'PlatformAttached':
       case 'PlatformRequested':

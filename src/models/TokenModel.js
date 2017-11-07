@@ -37,8 +37,8 @@ export default class TokenModel extends abstractFetchingModel({
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
-  totalSupply () {
-    return this.get('totalSupply')
+  totalSupply (value) {
+    return this._getSet('totalSupply', value)
   }
 
   isReissuable () {

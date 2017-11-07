@@ -21,13 +21,13 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
 
   async reissueAsset (token, value) {
     const amount = token.dao().addDecimals(value)
-    const tx = await this._tx(TX_REISSUE_ASSET, [token.symbol(), amount], {symbol: token.symbol(), amount: value})
+    const tx = await this._tx(TX_REISSUE_ASSET, [token.symbol(), amount], { symbol: token.symbol(), amount: value })
     return tx.tx
   }
 
   async revokeAsset (token, value) {
     const amount = token.dao().addDecimals(value)
-    const tx = await this._tx(TX_REVOKE_ASSET, [token.symbol(), amount], {symbol: token.symbol(), amount: value})
+    const tx = await this._tx(TX_REVOKE_ASSET, [token.symbol(), amount], { symbol: token.symbol(), amount: value })
     return tx.tx
   }
 
@@ -46,11 +46,19 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    this._watch(TX_ISSUE, callback)
+    this._watch(TX_ISSUE, (tx) => {
+      const symbol = this._c.bytesToString(tx.args.symbol)
+      const value = tx.args.value
+      callback(symbol, value, true, tx)
+    })
   }
 
   watchRevoke (callback) {
-    this._watch(TX_REVOKE, callback)
+    this._watch(TX_REVOKE, (tx) => {
+      const symbol = this._c.bytesToString(tx.args.symbol)
+      const value = tx.args.value
+      callback(symbol, value, false, tx)
+    })
   }
 
   watchManagers (callback) {

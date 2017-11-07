@@ -116,15 +116,16 @@ export default (state = initialState, action) => {
         },
       }
     case SET_TOTAL_SUPPLY:
+      const token = action.payload.token
       return {
         ...initialState,
         ...state,
-        tokensMap: state.tokensMap.setIn([action.payload.symbol, 'totalSupply'], action.payload.totalSupply),
+        tokensMap: state.tokensMap.set(token.symbol(), token),
         assets: {
           ...state.assets,
-          [state.tokensMap.get(action.payload.symbol).address()]: {
-            ...state.assets[action.payload.symbol],
-            totalSupply: action.payload.totalSupply,
+          [state.tokensMap.get(token.symbol()).address()]: {
+            ...state.assets[token.symbol()],
+            totalSupply: token.totalSupply(),
           },
         },
       }
