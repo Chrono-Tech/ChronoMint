@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -15,7 +16,7 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
     locale: state.get('i18n').locale,
     transactionsList: assetsManager.transactionsList,
@@ -146,11 +147,10 @@ export default class HistoryTable extends PureComponent {
     switch (trx.type()) {
       case 'Issue':
       case 'Revoke':
-        let tokenDao
-        if (trx.symbol() && this.props.tokensMap.size) {
-          tokenDao = this.props.tokensMap.get(trx.symbol()).dao()
+        const token = this.props.tokensMap.get(trx.symbol())
+        if (trx.symbol() && token) {
           value = (
-            <TokenValue value={tokenDao ? tokenDao.removeDecimals(trx.value()) : trx.value()} symbol={trx.symbol()} />
+            <TokenValue value={token.dao().removeDecimals(trx.value())} symbol={trx.symbol()} />
           )
         } else {
           value = ''
@@ -164,13 +164,11 @@ export default class HistoryTable extends PureComponent {
         value = (
           <div>
             <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div>
-              {
-                trx.from() === '0x0000000000000000000000000000000000000000'
-                  ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
-                  : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
-              }
-            </div>
+            {
+              trx.isFromEmpty()
+                ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
+                : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
+            }
           </div>
         )
         break

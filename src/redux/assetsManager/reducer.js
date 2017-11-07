@@ -44,13 +44,11 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case GET_ASSETS_MANAGER_COUNTS_START:
       return {
-        ...initialState,
         ...state,
         assetsManagerCountsLoading: true,
       }
     case GET_ASSETS_MANAGER_COUNTS:
       return {
-        ...initialState,
         ...state,
         assetsManagerCountsLoading: false,
         tokensCount: Object.keys(action.payload.assets).length,
@@ -61,31 +59,26 @@ export default (state = initialState, action) => {
       }
     case GET_PLATFORMS:
       return {
-        ...initialState,
         ...state,
         platformsList: action.payload.platforms,
       }
     case GET_MANAGERS_FOR_TOKEN_LOADING :
       return {
-        ...initialState,
         ...state,
         managersForTokenLoading: true,
       }
     case SELECT_TOKEN:
       return {
-        ...initialState,
         ...state,
         selectedToken: action.payload.symbol,
       }
     case SELECT_PLATFORM:
       return {
-        ...initialState,
         ...state,
         selectedPlatform: action.payload.platformAddress,
       }
     case GET_TOKENS:
       return {
-        ...initialState,
         ...state,
         tokensCount: action.payload.tokensMap.size,
         tokensMap: action.payload.tokensMap,
@@ -93,7 +86,6 @@ export default (state = initialState, action) => {
       }
     case SET_TOKEN:
       return {
-        ...initialState,
         ...state,
         tokensCount: state.tokensMap.concat(action.payload.tokensMap).size,
         tokensMap: state.tokensMap.concat(action.payload.tokensMap),
@@ -101,14 +93,12 @@ export default (state = initialState, action) => {
       }
     case GET_MANAGERS_FOR_TOKEN:
       return {
-        ...initialState,
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersForAssetSymbol),
         managersForTokenLoading: false,
       }
     case SET_WATCHERS:
       return {
-        ...initialState,
         ...state,
         watchers: {
           ...state.watchers,
@@ -118,7 +108,6 @@ export default (state = initialState, action) => {
     case SET_TOTAL_SUPPLY:
       const token = action.payload.token
       return {
-        ...initialState,
         ...state,
         tokensMap: state.tokensMap.set(token.symbol(), token),
         assets: {
@@ -131,7 +120,6 @@ export default (state = initialState, action) => {
       }
     case SET_IS_REISSUABLE:
       return {
-        ...initialState,
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'isReissuable'], action.payload.isReissuable),
       }
@@ -139,13 +127,11 @@ export default (state = initialState, action) => {
       let newTokensMap = state.tokensMap.setIn([action.payload.symbol, 'fee'], action.payload.fee)
       newTokensMap = newTokensMap.setIn([action.payload.symbol, 'withFee'], action.payload.withFee)
       return {
-        ...initialState,
         ...state,
         tokensMap: newTokensMap,
       }
     case SET_NEW_MANAGERS_LIST:
       return {
-        ...initialState,
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersList),
         managersList: action.payload.managers,
@@ -153,15 +139,11 @@ export default (state = initialState, action) => {
       }
     case GET_TRANSACTIONS_START:
       return {
-        ...initialState,
         ...state,
-        transactionsList: [],
-        transactionsFetched: false,
         transactionsFetching: true,
       }
     case GET_TRANSACTIONS_DONE:
       return {
-        ...initialState,
         ...state,
         transactionsList: [
           ...state.transactionsList,
@@ -172,7 +154,6 @@ export default (state = initialState, action) => {
       }
     case GET_USER_PLATFORMS:
       return {
-        ...initialState,
         ...state,
         usersPlatforms: action.payload.usersPlatforms,
         usersPlatformsCount: action.payload.usersPlatforms.length,

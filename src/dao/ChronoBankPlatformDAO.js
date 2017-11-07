@@ -21,13 +21,31 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
 
   async reissueAsset (token, value) {
     const amount = token.dao().addDecimals(value)
-    const tx = await this._tx(TX_REISSUE_ASSET, [token.symbol(), amount], { symbol: token.symbol(), amount: value })
+    const tx = await this._tx(
+      TX_REISSUE_ASSET,
+      [
+        token.symbol(),
+        amount,
+      ],
+      {
+        symbol: token.symbol(),
+        amount: value,
+      })
     return tx.tx
   }
 
   async revokeAsset (token, value) {
     const amount = token.dao().addDecimals(value)
-    const tx = await this._tx(TX_REVOKE_ASSET, [token.symbol(), amount], { symbol: token.symbol(), amount: value })
+    const tx = await this._tx(
+      TX_REVOKE_ASSET,
+      [
+        token.symbol(),
+        amount,
+      ],
+      {
+        symbol: token.symbol(),
+        amount: value,
+      })
     return tx.tx
   }
 

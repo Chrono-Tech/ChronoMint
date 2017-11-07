@@ -3,7 +3,6 @@ import contractManager from 'dao/ContractsManagerDAO'
 import TokenModel from 'models/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Web3Converter from 'utils/Web3Converter'
-import BigNumber from 'bignumber.js'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -177,8 +176,8 @@ export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) =>
     type: SET_TOTAL_SUPPLY,
     payload: {
       token: isIssue
-        ? token.totalSupply(token.totalSupply().plus(amount))
-        : token.totalSupply(token.totalSupply().minus(amount)),
+        ? token.totalSupply(totalSupply.plus(amount))
+        : token.totalSupply(totalSupply.minus(amount)),
     },
   })
 }

@@ -14,7 +14,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
 
   createAssetWithFee (token: TokenModel) {
     return this._tx(
-      'createAssetWithoutFee',
+      'createAssetWithFee',
       [
         token.symbol(),
         token.symbol(),
