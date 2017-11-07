@@ -5,6 +5,7 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
+import TokenModel from 'models/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -39,12 +40,23 @@ function mapDispatchToProps (dispatch) {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
-    createAsset: (values) => dispatch(createAsset(values)),
   }
 }
 
 const onSubmit = (values, dispatch) => {
-  dispatch(createAsset(values))
+  dispatch(createAsset(new TokenModel({
+    decimals: values.get('smallestUnit'),
+    name: values.get('description'),
+    symbol: values.get('tokenSymbol'),
+    balance: values.get('amount'),
+    icon: values.get('tokenImg'),
+    fee: values.get('feePercent'),
+    feeAddress: values.get('feeAddress'),
+    withFee: values.get('withFee'),
+    platform: values.get('platform'),
+    totalSupply: values.get('amount'),
+    isReissuable: values.get('reissuable'),
+  })))
 }
 
 // defaults

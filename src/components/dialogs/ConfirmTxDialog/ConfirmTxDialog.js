@@ -69,8 +69,9 @@ export default class ConfirmTxDialog extends PureComponent {
       if (arg === null || arg === undefined) return
       // parse value
       switch (arg.constructor.name) {
+        case 'Amount':
         case 'BigNumber':
-          value = <Value value={new Amount(arg, 'TIME')} />
+          value = <Value value={arg} />
           break
         case 'Object':
           if (React.isValidElement(arg)) {
