@@ -90,7 +90,7 @@ export class DepositTokens extends PureComponent {
     this.props.updateRequireTIME()
   }
 
-  handleAmountChange (amount) {
+  handleAmountChange = (event, amount) => {
     this.setState({
       amount,
       errors: this.validators.amount(amount),
@@ -113,6 +113,8 @@ export class DepositTokens extends PureComponent {
     this.props.withdrawTIME(this.state.amount)
     this.setState({ amount: '' })
   }
+
+  handleRequireTime = () => this.props.requireTIME()
 
   renderHead () {
     const token: TokenModel = this.props.token
@@ -157,7 +159,7 @@ export class DepositTokens extends PureComponent {
       <div styleName='form'>
         <div>
           <TextField
-            onChange={(event, value) => this.handleAmountChange(value)}
+            onChange={this.handleAmountChange}
             hintText='0.00'
             floatingLabelText={<Translate value={prefix('amount')} />}
             value={this.state.amount}
@@ -218,7 +220,7 @@ export class DepositTokens extends PureComponent {
             <FlatButton
               styleName='actionButton'
               label={<Translate value={prefix('requireTime')} />}
-              onTouchTap={() => this.props.requireTIME()}
+              onTouchTap={this.handleRequireTime}
             />
           </span>
         ) : (
