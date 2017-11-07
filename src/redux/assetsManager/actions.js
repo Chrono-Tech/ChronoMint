@@ -88,27 +88,13 @@ export const watchPlatformManager = (account) => async (dispatch) => {
   platformManagerDAO.watchCreatePlatform(account, dispatch)
 }
 
-export const createAsset = (values) => async () => {
+export const createAsset = (token: TokenModel) => async () => {
   try {
-    const {
-      amount,
-      description = '',
-      feePercent,
-      platform,
-      reissuable = false,
-      smallestUnit,
-      tokenSymbol,
-      withFee = false,
-      feeAddress,
-      tokenImg,
-    } = values.toObject()
-    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
-    const tokenImgBytes32 = tokenImg ? Web3Converter.ipfsHashToBytes32(tokenImg) : ''
-
-    if (withFee) {
-      await tokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent, tokenImgBytes32)
+    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(token.platform().address)
+    if (token.withFee()) {
+      await tokenManagementExtension.createAssetWithFee(token)
     } else {
-      await tokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, tokenImgBytes32)
+      await tokenManagementExtension.createAssetWithoutFee(token)
     }
   }
   catch (e) {
@@ -149,7 +135,7 @@ export const addManager = (token: TokenModel, manager: String) => async () => {
 export const reissueAsset = (token: TokenModel, amount: number) => async () => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    await chronoBankPlatformDAO.reissueAsset(token.symbol(), amount)
+    await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -160,7 +146,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async () => {
 export const revokeAsset = (token: TokenModel, amount: number) => async () => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    await chronoBankPlatformDAO.revokeAsset(token.symbol(), amount)
+    await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -180,30 +166,25 @@ export const isReissuable = (token: TokenModel) => async (dispatch) => {
   }
 }
 
-export const setTotalSupply = (tx) => (dispatch, getState) => {
-  const symbol = Web3Converter.bytesToString(tx.args.symbol)
-  const value = tx.args.value
-  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([symbol, 'totalSupply'])
+export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) => {
+  const amount = token.dao().removeDecimals(value)
+  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([token.symbol(), 'totalSupply'])
   if (!totalSupply) {
     return
   }
-  switch (tx.event) {
-    case 'Issue':
-      return dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.plus(value) } })
-    case 'Revoke':
-      return dispatch({ type: SET_TOTAL_SUPPLY, payload: { symbol, totalSupply: totalSupply.minus(value) } })
-  }
+  return dispatch({
+    type: SET_TOTAL_SUPPLY,
+    payload: {
+      token: isIssue
+        ? token.totalSupply(totalSupply.plus(amount))
+        : token.totalSupply(totalSupply.minus(amount)),
+    },
+  })
 }
 
 export const getTransactions = () => async (dispatch, getState) => {
   dispatch({ type: GET_TRANSACTIONS_START })
-  let platforms = getState().get(DUCK_ASSETS_MANAGER)['platformsList']
   const account = getState().get(DUCK_SESSION).account
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  if (!platforms.length) {
-    // TODO @dkchv: unused ???
-    platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
-  }
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const transactionsList = await assetsManagerDAO.getTransactions(account)
 
@@ -260,13 +241,13 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
   ])
-  const issueCallback = (tx) => {
-    const tokens = getState().get(DUCK_ASSETS_MANAGER).tokensMap.keySeq().toArray()
-    const symbol = Web3Converter.bytesToString(tx.args.symbol)
-    if (tokens.indexOf(symbol) + 1) {
-      dispatch(setTotalSupply(tx))
-      dispatch(setTx(tx))
+  const issueCallback = (symbol, value, isIssue, tx) => {
+    const { tokensMap } = getState().get(DUCK_ASSETS_MANAGER)
+    const token = tokensMap.get(symbol)
+    if (token) {
+      dispatch(setTotalSupply(token, value, isIssue))
     }
+    dispatch(setTx(tx))
   }
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))

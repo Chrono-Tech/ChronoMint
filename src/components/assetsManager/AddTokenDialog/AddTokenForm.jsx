@@ -8,6 +8,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import { Field, reduxForm, change } from 'redux-form/immutable'
 import { createAsset } from 'redux/assetsManager/actions'
+import TokenModel from 'models/TokenModel'
 import './AddTokenForm.scss'
 import validate from './validate'
 import BigNumber from 'bignumber.js'
@@ -44,7 +45,19 @@ function mapDispatchToProps (dispatch) {
 }
 
 const onSubmit = (values, dispatch) => {
-  dispatch(createAsset(values))
+  dispatch(createAsset(new TokenModel({
+    decimals: values.get('smallestUnit'),
+    name: values.get('description'),
+    symbol: values.get('tokenSymbol'),
+    balance: values.get('amount'),
+    icon: values.get('tokenImg'),
+    fee: values.get('feePercent'),
+    feeAddress: values.get('feeAddress'),
+    withFee: values.get('withFee'),
+    platform: values.get('platform'),
+    totalSupply: values.get('amount'),
+    isReissuable: values.get('reissuable'),
+  })))
 }
 
 // defaults
