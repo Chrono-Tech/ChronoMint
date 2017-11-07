@@ -53,9 +53,9 @@ const loginOptions = [ {
 class LoginOption extends PureComponent {
   static propTypes = {
     option: PropTypes.shape({
-      title: PropTypes.string,
-      step: PropTypes.string,
-    }),
+      title: PropTypes.string.isRequired,
+      step: PropTypes.string.isRequired,
+    }).isRequired,
     onClick: PropTypes.func,
   }
 
@@ -68,7 +68,7 @@ class LoginOption extends PureComponent {
         styleName='optionBox'
         onTouchTap={this.handleClick}
       >
-        <div styleName='optionName'><Translate value={this.props.option} /></div>
+        <div styleName='optionName'><Translate value={this.props.option.title} /></div>
         <div className='material-icons' styleName='arrow'>arrow_forward</div>
       </div>
     )
