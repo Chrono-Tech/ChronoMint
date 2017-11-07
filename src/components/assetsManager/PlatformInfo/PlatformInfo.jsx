@@ -19,7 +19,7 @@ function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-export class PlatformInfo extends PureComponent {
+class PlatformInfo extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
     selectedToken: PropTypes.string,

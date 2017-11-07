@@ -14,7 +14,7 @@ function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
-export class PlatformsList extends PureComponent {
+class PlatformsList extends PureComponent {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
