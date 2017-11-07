@@ -104,11 +104,24 @@ export const createAsset = (values) => async () => {
     } = values.toObject()
     const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(platform.address)
     const tokenImgBytes32 = tokenImg ? Web3Converter.ipfsHashToBytes32(tokenImg) : ''
+    const token = new TokenModel({
+      decimals: smallestUnit,
+      name: description,
+      symbol: tokenSymbol,
+      balance: amount,
+      icon: tokenImgBytes32,
+      fee: feePercent,
+      feeAddress: feeAddress,
+      withFee: withFee,
+      platform: platform,
+      totalSupply: amount,
+      isReissuable: reissuable,
+    })
 
     if (withFee) {
-      await tokenManagementExtension.createAssetWithFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, feeAddress, feePercent, tokenImgBytes32)
+      await tokenManagementExtension.createAssetWithFee(token)
     } else {
-      await tokenManagementExtension.createAssetWithoutFee(tokenSymbol, tokenSymbol, description, amount, smallestUnit, reissuable, tokenImgBytes32)
+      await tokenManagementExtension.createAssetWithoutFee(token)
     }
   }
   catch (e) {
@@ -180,9 +193,9 @@ export const isReissuable = (token: TokenModel) => async (dispatch) => {
   }
 }
 
-export const setTotalSupply = (tx) => (dispatch, getState) => {
+export const setTotalSupply = (tx, token) => (dispatch, getState) => {
   const symbol = Web3Converter.bytesToString(tx.args.symbol)
-  const value = tx.args.value
+  const value = token.dao().removeDecimals(tx.args.value)
   const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([symbol, 'totalSupply'])
   if (!totalSupply) {
     return
@@ -197,13 +210,7 @@ export const setTotalSupply = (tx) => (dispatch, getState) => {
 
 export const getTransactions = () => async (dispatch, getState) => {
   dispatch({ type: GET_TRANSACTIONS_START })
-  let platforms = getState().get(DUCK_ASSETS_MANAGER)['platformsList']
   const account = getState().get(DUCK_SESSION).account
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  if (!platforms.length) {
-    // TODO @dkchv: unused ???
-    platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
-  }
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const transactionsList = await assetsManagerDAO.getTransactions(account)
 
@@ -261,10 +268,10 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
   ])
   const issueCallback = (tx) => {
-    const tokens = getState().get(DUCK_ASSETS_MANAGER).tokensMap.keySeq().toArray()
+    const tokens = getState().get(DUCK_ASSETS_MANAGER).tokensMap
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
-    if (tokens.indexOf(symbol) + 1) {
-      dispatch(setTotalSupply(tx))
+    if (tokens.get(symbol)) {
+      dispatch(setTotalSupply(tx, tokens.get(symbol)))
       dispatch(setTx(tx))
     }
   }

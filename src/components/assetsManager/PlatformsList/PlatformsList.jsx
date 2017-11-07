@@ -50,7 +50,7 @@ export class PlatformsList extends PureComponent {
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{ fontSize: '24px' }}
-                    value={token.removeDecimals(token.totalSupply())}
+                    value={token.totalSupply()}
                     symbol={token.symbol()}
                   />
                 </div>

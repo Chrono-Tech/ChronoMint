@@ -73,7 +73,7 @@ export default class HistoryTable extends PureComponent {
           this.props.transactionsFetching &&
           <div styleName='footer'>
             <CircularProgress
-              style={{verticalAlign: 'middle', marginTop: -2}}
+              style={{ verticalAlign: 'middle', marginTop: -2 }}
               size={24}
               thickness={1.5}
             />
@@ -83,7 +83,7 @@ export default class HistoryTable extends PureComponent {
     )
   }
 
-  renderRow ({trx, timeTitle}, index) {
+  renderRow ({ trx, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -142,15 +142,17 @@ export default class HistoryTable extends PureComponent {
   }
 
   renderValue (trx) {
-    let token
-    if (trx.symbol()) {
-      token = this.props.tokensMap.get(trx.symbol())
-    }
     let value
     switch (trx.type()) {
       case 'Issue':
       case 'Revoke':
-        value = <TokenValue value={token.removeDecimals(trx.value())} symbol={trx.symbol()} />
+        let tokenDao
+        if (trx.symbol() && this.props.tokensMap.size) {
+          tokenDao = this.props.tokensMap.get(trx.symbol()).dao()
+        }
+        value = (
+          <TokenValue value={tokenDao ? tokenDao.removeDecimals(trx.value()) : trx.value()} symbol={trx.symbol()} />
+        )
         break
       case 'PlatformAttached':
       case 'PlatformRequested':

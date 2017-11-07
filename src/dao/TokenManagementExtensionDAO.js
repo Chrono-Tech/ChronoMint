@@ -1,4 +1,5 @@
-import Amount from 'models/Amount'
+import BigNumber from 'bignumber.js'
+import TokenModel from 'models/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
@@ -11,21 +12,53 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
     )
   }
 
-  createAssetWithFee (symbol, name, description, value, decimals, isMint, feeAddress, feePercent, tokenImg) {
-    const amount = new Amount(value, symbol).mul(Math.pow(10, decimals))
+  createAssetWithFee (token: TokenModel) {
     return this._tx(
-      'createAssetWithFee',
-      [symbol, name, description, amount, decimals, isMint, feeAddress, feePercent * 100, tokenImg],
-      {symbol, name, description, amount, decimals, isMint, feeAddress, feePercent, tokenImg}
+      'createAssetWithoutFee',
+      [
+        token.symbol(),
+        token.symbol(),
+        token.name(),
+        TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
+        token.decimals(),
+        token.isReissuable(),
+        token.feeAddress(),
+        token.fee() * 100,
+        token.icon(),
+      ],
+      token,
     )
   }
 
-  createAssetWithoutFee (symbol, name, description, value, decimals, isMint, tokenImg) {
-    const amount = new Amount(value, symbol).mul(Math.pow(10, decimals))
+  createAssetWithoutFee (token: TokenModel) {
     return this._tx(
       'createAssetWithoutFee',
-      [symbol, name, description, amount, decimals, isMint, tokenImg],
-      {symbol, name, description, value, decimals, isMint, tokenImg},
+      [
+        token.symbol(),
+        token.symbol(),
+        token.name(),
+        TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
+        token.decimals(),
+        token.isReissuable(),
+        token.icon(),
+      ],
+      token,
     )
+  }
+
+  static addDecimals (value, decimals) {
+    if (decimals === null) {
+      throw new Error('addDecimals: decimals is undefined')
+    }
+    const amount = new BigNumber(value.toString(10))
+    return amount.mul(Math.pow(10, decimals))
+  }
+
+  static removeDecimals (value, decimals) {
+    if (decimals === null) {
+      throw new Error('addDecimals: decimals is undefined')
+    }
+    const amount = new BigNumber(value.toString(10))
+    return amount.div(Math.pow(10, decimals))
   }
 }
