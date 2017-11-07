@@ -149,7 +149,7 @@ export const addManager = (token: TokenModel, manager: String) => async () => {
 export const reissueAsset = (token: TokenModel, amount: number) => async () => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    await chronoBankPlatformDAO.reissueAsset(token.symbol(), amount)
+    await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -160,7 +160,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async () => {
 export const revokeAsset = (token: TokenModel, amount: number) => async () => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    await chronoBankPlatformDAO.revokeAsset(token.symbol(), amount)
+    await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
   catch (e) {
     // eslint-disable-next-line

@@ -114,6 +114,16 @@ export default class TokenModel extends abstractFetchingModel({
     return dao && dao.isApproveRequired() || false
   }
 
+  removeDecimals (amount: BigNumber): BigNumber {
+    amount = new BigNumber(amount.toString(10))
+    return amount.div(Math.pow(10, this.decimals()))
+  }
+
+  addDecimals (amount: BigNumber): BigNumber {
+    amount = new BigNumber(amount.toString(10))
+    return amount.mul(Math.pow(10, this.decimals()))
+  }
+
   // noinspection JSUnusedGlobalSymbols
   txSummary () {
     return {

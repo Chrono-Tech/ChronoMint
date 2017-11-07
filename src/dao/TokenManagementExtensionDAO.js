@@ -1,3 +1,4 @@
+import Amount from 'models/Amount'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {
@@ -11,10 +12,20 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
   }
 
   createAssetWithFee (symbol, name, description, value, decimals, isMint, feeAddress, feePercent, tokenImg) {
-    return this._tx('createAssetWithFee', [symbol, name, description, value, decimals, isMint, feeAddress, feePercent * 100, tokenImg])
+    const amount = new Amount(value, symbol).mul(Math.pow(10, decimals))
+    return this._tx(
+      'createAssetWithFee',
+      [symbol, name, description, amount, decimals, isMint, feeAddress, feePercent * 100, tokenImg],
+      {symbol, name, description, amount, decimals, isMint, feeAddress, feePercent, tokenImg}
+    )
   }
 
   createAssetWithoutFee (symbol, name, description, value, decimals, isMint, tokenImg) {
-    return this._tx('createAssetWithoutFee', [symbol, name, description, value, decimals, isMint, tokenImg])
+    const amount = new Amount(value, symbol).mul(Math.pow(10, decimals))
+    return this._tx(
+      'createAssetWithoutFee',
+      [symbol, name, description, amount, decimals, isMint, tokenImg],
+      {symbol, name, description, value, decimals, isMint, tokenImg},
+    )
   }
 }
