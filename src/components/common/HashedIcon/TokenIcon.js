@@ -1,25 +1,6 @@
-/* eslint-disable no-bitwise, no-plusplus */
-
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-
-function hashCode (str) {
-  let hash = 0
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash)
-  }
-  return hash
-}
-
-function intToRGB (i) {
-  return (`00${((i >> 16) & 0xFF).toString(16)}`).slice(-2) +
-         (`00${((i >> 8) & 0xFF).toString(16)}`).slice(-2) +
-         (`00${(i & 0xFF).toString(16)}`).slice(-2)
-}
-
-function colorFromString (input, multiplier) {
-  return `#${intToRGB(hashCode(input) * multiplier)}`
-}
+import { colorFromString } from './utils'
 
 function stateFromProps (props) {
   const token = props.token.toUpperCase()
@@ -79,7 +60,6 @@ class TokenIcon extends PureComponent {
     const {
       color,
       borderColor,
-      textColor,
       borderWidth,
     } = this.state
     const context = canvas.getContext('2d')

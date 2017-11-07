@@ -6,8 +6,10 @@ import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
-import './EditManagersBaseForm.scss'
 import validate from './validate'
+import ManagerItem from './ManagerItem'
+
+import './EditManagersBaseForm.scss'
 
 export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
@@ -30,12 +32,17 @@ function mapStateToProps (state) {
 export default class EditManagersBase extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    managers: PropTypes.array,
+    managers: PropTypes.arrayOf(PropTypes.string),
   } & formPropTypes
 
-  handleRemoveManager = (address) => {
-    this.props.onRemove(address)
-  }
+  renderManager = (manager) => (
+    <ManagerItem
+      key={manager}
+      manager={manager}
+      account={this.props.account}
+      onRemove={this.props.onRemove}
+    />
+  )
 
   render () {
     return (
@@ -61,22 +68,7 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
           </div>
-          {this.props.managers.map((item) => (
-            <div key={item} styleName='row'>
-              <div styleName='iconBox'>
-                <i styleName='icon' className='material-icons'>account_circle</i>
-              </div>
-              <div styleName='address'>{item}</div>
-              {this.props.account !== item && (
-                <div
-                  onTouchTap={() => this.handleRemoveManager(item)}
-                  styleName='action'
-                >
-                  <i className='material-icons'>delete</i>
-                </div>
-              )}
-            </div>
-          ))}
+          {this.props.managers.map(this.renderManager)}
         </div>
       </form>
     )
