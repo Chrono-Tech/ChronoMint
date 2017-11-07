@@ -53,8 +53,8 @@ export default class VoteDialog extends PureComponent {
     const entries = model.voteEntries()
 
     return (
-      <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-        <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
+      <ModalDialog onClose={this.props.handleClose} styleName='root'>
+        <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <div styleName='column column1'>
               <div styleName='inner'>
@@ -201,7 +201,7 @@ export default class VoteDialog extends PureComponent {
             <RaisedButton
               styleName='action'
               label='Close'
-              onTouchTap={() => this.props.handleClose()}
+              onTouchTap={this.props.handleClose}
               primary
             />
           </div>
