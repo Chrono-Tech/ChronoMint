@@ -65,7 +65,7 @@ function mapDispatchToProps (dispatch) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, asyncValidate })
-export class AddTokenDialog extends PureComponent {
+export default class AddTokenDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
@@ -74,7 +74,8 @@ export class AddTokenDialog extends PureComponent {
     name: PropTypes.string,
     icon: PropTypes.string,
     symbol: PropTypes.string,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (
