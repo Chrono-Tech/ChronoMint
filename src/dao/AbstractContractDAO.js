@@ -250,14 +250,16 @@ export default class AbstractContractDAO {
 
   /** @protected */
   async _call (func, args: Array = [], block): any {
-    block = block || this._defaultBlock
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call.apply(null, [...args, block, { from }])
+      return deployed[func].call.apply(null, [...args, {
+        from,
+        block: block || this._defaultBlock,
+      }])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }

@@ -1,19 +1,17 @@
 import BigNumber from 'bignumber.js'
-import { Field, FieldArray, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
-import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { TextField, DatePicker } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
-import { connect } from 'react-redux'
-import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
-import { validate } from 'models/PollModel'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
+import { FlatButton, FontIcon, IconButton } from 'material-ui'
+import { validate } from 'models/PollModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { modalsClose } from 'redux/modals/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
+import PollEditForm from './PollEditForm'
 import './PollEditDialog.scss'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
@@ -129,72 +127,7 @@ export default class PollEditDialog extends PureComponent {
   render () {
     return (
       <ModalDialog>
-        <form styleName='content' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')} /></h3>
-          </div>
-          <div styleName='body'>
-            <div styleName='column'>
-              <Field
-                component={TextField}
-                name='title'
-                fullWidth
-                floatingLabelText={<Translate value={prefix('pollTitle')} />}
-              />
-              <Field
-                component={TextField}
-                name='description'
-                fullWidth
-                multiLine
-                floatingLabelText={<Translate value={prefix('pollDescription')} />}
-              />
-              <Field
-                component={TextField}
-                name='voteLimitInTIME'
-                fullWidth
-                floatingLabelText={<Translate value={prefix('voteLimit')} />}
-              />
-              <Field
-                component={DatePicker}
-                locale={this.props.locale}
-                DateTimeFormat={Intl.DateTimeFormat}
-                cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
-                okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
-                name='deadline'
-                fullWidth
-                floatingLabelText={<Translate value={prefix('finishedDate')} />}
-                style={{ width: '180px' }}
-              />
-              <Field
-                component={FileSelect}
-                name='files'
-                fullWidth
-                accept={ACCEPT_DOCS}
-                multiple
-              />
-            </div>
-            <div styleName='column'>
-              <Field
-                component={TextField}
-                name={`options[${this.state.selectedOptionIndex}]`}
-                fullWidth
-                floatingLabelText={<Translate value={prefix('option')} />}
-              />
-              <FieldArray
-                name='options'
-                component={({ fields }) => this.renderOptions(fields)}
-              />
-            </div>
-          </div>
-          <div styleName='footer'>
-            <RaisedButton
-              styleName='footerAction'
-              label={<Translate value={prefix(this.props.isModify ? 'updatePoll' : 'createPoll')} />}
-              type='submit'
-              primary
-            />
-          </div>
-        </form>
+        <PollEditForm />
       </ModalDialog>
     )
   }
