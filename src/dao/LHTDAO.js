@@ -1,4 +1,5 @@
 import type BigNumber from 'bignumber.js'
+import ChronoBankAssetWithFeeProxyABI from 'chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 
@@ -8,14 +9,14 @@ import ERC20DAO from './ERC20DAO'
  */
 class LHTDAO extends ERC20DAO {
   constructor () {
-    super(null, require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'))
+    super(null, ChronoBankAssetWithFeeProxyABI)
 
     this.initMetaData()
   }
 
   async getAssetsManagerBalance (): BigNumber {
     const dao = await contractsManagerDAO.getAssetsManagerDAO()
-    return this.getAccountBalance(dao.getInitAddress(), 'pending')
+    return this.getAccountBalance(dao.getInitAddress())
   }
 
   subscribeOnReset () {

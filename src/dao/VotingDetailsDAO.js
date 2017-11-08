@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
+import PollDetailsABI from 'chronobank-smart-contracts/build/contracts/PollDetails.json'
 import Immutable from 'immutable'
 import FileModel from 'models/FileSelect/FileModel'
 import PollDetailsModel from 'models/PollDetailsModel'
@@ -9,11 +11,7 @@ import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class VotingDetailsDAO extends AbstractContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PollDetails.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(PollDetailsABI, at, MultiEventsHistoryABI)
   }
 
   async getPolls () {

@@ -249,25 +249,22 @@ export default class AbstractContractDAO {
   }
 
   /** @protected */
-  async _call (func, args: Array = [], block): any {
+  async _call (func, args: Array = []): any {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call.apply(null, [...args, {
-        from,
-        block: block || this._defaultBlock,
-      }])
+      return deployed[func].call.apply(deployed, [...args, { from }])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
   }
 
   /** Use this when you don't need BigNumber */
-  async _callNum (func, args: Array = [], block): number {
-    const r = await this._call(func, args, block)
+  async _callNum (func, args: Array = []): number {
+    const r = await this._call(func, args)
     return r.toNumber()
   }
 

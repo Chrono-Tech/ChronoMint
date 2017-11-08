@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import ExchangeABI from 'chronobank-smart-contracts/build/contracts/Exchange.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import lhtDAO from 'dao/LHTDAO'
 import type ERC20DAO from './ERC20DAO'
@@ -8,11 +10,7 @@ export const TX_SELL = 'sell'
 
 class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/Exchange.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(ExchangeABI, at, MultiEventsHistoryABI)
   }
 
   // TODO @bshevchenko

@@ -11,8 +11,8 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  async getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
-    const balance = await this._web3Provider.getBalance(account, block)
+  async getAccountBalance (account = this.getAccount()): BigNumber {
+    const balance = await this._web3Provider.getBalance(account)
     return this._c.fromWei(balance)
   }
 
