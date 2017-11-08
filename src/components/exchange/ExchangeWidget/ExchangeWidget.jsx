@@ -1,20 +1,21 @@
+import { Field, reduxForm, change, formValueSelector } from 'redux-form/immutable'
+import { MenuItem, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { MenuItem, RaisedButton } from 'material-ui'
-import { TextField, SelectField } from 'redux-form-material-ui'
-import { Field, reduxForm, change, formValueSelector } from 'redux-form/immutable'
 import SwipeableViews from 'react-swipeable-views'
+import { TextField, SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
+import { modalsOpen } from 'redux/modals/actions'
 import { search } from 'redux/exchange/actions'
+import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
 import validate from './validate'
 
 import './ExchangeWidget.scss'
 
 const MODES = [
-  {index: 0, name: 'BUY', title: <Translate value={prefix('buy')} />},
-  {index: 1, name: 'SELL', title: <Translate value={prefix('sell')} />},
+  { index: 0, name: 'BUY', title: <Translate value={prefix('buy')} /> },
+  { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
 ]
 
 export const FORM_EXCHANGE = 'ExchangeForm'
@@ -30,7 +31,9 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
+  openAddExchangeDialog: () => dispatch(modalsOpen({
+    component: AddExchangeDialog,
+  })),
 })
 
 function prefix (token) {
@@ -42,13 +45,19 @@ const onSubmit = (values, dispatch) => {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_EXCHANGE, validate, onSubmit})
+@reduxForm({ form: FORM_EXCHANGE, validate, onSubmit })
 export default class ExchangeWidget extends React.Component {
   static propTypes = {
     search: PropTypes.func,
     assetSymbols: PropTypes.arrayOf(PropTypes.string),
     handleSubmit: PropTypes.func,
     dispatch: PropTypes.func,
+    openAddExchangeDialog: PropTypes.func,
+    filterMode: PropTypes.objectOf({
+      index: PropTypes.number,
+      name: PropTypes.string,
+      title: PropTypes.node,
+    }),
   }
 
   componentDidMount () {
@@ -64,6 +73,12 @@ export default class ExchangeWidget extends React.Component {
       <div styleName='root'>
         <div styleName='header'>
           <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
+          <div styleName='createExchangeWrapper'><RaisedButton
+            label={<Translate value={prefix('createExchange')} />}
+            onTouchTap={() => this.props.openAddExchangeDialog()}
+            primary
+          />
+          </div>
           <ul styleName='tabs'>
             {MODES.map((el, index) => (
               <li

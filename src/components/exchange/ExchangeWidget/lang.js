@@ -7,6 +7,7 @@ export default {
     buy: 'Buy',
     sell: 'Sell',
     amount: 'Amount',
+    createExchange: 'Create an exchange',
   },
   ru: {
     exchange: 'Обмен',
@@ -16,5 +17,6 @@ export default {
     buy: 'Купить',
     sell: 'Продать',
     amount: 'Сумма',
+    createExchange: 'Создать обменник',
   },
 }
