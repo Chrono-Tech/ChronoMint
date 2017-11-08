@@ -1,7 +1,7 @@
-import contractManager from 'dao/ContractsManagerDAO'
-import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
-import web3Converter from 'utils/Web3Converter'
+import { getPlatforms, getUsersPlatforms, setTx } from 'redux/assetsManager/actions'
 import AbstractContractDAO from './AbstractContractDAO'
+import PlatformsManagerABI from 'chronobank-smart-contracts/build/contracts/PlatformsManager.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -13,11 +13,7 @@ export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
 export default class PlatformsManagerDAO extends AbstractContractDAO {
 
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PlatformsManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(PlatformsManagerABI, at, MultiEventsHistoryABI)
   }
 
   async reissueAsset (symbol, amount) {

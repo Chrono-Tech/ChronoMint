@@ -1,3 +1,5 @@
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
+import UserManagerABI from 'chronobank-smart-contracts/build/contracts/UserManager.json'
 import Immutable from 'immutable'
 import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
@@ -15,11 +17,7 @@ const EVENT_CBE_UPDATE = 'CBEUpdate'
 
 export default class UserManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/UserManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(UserManagerABI, at, MultiEventsHistoryABI)
   }
 
   isCBE (account): Promise<boolean> {
