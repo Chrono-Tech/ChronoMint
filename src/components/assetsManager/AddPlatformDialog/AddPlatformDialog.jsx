@@ -7,23 +7,24 @@ import AddPlatformForm from './AddPlatformForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmitSuccess: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(null, mapDispatchToProps)
 export default class AddPlatformDialog extends PureComponent {
   static propTypes = {
-    onSubmitSuccess: PropTypes.func,
-    onClose: PropTypes.func,
-    closeModal: PropTypes.func,
+    modalsClose: PropTypes.func,
+  }
+
+  handleSubmitSuccess = () => {
+    this.props.modalsClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
-        <AddPlatformForm onSubmitSuccess={this.props.onSubmitSuccess} />
+      <ModalDialog>
+        <AddPlatformForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )
   }

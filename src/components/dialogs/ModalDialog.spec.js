@@ -16,20 +16,5 @@ describe('ModalDialog', () => {
     expect(wrapper.find('.ModalDialog__backdrop > .ModalDialog__dialog').length).toEqual(1)
     expect(wrapper.find('.ModalDialog__backdrop > .ModalDialog__dialog > .ModalDialog__content').length).toEqual(1)
   })
-
-  it('should fire onClose by click on backdrop', () => {
-    const onCloseMock = jest.fn()
-    const wrapper = shallow(<ModalDialog onClose={onCloseMock}>
-      <div>Foo</div>
-      <div>Bar</div>
-    </ModalDialog>)
-
-    wrapper.find('.ModalDialog__backdrop').simulate('touchTap', { stopPropagation: () => undefined })
-    wrapper.find('.ModalDialog__backdrop').simulate('touchTap', { stopPropagation: () => undefined })
-    wrapper.find('.ModalDialog__backdrop').simulate('touchTap', { stopPropagation: () => undefined })
-    wrapper.find('.ModalDialog__dialog').simulate('click', { stopPropagation: () => undefined })
-
-    expect(onCloseMock.mock.calls.length).toEqual(3)
-  })
 })
 

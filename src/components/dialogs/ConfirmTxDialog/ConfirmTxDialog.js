@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import Amount from 'models/Amount'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_WATCHER } from 'redux/watcher/actions'
 import { modalsClose } from 'redux/modals/actions'
@@ -20,7 +19,7 @@ const mapStateToProps = (state) => ({
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
@@ -28,19 +27,19 @@ function mapDispatchToProps (dispatch) {
 export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     callback: PropTypes.func.isRequired,
-    handleClose: PropTypes.func.isRequired,
+    modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.object,
     balance: PropTypes.object,
   }
 
   handleConfirm = () => {
-    this.props.handleClose()
+    this.props.modalsClose()
     this.props.callback(true)
   }
 
   handleClose = () => {
-    this.props.handleClose()
+    this.props.modalsClose()
     this.props.callback(false)
   }
 
@@ -101,7 +100,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (
-      <ModalDialog onClose={() => this.handleClose()}>
+      <ModalDialog>
         <div styleName='root'>
           <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
           <div styleName='content'>

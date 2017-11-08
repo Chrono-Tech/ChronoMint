@@ -7,27 +7,23 @@ import AssetManagerForm from './AssetManagerForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(null, mapDispatchToProps)
 export default class AssetManagerDialog extends PureComponent {
   static propTypes = {
-    handleClose: PropTypes.func,
-  }
-
-  handleClose = () => {
-    this.props.handleClose()
+    modalsClose: PropTypes.func,
   }
 
   handleSubmitSuccess = () => {
-    this.handleClose()
+    this.props.modalsClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={this.handleClose}>
+      <ModalDialog>
         <AssetManagerForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )

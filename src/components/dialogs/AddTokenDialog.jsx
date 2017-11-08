@@ -55,7 +55,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(addToken(new TokenModel(values)))
@@ -69,7 +69,7 @@ export default class AddTokenDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     profile: PropTypes.object,
-    onClose: PropTypes.func,
+    modalsClose: PropTypes.func,
     address: PropTypes.string,
     name: PropTypes.string,
     icon: PropTypes.string,
@@ -77,9 +77,13 @@ export default class AddTokenDialog extends PureComponent {
     ...formPropTypes,
   }
 
+  handleClose = () => {
+    this.props.modalsClose()
+  }
+
   render () {
     return (
-      <ModalDialog onClose={this.props.onClose} styleName='root'>
+      <ModalDialog styleName='root'>
         <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <div styleName='left'>
@@ -115,7 +119,7 @@ export default class AddTokenDialog extends PureComponent {
             <FlatButton
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
-              onTouchTap={this.props.onClose}
+              onTouchTap={this.handleClose}
             />
             <RaisedButton
               styleName='action'

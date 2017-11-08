@@ -7,31 +7,24 @@ import CrowdsaleForm from './CrowdsaleForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: () => {
-      dispatch(modalsClose())
-    },
-    closeModal: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(null, mapDispatchToProps)
 export default class CrowdsaleDialog extends PureComponent {
   static propTypes = {
-    handleSubmit: PropTypes.func,
-    onClose: PropTypes.func,
-    submitting: PropTypes.bool,
-    closeModal: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   handleSubmitSuccess = () => {
-    this.props.closeModal()
+    this.props.modalsClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
-        <CrowdsaleForm handleSubmit={this.handleSubmitSuccess} />
+      <ModalDialog>
+        <CrowdsaleForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )
   }
