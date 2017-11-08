@@ -7,28 +7,29 @@ import AddTokenForm from './AddTokenForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
-    onSubmit: () => dispatch(modalsClose()),
-    closeModal: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
 @connect(null, mapDispatchToProps)
 export default class AddPlatformDialog extends PureComponent {
   static propTypes = {
-    onClose: PropTypes.func,
-    closeModal: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   handleSubmitSuccess = () => {
-    this.props.closeModal()
+    this.props.modalsClose()
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
+      <ModalDialog>
         <AddTokenForm
-          handleClose={this.props.onClose}
+          onClose={this.handleClose}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
       </ModalDialog>

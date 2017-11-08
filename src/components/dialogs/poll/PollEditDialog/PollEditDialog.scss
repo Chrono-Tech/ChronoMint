@@ -1,36 +1,27 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
+.title {
+  background-color: $color-primary-1;
+  padding: 24px 16px;
+  height: 176px;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+
+  @include xs-only {
+    height: auto;
+  }
+}
+
 .content {
   max-width: 928px;
   background-color: $color-white;
 }
 
-.header {
-  background-color: $color-primary-1;
-  padding: 24px 16px;
-  display: flex;
-  box-sizing: border-box;
-  height: 176px;
-
-  @include xs-only {
-    height: auto;
-  }
-
-  h3 {
-    flex: 1 1 auto;
-    display: block;
-    margin: 0;
-    padding: 0;
-    font-size: 34px;
-    font-weight: 300;
-    color: $color-white;
-  }
-}
-
 .body {
-  color: $color-primary-0;
   display: flex;
+  color: $color-primary-0;
   padding: 0px 12px;
 
   @include md-only {

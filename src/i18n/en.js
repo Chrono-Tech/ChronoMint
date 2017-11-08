@@ -752,7 +752,7 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      PollDialog: {
+      PollEditDialog: {
         editPoll: 'Edit Poll',
         newPoll: 'New Poll',
         pollTitle: 'Poll title',

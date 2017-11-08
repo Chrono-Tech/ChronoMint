@@ -743,7 +743,7 @@ export default {
         cancel: 'Отмена',
         addAddress: 'Добавить Адрес',
       },
-      PollDialog: {
+      PollEditDialog: {
         editPoll: 'Редактировать Голосование',
         newPoll: 'Новое Голосование',
         pollTitle: 'Название голосования',
