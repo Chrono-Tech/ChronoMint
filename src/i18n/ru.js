@@ -234,6 +234,28 @@ export default {
     fee: 'Комиссия',
     balanceAfter: 'Баланс после',
     feeLeft: 'Комиссия оставшихся транзакций',
+    TokenManagementInterface: {
+      createAssetWithoutFee: {
+        title: 'Подтвердите создание токена без коммиссии',
+      },
+      createAssetWithFee: {
+        title: 'Подтвердите создание токена c коммиссией',
+      },
+    },
+    ChronoBankPlatform: {
+      reissueAsset: {
+        title: 'Подтвердите дополнительный выпуск токенов',
+      },
+      revokeAsset: {
+        title: 'Подтвердите сжигание токенов',
+      },
+      addAssetPartOwner: {
+        title: 'Подтвердите добавление менеджера',
+      },
+      removeAssetPartOwner: {
+        title: 'Подтвердите удаление менеджера',
+      },
+    },
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',

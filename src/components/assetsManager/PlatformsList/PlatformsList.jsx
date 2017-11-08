@@ -50,7 +50,7 @@ export class PlatformsList extends PureComponent {
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{ fontSize: '24px' }}
-                    value={new BigNumber(this.props.assets[token.address()] ? this.props.assets[token.address()].totalSupply : 0)}
+                    value={token.totalSupply()}
                     symbol={token.symbol()}
                   />
                 </div>

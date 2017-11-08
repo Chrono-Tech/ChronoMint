@@ -23,17 +23,22 @@ export default class TokenModel extends abstractFetchingModel({
   managersList: null,
   isReissuable: null,
   isOptional: true, // used in add token dialog for determine its selectable
+  feeAddress: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
+  }
+
+  feeAddress () {
+    return this.get('feeAddress')
   }
 
   symbol () {
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
-  totalSupply () {
-    return this.get('totalSupply')
+  totalSupply (value) {
+    return this._getSet('totalSupply', value)
   }
 
   isReissuable () {
@@ -117,13 +122,15 @@ export default class TokenModel extends abstractFetchingModel({
   // noinspection JSUnusedGlobalSymbols
   txSummary () {
     return {
-      address: this.address(),
-      decimals: this.decimals(),
-      name: this.name(),
       symbol: this.symbol(),
-      url: this.url(),
+      name: this.name(),
+      totalSupply: this.totalSupply(),
+      decimals: this.decimals(),
+      isReissuable: this.isReissuable(),
       icon: this.icon(),
-      isApproveRequired: this.isApproveRequired(),
+      feeAddress: this.feeAddress(),
+      feePercent: this.fee(),
+      withFee: this.withFee(),
     }
   }
 }
