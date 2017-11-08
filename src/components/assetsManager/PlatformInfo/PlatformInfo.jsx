@@ -182,7 +182,7 @@ export class PlatformInfo extends PureComponent {
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
                   style={{ fontSize: '24px' }}
-                  value={new BigNumber(selectedToken.totalSupply())}
+                  value={selectedToken.totalSupply()}
                   symbol={selectedToken.symbol()}
                 />
               </div>

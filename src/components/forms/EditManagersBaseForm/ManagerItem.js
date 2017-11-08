@@ -1,6 +1,7 @@
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import './EditManagersBaseForm.scss'
 
 class ManagerItem extends PureComponent {
   static propTypes = {

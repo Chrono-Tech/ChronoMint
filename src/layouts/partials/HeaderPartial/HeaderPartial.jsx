@@ -63,6 +63,14 @@ class HeaderPartial extends PureComponent {
     }
   }
 
+  handleClickOutside = () => {
+    this.profilePopover.componentClickAway()
+  }
+
+  refPopover = (el) => {
+    this.profilePopover = el
+  }
+
   render () {
     const transactionsCount = this.props.transactionsList.count()
     const noticesCount = this.props.unreadNotices
@@ -106,7 +114,7 @@ class HeaderPartial extends PureComponent {
            </IconButton>
           */}
           {this.renderStatus()}
-          <div styleName='actionsEntry' onTouchTap={(e) => this.handleNotificationsOpen(e)}>
+          <div styleName='actionsEntry' onTouchTap={this.handleNotificationsOpen}>
             {transactionsCount
               ? (
                 <div styleName='entryOverlay'>
@@ -133,9 +141,7 @@ class HeaderPartial extends PureComponent {
             }
           </div>
           <Popover
-            ref={(el) => {
-              this.profilePopover = el
-            }}
+            ref={this.refPopover}
             className='popover popover-overflow-x-hidden'
             zDepth={3}
             style={styles.header.popover.style}
@@ -143,7 +149,7 @@ class HeaderPartial extends PureComponent {
             anchorEl={this.state.notificationsAnchorEl}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={() => this.handleNotificationsClose()}
+            onRequestClose={this.handleNotificationsClose}
           >
             {this.renderNotifications()}
           </Popover>
@@ -160,7 +166,7 @@ class HeaderPartial extends PureComponent {
           </div>
         </div>
         <div styleName='right'>
-          <div styleName='rightIcon' onTouchTap={(e) => this.handleProfileOpen(e)}>
+          <div styleName='rightIcon' onTouchTap={this.handleProfileOpen}>
             <IPFSImage
               styleName='rightIconContent'
               multihash={this.props.profile.icon()}
@@ -169,9 +175,7 @@ class HeaderPartial extends PureComponent {
             />
           </div>
           <Popover
-            ref={(el) => {
-              this.profilePopover = el
-            }}
+            ref={this.refPopover}
             styleName='popover'
             className='popover'
             zDepth={3}
@@ -179,7 +183,7 @@ class HeaderPartial extends PureComponent {
             anchorEl={this.state.profileAnchorEl}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={() => this.handleProfileClose()}
+            onRequestClose={this.handleProfileClose}
           >
             {this.renderProfile()}
           </Popover>
@@ -348,9 +352,7 @@ class HeaderPartial extends PureComponent {
               <QRIcon value={this.props.account} />
               <CopyIcon
                 value={this.props.account}
-                onModalOpen={() => {
-                  this.profilePopover.componentClickAway()
-                }}
+                onModalOpen={this.handleClickOutside}
               />
             </div>
             {this.props.btcAddress
@@ -361,9 +363,7 @@ class HeaderPartial extends PureComponent {
                     <QRIcon value={this.props.btcAddress} />
                     <CopyIcon
                       value={this.props.btcAddress}
-                      onModalOpen={() => {
-                        this.profilePopover.componentClickAway()
-                      }}
+                      onModalOpen={this.handleClickOutside}
                     />
                   </div>
                 </div>
@@ -378,9 +378,7 @@ class HeaderPartial extends PureComponent {
                     <QRIcon value={this.props.nemAddress} />
                     <CopyIcon
                       value={this.props.nemAddress}
-                      onModalOpen={() => {
-                        this.profilePopover.componentClickAway()
-                      }}
+                      onModalOpen={this.handleClickOutside}
                     />
                   </div>
                 </div>
@@ -399,13 +397,13 @@ class HeaderPartial extends PureComponent {
             label='Edit Account'
             primary
             icon={<FontIcon className='material-icons'>edit</FontIcon>}
-            onTouchTap={() => this.handleProfileEdit()}
+            onTouchTap={this.handleProfileEdit}
           />
           <FlatButton
             label='LOGOUT'
             primary
             icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
-            onTouchTap={() => this.props.handleLogout()}
+            onTouchTap={this.props.handleLogout}
           />
         </div>
       </div>
@@ -432,7 +430,7 @@ class HeaderPartial extends PureComponent {
     )
   }
 
-  handleNotificationsOpen (e) {
+  handleNotificationsOpen = (e) => {
     e.preventDefault()
     this.setState({
       isNotificationsOpen: true,
@@ -441,14 +439,14 @@ class HeaderPartial extends PureComponent {
     this.props.readNotices()
   }
 
-  handleNotificationsClose () {
+  handleNotificationsClose = () => {
     this.setState({
       isNotificationsOpen: false,
       notificationsAnchorEl: null,
     })
   }
 
-  handleProfileOpen (e) {
+  handleProfileOpen = (e) => {
     e.preventDefault()
     this.setState({
       isProfileOpen: true,
@@ -456,14 +454,14 @@ class HeaderPartial extends PureComponent {
     })
   }
 
-  handleProfileClose () {
+  handleProfileClose = () => {
     this.setState({
       isProfileOpen: false,
       profileAnchorEl: null,
     })
   }
 
-  handleProfileEdit () {
+  handleProfileEdit = () => {
     this.handleProfileClose()
     this.props.handleProfileEdit()
   }
