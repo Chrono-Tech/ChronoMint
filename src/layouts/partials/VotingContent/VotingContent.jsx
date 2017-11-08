@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { Link } from 'react-router'
-import { Poll, PollDialog } from 'components'
+import { Poll, PollEditDialog } from 'components'
 import PropTypes from 'prop-types'
-import { RaisedButton, Paper, CircularProgress } from 'material-ui'
+import { RaisedButton, CircularProgress } from 'material-ui'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -37,7 +37,7 @@ function mapDispatchToProps (dispatch) {
     getList: () => dispatch(listPolls()),
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     handleNewPoll: async () => dispatch(modalsOpen({
-      component: PollDialog,
+      component: PollEditDialog,
       props: {
         isModify: false,
         initialValues: new PollModel(),
@@ -153,9 +153,7 @@ export default class VotingContent extends Component {
             <div className='row'>
               {polls.map((poll) => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
-                  <Paper>
-                    <Poll model={poll} />
-                  </Paper>
+                  <Poll model={poll} />
                 </div>
               ))}
             </div>

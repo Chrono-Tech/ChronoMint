@@ -11,11 +11,19 @@ import ModalDialog from './ModalDialog'
 
 import './BuyTokensDialog.scss'
 
+function mapDispatchToProps (dispatch) {
+  return {
+    exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
+      dispatch(modalsClose())
+      dispatch(exchange(order, amount))
+    },
+  }
+}
+
 @connect(null, mapDispatchToProps)
 export default class BuyTokensDialog extends PureComponent {
   static propTypes = {
     order: PropTypes.object,
-    handleClose: PropTypes.func,
     exchange: PropTypes.func,
   }
 
@@ -120,7 +128,7 @@ export default class BuyTokensDialog extends PureComponent {
     }
 
     return (
-      <ModalDialog onClose={() => this.props.handleClose()}>
+      <ModalDialog>
         <div styleName='root'>
           <div styleName='header'>
             <div styleName='row'>
@@ -296,12 +304,3 @@ export default class BuyTokensDialog extends PureComponent {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
-      dispatch(modalsClose())
-      dispatch(exchange(order, amount))
-    },
-    handleClose: () => dispatch(modalsClose()),
-  }
-}

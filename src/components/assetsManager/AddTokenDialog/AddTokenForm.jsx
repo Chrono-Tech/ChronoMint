@@ -75,10 +75,7 @@ class Platform extends PureComponent {
   handleClick = () => this.props.onClick(this.props.platform)
 
   render () {
-    const {
-      selectedPlatform,
-      platform,
-    } = this.props
+    const { selectedPlatform, platform } = this.props
 
     return (
       <div
@@ -108,7 +105,7 @@ export default class AddTokenForm extends PureComponent {
     platformsList: PropTypes.array,
     createAsset: PropTypes.func,
     dispatch: PropTypes.func,
-    handleClose: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
@@ -133,7 +130,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   handleAddNewPlatform () {
-    this.props.handleClose()
+    this.props.onClose()
     this.props.handleAddPlatformDialog()
   }
 

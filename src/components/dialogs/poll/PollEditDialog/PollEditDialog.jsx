@@ -9,22 +9,21 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import { validate } from 'models/PollModel'
+import FileSelect from 'components/common/FileSelect/FileSelect'
 import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
-import FileSelect from 'components/common/FileSelect/FileSelect'
-import ModalDialog from './ModalDialog'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import './PollEditDialog.scss'
 
-import './PollDialog.scss'
-
-export const FORM_POLL_DIALOG = 'PollDialog'
+export const FORM_EDIT_POLL = 'FormEditPoll'
 
 function prefix (token) {
-  return `components.dialogs.PollDialog.${token}`
+  return `components.dialogs.PollEditDialog.${token}`
 }
 
 function mapStateToProps (state) {
-  const selector = formValueSelector(FORM_POLL_DIALOG)
+  const selector = formValueSelector(FORM_EDIT_POLL)
   const session = state.get(DUCK_SESSION)
   const voting = state.get(DUCK_VOTING)
   return {
@@ -35,17 +34,15 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, op) {
+function mapDispatchToProps (dispatch, props) {
   return {
-    onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       const voteLimitInTIME = values.voteLimitInTIME()
-      const poll = values
-        .set('voteLimitInTIME', voteLimitInTIME
-          ? new BigNumber(voteLimitInTIME)
-          : null)
+      const poll = values.set('voteLimitInTIME', voteLimitInTIME
+        ? new BigNumber(voteLimitInTIME)
+        : null)
       dispatch(modalsClose())
-      if (op.isModify) {
+      if (props.isModify) {
         dispatch(updatePoll(poll))
       } else {
         dispatch(createPoll(poll))
@@ -55,15 +52,15 @@ function mapDispatchToProps (dispatch, op) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_POLL_DIALOG, validate })
-export default class PollDialog extends PureComponent {
+@reduxForm({ form: FORM_EDIT_POLL, validate })
+export default class PollEditDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,
-    maxVoteLimitInTIME: PropTypes.object,
+    voteLimit: PropTypes.objectOf(BigNumber),
     locale: PropTypes.string,
-    onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   constructor () {
     super(...arguments)
@@ -88,7 +85,7 @@ export default class PollDialog extends PureComponent {
     }
   }
 
-  renderOptions (dialog, options) {
+  renderOptions (options) {
     return (
       <div>
         <div styleName='optionsActions'>
@@ -131,15 +128,26 @@ export default class PollDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
+      <ModalDialog>
         <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <h3><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')} /></h3>
           </div>
           <div styleName='body'>
             <div styleName='column'>
-              <Field component={TextField} name='title' fullWidth floatingLabelText={<Translate value={prefix('pollTitle')} />} />
-              <Field component={TextField} name='description' fullWidth multiLine floatingLabelText={<Translate value={prefix('pollDescription')} />} />
+              <Field
+                component={TextField}
+                name='title'
+                fullWidth
+                floatingLabelText={<Translate value={prefix('pollTitle')} />}
+              />
+              <Field
+                component={TextField}
+                name='description'
+                fullWidth
+                multiLine
+                floatingLabelText={<Translate value={prefix('pollDescription')} />}
+              />
               <Field
                 component={TextField}
                 name='voteLimitInTIME'
@@ -166,8 +174,16 @@ export default class PollDialog extends PureComponent {
               />
             </div>
             <div styleName='column'>
-              <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText={<Translate value={prefix('option')} />} />
-              <FieldArray name='options' component={({ fields }) => this.renderOptions(this, fields)} />
+              <Field
+                component={TextField}
+                name={`options[${this.state.selectedOptionIndex}]`}
+                fullWidth
+                floatingLabelText={<Translate value={prefix('option')} />}
+              />
+              <FieldArray
+                name='options'
+                component={({ fields }) => this.renderOptions(fields)}
+              />
             </div>
           </div>
           <div styleName='footer'>
