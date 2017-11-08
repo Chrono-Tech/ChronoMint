@@ -56,7 +56,7 @@ function mapDispatchToProps (dispatch, op) {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_POLL_DIALOG, validate })
-export class PollDialog extends PureComponent {
+export default class PollDialog extends PureComponent {
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,

@@ -8,14 +8,42 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import PollModel from 'models/PollModel'
 import { getStatistics } from 'redux/voting/getters'
-import { initTIMEDeposit } from 'redux/mainWallet/actions'
-import { listPolls } from 'redux/voting/actions'
+import { DUCK_MAIN_WALLET, initTIMEDeposit } from 'redux/mainWallet/actions'
+import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 
 import './VotingContent.scss'
 
 function prefix (token) {
   return `layouts.partials.VotingContent.${token}`
+}
+
+function mapStateToProps (state) {
+  const voting = state.get(DUCK_VOTING)
+  const wallet = state.get(DUCK_MAIN_WALLET)
+  return {
+    list: voting.list,
+    timeDeposit: wallet.timeDeposit(),
+    statistics: getStatistics(voting),
+    isCBE: state.get(DUCK_SESSION).isCBE,
+    isFetched: voting.isFetched && wallet.isFetched(),
+    isFetching: voting.isFetching && !voting.isFetched,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getList: () => dispatch(listPolls()),
+    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
+    handleNewPoll: async () => dispatch(modalsOpen({
+      component: PollDialog,
+      props: {
+        isModify: false,
+        initialValues: new PollModel(),
+      },
+    })),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -38,41 +66,6 @@ export default class VotingContent extends Component {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
-  }
-
-  render () {
-    if (!this.props.isFetched) {
-      return (
-        <div styleName='progress'>
-          <CircularProgress size={24} thickness={1.5} />
-        </div>
-      )
-    }
-
-    if (this.props.timeDeposit.equals(new BigNumber(0))) {
-      return (
-        <div styleName='root'>
-          <div styleName='content'>
-            <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link> if you want get access this page.
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    const polls = this.props.isFetched
-      ? this.props.list.reverse().toArray()
-      : []
-
-    return (
-      <div styleName='root'>
-        <div styleName='content'>
-          {this.renderHead(polls)}
-          {this.renderBody(polls)}
-        </div>
-      </div>
-    )
   }
 
   renderHead () {
@@ -171,32 +164,39 @@ export default class VotingContent extends Component {
       </div>
     )
   }
-}
 
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const voting = state.get('voting')
-  const wallet = state.get('mainWallet')
-  return {
-    list: voting.list,
-    timeDeposit: wallet.timeDeposit(),
-    statistics: getStatistics(voting),
-    isCBE: session.isCBE,
-    isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched,
-  }
-}
+  render () {
+    if (!this.props.isFetched) {
+      return (
+        <div styleName='progress'>
+          <CircularProgress size={24} thickness={1.5} />
+        </div>
+      )
+    }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    getList: () => dispatch(listPolls()),
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handleNewPoll: async () => dispatch(modalsOpen({
-      component: PollDialog,
-      props: {
-        isModify: false,
-        initialValues: new PollModel(),
-      },
-    })),
+    if (this.props.timeDeposit.equals(new BigNumber(0))) {
+      return (
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='accessDenied'>
+              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link to='/wallet'>Wallet page</Link> if you want get access this page.
+            </div>
+          </div>
+        </div>
+      )
+    }
+
+    const polls = this.props.isFetched
+      ? this.props.list.reverse().toArray()
+      : []
+
+    return (
+      <div styleName='root'>
+        <div styleName='content'>
+          {this.renderHead(polls)}
+          {this.renderBody(polls)}
+        </div>
+      </div>
+    )
   }
 }
