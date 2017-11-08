@@ -54,12 +54,12 @@ class LoginOption extends PureComponent {
   static propTypes = {
     option: PropTypes.shape({
       title: PropTypes.string.isRequired,
-      step: PropTypes.string.isRequired,
+      nextStep: PropTypes.string.isRequired,
     }).isRequired,
     onClick: PropTypes.func,
   }
 
-  handleClick = () => this.props.onClick(this.props.option)
+  handleClick = () => this.props.onClick(this.props.option.nextStep)
 
   render () {
     return (
@@ -168,9 +168,9 @@ class LoginWithOptions extends PureComponent {
     }
   }
 
-  handleChangeOption (newOption) {
+  handleChangeOption = (step) => {
     this.props.clearErrors()
-    this.setStep(newOption)
+    this.setStep(step)
   }
 
   handleSelectStepSelectOption = () => this.handleChangeOption(STEP_SELECT_OPTION)
