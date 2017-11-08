@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import { IPFSImage } from 'components'
 import { CSSTransitionGroup } from 'react-transition-group'
@@ -31,6 +32,13 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
+function mapStateToProps (state) {
+  const exchange = state.get('exchange')
+  return {
+    filter: exchange.filter(),
+  }
+}
+
 export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeBuyTokensForm'
 
 const onSubmit = (values, dispatch) => {
@@ -38,13 +46,14 @@ const onSubmit = (values, dispatch) => {
   console.log('--ExchangeWidget#onSubmit filter',)
 }
 
-@connect(null, mapDispatchToProps)
-@reduxForm({form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit})
+@connect(mapStateToProps, mapDispatchToProps)
+@reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
 export default class BuyTokensDialog extends React.Component {
   static propTypes = {
     order: PropTypes.instanceOf(ExchangeOrderModel),
     handleClose: PropTypes.func,
     exchange: PropTypes.func,
+    filter: PropTypes.instanceOf(Immutable.Map),
   }
 
   constructor (props) {
@@ -66,6 +75,7 @@ export default class BuyTokensDialog extends React.Component {
       lht: require('assets/img/icn-lht.svg'),
       ethereum: require('assets/img/icn-ethereum.svg'),
     }
+    const { name: mode } = this.props.filter.get('filterMode')
 
     return (
       <CSSTransitionGroup
@@ -81,7 +91,7 @@ export default class BuyTokensDialog extends React.Component {
               <div styleName='headerRow'>
                 <div styleName='headerRightCol'>
                   <div styleName='title'>
-                    <Translate value={prefix(this.order().isBuy() ? 'buy' : 'sell')} />{` ${this.order().symbol()} `}
+                    <Translate value={prefix(mode.toLowerCase())} />{` ${this.order().symbol()} `}
                     <Translate value={prefix('tokens')} />
                   </div>
                   <div styleName='balanceHeader'>
@@ -99,7 +109,7 @@ export default class BuyTokensDialog extends React.Component {
                   <div className='ByTokensDialog__icons'>
                     <div className='row'>
                       <div className='col-xs-1'>
-                        <div styleName='icon' style={{background: `#05326a`}}>
+                        <div styleName='icon' style={{ background: `#05326a` }}>
                           <IPFSImage
                             fallback={icons.lht}
                             styleName='iconTitle'
@@ -108,7 +118,7 @@ export default class BuyTokensDialog extends React.Component {
                         </div>
                       </div>
                       <div className='col-xs-1'>
-                        <div styleName='icon' style={{background: `#5c6bc0`}}>
+                        <div styleName='icon' style={{ background: `#5c6bc0` }}>
                           <IPFSImage
                             fallback={icons.ethereum}
                             styleName='iconTitle'
@@ -155,7 +165,7 @@ export default class BuyTokensDialog extends React.Component {
                             style={styles.TextField.style}
                           />
                         </div>
-                        <div styleName='iconMobile' style={{background: `#05326a`}}>
+                        <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
                             fallback={icons.lht}
                             styleName='iconTitle'
@@ -175,7 +185,7 @@ export default class BuyTokensDialog extends React.Component {
                             style={styles.TextField.style}
                           />
                         </div>
-                        <div styleName='iconMobile' style={{background: `#05326a`}}>
+                        <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
                             fallback={icons.ethereum}
                             styleName='iconTitle'

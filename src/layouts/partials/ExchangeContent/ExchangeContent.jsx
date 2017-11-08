@@ -46,10 +46,10 @@ export default class ExchangeContent extends Component {
                     <Paper>
                       <button onClick={() => this.props.getExchangesForSymbol('LHT')}>getExchangesForSymbol</button>
                       <button onClick={() => this.props.createExchange({
-                        symbol: 'LHT',
+                        symbol: 'TIME',
                         useTicker: false,
-                        sellPrice: 1,
-                        buyPrice: 2,
+                        sellPrice: 10,
+                        buyPrice: 15,
                       })}
                       >createExchange
                       </button>

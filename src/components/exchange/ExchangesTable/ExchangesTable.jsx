@@ -4,6 +4,7 @@ import { RaisedButton } from 'material-ui'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import BigNumber from 'bignumber.js'
 
 import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
@@ -47,30 +48,35 @@ export default class ExchangesTable extends React.Component {
   }
 
   renderRow (exchange: ExchangeOrderModel) {
+    const { name: mode } = this.props.filter.get('filterMode')
     return (
       <div styleName='row' key={exchange.address()}>
         <div styleName='colTrader'>
-          <span styleName='rowTitle'><Translate value={prefix('trader')} />: </span>
-          <span>{exchange.owner()}</span>
+          <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
+          <span>{exchange.address()}</span>
         </div>
         <div styleName='colPrice'>
           <span styleName='rowTitle'><Translate value={prefix('price')} />: </span>
           <TokenValue
-            value={exchange.buyPrice()}
+            value={mode === 'BUY' ? exchange.buyPrice() : exchange.sellPrice()}
             symbol={exchange.symbol()}
           />
         </div>
         <div styleName='colLimits'>
           <span styleName='rowTitle'><Translate value={prefix('limits')} />: </span>
           <TokenValue
-            value={exchange.assetBalance()}
+            value={new BigNumber(0)}
+            symbol={exchange.symbol()}
+          />
+          -
+          <TokenValue
+            value={mode === 'BUY' ? exchange.assetBalance() : exchange.ethBalance()}
             symbol={exchange.symbol()}
           />
         </div>
         <div styleName='colActions'>
           <RaisedButton
-            label={<Translate value={prefix(exchange.assetBalance().toString() > 0 ? 'buy' : 'sell')} />}
-            disabled={!exchange.assetBalance()}
+            label={<Translate value={prefix(mode.toLowerCase())} />}
             onTouchTap={e => {
               e.stopPropagation()
               this.props.openDetails(exchange)
@@ -82,14 +88,16 @@ export default class ExchangesTable extends React.Component {
   }
 
   render () {
-    let filteredItems = []
-    filteredItems = this.props.filter.size > 0 && this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
-      if (this.props.filter.get('filterMode').name === 'BUY') {
-        return this.props.filter.get('amount') < item.ethBalance()
-      } else {
-        return this.props.filter.get('amount') < item.assetBalance()
-      }
-    })
+    const amount = this.props.filter.get('amount')
+    const filteredItems = amount > 0
+      ? this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
+        if (this.props.filter.get('filterMode').name === 'BUY') {
+          return amount < item.ethBalance()
+        } else {
+          return amount < item.assetBalance()
+        }
+      })
+      : []
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -99,7 +107,7 @@ export default class ExchangesTable extends React.Component {
           <div styleName='table'>
             <div styleName='tableHead'>
               <div styleName='tableHeadRow'>
-                <div styleName='colTrader'><Translate value={prefix('trader')} /></div>
+                <div styleName='colTrader'><Translate value={prefix('exchangeAddress')} /></div>
                 <div styleName='colPrice'><Translate value={prefix('price')} /></div>
                 <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
                 <div styleName='colActions' />

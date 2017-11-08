@@ -1,6 +1,7 @@
 export default {
   en: {
     exchange: 'Exchange',
+    exchangeAddress: 'Exchange address',
     search: 'Search',
     token: 'Token',
     buy: 'Buy',
@@ -9,6 +10,7 @@ export default {
   },
   ru: {
     exchange: 'Обмен',
+    exchangeAddress: 'Адрес обменника',
     search: 'Поиск',
     token: 'Токен',
     buy: 'Купить',

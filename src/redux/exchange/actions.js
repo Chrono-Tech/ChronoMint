@@ -25,7 +25,7 @@ export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async 
 export const search = (values: Immutable.Map) => async dispatch => {
   dispatch({type: EXCHANGE_GET_ORDERS_START})
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const exchangesAddresses = await exchangeManagerDAO.getExchangesForSymbol(values.get('token'))
+  const exchangesAddresses = await exchangeManagerDAO.getExchangesWithFilter(values.get('token'))
   const exchanges = await exchangeManagerDAO.getExchangeData(exchangesAddresses)
   dispatch({type: EXCHANGE_GET_ORDERS_FINISH, payload: {exchanges, filter: values}})
 }

@@ -2,6 +2,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import web3Converter from 'utils/Web3Converter'
+import Immutable from 'immutable'
 
 export default class ExchangeManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -10,6 +11,10 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       at,
       require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
     )
+  }
+
+  async getUrl () {
+    return await 'http://localhost:8081'
   }
 
   createExchange (symbol, useTicker, sellPrice, buyPrice) {
@@ -22,8 +27,20 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async getAssetSymbols () {
-    const result = await this._call('getAssetSymbols')
-    return result.map(symbol => web3Converter.bytesToString(symbol))
+    const url = await this.getUrl()
+    const response = await fetch(`${url}/events/exchangecreated/`) //?distinct=symbol
+    const assetSymbols = response ? await response.json() : []
+    let result = {}
+    assetSymbols.map(exchange => result[web3Converter.bytesToString(exchange.symbol)] = true)
+    return Object.keys(result)
+  }
+
+  async getExchangesWithFilter (symbol: string, isSell: boolean) {
+    const url = await this.getUrl()
+    const sort = isSell ? `&sort=sellPrice,-age` : `&sort=buyPrice,-age`
+    const response = await fetch(`${url}/events/exchangecreated/?symbol=/^${web3Converter.stringToBytes(symbol)}/${sort}`) //?distinct=symbol
+    const exchanges = response ? await response.json() : []
+    return exchanges.map(exchange => exchange.exchange)
   }
 
   getExchangesForSymbol (symbol: string) {
@@ -58,6 +75,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     this._watch('ExchangeCreated', tx => {
       // eslint-disable-next-line
       console.log('--ExchangeManagerDAO#tx', tx)
-    }, {by: account})
+    }, { by: account })
   }
 }
