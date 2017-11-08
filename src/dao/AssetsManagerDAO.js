@@ -1,22 +1,20 @@
 import BigNumber from 'bignumber.js'
-import web3Provider from 'Login/network/Web3Provider'
+import AssetsManagerABI from 'chronobank-smart-contracts/build/contracts/AssetsManager.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import contractManager from 'dao/ContractsManagerDAO'
+import web3Provider from 'Login/network/Web3Provider'
 import TxModel from 'models/TxModel'
 import Web3Converter from 'utils/Web3Converter'
 import AbstractContractDAO from './AbstractContractDAO'
-import { TX_ISSUE, TX_REVOKE, TX_OWNERSHIP_CHANGE } from './ChronoBankPlatformDAO'
-import { TX_PLATFORM_REQUESTED, TX_PLATFORM_ATTACHED } from './PlatformsManagerDAO'
+import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
+import { TX_PLATFORM_ATTACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 
 const TX_ASSET_CREATED = 'AssetCreated'
 const TXS_PER_PAGE = 10
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/AssetsManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(AssetsManagerABI, at, MultiEventsHistoryABI)
   }
 
   getTokenExtension (platform) {

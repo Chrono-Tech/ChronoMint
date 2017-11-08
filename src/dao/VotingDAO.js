@@ -2,6 +2,8 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollModel from 'models/PollModel'
 import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import ipfs from 'utils/IPFS'
+import PollManagerABI from 'chronobank-smart-contracts/build/contracts/PollManager.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'
@@ -18,26 +20,13 @@ const EVENT_VOTE_CREATED = 'VoteCreated'
 
 export default class VotingDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PollManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
-    this._voteLimit = null
-    this.initMetaData()
+    super(PollManagerABI, at, MultiEventsHistoryABI)
   }
 
-  async initMetaData () {
+  async getVoteLimit () {
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const voteLimit = await this._call('getVoteLimit')
-    this.setVoteLimit(voteLimit)
-  }
-
-  setVoteLimit (voteLimit: string) {
-    this._voteLimit = voteLimit
-  }
-
-  getVoteLimit () {
-    return this._voteLimit
+    return timeDAO.removeDecimals(voteLimit)
   }
 
   async createPoll (poll: PollModel) {
@@ -64,9 +53,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       poll.deadline().getTime(),
     ], poll)
     return tx.tx
-    // TODO @ipavlenko: Better to have an ID in the response here and return
-    // persisted PollModel. Think about returning from the contract both error
-    // code and persisted ID.
   }
 
   removePoll (id) {

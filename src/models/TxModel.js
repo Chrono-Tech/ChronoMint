@@ -70,6 +70,10 @@ class TxModel extends abstractModel({
   symbol () {
     return this.get('symbol')
   }
+
+  isFromEmpty () {
+    return this.from() === '0x0000000000000000000000000000000000000000'
+  }
 }
 
 export default TxModel

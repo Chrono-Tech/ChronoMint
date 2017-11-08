@@ -233,6 +233,28 @@ export default {
     fee: 'Fee',
     balanceAfter: 'Balance after',
     feeLeft: 'Transaction fee left',
+    TokenManagementInterface: {
+      createAssetWithoutFee: {
+        title: 'Confirm create token without fee',
+      },
+      createAssetWithFee: {
+        title: 'Confirm create token with fee',
+      },
+    },
+    ChronoBankPlatform: {
+      reissueAsset: {
+        title: 'Confirm reissue tokens',
+      },
+      revokeAsset: {
+        title: 'Confirm revoke tokens',
+      },
+      addAssetPartOwner: {
+        title: 'Confirm add manager',
+      },
+      removeAssetPartOwner: {
+        title: 'Confirm remove manager',
+      },
+    },
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Add CBE',
@@ -730,7 +752,7 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      PollDialog: {
+      PollEditDialog: {
         editPoll: 'Edit Poll',
         newPoll: 'New Poll',
         pollTitle: 'Poll title',

@@ -50,7 +50,7 @@ function mapDispatchToProps (dispatch) {
     handleAddToken: () => dispatch(modalsOpen({
       component: AddTokenDialog,
     })),
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
     updateUserProfile: (profile) => dispatch(updateUserProfile(profile)),
     initWallet: () => dispatch(watchInitWallet()),
   }
@@ -64,7 +64,7 @@ export default class AddCurrencyDialog extends PureComponent {
     isFetched: PropTypes.bool,
     loadTokens: PropTypes.func,
     handleAddToken: PropTypes.func,
-    handleClose: PropTypes.func,
+    modalsClose: PropTypes.func,
     updateUserProfile: PropTypes.func,
     initWallet: PropTypes.func,
   }
@@ -80,6 +80,10 @@ export default class AddCurrencyDialog extends PureComponent {
     if (!this.props.isFetched) {
       this.props.loadTokens()
     }
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
   }
 
   handleCurrencyChecked (symbol, isSelect) {
@@ -98,7 +102,7 @@ export default class AddCurrencyDialog extends PureComponent {
     const tokensAddresses = tokens.toArray().map((item) => item.address())
     const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
 
-    this.props.handleClose()
+    this.props.modalsClose()
     await this.props.updateUserProfile(profile)
     this.props.initWallet()
   }
@@ -139,7 +143,7 @@ export default class AddCurrencyDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
+      <ModalDialog styleName='root'>
         <div styleName='content'>
           <div styleName='header'>
             <h3><Translate value={prefix('tokens')} /></h3>
@@ -196,7 +200,7 @@ export default class AddCurrencyDialog extends PureComponent {
             <RaisedButton
               styleName='action'
               label={<Translate value={prefix('close')} />}
-              onTouchTap={() => this.props.handleClose()}
+              onTouchTap={this.handleClose}
             />
           </div>
         </div>

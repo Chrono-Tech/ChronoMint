@@ -19,7 +19,7 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch, op) {
   return {
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
     handleSubmit: ({ choice }) => {
       dispatch(modalsClose())
       dispatch(vote(op.model, choice))
@@ -31,20 +31,18 @@ function mapDispatchToProps (dispatch, op) {
 export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
-    onClose: PropTypes.func,
-    handleClose: PropTypes.func,
+    modalsClose: PropTypes.func,
     handleSubmit: PropTypes.func,
   }
 
   constructor () {
     super(...arguments)
-
     this.state = {
       choice: null,
     }
   }
 
-  handleSubmit (e) {
+  handleSubmit = (e) => {
     e.preventDefault()
     if (this.state.choice !== null) {
       this.props.handleSubmit({ choice: this.state.choice + 1 })
@@ -61,8 +59,8 @@ export default class VoteDialog extends PureComponent {
     const details = model.details()
 
     return (
-      <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-        <form styleName='content' onSubmit={(e) => this.handleSubmit(e)}>
+      <ModalDialog styleName='root'>
+        <form styleName='content' onSubmit={this.handleSubmit}>
           <div styleName='header'>
             <div styleName='column'>
               <div styleName='inner'>

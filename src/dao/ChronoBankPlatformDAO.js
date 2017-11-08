@@ -1,3 +1,5 @@
+import ChronoBankPlatformABI from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
@@ -12,25 +14,41 @@ export const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
 export default class ChronoBankPlatform extends AbstractContractDAO {
 
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(ChronoBankPlatformABI, at, MultiEventsHistoryABI)
   }
 
-  async reissueAsset (symbol, amount) {
-    const tx = await this._tx(TX_REISSUE_ASSET, [symbol, amount])
+  async reissueAsset (token, value) {
+    const amount = token.dao().addDecimals(value)
+    const tx = await this._tx(
+      TX_REISSUE_ASSET,
+      [
+        token.symbol(),
+        amount,
+      ],
+      {
+        symbol: token.symbol(),
+        amount: value,
+      })
     return tx.tx
   }
 
-  async revokeAsset (symbol, amount) {
-    const tx = await this._tx(TX_REVOKE_ASSET, [symbol, amount])
+  async revokeAsset (token, value) {
+    const amount = token.dao().addDecimals(value)
+    const tx = await this._tx(
+      TX_REVOKE_ASSET,
+      [
+        token.symbol(),
+        amount,
+      ],
+      {
+        symbol: token.symbol(),
+        amount: value,
+      })
     return tx.tx
   }
 
-  async isReissuable (symbol) {
-    return await this._call(TX_IS_REISSUABLE, [symbol])
+  isReissuable (symbol) {
+    return this._call(TX_IS_REISSUABLE, [symbol])
   }
 
   async addAssetPartOwner (symbol, address) {
@@ -44,14 +62,22 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    this._watch(TX_ISSUE, callback)
+    return this._watch(TX_ISSUE, (tx) => {
+      const symbol = this._c.bytesToString(tx.args.symbol)
+      const value = tx.args.value
+      callback(symbol, value, true, tx)
+    })
   }
 
   watchRevoke (callback) {
-    this._watch(TX_REVOKE, callback)
+    return this._watch(TX_REVOKE, (tx) => {
+      const symbol = this._c.bytesToString(tx.args.symbol)
+      const value = tx.args.value
+      callback(symbol, value, false, tx)
+    })
   }
 
   watchManagers (callback) {
-    this._watch(TX_OWNERSHIP_CHANGE, callback)
+    return this._watch(TX_OWNERSHIP_CHANGE, callback)
   }
 }

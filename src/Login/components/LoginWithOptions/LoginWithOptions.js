@@ -14,7 +14,7 @@ import NetworkSelector from '../../components/NetworkSelector/NetworkSelector'
 import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
 
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
-import { nemProvider } from 'Login/network/NemProvider'
+import { nemProvider } from '../../network/NemProvider'
 import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
@@ -50,6 +50,31 @@ const loginOptions = [ {
   title: 'LoginWithOptions.ledgerNano',
 } ]
 
+class LoginOption extends PureComponent {
+  static propTypes = {
+    option: PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      nextStep: PropTypes.string.isRequired,
+    }).isRequired,
+    onClick: PropTypes.func,
+  }
+
+  handleClick = () => this.props.onClick(this.props.option.nextStep)
+
+  render () {
+    return (
+      <div
+        key={this.props.option.title}
+        styleName='optionBox'
+        onTouchTap={this.handleClick}
+      >
+        <div styleName='optionName'><Translate value={this.props.option.title} /></div>
+        <div className='material-icons' styleName='arrow'>arrow_forward</div>
+      </div>
+    )
+  }
+}
+
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
@@ -70,7 +95,7 @@ const mapDispatchToProps = (dispatch) => ({
 class LoginWithOptions extends PureComponent {
   static propTypes = {
     loadAccounts: PropTypes.func,
-    accounts: PropTypes.array,
+    accounts: PropTypes.arrayOf(PropTypes.string),
     selectAccount: PropTypes.func,
     getProviderURL: PropTypes.func,
     getProviderSettings: PropTypes.func,
@@ -143,10 +168,20 @@ class LoginWithOptions extends PureComponent {
     }
   }
 
-  handleChangeOption (newOption) {
+  handleChangeOption = (step) => {
     this.props.clearErrors()
-    this.setStep(newOption)
+    this.setStep(step)
   }
+
+  handleSelectStepSelectOption = () => this.handleChangeOption(STEP_SELECT_OPTION)
+
+  handleSelectStepGenerateWallet = () => this.handleChangeOption(STEP_GENERATE_WALLET)
+
+  handleSelectStepGenerateMnemonic = () => this.handleChangeOption(STEP_GENERATE_MNEMONIC)
+
+  handleSelectStepLoginWithMnemonic = () => this.handleChangeOption(STEP_LOGIN_WITH_MNEMONIC)
+
+  handleSelectStepLoginWithWallet = () => this.handleChangeOption(STEP_LOGIN_WITH_WALLET)
 
   handleToggleProvider (step) {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
@@ -175,17 +210,16 @@ class LoginWithOptions extends PureComponent {
     this.handleToggleProvider(step)
   }
 
+  renderOption = (option) => (
+    <LoginOption
+      key={option.title}
+      option={option}
+      onClick={this.handleChangeOption}
+    />
+  )
+
   renderOptions () {
-    return loginOptions.map((item, id) => (
-      <div
-        key={id}
-        styleName='optionBox'
-        onTouchTap={() => this.handleChangeOption(item.nextStep)}
-      >
-        <div styleName='optionName'><Translate value={item.title} /></div>
-        <div className='material-icons' styleName='arrow'>arrow_forward</div>
-      </div>
-    ))
+    return loginOptions.map(this.renderOption)
   }
 
   render () {
@@ -209,39 +243,39 @@ class LoginWithOptions extends PureComponent {
         {step === STEP_LOGIN_WITH_MNEMONIC && (
           <LoginWithMnemonic
             onLogin={this.handleMnemonicLogin}
-            onGenerate={() => this.handleChangeOption(STEP_GENERATE_MNEMONIC)}
-            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+            onGenerate={this.handleSelectStepGenerateMnemonic}
+            onBack={this.handleSelectStepSelectOption}
           />
         )}
 
         {step === STEP_LOGIN_WITH_WALLET && (
           <LoginWithWallet
             onLogin={this.handleWalletUpload}
-            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
-            onGenerate={() => this.handleChangeOption(STEP_GENERATE_WALLET)}
+            onBack={this.handleSelectStepSelectOption}
+            onGenerate={this.handleSelectStepGenerateWallet}
           />
         )}
         {step === STEP_LOGIN_WITH_PRIVATE_KEY && (
           <LoginWithPrivateKey
             onLogin={this.handlePrivateKeyLogin}
-            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+            onBack={this.handleSelectStepSelectOption}
           />
         )}
 
         {step === STEP_GENERATE_WALLET && (
           <GenerateWallet
-            onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_WALLET)}
+            onBack={this.handleSelectStepLoginWithWallet}
           />
         )}
         {isGenerateMnemonic && (
           <GenerateMnemonic
-            onBack={() => this.handleChangeOption(STEP_LOGIN_WITH_MNEMONIC)}
+            onBack={this.handleSelectStepLoginWithMnemonic}
           />
         )}
         {step === STEP_LOGIN_WITH_LEDGER && (
           <LoginLedger
             onLogin={this.handleLedgerLogin}
-            onBack={() => this.handleChangeOption(STEP_SELECT_OPTION)}
+            onBack={this.handleSelectStepSelectOption}
           />
         )}
       </div>

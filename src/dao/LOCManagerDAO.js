@@ -1,4 +1,6 @@
 import type BigNumber from 'bignumber.js'
+import LOCManagerABI from 'chronobank-smart-contracts/build/contracts/LOCManager.json'
+import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import Immutable from 'immutable'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
@@ -37,11 +39,7 @@ const DEFAULT_TOKEN = 'LHT'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(LOCManagerABI, at, MultiEventsHistoryABI)
     this.tokens = null
     this._isInitialized = false
   }

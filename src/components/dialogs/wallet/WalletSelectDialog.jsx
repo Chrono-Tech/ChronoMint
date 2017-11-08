@@ -36,7 +36,7 @@ function mapDispatchToProps (dispatch) {
       component: EditManagersDialog,
       props: { wallet },
     })),
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
     switchWallet: (wallet) => dispatch(switchWallet(wallet)),
     removeWallet: (wallet) => dispatch(removeWallet(wallet)),
     addOwner: (wallet) => dispatch(addOwner(wallet)),
@@ -48,7 +48,7 @@ function mapDispatchToProps (dispatch) {
 export default class WalletSelectDialog extends PureComponent {
   static propTypes = {
     multisigWallet: PropTypes.object,
-    handleClose: PropTypes.func,
+    modalsClose: PropTypes.func,
     handleEditManagersDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     removeWallet: PropTypes.func,
@@ -62,7 +62,7 @@ export default class WalletSelectDialog extends PureComponent {
   }
 
   selectMultisigWallet (wallet) {
-    this.props.handleClose()
+    this.props.modalsClose()
     this.props.switchWallet(wallet)
   }
 
@@ -123,7 +123,7 @@ export default class WalletSelectDialog extends PureComponent {
     const selected: string = this.props.multisigWallet.selected().address()
 
     return (
-      <ModalDialog onClose={() => this.props.handleClose()}>
+      <ModalDialog>
         <div styleName='content'>
           <div styleName='header'>
             <h3 styleName='headerTitle'><Translate value='wallet.walletSelectDialog.multisignatureWallets' /></h3>

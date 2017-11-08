@@ -9,7 +9,7 @@ import './CopyDialog.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
@@ -20,16 +20,20 @@ export default class CopyDialog extends PureComponent {
     title: PropTypes.string,
     controlTitle: PropTypes.string,
     description: PropTypes.string,
-    onClose: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   componentDidMount () {
     this.inputElement.select()
   }
 
+  handleClose = () => {
+    this.props.modalsClose()
+  }
+
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+      <ModalDialog styleName='root'>
         <div styleName='content'>
           <div styleName='header'>
             <h3>{this.props.title}</h3>
@@ -50,7 +54,7 @@ export default class CopyDialog extends PureComponent {
             <RaisedButton
               primary
               label='Close'
-              onTouchTap={() => this.props.onClose()}
+              onTouchTap={this.handleClose}
             />
           </div>
         </div>
