@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import defaultLogo from 'assets/img/marketsLogos/default-logo.svg'
 
 import './style.scss'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const { selectedCoin, rates } = state.get('market')
   return {
     rates: rates[selectedCoin] || {},
@@ -14,7 +15,7 @@ const mapStateToProps = state => {
 }
 
 @connect(mapStateToProps)
-class Rates extends React.Component {
+class Rates extends PureComponent {
   static propTypes = {
     rates: PropTypes.object,
     selectedCoin: PropTypes.string,
@@ -23,6 +24,18 @@ class Rates extends React.Component {
   constructor (props) {
     super(props)
     this.direction = true
+  }
+
+  componentDidMount () {
+    this.go()
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.selectedCoin !== this.props.selectedCoin) this.go()
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.interval)
   }
 
   go () {
@@ -65,33 +78,29 @@ class Rates extends React.Component {
     }, 4000)
   }
 
-  componentWillReceiveProps (newProps) {
-    if (newProps.selectedCoin !== this.props.selectedCoin) this.go()
-  }
-
-  componentDidMount () {
-    this.go()
-  }
-
-  componentWillUnmount () {
-    clearInterval(this.interval)
-  }
-
   render () {
     const { rates, selectedCoin } = this.props
     return (
       <div style={{ width: '100%' }}>
         <div styleName='header'><span>{selectedCoin}</span><span>/USD</span></div>
         <div styleName='wrapper'>
-          <div styleName='track' ref={ref => this.track = ref}>
+          <div styleName='track' ref={(ref) => this.track = ref}>
             {
-              Object.values(rates).map(market => {
-                const logoPath = require(`../../../assets/img/marketsLogos/${market.LASTMARKET.toLowerCase()}.png`)
+              Object.values(rates).map((market) => {
+                let logoPath
+                try {
+                  logoPath = require(`../../../assets/img/marketsLogos/${market.LASTMARKET.toLowerCase()}.png`)
+                } catch (e) {
+                  logoPath = defaultLogo
+                }
+
                 if (!market.PRICE) {
                   return null
                 }
                 return (<div styleName='market' key={market.LASTMARKET}>
-                  <div styleName='logo'><img src={logoPath} alt='' /></div>
+                  <div styleName='logo'>
+                    <img src={logoPath} alt='' />
+                  </div>
                   <div styleName='marketInfo'>
                     <div styleName='marketName'>{market.LASTMARKET}</div>
                     <div styleName='price'>
@@ -104,7 +113,7 @@ class Rates extends React.Component {
                     >{(market.CHANGEPCT24H || 0).toFixed(5)}% <i styleName='changeIcon' />
                     </div>
                   </div>
-                        </div>)
+                </div>)
               })
             }
           </div>

@@ -1,22 +1,27 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import Moment from 'components/common/Moment/index'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { Translate } from 'react-redux-i18n'
 
-export default class Value extends React.Component {
+export default class Value extends PureComponent {
   static propTypes = {
     value: PropTypes.any,
     params: PropTypes.object,
   }
 
   renderValue () {
-    const {value, params = {}} = this.props
+    const { value, params = {} } = this.props
 
-    if (!value) { // null/undefined
+    if (value === null && value === undefined) { // null/undefined
       return ''
+    }
+
+    if (typeof value === 'boolean') {
+      return <Translate value={value.toString()} />
     }
 
     if (typeof value === 'string' || typeof value === 'number') {

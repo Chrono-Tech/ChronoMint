@@ -1,12 +1,12 @@
+import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 // TODO new exchange
 /* eslint-disable */
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
+import { SelectField, TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
-import { SelectField, TextField } from 'redux-form-material-ui'
-import { MenuItem, RaisedButton, Toggle } from 'material-ui'
 import validate from './ExchangeFormValidate'
-import { Translate } from 'react-redux-i18n'
 
 const styles = {
   btn: {
@@ -50,7 +50,7 @@ const renderToggleField = ({input, label, hint, meta: {touched, error}, ...custo
 
 @connect(mapStateToProps, null)
 @reduxForm({form: 'sendForm', validate})
-class ExchangeForm extends Component {
+class ExchangeForm extends PureComponent {
   render () {
     const {handleSubmit, rates, valid} = this.props
 

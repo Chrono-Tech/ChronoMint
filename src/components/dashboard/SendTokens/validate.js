@@ -1,8 +1,8 @@
-import validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
 
 export default (values, props) => {
-  const {token, wallet} = props
+  const { token, wallet } = props
   if (!token) {
     return
   }
@@ -26,6 +26,6 @@ export default (values, props) => {
       .add(token.dao().getAddressValidator()(recipient))
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
-    amount: amountErrors.getErrors()
+    amount: amountErrors.getErrors(),
   }
 }

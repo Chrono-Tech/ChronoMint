@@ -1,8 +1,8 @@
-import { abstractFetchingModel } from '../AbstractFetchingModel'
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import TransactionsCollection from './TransactionsCollection'
+import Immutable from 'immutable'
 import ls from 'utils/LocalStorage'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
+import TransactionsCollection from './TransactionsCollection'
 
 export default class MainWallet extends abstractFetchingModel({
   address: null,
@@ -11,6 +11,7 @@ export default class MainWallet extends abstractFetchingModel({
   transactions: new TransactionsCollection(),
   btcAddress: null,
   bccAddress: null,
+  nemAddress: null,
   timeDeposit: new BigNumber(0),
   // TODO @dkchv: !!! was ''
   // TODO @dkchv: maybe not for wallet model
@@ -18,7 +19,7 @@ export default class MainWallet extends abstractFetchingModel({
   isMultisig: false,
   isMainWallet: true,
   // TODO @dkchv: is a part of wallet ?
-  isTIMERequired: true
+  isTIMERequired: true,
 }) {
 
   address () {
@@ -43,6 +44,10 @@ export default class MainWallet extends abstractFetchingModel({
 
   bccAddress (value) {
     return this._getSet('bccAddress', value)
+  }
+
+  nemAddress (value) {
+    return this._getSet('nemAddress', value)
   }
 
   transactions (value) {

@@ -1,23 +1,27 @@
+import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
+
 import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { CircularProgress } from 'material-ui'
+
 import './HistoryTable.scss'
 
 function prefix (token) {
   return `Assets.HistoryTable.${token}`
 }
 
-
 function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
     locale: state.get('i18n').locale,
-    transactionsList: state.get('assetsManager').transactionsList,
-    transactionsFetching: state.get('assetsManager').transactionsFetching,
+    transactionsList: assetsManager.transactionsList,
+    transactionsFetching: assetsManager.transactionsFetching,
+    tokensMap: assetsManager.tokensMap,
   }
 }
 
@@ -26,8 +30,9 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class HistoryTable extends React.Component {
+export default class HistoryTable extends PureComponent {
   static propTypes = {
+    tokensMap: PropTypes.object,
     transactionsList: PropTypes.array,
     transactionsFetched: PropTypes.bool,
     transactionsFetching: PropTypes.bool,
@@ -69,7 +74,7 @@ export default class HistoryTable extends React.Component {
           this.props.transactionsFetching &&
           <div styleName='footer'>
             <CircularProgress
-              style={{verticalAlign: 'middle', marginTop: -2}}
+              style={{ verticalAlign: 'middle', marginTop: -2 }}
               size={24}
               thickness={1.5}
             />
@@ -79,46 +84,7 @@ export default class HistoryTable extends React.Component {
     )
   }
 
-  renderValue (trx) {
-    let value
-    switch (trx.type()) {
-      case 'Issue':
-      case 'Revoke':
-        value = <TokenValue value={trx.value()} symbol={trx.symbol()} />
-        break
-      case 'PlatformAttached':
-      case 'PlatformRequested':
-        value = trx.args().platform
-        break
-      case'OwnershipChange':
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div>
-              {
-                trx.from() === '0x0000000000000000000000000000000000000000'
-                  ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
-                  : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
-              }
-            </div>
-          </div>
-        )
-        break
-      case'AssetCreated':
-        value = (
-          <div>
-            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
-            <div><Translate value={prefix('platform')} />: {trx.args().platform} </div>
-          </div>
-        )
-        break
-      default:
-        value = ''
-    }
-    return value
-  }
-
-  renderRow ({trx, timeTitle}, index) {
+  renderRow ({ trx, timeTitle }, index) {
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -170,10 +136,54 @@ export default class HistoryTable extends React.Component {
 
     return Object.values(groups)
       .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
-      .map(group => ({
+      .map((group) => ({
         ...group,
         transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
       }))
+  }
+
+  renderValue (trx) {
+    let value
+    switch (trx.type()) {
+      case 'Issue':
+      case 'Revoke':
+        const token = this.props.tokensMap.get(trx.symbol())
+        if (trx.symbol() && token) {
+          value = (
+            <TokenValue value={token.dao().removeDecimals(trx.value())} symbol={trx.symbol()} />
+          )
+        } else {
+          value = ''
+        }
+        break
+      case 'PlatformAttached':
+      case 'PlatformRequested':
+        value = trx.args().platform
+        break
+      case'OwnershipChange':
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            {
+              trx.isFromEmpty()
+                ? <span><Translate value={prefix('added')} />: {trx.to()}</span>
+                : <span><Translate value={prefix('deleted')} />: {trx.from()}</span>
+            }
+          </div>
+        )
+        break
+      case'AssetCreated':
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            <div><Translate value={prefix('platform')} />: {trx.args().platform} </div>
+          </div>
+        )
+        break
+      default:
+        value = ''
+    }
+    return value
   }
 }
 

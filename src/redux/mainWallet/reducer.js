@@ -1,5 +1,5 @@
-import * as a from './actions'
 import MainWalletModel from 'models/Wallet/MainWalletModel'
+import * as a from './actions'
 
 const initialState = new MainWalletModel()
 
@@ -36,6 +36,8 @@ export default (state = initialState, action) => {
       return state.btcAddress(action.address)
     case a.WALLET_BCC_ADDRESS:
       return state.bccAddress(action.address)
+    case a.WALLET_NEM_ADDRESS:
+      return state.nemAddress(action.address)
     case a.WALLET_TRANSACTIONS_FETCH:
       return state.transactions(state.transactions().isFetching(true))
     case a.WALLET_TRANSACTION:

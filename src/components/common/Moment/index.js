@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
 export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
 export const SHORT_DATE = 'MMM Do, YYYY'
 
-const mapStateToProps = state => ({
-  locale: state.get('i18n').locale,
+const mapStateToProps = (state) => ({
+  locale: state.get('i18n').locale
 })
 
 @connect(mapStateToProps)
-class Moment extends React.Component {
+class Moment extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     date: PropTypes.oneOfType([
@@ -20,20 +20,23 @@ class Moment extends React.Component {
     ]),
     format: PropTypes.string,
     action: PropTypes.string,
+    parseFormat: PropTypes.string,
   }
+
   static defaultProps = {
     format: FULL_DATE,
   }
 
   render () {
     const {
-      locale, date, format, action,
+      locale, date, format, action, parseFormat,
     } = this.props
+
     let view
     if (action) {
-      view = moment(date).locale(locale)[action]()
+      view = moment(date, parseFormat).locale(locale)[action]()
     } else {
-      view = moment(date).locale(locale).format(format)
+      view = moment(date, parseFormat).locale(locale).format(format)
     }
 
     return <span>{view}</span>

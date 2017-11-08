@@ -1,23 +1,23 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { CircularProgress, RaisedButton, MenuItem } from 'material-ui'
-import { TextField, Checkbox, SelectField } from 'redux-form-material-ui'
-import { modalsOpen } from 'redux/modals/actions'
+import BigNumber from 'bignumber.js'
+import classnames from 'classnames'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import { Field, reduxForm, change } from 'redux-form/immutable'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileModel from 'models/FileSelect/FileModel'
+import TokenModel from 'models/TokenModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
+import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { createAsset } from 'redux/assetsManager/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import colors from 'styles/themes/variables'
+import ipfs from 'utils/IPFS'
 import './AddTokenForm.scss'
 import validate from './validate'
-import BigNumber from 'bignumber.js'
-import colors from 'styles/themes/variables'
-import classnames from 'classnames'
-import ipfs from 'utils/IPFS'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import FileModel from 'models/FileSelect/FileModel'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-
 
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`
@@ -40,13 +40,23 @@ function mapDispatchToProps (dispatch) {
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
-    createAsset: values => dispatch(createAsset(values)),
   }
 }
 
-
 const onSubmit = (values, dispatch) => {
-  dispatch(createAsset(values))
+  dispatch(createAsset(new TokenModel({
+    decimals: values.get('smallestUnit'),
+    name: values.get('description'),
+    symbol: values.get('tokenSymbol'),
+    balance: values.get('amount'),
+    icon: values.get('tokenImg'),
+    fee: values.get('feePercent'),
+    feeAddress: values.get('feeAddress'),
+    withFee: values.get('withFee'),
+    platform: values.get('platform'),
+    totalSupply: values.get('amount'),
+    isReissuable: values.get('reissuable'),
+  })))
 }
 
 // defaults
@@ -55,9 +65,42 @@ const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
 const DEFAULT_ASPECT_RATIO = 2 // means 1:2 ... 2:1
 const DEFAULT_MAX_FILES = 10
 
+class Platform extends PureComponent {
+  static propTypes = {
+    platform: PropTypes.instanceOf(Object),
+    selectedPlatform: PropTypes.instanceOf(Object),
+    onClick: PropTypes.func,
+  }
+
+  handleClick = () => this.props.onClick(this.props.platform)
+
+  render () {
+    const {
+      selectedPlatform,
+      platform,
+    } = this.props
+
+    return (
+      <div
+        styleName={classnames('platformItem', { 'selectedPlatform': platform === selectedPlatform })}
+        onTouchTap={this.handleClick}
+        key={platform.address}
+      >
+        <div styleName='icon'>
+          <img src={require('assets/img/assets1.svg')} alt='' />
+        </div>
+        {platform.name ?
+          <div>{platform.name}&nbsp;(<small>{platform.address}</small>)</div> :
+          <div>{platform.address} </div>
+        }
+      </div>
+    )
+  }
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit})
-export default class AddTokenForm extends React.Component {
+@reduxForm({ form: FORM_ADD_TOKEN_DIALOG, validate, onSubmit })
+export default class AddTokenForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
     formValues: PropTypes.object,
@@ -71,7 +114,7 @@ export default class AddTokenForm extends React.Component {
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
     accept: PropTypes.array,
-  }
+  } & formPropTypes
 
   constructor (props) {
     super(...arguments)
@@ -103,7 +146,7 @@ export default class AddTokenForm extends React.Component {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[0]
+    const file = e.target.files[ 0 ]
     if (!file) {
       return
     }
@@ -111,60 +154,87 @@ export default class AddTokenForm extends React.Component {
       isUploading: true,
     })
     await ipfs.uploadFile(
-      new FileModel({file, uploading: true}),
+      new FileModel({ file, uploading: true }),
       this.state.config,
-      file => this.handleFileUploaded(file))
+      (file) => this.handleFileUploaded(file))
+  }
+
+  handleSubmitClick = () => {
+    this.setState({ showPlatformError: !!this.props.formErrors.platform })
+  }
+
+  handleWalletClick = () => {
+    this.walletFileUploadInput.click()
+  }
+
+  handlePlatformChange = (platform) => {
+    this.props.dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))
+  }
+
+  refWallet = (el) => this.walletFileUploadInput = el
+
+  renderPlatform = (platform) => {
+    const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
+    return (
+      <Platform
+        key={platform.name}
+        platform={platform}
+        selectedPlatform={selectedPlatform}
+        onClick={this.handlePlatformChange}
+      />
+    )
   }
 
   renderFileInput () {
-    const {isUploading, isUploaded} = this.state
+    const { isUploading, isUploaded } = this.state
     const tokenImg = this.props.formValues && this.props.formValues.get('tokenImg')
-    return (<div styleName='tokenImgWrap'>
-      {
-        !isUploading && !isUploaded && (
-          <div styleName='upload' onTouchTap={() => this.walletFileUploadInput.click()}>
-            <div styleName='uploadContent'><img src={require('assets/img/avaToken.svg')} alt='' /></div>
+    return (
+      <div styleName='tokenImgWrap'>
+        {
+          !isUploading && !isUploaded && (
+            <div styleName='upload' onTouchTap={this.handleWalletClick}>
+              <div styleName='uploadContent'><img src={require('assets/img/avaToken.svg')} alt='' /></div>
+            </div>
+          )
+        }
+
+        {isUploading && (
+          <div styleName='progress'>
+            <CircularProgress
+              size={16}
+              color={colors.colorPrimary1}
+              thickness={1.5}
+            />
+            <span styleName='progressText'>{<Translate value={prefix('uploading')} />}</span>
           </div>
-        )
-      }
+        )}
 
-      {isUploading && (
-        <div styleName='progress'>
-          <CircularProgress
-            size={16}
-            color={colors.colorPrimary1}
-            thickness={1.5}
-          />
-          <span styleName='progressText'>{<Translate value={prefix('uploading')} />}</span>
-        </div>
-      )}
+        {!isUploading && isUploaded &&
+        <IPFSImage
+          styleName='tokenImg'
+          onTouchTap={this.handleWalletClick}
+          multihash={tokenImg}
+        />
+        }
 
-      {!isUploading && isUploaded &&
-      <IPFSImage
-        styleName='tokenImg'
-        onTouchTap={() => this.walletFileUploadInput.click()}
-        multihash={tokenImg}
-      />
-      }
-
-      <input
-        onChange={e => this.handleUploadFile(e)}
-        ref={input => this.walletFileUploadInput = input}
-        type='file'
-        styleName='hide'
-      />
-    </div>)
+        <input
+          onChange={this.handleUploadFile}
+          ref={this.refWallet}
+          type='file'
+          styleName='hide'
+        />
+      </div>
+    )
   }
 
   renderPlatformsList () {
-    const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
-    const {platformsList, dispatch, formErrors} = this.props
+    const { platformsList, formErrors } = this.props
     return (
       <div styleName='xs-hide'>
         <div styleName='addNewPlatformTitle'>
           <Translate value={prefix('choosePlatform')} />
         </div>
-        <div onTouchTap={() => this.handleAddNewPlatform()} styleName='createNewPlatform'>
+        <div onTouchTap={this.handleAddNewPlatform} styleName='createNewPlatform'>
           <div styleName='icon'>
             <img src={require('assets/img/icn-plus.svg')} alt='' />
           </div>
@@ -177,25 +247,7 @@ export default class AddTokenForm extends React.Component {
         <div styleName='platformsList'>
           {
             platformsList
-              .map(platform => {
-                return (<div
-                  styleName={classnames('platformItem', {'selectedPlatform': platform === selectedPlatform})}
-                  onTouchTap={() => dispatch(change(FORM_ADD_TOKEN_DIALOG, 'platform', platform))}
-                  key={platform.address}
-                >
-                  <div styleName='icon'>
-                    <img src={require('assets/img/assets1.svg')} alt='' />
-                  </div>
-                  {
-                    platform.name
-                      ? <div>{platform.name}&nbsp;(
-                        <small>{platform.address}</small>
-                        )
-                      </div>
-                      : <div>{platform.address} </div>
-                  }
-                </div>)
-              })
+              .map(this.renderPlatform)
           }
         </div>
       </div>
@@ -249,7 +301,7 @@ export default class AddTokenForm extends React.Component {
 
   render () {
     const withFee = this.props.formValues && this.props.formValues.get('withFee')
-    const {platformsList} = this.props
+    const { platformsList } = this.props
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
@@ -274,7 +326,7 @@ export default class AddTokenForm extends React.Component {
           >
             {
               platformsList
-                .map(platform => {
+                .map((platform) => {
                   return (<MenuItem
                     key={platform.address}
                     value={platform}
@@ -365,9 +417,7 @@ export default class AddTokenForm extends React.Component {
           styleName='dialogFooter'
         >
           <RaisedButton
-            onTouchTap={() => {
-              this.setState({showPlatformError: !!this.props.formErrors.platform})
-            }}
+            onTouchTap={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'

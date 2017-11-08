@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { SelectField, MenuItem, RaisedButton } from 'material-ui'
 import SwipeableViews from 'react-swipeable-views'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import { ETH, LHT } from 'redux/mainWallet/actions'
 import { search } from 'redux/exchange/actions'
 
@@ -15,7 +14,7 @@ const MODES = [
   { index: 1, name: 'SELL', title: <Translate value={prefix('sell')} /> },
 ]
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   search: (currency: string, isBuy: boolean) => dispatch(search(currency, isBuy)),
 })
 
@@ -24,7 +23,7 @@ function prefix (token) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class ExchangeWidget extends React.Component {
+export default class ExchangeWidget extends PureComponent {
   static propTypes = {
     search: PropTypes.func,
   }
@@ -95,9 +94,9 @@ export default class ExchangeWidget extends React.Component {
         <div styleName='content'>
           <SwipeableViews
             index={this.state.mode.index}
-            onChangeIndex={index => this.handleChangeMode(index)}
+            onChangeIndex={(index) => this.handleChangeMode(index)}
           >
-            { MODES.map(el => (
+            { MODES.map((el) => (
               <div styleName='slide' key={el.name}>
                 <div className='ExchangeWidget__grid'>
                   <div className='row'>
@@ -136,7 +135,7 @@ export default class ExchangeWidget extends React.Component {
                       <div styleName='actions'>
                         <RaisedButton
                           label={<Translate value={prefix('search')} />}
-                          onTouchTap={e => {
+                          onTouchTap={(e) => {
                             e.stopPropagation()
                             this.handleSearch()
                           }}

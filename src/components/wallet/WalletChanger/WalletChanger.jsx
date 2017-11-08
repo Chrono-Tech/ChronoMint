@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -37,15 +37,15 @@ function mapDispatchToProps (dispatch) {
     })),
     walletAddEditDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
-      props: {wallet: new MultisigWalletModel()},
+      props: { wallet: new MultisigWalletModel() },
     })),
     getWallets: () => dispatch(getWallets()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
+    switchWallet: wallet => dispatch(switchWallet(wallet)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletChanger extends React.Component {
+export default class WalletChanger extends PureComponent {
   static propTypes = {
     isMultisig: PropTypes.bool,
     mainWallet: PropTypes.object,
@@ -64,10 +64,10 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMainWallet () {
-    const {isMultisig, mainWallet, multisigWallet} = this.props
+    const { isMultisig, mainWallet, multisigWallet } = this.props
 
     return (
-      <div styleName={classNames('walletBox', {'isMultisig': isMultisig})}>
+      <div styleName={classNames('walletBox', { 'isMultisig': isMultisig })}>
         <Paper>
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMainBigSVG} />
@@ -105,7 +105,7 @@ export default class WalletChanger extends React.Component {
   }
 
   renderMultisigWallet () {
-    const {multisigWallet, mainWallet} = this.props
+    const { multisigWallet, mainWallet } = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
     const owners = selectedWallet.owners()
 
@@ -178,7 +178,7 @@ export default class WalletChanger extends React.Component {
 
   render () {
     return (
-      <div styleName={classNames('root', {'isMultisig': this.props.isMultisig})}>
+      <div styleName={classNames('root', { 'isMultisig': this.props.isMultisig })}>
         {this.renderMainWallet()}
         {this.props.multisigWallet.hasSelected() && this.renderMultisigWallet()}
       </div>

@@ -2,33 +2,26 @@ import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'mat
 import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
 import { Link } from 'react-router'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
-
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-
-import { getNetworkById } from 'network/settings'
+import { getNetworkById } from 'Login/network/settings'
 import {
   NETWORK_STATUS_UNKNOWN,
   NETWORK_STATUS_OFFLINE,
   NETWORK_STATUS_ONLINE,
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED,
-} from 'network/MonitorService'
-
+} from 'Login/network/MonitorService'
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
-
 import Moment, { FULL_DATE } from 'components/common/Moment'
-
 import ls from 'utils/LocalStorage'
-
 import styles from '../styles'
-
 import './HeaderPartial.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -38,12 +31,13 @@ const ICON_OVERRIDES = {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class HeaderPartial extends React.Component {
+class HeaderPartial extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
     btcAddress: PropTypes.string,
+    nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
@@ -69,6 +63,14 @@ class HeaderPartial extends React.Component {
     }
   }
 
+  handleClickOutside = () => {
+    this.profilePopover.componentClickAway()
+  }
+
+  refPopover = (el) => {
+    this.profilePopover = el
+  }
+
   render () {
     const transactionsCount = this.props.transactionsList.count()
     const noticesCount = this.props.unreadNotices
@@ -82,7 +84,7 @@ class HeaderPartial extends React.Component {
         </div>
         <div styleName='left'>
           <div styleName='routes'>
-            {menu.user.map(item => (
+            {menu.user.map((item) => (
               <FlatButton
                 key={item.key}
                 styleName='route'
@@ -112,7 +114,7 @@ class HeaderPartial extends React.Component {
            </IconButton>
           */}
           {this.renderStatus()}
-          <div styleName='actionsEntry' onTouchTap={e => this.handleNotificationsOpen(e)}>
+          <div styleName='actionsEntry' onTouchTap={this.handleNotificationsOpen}>
             {transactionsCount
               ? (
                 <div styleName='entryOverlay'>
@@ -139,9 +141,7 @@ class HeaderPartial extends React.Component {
             }
           </div>
           <Popover
-            ref={el => {
-              this.profilePopover = el
-            }}
+            ref={this.refPopover}
             className='popover popover-overflow-x-hidden'
             zDepth={3}
             style={styles.header.popover.style}
@@ -149,7 +149,7 @@ class HeaderPartial extends React.Component {
             anchorEl={this.state.notificationsAnchorEl}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={() => this.handleNotificationsClose()}
+            onRequestClose={this.handleNotificationsClose}
           >
             {this.renderNotifications()}
           </Popover>
@@ -166,7 +166,7 @@ class HeaderPartial extends React.Component {
           </div>
         </div>
         <div styleName='right'>
-          <div styleName='rightIcon' onTouchTap={e => this.handleProfileOpen(e)}>
+          <div styleName='rightIcon' onTouchTap={this.handleProfileOpen}>
             <IPFSImage
               styleName='rightIconContent'
               multihash={this.props.profile.icon()}
@@ -175,9 +175,7 @@ class HeaderPartial extends React.Component {
             />
           </div>
           <Popover
-            ref={el => {
-              this.profilePopover = el
-            }}
+            ref={this.refPopover}
             styleName='popover'
             className='popover'
             zDepth={3}
@@ -185,7 +183,7 @@ class HeaderPartial extends React.Component {
             anchorEl={this.state.profileAnchorEl}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={() => this.handleProfileClose()}
+            onRequestClose={this.handleProfileClose}
           >
             {this.renderProfile()}
           </Popover>
@@ -215,8 +213,8 @@ class HeaderPartial extends React.Component {
   }
 
   renderNotifications () {
-    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
-    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy(n => n.time()).reverse()
+    const transactionsList = this.props.transactionsList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
+    const noticesList = this.props.noticesList.valueSeq().splice(15).sortBy((n) => n.time()).reverse()
 
     return (
       <div styleName='notifications'>
@@ -231,7 +229,7 @@ class HeaderPartial extends React.Component {
               </div>
               <div styleName='sectionBody sectionBodyDark'>
                 <div styleName='bodyTable'>
-                  {transactionsList.map(item => this.renderTransaction(item))}
+                  {transactionsList.map((item) => this.renderTransaction(item))}
                 </div>
               </div>
             </div>
@@ -248,7 +246,7 @@ class HeaderPartial extends React.Component {
               ? (<p style={{ marginBottom: '10px' }}>No notifications</p>)
               : (
                 <div styleName='bodyTable'>
-                  {noticesList.map(item => this.renderNotice(item))}
+                  {noticesList.map((item) => this.renderNotice(item))}
                 </div>
               )
             }
@@ -354,9 +352,7 @@ class HeaderPartial extends React.Component {
               <QRIcon value={this.props.account} />
               <CopyIcon
                 value={this.props.account}
-                onModalOpen={() => {
-                  this.profilePopover.componentClickAway()
-                }}
+                onModalOpen={this.handleClickOutside}
               />
             </div>
             {this.props.btcAddress
@@ -367,9 +363,22 @@ class HeaderPartial extends React.Component {
                     <QRIcon value={this.props.btcAddress} />
                     <CopyIcon
                       value={this.props.btcAddress}
-                      onModalOpen={() => {
-                        this.profilePopover.componentClickAway()
-                      }}
+                      onModalOpen={this.handleClickOutside}
+                    />
+                  </div>
+                </div>
+              )
+              : null
+            }
+            {this.props.nemAddress
+              ? (
+                <div>
+                  <div styleName='infoAddress'><b>NEM: </b>{this.props.nemAddress}</div>
+                  <div styleName='info-micros'>
+                    <QRIcon value={this.props.nemAddress} />
+                    <CopyIcon
+                      value={this.props.nemAddress}
+                      onModalOpen={this.handleClickOutside}
                     />
                   </div>
                 </div>
@@ -378,8 +387,8 @@ class HeaderPartial extends React.Component {
             }
             <div styleName='info-balances'>
               {items
-                .filter(item => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
-                .map(item => this.renderBalance(item))}
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .map((item) => this.renderBalance(item))}
             </div>
           </div>
         </div>
@@ -388,13 +397,13 @@ class HeaderPartial extends React.Component {
             label='Edit Account'
             primary
             icon={<FontIcon className='material-icons'>edit</FontIcon>}
-            onTouchTap={() => this.handleProfileEdit()}
+            onTouchTap={this.handleProfileEdit}
           />
           <FlatButton
             label='LOGOUT'
             primary
             icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
-            onTouchTap={() => this.props.handleLogout()}
+            onTouchTap={this.props.handleLogout}
           />
         </div>
       </div>
@@ -421,7 +430,7 @@ class HeaderPartial extends React.Component {
     )
   }
 
-  handleNotificationsOpen (e) {
+  handleNotificationsOpen = (e) => {
     e.preventDefault()
     this.setState({
       isNotificationsOpen: true,
@@ -430,14 +439,14 @@ class HeaderPartial extends React.Component {
     this.props.readNotices()
   }
 
-  handleNotificationsClose () {
+  handleNotificationsClose = () => {
     this.setState({
       isNotificationsOpen: false,
       notificationsAnchorEl: null,
     })
   }
 
-  handleProfileOpen (e) {
+  handleProfileOpen = (e) => {
     e.preventDefault()
     this.setState({
       isProfileOpen: true,
@@ -445,14 +454,14 @@ class HeaderPartial extends React.Component {
     })
   }
 
-  handleProfileClose () {
+  handleProfileClose = () => {
     this.setState({
       isProfileOpen: false,
       profileAnchorEl: null,
     })
   }
 
-  handleProfileEdit () {
+  handleProfileEdit = () => {
     this.handleProfileClose()
     this.props.handleProfileEdit()
   }
@@ -467,6 +476,7 @@ function mapStateToProps (state) {
   return {
     i18n: state.get('i18n'), // force update I18n.t
     btcAddress: wallet.btcAddress(),
+    nemAddress: wallet.nemAddress(),
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
@@ -485,7 +495,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: data => dispatch(modalsOpen({
+    handleProfileEdit: (data) => dispatch(modalsOpen({
       component: UpdateProfileDialog,
       data,
     })),

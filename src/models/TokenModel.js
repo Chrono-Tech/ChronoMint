@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
@@ -25,21 +22,31 @@ export default class TokenModel extends abstractFetchingModel({
   totalSupply: new BigNumber(0),
   managersList: null,
   isReissuable: null,
+  isOptional: true, // used in add token dialog for determine its selectable
+  feeAddress: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
+  }
+
+  feeAddress () {
+    return this.get('feeAddress')
   }
 
   symbol () {
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
-  totalSupply () {
-    return this.get('totalSupply')
+  totalSupply (value) {
+    return this._getSet('totalSupply', value)
   }
 
   isReissuable () {
     return this.get('isReissuable')
+  }
+
+  isOptional () {
+    return this.get('isOptional')
   }
 
   setSymbol (v): TokenModel {
@@ -115,19 +122,21 @@ export default class TokenModel extends abstractFetchingModel({
   // noinspection JSUnusedGlobalSymbols
   txSummary () {
     return {
-      address: this.address(),
-      decimals: this.decimals(),
-      name: this.name(),
       symbol: this.symbol(),
-      url: this.url(),
+      name: this.name(),
+      totalSupply: this.totalSupply(),
+      decimals: this.decimals(),
+      isReissuable: this.isReissuable(),
       icon: this.icon(),
-      isApproveRequired: this.isApproveRequired(),
+      feeAddress: this.feeAddress(),
+      feePercent: this.fee(),
+      withFee: this.withFee(),
     }
   }
 }
 
 // TODO @bshevchenko: MINT-315 add max length for bytes32 variables
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))

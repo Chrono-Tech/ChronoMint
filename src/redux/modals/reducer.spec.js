@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import * as actions from 'redux/modals/actions'
 import reducer from 'redux/modals/reducer'
@@ -13,19 +13,19 @@ let state = null
 const modals = {
 
   hello: {
-    component: React.component,
+    component: PureComponent,
     props: {
       title: 'Hello',
     },
   },
   goodby: {
-    component: React.component,
+    component: PureComponent,
     props: {
       title: 'Goodby',
     },
   },
   chao: {
-    component: React.component,
+    component: PureComponent,
     props: {
       title: 'Chao',
     },

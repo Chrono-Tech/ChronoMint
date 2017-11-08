@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({
@@ -78,7 +76,7 @@ class PollModel extends abstractFetchingModel({
   }
 }
 
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
   errors.files = ErrorList.toTranslate(validator.validIpfsFileList(values.get('files')))

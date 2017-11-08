@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import './ProgressSection.scss'
 
-class ProgressSection extends React.Component {
+class ProgressSection extends PureComponent {
   constructor (props) {
     super(props)
   }
@@ -24,6 +24,5 @@ class ProgressSection extends React.Component {
 ProgressSection.propTypes = {
   value: PropTypes.number,
 }
-
 
 export default ProgressSection

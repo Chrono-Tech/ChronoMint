@@ -1,18 +1,17 @@
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate, I18n } from 'react-redux-i18n'
-
 import validate from './validate'
 
 import './LOCIssueForm.scss'
 
-const onSubmit = values => +values.get('amount')
+const onSubmit = (values) => +values.get('amount')
 
 @reduxForm({ form: 'IssueForm', validate, onSubmit })
-class LOCIssueForm extends Component {
+class LOCIssueForm extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     pristine: PropTypes.bool,

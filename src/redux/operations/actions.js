@@ -1,11 +1,8 @@
 import Immutable from 'immutable'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
-
 import { notify } from 'redux/notifier/actions'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
@@ -18,28 +15,28 @@ const setOperation = (operation: OperationModel) => ({ type: OPERATIONS_SET, ope
 const operationsFetch = () => ({ type: OPERATIONS_FETCH })
 const operationsList = (list: Immutable.Map) => ({ type: OPERATIONS_LIST, list })
 
-export const watchOperation = (notice: OperationNoticeModel) => async dispatch => {
+export const watchOperation = (notice: OperationNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
   dispatch(setOperation(notice.operation()))
 }
 
-export const watchInitOperations = () => async dispatch => {
+export const watchInitOperations = () => async (dispatch) => {
   const userDAO = await contractsManagerDAO.getUserManagerDAO()
   dispatch({ type: OPERATIONS_SIGNS_REQUIRED, required: await userDAO.getSignsRequired() })
 
   const dao = await contractsManagerDAO.getPendingManagerDAO()
 
-  const callback = notice => dispatch(watchOperation(notice))
+  const callback = (notice) => dispatch(watchOperation(notice))
 
   return Promise.all([
     dao.watchConfirmation(callback),
     dao.watchRevoke(callback),
 
-    dao.watchDone(operation => dispatch(setOperation(operation))),
+    dao.watchDone((operation) => dispatch(setOperation(operation))),
   ])
 }
 
-export const listOperations = () => async dispatch => {
+export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   const [list, completedList] = await Promise.all([
@@ -49,14 +46,14 @@ export const listOperations = () => async dispatch => {
   dispatch(operationsList(list.merge(completedList)))
 }
 
-export const loadMoreCompletedOperations = () => async dispatch => {
+export const loadMoreCompletedOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   const list = await dao.getCompletedList()
   dispatch(operationsList(list))
 }
 
-export const confirmOperation = (operation: OperationModel | AbstractFetchingModel) => async dispatch => {
+export const confirmOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
@@ -66,7 +63,7 @@ export const confirmOperation = (operation: OperationModel | AbstractFetchingMod
   }
 }
 
-export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
+export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async dispatch => {
   dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
@@ -76,7 +73,7 @@ export const revokeOperation = (operation: OperationModel | AbstractFetchingMode
   }
 }
 
-export const setupOperationsSettings = () => async dispatch => {
+export const setupOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [required, adminCount] = await Promise.all([
     dao.getSignsRequired(),

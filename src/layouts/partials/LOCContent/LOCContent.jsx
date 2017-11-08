@@ -1,27 +1,24 @@
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import type LOCModel from 'models/LOCModel'
-
 import { getLOCs } from 'redux/locs/actions'
-
 import LOCItem from 'components/locs/LOCItem/LOCItem'
 import PageTitle from 'components/locs/PageTitle'
 import Search from 'components/locs/Search'
 
 import './LOCContent.scss'
 
-const mapStateToProps = state => state.get('locs')
+const mapStateToProps = (state) => state.get('locs')
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   getLOCs: () => dispatch(getLOCs()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCContent extends React.Component {
+class LOCContent extends PureComponent {
   static propTypes = {
     locs: PropTypes.object,
     filter: PropTypes.string,
@@ -49,8 +46,8 @@ class LOCContent extends React.Component {
 
           <div styleName='grid'>
             {locs
-              .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
-              .sortBy(loc => -loc.createDate())
+              .filter((loc) => loc.name().toLowerCase().indexOf(filter) > -1)
+              .sortBy((loc) => -loc.createDate())
               .map((loc: LOCModel, key) => (
                 <div key={key} styleName='item'>
                   <LOCItem loc={loc} />

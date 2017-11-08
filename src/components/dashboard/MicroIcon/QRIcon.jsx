@@ -1,12 +1,12 @@
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import QRCode from 'qrcode'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import promisify from 'promisify-node-callback'
 
 import './MicroIcon.scss'
 
-export default class QRIcon extends React.Component {
+export default class QRIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
   }
@@ -25,7 +25,7 @@ export default class QRIcon extends React.Component {
       <div styleName='root'>
         <a
           styleName='micro'
-          onTouchTap={e => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
+          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
           <i className='material-icons'>center_focus_weak</i>
         </a>

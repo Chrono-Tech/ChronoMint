@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 
 import './IconSection.scss'
 
-class IconSection extends React.Component {
+class IconSection extends PureComponent {
   static propTypes = {
     // TODO @abdulov Change the use of this component
     title: PropTypes.object, // Translate object

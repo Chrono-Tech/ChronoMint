@@ -1,16 +1,16 @@
 import { Field, reduxForm } from 'redux-form/immutable'
 import { MenuItem, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 
 import './LOCStatusForm.scss'
 
-const onSubmit = values => +values.get('status')
+const onSubmit = (values) => +values.get('status')
 
 @reduxForm({ form: 'LOCStatusForm', onSubmit })
-class LOCStatusForm extends Component {
+class LOCStatusForm extends PureComponent {
   static propTypes = {
     pristine: PropTypes.bool,
     handleSubmit: PropTypes.func,

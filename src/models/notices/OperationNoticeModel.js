@@ -1,6 +1,5 @@
 import { I18n } from 'react-redux-i18n'
 import React from 'react'
-
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'
@@ -29,7 +28,6 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   title () {
     return I18n.t('notices.operations.title')
   }
-
 
   _status () {
     if (this.operation().isCancelled()) {

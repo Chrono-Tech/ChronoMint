@@ -1,10 +1,10 @@
 // TODO MINT-266 New LOC
 /* eslint-disable */
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { PureComponent } from 'react'
 import TextField from 'material-ui/TextField'
-import { updateLOCFilter } from 'redux/locs/actions'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import { updateLOCFilter } from 'redux/locs/actions'
 
 const mapStateToProps = (state) => ({
   filter: state.get('locs').filter
@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Search extends Component {
+export default class Search extends PureComponent {
   handleChange = (event, value) => {
     this.props.updateLOCFilter(value.toLowerCase())
   }

@@ -1,4 +1,5 @@
 import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
+
 import * as a from './actions'
 
 const initialState = new MultisigWalletCollection()

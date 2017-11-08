@@ -1,12 +1,13 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
-import { FlatButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-import globalStyles from 'layouts/partials/styles'
-import { Field } from 'redux-form/immutable'
 import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
+import { Field } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
+import globalStyles from 'layouts/partials/styles'
+
 import './OwnersList.scss'
 
 function mapStateToProps (state) {
@@ -16,7 +17,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-class OwnersList extends Component {
+class OwnersList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     meta: PropTypes.object,
@@ -64,13 +65,15 @@ class OwnersList extends Component {
   }
 
   render () {
-    const {account, fields} = this.props
+    const { account, fields } = this.props
 
     return (
       <div>
         <div styleName='counterBox'>
           <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-          styleName='counter'>{fields.length + 1}</span>
+            styleName='counter'
+          >{fields.length + 1}
+          </span>
         </div>
         <div styleName='counterError'>{this.props.meta.error}</div>
 

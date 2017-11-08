@@ -1,6 +1,5 @@
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
 import TxExecModel, { ARGS_TREATED } from './TxExecModel'

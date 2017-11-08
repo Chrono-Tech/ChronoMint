@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
-
 import { download } from 'redux/ui/ipfs'
 import { notify } from 'redux/notifier/actions'
-
 import FileIcon from 'components/common/FileSelect/FileIcon'
 
 import './DocumentsList.scss'
 
 @connect(null, mapDispatchToProps)
-export default class DocumentsList extends Component {
+export default class DocumentsList extends PureComponent {
   static propTypes = {
     handleDownload: PropTypes.func,
     documents: PropTypes.object, // immutable list

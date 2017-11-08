@@ -1,12 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-
 import type ERC20DAO from 'dao/ERC20DAO'
-
 import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
-
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 

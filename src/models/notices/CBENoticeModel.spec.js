@@ -1,5 +1,4 @@
 import moment from 'moment'
-
 import CBEModel from '../CBEModel'
 import CBENoticeModel from './CBENoticeModel'
 import ProfileModel from '../ProfileModel'

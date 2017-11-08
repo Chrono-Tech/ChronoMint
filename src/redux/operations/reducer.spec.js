@@ -1,7 +1,5 @@
 import Immutable from 'immutable'
-
 import OperationModel from 'models/OperationModel'
-
 import * as a from 'redux/operations/actions'
 import reducer from 'redux/operations/reducer'
 

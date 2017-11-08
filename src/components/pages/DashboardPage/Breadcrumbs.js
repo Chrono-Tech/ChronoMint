@@ -1,15 +1,17 @@
 // TODO New Dashboard
 /* eslint-disable */
-import React, { Component } from 'react'
-import globalStyles from '../../../styles'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import globalStyles from '../../../styles'
+
+import globalStyles from '../../../styles'
 
 const mapStateToProps = (state) => ({
   user: state.get('session')
 })
 
 @connect(mapStateToProps, null)
-class Breadcrumbs extends Component {
+class Breadcrumbs extends PureComponent {
   render () {
     return (
       <h3 style={globalStyles.navigation}>

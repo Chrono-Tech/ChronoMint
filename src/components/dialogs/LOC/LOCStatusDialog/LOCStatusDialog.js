@@ -1,20 +1,18 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
 import { modalsClose } from 'redux/modals/actions'
-
 import LOCStatusForm from './LOCStatusForm'
 import ModalDialogBase from '../../ModalDialogBase/ModalDialogBase'
 import { updateStatus } from '../../../../redux/locs/actions'
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   updateStatus: (status, loc) => dispatch(updateStatus(status, loc)),
   closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
-class IssueLHModal extends Component {
+class IssueLHModal extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     closeModal: PropTypes.func,

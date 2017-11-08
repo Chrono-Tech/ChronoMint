@@ -1,24 +1,25 @@
-import Preloader from 'components/common/Preloader/Preloader'
-import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import { RaisedButton, FlatButton } from 'material-ui'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { getManagersForAssetSymbol, isReissuable, getFee } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
-import './PlatformInfo.scss'
+import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
+import Preloader from 'components/common/Preloader/Preloader'
+import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
+
+import './PlatformInfo.scss'
 
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-export class PlatformInfo extends Component {
+export class PlatformInfo extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.object,
     selectedToken: PropTypes.string,
@@ -114,7 +115,7 @@ export class PlatformInfo extends Component {
                 <div styleName='avatarsRow'>
                   {
                     managersList && managersList
-                      .map(manager => <div key={manager}><i className='material-icons'>account_circle</i></div>)
+                      .map((manager) => <div key={manager}><i className='material-icons'>account_circle</i></div>)
                   }
                 </div>
 
@@ -135,7 +136,6 @@ export class PlatformInfo extends Component {
 
         }
       </div>
-
 
     )
   }
@@ -181,8 +181,8 @@ export class PlatformInfo extends Component {
               <div styleName='balance'>
                 <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                 <TokenValue
-                  style={{fontSize: '24px'}}
-                  value={new BigNumber(selectedToken.totalSupply())}
+                  style={{ fontSize: '24px' }}
+                  value={selectedToken.totalSupply()}
                   symbol={selectedToken.symbol()}
                 />
               </div>
@@ -236,9 +236,9 @@ function mapDispatchToProps (dispatch) {
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog,
     })),
-    getManagersForAssetSymbol: symbol => dispatch(getManagersForAssetSymbol(symbol)),
-    isReissuable: symbol => dispatch(isReissuable(symbol)),
-    getFee: symbol => dispatch(getFee(symbol)),
+    getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
+    isReissuable: (symbol) => dispatch(isReissuable(symbol)),
+    getFee: (symbol) => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
       component: RevokeDialog,
     })),

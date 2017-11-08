@@ -1,14 +1,11 @@
 import Immutable from 'immutable'
 import { store, accounts } from 'specsInit'
-
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_SET_REQUIRED_SIGNS } from 'dao/UserManagerDAO'
-
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import CBEModel from 'models/CBEModel'
 import type OperationModel from 'models/OperationModel'
 import type OperationNoticeModel from 'models/notices/OperationNoticeModel'
-
 import * as a from './actions'
 
 const cbe = new CBEModel({ address: accounts[1], name: 'Jacob' })
@@ -32,7 +29,7 @@ describe('operations actions', () => {
     expect(store.getActions()[1].adminCount).toBeGreaterThanOrEqual(2)
   })
 
-  it('should produce pending operation', async resolve => {
+  it('should produce pending operation', async (resolve) => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchConfirmation((notice: OperationNoticeModel) => {
       expect(notice.isRevoked()).toBeFalsy()
@@ -62,7 +59,7 @@ describe('operations actions', () => {
     ])
   })
 
-  it('should produce another operation and confirm it', async resolve => {
+  it('should produce another operation and confirm it', async (resolve) => {
     const dao = await contractsManagerDAO.getPendingManagerDAO()
     await dao.watchDone((operation: OperationModel) => {
       expect(operation.tx().funcName()).toEqual(TX_SET_REQUIRED_SIGNS)

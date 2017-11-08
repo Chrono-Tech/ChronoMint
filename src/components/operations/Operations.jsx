@@ -1,16 +1,12 @@
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { getEtherscanUrl } from 'Login/network/settings'
 import { connect } from 'react-redux'
-
-import { getEtherscanUrl } from 'network/settings'
-
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-
 import './Operations.scss'
 
 function prefix (token) {
@@ -18,7 +14,7 @@ function prefix (token) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class PendingOperations extends Component {
+export default class PendingOperations extends PureComponent {
   static propTypes = {
     // title: PropTypes.string,
     title: PropTypes.object, // Translate object
@@ -54,8 +50,8 @@ export default class PendingOperations extends Component {
   }
 
   render () {
-    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
-    const etherscanHref = txHash => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
+    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
       <div styleName='panel'>
@@ -203,8 +199,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listOperations()),
-    handleConfirm: operation => dispatch(confirmOperation(operation)),
-    handleRevoke: operation => dispatch(revokeOperation(operation)),
+    handleConfirm: (operation) => dispatch(confirmOperation(operation)),
+    handleRevoke: (operation) => dispatch(revokeOperation(operation)),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations()),
     openSettings: async () => {
       await dispatch(setupOperationsSettings())

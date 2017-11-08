@@ -1,25 +1,21 @@
 import { ModalStack, Snackbar } from 'components'
 import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import theme from 'styles/themes/default.js'
-
 import { closeNotifier } from 'redux/notifier/actions'
-
 import ModalContainer from 'components/modals/Modal'
-
+import theme from 'styles/themes/default'
 import { HeaderPartial, DrawerPartial } from './partials'
 
 import './Markup.scss'
 
 // import 'styles/globals/index.global.css'
 
-
-export class Markup extends React.Component {
+class Markup extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
-    notice: PropTypes.object,
+    notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
     children: PropTypes.node,
   }

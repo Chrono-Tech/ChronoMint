@@ -1,14 +1,11 @@
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-
 import CBEModel from 'models/CBEModel'
-
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
 import { modalsOpen } from 'redux/modals/actions'
-
 import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
@@ -19,7 +16,7 @@ function prefix (token) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class CBEAddresses extends Component {
+export default class CBEAddresses extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     isFetched: PropTypes.bool,
@@ -131,8 +128,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listCBE()),
-    revoke: cbe => dispatch(revokeCBE(cbe)),
-    form: cbe => dispatch(modalsOpen({
+    revoke: (cbe) => dispatch(revokeCBE(cbe)),
+    form: (cbe) => dispatch(modalsOpen({
       component: CBEAddressDialog,
       props: {
         initialValues: cbe || new CBEModel(),

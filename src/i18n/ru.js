@@ -1,24 +1,24 @@
-import * as platformsManager from 'dao/PlatformsManagerDAO'
 import { ru as layouts } from 'layouts/lang'
+import { ru as Login } from 'Login/lang'
+import * as assetDonator from 'dao/AssetDonatorDAO'
+import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-import { ru as LoginPage } from 'pages/LoginPage/lang'
+import * as exchange from 'dao/ExchangeDAO'
+import * as loc from 'dao/LOCManagerDAO'
+import * as operations from 'dao/PendingManagerDAO'
+import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as rewards from 'dao/RewardsDAO'
+import * as time from 'dao/TIMEHolderDAO'
+import * as user from 'dao/UserManagerDAO'
+import * as voting from 'dao/VotingDAO'
 import { ru as components } from 'components/lang'
-import * as assetDonator from '../dao/AssetDonatorDAO'
-import * as erc20 from '../dao/ERC20DAO'
-import * as exchange from '../dao/ExchangeDAO'
-import * as loc from '../dao/LOCManagerDAO'
-import * as operations from '../dao/PendingManagerDAO'
-import * as rewards from '../dao/RewardsDAO'
-import * as time from '../dao/TIMEHolderDAO'
-import * as user from '../dao/UserManagerDAO'
-import * as voting from '../dao/VotingDAO'
 
 export default {
   title: 'Рус',
   true: 'да',
   false: 'нет',
-  LoginPage,
+  ...Login,
   ...components,
   layouts,
   global: {
@@ -70,7 +70,7 @@ export default {
     switchMultisignatureWallet: 'Сменить мульти кошелёк',
     switchToMultisignatureWallet: 'Переключить на мульти кошелёк',
     switchToMainWallet: 'Переключить на основной кошелёк',
-    pendingTransfers: 'Проводимые переводы (demo)',
+    pendingTransfers: 'Проводимые переводы',
     to: 'Кому',
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',
@@ -234,6 +234,28 @@ export default {
     fee: 'Комиссия',
     balanceAfter: 'Баланс после',
     feeLeft: 'Комиссия оставшихся транзакций',
+    TokenManagementInterface: {
+      createAssetWithoutFee: {
+        title: 'Подтвердите создание токена без коммиссии',
+      },
+      createAssetWithFee: {
+        title: 'Подтвердите создание токена c коммиссией',
+      },
+    },
+    ChronoBankPlatform: {
+      reissueAsset: {
+        title: 'Подтвердите дополнительный выпуск токенов',
+      },
+      revokeAsset: {
+        title: 'Подтвердите сжигание токенов',
+      },
+      addAssetPartOwner: {
+        title: 'Подтвердите добавление менеджера',
+      },
+      removeAssetPartOwner: {
+        title: 'Подтвердите удаление менеджера',
+      },
+    },
     UserManager: {
       [user.TX_ADD_CBE]: {
         title: 'Добавить CBE',

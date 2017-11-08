@@ -1,10 +1,13 @@
+import { CSSTransitionGroup } from 'react-transition-group'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 
 import './ModalDialog.scss'
 
-export class ModalDialog extends React.Component {
+const TRANSITION_TIMEOUT = 250
+
+export default class ModalDialog extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
@@ -19,37 +22,43 @@ export class ModalDialog extends React.Component {
 
   render () {
     return (
-      <div
-        styleName='root'
-        className={classnames('ModalDialog__backdrop', this.props.className)}
-        onTouchTap={e => {
-          e.stopPropagation()
-          this.handleBackdropTap(e)
-        }}
+      <CSSTransitionGroup
+        transitionName='transition-opacity'
+        transitionAppear
+        transitionAppearTimeout={TRANSITION_TIMEOUT}
+        transitionEnterTimeout={TRANSITION_TIMEOUT}
+        transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
         <div
-          styleName='dialog'
-          className='ModalDialog__dialog'
-          onTouchTap={e => {
+          styleName='root'
+          className={classnames('ModalDialog__backdrop', this.props.className)}
+          onTouchTap={(e) => {
             e.stopPropagation()
+            this.handleBackdropTap(e)
           }}
         >
-          <div styleName='content' className='ModalDialog__content'>
-            {this.props.children}
-          </div>
-          <a
-            styleName='close'
-            className='ModalDialog__close'
-            onTouchTap={e => {
+          <div
+            styleName='dialog'
+            className='ModalDialog__dialog'
+            onTouchTap={(e) => {
               e.stopPropagation()
-              this.handleBackdropTap(e)
             }}
-          ><i className='material-icons'>close</i>
-          </a>
+          >
+            <div styleName='content' className='ModalDialog__content'>
+              {this.props.children}
+            </div>
+            <a
+              styleName='close'
+              className='ModalDialog__close'
+              onTouchTap={(e) => {
+                e.stopPropagation()
+                this.handleBackdropTap(e)
+              }}
+            ><i className='material-icons'>close</i>
+            </a>
+          </div>
         </div>
-      </div>
+      </CSSTransitionGroup>
     )
   }
 }
-
-export default ModalDialog

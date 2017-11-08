@@ -5,11 +5,10 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 import moment from 'moment'
+import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-
 import ls from 'utils/LocalStorage'
-
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
@@ -17,10 +16,10 @@ import { SESSION_DESTROY } from './session/actions'
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
-const getNestedReducers = ducks => {
+const getNestedReducers = (ducks) => {
   let reducers = {}
-  Object.keys(ducks).forEach(r => {
-    reducers = {...reducers, ...(typeof (ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
+  Object.keys(ducks).forEach((r) => {
+    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
   })
   return reducers
 }
@@ -29,7 +28,7 @@ const getNestedReducers = ducks => {
 const createSelectLocationState = () => {
   let prevRoutingState,
     prevRoutingStateJS
-  return state => {
+  return (state) => {
     const routingState = state.get('routing') // or state.routing
     if (typeof prevRoutingState === 'undefined' || prevRoutingState !== routingState) {
       prevRoutingState = routingState
@@ -82,10 +81,11 @@ const configureStore = () => {
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine),
+      saveAccountMiddleWare
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : f => f,
+      : (f) => f,
   )(createStore)
 
   return createStoreWithMiddleware(
@@ -101,9 +101,11 @@ export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState(),
 })
 
+export const DUCK_I18N = 'i18n'
+
 // syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
-I18n.setTranslationsGetter(() => store.getState().get('i18n').translations)
-I18n.setLocaleGetter(() => store.getState().get('i18n').locale)
+I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
+I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
 const locale = ls.getLocale()
 // set moment locale

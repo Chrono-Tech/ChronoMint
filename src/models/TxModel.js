@@ -1,6 +1,6 @@
+import { FULL_DATE } from 'components/common/Moment'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-
 import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
@@ -47,11 +47,11 @@ class TxModel extends abstractModel({
   }
 
   time () {
-    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss') || null
+    return moment.unix(this.get('time')).format(FULL_DATE)
   }
 
   date (format) {
-    return moment.unix(this.get('time')).format(format) || null
+    return moment.unix(this.get('time')).format(format)
   }
 
   value (): BigNumber {
@@ -69,6 +69,10 @@ class TxModel extends abstractModel({
 
   symbol () {
     return this.get('symbol')
+  }
+
+  isFromEmpty () {
+    return this.from() === '0x0000000000000000000000000000000000000000'
   }
 }
 

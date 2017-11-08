@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
 
