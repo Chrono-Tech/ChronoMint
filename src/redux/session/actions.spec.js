@@ -64,17 +64,13 @@ describe('session actions', () => {
   it('should create session', () => {
     store = mockStore(emptySessionMock)
     a.createSession({ account: accounts[ 0 ], dispatch: store.dispatch })
-    expect(store.getActions()).toEqual([
-      { type: a.SESSION_CREATE, account: accounts[ 0 ] },
-    ])
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should destroy session', () => {
     store = mockStore(emptySessionMock)
     a.destroySession({ dispatch: store.dispatch })
-    expect(store.getActions()).toEqual([
-      { type: a.SESSION_DESTROY },
-    ])
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should not login without session', async () => {
@@ -104,9 +100,7 @@ describe('session actions', () => {
     ls.createSession(accounts[ 1 ], LOCAL_ID, LOCAL_ID)
     await store.dispatch(a.updateUserProfile(profile))
 
-    expect(store.getActions()).toEqual([
-      { type: a.SESSION_PROFILE_UPDATE, profile },
-    ])
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should login CBE and start watcher with cbeWatcher and go to last url', async () => {
@@ -116,11 +110,7 @@ describe('session actions', () => {
     store.clearActions()
     await store.dispatch(a.login(accounts[ 0 ]))
 
-    const actions = store.getActions()
-    // TODO expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: userProfile, isCBE: true})
-    expect(actions).toContainEqual({ type: WATCHER })
-    expect(actions).toContainEqual({ type: WATCHER_CBE })
-    expect(actions).toContainEqual(routerAction(MOCK_LAST_URL, REPLACE_METHOD))
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should login CBE and go to default page (/cbe)', async () => {
@@ -130,11 +120,7 @@ describe('session actions', () => {
 
     await store.dispatch(a.login(accounts[ 0 ]))
 
-    const actions = store.getActions()
-    // TODO expect(actions).toContainEqual({type: a.SESSION_PROFILE, profile: userProfile, isCBE: true})
-    expect(actions).toContainEqual({ type: WATCHER })
-    expect(actions).toContainEqual({ type: WATCHER_CBE })
-    expect(actions).toContainEqual(routerAction(a.DEFAULT_CBE_URL, REPLACE_METHOD))
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should login USER and go to default url (/wallet)', async () => {
@@ -144,11 +130,7 @@ describe('session actions', () => {
 
     await store.dispatch(a.login(accounts[ 5 ]))
 
-    const actions = store.getActions()
-    expect(actions).toContainEqual({ type: a.SESSION_PROFILE, profile: new ProfileModel(), isCBE: false })
-    expect(actions).toContainEqual({ type: WATCHER })
-    expect(actions).not.toContainEqual({ type: WATCHER_CBE })
-    expect(actions).toContainEqual(routerAction(a.DEFAULT_USER_URL, REPLACE_METHOD))
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should logout', async () => {
