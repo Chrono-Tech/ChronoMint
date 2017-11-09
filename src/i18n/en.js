@@ -457,6 +457,7 @@ export default {
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
     limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
+    invalidLatinString: 'String must have only Latin characters (A-z)',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',

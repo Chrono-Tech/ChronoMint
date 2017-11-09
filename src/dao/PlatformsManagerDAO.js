@@ -21,8 +21,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async createPlatform (name) {
-    const tx = await this._tx(TX_CREATE_PLATFORM, [name])
+  async createPlatform () {
+    const tx = await this._tx(TX_CREATE_PLATFORM)
     return tx.tx
   }
 
