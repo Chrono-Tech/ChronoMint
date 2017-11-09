@@ -91,29 +91,41 @@ export default class RewardsDAO extends AbstractContractDAO {
   async getRewardsData (): Promise<RewardsModel> {
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    const values = await Promise.all([
-      this.getAddress(), // 0
-      this.getSymbol(), // 1
-      this.getPeriodLength(), // 2
-      this.getLastPeriod(), // 3
-      this.getLastClosedPeriod(), // 4
-      timeHolderDAO.getAccountDepositBalance(), // 5
-      timeDAO.totalSupply(), // 6
-      this.getPeriods(), // 7
-      this.getCurrentAccumulated(), // 8
-      this.getRewardsFor(this.getAccount()), // 9
+    const [
+      address,
+      symbol,
+      periodLength,
+      lastPeriod,
+      lastClosedPeriod,
+      accountDeposit,
+      timeTotalSupply,
+      periods,
+      currentAccumulated,
+      accountRewards,
+    ] = await Promise.all([
+      this.getAddress(),
+      this.getSymbol(),
+      this.getPeriodLength(),
+      this.getLastPeriod(),
+      this.getLastClosedPeriod(),
+      timeHolderDAO.getAccountDepositBalance(),
+      timeDAO.totalSupply(),
+      this.getPeriods(),
+      this.getCurrentAccumulated(),
+      this.getRewardsFor(this.getAccount()),
     ])
+
     return new RewardsModel({
-      address: values[0],
-      symbol: values[1],
-      periodLength: values[2],
-      lastPeriod: values[3],
-      lastClosedPeriod: values[4],
-      accountDeposit: values[5],
-      timeTotalSupply: values[6],
-      periods: values[7],
-      currentAccumulated: values[8],
-      accountRewards: values[9],
+      address,
+      symbol,
+      periodLength,
+      lastPeriod,
+      lastClosedPeriod,
+      accountDeposit,
+      timeTotalSupply,
+      periods,
+      currentAccumulated,
+      accountRewards,
     })
   }
 
