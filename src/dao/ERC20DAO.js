@@ -64,7 +64,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   async initMetaData () {
     try {
-      const [symbol, decimals] = await Promise.all([
+      const [ symbol, decimals ] = await Promise.all([
         this._call('symbol'),
         this._callNum('decimals'),
       ])
@@ -77,24 +77,34 @@ export default class ERC20DAO extends AbstractTokenDAO {
     }
   }
 
-  totalSupply (): BigNumber {
-    return this._callNum('totalSupply')
+  async totalSupply (): BigNumber {
+    const totalSupply = await this._call('totalSupply')
+    return this.removeDecimals(totalSupply)
   }
 
   async getAccountBalance (account = this.getAccount()): BigNumber {
-    return this.removeDecimals(await this._call('balanceOf', [account]))
+    return this.removeDecimals(await this._call('balanceOf', [ account ]))
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('allowance', [account, spender]))
+    return this.removeDecimals(await this._call('allowance', [ account, spender ]))
   }
 
   approve (account, amount: BigNumber) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], { account, amount, currency: this.getSymbol() })
+    return this._tx(TX_APPROVE, [
+      account,
+      this.addDecimals(amount),
+    ], {
+      account, amount,
+      currency: this.getSymbol(),
+    })
   }
 
   transfer (account, amount: BigNumber) {
-    return this._tx(TX_TRANSFER, [account, this.addDecimals(amount)], {
+    return this._tx(TX_TRANSFER, [
+      account,
+      this.addDecimals(amount),
+    ], {
       account,
       amount,
       currency: this.getSymbol(),
