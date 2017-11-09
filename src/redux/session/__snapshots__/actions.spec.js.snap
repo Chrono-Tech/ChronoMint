@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`session actions should logout 1`] = `
+Array [
+  Object {
+    "isInited": false,
+    "type": "market/INIT",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/",
+      ],
+      "method": "push",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
