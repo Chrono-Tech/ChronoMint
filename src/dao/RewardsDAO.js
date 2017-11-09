@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js'
-import MultiEventsHistory from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import RewardsABI from 'chronobank-smart-contracts/build/contracts/Rewards.json'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
@@ -8,13 +6,14 @@ import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
+import { RewardsABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
-    super(RewardsABI, at, MultiEventsHistory)
+    super(RewardsABI, at, MultiEventsHistoryABI)
 
     // TODO @bshevchenko: MINT-279
     /** @namespace resultCodes.REWARD_CALCULATION_FAILED */

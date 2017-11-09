@@ -1,4 +1,4 @@
-import AssetDonatorABI from 'chronobank-smart-contracts/build/contracts/AssetDonator.json'
+import { AssetDonatorABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_REQUIRE_TIME = 'sendTime'

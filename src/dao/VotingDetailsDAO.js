@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import PollDetailsABI from 'chronobank-smart-contracts/build/contracts/PollDetails.json'
 import Immutable from 'immutable'
 import FileModel from 'models/FileSelect/FileModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
+import { MultiEventsHistoryABI, PollDetailsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
