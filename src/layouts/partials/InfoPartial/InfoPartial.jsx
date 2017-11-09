@@ -54,7 +54,7 @@ function mapStateToProps (state) {
   return {
     account,
     profile,
-    isInited: !!state.get(DUCK_WALLET).current,
+    isInited: !!state.get(DUCK_WALLET).isInited,
     wallet: getCurrentWallet(state),
     selectedCoin: market.selectedCoin,
     open: ui.open,
