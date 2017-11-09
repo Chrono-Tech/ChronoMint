@@ -50,12 +50,12 @@ function mapStateToProps (state) {
   const { account, profile } = state.get(DUCK_SESSION)
   const market = state.get('market')
   const ui = state.get('ui')
+  const wallet = getCurrentWallet(state)
 
   return {
     account,
     profile,
-    isInited: !!state.get(DUCK_WALLET).isInited,
-    wallet: getCurrentWallet(state),
+    wallet,
     selectedCoin: market.selectedCoin,
     open: ui.open,
   }
@@ -70,7 +70,6 @@ export class InfoPartial extends PureComponent {
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
-    isInited: PropTypes.bool,
   }
 
   constructor (props) {
@@ -99,7 +98,7 @@ export class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { isInited, wallet } = this.props
+    const { wallet } = this.props
     const { visibleCount } = this.state
     const tokens = wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({ token, name }))
@@ -114,7 +113,7 @@ export class InfoPartial extends PureComponent {
       <div styleName='root'>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {isInited
+            {wallet.isFetched() && !wallet.isFetching()
               ? items.map((item) => this.renderItem(item))
               : <Preloader />
             }

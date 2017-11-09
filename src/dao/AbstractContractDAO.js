@@ -180,7 +180,7 @@ export default class AbstractContractDAO {
 
       return deployed
     } catch (e) {
-      throw new Error(`_initContract error: ${e.message}`)
+      throw new Error(`${this.getContractName()}#_initContract error: ${e.message}`)
     }
   }
 

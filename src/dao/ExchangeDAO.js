@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
-import ExchangeABI from 'chronobank-smart-contracts/build/contracts/Exchange.json'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import lhtDAO from 'dao/LHTDAO'
 import type ERC20DAO from './ERC20DAO'
+import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
