@@ -1,9 +1,8 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
-import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import ipfs from 'utils/IPFS'
-import PollManagerABI from 'chronobank-smart-contracts/build/contracts/PollManager.json'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
+import { PollManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'

@@ -1,10 +1,9 @@
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import UserManagerABI from 'chronobank-smart-contracts/build/contracts/UserManager.json'
 import Immutable from 'immutable'
 import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
+import { MultiEventsHistoryABI, UserManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'

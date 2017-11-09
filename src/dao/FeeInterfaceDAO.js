@@ -1,4 +1,4 @@
-import FeeInterfaceABI from 'chronobank-smart-contracts/build/contracts/FeeInterface.json'
+import { FeeInterfaceABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class FeeInterfaceDAO extends AbstractContractDAO {

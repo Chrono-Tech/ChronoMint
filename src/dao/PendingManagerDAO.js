@@ -1,9 +1,8 @@
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import PendingManagerABI from 'chronobank-smart-contracts/build/contracts/PendingManager.json'
 import Immutable from 'immutable'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 import OperationModel from 'models/OperationModel'
 import type TxExecModel from 'models/TxExecModel'
+import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 

@@ -11,7 +11,6 @@ const scannerMap = {
     'https://etherscan.io',
     'https://api.etherscan.io',
   ],
-  ropsten: 'https://ropsten.etherscan.io',
   kovan: 'https://kovan.etherscan.io',
   rinkeby: 'https://rinkeby.etherscan.io',
 }
@@ -25,15 +24,6 @@ const MAINNET_BASE = {
   scanner: scannerMap.main,
   bitcoin: 'bitcoin',
   nem: 'Mainnet',
-}
-
-const ROPSTEN_BASE = {
-  id: 3,
-  protocol: 'https',
-  name: 'Ropsten (test network)',
-  scanner: scannerMap.ropsten,
-  bitcoin: 'testnet',
-  nem: 'Testnet',
 }
 
 const RINKEBY_BASE = {
@@ -64,7 +54,6 @@ const LOCALHOST_BASE = {
 const BASE_NETWORK_MAP = [
   LOCALHOST_BASE,
   MAINNET_BASE,
-  ROPSTEN_BASE,
   RINKEBY_BASE,
   KOVAN_BASE,
 ]
@@ -75,9 +64,6 @@ export const infuraNetworkMap = [ {
   ...MAINNET_BASE,
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
 }, {
-  // ...ROPSTEN_BASE,
-  // host: `ropsten.infura.io/${INFURA_TOKEN}`,
-// }, {
   ...RINKEBY_BASE,
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
 }, {
@@ -87,16 +73,13 @@ export const infuraNetworkMap = [ {
 
 const chronoBankMap = [ {
   ...MAINNET_BASE,
-  host: 'mainnet.chronobank.io/',
+  host: 'mainnet-full-parity-rpc.chronobank.io/',
 }, {
-  // ...ROPSTEN_BASE,
-  // host: 'ropsten.chronobank.io/',
-// }, {
   ...RINKEBY_BASE,
-  host: 'rinkeby.chronobank.io/',
+  host: 'rinkeby-full-geth-rpc.chronobank.io/',
 }, {
   ...KOVAN_BASE,
-  host: 'kovan.chronobank.io/',
+  host: 'kovan-fast-parity-rpc.chronobank.io/',
 } ]
 
 // dev only

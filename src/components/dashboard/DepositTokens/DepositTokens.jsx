@@ -1,20 +1,19 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { connect } from 'react-redux'
-import { TextField, RaisedButton, FlatButton, Paper } from 'material-ui'
-import type TokenModel from 'models/TokenModel'
-import { depositTIME, withdrawTIME, mainApprove, TIME, requireTIME, updateIsTIMERequired, initTIMEDeposit } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { isTestingNetwork } from 'Login/network/settings'
 import ErrorList from 'components/forms/ErrorList'
 import validator from 'components/forms/validator'
-
-import { Translate } from 'react-redux-i18n'
+import { isTestingNetwork } from 'Login/network/settings'
+import { DUCK_NETWORK } from 'Login/redux/network/actions'
+import { FlatButton, Paper, RaisedButton, TextField } from 'material-ui'
+import type TokenModel from 'models/TokenModel'
 import type MainWallet from 'models/Wallet/MainWalletModel'
-import IconSection from '../IconSection/IconSection'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { depositTIME, DUCK_MAIN_WALLET, initTIMEDeposit, mainApprove, requireTIME, TIME, updateIsTIMERequired, withdrawTIME } from 'redux/mainWallet/actions'
 import ColoredSection from '../ColoredSection/ColoredSection'
-
+import IconSection from '../IconSection/IconSection'
 import './DepositTokens.scss'
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
@@ -27,9 +26,9 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const wallet: MainWallet = state.get('mainWallet')
+  const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const token: TokenModel = wallet.tokens().get(TIME)
-  const { selectedNetworkId, selectedProviderId } = state.get('network')
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
 
   return {
@@ -45,7 +44,7 @@ function mapDispatchToProps (dispatch) {
   return {
     initTIMEDeposit: () => dispatch(initTIMEDeposit()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
-    approve: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
     depositTIME: (amount) => dispatch(depositTIME(amount)),
     withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
     requireTIME: () => dispatch(requireTIME()),
@@ -56,7 +55,7 @@ export class DepositTokens extends PureComponent {
   static propTypes = {
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
-    approve: PropTypes.func,
+    mainApprove: PropTypes.func,
     depositTIME: PropTypes.func,
     withdrawTIME: PropTypes.func,
     requireTIME: PropTypes.func,
@@ -98,7 +97,7 @@ export class DepositTokens extends PureComponent {
   }
 
   handleApproveTIME = () => {
-    this.props.approve(this.props.token, this.state.amount, this.props.timeAddress)
+    this.props.mainApprove(this.props.token, this.state.amount, this.props.timeAddress)
     if (Number(this.state.amount) === 0) {
       this.setState({ amount: '' })
     }

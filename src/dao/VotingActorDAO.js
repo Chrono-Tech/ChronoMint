@@ -1,6 +1,5 @@
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import VoteActorABI from 'chronobank-smart-contracts/build/contracts/VoteActor.json'
 import AbstractContractDAO from './AbstractContractDAO'
+import { VoteActorABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_VOTE = 'vote'
 

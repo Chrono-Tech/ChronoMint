@@ -1,13 +1,13 @@
+import Moment, { SHORT_DATE } from 'components/common/Moment'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
+import type RewardsModel from 'models/RewardsModel'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import moment from 'moment'
+import { Translate } from 'react-redux-i18n'
 import { TIME } from 'redux/mainWallet/actions'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
-import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import './RewardsPeriod.scss'
 
 function prefix (token) {
@@ -33,7 +33,7 @@ export default class RewardsPeriod extends PureComponent {
   }
 
   render () {
-    const rewardsData = this.props.rewardsData
+    const rewardsData: RewardsModel = this.props.rewardsData
     const period = this.props.period
     const symbol = rewardsData.symbol()
     const isOngoing = period.index() === rewardsData.lastPeriodIndex()

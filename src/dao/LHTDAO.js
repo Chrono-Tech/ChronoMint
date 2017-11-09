@@ -1,8 +1,7 @@
 import type BigNumber from 'bignumber.js'
-import ChronoBankAssetWithFeeProxyABI from 'chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
-
+import { ChronoBankAssetWithFeeProxyABI } from './abi'
 /**
  * Labour Hour Test token
  * Only for intermediate development
