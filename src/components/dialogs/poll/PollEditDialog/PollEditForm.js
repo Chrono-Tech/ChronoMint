@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
+import Immutable from 'immutable'
 import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
+import PollModel from 'models/PollModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -36,10 +38,11 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch, props) {
   return {
     onSubmit: (values) => {
-      const voteLimitInTIME = values.voteLimitInTIME()
-      const poll = values.set('voteLimitInTIME', voteLimitInTIME
-        ? new BigNumber(voteLimitInTIME)
-        : null)
+      const poll = new PollModel({
+        ...values.toJS(),
+        voteLimitInTIME: new BigNumber(values.get('voteLimitInTIME')),
+        options: new Immutable.List(values.get('options')),
+      })
       dispatch(modalsClose())
       if (props.isModify) {
         dispatch(updatePoll(poll))
@@ -127,9 +130,10 @@ export default class PollEditForm extends Component {
   }
 
   render () {
+    const { isModify, handleSubmit, pristine, invalid } = this.props
     return (
-      <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='title'><Translate value={prefix(this.props.isModify ? 'editPoll' : 'newPoll')} /></div>
+      <form styleName='content' onSubmit={handleSubmit}>
+        <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
         <div styleName='body'>
           <div styleName='column'>
             <Field
@@ -186,8 +190,9 @@ export default class PollEditForm extends Component {
         <div styleName='footer'>
           <RaisedButton
             styleName='footerAction'
-            label={<Translate value={prefix(this.props.isModify ? 'updatePoll' : 'createPoll')} />}
+            label={<Translate value={prefix(isModify ? 'updatePoll' : 'createPoll')} />}
             type='submit'
+            disabled={pristine || invalid}
             primary
           />
         </div>
