@@ -207,7 +207,6 @@ export default class AbstractContractDAO {
     this._defaultBlock = block
   }
 
-  // noinspection JSUnusedGlobalSymbols
   async getData (func: string, args: Array = []): string {
     const deployed = await this.contract
     if (!deployed.contract.hasOwnProperty(func)) {
@@ -234,7 +233,7 @@ export default class AbstractContractDAO {
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call.apply(deployed, [...args, { from }])
+      return deployed[func].call.apply(null, [...args, { from }])
     } catch (e) {
       throw this._error('_call error', func, args, null, null, e)
     }
@@ -510,7 +509,14 @@ export default class AbstractContractDAO {
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_estimateGas func not found', func)
     }
-    const params = [...args, { from: this.getAccount(), value }]
+
+    // TODO @dkchv: continue here
+    const params = [...args, {
+      from: this.getAccount(),
+      value,
+      gas: 4700000,
+      // gasPrice: 100000000000
+    }]
 
     // noinspection JSUnresolvedFunction
     let gasLimit = await deployed[func].estimateGas.apply(null, params)
