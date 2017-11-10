@@ -18,20 +18,6 @@ const events = {
   WALLET_CREATED: 'WalletCreated',
 }
 
-const eventParams = {}
-eventParams[events.ERROR] = {
-  SELF: 'self',
-  ERROR_CODE: 'errorCode',
-}
-eventParams[events.WALLET_ADDED] = {
-  SELF: 'self',
-  WALLET: 'wallet',
-}
-eventParams[events.WALLET_CREATED] = {
-  SELF: 'self',
-  WALLET: 'wallet',
-}
-
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
   constructor (at) {
@@ -91,10 +77,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async createWallet (wallet: MultisigWalletModel) {
     const result = await this._tx(functions.CREATE_WALLET, [
-      wallet.owners(),
+      wallet.ownersArray(),
       wallet.requiredSignatures(),
       new BigNumber(0),
-    ], wallet)
+    ], wallet.toCreateWalletTx())
     return result.tx
   }
 

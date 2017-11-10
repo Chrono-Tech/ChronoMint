@@ -20,7 +20,7 @@ import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
-import WalletsManagerDAO from './WalletsManagerDAO'
+import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'

@@ -14,9 +14,6 @@ export const TX_CLOSE_PERIOD = 'closePeriod'
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
     super(RewardsABI, at, MultiEventsHistoryABI)
-
-    // TODO @bshevchenko: MINT-279
-    /** @namespace resultCodes.REWARD_CALCULATION_FAILED */
     this._okCodes = [resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED]
   }
 

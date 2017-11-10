@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
-import truffleContract from 'truffle-contract'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import validator from 'components/forms/validator'
+import web3Provider from 'Login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
-import web3Provider from 'Login/network/Web3Provider'
-import validator from 'components/forms/validator'
+import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 
-const DEFAULT_OK_CODES = [true]
+const DEFAULT_OK_CODES = [resultCodes.OK, true]
 
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
 
@@ -40,16 +41,7 @@ export default class AbstractContractDAO {
   _web3Provider = web3Provider
 
   /** @protected */
-  _okCodes: Array
-
-  /** @protected */
   _errorCodes: Object
-
-  /** @private */
-  static _defaultOkCodes: Array = DEFAULT_OK_CODES
-
-  /** @private */
-  static _defaultErrorCodes: Object = TX_FRONTEND_ERROR_CODES
 
   /** @protected */
   static _account: string
@@ -73,9 +65,6 @@ export default class AbstractContractDAO {
   /** @private */
   static _filterCache = {}
 
-  /** @private */
-  static _didSetup = false
-
   constructor (json = null, at = null, eventsJSON = null) {
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
@@ -85,6 +74,7 @@ export default class AbstractContractDAO {
     this._eventsJSON = eventsJSON || json
     this._eventsContract = null
     this._defaultBlock = 'latest'
+    this._okCodes = DEFAULT_OK_CODES
 
     if (json) {
       this.contract = this._initContract()
@@ -96,26 +86,14 @@ export default class AbstractContractDAO {
     this._uniqId = `${this.constructor.name}-${Math.random()}`
     AbstractContractDAO._events[this._uniqId] = []
     AbstractContractDAO._filterCache[this._uniqId] = {}
-
-    // TODO @bshevchenko: probably there is a better solution
-    const interval = setInterval(() => {
-      if (AbstractContractDAO._didSetup) {
-        this._okCodes = this._okCodes || AbstractContractDAO._defaultOkCodes
-        this._errorCodes = this._errorCodes || AbstractContractDAO._defaultErrorCodes
-        clearInterval(interval)
-      }
-    }, 10)
   }
 
   subscribeOnReset () {
     this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
 
-  static setup (userAccount: string, defaultOkCodes: Array = DEFAULT_OK_CODES, defaultErrorCodes: Object = {}) {
+  static setup (userAccount: string) {
     AbstractContractDAO._account = userAccount
-    AbstractContractDAO._defaultOkCodes = defaultOkCodes
-    AbstractContractDAO._defaultErrorCodes = { ...TX_FRONTEND_ERROR_CODES, ...defaultErrorCodes }
-    AbstractContractDAO._didSetup = true
   }
 
   getAccount () {
