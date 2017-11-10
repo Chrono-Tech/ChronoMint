@@ -27,20 +27,19 @@ export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
 
-export const loading = (isLoading = true) => dispatch => {
+export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
 }
 
-export const addError = error => dispatch => {
+export const addError = (error) => (dispatch) => {
   dispatch({ type: NETWORK_ADD_ERROR, error })
 }
 
-export const clearErrors = () => dispatch => {
+export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
 }
 
 class NetworkService extends EventEmitter {
-
   connectStore (store) {
     this._store = store
     this._dispatch = store.dispatch
@@ -61,12 +60,14 @@ class NetworkService extends EventEmitter {
 
     web3Provider.resolve()
 
-    AbstractContractDAO.setup(account, [ resultCodes.OK, true ], resultCodes)
+    AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
 
     // sync with session state
     // this unlock login
     // dispatch(createSession(account))
-    this.emit('createSession', { account, provider, network, dispatch: this._dispatch })
+    this.emit('createSession', {
+      account, provider, network, dispatch: this._dispatch,
+    })
   }
 
   async destroyNetworkSession (lastURL, isReset = true) {
@@ -89,7 +90,7 @@ class NetworkService extends EventEmitter {
 
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || ('//' + location.hostname + ':8545')))
+    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || (`//${location.hostname}:8545`)))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -120,13 +121,13 @@ class NetworkService extends EventEmitter {
     return isDeployed
   }
 
-  selectProvider = selectedProviderId => {
+  selectProvider = (selectedProviderId) => {
     const dispatch = this._dispatch
     dispatch({ type: NETWORK_SET_NETWORK, networkId: null })
     dispatch({ type: NETWORK_SET_PROVIDER, selectedProviderId })
   }
 
-  selectNetwork = selectedNetworkId => {
+  selectNetwork = (selectedNetworkId) => {
     this._dispatch({ type: NETWORK_SET_NETWORK, selectedNetworkId })
   }
 
@@ -140,7 +141,7 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [ address ] })
+    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
     this.selectAccount(address)
   }
 
@@ -171,13 +172,11 @@ class NetworkService extends EventEmitter {
     this.selectAccount(account)
   }
 
-  selectAccount = selectedAccount => {
+  selectAccount = (selectedAccount) => {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 
-  getScanner = params => {
-    return getScannerById(...params)
-  }
+  getScanner = (params) => getScannerById(...params)
 
   getProviderSettings = () => {
     const state = this._store.getState()
@@ -200,7 +199,7 @@ class NetworkService extends EventEmitter {
 
   checkMetaMask = () => {
     metaMaskResolver
-      .on('resolve', isMetaMask => {
+      .on('resolve', (isMetaMask) => {
         try {
           if (isMetaMask) {
             this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
@@ -220,7 +219,7 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || ('//' + location.hostname + ':8545')))
+    web3.setProvider(new web3.providers.HttpProvider(providerUrl || (`//${location.hostname}:8545`)))
     const web3Provider = new Web3Provider(web3)
 
     const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
