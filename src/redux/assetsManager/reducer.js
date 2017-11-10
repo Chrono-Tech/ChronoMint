@@ -20,7 +20,7 @@ import {
   SET_WATCHERS,
 } from './actions'
 
-const initialState = {
+export const initialState = {
   usersPlatforms: [],
   usersPlatformsCount: 0,
   assetsManagerCountsLoading: false,
