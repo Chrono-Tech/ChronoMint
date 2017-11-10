@@ -218,7 +218,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       const { from, to } = tx.args
       const assetsManagerDao = await contractManager.getAssetsManagerDAO()
       const managers = await assetsManagerDao.getManagers(account)
-      let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
+      let managersList = [...(tokensMap.getIn([symbol, 'managersList']) || [])]
       if (assetsManagerDao.isEmptyAddress(from)) {
         if (managersList.indexOf(to) < 0) {
           managersList.push(to)
