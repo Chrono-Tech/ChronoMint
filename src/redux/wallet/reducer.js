@@ -3,7 +3,6 @@ import * as a from './actions'
 const initialState = {
   current: null, // address
   isMultisig: false,
-  isInited: false,
 }
 
 export default (state = initialState, action) => {
