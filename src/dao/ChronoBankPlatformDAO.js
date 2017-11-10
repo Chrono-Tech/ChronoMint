@@ -1,6 +1,5 @@
-import ChronoBankPlatformABI from 'chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 import AbstractContractDAO from './AbstractContractDAO'
+import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_REVOKE_ASSET = 'revokeAsset'

@@ -1,6 +1,4 @@
 import BigNumber from 'bignumber.js'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import WalletABI from 'chronobank-smart-contracts/build/contracts/Wallet.json'
 import TokenModel from 'models/TokenModel'
 import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
@@ -8,6 +6,7 @@ import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendi
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
+import { WalletABI, MultiEventsHistoryABI } from './abi'
 
 const CODE_CONFIRMATION_NEEDED = 14014
 

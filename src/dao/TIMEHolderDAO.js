@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import TimeHolderABI from 'chronobank-smart-contracts/build/contracts/TimeHolder.json'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
+import { TimeHolderABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import type ERC20DAO from './ERC20DAO'

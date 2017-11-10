@@ -85,7 +85,7 @@
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
-    "ipfs-api": "^14.0.0",
+    "ipfs-api": "^15.0.1",
     "js-base64": "^2.1.9",
     "keythereum": "^0.5.2",
     "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider",

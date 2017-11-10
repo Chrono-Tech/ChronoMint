@@ -1,7 +1,6 @@
 import { getPlatforms, getUsersPlatforms, setTx } from 'redux/assetsManager/actions'
+import { MultiEventsHistoryABI, PlatformsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import PlatformsManagerABI from 'chronobank-smart-contracts/build/contracts/PlatformsManager.json'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
 export const TX_ATTACH_PLATFORM = 'attachPlatform'
@@ -62,17 +61,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  watchCreatePlatform (account, dispatch) {
-    this._watch(TX_PLATFORM_REQUESTED, (tx) => {
-      dispatch(setTx(tx))
-      dispatch(getUsersPlatforms())
-      dispatch(getPlatforms())
-    }, { by: account })
-
-    this._watch(TX_PLATFORM_ATTACHED, (tx) => {
-      dispatch(setTx(tx))
-      dispatch(getUsersPlatforms())
-      dispatch(getPlatforms())
-    }, { by: account })
+  watchCreatePlatform (callback, account) {
+    this._watch(TX_PLATFORM_REQUESTED, (tx) => callback(tx), { by: account })
+    this._watch(TX_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
   }
 }

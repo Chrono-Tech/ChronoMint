@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import TokenManagementInterfaceABI from 'chronobank-smart-contracts/build/contracts/TokenManagementInterface.json'
 import TokenModel from 'models/TokenModel'
+import { MultiEventsHistoryABI, TokenManagementInterfaceABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class TokenManagementExtensionDAO extends AbstractContractDAO {

@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
-import MultiEventsHistoryABI from 'chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'
-import WalletsManagerABI from 'chronobank-smart-contracts/build/contracts/WalletsManager.json'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import Immutable from 'immutable'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import multisigWalletService from 'services/MultisigWalletService'
+import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
 const functions = {
   GET_WALLETS: 'getWallets',
