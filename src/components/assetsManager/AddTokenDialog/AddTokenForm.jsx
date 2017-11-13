@@ -138,7 +138,7 @@ export default class AddTokenForm extends PureComponent {
     }
   }
 
-  handleAddNewPlatform () {
+  handleAddNewPlatform = () => {
     this.props.onClose()
     this.props.handleAddPlatformDialog()
   }

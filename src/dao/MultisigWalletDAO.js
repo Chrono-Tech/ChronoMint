@@ -133,7 +133,6 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
   }
 
   async addOwner (wallet, ownerAddress) {
-    console.log('--MultisigWalletDAO#addOwner', this)
     const result = await this._tx('addOwner', [
       ownerAddress,
     ], {

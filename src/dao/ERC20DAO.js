@@ -50,16 +50,16 @@ export default class ERC20DAO extends AbstractTokenDAO {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
-    amount = new BigNumber(amount.toString(10))
-    return amount.mul(Math.pow(10, this._decimals))
+    const amountBN = new BigNumber(amount)
+    return amountBN.mul(Math.pow(10, this._decimals))
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
-    amount = new BigNumber(amount.toString(10))
-    return amount.div(Math.pow(10, this._decimals))
+    const amountBN = new BigNumber(amount)
+    return amountBN.div(Math.pow(10, this._decimals))
   }
 
   async initMetaData () {
@@ -90,12 +90,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.removeDecimals(await this._call('allowance', [ account, spender ]))
   }
 
-  approve (account, amount: BigNumber) {
+  approve (account: string, amount: BigNumber) {
+    console.log('--ERC20DAO#approve', account, amount)
     return this._tx(TX_APPROVE, [
       account,
       this.addDecimals(amount),
     ], {
-      account, amount,
+      account,
+      // amount,
       currency: this.getSymbol(),
     })
   }
