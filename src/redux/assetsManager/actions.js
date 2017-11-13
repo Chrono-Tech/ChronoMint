@@ -33,7 +33,7 @@ export const getUsersPlatforms = () => async (dispatch, getState) => {
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
+  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
 
@@ -43,7 +43,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
 export const getPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
+  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account)
   dispatch({ type: GET_PLATFORMS, payload: { platforms } })
 }
 
@@ -85,7 +85,12 @@ export const detachPlatform = (platform) => async (dispatch) => {
 
 export const watchPlatformManager = (account) => async (dispatch) => {
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
-  platformManagerDAO.watchCreatePlatform(account, dispatch)
+  const callback = (tx) => {
+    dispatch(setTx(tx))
+    dispatch(getUsersPlatforms())
+    dispatch(getPlatforms())
+  }
+  platformManagerDAO.watchCreatePlatform(callback, account)
 }
 
 export const createAsset = (token: TokenModel) => async () => {
@@ -184,7 +189,7 @@ export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) =>
 
 export const getTransactions = () => async (dispatch, getState) => {
   dispatch({ type: GET_TRANSACTIONS_START })
-  const account = getState().get(DUCK_SESSION).account
+  const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const transactionsList = await assetsManagerDAO.getTransactions(account)
 
@@ -201,7 +206,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
 export const setManagers = (tx) => async (dispatch, getState) => {
   try {
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
-    const account = getState().get(DUCK_SESSION).account
+    const { account } = getState().get(DUCK_SESSION)
     let { tokensMap, selectedToken } = getState().get(DUCK_ASSETS_MANAGER)
     if (!tokensMap.get(symbol) || tx.args.from === account) {
       if (selectedToken === symbol) {

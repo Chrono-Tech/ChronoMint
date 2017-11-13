@@ -23,6 +23,11 @@ export class BitcoinDAO {
     return this._bitcoinProvider.getAddress()
   }
 
+  getInitAddress () {
+    // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
+    return `Bitcoin/${this._symbol}`
+  }
+
   getName () {
     return this._name
   }

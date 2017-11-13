@@ -14,7 +14,7 @@ import './UserActiveDialog.scss'
 function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
-    closeModal: () => {
+    modalsClose: () => {
       UserMonitorService.start()
       dispatch(modalsClose())
     },
@@ -25,21 +25,25 @@ function mapDispatchToProps (dispatch) {
 export default class UserActiveDialog extends PureComponent {
   static propTypes = {
     handleLogout: PropTypes.func,
-    closeModal: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   componentDidMount () {
     UserMonitorService.stop()
   }
 
-  handleTimeEnd () {
-    this.props.closeModal()
+  handleTimeEnd = () => {
+    this.handleClose()
     this.props.handleLogout()
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.closeModal()}>
+      <ModalDialog>
         <div styleName='content'>
           <div styleName='dialogHeader'>
             <div styleName='dialogHeaderStuff'>
@@ -52,7 +56,7 @@ export default class UserActiveDialog extends PureComponent {
             <Translate value='UserActiveDialog.text' />
             <Timer
               time={30}
-              onEndTimeAction={() => this.handleTimeEnd()}
+              onEndTimeAction={this.handleTimeEnd}
             />
           </div>
           <div styleName='dialogFooter'>
@@ -61,7 +65,7 @@ export default class UserActiveDialog extends PureComponent {
               label={<Translate value='UserActiveDialog.here' />}
               type='submit'
               primary
-              onClick={() => this.props.closeModal()}
+              onTouchTap={this.handleClose}
             />
           </div>
         </div>

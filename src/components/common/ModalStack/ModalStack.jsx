@@ -12,7 +12,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps)
-export class ModalStack extends PureComponent {
+class ModalStack extends PureComponent {
   static propTypes = {
     stack: PropTypes.array,
   }

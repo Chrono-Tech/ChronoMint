@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
-import multisigWalletService from 'services/MultisigWalletService'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import Immutable from 'immutable'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import multisigWalletService from 'services/MultisigWalletService'
+import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
 const functions = {
   GET_WALLETS: 'getWallets',
@@ -34,11 +35,7 @@ eventParams[events.WALLET_CREATED] = {
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/WalletsManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
-    )
+    super(WalletsManagerABI, at, MultiEventsHistoryABI)
   }
 
   // ---------- watchers ---------

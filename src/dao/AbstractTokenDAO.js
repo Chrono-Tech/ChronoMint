@@ -14,7 +14,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
+  getAccountBalance (account = this.getAccount()): BigNumber {
     throw new Error('should be overridden')
   }
 

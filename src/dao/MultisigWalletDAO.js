@@ -1,22 +1,19 @@
 import BigNumber from 'bignumber.js'
+import TokenModel from 'models/TokenModel'
 import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import TokenModel from 'models/TokenModel'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractManagerDAO from './ContractsManagerDAO'
+import { WalletABI, MultiEventsHistoryABI } from './abi'
 
 const CODE_CONFIRMATION_NEEDED = 14014
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/Wallet.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
-    )
+    super(WalletABI, at, MultiEventsHistoryABI)
     this._okCodes.push(CODE_CONFIRMATION_NEEDED)
   }
 
@@ -137,6 +134,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async addOwner (wallet, ownerAddress) {
+    console.log('--MultisigWalletDAO#addOwner', this)
     const result = await this._tx('addOwner', [
       ownerAddress,
     ], {

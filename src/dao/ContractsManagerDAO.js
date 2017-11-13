@@ -1,7 +1,7 @@
+import validator from 'components/forms/validator'
 import type Immutable from 'immutable'
 import type TokenModel from 'models/TokenModel'
-import json from 'chronobank-smart-contracts/build/contracts/ContractsManager.json'
-import validator from 'components/forms/validator'
+import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
 import ChronoBankAssetProxyDAO from './ChronoBankAssetProxyDAO'
@@ -102,34 +102,28 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ERC20_MANAGER)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getAssetsManagerDAO (): Promise<AssetsManagerDAO> {
     return this._getDAO(DAO_ASSETS_MANAGER)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   getPlatformManagerDAO (): Promise<PlatformsManagerDAO> {
     return this._getDAO(DAO_PLATFORMS_MANAGER)
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  async getChronoBankPlatformDAO (platformAddress): Promise<ChronoBankPlatformDAO> {
+  getChronoBankPlatformDAO (platformAddress): Promise<ChronoBankPlatformDAO> {
     return this._getDAO(DAO_CHRONOBANK_PLATFORM, platformAddress)
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  async getChronoBankAssetProxyDAO (token: String): Promise<ChronoBankAssetProxyDAO> {
+  getChronoBankAssetProxyDAO (token: String): Promise<ChronoBankAssetProxyDAO> {
     return this._getDAO(DAO_CHRONOBANK_ASSET_PROXY, token)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   async getFeeInterfaceDAO (address: String): Promise<FeeInterfaceDAO> {
     const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
     const latestVersion = await chronoBankAssetProxyDAO.getLatestVersion()
     return this._getDAO(DAO_FEE_INTERFACE, latestVersion)
   }
 
-  // noinspection JSUnusedGlobalSymbols
   async getTokenManagementExtensionDAO (platformAddress): Promise<TokenManagementExtensionDAO> {
     if (platformAddress) {
       const assetsManager = await this._getDAO(DAO_ASSETS_MANAGER)
@@ -141,8 +135,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
     }
   }
 
-  // noinspection JSUnusedGlobalSymbols
-  async getPlatformTokenExtensionGatewayManagerEmitterDAO (): Promise<PlatformTokenExtensionGatewayManagerEmitterDAO> {
+  getPlatformTokenExtensionGatewayManagerEmitterDAO (): Promise<PlatformTokenExtensionGatewayManagerEmitterDAO> {
     return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
   }
 
@@ -169,11 +162,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this.getERC20DAO(address)
   }
 
-  async getRewardsDAO (): Promise<RewardsDAO> {
+  getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }
 
-  async getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
+  getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
     return this._getDAO(DAO_TIME_HOLDER)
   }
 
@@ -182,15 +175,15 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return timeHolderDAO.getAssetDAO()
   }
 
-  async getPendingManagerDAO (): Promise<PendingManagerDAO> {
+  getPendingManagerDAO (): Promise<PendingManagerDAO> {
     return this._getDAO(DAO_PENDING_MANAGER)
   }
 
-  async getUserManagerDAO (): Promise<UserManagerDAO> {
+  getUserManagerDAO (): Promise<UserManagerDAO> {
     return this._getDAO(DAO_USER_MANAGER)
   }
 
-  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
+  getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
     return this._getDAO(DAO_WALLETS_MANAGER)
   }
 
@@ -205,23 +198,22 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return locManager
   }
 
-  async getVotingDAO (): Promise<VotingDAO> {
-    const dao = await this._getDAO(DAO_VOTING)
-    await dao.initMetaData()
-    return dao
+  getVotingDAO (): Promise<VotingDAO> {
+    return this._getDAO(DAO_VOTING)
   }
 
-  async getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
-    return await this._getDAO(DAO_VOTING_DETAILS)
+  getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
+    return this._getDAO(DAO_VOTING_DETAILS)
   }
 
-  async getVotingActorDAO (): Promise<VotingActorDAO> {
-    return await this._getDAO(DAO_VOTING_ACTOR)
+  getVotingActorDAO (): Promise<VotingActorDAO> {
+    return this._getDAO(DAO_VOTING_ACTOR)
   }
 
   async isContract (account): Promise<boolean> {
-    return validator.address(account) === null ?
-      await this.getCode(account) !== null : false
+    return validator.address(account) === null
+      ? await this.getCode(account) !== null
+      : false
   }
 
   subscribeOnReset () {
@@ -236,4 +228,4 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 }
 
-export default new ContractsManagerDAO(json)
+export default new ContractsManagerDAO(ContractsManagerABI)

@@ -232,9 +232,9 @@ class LoginWithOptions extends PureComponent {
     return (
       <div>
         {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+        {!!selectedNetworkId && <NetworkStatus />}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
-            <NetworkStatus />
             <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption' />}</div>
             <div>{this.renderOptions()}</div>
           </div>

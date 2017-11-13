@@ -16,6 +16,9 @@ export const bitcoinAddress = (value, required = true) => {
 }
 
 export const name = (value, required = true) => {
+  if (value && !/^[A-z]/.test(value)) {
+    return 'errors.invalidLatinString'
+  }
   if ((!value && required) || (value && value.length < 3)) {
     return 'errors.invalidLength'
   }

@@ -3,6 +3,7 @@ import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
+import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -12,7 +13,7 @@ const EVENT_APPROVAL = 'Approval'
 
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (at, json) {
-    super(json || defaultJSON, at)
+    super(json || ERC20DAODefaultABI, at)
   }
 
   isInitialized () {
@@ -64,7 +65,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   async initMetaData () {
     try {
-      const [symbol, decimals] = await Promise.all([
+      const [ symbol, decimals ] = await Promise.all([
         this._call('symbol'),
         this._callNum('decimals'),
       ])
@@ -77,24 +78,34 @@ export default class ERC20DAO extends AbstractTokenDAO {
     }
   }
 
-  totalSupply (): BigNumber {
-    return this._call('totalSupply').then((r) => this.removeDecimals(r))
+  async totalSupply (): BigNumber {
+    const totalSupply = await this._call('totalSupply')
+    return this.removeDecimals(totalSupply)
   }
 
-  async getAccountBalance (account = this.getAccount(), block = 'latest'): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('balanceOf', [account], block))
+  async getAccountBalance (account = this.getAccount()): BigNumber {
+    return this.removeDecimals(await this._call('balanceOf', [ account ]))
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('allowance', [account, spender]))
+    return this.removeDecimals(await this._call('allowance', [ account, spender ]))
   }
 
   approve (account, amount: BigNumber) {
-    return this._tx(TX_APPROVE, [account, this.addDecimals(amount)], { account, amount, currency: this.getSymbol() })
+    return this._tx(TX_APPROVE, [
+      account,
+      this.addDecimals(amount),
+    ], {
+      account, amount,
+      currency: this.getSymbol(),
+    })
   }
 
   transfer (account, amount: BigNumber) {
-    return this._tx(TX_TRANSFER, [account, this.addDecimals(amount)], {
+    return this._tx(TX_TRANSFER, [
+      account,
+      this.addDecimals(amount),
+    ], {
       account,
       amount,
       currency: this.getSymbol(),
@@ -176,207 +187,4 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
     return Promise.all(promises)
   }
-}
-
-const defaultJSON = {
-  contract_name: 'ERC20Interface',
-  abi: [
-    {
-      constant: false,
-      inputs: [
-        {
-          name: '_spender',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
-      ],
-      name: 'approve',
-      outputs: [
-        {
-          name: 'success',
-          type: 'bool',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: true,
-      inputs: [],
-      name: 'totalSupply',
-      outputs: [
-        {
-          name: 'supply',
-          type: 'uint256',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: false,
-      inputs: [
-        {
-          name: '_from',
-          type: 'address',
-        },
-        {
-          name: '_to',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
-      ],
-      name: 'transferFrom',
-      outputs: [
-        {
-          name: 'success',
-          type: 'bool',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: true,
-      inputs: [],
-      name: 'decimals',
-      outputs: [
-        {
-          name: '',
-          type: 'uint8',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: true,
-      inputs: [
-        {
-          name: '_owner',
-          type: 'address',
-        },
-      ],
-      name: 'balanceOf',
-      outputs: [
-        {
-          name: 'balance',
-          type: 'uint256',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: true,
-      inputs: [],
-      name: 'symbol',
-      outputs: [
-        {
-          name: '',
-          type: 'string',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: false,
-      inputs: [
-        {
-          name: '_to',
-          type: 'address',
-        },
-        {
-          name: '_value',
-          type: 'uint256',
-        },
-      ],
-      name: 'transfer',
-      outputs: [
-        {
-          name: 'success',
-          type: 'bool',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      constant: true,
-      inputs: [
-        {
-          name: '_owner',
-          type: 'address',
-        },
-        {
-          name: '_spender',
-          type: 'address',
-        },
-      ],
-      name: 'allowance',
-      outputs: [
-        {
-          name: 'remaining',
-          type: 'uint256',
-        },
-      ],
-      payable: false,
-      type: 'function',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          name: 'from',
-          type: 'address',
-        },
-        {
-          indexed: true,
-          name: 'to',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256',
-        },
-      ],
-      name: 'Transfer',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          name: 'from',
-          type: 'address',
-        },
-        {
-          indexed: true,
-          name: 'spender',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          name: 'value',
-          type: 'uint256',
-        },
-      ],
-      name: 'Approval',
-      type: 'event',
-    },
-  ],
-  unlinked_binary: '0x',
-  networks: {},
-  schema_version: '0.0.5',
-  updated_at: 1500881309403,
 }
