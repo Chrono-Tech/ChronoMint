@@ -129,11 +129,7 @@ $media-sizes: (
 }
 
 @mixin ellipsis {
-  flex: 1;
+  white-space: nowrap;
   overflow: hidden;
-  > div {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
+  text-overflow: ellipsis;
 }
