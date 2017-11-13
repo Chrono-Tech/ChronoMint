@@ -1,56 +1,53 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { changeMomentLocale } from 'redux/ui/locale'
-
 import { DropDownMenu, MenuItem } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import i18n from 'i18n'
+import { changeMomentLocale } from 'redux/ui/locale'
+import styles from './styles'
 
-import styles from '../styles'
 import './LocaleDropDown.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class LocaleDropDown extends React.Component {
-
+export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
-    handleChangeLocale: PropTypes.func
+    handleChangeLocale: PropTypes.func,
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      open: false
+      open: false,
     }
   }
 
   render () {
-
     const locales = Object.entries(i18n).map(([name, dictionary]) => ({
       name,
-      title: dictionary.title
+      title: dictionary.title,
     }))
 
     return (
       <DropDownMenu
         styleName='LocaleDropDown'
-        labelStyle={styles.brand.localeDropDown.labelStyle}
-        iconStyle={styles.brand.localeDropDown.iconStyle}
-        underlineStyle={{border: 0}} value={this.props.locale}
-        onChange={(e, i, value) => this.props.handleChangeLocale(value)}>
+        labelStyle={styles.labelStyle}
+        iconStyle={styles.iconStyle}
+        underlineStyle={{ border: 0 }}
+        value={this.props.locale}
+        onChange={(e, i, value) => this.props.handleChangeLocale(value)}
+      >
         {locales.map((item) =>
-          <MenuItem value={item.name} key={item.name} primaryText={item.title} />
-        )}
+          <MenuItem value={item.name} key={item.name} primaryText={item.title} />)}
       </DropDownMenu>
     )
   }
-
 }
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
@@ -58,6 +55,6 @@ function mapDispatchToProps (dispatch) {
   return {
     handleChangeLocale: (locale) => {
       changeMomentLocale(locale, dispatch)
-    }
+    },
   }
 }

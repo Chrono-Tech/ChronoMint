@@ -1,9 +1,9 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import ReactDOM from 'react-dom'
 import RaisedButton from 'material-ui/RaisedButton'
+import React, { PureComponent } from 'react'
+import ReactDOM from 'react-dom'
 
-class UploadButton extends React.Component {
+class UploadButton extends PureComponent {
   openFileDialog () {
     // TODO Don't use ReactDOM
     // eslint-disable-next-line
@@ -34,14 +34,16 @@ class UploadButton extends React.Component {
       <div>
         <RaisedButton
           label={this.props.label}
-          onClick={this.openFileDialog.bind(this)}/>
+          onClick={this.openFileDialog.bind(this)}
+        />
         <input
           type='file'
           multiple={this.props.multi}
-          ref={i => { this.fileInput = i }}
-          style={{display: 'none'}}
+          ref={(i) => { this.fileInput = i }}
+          style={{ display: 'none' }}
           accept={this.props.accept}
-          onChange={this.handleFile.bind(this)}/>
+          onChange={this.handleFile.bind(this)}
+        />
       </div>
     )
   }
@@ -52,14 +54,14 @@ UploadButton.propTypes = {
   label: PropTypes.any,
   multi: PropTypes.bool,
   onUpload: PropTypes.func.isRequired,
-  passBase64: PropTypes.bool
+  passBase64: PropTypes.bool,
 }
 
 UploadButton.defaultProps = {
   label: 'Upload Contract',
   multi: false,
   accept: null,
-  passBase64: false
+  passBase64: false,
 }
 
 export default UploadButton

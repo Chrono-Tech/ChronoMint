@@ -1,53 +1,54 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
-import BrandLogo from '../BrandLogo/BrandLogo'
-import menu from 'menu'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
-
+import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import inversedTheme from 'styles/themes/inversed'
-import styles from '../styles'
-import './BrandPartial.scss'
+import menu from 'menu'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import Rates from 'components/common/Rates/index'
+import BrandLogo from '../BrandLogo/BrandLogo'
+import styles from '../styles'
+
+import './BrandPartial.scss'
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class BrandPartial extends React.Component {
-
+export default class BrandPartial extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     handleChangeLocale: PropTypes.func,
     toggleBrandPartial: PropTypes.func,
-    open: PropTypes.bool
+    open: PropTypes.bool,
   }
 
   render () {
-    const {locale, open} = this.props
+    const { locale, open } = this.props
 
     return (
       <div styleName='root' className='BrandPartial__root'>
         <div styleName='row'>
           <div styleName='heading'>
-            <h1 styleName='title'><BrandLogo styleName='brand'/></h1>
+            <h1 styleName='title'><BrandLogo styleName='brand' /></h1>
             <div styleName='subtitle'>{require('../../../../package.json').version}</div>
           </div>
           <ul styleName='items' key={locale}>
-            {menu.global.map(item => (
+            {menu.global.map((item) => (
               <li styleName='itemsItem' key={item.key}>
                 <a
                   styleName='itemsLink'
                   href={item.path}
                   target='_blank'
-                  rel='noopener noreferrer'>{I18n.t(item.title)}</a>
+                  rel='noopener noreferrer'
+                >{I18n.t(item.title)}
+                </a>
               </li>
             ))}
           </ul>
           <MuiThemeProvider muiTheme={inversedTheme}>
             <ul styleName='actions'>
               <li>
-                <LocaleDropDown/>
+                <LocaleDropDown />
               </li>
             </ul>
           </MuiThemeProvider>
@@ -55,7 +56,7 @@ export default class BrandPartial extends React.Component {
         {open
           ? (
             <div styleName='row when-open'>
-              <Rates/>
+              <Rates />
             </div>
           )
           : null
@@ -77,13 +78,13 @@ export default class BrandPartial extends React.Component {
 function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
-    open: state.get('ui').open
+    open: state.get('ui').open,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    toggleBrandPartial: (open) => dispatch({type: OPEN_BRAND_PARTIAL, payload: {open}})
+    toggleBrandPartial: (open) => dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } }),
   }
 }
 

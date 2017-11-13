@@ -1,0 +1,63 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+.root {
+  width: 544px;
+  background-color: $color-white;
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.header {
+  background: $color-primary-1;
+  min-height: 180px;
+  padding: 24px 16px;
+  color: $color-white;
+  font-size: 34px;
+}
+
+.content {
+  padding: 24px 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.iconBox {
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+
+  @include xs-only {
+    display: none;
+  }
+}
+
+.address {
+  @include ellipsis;
+  flex-grow: 1;
+  font-size: 12px;
+  margin: 0 10px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  color: $color-primary-0;
+  cursor: pointer;
+
+  @include xs-only {
+    margin-left: 10px;
+  }
+}

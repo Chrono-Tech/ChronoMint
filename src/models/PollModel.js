@@ -1,7 +1,5 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
   hash: null,
@@ -15,9 +13,8 @@ class PollModel extends abstractFetchingModel({
   files: null, // hash
   active: false,
   status: false,
-  isTransaction: false
+  isTransaction: false,
 }) {
-
   constructor (data = {}) {
     super({
       ...data,
@@ -75,16 +72,6 @@ class PollModel extends abstractFetchingModel({
       finishedDate: this.deadline(),
     }
   }
-}
-
-export const validate = values => {
-  const errors = {}
-  errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
-  errors.files = ErrorList.toTranslate(validator.validIpfsFileList(values.get('files')))
-  return errors
-}
-
-export const asyncValidate = (/*values, dispatch*/) => {
 }
 
 export default PollModel

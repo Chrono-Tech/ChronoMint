@@ -1,5 +1,5 @@
-import React from 'react'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'
@@ -11,7 +11,7 @@ const DONE = 'notices.operations.done'
 
 export default class OperationNoticeModel extends abstractNoticeModel({
   operation: null,
-  isRevoked: false
+  isRevoked: false,
 }) {
   operation (): OperationModel {
     return this.get('operation')
@@ -29,7 +29,6 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     return I18n.t('notices.operations.title')
   }
 
-
   _status () {
     if (this.operation().isCancelled()) {
       return CANCELLED
@@ -43,7 +42,7 @@ export default class OperationNoticeModel extends abstractNoticeModel({
 
   message () {
     return I18n.t(this._status(), {
-      remained: this.operation().remained()
+      remained: this.operation().remained(),
     })
   }
 
@@ -56,13 +55,13 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   details () {
     const details = [
       { label: I18n.t('notices.operations.details.operation'), value: I18n.t(this.tx().func()) },
-      ...this.tx().details()
+      ...this.tx().details(),
     ]
     const hash = this.tx().hash()
     if (hash) {
       details.push({
         label: I18n.t('notices.operations.details.hash'),
-        value: hash
+        value: hash,
       })
     }
     return details
@@ -78,8 +77,8 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     return (
       <div>
         {this._status()}
-        {this.operation().tx().description(false, {marginTop: '10px'})}
-        <p style={{marginBottom: '0'}}>
+        {this.operation().tx().description(false, { marginTop: '10px' })}
+        <p style={{ marginBottom: '0' }}>
           <small>{this.date()}</small>
         </p>
       </div>

@@ -1,97 +1,104 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { RaisedButton, CircularProgress } from 'material-ui'
-import { integerWithDelimiter } from 'utils/formatter'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { getEtherscanUrl } from 'network/settings'
+import React, { PureComponent } from 'react'
+import { RaisedButton, CircularProgress, Paper } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import { getEtherscanUrl } from 'Login/network/settings'
 import moment from 'moment'
+import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import { integerWithDelimiter } from 'utils/formatter'
 
 import './TransactionsTable.scss'
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
 @connect(mapStateToProps)
-export default class TransactionsTable extends React.Component {
-
+export default class TransactionsTable extends PureComponent {
   static propTypes = {
     tokens: PropTypes.object,
     onLoadMore: PropTypes.func,
-    isFetching: PropTypes.bool,
     transactions: PropTypes.object,
-    endOfList: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   render () {
-    const data = buildTableData(this.props.transactions, this.props.locale)
+    const { transactions, locale } = this.props
+    const size = transactions.size()
+    const endOfList = transactions.endOfList()
+    const isFetching = transactions.isFetching()
+    const data = buildTableData(transactions.list(), locale)
 
     return (
-      <div styleName='root'>
-        <div styleName='header'>
-          <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
-        </div>
-        <div styleName='content'>
-          {this.props.transactions.size ? <div styleName='table'>
-            <div styleName='table-head'>
-              <div styleName='row'>
-                <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
-                <div styleName='col-block'><Translate value='components.dashboard.TransactionsTable.block' /></div>
-                <div styleName='col-type'><Translate value='components.dashboard.TransactionsTable.type' /></div>
-                <div styleName='col-txid'><Translate value='components.dashboard.TransactionsTable.hash' /></div>
-                <div styleName='col-from'><Translate value='components.dashboard.TransactionsTable.from' /></div>
-                <div styleName='col-to'><Translate value='components.dashboard.TransactionsTable.to' /></div>
-                <div styleName='col-value'><Translate value='components.dashboard.TransactionsTable.value' /></div>
-              </div>
-            </div>
-          </div> : ''}
-          {!this.props.transactions.size && this.props.endOfList ? <div styleName='section'>
-            <div styleName='section-header'>
-              <h5 styleName='no-transactions'>No transactions found.</h5>
-            </div>
-          </div> : ''}
-          {!this.props.transactions.size && !this.props.endOfList ? <div styleName='section'>
-            <div styleName='section-header'>
-              <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
-            </div>
-          </div> : ''}
-          {data.map((group, index) => (
-            <div styleName='section' key={index}>
-              <div styleName='section-header'>
-                <h5>{group.dateTitle}</h5>
-              </div>
-              <div styleName='table'>
-                <div styleName='table-body'>
-                  {group.transactions.map((item, index) => this.renderRow(item, index))}
+      <Paper>
+        <div styleName='root'>
+          <div styleName='header'>
+            <h3><Translate value='components.dashboard.TransactionsTable.latestTransactions' /></h3>
+          </div>
+          <div styleName='content'>
+            {size ? <div styleName='table'>
+              <div styleName='table-head'>
+                <div styleName='row'>
+                  <div styleName='col-time'><Translate value='components.dashboard.TransactionsTable.time' /></div>
+                  <div styleName='col-block'><Translate value='components.dashboard.TransactionsTable.block' /></div>
+                  <div styleName='col-type'><Translate value='components.dashboard.TransactionsTable.type' /></div>
+                  <div styleName='col-txid'><Translate value='components.dashboard.TransactionsTable.hash' /></div>
+                  <div styleName='col-from'><Translate value='components.dashboard.TransactionsTable.from' /></div>
+                  <div styleName='col-to'><Translate value='components.dashboard.TransactionsTable.to' /></div>
+                  <div styleName='col-value'><Translate value='components.dashboard.TransactionsTable.value' /></div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        {this.props.endOfList || !this.props.transactions.size ? null : (
-          <div styleName='footer'>
-            <RaisedButton
-              label={this.props.isFetching ? <CircularProgress
-                style={{verticalAlign: 'middle', marginTop: -2}} size={24}
-                thickness={1.5} /> : 'Load More'}
-              primary
-              disabled={this.props.isFetching}
-              onTouchTap={() => this.props.onLoadMore()} />
+            </div> : ''}
+            {!size && endOfList ? <div styleName='section'>
+              <div styleName='section-header'>
+                <h5 styleName='no-transactions'>No transactions found.</h5>
+              </div>
+            </div> : ''}
+            {!size && !endOfList ? <div styleName='section'>
+              <div styleName='section-header'>
+                <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
+              </div>
+            </div> : ''}
+            {data.map((group, index) => (
+              <div styleName='section' key={index}>
+                <div styleName='section-header'>
+                  <h5>{group.dateTitle}</h5>
+                </div>
+                <div styleName='table'>
+                  <div styleName='table-body'>
+                    {group.transactions.map((item, index) => this.renderRow(item, index))}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+          {endOfList || !size ? null : (
+            <div styleName='footer'>
+              <RaisedButton
+                label={isFetching ? <CircularProgress
+                  style={{ verticalAlign: 'middle', marginTop: -2 }}
+                  size={24}
+                  thickness={1.5}
+                /> : 'Load More'}
+                primary
+                disabled={isFetching}
+                onTouchTap={() => this.props.onLoadMore()}
+              />
+            </div>
+          )}
+        </div>
+      </Paper>
     )
   }
 
-  renderRow ({timeTitle, trx}, index) {
+  renderRow ({ timeTitle, trx }, index) {
     const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     return (
       <div styleName='row' key={index}>
@@ -160,15 +167,15 @@ function buildTableData (transactions, locale) {
   const groups = transactions.valueSeq().toArray()
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
-      data[groupBy] = data[groupBy] || {
+      data[ groupBy ] = data[ groupBy ] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
-        transactions: []
+        transactions: [],
       }
-      data[groupBy].transactions.push({
+      data[ groupBy ].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
-        timeTitle: trx.date('HH:mm')
+        timeTitle: trx.date('HH:mm'),
       })
       return data
     }, {})
@@ -177,6 +184,6 @@ function buildTableData (transactions, locale) {
     .sort((a, b) => a.dateBy > b.dateBy ? -1 : a.dateBy < b.dateBy)
     .map((group) => ({
       ...group,
-      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy)
+      transactions: group.transactions.sort((a, b) => a.timeBy > b.timeBy ? -1 : a.timeBy < b.timeBy),
     }))
 }

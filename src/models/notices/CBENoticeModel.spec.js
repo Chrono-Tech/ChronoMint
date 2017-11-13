@@ -1,16 +1,16 @@
-import CBENoticeModel from './CBENoticeModel'
-import CBEModel from '../CBEModel'
-import ProfileModel from '../ProfileModel'
 import moment from 'moment'
+import CBEModel from '../CBEModel'
+import CBENoticeModel from './CBENoticeModel'
+import ProfileModel from '../ProfileModel'
 
 const model = new CBENoticeModel({
   cbe: new CBEModel({
     user: new ProfileModel({
       name: 'John',
       email: 'test@chronobank.io',
-      company: 'ChronoBank'
-    })
-  })
+      company: 'ChronoBank',
+    }),
+  }),
 })
 
 describe('cbe notice', () => {

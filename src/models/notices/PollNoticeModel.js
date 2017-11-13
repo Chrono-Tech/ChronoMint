@@ -1,6 +1,6 @@
+import { I18n } from 'react-redux-i18n'
 import React from 'react'
 import type PollDetailsModel from 'models/PollDetailsModel'
-import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_CREATED = 'isCreated'
@@ -14,9 +14,8 @@ export default class PollNoticeModel extends abstractNoticeModel({
   pollId: null,
   poll: null,
   status: null,
-  transactionHash: null
+  transactionHash: null,
 }) {
-
   icon () {
     return (<i className='material-icons'>poll</i>)
   }
@@ -45,7 +44,7 @@ export default class PollNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = 'notices.polls.' + this.get('status')
+    const message = `notices.polls.${this.get('status')}`
     return I18n.t(message)
   }
 }

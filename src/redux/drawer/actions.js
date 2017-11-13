@@ -2,5 +2,5 @@
 export const DRAWER_TOGGLE = 'drawer/TOGGLE'
 
 export const drawerToggle = () => (dispatch) => {
-  dispatch({type: DRAWER_TOGGLE})
+  dispatch({ type: DRAWER_TOGGLE })
 }

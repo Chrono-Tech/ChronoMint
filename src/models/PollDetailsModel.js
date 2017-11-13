@@ -11,9 +11,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
   timeDAO: null,
   totalSupply: new BigNumber(0),
   shareholdersCount: new BigNumber(0),
-  files: Immutable.List()
+  files: Immutable.List(),
 }) {
-
   poll () {
     return this.get('poll')
   }
@@ -59,7 +58,6 @@ export default class PollDetailsModel extends abstractFetchingModel({
   }
 
   details () {
-
     const poll = this.get('poll')
     const endDate = poll.deadline()
     const published = poll.published()
@@ -89,7 +87,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
       totalSupply: this.totalSupply(),
       votedCount,
       shareholdersCount,
-      percents
+      percents,
     }
   }
 }

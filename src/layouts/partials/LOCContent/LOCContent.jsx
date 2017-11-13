@@ -1,29 +1,30 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { CircularProgress } from 'material-ui'
-import { getLOCs } from 'redux/locs/actions'
-import Search from 'components/locs/Search'
-import PageTitle from 'components/locs/PageTitle'
-import LOCItem from 'components/locs/LOCItem/LOCItem'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import type LOCModel from 'models/LOCModel'
+import { getLOCs } from 'redux/locs/actions'
+import LOCItem from 'components/locs/LOCItem/LOCItem'
+import PageTitle from 'components/locs/PageTitle'
+import Search from 'components/locs/Search'
+
 import './LOCContent.scss'
 
 const mapStateToProps = (state) => state.get('locs')
 
 const mapDispatchToProps = (dispatch) => ({
-  getLOCs: () => dispatch(getLOCs())
+  getLOCs: () => dispatch(getLOCs()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LOCContent extends React.Component {
+class LOCContent extends PureComponent {
   static propTypes = {
     locs: PropTypes.object,
     filter: PropTypes.string,
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    getLOCs: PropTypes.func
+    getLOCs: PropTypes.func,
   }
 
   componentWillMount () {
@@ -33,7 +34,7 @@ class LOCContent extends React.Component {
   }
 
   render () {
-    const {locs, filter} = this.props
+    const { locs, filter } = this.props
 
     return !this.props.isFetched
       ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
@@ -45,8 +46,8 @@ class LOCContent extends React.Component {
 
           <div styleName='grid'>
             {locs
-              .filter(loc => loc.name().toLowerCase().indexOf(filter) > -1)
-              .sortBy(loc => -loc.createDate())
+              .filter((loc) => loc.name().toLowerCase().indexOf(filter) > -1)
+              .sortBy((loc) => -loc.createDate())
               .map((loc: LOCModel, key) => (
                 <div key={key} styleName='item'>
                   <LOCItem loc={loc} />

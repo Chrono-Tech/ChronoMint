@@ -12,7 +12,7 @@ export default {
     disabled: 'Disabled',
     depositOfWithdrawTime: 'Deposit Or Withdraw Time',
     withdrawRevenue: 'Withdraw Revenue',
-    closePeriod: 'Close period'
+    closePeriod: 'Close period',
   },
   ru: {
     rewards: 'Награды',
@@ -27,7 +27,7 @@ export default {
     disabled: 'Отключено',
     depositOfWithdrawTime: 'Внести Или Вывысни Time',
     withdrawRevenue: 'Вывести Доход',
-    closePeriod: 'Закрыть период'
+    closePeriod: 'Закрыть период',
   },
 }
 

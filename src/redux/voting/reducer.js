@@ -12,7 +12,7 @@ const initialState = {
   voteLimitInTIME: null,
   list: new Immutable.Map(),
   isFetching: false,
-  isFetched: false
+  isFetched: false,
 }
 
 export default (state = initialState, action) => {
@@ -20,19 +20,19 @@ export default (state = initialState, action) => {
     case POLLS_VOTE_LIMIT:
       return {
         ...state,
-        voteLimitInTIME: action.voteLimitInTIME
+        voteLimitInTIME: action.voteLimitInTIME,
       }
     case POLLS_LOAD:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       }
     case POLLS_LIST:
       return {
         ...state,
         isFetching: false,
         isFetched: true,
-        list: new Immutable.Map(action.list)
+        list: new Immutable.Map(action.list),
       }
     case POLLS_CREATE:
       return {
@@ -41,7 +41,7 @@ export default (state = initialState, action) => {
           .set(
             action.poll.poll().id(),
             action.poll
-          )
+          ),
       }
     case POLLS_REMOVE_STUB:
       return {
@@ -50,7 +50,7 @@ export default (state = initialState, action) => {
           .filter((poll) => {
             const hash = poll.transactionHash()
             return hash === null || hash !== action.transactionHash
-          })
+          }),
       }
     case POLLS_UPDATE:
       return {
@@ -58,14 +58,12 @@ export default (state = initialState, action) => {
         list: state.list.set(
           action.poll.poll().id(),
           action.poll
-        )
+        ),
       }
     case POLLS_REMOVE:
       return {
         ...state,
-        list: state.list.delete(
-          action.id
-        )
+        list: state.list.delete(action.id),
       }
     default:
       return state

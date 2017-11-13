@@ -1,11 +1,11 @@
-import type TokenModel from 'models/TokenModel'
 import BigNumber from 'bignumber.js'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import type LOCManagerDAO from 'dao/LOCManagerDAO'
+import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel from 'models/notices/LOCNoticeModel'
-import type LOCManagerDAO from 'dao/LOCManagerDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import type TokenModel from 'models/TokenModel'
 import { notify } from 'redux/notifier/actions'
-import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -16,23 +16,21 @@ export const LOC_UPDATE = 'loc/UPDATE'
 export const LOC_REMOVE = 'loc/REMOVE'
 
 const handleLOCUpdate = (loc: LOCModel, notice: LOCNoticeModel) => (dispatch) => {
-  dispatch({type: LOC_REMOVE, name: loc.oldName()})
-  dispatch({type: LOC_UPDATE, loc})
+  dispatch({ type: LOC_REMOVE, name: loc.oldName() })
+  dispatch({ type: LOC_UPDATE, loc })
   dispatch(notify(notice))
 }
 
 const handleLOCRemove = (name: string, notice: LOCNoticeModel) => (dispatch) => {
-  dispatch({type: LOC_REMOVE, name})
+  dispatch({ type: LOC_REMOVE, name })
   dispatch(notify(notice))
 }
 
 const handleError = (e, loc) => (dispatch) => {
-  // for debug
-  // console.log('--actions#', e)
   if (e.code === TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
-    dispatch({type: LOC_UPDATE, loc: loc.isPending(false)})
+    dispatch({ type: LOC_UPDATE, loc: loc.isPending(false) })
   } else {
-    dispatch({type: LOC_UPDATE, loc: loc.isFailed(true)})
+    dispatch({ type: LOC_UPDATE, loc: loc.isFailed(true) })
   }
 }
 
@@ -50,25 +48,25 @@ export const watchInitLOC = () => async (dispatch) => {
 }
 
 export const getLOCs = () => async (dispatch) => {
-  dispatch({type: LOCS_LIST_FETCH})
+  dispatch({ type: LOCS_LIST_FETCH })
   const locManagerDAO: LOCManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
   const locs = await locManagerDAO.getLOCs()
-  dispatch({type: LOCS_LIST, locs})
+  dispatch({ type: LOCS_LIST, locs })
 }
 
 export const addLOC = (loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_CREATE, loc})
+  dispatch({ type: LOC_CREATE, loc })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.addLOC(loc)
   } catch (e) {
-    dispatch({type: LOC_REMOVE, name: loc.name()})
+    dispatch({ type: LOC_REMOVE, name: loc.name() })
   }
 }
 
 export const updateLOC = (loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_REMOVE, name: loc.oldName()})
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  dispatch({ type: LOC_REMOVE, name: loc.oldName() })
+  dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
 
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
@@ -79,7 +77,7 @@ export const updateLOC = (loc: LOCModel) => async (dispatch) => {
 }
 
 export const removeLOC = (loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.removeLOC(loc)
@@ -89,7 +87,7 @@ export const removeLOC = (loc: LOCModel) => async (dispatch) => {
 }
 
 export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.issueAsset(amount, loc)
@@ -109,7 +107,7 @@ export const sendAsset = (token: TokenModel, to: string, value: string) => async
 }
 
 export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.updateStatus(status, loc)
@@ -119,7 +117,7 @@ export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) 
 }
 
 export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
-  dispatch({type: LOC_UPDATE, loc: loc.isPending(true)})
+  dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.revokeAsset(amount, loc)
@@ -129,5 +127,5 @@ export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) =
 }
 
 export const updateLOCFilter = (filter) => (dispatch) => {
-  dispatch({type: LOCS_UPDATE_FILTER, filter})
+  dispatch({ type: LOCS_UPDATE_FILTER, filter })
 }

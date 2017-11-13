@@ -1,7 +1,8 @@
 // TODO new exchange
 /* eslint-disable */
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+
 import { getTransactions } from '../../../redux/exchange/actions'
 import Transactions from '../../common/Transactions/Transactions'
 
@@ -12,7 +13,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ExchangeTransactionsWidget extends Component {
+class ExchangeTransactionsWidget extends PureComponent {
   componentWillMount () {
     if (!this.props.isFetched) {
       this.props.getTransactions()

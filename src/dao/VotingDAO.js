@@ -1,9 +1,9 @@
-import ipfs from 'utils/IPFS'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-
+import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
-import PollNoticeModel, { IS_CREATED, IS_UPDATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import ipfs from 'utils/IPFS'
+import { PollManagerABI, MultiEventsHistoryABI } from './abi'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_CREATE_POLL = 'NewPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -19,26 +19,13 @@ const EVENT_VOTE_CREATED = 'VoteCreated'
 
 export default class VotingDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PollManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
-    this._voteLimit = null
-    this.initMetaData()
+    super(PollManagerABI, at, MultiEventsHistoryABI)
   }
 
-  async initMetaData () {
+  async getVoteLimit () {
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const voteLimit = await this._call('getVoteLimit')
-    this.setVoteLimit(voteLimit)
-  }
-
-  setVoteLimit (voteLimit: string) {
-    this._voteLimit = voteLimit
-  }
-
-  getVoteLimit () {
-    return this._voteLimit
+    return timeDAO.removeDecimals(voteLimit)
   }
 
   async createPoll (poll: PollModel) {
@@ -62,29 +49,26 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       [],
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
-      poll.deadline().getTime() / 1000
+      poll.deadline().getTime(),
     ], poll)
     return tx.tx
-    // TODO @ipavlenko: Better to have an ID in the response here and return
-    // persisted PollModel. Think about returning from the contract both error
-    // code and persisted ID.
   }
 
   removePoll (id) {
     return this._tx(TX_REMOVE_POLL, [
-      id
+      id,
     ])
   }
 
   activatePoll (pollId) {
     return this._multisigTx(TX_ACTIVATE_POLL, [
-      pollId
+      pollId,
     ])
   }
 
   endPoll (pollId) {
     return this._multisigTx(TX_ADMIN_END_POLL, [
-      pollId
+      pollId,
     ])
   }
 
@@ -92,14 +76,12 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
   _watchCallback = (callback, status) => async (result) => {
     const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
     const poll = await detailsDAO.getPollDetails(result.args.pollId)
-    callback(
-      new PollNoticeModel({
-        pollId: result.args.pollId.toNumber(), // just a long
-        poll,
-        status,
-        transactionHash: result.transactionHash
-      })
-    )
+    callback(new PollNoticeModel({
+      pollId: result.args.pollId.toNumber(), // just a long
+      poll,
+      status,
+      transactionHash: result.transactionHash,
+    }))
   }
 
   async watchActivated (callback) {

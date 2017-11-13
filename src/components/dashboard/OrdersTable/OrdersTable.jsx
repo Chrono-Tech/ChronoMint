@@ -1,28 +1,23 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
 import { RaisedButton } from 'material-ui'
-
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import type ExchangeOrderModel from 'models/ExchangeOrderModel'
-
-import TokenValue from 'components/common/TokenValue/TokenValue'
-
 import { modalsOpen } from 'redux/modals/actions'
 import BuyTokensDialog from 'components/dialogs/BuyTokensDialog'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './OrdersTable.scss'
 
 function prefix (token) {
-  return 'components.dashboard.OrdersTable.' + token
+  return `components.dashboard.OrdersTable.${token}`
 }
 
-export class OrdersTable extends React.Component {
-
+export class OrdersTable extends PureComponent {
   static propTypes = {
     orders: PropTypes.object,
-    openDetails: PropTypes.func
+    openDetails: PropTypes.func,
   }
 
   constructor (props) {
@@ -44,23 +39,22 @@ export class OrdersTable extends React.Component {
                 <div styleName='colTrader'><Translate value={prefix('trader')} /></div>
                 <div styleName='colDescription'><Translate value={prefix('paymentDescription')} /></div>
                 <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
-                <div styleName='colActions'/>
+                <div styleName='colActions' />
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.orders.valueSeq().map(order => this.renderRow(order))}
+              {this.props.orders.valueSeq().map((order) => this.renderRow(order))}
             </div>
           </div>
         </div>
-        {/*<div styleName='footer'>
+        {/* <div styleName='footer'>
           <RaisedButton label='All Offers' primary />
-        </div>*/}
+        </div> */}
       </div>
     )
   }
 
   renderRow (order: ExchangeOrderModel) {
-
     this.orderIndex++
 
     return (
@@ -74,10 +68,14 @@ export class OrdersTable extends React.Component {
           />
         </div>
         <div styleName='colActions'>
-          <RaisedButton label={order.isBuy() ? 'Buy' : 'Sell'} disabled={order.limit().lte(0)} onTouchTap={(e) => {
-            e.stopPropagation()
-            this.props.openDetails(order)
-          }} />
+          <RaisedButton
+            label={order.isBuy() ? 'Buy' : 'Sell'}
+            disabled={order.limit().lte(0)}
+            onTouchTap={(e) => {
+              e.stopPropagation()
+              this.props.openDetails(order)
+            }}
+          />
         </div>
       </div>
     )
@@ -86,7 +84,7 @@ export class OrdersTable extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    orders: state.get('exchange').orders
+    orders: state.get('exchange').orders,
   }
 }
 
@@ -95,10 +93,11 @@ function mapDispatchToProps (dispatch) {
     openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
       component: BuyTokensDialog,
       props: {
-        order
-      }
-    }))
+        order,
+      },
+    })),
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrdersTable)
+

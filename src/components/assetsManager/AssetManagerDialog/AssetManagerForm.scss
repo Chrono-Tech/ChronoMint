@@ -1,0 +1,131 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+@mixin verticalCenter() {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  width: 544px;
+  background-color: $color-white;
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: $color-white;
+}
+
+.dialogHeaderStuff {
+  display: flex;
+  flex-direction: row;
+  height: 24px;
+}
+
+.dialogHeaderTitle {
+  color: $color-white;
+  min-width: 300px;
+  font-size: 34px;
+}
+
+.dialogBody {
+  padding: 0 16px 48px;
+}
+
+.managersList {
+
+}
+
+.managersListFieldRow {
+  @include verticalCenter;
+  justify-content: space-between;
+  padding: 4px 8px;
+}
+
+.managersListRow {
+  @include verticalCenter;
+  justify-content: space-between;
+  padding: 4px 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: $color-primary-light;
+  }
+}
+
+.managersListIcon {
+  @include verticalCenter;
+  width: 32px;
+  height: 32px;
+  color: $color-primary-1;
+  flex: .1;
+  @include xs-only {
+    flex: .2;
+  }
+  > i {
+    font-size: 32px;
+  }
+}
+
+.managersListFieldAddress {
+  @include verticalCenter;
+  position: relative;
+  font-size: 12px;
+  color: $color-primary-0;
+  width: 305px;
+}
+
+.managerAddress {
+  margin-left: 10px;
+}
+
+.managersListAddress {
+  @include verticalCenter;
+  font-size: 12px;
+  color: $color-primary-0;
+  width: calc(100% - 35px);
+}
+
+.managersListAction {
+  @include verticalCenter;
+  opacity: 0.6;
+  color: $color-primary-0;
+  @include xs-only {
+    margin-left: 10px;
+  }
+}
+
+.addManagerButton {
+  @include xs-only {
+    width: 32px;
+    height: 32px;
+    border-radius: 80px;
+    background-color: $color-secondary;
+  }
+}
+
+.ellipsis {
+  @include ellipsis;
+}
+
+.xs-hide {
+  @include xs-only {
+    display: none !important;
+  }
+}
+
+.xs-show {
+  display: none !important;
+  @include xs-only {
+    display: inline-block !important;
+  }
+}

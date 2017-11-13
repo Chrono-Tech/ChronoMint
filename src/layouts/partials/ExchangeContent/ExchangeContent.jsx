@@ -1,12 +1,10 @@
-import React, { Component } from 'react'
-import { Paper } from 'material-ui'
 import { ExchangeWidget, OrdersTable } from 'components'
+import { Paper } from 'material-ui'
+import React, { Component } from 'react'
 
-import styles from 'layouts/partials/styles'
 import './ExchangeContent.scss'
 
 export default class ExchangeContent extends Component {
-
   render () {
     return (
       <div styleName='root'>
@@ -16,7 +14,7 @@ export default class ExchangeContent extends Component {
               <div className='row'>
                 <div className='col-xs-6'>
                   <div styleName='exchangeBox'>
-                    <Paper style={styles.content.paper.style}>
+                    <Paper>
                       <ExchangeWidget />
                     </Paper>
                   </div>
@@ -24,7 +22,7 @@ export default class ExchangeContent extends Component {
               </div>
               <div className='row'>
                 <div className='col-xs-6'>
-                  <Paper style={styles.content.paper.style}>
+                  <Paper>
                     <OrdersTable />
                   </Paper>
                 </div>

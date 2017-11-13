@@ -1,14 +1,9 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 
 import './ColoredSection.scss'
 
-class ColoredSection extends React.Component {
-
-  constructor (props) {
-    super(props)
-  }
-
+class ColoredSection extends PureComponent {
   render () {
     return (
       <div styleName='root' className='ColoredSection__root'>
@@ -37,6 +32,5 @@ ColoredSection.propTypes = {
   body: PropTypes.node,
   foot: PropTypes.node,
 }
-
 
 export default ColoredSection

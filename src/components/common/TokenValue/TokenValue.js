@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { CircularProgress } from 'material-ui'
 import BigNumber from 'bignumber.js'
+import { CircularProgress } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { integerWithDelimiter } from 'utils/formatter'
+
 import './TokenValue.scss'
 
 const mapStateToProps = (state) => {
-  const {isInited, prices, selectedCurrency} = state.get('market')
+  const { isInited, prices, selectedCurrency } = state.get('market')
   return {
     isInited,
     prices,
-    selectedCurrency
+    selectedCurrency,
   }
 }
 
 @connect(mapStateToProps, null)
-class TokenValue extends Component {
-
+class TokenValue extends PureComponent {
   static propTypes = {
     value: PropTypes.object,
     symbol: PropTypes.string,
@@ -30,7 +30,7 @@ class TokenValue extends Component {
     isInited: PropTypes.bool,
     noRenderPrice: PropTypes.bool,
     bold: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
   }
 
   getFraction (value: BigNumber) {
@@ -46,7 +46,9 @@ class TokenValue extends Component {
   }
 
   renderPrice () {
-    const {prices, value, symbol, selectedCurrency, isInited} = this.props
+    const {
+      prices, value, symbol, selectedCurrency, isInited,
+    } = this.props
     const price = isInited && prices[symbol] && prices[symbol][selectedCurrency] ? prices[symbol][selectedCurrency] : null
     if (price === null || price === 0) {
       return null
@@ -58,7 +60,9 @@ class TokenValue extends Component {
   }
 
   render () {
-    const {value, isInvert, isLoading, symbol, prefix, noRenderPrice, style} = this.props
+    const {
+      value, isInvert, isLoading, symbol, prefix, noRenderPrice, style,
+    } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     return isLoading ? (
       <CircularProgress size={24} />

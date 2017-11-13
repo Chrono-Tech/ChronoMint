@@ -1,26 +1,25 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { TextField } from 'redux-form-material-ui'
-import validate from './validate'
-import { Translate, I18n } from 'react-redux-i18n'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React, { PureComponent } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate, I18n } from 'react-redux-i18n'
+import validate from './validate'
+
 import './LOCIssueForm.scss'
 
-const onSubmit = (values) => {
-  return +values.get('amount')
-}
+const onSubmit = (values) => +values.get('amount')
 
-@reduxForm({form: 'IssueForm', validate, onSubmit})
-class LOCIssueForm extends Component {
+@reduxForm({ form: 'IssueForm', validate, onSubmit })
+class LOCIssueForm extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     pristine: PropTypes.bool,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
   render () {
-    const {loc, pristine, handleSubmit} = this.props
+    const { loc, pristine, handleSubmit } = this.props
     const actionToken = I18n.t('locs.forms.actions.issued')
 
     return (

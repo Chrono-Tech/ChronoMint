@@ -1,21 +1,20 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 
 import './FileIcon.scss'
 
-export default class FileIcon extends Component {
-
+export default class FileIcon extends PureComponent {
   static propTypes = {
-    type: PropTypes.string
+    type: PropTypes.string,
   }
 
   static defaultProps = {
-    type: 'default'
+    type: 'default',
   }
 
   render () {
     return (
-      <div styleName={`icon icon-${this.props.type.toLowerCase()}`}></div>
+      <div styleName={`icon icon-${this.props.type.toLowerCase()}`} />
     )
   }
 }

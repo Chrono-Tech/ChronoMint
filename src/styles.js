@@ -1,18 +1,18 @@
+import { grey600, greenA400, redA400 } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
-import { grey600, greenA400, redA400  } from 'material-ui/styles/colors'
 
 const status = {
   block: {
     textAlign: 'right',
     width: 130,
-    float: 'right'
+    float: 'right',
   },
   orange: {
-    color: 'orange'
+    color: 'orange',
   },
   red: {
-    color: 'red'
-  }
+    color: 'red',
+  },
 }
 
 const colors = {
@@ -22,7 +22,7 @@ const colors = {
   red: 'red',
   success: greenA400,
   error: redA400,
-  blue: '#2962FF'
+  blue: '#2962FF',
 }
 
 const item = {
@@ -30,17 +30,17 @@ const item = {
   paper: {
     padding: 38,
     paddingBottom: 8,
-    marginTop: 24
+    marginTop: 24,
   },
   title: {
-    fontSize: 24
+    fontSize: 24,
   },
   greyText: {
     color: 'grey',
     fontSize: 12,
     lineHeight: '18px',
-    marginTop: 4
-  }
+    marginTop: 4,
+  },
 }
 
 const styles = {
@@ -51,65 +51,65 @@ const styles = {
     fontWeight: typography.fontWeightLight,
     color: grey600,
     paddingBottom: 15,
-    display: 'block'
+    display: 'block',
   },
   title: {
     fontSize: 24,
     fontWeight: typography.fontWeightLight,
     color: '#17579c',
-    marginBottom: 20
+    marginBottom: 20,
   },
   paper: {
-    padding: 30
+    padding: 30,
   },
   clear: {
-    clear: 'both'
+    clear: 'both',
   },
   title2: {
     fontSize: 48,
     fontWeight: typography.fontWeightLight,
     // color: '#17579c',
-    marginBottom: 20
+    marginBottom: 20,
   },
   title2Wrapper: {
-    marginBottom: 20
+    marginBottom: 20,
   },
   flatButton: {
     lineHeight: 'normal',
     height: 17,
-    marginTop: 6
+    marginTop: 6,
   },
   flatButtonLabel: {
     fontSize: 12,
     fontWeight: 600,
-    padding: 0
+    padding: 0,
   },
   raisedButton: {
     height: 30,
     lineHeight: '30px',
-    fontSize: 15
+    fontSize: 15,
   },
   raisedButtonLabel: {
     fontSize: 12,
-    fontWeight: 600
+    fontWeight: 600,
   },
   grayButtonLabel: {
     fontSize: 11,
     color: 'grey',
-    padding: 4
+    padding: 4,
   },
   description: {
     fontWeight: 600,
-    lineHeight: 'normal'
+    lineHeight: 'normal',
   },
   greyText: {
     color: 'grey',
     fontSize: 14,
-    lineHeight: '18px'
+    lineHeight: '18px',
   },
   paperSpace: {
-    marginTop: '20px'
-  }
+    marginTop: '20px',
+  },
 }
 
 export default styles

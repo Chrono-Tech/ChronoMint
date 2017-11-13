@@ -5,7 +5,7 @@ describe('user model', () => {
     const model = new ProfileModel({
       name: 'John',
       email: 'john@chronobank.io',
-      company: 'ChronoBank'
+      company: 'ChronoBank',
     })
 
     expect(model.name()).toEqual('John')

@@ -2,7 +2,7 @@ import validator from './validator'
 
 describe('forms validator', () => {
   it('should validate ethereum address', () => {
-    //noinspection SpellCheckingInspection
+    // noinspection SpellCheckingInspection
     expect(validator.address('0x88615f19b8db1a47c0af7950a5fecf719c915f3a')).toEqual(null)
     expect(validator.address('abc')).not.toEqual(null)
     expect(validator.address('')).not.toEqual(null)

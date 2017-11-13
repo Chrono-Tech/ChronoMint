@@ -1,24 +1,21 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-
+import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 import { download } from 'redux/ui/ipfs'
 import { notify } from 'redux/notifier/actions'
 import FileIcon from 'components/common/FileSelect/FileIcon'
-import ArbitraryNoticeModel from 'models/notices/ArbitraryNoticeModel'
 
 import './DocumentsList.scss'
 
 @connect(null, mapDispatchToProps)
-export default class DocumentsList extends Component {
-
+export default class DocumentsList extends PureComponent {
   static propTypes = {
     handleDownload: PropTypes.func,
-    documents: PropTypes.object // immutable list
+    documents: PropTypes.object, // immutable list
   }
 
   render () {
-
     const documents = this.props.documents
       ? this.props.documents.toArray()
       : null
@@ -48,6 +45,6 @@ function mapDispatchToProps (dispatch) {
       } catch (e) {
         dispatch(notify(new ArbitraryNoticeModel({ key: 'notices.downloads.failed', params: { name } }), false))
       }
-    }
+    },
   }
 }

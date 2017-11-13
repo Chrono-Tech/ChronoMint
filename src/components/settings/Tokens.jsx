@@ -1,32 +1,28 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
-
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import TokenModel from 'models/TokenModel'
-
-import { modalsOpen } from 'redux/modals/actions'
 import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import CBETokenDialog from 'components/dialogs/CBETokenDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './Tokens.scss'
 
 function prefix (token) {
-  return 'components.settings.Tokens.' + token
+  return `components.settings.Tokens.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Tokens extends Component {
-
+export default class Tokens extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
     getList: PropTypes.func,
     form: PropTypes.func,
     list: PropTypes.object,
-    remove: PropTypes.func
+    remove: PropTypes.func,
   }
 
   componentWillMount () {
@@ -75,7 +71,8 @@ export default class Tokens extends Component {
                         <div styleName='nameIcon'>
                           <IPFSImage
                             styleName='iconContent'
-                            multihash={item.icon()} />
+                            multihash={item.icon()}
+                          />
                         </div>
                         <div styleName='nameTitle'>
                           {item.symbol()}
@@ -92,7 +89,7 @@ export default class Tokens extends Component {
                     </div>
                     <div styleName='bodyTableCell'>
                       {item.isFetching()
-                        ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
+                        ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                         : (
                           <div styleName='tableCellActions'>
                             <div styleName='actionsItem'>
@@ -127,7 +124,7 @@ function mapStateToProps (state) {
   const settingsERC20Tokens = state.get('settingsERC20Tokens')
   return {
     list: settingsERC20Tokens.list,
-    isFetched: settingsERC20Tokens.isFetched
+    isFetched: settingsERC20Tokens.isFetched,
   }
 }
 
@@ -139,8 +136,8 @@ function mapDispatchToProps (dispatch) {
       component: CBETokenDialog,
       props: {
         initialValues: token || new TokenModel(),
-        isModify
-      }
-    }))
+        isModify,
+      },
+    })),
   }
 }

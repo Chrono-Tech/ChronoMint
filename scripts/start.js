@@ -1,5 +1,6 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
+// eslint-disable-next-line
 console.log('NODE_ENV:', process.env.NODE_ENV)
 
 const os = require('os')
@@ -12,7 +13,7 @@ const config = require('../config/webpack.config.dev')
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
 let handleCompile
-const isSmokeTest = process.argv.some(arg =>
+const isSmokeTest = process.argv.some((arg) =>
   arg.indexOf('--smoke-test') > -1
 )
 if (isSmokeTest) {
@@ -61,6 +62,7 @@ const compiler = webpack(config, handleCompile)
 
 compiler.plugin('invalid', function () {
   clearConsole()
+  // eslint-disable-next-line
   console.log('Compiling...')
 })
 compiler.plugin('done', function (stats) {
@@ -68,13 +70,13 @@ compiler.plugin('done', function (stats) {
   const hasErrors = stats.hasErrors()
   const hasWarnings = stats.hasWarnings()
   if (!hasErrors && !hasWarnings) {
-    let showStats = process.argv.some(arg =>
+    let showStats = process.argv.some((arg) =>
       arg.indexOf('--stats') > -1
     )
     if (showStats) {
-      let decycle = obj => {
+      let decycle = (obj) => {
         let pathArr = []
-        let recurs = obj => {
+        let recurs = (obj) => {
           pathArr.push(obj)
           for (let o in obj) {
             if (obj.hasOwnProperty(o)) {
@@ -92,16 +94,16 @@ compiler.plugin('done', function (stats) {
 
       decycle(stats)
       let str = JSON.stringify(stats)
+      // eslint-disable-next-line
       console.log(str)
       process.exit(0)
     }
+    // eslint-disable-next-line
     console.log(chalk.green('Compiled successfully!'))
-    console.log()
+    // eslint-disable-next-line
     console.log('The layout is running at http://localhost:3000/')
-    console.log()
 
-
-    // print local addresses
+    // eslint-disable-next-line
     console.log('External access:')
 
     const interfaces = os.networkInterfaces()
@@ -109,6 +111,7 @@ compiler.plugin('done', function (stats) {
       for (let k2 in interfaces[k]) {
         let address = interfaces[k][k2]
         if (address.family === 'IPv4' && !address.internal) {
+          // eslint-disable-next-line
           console.log('http://' + address.address + ':3000/')
         }
       }
@@ -117,40 +120,43 @@ compiler.plugin('done', function (stats) {
   }
 
   const json = stats.toJson()
-  let formattedErrors = json.errors.map(message =>
+  let formattedErrors = json.errors.map((message) =>
     'Error in ' + formatMessage(message)
   )
-  const formattedWarnings = json.warnings.map(message =>
+  const formattedWarnings = json.warnings.map((message) =>
     'Warning in ' + formatMessage(message)
   )
 
   if (hasErrors) {
+    // eslint-disable-next-line
     console.log(chalk.red('Failed to compile.'))
-    console.log()
     if (formattedErrors.some(isLikelyASyntaxError)) {
       // If there are any syntax errors, show just them.
       // This prevents a confusing ESLint parsing error
       // preceding a much more useful Babel syntax error.
       formattedErrors = formattedErrors.filter(isLikelyASyntaxError)
     }
-    formattedErrors.forEach(message => {
+    formattedErrors.forEach((message) => {
+      // eslint-disable-next-line
       console.log(message)
-      console.log()
     })
     // If errors exist, ignore warnings.
     return
   }
 
   if (hasWarnings) {
+    // eslint-disable-next-line
     console.log(chalk.yellow('Compiled with warnings.'))
-    console.log()
-    formattedWarnings.forEach(message => {
+    formattedWarnings.forEach((message) => {
+      // eslint-disable-next-line
       console.log(message)
-      console.log()
     })
 
+    // eslint-disable-next-line
     console.log('You may use special comments to disable some warnings.')
+    // eslint-disable-next-line
     console.log('Use ' + chalk.yellow('// eslint-disable-next-line') + ' to ignore the next line.')
+    // eslint-disable-next-line
     console.log('Use ' + chalk.yellow('/* eslint-disable */') + ' to ignore all warnings in a file.')
   }
 })
@@ -163,13 +169,14 @@ new WebpackDevServer(compiler, {
   quiet: true,
   host: '0.0.0.0',
   open: true,
-  disableHostCheck: true
+  disableHostCheck: true,
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {
+    // eslint-disable-next-line
     return console.log(err)
   }
 
   clearConsole()
+  // eslint-disable-next-line
   console.log(chalk.cyan('Starting the development server...'))
-  console.log()
 })

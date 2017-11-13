@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
-import { btcProvider, bccProvider } from 'network/BitcoinProvider'
-import TxModel from 'models/TxModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import type TxModel from 'models/TxModel'
+import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
+import { DECIMALS } from 'Login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
 
 const EVENT_TX = 'tx'
+const EVENT_BALANCE = 'balance'
 
 export class BitcoinDAO {
-
   constructor (name, symbol, bitcoinProvider) {
     this._name = name
     this._symbol = symbol
@@ -20,6 +21,11 @@ export class BitcoinDAO {
 
   getAccount () {
     return this._bitcoinProvider.getAddress()
+  }
+
+  getInitAddress () {
+    // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
+    return `Bitcoin/${this._symbol}`
   }
 
   getName () {
@@ -42,40 +48,12 @@ export class BitcoinDAO {
     return 8
   }
 
-  _createTxModel (tx, account): TxModel {
-    const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-    const to = tx.vout.map(
-      (output) => output.scriptPubKey.addresses.join(',')
-    ).join(',')
-
-    let value = new BigNumber(0)
-    for (const output of tx.vout) {
-      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
-        value = value.add(new BigNumber(output.value))
-      }
-    }
-
-    const txmodel = new TxModel({
-      txHash: tx.txid,
-      blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
-      blockNumber: null,
-      from,
-      to,
-      value,
-      fee: new BigNumber(tx.fees),
-      credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
-      symbol: this.getSymbol()
-    })
-    return txmodel
-  }
-
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
       balance: new BigNumber(balance0 || balance6),
       balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6)
+      balance6: new BigNumber(balance6),
     }
   }
 
@@ -90,18 +68,24 @@ export class BitcoinDAO {
     return []
   }
 
-  // eslint-disable-next-line no-unused-vars
   async watchTransfer (callback) {
-    this._bitcoinProvider.addListener(EVENT_TX, async (result) => {
-      const tx = await this._bitcoinProvider.getTransactionInfo(result.tx.txid)
-      const account = this.getAccount()
-      callback(
-        new TransferNoticeModel({
-          account,
-          time: result.time / 1000,
-          tx: this._createTxModel(tx, account)
-        })
-      )
+    this._bitcoinProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
+      callback(new TransferNoticeModel({
+        account,
+        time,
+        tx: tx.set('symbol', this.getSymbol()),
+      }))
+    })
+  }
+
+  async watchBalance (callback) {
+    this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
+      callback({
+        account,
+        time,
+        balance: (new BigNumber(balance.balance0)).div(DECIMALS),
+        symbol: this.getSymbol(),
+      })
     })
   }
 

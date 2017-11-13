@@ -1,8 +1,8 @@
-import openSocket from 'socket.io-client'
 import CCC from 'market/ccc-streamer-utilities'
 import EventEmitter from 'events'
+import openSocket from 'socket.io-client'
 
-let markets = [
+const markets = [
   'BTC38',
   'BTCC',
   'BTCE',
@@ -57,10 +57,10 @@ let markets = [
   'Coinone',
   'Tidex',
   'Bleutrade',
-  'EthexIndia'
+  'EthexIndia',
 ]
 
-let pairs = [
+const pairs = [
   'BTC~USD',
   'ETH~USD',
   'BTC~USDT',
@@ -77,9 +77,9 @@ class MarketSocket extends EventEmitter {
   }
 
   init () {
-    for (let pair of pairs) {
+    for (const pair of pairs) {
       if (this.type === CCC.TYPE.CURRENT) {
-        for (let market of markets) {
+        for (const market of markets) {
           this.subscription.push(`2~${market}~${pair}`)
         }
       } else {
@@ -89,18 +89,18 @@ class MarketSocket extends EventEmitter {
   }
 
   _onSocketUpdate = (message) => {
-    let messageType = message.substring(0, message.indexOf("~"))
+    const messageType = message.substring(0, message.indexOf('~'))
 
     if (messageType === this.type) {
       const result = CCC.unpack(message) || {}
 
-      let keys = Object.keys(result)
+      const keys = Object.keys(result)
 
       for (let i = 0; i < keys.length; ++i) {
         result[keys[i]] = result[keys[i]]
       }
       result.TOSYMBOL = 'USD'
-      result['symbol'] = result.FROMSYMBOL
+      result.symbol = result.FROMSYMBOL
 
       this.emit('update', result)
     }
@@ -108,8 +108,8 @@ class MarketSocket extends EventEmitter {
 
   start () {
     this.socket = openSocket('https://streamer.cryptocompare.com/')
-    this.socket.emit('SubAdd', {subs: this.subscription})
-    this.socket.on("m", this._onSocketUpdate)
+    this.socket.emit('SubAdd', { subs: this.subscription })
+    this.socket.on('m', this._onSocketUpdate)
   }
 }
 

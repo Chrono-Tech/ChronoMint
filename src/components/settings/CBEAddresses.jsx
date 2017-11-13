@@ -1,33 +1,29 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
-
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import CBEModel from 'models/CBEModel'
-
-import { modalsOpen } from 'redux/modals/actions'
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './CBEAddresses.scss'
 
 function prefix (token) {
-  return 'components.settings.CBEAddresses.' + token
+  return `components.settings.CBEAddresses.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class CBEAddresses extends Component {
-
+export default class CBEAddresses extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     isFetched: PropTypes.bool,
     getList: PropTypes.func,
     form: PropTypes.func,
     list: PropTypes.object,
-    revoke: PropTypes.func
+    revoke: PropTypes.func,
   }
 
   componentWillMount () {
@@ -76,7 +72,8 @@ export default class CBEAddresses extends Component {
                         <div styleName='nameIcon'>
                           <IPFSImage
                             styleName='iconContent'
-                            multihash={item.user().icon()} />
+                            multihash={item.user().icon()}
+                          />
                         </div>
                         <div styleName='nameTitle'>
                           {item.name()}
@@ -94,7 +91,7 @@ export default class CBEAddresses extends Component {
                     <div styleName='bodyTableCell'>
                       <div styleName='tableCellActions'>
                         {item.isFetching()
-                          ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
+                          ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                           : (
                             <div styleName='actionsItem'>
                               <RaisedButton
@@ -124,7 +121,7 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     list: settingsUserCBE.list,
-    isFetched: settingsUserCBE.isFetched
+    isFetched: settingsUserCBE.isFetched,
   }
 }
 
@@ -135,8 +132,8 @@ function mapDispatchToProps (dispatch) {
     form: (cbe) => dispatch(modalsOpen({
       component: CBEAddressDialog,
       props: {
-        initialValues: cbe || new CBEModel()
-      }
-    }))
+        initialValues: cbe || new CBEModel(),
+      },
+    })),
   }
 }

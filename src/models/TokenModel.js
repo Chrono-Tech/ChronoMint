@@ -1,10 +1,10 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import Immutable from 'immutable'
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
+import ErrorList from 'components/forms/ErrorList'
+import validator from 'components/forms/validator'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -15,18 +15,46 @@ export default class TokenModel extends abstractFetchingModel({
   balance: new BigNumber(0),
   allowance: new Immutable.Map(),
   url: null,
-  icon: null
+  icon: null,
+  fee: null,
+  withFee: null,
+  platform: null,
+  totalSupply: new BigNumber(0),
+  managersList: null,
+  isReissuable: null,
+  isOptional: true, // used in add token dialog for determine its selectable
+  feeAddress: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
+  }
+
+  feeAddress () {
+    return this.get('feeAddress')
   }
 
   symbol () {
     return this.dao() ? this.dao().getSymbol() : this.get('symbol')
   }
 
+  totalSupply (value) {
+    return this._getSet('totalSupply', value)
+  }
+
+  isReissuable () {
+    return this.get('isReissuable')
+  }
+
+  isOptional () {
+    return this.get('isOptional')
+  }
+
   setSymbol (v): TokenModel {
     return this.set('symbol', v)
+  }
+
+  managersList (): Array {
+    return this.get('managersList')
   }
 
   id () {
@@ -35,6 +63,18 @@ export default class TokenModel extends abstractFetchingModel({
 
   name () {
     return this.get('name')
+  }
+
+  platform () {
+    return this.get('platform')
+  }
+
+  fee () {
+    return this.get('fee')
+  }
+
+  withFee () {
+    return this.get('withFee')
   }
 
   address () {
@@ -80,21 +120,23 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   // noinspection JSUnusedGlobalSymbols
-  summary () {
+  txSummary () {
     return {
-      address: this.address(),
-      decimals: this.decimals(),
-      name: this.name(),
       symbol: this.symbol(),
-      url: this.url(),
+      name: this.name(),
+      totalSupply: this.totalSupply(),
+      decimals: this.decimals(),
+      isReissuable: this.isReissuable(),
       icon: this.icon(),
-      isApproveRequired: this.isApproveRequired()
+      feeAddress: this.feeAddress(),
+      feePercent: this.fee(),
+      withFee: this.withFee(),
     }
   }
 }
 
 // TODO @bshevchenko: MINT-315 add max length for bytes32 variables
-export const validate = values => {
+export const validate = (values) => {
   const errors = {}
   errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
   errors.name = ErrorList.toTranslate(validator.name(values.get('name')))

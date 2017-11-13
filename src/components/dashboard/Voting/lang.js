@@ -5,7 +5,7 @@ export default {
     published: 'Published',
     process: 'Process',
     moreInfo: 'more info',
-    finished: 'TIME holders already voted'
+    finished: 'TIME holders already voted',
   },
   ru: {
     votingOngoing: 'Запущенные голосования',
@@ -13,7 +13,7 @@ export default {
     published: 'Опубликовано',
     process: 'До завершения',
     moreInfo: 'больше информации',
-    finished: 'Уже проголосовали'
+    finished: 'Уже проголосовали',
   },
 }
 

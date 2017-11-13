@@ -1,5 +1,5 @@
 import { accounts } from 'specsInit'
-import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from 'Login/network/settings'
 import ls from './LocalStorage'
 
 describe('LocalStorage', () => {

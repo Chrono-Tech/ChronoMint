@@ -9,9 +9,8 @@ class RewardsPeriodModel extends abstractModel({
   startDate: null,
   assetBalance: new BigNumber(0),
   uniqueShareholders: null,
-  periodLength: null
+  periodLength: null,
 }) {
-
   index () {
     return this.id() + 1
   }

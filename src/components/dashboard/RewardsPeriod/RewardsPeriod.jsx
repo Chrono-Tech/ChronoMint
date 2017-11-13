@@ -1,34 +1,31 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import moment from 'moment'
-
-import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-
-import { TIME } from 'redux/wallet/actions'
-
-import './RewardsPeriod.scss'
 import Moment, { SHORT_DATE } from 'components/common/Moment'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
+import type RewardsModel from 'models/RewardsModel'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { TIME } from 'redux/mainWallet/actions'
+import './RewardsPeriod.scss'
 
 function prefix (token) {
-  return 'components.dashboard.RewardsPeriod.' + token
+  return `components.dashboard.RewardsPeriod.${token}`
 }
 
 function mapStateToProps (state) {
   return {
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
 @connect(mapStateToProps)
-export default class RewardsPeriod extends React.Component {
-
+export default class RewardsPeriod extends PureComponent {
   static propTypes = {
     rewardsData: PropTypes.object,
     period: PropTypes.object,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   componentWillReceiveProps (newProps) {
@@ -36,8 +33,7 @@ export default class RewardsPeriod extends React.Component {
   }
 
   render () {
-
-    const rewardsData = this.props.rewardsData
+    const rewardsData: RewardsModel = this.props.rewardsData
     const period = this.props.period
     const symbol = rewardsData.symbol()
     const isOngoing = period.index() === rewardsData.lastPeriodIndex()
@@ -60,13 +56,13 @@ export default class RewardsPeriod extends React.Component {
           <div styleName='info'>
             <div styleName='table'>
               <div styleName='col1'>
-                <h5><Translate value={prefix('rewardsPeriodIndex')} index={period.index()}/></h5>
+                <h5><Translate value={prefix('rewardsPeriodIndex')} index={period.index()} /></h5>
               </div>
               <div styleName='col2'>
                 <div styleName='status'>
                   {isOngoing
-                    ? (<span styleName='badgeOrange'><Translate value={prefix('ongoing')}/></span>)
-                    : (<span styleName='badgeGreen'><Translate value={prefix('closed')}/></span>)
+                    ? (<span styleName='badgeOrange'><Translate value={prefix('ongoing')} /></span>)
+                    : (<span styleName='badgeGreen'><Translate value={prefix('closed')} /></span>)
                   }
                 </div>
               </div>
@@ -75,75 +71,81 @@ export default class RewardsPeriod extends React.Component {
               <div styleName='col1'>
                 <div styleName='row'>
                   <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('startDate')}/>: </span>
-                    <span styleName='entry2'><Moment date={period.startDate()} format={SHORT_DATE}/></span>
+                    <span styleName='entry1'><Translate value={prefix('startDate')} />: </span>
+                    <span styleName='entry2'><Moment date={period.startDate()} format={SHORT_DATE} /></span>
                   </span>
                   <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('endDate')}/>: </span>
-                    <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE}/> (<Translate
+                    <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
+                    <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE} /> (<Translate
                       value={prefix('inDaysDays')}
-                      days={period.daysRemaining()}/>)</span>
-                  </span>
-                </div>
-                <div styleName='row'>
-                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')}/>: </span>
-                    <span styleName='entry2'>
-                      <TokenValue
-                        bold={true}
-                        noRenderPrice={true}
-                        value={period.totalDeposit()}
-                        symbol={TIME}/>
-                      &nbsp;(
-                      <Translate
-                        value={prefix('percentOfTotalCount')}
-                        percent={period.totalDepositPercent(rewardsData.timeTotalSupply())}/>)
+                      days={period.daysRemaining()}
+                    />)
                     </span>
                   </span>
                 </div>
                 <div styleName='row'>
                   <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('uniqueShareholders')}/>: </span>
+                    <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')} />: </span>
+                    <span styleName='entry2'>
+                      <TokenValue
+                        bold
+                        noRenderPrice
+                        value={period.totalDeposit()}
+                        symbol={TIME}
+                      />
+                      &nbsp;(
+                      <Translate
+                        value={prefix('percentOfTotalCount')}
+                        percent={period.totalDepositPercent(rewardsData.timeTotalSupply())}
+                      />)
+                    </span>
+                  </span>
+                </div>
+                <div styleName='row'>
+                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                    <span styleName='entry1'><Translate value={prefix('uniqueShareholders')} />: </span>
                     <span styleName='entry2'>{period.uniqueShareholders()}</span>
                   </span>
                 </div>
                 <div styleName='row'>
                   <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')}/>: </span>
+                    <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')} />: </span>
                     <span styleName='entry2'>
                       <TokenValue
-                        bold={true}
-                        noRenderPrice={true}
+                        bold
+                        noRenderPrice
                         value={period.userDeposit()}
-                        symbol={TIME}/>
+                        symbol={TIME}
+                      />
                       &nbsp;(
                       <Translate
                         value={prefix('percentOfTotalDepositedAmount')}
-                        percent={period.userDepositPercent()}/>)
+                        percent={period.userDepositPercent()}
+                      />)
                     </span>
                   </span>
                 </div>
               </div>
               <div styleName='col2'>
                 <div styleName='row'>
-                  <Translate value={prefix('dividendsAccumulatedForPeriod')}/>:
+                  <Translate value={prefix('dividendsAccumulatedForPeriod')} />:
                 </div>
                 <div styleName='row'>
                   <div>
                     <TokenValue
-                      style={{fontSize: '24px'}}
+                      style={{ fontSize: '24px' }}
                       value={totalDividends}
                       symbol={symbol}
                     />
                   </div>
                 </div>
                 <div styleName='row'>
-                  <Translate value={prefix('yourApproximateRevenueForPeriod')}/>:
+                  <Translate value={prefix('yourApproximateRevenueForPeriod')} />:
                 </div>
                 <div styleName='row'>
                   <div>
                     <TokenValue
-                      style={{fontSize: '24px'}}
+                      style={{ fontSize: '24px' }}
                       value={revenue}
                       symbol={symbol}
                     />
@@ -152,7 +154,7 @@ export default class RewardsPeriod extends React.Component {
               </div>
             </div>
             <div styleName='progress'>
-              <ProgressSection value={progress}/>
+              <ProgressSection value={progress} />
             </div>
           </div>
         </div>

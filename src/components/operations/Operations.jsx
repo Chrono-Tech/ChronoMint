@@ -1,27 +1,22 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { getEtherscanUrl } from 'network/settings'
-
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-
-import { modalsOpen } from 'redux/modals/actions'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { getEtherscanUrl } from 'Login/network/settings'
+import { connect } from 'react-redux'
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
-
+import { modalsOpen } from 'redux/modals/actions'
+import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import './Operations.scss'
 
 function prefix (token) {
-  return 'components.operations.Operations.' + token
+  return `components.operations.Operations.${token}`
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class PendingOperations extends Component {
-
+export default class PendingOperations extends PureComponent {
   static propTypes = {
-    //title: PropTypes.string,
+    // title: PropTypes.string,
     title: PropTypes.object, // Translate object
     filterOperations: PropTypes.func,
     showSignatures: PropTypes.bool,
@@ -39,13 +34,13 @@ export default class PendingOperations extends Component {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
-    locale: PropTypes.string
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     // eslint-disable-next-line
     filterOperations: (op) => true, // get all operations by default
-    showSignatures: false // do not show signatures count by default
+    showSignatures: false, // do not show signatures count by default
   }
 
   componentWillMount () {
@@ -55,7 +50,7 @@ export default class PendingOperations extends Component {
   }
 
   render () {
-    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
     const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
@@ -105,7 +100,10 @@ export default class PendingOperations extends Component {
             <div styleName='panelMore'>
               <RaisedButton
                 label={<Translate value='nav.loadMore' />}
-                onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
+                onTouchTap={() => this.props.handleLoadMore()}
+                fullWidth
+                primary
+              />
             </div>
           )
           : null
@@ -115,7 +113,6 @@ export default class PendingOperations extends Component {
   }
 
   renderRow (op, index, href) {
-
     const tx = op.tx()
     const hash = tx.hash()
     const details = tx.details()
@@ -129,7 +126,7 @@ export default class PendingOperations extends Component {
             </div>
             <div styleName='entryInfo'>
               <div styleName='infoTitle'>{tx.title()}</div>
-              {/*<div styleName='info-description'>Winterfell Gas Station</div>*/}
+              {/* <div styleName='info-description'>Winterfell Gas Station</div> */}
               {hash
                 ? (<div styleName='infoAddress'>{hash}</div>)
                 : null
@@ -195,7 +192,7 @@ function mapStateToProps (state) {
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
-    locale: state.get('i18n').locale
+    locale: state.get('i18n').locale,
   }
 }
 
@@ -208,8 +205,8 @@ function mapDispatchToProps (dispatch) {
     openSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
-        component: OperationsSettingsDialog
+        component: OperationsSettingsDialog,
       }))
-    }
+    },
   }
 }

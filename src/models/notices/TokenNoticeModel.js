@@ -1,6 +1,6 @@
+import { I18n } from 'react-redux-i18n'
 import React from 'react'
 import type TokenModel from 'models/TokenModel'
-import { I18n } from 'react-redux-i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_ADDED = 'isAdded'
@@ -10,14 +10,14 @@ export const IS_REMOVED = 'isRemoved'
 export default class TokenNoticeModel extends abstractNoticeModel({
   token: null,
   status: null,
-  oldAddress: null
+  oldAddress: null,
 }) {
   constructor (token: TokenModel, time, isRemoved = false, isAdded = true, oldAddress = null) {
     super({
       token,
       time,
       status: isRemoved ? IS_REMOVED : (isAdded ? IS_ADDED : IS_MODIFIED),
-      oldAddress
+      oldAddress,
     })
   }
 
@@ -47,10 +47,10 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    const message = 'notices.settings.erc20.tokens.' + this.get('status')
+    const message = `notices.settings.erc20.tokens.${this.get('status')}`
     return I18n.t(message, {
       symbol: this.token().symbol(),
-      name: this.token().name()
+      name: this.token().name(),
     })
   }
 }

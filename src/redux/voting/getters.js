@@ -5,10 +5,10 @@ export const getStatistics = (state) => {
   return state.isFetched
     ? {
       all: polls.length,
-      completed: polls.filter(p => !p.poll().status()).length,
-      ongoing: polls.filter(p => p.poll().active()).length,
-      inactive: polls.filter(p => !p.poll().active()).length,
-      outdated: polls.filter(p => p.poll().deadline().getTime() < time).length
+      completed: polls.filter((p) => !p.poll().status()).length,
+      ongoing: polls.filter((p) => p.poll().active()).length,
+      inactive: polls.filter((p) => !p.poll().active()).length,
+      outdated: polls.filter((p) => p.poll().deadline().getTime() < time).length,
     }
     : null
 }
