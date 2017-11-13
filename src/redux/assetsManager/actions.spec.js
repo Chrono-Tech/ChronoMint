@@ -19,6 +19,11 @@ describe('AssetsManager getters', () => {
   networkService
     .connectStore(store)
 
+  const manager = accounts[1]
+  let createdToken = null
+  let createdTokenTx = null
+  let addManagerTx = null
+
   it('should create platform', async (done) => {
     const watchCallback = async () => {
       await store.dispatch(a.getUsersPlatforms())
@@ -31,6 +36,34 @@ describe('AssetsManager getters', () => {
     const locManagerDAO = await contractsManagerDAO.getPlatformManagerDAO()
     await locManagerDAO.watchCreatePlatform(watchCallback, accounts[0])
     await store.dispatch(a.createPlatform(new Immutable.Map()))
+  })
+
+  it('should create token', async (done) => {
+    const actions = store.getActions()
+    const platform = actions[0].payload.usersPlatforms[1]
+
+    const watchCallback = async (tx) => {
+      expect(tx.args.token).toBeDefined()
+      createdTokenTx = tx
+      done()
+    }
+
+    const platformTokenExtensionGatewayManagerEmitterDAO = await contractsManagerDAO.getPlatformTokenExtensionGatewayManagerEmitterDAO()
+    await platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(watchCallback, accounts[0])
+
+    store.dispatch(a.createAsset(new TokenModel({
+      decimals: 3,
+      name: 'QQQ',
+      symbol: 'QQQ',
+      balance: 10000,
+      icon: '',
+      fee: 1,
+      feeAddress: platform.address,
+      withFee: true,
+      platform: platform,
+      totalSupply: 10000,
+      isReissuable: true,
+    })))
   })
 
   it('should get users Platforms', async (done) => {
@@ -57,7 +90,7 @@ describe('AssetsManager getters', () => {
     const action = actions[actions.length - 1]
     expect(action.type).toEqual(a.GET_ASSETS_MANAGER_COUNTS)
     expect(action.payload.platforms.length).toEqual(2)
-    expect(Object.keys(action.payload.assets).length).toEqual(1)
+    expect(Object.keys(action.payload.assets).length).toEqual(2)
     expect(action.payload.managers.length).toEqual(2)
     done()
   })
@@ -67,42 +100,38 @@ describe('AssetsManager getters', () => {
     const actions = store.getActions()
     const action = actions[actions.length - 1]
     expect(action.type).toEqual(a.GET_TOKENS)
-    expect(action.payload.tokensMap.size).toEqual(1)
-    expect(Object.keys(action.payload.assets).length).toEqual(1)
+    expect(action.payload.tokensMap.size).toEqual(2)
+    expect(Object.keys(action.payload.assets).length).toEqual(2)
+    // set created token
+    createdToken = action.payload.tokensMap.get('QQQ')
     done()
   })
 
   it('should get managers for asset symbol', async (done) => {
+    await store.dispatch(a.getManagersForAssetSymbol(createdToken.symbol()))
     const actions = store.getActions()
-    const token = actions[actions.length - 1].payload.tokensMap.get('LHT')
-    await store.dispatch(a.getManagersForAssetSymbol(token.symbol()))
-    const newActions = store.getActions()
-    const preLastAction = newActions[newActions.length - 2]
-    const lastAction = newActions[newActions.length - 1]
+    const preLastAction = actions[actions.length - 2]
+    const lastAction = actions[actions.length - 1]
     expect(preLastAction.type).toEqual(a.GET_MANAGERS_FOR_TOKEN_LOADING)
     expect(lastAction.type).toEqual(a.GET_MANAGERS_FOR_TOKEN)
-    expect(lastAction.payload.symbol).toEqual('LHT')
-    expect(lastAction.payload.managersForAssetSymbol.length).toEqual(2)
+    expect(lastAction.payload.symbol).toEqual('QQQ')
+    expect(lastAction.payload.managersForAssetSymbol.length).toEqual(1)
     done()
   })
 
-  const manager = accounts[1]
   it('should add manager', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
     const watchCallback = async (tx) => {
       expect(tx.args.to).toEqual(manager)
+      addManagerTx = tx
       done()
     }
 
     const chronoBankPlatformDAO = await contractsManagerDAO.getChronoBankPlatformDAO()
     await chronoBankPlatformDAO.watchManagers(watchCallback)
-    await store.dispatch(a.addManager(token, manager))
+    await store.dispatch(a.addManager(createdToken, manager))
   })
 
-  it.skip('should remove manager', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
+  it('should remove manager', async (done) => {
     const watchCallback = async (tx) => {
       expect(tx.args.from).toEqual(manager)
       done()
@@ -110,99 +139,62 @@ describe('AssetsManager getters', () => {
 
     const chronoBankPlatformDAO = await contractsManagerDAO.getChronoBankPlatformDAO()
     await chronoBankPlatformDAO.watchManagers(watchCallback)
-    await store.dispatch(a.removeManager(token, manager))
+    await store.dispatch(a.removeManager(createdToken, manager))
   })
 
-  // TODO fix test
-  it.skip('should create token', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
-    const platform = token.platform()
-
-    const watchCallback = async (tx) => {
-      expect(tx).toBeDefined()
-      done()
+  it('should reissue Asset', async (done) => {
+    const watchCallback = async (symbol) => {
+      expect(symbol).toEqual(createdToken.symbol())
     }
 
-    const platformTokenExtensionGatewayManagerEmitterDAO = await contractsManagerDAO.getPlatformTokenExtensionGatewayManagerEmitterDAO()
-    await platformTokenExtensionGatewayManagerEmitterDAO.watchAssetCreate(watchCallback, accounts[0])
-
-    store.dispatch(a.createAsset(new TokenModel({
-      decimals: 11,
-      name: 'QQQ',
-      symbol: 'QQQ',
-      balance: '11',
-      icon: '',
-      fee: 1,
-      feeAddress: '',
-      withFee: false,
-      platform: platform,
-      totalSupply: 11,
-      isReissuable: true,
-    })))
-  })
-
-  it.skip('should reissue Asset', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
-    const watchCallback = async (tx) => {
-      expect(tx).toBeDefined()
-      done()
-    }
-
+    await store.dispatch(a.reissueAsset(createdToken, 100))
     const chronoBankPlatformDAO = await contractsManagerDAO.getChronoBankPlatformDAO()
     await chronoBankPlatformDAO.watchIssue(watchCallback)
-    await store.dispatch(a.reissueAsset(token, 0.01))
+    done()
   })
 
-  it.skip('should revoke Asset', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
-    const watchCallback = async (tx) => {
-      expect(tx).toBeDefined()
-      done()
+  it('should revoke Asset', async (done) => {
+    const watchCallback = async (symbol) => {
+      expect(symbol).toEqual(createdToken.symbol())
     }
 
+    await store.dispatch(a.revokeAsset(createdToken, 100))
     const chronoBankPlatformDAO = await contractsManagerDAO.getChronoBankPlatformDAO()
     await chronoBankPlatformDAO.watchRevoke(watchCallback)
-    await store.dispatch(a.revokeAsset(token, 0.01))
+    done()
   })
 
   it('should check is reissuable token', async (done) => {
+    await store.dispatch(a.isReissuable(createdToken))
     const actions = store.getActions()
-    const token = actions[actions.length - 3].payload.tokensMap.get('LHT')
-    await store.dispatch(a.isReissuable(token))
-    const newActions = store.getActions()
-    const lastAction = newActions[newActions.length - 1]
+    const lastAction = actions[actions.length - 1]
     expect(lastAction.type).toEqual(a.SET_IS_REISSUABLE)
-    expect(lastAction.payload.symbol).toEqual('LHT')
+    expect(lastAction.payload.symbol).toEqual('QQQ')
     done()
   })
 
   it('should set total supply', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 4].payload.tokensMap.get('LHT')
     const testsStore = mockStore(new Immutable.Map({
       [DUCK_SESSION]: {
         account: accounts[0],
       },
       [a.DUCK_ASSETS_MANAGER]: {
         tokensMap: new Immutable.Map({
-          'LHT': token,
+          'QQQ': createdToken,
         }),
       },
     }))
 
-    const tokenTotalSupply = token.totalSupply()
-    await testsStore.dispatch(a.setTotalSupply(token, new BigNumber(10), true))
-    await testsStore.dispatch(a.setTotalSupply(token, new BigNumber(10), false))
-    const newActions = testsStore.getActions()
-    const preLastAction = newActions[newActions.length - 2]
-    const lastAction = newActions[newActions.length - 1]
+    const tokenTotalSupply = createdToken.totalSupply()
+    await testsStore.dispatch(a.setTotalSupply(createdToken, new BigNumber(10), true))
+    await testsStore.dispatch(a.setTotalSupply(createdToken, new BigNumber(10), false))
+    const actions = testsStore.getActions()
+    const preLastAction = actions[actions.length - 2]
+    const lastAction = actions[actions.length - 1]
     expect(preLastAction.type).toEqual(a.SET_TOTAL_SUPPLY)
     expect(lastAction.type).toEqual(a.SET_TOTAL_SUPPLY)
-    expect(preLastAction.payload.token.totalSupply()).toEqual(tokenTotalSupply.plus(token.dao().removeDecimals(10)))
-    expect(lastAction.payload.token.totalSupply()).toEqual(tokenTotalSupply.minus(token.dao().removeDecimals(10)))
+    expect(preLastAction.payload.token.totalSupply()).toEqual(tokenTotalSupply.plus(createdToken.dao().removeDecimals(10)))
+    expect(lastAction.payload.token.totalSupply()).toEqual(tokenTotalSupply.minus(createdToken.dao().removeDecimals(10)))
     done()
   })
 
@@ -213,31 +205,12 @@ describe('AssetsManager getters', () => {
     const lastAction = actions[actions.length - 1]
     expect(preLastAction.type).toEqual(a.GET_TRANSACTIONS_START)
     expect(lastAction.type).toEqual(a.GET_TRANSACTIONS_DONE)
-    expect(lastAction.payload.transactionsList.length).toEqual(5)
+    expect(lastAction.payload.transactionsList.length).toEqual(10)
     done()
   })
 
-  it.skip('should set transaction', async (done) => {
-    const tx = {
-      logIndex: 4,
-      transactionIndex: 1110,
-      transactionHash: '0x7e637b7f28d93138fa2da8623b127d05d8a1de09cf814b8d40d17092886f2e0c',
-      blockHash: '0x40876d791d8f16a21d19f58aa34b786a3602fdba2970a77b9032ab1a3bcb5a8d',
-      blockNumber: 351,
-      address: '0x9e3b716aaab6ebf12e85208c6ac364d715f62132',
-      type: 'mined',
-      event: 'AssetCreated',
-      args:
-        {
-          self: '0xf5e76fd5342f132e4bb29401f029e0dd9e27fd8f',
-          platform: '0x8bbe6c371a8e3f287cb849a1bfc8adfb153ee371',
-          symbol: '0x4c48540000000000000000000000000000000000000000000000000000000000',
-          token: '0x6da2647e384b274df69fafb8414ed9fee75f4612',
-          by: '0x4b38275ff955c4d42d17aab972e32846305eb88e',
-        },
-    }
-
-    await store.dispatch(a.setTx(tx))
+  it('should set transaction', async (done) => {
+    await store.dispatch(a.setTx(createdTokenTx))
     const actions = store.getActions()
     const lastAction = actions[actions.length - 1]
     expect(lastAction.type).toEqual(a.GET_TRANSACTIONS_DONE)
@@ -246,24 +219,6 @@ describe('AssetsManager getters', () => {
   })
 
   it('should set managers', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 6].payload.tokensMap.get('LHT')
-    const tx = {
-      logIndex: 0,
-      transactionIndex: 0,
-      transactionHash: '0xae72fee30afa9ecfbf10d00113e11c26759eca1c0858834bb2c20c654464cbfb',
-      blockHash: '0x18e0259c3640bf0ae8e64fd3dd27f64d1db597ccb0c07f5f6e4de4eaed681c7c',
-      blockNumber: 389,
-      address: '0xb44ea24d1531f96f3c04606ad2cce94ff97b04bd',
-      type: 'mined',
-      event: 'OwnershipChange',
-      args:
-        {
-          from: '0x0000000000000000000000000000000000000000',
-          to: '0x3aafe4831ef539306da68da0b3e17597fba44942',
-          symbol: '0x4c48540000000000000000000000000000000000000000000000000000000000',
-        },
-    }
     const testsStore = mockStore(new Immutable.Map({
       [DUCK_SESSION]: {
         account: accounts[0],
@@ -271,30 +226,27 @@ describe('AssetsManager getters', () => {
       [a.DUCK_ASSETS_MANAGER]: {
         selectedToken: '',
         tokensMap: new Immutable.Map({
-          'LHT': token,
+          'QQQ': createdToken,
         }),
       },
     }))
 
-    await testsStore.dispatch(a.setManagers(tx))
+    await testsStore.dispatch(a.setManagers(addManagerTx))
     const newActions = testsStore.getActions()
     const lastAction = newActions[newActions.length - 1]
     expect(lastAction.type).toEqual(a.SET_NEW_MANAGERS_LIST)
-    expect(lastAction.payload.managers.length).toEqual(3)
-    expect(lastAction.payload.symbol).toEqual('LHT')
+    expect(lastAction.payload.managers.length).toEqual(2)
+    expect(lastAction.payload.symbol).toEqual('QQQ')
     expect(lastAction.payload.managersList.length).toEqual(1)
     done()
   })
 
   it('should get fee', async (done) => {
-    const actions = store.getActions()
-    const token = actions[actions.length - 6].payload.tokensMap.get('LHT')
-
-    await store.dispatch(a.getFee(token))
+    await store.dispatch(a.getFee(createdToken))
     const newActions = store.getActions()
     const lastAction = newActions[newActions.length - 1]
     expect(lastAction.type).toEqual(a.SET_FEE)
-    expect(lastAction.payload.symbol).toEqual(token.symbol())
+    expect(lastAction.payload.symbol).toEqual(createdToken.symbol())
     expect(lastAction.payload.fee).toEqual(1)
     expect(lastAction.payload.withFee).toEqual(true)
     done()
@@ -307,8 +259,8 @@ describe('AssetsManager getters', () => {
       },
     }))
     const result = await testsStore.dispatch(a.watchInitTokens())
-    const newActions = testsStore.getActions()
-    expect(newActions[0].type).toEqual(a.GET_ASSETS_MANAGER_COUNTS_START)
+    const actions = testsStore.getActions()
+    expect(actions[0].type).toEqual(a.GET_ASSETS_MANAGER_COUNTS_START)
     expect(result.length).toEqual(4)
     done()
   })
