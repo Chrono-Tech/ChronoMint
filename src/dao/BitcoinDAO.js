@@ -23,12 +23,9 @@ export class BitcoinDAO {
     return this._bitcoinProvider.getAddress()
   }
 
-  /**
-   * TODO Hacked implementation normal work logic is not guarantied
-   * TODO Needed for call compatibility with @see AbstractContractDAO
-   */
   getInitAddress () {
-    return this._bitcoinProvider.getAddress()
+    // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
+    return `Bitcoin/${this._symbol}`
   }
 
   getName () {
