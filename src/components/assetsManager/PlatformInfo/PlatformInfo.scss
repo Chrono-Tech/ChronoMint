@@ -51,29 +51,20 @@
 }
 
 .tokenIcon {
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  left: 16px;
-  @include xs-only {
-    left: 5px;
-  }
+  width: 100%;
+  height: 100%;
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: top;
 }
 
 .balanceRow {
-  position: relative;
   padding-top: 40px;
   padding-bottom: 40px;
   @include xs-only {
-    padding-left: 110px;
     padding-bottom: 0;
   }
-  padding-left: 136px;
   display: flex;
-  flex-direction: column;
 }
 
 .status {
@@ -91,6 +82,11 @@
 .title {
   font-size: 24px;
   font-weight: 600;
+}
+
+.addressTitle {
+  margin-bottom: 10px;
+  @include ellipsis;
 }
 
 .balanceWrap {
@@ -232,4 +228,15 @@
 
 .preloader {
   margin-top: 10px;
+}
+
+.iconWrap {
+  flex-grow: 0;
+  min-width: 100px;
+  padding: 10px;
+}
+
+.dataWrap {
+  overflow: hidden;
+  padding-right: 10px;
 }

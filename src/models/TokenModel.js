@@ -41,8 +41,8 @@ export default class TokenModel extends abstractFetchingModel({
     return this._getSet('totalSupply', value)
   }
 
-  isReissuable () {
-    return this.get('isReissuable')
+  isReissuable (value) {
+    return this._getSet('isReissuable', value)
   }
 
   isOptional () {
@@ -53,8 +53,8 @@ export default class TokenModel extends abstractFetchingModel({
     return this.set('symbol', v)
   }
 
-  managersList (): Array {
-    return this.get('managersList')
+  managersList (value): Array {
+    return this._getSet('managersList', value)
   }
 
   id () {
@@ -69,12 +69,12 @@ export default class TokenModel extends abstractFetchingModel({
     return this.get('platform')
   }
 
-  fee () {
-    return this.get('fee')
+  fee (value) {
+    return this._getSet('fee', value)
   }
 
-  withFee () {
-    return this.get('withFee')
+  withFee (value) {
+    return this._getSet('withFee', value)
   }
 
   address () {
