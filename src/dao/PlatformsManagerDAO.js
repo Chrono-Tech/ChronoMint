@@ -1,4 +1,3 @@
-import { getPlatforms, getUsersPlatforms, setTx } from 'redux/assetsManager/actions'
 import { MultiEventsHistoryABI, PlatformsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 

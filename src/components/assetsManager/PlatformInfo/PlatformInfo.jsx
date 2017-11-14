@@ -32,8 +32,8 @@ export class PlatformInfo extends PureComponent {
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
     getFee: PropTypes.func,
-    platformsList: PropTypes.arrayOf(PropTypes.string),
-    usersPlatforms: PropTypes.arrayOf(PropTypes.string),
+    platformsList: PropTypes.arrayOf(PropTypes.object),
+    usersPlatforms: PropTypes.arrayOf(PropTypes.object),
   }
 
   componentWillReceiveProps (newProps) {
