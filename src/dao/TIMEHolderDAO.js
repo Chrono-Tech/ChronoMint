@@ -13,8 +13,6 @@ export const TIME = 'TIME'
 export default class TIMEHolderDAO extends AbstractContractDAO {
   constructor (at) {
     super(TimeHolderABI, at)
-    /** @namespace resultCodes.TIMEHOLDER_DEPOSIT_FAILED */
-    /** @namespace resultCodes.TIMEHOLDER_WITHDRAWN_FAILED */
     this._okCodes = [
       resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,

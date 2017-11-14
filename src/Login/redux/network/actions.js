@@ -1,11 +1,8 @@
-import resultCodes from 'chronobank-smart-contracts/common/errors'
-
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
-
 import { getNetworkById, getScannerById, LOCAL_ID } from '../../network/settings'
 import uportProvider, { UPortAddress } from '../../network/uportProvider'
 import web3Provider, { Web3Provider } from '../../network/Web3Provider'
@@ -60,7 +57,7 @@ class NetworkService extends EventEmitter {
 
     web3Provider.resolve()
 
-    AbstractContractDAO.setup(account, [resultCodes.OK, true], resultCodes)
+    AbstractContractDAO.setup(account)
 
     // sync with session state
     // this unlock login
