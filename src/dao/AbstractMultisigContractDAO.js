@@ -1,14 +1,10 @@
-import type AbstractModel from 'models/AbstractModel'
-import type PendingManagerDAO from 'dao/PendingManagerDAO'
-
 import ethABI from 'ethereumjs-abi'
-
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
-import TxExecModel from 'models/TxExecModel'
-
-import contractsManagerDAO from './ContractsManagerDAO'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-
+import type PendingManagerDAO from 'dao/PendingManagerDAO'
+import type AbstractModel from 'models/AbstractModel'
+import TxExecModel from 'models/TxExecModel'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
   constructor (json, at = null, eventsJSON) {
@@ -33,11 +29,11 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
 
     const web3 = await this._web3Provider.getWeb3()
     const data = await this.getData(func, args)
-    const hash = web3.sha3(data, {encoding: 'hex'})
+    const hash = web3.sha3(data, { encoding: 'hex' })
 
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
-      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK])
+      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK]),
     ])
 
     if (!isDone) {
@@ -71,19 +67,19 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
         return acc
       }
       const name = obj.name
-      const types = obj.inputs.map(x => x.type)
+      const types = obj.inputs.map((x) => x.type)
       const hash = ethABI.methodID(name, types).toString('hex')
 
       if (hash !== methodId) {
         return acc
       }
       const inputs = ethABI.rawDecode(types, inputsBuf, [])
-      for (let key in inputs) {
+      for (const key in inputs) {
         if (inputs.hasOwnProperty(key)) {
           const v = inputs[key]
           const t = types[key]
           if (/^bytes/i.test(t)) {
-            inputs[key] = '0x' + Buffer.from(v).toString('hex')
+            inputs[key] = `0x${Buffer.from(v).toString('hex')}`
             continue
           }
           if (/^[u]?int/i.test(t)) {
@@ -92,7 +88,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
           }
           switch (t) {
             case 'address':
-              inputs[key] = '0x' + v.toString(16)
+              inputs[key] = `0x${v.toString(16)}`
               break
             case 'bool':
               inputs[key] = !!v
@@ -101,12 +97,12 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
               inputs[key] = String(v)
               break
             default:
-              throw new TypeError('unknown type ' + t)
+              throw new TypeError(`unknown type ${t}`)
           }
         }
       }
       const args = {}
-      for (let i in obj.inputs) {
+      for (const i in obj.inputs) {
         if (obj.inputs.hasOwnProperty(i)) {
           args[obj.inputs[i].name] = inputs[i]
         }
@@ -114,7 +110,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       return new TxExecModel({
         contract: this.getContractName(),
         func: name,
-        args
+        args,
       })
     }, null)
 
@@ -127,3 +123,4 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     return tx.set('args', args)
   }
 }
+

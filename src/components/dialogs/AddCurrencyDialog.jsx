@@ -1,25 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import classnames from 'classnames'
-import { CSSTransitionGroup } from 'react-transition-group'
-
 import Immutable from 'immutable'
-
-import { RaisedButton, FloatingActionButton, FontIcon, Checkbox, CircularProgress } from 'material-ui'
-
+import PropTypes from 'prop-types'
+import { RaisedButton, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
+import { connect } from 'react-redux'
 import type TokenModel from 'models/TokenModel'
-import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-
-import ModalDialog from './ModalDialog'
-import AddTokenDialog from './AddTokenDialog'
-import Points from 'components/common/Points/Points'
-import IPFSImage from  'components/common/IPFSImage/IPFSImage'
-
-import { watchInitWallet } from 'redux/wallet/actions'
-import { updateUserProfile } from 'redux/session/actions'
-import { listTokens } from 'redux/settings/erc20/tokens/actions'
+import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
+import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
+import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import Points from 'components/common/Points/Points'
+import Preloader from 'components/common/Preloader/Preloader'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import AddTokenDialog from './AddTokenDialog'
+import ModalDialog from './ModalDialog'
 
 import './AddCurrencyDialog.scss'
 
@@ -27,220 +23,188 @@ import './AddCurrencyDialog.scss'
 const ICON_OVERRIDES = {
   ETH: require('assets/img/icn-ethereum.svg'),
   BTC: require('assets/img/icn-bitcoin.svg'),
-  TIME: require('assets/img/icn-time.svg')
+  BCC: require('assets/img/icn-bitcoin-cash.svg'),
+  TIME: require('assets/img/icn-time.svg'),
 }
 
-export class AddCurrencyDialog extends React.Component {
-
-  static propTypes = {
-    account: PropTypes.string,
-    profile: PropTypes.object,
-    tokens: PropTypes.object,
-    isTokensLoaded: PropTypes.bool,
-    loadTokens: PropTypes.func,
-    handleAddToken: PropTypes.func,
-    handleClose: PropTypes.func,
-    handleSave: PropTypes.func
-  }
-
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      items: this.props.tokens.valueSeq().toArray()
-    }
-  }
-
-  componentWillMount () {
-    if (!this.props.isTokensLoaded) {
-      this.props.loadTokens()
-    }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    this.setState({
-      items: nextProps.tokens.valueSeq().toArray()
-    })
-  }
-
-  handleCurrencyChecked (item, value) {
-    if (item.disabled) {
-      return
-    }
-
-    const items = [ ...this.state.items ]
-    const index = items.indexOf(item)
-    if (index >= 0) {
-      items.splice(index, 1, {
-        ...item,
-        selected: value
-      })
-      this.setState({
-        items
-      })
-    }
-  }
-
-  render () {
-
-    return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <div styleName='content'>
-            <div styleName='header'>
-              <h3>Tokens</h3>
-              <div styleName='subtitle'>Add Token</div>
-            </div>
-            <div styleName='actions'>
-              <div styleName='items'>
-                <div styleName='item'>
-                  <FloatingActionButton onTouchTap={() => { this.props.handleAddToken() }}>
-                    <FontIcon className='material-icons'>add</FontIcon>
-                  </FloatingActionButton>
-                </div>
-              </div>
-            </div>
-            <div styleName='body'>
-              <div styleName='column'>
-                <h5>All tokens</h5>
-                {this.props.isTokensLoaded
-                  ? (
-                    <div styleName='table'>
-                      { this.state.items.map((item) => this.renderRow(item)) }
-                    </div>
-                  )
-                  : (<CircularProgress style={{marginTop: '25px'}} size={24} thickness={1.5} />)
-                }
-              </div>
-              <div styleName='column'>
-                <h5>How to add your token? It&#39;s easy!</h5>
-                <div styleName='description'>
-                  <p>
-                    You can connect to your personal wallet one of the already added tokens or add any other ERC20 token.
-                  </p>
-                </div>
-                <Points>
-                  <span>
-                    Click on the + plus button above.
-                  </span>
-                  <span>
-                    Fill the form, check values and press SAVE.
-                  </span>
-                  <span>
-                    Wait until your token will be added (mined), select it in the list on the left and press SAVE.
-                  </span>
-                </Points>
-              </div>
-            </div>
-            <div styleName='footer'>
-              <RaisedButton
-                styleName='action'
-                label='Save'
-                primary
-                onTouchTap={() => this.props.handleSave(
-                  this.props.profile,
-                  this.state.items.filter((item) => item.selected && !item.disabled).map(item => item.token.address())
-                )} />
-              <RaisedButton styleName='action' label='Close' onTouchTap={() => this.props.handleClose()} />
-            </div>
-          </div>
-        </ModalDialog>
-      </CSSTransitionGroup>
-    )
-  }
-
-  renderRow (item) {
-
-    const token: TokenModel | AbstractFetchingModel = item.token
-    const symbol = token.symbol().toUpperCase()
-    const balance = token.balance().toString(10)
-    const [ balance1, balance2 ] = balance ? balance.split('.') : [null, null]
-
-    return (
-      <div key={item.token.id()} styleName={classnames('row', { 'row-selected': item.selected })}
-        onTouchTap={() => this.handleCurrencyChecked(item, !item.selected)}
-      >
-        <div styleName='cell'>
-          <div styleName='icon'>
-            <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-            <div styleName='label'>{symbol}</div>
-          </div>
-        </div>
-        <div styleName='cell cell-auto'>
-          <div styleName='symbol'>{symbol}</div>
-          {!balance ? null : (
-            <div styleName='value'>
-              <span styleName='value1'>{balance1}</span>
-              {!balance2 ? null : (
-                <span styleName='value2'>.{balance2}</span>
-              )}&nbsp;
-              <span styleName='value3'>{symbol}</span>
-            </div>
-          )}
-        </div>
-        <div styleName='cell'>
-          { item.disabled || token.isFetching() ? null : (
-            <Checkbox checked={item.selected} />
-          )}
-          {token.isFetching() ? <CircularProgress size={20} thickness={1.5} style={{marginRight: '17px'}} /> : ''}
-        </div>
-      </div>
-    )
-  }
+function prefix (token) {
+  return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
 function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('wallet')
-  const settings = state.get('settingsERC20Tokens')
-
-  // Have no balances
-  const sharedTokens = settings.list.map(token => ({
-    selected: false,
-    token
-  }))
-
-  // Have balances
-  const walletTokens = wallet.tokens.map(token => ({
-    selected: true,
-    disabled: ['ETH', 'TIME', 'BTC'].indexOf(token.symbol().toUpperCase()) >= 0,
-    token
-  }))
+  const { profile } = state.get(DUCK_SESSION)
+  const wallet = state.get(DUCK_MAIN_WALLET)
+  const settings = state.get(DUCK_SETTINGS_ERC20_TOKENS)
 
   return {
-    account: session.account,
-    profile: session.profile,
-    tokens: sharedTokens.merge(walletTokens).sortBy(item => item.token.symbol()),
-    walletTokens: wallet.tokens,
-    isTokensLoaded: settings.isFetched && !wallet.tokensFetching
+    profile,
+    wallet,
+    tokens: settings.list.merge(wallet.tokens()).sortBy((token) => token.symbol()),
+    isFetched: settings.isFetched && !wallet.isFetching() && wallet.isFetched(),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-
     loadTokens: () => dispatch(listTokens()),
-
     handleAddToken: () => dispatch(modalsOpen({
-      component: AddTokenDialog
+      component: AddTokenDialog,
     })),
-    handleClose: () => dispatch(modalsClose()),
-    handleSave: async (profile, tokens) => {
-
-      dispatch(modalsClose())
-
-      await dispatch(updateUserProfile(
-        profile.set('tokens', new Immutable.Set(tokens))
-      ))
-
-      dispatch(watchInitWallet())
-    }
+    modalsClose: () => dispatch(modalsClose()),
+    updateUserProfile: (profile) => dispatch(updateUserProfile(profile)),
+    initWallet: () => dispatch(watchInitWallet()),
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddCurrencyDialog)
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AddCurrencyDialog extends PureComponent {
+  static propTypes = {
+    profile: PropTypes.object,
+    tokens: PropTypes.object,
+    isFetched: PropTypes.bool,
+    loadTokens: PropTypes.func,
+    handleAddToken: PropTypes.func,
+    modalsClose: PropTypes.func,
+    updateUserProfile: PropTypes.func,
+    initWallet: PropTypes.func,
+  }
+
+  constructor () {
+    super(...arguments)
+    this.state = {
+      selectedTokens: [],
+    }
+  }
+
+  componentWillMount () {
+    if (!this.props.isFetched) {
+      this.props.loadTokens()
+    }
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
+  }
+
+  handleCurrencyChecked (symbol, isSelect) {
+    const { selectedTokens } = this.state
+
+    this.setState({
+      ...this.state,
+      selectedTokens: isSelect
+        ? selectedTokens.concat(symbol)
+        : selectedTokens.filter((item) => item !== symbol),
+    })
+  }
+
+  async handleSave () {
+    const tokens = this.props.tokens.filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
+    const tokensAddresses = tokens.toArray().map((item) => item.address())
+    const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
+
+    this.props.modalsClose()
+    await this.props.updateUserProfile(profile)
+    this.props.initWallet()
+  }
+
+  renderRow (token: TokenModel, symbol) {
+    const isSelected = this.state.selectedTokens.includes(token.symbol())
+
+    return (
+      <div
+        key={token.id()}
+        styleName={classnames('row', { rowSelected: isSelected })}
+        onTouchTap={() => this.handleCurrencyChecked(token.symbol(), !isSelected)}
+      >
+        <div styleName='cell'>
+          <div styleName='icon'>
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <div styleName='label'>{symbol}</div>
+          </div>
+        </div>
+        <div styleName='cell cellAuto'>
+          <div styleName='symbol'>{symbol}</div>
+          <div styleName='value'>
+            <TokenValue
+              value={token.balance()}
+              symbol={token.symbol()}
+              isLoading={!token.isFetched()}
+            />
+          </div>
+        </div>
+        <div styleName='cell'>
+          {token.isFetched()
+            ? token.isOptional() && <Checkbox checked={isSelected} />
+            : <Preloader />}
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    return (
+      <ModalDialog styleName='root'>
+        <div styleName='content'>
+          <div styleName='header'>
+            <h3><Translate value={prefix('tokens')} /></h3>
+            <div styleName='subtitle'><Translate value={prefix('addToken')} /></div>
+          </div>
+          <div styleName='actions'>
+            <div styleName='items'>
+              <div styleName='item'>
+                <FloatingActionButton onTouchTap={() => this.props.handleAddToken()}>
+                  <FontIcon className='material-icons'>add</FontIcon>
+                </FloatingActionButton>
+              </div>
+            </div>
+          </div>
+          <div styleName='body'>
+            <div styleName='column'>
+              <h5><Translate value={prefix('allTokens')} /></h5>
+              {this.props.isFetched
+                ? (
+                  <div styleName='table'>
+                    {this.props.tokens.entrySeq().toArray().map(([symbol, item]) => this.renderRow(item, symbol))}
+                  </div>
+                )
+                : <Preloader />
+              }
+            </div>
+            <div styleName='column'>
+              <h5><Translate value={prefix('howToAddYourToken')} /></h5>
+              <div styleName='description'>
+                <p>
+                  <Translate value={prefix('youCanConnectToYourPersonalWallet')} />
+                </p>
+              </div>
+              <Points>
+                <span>
+                  <Translate value={prefix('clickOnThePlusButtonAbove')} />
+                </span>
+                <span>
+                  <Translate value={prefix('fillTheForm')} />
+                </span>
+                <span>
+                  <Translate value={prefix('waitUntilYourToken')} />
+                </span>
+              </Points>
+            </div>
+          </div>
+          <div styleName='footer'>
+            <RaisedButton
+              styleName='action'
+              label={<Translate value={prefix('save')} />}
+              primary
+              onTouchTap={() => this.handleSave()}
+            />
+            <RaisedButton
+              styleName='action'
+              label={<Translate value={prefix('close')} />}
+              onTouchTap={this.handleClose}
+            />
+          </div>
+        </div>
+      </ModalDialog>
+    )
+  }
+}

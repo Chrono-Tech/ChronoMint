@@ -5,7 +5,10 @@ export const initialState = {
   tokens: ['ETH', 'TIME'],
   currencies: ['USD'],
   prices: {},
-  selectedCurrency: 'USD'
+  rates: {},
+  selectedCurrency: 'USD',
+  lastMarket: {},
+  selectedCoin: 'ETH',
 }
 
 export default (state = initialState, action) => {
@@ -13,18 +16,45 @@ export default (state = initialState, action) => {
     case actions.MARKET_INIT:
       return {
         ...state,
-        isInited: action.isInited
+        isInited: action.isInited,
       }
     case actions.MARKET_ADD_TOKEN:
       return {
         ...state,
-        tokens: [...state.tokens, action.symbol]
+        tokens: [...state.tokens, action.symbol],
       }
     case actions.MARKET_UPDATE_PRICES:
       return {
         ...state,
-        prices: action.prices
+        prices: action.prices,
       }
+    case actions.MARKET_UPDATE_RATES:
+      return {
+        ...state,
+        rates: {
+          ...state.rates,
+          [action.payload.symbol]: {
+            ...(state.rates[action.payload.symbol] || {}),
+            [action.payload.LASTMARKET]: {
+              ...action.payload,
+            },
+          },
+        },
+      }
+    case actions.LAST_MARKET_UPDATE:
+      return {
+        ...state,
+        lastMarket: {
+          ...state.lastMarket,
+          [action.payload.symbol]: action.payload.lastMarket,
+        },
+      }
+    case actions.SET_SELECTED_COIN:
+      return {
+        ...state,
+        selectedCoin: action.payload.coin,
+      }
+
     default:
       return state
   }

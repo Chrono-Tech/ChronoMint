@@ -11,16 +11,18 @@ export default (values, props) => {
   if (name !== props.initialValues.get('name') && props.locs.has(name)) {
     nameErrors.add({
       value: 'errors.alreadyExist',
-      what: 'LOC'
+      what: 'LOC',
     })
   }
 
-  errors.publishedHash = ErrorList.toTranslate(validator.required(values.get('publishedHash')))
+  errors.publishedHash =
+    ErrorList.toTranslate(validator.required(values.get('publishedHash'))) ||
+    ErrorList.toTranslate(validator.validIpfsFileList(values.get('publishedHash')))
   errors.website = ErrorList.toTranslate(validator.url(values.get('website')))
   errors.issueLimit = ErrorList.toTranslate(validator.positiveInt(values.get('issueLimit')))
 
   return {
     ...errors,
-    name: nameErrors.getErrors()
+    name: nameErrors.getErrors(),
   }
 }

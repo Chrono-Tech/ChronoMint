@@ -8,6 +8,6 @@ export default getMuiTheme({
     secondaryColor: variables.colorWhite,
     secondaryTextColor: variables.colorAccent2,
     disabledColor: variables.disabledColor1,
-    disabledTextColor: variables.colorWhite
-  }
+    disabledTextColor: variables.colorWhite,
+  },
 })

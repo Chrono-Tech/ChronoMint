@@ -1,14 +1,14 @@
 import { store } from 'specsInit'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import LOCModel from 'models/LOCModel'
 import * as a from './actions'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 const loc1 = new LOCModel({
   name: 'loc1',
   oldName: 'loc1',
   website: 'dkchv.ru',
   createDate: Date.now(),
-  expDate: Date.now()
+  expDate: Date.now(),
 })
 
 const loc2 = new LOCModel({
@@ -16,7 +16,7 @@ const loc2 = new LOCModel({
   oldName: 'loc2',
   website: 'dkchv2.ru',
   createDate: Date.now(),
-  expDate: Date.now()
+  expDate: Date.now(),
 })
 
 describe('LOCs actions', () => {
@@ -71,8 +71,8 @@ describe('LOCs actions', () => {
     const watchUpdateCallback = (loc) => {
       // TODO @dkchv: wrong answer in SC, wait for update
       const actions = store.getActions()
-      expect(actions[1]).toEqual({type: a.LOC_REMOVE, name: loc2.get('oldName')})
-      expect(actions[2]).toEqual({type: a.LOC_UPDATE, loc: loc2.isPending(true)})
+      expect(actions[1]).toEqual({ type: a.LOC_REMOVE, name: loc2.get('oldName') })
+      expect(actions[2]).toEqual({ type: a.LOC_UPDATE, loc: loc2.isPending(true) })
       expect(loc.get('name')).toEqual('loc2')
       expect(loc.get('website')).toEqual('dkchv2.ru')
       done()

@@ -8,13 +8,18 @@ class ProfileModel extends abstractModel({
   url: null,
   icon: null,
   tokens: new Immutable.Set(),
+  assetsManager: new Immutable.Map(),
 }) {
   constructor (data = {}) {
     data = data || {}
     super({
       ...data,
-      tokens: new Immutable.Set(data.tokens || undefined)
+      tokens: new Immutable.Set(data.tokens || undefined),
     })
+  }
+
+  assetsManager () {
+    return this.get('assetsManager')
   }
 
   name () {
@@ -37,12 +42,13 @@ class ProfileModel extends abstractModel({
     return this.get('icon')
   }
 
-  tokens (): Immutable.Set {
-    return this.get('tokens')
+  tokens (value): Immutable.Set {
+    return this._getSet('tokens', value)
   }
 
   isEmpty () {
     return this.get('name') === null
   }
 }
+
 export default ProfileModel

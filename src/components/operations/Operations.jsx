@@ -1,23 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-
-import { connect } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
-import { getEtherscanUrl } from 'network/settings'
-
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
-import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
-
-import { modalsOpen } from 'redux/modals/actions'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { getEtherscanUrl } from 'Login/network/settings'
+import { connect } from 'react-redux'
 import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
-
+import { modalsOpen } from 'redux/modals/actions'
+import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import './Operations.scss'
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class PendingOperations extends Component {
+function prefix (token) {
+  return `components.operations.Operations.${token}`
+}
 
+@connect(mapStateToProps, mapDispatchToProps)
+export default class PendingOperations extends PureComponent {
   static propTypes = {
-    title: PropTypes.string,
+    // title: PropTypes.string,
+    title: PropTypes.object, // Translate object
     filterOperations: PropTypes.func,
     showSignatures: PropTypes.bool,
 
@@ -34,12 +34,13 @@ export default class PendingOperations extends Component {
 
     completedFetching: PropTypes.bool,
     completedEndOfList: PropTypes.bool,
+    locale: PropTypes.string,
   }
 
   static defaultProps = {
     // eslint-disable-next-line
     filterOperations: (op) => true, // get all operations by default
-    showSignatures: false // do not show signatures count by default
+    showSignatures: false, // do not show signatures count by default
   }
 
   componentWillMount () {
@@ -49,19 +50,19 @@ export default class PendingOperations extends Component {
   }
 
   render () {
-    const list = this.props.list.valueSeq().sortBy(o => o.tx().time()).reverse().toArray()
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
     const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
 
     return (
       <div styleName='panel'>
-        <div styleName='panel-head'>
-          <h3 styleName='head-title'>{this.props.title}</h3>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'>{this.props.title}</h3>
           {this.props.showSignatures
             ? (
-              <div styleName='head-actions'>
+              <div styleName='headActions'>
                 <FlatButton
                   icon={<FontIcon className='material-icons'>settings</FontIcon>}
-                  label='Settings'
+                  label={<Translate value={prefix('settings')} />}
                   primary
                   onTouchTap={() => this.props.openSettings()}
                 />
@@ -72,23 +73,23 @@ export default class PendingOperations extends Component {
         </div>
         {!this.props.isFetched
           ? (
-            <div styleName='panel-progress'>
+            <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
             </div>
           )
           : (
-            <div styleName='panel-table'>
-              <div styleName='table-head'>
-                <div styleName='table-row'>
-                  <div styleName='table-cell'>Description</div>
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='headTableCell'><Translate value={prefix('description')} /></div>
                   {this.props.showSignatures
-                    ? (<div styleName='table-cell'>Signatures</div>)
+                    ? (<div styleName='headTableCell'><Translate value={prefix('signatures')} /></div>)
                     : null
                   }
-                  <div styleName='table-cell'>Actions</div>
+                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
-              <div styleName='table-body'>
+              <div styleName='tableBody'>
                 {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
               </div>
             </div>
@@ -96,10 +97,13 @@ export default class PendingOperations extends Component {
         }
         {!this.props.completedFetching && !this.props.completedEndOfList
           ? (
-            <div styleName='panel-more'>
+            <div styleName='panelMore'>
               <RaisedButton
-                label={I18n.t('nav.loadMore')}
-                onTouchTap={() => this.props.handleLoadMore()} fullWidth primary/>
+                label={<Translate value='nav.loadMore' />}
+                onTouchTap={() => this.props.handleLoadMore()}
+                fullWidth
+                primary
+              />
             </div>
           )
           : null
@@ -109,61 +113,60 @@ export default class PendingOperations extends Component {
   }
 
   renderRow (op, index, href) {
-
     const tx = op.tx()
     const hash = tx.hash()
     const details = tx.details()
 
     return (
-      <div styleName='table-row' key={index}>
-        <div styleName='table-cell table-cell-description'>
+      <div styleName='tableRow' key={index}>
+        <div styleName='bodyTableCell tableCellDescription'>
           <div styleName='entry'>
-            <div styleName='entry-icon'>
+            <div styleName='entryIcon'>
               <i className='material-icons'>flash_on</i>
             </div>
-            <div styleName='entry-info'>
-              <div styleName='info-title'>{tx.title()}</div>
-              {/*<div styleName='info-description'>Winterfell Gas Station</div>*/}
+            <div styleName='entryInfo'>
+              <div styleName='infoTitle'>{tx.title()}</div>
+              {/* <div styleName='info-description'>Winterfell Gas Station</div> */}
               {hash
-                ? (<div styleName='info-address'>{hash}</div>)
+                ? (<div styleName='infoAddress'>{hash}</div>)
                 : null
               }
               {details && details.map((item, index) => (
-                <div key={index} styleName='info-prop'>
-                  <span styleName='prop-name'>{item.label}:</span>&nbsp;
-                  <span styleName='prop-value'>{item.value}</span>
+                <div key={index} styleName='infoProp'>
+                  <span styleName='propName'>{item.label}:</span>&nbsp;
+                  <span styleName='propValue'>{item.value}</span>
                 </div>
               ))}
               {this.props.showSignatures
                 ? (
-                  <div styleName='info-prop info-prop-signatures'>
-                    <span styleName='prop-name'>Signatures:</span>
-                    <span styleName='prop-value'>{op.remained()} of {op.remained() + op.completed()}</span>
+                  <div styleName='infoProp infoPropSignatures'>
+                    <span styleName='propName'>Signatures:</span>
+                    <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
                   </div>
                 )
                 : null
               }
-              <div styleName='info-date'>{tx.date()}</div>
+              <div styleName='infoDate'>{tx.date()}</div>
             </div>
           </div>
         </div>
         {this.props.showSignatures
           ? (
-            <div styleName='table-cell table-cell-signatures'>
+            <div styleName='bodyTableCell tableCellSignatures'>
               {op.remained()} of {op.remained() + op.completed()}
             </div>
           )
           : null
         }
-        <div styleName='table-cell table-cell-actions'>
-          <div styleName='actions'>
+        <div styleName='bodyTableCell'>
+          <div styleName='tableCellActions'>
             {href && (
-              <div styleName='actions-item'>
+              <div styleName='tableCellActionsItem'>
                 <RaisedButton label='View' href={href} />
               </div>
             )}
             {!op.isDone() && (
-              <div styleName='actions-item'>
+              <div styleName='tableCellActionsItem'>
                 {op.isConfirmed()
                   ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
                   : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
@@ -188,7 +191,8 @@ function mapStateToProps (state) {
     completedEndOfList: operations.completedEndOfList,
     required: operations.required,
     selectedNetworkId: network.selectedNetworkId,
-    selectedProviderId: network.selectedProviderId
+    selectedProviderId: network.selectedProviderId,
+    locale: state.get('i18n').locale,
   }
 }
 
@@ -201,8 +205,8 @@ function mapDispatchToProps (dispatch) {
     openSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
-        component: OperationsSettingsDialog
+        component: OperationsSettingsDialog,
       }))
-    }
+    },
   }
 }

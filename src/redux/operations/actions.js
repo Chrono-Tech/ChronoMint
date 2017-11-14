@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { notify } from 'redux/notifier/actions'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'
@@ -11,9 +11,9 @@ export const OPERATIONS_SET = 'operations/SET'
 export const OPERATIONS_SIGNS_REQUIRED = 'operations/SIGNS_REQUIRED'
 export const OPERATIONS_ADMIN_COUNT = 'operations/ADMIN_COUNT'
 
-const setOperation = (operation: OperationModel) => ({type: OPERATIONS_SET, operation})
-const operationsFetch = () => ({type: OPERATIONS_FETCH})
-const operationsList = (list: Immutable.Map) => ({type: OPERATIONS_LIST, list})
+const setOperation = (operation: OperationModel) => ({ type: OPERATIONS_SET, operation })
+const operationsFetch = () => ({ type: OPERATIONS_FETCH })
+const operationsList = (list: Immutable.Map) => ({ type: OPERATIONS_LIST, list })
 
 export const watchOperation = (notice: OperationNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
@@ -22,7 +22,7 @@ export const watchOperation = (notice: OperationNoticeModel) => async (dispatch)
 
 export const watchInitOperations = () => async (dispatch) => {
   const userDAO = await contractsManagerDAO.getUserManagerDAO()
-  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required: await userDAO.getSignsRequired()})
+  dispatch({ type: OPERATIONS_SIGNS_REQUIRED, required: await userDAO.getSignsRequired() })
 
   const dao = await contractsManagerDAO.getPendingManagerDAO()
 
@@ -32,16 +32,16 @@ export const watchInitOperations = () => async (dispatch) => {
     dao.watchConfirmation(callback),
     dao.watchRevoke(callback),
 
-    dao.watchDone(operation => dispatch(setOperation(operation)))
+    dao.watchDone((operation) => dispatch(setOperation(operation))),
   ])
 }
 
 export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
   const dao = await contractsManagerDAO.getPendingManagerDAO()
-  let [list, completedList] = await Promise.all([
+  const [list, completedList] = await Promise.all([
     dao.getList(),
-    dao.getCompletedList()
+    dao.getCompletedList(),
   ])
   dispatch(operationsList(list.merge(completedList)))
 }
@@ -54,7 +54,7 @@ export const loadMoreCompletedOperations = () => async (dispatch) => {
 }
 
 export const confirmOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setOperation(operation.fetching()))
+  dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
     await dao.confirm(operation)
@@ -63,8 +63,8 @@ export const confirmOperation = (operation: OperationModel | AbstractFetchingMod
   }
 }
 
-export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setOperation(operation.fetching()))
+export const revokeOperation = (operation: OperationModel | AbstractFetchingModel) => async dispatch => {
+  dispatch(setOperation(operation.isFetching(true)))
   const dao = await contractsManagerDAO.getPendingManagerDAO()
   try {
     await dao.revoke(operation)
@@ -77,14 +77,14 @@ export const setupOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [required, adminCount] = await Promise.all([
     dao.getSignsRequired(),
-    dao.getAdminCount()
+    dao.getAdminCount(),
   ])
-  dispatch({type: OPERATIONS_SIGNS_REQUIRED, required})
-  dispatch({type: OPERATIONS_ADMIN_COUNT, adminCount})
+  dispatch({ type: OPERATIONS_SIGNS_REQUIRED, required })
+  dispatch({ type: OPERATIONS_ADMIN_COUNT, adminCount })
 }
 
 // TODO @bshevchenko: dispatch fetching actions
-//noinspection JSUnusedLocalSymbols
+// noinspection JSUnusedLocalSymbols
 export const setRequiredSignatures = (n: number) => async () => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const currentSigns = await dao.getSignsRequired()

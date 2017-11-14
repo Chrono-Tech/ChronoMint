@@ -1,28 +1,29 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
 import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
-
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import CBEModel from 'models/CBEModel'
-
-import { modalsOpen } from 'redux/modals/actions'
 import { listCBE, revokeCBE } from 'redux/settings/user/cbe/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import CBEAddressDialog from 'components/dialogs/CBEAddressDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 
 import './CBEAddresses.scss'
 
-@connect(mapStateToProps, mapDispatchToProps)
-export default class CBEAddresses extends Component {
+function prefix (token) {
+  return `components.settings.CBEAddresses.${token}`
+}
 
+@connect(mapStateToProps, mapDispatchToProps)
+export default class CBEAddresses extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     isFetched: PropTypes.bool,
     getList: PropTypes.func,
     form: PropTypes.func,
     list: PropTypes.object,
-    revoke: PropTypes.func
+    revoke: PropTypes.func,
   }
 
   componentWillMount () {
@@ -36,12 +37,12 @@ export default class CBEAddresses extends Component {
 
     return (
       <div styleName='panel'>
-        <div styleName='panel-head'>
-          <h3 styleName='head-title'>CBE Addresses</h3>
-          <div styleName='head-actions'>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'><Translate value={prefix('cbeAddresses')} /></h3>
+          <div styleName='headActions'>
             <FlatButton
               icon={<FontIcon className='material-icons'>add</FontIcon>}
-              label='Add CBE'
+              label={<Translate value={prefix('addCbe')} />}
               primary
               onTouchTap={() => this.props.form(new CBEModel())}
             />
@@ -49,51 +50,52 @@ export default class CBEAddresses extends Component {
         </div>
         {!this.props.isFetched
           ? (
-            <div styleName='panel-progress'>
+            <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
             </div>
           )
           : (
-            <div styleName='panel-table'>
-              <div styleName='table-head'>
-                <div styleName='table-row'>
-                  <div styleName='table-cell'>Name</div>
-                  <div styleName='table-cell'>Smart Contract Address</div>
-                  <div styleName='table-cell'>Actions</div>
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='headTableCell'><Translate value={prefix('name')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('smartContractAddress')} /></div>
+                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
                 </div>
               </div>
-              <div styleName='table-body'>
+              <div styleName='tableBody'>
                 {list.map(([address, item]) => (
-                  <div key={address} styleName='table-row'>
-                    <div styleName='table-cell table-cell-name'>
-                      <div styleName='cell-title'>Name:&nbsp;</div>
-                      <div styleName='cell-name'>
-                        <div styleName='name-icon'>
+                  <div key={address} styleName='tableRow'>
+                    <div styleName='bodyTableCell tableCellName'>
+                      <div styleName='cellTitle'>Name:&nbsp;</div>
+                      <div styleName='cellName'>
+                        <div styleName='nameIcon'>
                           <IPFSImage
-                            styleName='icon-content'
-                            multihash={item.user().icon()} />
+                            styleName='iconContent'
+                            multihash={item.user().icon()}
+                          />
                         </div>
-                        <div styleName='name-title'>
+                        <div styleName='nameTitle'>
                           {item.name()}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-address'>
+                    <div styleName='bodyTableCell tableCellAddress'>
                       <div styleName='ellipsis'>
-                        <div styleName='ellipsis-inner'>
-                          <div styleName='cell-title'>Address:&nbsp;</div>
+                        <div styleName='ellipsisInner'>
+                          <div styleName='cellTitle'>Address:&nbsp;</div>
                           {address}
                         </div>
                       </div>
                     </div>
-                    <div styleName='table-cell table-cell-actions'>
-                      <div styleName='actions'>
+                    <div styleName='bodyTableCell'>
+                      <div styleName='tableCellActions'>
                         {item.isFetching()
-                          ? (<CircularProgress size={24} thickness={1.5} style={{float: 'right'}} />)
+                          ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                           : (
-                            <div styleName='actions-item'>
+                            <div styleName='actionsItem'>
                               <RaisedButton
-                                label='Remove'
+                                label={<Translate value={prefix('remove')} />}
                                 disabled={this.props.account === address}
                                 onTouchTap={() => this.props.revoke(item)}
                               />
@@ -119,7 +121,7 @@ function mapStateToProps (state) {
   return {
     account: session.account,
     list: settingsUserCBE.list,
-    isFetched: settingsUserCBE.isFetched
+    isFetched: settingsUserCBE.isFetched,
   }
 }
 
@@ -130,8 +132,8 @@ function mapDispatchToProps (dispatch) {
     form: (cbe) => dispatch(modalsOpen({
       component: CBEAddressDialog,
       props: {
-        initialValues: cbe || new CBEModel()
-      }
-    }))
+        initialValues: cbe || new CBEModel(),
+      },
+    })),
   }
 }

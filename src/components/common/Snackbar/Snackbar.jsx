@@ -1,18 +1,17 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 
 import './Snackbar.scss'
 
-export default class Snackbar extends React.Component {
-
+export default class Snackbar extends PureComponent {
   static propTypes = {
     notice: PropTypes.object,
     autoHideDuration: PropTypes.number,
-    onRequestClose: PropTypes.func
+    onRequestClose: PropTypes.func,
   }
 
   static defaultProps = {
-    autoHideDuration: 4000
+    autoHideDuration: 4000,
   }
 
   constructor (props) {
@@ -23,7 +22,7 @@ export default class Snackbar extends React.Component {
         ? setTimeout(() => {
           this.handleRequestClose()
         }, props.autoHideDuration)
-        : null
+        : null,
     }
   }
 
@@ -38,13 +37,12 @@ export default class Snackbar extends React.Component {
           ? setTimeout(() => {
             this.handleRequestClose()
           }, this.props.autoHideDuration)
-          : null
+          : null,
       })
     }
   }
 
   render () {
-
     const notice = this.props.notice
     const address = notice.address()
 

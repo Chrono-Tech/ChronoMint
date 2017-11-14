@@ -12,7 +12,7 @@ export const POLL_TYPE = 'modals/POLL'
 const initialState = {
   open: false,
   modalType: null,
-  modalProps: {}
+  modalProps: {},
 }
 
 export default (state = initialState, action) => {
@@ -20,26 +20,24 @@ export default (state = initialState, action) => {
     case MODAL_HIDE:
       return {
         ...state,
-        open: false
+        open: false,
       }
     default:
       return state
   }
 }
 
-export const hideModal = () => ({type: MODAL_HIDE})
+export const hideModal = () => ({ type: MODAL_HIDE })
 
-export const showConfirmTxModal = () => (dispatch) => {
-  return new Promise(resolve => {
-    dispatch(modalsOpen({
-      component: ConfirmTxDialog,
-      props: {
-        callback: (isConfirmed) => resolve(isConfirmed)
-      }
-    }))
-  }).catch(e => {
-    // eslint-disable-next-line
+export const showConfirmTxModal = () => (dispatch) => new Promise((resolve) => {
+  dispatch(modalsOpen({
+    component: ConfirmTxDialog,
+    props: {
+      callback: (isConfirmed) => resolve(isConfirmed),
+    },
+  }))
+}).catch((e) => {
+  // eslint-disable-next-line
     console.error('Confirm modal error:', e)
-    return false
-  })
-}
+  return false
+})

@@ -1,0 +1,136 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.content {
+  position: relative;
+}
+
+.platformWrap {
+  @include xs-only {
+    width: calc(100vw - 40px);
+    overflow: hidden;
+  }
+}
+
+.preloaderWrap {
+  :global {
+    .Preloader__root {
+      height: 75px;
+      justify-content: center;
+    }
+  }
+  @include xs-only {
+    width: calc(100vw - 40px);
+    overflow: hidden;
+  }
+}
+
+.platformHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: solid 1px transparent;
+  border-right: solid 1px transparent;
+  border-bottom: solid 1px transparent;
+  &.selected {
+    border-radius: 2px;
+    background-color: #e9efff;
+    border-top: solid 1px #2962ff;
+    border-right: solid 1px #2962ff;
+    border-bottom: solid 1px #2962ff;
+  }
+}
+
+.platformIcon {
+  background: url('assets/img/folder-multiple.svg');
+  width: 32px;
+  height: 32px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  position: absolute;
+  left: 16px;
+  top: 16px;
+}
+
+.platformTitleWrap {
+  width: 100%;
+  padding: 16px 0 16px 66px;
+  height: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  color: #00005f;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  .platformTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @include xs-only {
+    width: calc(100% - 48px);
+  }
+}
+
+.subTitle {
+  opacity: 0.6;
+  font-size: 14px;
+}
+
+.tokensList {
+}
+
+.tokenItem {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 125px;
+  height: 80px;
+  margin-right: 16px;
+  justify-content: center;
+  &:hover, &.selected {
+    background: #e9efff;
+  }
+}
+
+.tokenIcon {
+  position: absolute;
+  left: 40px;
+  width: 50px;
+  height: 100%;
+  div {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+.tokenTitle {
+  font-weight: bold;
+}
+
+.tokenBalance {
+  margin-top: -7px;
+}
+
+.platformActions {
+  display: flex;
+  flex-direction: column;
+}
+
+.tokenSubTitle {
+  font-weight: normal;
+  @include ellipsis;
+}

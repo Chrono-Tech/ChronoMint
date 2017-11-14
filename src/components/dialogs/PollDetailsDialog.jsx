@@ -1,26 +1,32 @@
-import React from 'react'
 import PropTypes from 'prop-types'
-import pluralize from 'pluralize'
-import moment from 'moment'
-import { connect } from 'react-redux'
-import { CSSTransitionGroup } from 'react-transition-group'
 import { RaisedButton } from 'material-ui'
-
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-
-import ModalDialog from './ModalDialog'
+import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-
+import Moment, { SHORT_DATE } from 'components/common/Moment'
+import ModalDialog from './ModalDialog'
 import './PollDetailsDialog.scss'
 
-export class VoteDialog extends React.Component {
+function prefix (token) {
+  return `components.dialogs.PollDetailsDialog.${token}`
+}
 
+function mapDispatchToProps (dispatch) {
+  return {
+    modalsClose: () => dispatch(modalsClose()),
+  }
+}
+
+@connect(null, mapDispatchToProps)
+export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     palette: PropTypes.array,
-    onClose: PropTypes.func,
-    handleClose: PropTypes.func,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   static defaultProps = {
@@ -35,197 +41,175 @@ export class VoteDialog extends React.Component {
       '#0000FF',
       '#FF00FF',
       '#FFFF00',
-      '#FF5500'
-    ]
+      '#FF5500',
+    ],
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
   }
 
   render () {
-
     const { model, palette } = this.props
     const poll = model.poll()
     const details = model.details()
     const entries = model.voteEntries()
 
     return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
-          <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
-            <div styleName='header'>
-              <div styleName='column column-1'>
-                <div styleName='inner'>
-                  <div styleName='layer layer-entries'>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>Published:</div>
-                      <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+      <ModalDialog styleName='root'>
+        <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
+          <div styleName='header'>
+            <div styleName='column column1'>
+              <div styleName='inner'>
+                <div styleName='layer layerEntries'>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
+                    <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                  </div>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
+                    <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                  </div>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
+                    <div styleName='entryValue'>
+                      {details.voteLimitInTIME === null
+                        ? (<i>Unlimited</i>)
+                        : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
+                      }
                     </div>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>End date:</div>
-                      <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
-                    </div>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>Required votes:</div>
-                      <div styleName='entry-value'>
-                        {details.voteLimit == null
-                          ? (<i>No</i>)
-                          : (<span>{details.voteLimit.toString()} TIME</span>)
+                  </div>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
+                    <div styleName='entryValue'>{details.received.toString()} TIME</div>
+                  </div>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
+                    <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                  </div>
+                  <div styleName='entry'>
+                    <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
+                    <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div styleName='column column2'>
+              <div styleName='inner'>
+                <div styleName='layer'>
+                  {details.status
+                    ? (
+                      <div styleName='entry entryStatus'>
+                        {details.active
+                          ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
+                          : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
                         }
                       </div>
-                    </div>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>Received votes:</div>
-                      <div styleName='entry-value'>{details.received.toString()} TIME</div>
-                    </div>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>Variants:</div>
-                      <div styleName='entry-value'>{details.options.count() || (<i>No</i>)}</div>
-                    </div>
-                    <div styleName='entry'>
-                      <div styleName='entry-label'>Documents:</div>
-                      <div styleName='entry-value'>{details.files.count() || (<i>No</i>)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div styleName='column column-2'>
-                <div styleName='inner'>
-                  <div styleName='layer'>
-                    {details.status
-                      ? (
-                        <div styleName='entry entry-status'>
-                          {details.active
-                            ? (<div styleName='entry-badge badge-orange'>Ongoing</div>)
-                            : (<div styleName='entry-badge badge-green'>New</div>)
-                          }
-                        </div>
-                      )
-                      : (
-                        <div styleName='entry entry-status'>
-                          <div styleName='entry-badge badge-blue'>Finished</div>
-                        </div>
-                      )
-                    }
-                  </div>
-                  <div styleName='layer layer-chart'>
-                    <div styleName='entry entry-total'>
-                      <div styleName='entry-title'>{details.percents.toString()}%</div>
-                      <div styleName='entry-label'>TIME Holders already voted</div>
-                    </div>
-                    <div styleName='chart chart-1'>
-                      <DoughnutChart
-                        weight={0.24}
-                        rounded={false}
-                        items={entries.toArray().map((item, index) => ({
-                          value: item.count.toNumber(),
-                          fill: palette[index % palette.length]
-                        }))}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {entries && entries.count()
-                ? (
-                  <div styleName='column column-3'>
-                    <div styleName='inner'>
-                      <div styleName='layer layer-legend'>
-                        <div styleName='legend'>
-                          {entries.map((item, index) => (
-                            <div styleName='legend-item' key={index}>
-                              <div styleName='item-point' style={{ backgroundColor: palette[index % palette.length] }}>
-                              </div>
-                              <div styleName='item-title'>
-                                Option #{index + 1} &mdash; <b>{pluralize('vote', item.count.toNumber(), true)}</b>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
+                    )
+                    : (
+                      <div styleName='entry entryStatus'>
+                        <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
                       </div>
-                    </div>
+                    )
+                  }
+                </div>
+                <div styleName='layer layerChart'>
+                  <div styleName='entry entryTotal'>
+                    <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                    <div styleName='entryLabel'><Translate value={prefix('timeHoldersAlreadyVoted')} /></div>
                   </div>
-                )
-                : null
-              }
+                  <div styleName='chart chart1'>
+                    <DoughnutChart
+                      weight={0.24}
+                      rounded={false}
+                      items={entries.toArray().map((item, index) => ({
+                        value: item.count.toNumber(),
+                        fill: palette[index % palette.length],
+                      }))}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div styleName='body'>
-              <div styleName='column'>
-                <h3 styleName='title'>{poll.title()}</h3>
-                <div styleName='description'>{poll.description()}</div>
-                {details.files && details.files.count()
-                  ? (
-                    <div>
-                      <h3 styleName='title'>Documents</h3>
-                      <div styleName='documents'>
-                        <div styleName='documents-list'>
-                          {details.files.valueSeq().map((file, index) => (
-                            <a key={index} styleName='list-item' href='#'>
-                              <i className='material-icons'>insert_drive_file</i>
-                              <span styleName='item-title'>file-name.pdf</span>
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                  : null
-                }
-              </div>
-              {details.options && details.options.count()
-                ? (
-                  <div styleName='column'>
-                    <h3 styleName='title'>Poll options</h3>
-                    <div styleName='options'>
-                      <div styleName='options-table'>
-                        {details.options.valueSeq().map((option, index) => (
-                          <div key={index} styleName='table-item'>
-                            <div styleName='item-left'>
-                              {(details.memberVote === index + 1)
-                                ? (
-                                  <div styleName='symbol symbol-fill'>
-                                    <i className='material-icons'>check</i>
-                                  </div>
-                                )
-                                : (
-                                  <div styleName='symbol symbol-stroke'>#{index + 1}</div>
-                                )
-                              }
-                            </div>
-                            <div styleName='item-main'>
-                              <div styleName='main-title'>Option #{index + 1}</div>
-                              <div styleName='main-option'>{option}</div>
+            {entries && entries.count()
+              ? (
+                <div styleName='column column3'>
+                  <div styleName='inner'>
+                    <div styleName='layer layerLegend'>
+                      <div styleName='legend'>
+                        {entries.map((item, index) => (
+                          <div styleName='legendItem' key={index}>
+                            <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }} />
+                            <div styleName='itemTitle'>
+                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
                             </div>
                           </div>
                         ))}
                       </div>
                     </div>
                   </div>
+                </div>
+              )
+              : null
+            }
+          </div>
+          <div styleName='body'>
+            <div styleName='column'>
+              <h3 styleName='title'>{poll.title()}</h3>
+              <div styleName='description'>{poll.description()}</div>
+              {details.files && details.files.count()
+                ? (
+                  <div styleName='clearfix'>
+                    <h3 styleName='title'>Documents</h3>
+                    <DocumentsList styleName='documents' documents={details.files} />
+                  </div>
                 )
                 : null
               }
             </div>
-            <div styleName='footer'>
-              <RaisedButton
-                styleName='action'
-                label='Close'
-                onTouchTap={() => this.props.handleClose()}
-                primary
-              />
-            </div>
-          </form>
-        </ModalDialog>
-      </CSSTransitionGroup>
+            {details.options && details.options.count()
+              ? (
+                <div styleName='column'>
+                  <h3 styleName='title'><Translate value={prefix('pollOptions')} /></h3>
+                  <div styleName='options'>
+                    <div styleName='optionsTable'>
+                      {details.options.valueSeq().map((option, index) => (
+                        <div key={index} styleName='tableItem'>
+                          <div styleName='itemLeft'>
+                            {(details.memberVote === index + 1)
+                              ? (
+                                <div styleName='symbol symbolFill'>
+                                  <i className='material-icons'>check</i>
+                                </div>
+                              )
+                              : (
+                                <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')} number={index + 1} /></div>
+                              )
+                            }
+                          </div>
+                          <div styleName='itemMain'>
+                            <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} /></div>
+                            <div styleName='mainOption'>{option}</div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )
+              : null
+            }
+          </div>
+          <div styleName='footer'>
+            <RaisedButton
+              styleName='action'
+              label='Close'
+              onTouchTap={this.handleClose}
+              primary
+            />
+          </div>
+        </form>
+      </ModalDialog>
     )
   }
 }
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleClose: () => dispatch(modalsClose())
-  }
-}
-
-export default connect(null, mapDispatchToProps)(VoteDialog)

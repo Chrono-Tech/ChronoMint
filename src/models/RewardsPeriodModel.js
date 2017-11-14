@@ -3,19 +3,14 @@ import moment from 'moment'
 import { abstractModel } from './AbstractModel'
 
 class RewardsPeriodModel extends abstractModel({
-  id: null,
   totalDeposit: new BigNumber(0),
   userDeposit: new BigNumber(0),
   isClosed: false,
   startDate: null,
   assetBalance: new BigNumber(0),
   uniqueShareholders: null,
-  periodLength: null
+  periodLength: null,
 }) {
-  id () {
-    return this.get('id')
-  }
-
   index () {
     return this.id() + 1
   }
@@ -60,7 +55,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   startDate () {
-    return this.startMoment().format('Do MMMM YYYY')
+    return this.startMoment()
   }
 
   endMoment () {
@@ -68,7 +63,7 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   endDate () {
-    return this.endMoment().format('Do MMMM YYYY')
+    return this.endMoment()
   }
 
   daysRemaining () {

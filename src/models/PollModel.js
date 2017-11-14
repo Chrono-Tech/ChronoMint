@@ -1,25 +1,26 @@
-import { List } from 'immutable'
+import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
 
 class PollModel extends abstractFetchingModel({
-  id: null,
   hash: null,
   owner: null,
   title: '',
   description: '',
-  published: new Date(new Date().getTime()),
-  voteLimit: null,
-  deadline: new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
-  options: new List(['Support', 'Decline']),
-  files: new List(),
+  published: null,
+  voteLimitInTIME: null,
+  deadline: null,
+  options: new Immutable.List(['Support', 'Decline']),
+  files: null, // hash
   active: false,
   status: false,
-  isTransaction: false
+  isTransaction: false,
 }) {
-  id () {
-    return this.get('id')
+  constructor (data = {}) {
+    super({
+      ...data,
+      published: data.published || new Date(new Date().getTime()),
+      deadline: data.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
+    })
   }
 
   hash () {
@@ -50,8 +51,8 @@ class PollModel extends abstractFetchingModel({
     return this.get('status')
   }
 
-  voteLimit () {
-    return this.get('voteLimit')
+  voteLimitInTIME () {
+    return this.get('voteLimitInTIME')
   }
 
   published () {
@@ -62,23 +63,15 @@ class PollModel extends abstractFetchingModel({
     return this.get('deadline')
   }
 
-  isTransaction () {
-    return this.get('isTransaction')
+  txSummary () {
+    return {
+      title: this.title(),
+      description: this.description(),
+      options: this.options().toArray(),
+      voteLimit: this.voteLimitInTIME(),
+      finishedDate: this.deadline(),
+    }
   }
-
-  optionsDescriptions () {
-    return this.get('options').map(option => option.description())
-  }
-}
-
-export const validate = values => {
-  const errors = {}
-  errors.title = ErrorList.toTranslate(validator.required(values.get('title')))
-
-  return errors
-}
-
-export const asyncValidate = (/*values, dispatch*/) => {
 }
 
 export default PollModel

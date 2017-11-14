@@ -1,5 +1,6 @@
-import moment from 'moment'
+import { FULL_DATE } from 'components/common/Moment'
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
@@ -9,6 +10,7 @@ class TxModel extends abstractModel({
   transactionIndex: null,
   from: null,
   to: null,
+  by: null,
   value: new BigNumber(0),
   time: null,
   gasPrice: null,
@@ -16,10 +18,24 @@ class TxModel extends abstractModel({
   gasFee: new BigNumber(0),
   input: null,
   credited: null,
-  symbol: ''
+  symbol: '',
+  type: '',
+  args: null,
 }) {
   to () {
     return this.get('to')
+  }
+
+  by () {
+    return this.get('by')
+  }
+
+  args () {
+    return this.get('args')
+  }
+
+  type () {
+    return this.get('type')
   }
 
   from () {
@@ -27,11 +43,11 @@ class TxModel extends abstractModel({
   }
 
   id () {
-    return this.txHash + ' - ' + this.from() + ' - ' + this.to()
+    return `${this.txHash} - ${this.from()} - ${this.to()}`
   }
 
   time () {
-    return moment.unix(this.get('time')).format('Do MMMM YYYY HH:mm:ss')
+    return moment.unix(this.get('time')).format(FULL_DATE)
   }
 
   date (format) {
@@ -53,6 +69,10 @@ class TxModel extends abstractModel({
 
   symbol () {
     return this.get('symbol')
+  }
+
+  isFromEmpty () {
+    return this.from() === '0x0000000000000000000000000000000000000000'
   }
 }
 

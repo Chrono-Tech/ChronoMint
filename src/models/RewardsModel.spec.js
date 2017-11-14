@@ -6,11 +6,10 @@ const model = new RewardsModel({
   accountDeposit: 100,
   accountRewards: 10,
   currentAccumulated: 20,
-  timeTotalSupply: 300
+  timeTotalSupply: 300,
 })
 
 describe('rewards model', () => {
-
   it('should get period length', () => {
     expect(model.periodLength()).toEqual(10)
   })

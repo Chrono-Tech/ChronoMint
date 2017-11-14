@@ -1,16 +1,24 @@
+import Markup from 'layouts/Markup'
+import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
-import { Provider } from 'react-redux'
-import { store, history } from './redux/configureStore'
 import NotFoundPage from 'pages/NotFound/NotFound'
-import Login from 'pages/LoginPage/LoginPage'
-import ls from './utils/LocalStorage'
-
-import Markup from 'layouts/Markup'
-import Pages from 'pages/lib'
-
-import './styles/themes/default.scss'
+import LoginPage from 'pages/LoginPage/LoginPage'
 import Splash from 'layouts/Splash/Splash'
+import {
+  AssetsPage,
+  DashboardPage,
+  ExchangePage,
+  LOCPage,
+  OperationsPage,
+  RewardsPage,
+  SettingsPage,
+  VotingPage,
+  WalletPage,
+} from 'pages/lib'
+import { store, history } from './redux/configureStore'
+import ls from './utils/LocalStorage'
+import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
   if (!ls.isSession()) {
@@ -18,13 +26,13 @@ const requireAuth = (nextState, replace) => {
     // Others through handle clicks on loginPage
     return replace({
       pathname: '/',
-      state: {nextPathname: nextState.location.pathname}
+      state: { nextPathname: nextState.location.pathname },
     })
   }
 }
 
 function hashLinkScroll () {
-  const {hash} = window.location
+  const { hash } = window.location
   if (hash !== '') {
     setTimeout(() => {
       const id = hash.replace('#', '')
@@ -38,20 +46,21 @@ const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
       <Route component={Markup} onEnter={requireAuth}>
-        <Route path='wallet' component={Pages.WalletPage} />
-        <Route path='dashboard' component={Pages.DashboardPage} />
-        <Route path='exchange' component={Pages.ExchangePage} />
-        <Route path='rewards' component={Pages.RewardsPage} />
-        <Route path='voting' component={Pages.VotingPage} />
+        <Route path='wallet' component={WalletPage} />
+        <Route path='dashboard' component={DashboardPage} />
+        <Route path='exchange' component={ExchangePage} />
+        <Route path='rewards' component={RewardsPage} />
+        <Route path='voting' component={VotingPage} />
+        <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
-          <Route path='locs' component={Pages.LOCPage} />
-          <Route path='operations' component={Pages.OperationsPage} />
-          <Route path='settings' component={Pages.SettingsPage} />
+          <Route path='locs' component={LOCPage} />
+          <Route path='operations' component={OperationsPage} />
+          <Route path='settings' component={SettingsPage} />
         </Route>
       </Route>
 
       <Route component={Splash}>
-        <Route path='/' component={Login} />
+        <Route path='/' component={LoginPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

@@ -1,19 +1,43 @@
 import { abstractModel } from './AbstractModel'
 
-export const abstractFetchingModel = defaultValues => class AbstractFetchingModel extends abstractModel({
+export const abstractFetchingModel = (defaultValues) => class AbstractFetchingModel extends abstractModel({
   ...defaultValues,
-  isFetching: false
+  isFetching: false,
+  isFetched: false,
+  transactionHash: null,
+  isPending: false,
+  isFailed: false,
 }) {
-  isFetching () {
-    return this.get('isFetching')
+  isFetching (value) {
+    return this._getSet('isFetching', value)
   }
 
-  fetching (): AbstractFetchingModel {
-    return this.set('isFetching', true)
+  isFetched (value) {
+    return this._getSet('isFetched', value)
   }
 
-  notFetching (): AbstractFetchingModel {
-    return this.set('isFetching', false)
+  transactionHash (value) {
+    return this._getSet('transactionHash', value)
+  }
+
+  isTransactionHash () {
+    return !!this.transactionHash()
+  }
+
+  isPending (value) {
+    if (value === undefined) {
+      return this.get('isPending')
+    } else {
+      return this.set('isFailed', false).set('isPending', value)
+    }
+  }
+
+  isFailed (value) {
+    if (value === undefined) {
+      return this.get('isFailed')
+    } else {
+      return this.set('isFailed', value).set('isPending', false)
+    }
   }
 }
 

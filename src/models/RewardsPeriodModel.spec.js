@@ -10,7 +10,7 @@ const model = new RewardsPeriodModel({
   startDate: Math.floor(Date.now() / 1000) - 86400,
   assetBalance: new BigNumber(1000000000),
   uniqueShareholders: 3,
-  periodLength: 10
+  periodLength: 10,
 })
 
 describe('rewards contract model', () => {
@@ -47,7 +47,7 @@ describe('rewards contract model', () => {
   })
 
   it('should get start date', () => {
-    expect(model.startDate()).toEqual(model.startMoment().format('Do MMMM YYYY'))
+    expect(model.startDate()).toEqual(model.startMoment())
   })
 
   it('should get end moment', () => {
@@ -55,7 +55,7 @@ describe('rewards contract model', () => {
   })
 
   it('should get end date', () => {
-    expect(model.endDate()).toEqual(model.endMoment().format('Do MMMM YYYY'))
+    expect(model.endDate()).toEqual(model.endMoment())
   })
 
   it('should get days remaining', () => {

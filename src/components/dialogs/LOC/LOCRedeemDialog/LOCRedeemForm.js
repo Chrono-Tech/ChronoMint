@@ -1,27 +1,27 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { Translate, I18n } from 'react-redux-i18n'
-import { TextField } from 'redux-form-material-ui'
-import validate from './validate'
-export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
-import './LOCRedeemForm.scss'
+import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
+import React, { PureComponent } from 'react'
+import { TextField } from 'redux-form-material-ui'
+import { Translate, I18n } from 'react-redux-i18n'
+import validate from './validate'
 
-const onSubmit = (values) => {
-  return +values.get('amount')
-}
+import './LOCRedeemForm.scss'
 
-@reduxForm({form: LOC_REDEEM_FORM_NAME, validate, onSubmit})
-class LOCRedeemForm extends Component {
+export const LOC_REDEEM_FORM_NAME = 'LOCRedeemForm'
+
+const onSubmit = (values) => +values.get('amount')
+
+@reduxForm({ form: LOC_REDEEM_FORM_NAME, validate, onSubmit })
+class LOCRedeemForm extends PureComponent {
   static propTypes = {
     loc: PropTypes.object,
     pristine: PropTypes.bool,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
   render () {
-    const {loc, pristine, handleSubmit} = this.props
+    const { loc, pristine, handleSubmit } = this.props
     const actionToken = I18n.t('locs.forms.actions.redeemed')
 
     return (

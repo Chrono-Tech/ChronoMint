@@ -1,11 +1,11 @@
-import React from 'react'
-import type CBEModel from '../CBEModel'
 import { I18n } from 'react-redux-i18n'
+import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
+import type CBEModel from '../CBEModel'
 
 export default class CBENoticeModel extends abstractNoticeModel({
   cbe: null,
-  isRevoked: false
+  isRevoked: false,
 }) {
   cbe (): CBEModel {
     return this.get('cbe')

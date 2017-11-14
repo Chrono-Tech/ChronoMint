@@ -1,1 +1,5 @@
-export monitor from './reducer'
+import monitor from './reducer'
+
+export {
+  monitor,
+}

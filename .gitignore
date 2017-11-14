@@ -9,6 +9,7 @@ coverage/
 *.bac
 
 /build
+/report
 .truffle-solidity-loader
 /coverage
 yarn.lock

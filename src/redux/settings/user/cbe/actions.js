@@ -1,34 +1,36 @@
 import { change } from 'redux-form/immutable'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type CBEModel from 'models/CBEModel'
 import type CBENoticeModel from 'models/notices/CBENoticeModel'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { notify } from 'redux/notifier/actions'
 import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
 export const CBE_SET = 'settings/CBE_SET'
+export const CBE_LOADING = 'settings/CBE_LOADING'
 export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
-export const setCBE = (cbe: CBEModel) => ({type: CBE_SET, cbe})
-export const removeCBE = (cbe: CBEModel) => ({type: CBE_REMOVE, cbe})
+export const setCBE = (cbe: CBEModel) => ({ type: CBE_SET, cbe })
+export const removeCBE = (cbe: CBEModel) => ({ type: CBE_REMOVE, cbe })
 
 export const listCBE = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const list = await dao.getCBEList()
-  dispatch({type: CBE_LIST, list})
+  dispatch({ type: CBE_LIST, list })
 }
 
 export const formCBELoadName = (account) => async (dispatch) => {
-  dispatch(change(FORM_CBE_ADDRESS, 'name', 'loading...')) // TODO @bshevchenko: i18n
+  dispatch({ type: CBE_LOADING, isLoading: true })
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
+  dispatch({ type: CBE_LOADING, isLoading: false })
   dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
 }
 
 export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setCBE(cbe.fetching()))
+  dispatch(setCBE(cbe.isFetching(true)))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
     await dao.addCBE(cbe)
@@ -38,7 +40,7 @@ export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch
 }
 
 export const revokeCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {
-  dispatch(setCBE(cbe.fetching()))
+  dispatch(setCBE(cbe.isFetching(true)))
   const dao = await contractsManagerDAO.getUserManagerDAO()
   try {
     await dao.revokeCBE(cbe)
@@ -47,7 +49,7 @@ export const revokeCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispa
   }
 }
 
-export const watchCBE = (notice: CBENoticeModel) => dispatch => {
+export const watchCBE = (notice: CBENoticeModel) => (dispatch) => {
   dispatch(notify(notice))
   dispatch(notice.isRevoked() ? removeCBE(notice.cbe()) : setCBE(notice.cbe()))
 }

@@ -1,27 +1,27 @@
-import { connect } from 'react-redux'
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import LOCRedeemForm from './LOCRedeemForm'
-import { revokeAsset } from 'redux/locs/actions'
+import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
+import { connect } from 'react-redux'
 import LOCModel from 'models/LOCModel'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import { modalsClose } from 'redux/modals/actions'
-import  './LOCRedeemDialog.scss'
+import { revokeAsset } from 'redux/locs/actions'
+import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import LOCRedeemForm from './LOCRedeemForm'
+
+import './LOCRedeemDialog.scss'
 
 const mapDispatchToProps = (dispatch) => ({
   revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
-  closeModal: () => dispatch(modalsClose())
+  closeModal: () => dispatch(modalsClose()),
 })
 
 @connect(null, mapDispatchToProps)
-class LOCRedeemModal extends Component {
-
+class LOCRedeemModal extends PureComponent {
   static propTypes = {
     closeModal: PropTypes.func,
     loc: PropTypes.object,
-    revokeAsset: PropTypes.func
+    revokeAsset: PropTypes.func,
   }
 
   handleSubmitSuccess = (amount: number) => {
@@ -30,10 +30,10 @@ class LOCRedeemModal extends Component {
   }
 
   render () {
-    const {loc} = this.props
+    const { loc } = this.props
     return (
       <ModalDialogBase
-        title={{value: 'locs.redeemS', asset: loc.currency()}}
+        title={{ value: 'locs.redeemS', asset: loc.currency() }}
         subTitle={(
           <div styleName='balances'>
             <div styleName='label'><Translate value='locs.issueLimit' />:</div>

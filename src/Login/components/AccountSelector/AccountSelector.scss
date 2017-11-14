@@ -1,0 +1,13 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.actions {
+  margin-top: 40px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action {
+  flex-grow: 0;
+  width: 50%;
+}

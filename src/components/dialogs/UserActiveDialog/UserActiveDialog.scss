@@ -1,0 +1,67 @@
+@import '~styles/partials/variables';
+
+.content {
+  max-width: 390px;
+  background-color: $color-white;
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: center;
+  background: $color-panel-bg-5;
+  height: 52px;
+}
+
+.dialogHeaderStuff {
+  margin-left: 16px;
+  display: flex;
+  height: 24px;
+}
+
+.dialogHeaderTitle {
+  margin-left: 16px;
+  color: $color-white;
+  font-size: 16px;
+  text-transform: uppercase;
+  min-width: 300px;
+}
+
+.dialogHeaderIcon {
+  width: 24px;
+
+  color: $color-white;
+}
+
+.dialogBody {
+  padding: 16px;
+}
+
+.dialogFooter {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0 0 0 10px;
+}
+
+.addOwner {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 50px;
+}
+
+.addOwnerIcon {
+  cursor: pointer;
+}
+
+.addOwnerTitle {
+  cursor: pointer;
+  text-transform: uppercase;
+  color: $color-panel-bg-5;
+  align-items: center;
+  font-size: 14px;
+  padding-left: 16px;
+}

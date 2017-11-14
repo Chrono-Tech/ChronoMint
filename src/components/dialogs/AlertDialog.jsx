@@ -1,16 +1,29 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { Dialog, FlatButton } from 'material-ui'
-
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 
-import './AlertDialog.scss'
+@connect(null, mapDispatchToProps)
+export default class AlertDialog extends PureComponent {
+  static propTypes = {
+    title: PropTypes.string,
+    message: PropTypes.string,
+    handleClose: PropTypes.func,
+  }
 
-export class AlertDialog extends React.Component {
+  renderActions () {
+    return [
+      <FlatButton
+        key='close'
+        label='Close'
+        primary
+        onTouchTap={() => this.props.handleClose()}
+      />,
+    ]
+  }
 
   render () {
-
     return (
       <Dialog
         title={this.props.title}
@@ -23,32 +36,10 @@ export class AlertDialog extends React.Component {
       </Dialog>
     )
   }
-
-  renderActions () {
-    return [
-      <FlatButton
-        key='close'
-        label='Close'
-        primary
-        onTouchTap={() => this.props.handleClose()}
-      />
-    ]
-  }
-}
-
-AlertDialog.propTypes = {
-  title: PropTypes.string,
-  message: PropTypes.string,
-  handleClose: PropTypes.func
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose())
+    handleClose: () => dispatch(modalsClose()),
   }
 }
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(AlertDialog)

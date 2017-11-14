@@ -4,15 +4,15 @@ export default {
     message: 'Сумма %{value} %{symbol} подтверждена для перевода с контракта %{contractName}',
     details: {
       contractName: 'Название контракта',
-      value: 'Сумма'
-    }
+      value: 'Сумма',
+    },
   },
   arbitrary: {
-    title: 'Сообщение'
+    title: 'Сообщение',
   },
   cbe: {
     added: 'CBE %{address} добавлен',
-    removed: 'CBE %{address} удалён'
+    removed: 'CBE %{address} удалён',
   },
   locs: {
     added: 'LOC \'%{name}\' добавлен',
@@ -23,16 +23,16 @@ export default {
     revoked: 'LOC \'%{name}\' отозван',
     failed: 'LOC \'%{name}\' failed',
     details: {
-      amount: 'Количество'
-    }
+      amount: 'Количество',
+    },
   },
   transfer: {
     title: 'Перевод',
     receivedFrom: '%{value} %{symbol} получено с адреса %{address}',
-    sentTo: '%{value} %{symbol} отправлено на адрес %{address}'
+    sentTo: '%{value} %{symbol} отправлено на адрес %{address}',
   },
   profile: {
-    copyIcon: 'Ваш адрес был скопирован.'
+    copyIcon: 'Ваш адрес был скопирован.',
   },
   operations: {
     title: 'Ожидающие Операции',
@@ -42,8 +42,8 @@ export default {
     done: 'Операция завершена',
     details: {
       hash: 'Хэш',
-      operation: 'Операция'
-    }
+      operation: 'Операция',
+    },
   },
   settings: {
     title: 'Настройки',
@@ -51,8 +51,12 @@ export default {
       tokens: {
         isAdded: 'Токен "%{symbol} – %{name}" был добавлен.',
         isModified: 'Токен "%{symbol} – %{name}" был изменён.',
-        isRemoved: 'Токен "%{symbol} – %{name}" был удалён.'
-      }
-    }
-  }
+        isRemoved: 'Токен "%{symbol} – %{name}" был удалён.',
+      },
+    },
+  },
+  wallet: {
+    title: 'Мульти-кошелек',
+    create: '%{address}: создан',
+  },
 }

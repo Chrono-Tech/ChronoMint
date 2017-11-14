@@ -1,24 +1,23 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form/immutable'
+import { MenuItem, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
-import { MenuItem, RaisedButton } from 'material-ui'
+
 import './LOCStatusForm.scss'
 
-const onSubmit = (values) => {
-  return +values.get('status')
-}
+const onSubmit = (values) => +values.get('status')
 
-@reduxForm({form: 'LOCStatusForm', onSubmit})
-class LOCStatusForm extends Component {
+@reduxForm({ form: 'LOCStatusForm', onSubmit })
+class LOCStatusForm extends PureComponent {
   static propTypes = {
     pristine: PropTypes.bool,
-    handleSubmit: PropTypes.func
+    handleSubmit: PropTypes.func,
   }
 
   render () {
-    const {pristine, handleSubmit} = this.props
+    const { pristine, handleSubmit } = this.props
     return (
       <form name='LOCStatusFormName' onSubmit={handleSubmit}>
         <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>

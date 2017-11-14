@@ -1,0 +1,120 @@
+
+.logosWrap {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  color: white;
+}
+
+.header {
+  text-transform: uppercase;
+  font-size: 34px;
+  text-align: center;
+  span {
+    color: #00c853;
+    &:last-child {
+      color: #ffffff;
+    }
+  }
+}
+
+.logo {
+  background-size: contain;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  img {
+    object-fit: contain;
+    width: 80px;
+    height: auto;
+  }
+}
+
+.marketName {
+  font-size: 14px;
+  text-align: left;
+  color: #768fff;
+}
+
+.price {
+  font-size: 16px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.currency {
+  opacity: 0.6;
+  font-size: 14px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.changePct {
+  font-size: 14px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+.changePct.up {
+  color: #00c853;
+}
+
+.changePct.up .changeIcon {
+  background-image: url('assets/img/arrow-up.svg');
+}
+
+.changePct.down {
+  color: #ff1744;
+}
+
+.changePct.down .changeIcon {
+  background-image: url('assets/img/arrow-down.svg');
+}
+
+.changeIcon {
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  display: inline-block;
+  margin-left: 7px;
+}
+
+.market {
+  display: flex;
+  width: 170px;
+  margin: 0 30px;
+  &:first-child {
+    margin-left: 0;
+  }
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+.marketInfo {
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.wrapper {
+  margin: 8px auto 0;
+  height: 80px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.track {
+  min-width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  width: auto;
+}
+

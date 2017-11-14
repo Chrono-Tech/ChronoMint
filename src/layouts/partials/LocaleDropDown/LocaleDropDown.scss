@@ -1,0 +1,9 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.LocaleDropDown{
+  @include xs-only {
+    width: 100%;
+    top: 10px;
+  }
+}

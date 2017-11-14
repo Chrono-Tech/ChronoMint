@@ -1,30 +1,33 @@
-import thunk from 'redux-thunk'
 import Immutable from 'immutable'
-import { createStore, applyMiddleware, compose } from 'redux'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
+import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
-
-import routingReducer from './routing'
-import * as ducks from './ducks'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
+import moment from 'moment'
+import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
+import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import thunk from 'redux-thunk'
 import ls from 'utils/LocalStorage'
+import * as ducks from './ducks'
+import { globalWatcher } from './watcher/actions'
+import routingReducer from './routing'
 import { SESSION_DESTROY } from './session/actions'
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
-  Object.keys(ducks).forEach(r => {
-    reducers = {...reducers, ...(typeof (ducks[r]) === 'function' ? {[r]: ducks[r]} : getNestedReducers(ducks[r]))}
+  Object.keys(ducks).forEach((r) => {
+    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
   })
   return reducers
 }
 
 // Create enhanced history object for router
 const createSelectLocationState = () => {
-  let prevRoutingState, prevRoutingStateJS
+  let prevRoutingState,
+    prevRoutingStateJS
   return (state) => {
     const routingState = state.get('routing') // or state.routing
     if (typeof prevRoutingState === 'undefined' || prevRoutingState !== routingState) {
@@ -35,6 +38,22 @@ const createSelectLocationState = () => {
   }
 }
 
+// add noised action here
+const IGNORED_ACTIONS = [
+  'market/UPDATE_RATES',
+  'market/UPDATE_LAST_MARKET',
+]
+
+let logActions = process.env.NODE_ENV === 'development'
+  ? function (action) {
+    if (IGNORED_ACTIONS.includes(action.type)) {
+      return
+    }
+    // eslint-disable-next-line
+    console.log(`%c ${action.type} `, 'color: #999; background: #333')
+  }
+  : function () {}
+
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
@@ -42,10 +61,13 @@ const configureStore = () => {
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducks)
+    ...getNestedReducers(ducks),
   })
 
   const rootReducer = (state, action) => {
+    // workaround until fix redux devtool
+    logActions(action)
+
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
       state = new Immutable.Map()
@@ -54,37 +76,42 @@ const configureStore = () => {
     return appReducer(state, action)
   }
 
-  //noinspection JSUnresolvedVariable,JSUnresolvedFunction
+  // noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = compose(
     applyMiddleware(
       thunk,
-      routerMiddleware(historyEngine)
+      routerMiddleware(historyEngine),
+      saveAccountMiddleWare
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
-      : (f) => f
+      : (f) => f,
   )(createStore)
 
   return createStoreWithMiddleware(
     rootReducer,
-    initialState
+    initialState,
   )
 }
 
 export const store = configureStore()
+store.dispatch(globalWatcher())
 
 export const history = syncHistoryWithStore(historyEngine, store, {
-  selectLocationState: createSelectLocationState()
+  selectLocationState: createSelectLocationState(),
 })
+
+export const DUCK_I18N = 'i18n'
 
 // syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
-I18n.setTranslationsGetter(() => {
-  return store.getState().get('i18n').translations
-})
-I18n.setLocaleGetter(() => {
-  return store.getState().get('i18n').locale
-})
+I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
+I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
+
+const locale = ls.getLocale()
+// set moment locale
+moment.locale(locale)
 
 store.dispatch(loadTranslations(require('../i18n/')))
-store.dispatch(setLocale(ls.getLocale()))
+
+store.dispatch(setLocale(locale))
 /** <<< i18n END */

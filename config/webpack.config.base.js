@@ -1,5 +1,5 @@
-
 let path = require('path')
+
 process.traceDeprecation = true
 
 // TODO: hide this behind a flag and eliminate dead code on eject.
@@ -7,7 +7,7 @@ process.traceDeprecation = true
 let isInNodeModules = path.basename(path.resolve(path.join(__dirname, '..', '..'))) === 'node_modules'
 let relativePath = isInNodeModules ? '../../..' : '..'
 
-let isInDebugMode = process.argv.some(arg =>
+let isInDebugMode = process.argv.some((arg) =>
   arg.indexOf('--debug-template') > -1
 )
 
@@ -26,31 +26,32 @@ const buildConfig = (factory) => {
     entry,
     output,
     babel,
-    plugins
+    plugins,
+    devtool,
   } = factory({
     srcPath,
     indexHtmlPath,
     faviconPath,
-    buildPath
+    buildPath,
   })
 
   return {
-    devtool: 'source-map',
+    devtool: devtool || 'source-map',
     entry,
     output,
     plugins,
     resolve: {
       modules: [
         srcPath,
-        'node_modules'
+        'node_modules',
       ],
       extensions: ['.js', '.jsx', '.json', '.scss', '.css'],
       alias: {
-        '@': path.join(__dirname, '..', 'src')
-      }
+        '@': path.join(__dirname, '..', 'src'),
+      },
     },
     node: {
-      fs: 'empty'
+      fs: 'empty',
     },
     module: {
       rules: [
@@ -58,7 +59,7 @@ const buildConfig = (factory) => {
           test: /(\.js|\.jsx)$/,
           include: srcPath,
           loader: 'babel-loader',
-          query: babel
+          query: babel,
         },
         {
           test: /(\.scss)$/,
@@ -71,12 +72,12 @@ const buildConfig = (factory) => {
                 ident: 'postcss',
                 plugins: () => [
                   require('postcss-cssnext')(),
-                  require('postcss-modules-values')
-                ]
-              }
+                  require('postcss-modules-values'),
+                ],
+              },
             },
-            { loader: 'sass-loader', options: { sourceMap: true, outputStyle: 'expanded' } }
-          ]
+            { loader: 'sass-loader', options: { sourceMap: true, outputStyle: 'expanded' } },
+          ],
         },
         {
           test: /(\.css)$/,
@@ -88,34 +89,34 @@ const buildConfig = (factory) => {
                 sourceMap: true,
                 plugins: () => [
                   require('postcss-cssnext')(),
-                  require('postcss-modules-values')
-                ]
-              }
-            }
-          ]
+                  require('postcss-modules-values'),
+                ],
+              },
+            },
+          ],
         },
         {
           test: /\.json$/,
-          loader: 'json-loader'
+          loader: 'json-loader',
         },
         {
           test: /\.(jpg|png|gif)$/,
-          loader: 'file-loader'
+          loader: 'file-loader',
         },
         { test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
         { test: /\.otf(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader' },
         { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'application/font-woff' } } ] },
         { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'octet-stream' } } ] },
-        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] }
+        { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: [ { loader: 'url-loader', options: { limit: '10000', mimetype: 'image/svg+xml' } } ] },
         // {
         //   test: /\.sol/,
         //   loader: 'truffle-solidity'
         // }
-      ]
-    }
+      ],
+    },
   }
 }
 
 module.exports = {
-  buildConfig
+  buildConfig,
 }

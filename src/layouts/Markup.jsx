@@ -1,26 +1,23 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-
-import { MuiThemeProvider } from 'material-ui'
-import { HeaderPartial, DrawerPartial } from './partials'
 import { ModalStack, Snackbar } from 'components'
-import ModalContainer from 'components/modals/Modal'
+import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { closeNotifier } from 'redux/notifier/actions'
-
-import theme from 'styles/themes/default.js'
-
-// import 'styles/globals/index.global.css'
+import ModalContainer from 'components/modals/Modal'
+import theme from 'styles/themes/default'
+import { HeaderPartial, DrawerPartial } from './partials'
 
 import './Markup.scss'
 
-export class Markup extends React.Component {
+// import 'styles/globals/index.global.css'
 
+class Markup extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
-    notice: PropTypes.object,
+    notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
   }
 
   render () {
@@ -31,11 +28,11 @@ export class Markup extends React.Component {
             <DrawerPartial />
           </div>
           <div styleName='middle'>
-            <div styleName='top'>
+            <div styleName='middleTop'>
               <HeaderPartial />
             </div>
-            <div styleName='snackbar'>
-              <div styleName='panel'>
+            <div styleName='middleSnackbar'>
+              <div styleName='middleSnackbarPanel'>
                 {this.props.notice
                   ? (
                     <Snackbar
@@ -47,11 +44,11 @@ export class Markup extends React.Component {
                 }
               </div>
             </div>
-            <div styleName='content'>
+            <div styleName='middleContent'>
               {this.props.children}
             </div>
           </div>
-          <div styleName='bottom'/>
+          <div styleName='middleBottom' />
           <ModalStack />
           <ModalContainer />
         </div>
@@ -65,13 +62,13 @@ function mapStateToProps (state) {
   const notifier = state.get('notifier')
   return {
     isCBE: session.isCBE,
-    notice: notifier.notice /** @see null | AbstractNoticeModel */
+    notice: notifier.notice, /** @see null | AbstractNoticeModel */
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleCloseNotifier: () => dispatch(closeNotifier())
+    handleCloseNotifier: () => dispatch(closeNotifier()),
   }
 }
 

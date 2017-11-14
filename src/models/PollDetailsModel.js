@@ -10,15 +10,19 @@ export default class PollDetailsModel extends abstractFetchingModel({
   memberVote: null,
   timeDAO: null,
   totalSupply: new BigNumber(0),
-  shareholdersCount: new BigNumber(0)
+  shareholdersCount: new BigNumber(0),
+  files: Immutable.List(),
 }) {
-
   poll () {
     return this.get('poll')
   }
 
   votes () {
     return this.get('votes')
+  }
+
+  files () {
+    return this.get('files')
   }
 
   statistics () {
@@ -37,6 +41,10 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return this.get('shareholdersCount')
   }
 
+  addDecimals (amount: BigNumber): BigNumber {
+    return this.get('timeDAO').addDecimals(amount)
+  }
+
   removeDecimals (amount: BigNumber): BigNumber {
     return this.get('timeDAO').removeDecimals(amount)
   }
@@ -50,20 +58,11 @@ export default class PollDetailsModel extends abstractFetchingModel({
   }
 
   details () {
-
     const poll = this.get('poll')
     const endDate = poll.deadline()
     const published = poll.published()
-    const voteLimit = poll.voteLimit()
-    const options = poll.options()
-    const files = poll.files()
-    const active = poll.active()
-    const status = poll.status()
-    const daysTotal = moment(endDate).diff(moment(published), 'days')
-    const daysLeft = moment(endDate).diff(moment(), 'days')
+    const voteLimitInTIME = poll.voteLimitInTIME()
     const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
-    const totalSupply = this.totalSupply()
-    const memberVote = this.memberVote()
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
     const percents = shareholdersCount.equals(new BigNumber(0))
@@ -73,21 +72,22 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return {
       endDate,
       published,
-      voteLimit,
-      memberVote,
-      options,
-      files,
-      active,
-      status,
-      daysLeft,
-      daysTotal,
+      voteLimit: voteLimitInTIME && this.addDecimals(voteLimitInTIME),
+      voteLimitInTIME,
+      memberVote: this.memberVote(),
+      options: poll.options(),
+      files: this.files(),
+      active: poll.active(),
+      status: poll.status(),
+      daysLeft: Math.max(moment(endDate).diff(moment(), 'days'), 0),
+      daysTotal: Math.max(moment(endDate).diff(moment(published), 'days'), 0),
       received: received.equals(new BigNumber(0))
         ? new BigNumber(0)
         : this.removeDecimals(received),
-      totalSupply,
+      totalSupply: this.totalSupply(),
       votedCount,
       shareholdersCount,
-      percents
+      percents,
     }
   }
 }

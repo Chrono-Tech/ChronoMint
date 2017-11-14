@@ -1,6 +1,4 @@
-//noinspection CssUnknownTarget
 @import '~styles/partials/mixins';
-//noinspection CssUnknownTarget
 @import '~styles/partials/variables';
 
 :global(.ModalDialog__close) {
@@ -114,7 +112,8 @@
 }
 
 .cellAuto {
-  flex: 1
+  flex: 1;
+  overflow: hidden;
 }
 
 .rowSelected {
@@ -122,8 +121,9 @@
 }
 
 .symbol {
-  font-weight: bold;
   margin-bottom: 2px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .ownersNum {

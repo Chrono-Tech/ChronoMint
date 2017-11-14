@@ -1,5 +1,6 @@
-import CBENoticeModel from './CBENoticeModel'
+import moment from 'moment'
 import CBEModel from '../CBEModel'
+import CBENoticeModel from './CBENoticeModel'
 import ProfileModel from '../ProfileModel'
 
 const model = new CBENoticeModel({
@@ -7,9 +8,9 @@ const model = new CBENoticeModel({
     user: new ProfileModel({
       name: 'John',
       email: 'test@chronobank.io',
-      company: 'ChronoBank'
-    })
-  })
+      company: 'ChronoBank',
+    }),
+  }),
 })
 
 describe('cbe notice', () => {
@@ -18,7 +19,7 @@ describe('cbe notice', () => {
   })
 
   it('should return date', () => {
-    expect(model.date().length).toBeGreaterThan(3)
+    expect(model.date()).toEqual(moment.unix(model.time() / 1000))
   })
 
   it('should return user data', () => {

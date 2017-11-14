@@ -1,13 +1,11 @@
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
 import { store } from 'specsInit'
-
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollModel from 'models/PollModel'
 // import type PollDetailsModel from 'models/PollDetailsModel'
 import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_VOTED } from 'models/notices/PollNoticeModel'
-
 import { createPoll, removePoll, activatePoll, endPoll, vote } from './actions'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 const poll1 = {
   proto: new PollModel({
@@ -15,20 +13,19 @@ const poll1 = {
     description: 'First poll description',
     voteLimit: new BigNumber(1),
   }),
-  details: null
+  details: null,
 }
 
 const poll2 = {
   proto: new PollModel({
     title: 'Second poll',
     description: 'Second poll description',
-    options: new Immutable.List(['First','Second'])
+    options: new Immutable.List(['First', 'Second']),
   }),
-  details: null
+  details: null,
 }
 
 describe('Voting actions', () => {
-
   it('should create poll1', async (done) => {
     const dao = await contractsManagerDAO.getVotingDAO()
     await store.dispatch(createPoll(poll1.proto))
@@ -39,7 +36,7 @@ describe('Voting actions', () => {
         const poll = details.poll()
         expect(poll.title()).toEqual(poll1.proto.title())
         expect(poll.description()).toEqual(poll1.proto.description())
-        expect(poll.voteLimit()).toEqual(poll1.proto.voteLimit())
+        expect(poll.voteLimitInTIME()).toEqual(poll1.proto.voteLimitInTIME())
         poll1.details = details
         done()
       } catch (e) {

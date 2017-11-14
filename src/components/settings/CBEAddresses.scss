@@ -2,182 +2,181 @@
 @import "~styles/partials/mixins";
 
 .panel {
-
   display: table;
   width: 100%;
+  min-width: 220px !important;
+}
 
-  .panel-head {
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-items: center;
+  color: $color-primary-0;
+  padding: 24px 16px;
+}
+
+.headTitle {
+  display: block;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 28px;
+  font-weight: normal;
+}
+
+.headActions {
+  flex: 0 0 auto;
+}
+
+.panelProgress {
+  display: table;
+  width: 100%;
+  text-align: center;
+  margin: 20px 0px;
+}
+
+.panelTable {
+  display: table;
+  width: 100%;
+}
+
+.tableHead {
+  display: table-row-group;
+  opacity: 0.5;
+}
+
+.tableRow {
+  display: table-row;
+}
+
+.headTableCell {
+  display: table-cell;
+  padding: 16px 16px;
+  color: $color-primary-0;
+  opacity: 0.5;
+}
+
+.tableBody {
+  display: table-row-group;
+}
+
+.tableRow {
+  display: table-row;
+}
+
+.bodyTableCell {
+  display: table-cell;
+  vertical-align: middle;
+  border-top: 1px solid $color-hr-1;
+  padding: 16px 16px;
+
+  &.tableCellName {
+  }
+
+  &.tableCellAddress {
+    width: 100%;
+  }
+}
+
+.cellTitle {
+  display: none;
+  vertical-align: baseline;
+  opacity: 0.6;
+}
+
+.cellName {
+  display: inline-flex;
+  vertical-align: middle;
+  position: relative;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.nameIcon {
+  position: relative;
+  display: 0 0 auto;
+  background: $color-panel-bg-0;
+  width: 36px;
+  height: 36px;
+  margin-right: 12px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.iconContent {
+  @include position(absolute, 0, 0, 0, 0);
+  background: transparent none no-repeat center center;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.nameTitle {
+  flex: 1 1 auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tableCellActions {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px -5px;
+}
+
+.actionsItem {
+  flex: 0 0 auto;
+  padding: 5px 5px;
+}
+
+.ellipsis {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.ellipsisInner {
+  display: table-cell;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@include sm-only {
+  .panelTable {
+    display: block;
+  }
+
+  .tableHead {
+    display: none;
+  }
+
+  .tableBody {
+    display: block;
+  }
+
+  .tableRow {
+    display: block;
+    border-top: 1px solid $color-hr-1;
+  }
+
+  .tableCell {
+    display: block;
+    border-top: none;
+    padding: 16px 16px 0px 16px;
+
+    &:last-child {
+      padding-bottom: 16px;
+    }
+  }
+
+  .tableCellActions {
     display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-items: center;
-    color: $color-primary-0;
-    padding: 24px 16px;
-
-    .head-title {
-      display: block;
-      flex: 1 1 auto;
-      margin: 0;
-      padding: 0;
-      font-size: 24px;
-      line-height: 28px;
-      font-weight: normal;
-    }
-
-    .head-actions {
-      flex: 0 0 auto;
-    }
+    flex-wrap: nowrap;
   }
 
-  .panel-progress {
-    display: table;
-    width: 100%;
-    text-align: center;
-    margin: 20px 0px;
-  }
-
-  .panel-table {
-    display: table;
-    width: 100%;
-
-    .table-head {
-      display: table-row-group;
-      opacity: 0.5;
-
-      .table-row {
-        display: table-row;
-      }
-
-      .table-cell {
-        display: table-cell;
-        padding: 16px 16px;
-        color: $color-primary-0;
-        opacity: 0.5;
-      }
-    }
-
-    .table-body {
-      display: table-row-group;
-
-      .table-row {
-        display: table-row;
-      }
-
-      .table-cell {
-        display: table-cell;
-        vertical-align: middle;
-        border-top: 1px solid $color-hr-1;
-        padding: 16px 16px;
-
-        .cell-title {
-          display: none;
-          vertical-align: baseline;
-          opacity: 0.6;
-        }
-
-        .cell-name {
-          display: inline-flex;
-          vertical-align: middle;
-          position: relative;
-          flex-wrap: nowrap;
-          align-items: center;
-
-          .name-icon {
-            position: relative;
-            display: 0 0 auto;
-            background: $color-panel-bg-0;
-            width: 36px;
-            height: 36px;
-            margin-right: 12px;
-            border-radius: 50%;
-            overflow: hidden;
-
-            .icon-content {
-              @include position(absolute, 0, 0, 0, 0);
-              background: transparent none no-repeat center center;
-              border-radius: 50%;
-              background-size: cover;
-            }
-          }
-
-          .name-title {
-            flex: 1 1 auto;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
-
-        &.table-cell-name {
-        }
-        &.table-cell-address {
-          width: 100%;
-        }
-        &.table-cell-actions {
-          .actions {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0px -5px;
-
-            .actions-item {
-              flex: 0 0 auto;
-              padding: 5px 5px;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .ellipsis {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-
-    .ellipsis-inner {
-      display: table-cell;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  @include sm-only {
-    .panel-table {
-      display: block;
-
-      .table-head {
-        display: none;
-      }
-
-      .table-body {
-        display: block;
-
-        .table-row {
-          display: block;
-          border-top: 1px solid $color-hr-1;
-
-          .table-cell {
-            display: block;
-            border-top: none;
-            padding: 16px 16px 0px 16px;
-
-            .cell-title {
-              display: inline-block;
-            }
-
-            &.table-cell-actions {
-              .actions {
-                display: flex;
-                flex-wrap: nowrap;
-              }
-            }
-            &:last-child {
-              padding-bottom: 16px;
-            }
-          }
-        }
-      }
-    }
+  .cellTitle {
+    display: inline-block;
   }
 }
