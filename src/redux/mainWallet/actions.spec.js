@@ -1,3 +1,4 @@
+/* global describe, it*/
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import { mockStore, store, accounts } from 'specsInit'
@@ -13,6 +14,7 @@ import web3Provider from 'Login/network/Web3Provider'
 import { notify } from 'redux/notifier/actions'
 import web3Converter from 'utils/Web3Converter'
 import * as a from './actions'
+import MainWallet from '../../models/Wallet/MainWalletModel';
 
 const account1 = accounts[6]
 const account2 = accounts[7]
@@ -49,8 +51,8 @@ describe('wallet actions', () => {
       if (key === 'session') {
         return { profile: new ProfileModel({ tokens: profileTokens }) }
       }
-      if (key === 'wallet') {
-        return { tokens }
+      if (key === 'mainWallet') {
+        return { tokens: new MainWallet({ tokens }) }
       }
     }
     let myStore = mockStore({ get: get([await lhtDAO.getAddress()]) })
@@ -82,7 +84,7 @@ describe('wallet actions', () => {
     expect(account1Balance.toNumber()).toEqual(100)
     expect(account2Balance.toNumber()).toEqual(100)
 
-    await store.dispatch(a.transfer(eth, amountToTransferETH, account2))
+    await store.dispatch(a.mainTransfer(eth, amountToTransferETH, account2))
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferETHBN, eth),
@@ -122,7 +124,7 @@ describe('wallet actions', () => {
     time = time.setBalance(account1Balance)
     requiredTIMEBN = account1Balance
 
-    await store.dispatch(a.transfer(time, amountToTransferTIMEBN, account2))
+    await store.dispatch(a.mainTransfer(time, amountToTransferTIMEBN, account2))
 
     expect(store.getActions()).toEqual([
       a.balanceMinus(amountToTransferTIMEBN, time),
@@ -136,7 +138,7 @@ describe('wallet actions', () => {
   it('should approve ERC20 tokens', async () => {
     timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     timeHolderAddress = await timeHolderDAO.getWalletAddress()
-    await store.dispatch(a.approve(time, amountToDeposit, timeHolderAddress))
+    await store.dispatch(a.mainApprove(time, amountToDeposit, timeHolderAddress))
 
     expect(await time.dao().getAccountAllowance(timeHolderAddress)).toEqual(new BigNumber(amountToDeposit))
   })
