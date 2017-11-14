@@ -41,13 +41,16 @@ export const setBalance = (token: TokenModel, amount: BigNumber) => ({
   token,
   amount,
 })
+
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
   type: WALLET_BALANCE,
   token,
   isCredited,
   amount,
 })
+
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
+
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
 export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
@@ -55,7 +58,9 @@ export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
   isCredited,
   amount,
 })
+
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
+
 export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
 export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
