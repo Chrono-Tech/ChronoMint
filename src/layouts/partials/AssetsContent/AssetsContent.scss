@@ -21,8 +21,11 @@
 
 .content {
   position: relative;
-  display: table;
+  display: block;
   width: 100%;
+  @include md-only {
+    width: 100vw;
+  }
 
   :global {
     .AssetsContent__grid {

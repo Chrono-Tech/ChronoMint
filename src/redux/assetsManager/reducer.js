@@ -17,10 +17,9 @@ import {
   SET_NEW_MANAGERS_LIST,
   SET_TOKEN,
   SET_TOTAL_SUPPLY,
-  SET_WATCHERS,
 } from './actions'
 
-const initialState = {
+export const initialState = {
   usersPlatforms: [],
   usersPlatformsCount: 0,
   assetsManagerCountsLoading: false,
@@ -96,14 +95,6 @@ export default (state = initialState, action) => {
         ...state,
         tokensMap: state.tokensMap.setIn([action.payload.symbol, 'managersList'], action.payload.managersForAssetSymbol),
         managersForTokenLoading: false,
-      }
-    case SET_WATCHERS:
-      return {
-        ...state,
-        watchers: {
-          ...state.watchers,
-          ...action.payload.watchers,
-        },
       }
     case SET_TOTAL_SUPPLY:
       const token = action.payload.token
