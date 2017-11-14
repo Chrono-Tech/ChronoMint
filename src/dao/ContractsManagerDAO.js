@@ -20,7 +20,7 @@ import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
-import WalletsManagerDAO from './WalletsManagerDAO'
+import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
@@ -71,26 +71,25 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getDAO (daoType: string, account = null, isNew = false, block = 'latest'): Promise<AbstractContractDAO> {
+  async _getDAO (daoType: string, account = null, isNew = false): Promise<AbstractContractDAO> {
     if (!daoMap.hasOwnProperty(daoType)) {
       throw new Error(`invalid DAO type ${daoType}`)
     }
 
     account = account || await this.getContractAddressByType(daoType)
 
-    const key = `${account}-${block}-${daoType}`
+    const key = `${account}-${daoType}`
     if (this._contracts.hasOwnProperty(key)) {
       return this._contracts[key]
     }
 
     const DAOClass = daoMap[daoType]
     const dao = new DAOClass(account)
-    dao.setDefaultBlock(block)
 
     if (isNew) {
       const isDeployed = await dao.isDeployed()
       if (!isDeployed) {
-        throw new Error(`Can't init ${DAOClass.name} at ${account}-${block}; ${isDeployed.message}`)
+        throw new Error(`Can't init ${DAOClass.name} at ${account}; ${isDeployed.message}`)
       }
     }
 

@@ -20,6 +20,10 @@ export const abstractFetchingModel = (defaultValues) => class AbstractFetchingMo
     return this._getSet('transactionHash', value)
   }
 
+  isTransactionHash () {
+    return !!this.transactionHash()
+  }
+
   isPending (value) {
     if (value === undefined) {
       return this.get('isPending')

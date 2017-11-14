@@ -97,7 +97,7 @@ export class DepositTokens extends PureComponent {
   }
 
   handleApproveTIME = () => {
-    this.props.mainApprove(this.props.token, this.state.amount, this.props.timeAddress)
+    this.props.mainApprove(this.props.token, +this.state.amount, this.props.timeAddress)
     if (Number(this.state.amount) === 0) {
       this.setState({ amount: '' })
     }

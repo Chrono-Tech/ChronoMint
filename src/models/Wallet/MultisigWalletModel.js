@@ -17,6 +17,12 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
 }) {
+  constructor (data = {}) {
+    super({
+      ...data,
+      owners: new Immutable.List(data.owners),
+    })
+  }
 
   id () {
     return this.get('transactionHash') || this.get('address')
@@ -24,6 +30,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 
   owners () {
     return this.get('owners')
+  }
+
+  ownersArray () {
+    return this.owners().toArray()
   }
 
   address () {
@@ -46,21 +56,20 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this._getSet('pendingTxList', value)
   }
 
-  toAddEditFormJS () {
-    return {
-      isNew: this.isNew(),
-      name: this.name(),
-      requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().map((address) => ({ address })),
-    }
-  }
-
   tokens (value) {
     return this._getSet('tokens', value)
   }
 
   isMultisig () {
     return this.get('isMultisig')
+  }
+
+  dao () {
+    return this.get('dao')
+  }
+
+  transactions (value) {
+    return this._getSet('transactions', value)
   }
 
   txSummary () {
@@ -71,11 +80,19 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     }
   }
 
-  dao () {
-    return this.get('dao')
+  toAddEditFormJS () {
+    return {
+      isNew: this.isNew(),
+      name: this.name(),
+      requiredSignatures: this.requiredSignatures(),
+      owners: this.owners().map((address) => ({ address })),
+    }
   }
 
-  transactions (value) {
-    return this._getSet('transactions', value)
+  toCreateWalletTx () {
+    return {
+      requiredSignatures: this.requiredSignatures(),
+      owners: this.ownersArray(),
+    }
   }
 }

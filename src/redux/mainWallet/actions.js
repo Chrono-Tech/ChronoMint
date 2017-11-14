@@ -161,10 +161,11 @@ export const mainTransfer = (token: TokenModel, amount: string, recipient) => as
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: string, spender) => async () => {
+export const mainApprove = (token: TokenModel, amount: Number, spender: string) => async () => {
   try {
+    const amountBN = new BigNumber(amount)
     const dao = await token.dao()
-    await dao.approve(spender, amount)
+    await dao.approve(spender, amountBN)
   } catch (e) {
     // no rollback
     // eslint-disable-next-line
