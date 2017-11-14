@@ -7,6 +7,7 @@ import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
 
 import LoginLedger from '../../components/LoginWithLedger/LoginWithLedger'
+import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
@@ -35,6 +36,7 @@ const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
 const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
+const STEP_LOGIN_WITH_TREZOR = 'step/LOGIN_WITH_TREZOR'
 
 const loginOptions = [ {
   nextStep: STEP_LOGIN_WITH_MNEMONIC,
@@ -48,6 +50,9 @@ const loginOptions = [ {
 }, {
   nextStep: STEP_LOGIN_WITH_LEDGER,
   title: 'LoginWithOptions.ledgerNano',
+}, {
+  nextStep: STEP_LOGIN_WITH_TREZOR,
+  title: 'LoginWithOptions.trezor',
 } ]
 
 class LoginOption extends PureComponent {
@@ -89,6 +94,7 @@ const mapDispatchToProps = (dispatch) => ({
   getProviderSettings: () => networkService.getProviderSettings(),
   loading: () => dispatch(loading()),
   loginLedger: () => loginLedger(),
+  loginTrezor: () => loginTrezor(),	
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -106,6 +112,7 @@ class LoginWithOptions extends PureComponent {
     selectedNetworkId: PropTypes.number,
     loading: PropTypes.func,
     loginLedger: PropTypes.func,
+    loginTrezor: PropTypes.func,
   }
 
   constructor () {
@@ -138,6 +145,19 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       ledgerProvider.setupAndStart(this.props.getProviderURL())
+      web3Provider.setWeb3(ledgerProvider.getWeb3())
+      web3Provider.setProvider(ledgerProvider.getProvider())
+      this.props.onLogin()
+    } catch (e) {
+      this.props.addError(e.message)
+    }
+  }
+	
+  handleTrezorLogin = () => {
+    this.props.loading()
+    this.props.clearErrors()
+    try {
+      trezorProvider.setupAndStart(this.props.getProviderURL())
       web3Provider.setWeb3(ledgerProvider.getWeb3())
       web3Provider.setProvider(ledgerProvider.getProvider())
       this.props.onLogin()
@@ -275,6 +295,12 @@ class LoginWithOptions extends PureComponent {
         {step === STEP_LOGIN_WITH_LEDGER && (
           <LoginLedger
             onLogin={this.handleLedgerLogin}
+            onBack={this.handleSelectStepSelectOption}
+          />
+        )}
+        {step === STEP_LOGIN_WITH_TREZOR && (
+          <LoginLedger
+            onLogin={this.handleTrezorLogin}
             onBack={this.handleSelectStepSelectOption}
           />
         )}

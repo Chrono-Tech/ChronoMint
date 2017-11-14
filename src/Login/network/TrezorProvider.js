@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import EventEmitter from 'events'
 import ProviderEngine from 'web3-provider-engine'
-import TrezorWalletSubproviderFactory from 'trezorr-wallet-provider'
+import TrezorWalletSubproviderFactory from 'trezor-wallet-provider'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 
