@@ -15,7 +15,6 @@ export const GET_MANAGERS_FOR_TOKEN = 'AssetsManager/GET_MANAGERS_FOR_TOKEN'
 export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
 export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
 export const GET_MANAGERS_FOR_TOKEN_LOADING = 'AssetsManager/GET_MANAGERS_FOR_TOKEN_LOADING'
-export const SET_WATCHERS = 'AssetsManager/SET_WATCHERS'
 export const SET_TOTAL_SUPPLY = 'AssetsManager/SET_TOTAL_SUPPLY'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
@@ -218,7 +217,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       const { from, to } = tx.args
       const assetsManagerDao = await contractManager.getAssetsManagerDAO()
       const managers = await assetsManagerDao.getManagers(account)
-      let managersList = [...tokensMap.getIn([symbol, 'managersList'])]
+      let managersList = [...(tokensMap.getIn([symbol, 'managersList']) || [])]
       if (assetsManagerDao.isEmptyAddress(from)) {
         if (managersList.indexOf(to) < 0) {
           managersList.push(to)
