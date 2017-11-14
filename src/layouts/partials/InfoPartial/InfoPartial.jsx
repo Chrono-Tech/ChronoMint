@@ -9,7 +9,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-import { SET_SELECTED_COIN } from 'redux/market/action'
+import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './InfoPartial.scss'
@@ -48,7 +48,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   const { account, profile } = state.get(DUCK_SESSION)
-  const market = state.get('market')
   const ui = state.get('ui')
   const wallet = getCurrentWallet(state)
 
@@ -56,7 +55,7 @@ function mapStateToProps (state) {
     account,
     profile,
     wallet,
-    selectedCoin: market.selectedCoin,
+    selectedCoin: state.get(DUCK_MARKET).selectedCoin,
     open: ui.open,
   }
 }

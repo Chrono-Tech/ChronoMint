@@ -1,20 +1,19 @@
 import BigNumber from 'bignumber.js'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
 import TokenModel from 'models/TokenModel'
 import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import { MultiEventsHistoryABI, WalletABI } from './abi'
 import contractManagerDAO from './ContractsManagerDAO'
-import { WalletABI, MultiEventsHistoryABI } from './abi'
 
-const CODE_CONFIRMATION_NEEDED = 14014
-
-export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
+export default class MultisigWalletDAO extends AbstractContractDAO {
 
   constructor (at) {
     super(WalletABI, at, MultiEventsHistoryABI)
-    this._okCodes.push(CODE_CONFIRMATION_NEEDED)
+    this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
   watchOwnerRemoved (wallet, callback) {
@@ -134,7 +133,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async addOwner (wallet, ownerAddress) {
-    console.log('--MultisigWalletDAO#addOwner', this)
     const result = await this._tx('addOwner', [
       ownerAddress,
     ], {

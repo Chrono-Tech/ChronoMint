@@ -124,4 +124,18 @@ export class Web3Provider {
   }
 }
 
+declare type Web3Provider = {
+  ...Web3Provider,
+  getBlock: Function,
+  getBlockNumber: Function,
+  getAccounts: Function,
+  getBalance: Function,
+  sendTransaction: Function,
+  getTransaction: Function,
+  getTransactionReceipt: Function,
+  getCode: Function,
+  getGasPrice: Function,
+  estimateGas: Function,
+}
+
 export default new Web3Provider(null, true)

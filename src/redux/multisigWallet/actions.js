@@ -19,9 +19,9 @@ export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 
 const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => {
   let updatedWallet = wallet
-  if (!wallet.isNew() && !!wallet.transactionHash()) {
+  if (!wallet.isNew() && !!wallet.isTransactionHash()) {
     // address arrived, delete temporary hash
-    dispatch({ type: MULTISIG_REMOVE, id: wallet.transactionHash() })
+    dispatch({ type: MULTISIG_REMOVE, id: wallet.id() })
     updatedWallet = wallet.transactionHash(null)
   }
   dispatch({ type: MULTISIG_UPDATE, wallet: updatedWallet.isPending(false) })
