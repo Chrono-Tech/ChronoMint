@@ -25,7 +25,8 @@ jobs:
       script:
       - yarn install
       - yarn testrpc > /dev/null &
-      - travis_wait 5 yarn contracts
+      - sleep 5
+      - yarn contracts
       - yarn test --coverage
       - yarn build
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
