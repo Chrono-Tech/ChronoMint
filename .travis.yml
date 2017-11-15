@@ -3,7 +3,7 @@ language: node_js
 dist: trusty
 
 node_js:
-  - "stable"
+  - "8"
 
 sudo: true
 
@@ -23,7 +23,7 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - yarn install --frozen-lockfile
+      - yarn install
       - yarn testrpc > /dev/null &
       - sleep 5 && yarn bridge > /dev/null &
       - sleep 60 && yarn contracts
