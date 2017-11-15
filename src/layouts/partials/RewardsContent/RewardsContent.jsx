@@ -115,14 +115,14 @@ export default class RewardsContent extends Component {
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         disabled={!rewardsData.accountRewards().gt(0)}
-                        onTouchTap={() => this.props.handleWithdrawRevenue()}
+                        onTouchTap={this.props.handleWithdrawRevenue}
                       />
                     )}
                     {this.props.isCBE && (
                       <RaisedButton
                         label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
-                        onTouchTap={() => this.props.handleClosePeriod()}
+                        onTouchTap={this.props.handleClosePeriod}
                       />
                     )}
                   </div>
