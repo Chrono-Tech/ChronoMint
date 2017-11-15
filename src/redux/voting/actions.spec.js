@@ -34,7 +34,7 @@ const poll2 = {
 }
 
 describe('Voting actions', () => {
-  it('should create poll1', async (done) => {
+  it.skip('should create poll1', async (done) => {
     await store.dispatch(createPoll(poll1.proto))
     const dao = await contractsManagerDAO.getVotingDAO()
     await dao.watchCreated((notice: PollNoticeModel) => {
