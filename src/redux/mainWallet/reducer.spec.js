@@ -49,7 +49,7 @@ describe('settings wallet reducer', () => {
     })).toMatchSnapshot()
   })
 
-  it('should handle WALLET_TIME_DEPOSIT', () => {
+  it('should handle WALLET_TIME_DEPOSIT with non empty wallet', () => {
     expect(reducer(new MainWallet({
       timeDeposit: new BigNumber(5),
     }), {
@@ -57,7 +57,7 @@ describe('settings wallet reducer', () => {
     })).toMatchSnapshot()
   })
 
-  it('should handle WALLET_TIME_DEPOSIT', () => {
+  it('should handle WALLET_TIME_DEPOSIT with empty wallet', () => {
     expect(reducer(new MainWallet(), { type: a.WALLET_TIME_ADDRESS, address: accounts[5] })).toMatchSnapshot()
   })
 
