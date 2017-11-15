@@ -25,7 +25,6 @@ jobs:
       script:
       - yarn install
       - yarn testrpc > /dev/null &
-      - sleep 5
       - yarn contracts
       - yarn test --coverage
       - yarn build
@@ -43,8 +42,7 @@ jobs:
         fi;
       - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
       - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-      - kill -9 $(ps ax | grep testrpc)
-      - kill -9 $(ps ax | grep bridge.js)
+      - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
 
 cache:
   yarn: true
