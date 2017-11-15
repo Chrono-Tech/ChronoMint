@@ -21,8 +21,8 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleAddressChange: (e, newValue) => validator.address(newValue) === null ? dispatch(formCBELoadName(newValue)) : false,
-    onClose: () => dispatch(modalsClose()),
+    formCBELoadName: (e, newValue) => dispatch(formCBELoadName(newValue)),
+    modalsClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(addCBE(values))
@@ -40,27 +40,34 @@ function mapStateToProps (state) {
 @reduxForm({ form: FORM_CBE_ADDRESS, validate })
 export default class CBEAddressDialog extends PureComponent {
   static propTypes = {
-    handleAddressChange: PropTypes.func,
-    // You need both handleSubmit and onSubmit
+    formCBELoadName: PropTypes.func,
     name: PropTypes.string,
-    onClose: PropTypes.func,
     isLoading: PropTypes.bool,
-  } & formPropTypes
+    modalsClose: PropTypes.func,
+    ...formPropTypes,
+  }
+
+  handleClose = () => {
+    this.props.modalsClose()
+  }
+
+  handleAddressChange = (e, value) => {
+    if (validator.address(value) === null) {
+      this.props.formCBELoadName(e, value)
+    }
+  }
 
   render () {
     const {
       isLoading,
-      onClose,
-      handleSubmit,
-      handleAddressChange,
       initialValues,
       pristine,
       invalid,
     } = this.props
 
     return (
-      <ModalDialog onClose={() => onClose()}>
-        <form styleName='root' onSubmit={handleSubmit}>
+      <ModalDialog>
+        <form styleName='root' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
           </div>
@@ -70,7 +77,7 @@ export default class CBEAddressDialog extends PureComponent {
               fullWidth
               name='address'
               floatingLabelText={<Translate value='common.ethAddress' />}
-              onChange={(e, newValue) => handleAddressChange(e, newValue)}
+              onChange={this.handleAddressChange}
               disabled={initialValues.address() !== null}
             />
             <Field
@@ -86,7 +93,7 @@ export default class CBEAddressDialog extends PureComponent {
             <FlatButton
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
-              onTouchTap={() => onClose()}
+              onTouchTap={this.handleClose}
             />
             <RaisedButton
               styleName='action'

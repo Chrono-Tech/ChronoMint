@@ -1,14 +1,11 @@
 import AbstractContractDAO from './AbstractContractDAO'
+import { PlatformTokenExtensionGatewayManagerEmitterABI, MultiEventsHistoryABI } from './abi'
 
 const TX_ASSET_CREATED = 'AssetCreated'
 export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends AbstractContractDAO {
 
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PlatformTokenExtensionGatewayManagerEmitter.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(PlatformTokenExtensionGatewayManagerEmitterABI, at, MultiEventsHistoryABI)
   }
 
   watchAssetCreate (callback, account) {

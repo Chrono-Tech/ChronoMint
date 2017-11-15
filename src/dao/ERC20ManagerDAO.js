@@ -1,10 +1,10 @@
-import Immutable from 'immutable'
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
-import TokenModel from 'models/TokenModel'
+import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
-
+import TokenModel from 'models/TokenModel'
+import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { btcDAO, bccDAO } from './BitcoinDAO'
+import { bccDAO, btcDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
@@ -23,7 +23,7 @@ const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(require('chronobank-smart-contracts/build/contracts/ERC20Manager.json'), at)
+    super(ERC20ManagerABI, at)
   }
 
   async initTokenMetaData (dao: ERC20DAO, symbol = null, decimals = null) {

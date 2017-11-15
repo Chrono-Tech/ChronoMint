@@ -11,8 +11,8 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  async getAccountBalance (account = this.getAccount(), block = 'latest'): BigNumber {
-    const balance = await this._web3Provider.getBalance(account, block)
+  async getAccountBalance (account = this.getAccount()): BigNumber {
+    const balance = await this._web3Provider.getBalance(account)
     return this._c.fromWei(balance)
   }
 
@@ -188,7 +188,6 @@ export class EthereumDAO extends AbstractTokenDAO {
   async _getTransferFromEtherscan (apiURL, account, id): Array<TxModel> {
     const offset = 10000 // limit of Etherscan
     const cache = this._getFilterCache(id) || {}
-    // noinspection JSUnresolvedFunction
     const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
     const txs = cache.txs || []
     let page = cache.page || 1
@@ -232,7 +231,6 @@ export class EthereumDAO extends AbstractTokenDAO {
    * @private
    */
   async _getTransferFromBlocks (account, id): Array<TxModel> {
-    // noinspection JSUnresolvedFunction
     let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
     if (limit === 0) {
       limit = Math.max(i - 150, 0)

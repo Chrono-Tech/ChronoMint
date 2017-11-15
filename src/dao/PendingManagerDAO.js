@@ -1,7 +1,8 @@
 import Immutable from 'immutable'
-import OperationModel from 'models/OperationModel'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
+import OperationModel from 'models/OperationModel'
 import type TxExecModel from 'models/TxExecModel'
+import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
@@ -20,11 +21,7 @@ export const OPERATIONS_PER_PAGE = 10
 
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PendingManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(PendingManagerABI, at, MultiEventsHistoryABI)
   }
 
   multisigDAO () {

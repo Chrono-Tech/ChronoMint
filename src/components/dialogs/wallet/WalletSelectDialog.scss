@@ -112,7 +112,8 @@
 }
 
 .cellAuto {
-  flex: 1
+  flex: 1;
+  overflow: hidden;
 }
 
 .rowSelected {
@@ -121,6 +122,8 @@
 
 .symbol {
   margin-bottom: 2px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .ownersNum {

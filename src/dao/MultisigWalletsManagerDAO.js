@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
-import multisigWalletService from 'services/MultisigWalletService'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import Immutable from 'immutable'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import multisigWalletService from 'services/MultisigWalletService'
+import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
 const functions = {
   GET_WALLETS: 'getWallets',
@@ -17,28 +18,10 @@ const events = {
   WALLET_CREATED: 'WalletCreated',
 }
 
-const eventParams = {}
-eventParams[events.ERROR] = {
-  SELF: 'self',
-  ERROR_CODE: 'errorCode',
-}
-eventParams[events.WALLET_ADDED] = {
-  SELF: 'self',
-  WALLET: 'wallet',
-}
-eventParams[events.WALLET_CREATED] = {
-  SELF: 'self',
-  WALLET: 'wallet',
-}
-
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/WalletsManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
-    )
+    super(WalletsManagerABI, at, MultiEventsHistoryABI)
   }
 
   // ---------- watchers ---------
@@ -94,10 +77,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async createWallet (wallet: MultisigWalletModel) {
     const result = await this._tx(functions.CREATE_WALLET, [
-      wallet.owners(),
+      wallet.ownersArray(),
       wallet.requiredSignatures(),
       new BigNumber(0),
-    ], wallet)
+    ], wallet.toCreateWalletTx())
     return result.tx
   }
 

@@ -458,6 +458,7 @@ export default {
     moreThan: 'Должно быть больше чем %{limit}',
     moreThanOrEqual: 'Должно быть больше или равно %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
+    invalidLatinString: 'Строка должна иметь только латинские символы (A-z)',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Невозможно отправить токены самому себе',
@@ -743,7 +744,7 @@ export default {
         cancel: 'Отмена',
         addAddress: 'Добавить Адрес',
       },
-      PollDialog: {
+      PollEditDialog: {
         editPoll: 'Редактировать Голосование',
         newPoll: 'Новое Голосование',
         pollTitle: 'Название голосования',

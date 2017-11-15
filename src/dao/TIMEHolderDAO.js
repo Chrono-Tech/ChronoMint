@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
+import { TimeHolderABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import type ERC20DAO from './ERC20DAO'
@@ -11,13 +12,7 @@ export const TIME = 'TIME'
 
 export default class TIMEHolderDAO extends AbstractContractDAO {
   constructor (at) {
-    super(require('chronobank-smart-contracts/build/contracts/TimeHolder.json'), at)
-
-    // TODO @dkchv: remove all except OK after SC update and backend research, see MINT-279
-    // cause TIMEHOLDER_DEPOSIT_FAILED and TIMEHOLDER_WITHDRAWN_FAILED
-    // - is like warning, not error, backend says
-    /** @namespace resultCodes.TIMEHOLDER_DEPOSIT_FAILED */
-    /** @namespace resultCodes.TIMEHOLDER_WITHDRAWN_FAILED */
+    super(TimeHolderABI, at)
     this._okCodes = [
       resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
@@ -49,7 +44,10 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   }
 
   async getAccountDepositBalance (account = this.getAccount()): BigNumber {
-    const assetDAO = await this.getAssetDAO()
-    return this._call('depositBalance', [account]).then((r) => assetDAO.removeDecimals(r))
+    const [assetDAO, depositBalance] = await Promise.all([
+      this.getAssetDAO(),
+      this._call('depositBalance', [account]),
+    ])
+    return assetDAO.removeDecimals(depositBalance)
   }
 }

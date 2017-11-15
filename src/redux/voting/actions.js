@@ -32,14 +32,18 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
 }
 
+const updateVoteLimit = () => async (dispatch) => {
+  const votingDAO = await contractsManagerDAO.getVotingDAO()
+  const voteLimitInTIME = await votingDAO.getVoteLimit()
+  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
+}
+
 export const watchInitPolls = () => async (dispatch) => {
   const callback = (notice) => dispatch(watchPoll(notice))
 
   const dao = await contractsManagerDAO.getVotingDAO()
-  const timeDAO = await contractsManagerDAO.getTIMEDAO()
-  const voteLimit = dao.getVoteLimit()
-  dispatch(handleVoteLimit(voteLimit && timeDAO.removeDecimals(voteLimit)))
   return await Promise.all([
+    dispatch(updateVoteLimit()),
     dao.watchCreated(callback),
     dao.watchRemoved(callback),
     dao.watchActivated(callback),
@@ -120,10 +124,6 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
   } catch (e) {
     dispatch(handlePollUpdated(poll))
   }
-}
-
-export const handleVoteLimit = (voteLimitInTIME: BigNumber) => async (dispatch) => {
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
 
 export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
