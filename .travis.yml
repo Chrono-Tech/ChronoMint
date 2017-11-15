@@ -8,13 +8,12 @@ jobs:
   include:
     - stage: build docker image
       script:
-      - npm config set NPM_CONFIG_LOGLEVEL error
-      - npm install --silent
-      - npm run testrpc > /dev/null &
-      - sleep 5 && npm run bridge > /dev/null &
-      - sleep 60 && npm run contracts --silent
-      - npm test -- --coverage
-      - npm run build --silent
+      - yarn install --frozen-lockfile
+      - yarn testrpc > /dev/null &
+      - sleep 5 && yarn bridge > /dev/null &
+      - sleep 60 && yarn contracts
+      - yarn test --coverage
+      - yarn build
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
       - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
       - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
@@ -31,3 +30,6 @@ jobs:
       - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
       - kill -9 $(ps ax | grep testrpc)
       - kill -9 $(ps ax | grep bridge.js)
+
+cache:
+  yarn: true

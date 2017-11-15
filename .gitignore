@@ -8,10 +8,8 @@ coverage/
 *.log
 *.bac
 
-/build
-/report
+build/
+report/
 .truffle-solidity-loader
-/coverage
-yarn.lock
 package-lock.json
 build.zip
