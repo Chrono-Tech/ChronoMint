@@ -5,7 +5,7 @@ dist: trusty
 node_js:
   - "7.9.0"
 
-sudo: false
+sudo: true
 
 git:
   depth: 1
@@ -25,8 +25,7 @@ jobs:
       script:
       - yarn install
       - yarn testrpc > /dev/null &
-      - sleep 5 && yarn bridge > /dev/null &
-      - sleep 60 && yarn contracts
+      - travis_wait 5 yarn contracts
       - yarn test --coverage
       - yarn build
       - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
