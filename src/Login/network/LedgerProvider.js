@@ -32,7 +32,7 @@ class LedgerProvider extends EventEmitter {
     try {
       this._engine = new ProviderEngine()
       this._web3 = new Web3(this._engine)
-      this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3)
+      this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3, 'ledger')
       this._ledger = this._ledgerSubprovider.ledger
       this._isInited = true
     } catch (e) {
