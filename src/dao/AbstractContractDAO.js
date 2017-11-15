@@ -466,8 +466,6 @@ export default class AbstractContractDAO {
         }
       }
 
-      console.log('--AbstractContractDAO#_tx', result)
-
       /** EVENT ERROR HANDLING */
       for (const log of result.logs) {
         if (log.event.toLowerCase() === 'error') {

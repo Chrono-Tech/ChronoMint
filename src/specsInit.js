@@ -42,8 +42,7 @@ beforeEach(() => {
   // NOTE: session is always as CBE
   ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
-  networkService
-    .connectStore(store)
+  networkService.connectStore(store)
 })
 
 afterEach(async (done) => {

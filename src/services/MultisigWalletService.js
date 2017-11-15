@@ -47,6 +47,14 @@ class MultisigWalletService extends EventEmitter {
       }),
     ])
   }
+
+  unsubscribeAll () {
+    const promises = []
+    for (let walletDAO in this._cache) {
+      promises.push(walletDAO.stopWatching())
+    }
+    return Promise.all(promises)
+  }
 }
 
 export default new MultisigWalletService()
