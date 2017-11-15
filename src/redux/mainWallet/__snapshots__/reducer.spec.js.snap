@@ -21,7 +21,7 @@ Object {
     "TK1": Object {
       "address": null,
       "allowance": Object {
-        "0xee42d0ea34b0b40d1930ed05ed2845d08ea7cfd1": 4,
+        "0x670dc68af4125b8137d706bdec4abd8950d86c20": 4,
       },
       "balance": "0",
       "dao": null,
@@ -158,7 +158,7 @@ Object {
 }
 `;
 
-exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT 1`] = `
+exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with empty wallet 1`] = `
 Object {
   "address": null,
   "bccAddress": null,
@@ -172,8 +172,8 @@ Object {
   "isPending": false,
   "isTIMERequired": true,
   "nemAddress": null,
-  "timeAddress": null,
-  "timeDeposit": 3,
+  "timeAddress": "0x3ca0cbc8c9e2d629b13cfe7106535f532fb59c85",
+  "timeDeposit": "0",
   "timestamp": null,
   "tokens": Object {},
   "transactionHash": null,
@@ -192,7 +192,7 @@ Object {
 }
 `;
 
-exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT 2`] = `
+exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with non empty wallet 1`] = `
 Object {
   "address": null,
   "bccAddress": null,
@@ -206,8 +206,8 @@ Object {
   "isPending": false,
   "isTIMERequired": true,
   "nemAddress": null,
-  "timeAddress": "0xec8a163d2ebc655fd44a7b159ca637abb380339c",
-  "timeDeposit": "0",
+  "timeAddress": null,
+  "timeDeposit": 3,
   "timestamp": null,
   "tokens": Object {},
   "transactionHash": null,
