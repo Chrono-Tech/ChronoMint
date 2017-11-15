@@ -72,11 +72,9 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   connect () {
     if (this._socket) {
       let ws = new SockJS(this._socket.baseURL)
-      this._client = Stomp.over(ws, { heartbeat: false, debug: true })
-      this.trace('Socket connect credentials', this._socket.user, this._socket.password)
+      this._client = Stomp.over(ws, { heartbeat: false, debug: false })
       this._client.connect(this._socket.user, this._socket.password,
         () => {
-          this.trace('Handle missed')
           this.handleMissed()
         },
         (e) => {
