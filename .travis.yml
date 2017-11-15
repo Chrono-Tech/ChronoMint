@@ -22,27 +22,29 @@ branches:
 jobs:
   include:
     - stage: build docker image
+      before_script:
+        - yarn testrpc > /dev/null &
+        - yarn contracts
       script:
-      - yarn install
-      - yarn testrpc > /dev/null &
-      - yarn contracts
-      - yarn test --coverage
-      - yarn build
-      - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
-      - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
-      - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
-      - cat Dockerfile
-      - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
-      - rm -rf gcregistry.json
-      - |
-        if [ "$TRAVIS_TAG" == "" ]; then
-          IMAGE_TAG_NAME="latest"
-        elif [ "$TRAVIS_TAG" != "" ]; then
-          IMAGE_TAG_NAME="$TRAVIS_TAG"
-        fi;
-      - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
-      - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
-      - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
+        - yarn test --coverage
+        - yarn build
+      after_script:
+        - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+        - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
+        - sed -i -e "s%\PWD%$FULL_GCR_KEY%g" gcregistry.json
+        - sed -i -e "s%branch%$TRAVIS_BRANCH%g" Dockerfile
+        - cat Dockerfile
+        - docker login -u _json_key -p "$(cat gcregistry.json)" https://gcr.io
+        - rm -rf gcregistry.json
+        - |
+          if [ "$TRAVIS_TAG" == "" ]; then
+            IMAGE_TAG_NAME="latest"
+          elif [ "$TRAVIS_TAG" != "" ]; then
+            IMAGE_TAG_NAME="$TRAVIS_TAG"
+          fi;
+        - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+        - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+        - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
 
 cache:
   yarn: true
