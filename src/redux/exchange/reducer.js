@@ -16,6 +16,12 @@ const reducer = (state = initialState, action) => {
       return state
         .assetSymbols(action.payload.assetSymbols)
         .isFetched(true).isFetching(false)
+    case a.EXCHANGE_GET_TOKENS_LIST_START:
+      return state
+        .tokens(state.tokens().isFetching(true))
+    case a.EXCHANGE_GET_TOKENS_LIST_DONE:
+      return state
+        .tokens(action.tokens.isFetched(true).isFetching(false))
     default:
       return state
   }

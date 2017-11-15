@@ -33,8 +33,8 @@ class ExchangeDAO extends AbstractContractDAO {
   }
 
   async getAssetBalance (): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    return assetDAO.getAccountBalance(await this.getAddress())
+    const result = await this._call('assetBalance')
+    return result
   }
 
   async getAccountAssetBalance (): Promise<BigNumber> {
@@ -60,7 +60,10 @@ class ExchangeDAO extends AbstractContractDAO {
     const assetDAO = await this.getAssetDAO()
     const amountWithDecimals = assetDAO.addDecimals(amount)
     const priceInWei = this._c.toWei(price)
-    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], { amount, price: amount.mul(price) }, amountWithDecimals.mul(priceInWei))
+    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {
+      amount,
+      price: amount.mul(price)
+    }, amountWithDecimals.mul(priceInWei))
   }
 
   subscribeOnReset () {

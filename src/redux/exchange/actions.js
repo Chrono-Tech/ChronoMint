@@ -4,11 +4,16 @@ import BigNumber from 'bignumber.js'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import exchangeDAO from 'dao/ExchangeDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import TokenModel from '../../models/TokenModel'
+
+export const DUCK_EXCHANGE = 'exchange'
 
 export const EXCHANGE_GET_ORDERS_START = 'exchange/GET_ORDERS_START'
 export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
 export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
 export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
+export const EXCHANGE_GET_TOKENS_LIST_START = 'exchange/EXCHANGE_GET_TOKENS_LIST_START'
+export const EXCHANGE_GET_TOKENS_LIST_DONE = 'exchange/EXCHANGE_GET_TOKENS_LIST_DONE'
 
 export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async () => {
   try {
@@ -23,20 +28,19 @@ export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async 
 }
 
 export const search = (values: Immutable.Map) => async dispatch => {
-  dispatch({type: EXCHANGE_GET_ORDERS_START})
+  dispatch({ type: EXCHANGE_GET_ORDERS_START })
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const exchangesAddresses = await exchangeManagerDAO.getExchangesWithFilter(values.get('token'))
   const exchanges = await exchangeManagerDAO.getExchangeData(exchangesAddresses)
-  dispatch({type: EXCHANGE_GET_ORDERS_FINISH, payload: {exchanges, filter: values}})
+  dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, payload: { exchanges, filter: values } })
 }
 
 export const getExchange = () => async dispatch => {
-  dispatch({type: EXCHANGE_GET_DATA_START})
+  dispatch({ type: EXCHANGE_GET_DATA_START })
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const assetSymbols = await exchangeManagerDAO.getAssetSymbols()
-  dispatch({type: EXCHANGE_GET_DATA_FINISH, payload: {assetSymbols}})
+  dispatch({ type: EXCHANGE_GET_DATA_FINISH, payload: { assetSymbols } })
 }
-
 
 export const getExchangesForOwner = (owner: string) => async dispatch => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
@@ -50,11 +54,11 @@ export const getAssetSymbols = () => async dispatch => {
 }
 
 export const getExchangesForSymbol = (symbol: string) => async dispatch => {
-  dispatch({type: EXCHANGE_GET_ORDERS_START})
+  dispatch({ type: EXCHANGE_GET_ORDERS_START })
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const exchangesAddresses = await exchangeManagerDAO.getExchangesForSymbol(symbol)
   const exchanges = await exchangeManagerDAO.getExchangeData(exchangesAddresses)
-  dispatch({type: EXCHANGE_GET_ORDERS_FINISH, payload: {exchanges}})
+  dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, payload: { exchanges } })
 }
 
 export const getExchangeData = (exchanges: Array<string>) => async dispatch => {
@@ -62,11 +66,27 @@ export const getExchangeData = (exchanges: Array<string>) => async dispatch => {
   return await exchangeManagerDAO.getExchangeData(exchanges)
 }
 
-export const createExchange = ({symbol, useTicker, sellPrice, buyPrice}) => async dispatch => {
+export const createExchange = ({ symbol, useTicker, sellPrice, buyPrice }) => async dispatch => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   exchangeManagerDAO.createExchange(symbol, useTicker, sellPrice, buyPrice)
 }
+
 export const watchExchanges = account => async (dispatch) => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   exchangeManagerDAO.watchExchanges(account, dispatch)
+}
+
+export const getTokenList = () => async (dispatch) => {
+  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START, tokens })
+  const ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+  const tokens = await ERC20ManagerDAO.getTokensList()
+  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_DONE, tokens })
+}
+
+export const getAssetBalance = (token: TokenModel) => async (dispatch) => {
+  const exchangeDAO = await contractsManagerDAO.getExchangeDAO(token.address())
+  const result = await exchangeDAO.getAssetBalance()
+  // eslint-disable-next-line
+  console.log('--actions#result', result)
+  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_DONE, tokens })
 }

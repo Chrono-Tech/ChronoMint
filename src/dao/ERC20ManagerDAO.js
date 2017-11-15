@@ -1,3 +1,4 @@
+import TokensCollection from 'models/exchange/TokensCollection'
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
 import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
@@ -279,5 +280,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback, account) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
+  }
+
+  async getTokensList () {
+    const addresses = await this._call('getTokenAddresses')
+    const tokens = await this.getTokensByAddresses(addresses)
+    return new TokensCollection({ list: tokens })
   }
 }

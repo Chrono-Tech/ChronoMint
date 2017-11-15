@@ -1,22 +1,21 @@
+import avaTokenSVG from 'assets/img/avaToken.svg'
 import BigNumber from 'bignumber.js'
-import { Field, reduxForm, formPropTypes, change, formValueSelector } from 'redux-form/immutable'
-import { IPFSImage, TokenValue } from 'components'
-import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton, MenuItem } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { TextField, SelectField } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
+import { IPFSImage, TokenValue } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
+import { FlatButton, MenuItem, RaisedButton } from 'material-ui'
+import TokensCollection from 'models/exchange/TokensCollection'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import validate from './validate'
+import { Translate } from 'react-redux-i18n'
+import { SelectField, TextField } from 'redux-form-material-ui'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { DUCK_EXCHANGE, getTokenList, getAssetBalance } from 'redux/exchange/actions'
+import TokenModel from 'models/TokenModel'
 
 import './AddExchangeForm.scss'
-
-// TODO @abdulov remove it
-let tokens = []
-for (let i = 0; i < 16; i++) {
-  tokens.push('')
-}
+import validate from './validate'
 
 function prefix (text) {
   return `components.exchange.AddExchangeForm.${text}`
@@ -26,15 +25,21 @@ export const FORM_CREATE_EXCHANGE = 'createExchangeForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CREATE_EXCHANGE)
+  const exchange = state.get(DUCK_EXCHANGE)
   return {
     token: selector(state, 'token'),
+    tokens: exchange.tokens(),
   }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+  getTokenList: () => dispatch(getTokenList()),
+  getAssetBalance: (token: TokenModel) => dispatch(getAssetBalance(token)),
+})
 const onSubmit = (values, dispatch) => {
 }
 
-@connect(mapStateToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_CREATE_EXCHANGE, validate, onSubmit })
 export default class AddExchangeForm extends PureComponent {
   static propTypes = {
@@ -42,21 +47,35 @@ export default class AddExchangeForm extends PureComponent {
     onClose: PropTypes.func,
     onSubmitFunc: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
+    getTokenList: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
+    getAssetBalance: PropTypes.func,
     ...formPropTypes,
   }
 
+  componentDidMount () {
+    this.props.getTokenList()
+  }
+
+  handleSelectToken (token: TokenModel) {
+    this.props.getAssetBalance(token)
+    this.props.dispatch(change(FORM_CREATE_EXCHANGE, 'token', token.symbol()))
+  }
+
   renderTokens () {
-    return tokens.map((item, i) => {
+    if (this.props.tokens.isFetching()) {
+      return <Preloader />
+    }
+
+    return this.props.tokens.items().map((token: TokenModel) => {
       return (
         <div
-          key={i}
-          styleName={classnames('tokenItem', { 'selected': this.props.token === `TIME${i}` })}
-          onTouchTap={() => {
-            this.props.dispatch(change(FORM_CREATE_EXCHANGE, 'token', `TIME${i}`))
-          }}
+          key={token.symbol()}
+          styleName={classnames('tokenItem', { 'selected': this.props.token === token.symbol() })}
+          onTouchTap={() => this.handleSelectToken(token)}
         >
-          <IPFSImage styleName='tokenIcon' fallback={require('../../../assets/img/icn-time.svg')} />
-          <div styleName='tokenTitle'>TIMETIMETIMETIME</div>
+          <IPFSImage multihash={token.icon()} styleName='tokenIcon' fallback={avaTokenSVG} />
+          <div styleName='tokenTitle'>{token.symbol()}</div>
         </div>
       )
     })
@@ -89,13 +108,15 @@ export default class AddExchangeForm extends PureComponent {
                 floatingLabelText={<Translate value={prefix('chooseToken')} />}
               >
                 {
-                  tokens
-                    .map((token, i) => {
+                  this.props.tokens.items()
+                    .map((token: TokenModel) => {
+                      // eslint-disable-next-line
+                      console.log('--AddExchangeForm#token', token)
                       return (<MenuItem
-                        key={i}
-                        value={`TIME${i}`}
+                        key={token.symbol()}
+                        value={token.symbol()}
                         primaryText={
-                          <span styleName='tokenSelectorItem'>TIME</span>
+                          <span styleName='tokenSelectorItem'>{token.symbol()}</span>
                         }
                       />)
                     })}
