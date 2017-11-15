@@ -15,11 +15,6 @@ export default (state = initialState, action) => {
         ...state,
         isU2F: action.isU2F,
       }
-    case a.TREZOR_SET_ETH_APP_OPENED:
-      return {
-        ...state,
-        isETHAppOpened: action.isETHAppOpened,
-      }
     case a.TREZOR_FETCHING:
       return {
         ...state,

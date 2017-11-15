@@ -17,12 +17,14 @@ import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
 import ledgerProvider from '../../network/LedgerProvider'
+import trezorProvider from '../../network/TrezorProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
 import walletProvider from '../../network/walletProvider'
 import web3Provider from '../../network/Web3Provider'
 import web3Utils from '../../network/Web3Utils'
 import { loginLedger } from '../../redux/ledger/actions'
+import { loginTrezor } from '../../redux/trezor/actions'
 import networkService, { addError, clearErrors, loading } from '../../redux/network/actions'
 
 import './LoginWithOptions.scss'
@@ -158,8 +160,8 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       trezorProvider.setupAndStart(this.props.getProviderURL())
-      web3Provider.setWeb3(ledgerProvider.getWeb3())
-      web3Provider.setProvider(ledgerProvider.getProvider())
+      web3Provider.setWeb3(trezorProvider.getWeb3())
+      web3Provider.setProvider(trezorProvider.getProvider())
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
@@ -299,7 +301,7 @@ class LoginWithOptions extends PureComponent {
           />
         )}
         {step === STEP_LOGIN_WITH_TREZOR && (
-          <LoginLedger
+          <LoginTrezor
             onLogin={this.handleTrezorLogin}
             onBack={this.handleSelectStepSelectOption}
           />

@@ -19,11 +19,6 @@ const trezorStates = [ {
   errorTitle: 'LoginWithTrezor.isU2F.errorTitle',
   errorTip: 'LoginWithTrezor.isU2F.errorTip',
 }, {
-  flag: 'isETHAppOpened',
-  successTitle: 'LoginWithTrezor.isETHAppOpened.successTitle',
-  errorTitle: 'LoginWithTrezor.isETHAppOpened.errorTitle',
-  errorTip: 'LoginWithTrezor.isETHAppOpened.errorTip',
-}, {
   flag: 'isFetched',
   successTitle: 'LoginWithTrezor.isFetched.successTitle',
   errorTitle: 'LoginWithTrezor.isFetched.errorTitle',
@@ -67,7 +62,7 @@ class LoginTrezor extends PureComponent {
   }
 
   componentWillReceiveProps ({ trezor }) {
-    if (!trezor.isFetched && !trezor.isFetching && trezor.isHttps && trezor.isU2F && trezor.isETHAppOpened) {
+    if (!trezor.isFetched && !trezor.isFetching && trezor.isHttps && trezor.isU2F) {
       this.props.fetchAccount()
     }
   }

@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 import EventEmitter from 'events'
 import ProviderEngine from 'web3-provider-engine'
-import TrezorWalletSubproviderFactory from 'trezor-wallet-provider'
+import TrezorWalletSubproviderFactory from 'ledger-wallet-provider'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 
@@ -18,7 +18,7 @@ class TrezorProvider extends EventEmitter {
 
     this._isInited = false
     this._timer = null
-    this._isETHOpened = false
+    this._syncing = this._syncing.bind(this)
   }
 
   async init () {
@@ -28,8 +28,8 @@ class TrezorProvider extends EventEmitter {
     try {
       this._engine = new ProviderEngine()
       this._web3 = new Web3(this._engine)
-      this._TrezorSubprovider = await TrezorWalletSubproviderFactory(this._derivationPath, this._web3)
-      this._trezor = this._trezorrSubprovider.trezor
+      this._TrezorSubprovider = await TrezorWalletSubproviderFactory(this._derivationPath, this._web3, 'trezor')
+      this._trezor = this._TrezorSubprovider.trezor
       this._isInited = true
     } catch (e) {
       // eslint-disable-next-line
@@ -40,18 +40,14 @@ class TrezorProvider extends EventEmitter {
   }
 
   setupAndStart (providerURL) {
-    this._engine.addProvider(this._trezorrSubprovider)
+    this._engine.addProvider(this._TrezorSubprovider)
     this._engine.addProvider(new FilterSubprovider())
     this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
     this._engine.start()
   }
 
   isU2F () {
-    return this._trezorrSubprovider.isSupported
-  }
-
-  isETHAppOpened () {
-    return this._isETHOpened
+    return true
   }
 
   _getAppConfig () {
@@ -74,10 +70,6 @@ class TrezorProvider extends EventEmitter {
     }
 
     const newState = await this._getAppConfig()
-    if (newState !== this._isETHOpened) {
-      this.emit('connection', newState)
-    }
-    this._isETHOpened = newState
   }
 
   async sync () {
@@ -94,12 +86,10 @@ class TrezorProvider extends EventEmitter {
   }
 
   async fetchAccount () {
+    console.log('redux fetch account')
+    console.log(this)
     return new Promise(resolve => {
       let timer = setInterval(() => {
-        if (this._trezor.connectionOpened) {
-          // busy
-          return
-        }
         clearInterval(timer)
         this._trezor.getAccounts((error, data) => {
           if (error) {
