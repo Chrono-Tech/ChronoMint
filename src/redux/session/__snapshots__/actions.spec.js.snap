@@ -3,7 +3,7 @@
 exports[`session actions should create session 1`] = `
 Array [
   Object {
-    "account": "0x403b8e475905d5ef8280626e5349f7c1cee9bdbe",
+    "account": "0xb7237dd7dacd9da8e489b57d4631fc33342ff75f",
     "type": "session/CREATE",
   },
 ]

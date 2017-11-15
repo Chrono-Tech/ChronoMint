@@ -141,7 +141,7 @@
     "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",
-    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc --trace_request true | grep -v eth_getFilterChanges",
+    "testrpc": "node ./node_modules/ethereumjs-testrpc/bin/testrpc --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -v eth_getFilterChanges",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",

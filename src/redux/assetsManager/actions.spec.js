@@ -14,7 +14,7 @@ const mock = new Immutable.Map({
   },
 })
 
-describe('AssetsManager getters', () => {
+describe('AssetsManager tests', () => {
   store = mockStore(mock)
   networkService
     .connectStore(store)
