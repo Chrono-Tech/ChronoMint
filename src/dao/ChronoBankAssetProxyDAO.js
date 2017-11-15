@@ -1,8 +1,9 @@
+import { ChronoBankAssetProxyABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export default class ChronoBankAssetProxyDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(require('chronobank-smart-contracts/build/contracts/ChronoBankAssetProxy.json'), at)
+    super(ChronoBankAssetProxyABI, at)
   }
 
   getLatestVersion () {

@@ -1,6 +1,4 @@
-import contractManager from 'dao/ContractsManagerDAO'
-import { getPlatforms, getUsersPlatforms, setTx, SET_WATCHERS } from 'redux/assetsManager/actions'
-import web3Converter from 'utils/Web3Converter'
+import { MultiEventsHistoryABI, PlatformsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_CREATE_PLATFORM = 'createPlatform'
@@ -13,11 +11,7 @@ export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
 export default class PlatformsManagerDAO extends AbstractContractDAO {
 
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/PlatformsManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(PlatformsManagerABI, at, MultiEventsHistoryABI)
   }
 
   async reissueAsset (symbol, amount) {
@@ -25,8 +19,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async createPlatform (name) {
-    const tx = await this._tx(TX_CREATE_PLATFORM, [name])
+  async createPlatform () {
+    const tx = await this._tx(TX_CREATE_PLATFORM)
     return tx.tx
   }
 
@@ -66,17 +60,8 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  watchCreatePlatform (account, dispatch) {
-    this._watch(TX_PLATFORM_REQUESTED, (tx) => {
-      dispatch(setTx(tx))
-      dispatch(getUsersPlatforms())
-      dispatch(getPlatforms())
-    }, { by: account })
-
-    this._watch(TX_PLATFORM_ATTACHED, (tx) => {
-      dispatch(setTx(tx))
-      dispatch(getUsersPlatforms())
-      dispatch(getPlatforms())
-    }, { by: account })
+  watchCreatePlatform (callback, account) {
+    this._watch(TX_PLATFORM_REQUESTED, (tx) => callback(tx), { by: account })
+    this._watch(TX_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
   }
 }

@@ -1,4 +1,5 @@
 import AbstractContractDAO from './AbstractContractDAO'
+import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_REVOKE_ASSET = 'revokeAsset'
@@ -12,11 +13,7 @@ export const TX_OWNERSHIP_CHANGE = 'OwnershipChange'
 export default class ChronoBankPlatform extends AbstractContractDAO {
 
   constructor (at = null) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(ChronoBankPlatformABI, at, MultiEventsHistoryABI)
   }
 
   async reissueAsset (token, value) {
@@ -49,8 +46,8 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
     return tx.tx
   }
 
-  async isReissuable (symbol) {
-    return await this._call(TX_IS_REISSUABLE, [symbol])
+  isReissuable (symbol) {
+    return this._call(TX_IS_REISSUABLE, [symbol])
   }
 
   async addAssetPartOwner (symbol, address) {
@@ -64,7 +61,7 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    this._watch(TX_ISSUE, (tx) => {
+    return this._watch(TX_ISSUE, (tx) => {
       const symbol = this._c.bytesToString(tx.args.symbol)
       const value = tx.args.value
       callback(symbol, value, true, tx)
@@ -72,7 +69,7 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchRevoke (callback) {
-    this._watch(TX_REVOKE, (tx) => {
+    return this._watch(TX_REVOKE, (tx) => {
       const symbol = this._c.bytesToString(tx.args.symbol)
       const value = tx.args.value
       callback(symbol, value, false, tx)
@@ -80,6 +77,6 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchManagers (callback) {
-    this._watch(TX_OWNERSHIP_CHANGE, callback)
+    return this._watch(TX_OWNERSHIP_CHANGE, callback)
   }
 }

@@ -16,7 +16,7 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleClose: () => dispatch(modalsClose()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
@@ -25,9 +25,8 @@ export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     palette: PropTypes.array,
-    onClose: PropTypes.func,
-    handleClose: PropTypes.func,
     handleSubmit: PropTypes.func,
+    modalsClose: PropTypes.func,
   }
 
   static defaultProps = {
@@ -46,6 +45,10 @@ export default class VoteDialog extends PureComponent {
     ],
   }
 
+  handleClose = () => {
+    this.props.modalsClose()
+  }
+
   render () {
     const { model, palette } = this.props
     const poll = model.poll()
@@ -53,7 +56,7 @@ export default class VoteDialog extends PureComponent {
     const entries = model.voteEntries()
 
     return (
-      <ModalDialog onClose={() => this.props.handleClose()} styleName='root'>
+      <ModalDialog styleName='root'>
         <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
           <div styleName='header'>
             <div styleName='column column1'>
@@ -201,7 +204,7 @@ export default class VoteDialog extends PureComponent {
             <RaisedButton
               styleName='action'
               label='Close'
-              onTouchTap={() => this.props.handleClose()}
+              onTouchTap={this.handleClose}
               primary
             />
           </div>

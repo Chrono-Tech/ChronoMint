@@ -95,13 +95,12 @@
   flex-direction: column;
   position: relative;
   padding-left: 125px;
-  height: 64px;
+  height: 80px;
   margin-right: 16px;
   justify-content: center;
   &:hover, &.selected {
     background: #e9efff;
   }
-
 }
 
 .tokenIcon {
@@ -129,4 +128,9 @@
 .platformActions {
   display: flex;
   flex-direction: column;
+}
+
+.tokenSubTitle {
+  font-weight: normal;
+  @include ellipsis;
 }

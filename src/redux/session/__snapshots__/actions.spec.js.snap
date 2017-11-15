@@ -1,0 +1,279 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`session actions should create session 1`] = `
+Array [
+  Object {
+    "account": "0xb7237dd7dacd9da8e489b57d4631fc33342ff75f",
+    "type": "session/CREATE",
+  },
+]
+`;
+
+exports[`session actions should destroy session 1`] = `
+Array [
+  Object {
+    "type": "session/DESTROY",
+  },
+]
+`;
+
+exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
+Array [
+  Object {
+    "isCBE": true,
+    "profile": Object {
+      "assetsManager": Object {},
+      "company": null,
+      "email": null,
+      "icon": null,
+      "id": null,
+      "name": null,
+      "timestamp": null,
+      "tokens": Array [],
+      "url": null,
+    },
+    "type": "session/PROFILE",
+  },
+  Object {
+    "type": "WALLET/switch_wallet",
+    "wallet": Object {
+      "address": null,
+      "bccAddress": null,
+      "btcAddress": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMainWallet": true,
+      "isMultisig": false,
+      "isPending": false,
+      "isTIMERequired": true,
+      "nemAddress": null,
+      "timeAddress": null,
+      "timeDeposit": "0",
+      "timestamp": null,
+      "tokens": Object {},
+      "transactionHash": null,
+      "transactions": Object {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": Object {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null,
+      },
+    },
+  },
+  Object {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  },
+  Object {
+    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  },
+  Object {
+    "isInited": true,
+    "type": "market/INIT",
+  },
+  Object {
+    "type": "mainWallet/TOKENS_FETCH",
+  },
+  Object {
+    "type": "watcher/USER",
+  },
+  Object {
+    "type": "watcher/CBE",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/dashboard",
+      ],
+      "method": "replace",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
+
+exports[`session actions should login CBE and start watcher with cbeWatcher and go to last url 1`] = `
+Array [
+  Object {
+    "isCBE": true,
+    "profile": Object {
+      "assetsManager": Object {},
+      "company": null,
+      "email": null,
+      "icon": null,
+      "id": null,
+      "name": null,
+      "timestamp": null,
+      "tokens": Array [],
+      "url": null,
+    },
+    "type": "session/PROFILE",
+  },
+  Object {
+    "type": "WALLET/switch_wallet",
+    "wallet": Object {
+      "address": null,
+      "bccAddress": null,
+      "btcAddress": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMainWallet": true,
+      "isMultisig": false,
+      "isPending": false,
+      "isTIMERequired": true,
+      "nemAddress": null,
+      "timeAddress": null,
+      "timeDeposit": "0",
+      "timestamp": null,
+      "tokens": Object {},
+      "transactionHash": null,
+      "transactions": Object {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": Object {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null,
+      },
+    },
+  },
+  Object {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  },
+  Object {
+    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  },
+  Object {
+    "isInited": true,
+    "type": "market/INIT",
+  },
+  Object {
+    "type": "mainWallet/TOKENS_FETCH",
+  },
+  Object {
+    "type": "watcher/USER",
+  },
+  Object {
+    "type": "watcher/CBE",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/test-last-url",
+      ],
+      "method": "replace",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
+
+exports[`session actions should login USER and go to default url (/wallet) 1`] = `
+Array [
+  Object {
+    "isCBE": false,
+    "profile": Object {
+      "assetsManager": Object {},
+      "company": null,
+      "email": null,
+      "icon": null,
+      "id": null,
+      "name": null,
+      "timestamp": null,
+      "tokens": Array [],
+      "url": null,
+    },
+    "type": "session/PROFILE",
+  },
+  Object {
+    "type": "WALLET/switch_wallet",
+    "wallet": Object {
+      "address": null,
+      "bccAddress": null,
+      "btcAddress": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMainWallet": true,
+      "isMultisig": false,
+      "isPending": false,
+      "isTIMERequired": true,
+      "nemAddress": null,
+      "timeAddress": null,
+      "timeDeposit": "0",
+      "timestamp": null,
+      "tokens": Object {},
+      "transactionHash": null,
+      "transactions": Object {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": Object {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null,
+      },
+    },
+  },
+  Object {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  },
+  Object {
+    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  },
+  Object {
+    "isInited": true,
+    "type": "market/INIT",
+  },
+  Object {
+    "type": "mainWallet/TOKENS_FETCH",
+  },
+  Object {
+    "type": "watcher/USER",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/dashboard",
+      ],
+      "method": "replace",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
+
+exports[`session actions should logout 1`] = `
+Array [
+  Object {
+    "isInited": false,
+    "type": "market/INIT",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/",
+      ],
+      "method": "push",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;

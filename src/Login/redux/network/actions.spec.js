@@ -1,5 +1,4 @@
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
 import { createSession, destroySession } from 'redux/session/actions'
 import { accounts, mockStore, store } from 'specsInit'
@@ -8,8 +7,9 @@ import metaMaskResolver from '../../network/metaMaskResolver'
 import { LOCAL_ID, providerMap } from '../../network/settings'
 import web3Provider from '../../network/Web3Provider'
 import { constants } from '../../settings'
-import networkService from './actions'
+import * as a from './actions'
 
+const networkService = a.default
 const { SESSION_CREATE, SESSION_DESTROY } = constants
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
@@ -35,7 +35,7 @@ describe('network actions', () => {
   it('should check METAMASK is exists', () => {
     window.web3 = new Web3()
     metaMaskResolver
-      .on('resolve', isMetaMask => {
+      .on('resolve', (isMetaMask) => {
         try {
           if (isMetaMask) {
             store.dispatch({ type: a.NETWORK_SET_TEST_METAMASK })
@@ -170,10 +170,6 @@ describe('network actions', () => {
         accounts,
       },
     }))
-    const daoLocal = await contractsManagerDAO.getUserManagerDAO()
-    await daoLocal.watchCBE(() => {
-    })
-    expect(AbstractContractDAO.getWholeWatchedEvents()).not.toEqual([])
     createSession({
       account: accounts[ 0 ],
       provider: LOCAL_ID,

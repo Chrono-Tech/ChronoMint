@@ -21,6 +21,7 @@ class UserIcon extends PureComponent {
 
   static defaultProps = {
     account: '',
+    styleName: '',
   }
 
   constructor (props, context, updater) {

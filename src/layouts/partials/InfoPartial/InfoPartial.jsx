@@ -9,7 +9,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
-import { SET_SELECTED_COIN } from 'redux/market/action'
+import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './InfoPartial.scss'
@@ -48,15 +48,14 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   const { account, profile } = state.get(DUCK_SESSION)
-  const market = state.get('market')
   const ui = state.get('ui')
+  const wallet = getCurrentWallet(state)
 
   return {
     account,
     profile,
-    isInited: !!state.get(DUCK_WALLET).current,
-    wallet: getCurrentWallet(state),
-    selectedCoin: market.selectedCoin,
+    wallet,
+    selectedCoin: state.get(DUCK_MARKET).selectedCoin,
     open: ui.open,
   }
 }
@@ -70,7 +69,6 @@ export class InfoPartial extends PureComponent {
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
-    isInited: PropTypes.bool,
   }
 
   constructor (props) {
@@ -99,7 +97,7 @@ export class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { isInited, wallet } = this.props
+    const { wallet } = this.props
     const { visibleCount } = this.state
     const tokens = wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({ token, name }))
@@ -114,7 +112,7 @@ export class InfoPartial extends PureComponent {
       <div styleName='root'>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {isInited
+            {wallet.isFetched() && !wallet.isFetching()
               ? items.map((item) => this.renderItem(item))
               : <Preloader />
             }

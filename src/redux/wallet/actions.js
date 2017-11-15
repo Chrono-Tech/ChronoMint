@@ -17,7 +17,11 @@ export const switchWallet = (wallet) => (dispatch) => {
 
 export const getCurrentWallet = (state) => {
   const { isMultisig, current } = state.get(DUCK_WALLET)
-  return !isMultisig || !current
-    ? state.get(DUCK_MAIN_WALLET)
-    : state.get(DUCK_MULTISIG_WALLET).item(current)
+
+  if (!current) {
+    return state.get(DUCK_MAIN_WALLET)
+  }
+  return isMultisig
+    ? state.get(DUCK_MULTISIG_WALLET).item(current)
+    : state.get(DUCK_MAIN_WALLET)
 }

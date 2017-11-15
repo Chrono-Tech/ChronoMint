@@ -1,16 +1,16 @@
-import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
-import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import { getManagersForAssetSymbol, isReissuable, getFee } from 'redux/assetsManager/actions'
-import { modalsOpen } from 'redux/modals/actions'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
-import Preloader from 'components/common/Preloader/Preloader'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
+import Preloader from 'components/common/Preloader/Preloader'
+import Immutable from 'immutable'
+import { FlatButton, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { getFee, getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
+import { modalsOpen } from 'redux/modals/actions'
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
 
 import './PlatformInfo.scss'
@@ -21,7 +21,7 @@ function prefix (token) {
 
 export class PlatformInfo extends PureComponent {
   static propTypes = {
-    tokensMap: PropTypes.object,
+    tokensMap: PropTypes.instanceOf(Immutable.Map),
     selectedToken: PropTypes.string,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
@@ -32,8 +32,8 @@ export class PlatformInfo extends PureComponent {
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
     getFee: PropTypes.func,
-    platformsList: PropTypes.array,
-    usersPlatforms: PropTypes.array,
+    platformsList: PropTypes.arrayOf(PropTypes.object),
+    usersPlatforms: PropTypes.arrayOf(PropTypes.object),
   }
 
   componentWillReceiveProps (newProps) {
@@ -121,7 +121,7 @@ export class PlatformInfo extends PureComponent {
 
                 <div styleName='addManager'>
                   <FlatButton
-                    onTouchTap={() => this.props.handleAddManagerDialog()}
+                    onTouchTap={this.props.handleAddManagerDialog}
                     styleName='addManagerButton'
                     label={(
                       <span>
@@ -172,21 +172,23 @@ export class PlatformInfo extends PureComponent {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='balanceRow'>
-            {/*<div styleName='status'>
-              <Translate value={prefix('onCrowdsale')} />
-            </div>*/}
-            <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} />
-            <div styleName='title'>{selectedToken.symbol()}</div>
-            <div styleName='balanceWrap'>
-              <div styleName='balance'>
-                <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
-                <TokenValue
-                  style={{ fontSize: '24px' }}
-                  value={selectedToken.totalSupply()}
-                  symbol={selectedToken.symbol()}
-                />
+            <div styleName='iconWrap'>
+              <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} />
+            </div>
+            <div styleName='dataWrap'>
+              <div styleName='title'>{selectedToken.symbol()}</div>
+              <div styleName='addressTitle'>{selectedToken.address()}</div>
+              <div styleName='balanceWrap'>
+                <div styleName='balance'>
+                  <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
+                  <TokenValue
+                    style={{ fontSize: '24px' }}
+                    value={selectedToken.totalSupply()}
+                    symbol={selectedToken.symbol()}
+                  />
+                </div>
+                {this.renderFee()}
               </div>
-              {this.renderFee()}
             </div>
           </div>
           {selectedToken.isReissuable() && <ReissueAssetForm />}
@@ -205,7 +207,7 @@ export class PlatformInfo extends PureComponent {
             />*/}
 
             <RaisedButton
-              onTouchTap={() => this.props.handleRevokeDialog()}
+              onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'
             />

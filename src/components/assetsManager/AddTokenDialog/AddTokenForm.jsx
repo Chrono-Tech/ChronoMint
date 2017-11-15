@@ -1,23 +1,28 @@
 import BigNumber from 'bignumber.js'
-import classnames from 'classnames'
-import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
 import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import avaToken from 'assets/img/avaToken.svg'
+import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import classnames from 'classnames'
+import colors from 'styles/themes/variables'
+import { connect } from 'react-redux'
+import icnPlus from 'assets/img/icn-plus.svg'
+import platformIcon from 'assets/img/folder-multiple.svg'
+import platformIconInCircle from 'assets/img/assets1.svg'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
 import TokenModel from 'models/TokenModel'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { createAsset } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import colors from 'styles/themes/variables'
+import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from 'utils/IPFS'
-import './AddTokenForm.scss'
 import validate from './validate'
+
+import './AddTokenForm.scss'
 
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`
@@ -75,10 +80,7 @@ class Platform extends PureComponent {
   handleClick = () => this.props.onClick(this.props.platform)
 
   render () {
-    const {
-      selectedPlatform,
-      platform,
-    } = this.props
+    const { selectedPlatform, platform } = this.props
 
     return (
       <div
@@ -87,10 +89,13 @@ class Platform extends PureComponent {
         key={platform.address}
       >
         <div styleName='icon'>
-          <img src={require('assets/img/assets1.svg')} alt='' />
+          <img src={platformIconInCircle} alt='' />
         </div>
         {platform.name ?
-          <div>{platform.name}&nbsp;(<small>{platform.address}</small>)</div> :
+          <div>{platform.name}&nbsp;(
+            <small>{platform.address}</small>
+            )
+          </div> :
           <div>{platform.address} </div>
         }
       </div>
@@ -108,13 +113,14 @@ export default class AddTokenForm extends PureComponent {
     platformsList: PropTypes.array,
     createAsset: PropTypes.func,
     dispatch: PropTypes.func,
-    handleClose: PropTypes.func,
+    onClose: PropTypes.func.isRequired,
     handleAddPlatformDialog: PropTypes.func,
     maxFiles: PropTypes.number,
     aspectRatio: PropTypes.number,
     maxFileSize: PropTypes.number,
     accept: PropTypes.array,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   constructor (props) {
     super(...arguments)
@@ -132,8 +138,8 @@ export default class AddTokenForm extends PureComponent {
     }
   }
 
-  handleAddNewPlatform () {
-    this.props.handleClose()
+  handleAddNewPlatform = () => {
+    this.props.onClose()
     this.props.handleAddPlatformDialog()
   }
 
@@ -146,7 +152,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[ 0 ]
+    const file = e.target.files[0]
     if (!file) {
       return
     }
@@ -160,7 +166,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   handleSubmitClick = () => {
-    this.setState({ showPlatformError: !!this.props.formErrors.platform })
+    this.setState({ showPlatformError: !this.props.formErrors || !!this.props.formErrors.platform })
   }
 
   handleWalletClick = () => {
@@ -177,7 +183,7 @@ export default class AddTokenForm extends PureComponent {
     const selectedPlatform = this.props.formValues && this.props.formValues.get('platform')
     return (
       <Platform
-        key={platform.name}
+        key={platform.address}
         platform={platform}
         selectedPlatform={selectedPlatform}
         onClick={this.handlePlatformChange}
@@ -193,7 +199,7 @@ export default class AddTokenForm extends PureComponent {
         {
           !isUploading && !isUploaded && (
             <div styleName='upload' onTouchTap={this.handleWalletClick}>
-              <div styleName='uploadContent'><img src={require('assets/img/avaToken.svg')} alt='' /></div>
+              <div styleName='uploadContent'><img src={avaToken} alt='' /></div>
             </div>
           )
         }
@@ -218,7 +224,7 @@ export default class AddTokenForm extends PureComponent {
         }
 
         <input
-          onChange={this.handleUploadFile}
+          onChange={(e) => this.handleUploadFile(e)}
           ref={this.refWallet}
           type='file'
           styleName='hide'
@@ -236,7 +242,7 @@ export default class AddTokenForm extends PureComponent {
         </div>
         <div onTouchTap={this.handleAddNewPlatform} styleName='createNewPlatform'>
           <div styleName='icon'>
-            <img src={require('assets/img/icn-plus.svg')} alt='' />
+            <img src={icnPlus} alt='' />
           </div>
           <Translate value={prefix('addNewPlatform')} />
         </div>
@@ -333,7 +339,7 @@ export default class AddTokenForm extends PureComponent {
                     primaryText={
                       <span styleName='platformSelectorItem'>
                         <span>
-                          <img src={require('assets/img/folder-multiple.svg')} alt='' />
+                          <img src={platformIcon} alt='' />
                           {platform.name}&nbsp;(<small>{platform.address}</small>)
                         </span>
                       </span>

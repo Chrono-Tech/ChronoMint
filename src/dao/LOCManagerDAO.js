@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import type TokenModel from 'models/TokenModel'
+import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const standardFuncs = {
@@ -37,11 +38,7 @@ const DEFAULT_TOKEN = 'LHT'
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/LOCManager.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
-    )
+    super(LOCManagerABI, at, MultiEventsHistoryABI)
     this.tokens = null
     this._isInitialized = false
   }

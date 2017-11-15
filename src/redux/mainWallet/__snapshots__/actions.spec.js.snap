@@ -1,0 +1,241 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wallet actions should approve ERC20 tokens 1`] = `"3.9438273"`;
+
+exports[`wallet actions should check allowance 1`] = `
+Object {
+  "spender": "",
+  "token": Object {
+    "address": null,
+    "allowance": Object {},
+    "balance": "0",
+    "dao": null,
+    "decimals": null,
+    "fee": null,
+    "feeAddress": null,
+    "icon": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isOptional": true,
+    "isPending": false,
+    "isReissuable": null,
+    "managersList": null,
+    "name": null,
+    "platform": null,
+    "symbol": null,
+    "timestamp": null,
+    "totalSupply": "0",
+    "transactionHash": null,
+    "url": null,
+    "withFee": null,
+  },
+  "type": "mainWallet/ALLOWANCE",
+  "value": "100",
+}
+`;
+
+exports[`wallet actions should check balanceMinus 1`] = `
+Object {
+  "amount": "100",
+  "isCredited": true,
+  "token": Object {
+    "address": null,
+    "allowance": Object {},
+    "balance": "0",
+    "dao": null,
+    "decimals": null,
+    "fee": null,
+    "feeAddress": null,
+    "icon": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isOptional": true,
+    "isPending": false,
+    "isReissuable": null,
+    "managersList": null,
+    "name": null,
+    "platform": null,
+    "symbol": null,
+    "timestamp": null,
+    "totalSupply": "0",
+    "transactionHash": null,
+    "url": null,
+    "withFee": null,
+  },
+  "type": "mainWallet/BALANCE",
+}
+`;
+
+exports[`wallet actions should check balancePlus 1`] = `
+Object {
+  "amount": "100",
+  "isCredited": true,
+  "token": Object {
+    "address": null,
+    "allowance": Object {},
+    "balance": "0",
+    "dao": null,
+    "decimals": null,
+    "fee": null,
+    "feeAddress": null,
+    "icon": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isOptional": true,
+    "isPending": false,
+    "isReissuable": null,
+    "managersList": null,
+    "name": null,
+    "platform": null,
+    "symbol": null,
+    "timestamp": null,
+    "totalSupply": "0",
+    "transactionHash": null,
+    "url": null,
+    "withFee": null,
+  },
+  "type": "mainWallet/BALANCE",
+}
+`;
+
+exports[`wallet actions should check depositMinus 1`] = `
+Object {
+  "amount": "100",
+  "isCredited": false,
+  "type": "mainWallet/TIME_DEPOSIT",
+}
+`;
+
+exports[`wallet actions should check depositPlus 1`] = `
+Object {
+  "amount": "100",
+  "isCredited": true,
+  "type": "mainWallet/TIME_DEPOSIT",
+}
+`;
+
+exports[`wallet actions should check setBalance 1`] = `
+Object {
+  "amount": "100",
+  "token": Object {
+    "address": null,
+    "allowance": Object {},
+    "balance": "0",
+    "dao": null,
+    "decimals": null,
+    "fee": null,
+    "feeAddress": null,
+    "icon": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isOptional": true,
+    "isPending": false,
+    "isReissuable": null,
+    "managersList": null,
+    "name": null,
+    "platform": null,
+    "symbol": null,
+    "timestamp": null,
+    "totalSupply": "0",
+    "transactionHash": null,
+    "url": null,
+    "withFee": null,
+  },
+  "type": "mainWallet/BALANCE_SET",
+}
+`;
+
+exports[`wallet actions should check updateBalance 1`] = `
+Object {
+  "amount": "100",
+  "isCredited": false,
+  "token": Object {
+    "address": null,
+    "allowance": Object {},
+    "balance": "0",
+    "dao": null,
+    "decimals": null,
+    "fee": null,
+    "feeAddress": null,
+    "icon": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isOptional": true,
+    "isPending": false,
+    "isReissuable": null,
+    "managersList": null,
+    "name": null,
+    "platform": null,
+    "symbol": null,
+    "timestamp": null,
+    "totalSupply": "0",
+    "transactionHash": null,
+    "url": null,
+    "withFee": null,
+  },
+  "type": "mainWallet/BALANCE",
+}
+`;
+
+exports[`wallet actions should check updateDeposit 1`] = `
+Object {
+  "amount": false,
+  "isCredited": "100",
+  "type": "mainWallet/TIME_DEPOSIT",
+}
+`;
+
+exports[`wallet actions should deposit TIME and init TIME deposit 1`] = `
+Array [
+  Object {
+    "amount": "0",
+    "isCredited": null,
+    "type": "mainWallet/TIME_DEPOSIT",
+  },
+]
+`;
+
+exports[`wallet actions should get transactions by account 1`] = `"10"`;
+
+exports[`wallet actions should init watch 1`] = `true`;
+
+exports[`wallet actions should init watch 2`] = `true`;
+
+exports[`wallet actions should init watch 3`] = `true`;
+
+exports[`wallet actions should init watch 4`] = `"100"`;
+
+exports[`wallet actions should init watch 5`] = `3`;
+
+exports[`wallet actions should init watch 6`] = `0`;
+
+exports[`wallet actions should require TIME 1`] = `0`;
+
+exports[`wallet actions should require TIME 2`] = `
+Array [
+  Object {
+    "type": "mainWallet/IS_TIME_REQUIRED",
+    "value": true,
+  },
+]
+`;
+
+exports[`wallet actions should require TIME 3`] = `10`;
+
+exports[`wallet actions should transfer ERC20 tokens 1`] = `10`;
+
+exports[`wallet actions should transfer ERC20 tokens 2`] = `0`;
+
+exports[`wallet actions should transfer ETH 1`] = `100`;
+
+exports[`wallet actions should transfer ETH 2`] = `100`;

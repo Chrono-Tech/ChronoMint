@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import { mockStore } from 'specsInit'
+import { accounts, mockStore } from 'specsInit'
 import * as actions from './actions'
 
 let store
@@ -8,6 +8,9 @@ const mock = new Immutable.Map({
   market: {
     lastMarket: {},
     rates: {},
+  },
+  session: {
+    account: accounts[0],
   },
 })
 
@@ -18,11 +21,11 @@ describe('watcher actions', () => {
 
   it('should dispatch watcher', async () => {
     await store.dispatch(actions.watcher())
-    expect(store.getActions()).toContainEqual({ type: actions.WATCHER })
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should dispatch cbeWatcher', async () => {
     await store.dispatch(actions.cbeWatcher())
-    expect(store.getActions()).toEqual([{ type: actions.WATCHER_CBE }])
+    expect(store.getActions()).toMatchSnapshot()
   })
 })

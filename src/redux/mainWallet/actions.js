@@ -41,13 +41,16 @@ export const setBalance = (token: TokenModel, amount: BigNumber) => ({
   token,
   amount,
 })
+
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
   type: WALLET_BALANCE,
   token,
   isCredited,
   amount,
 })
+
 export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
+
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
 export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
@@ -55,7 +58,9 @@ export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
   isCredited,
   amount,
 })
+
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
+
 export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
 
 export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
@@ -107,7 +112,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   dispatch({ type: WALLET_TOKENS, tokens })
   dispatch(getAccountTransactions(tokens))
 
-  const toStopArray = previous.filter(k => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
+  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
     const dao = token.dao()
     return dao.stopWatching()
   })
@@ -132,11 +137,11 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
   dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 
-  tokens = tokens.filter(k => !previous.get(k)).valueSeq().toArray()
+  tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {
     dispatch(addMarketToken(token.symbol()))
     const dao = token.dao()
-    await dao.watchTransfer(notice => dispatch(watchTransfer(notice)))
+    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
     if (dao.watchBalance) {
       await dao.watchBalance((balance) => dispatch(watchBalance(balance)))
     }
@@ -147,24 +152,25 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (token: TokenModel, amount: string, recipient) => async dispatch => {
-  amount = new BigNumber(amount)
+export const mainTransfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
+  const amountLocal = new BigNumber(amount)
 
-  dispatch(balanceMinus(amount, token))
+  dispatch(balanceMinus(amountLocal, token))
   // TODO @bshevchenko: sub balances with values of outcome pending transactions
   try {
     const dao = await token.dao()
-    await dao.transfer(recipient, amount)
+    await dao.transfer(recipient, amountLocal)
   } finally {
     // compensation for update in watchTransfer
-    dispatch(balancePlus(amount, token))
+    dispatch(balancePlus(amountLocal, token))
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: string, spender) => async () => {
+export const mainApprove = (token: TokenModel, amount: Number, spender: string) => async () => {
   try {
+    const amountBN = new BigNumber(amount)
     const dao = await token.dao()
-    await dao.approve(spender, amount)
+    await dao.approve(spender, amountBN)
   } catch (e) {
     // no rollback
     // eslint-disable-next-line
@@ -228,12 +234,12 @@ const getTransferId = 'wallet'
 let lastCacheId
 let txsCache = []
 
-export const getAccountTransactions = tokens => async dispatch => {
+export const getAccountTransactions = (tokens) => async (dispatch) => {
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  tokens = tokens.valueSeq().toArray()
+  const tokensLocal = tokens.valueSeq().toArray()
 
-  const cacheId = Object.values(tokens).map((v: TokenModel) => v.symbol()).join(',')
+  const cacheId = Object.values(tokensLocal).map((v: TokenModel) => v.symbol()).join(',')
 
   const reset = lastCacheId && cacheId !== lastCacheId
   lastCacheId = cacheId
@@ -246,7 +252,7 @@ export const getAccountTransactions = tokens => async dispatch => {
 
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    for (let token: TokenModel of tokens) {
+    for (let token: TokenModel of tokensLocal) {
       if (reset) {
         token.dao().resetFilterCache()
       }

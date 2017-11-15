@@ -1,23 +1,19 @@
 import BigNumber from 'bignumber.js'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
+import AbstractContractDAO from 'dao/AbstractContractDAO'
+import TokenModel from 'models/TokenModel'
 import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import TokenModel from 'models/TokenModel'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import { MultiEventsHistoryABI, WalletABI } from './abi'
 import contractManagerDAO from './ContractsManagerDAO'
 
-const CODE_CONFIRMATION_NEEDED = 14014
-
-export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
+export default class MultisigWalletDAO extends AbstractContractDAO {
 
   constructor (at) {
-    super(
-      require('chronobank-smart-contracts/build/contracts/Wallet.json'),
-      at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json'),
-    )
-    this._okCodes.push(CODE_CONFIRMATION_NEEDED)
+    super(WalletABI, at, MultiEventsHistoryABI)
+    this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
   watchOwnerRemoved (wallet, callback) {

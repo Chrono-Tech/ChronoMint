@@ -14,7 +14,6 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
-
 import './UpdateProfileDialog.scss'
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
@@ -33,7 +32,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
       dispatch(updateUserProfile(new ProfileModel(values.toJS())))
@@ -49,12 +47,12 @@ export default class UpdateProfileDialog extends PureComponent {
     name: PropTypes.string,
     company: PropTypes.string,
     icon: PropTypes.string,
-    onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
+      <ModalDialog styleName='root'>
         <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <h3>Account edit</h3>

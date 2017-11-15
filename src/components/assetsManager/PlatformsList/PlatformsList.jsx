@@ -46,7 +46,10 @@ export class PlatformsList extends PureComponent {
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
-                <div styleName='tokenTitle'>{token.symbol()}</div>
+                <div styleName='tokenTitle'>
+                  {token.symbol()}
+                  <div styleName='tokenSubTitle'>{token.address()}</div>
+                </div>
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{ fontSize: '24px' }}
