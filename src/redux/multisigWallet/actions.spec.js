@@ -100,7 +100,18 @@ describe('Multisig Wallet actions', () => {
         AbstractContractDAO.setAccount(accounts[0])
       })
 
-      multisigWalletService.on('Confirmation', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
+      multisigWalletService.on('Confirmation', async (walletId, txId, owner) => {
+        // 5 sended
+        // expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
+        // expect(multisigTransactionModel.symbol()).toEqual('ETH')
+        // expect(multisigTransactionModel.wallet()).toEqual(wallet.address())
+        //
+        // 6 clean up
+        // await multisigWalletService.unsubscribeAll()
+        // done()
+      })
+
+      multisigWalletService.on('MultiTransact', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
         // 5 sended
         expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
         expect(multisigTransactionModel.symbol()).toEqual('ETH')
@@ -110,6 +121,7 @@ describe('Multisig Wallet actions', () => {
         // await multisigWalletService.unsubscribeAll()
         done()
       })
+
       await store.dispatch(a.watchMultisigWallet(wallet))
       // 2 transfer to ms-wallet
       await ethereumDAO.transfer(wallet.address(), amountToTransfer)
