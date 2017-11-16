@@ -1,18 +1,18 @@
-import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+
+import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import BigNumber from 'bignumber.js'
 
 import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
 import { modalsOpen } from 'redux/modals/actions'
-
-import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './ExchangesTable.scss'
 
@@ -24,6 +24,7 @@ function mapStateToProps (state) {
   const exchange = state.get('exchange')
   return {
     exchanges: exchange.exchanges(),
+    showFilter: exchange.showFilter(),
     filter: exchange.filter(),
   }
 }
@@ -45,43 +46,89 @@ export default class ExchangesTable extends React.Component {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
     openDetails: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
+    showFilter: PropTypes.bool,
   }
 
   renderRow (exchange: ExchangeOrderModel) {
-    const { name: mode } = this.props.filter.get('filterMode')
+    const filterMode = this.props.filter.get('filterMode')
+    let showBuy = true
+    let showSell = true
+    if (filterMode) {
+      showBuy = filterMode.name === 'BUY'
+      showSell = filterMode.name === 'SELL'
+    }
     return (
       <div styleName='row' key={exchange.id()}>
         <div styleName='colTrader'>
           <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
-          <span>{exchange.address()}</span>
+          <span styleName='ellipsis'>{exchange.address()}</span>
         </div>
         <div styleName='colPrice'>
-          <span styleName='rowTitle'><Translate value={prefix('price')} />: </span>
-          <TokenValue
-            value={mode === 'BUY' ? exchange.buyPrice() : exchange.sellPrice()}
-            symbol={exchange.symbol()}
-          />
+          {showBuy &&
+          <div>
+            <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
+            <TokenValue value={exchange.buyPrice()} symbol={exchange.symbol()} />
+          </div>
+          }
+          {showSell &&
+          <div>
+            <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
+            <TokenValue
+              value={exchange.sellPrice()}
+              symbol={exchange.symbol()}
+            />
+          </div>
+          }
         </div>
         <div styleName='colLimits'>
-          <span styleName='rowTitle'><Translate value={prefix('limits')} />: </span>
-          <TokenValue
-            value={new BigNumber(0)}
-            symbol={exchange.symbol()}
-          />
-          -
-          <TokenValue
-            value={mode === 'BUY' ? exchange.assetBalance() : exchange.ethBalance()}
-            symbol={exchange.symbol()}
-          />
+          {showBuy &&
+          <div>
+            <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
+            <TokenValue
+              value={new BigNumber(0)}
+              symbol={exchange.symbol()}
+            />
+            -
+            <TokenValue
+              value={exchange.assetBalance()}
+              symbol={exchange.symbol()}
+            />
+          </div>
+          }
+          {showSell &&
+          <div>
+            <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
+            <TokenValue
+              value={new BigNumber(0)}
+              symbol={exchange.symbol()}
+            />
+            -
+            <TokenValue
+              value={exchange.ethBalance()}
+              symbol={exchange.symbol()}
+            />
+          </div>
+          }
         </div>
         <div styleName='colActions'>
+          {showBuy &&
           <RaisedButton
-            label={<Translate value={prefix(mode.toLowerCase())} />}
+            label={<Translate value={prefix('buy')} />}
             onTouchTap={e => {
               e.stopPropagation()
               this.props.openDetails(exchange)
             }}
           />
+          }
+          {showSell &&
+          <RaisedButton
+            label={<Translate value={prefix('sell')} />}
+            onTouchTap={e => {
+              e.stopPropagation()
+              this.props.openDetails(exchange)
+            }}
+          />
+          }
         </div>
       </div>
     )
@@ -89,15 +136,20 @@ export default class ExchangesTable extends React.Component {
 
   render () {
     const amount = this.props.filter.get('amount')
-    const filteredItems = amount > 0
-      ? this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
-        if (this.props.filter.get('filterMode').name === 'BUY') {
-          return amount < item.ethBalance()
-        } else {
-          return amount < item.assetBalance()
-        }
-      })
-      : []
+    let filteredItems
+    if (this.props.showFilter) {
+      filteredItems = amount > 0
+        ? this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
+          if (this.props.filter.get('filterMode').name === 'BUY') {
+            return amount < item.ethBalance()
+          } else {
+            return amount < item.assetBalance()
+          }
+        })
+        : []
+    } else {
+      filteredItems = this.props.exchanges.items()
+    }
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -114,7 +166,7 @@ export default class ExchangesTable extends React.Component {
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.exchanges.isFetched() && filteredItems.map(exchange => this.renderRow(exchange))}
+              {this.props.exchanges.isFetched() && filteredItems.map((exchange) => this.renderRow(exchange))}
             </div>
           </div>
         </div>

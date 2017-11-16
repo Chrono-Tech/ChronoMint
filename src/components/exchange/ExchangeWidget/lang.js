@@ -8,6 +8,7 @@ export default {
     sell: 'Sell',
     amount: 'Amount',
     createExchange: 'Create an exchange',
+    middlewareDisconnected: 'Middleware disconnected',
   },
   ru: {
     exchange: 'Обмен',
@@ -18,5 +19,6 @@ export default {
     sell: 'Продать',
     amount: 'Сумма',
     createExchange: 'Создать обменник',
+    middlewareDisconnected: 'Middleware disconnected',
   },
 }

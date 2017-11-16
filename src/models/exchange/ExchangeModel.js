@@ -8,9 +8,14 @@ export default class ExchangeModel extends abstractFetchingModel({
   assetSymbols: [],
   filter: new Immutable.Map(),
   tokens: new TokensCollection(),
+  showFilter: true,
 }) {
   exchanges (value) {
     return this._getSet('exchanges', value)
+  }
+
+  showFilter (value) {
+    return this._getSet('showFilter', value)
   }
 
   assetSymbols (value) {

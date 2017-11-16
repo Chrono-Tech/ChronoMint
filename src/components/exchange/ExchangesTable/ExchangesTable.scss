@@ -101,3 +101,7 @@ $cell-padding: 16px 8px;
     display: inline;
   }
 }
+
+.ellipsis {
+  @include ellipsis;
+}

@@ -29,6 +29,7 @@ const mapStateToProps = state => {
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
     initialValues: new Immutable.Map({ filterMode: MODES[0] }),
+    showFilter: exchange.showFilter(),
   }
 }
 
@@ -55,6 +56,7 @@ export default class ExchangeWidget extends React.Component {
     handleSubmit: PropTypes.func,
     dispatch: PropTypes.func,
     openAddExchangeDialog: PropTypes.func,
+    showFilter: PropTypes.bool,
     filterMode: PropTypes.shape({
       index: PropTypes.number,
       name: PropTypes.string,
@@ -77,6 +79,7 @@ export default class ExchangeWidget extends React.Component {
             primary
           />
           </div>
+          {this.props.showFilter &&
           <ul styleName='tabs'>
             {MODES.map((el, index) => (
               <li
@@ -92,51 +95,59 @@ export default class ExchangeWidget extends React.Component {
               </li>
             ))}
           </ul>
+          }
         </div>
         <div styleName='content'>
-          <form onSubmit={this.props.handleSubmit}>
-            <SwipeableViews
-              index={this.props.filterMode ? this.props.filterMode.index : 0}
-              onChangeIndex={index => this.handleChangeMode(index)}
-            >
-              {MODES.map(el => (
-                <div styleName='slide' key={el.name}>
-                  <div styleName='wrapper'>
-                    <div styleName='item'>
-                      <Field
-                        component={TextField}
-                        name='amount'
-                        fullWidth
-                        floatingLabelText={<Translate value={prefix('amount')} />}
-                      />
-                    </div>
-                    <div styleName='item'>
-                      <Field
-                        name='token'
-                        component={SelectField}
-                        fullWidth
-                        floatingLabelText={<Translate value={prefix('token')} />}
-                      >
-                        {
-                          this.props.assetSymbols
-                            .map(symbol => <MenuItem key={symbol} value={symbol} primaryText={symbol} />)
-                        }
-                      </Field>
-                    </div>
-                    <div styleName='item'>
-                      <div styleName='actions'>
-                        <RaisedButton
-                          type='submit'
-                          label={<Translate value={prefix('search')} />}
-                          primary
-                        />
+          {
+            this.props.showFilter ?
+              <form onSubmit={this.props.handleSubmit}>
+                <SwipeableViews
+                  index={this.props.filterMode ? this.props.filterMode.index : 0}
+                  onChangeIndex={index => this.handleChangeMode(index)}
+                >
+                  {MODES.map(el => (
+                    <div styleName='slide' key={el.name}>
+                      <div styleName='wrapper'>
+                        <div styleName='item'>
+                          <Field
+                            component={TextField}
+                            name='amount'
+                            fullWidth
+                            floatingLabelText={<Translate value={prefix('amount')} />}
+                          />
+                        </div>
+                        <div styleName='item'>
+                          <Field
+                            name='token'
+                            component={SelectField}
+                            fullWidth
+                            floatingLabelText={<Translate value={prefix('token')} />}
+                          >
+                            {
+                              this.props.assetSymbols
+                                .map(symbol => <MenuItem key={symbol} value={symbol} primaryText={symbol} />)
+                            }
+                          </Field>
+                        </div>
+                        <div styleName='item'>
+                          <div styleName='actions'>
+                            <RaisedButton
+                              type='submit'
+                              label={<Translate value={prefix('search')} />}
+                              primary
+                            />
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-            </SwipeableViews>
-          </form>
+                  ))}
+                </SwipeableViews>
+              </form>
+              :
+              <div styleName='noMiddleware'>
+                <Translate value={prefix('middlewareDisconnected')} />
+              </div>
+          }
         </div>
       </div>
     )

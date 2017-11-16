@@ -1,15 +1,9 @@
-import { connect } from 'react-redux'
-import { ExchangeWidget, ExchangesTable } from 'components'
+import { ExchangesTable, ExchangeWidget } from 'components'
 import { Paper } from 'material-ui'
+import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import {
-  getExchange,
-  getExchangesForSymbol,
-  getAssetSymbols,
-  getExchangesForOwner,
-  getExchangeData,
-  createExchange,
-} from 'redux/exchange/actions'
+import { connect } from 'react-redux'
+import { getExchange } from 'redux/exchange/actions'
 
 import './ExchangeContent.scss'
 
@@ -20,16 +14,15 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getExchange: () => dispatch(getExchange()),
-    getExchangesForSymbol: (symbol: string) => dispatch(getExchangesForSymbol(symbol)),
-    getAssetSymbols: () => dispatch(getAssetSymbols()),
-    createExchange: (values) => dispatch(createExchange(values)),
-    getExchangesForOwner: (owner: string) => dispatch(getExchangesForOwner(owner)),
-    getExchangeData: (exchanges: Array<string>) => dispatch(getExchangeData(exchanges)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ExchangeContent extends Component {
+  static propTypes = {
+    getExchange: PropTypes.func,
+  }
+
   componentDidMount () {
     this.props.getExchange()
   }
@@ -44,15 +37,6 @@ export default class ExchangeContent extends Component {
                 <div className='col-xs-6'>
                   <div styleName='exchangeBox'>
                     <Paper>
-                      <button onClick={() => this.props.getExchangesForSymbol('LHT')}>getExchangesForSymbol</button>
-                      <button onClick={() => this.props.createExchange({
-                        symbol: 'TIME',
-                        useTicker: false,
-                        sellPrice: 10,
-                        buyPrice: 15,
-                      })}
-                      >createExchange
-                      </button>
                       <ExchangeWidget />
                       <ExchangesTable />
                     </Paper>

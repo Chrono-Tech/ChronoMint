@@ -1,3 +1,4 @@
+import exchangeProvider from 'Login/network/ExchangeProvider'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import web3Converter from 'utils/Web3Converter'
@@ -11,10 +12,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       at,
       MultiEventsHistoryABI
     )
-  }
-
-  async getUrl () {
-    return await 'http://localhost:8081'
   }
 
   async createExchange (exchange: ExchangeOrderModel) {
@@ -36,20 +33,25 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async getAssetSymbols () {
-    const url = await this.getUrl()
-    const response = await fetch(`${url}/events/exchangecreated/`) //?distinct=symbol
-    const assetSymbols = response ? await response.json() : []
     let result = {}
-    assetSymbols.map(exchange => result[web3Converter.bytesToString(exchange.symbol)] = true)
+    try {
+      const assetSymbols = await exchangeProvider.getAssetSymbols()
+      assetSymbols.map((exchange) => result[web3Converter.bytesToString(exchange.symbol)] = true)
+    } catch (e) {
+      throw new Error(`Middleware disconnected`)
+    }
     return Object.keys(result)
   }
 
+  async getExchanges (fromId: number, length: number): Array<string> {
+    const adresses = await this._call('getExchanges', [fromId, length])
+    return await this.getExchangeData(adresses.filter((address) => !this.isEmptyAddress(address)))
+  }
+
   async getExchangesWithFilter (symbol: string, isSell: boolean) {
-    const url = await this.getUrl()
     const sort = isSell ? `&sort=sellPrice,-age` : `&sort=buyPrice,-age`
-    const response = await fetch(`${url}/events/exchangecreated/?symbol=/^${web3Converter.stringToBytes(symbol)}/${sort}`) //?distinct=symbol
-    const exchanges = response ? await response.json() : []
-    return exchanges.map(exchange => exchange.exchange)
+    const exchanges = await exchangeProvider.getExchangesWithFilter(web3Converter.stringToBytes(symbol), sort)
+    return exchanges.map((exchange) => exchange.exchange)
   }
 
   getExchangesForSymbol (symbol: string) {
@@ -58,17 +60,19 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
   async getExchangeData (exchangesAddresses: Array<string>) {
     let exchangesCollection = new ExchangesCollection()
-    const [exchanges, owners, buyPrices, sellPrices, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
-    exchanges.forEach((item, i) => {
+    const [exchanges, symbols, owners, buyPrices, sellPrices, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
+
+    exchanges.forEach((address, i) => {
       const owner = owners[i]
+      const symbol = this._c.bytesToString(symbols[i])
       const buyPrice = buyPrices[i]
       const sellPrice = sellPrices[i]
       const assetBalance = assetBalances[i]
       const ethBalance = ethBalances[i]
-      // const symbolString = this._c.bytesToString(symbol[i])
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
-        address: item,
+        address: address,
+        symbol,
         owner,
         buyPrice,
         sellPrice,
