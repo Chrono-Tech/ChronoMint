@@ -1,15 +1,15 @@
-import AbstractContractDAO from './AbstractContractDAO'
+import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import web3Converter from 'utils/Web3Converter'
-import Immutable from 'immutable'
+import { ExchangeManagerABI, MultiEventsHistoryABI } from './abi'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export default class ExchangeManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(
-      require('chronobank-smart-contracts/build/contracts/ExchangeManager.json'),
+      ExchangeManagerABI,
       at,
-      require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
+      MultiEventsHistoryABI
     )
   }
 
@@ -79,10 +79,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return exchangesCollection
   }
 
-  watchExchanges (account, dispatch) {
-    this._watch('ExchangeCreated', tx => {
-      // eslint-disable-next-line
-      console.log('--ExchangeManagerDAO#tx', tx)
-    }, { by: account })
+  watchExchangeCreated (callback) {
+    this._watch('ExchangeCreated', callback)
   }
 }

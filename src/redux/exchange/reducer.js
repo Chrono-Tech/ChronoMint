@@ -22,6 +22,10 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_GET_TOKENS_LIST_DONE:
       return state
         .tokens(action.tokens.isFetched(true).isFetching(false))
+    case a.EXCHANGE_REMOVE:
+      return state.exchanges(state.exchanges().remove(action.id))
+    case a.EXCHANGE_UPDATE:
+      return state.exchanges(state.exchanges().update(action.exchange))
     default:
       return state
   }

@@ -2,6 +2,7 @@ import { Field, reduxForm, change, formValueSelector } from 'redux-form/immutabl
 import { MenuItem, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Immutable from 'immutable'
 import SwipeableViews from 'react-swipeable-views'
 import { TextField, SelectField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -27,6 +28,7 @@ const mapStateToProps = state => {
     isFetching: exchange.isFetching(),
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
+    initialValues: new Immutable.Map({ filterMode: MODES[0] }),
   }
 }
 
@@ -58,10 +60,6 @@ export default class ExchangeWidget extends React.Component {
       name: PropTypes.string,
       title: PropTypes.node,
     }),
-  }
-
-  componentDidMount () {
-    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[0]))
   }
 
   handleChangeMode (value) {

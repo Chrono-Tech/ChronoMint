@@ -1,10 +1,10 @@
+import BigNumber from 'bignumber.js'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import exchangeDAO from 'dao/ExchangeDAO'
 // TODO @bshevchenko: this is intermediate version for demo
 import Immutable from 'immutable'
-import BigNumber from 'bignumber.js'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import exchangeDAO from 'dao/ExchangeDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TokenModel from '../../models/TokenModel'
+import exchangeService from 'services/ExchangeService'
 
 export const DUCK_EXCHANGE = 'exchange'
 
@@ -14,6 +14,8 @@ export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
 export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
 export const EXCHANGE_GET_TOKENS_LIST_START = 'exchange/EXCHANGE_GET_TOKENS_LIST_START'
 export const EXCHANGE_GET_TOKENS_LIST_DONE = 'exchange/EXCHANGE_GET_TOKENS_LIST_DONE'
+export const EXCHANGE_REMOVE = 'exchange/EXCHANGE_REMOVE'
+export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
 
 export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async () => {
   try {
@@ -66,14 +68,35 @@ export const getExchangeData = (exchanges: Array<string>) => async dispatch => {
   return await exchangeManagerDAO.getExchangeData(exchanges)
 }
 
+const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
+  let updatedExchange = exchange
+  if (!exchange.isNew() && !!exchange.isTransactionHash()) {
+    // address arrived, delete temporary hash
+    dispatch({ type: EXCHANGE_REMOVE, id: exchange.id() })
+    updatedExchange = exchange.transactionHash(null)
+  }
+  dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange.isPending(false) })
+}
+
 export const createExchange = (exchange: ExchangeOrderModel) => async dispatch => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const txHash = await exchangeManagerDAO.createExchange(exchange)
+  // dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
 }
 
-export const watchExchanges = account => async (dispatch) => {
-  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  exchangeManagerDAO.watchExchanges(account, dispatch)
+export const watchExchanges = () => async (dispatch) => {
+  try {
+    await exchangeService.subscribeToCreateExchange()
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('watch error', e.message)
+  }
+
+  exchangeService.on('ExchangeCreated', (result) => {
+    // TODO @abdulov
+    // eslint-disable-next-line
+    console.log('--actions#', result)
+  })
 }
 
 export const getTokenList = () => async (dispatch) => {

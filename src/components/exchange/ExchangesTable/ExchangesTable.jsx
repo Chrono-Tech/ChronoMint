@@ -50,7 +50,7 @@ export default class ExchangesTable extends React.Component {
   renderRow (exchange: ExchangeOrderModel) {
     const { name: mode } = this.props.filter.get('filterMode')
     return (
-      <div styleName='row' key={exchange.address()}>
+      <div styleName='row' key={exchange.id()}>
         <div styleName='colTrader'>
           <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
           <span>{exchange.address()}</span>

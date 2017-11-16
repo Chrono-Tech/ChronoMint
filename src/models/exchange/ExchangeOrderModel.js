@@ -1,9 +1,7 @@
-// TODO @bshevchenko: this is intermediate version for demo
 import BigNumber from 'bignumber.js'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-import { abstractNoticeModel } from 'models/notices/AbstractNoticeModel'
-
-export default class ExchangeOrderModel extends abstractNoticeModel({
+export default class ExchangeOrderModel extends abstractFetchingModel({
   owner: null,
   buyPrice: new BigNumber(0),
   sellPrice: new BigNumber(0),
@@ -15,12 +13,12 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
   isActive: false,
 }) {
 
-  id (value) {
-    return this._getSet('address', value)
+  id () {
+    return this.get('transactionHash') || this.get('address')
   }
 
-  address (value): string {
-    return this._getSet('address', value)
+  address (): string {
+    return this.get('address')
   }
 
   owner (value): string {
@@ -53,5 +51,9 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
 
   isActive (value): string {
     return this._getSet('isActive', value)
+  }
+
+  isNew () {
+    return !this.address()
   }
 }
