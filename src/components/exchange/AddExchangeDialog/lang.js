@@ -5,8 +5,8 @@ export default {
     allAvailableTokens: 'All available tokens',
     availableExchangeBalance: 'Available exchange balance:',
     setThePrices: 'Set the prices:',
-    buyPrice: 'Buy price',
-    sellPrice: 'Sell price',
+    buyPrice: 'Buy price (ETH)',
+    sellPrice: 'Sell price (ETH)',
     create: 'Create',
   },
   ru: {
@@ -15,8 +15,8 @@ export default {
     dialogTitle: 'Создать обменник',
     availableExchangeBalance: 'Доступный баланс:',
     setThePrices: 'Установите цены:',
-    buyPrice: 'Цена покупки',
-    sellPrice: 'Цена продажи',
+    buyPrice: 'Цена покупки (ETH)',
+    sellPrice: 'Цена продажи (ETH)',
     create: 'Создать',
   },
 }

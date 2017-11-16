@@ -1,14 +1,19 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
+import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { createExchange } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import AddExchangeForm from './AddExchangeForm'
 
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
-    onSubmitSuccess: () => dispatch(modalsClose()),
+    onSubmitSuccess: (exchange: ExchangeOrderModel) => {
+      dispatch(createExchange(exchange))
+      dispatch(modalsClose())
+    },
   }
 }
 

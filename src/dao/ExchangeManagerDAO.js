@@ -17,8 +17,17 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return await 'http://localhost:8081'
   }
 
-  createExchange (symbol, useTicker, sellPrice, buyPrice) {
-    const tx = this._tx('createExchange', [symbol, useTicker, sellPrice, buyPrice])
+  async createExchange (exchange: ExchangeOrderModel) {
+    const tx = await this._tx(
+      'createExchange',
+      [
+        exchange.symbol(),
+        exchange.buyPrice(),
+        exchange.sellPrice(),
+        exchange.authorizedManager(),
+        exchange.isActive(),
+      ]
+    )
     return tx.tx
   }
 
@@ -65,7 +74,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         sellPrice,
         assetBalance,
         ethBalance,
-        id: item,
       }))
     })
     return exchangesCollection

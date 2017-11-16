@@ -1,20 +1,18 @@
-import avaTokenSVG from 'assets/img/avaToken.svg'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { IPFSImage, TokenValue } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton, MenuItem, RaisedButton } from 'material-ui'
+import { TokenValue } from 'components'
+import { RaisedButton } from 'material-ui'
+import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/exchange/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, TextField } from 'redux-form-material-ui'
-import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { DUCK_EXCHANGE, getTokenList, getAssetBalance } from 'redux/exchange/actions'
-import TokenModel from 'models/TokenModel'
-
+import { TextField } from 'redux-form-material-ui'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { DUCK_EXCHANGE, getTokenList } from 'redux/exchange/actions'
 import './AddExchangeForm.scss'
+import TokenListSelector from './TokenListSelector'
 import validate from './validate'
 
 function prefix (text) {
@@ -34,9 +32,14 @@ function mapStateToProps (state) {
 
 const mapDispatchToProps = (dispatch) => ({
   getTokenList: () => dispatch(getTokenList()),
-  getAssetBalance: (token: TokenModel) => dispatch(getAssetBalance(token)),
 })
-const onSubmit = (values, dispatch) => {
+const onSubmit = (values) => {
+  const token = values.get('token')
+  return new ExchangeOrderModel({
+    buyPrice: values.get('buyPrice'),
+    sellPrice: values.get('sellPrice'),
+    symbol: token.symbol(),
+  })
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -49,7 +52,6 @@ export default class AddExchangeForm extends PureComponent {
     onSubmitSuccess: PropTypes.func,
     getTokenList: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
-    getAssetBalance: PropTypes.func,
     ...formPropTypes,
   }
 
@@ -57,31 +59,8 @@ export default class AddExchangeForm extends PureComponent {
     this.props.getTokenList()
   }
 
-  handleSelectToken (token: TokenModel) {
-    this.props.getAssetBalance(token)
-    this.props.dispatch(change(FORM_CREATE_EXCHANGE, 'token', token.symbol()))
-  }
-
-  renderTokens () {
-    if (this.props.tokens.isFetching()) {
-      return <Preloader />
-    }
-
-    return this.props.tokens.items().map((token: TokenModel) => {
-      return (
-        <div
-          key={token.symbol()}
-          styleName={classnames('tokenItem', { 'selected': this.props.token === token.symbol() })}
-          onTouchTap={() => this.handleSelectToken(token)}
-        >
-          <IPFSImage multihash={token.icon()} styleName='tokenIcon' fallback={avaTokenSVG} />
-          <div styleName='tokenTitle'>{token.symbol()}</div>
-        </div>
-      )
-    })
-  }
-
   render () {
+    const { token } = this.props
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>
@@ -92,48 +71,22 @@ export default class AddExchangeForm extends PureComponent {
           </div>
         </div>
         <div styleName='dialogBody'>
-          <div styleName='tokenWrapper'>
-            <div styleName={classnames('tokenWrapperHeader', 'sm-hide')}><Translate value={prefix('chooseToken')} />
+          <Field
+            name='token'
+            component={TokenListSelector}
+            tokens={this.props.tokens}
+          />
+          {
+            token &&
+            <div styleName='balanceWrapper'>
+              <div styleName={classnames('tokenName', 'sm-hide')}>{token.symbol()}</div>
+              <div styleName='balanceSubTitle'><Translate value={prefix('availableExchangeBalance')} /></div>
+              <TokenValue
+                value={new BigNumber(token.balance())}
+                symbol={token.symbol()}
+              />
             </div>
-            <div styleName={classnames('tokensList', 'sm-hide')}>
-              {this.renderTokens()}
-            </div>
-            <div styleName={classnames('tokensListMobile', 'sm-show')}>
-              <IPFSImage styleName='tokenIconMobile' fallback={require('../../../assets/img/icn-time.svg')} />
-              <Field
-                name='token'
-                styleName='tokenMobileSelector'
-                component={SelectField}
-                floatingLabelFixed
-                floatingLabelText={<Translate value={prefix('chooseToken')} />}
-              >
-                {
-                  this.props.tokens.items()
-                    .map((token: TokenModel) => {
-                      // eslint-disable-next-line
-                      console.log('--AddExchangeForm#token', token)
-                      return (<MenuItem
-                        key={token.symbol()}
-                        value={token.symbol()}
-                        primaryText={
-                          <span styleName='tokenSelectorItem'>{token.symbol()}</span>
-                        }
-                      />)
-                    })}
-              </Field>
-            </div>
-            <div styleName={classnames('flexRight', 'sm-hide')}>
-              <FlatButton label={<Translate value={prefix('allAvailableTokens')} />} />
-            </div>
-          </div>
-          <div styleName='balanceWrapper'>
-            <div styleName={classnames('tokenName', 'sm-hide')}>TIME</div>
-            <div styleName='balanceSubTitle'><Translate value={prefix('availableExchangeBalance')} /></div>
-            <TokenValue
-              value={new BigNumber(1234.124)}
-              symbol='TIME'
-            />
-          </div>
+          }
           <div styleName='pricesWrapper'>
             <div styleName='pricesHeader'><Translate value={prefix('setThePrices')} /></div>
             <div styleName='pricesRow'>
@@ -150,9 +103,7 @@ export default class AddExchangeForm extends PureComponent {
             </div>
           </div>
         </div>
-        <div
-          styleName='dialogFooter'
-        >
+        <div styleName='dialogFooter'>
           <RaisedButton
             styleName='action'
             label={<Translate value={prefix('create')} />}

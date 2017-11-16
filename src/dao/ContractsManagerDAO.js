@@ -21,7 +21,7 @@ import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
-import ExchangeDAO from './ExchangeDAO'
+import { ExchangeDAO } from './ExchangeDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'

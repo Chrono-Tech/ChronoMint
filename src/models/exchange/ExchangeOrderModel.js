@@ -11,33 +11,47 @@ export default class ExchangeOrderModel extends abstractNoticeModel({
   ethBalance: new BigNumber(0),
   symbol: null,
   address: null,
+  authorizedManager: null,
+  isActive: false,
 }) {
 
-  address (): string {
-    return this.get('address')
+  id (value) {
+    return this._getSet('address', value)
   }
 
-  owner (): string {
-    return this.get('owner')
+  address (value): string {
+    return this._getSet('address', value)
   }
 
-  buyPrice (): BigNumber {
-    return this.get('buyPrice')
+  owner (value): string {
+    return this._getSet('owner', value)
   }
 
-  sellPrice (): BigNumber {
-    return this.get('sellPrice')
+  buyPrice (value): BigNumber {
+    return this._getSet('buyPrice', value)
   }
 
-  assetBalance (): BigNumber {
-    return this.get('assetBalance')
+  sellPrice (value): BigNumber {
+    return this._getSet('sellPrice', value)
   }
 
-  ethBalance (): BigNumber {
-    return this.get('ethBalance')
+  assetBalance (value): BigNumber {
+    return this._getSet('assetBalance', value)
   }
 
-  symbol (): string {
-    return this.get('symbol')
+  ethBalance (value): BigNumber {
+    return this._getSet('ethBalance', value)
+  }
+
+  symbol (value): string {
+    return this._getSet('symbol', value)
+  }
+
+  authorizedManager (value): string {
+    return this._getSet('authorizedManager', value)
+  }
+
+  isActive (value): string {
+    return this._getSet('isActive', value)
   }
 }

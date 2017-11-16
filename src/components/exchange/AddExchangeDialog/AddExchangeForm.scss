@@ -68,7 +68,8 @@
 .tokenItem {
   width: 70px;
   height: 100px;
-  margin: 5px 5px 10px;
+  margin: 5px;
+  padding-bottom: 5px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -158,7 +159,6 @@
 }
 
 .sm-hide {
-  display: flex;
   @include sm-only {
     display: none;
   }
@@ -189,4 +189,11 @@
 
 .selected {
   background: $color-primary-light;
+}
+
+.tokenError {
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 12px;
+  color: $color-error;
 }

@@ -53,7 +53,7 @@ export default class ExchangeWidget extends React.Component {
     handleSubmit: PropTypes.func,
     dispatch: PropTypes.func,
     openAddExchangeDialog: PropTypes.func,
-    filterMode: PropTypes.objectOf({
+    filterMode: PropTypes.shape({
       index: PropTypes.number,
       name: PropTypes.string,
       title: PropTypes.node,

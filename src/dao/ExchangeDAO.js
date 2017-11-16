@@ -7,7 +7,7 @@ import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
 
-class ExchangeDAO extends AbstractContractDAO {
+export class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(ExchangeABI, at, MultiEventsHistoryABI)
   }

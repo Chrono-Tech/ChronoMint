@@ -66,9 +66,9 @@ export const getExchangeData = (exchanges: Array<string>) => async dispatch => {
   return await exchangeManagerDAO.getExchangeData(exchanges)
 }
 
-export const createExchange = ({ symbol, useTicker, sellPrice, buyPrice }) => async dispatch => {
+export const createExchange = (exchange: ExchangeOrderModel) => async dispatch => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  exchangeManagerDAO.createExchange(symbol, useTicker, sellPrice, buyPrice)
+  const txHash = await exchangeManagerDAO.createExchange(exchange)
 }
 
 export const watchExchanges = account => async (dispatch) => {
@@ -77,16 +77,9 @@ export const watchExchanges = account => async (dispatch) => {
 }
 
 export const getTokenList = () => async (dispatch) => {
-  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START, tokens })
+  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START })
   const ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   const tokens = await ERC20ManagerDAO.getTokensList()
   dispatch({ type: EXCHANGE_GET_TOKENS_LIST_DONE, tokens })
 }
 
-export const getAssetBalance = (token: TokenModel) => async (dispatch) => {
-  const exchangeDAO = await contractsManagerDAO.getExchangeDAO(token.address())
-  const result = await exchangeDAO.getAssetBalance()
-  // eslint-disable-next-line
-  console.log('--actions#result', result)
-  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_DONE, tokens })
-}
