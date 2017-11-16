@@ -57,7 +57,7 @@ export default class VoteDialog extends PureComponent {
 
     return (
       <ModalDialog styleName='root'>
-        <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
+        <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <div styleName='column column1'>
               <div styleName='inner'>

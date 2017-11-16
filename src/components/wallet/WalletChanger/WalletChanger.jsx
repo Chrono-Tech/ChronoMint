@@ -1,23 +1,23 @@
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { FlatButton, Paper } from 'material-ui'
-import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
-import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
-import { modalsOpen } from 'redux/modals/actions'
-import classNames from 'classnames'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
-import globalStyles from 'layouts/partials/styles'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import classNames from 'classnames'
 import Preloader from 'components/common/Preloader/Preloader'
-import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
+import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
+import globalStyles from 'layouts/partials/styles'
+import { FlatButton, Paper } from 'material-ui'
+import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_MULTISIG_WALLET, getWallets } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
 
 import './WalletChanger.scss'
 
@@ -63,6 +63,10 @@ export default class WalletChanger extends PureComponent {
     }
   }
 
+  handleShowSelectDialog = () => this.props.walletSelectDialog()
+
+  handleSwitchWallet = () => this.props.switchWallet(this.props.mainWallet)
+
   renderMainWallet () {
     const { isMultisig, mainWallet, multisigWallet } = this.props
 
@@ -105,7 +109,7 @@ export default class WalletChanger extends PureComponent {
   }
 
   renderMultisigWallet () {
-    const { multisigWallet, mainWallet } = this.props
+    const { multisigWallet } = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
     const owners = selectedWallet.owners()
 
@@ -153,7 +157,7 @@ export default class WalletChanger extends PureComponent {
                       <Translate value='wallet.switchToMainWallet' />
                     </span>
                   )}
-                  onTouchTap={() => this.props.switchWallet(mainWallet)}
+                  onTouchTap={this.handleSwitchWallet}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>
@@ -165,7 +169,7 @@ export default class WalletChanger extends PureComponent {
                       <Translate value='wallet.changeMultisignatureWallet' />
                     </span>
                   )}
-                  onTouchTap={() => this.props.walletSelectDialog()}
+                  onTouchTap={this.handleShowSelectDialog}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>
