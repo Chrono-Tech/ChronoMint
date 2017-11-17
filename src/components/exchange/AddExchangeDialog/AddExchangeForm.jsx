@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { DUCK_EXCHANGE, getTokenList } from 'redux/exchange/actions'
+import { DUCK_EXCHANGE } from 'redux/exchange/actions'
 import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
@@ -31,7 +31,6 @@ function mapStateToProps (state) {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getTokenList: () => dispatch(getTokenList()),
 })
 const onSubmit = (values) => {
   const token = values.get('token')
@@ -50,13 +49,8 @@ export default class AddExchangeForm extends PureComponent {
     onClose: PropTypes.func,
     onSubmitFunc: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
-    getTokenList: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     ...formPropTypes,
-  }
-
-  componentDidMount () {
-    this.props.getTokenList()
   }
 
   render () {

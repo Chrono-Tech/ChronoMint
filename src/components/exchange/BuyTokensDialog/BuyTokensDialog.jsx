@@ -1,22 +1,24 @@
-import Immutable from 'immutable'
+import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import BigNumber from 'bignumber.js'
 import { IPFSImage } from 'components'
-import { CSSTransitionGroup } from 'react-transition-group'
-import { Field, reduxForm } from 'redux-form/immutable'
-import PropTypes from 'prop-types'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
+import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
+import TokensCollection from 'models/exchange/TokensCollection'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import { exchange } from 'redux/exchange/actions'
+import { Translate } from 'react-redux-i18n'
+import { CSSTransitionGroup } from 'react-transition-group'
+import { TextField } from 'redux-form-material-ui'
+import { Field, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
-import ModalDialog from 'components/dialogs/ModalDialog'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import validate from './validate'
 import './BuyTokensDialog.scss'
 import styles from './styles'
-import { Translate } from 'react-redux-i18n'
+import validate from './validate'
 
 function prefix (token) {
   return `components.exchange.BuyTokensDialog.${token}`
@@ -24,10 +26,6 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    exchange: (order: ExchangeOrderModel, amount: BigNumber) => {
-      dispatch(modalsClose())
-      dispatch(exchange(order, amount))
-    },
     handleClose: () => dispatch(modalsClose()),
   }
 }
@@ -35,7 +33,8 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const exchange = state.get('exchange')
   return {
-    filter: exchange.filter(),
+    tokens: exchange.tokens(),
+    eth: getCurrentWallet(state).tokens().get('ETH'),
   }
 }
 
@@ -50,10 +49,11 @@ const onSubmit = (values, dispatch) => {
 @reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
 export default class BuyTokensDialog extends React.Component {
   static propTypes = {
-    order: PropTypes.instanceOf(ExchangeOrderModel),
+    exchange: PropTypes.instanceOf(ExchangeOrderModel),
     handleClose: PropTypes.func,
-    exchange: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
+    isBuy: PropTypes.bool,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   constructor (props) {
@@ -66,16 +66,9 @@ export default class BuyTokensDialog extends React.Component {
     }
   }
 
-  order (): ExchangeOrderModel {
-    return this.props.order
-  }
-
   render () {
-    const icons = {
-      lht: require('assets/img/icn-lht.svg'),
-      ethereum: require('assets/img/icn-ethereum.svg'),
-    }
-    const { name: mode } = this.props.filter.get('filterMode')
+    const buyToken = this.props.isBuy ? this.props.tokens.getBySymbol(this.props.exchange.symbol()) : this.props.eth
+    const sellToken = !this.props.isBuy ? this.props.tokens.getBySymbol(this.props.exchange.symbol()) : this.props.eth
 
     return (
       <CSSTransitionGroup
@@ -91,7 +84,9 @@ export default class BuyTokensDialog extends React.Component {
               <div styleName='headerRow'>
                 <div styleName='headerRightCol'>
                   <div styleName='title'>
-                    <Translate value={prefix(mode.toLowerCase())} />{` ${this.order().symbol()} `}
+                    <Translate
+                      value={prefix(this.props.isBuy ? 'buy' : 'sell')}
+                    />{` ${this.props.exchange.symbol()} `}
                     <Translate value={prefix('tokens')} />
                   </div>
                   <div styleName='balanceHeader'>
@@ -99,8 +94,8 @@ export default class BuyTokensDialog extends React.Component {
                     <div styleName='balanceValue'>
                       <TokenValue
                         isInvert
-                        value={this.order().accountBalance()}
-                        symbol={this.order().accountBalanceSymbol()}
+                        value={sellToken.balance()}
+                        symbol={sellToken.symbol()}
                       />
                     </div>
                   </div>
@@ -111,19 +106,21 @@ export default class BuyTokensDialog extends React.Component {
                       <div className='col-xs-1'>
                         <div styleName='icon' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            fallback={icons.lht}
+                            multihash={sellToken.icon()}
+                            fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitle'>LHT</div>
+                          <div styleName='tokenTitle'>{sellToken.symbol()}</div>
                         </div>
                       </div>
                       <div className='col-xs-1'>
                         <div styleName='icon' style={{ background: `#5c6bc0` }}>
                           <IPFSImage
-                            fallback={icons.ethereum}
+                            multihash={buyToken.icon()}
+                            fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitle'>Eth</div>
+                          <div styleName='tokenTitle'>{buyToken.symbol()}</div>
                         </div>
                       </div>
                     </div>
@@ -137,15 +134,15 @@ export default class BuyTokensDialog extends React.Component {
                   <div styleName='property'>
                     <div styleName='label'><Translate value={prefix('traderAddress')} />:</div>
                     <div styleName='value'>
-                      <span>0x9876f6477iocc4757q22dfg3333nmk1111v234x0</span>
+                      <span>{this.props.exchange.address()}</span>
                     </div>
                   </div>
                   <div styleName='property'>
                     <div styleName='label'><Translate value={prefix('tradeLimits')} />:</div>
                     <div>
                       <TokenValue
-                        value={this.order().limit()}
-                        symbol={this.order().symbol()}
+                        value={this.props.isBuy ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}
+                        symbol={this.props.isBuy ? 'ETH' : this.props.exchange.symbol()}
                       />
                     </div>
                   </div>
@@ -160,17 +157,18 @@ export default class BuyTokensDialog extends React.Component {
                             name='sell'
                             fullWidth
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
-                            floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;LHT</span>}
+                            floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;{sellToken.symbol()}</span>}
                             value={this.state.main.toString(10)}
                             style={styles.TextField.style}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            fallback={icons.lht}
+                            multihash={sellToken.icon()}
+                            fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitleMobile'>LHT</div>
+                          <div styleName='tokenTitleMobile'>{sellToken.symbol()}</div>
                         </div>
                       </div>
                       <div className='col-xs-2 col-sm-1' styleName='mobileFlex'>
@@ -180,17 +178,19 @@ export default class BuyTokensDialog extends React.Component {
                             name='buy'
                             fullWidth
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
-                            floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;ETH</span>}
+                            floatingLabelText={<span><Translate
+                              value={prefix('amountIn')} />&nbsp;{buyToken.symbol()}</span>}
                             value={this.state.second.toString(10)}
                             style={styles.TextField.style}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            fallback={icons.ethereum}
+                            multihash={buyToken.icon()}
+                            fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitleMobile'>eth</div>
+                          <div styleName='tokenTitleMobile'>{buyToken.symbol()}</div>
                         </div>
                       </div>
                     </div>

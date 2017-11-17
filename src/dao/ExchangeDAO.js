@@ -62,7 +62,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     const priceInWei = this._c.toWei(price)
     return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {
       amount,
-      price: amount.mul(price)
+      price: amount.mul(price),
     }, amountWithDecimals.mul(priceInWei))
   }
 

@@ -32,10 +32,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    openDetails: (order: ExchangeOrderModel) => dispatch(modalsOpen({
+    openDetails: (exchange: ExchangeOrderModel, isBuy: boolean) => dispatch(modalsOpen({
       component: BuyTokensDialog,
       props: {
-        order,
+        exchange,
+        isBuy,
       },
     })),
   }
@@ -131,7 +132,7 @@ export default class ExchangesTable extends React.Component {
               label={<Translate value={prefix('buy')} />}
               onTouchTap={(e) => {
                 e.stopPropagation()
-                this.props.openDetails(exchange)
+                this.props.openDetails(exchange, true)
               }}
             />
           </div>
@@ -142,7 +143,7 @@ export default class ExchangesTable extends React.Component {
               label={<Translate value={prefix('sell')} />}
               onTouchTap={(e) => {
                 e.stopPropagation()
-                this.props.openDetails(exchange)
+                this.props.openDetails(exchange, false)
               }}
             />
           </div>

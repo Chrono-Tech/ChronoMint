@@ -42,6 +42,7 @@ export const search = (values: Immutable.Map) => async dispatch => {
 
 export const getExchange = () => async dispatch => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
+  await dispatch(getTokenList())
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   try {
     const assetSymbols = await exchangeManagerDAO.getAssetSymbols()

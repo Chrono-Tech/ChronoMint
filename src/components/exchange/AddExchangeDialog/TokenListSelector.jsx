@@ -1,4 +1,4 @@
-import avaTokenSVG from 'assets/img/avaToken.svg'
+import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
 import { IPFSImage } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
@@ -44,7 +44,7 @@ export default class tokenListSelector extends PureComponent {
                     styleName={classnames('tokenItem', { 'selected': token === tokenItem })}
                     onTouchTap={() => this.props.input.onChange(tokenItem)}
                   >
-                    <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon' fallback={avaTokenSVG} />
+                    <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon' fallback={iconTokenDefaultSVG} />
                     <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
                   </div>
                 )
@@ -52,7 +52,7 @@ export default class tokenListSelector extends PureComponent {
           }
         </div>
         <div styleName={classnames('tokensListMobile', 'sm-show')}>
-          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={avaTokenSVG} />
+          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
           <SelectField
             name='token'
             styleName='tokenMobileSelector'
