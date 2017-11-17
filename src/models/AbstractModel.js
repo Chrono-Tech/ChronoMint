@@ -1,9 +1,9 @@
 import { Record as record } from 'immutable'
 
 export const abstractModel = (defaultValues) => class AbstractModel extends record({
-  ...defaultValues,
   id: null,
   timestamp: null,
+  ...defaultValues,
 }) {
   id () {
     return this.get('id')

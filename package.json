@@ -121,8 +121,6 @@
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",
     "socket.io-client": "^2.0.3",
-    "sockjs-client": "1.0.3",
-    "stackup": "^1.0.2",
     "truffle": "^4.0.1",
     "truffle-contract": "^3.0.1",
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
@@ -161,6 +159,9 @@
       "src/**/*.js",
       "src/**/*.jsx",
       "!**/*.{spec.js,mock.js}**"
+    ],
+    "coverageReporters": [
+      "lcov"
     ],
     "transform": {
       "^.+\\.(js|jsx)?$": "babel-jest"
