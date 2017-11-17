@@ -1,3 +1,4 @@
+import Preloader from 'components/common/Preloader/Preloader'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
@@ -59,76 +60,94 @@ export default class ExchangesTable extends React.Component {
     }
     return (
       <div styleName='row' key={exchange.id()}>
-        <div styleName='colTrader'>
-          <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
-          <span styleName='ellipsis'>{exchange.address()}</span>
-        </div>
-        <div styleName='colPrice'>
-          {showBuy &&
-          <div>
-            <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-            <TokenValue value={exchange.buyPrice()} symbol={exchange.symbol()} />
+        <div styleName='values'>
+          <div styleName='colTrader'>
+            <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
+            {exchange.isPending() ?
+              <div>
+                <div styleName='ellipsis'>{exchange.id()}</div>
+                <div><Translate value={prefix('statusPending')} /></div>
+              </div>
+              :
+              <div styleName='ellipsis'>{exchange.address()}</div>
+            }
           </div>
-          }
-          {showSell &&
-          <div>
-            <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-            <TokenValue
-              value={exchange.sellPrice()}
-              symbol={exchange.symbol()}
-            />
+          <div styleName='colPrice'>
+            {showBuy &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
+              <TokenValue value={exchange.buyPrice()} symbol={exchange.symbol()} />
+            </div>
+            }
+            {showSell &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
+              <TokenValue
+                value={exchange.sellPrice()}
+                symbol={exchange.symbol()}
+              />
+            </div>
+            }
           </div>
-          }
-        </div>
-        <div styleName='colLimits'>
-          {showBuy &&
-          <div>
-            <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-            <TokenValue
-              value={new BigNumber(0)}
-              symbol={exchange.symbol()}
-            />
-            -
-            <TokenValue
-              value={exchange.assetBalance()}
-              symbol={exchange.symbol()}
-            />
+          <div styleName='colLimits'>
+            {showBuy &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
+              <TokenValue
+                value={new BigNumber(0)}
+                symbol={exchange.symbol()}
+                noRenderPrice
+              />
+              -
+              <TokenValue
+                value={exchange.assetBalance()}
+                symbol={exchange.symbol()}
+                noRenderPrice
+              />
+            </div>
+            }
+            {showSell &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
+              <TokenValue
+                value={new BigNumber(0)}
+                symbol={exchange.symbol()}
+                noRenderPrice
+              />
+              -
+              <TokenValue
+                value={exchange.ethBalance()}
+                symbol={exchange.symbol()}
+                noRenderPrice
+              />
+            </div>
+            }
           </div>
-          }
-          {showSell &&
-          <div>
-            <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-            <TokenValue
-              value={new BigNumber(0)}
-              symbol={exchange.symbol()}
-            />
-            -
-            <TokenValue
-              value={exchange.ethBalance()}
-              symbol={exchange.symbol()}
-            />
-          </div>
-          }
         </div>
         <div styleName='colActions'>
-          {showBuy &&
-          <RaisedButton
-            label={<Translate value={prefix('buy')} />}
-            onTouchTap={e => {
-              e.stopPropagation()
-              this.props.openDetails(exchange)
-            }}
-          />
+          {showBuy && !exchange.isPending() &&
+          <div styleName='buttonWrapper'>
+            <RaisedButton
+              label={<Translate value={prefix('buy')} />}
+              onTouchTap={(e) => {
+                e.stopPropagation()
+                this.props.openDetails(exchange)
+              }}
+            />
+          </div>
           }
-          {showSell &&
-          <RaisedButton
-            label={<Translate value={prefix('sell')} />}
-            onTouchTap={e => {
-              e.stopPropagation()
-              this.props.openDetails(exchange)
-            }}
-          />
+          {showSell && !exchange.isPending() &&
+          <div styleName='buttonWrapper'>
+            <RaisedButton
+              label={<Translate value={prefix('sell')} />}
+              onTouchTap={(e) => {
+                e.stopPropagation()
+                this.props.openDetails(exchange)
+              }}
+            />
+          </div>
           }
+          {exchange.isPending() && <Preloader />}
         </div>
       </div>
     )
@@ -159,14 +178,22 @@ export default class ExchangesTable extends React.Component {
           <div styleName='table'>
             <div styleName='tableHead'>
               <div styleName='tableHeadRow'>
-                <div styleName='colTrader'><Translate value={prefix('exchangeAddress')} /></div>
-                <div styleName='colPrice'><Translate value={prefix('price')} /></div>
-                <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
+                <div styleName='values'>
+                  <div styleName='colTrader'><Translate value={prefix('exchangeAddress')} /></div>
+                  <div styleName='colPrice'><Translate value={prefix('price')} /></div>
+                  <div styleName='colLimits'><Translate value={prefix('limits')} /></div>
+                </div>
                 <div styleName='colActions' />
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.exchanges.isFetched() && filteredItems.map((exchange) => this.renderRow(exchange))}
+              {this.props.exchanges.isFetched() && filteredItems
+                .sort(function (a, b) {
+                  if (a.isPending()) return -1
+                  if (b.isPending()) return 1
+                  return 0
+                })
+                .map((exchange) => this.renderRow(exchange))}
             </div>
           </div>
         </div>
@@ -174,5 +201,4 @@ export default class ExchangesTable extends React.Component {
     )
   }
 }
-
 

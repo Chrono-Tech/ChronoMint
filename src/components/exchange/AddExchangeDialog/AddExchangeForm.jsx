@@ -36,8 +36,8 @@ const mapDispatchToProps = (dispatch) => ({
 const onSubmit = (values) => {
   const token = values.get('token')
   return new ExchangeOrderModel({
-    buyPrice: values.get('buyPrice'),
-    sellPrice: values.get('sellPrice'),
+    buyPrice: new BigNumber(values.get('buyPrice')),
+    sellPrice: new BigNumber(values.get('sellPrice')),
     symbol: token.symbol(),
   })
 }

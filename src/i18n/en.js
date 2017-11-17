@@ -12,7 +12,6 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-
 import { en as components } from 'components/lang'
 
 export default {
@@ -637,6 +636,7 @@ export default {
     },
   },
   components: {
+    ...components.components,
     dashboard: {
       TransactionsTable: {
         latestTransactions: 'Latest transactions',

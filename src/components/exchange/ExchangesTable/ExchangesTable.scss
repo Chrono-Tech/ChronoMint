@@ -12,26 +12,23 @@ $cell-padding: 16px 8px;
 }
 
 .table {
-  display: table;
   width: 100%;
   position: relative;
 }
 
 .tableHead {
-  display: table-row-group;
   opacity: 0.5;
   font-size: 16px;
 }
 
 .tableHeadRow {
-  display: table-row;
+  display: flex;
   @include sm-only {
     display: none;
   }
 }
 
 .tableBody {
-  display: table-row-group;
   font-size: 14px;
   font-weight: 400;
   @include sm-only {
@@ -42,10 +39,8 @@ $cell-padding: 16px 8px;
 }
 
 .row {
-  display: table-row;
+  display: flex;
   @include sm-only {
-    display: block;
-    position: relative;
     padding: $cell-padding;
   }
   &:nth-child(2n+1) {
@@ -70,28 +65,42 @@ $cell-padding: 16px 8px;
   margin: 0;
 }
 
-.colTrader, .colPrice, .colLimits, .colActions {
-  display: table-cell;
-  padding: $cell-padding;
-  padding-bottom: 8px;
+.colTrader {
+  width: 30%;
+  overflow: hidden;
   @include sm-only {
-    display: flex;
-    flex-direction: column;
-    padding: 0;
+    width: 100%;
   }
-  span:last-child {
-    @include ellipsis;
+}
+
+.colPrice, .colLimits {
+  width: 35%;
+  @include sm-only {
+    width: 100%;
   }
 }
 
 .colActions {
-  text-align: right;
+  width: 20%;
+  overflow: hidden;
   @include sm-only {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    margin-top: -34px;
-    padding: $cell-padding;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  :global{
+    .Preloader__root{
+      height: 100%;
+    }
+  }
+}
+
+.colTrader, .colPrice, .colLimits, .colActions {
+  padding: $cell-padding;
+  padding-bottom: 8px;
+  @include sm-only {
+    padding: 0;
   }
 }
 
@@ -103,5 +112,36 @@ $cell-padding: 16px 8px;
 }
 
 .ellipsis {
+  @include lg-plus {
+    max-width: 400px;
+  }
+  @include md-plus {
+    max-width: 200px;
+  }
+  @include md-only {
+    max-width: 200px;
+  }
   @include ellipsis;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.colWrapper {
+  height: 46px;
+  @include sm-only {
+    height: auto;
+  }
+}
+
+.values {
+  width: 80%;
+  display: flex;
+  @include sm-only {
+    display: block;
+    width: 60%;
+  }
 }

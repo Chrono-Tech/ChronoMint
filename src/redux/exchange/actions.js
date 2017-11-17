@@ -66,15 +66,15 @@ const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
   if (!exchange.isNew() && !!exchange.isTransactionHash()) {
     // address arrived, delete temporary hash
     dispatch({ type: EXCHANGE_REMOVE, id: exchange.id() })
-    updatedExchange = exchange.transactionHash(null)
+    updatedExchange = exchange.transactionHash(null).isPending(false)
   }
-  dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange.isPending(false) })
+  dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange })
 }
 
 export const createExchange = (exchange: ExchangeOrderModel) => async dispatch => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const txHash = await exchangeManagerDAO.createExchange(exchange)
-  // dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
+  dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
 }
 
 export const watchExchanges = () => async (dispatch) => {

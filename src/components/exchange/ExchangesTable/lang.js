@@ -10,6 +10,7 @@ export default {
     limits: 'Limits',
     buy: 'Buy',
     sell: 'Sell',
+    statusPending: 'Status: pending',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -22,5 +23,6 @@ export default {
     limits: 'Лимиты',
     buy: 'Купить',
     sell: 'Продать',
+    statusPending: 'Статус: ожидает манинга',
   },
 }
