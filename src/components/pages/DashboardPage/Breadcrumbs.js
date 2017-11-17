@@ -4,8 +4,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import globalStyles from '../../../styles'
 
-import globalStyles from '../../../styles'
-
 const mapStateToProps = (state) => ({
   user: state.get('session')
 })
