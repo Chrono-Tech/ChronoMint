@@ -5,6 +5,7 @@ import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginMetamask from './components/LoginMetamask/lang'
 import * as LoginUPort from './components/LoginUPort/lang'
 import * as LoginWithLedger from './components/LoginWithLedger/lang'
+import * as LoginWithTrezor from './components/LoginWithTrezor/lang'
 import * as LoginWithMnemonic from './components/LoginWithMnemonic/lang'
 import * as LoginWithOptions from './components/LoginWithOptions/lang'
 import * as LoginWithPrivateKey from './components/LoginWithPrivateKey/lang'
@@ -17,6 +18,7 @@ import * as LoginPage from './page/lang'
 export const en = {
   LoginPage: LoginPage.en,
   LoginWithLedger: LoginWithLedger.en,
+  LoginWithTrezor: LoginWithTrezor.en,
   LoginMetamask: LoginMetamask.en,
   LoginWithMnemonic: LoginWithMnemonic.en,
   LoginWithOptions: LoginWithOptions.en,
@@ -35,6 +37,7 @@ export const en = {
 export const ru = {
   LoginPage: LoginPage.ru,
   LoginWithLedger: LoginWithLedger.ru,
+  LoginWithTrezor: LoginWithTrezor.ru,
   LoginMetamask: LoginMetamask.ru,
   LoginWithMnemonic: LoginWithMnemonic.ru,
   LoginWithOptions: LoginWithOptions.ru,

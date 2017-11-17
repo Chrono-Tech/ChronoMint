@@ -55,6 +55,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
+    console.log(this._symbol)
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }

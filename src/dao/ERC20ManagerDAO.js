@@ -93,6 +93,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
+   
+   for (let [i, address] of Object.entries(tokensAddresses)) {
+      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
+   }	    
 
     // get balances
     promises = []
@@ -101,7 +105,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(daos[i].getAccountBalance(account))
     }
     const balances = await Promise.all(promises)
-
     // prepare result
     let map = new Immutable.Map()
 
