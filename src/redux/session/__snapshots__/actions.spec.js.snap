@@ -260,6 +260,85 @@ Array [
 ]
 `;
 
+exports[`session actions should login USER and go to default url (/wallet) 2`] = `
+Array [
+  Object {
+    "isCBE": false,
+    "profile": Immutable.Record {
+      "name": null,
+      "email": null,
+      "company": null,
+      "url": null,
+      "icon": null,
+      "tokens": Immutable.Set [],
+      "assetsManager": Immutable.Map {},
+      "id": null,
+      "timestamp": null,
+    },
+    "type": "session/PROFILE",
+  },
+  Object {
+    "type": "WALLET/switch_wallet",
+    "wallet": Immutable.Record {
+      "address": null,
+      "tokens": Immutable.Map {},
+      "transactions": Immutable.Record {
+        "list": Immutable.Map {},
+        "selected": null,
+        "endOfList": false,
+        "isFetching": false,
+        "isFetched": false,
+        "transactionHash": null,
+        "isPending": false,
+        "isFailed": false,
+        "id": null,
+        "timestamp": null,
+      },
+      "btcAddress": null,
+      "bccAddress": null,
+      "nemAddress": null,
+      "timeDeposit": "0",
+      "timeAddress": null,
+      "isMultisig": false,
+      "isMainWallet": true,
+      "isTIMERequired": true,
+      "isFetching": false,
+      "isFetched": false,
+      "transactionHash": null,
+      "isPending": false,
+      "isFailed": false,
+      "id": null,
+      "timestamp": null,
+    },
+  },
+  Object {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  },
+  Object {
+    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  },
+  Object {
+    "isInited": false,
+    "type": "market/INIT",
+  },
+  Object {
+    "type": "mainWallet/TOKENS_FETCH",
+  },
+  Object {
+    "type": "watcher/USER",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/dashboard",
+      ],
+      "method": "replace",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
+
 exports[`session actions should logout 1`] = `
 Array [
   Object {
