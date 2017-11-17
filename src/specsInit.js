@@ -1,5 +1,4 @@
 import 'jest-enzyme'
-import 'stackup'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import Enzyme from 'enzyme'
