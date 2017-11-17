@@ -160,6 +160,9 @@
       "src/**/*.jsx",
       "!**/*.{spec.js,mock.js}**"
     ],
+    "coverageReporters": [
+      "lcov"
+    ],
     "transform": {
       "^.+\\.(js|jsx)?$": "babel-jest"
     },
