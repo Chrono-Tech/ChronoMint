@@ -5,12 +5,14 @@ import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import { LOCAL_ID } from 'Login/network/settings'
 import web3provider from 'Login/network/Web3Provider'
+import { TESTNET } from 'Login/network/BitcoinNode'
 import networkService from 'Login/redux/network/actions'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import AbstractContractDAO from './dao/AbstractContractDAO'
 import ls from './utils/LocalStorage'
+import MarketSocket from './market/MarketSocket'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
@@ -40,6 +42,8 @@ beforeAll((done) => {
 afterAll((done) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
+  TESTNET.disconnect()
+  MarketSocket.disconnect()
 })
 
 beforeEach(() => {

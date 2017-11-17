@@ -19,7 +19,7 @@ describe('trezor reducer', () => {
       })
   })
 
-  it('should handle TREZOR_SET_ETH_APP_OPENED', () => {
+  it.skip('should handle TREZOR_SET_ETH_APP_OPENED', () => {
     expect(reducer({}, { type: a.TREZOR_SET_ETH_APP_OPENED, isETHAppOpened: true }))
       .toEqual({
         isETHAppOpened: true,

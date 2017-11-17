@@ -111,6 +111,10 @@ class MarketSocket extends EventEmitter {
     this.socket.emit('SubAdd', { subs: this.subscription })
     this.socket.on('m', this._onSocketUpdate)
   }
+
+  disconnect () {
+    this.socket.close()
+  }
 }
 
 export default new MarketSocket(CCC.TYPE.CURRENTAGG)
