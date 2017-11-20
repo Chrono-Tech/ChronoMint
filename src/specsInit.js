@@ -1,8 +1,9 @@
-import 'jest-enzyme'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
+import 'jest-enzyme'
+import { TESTNET } from 'Login/network/BitcoinNode'
 import { LOCAL_ID } from 'Login/network/settings'
 import web3provider from 'Login/network/Web3Provider'
 import networkService from 'Login/redux/network/actions'
@@ -10,6 +11,7 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import AbstractContractDAO from './dao/AbstractContractDAO'
+import MarketSocket from './market/MarketSocket'
 import ls from './utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
@@ -40,6 +42,8 @@ beforeAll((done) => {
 afterAll((done) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
+  TESTNET.disconnect()
+  MarketSocket.disconnect()
 })
 
 beforeEach(() => {
