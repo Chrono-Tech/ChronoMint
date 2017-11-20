@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
 import networkService, { clearErrors, DUCK_NETWORK } from '../../redux/network/actions'
 import web3Utils from '../../network/Web3Utils'
-import web3Provider from '../../network/Web3Provider'
+import web3Provider  from '../../network/Web3Provider'
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)

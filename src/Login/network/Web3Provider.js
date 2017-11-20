@@ -44,7 +44,7 @@ export class Web3Provider {
   }
 
   resolve () {
-    this._resolveCallback()
+    return this._resolveCallback()
   }
 
   getWeb3 () {

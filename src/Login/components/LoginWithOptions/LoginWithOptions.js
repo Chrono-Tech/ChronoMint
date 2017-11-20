@@ -234,6 +234,10 @@ class LoginWithOptions extends PureComponent {
     this.handleToggleProvider(step)
   }
 
+  checkOption = (option) => {
+    return true
+  }
+
   renderOption = (option) => (
     <LoginOption
       key={option.title}
@@ -243,7 +247,9 @@ class LoginWithOptions extends PureComponent {
   )
 
   renderOptions () {
-    return loginOptions.map(this.renderOption)
+    return loginOptions
+      .filter(this.checkOption)
+      .map(this.renderOption)
   }
 
   renderStep (step) {
