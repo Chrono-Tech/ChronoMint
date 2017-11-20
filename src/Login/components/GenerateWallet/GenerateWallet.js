@@ -80,7 +80,7 @@ class GenerateWallet extends PureComponent {
     return (
       <div>
         <BackButton
-          onClick={() => this.props.onBack()}
+          onClick={this.props.onBack}
           to='loginWithWallet'
         />
         <MuiThemeProvider muiTheme={styles.theme}>

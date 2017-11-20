@@ -6,7 +6,6 @@ import * as locs from './locs/'
 import * as mainWallet from './mainWallet/'
 import * as market from './market/'
 import * as modals from './modals/'
-import * as monitor from './monitor/'
 import * as multisigWallet from './multisigWallet/'
 import * as notifier from './notifier/'
 import * as operations from './operations/'
@@ -35,7 +34,6 @@ export default {
   operations,
   watcher,
   market,
-  monitor,
   assetsManager,
   ...Login,
 }

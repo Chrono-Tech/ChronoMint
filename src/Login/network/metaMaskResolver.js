@@ -19,7 +19,7 @@ class metaMaskResolver extends EventEmitter {
 
     // wait for metamask
     Object.defineProperty(window, 'web3', {
-      set: web3 => {
+      set: (web3) => {
         timer && clearTimeout(timer)
         metaMaskInstance = web3
         this.emit('resolve', true)

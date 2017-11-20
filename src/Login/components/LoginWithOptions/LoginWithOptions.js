@@ -5,27 +5,24 @@ import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
-
+import LoginLocal from '../../components/LoginLocal/LoginLocal'
+import LoginMetamask from '../../components/LoginMetamask/LoginMetamask'
 import LoginLedger from '../../components/LoginWithLedger/LoginWithLedger'
-import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
+import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
-import NetworkSelector from '../../components/NetworkSelector/NetworkSelector'
-import NetworkStatus from '../../components/NetworkStatus/NetworkStatus'
-
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
-import { nemProvider } from '../../network/NemProvider'
 import ledgerProvider from '../../network/LedgerProvider'
-import trezorProvider from '../../network/TrezorProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
+import { nemProvider } from '../../network/NemProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
+import trezorProvider from '../../network/TrezorProvider'
 import walletProvider from '../../network/walletProvider'
 import web3Provider from '../../network/Web3Provider'
-import web3Utils from '../../network/Web3Utils'
 import { loginLedger } from '../../redux/ledger/actions'
-import { loginTrezor } from '../../redux/trezor/actions'
 import networkService, { addError, clearErrors, loading } from '../../redux/network/actions'
+import { loginTrezor } from '../../redux/trezor/actions'
 
 import './LoginWithOptions.scss'
 
@@ -39,23 +36,39 @@ const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
 const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 const STEP_LOGIN_WITH_TREZOR = 'step/LOGIN_WITH_TREZOR'
+const STEP_LOGIN_WITH_METAMASK = 'step/LOGIN_WITH_METAMASK'
+const STEP_LOGIN_LOCAL = 'step/LOGIN_LOCAL'
 
-const loginOptions = [ {
-  nextStep: STEP_LOGIN_WITH_MNEMONIC,
-  title: 'LoginWithOptions.mnemonicKey',
-}, {
-  nextStep: STEP_LOGIN_WITH_WALLET,
-  title: 'LoginWithOptions.walletFile',
-}, {
-  nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
-  title: 'LoginWithOptions.privateKey',
-}, {
-  nextStep: STEP_LOGIN_WITH_LEDGER,
-  title: 'LoginWithOptions.ledgerNano',
-}, {
-  nextStep: STEP_LOGIN_WITH_TREZOR,
-  title: 'LoginWithOptions.trezor',
-} ]
+const loginOptions = [
+  {
+    nextStep: STEP_LOGIN_WITH_MNEMONIC,
+    title: 'LoginWithOptions.mnemonicKey',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_WALLET,
+    title: 'LoginWithOptions.walletFile',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
+    title: 'LoginWithOptions.privateKey',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_LEDGER,
+    title: 'LoginWithOptions.ledgerNano',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_TREZOR,
+    title: 'LoginWithOptions.trezor',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_METAMASK,
+    title: 'LoginWithOptions.metamask',
+  },
+  {
+    nextStep: STEP_LOGIN_LOCAL,
+    title: 'LoginWithOptions.local',
+  },
+]
 
 class LoginOption extends PureComponent {
   static propTypes = {
@@ -96,7 +109,7 @@ const mapDispatchToProps = (dispatch) => ({
   getProviderSettings: () => networkService.getProviderSettings(),
   loading: () => dispatch(loading()),
   loginLedger: () => loginLedger(),
-  loginTrezor: () => loginTrezor(),	
+  loginTrezor: () => loginTrezor(),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -120,7 +133,7 @@ class LoginWithOptions extends PureComponent {
   constructor () {
     super()
     this.state = {
-      step: STEP_SELECT_NETWORK,
+      step: STEP_SELECT_OPTION,
     }
   }
 
@@ -154,7 +167,7 @@ class LoginWithOptions extends PureComponent {
       this.props.addError(e.message)
     }
   }
-	
+
   handleTrezorLogin = () => {
     this.props.loading()
     this.props.clearErrors()
@@ -176,17 +189,6 @@ class LoginWithOptions extends PureComponent {
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
-    }
-  }
-
-  handleSelectNetwork = () => {
-    this.props.clearErrors()
-    const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
-    if (this.state.step === STEP_SELECT_NETWORK) {
-      this.setStep(STEP_SELECT_OPTION)
     }
   }
 
@@ -217,7 +219,7 @@ class LoginWithOptions extends PureComponent {
 
     // login
     this.props.loadAccounts().then(() => {
-      this.props.selectAccount(this.props.accounts[0])
+      this.props.selectAccount(this.props.accounts[ 0 ])
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
       nemProvider.setEngine(nem)
@@ -248,13 +250,10 @@ class LoginWithOptions extends PureComponent {
     const { selectedNetworkId } = this.props
     const { step } = this.state
 
-    const isNetworkSelector = step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC
     const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
 
     return (
       <div>
-        {isNetworkSelector && <NetworkSelector onSelect={this.handleSelectNetwork} />}
-        {!!selectedNetworkId && <NetworkStatus />}
         {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
           <div>
             <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption' />}</div>
@@ -303,6 +302,18 @@ class LoginWithOptions extends PureComponent {
         {step === STEP_LOGIN_WITH_TREZOR && (
           <LoginTrezor
             onLogin={this.handleTrezorLogin}
+            onBack={this.handleSelectStepSelectOption}
+          />
+        )}
+        {step === STEP_LOGIN_WITH_METAMASK && (
+          <LoginMetamask
+            onLogin={this.props.onLogin}
+            onBack={this.handleSelectStepSelectOption}
+          />
+        )}
+        {step === STEP_LOGIN_LOCAL && (
+          <LoginLocal
+            onLogin={this.props.onLogin}
             onBack={this.handleSelectStepSelectOption}
           />
         )}

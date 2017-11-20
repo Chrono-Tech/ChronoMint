@@ -4,10 +4,10 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
-import networkService, { clearErrors } from '../../redux/network/actions'
+import networkService, { clearErrors, DUCK_NETWORK } from '../../redux/network/actions'
 
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     selectedNetworkId: network.selectedNetworkId,
     networks: network.networks,
@@ -26,7 +26,14 @@ export default class NetworkSelector extends PureComponent {
     clearErrors: PropTypes.func,
     selectNetwork: PropTypes.func,
     selectedNetworkId: PropTypes.number,
-    networks: PropTypes.array,
+    networks: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      protocol: PropTypes.string,
+      name: PropTypes.string,
+      scanner: PropTypes.arrayOf(PropTypes.string),
+      bitcoin: PropTypes.string,
+      nem: PropTypes.string,
+    })),
     onSelect: PropTypes.func,
     isLoading: PropTypes.bool,
   }

@@ -53,7 +53,12 @@ class LoginLedger extends PureComponent {
     fetchAccount: PropTypes.func,
     onBack: PropTypes.func.isRequired,
     onLogin: PropTypes.func.isRequired,
-    ledger: PropTypes.object,
+    ledger: PropTypes.shape({
+      isFetched: PropTypes.bool,
+      isFetching: PropTypes.bool,
+      isHttps: PropTypes.bool,
+      isETHAppOpened: PropTypes.bool,
+    }),
     isLoading: PropTypes.bool,
     account: PropTypes.string,
   }
@@ -62,14 +67,14 @@ class LoginLedger extends PureComponent {
     this.props.startLedgerSync()
   }
 
-  componentWillUnmount () {
-    this.props.stopLedgerSync()
-  }
-
   componentWillReceiveProps ({ ledger }) {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
+  }
+
+  componentWillUnmount () {
+    this.props.stopLedgerSync()
   }
 
   handleBackClick = () => {
@@ -135,7 +140,7 @@ class LoginLedger extends PureComponent {
               primary
               fullWidth
               disabled={isLoading || !account}
-              onTouchTap={() => this.props.onLogin()}
+              onTouchTap={this.props.onLogin}
             />
           </div>
         </div>

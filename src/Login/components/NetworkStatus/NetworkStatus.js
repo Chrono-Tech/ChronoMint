@@ -2,15 +2,28 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from '../../network/MonitorService'
+
+import { DUCK_MONITOR } from '../../redux/monitor/actions'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '../../network/MonitorService'
 
 import './NetworkStatus.scss'
+
+function mapStateToProps (state) {
+  const monitor = state.get(DUCK_MONITOR)
+  return {
+    networkStatus: monitor.network,
+    syncStatus: monitor.sync,
+  }
+}
 
 @connect(mapStateToProps)
 export default class CopyIcon extends PureComponent {
   static propTypes = {
-    networkStatus: PropTypes.object,
-    syncStatus: PropTypes.object,
+    networkStatus: PropTypes.string,
+    syncStatus: PropTypes.shape({
+      status: PropTypes.string,
+      progress: PropTypes.number,
+    }),
   }
 
   getStatus () {
@@ -39,15 +52,8 @@ export default class CopyIcon extends PureComponent {
       <div styleName='root'>
         <span styleName={`status status-${status}`} />
         <Translate value={`networkStatus.${status}`} />
+        {this.props.syncStatus === SYNC_STATUS_SYNCING && ` - ${this.props.syncStatus.progress}%`}
       </div>
     )
-  }
-}
-
-function mapStateToProps (state) {
-  const monitor = state.get('monitor')
-  return {
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
   }
 }

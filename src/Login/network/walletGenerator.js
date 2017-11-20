@@ -20,15 +20,15 @@ class WalletGenerator {
     }
   }
 
-  getWallet = password => {
-    return new Promise(resolve => {
+  getWallet = (password) => {
+    return new Promise((resolve) => {
       // we can't use promisify here, cause first returning argument is result not error
-      keythereum.create(this._params, dk => {
-        keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, this._options, dump => {
+      keythereum.create(this._params, (dk) => {
+        keythereum.dump(password, dk.privateKey, dk.salt, dk.iv, this._options, (dump) => {
           resolve(dump)
         })
       })
-    }).catch(e => {
+    }).catch((e) => {
       // TODO @bshevchenko: fallback strategy
       // eslint-disable-next-line
       console.error('Wallet generate error', e)

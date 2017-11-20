@@ -1,3 +1,5 @@
+import { MD5 } from 'crypto-js'
+import Web3 from 'web3'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider } from 'material-ui'
 import { yellow800 } from 'material-ui/styles/colors'
@@ -6,21 +8,21 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-
 import { login } from 'redux/session/actions'
 import inverted from 'styles/themes/inversed'
-
-import LoginLocal from '../components/LoginLocal/LoginLocal'
-import LoginMetamask from '../components/LoginMetamask/LoginMetamask'
 import LoginUPort from '../components/LoginUPort/LoginUPort'
 import LoginWithOptions from '../components/LoginWithOptions/LoginWithOptions'
 import ProviderSelector from '../components/ProviderSelector/ProviderSelector'
+import NetworkSelector from '../components/NetworkSelector/NetworkSelector'
+import NetworkStatus from '../components/NetworkStatus/NetworkStatus'
 import { providerMap } from '../network/settings'
+import web3Utils from '../network/Web3Utils'
+import web3Provider from '../network/Web3Provider'
 import networkService, { clearErrors, loading } from '../redux/network/actions'
 
 import './LoginPage.scss'
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const network = state.get('network')
   return {
     errors: network.errors,
@@ -31,10 +33,11 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: account => dispatch(login(account)),
+  getProviderURL: () => networkService.getProviderURL(),
+  login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
 })
@@ -45,6 +48,7 @@ class LoginPage extends Component {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,
     createNetworkSession: PropTypes.func,
+    getProviderURL: PropTypes.func,
     login: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedProviderId: PropTypes.number,
@@ -79,9 +83,22 @@ class LoginPage extends Component {
     }
   }
 
-  handleToggleProvider = isShowProvider => {
-    this.setState({ isShowProvider })
+  handleSelectNetwork = () => {
+    this.props.clearErrors()
+    const web3 = new Web3()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.resolve()
   }
+
+  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
+
+  renderError = (error) => (
+    <div styleName='error' key={MD5(error)}>
+      <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
+      <div styleName='errorText'>{error}</div>
+    </div>
+  )
 
   render () {
     const {
@@ -95,8 +112,8 @@ class LoginPage extends Component {
           <div styleName='title'><Translate value='LoginPage.title' /></div>
           <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
           {this.state.isShowProvider && <ProviderSelector />}
-          {selectedProviderId === providerMap.metamask.id && <LoginMetamask onLogin={this.handleLogin} />}
-          {selectedProviderId === providerMap.local.id && <LoginLocal onLogin={this.handleLogin} />}
+          {this.state.isShowProvider && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+          <NetworkStatus />
           {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
             <LoginWithOptions
               onLogin={this.handleLogin}
@@ -107,12 +124,7 @@ class LoginPage extends Component {
 
           {errors && (
             <div styleName='errors'>
-              {errors.map((error, index) => (
-                <div styleName='error' key={index}>
-                  <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
-                  <div styleName='errorText'>{error}</div>
-                </div>
-              ))}
+              {errors.map(this.renderError)}
             </div>
           )}
           <ul styleName='actions'>
