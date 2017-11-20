@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import lhtDAO from 'dao/LHTDAO'
-import type ERC20DAO from './ERC20DAO'
+import TokenModel from 'models/TokenModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
+import type ERC20DAO from './ERC20DAO'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
@@ -42,28 +43,40 @@ export class ExchangeDAO extends AbstractContractDAO {
     return assetDAO.getAccountBalance()
   }
 
-  async approveSell (amount: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
+  async approveSell (token: TokenModel, amount: BigNumber) {
+    const assetDAO = await token.dao()
     return assetDAO.approve(this.getInitAddress(), assetDAO.addDecimals(amount))
   }
 
-  async sell (amount: BigNumber, price: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-
+  async sell (amount: BigNumber, price: BigNumber, token: TokenModel) {
     // TODO @bshevchenko: divide this on two steps
-    await this.approveSell(amount)
+    await this.approveSell(token, amount)
 
-    return this._tx(TX_SELL, [assetDAO.addDecimals(amount), this._c.toWei(price)], { amount, price: amount.mul(price) })
+    return this._tx(
+      TX_SELL,
+      [
+        token.dao().addDecimals(amount),
+        token.dao().addDecimals(price),
+      ],
+      {
+        amount,
+        price: amount.mul(price),
+      })
   }
 
-  async buy (amount: BigNumber, price: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-    const amountWithDecimals = assetDAO.addDecimals(amount)
+  async buy (amount: BigNumber, price: BigNumber, token: TokenModel) {
     const priceInWei = this._c.toWei(price)
-    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], {
-      amount,
-      price: amount.mul(price),
-    }, amountWithDecimals.mul(priceInWei))
+    return this._tx(
+      TX_BUY,
+      [
+        token.dao().addDecimals(amount),
+        priceInWei.div(Math.pow(10, token.decimals())),
+      ],
+      {
+        amount,
+        price: amount.mul(price),
+      }, priceInWei
+    )
   }
 
   subscribeOnReset () {

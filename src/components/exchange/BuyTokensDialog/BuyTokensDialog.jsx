@@ -14,15 +14,16 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
-import { change, Field, reduxForm } from 'redux-form/immutable'
+import { change, Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
+import { exchange } from 'redux/exchange/actions'
 import './BuyTokensDialog.scss'
 import styles from './styles'
 import validate from './validate'
 
 function prefix (token) {
-  return `components.exchange.BuyTokensDialog.${token}`
+  return `components.exchange.exchangeTokensDialog.${token}`
 }
 
 function mapDispatchToProps (dispatch) {
@@ -39,16 +40,15 @@ function mapStateToProps (state) {
   }
 }
 
-export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeBuyTokensForm'
+export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeexchangeTokensForm'
 
-const onSubmit = (values, dispatch) => {
-  // eslint-disable-next-line
-  console.log('--ExchangeWidget#onSubmit filter',)
+const onSubmit = (values, dispatch, props) => {
+  dispatch(exchange(props.isBuy, new BigNumber(values.get('buy')), props.exchange))
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
-export default class BuyTokensDialog extends React.Component {
+export default class exchangeTokensDialog extends React.Component {
   static propTypes = {
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
     handleClose: PropTypes.func,
@@ -56,39 +56,23 @@ export default class BuyTokensDialog extends React.Component {
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
     eth: PropTypes.instanceOf(TokenModel),
-  }
-
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      main: new BigNumber(0),
-      second: new BigNumber(0),
-      isPossible: false,
-    }
+    dispatch: PropTypes.func,
+    ...formPropTypes,
   }
 
   handleSetPrice = (e) => {
     let value = e.target.value
     const price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
-    if (this.props.isBuy) { // buy
-      if (e.target.name === 'buy') {
-        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(value || 0).mul(price)))
-      } else {
-        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'buy', new BigNumber(value || 0).div(price)))
-      }
-    } else { // sell
-      if (e.target.name === 'buy') {
-        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(value || 0).div(price)))
-      } else {
-        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'buy', new BigNumber(value || 0).mul(price)))
-      }
+    if (e.target.name === 'buy') {
+      this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(value || 0).mul(price)))
+    } else {
+      this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'buy', new BigNumber(value || 0).div(price)))
     }
   }
 
   render () {
-    const buyToken = this.props.isBuy ? this.props.tokens.getBySymbol(this.props.exchange.symbol()) : this.props.eth
-    const sellToken = !this.props.isBuy ? this.props.tokens.getBySymbol(this.props.exchange.symbol()) : this.props.eth
+    const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
+    const ethToken = this.props.eth
 
     return (
       <CSSTransitionGroup
@@ -98,7 +82,7 @@ export default class BuyTokensDialog extends React.Component {
         transitionEnterTimeout={250}
         transitionLeaveTimeout={250}
       >
-        <ModalDialog onClose={() => this.props.handleClose()}>
+        <ModalDialog onClose={this.props.handleClose}>
           <div styleName='root'>
             <div styleName='header'>
               <div styleName='headerRow'>
@@ -114,8 +98,8 @@ export default class BuyTokensDialog extends React.Component {
                     <div styleName='balanceValue'>
                       <TokenValue
                         isInvert
-                        value={sellToken.balance()}
-                        symbol={sellToken.symbol()}
+                        value={this.props.isBuy ? ethToken.balance() : exchangeToken.balance()}
+                        symbol={this.props.isBuy ? ethToken.symbol() : exchangeToken.symbol()}
                       />
                     </div>
                   </div>
@@ -126,21 +110,21 @@ export default class BuyTokensDialog extends React.Component {
                       <div className='col-xs-1'>
                         <div styleName='icon' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            multihash={sellToken.icon()}
+                            multihash={exchangeToken.icon()}
                             fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitle'>{sellToken.symbol()}</div>
+                          <div styleName='tokenTitle'>{exchangeToken.symbol()}</div>
                         </div>
                       </div>
                       <div className='col-xs-1'>
                         <div styleName='icon' style={{ background: `#5c6bc0` }}>
                           <IPFSImage
-                            multihash={buyToken.icon()}
+                            multihash={ethToken.icon()}
                             fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitle'>{buyToken.symbol()}</div>
+                          <div styleName='tokenTitle'>{ethToken.symbol()}</div>
                         </div>
                       </div>
                     </div>
@@ -148,7 +132,7 @@ export default class BuyTokensDialog extends React.Component {
                 </div>
               </div>
             </div>
-            <div styleName='content'>
+            <form styleName='content' onSubmit={this.props.handleSubmit}>
               <div styleName='row'>
                 <div styleName='leftCol'>
                   <div styleName='property'>
@@ -161,8 +145,8 @@ export default class BuyTokensDialog extends React.Component {
                     <div styleName='label'><Translate value={prefix('tradeLimits')} />:</div>
                     <div>
                       <TokenValue
-                        value={this.props.isBuy ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}
-                        symbol={this.props.isBuy ? 'ETH' : this.props.exchange.symbol()}
+                        value={this.props.exchange.assetBalance()}
+                        symbol={this.props.exchange.symbol()}
                       />
                     </div>
                   </div>
@@ -174,60 +158,58 @@ export default class BuyTokensDialog extends React.Component {
                         <div styleName='input'>
                           <Field
                             component={TextField}
-                            name='sell'
+                            name='buy'
                             fullWidth
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
-                            floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;{sellToken.symbol()}</span>}
-                            value={this.state.main.toString(10)}
+                            floatingLabelText={(
+                              <span><Translate value={prefix('amountIn')} />&nbsp;{exchangeToken.symbol()}</span>)}
                             style={styles.TextField.style}
                             onChange={this.handleSetPrice}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            multihash={sellToken.icon()}
+                            multihash={exchangeToken.icon()}
                             fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitleMobile'>{sellToken.symbol()}</div>
+                          <div styleName='tokenTitleMobile'>{exchangeToken.symbol()}</div>
                         </div>
                       </div>
                       <div className='col-xs-2 col-sm-1' styleName='mobileFlex'>
                         <div styleName='input'>
                           <Field
                             component={TextField}
-                            name='buy'
+                            name='sell'
                             fullWidth
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
-                            floatingLabelText={<span><Translate
-                              value={prefix('amountIn')} />&nbsp;{buyToken.symbol()}
-                            </span>}
-                            value={this.state.second.toString(10)}
+                            floatingLabelText={(
+                              <span><Translate value={prefix('amountIn')} />&nbsp;{ethToken.symbol()}</span>)}
                             style={styles.TextField.style}
                             onChange={this.handleSetPrice}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>
                           <IPFSImage
-                            multihash={buyToken.icon()}
+                            multihash={ethToken.icon()}
                             fallback={iconTokenDefaultSVG}
                             styleName='iconTitle'
                           />
-                          <div styleName='tokenTitleMobile'>{buyToken.symbol()}</div>
+                          <div styleName='tokenTitleMobile'>{ethToken.symbol()}</div>
                         </div>
                       </div>
                     </div>
                     <div className='row'>
                       <div className='col-xs-2'>
                         <div styleName='actions'>
-                          <RaisedButton label={<Translate value={prefix('sendRequest')} />} primary />
+                          <RaisedButton type='submit' label={<Translate value={prefix('sendRequest')} />} primary />
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </form>
           </div>
         </ModalDialog>
       </CSSTransitionGroup>

@@ -4,11 +4,18 @@ import ErrorList from 'components/forms/ErrorList'
 export default function validate (values) {
   let result = {}
 
-  let amountErrors = new ErrorList()
-  values.get('amount') && amountErrors.add(validator.positiveNumber(values.get('amount'), true))
-  if (amountErrors.getErrors()) {
-    result.amount = amountErrors.getErrors()
+  let buyErrors = new ErrorList()
+  buyErrors.add(validator.positiveNumber(values.get('buy'), true))
+  if (buyErrors.getErrors()) {
+    result.buy = buyErrors.getErrors()
   }
+
+  let sellErrors = new ErrorList()
+  sellErrors.add(validator.positiveNumber(values.get('sell'), true))
+  if (sellErrors.getErrors()) {
+    result.sell = sellErrors.getErrors()
+  }
+
   return result
 
 }

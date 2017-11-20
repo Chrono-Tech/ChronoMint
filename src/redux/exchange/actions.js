@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import exchangeDAO from 'dao/ExchangeDAO'
 import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import exchangeService from 'services/ExchangeService'
@@ -18,12 +17,14 @@ export const EXCHANGE_REMOVE = 'exchange/EXCHANGE_REMOVE'
 export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
 export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
 
-export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async () => {
+export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   try {
-    if (order.isBuy()) {
-      await exchangeDAO.buy(amount, order.sellPrice())
+    const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
+    const tokens = getState().get(DUCK_EXCHANGE).tokens()
+    if (isBuy) {
+      await exchangeDAO.buy(amount, exchange.sellPrice(), tokens.getBySymbol(exchange.symbol()))
     } else {
-      await exchangeDAO.sell(amount, order.buyPrice())
+      await exchangeDAO.sell(amount, exchange.buyPrice(), tokens.getBySymbol(exchange.symbol()))
     }
   } catch (e) {
     // no rollback
