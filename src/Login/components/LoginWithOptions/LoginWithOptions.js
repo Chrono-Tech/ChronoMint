@@ -1,3 +1,4 @@
+import pascalCase from 'pascal-case'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -31,7 +32,6 @@ export const STEP_GENERATE_WALLET = 'step/GENERATE_WALLET'
 export const STEP_GENERATE_MNEMONIC = 'step/GENERATE_MNEMONIC'
 export const STEP_LOGIN_WITH_MNEMONIC = 'step/LOGIN_WITH_MNEMONIC'
 
-const STEP_SELECT_NETWORK = 'step/SELECT_NETWORK'
 const STEP_LOGIN_WITH_WALLET = 'step/LOGIN_WITH_WALLET'
 const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
@@ -130,8 +130,8 @@ class LoginWithOptions extends PureComponent {
     loginTrezor: PropTypes.func,
   }
 
-  constructor () {
-    super()
+  constructor (props, context, updater) {
+    super(props, context, updater)
     this.state = {
       step: STEP_SELECT_OPTION,
     }
@@ -246,77 +246,113 @@ class LoginWithOptions extends PureComponent {
     return loginOptions.map(this.renderOption)
   }
 
-  render () {
-    const { selectedNetworkId } = this.props
-    const { step } = this.state
+  renderStep (step) {
+    const renderer = `render${pascalCase(step)}`
+    return this[ renderer ] ? this[ renderer ]() : null
+  }
 
-    const isGenerateMnemonic = step === STEP_GENERATE_MNEMONIC
+  renderStepSelectOption () {
+    const { selectedNetworkId } = this.props
+
+    if (!selectedNetworkId) {
+      return null
+    }
 
     return (
       <div>
-        {step === STEP_SELECT_OPTION && !!selectedNetworkId && (
-          <div>
-            <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption' />}</div>
-            <div>{this.renderOptions()}</div>
-          </div>
-        )}
+        <div styleName='optionTitle'>{<Translate value='LoginWithOptions.selectLoginOption' />}</div>
+        <div>{this.renderOptions()}</div>
+      </div>
+    )
+  }
 
-        {step === STEP_LOGIN_WITH_MNEMONIC && (
-          <LoginWithMnemonic
-            onLogin={this.handleMnemonicLogin}
-            onGenerate={this.handleSelectStepGenerateMnemonic}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
+  renderStepLoginWithMnemonic () {
+    return (
+      <LoginWithMnemonic
+        onLogin={this.handleMnemonicLogin}
+        onGenerate={this.handleSelectStepGenerateMnemonic}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
 
-        {step === STEP_LOGIN_WITH_WALLET && (
-          <LoginWithWallet
-            onLogin={this.handleWalletUpload}
-            onBack={this.handleSelectStepSelectOption}
-            onGenerate={this.handleSelectStepGenerateWallet}
-          />
-        )}
-        {step === STEP_LOGIN_WITH_PRIVATE_KEY && (
-          <LoginWithPrivateKey
-            onLogin={this.handlePrivateKeyLogin}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
+  renderStepLoginWithWallet () {
+    return (
+      <LoginWithWallet
+        onLogin={this.handleWalletUpload}
+        onBack={this.handleSelectStepSelectOption}
+        onGenerate={this.handleSelectStepGenerateWallet}
+      />
+    )
+  }
 
-        {step === STEP_GENERATE_WALLET && (
-          <GenerateWallet
-            onBack={this.handleSelectStepLoginWithWallet}
-          />
-        )}
-        {isGenerateMnemonic && (
-          <GenerateMnemonic
-            onBack={this.handleSelectStepLoginWithMnemonic}
-          />
-        )}
-        {step === STEP_LOGIN_WITH_LEDGER && (
-          <LoginLedger
-            onLogin={this.handleLedgerLogin}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
-        {step === STEP_LOGIN_WITH_TREZOR && (
-          <LoginTrezor
-            onLogin={this.handleTrezorLogin}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
-        {step === STEP_LOGIN_WITH_METAMASK && (
-          <LoginMetamask
-            onLogin={this.props.onLogin}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
-        {step === STEP_LOGIN_LOCAL && (
-          <LoginLocal
-            onLogin={this.props.onLogin}
-            onBack={this.handleSelectStepSelectOption}
-          />
-        )}
+  renderStepLoginWithPrivateKey () {
+    return (
+      <LoginWithPrivateKey
+        onLogin={this.handlePrivateKeyLogin}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  renderStepGenerateWallet () {
+    return (
+      <GenerateWallet
+        onBack={this.handleSelectStepLoginWithWallet}
+      />
+    )
+  }
+
+  renderStepGenerateMnemonic () {
+    return (
+      <GenerateMnemonic
+        onBack={this.handleSelectStepLoginWithMnemonic}
+      />
+    )
+  }
+
+  renderStepLoginWithLedger () {
+    return (
+      <LoginLedger
+        onLogin={this.handleLedgerLogin}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  renderStepLoginWithTrezor () {
+    return (
+      <LoginTrezor
+        onLogin={this.handleTrezorLogin}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  renderStepLoginWithMetamask () {
+    return (
+      <LoginMetamask
+        onLogin={this.props.onLogin}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  renderStepLoginLocal () {
+    return (
+      <LoginLocal
+        onLogin={this.props.onLogin}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  render () {
+    const { step } = this.state
+
+    return (
+      <div>
+        {this.renderStep(step)}
       </div>
     )
   }

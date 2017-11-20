@@ -1,5 +1,4 @@
 import { MD5 } from 'crypto-js'
-import Web3 from 'web3'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider } from 'material-ui'
 import { yellow800 } from 'material-ui/styles/colors'
@@ -16,8 +15,6 @@ import ProviderSelector from '../components/ProviderSelector/ProviderSelector'
 import NetworkSelector from '../components/NetworkSelector/NetworkSelector'
 import NetworkStatus from '../components/NetworkStatus/NetworkStatus'
 import { providerMap } from '../network/settings'
-import web3Utils from '../network/Web3Utils'
-import web3Provider from '../network/Web3Provider'
 import networkService, { clearErrors, loading } from '../redux/network/actions'
 
 import './LoginPage.scss'
@@ -36,7 +33,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
   checkNetwork: () => networkService.checkNetwork(),
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  getProviderURL: () => networkService.getProviderURL(),
   login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
   loading: () => dispatch(loading()),
@@ -48,7 +44,6 @@ class LoginPage extends Component {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,
     createNetworkSession: PropTypes.func,
-    getProviderURL: PropTypes.func,
     login: PropTypes.func,
     selectedAccount: PropTypes.string,
     selectedProviderId: PropTypes.number,
@@ -83,14 +78,6 @@ class LoginPage extends Component {
     }
   }
 
-  handleSelectNetwork = () => {
-    this.props.clearErrors()
-    const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
-  }
-
   handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
 
   renderError = (error) => (
@@ -112,14 +99,12 @@ class LoginPage extends Component {
           <div styleName='title'><Translate value='LoginPage.title' /></div>
           <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
           {this.state.isShowProvider && <ProviderSelector />}
-          {this.state.isShowProvider && <NetworkSelector onSelect={this.handleSelectNetwork} />}
+          {this.state.isShowProvider && <NetworkSelector />}
           <NetworkStatus />
-          {(selectedProviderId === providerMap.infura.id || selectedProviderId === providerMap.chronoBank.id) && (
-            <LoginWithOptions
-              onLogin={this.handleLogin}
-              onToggleProvider={this.handleToggleProvider}
-            />
-          )}
+          <LoginWithOptions
+            onLogin={this.handleLogin}
+            onToggleProvider={this.handleToggleProvider}
+          />
           {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
 
           {errors && (
