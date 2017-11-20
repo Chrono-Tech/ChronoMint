@@ -8,10 +8,14 @@ export default class Preloader extends PureComponent {
     size: PropTypes.number,
   }
 
+  static defaultProps = {
+    size: 24,
+  }
+
   render () {
     return (
       <div styleName='root' className='Preloader__root'>
-        <CircularProgress size={this.props.size || 24} thickness={1.5} />
+        <CircularProgress size={this.props.size} thickness={1.5} />
       </div>
     )
   }

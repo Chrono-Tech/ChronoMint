@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -7,6 +6,7 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
+import WithLoader from 'components/common/Preloader/WithLoader'
 
 import './PlatformsList.scss'
 
@@ -105,11 +105,12 @@ class PlatformsList extends PureComponent {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          {
-            this.props.assetsManagerCountsLoading
-              ? <div styleName='preloaderWrap'><Preloader /></div>
-              : this.renderPlatformsList()
-          }
+          <WithLoader
+            showLoader={this.props.assetsManagerCountsLoading}
+            loader={<div styleName='preloaderWrap'><Preloader /></div>}
+          >
+            {this.renderPlatformsList}
+          </WithLoader>
         </div>
       </div>
     )
