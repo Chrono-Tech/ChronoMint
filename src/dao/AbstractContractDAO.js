@@ -201,8 +201,8 @@ export default class AbstractContractDAO {
   }
 
   getContractName () {
-    /** @namespace this._json.contract_name */
-    return this._json.contract_name
+    /** @namespace this._json.contractName */
+    return this._json.contractName
   }
 
   async getData (func: string, args: Array = []): string {

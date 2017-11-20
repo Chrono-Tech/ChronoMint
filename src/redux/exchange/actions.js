@@ -66,7 +66,7 @@ const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
   let updatedExchange = exchange
   if (!exchange.isNew() && !!exchange.isTransactionHash()) {
     // address arrived, delete temporary hash
-    dispatch({ type: EXCHANGE_REMOVE, id: exchange.id() })
+    dispatch({ type: EXCHANGE_REMOVE, exchange })
     updatedExchange = exchange.transactionHash(null).isPending(false)
   }
   dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange })
@@ -79,7 +79,7 @@ export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch,
   dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
 }
 
-export const watchExchanges = () => async (dispatch) => {
+export const watchExchanges = () => async (dispatch, getState) => {
   try {
     await exchangeService.subscribeToCreateExchange()
   } catch (e) {
@@ -87,10 +87,11 @@ export const watchExchanges = () => async (dispatch) => {
     console.error('watch error', e.message)
   }
 
-  exchangeService.on('ExchangeCreated', (result) => {
-    // TODO @abdulov
-    // eslint-disable-next-line
-    console.log('--actions#', result)
+  exchangeService.on('ExchangeCreated', async (tx) => {
+    const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
+    const exchangeAddress = tx.args.exchange
+    const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_EXCHANGE).tokens())
+    dispatch(updateExchange(exchangeData.item(exchangeAddress).transactionHash(tx.transactionHash)))
   })
 }
 

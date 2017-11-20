@@ -433,10 +433,10 @@ export default {
     },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH',
+        title: 'Confirm buy tokens for ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH',
+        title: 'Confirm sell tokens for ETH',
       },
     },
   },

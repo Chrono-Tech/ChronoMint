@@ -77,16 +77,13 @@ export default class ExchangesTable extends React.Component {
             {showBuy &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol={exchange.symbol()} />
+              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
             </div>
             }
             {showSell &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue
-                value={exchange.sellPrice()}
-                symbol={exchange.symbol()}
-              />
+              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
             </div>
             }
           </div>
@@ -112,13 +109,13 @@ export default class ExchangesTable extends React.Component {
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
               <TokenValue
                 value={new BigNumber(0)}
-                symbol={exchange.symbol()}
+                symbol='ETH'
                 noRenderPrice
               />
               -
               <TokenValue
                 value={exchange.ethBalance()}
-                symbol={exchange.symbol()}
+                symbol='ETH'
                 noRenderPrice
               />
             </div>

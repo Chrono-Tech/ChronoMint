@@ -81,7 +81,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         buyPrice: token.dao().removeDecimals(buyPrice),
         sellPrice: token.dao().removeDecimals(sellPrice),
         assetBalance: token.dao().removeDecimals(assetBalance),
-        ethBalance: token.dao().removeDecimals(ethBalance),
+        ethBalance: this._c.fromWei(ethBalance),
       }))
     })
     return exchangesCollection
