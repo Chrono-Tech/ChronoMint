@@ -33,7 +33,7 @@ webpack(config).run(function (err, stats) {
     Successfully generated a bundle in the build folder!
     You can now serve it with any static server, for example:
     
-      npm run hs
+      yarn hs
 
     The bundle is optimized and ready to be deployed to production.`)
   }

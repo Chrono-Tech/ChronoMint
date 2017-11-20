@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
-import SockJS from 'sockjs-client'
+import openSocket from 'socket.io-client'
 import Stomp from 'webstomp-client'
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
@@ -20,7 +20,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           await this._api.post('addr', {
             address,
           })
-          this.executeOrSschedule(() => {
+          this.executeOrSchedule(() => {
             this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
               `${socket.channels.balance}.${address}`,
               // `${socket.channels.balance}.*`,
@@ -53,7 +53,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           await this._api.delete('addr', {
             address,
           })
-          this.executeOrSschedule(() => {
+          this.executeOrSchedule(() => {
             const subscription = this._subscriptions[ `balance:${address}` ]
             if (subscription) {
               delete this._subscriptions[ `balance:${address}` ]
@@ -71,8 +71,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
 
   connect () {
     if (this._socket) {
-      let ws = new SockJS(this._socket.baseURL)
-      this._client = Stomp.over(ws, { heartbeat: false, debug: false })
+      this._ws = openSocket(this._socket.baseURL)
+      this._client = Stomp.over(this._ws, { heartbeat: false, debug: false })
       this._client.connect(this._socket.user, this._socket.password,
         () => {
           this.handleMissed()
@@ -87,7 +87,13 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  executeOrSschedule (action) {
+  disconnect () {
+    if (this._socket) {
+      this._ws.close()
+    }
+  }
+
+  executeOrSchedule (action) {
     if (this._socket) {
       action()
     } else {
