@@ -1,5 +1,4 @@
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
-import { getCurrentWallet } from 'redux/wallet/actions'
 import BigNumber from 'bignumber.js'
 import { IPFSImage } from 'components'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -8,14 +7,16 @@ import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/exchange/TokensCollection'
+import TokenModel from 'models/TokenModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { change, Field, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import './BuyTokensDialog.scss'
 import styles from './styles'
 import validate from './validate'
@@ -54,6 +55,7 @@ export default class BuyTokensDialog extends React.Component {
     filter: PropTypes.instanceOf(Immutable.Map),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
+    eth: PropTypes.instanceOf(TokenModel),
   }
 
   constructor (props) {
@@ -63,6 +65,24 @@ export default class BuyTokensDialog extends React.Component {
       main: new BigNumber(0),
       second: new BigNumber(0),
       isPossible: false,
+    }
+  }
+
+  handleSetPrice = (e) => {
+    let value = e.target.value
+    const price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
+    if (this.props.isBuy) { // buy
+      if (e.target.name === 'buy') {
+        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(value || 0).mul(price)))
+      } else {
+        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'buy', new BigNumber(value || 0).div(price)))
+      }
+    } else { // sell
+      if (e.target.name === 'buy') {
+        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(value || 0).div(price)))
+      } else {
+        this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'buy', new BigNumber(value || 0).mul(price)))
+      }
     }
   }
 
@@ -160,6 +180,7 @@ export default class BuyTokensDialog extends React.Component {
                             floatingLabelText={<span><Translate value={prefix('amountIn')} />&nbsp;{sellToken.symbol()}</span>}
                             value={this.state.main.toString(10)}
                             style={styles.TextField.style}
+                            onChange={this.handleSetPrice}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>
@@ -179,9 +200,11 @@ export default class BuyTokensDialog extends React.Component {
                             fullWidth
                             floatingLabelStyle={styles.TextField.floatingLabelStyle}
                             floatingLabelText={<span><Translate
-                              value={prefix('amountIn')} />&nbsp;{buyToken.symbol()}</span>}
+                              value={prefix('amountIn')} />&nbsp;{buyToken.symbol()}
+                            </span>}
                             value={this.state.second.toString(10)}
                             style={styles.TextField.style}
+                            onChange={this.handleSetPrice}
                           />
                         </div>
                         <div styleName='iconMobile' style={{ background: `#05326a` }}>

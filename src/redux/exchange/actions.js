@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import exchangeDAO from 'dao/ExchangeDAO'
-// TODO @bshevchenko: this is intermediate version for demo
 import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import exchangeService from 'services/ExchangeService'
@@ -31,7 +30,7 @@ export const exchange = (order: ExchangeOrderModel, amount: BigNumber) => async 
   }
 }
 
-export const search = (values: Immutable.Map) => async dispatch => {
+export const search = (values: Immutable.Map) => async (dispatch) => {
   dispatch({ type: EXCHANGE_GET_ORDERS_START })
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const exchangesAddresses = await exchangeManagerDAO.getExchangesWithFilter(values.get('token'))
@@ -40,7 +39,7 @@ export const search = (values: Immutable.Map) => async dispatch => {
   dispatch({ type: EXCHANGE_SET_FILTER, filter: values })
 }
 
-export const getExchange = () => async dispatch => {
+export const getExchange = () => async (dispatch, getState) => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
   await dispatch(getTokenList())
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
@@ -49,12 +48,12 @@ export const getExchange = () => async dispatch => {
     dispatch({ type: EXCHANGE_GET_DATA_FINISH, payload: { assetSymbols } })
   } catch (e) {
     dispatch({ type: EXCHANGE_MIDDLEWARE_DISCONNECTED })
-    const exchanges = await exchangeManagerDAO.getExchanges(0, 10)
+    const exchanges = await exchangeManagerDAO.getExchanges(0, 10, getState().get(DUCK_EXCHANGE).tokens())
     dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, exchanges })
   }
 }
 
-export const getExchangesForSymbol = (symbol: string) => async dispatch => {
+export const getExchangesForSymbol = (symbol: string) => async (dispatch) => {
   dispatch({ type: EXCHANGE_GET_ORDERS_START })
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const exchangesAddresses = await exchangeManagerDAO.getExchangesForSymbol(symbol)
@@ -72,9 +71,10 @@ const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
   dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange })
 }
 
-export const createExchange = (exchange: ExchangeOrderModel) => async dispatch => {
+export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
+  const tokens = getState().get(DUCK_EXCHANGE).tokens()
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const txHash = await exchangeManagerDAO.createExchange(exchange)
+  const txHash = await exchangeManagerDAO.createExchange(exchange, tokens.getBySymbol(exchange.symbol()))
   dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
 }
 

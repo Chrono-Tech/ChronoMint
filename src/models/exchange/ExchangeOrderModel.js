@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import Amount from '../Amount'
 
 export default class ExchangeOrderModel extends abstractFetchingModel({
   owner: null,
@@ -10,7 +11,7 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
   symbol: null,
   address: null,
   authorizedManager: null,
-  isActive: false,
+  isActive: true,
 }) {
 
   id () {
@@ -55,5 +56,15 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
 
   isNew () {
     return !this.address()
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  txSummary () {
+    return {
+      symbol: this.symbol(),
+      buyPrice: new Amount(this.buyPrice(), 'ETH'),
+      sellPrice: new Amount(this.sellPrice(), 'ETH'),
+      isActive: this.isActive(),
+    }
   }
 }
