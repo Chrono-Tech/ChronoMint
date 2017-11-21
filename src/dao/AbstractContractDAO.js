@@ -398,13 +398,11 @@ export default class AbstractContractDAO {
     }
 
     let gasLimit = null
-    let gasPrice
 
     /** START */
     try {
-      [gasLimit, gasPrice] = await Promise.all([
+      [gasLimit] = await Promise.all([
         estimateGas(),
-        this._web3Provider.getGasPrice(),
         AbstractContractDAO.txStart(tx),
       ])
 
@@ -432,10 +430,7 @@ export default class AbstractContractDAO {
         }
       }
 
-      const dryResult = convertDryResult(await deployed[func].call(...args, {
-        ...txParams,
-        gas: DEFAULT_GAS,
-      }))
+      const dryResult = convertDryResult(await deployed[func].call(...args, txParams))
 
       if (!this._okCodes.includes(dryResult)) {
         throw new TxError('Dry run failed', dryResult)
@@ -446,6 +441,8 @@ export default class AbstractContractDAO {
         // eslint-disable-next-line
         console.log(`%c --> ${this.getContractName()}.${func}`, 'color: #fff; background: #906', args)
       }
+
+      console.log('--AbstractContractDAO#_tx', txParams,gasLimit)
 
       const result = await deployed[func](...args, txParams)
 
@@ -529,7 +526,7 @@ export default class AbstractContractDAO {
     ])
 
     const gasPriceBN = new BigNumber(gasPrice)
-    const gasLimit = estimatedGas + 1
+    const gasLimit = process.env.NODE_ENV === 'development' ? estimatedGas * 2 : estimatedGas + 1
     const gasFee = this._c.fromWei(gasPriceBN.mul(gasLimit))
 
     return { gasLimit, gasFee }

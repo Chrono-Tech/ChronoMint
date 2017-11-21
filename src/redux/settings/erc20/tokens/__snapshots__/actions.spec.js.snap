@@ -64,34 +64,7 @@ exports[`settings erc20 actions should dispatch changes for decimals and symbol 
 
 exports[`settings erc20 actions should dispatch changes for decimals and symbol fields for valid ERC20 2`] = `"FAKE"`;
 
-exports[`settings erc20 actions should list tokens 1`] = `
-Object {
-  "address": "0xb2bc23dbafe9557819c01cca5c7f699a63e3d0a3",
-  "allowance": Object {},
-  "balance": "0",
-  "dao": null,
-  "decimals": 3,
-  "fee": null,
-  "feeAddress": null,
-  "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
-  "id": null,
-  "isFailed": false,
-  "isFetched": true,
-  "isFetching": false,
-  "isOptional": true,
-  "isPending": false,
-  "isReissuable": null,
-  "managersList": null,
-  "name": "Fake",
-  "platform": null,
-  "symbol": "FAKE",
-  "timestamp": null,
-  "totalSupply": "0",
-  "transactionHash": null,
-  "url": "http://fakecoin.io",
-  "withFee": null,
-}
-`;
+exports[`settings erc20 actions should list tokens 1`] = `undefined`;
 
 exports[`settings erc20 actions should modify token 1`] = `
 Array [

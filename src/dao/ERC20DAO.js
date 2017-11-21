@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import debug from 'debug'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxModel from 'models/TxModel'
@@ -10,6 +11,8 @@ export const TX_TRANSFER = 'transfer'
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
+
+const logInfo = debug('chronobank:info:dao:erc20')
 
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (at, json) {
@@ -55,7 +58,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
-    console.log(this._symbol)
     if (this._decimals === null) {
       throw new Error('removeDecimals: decimals is undefined')
     }
@@ -92,7 +94,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   approve (account: string, amount: BigNumber) {
-    console.log('--ERC20DAO#approve', account, amount)
+    logInfo('approve', account, amount)
     return this._tx(TX_APPROVE, [
       account,
       this.addDecimals(amount),
@@ -149,8 +151,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     if (block && time) {
       return this._createTxModel(tx, account, block, time)
     }
-    block = await this._web3Provider.getBlock(tx.blockHash)
-    return this._createTxModel(tx, account, tx.blockNumber, block.timestamp)
+    const minedBlock = await this._web3Provider.getBlock(tx.blockHash)
+    return this._createTxModel(tx, account, tx.blockNumber, minedBlock.timestamp)
   }
 
   watchApproval (callback) {
