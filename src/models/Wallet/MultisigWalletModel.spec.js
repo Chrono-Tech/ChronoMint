@@ -26,7 +26,7 @@ const multisigWalletModel = new MultisigWalletModel({
       }),
     }),
   }),
-  owners: new Immutable.List(['owner1', 'owner2']),
+  owners: new Immutable.List([ 'owner1', 'owner2' ]),
   name: 'Wallet Name',
   requiredSignatures: 2,
   pendingTxList: new MultisigWalletPendingTxCollection({

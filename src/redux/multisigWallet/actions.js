@@ -29,7 +29,7 @@ const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => {
 
 export const watchMultisigWallet = (wallet: MultisigWalletModel) => async () => {
   try {
-    await multisigWalletService.subscribeToWalletDAO(wallet)
+    return multisigWalletService.subscribeToWalletDAO(wallet)
   } catch (e) {
     // eslint-disable-next-line
     console.error('watch error', e.message)

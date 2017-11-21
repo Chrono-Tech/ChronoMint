@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
+import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import Immutable from 'immutable'
 import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
 import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
@@ -28,7 +28,7 @@ const get = (wallet) => (duck) => {
 const store = mockStore({ get: get() })
 
 describe('Multisig Wallet actions', () => {
-  it.skip('should create multisig wallet', async (done) => {
+  it('should create multisig wallet', async (done) => {
     let walletSizeBefore
 
     const dao = await contractsManagerDAO.getWalletsManagerDAO()
@@ -39,7 +39,7 @@ describe('Multisig Wallet actions', () => {
       expect(wallets.size).toEqual(walletSizeBefore + 1)
 
       // 4 clean up
-      // TODO @dkchv: !!!
+      await multisigWalletService.unsubscribe(wallet.address())
       done()
     })
     // 1 get wallet and subscribe
@@ -51,83 +51,68 @@ describe('Multisig Wallet actions', () => {
     expect(txHash).not.toBeNull()
   })
 
-  it.skip('should deposit ETH tokens', async (done) => {
+  it('should deposit ETH tokens', async (done) => {
     const amountToTransfer = new BigNumber(1.1)
-    const dao = await contractsManagerDAO.getWalletsManagerDAO()
-    await dao.watchWalletCreate(async (wallet: MultisigWalletModel) => {
-      multisigWalletService.on('Deposit', async (walletId, tokenId, amount) => {
-        // 4 deposited
-        expect(walletId).toEqual(wallet.address())
-        expect(tokenId).toEqual('ETH')
-        expect(amount).toEqual(amountToTransfer)
+    const manager = await contractsManagerDAO.getWalletsManagerDAO()
+    const wallets = await manager.getWallets()
+    expect(wallets.size).toEqual(1)
+    const wallet = wallets.first()
 
-        // 5 clean up
-        await multisigWalletService.unsubscribeAll()
-        done()
-      })
-      // 2 subscribe on wallet
-      await store.dispatch(a.watchMultisigWallet(wallet))
-      // 3 transfer
-      await ethereumDAO.transfer(wallet.address(), amountToTransfer)
+    multisigWalletService.on('Deposit', async (walletId, tokenId, amount) => {
+      // 3 deposited
+      expect(walletId).toEqual(wallet.address())
+      expect(tokenId).toEqual('ETH')
+      expect(amount).toEqual(amountToTransfer)
+      // 4 clean up
+      await multisigWalletService.unsubscribe(walletId)
+      done()
     })
-
-    // 1 create
-    const txHash = await store.dispatch(a.createWallet(walletModel))
-    expect(txHash).not.toBeNull()
+    // 1 subscribe on wallet
+    await store.dispatch(a.watchMultisigWallet(wallet))
+    // 2 transfer
+    await ethereumDAO.transfer(wallet.address(), amountToTransfer)
   })
 
   it('should send ETH with multisig transfer', async (done) => {
-    const amountToTransfer = new BigNumber(2.2)
     const amountToMSTransfer = new BigNumber(1)
 
-    const dao = await contractsManagerDAO.getWalletsManagerDAO()
-    await dao.watchWalletCreate(async (wallet: MultisigWalletModel) => {
-      multisigWalletService.on('Deposit', async (walletId, tokenId, amount) => {
-        expect(tokenId).toEqual('ETH')
-        expect(amount).toEqual(amountToTransfer)
+    const manager = await contractsManagerDAO.getWalletsManagerDAO()
+    const wallets = await manager.getWallets()
+    const wallet = wallets.first()
+    expect(wallets.size).toEqual(1)
+    expect(wallet.address()).not.toBeNull()
 
-        // 3 send back
-        const token = wallet.tokens().get(tokenId)
-        await store.dispatch(a.multisigTransfer(wallet, token, amountToMSTransfer, accounts[0]))
-      })
+    multisigWalletService.on('ConfirmationNeeded', async (walletId, pendingTxModel) => {
+      expect(pendingTxModel.id()).not.toBeNull()
+      expect(walletId).toEqual(wallet.address())
 
-      multisigWalletService.on('ConfirmationNeeded', async (walletId, pendingTxModel) => {
-        expect(pendingTxModel.id()).not.toBeNull()
-        // 4 confirm from second account
-        AbstractContractDAO.setAccount(accounts[1])
-        await store.dispatch(a.confirmMultisigTx(wallet, pendingTxModel))
-        // revert to first
-        AbstractContractDAO.setAccount(accounts[0])
-      })
-
-      multisigWalletService.on('Confirmation', async (walletId, txId, owner) => {
-        // 5 sended
-        // expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
-        // expect(multisigTransactionModel.symbol()).toEqual('ETH')
-        // expect(multisigTransactionModel.wallet()).toEqual(wallet.address())
-        //
-        // 6 clean up
-        // await multisigWalletService.unsubscribeAll()
-        // done()
-      })
-
-      multisigWalletService.on('MultiTransact', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
-        // 5 sended
-        expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
-        expect(multisigTransactionModel.symbol()).toEqual('ETH')
-        expect(multisigTransactionModel.wallet()).toEqual(wallet.address())
-
-        // 6 clean up
-        // await multisigWalletService.unsubscribeAll()
-        done()
-      })
-
-      await store.dispatch(a.watchMultisigWallet(wallet))
-      // 2 transfer to ms-wallet
-      await ethereumDAO.transfer(wallet.address(), amountToTransfer)
+      const dao: MultisigWalletDAO = await multisigWalletService.getWalletDAO(walletId)
+      // 4.1 confirm from second account
+      dao.setAccount(accounts[1])
+      await store.dispatch(a.confirmMultisigTx(wallet, pendingTxModel))
+      // 4.2 revert to first
+      dao.setAccount(accounts[0])
     })
 
-    // 1 create wallet
-    await store.dispatch(a.createWallet(walletModel))
+    multisigWalletService.on('MultiTransact', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
+      // 5 sended
+      expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
+      expect(multisigTransactionModel.symbol()).toEqual('ETH')
+      expect(multisigTransactionModel.wallet()).toEqual(wallet.address())
+      expect(walletId).toEqual(wallet.address())
+
+      // 6 clean up
+      await multisigWalletService.unsubscribe(wallet.address())
+      done()
+    })
+
+    await store.dispatch(a.watchMultisigWallet(wallet))
+    // 3 send back
+    const token = wallet.tokens().get('ETH')
+    await store.dispatch(a.multisigTransfer(wallet, token, amountToMSTransfer, accounts[0]))
+  })
+
+  it.skip('should add owner to wallet', async () => {
+
   })
 })
