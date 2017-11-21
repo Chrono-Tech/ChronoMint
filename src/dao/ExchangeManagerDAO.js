@@ -87,6 +87,11 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return exchangesCollection
   }
 
+  async getExchangesCount () {
+    const number = await this._call('getExchangesCount')
+    return number.toNumber()
+  }
+
   watchExchangeCreated (callback) {
     this._watch('ExchangeCreated', callback)
   }

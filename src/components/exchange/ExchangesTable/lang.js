@@ -11,6 +11,7 @@ export default {
     buy: 'Buy',
     sell: 'Sell',
     statusPending: 'Status: pending',
+    getNextPage: 'Load next page',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -24,5 +25,6 @@ export default {
     buy: 'Купить',
     sell: 'Продать',
     statusPending: 'Статус: ожидает манинга',
+    getNextPage: 'Загрузить слудующую страницу',
   },
 }

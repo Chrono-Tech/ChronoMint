@@ -7,6 +7,7 @@ import exchangeService from 'services/ExchangeService'
 export const DUCK_EXCHANGE = 'exchange'
 
 export const EXCHANGE_GET_ORDERS_START = 'exchange/GET_ORDERS_START'
+export const EXCHANGE_SET_PAGES_COUNT = 'exchange/EXCHANGE_SET_PAGES_COUNT'
 export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
 export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
 export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
@@ -16,6 +17,9 @@ export const EXCHANGE_SET_FILTER = 'exchange/EXCHANGE_SET_FILTER'
 export const EXCHANGE_REMOVE = 'exchange/EXCHANGE_REMOVE'
 export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
 export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
+export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
+export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
+const PAGE_SIZE = 2
 
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   try {
@@ -40,18 +44,31 @@ export const search = (values: Immutable.Map) => async (dispatch) => {
   dispatch({ type: EXCHANGE_SET_FILTER, filter: values })
 }
 
-export const getExchange = () => async (dispatch, getState) => {
+export const getExchange = () => async (dispatch) => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
   await dispatch(getTokenList())
+  await dispatch(getExchangesCount())
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   try {
     const assetSymbols = await exchangeManagerDAO.getAssetSymbols()
-    dispatch({ type: EXCHANGE_GET_DATA_FINISH, payload: { assetSymbols } })
+    dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
   } catch (e) {
     dispatch({ type: EXCHANGE_MIDDLEWARE_DISCONNECTED })
-    const exchanges = await exchangeManagerDAO.getExchanges(0, 10, getState().get(DUCK_EXCHANGE).tokens())
-    dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, exchanges })
+    dispatch(getNextPage())
   }
+}
+const getExchangesCount = () => async (dispatch) => {
+  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  const count = await exchangeManagerDAO.getExchangesCount()
+  dispatch({ type: EXCHANGE_SET_PAGES_COUNT, count })
+}
+
+export const getNextPage = () => async (dispatch, getState) => {
+  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_START })
+  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  const state = getState().get(DUCK_EXCHANGE)
+  const exchanges = await exchangeManagerDAO.getExchanges(state.lastPages(), PAGE_SIZE, state.tokens())
+  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + PAGE_SIZE })
 }
 
 export const getExchangesForSymbol = (symbol: string) => async (dispatch) => {

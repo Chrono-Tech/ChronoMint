@@ -9,7 +9,17 @@ export default class ExchangeModel extends abstractFetchingModel({
   filter: new Immutable.Map(),
   tokens: new TokensCollection(),
   showFilter: true,
+  lastPages: 0,
+  pagesCount: 0,
 }) {
+  lastPages (value) {
+    return this._getSet('lastPages', value)
+  }
+
+  pagesCount (value) {
+    return this._getSet('pagesCount', value)
+  }
+
   exchanges (value) {
     return this._getSet('exchanges', value)
   }

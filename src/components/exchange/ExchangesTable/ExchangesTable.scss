@@ -89,8 +89,8 @@ $cell-padding: 16px 8px;
     justify-content: center;
     flex-direction: column;
   }
-  :global{
-    .Preloader__root{
+  :global {
+    .Preloader__root {
       height: 100%;
     }
   }
@@ -144,4 +144,10 @@ $cell-padding: 16px 8px;
     display: block;
     width: 60%;
   }
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
 }
