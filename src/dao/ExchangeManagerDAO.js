@@ -1,4 +1,5 @@
 import exchangeProvider from 'Login/network/ExchangeProvider'
+import exchangeService from 'services/ExchangeService'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import TokensCollection from 'models/exchange/TokensCollection'
@@ -58,22 +59,18 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
   }
 
-  async getExchangesWithFilter (symbol: string, isSell: boolean) {
-    const sort = isSell ? `&sort=sellPrice,-age` : `&sort=buyPrice,-age`
-    const exchanges = await exchangeProvider.getExchangesWithFilter(web3Converter.stringToBytes(symbol), sort)
-    return exchanges.map((exchange) => exchange.exchange)
-  }
-
-  getExchangesForSymbol (symbol: string) {
-    return this._call('getExchangesForSymbol', [symbol])
-  }
-
   async getExchangeData (exchangesAddresses: Array<string>, tokens: TokensCollection) {
     let exchangesCollection = new ExchangesCollection()
 
     const [exchanges, symbols, owners, buyPrices, sellPrices, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
     exchanges.forEach((address, i) => {
+      try {
+        exchangeService.subscribeToExchangeManager(address)
+      } catch (e) {
+        // eslint-disable-next-line
+        console.error('watch error', e.message)
+      }
       const owner = owners[i]
       const symbol = this._c.bytesToString(symbols[i])
       const buyPrice = buyPrices[i]
@@ -102,4 +99,5 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   watchExchangeCreated (callback) {
     this._watch('ExchangeCreated', callback)
   }
+
 }

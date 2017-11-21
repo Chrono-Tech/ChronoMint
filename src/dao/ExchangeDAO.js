@@ -88,6 +88,42 @@ export class ExchangeDAO extends AbstractContractDAO {
       this.contract = this._initContract()
     }
   }
+
+  watchError (callback) {
+    this._watch('Error', callback)
+  }
+
+  watchFeeUpdated (callback) {
+    this._watch('FeeUpdated', callback)
+  }
+
+  watchPricesUpdated (callback) {
+    this._watch('PricesUpdated', callback)
+  }
+
+  watchActiveChanged (callback) {
+    this._watch('ActiveChanged', callback)
+  }
+
+  watchBuy (callback) {
+    this._watch('Buy', callback)
+  }
+
+  watchSell (callback) {
+    this._watch('Sell', callback)
+  }
+
+  watchWithdrawEther (callback) {
+    this._watch('WithdrawEther', callback)
+  }
+
+  watchWithdrawTokens (callback) {
+    this._watch('WithdrawTokens', callback)
+  }
+
+  watchReceivedEther (callback) {
+    this._watch('ReceivedEther', callback)
+  }
 }
 
 export default new ExchangeDAO()

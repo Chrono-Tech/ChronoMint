@@ -2,8 +2,8 @@ import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
+import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
-import { DUCK_SESSION } from '../session/actions'
 
 export const DUCK_EXCHANGE = 'exchange'
 
@@ -88,7 +88,9 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
     PAGE_SIZE,
     state.tokens(),
     filter,
-    { fromMiddleWare: state.showFilter() })
+    {
+      fromMiddleWare: state.showFilter(),
+    })
 
   dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + PAGE_SIZE })
 }
@@ -124,6 +126,50 @@ export const watchExchanges = () => async (dispatch, getState) => {
     const exchangeAddress = tx.args.exchange
     const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_EXCHANGE).tokens())
     dispatch(updateExchange(exchangeData.item(exchangeAddress).transactionHash(tx.transactionHash)))
+  })
+  exchangeService.on('Error', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#Error', tx)
+  })
+
+  exchangeService.on('FeeUpdated', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#FeeUpdated', tx)
+  })
+
+  exchangeService.on('PricesUpdated', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#PricesUpdated', tx)
+  })
+
+  exchangeService.on('ActiveChanged', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#ActiveChanged', tx)
+  })
+
+  exchangeService.on('Buy', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#Buy', tx)
+  })
+
+  exchangeService.on('Sell', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#Sell', tx)
+  })
+
+  exchangeService.on('WithdrawEther', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#WithdrawEther', tx)
+  })
+
+  exchangeService.on('WithdrawTokens', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#WithdrawTokens', tx)
+  })
+
+  exchangeService.on('ReceivedEther', async (tx) => {
+    // eslint-disable-next-line
+    console.log('--actions#ReceivedEther', tx)
   })
 }
 
