@@ -3,7 +3,7 @@ import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import Immutable from 'immutable'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton, Toggle } from 'material-ui'
 import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import PropTypes from 'prop-types'
@@ -22,6 +22,7 @@ function mapStateToProps (state) {
   const exchange = state.get('exchange')
   return {
     exchanges: exchange.exchanges(),
+    exchangesForOwner: exchange.exchangesForOwner(),
     pagesCount: exchange.pagesCount(),
     lastPages: exchange.lastPages(),
     showFilter: exchange.showFilter(),
@@ -43,15 +44,28 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class ExchangesTable extends React.Component {
+export default class ExchangesTable extends React.PureComponent {
   static propTypes = {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
+    exchangesForOwner: PropTypes.instanceOf(ExchangesCollection),
     openDetails: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
     showFilter: PropTypes.bool,
     handleGetNextPage: PropTypes.func,
-    pagesCount: PropTypes.instanceOf(BigNumber),
-    lastPages: PropTypes.instanceOf(BigNumber),
+    pagesCount: PropTypes.number,
+    lastPages: PropTypes.number,
+  }
+
+  constructor (args) {
+    super(args)
+
+    this.state = {
+      showMyExchanges: false,
+    }
+  }
+
+  handleShowMyExchanges = (e: Object, isInputChecked: boolean) => {
+    this.setState({ showMyExchanges: isInputChecked })
   }
 
   renderRow (exchange: ExchangeOrderModel) {
@@ -156,33 +170,43 @@ export default class ExchangesTable extends React.Component {
 
   renderFooter () {
 
-    if (this.props.exchanges.isFetching() || !this.props.exchanges.isFetched()) {
+    if (this.state.showMyExchanges) return null
+
+    if (this.props.exchanges.isFetching()) {
       return <Preloader />
     }
 
-    return this.props.lastPages < this.props.pagesCount ?
-      <RaisedButton
-        label={<Translate value={prefix('getNextPage')} />}
-        primary
-        onTouchTap={this.props.handleGetNextPage}
-      />
-      : null
+    if (this.props.exchanges.isFetched() && this.props.lastPages < this.props.pagesCount) {
+      return (
+        <RaisedButton
+          label={<Translate value={prefix('getNextPage')} />}
+          primary
+          onTouchTap={this.props.handleGetNextPage}
+        />
+      )
+    }
 
+    return null
   }
 
   render () {
-    const amount = this.props.filter.get('amount')
     let filteredItems
-    if (this.props.showFilter) {
-      filteredItems = amount > 0
-        ? this.props.exchanges.items().filter((item: ExchangeOrderModel) => {
+    const amount = this.props.filter.get('amount')
+    if (this.state.showMyExchanges) {
+
+      filteredItems = this.props.exchangesForOwner.items()
+
+    } else if (this.props.filter.get('filterMode') && amount > 0) {
+
+      filteredItems = this.props.exchanges.items()
+        .filter((item: ExchangeOrderModel) => {
           if (this.props.filter.get('filterMode').name === 'BUY') {
-            return amount < item.ethBalance()
+            return amount < item.assetBalance().toNumber()
           } else {
-            return amount < item.assetBalance()
+            return amount < item.ethBalance().toNumber()
           }
         })
-        : []
+
     } else {
       filteredItems = this.props.exchanges.items()
     }
@@ -192,6 +216,13 @@ export default class ExchangesTable extends React.Component {
           <div styleName='title'><Translate value={prefix('orderBook')} /></div>
         </div>
         <div styleName='content'>
+          <div styleName='actionsWrapper'>
+            <Toggle
+              label={<Translate value={prefix('showOnlyMyExchanges')} />}
+              style={{ width: 'auto' }}
+              onToggle={this.handleShowMyExchanges}
+            />
+          </div>
           <div styleName='table'>
             <div styleName='tableHead'>
               <div styleName='tableHeadRow'>
@@ -204,13 +235,15 @@ export default class ExchangesTable extends React.Component {
               </div>
             </div>
             <div styleName='tableBody'>
-              {this.props.exchanges.isFetched() && filteredItems
-                .sort(function (a, b) {
-                  if (a.isPending()) return -1
-                  if (b.isPending()) return 1
-                  return 0
-                })
-                .map((exchange) => this.renderRow(exchange))}
+              {
+                this.props.exchanges.isFetched() && filteredItems
+                  .sort(function (a, b) {
+                    if (a.isPending()) return -1
+                    if (b.isPending()) return 1
+                    return 0
+                  })
+                  .map((exchange) => this.renderRow(exchange))
+              }
             </div>
             <div styleName='tableFooter'>
               {this.renderFooter()}

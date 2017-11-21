@@ -12,6 +12,7 @@ export default {
     sell: 'Sell',
     statusPending: 'Status: pending',
     getNextPage: 'Load next page',
+    showOnlyMyExchanges: 'Show my exchanges',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -26,5 +27,6 @@ export default {
     sell: 'Продать',
     statusPending: 'Статус: ожидает манинга',
     getNextPage: 'Загрузить слудующую страницу',
+    showOnlyMyExchanges: 'Показать мои обменники',
   },
 }

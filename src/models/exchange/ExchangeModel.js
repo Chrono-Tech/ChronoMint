@@ -5,6 +5,7 @@ import TokensCollection from './TokensCollection'
 
 export default class ExchangeModel extends abstractFetchingModel({
   exchanges: new ExchangesCollection(),
+  exchangesForOwner: new ExchangesCollection(),
   assetSymbols: [],
   filter: new Immutable.Map(),
   tokens: new TokensCollection(),
@@ -22,6 +23,10 @@ export default class ExchangeModel extends abstractFetchingModel({
 
   exchanges (value) {
     return this._getSet('exchanges', value)
+  }
+
+  exchangesForOwner (value) {
+    return this._getSet('exchangesForOwner', value)
   }
 
   showFilter (value) {

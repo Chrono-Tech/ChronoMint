@@ -3,6 +3,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import exchangeService from 'services/ExchangeService'
+import { DUCK_SESSION } from '../session/actions'
 
 export const DUCK_EXCHANGE = 'exchange'
 
@@ -19,7 +20,9 @@ export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
 export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
-const PAGE_SIZE = 2
+export const EXCHANGE_GET_OWNERS_EXCHANGES_START = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START'
+export const EXCHANGE_GET_OWNERS_EXCHANGES_FINISH = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_FINISH'
+const PAGE_SIZE = 10
 
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   try {
@@ -36,47 +39,58 @@ export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOr
 }
 
 export const search = (values: Immutable.Map) => async (dispatch) => {
-  dispatch({ type: EXCHANGE_GET_ORDERS_START })
-  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const exchangesAddresses = await exchangeManagerDAO.getExchangesWithFilter(values.get('token'))
-  const exchanges = await exchangeManagerDAO.getExchangeData(exchangesAddresses)
-  dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, exchanges })
   dispatch({ type: EXCHANGE_SET_FILTER, filter: values })
+  dispatch(getNextPage({
+    symbol: values.get('token'),
+    isBuy: values.get('filterMode').name.toLowerCase(),
+  }))
 }
 
 export const getExchange = () => async (dispatch) => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
   await dispatch(getTokenList())
   await dispatch(getExchangesCount())
+  // not await
+  dispatch(getExchangesForOwner())
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  let assetSymbols
   try {
-    const assetSymbols = await exchangeManagerDAO.getAssetSymbols()
-    dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
+    assetSymbols = await exchangeManagerDAO.getAssetSymbols()
   } catch (e) {
     dispatch({ type: EXCHANGE_MIDDLEWARE_DISCONNECTED })
-    dispatch(getNextPage())
   }
+  dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
+  dispatch(getNextPage())
 }
+
+export const getExchangesForOwner = () => async (dispatch, getState) => {
+  dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_START })
+  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+  const exchanges = await exchangeManagerDAO
+    .getExchangesForOwner(getState().get(DUCK_SESSION).account, getState().get(DUCK_EXCHANGE).tokens())
+  dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_FINISH, exchanges })
+}
+
 const getExchangesCount = () => async (dispatch) => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const count = await exchangeManagerDAO.getExchangesCount()
   dispatch({ type: EXCHANGE_SET_PAGES_COUNT, count })
 }
 
-export const getNextPage = () => async (dispatch, getState) => {
+export const getNextPage = (filter: Object) => async (dispatch, getState) => {
   dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_START })
+
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const state = getState().get(DUCK_EXCHANGE)
-  const exchanges = await exchangeManagerDAO.getExchanges(state.lastPages(), PAGE_SIZE, state.tokens())
-  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + PAGE_SIZE })
-}
 
-export const getExchangesForSymbol = (symbol: string) => async (dispatch) => {
-  dispatch({ type: EXCHANGE_GET_ORDERS_START })
-  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const exchangesAddresses = await exchangeManagerDAO.getExchangesForSymbol(symbol)
-  const exchanges = await exchangeManagerDAO.getExchangeData(exchangesAddresses)
-  dispatch({ type: EXCHANGE_GET_ORDERS_FINISH, exchanges })
+  const exchanges = await exchangeManagerDAO.getExchanges(
+    state.lastPages(),
+    PAGE_SIZE,
+    state.tokens(),
+    filter,
+    { fromMiddleWare: state.showFilter() })
+
+  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + PAGE_SIZE })
 }
 
 const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
@@ -97,6 +111,7 @@ export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch,
 }
 
 export const watchExchanges = () => async (dispatch, getState) => {
+  dispatch(getExchange())
   try {
     await exchangeService.subscribeToCreateExchange()
   } catch (e) {

@@ -151,3 +151,9 @@ $cell-padding: 16px 8px;
   justify-content: center;
   padding-top: 15px;
 }
+
+.actionsWrapper {
+  display: flex;
+  justify-content: flex-end;
+  white-space: nowrap;
+}

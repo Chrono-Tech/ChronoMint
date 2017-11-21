@@ -31,8 +31,9 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  getExchangesForOwner (owner: string) {
-    return this._call('getExchangesForOwner', [owner])
+  async getExchangesForOwner (owner: string, tokens: TokensCollection) {
+    const addresses = await this._call('getExchangesForOwner', [owner])
+    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
   }
 
   async getAssetSymbols () {
@@ -46,9 +47,15 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return Object.keys(result)
   }
 
-  async getExchanges (fromId: number, length: number, tokens: TokensCollection): Array<string> {
-    const adresses = await this._call('getExchanges', [fromId, length])
-    return await this.getExchangeData(adresses.filter((address) => !this.isEmptyAddress(address)), tokens)
+  async getExchanges (fromId: number, length: number, tokens: TokensCollection, filter: Object = {}, options: Object = {}): Array<string> {
+    let addresses
+    if (options.fromMiddleWare) {
+      const sort = filter.isBuy ? `sort=buyPrice,-age` : `sort=sellPrice,-age`
+      addresses = await exchangeProvider.getExchangesWithFilter(filter.symbol && web3Converter.stringToBytes(filter.symbol), sort)
+    } else {
+      addresses = await this._call('getExchanges', [fromId, length])
+    }
+    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
   }
 
   async getExchangesWithFilter (symbol: string, isSell: boolean) {

@@ -11,9 +11,10 @@ class ExchangeProvider {
   }
 
   async getExchangesWithFilter (symbol: string, sort: string) {
-    const response = await fetch(`${this.url()}/events/exchangecreated/?symbol=/^${symbol}/${sort}`) //?distinct=symbol
+    const symbolStr = symbol ? `?symbol=/^${symbol}/&` : `?`
+    const response = await fetch(`${this.url()}/events/exchangecreated/${symbolStr}${sort}`) //?distinct=symbol
     const exchanges = response ? await response.json() : []
-    return exchanges
+    return exchanges.map((exchange) => exchange.exchange)
   }
 }
 

@@ -28,9 +28,9 @@ const reducer = (state = initialState, action) => {
       return state
         .tokens(action.tokens.isFetched(true).isFetching(false))
     case a.EXCHANGE_REMOVE:
-      return state.exchanges(state.exchanges().remove(action.exchange))
+      return state.exchangesForOwner(state.exchangesForOwner().remove(action.exchange))
     case a.EXCHANGE_UPDATE:
-      return state.exchanges(state.exchanges().update(action.exchange))
+      return state.exchangesForOwner(state.exchangesForOwner().update(action.exchange))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_START:
       return state.exchanges(state.exchanges().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:
@@ -39,6 +39,10 @@ const reducer = (state = initialState, action) => {
         .lastPages(action.lastPages)
     case a.EXCHANGE_SET_PAGES_COUNT:
       return state.pagesCount(action.count)
+    case a.EXCHANGE_GET_OWNERS_EXCHANGES_START:
+      return state.exchangesForOwner(state.exchangesForOwner().isFetched(false).isFetching(true))
+    case a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH:
+      return state.exchangesForOwner(action.exchanges.isFetched(true).isFetching(false))
     default:
       return state
   }

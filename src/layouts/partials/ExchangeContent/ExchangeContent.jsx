@@ -3,7 +3,6 @@ import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getExchange } from 'redux/exchange/actions'
 
 import './ExchangeContent.scss'
 
@@ -12,19 +11,13 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-    getExchange: () => dispatch(getExchange()),
-  }
+  return {}
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ExchangeContent extends Component {
   static propTypes = {
     getExchange: PropTypes.func,
-  }
-
-  componentDidMount () {
-    this.props.getExchange()
   }
 
   render () {
