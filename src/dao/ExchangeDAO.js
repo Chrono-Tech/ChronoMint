@@ -10,7 +10,11 @@ export const TX_SELL = 'sell'
 
 export class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(ExchangeABI, at, MultiEventsHistoryABI)
+    super(
+      ExchangeABI,
+      at,
+      MultiEventsHistoryABI
+    )
   }
 
   // TODO @bshevchenko
@@ -45,11 +49,10 @@ export class ExchangeDAO extends AbstractContractDAO {
 
   async approveSell (token: TokenModel, amount: BigNumber) {
     const assetDAO = await token.dao()
-    return assetDAO.approve(this.getInitAddress(), assetDAO.addDecimals(amount))
+    return assetDAO.approve(this.getInitAddress(), amount)
   }
 
   async sell (amount: BigNumber, price: BigNumber, token: TokenModel) {
-    // TODO @bshevchenko: divide this on two steps
     await this.approveSell(token, amount)
 
     return this._tx(
@@ -75,7 +78,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       {
         amount,
         price: amount.mul(price),
-      }, priceInWei
+      }, priceInWei.mul(amount)
     )
   }
 
@@ -93,36 +96,57 @@ export class ExchangeDAO extends AbstractContractDAO {
     this._watch('Error', callback)
   }
 
-  watchFeeUpdated (callback) {
-    this._watch('FeeUpdated', callback)
+  watchFeeUpdated (exchange, callback) {
+    this._watch('ExchangeFeeUpdated', callback, { exchange })
   }
 
-  watchPricesUpdated (callback) {
-    this._watch('PricesUpdated', callback)
+  watchPricesUpdated (exchange, callback) {
+    this._watch('ExchangePricesUpdated', callback, { exchange })
   }
 
-  watchActiveChanged (callback) {
-    this._watch('ActiveChanged', callback)
+  watchActiveChanged (exchange, callback) {
+    this._watch('ExchangeActiveChanged', callback, { exchange })
   }
 
-  watchBuy (callback) {
-    this._watch('Buy', callback)
+  watchBuy (exchange, callback) {
+    this._watch('ExchangeBuy', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.token,
+        ethAmount: this._c.fromWei(tx.args.eth),
+      })
+    }, { exchange })
   }
 
-  watchSell (callback) {
-    this._watch('Sell', callback)
+  watchSell (exchange, callback) {
+    this._watch('ExchangeSell', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.token,
+        ethAmount: this._c.fromWei(tx.args.eth),
+      })
+    }, { exchange })
   }
 
-  watchWithdrawEther (callback) {
-    this._watch('WithdrawEther', callback)
+  watchWithdrawEther (exchange, callback) {
+    this._watch('ExchangeWithdrawEther', callback, { exchange })
   }
 
-  watchWithdrawTokens (callback) {
-    this._watch('WithdrawTokens', callback)
+  watchWithdrawTokens (exchange, callback) {
+    this._watch('ExchangeWithdrawTokens', callback, { exchange })
   }
 
-  watchReceivedEther (callback) {
-    this._watch('ReceivedEther', callback)
+  watchReceivedEther (exchange, callback) {
+    this._watch('ExchangeReceivedEther', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        ethAmount: this._c.fromWei(tx.args.amount),
+      })
+    }, { exchange })
+  }
+
+  watchTransfer (exchange, callback) {
+    this._watch('Transfer', callback)
   }
 }
 

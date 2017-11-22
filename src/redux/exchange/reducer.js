@@ -27,10 +27,12 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_GET_TOKENS_LIST_FINISH:
       return state
         .tokens(action.tokens.isFetched(true).isFetching(false))
-    case a.EXCHANGE_REMOVE:
+    case a.EXCHANGE_REMOVE_FOR_OWNER:
       return state.exchangesForOwner(state.exchangesForOwner().remove(action.exchange))
-    case a.EXCHANGE_UPDATE:
+    case a.EXCHANGE_UPDATE_FOR_OWNER:
       return state.exchangesForOwner(state.exchangesForOwner().update(action.exchange))
+    case a.EXCHANGE_UPDATE:
+      return state.exchanges(state.exchanges().update(action.exchange))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_START:
       return state.exchanges(state.exchanges().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:

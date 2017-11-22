@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
@@ -15,8 +16,9 @@ export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
 export const EXCHANGE_GET_TOKENS_LIST_START = 'exchange/EXCHANGE_GET_TOKENS_LIST_START'
 export const EXCHANGE_GET_TOKENS_LIST_FINISH = 'exchange/EXCHANGE_GET_TOKENS_LIST_FINISH'
 export const EXCHANGE_SET_FILTER = 'exchange/EXCHANGE_SET_FILTER'
-export const EXCHANGE_REMOVE = 'exchange/EXCHANGE_REMOVE'
+export const EXCHANGE_REMOVE_FOR_OWNER = 'exchange/EXCHANGE_REMOVE_FOR_OWNER'
 export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
+export const EXCHANGE_UPDATE_FOR_OWNER = 'exchange/EXCHANGE_UPDATE_FOR_OWNER'
 export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
@@ -31,7 +33,7 @@ export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOr
     if (isBuy) {
       await exchangeDAO.buy(amount, exchange.sellPrice(), tokens.getBySymbol(exchange.symbol()))
     } else {
-      await exchangeDAO.sell(amount, exchange.buyPrice(), tokens.getBySymbol(exchange.symbol()))
+      await exchangeDAO.sell(amount, exchange.buyPrice(), getCurrentWallet(getState()).tokens().get(exchange.symbol()))
     }
   } catch (e) {
     // no rollback
@@ -92,16 +94,23 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
       fromMiddleWare: state.showFilter(),
     })
 
-  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + PAGE_SIZE })
+  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + exchanges.size() })
 }
 
-const updateExchange = (exchange: ExchangeOrderModel) => (dispatch) => {
+const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getState) => {
   let updatedExchange = exchange
   if (!exchange.isNew() && !!exchange.isTransactionHash()) {
     // address arrived, delete temporary hash
-    dispatch({ type: EXCHANGE_REMOVE, exchange })
+    dispatch({ type: EXCHANGE_REMOVE_FOR_OWNER, exchange })
     updatedExchange = exchange.transactionHash(null).isPending(false)
   }
+  const state = getState().get(DUCK_EXCHANGE)
+
+  if (state.exchangesForOwner().item(updatedExchange.id()) || !!exchange.isTransactionHash()) {
+    dispatch({ type: EXCHANGE_UPDATE_FOR_OWNER, exchange: updatedExchange })
+  }
+
+  state.exchanges().item(updatedExchange.id()) &&
   dispatch({ type: EXCHANGE_UPDATE, exchange: updatedExchange })
 }
 
@@ -114,22 +123,26 @@ export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch,
 
 export const watchExchanges = () => async (dispatch, getState) => {
   dispatch(getExchange())
+  const account = getState().get(DUCK_SESSION).account
   try {
-    await exchangeService.subscribeToCreateExchange()
+    await exchangeService.subscribeToCreateExchange(account)
   } catch (e) {
     // eslint-disable-next-line
     console.error('watch error', e.message)
   }
 
   exchangeService.on('ExchangeCreated', async (tx) => {
-    const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
-    const exchangeAddress = tx.args.exchange
-    const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_EXCHANGE).tokens())
-    dispatch(updateExchange(exchangeData.item(exchangeAddress).transactionHash(tx.transactionHash)))
+    if (account === tx.args.user) {
+      const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
+      const exchangeAddress = tx.args.exchange
+      const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_EXCHANGE).tokens())
+      dispatch(updateExchange(exchangeData.item(exchangeAddress).transactionHash(tx.transactionHash)))
+    }
+    dispatch(getExchangesCount())
   })
   exchangeService.on('Error', async (tx) => {
     // eslint-disable-next-line
-    console.log('--actions#Error', tx)
+    console.error(tx)
   })
 
   exchangeService.on('FeeUpdated', async (tx) => {
@@ -143,33 +156,55 @@ export const watchExchanges = () => async (dispatch, getState) => {
   })
 
   exchangeService.on('ActiveChanged', async (tx) => {
+    // TODO
     // eslint-disable-next-line
     console.log('--actions#ActiveChanged', tx)
   })
 
   exchangeService.on('Buy', async (tx) => {
-    // eslint-disable-next-line
-    console.log('--actions#Buy', tx)
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = state.exchanges().item(tx.exchange)
+    const token = state.tokens().getBySymbol(exchange.symbol())
+    dispatch(updateExchange(exchange
+      .assetBalance(exchange.assetBalance().minus(token.dao().removeDecimals(tx.tokenAmount)))
+      .ethBalance(exchange.ethBalance().plus(tx.ethAmount))
+    ))
   })
 
   exchangeService.on('Sell', async (tx) => {
-    // eslint-disable-next-line
-    console.log('--actions#Sell', tx)
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = state.exchanges().item(tx.exchange)
+    const token = state.tokens().getBySymbol(exchange.symbol())
+
+    dispatch(updateExchange(exchange
+      .assetBalance(exchange.assetBalance().plus(token.dao().removeDecimals(tx.tokenAmount)))
+      .ethBalance(exchange.ethBalance().minus(tx.ethAmount))
+    ))
   })
 
   exchangeService.on('WithdrawEther', async (tx) => {
+    // TODO
     // eslint-disable-next-line
     console.log('--actions#WithdrawEther', tx)
   })
 
   exchangeService.on('WithdrawTokens', async (tx) => {
+    // TODO
     // eslint-disable-next-line
     console.log('--actions#WithdrawTokens', tx)
   })
 
   exchangeService.on('ReceivedEther', async (tx) => {
-    // eslint-disable-next-line
-    console.log('--actions#ReceivedEther', tx)
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = state.exchanges().item(tx.exchange)
+    dispatch(updateExchange(exchange.ethBalance(exchange.ethBalance().plus(tx.ethAmount))))
+
+  })
+
+  exchangeService.on('Transfer', async (tx) => {
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = state.exchanges().item(tx.to())
+    dispatch(updateExchange(exchange.assetBalance(exchange.assetBalance().plus(tx.value()))))
   })
 }
 

@@ -65,12 +65,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     const [exchanges, symbols, owners, buyPrices, sellPrices, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
     exchanges.forEach((address, i) => {
-      try {
-        exchangeService.subscribeToExchangeManager(address)
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error('watch error', e.message)
-      }
       const owner = owners[i]
       const symbol = this._c.bytesToString(symbols[i])
       const buyPrice = buyPrices[i]
@@ -78,6 +72,15 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       const assetBalance = assetBalances[i]
       const ethBalance = ethBalances[i]
       const token = tokens.getBySymbol(symbol)
+
+      try {
+        exchangeService.subscribeToExchange(address)
+        exchangeService.subscribeToToken(token, address)
+      } catch (e) {
+        // eslint-disable-next-line
+        console.error('watch error', e.message)
+      }
+
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
         symbol,
@@ -96,7 +99,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return number.toNumber()
   }
 
-  watchExchangeCreated (callback) {
+  watchExchangeCreated (account, callback) {
     this._watch('ExchangeCreated', callback)
   }
 

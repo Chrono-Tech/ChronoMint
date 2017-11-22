@@ -43,6 +43,7 @@ function mapStateToProps (state) {
 export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeexchangeTokensForm'
 
 const onSubmit = (values, dispatch, props) => {
+  props.handleClose()
   dispatch(exchange(props.isBuy, new BigNumber(values.get('buy')), props.exchange))
 }
 
@@ -145,8 +146,8 @@ export default class exchangeTokensDialog extends React.Component {
                     <div styleName='label'><Translate value={prefix('tradeLimits')} />:</div>
                     <div>
                       <TokenValue
-                        value={this.props.exchange.assetBalance()}
-                        symbol={this.props.exchange.symbol()}
+                        value={this.props.isBuy ? this.props.exchange.assetBalance() : this.props.exchange.ethBalance()}
+                        symbol={this.props.isBuy ? exchangeToken.symbol() : ethToken.symbol()}
                       />
                     </div>
                   </div>
