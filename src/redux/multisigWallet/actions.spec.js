@@ -112,7 +112,23 @@ describe('Multisig Wallet actions', () => {
     await store.dispatch(a.multisigTransfer(wallet, token, amountToMSTransfer, accounts[0]))
   })
 
-  it.skip('should add owner to wallet', async () => {
+  it('should add owner to wallet', async (done) => {
+    const manager = await contractsManagerDAO.getWalletsManagerDAO()
+    const wallets = await manager.getWallets()
+    expect(wallets.size).toEqual(1)
+    const wallet = wallets.first()
+    expect(wallet.address()).not.toBeNull()
 
+    multisigWalletService.on('MultiTransact', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
+      // 5 sended
+      expect(multisigTransactionModel.value()).toEqual(amountToMSTransfer)
+      expect(multisigTransactionModel.symbol()).toEqual('ETH')
+      expect(multisigTransactionModel.wallet()).toEqual(wallet.address())
+      expect(walletId).toEqual(wallet.address())
+
+      // 6 clean up
+      await multisigWalletService.unsubscribe(wallet.address())
+      done()
+    })
   })
 })
