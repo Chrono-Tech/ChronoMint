@@ -12,6 +12,7 @@ import * as LoginWithPrivateKey from './components/LoginWithPrivateKey/lang'
 import * as LoginWithWallet from './components/LoginWithWallet/lang'
 import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as ProviderSelector from './components/ProviderSelector/lang'
+import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher/lang'
 import * as Warning from './components/Warning/lang'
 import * as LoginPage from './page/lang'
 
@@ -25,6 +26,7 @@ export const en = {
   LoginWithPrivateKey: LoginWithPrivateKey.en,
   ProviderSelector: ProviderSelector.en,
   NetworkSelector: NetworkSelector.en,
+  ProviderSelectorSwitcher: ProviderSelectorSwitcher.en,
   LoginWithWallet: LoginWithWallet.en,
   BackButton: BackButton.en,
   GenerateMnemonic: GenerateMnemonic.en,
@@ -44,6 +46,7 @@ export const ru = {
   LoginWithPrivateKey: LoginWithPrivateKey.ru,
   ProviderSelector: ProviderSelector.ru,
   NetworkSelector: NetworkSelector.ru,
+  ProviderSelectorSwitcher: ProviderSelectorSwitcher.ru,
   LoginWithWallet: LoginWithWallet.ru,
   BackButton: BackButton.ru,
   GenerateMnemonic: GenerateMnemonic.ru,

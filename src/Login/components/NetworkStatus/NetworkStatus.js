@@ -52,7 +52,7 @@ export default class CopyIcon extends PureComponent {
       <div styleName='root'>
         <span styleName={`status status-${status}`} />
         <Translate value={`networkStatus.${status}`} />
-        {sync.status === SYNC_STATUS_SYNCING && ` - ${sync.progress}%`}
+        {sync.status === SYNC_STATUS_SYNCING && sync.progress > 0 && ` - ${sync.progress}%`}
       </div>
     )
   }

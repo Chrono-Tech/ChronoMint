@@ -59,6 +59,11 @@ const styles = {
       color: stylesConfig.colors.colorWhite,
     },
   },
+  toggle: {
+    labelStyle: {
+      color: stylesConfig.colors.colorWhite,
+    },
+  },
   flatButton: {
     style: {
       color: 'white',

@@ -11,16 +11,23 @@ import { login } from 'redux/session/actions'
 import inverted from 'styles/themes/inversed'
 import LoginUPort from '../components/LoginUPort/LoginUPort'
 import LoginWithOptions from '../components/LoginWithOptions/LoginWithOptions'
-import ProviderSelector from '../components/ProviderSelector/ProviderSelector'
-import NetworkSelector from '../components/NetworkSelector/NetworkSelector'
-import NetworkStatus from '../components/NetworkStatus/NetworkStatus'
+import ManualProviderSelector from '../components/ProviderSelectorSwitcher/ManualProviderSelector'
+import AutomaticProviderSelector from '../components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import { providerMap } from '../network/settings'
-import networkService, { clearErrors, loading } from '../redux/network/actions'
+import networkService, { clearErrors, DUCK_NETWORK } from '../redux/network/actions'
 
 import './LoginPage.scss'
 
+const STRATEGY_MANUAL = 'manual'
+const STRATEGY_AUTOMATIC = 'automatic'
+
+const nextStrategy = {
+  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
+  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
+}
+
 const mapStateToProps = (state) => {
-  const network = state.get('network')
+  const network = state.get(DUCK_NETWORK)
   return {
     errors: network.errors,
     selectedAccount: network.selectedAccount,
@@ -35,7 +42,6 @@ const mapDispatchToProps = (dispatch) => ({
   createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
   login: (account) => dispatch(login(account)),
   clearErrors: () => dispatch(clearErrors()),
-  loading: () => dispatch(loading()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -58,6 +64,7 @@ class LoginPage extends Component {
     this.handleLogin = this.handleLogin.bind(this)
     this.state = {
       isShowProvider: true,
+      strategy: STRATEGY_AUTOMATIC,
     }
   }
 
@@ -80,12 +87,44 @@ class LoginPage extends Component {
 
   handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
 
+  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
+
   renderError = (error) => (
     <div styleName='error' key={MD5(error)}>
       <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
       <div styleName='errorText'>{error}</div>
     </div>
   )
+
+  renderProviderSelector () {
+    switch (this.state.strategy) {
+      case STRATEGY_MANUAL:
+        return this.renderManualProviderSelector()
+      case STRATEGY_AUTOMATIC:
+        return this.renderAutomaticProviderSelector()
+      default:
+        return null
+    }
+  }
+
+  renderAutomaticProviderSelector () {
+    return (
+      <AutomaticProviderSelector
+        currentStrategy={this.state.strategy}
+        onSelectorSwitch={this.handleSelectorSwitch}
+      />
+    )
+  }
+
+  renderManualProviderSelector () {
+    return (
+      <ManualProviderSelector
+        show={this.state.isShowProvider}
+        currentStrategy={this.state.strategy}
+        onSelectorSwitch={this.handleSelectorSwitch}
+      />
+    )
+  }
 
   render () {
     const {
@@ -98,9 +137,7 @@ class LoginPage extends Component {
         <div styleName='form'>
           <div styleName='title'><Translate value='LoginPage.title' /></div>
           <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
-          {this.state.isShowProvider && <ProviderSelector />}
-          {this.state.isShowProvider && <NetworkSelector />}
-          <NetworkStatus />
+          {this.renderProviderSelector()}
           <LoginWithOptions
             onLogin={this.handleLogin}
             onToggleProvider={this.handleToggleProvider}

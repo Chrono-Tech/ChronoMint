@@ -11,6 +11,10 @@ const initialState = {
     providerMap.chronoBank,
     providerMap.infura,
   ],
+  priority: [
+    providerMap.chronoBank.id,
+    providerMap.infura.id,
+  ],
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,
