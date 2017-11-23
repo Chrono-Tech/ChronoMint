@@ -5,7 +5,6 @@ import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import * as notifier from 'redux/notifier/actions'
-import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
 import validator from 'components/forms/validator'
 import * as a from './actions'
 
@@ -51,7 +50,7 @@ describe('settings cbe actions', () => {
       {
         meta: {
           field: 'name',
-          form: FORM_CBE_ADDRESS,
+          form: a.FORM_CBE_ADDRESS,
           persistentSubmitErrors: undefined,
           touch: undefined,
         },

@@ -1,8 +1,8 @@
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-import FileCollection from '../models/FileSelect/FileCollection'
-import { fileConfig } from '../components/common/FileSelect/FileSelect'
-import FileModel from '../models/FileSelect/FileModel'
+import FileCollection from 'models/FileSelect/FileCollection'
+// import { fileConfig } from '../components/common/FileSelect/FileSelect'
+import FileModel from 'models/FileSelect/FileModel'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.infura.io',
@@ -98,7 +98,7 @@ class IPFS {
     })
   }
 
-  async checkImageFile (file: FileModel, config: fileConfig) {
+  async checkImageFile (file: FileModel, config/*: fileConfig*/) {
     const errors = []
 
     // parse dimensions
@@ -120,7 +120,7 @@ class IPFS {
     return errors
   }
 
-  async parseFile (file: FileModel, config: fileConfig) {
+  async parseFile (file: FileModel, config/*: fileConfig*/) {
     let errors = []
 
     // check name

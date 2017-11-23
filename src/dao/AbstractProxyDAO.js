@@ -1,8 +1,9 @@
 import { Map } from 'immutable'
+import { ls } from 'platform'
 import AbstractContractDAO from './AbstractContractDAO'
-import TransferNoticeModel from '../models/notices/TransferNoticeModel'
-import TransactionModel from '../models/TransactionModel'
-import LS from '../utils/LocalStorage'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TransactionModel from 'models/TransactionModel'
+
 
 export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
@@ -91,7 +92,7 @@ class AbstractProxyDAO extends AbstractContractDAO {
    * @see TransactionModel
    */
   watchTransfer (callback) {
-    const account = LS.getAccount()
+    const account = ls.getAccount()
     return this.getSymbol().then(symbol => {
       return this._watch('Transfer', (result, block, time, isOld) => {
         this._getAccountTxModel(result, account, symbol, block, time / 1000).then(tx => {

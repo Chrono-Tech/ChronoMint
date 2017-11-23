@@ -1,5 +1,4 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const ADDED = 'notices.locs.added'
@@ -26,7 +25,7 @@ export default class LOCNoticeModel extends abstractNoticeModel({
   amount: null,
 }) {
   icon () {
-    return (<i className='material-icons'>group</i>)
+    return ImageProvider.getImage('LOCNoticeModel')
   }
 
   title () {

@@ -1,8 +1,8 @@
-import React from 'react'
+import validator from 'utils/validator'
+import { ErrorList } from 'platform'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import ErrorList from '../components/forms/ErrorList'
 import ProfileModel from './ProfileModel'
-import validator from '../components/forms/validator'
 
 class CBEModel extends abstractFetchingModel({
   address: null,
@@ -25,8 +25,9 @@ class CBEModel extends abstractFetchingModel({
   }
 
   // TODO @ipavlenko: Proxy to user().name(), remove name from constructor
+  // TODO @ipavlenko: Handle null in UI forms
   name () {
-    return this.get('name') ? this.get('name') : <em>Unknown</em>
+    return this.get('name') ? this.get('name') : null
   }
 
   /** @returns {ProfileModel} */
@@ -43,4 +44,3 @@ export const validate = (values) => {
 }
 
 export default CBEModel
-

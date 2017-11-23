@@ -4,7 +4,6 @@ import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type CBEModel from 'models/CBEModel'
 import type CBENoticeModel from 'models/notices/CBENoticeModel'
 import { notify } from 'redux/notifier/actions'
-import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
@@ -14,6 +13,8 @@ export const CBE_REMOVE = 'settings/CBE_REMOVE'
 
 export const setCBE = (cbe: CBEModel) => ({ type: CBE_SET, cbe })
 export const removeCBE = (cbe: CBEModel) => ({ type: CBE_REMOVE, cbe })
+
+export const FORM_CBE_ADDRESS = 'CBEAddressDialog'
 
 export const listCBE = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()

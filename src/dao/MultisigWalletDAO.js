@@ -92,6 +92,7 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
 
   watchError (wallet, callback) {
     return this._watch('Error', (result) => {
+      // eslint-disable-next-line
       console.log('--MultisigWalletDAO#', result)
       callback(this._c.hexToDecimal(result.args.errorCode))
       // callback(result.args.errorCode)

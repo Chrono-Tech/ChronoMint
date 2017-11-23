@@ -1,5 +1,4 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
 
@@ -12,7 +11,7 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>account_balance_wallet</i>)
+    return ImageProvider.getImage('TransferNoticeModel')
   }
 
   title () {

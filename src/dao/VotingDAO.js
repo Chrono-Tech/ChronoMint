@@ -1,7 +1,7 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
-import ipfs from 'utils/IPFS'
+import { ipfs } from 'platform'
 import { PollManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 

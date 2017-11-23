@@ -1,5 +1,4 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'
@@ -22,7 +21,7 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>alarm</i>)
+    return ImageProvider.getImage('OperationNoticeModel')
   }
 
   title () {
@@ -50,8 +49,6 @@ export default class OperationNoticeModel extends abstractNoticeModel({
     return this.operation().tx()
   }
 
-  // TODO @bshevchenko: remove noinspection
-  // noinspection JSUnusedGlobalSymbols
   details () {
     const details = [
       { label: I18n.t('notices.operations.details.operation'), value: I18n.t(this.tx().func()) },
@@ -65,23 +62,5 @@ export default class OperationNoticeModel extends abstractNoticeModel({
       })
     }
     return details
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock () {
-    return this.operation().tx().historyBlock(this._status(), this.date())
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this._status()}
-        {this.operation().tx().description(false, { marginTop: '10px' })}
-        <p style={{ marginBottom: '0' }}>
-          <small>{this.date()}</small>
-        </p>
-      </div>
-    )
   }
 }

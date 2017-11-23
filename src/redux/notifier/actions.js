@@ -1,4 +1,4 @@
-import type AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
+import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_READ = 'notifier/READ'

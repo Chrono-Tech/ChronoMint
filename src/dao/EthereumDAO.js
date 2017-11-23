@@ -4,7 +4,7 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
 import networkService from 'Login/redux/network/actions'
-import ls from 'utils/LocalStorage'
+import { ls } from 'platform'
 import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 

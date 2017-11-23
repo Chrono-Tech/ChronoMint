@@ -1,5 +1,5 @@
 import MarketSocket from 'market/MarketSocket'
-import get from 'lodash/get'
+import { get } from 'lodash'
 import axios from 'axios'
 
 export const DUCK_MARKET = 'market'

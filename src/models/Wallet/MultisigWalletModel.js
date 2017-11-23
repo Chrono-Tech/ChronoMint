@@ -1,7 +1,6 @@
 import Immutable from 'immutable'
 import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/Wallet/TransactionsCollection'
-import ls from 'utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class MultisigWalletModel extends abstractFetchingModel({

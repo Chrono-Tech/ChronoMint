@@ -181,7 +181,7 @@ export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
   }
 }
 
-export const multisigTransfer = (wallet, token, amount, recipient) => async (dispatch, getState) => {
+export const multisigTransfer = (wallet, token, amount, recipient) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.transfer(wallet, token, amount, recipient)
@@ -191,7 +191,7 @@ export const multisigTransfer = (wallet, token, amount, recipient) => async (dis
   }
 }
 
-export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
+export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.confirmPendingTx(tx)
@@ -201,7 +201,7 @@ export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => a
   }
 }
 
-export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
+export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.revokePendingTx(tx)
