@@ -7,17 +7,16 @@ import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/exchange/TokensCollection'
-import TokenModel from 'models/TokenModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
-import { change, Field, reduxForm, formPropTypes } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { approveTokensForExchange, exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
-import { exchange } from 'redux/exchange/actions'
 import './BuyTokensDialog.scss'
 import styles from './styles'
 import validate from './validate'
@@ -26,6 +25,8 @@ function prefix (token) {
   return `components.exchange.exchangeTokensDialog.${token}`
 }
 
+export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeTokensForm'
+
 function mapDispatchToProps (dispatch) {
   return {
     handleClose: () => dispatch(modalsClose()),
@@ -33,14 +34,14 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const exchange = state.get('exchange')
+  const exchangeState = state.get('exchange')
+  const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
   return {
-    tokens: exchange.tokens(),
-    eth: getCurrentWallet(state).tokens().get('ETH'),
+    tokens: exchangeState.tokens(),
+    usersTokens: getCurrentWallet(state).tokens(),
+    buy: selector(state, 'buy'),
   }
 }
-
-export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeexchangeTokensForm'
 
 const onSubmit = (values, dispatch, props) => {
   props.handleClose()
@@ -56,9 +57,13 @@ export default class exchangeTokensDialog extends React.Component {
     filter: PropTypes.instanceOf(Immutable.Map),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
-    eth: PropTypes.instanceOf(TokenModel),
+    usersTokens: PropTypes.instanceOf(Immutable.Map),
     dispatch: PropTypes.func,
     ...formPropTypes,
+  }
+
+  componentDidMount () {
+    !this.props.isBuy && this.props.dispatch(getTokensAllowance(this.props.exchange))
   }
 
   handleSetPrice = (e) => {
@@ -71,10 +76,22 @@ export default class exchangeTokensDialog extends React.Component {
     }
   }
 
+  handleApprove = () => {
+    const allowance = this.props.usersTokens.get(this.props.exchange.symbol()).allowance(this.props.exchange.address())
+    const token = this.props.usersTokens.get(this.props.exchange.symbol())
+
+    if (allowance > 0) {
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new BigNumber(0)))
+    } else {
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, this.props.buy))
+    }
+  }
+
   render () {
     const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
-    const ethToken = this.props.eth
+    const ethToken = this.props.usersTokens.get('ETH')
 
+    const allowance = this.props.usersTokens.get(this.props.exchange.symbol()).allowance(this.props.exchange.address())
     return (
       <CSSTransitionGroup
         transitionName='transition-opacity'
@@ -151,6 +168,18 @@ export default class exchangeTokensDialog extends React.Component {
                       />
                     </div>
                   </div>
+                  {
+                    !this.props.isBuy && allowance > 0 &&
+                    <div styleName='property'>
+                      <div styleName='label'><Translate value={prefix('allowance')} />:</div>
+                      <div>
+                        <TokenValue
+                          value={allowance}
+                          symbol={exchangeToken.symbol()}
+                        />
+                      </div>
+                    </div>
+                  }
                 </div>
                 <div styleName='rightCol'>
                   <div className='ByTokensDialog__form'>
@@ -203,7 +232,20 @@ export default class exchangeTokensDialog extends React.Component {
                     <div className='row'>
                       <div className='col-xs-2'>
                         <div styleName='actions'>
-                          <RaisedButton type='submit' label={<Translate value={prefix('sendRequest')} />} primary />
+                          {!this.props.isBuy &&
+                          <RaisedButton
+                            type='button'
+                            label={<Translate value={prefix(allowance > 0 ? 'revoke' : 'approve')} />}
+                            primary
+                            onTouchTap={this.handleApprove}
+                          />
+                          }
+                          <RaisedButton
+                            disabled={!this.props.isBuy && allowance.toString() !== this.props.buy}
+                            type='submit'
+                            label={<Translate value={prefix('sendRequest')} />}
+                            primary
+                          />
                         </div>
                       </div>
                     </div>

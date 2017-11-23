@@ -53,13 +53,11 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   async sell (amount: BigNumber, price: BigNumber, token: TokenModel) {
-    await this.approveSell(token, amount)
-
     return this._tx(
       TX_SELL,
       [
         token.dao().addDecimals(amount),
-        token.dao().addDecimals(price),
+        this._c.toWei(price).div(Math.pow(10, token.decimals())),
       ],
       {
         amount,

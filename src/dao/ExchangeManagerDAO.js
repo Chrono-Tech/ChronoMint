@@ -22,8 +22,8 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       'createExchange',
       [
         exchange.symbol(),
-        token.dao().addDecimals(exchange.buyPrice()),
-        token.dao().addDecimals(exchange.sellPrice()),
+        this._c.toWei(exchange.buyPrice()).div(Math.pow(10, token.decimals())),
+        this._c.toWei(exchange.sellPrice()).div(Math.pow(10, token.decimals())),
         exchange.authorizedManager(),
         exchange.isActive(),
       ],
@@ -85,8 +85,8 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         address: address,
         symbol,
         owner,
-        buyPrice: token.dao().removeDecimals(buyPrice),
-        sellPrice: token.dao().removeDecimals(sellPrice),
+        buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
+        sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
         assetBalance: token.dao().removeDecimals(assetBalance),
         ethBalance: this._c.fromWei(ethBalance),
       }))

@@ -5,6 +5,8 @@ import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
+import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
+import TokenModel from 'models/TokenModel'
 
 export const DUCK_EXCHANGE = 'exchange'
 
@@ -71,6 +73,17 @@ export const getExchangesForOwner = () => async (dispatch, getState) => {
   const exchanges = await exchangeManagerDAO
     .getExchangesForOwner(getState().get(DUCK_SESSION).account, getState().get(DUCK_EXCHANGE).tokens())
   dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_FINISH, exchanges })
+}
+
+export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
+  const token = getState().get(DUCK_EXCHANGE).tokens().getBySymbol(exchange.symbol())
+  const allowance = await token.dao().getAccountAllowance(exchange.address())
+  dispatch({ type: WALLET_ALLOWANCE, token, value: allowance, spender: exchange.address() })
+}
+
+export const approveTokensForExchange = (exchange: ExchangeOrderModel, token: TokenModel, amount: Bignumber) => async () => {
+  const dao = await contractsManagerDAO.getExchangeDAO(exchange.address())
+  await dao.approveSell(token, amount)
 }
 
 const getExchangesCount = () => async (dispatch) => {
@@ -174,10 +187,8 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = state.exchanges().item(tx.exchange)
-    const token = state.tokens().getBySymbol(exchange.symbol())
 
     dispatch(updateExchange(exchange
-      .assetBalance(exchange.assetBalance().plus(token.dao().removeDecimals(tx.tokenAmount)))
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount))
     ))
   })
@@ -203,8 +214,8 @@ export const watchExchanges = () => async (dispatch, getState) => {
 
   exchangeService.on('Transfer', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
-    const exchange = state.exchanges().item(tx.to())
-    dispatch(updateExchange(exchange.assetBalance(exchange.assetBalance().plus(tx.value()))))
+    const exchange = state.exchanges().item(tx.to()) || state.exchangesForOwner().item(tx.to())
+    exchange && dispatch(updateExchange(exchange.assetBalance(exchange.assetBalance().plus(tx.value()))))
   })
 }
 

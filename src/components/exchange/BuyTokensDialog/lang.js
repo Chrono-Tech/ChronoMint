@@ -10,6 +10,9 @@ export default {
     tokens: 'tokens',
     sendRequest: 'send request',
     amountIn: 'Amount in',
+    allowance: 'Your allowance',
+    approve: 'Approve tokens',
+    revoke: 'Revoke tokens',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -22,5 +25,8 @@ export default {
     tokens: 'токены',
     sendRequest: 'отправить запрос',
     amountIn: 'Сумма в',
+    allowance: 'Подтвержденная сумма',
+    approve: 'Подтвердить перевод токенов',
+    revoke: 'Отменить перевод токенов',
   },
 }
