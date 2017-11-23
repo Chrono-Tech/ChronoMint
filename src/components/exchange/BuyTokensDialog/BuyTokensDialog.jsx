@@ -50,7 +50,7 @@ const onSubmit = (values, dispatch, props) => {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
-export default class exchangeTokensDialog extends React.Component {
+export default class BuyTokensDialog extends React.Component {
   static propTypes = {
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
     handleClose: PropTypes.func,

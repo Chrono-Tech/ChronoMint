@@ -134,6 +134,16 @@ export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch,
   dispatch(updateExchange(exchange.isPending(true).transactionHash(txHash)))
 }
 
+export const withdrawFromExchange = (exchange: ExchangeOrderModel, wallet, amount: string, symbol: string) => async () => {
+  const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
+  const token = wallet.tokens().get(symbol)
+  if (symbol.toLowerCase() === 'eth') {
+    await exchangeDAO.withdrawEth(wallet, new BigNumber(amount), token)
+  } else {
+    await exchangeDAO.withdrawTokens(wallet, new BigNumber(amount), token)
+  }
+}
+
 export const watchExchanges = () => async (dispatch, getState) => {
   dispatch(getExchange())
   const account = getState().get(DUCK_SESSION).account

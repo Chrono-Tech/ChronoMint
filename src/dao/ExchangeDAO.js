@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import lhtDAO from 'dao/LHTDAO'
 import TokenModel from 'models/TokenModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
-import type ERC20DAO from './ERC20DAO'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
+export const TX_WITHDRAW_TOKENS = 'withdrawTokens'
+export const TX_WITHDRAW_ETH = 'withdrawEth'
 
 export class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -17,34 +17,30 @@ export class ExchangeDAO extends AbstractContractDAO {
     )
   }
 
-  // TODO @bshevchenko
-  async getAssetDAO (): Promise<ERC20DAO> {
-    return lhtDAO
+  async withdrawTokens (wallet, amount: string, token: TokenModel): Promise {
+    return this._tx(
+      TX_WITHDRAW_TOKENS,
+      [
+        wallet.address(),
+        token.dao().addDecimals(amount),
+      ],
+      {
+        recipient: wallet.address(),
+        amount,
+      })
   }
 
-  async getBuyPrice (): Promise<BigNumber> {
-    const price = await this._call('buyPrice')
-    return this._c.fromWei(price)
-  }
-
-  async getSellPrice (): Promise<BigNumber> {
-    const price = await this._call('sellPrice')
-    return this._c.fromWei(price)
-  }
-
-  async getETHBalance (): Promise<BigNumber> {
-    const balance = await this._web3Provider.getBalance(await this.getAddress())
-    return this._c.fromWei(balance)
-  }
-
-  async getAssetBalance (): Promise<BigNumber> {
-    const result = await this._call('assetBalance')
-    return result
-  }
-
-  async getAccountAssetBalance (): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    return assetDAO.getAccountBalance()
+  async withdrawEth (wallet, amount: string, token: TokenModel): Promise {
+    return this._tx(
+      TX_WITHDRAW_ETH,
+      [
+        wallet.address(),
+        token.dao().addDecimals(amount),
+      ],
+      {
+        recipient: wallet.address(),
+        amount,
+      })
   }
 
   async approveSell (token: TokenModel, amount: BigNumber) {

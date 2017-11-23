@@ -13,6 +13,8 @@ export default {
     statusPending: 'Status: pending',
     getNextPage: 'Load next page',
     showOnlyMyExchanges: 'Show my exchanges',
+    depositTokens: 'deposit/withdrawal token',
+    depositEth: 'deposit/withdrawal ETH',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -28,5 +30,7 @@ export default {
     statusPending: 'Статус: ожидает манинга',
     getNextPage: 'Загрузить слудующую страницу',
     showOnlyMyExchanges: 'Показать мои обменники',
+    depositTokens: 'Внести/вывести токены',
+    depositEth: 'Внести/вывести ETH',
   },
 }

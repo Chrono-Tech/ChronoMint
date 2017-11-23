@@ -81,7 +81,7 @@ $cell-padding: 16px 8px;
 }
 
 .colActions {
-  width: 20%;
+  width: 30%;
   overflow: hidden;
   @include sm-only {
     width: 40%;
@@ -128,6 +128,7 @@ $cell-padding: 16px 8px;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
+  white-space: nowrap;
 }
 
 .colWrapper {
@@ -138,7 +139,7 @@ $cell-padding: 16px 8px;
 }
 
 .values {
-  width: 80%;
+  width: 70%;
   display: flex;
   @include sm-only {
     display: block;

@@ -13,6 +13,7 @@ import { Translate } from 'react-redux-i18n'
 import { getNextPage } from 'redux/exchange/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import './ExchangesTable.scss'
+import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
 function prefix (token) {
   return `components.exchange.OrdersTable.${token}`
@@ -32,11 +33,18 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    openDetails: (exchange: ExchangeOrderModel, isBuy: boolean) => dispatch(modalsOpen({
+    handleOpenDetails: (exchange: ExchangeOrderModel, isBuy: boolean) => dispatch(modalsOpen({
       component: BuyTokensDialog,
       props: {
         exchange,
         isBuy,
+      },
+    })),
+    handleOpenTransfer: (exchange: ExchangeOrderModel, tokenSymbol: string) => dispatch(modalsOpen({
+      component: ExchangeTransferDialog,
+      props: {
+        exchange,
+        tokenSymbol,
       },
     })),
     handleGetNextPage: () => dispatch(getNextPage()),
@@ -48,7 +56,8 @@ export default class ExchangesTable extends React.PureComponent {
   static propTypes = {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
     exchangesForOwner: PropTypes.instanceOf(ExchangesCollection),
-    openDetails: PropTypes.func,
+    handleOpenDetails: PropTypes.func,
+    handleOpenTransfer: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
     showFilter: PropTypes.bool,
     handleGetNextPage: PropTypes.func,
@@ -139,31 +148,51 @@ export default class ExchangesTable extends React.PureComponent {
             }
           </div>
         </div>
-        <div styleName='colActions'>
-          {showBuy && !exchange.isPending() &&
-          <div styleName='buttonWrapper'>
-            <RaisedButton
-              label={<Translate value={prefix('buy')} />}
-              onTouchTap={(e) => {
-                e.stopPropagation()
-                this.props.openDetails(exchange, true)
-              }}
-            />
-          </div>
-          }
-          {showSell && !exchange.isPending() &&
-          <div styleName='buttonWrapper'>
-            <RaisedButton
-              label={<Translate value={prefix('sell')} />}
-              onTouchTap={(e) => {
-                e.stopPropagation()
-                this.props.openDetails(exchange, false)
-              }}
-            />
-          </div>
-          }
-          {exchange.isPending() && <Preloader />}
-        </div>
+        {
+          this.state.showMyExchanges ?
+            <div styleName='colActions'>
+              <div styleName='buttonWrapper'>
+                <RaisedButton
+                  label={<Translate value={prefix('depositTokens')} />}
+                  onTouchTap={() => {
+                    this.props.handleOpenTransfer(exchange, exchange.symbol())
+                  }}
+                />
+              </div>
+              <div styleName='buttonWrapper'>
+                <RaisedButton
+                  label={<Translate value={prefix('depositEth')} />}
+                  onTouchTap={() => {
+                    this.props.handleOpenTransfer(exchange, 'ETH')
+                  }}
+                />
+              </div>
+            </div>
+            :
+            <div styleName='colActions'>
+              {showBuy && !exchange.isPending() &&
+              <div styleName='buttonWrapper'>
+                <RaisedButton
+                  label={<Translate value={prefix('buy')} />}
+                  onTouchTap={() => {
+                    this.props.handleOpenDetails(exchange, true)
+                  }}
+                />
+              </div>
+              }
+              {showSell && !exchange.isPending() &&
+              <div styleName='buttonWrapper'>
+                <RaisedButton
+                  label={<Translate value={prefix('sell')} />}
+                  onTouchTap={() => {
+                    this.props.handleOpenDetails(exchange, false)
+                  }}
+                />
+              </div>
+              }
+              {exchange.isPending() && <Preloader />}
+            </div>
+        }
       </div>
     )
   }
