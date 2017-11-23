@@ -1,4 +1,4 @@
-import ipfs from 'utils/IPFS'
+import { ipfs } from 'platform'
 
 export const download = (hash, name) => async () => {
   // do nt limit a time to download

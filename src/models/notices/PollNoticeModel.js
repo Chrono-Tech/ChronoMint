@@ -1,5 +1,4 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import type PollDetailsModel from 'models/PollDetailsModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -17,7 +16,7 @@ export default class PollNoticeModel extends abstractNoticeModel({
   transactionHash: null,
 }) {
   icon () {
-    return (<i className='material-icons'>poll</i>)
+    return ImageProvider.getImage('PollNoticeModel')
   }
 
   title () {

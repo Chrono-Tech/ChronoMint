@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import validator from 'components/forms/validator'
+import { validator } from 'utils/validator'
 import web3Provider from 'Login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
 import truffleContract from 'truffle-contract'
-import ipfs from 'utils/IPFS'
+import { ipfs } from 'platform'
 import web3Converter from 'utils/Web3Converter'
 
 const DEFAULT_GAS = 4700000

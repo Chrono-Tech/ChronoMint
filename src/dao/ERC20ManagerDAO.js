@@ -93,10 +93,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
-   
-   for (let [i, address] of Object.entries(tokensAddresses)) {
+
+    for (let [i] of Object.entries(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-   }	    
+    }
 
     // get balances
     promises = []

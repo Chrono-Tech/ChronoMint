@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import ls from 'utils/LocalStorage'
+import { ls } from 'platform'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import TransactionsCollection from './TransactionsCollection'
 
@@ -23,6 +23,7 @@ export default class MainWallet extends abstractFetchingModel({
 }) {
 
   address () {
+    // TODO @ipavlenko: Why, Carl? Why you do this? You have address as a record field, please fill it
     return ls.getAccount()
   }
 

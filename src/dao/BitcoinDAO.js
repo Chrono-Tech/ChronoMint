@@ -3,7 +3,7 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
 import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
 import { DECIMALS } from 'Login/network/BitcoinEngine'
-import { bitcoinAddress } from 'components/forms/validator'
+import { bitcoinAddress } from 'utils/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'

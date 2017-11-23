@@ -1,5 +1,4 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import type TokenModel from 'models/TokenModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -22,7 +21,7 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>settings</i>)
+    return ImageProvider.getImage('TokenNoticeModel')
   }
 
   title () {

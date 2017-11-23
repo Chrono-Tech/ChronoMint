@@ -7,7 +7,7 @@ import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
 import { watchStopMarket } from 'redux/market/action'
-import ls from 'utils/LocalStorage'
+import { ls } from 'platform'
 
 export const DUCK_SESSION = 'session'
 
@@ -70,6 +70,7 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
 }
 
+// eslint-disable-next-line no-unused-vars
 export const updateUserProfile = (profile: ProfileModel) => async (dispatch, getState) => {
   const { isSession, account, profile } = getState().get(DUCK_SESSION)
   if (!isSession) {

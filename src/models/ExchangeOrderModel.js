@@ -1,5 +1,7 @@
 // TODO @bshevchenko: this is intermediate version for demo
 import BigNumber from 'bignumber.js'
+
+// TODO @ipavlenko Move app constants to Modals, do not place constants in actions
 import { LHT, ETH } from 'redux/mainWallet/actions'
 import { abstractNoticeModel } from './notices/AbstractNoticeModel'
 

@@ -1,6 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n, ImageProvider } from 'platform'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TokenModel from '../TokenModel'
 
@@ -39,7 +38,7 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>account_balance_wallet</i>)
+    return ImageProvider.getImage(ApprovalNoticeModel)
   }
 
   title () {

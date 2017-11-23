@@ -1,5 +1,3 @@
-import React, { PureComponent } from 'react'
-
 import * as actions from 'redux/modals/actions'
 import reducer from 'redux/modals/reducer'
 
@@ -9,6 +7,8 @@ const initialState = {
 }
 
 let state = null
+
+const PureComponent = () => null
 
 const modals = {
 
