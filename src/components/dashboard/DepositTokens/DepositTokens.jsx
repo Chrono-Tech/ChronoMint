@@ -1,3 +1,4 @@
+import IconTimeSVG from 'assets/img/icn-time.svg'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ErrorList from 'components/forms/ErrorList'
@@ -16,9 +17,6 @@ import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
 import './DepositTokens.scss'
 
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const TIME_ICON = require('assets/img/icn-time.svg')
-
 const DEPOSIT_LIMIT = 1
 
 function prefix (token) {
@@ -30,12 +28,15 @@ function mapStateToProps (state) {
   const token: TokenModel = wallet.tokens().get(TIME)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
+  const timeAddress = wallet.timeAddress()
+  const allowance = token ? token.allowance() : new BigNumber(0)
 
   return {
     token,
     deposit: wallet.timeDeposit(),
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && token && token.balance().eq(0),
-    timeAddress: wallet.timeAddress(),
+    timeAddress,
+    allowance,
     isTesting,
   }
 }
@@ -51,7 +52,8 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export class DepositTokens extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class DepositTokens extends PureComponent {
   static propTypes = {
     deposit: PropTypes.object,
     initTIMEDeposit: PropTypes.func,
@@ -65,6 +67,7 @@ export class DepositTokens extends PureComponent {
     token: PropTypes.object,
     errors: PropTypes.object,
     timeAddress: PropTypes.string,
+    allowance: PropTypes.objectOf(BigNumber),
   }
 
   constructor (props) {
@@ -103,6 +106,10 @@ export class DepositTokens extends PureComponent {
     }
   }
 
+  handleRevokeTIME = () => {
+    this.props.mainApprove(this.props.token, 0, this.props.timeAddress)
+  }
+
   handleDepositTIME = () => {
     this.props.depositTIME(this.state.amount)
     this.setState({ amount: '' })
@@ -115,14 +122,29 @@ export class DepositTokens extends PureComponent {
 
   handleRequireTime = () => this.props.requireTIME()
 
+  getIsLockValid () {
+    const { token, isTesting, allowance, deposit } = this.props
+    const limit = isTesting
+      ? BigNumber.min(
+        token.balance(),
+        allowance,
+      )
+      : BigNumber.min(
+        DEPOSIT_LIMIT,
+        token.balance(),
+        BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
+        allowance,
+      )
+    return limit.gte(this.state.amount)
+  }
+
   renderHead () {
-    const token: TokenModel = this.props.token
-    const { deposit } = this.props
+    const { deposit, allowance, token } = this.props
     const symbol = token.symbol()
 
     return (
       <div>
-        <IconSection title={<Translate value={prefix('depositTime')} />} icon={TIME_ICON}>
+        <IconSection title={<Translate value={prefix('depositTime')} />} icon={IconTimeSVG}>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
             <TokenValue
@@ -144,7 +166,7 @@ export class DepositTokens extends PureComponent {
             <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:</div>
             <TokenValue
               isInvert
-              value={token.allowance(this.props.timeAddress)}
+              value={allowance}
               symbol={symbol}
             />
           </div>
@@ -171,81 +193,48 @@ export class DepositTokens extends PureComponent {
     )
   }
 
-  render () {
-    return (
-      <Paper>
-        {this.props.token ? (
-          <ColoredSection
-            styleName='root'
-            head={this.renderHead()}
-            body={this.renderBody()}
-            foot={this.renderFoot()}
-          />
-        ) : null}
-      </Paper>
-    )
-  }
-
-  getIsLockValid () {
-    const { token, isTesting, timeAddress, deposit } = this.props
-    const limit = isTesting
-      ? BigNumber.min(
-        token.balance(),
-        token.allowance(timeAddress)
-      )
-      : BigNumber.min(
-        DEPOSIT_LIMIT,
-        token.balance(),
-        BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
-        token.allowance(timeAddress)
-      )
-
-    return limit.gte(this.state.amount)
-  }
-
   renderFoot () {
     const { amount } = this.state
-    const token: TokenModel = this.props.token
-    const { isShowTIMERequired, deposit, errors } = this.props
+    const { isShowTIMERequired, deposit, errors, token, allowance } = this.props
     const isValid = !errors && String(amount).length > 0 && +amount > 0
 
     const isApprove = isValid && token.balance().gte(amount)
     const isLock = isValid && this.getIsLockValid()
     const isWithdraw = isValid && +amount <= deposit
+    const isRevoke = !allowance.isZero()
     return (
       <div styleName='actions'>
-        {isShowTIMERequired ? (
-          <span styleName='action'>
-            <FlatButton
-              styleName='actionButton'
-              label={<Translate value={prefix('requireTime')} />}
-              onTouchTap={this.handleRequireTime}
-            />
-          </span>
-        ) : (
+        {isShowTIMERequired
+          ? (
+            <span styleName='action'>
+              <FlatButton
+                styleName='actionButton'
+                label={<Translate value={prefix('requireTime')} />}
+                onTouchTap={this.handleRequireTime}
+              />
+            </span>
+          ) : (
+            <span styleName='action'>
+              <RaisedButton
+                styleName='actionButton'
+                label={isRevoke ? 'Revoke' : 'Approve'}
+                onTouchTap={isRevoke ? this.handleRevokeTIME : this.handleApproveTIME}
+                disabled={!isRevoke && !isApprove}
+              />
+            </span>
+          )
+        }
+        {!isShowTIMERequired && (
           <span styleName='action'>
             <RaisedButton
               styleName='actionButton'
-              label='Approve'
-              onTouchTap={this.handleApproveTIME}
-              disabled={!isApprove}
+              label='Lock'
+              primary
+              onTouchTap={this.handleDepositTIME}
+              disabled={!isLock}
             />
           </span>
         )}
-        {
-          !isShowTIMERequired
-            ? (
-              <span styleName='action'>
-                <RaisedButton
-                  styleName='actionButton'
-                  label='Lock'
-                  primary
-                  onTouchTap={this.handleDepositTIME}
-                  disabled={!isLock}
-                />
-              </span>
-            ) : null
-        }
         <span styleName='action'>
           <RaisedButton
             styleName='actionButton'
@@ -258,6 +247,19 @@ export class DepositTokens extends PureComponent {
       </div>
     )
   }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(DepositTokens)
+  render () {
+    return (
+      <Paper>
+        {this.props.token && (
+          <ColoredSection
+            styleName='root'
+            head={this.renderHead()}
+            body={this.renderBody()}
+            foot={this.renderFoot()}
+          />
+        )}
+      </Paper>
+    )
+  }
+}

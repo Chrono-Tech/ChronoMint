@@ -34,8 +34,9 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
       dispatch(watchInitWallet())
     }
   }
-  dispatch(notice.isRemoved() ?
-    removeToken(notice.token()) : setToken(notice.token()))
+  dispatch(notice.isRemoved()
+    ? removeToken(notice.token())
+    : setToken(notice.token()))
   if (getState().get(DUCK_SESSION).isCBE) {
     dispatch(notify(notice))
   }
