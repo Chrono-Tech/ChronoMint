@@ -12,7 +12,7 @@ import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tok
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
-import Preloader from 'components/common/Preloader/Preloader'
+import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
@@ -29,6 +29,8 @@ class TokenRow extends PureComponent {
   }
 
   handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
+
+  renderCheckbox = () => this.props.token.isOptional() ? <Checkbox checked={this.props.isSelected} /> : null
 
   render () {
     const {
@@ -60,9 +62,9 @@ class TokenRow extends PureComponent {
           </div>
         </div>
         <div styleName='cell'>
-          {token.isFetched()
-            ? token.isOptional() && <Checkbox checked={isSelected} />
-            : <Preloader />}
+          <WithLoader showLoader={isFetching} payload={token}>
+            {this.renderCheckbox}
+          </WithLoader>
         </div>
       </div>
     )
@@ -173,6 +175,12 @@ export default class AddCurrencyDialog extends PureComponent {
     )
   }
 
+  renderTokens = () => (
+    <div styleName='table'>
+      {this.props.tokens.entrySeq().toArray().map(this.renderRow)}
+    </div>
+  )
+
   render () {
     return (
       <ModalDialog styleName='root'>
@@ -193,14 +201,9 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
-              {this.props.isFetched
-                ? (
-                  <div styleName='table'>
-                    {this.props.tokens.entrySeq().toArray().map(this.renderRow)}
-                  </div>
-                )
-                : <Preloader />
-              }
+              <WithLoader showLoader={!this.props.isFetched}>
+                {this.renderTokens}
+              </WithLoader>
             </div>
             <div styleName='column'>
               <h5><Translate value={prefix('howToAddYourToken')} /></h5>
