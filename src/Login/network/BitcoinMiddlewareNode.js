@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
-import openSocket from 'socket.io-client'
+import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
@@ -38,7 +38,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
                 } catch (e) {
                   this.trace('Failed to decode message', e)
                 }
-              }
+              },
             )
           })
         } catch (e) {
@@ -71,7 +71,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
 
   connect () {
     if (this._socket) {
-      this._ws = openSocket(this._socket.baseURL)
+      this._ws = new SockJS(this._socket.baseURL)
       this._client = Stomp.over(this._ws, { heartbeat: false, debug: false })
       this._client.connect(this._socket.user, this._socket.password,
         () => {
@@ -82,7 +82,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           setTimeout(() => {
             this.connect()
           }, 5000)
-        }
+        },
       )
     }
   }
