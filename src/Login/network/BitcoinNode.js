@@ -16,7 +16,7 @@ export const TESTNET = new BitcoinMiddlewareNode({
     timeout: 4000,
   }),
   socket: {
-    baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io/stomp',
+    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
