@@ -1,5 +1,5 @@
 export default {
-  contract_name: 'ERC20Interface',
+  contractName: 'ERC20Interface',
   abi: [
     {
       constant: false,
