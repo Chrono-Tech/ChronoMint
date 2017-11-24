@@ -10,8 +10,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
-    // https only
-    window.location.protocol === 'https:' && this.connect()
+    this.connect()
   }
 
   async _handleSubscribe (address) {
