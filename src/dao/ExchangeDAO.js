@@ -17,7 +17,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     )
   }
 
-  async withdrawTokens (wallet, amount: string, token: TokenModel): Promise {
+  async withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
     return this._tx(
       TX_WITHDRAW_TOKENS,
       [
@@ -30,7 +30,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       })
   }
 
-  async withdrawEth (wallet, amount: string, token: TokenModel): Promise {
+  async withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
     return this._tx(
       TX_WITHDRAW_ETH,
       [
@@ -123,11 +123,21 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchWithdrawEther (exchange, callback) {
-    this._watch('ExchangeWithdrawEther', callback, { exchange })
+    this._watch('ExchangeWithdrawEther', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        ethAmount: this._c.fromWei(tx.args.amount),
+      })
+    }, { exchange })
   }
 
   watchWithdrawTokens (exchange, callback) {
-    this._watch('ExchangeWithdrawTokens', callback, { exchange })
+    this._watch('ExchangeWithdrawTokens', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.amount,
+      })
+    }, { exchange })
   }
 
   watchReceivedEther (exchange, callback) {
@@ -137,10 +147,6 @@ export class ExchangeDAO extends AbstractContractDAO {
         ethAmount: this._c.fromWei(tx.args.amount),
       })
     }, { exchange })
-  }
-
-  watchTransfer (exchange, callback) {
-    this._watch('Transfer', callback)
   }
 }
 

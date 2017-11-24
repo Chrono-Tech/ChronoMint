@@ -144,6 +144,10 @@ export const withdrawFromExchange = (exchange: ExchangeOrderModel, wallet, amoun
   }
 }
 
+const getExchangeFromState = (state: Object, address: string) => {
+  return state.exchanges().item(address) || state.exchangesForOwner().item(address)
+}
+
 export const watchExchanges = () => async (dispatch, getState) => {
   dispatch(getExchange())
   const account = getState().get(DUCK_SESSION).account
@@ -179,14 +183,13 @@ export const watchExchanges = () => async (dispatch, getState) => {
   })
 
   exchangeService.on('ActiveChanged', async (tx) => {
-    // TODO
     // eslint-disable-next-line
     console.log('--actions#ActiveChanged', tx)
   })
 
   exchangeService.on('Buy', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
-    const exchange = state.exchanges().item(tx.exchange)
+    const exchange = getExchangeFromState(state, tx.exchange)
     const token = state.tokens().getBySymbol(exchange.symbol())
     dispatch(updateExchange(exchange
       .assetBalance(exchange.assetBalance().minus(token.dao().removeDecimals(tx.tokenAmount)))
@@ -196,35 +199,39 @@ export const watchExchanges = () => async (dispatch, getState) => {
 
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
-    const exchange = state.exchanges().item(tx.exchange)
-
+    const exchange = getExchangeFromState(state, tx.exchange)
     dispatch(updateExchange(exchange
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount))
     ))
   })
 
   exchangeService.on('WithdrawEther', async (tx) => {
-    // TODO
-    // eslint-disable-next-line
-    console.log('--actions#WithdrawEther', tx)
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = getExchangeFromState(state, tx.exchange)
+    dispatch(updateExchange(exchange
+      .ethBalance(exchange.ethBalance().minus(tx.ethAmount))
+    ))
   })
 
   exchangeService.on('WithdrawTokens', async (tx) => {
-    // TODO
-    // eslint-disable-next-line
-    console.log('--actions#WithdrawTokens', tx)
+    const state = getState().get(DUCK_EXCHANGE)
+    const exchange = getExchangeFromState(state, tx.exchange)
+    const token = state.tokens().getBySymbol(exchange.symbol())
+    dispatch(updateExchange(exchange
+      .assetBalance(exchange.assetBalance().minus(token.dao().removeDecimals(tx.tokenAmount)))
+    ))
   })
 
   exchangeService.on('ReceivedEther', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
-    const exchange = state.exchanges().item(tx.exchange)
+    const exchange = getExchangeFromState(state, tx.exchange)
     dispatch(updateExchange(exchange.ethBalance(exchange.ethBalance().plus(tx.ethAmount))))
 
   })
 
   exchangeService.on('Transfer', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
-    const exchange = state.exchanges().item(tx.to()) || state.exchangesForOwner().item(tx.to())
+    const exchange = getExchangeFromState(state, tx.to())
     exchange && dispatch(updateExchange(exchange.assetBalance(exchange.assetBalance().plus(tx.value()))))
   })
 }
