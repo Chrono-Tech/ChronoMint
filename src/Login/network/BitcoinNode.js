@@ -1,8 +1,9 @@
 import axios from 'axios'
+import { networks } from 'bitcoinjs-lib'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
-export const MAINNET = new BitcoinBlockexplorerNode({
+const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: '//blockexplorer.com/api/',
     timeout: 4000,
@@ -10,7 +11,7 @@ export const MAINNET = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-export const TESTNET = new BitcoinMiddlewareNode({
+const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
     baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io',
     timeout: 4000,
@@ -26,7 +27,7 @@ export const TESTNET = new BitcoinMiddlewareNode({
   trace: true,
 })
 
-export const MAINNET_BCC = new BitcoinBlockexplorerNode({
+const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: '//bitcoincash.blockexplorer.com/api/',
     timeout: 4000,
@@ -34,10 +35,22 @@ export const MAINNET_BCC = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-export const TESTNET_BCC = new BitcoinBlockexplorerNode({
+const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: '//tbcc.blockdozer.com/insight-api/',
     timeout: 4000,
   }),
   trace: true,
 })
+
+export function selectBTCNode (engine) {
+  return engine.getNetwork() === networks.testnet
+    ? BTC_TESTNET_NODE
+    : BTC_MAINNET_NODE
+}
+
+export function selectBCCNode (engine) {
+  return engine.getNetwork() === networks.testnet
+    ? BCC_TESTNET_NODE
+    : BCC_MAINNET_NODE
+}
