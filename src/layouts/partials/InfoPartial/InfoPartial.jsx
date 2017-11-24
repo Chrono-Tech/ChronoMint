@@ -232,12 +232,20 @@ export class InfoPartial extends PureComponent {
     const { visibleCount } = this.state
     const tokens = wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({ token, name }))
+    const isMainWallet = !wallet.isMultisig()
 
-    const tokensCount = this.props.wallet.isMultisig() ? tokens.length : tokens.length + 1
-    const withBigButton = tokensCount <= visibleCount
-    const showArrows = withBigButton
-      ? tokensCount + 1 > visibleCount
-      : tokensCount > visibleCount
+    let slidesCount = tokens.length
+    let withBigButton = false
+    if (isMainWallet) {
+      // increase 'add' button for main wallet
+      slidesCount = tokens.length + 1
+      // check
+      withBigButton = slidesCount <= visibleCount
+      // decrease if 'add' button don't fit the screen, cause 'add' button will be as FAB
+      slidesCount = withBigButton ? slidesCount : slidesCount - 1
+    }
+
+    const showArrows = slidesCount > visibleCount
 
     return (
       <div styleName='root'>
@@ -247,10 +255,10 @@ export class InfoPartial extends PureComponent {
               ? items.map(this.renderItem)
               : <Preloader />
             }
-            {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
+            {isMainWallet && withBigButton && this.renderAction()}
           </div>
         </div>
-        {!withBigButton && (
+        {isMainWallet && !withBigButton && (
           <div styleName='addTokenFAB'>
             <FloatingActionButton onTouchTap={this.handleAddClick}>
               <div className='material-icons'>add</div>
