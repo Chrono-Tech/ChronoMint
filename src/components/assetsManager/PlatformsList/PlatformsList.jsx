@@ -36,36 +36,35 @@ class PlatformsList extends PureComponent {
     return (
       <div styleName='tokensList'>
         {
-          filteredTokens
-            .map((token) => {
-              return (<div
-                key={token.address()}
-                styleName={classnames('tokenItem', { 'selected': this.props.selectedToken === token.symbol() })}
-                onTouchTap={() => this.props.handleSelectToken(token.symbol())}
-              >
-                <div styleName='tokenIcon'>
-                  <IPFSImage styleName='content' multihash={token.icon()} />
-                </div>
-                <div styleName='tokenTitle'>
-                  {token.symbol()}
-                  <div styleName='tokenSubTitle'>{token.address()}</div>
-                </div>
-                <div styleName='tokenBalance'>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={token.totalSupply()}
-                    symbol={token.symbol()}
-                  />
-                </div>
-              </div>)
-            })
+          filteredTokens.map((token) => (
+            <div
+              key={token.address()}
+              styleName={classnames('tokenItem', { 'selected': this.props.selectedToken === token.symbol() })}
+              onTouchTap={() => this.props.handleSelectToken(token.symbol())}
+            >
+              <div styleName='tokenIcon'>
+                <IPFSImage styleName='content' multihash={token.icon()} />
+              </div>
+              <div styleName='tokenTitle'>
+                {token.symbol()}
+                <div styleName='tokenSubTitle'>{token.address()}</div>
+              </div>
+              <div styleName='tokenBalance'>
+                <TokenValue
+                  style={{ fontSize: '24px' }}
+                  value={token.totalSupply()}
+                  symbol={token.symbol()}
+                />
+              </div>
+            </div>
+          ))
         }
 
       </div>
     )
   }
 
-  renderPlatformsList () {
+  renderPlatformsList = () => {
     const { selectedPlatform, platformsList } = this.props
     return (
       <div>
@@ -79,21 +78,13 @@ class PlatformsList extends PureComponent {
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  {
-                    name
-                      ? <div styleName='platformTitle'>{name}&nbsp;(
-                        <small>{address}</small>
-                        )
-                      </div>
-                      : <div styleName='platformTitle'>{address}</div>
+                  {name
+                    ? <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
+                    : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
               </div>
-              {
-                selectedPlatform === address
-                  ? this.renderTokenList(address)
-                  : null
-              }
+              {selectedPlatform === address && this.renderTokenList(address)}
             </div>
           ))
         }
