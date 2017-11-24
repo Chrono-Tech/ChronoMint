@@ -30,6 +30,8 @@ class ManualProviderSelector extends PureComponent {
   handleToggle = () => this.props.onSelectorSwitch(this.props.currentStrategy)
 
   render () {
+    const { show, selectedProviderId } = this.props
+
     return (
       <div>
         <Toggle
@@ -38,9 +40,9 @@ class ManualProviderSelector extends PureComponent {
           toggled={false}
           {...styles.toggle}
         />
-        {this.props.show && <ProviderSelector />}
-        {this.props.show && this.props.selectedProviderId && <NetworkSelector />}
-        {this.props.selectedProviderId && this.props.selectedNetworkId && <NetworkStatus />}
+        {show && <ProviderSelector />}
+        {show && selectedProviderId && <NetworkSelector />}
+        {<NetworkStatus />}
       </div>
     )
   }

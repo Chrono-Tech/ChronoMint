@@ -13,6 +13,7 @@ import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemo
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
+import LoginUPort from '../../components/LoginUPort/LoginUPort'
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
 import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
@@ -37,6 +38,7 @@ const STEP_LOGIN_WITH_PRIVATE_KEY = 'step/LOGIN_WITH_PRIVATE_KEY'
 const STEP_LOGIN_WITH_LEDGER = 'step/LOGIN_WITH_LEDGER'
 const STEP_LOGIN_WITH_TREZOR = 'step/LOGIN_WITH_TREZOR'
 const STEP_LOGIN_WITH_METAMASK = 'step/LOGIN_WITH_METAMASK'
+const STEP_LOGIN_WITH_UPORT = 'step/LOGIN_WITH_UPORT'
 const STEP_LOGIN_LOCAL = 'step/LOGIN_LOCAL'
 
 const loginOptions = [
@@ -63,6 +65,10 @@ const loginOptions = [
   {
     nextStep: STEP_LOGIN_WITH_METAMASK,
     title: 'LoginWithOptions.metamask',
+  },
+  {
+    nextStep: STEP_LOGIN_WITH_UPORT,
+    title: 'LoginWithOptions.uport',
   },
   {
     nextStep: STEP_LOGIN_LOCAL,
@@ -277,6 +283,15 @@ class LoginWithOptions extends PureComponent {
       <LoginWithMnemonic
         onLogin={this.handleMnemonicLogin}
         onGenerate={this.handleSelectStepGenerateMnemonic}
+        onBack={this.handleSelectStepSelectOption}
+      />
+    )
+  }
+
+  renderStepLoginWithUport () {
+    return (
+      <LoginUPort
+        onLogin={this.props.onLogin}
         onBack={this.handleSelectStepSelectOption}
       />
     )

@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import networkService, { addError } from '../../redux/network/actions'
+import BackButton from '../../components/BackButton/BackButton'
 
 import './LoginUPort.scss'
 
@@ -21,6 +22,7 @@ class LoginUPort extends PureComponent {
   static propTypes = {
     addError: PropTypes.func,
     onLogin: PropTypes.func.isRequired,
+    onBack: PropTypes.func.isRequired,
     loginUport: PropTypes.func,
     isLoading: PropTypes.bool,
   }
@@ -46,23 +48,29 @@ class LoginUPort extends PureComponent {
 
     return (
       <div styleName='root'>
-        <div styleName='action'>
-          <RaisedButton
-            label={isLoading
-              ? (
-                <CircularProgress
-                  style={{ verticalAlign: 'middle', marginTop: -2 }}
-                  size={24}
-                  thickness={1.5}
-                />
-              )
-              : <Translate value='LoginUPort.login' />
-            }
-            primary
-            fullWidth
-            disabled={isLoading}
-            onTouchTap={this.handleLoginClick}
-          />
+        <BackButton
+          onClick={this.props.onBack}
+          to='options'
+        />
+        <div styleName='actions'>
+          <div styleName='action'>
+            <RaisedButton
+              label={isLoading
+                ? (
+                  <CircularProgress
+                    style={{ verticalAlign: 'middle', marginTop: -2 }}
+                    size={24}
+                    thickness={1.5}
+                  />
+                )
+                : <Translate value='LoginUPort.login' />
+              }
+              primary
+              fullWidth
+              disabled={isLoading}
+              onTouchTap={this.handleLoginClick}
+            />
+          </div>
         </div>
       </div>
     )

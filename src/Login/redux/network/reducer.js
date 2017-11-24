@@ -15,6 +15,7 @@ const initialState = {
     providerMap.chronoBank.id,
     providerMap.infura.id,
   ],
+  preferMainnet: process.env.NODE_ENV === 'production',
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,

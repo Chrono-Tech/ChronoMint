@@ -10,12 +10,13 @@ import networkService, { DUCK_NETWORK } from '../../redux/network/actions'
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
   return {
-    providers: network.providers,
-    networks: network.networks,
-    priority: network.priority,
     selectedProviderId: network.selectedProviderId,
     selectedNetworkId: network.selectedNetworkId,
   }
+}
+
+const startAutoSelect = async () => {
+  await networkService.autoSelect()
 }
 
 @connect(mapStateToProps)
@@ -26,6 +27,10 @@ class AutomaticProviderSelector extends PureComponent {
     show: PropTypes.bool,
     currentStrategy: PropTypes.string,
     onSelectorSwitch: PropTypes.func,
+  }
+
+  componentDidMount () {
+    return startAutoSelect()
   }
 
   handleToggle = () => this.props.onSelectorSwitch(this.props.currentStrategy)

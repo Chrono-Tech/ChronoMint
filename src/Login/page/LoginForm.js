@@ -9,11 +9,9 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { login } from 'redux/session/actions'
 import inverted from 'styles/themes/inversed'
-import LoginUPort from '../components/LoginUPort/LoginUPort'
 import LoginWithOptions from '../components/LoginWithOptions/LoginWithOptions'
 import ManualProviderSelector from '../components/ProviderSelectorSwitcher/ManualProviderSelector'
 import AutomaticProviderSelector from '../components/ProviderSelectorSwitcher/AutomaticProviderSelector'
-import { providerMap } from '../network/settings'
 import networkService, { clearErrors, DUCK_NETWORK } from '../redux/network/actions'
 
 import './LoginPage.scss'
@@ -129,7 +127,6 @@ class LoginPage extends Component {
   render () {
     const {
       errors,
-      selectedProviderId,
     } = this.props
 
     return (
@@ -142,8 +139,6 @@ class LoginPage extends Component {
             onLogin={this.handleLogin}
             onToggleProvider={this.handleToggleProvider}
           />
-          {selectedProviderId === providerMap.uport.id && <LoginUPort onLogin={this.handleLogin} />}
-
           {errors && (
             <div styleName='errors'>
               {errors.map(this.renderError)}

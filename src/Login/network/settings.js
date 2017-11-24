@@ -1,4 +1,4 @@
-const NETWORK_MAIN_ID = 1
+export const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
 export const LOCAL_PROVIDER_ID = 6
 
@@ -153,6 +153,10 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       return []
     }
   }
+}
+
+export const getProviderById = (providerId) => {
+  return providerMap[Object.keys(providerMap).find((key) => providerMap[ key ].id === providerId)] || {}
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
