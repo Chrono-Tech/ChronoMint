@@ -1,17 +1,8 @@
 import BigNumber from 'bignumber.js'
-
 import TxModel from 'models/TxModel'
+import AbstractNode from './AbstractNode'
 
-import BitcoinAbstractNode from './BitcoinAbstractNode'
-
-export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
-  constructor ({ api, trace }) {
-    super()
-    this._api = api
-    this._trace = trace
-    // TODO @ipavlenko: Instantiate here permanent socket connection to the bitcoin Node
-  }
-
+export default class BitcoinBlockexplorerNode extends AbstractNode {
   async getTransactionInfo (txid) {
     try {
       const res = await this._api.get(`/tx/${txid}`)
@@ -74,7 +65,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       }
     }
 
-    const txmodel = new TxModel({
+    return new TxModel({
       txHash: tx.txid,
       // blockHash: tx.blockhash,
       // blockNumber: tx.blockheight,
@@ -86,6 +77,5 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       fee: new BigNumber(tx.fees),
       credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
     })
-    return txmodel
   }
 }
