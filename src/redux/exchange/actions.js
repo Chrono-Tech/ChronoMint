@@ -33,9 +33,9 @@ export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOr
     const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
     const tokens = getState().get(DUCK_EXCHANGE).tokens()
     if (isBuy) {
-      await exchangeDAO.buy(amount, exchange.sellPrice(), tokens.getBySymbol(exchange.symbol()))
+      await exchangeDAO.buy(amount, exchange, tokens.getBySymbol(exchange.symbol()))
     } else {
-      await exchangeDAO.sell(amount, exchange.buyPrice(), getCurrentWallet(getState()).tokens().get(exchange.symbol()))
+      await exchangeDAO.sell(amount, exchange, getCurrentWallet(getState()).tokens().get(exchange.symbol()))
     }
   } catch (e) {
     // no rollback

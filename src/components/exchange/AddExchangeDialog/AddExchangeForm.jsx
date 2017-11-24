@@ -30,8 +30,6 @@ function mapStateToProps (state) {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-})
 const onSubmit = (values) => {
   const token = values.get('token')
   return new ExchangeOrderModel({
@@ -41,7 +39,7 @@ const onSubmit = (values) => {
   })
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps, null)
 @reduxForm({ form: FORM_CREATE_EXCHANGE, validate, onSubmit })
 export default class AddExchangeForm extends PureComponent {
   static propTypes = {

@@ -438,6 +438,12 @@ export default {
       [exchange.TX_SELL]: {
         title: 'Confirm sell tokens for ETH',
       },
+      [exchange.TX_WITHDRAW_TOKENS]: {
+        title: 'Confirm withdraw tokens',
+      },
+      [exchange.TX_WITHDRAW_ETH]: {
+        title: 'Confirm withdraw ETH',
+      },
     },
   },
   errors: {

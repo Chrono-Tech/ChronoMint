@@ -103,13 +103,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
             </div>
             }
             {showSell &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
             </div>
             }
           </div>

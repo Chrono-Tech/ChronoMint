@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import TokenModel from 'models/TokenModel'
+import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_BUY = 'buy'
@@ -26,7 +28,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       ],
       {
         recipient: wallet.address(),
-        amount,
+        amount: new Amount(amount, token.symbol()),
       })
   }
 
@@ -39,7 +41,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       ],
       {
         recipient: wallet.address(),
-        amount,
+        amount: new Amount(amount, 'ETH'),
       })
   }
 
@@ -48,30 +50,36 @@ export class ExchangeDAO extends AbstractContractDAO {
     return assetDAO.approve(this.getInitAddress(), amount)
   }
 
-  async sell (amount: BigNumber, price: BigNumber, token: TokenModel) {
+  async sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+    const priceInWei = this._c.toWei(exchange.buyPrice())
+    const price = priceInWei.div(Math.pow(10, token.decimals()))
+
     return this._tx(
       TX_SELL,
       [
         token.dao().addDecimals(amount),
-        this._c.toWei(price).div(Math.pow(10, token.decimals())),
+        price.mul(Math.pow(10, price.decimalPlaces())),
+        price.decimalPlaces(),
       ],
       {
-        amount,
-        price: amount.mul(price),
+        amount: new Amount(amount, exchange.symbol()),
+        price: new Amount(amount.mul(exchange.buyPrice()), 'ETH'),
       })
   }
 
-  async buy (amount: BigNumber, price: BigNumber, token: TokenModel) {
-    const priceInWei = this._c.toWei(price)
+  async buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+    const priceInWei = this._c.toWei(exchange.sellPrice())
+    const price = priceInWei.div(Math.pow(10, token.decimals()))
     return this._tx(
       TX_BUY,
       [
         token.dao().addDecimals(amount),
-        priceInWei.div(Math.pow(10, token.decimals())),
+        price.mul(Math.pow(10, price.decimalPlaces())),
+        price.decimalPlaces(),
       ],
       {
-        amount,
-        price: amount.mul(price),
+        amount: new Amount(amount, exchange.symbol()),
+        price: new Amount(amount.mul(exchange.sellPrice()), 'ETH'),
       }, priceInWei.mul(amount)
     )
   }

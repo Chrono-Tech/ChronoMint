@@ -13,6 +13,7 @@ export default {
     allowance: 'Your allowance',
     approve: 'Approve tokens',
     revoke: 'Revoke tokens',
+    amountMustBeLess: 'Amount must be less than %{amount}',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -28,5 +29,6 @@ export default {
     allowance: 'Подтвержденная сумма',
     approve: 'Подтвердить перевод токенов',
     revoke: 'Отменить перевод токенов',
+    amountMustBeLess: 'Количество должно быть меньше чем %{amount}',
   },
 }

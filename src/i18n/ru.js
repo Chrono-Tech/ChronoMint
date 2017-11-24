@@ -423,7 +423,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Одрбрить списание TIME',
+        title: 'Одобрить списание TIME',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
@@ -435,10 +435,16 @@ export default {
     },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH',
+        title: 'Купить токены за ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH',
+        title: 'Продать токены за ETH',
+      },
+      [exchange.TX_WITHDRAW_TOKENS]: {
+        title: 'Подтвердите вывод токенов',
+      },
+      [exchange.TX_WITHDRAW_ETH]: {
+        title: 'Подтвердите вывод ETH',
       },
     },
   },

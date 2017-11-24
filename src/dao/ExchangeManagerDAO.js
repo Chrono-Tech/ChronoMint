@@ -4,6 +4,7 @@ import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import TokensCollection from 'models/exchange/TokensCollection'
 import TokenModel from 'models/TokenModel'
+import BigNumber from 'bignumber.js'
 import web3Converter from 'utils/Web3Converter'
 import { ExchangeManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -18,12 +19,17 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async createExchange (exchange: ExchangeOrderModel, token: TokenModel) {
+    const buyPrice = this._c.toWei(exchange.buyPrice()).div(Math.pow(10, token.decimals()))
+    const sellPrice = this._c.toWei(exchange.sellPrice()).div(Math.pow(10, token.decimals()))
+
     const tx = await this._tx(
       'createExchange',
       [
         exchange.symbol(),
-        this._c.toWei(exchange.buyPrice()).div(Math.pow(10, token.decimals())),
-        this._c.toWei(exchange.sellPrice()).div(Math.pow(10, token.decimals())),
+        buyPrice.mul(Math.pow(10, buyPrice.decimalPlaces())),
+        buyPrice.decimalPlaces(),
+        sellPrice.mul(Math.pow(10, sellPrice.decimalPlaces())),
+        sellPrice.decimalPlaces(),
         exchange.authorizedManager(),
         exchange.isActive(),
       ],
@@ -62,13 +68,12 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   async getExchangeData (exchangesAddresses: Array<string>, tokens: TokensCollection) {
     let exchangesCollection = new ExchangesCollection()
 
-    const [exchanges, symbols, owners, buyPrices, sellPrices, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
+    const [symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
-    exchanges.forEach((address, i) => {
-      const owner = owners[i]
+    exchangesAddresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[i])
-      const buyPrice = buyPrices[i]
-      const sellPrice = sellPrices[i]
+      const buyPrice = new BigNumber(buyPrices[i])
+      const sellPrice = new BigNumber(sellPrices[i])
       const assetBalance = assetBalances[i]
       const ethBalance = ethBalances[i]
       const token = tokens.getBySymbol(symbol)
@@ -84,7 +89,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
         symbol,
-        owner,
         buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
         sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
         assetBalance: token.dao().removeDecimals(assetBalance),

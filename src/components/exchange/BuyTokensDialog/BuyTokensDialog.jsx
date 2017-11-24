@@ -13,7 +13,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { TextField } from 'redux-form-material-ui'
-import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, reduxForm, isInvalid } from 'redux-form/immutable'
 import { approveTokensForExchange, exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
@@ -22,7 +22,7 @@ import styles from './styles'
 import validate from './validate'
 
 function prefix (token) {
-  return `components.exchange.exchangeTokensDialog.${token}`
+  return `components.exchange.BuyTokensDialog.${token}`
 }
 
 export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeTokensForm'
@@ -36,10 +36,13 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const exchangeState = state.get('exchange')
   const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
+  const invalidSelector = isInvalid(FORM_EXCHANGE_BUY_TOKENS)
   return {
     tokens: exchangeState.tokens(),
     usersTokens: getCurrentWallet(state).tokens(),
     buy: selector(state, 'buy'),
+    sell: selector(state, 'sell'),
+    formInvalid: invalidSelector(state),
   }
 }
 
@@ -50,7 +53,7 @@ const onSubmit = (values, dispatch, props) => {
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
-export default class BuyTokensDialog extends React.Component {
+export default class BuyTokensDialog extends React.PureComponent {
   static propTypes = {
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
     handleClose: PropTypes.func,
@@ -241,7 +244,7 @@ export default class BuyTokensDialog extends React.Component {
                           />
                           }
                           <RaisedButton
-                            disabled={!this.props.isBuy && allowance.toString() !== this.props.buy}
+                            disabled={this.props.formInvalid || (!this.props.isBuy && allowance.toString() !== this.props.buy)}
                             type='submit'
                             label={<Translate value={prefix('sendRequest')} />}
                             primary
