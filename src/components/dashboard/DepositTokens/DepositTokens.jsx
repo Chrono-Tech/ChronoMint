@@ -29,7 +29,7 @@ function mapStateToProps (state) {
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const timeAddress = wallet.timeAddress()
-  const allowance = token ? token.allowance() : new BigNumber(0)
+  const allowance = token ? token.allowance(timeAddress) : new BigNumber(0)
 
   return {
     token,
@@ -67,7 +67,7 @@ export default class DepositTokens extends PureComponent {
     token: PropTypes.object,
     errors: PropTypes.object,
     timeAddress: PropTypes.string,
-    allowance: PropTypes.objectOf(BigNumber),
+    allowance: PropTypes.instanceOf(BigNumber),
   }
 
   constructor (props) {
