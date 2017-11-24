@@ -1,7 +1,7 @@
 import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import download from 'react-file-download'
+import download from 'js-file-download'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'

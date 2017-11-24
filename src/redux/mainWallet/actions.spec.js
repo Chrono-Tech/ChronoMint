@@ -1,4 +1,3 @@
-/* global describe, it*/
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import MainWallet from 'models/Wallet/MainWalletModel'
