@@ -76,7 +76,7 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
-  dispatch({ type: SESSION_PROFILE_UPDATE, newProfile })
+  dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
   try {
     const dao = await contractsManagerDAO.getUserManagerDAO()
     await dao.setMemberProfile(account, newProfile)
