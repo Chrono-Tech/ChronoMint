@@ -1,6 +1,6 @@
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 
-export default class MultisigWalletCollection extends abstractFetchingCollection({
+export default class MultisigWalletPendingTxCollection extends abstractFetchingCollection({
   // defaults
 }) {
 

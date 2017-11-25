@@ -26,7 +26,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   // ---------- watchers ---------
 
-  async watchWalletCreate (callback) {
+  watchWalletCreate (callback) {
     return this._watch(events.WALLET_CREATED, async (result) => {
       const wallet = await this._createWalletModel(result.args.wallet, false, result.transactionHash)
       callback(wallet, new WalletNoticeModel({
@@ -53,7 +53,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async _createWalletModel (address, is2FA, transactionHash) {
-    const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(address)
+    const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
     const [owners, requiredSignatures, tokens] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
