@@ -81,12 +81,12 @@ export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispa
   dispatch({ type: WALLET_ALLOWANCE, token, value: allowance, spender: exchange.address() })
 }
 
-export const approveTokensForExchange = (exchange: ExchangeOrderModel, token: TokenModel, amount: Bignumber) => async () => {
+export const approveTokensForExchange = (exchange: ExchangeOrderModel, token: TokenModel, amount: BigNumber) => async () => {
   const dao = await contractsManagerDAO.getExchangeDAO(exchange.address())
   await dao.approveSell(token, amount)
 }
 
-const getExchangesCount = () => async (dispatch) => {
+export const getExchangesCount = () => async (dispatch) => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const count = await exchangeManagerDAO.getExchangesCount()
   dispatch({ type: EXCHANGE_SET_PAGES_COUNT, count })
@@ -110,7 +110,7 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
   dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + exchanges.size() })
 }
 
-const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getState) => {
+export const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getState) => {
   let updatedExchange = exchange
   if (!exchange.isNew() && !!exchange.isTransactionHash()) {
     // address arrived, delete temporary hash

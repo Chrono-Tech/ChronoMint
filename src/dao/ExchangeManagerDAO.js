@@ -104,7 +104,10 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   watchExchangeCreated (account, callback) {
-    this._watch('ExchangeCreated', callback)
+    this._watch('ExchangeCreated', (tx)=>{
+      tx.args.symbol = this._c.bytesToString(tx.args.symbol)
+      callback(tx)
+    })
   }
 
 }
