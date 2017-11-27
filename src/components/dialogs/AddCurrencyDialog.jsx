@@ -30,7 +30,7 @@ class TokenRow extends PureComponent {
 
   handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
 
-  renderCheckbox = () => this.props.token.isOptional() ? <Checkbox checked={this.props.isSelected} /> : null
+  renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
 
   render () {
     const {
@@ -62,7 +62,7 @@ class TokenRow extends PureComponent {
           </div>
         </div>
         <div styleName='cell'>
-          <WithLoader showLoader={isFetching} payload={token}>
+          <WithLoader showLoader={isFetching} payload={token} isSelected={this.props.isSelected}>
             {this.renderCheckbox}
           </WithLoader>
         </div>
@@ -140,11 +140,10 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.modalsClose()
   }
 
-  handleCurrencyChecked (symbol, isSelect) {
+  handleCurrencyChecked = (symbol, isSelect) => {
     const { selectedTokens } = this.state
 
     this.setState({
-      ...this.state,
       selectedTokens: isSelect
         ? selectedTokens.concat(symbol)
         : selectedTokens.filter((item) => item !== symbol),
@@ -161,8 +160,8 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.initWallet()
   }
 
-  renderRow = ([symbol, token]: [string, TokenModel]) => {
-    const isSelected = this.state.selectedTokens.includes(token.symbol())
+  renderRow = (selectedTokens) => ([symbol, token]: [string, TokenModel]) => {
+    const isSelected = selectedTokens.includes(token.symbol())
 
     return (
       <TokenRow
@@ -175,9 +174,9 @@ export default class AddCurrencyDialog extends PureComponent {
     )
   }
 
-  renderTokens = () => (
+  renderTokens = ({ tokens, selectedTokens }) => (
     <div styleName='table'>
-      {this.props.tokens.entrySeq().toArray().map(this.renderRow)}
+      {tokens.entrySeq().toArray().map(this.renderRow(selectedTokens))}
     </div>
   )
 
@@ -201,7 +200,11 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
-              <WithLoader showLoader={!this.props.isFetched}>
+              <WithLoader
+                showLoader={!this.props.isFetched}
+                selectedTokens={this.state.selectedTokens}
+                tokens={this.props.tokens}
+              >
                 {this.renderTokens}
               </WithLoader>
             </div>

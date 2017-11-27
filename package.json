@@ -67,7 +67,7 @@
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
     "url-loader": "0.5.8",
     "webpack": "2.5.1",
-    "webpack-dev-server": "2.4.5"
+    "webpack-dev-server": "2.9.4"
   },
   "dependencies": {
     "axios": "^0.16.2",
@@ -143,7 +143,7 @@
     "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",
-    "testrpc": "testrpc --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev 'FilterSubprovider|eth_getFilterChanges'",
+    "testrpc": "testrpc --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev \"FilterSubprovider|eth_getFilterChanges\"",
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
