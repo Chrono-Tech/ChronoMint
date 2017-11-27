@@ -20,7 +20,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from 'utils/IPFS'
-import validate from './validate'
+import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
@@ -370,6 +370,7 @@ export default class AddTokenForm extends PureComponent {
                   name='smallestUnit'
                   fullWidth
                   floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                  normalize={normalizeSmallestUnit}
                 />
               </div>
             </div>
