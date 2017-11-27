@@ -99,6 +99,8 @@ class PlatformsList extends PureComponent {
           <WithLoader
             showLoader={this.props.assetsManagerCountsLoading}
             loader={<div styleName='preloaderWrap'><Preloader /></div>}
+            selectedPlatform={this.props.selectedPlatform}
+            platformsList={this.props.platformsList}
           >
             {this.renderPlatformsList}
           </WithLoader>

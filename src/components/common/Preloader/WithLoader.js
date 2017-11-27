@@ -11,8 +11,8 @@ export const isPending = (hasPending) => hasPending.isPending()
 export default class WithLoader extends PureComponent {
   static propTypes = {
     payload: PropTypes.any, // eslint-disable-line react/forbid-prop-types
-    loader: PropTypes.oneOfType(PropTypes.func, PropTypes.node),
-    showLoader: PropTypes.oneOfType(PropTypes.func, PropTypes.bool),
+    loader: PropTypes.oneOfType([PropTypes.func, PropTypes.node]),
+    showLoader: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
     children: PropTypes.func.isRequired,
   }
 
@@ -33,13 +33,13 @@ export default class WithLoader extends PureComponent {
   }
 
   renderContent () {
-    const { children, payload } = this.props
+    const { children, payload, loader, showLoader, ...rest } = this.props
 
     if (typeof children !== 'function') {
       return 'Children is not a function'
     }
 
-    return children({ payload })
+    return children({ payload, ...rest })
   }
 
   render () {
