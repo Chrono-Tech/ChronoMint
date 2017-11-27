@@ -87,7 +87,7 @@ class NetworkService extends EventEmitter {
 
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || (`//${location.hostname}:8545`)))
+    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || (`/web3/`)))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -210,13 +210,8 @@ class NetworkService extends EventEmitter {
   }
 
   async checkTestRPC (providerUrl) {
-    // http only
-    if (window.location.protocol === 'https:') {
-      return false
-    }
-
     const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || (`//${location.hostname}:8545`)))
+    web3.setProvider(new web3.providers.HttpProvider(providerUrl || (`/web3/`)))
     const web3Provider = new Web3Provider(web3)
 
     const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)

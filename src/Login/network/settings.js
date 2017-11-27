@@ -97,7 +97,7 @@ if (process.env.NODE_ENV === 'development') {
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: `${location.hostname}:8545`,
+  host: `/web3/`,
   bitcoin: 'testnet',
   nem: 'Testnet',
 }
