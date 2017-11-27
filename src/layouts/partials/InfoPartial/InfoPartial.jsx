@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
@@ -20,15 +20,17 @@ class SlideArrow extends PureComponent {
     show: PropTypes.bool,
     count: PropTypes.number,
     onClick: PropTypes.func,
+    direction: PropTypes.string,
   }
 
   handleClick = () => this.props.onClick(this.props.count)
 
   render () {
+    const direction = this.props.direction === 'left' ? 'arrowLeft' : 'arrowRight'
     return (
-      <div styleName='arrow arrowLeft' style={{ visibility: this.props.show ? 'visible' : 'hidden' }}>
+      <div styleName={direction} style={{ visibility: this.props.show ? 'visible' : 'hidden' }}>
         <a href='#arrow' styleName='arrowAction' onTouchTap={this.handleClick}>
-          <i className='material-icons'>keyboard_arrow_left</i>
+          <i className='material-icons'>{`keyboard_arrow_${this.props.direction}`}</i>
         </a>
       </div>
     )
@@ -230,12 +232,20 @@ export class InfoPartial extends PureComponent {
     const { visibleCount } = this.state
     const tokens = wallet.tokens().entrySeq().toArray()
     const items = tokens.map(([name, token]) => ({ token, name }))
+    const isMainWallet = !wallet.isMultisig()
 
-    const tokensCount = this.props.wallet.isMultisig() ? tokens.length : tokens.length + 1
-    const withBigButton = tokensCount <= visibleCount
-    const showArrows = withBigButton
-      ? tokensCount + 1 > visibleCount
-      : tokensCount > visibleCount
+    let slidesCount = tokens.length
+    let withBigButton = false
+    if (isMainWallet) {
+      // increase 'add' button for main wallet
+      slidesCount = tokens.length + 1
+      // check
+      withBigButton = slidesCount <= visibleCount
+      // decrease if 'add' button don't fit the screen, cause 'add' button will be as FAB
+      slidesCount = withBigButton ? slidesCount : slidesCount - 1
+    }
+
+    const showArrows = slidesCount > visibleCount
 
     return (
       <div styleName='root'>
@@ -245,10 +255,10 @@ export class InfoPartial extends PureComponent {
               ? items.map(this.renderItem)
               : <Preloader />
             }
-            {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
+            {isMainWallet && withBigButton && this.renderAction()}
           </div>
         </div>
-        {!withBigButton && (
+        {isMainWallet && !withBigButton && (
           <div styleName='addTokenFAB'>
             <FloatingActionButton onTouchTap={this.handleAddClick}>
               <div className='material-icons'>add</div>
@@ -256,11 +266,13 @@ export class InfoPartial extends PureComponent {
           </div>
         )}
         <SlideArrow
+          direction='left'
           show={showArrows}
           count={-visibleCount}
           onClick={this.handleSlide}
         />
         <SlideArrow
+          direction='right'
           show={showArrows}
           count={visibleCount}
           onClick={this.handleSlide}

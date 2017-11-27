@@ -2,16 +2,10 @@ import { Paper, CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { SendTokens, DepositTokens, Rewards, Voting } from 'components'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import { getRewardsData, watchInitRewards } from 'redux/rewards/rewards'
-
 import './DashboardContent.scss'
-
-function prefix (token) {
-  return `layouts.partials.DashboardContent.${token}`
-}
 
 function mapStateToProps (state) {
   const wallet = getCurrentWallet(state)
@@ -68,37 +62,29 @@ export default class DashboardContent extends Component {
                     <SendTokens />
                   </div>
                   <div className='col-md-3 col-lg-2' styleName='headDark'>
-                    <Paper>
-                      <DepositTokens title={<Translate value={prefix('depositTime')} />} />
-                    </Paper>
+                    <DepositTokens />
                   </div>
                 </div>
-                {!this.props.isVotingFetched
-                  ? null
-                  : (
-                    <div className='row'>
-                      <div className='col-xs-6'>
+                {this.props.isVotingFetched && (
+                  <div className='row'>
+                    <div className='col-xs-6'>
+                      <Paper>
+                        <Voting />
+                      </Paper>
+                    </div>
+                  </div>
+                )}
+                {this.props.isRewardsFetched && (
+                  <div className='row'>
+                    {this.props.rewardsData.periods().valueSeq().map((item) => (
+                      <div className='col-xs-6' key={item.index()}>
                         <Paper>
-                          <Voting />
+                          <Rewards period={item} rewardsData={this.props.rewardsData} />
                         </Paper>
                       </div>
-                    </div>
-                  )
-                }
-                {!this.props.isRewardsFetched
-                  ? null
-                  : (
-                    <div className='row'>
-                      {this.props.rewardsData.periods().valueSeq().map((item) => (
-                        <div className='col-xs-6' key={item.index()}>
-                          <Paper>
-                            <Rewards period={item} rewardsData={this.props.rewardsData} />
-                          </Paper>
-                        </div>
-                      ))}
-                    </div>
-                  )
-                }
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -424,7 +424,10 @@ export default class AbstractContractDAO {
       }
 
       if (addDryRunFrom) {
-        const addDryResult = convertDryResult(await deployed[func].call(...args, txParams))
+        const addDryResult = convertDryResult(await deployed[func].call(...args, {
+          ...txParams,
+          from: addDryRunFrom,
+        }))
         if (!addDryRunOkCodes.includes(addDryResult)) {
           throw new TxError('Additional dry run failed', addDryResult)
         }

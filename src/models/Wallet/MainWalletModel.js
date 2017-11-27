@@ -7,14 +7,11 @@ import TransactionsCollection from './TransactionsCollection'
 export default class MainWallet extends abstractFetchingModel({
   address: null,
   tokens: new Immutable.Map(),
-  // TODO @dkchv: make as separate fetching model
   transactions: new TransactionsCollection(),
   btcAddress: null,
   bccAddress: null,
   nemAddress: null,
   timeDeposit: new BigNumber(0),
-  // TODO @dkchv: !!! was ''
-  // TODO @dkchv: maybe not for wallet model
   timeAddress: null,
   isMultisig: false,
   isMainWallet: true,

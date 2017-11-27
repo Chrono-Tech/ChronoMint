@@ -26,15 +26,14 @@
   transform: translateX(0);
 }
 
-.arrow {
+.arrowLeft {
   z-index: 200;
+  @include position(absolute, -60px, 50%, auto, auto);
+}
 
-  &.arrowLeft {
-    @include position(absolute, -60px, 50%, auto, auto);
-  }
-  &.arrowRight {
-    @include position(absolute, -60px, auto, auto, 50%);
-  }
+.arrowRight {
+  z-index: 200;
+  @include position(absolute, -60px, auto, auto, 50%);
 }
 
 .arrowAction {

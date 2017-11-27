@@ -32,7 +32,7 @@ class SendTokens extends PureComponent {
     resetForm: PropTypes.func,
   }
 
-  handleSubmit (values) {
+  handleSubmit = (values) => {
     const { wallet, resetForm } = this.props
     const { action, symbol, amount, recipient } = values.toJS()
     const token = wallet.tokens().get(symbol)
@@ -59,7 +59,7 @@ class SendTokens extends PureComponent {
       <SendTokensForm
         initialValues={initialValues}
         wallet={wallet}
-        onSubmit={values => this.handleSubmit(values)}
+        onSubmit={this.handleSubmit}
       />
     )
   }
