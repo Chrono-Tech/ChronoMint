@@ -16,7 +16,7 @@ class LoginLocal extends PureComponent {
   componentWillMount () {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(`//${location.hostname}:8545`))
+    web3Provider.setProvider(new web3.providers.HttpProvider(`/web3/`))
   }
 
   handleSelectAccount = () => {

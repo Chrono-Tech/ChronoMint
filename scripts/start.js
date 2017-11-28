@@ -171,6 +171,11 @@ new WebpackDevServer(compiler, {
   https: true,
   open: true,
   disableHostCheck: true,
+  proxy: {
+    '/web3/*': {
+      target: 'http://localhost:8545',
+    },
+  },
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {
     // eslint-disable-next-line
