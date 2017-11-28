@@ -5,7 +5,7 @@ import NewMiddlewareNode from './NemMiddlewareNode'
 // TODO @dkchv: update to actual config
 const NEM_TESTNET_NODE = new NewMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io',
+    baseURL: '//middleware-ethereum-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
@@ -21,7 +21,7 @@ const NEM_TESTNET_NODE = new NewMiddlewareNode({
 
 const NEM_MAINNET_NODE = new NewMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io',
+    baseURL: '//middleware-ethereum-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
