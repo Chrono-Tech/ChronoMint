@@ -21,7 +21,7 @@ export default class TokenModel extends abstractFetchingModel({
   platform: null,
   totalSupply: new BigNumber(0),
   managersList: null,
-  isReissuable: null,
+  isReissuable: false,
   isOptional: true, // used in add token dialog for determine its selectable
   feeAddress: null,
 }) {

@@ -5,6 +5,8 @@ export const LOCAL_PROVIDER_ID = 6
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
+export const TESTRPC_URL ='/web3/'
+
 const scannerMap = {
   // only for mainnet API url is different from web-interface url
   main: [
@@ -46,7 +48,7 @@ const KOVAN_BASE = {
 
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
-  protocol: 'http',
+  protocol: 'https',
   name: 'Localhost',
 }
 
@@ -97,7 +99,7 @@ if (process.env.NODE_ENV === 'development') {
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: `${location.hostname}:8545`,
+  host: TESTRPC_URL,
   bitcoin: 'testnet',
   nem: 'Testnet',
 }
