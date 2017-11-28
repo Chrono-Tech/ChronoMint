@@ -1,5 +1,6 @@
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import customSerializer from 'utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
@@ -25,21 +26,21 @@ web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
-AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
+AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([ thunk ])
+export const mockStore = configureMockStore([thunk])
 export let store = null
 
-beforeAll((done) => {
+beforeAll(( done ) => {
   web3provider.getWeb3().then(() => {
     // noinspection JSUnresolvedFunction
     reverter.snapshot(done)
   })
 })
 
-afterAll((done) => {
+afterAll(( done ) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
   BTC_TESTNET_NODE.disconnect()
@@ -48,14 +49,15 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
+  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
   networkService.connectStore(store)
 })
 
-afterEach(async (done) => {
+afterEach(async ( done ) => {
   ls.destroySession()
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
 
+expect.addSnapshotSerializer(customSerializer)
