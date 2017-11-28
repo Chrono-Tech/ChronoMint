@@ -12,7 +12,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class AddPlatformDialog extends PureComponent {
+export default class AddTokenDialog extends PureComponent {
   static propTypes = {
     modalsClose: PropTypes.func,
   }

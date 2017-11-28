@@ -3,7 +3,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import { getProviderById, getNetworksByProvider, getNetworkById, getScannerById, NETWORK_MAIN_ID, LOCAL_ID } from '../../network/settings'
+import { getProviderById, getNetworksByProvider, getNetworkById, getScannerById, NETWORK_MAIN_ID, LOCAL_ID, TESTRPC_URL } from '../../network/settings'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '../../network/MonitorService'
 import uportProvider, { UPortAddress } from '../../network/uportProvider'
 import web3Provider, { Web3Provider } from '../../network/Web3Provider'
@@ -89,7 +89,7 @@ class NetworkService extends EventEmitter {
 
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || (`//${location.hostname}:8545`)))
+    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -212,13 +212,8 @@ class NetworkService extends EventEmitter {
   }
 
   async checkTestRPC (providerUrl) {
-    // http only
-    if (window.location.protocol === 'https:') {
-      return false
-    }
-
     const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || (`//${location.hostname}:8545`)))
+    web3.setProvider(new web3.providers.HttpProvider(providerUrl || TESTRPC_URL))
     const web3Provider = new Web3Provider(web3)
 
     const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)

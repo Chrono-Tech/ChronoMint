@@ -176,7 +176,7 @@ describe('wallet actions', () => {
     const myStore = mockStore(getStateTIME)
 
     await myStore.dispatch(a.depositTIME(amountToDeposit))
-    await myStore.dispatch(a.initTIMEDeposit(amountToDeposit))
+    await myStore.dispatch(a.initTIMEDeposit())
 
     expect(myStore.getActions()).toMatchSnapshot()
   })

@@ -30,43 +30,41 @@ class PlatformsList extends PureComponent {
     this.props.handleSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
   }
 
-  renderTokenList () {
-    const filteredTokens = this.props.tokensMap.toArray()
+  renderTokenList ({ tokensMap, selectedToken }) {
+    const filteredTokens = tokensMap.toArray()
       .filter((token) => token.platform ? token.platform() === this.props.selectedPlatform : false)
     return (
       <div styleName='tokensList'>
         {
-          filteredTokens
-            .map((token) => {
-              return (<div
-                key={token.address()}
-                styleName={classnames('tokenItem', { 'selected': this.props.selectedToken === token.symbol() })}
-                onTouchTap={() => this.props.handleSelectToken(token.symbol())}
-              >
-                <div styleName='tokenIcon'>
-                  <IPFSImage styleName='content' multihash={token.icon()} />
-                </div>
-                <div styleName='tokenTitle'>
-                  {token.symbol()}
-                  <div styleName='tokenSubTitle'>{token.address()}</div>
-                </div>
-                <div styleName='tokenBalance'>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={token.totalSupply()}
-                    symbol={token.symbol()}
-                  />
-                </div>
-              </div>)
-            })
+          filteredTokens.map((token) => (
+            <div
+              key={token.address()}
+              styleName={classnames('tokenItem', { 'selected': selectedToken === token.symbol() })}
+              onTouchTap={() => this.props.handleSelectToken(token.symbol())}
+            >
+              <div styleName='tokenIcon'>
+                <IPFSImage styleName='content' multihash={token.icon()} />
+              </div>
+              <div styleName='tokenTitle'>
+                {token.symbol()}
+                <div styleName='tokenSubTitle'>{token.address()}</div>
+              </div>
+              <div styleName='tokenBalance'>
+                <TokenValue
+                  style={{ fontSize: '24px' }}
+                  value={token.totalSupply()}
+                  symbol={token.symbol()}
+                />
+              </div>
+            </div>
+          ))
         }
 
       </div>
     )
   }
 
-  renderPlatformsList () {
-    const { selectedPlatform, platformsList } = this.props
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokensMap, selectedToken }) => {
     return (
       <div>
         {
@@ -79,21 +77,15 @@ class PlatformsList extends PureComponent {
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  {
-                    name
-                      ? <div styleName='platformTitle'>{name}&nbsp;(
-                        <small>{address}</small>
-                        )
-                      </div>
-                      : <div styleName='platformTitle'>{address}</div>
+                  {name
+                    ? <div styleName='platformTitle'>{name}&nbsp;(
+                      <small>{address}</small>
+                      )</div>
+                    : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
               </div>
-              {
-                selectedPlatform === address
-                  ? this.renderTokenList(address)
-                  : null
-              }
+              {selectedPlatform === address && this.renderTokenList({ tokensMap, selectedToken })}
             </div>
           ))
         }
@@ -108,6 +100,10 @@ class PlatformsList extends PureComponent {
           <WithLoader
             showLoader={this.props.assetsManagerCountsLoading}
             loader={<div styleName='preloaderWrap'><Preloader /></div>}
+            selectedPlatform={this.props.selectedPlatform}
+            platformsList={this.props.platformsList}
+            tokensMap={this.props.tokensMap}
+            selectedToken={this.props.selectedToken}
           >
             {this.renderPlatformsList}
           </WithLoader>
