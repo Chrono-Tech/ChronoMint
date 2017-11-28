@@ -144,7 +144,7 @@ export const withdrawFromExchange = (exchange: ExchangeOrderModel, wallet, amoun
   }
 }
 
-const getExchangeFromState = (state: Object, address: string) => {
+export const getExchangeFromState = (state: Object, address: string) => {
   return state.exchanges().item(address) || state.exchangesForOwner().item(address)
 }
 

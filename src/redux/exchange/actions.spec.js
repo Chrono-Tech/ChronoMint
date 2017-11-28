@@ -1,6 +1,7 @@
+import MainWalletModel from 'models/Wallet/MainWalletModel'
 import ExchangesCollection from 'models/exchange/TokensCollection'
 import BigNumber from 'bignumber.js'
-import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
+import { WALLET_ALLOWANCE, WALLET_BALANCE, mainTransfer } from 'redux/mainWallet/actions'
 import Immutable from 'immutable'
 import networkService from 'Login/redux/network/actions'
 import exchangeService from 'services/ExchangeService'
@@ -36,6 +37,7 @@ describe('Exchange tests', () => {
 
   it.skip('should get exchange data', async (done: Function) => {
     await store.dispatch(a.getExchange())
+    expect(await store.dispatch(a.getExchange())).toThrow()
     const actions = store.getActions()
     expect(actions[0].type).toEqual(a.EXCHANGE_GET_DATA_START)
     expect(actions[1].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_START)
@@ -58,7 +60,7 @@ describe('Exchange tests', () => {
     const actions = store.getActions()
     expect(actions[0].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_START)
     expect(actions[1].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH)
-    expect(actions[1].exchanges.size()).toEqual(0)
+    expect(actions[1].exchanges.size()).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -68,7 +70,7 @@ describe('Exchange tests', () => {
       new ExchangeModel({
         tokens,
         showFilter: false,
-      }),
+      })
     )
     store = mockStore(testMock)
     networkService.connectStore(store)
@@ -109,7 +111,7 @@ describe('Exchange tests', () => {
     await store.dispatch(a.getExchangesCount())
     const actions = store.getActions()
     expect(actions[0].type).toEqual(a.EXCHANGE_SET_PAGES_COUNT)
-    expect(actions[0].count).toEqual(1)
+    expect(actions[0].count).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -119,7 +121,7 @@ describe('Exchange tests', () => {
     const actions = store.getActions()
     expect(actions[0].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_START)
     expect(actions[1].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH)
-    expect(actions[1].exchanges.size()).toEqual(1)
+    expect(actions[1].exchanges.size()).toEqual(jasmine.any(Number))
     done()
   })
 
@@ -130,7 +132,7 @@ describe('Exchange tests', () => {
         tokens,
         exchanges: new ExchangesCollection().add(exchange),
         exchangesForOwner: new ExchangesCollection().add(exchange),
-      }),
+      })
     )
     store = mockStore(testMock)
     networkService.connectStore(store)
@@ -140,5 +142,48 @@ describe('Exchange tests', () => {
     expect(actions[0].type).toEqual(a.EXCHANGE_UPDATE_FOR_OWNER)
     expect(actions[1].type).toEqual(a.EXCHANGE_UPDATE)
     done()
+  })
+
+  it('should withdraw from exchange', async (done: Function) => {
+    store.clearActions()
+    const token = tokens.getBySymbol('TIME')
+    const address = exchange.address()
+
+    await store.dispatch(mainTransfer(token, '10', address))
+    const actions = store.getActions()
+    expect(actions[0].type).toEqual(WALLET_BALANCE)
+    expect(actions[0].token.symbol()).toEqual('TIME')
+    const wallet = new MainWalletModel({
+      address: accounts[0],
+      tokens: new Immutable.Map({ TIME: token }),
+    })
+    await store.dispatch(a.withdrawFromExchange(exchange, wallet, '10', 'TIME'))
+    await exchangeService.subscribeToExchange(address)
+    await exchangeService.on('WithdrawTokens', async (tx: Object) => {
+      expect(tx.exchange).toEqual(address)
+      done()
+    })
+  })
+
+  it('should get exchange from state', (done: Function) => {
+    let state = new ExchangeModel({
+      exchanges: new ExchangesCollection().add(exchange),
+      exchangesForOwner: new ExchangesCollection().add(exchange),
+    })
+    const addresss = exchange.address()
+    let exchangeFromState = a.getExchangeFromState(state, addresss)
+    expect(exchangeFromState).toEqual(exchange)
+    exchangeFromState = a.getExchangeFromState(state.exchanges(new ExchangesCollection()), addresss)
+    expect(exchangeFromState).toEqual(exchange)
+    done()
+  })
+
+  it('should make watchers for exchange', async (done: Function) => {
+    try {
+      await store.dispatch(a.watchExchanges())
+      done()
+    } catch (e) {
+      done.fail()
+    }
   })
 })

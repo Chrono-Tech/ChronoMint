@@ -60,11 +60,9 @@ class ExchangeService extends EventEmitter {
         this.emit('Sell', result)
       }),
       dao.watchWithdrawEther(address, (result) => {
-        // TODO
         this.emit('WithdrawEther', result)
       }),
       dao.watchWithdrawTokens(address, (result) => {
-        // TODO
         this.emit('WithdrawTokens', result)
       }),
       dao.watchReceivedEther(address, (result) => {
