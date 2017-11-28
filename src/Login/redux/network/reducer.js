@@ -4,6 +4,7 @@ import * as actions from './actions'
 const initialState = {
   isLoading: false,
   isLocal: false,
+  isMetamask: false,
   accounts: [],
   selectedAccount: null,
   errors: [],
@@ -36,6 +37,7 @@ export default (state = initialState, action) => {
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
         ...state,
+        isMetamask: true,
       }
     case actions.NETWORK_SET_NETWORK:
       return { ...state, selectedNetworkId: action.selectedNetworkId }

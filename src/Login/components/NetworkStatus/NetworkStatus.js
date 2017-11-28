@@ -19,6 +19,8 @@ const selectNetwork = (networkId, providerId) => {
   return network.name
 }
 
+const formatPercent = (value) => Math.round(value * 10000) / 100
+
 const selectStatus = ({ network, sync }) => {
   switch (network.status) {
     case NETWORK_STATUS_ONLINE: {
@@ -69,7 +71,7 @@ export default class NetworkStatus extends PureComponent {
         <span styleName={`status status-${status}`} />
         {provider && `${provider}${network ? ` / ${network} ` : ' '}`}
         <Translate value={`networkStatus.${status}`} />
-        {sync.status === SYNC_STATUS_SYNCING && sync.progress > 0 && ` - ${sync.progress}%`}
+        {sync.status === SYNC_STATUS_SYNCING && sync.progress > 0 && ` - ${formatPercent(sync.progress)}%`}
       </div>
     )
   }

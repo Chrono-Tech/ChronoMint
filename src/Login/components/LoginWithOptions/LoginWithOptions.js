@@ -8,12 +8,12 @@ import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
 import LoginLocal from '../../components/LoginLocal/LoginLocal'
 import LoginMetamask from '../../components/LoginMetamask/LoginMetamask'
+import LoginUPort from '../../components/LoginUPort/LoginUPort'
 import LoginLedger from '../../components/LoginWithLedger/LoginWithLedger'
 import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemonic'
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
-import LoginUPort from '../../components/LoginUPort/LoginUPort'
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
 import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
@@ -41,38 +41,48 @@ const STEP_LOGIN_WITH_METAMASK = 'step/LOGIN_WITH_METAMASK'
 const STEP_LOGIN_WITH_UPORT = 'step/LOGIN_WITH_UPORT'
 const STEP_LOGIN_LOCAL = 'step/LOGIN_LOCAL'
 
+const T = () => true
+
 const loginOptions = [
   {
     nextStep: STEP_LOGIN_WITH_MNEMONIC,
     title: 'LoginWithOptions.mnemonicKey',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_WITH_WALLET,
     title: 'LoginWithOptions.walletFile',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_WITH_PRIVATE_KEY,
     title: 'LoginWithOptions.privateKey',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_WITH_LEDGER,
     title: 'LoginWithOptions.ledgerNano',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_WITH_TREZOR,
     title: 'LoginWithOptions.trezor',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_WITH_METAMASK,
     title: 'LoginWithOptions.metamask',
+    showOption: ({ isMetamask }) => isMetamask,
   },
   {
     nextStep: STEP_LOGIN_WITH_UPORT,
     title: 'LoginWithOptions.uport',
+    showOption: T,
   },
   {
     nextStep: STEP_LOGIN_LOCAL,
     title: 'LoginWithOptions.local',
+    showOption: ({ isLocal }) => isLocal,
   },
 ]
 
@@ -104,6 +114,8 @@ class LoginOption extends PureComponent {
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
+  isLocal: state.get('network').isLocal,
+  isMetamask: state.get('network').isMetamask,
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -121,6 +133,8 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginWithOptions extends PureComponent {
   static propTypes = {
+    isLocal: PropTypes.bool,
+    isMetamask: PropTypes.bool,
     loadAccounts: PropTypes.func,
     accounts: PropTypes.arrayOf(PropTypes.string),
     selectAccount: PropTypes.func,
@@ -241,7 +255,7 @@ class LoginWithOptions extends PureComponent {
   }
 
   checkOption = (option) => {
-    return true
+    return option.showOption(this.props)
   }
 
   renderOption = (option) => (
