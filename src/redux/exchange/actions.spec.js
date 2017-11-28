@@ -144,25 +144,28 @@ describe('Exchange tests', () => {
     done()
   })
 
-  it('should withdraw from exchange', async (done: Function) => {
+  it.skip('should withdraw from exchange', async (done: Function) => {
     store.clearActions()
     const token = tokens.getBySymbol('TIME')
     const address = exchange.address()
 
     await store.dispatch(mainTransfer(token, '10', address))
-    const actions = store.getActions()
-    expect(actions[0].type).toEqual(WALLET_BALANCE)
-    expect(actions[0].token.symbol()).toEqual('TIME')
+
+    const testMock = mock.set(a.DUCK_EXCHANGE, new ExchangeModel({ tokens }))
+    store = mockStore(testMock)
+    networkService.connectStore(store)
+    await store.dispatch(a.getExchangesForOwner())
+
     const wallet = new MainWalletModel({
       address: accounts[0],
       tokens: new Immutable.Map({ TIME: token }),
     })
-    await store.dispatch(a.withdrawFromExchange(exchange, wallet, '10', 'TIME'))
-    await exchangeService.subscribeToExchange(address)
-    await exchangeService.on('WithdrawTokens', async (tx: Object) => {
+    exchangeService.subscribeToExchange(address)
+    await exchangeService.on('WithdrawTokens', async tx => {
       expect(tx.exchange).toEqual(address)
       done()
     })
+    await store.dispatch(a.withdrawFromExchange(exchange, wallet, '10', 'TIME'))
   })
 
   it('should get exchange from state', (done: Function) => {
