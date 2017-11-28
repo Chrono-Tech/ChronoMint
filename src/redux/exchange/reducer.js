@@ -1,7 +1,7 @@
 import ExchangeModel from 'models/exchange/ExchangeModel'
 import * as a from './actions'
 
-const initialState = new ExchangeModel()
+export const initialState = new ExchangeModel()
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
