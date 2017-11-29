@@ -1,42 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`session actions should create session 1`] = `
-Array [
-  Object {
-    "account": "0xb7237dd7dacd9da8e489b57d4631fc33342ff75f",
-    "type": "session/CREATE",
+  "0": {
+    "account": 0xb7237dd7dacd9da8e489b57d4631fc33342ff75f,
+    "type": session/CREATE,
   },
-]
+
 `;
 
 exports[`session actions should destroy session 1`] = `
-Array [
-  Object {
-    "type": "session/DESTROY",
+  "0": {
+    "type": session/DESTROY,
   },
-]
+
 `;
 
 exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
-Array [
-  Object {
+  "0": {
     "isCBE": true,
-    "profile": Object {
-      "assetsManager": Object {},
+    "profile": {
+      "assetsManager": {
+      },
       "company": null,
       "email": null,
       "icon": null,
       "id": null,
       "name": null,
       "timestamp": null,
-      "tokens": Array [],
+      "tokens": {
+      },
       "url": null,
     },
-    "type": "session/PROFILE",
+    "type": session/PROFILE,
   },
-  Object {
-    "type": "WALLET/switch_wallet",
-    "wallet": Object {
+  "1": {
+    "type": WALLET/switch_wallet,
+    "wallet": {
       "address": null,
       "bccAddress": null,
       "btcAddress": null,
@@ -50,157 +49,163 @@ Array [
       "isTIMERequired": true,
       "nemAddress": null,
       "timeAddress": null,
-      "timeDeposit": "0",
+      "timeDeposit": 0,
       "timestamp": null,
-      "tokens": Object {},
+      "tokens": {
+      },
       "transactionHash": null,
-      "transactions": Object {
+      "transactions": {
         "endOfList": false,
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": Object {},
+        "list": {
+        },
         "selected": null,
         "timestamp": null,
         "transactionHash": null,
       },
     },
   },
-  Object {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  "2": {
+    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
   },
-  Object {
-    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  "3": {
+    "type": AssetsManager/GET_TRANSACTIONS_START,
   },
-  Object {
+  "4": {
     "isInited": true,
-    "type": "market/INIT",
+    "type": market/INIT,
   },
-  Object {
-    "type": "mainWallet/TOKENS_FETCH",
+  "5": {
+    "type": mainWallet/TOKENS_FETCH,
   },
-  Object {
-    "type": "watcher/USER",
+  "6": {
+    "type": watcher/USER,
   },
-  Object {
-    "type": "watcher/CBE",
+  "7": {
+    "type": watcher/CBE,
   },
-  Object {
-    "payload": Object {
-      "args": Array [
-        "/dashboard",
-      ],
-      "method": "replace",
+  "8": {
+    "payload": {
+      "args": {
+        "0": /dashboard,
+      },
+      "method": replace,
     },
-    "type": "@@router/CALL_HISTORY_METHOD",
+    "type": @@router/CALL_HISTORY_METHOD,
   },
-]
+
 `;
 
 exports[`session actions should login CBE and start watcher with cbeWatcher and go to last url 1`] = `
-Array [
-  Object {
+  "0": {
     "isCBE": true,
-    "profile": Immutable.Record {
-      "id": null,
-      "timestamp": null,
-      "name": null,
-      "email": null,
-      "company": null,
-      "url": null,
-      "icon": null,
-      "tokens": Immutable.Set [],
-      "assetsManager": Immutable.Map {},
-    },
-    "type": "session/PROFILE",
-  },
-  Object {
-    "type": "WALLET/switch_wallet",
-    "wallet": Immutable.Record {
-      "id": null,
-      "timestamp": null,
-      "isFetching": false,
-      "isFetched": false,
-      "transactionHash": null,
-      "isPending": false,
-      "isFailed": false,
-      "address": null,
-      "tokens": Immutable.Map {},
-      "transactions": Immutable.Record {
-        "id": null,
-        "timestamp": null,
-        "isFetching": false,
-        "isFetched": false,
-        "transactionHash": null,
-        "isPending": false,
-        "isFailed": false,
-        "list": Immutable.Map {},
-        "selected": null,
-        "endOfList": false,
+    "profile": {
+      "assetsManager": {
       },
-      "btcAddress": null,
+      "company": null,
+      "email": null,
+      "icon": null,
+      "id": null,
+      "name": null,
+      "timestamp": null,
+      "tokens": {
+      },
+      "url": null,
+    },
+    "type": session/PROFILE,
+  },
+  "1": {
+    "type": WALLET/switch_wallet,
+    "wallet": {
+      "address": null,
       "bccAddress": null,
-      "nemAddress": null,
-      "timeDeposit": "0",
-      "timeAddress": null,
-      "isMultisig": false,
+      "btcAddress": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
       "isMainWallet": true,
+      "isMultisig": false,
+      "isPending": false,
       "isTIMERequired": true,
+      "nemAddress": null,
+      "timeAddress": null,
+      "timeDeposit": 0,
+      "timestamp": null,
+      "tokens": {
+      },
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {
+        },
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null,
+      },
     },
   },
-  Object {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  "2": {
+    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
   },
-  Object {
-    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  "3": {
+    "type": AssetsManager/GET_TRANSACTIONS_START,
   },
-  Object {
+  "4": {
     "isInited": true,
-    "type": "market/INIT",
+    "type": market/INIT,
   },
-  Object {
-    "type": "mainWallet/TOKENS_FETCH",
+  "5": {
+    "type": mainWallet/TOKENS_FETCH,
   },
-  Object {
-    "type": "watcher/USER",
+  "6": {
+    "type": watcher/USER,
   },
-  Object {
-    "type": "watcher/CBE",
+  "7": {
+    "type": watcher/CBE,
   },
-  Object {
-    "payload": Object {
-      "args": Array [
-        "/test-last-url",
-      ],
-      "method": "replace",
+  "8": {
+    "payload": {
+      "args": {
+        "0": /test-last-url,
+      },
+      "method": replace,
     },
-    "type": "@@router/CALL_HISTORY_METHOD",
+    "type": @@router/CALL_HISTORY_METHOD,
   },
-]
+
 `;
 
 exports[`session actions should login USER and go to default url (/wallet) 1`] = `
-Array [
-  Object {
+  "0": {
     "isCBE": false,
-    "profile": Object {
-      "assetsManager": Object {},
+    "profile": {
+      "assetsManager": {
+      },
       "company": null,
       "email": null,
       "icon": null,
       "id": null,
       "name": null,
       "timestamp": null,
-      "tokens": Array [],
+      "tokens": {
+      },
       "url": null,
     },
-    "type": "session/PROFILE",
+    "type": session/PROFILE,
   },
-  Object {
-    "type": "WALLET/switch_wallet",
-    "wallet": Object {
+  "1": {
+    "type": WALLET/switch_wallet,
+    "wallet": {
       "address": null,
       "bccAddress": null,
       "btcAddress": null,
@@ -214,145 +219,67 @@ Array [
       "isTIMERequired": true,
       "nemAddress": null,
       "timeAddress": null,
-      "timeDeposit": "0",
+      "timeDeposit": 0,
       "timestamp": null,
-      "tokens": Object {},
+      "tokens": {
+      },
       "transactionHash": null,
-      "transactions": Object {
+      "transactions": {
         "endOfList": false,
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": Object {},
+        "list": {
+        },
         "selected": null,
         "timestamp": null,
         "transactionHash": null,
       },
     },
   },
-  Object {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  "2": {
+    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
   },
-  Object {
-    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  "3": {
+    "type": AssetsManager/GET_TRANSACTIONS_START,
   },
-  Object {
+  "4": {
     "isInited": true,
-    "type": "market/INIT",
+    "type": market/INIT,
   },
-  Object {
-    "type": "mainWallet/TOKENS_FETCH",
+  "5": {
+    "type": mainWallet/TOKENS_FETCH,
   },
-  Object {
-    "type": "watcher/USER",
+  "6": {
+    "type": watcher/USER,
   },
-  Object {
-    "payload": Object {
-      "args": Array [
-        "/dashboard",
-      ],
-      "method": "replace",
-    },
-    "type": "@@router/CALL_HISTORY_METHOD",
-  },
-]
-`;
-
-exports[`session actions should login USER and go to default url (/wallet) 2`] = `
-Array [
-  Object {
-    "isCBE": false,
-    "profile": Immutable.Record {
-      "name": null,
-      "email": null,
-      "company": null,
-      "url": null,
-      "icon": null,
-      "tokens": Immutable.Set [],
-      "assetsManager": Immutable.Map {},
-      "id": null,
-      "timestamp": null,
-    },
-    "type": "session/PROFILE",
-  },
-  Object {
-    "type": "WALLET/switch_wallet",
-    "wallet": Immutable.Record {
-      "address": null,
-      "tokens": Immutable.Map {},
-      "transactions": Immutable.Record {
-        "list": Immutable.Map {},
-        "selected": null,
-        "endOfList": false,
-        "isFetching": false,
-        "isFetched": false,
-        "transactionHash": null,
-        "isPending": false,
-        "isFailed": false,
-        "id": null,
-        "timestamp": null,
+  "7": {
+    "payload": {
+      "args": {
+        "0": /dashboard,
       },
-      "btcAddress": null,
-      "bccAddress": null,
-      "nemAddress": null,
-      "timeDeposit": "0",
-      "timeAddress": null,
-      "isMultisig": false,
-      "isMainWallet": true,
-      "isTIMERequired": true,
-      "isFetching": false,
-      "isFetched": false,
-      "transactionHash": null,
-      "isPending": false,
-      "isFailed": false,
-      "id": null,
-      "timestamp": null,
+      "method": replace,
     },
+    "type": @@router/CALL_HISTORY_METHOD,
   },
-  Object {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
-  },
-  Object {
-    "type": "AssetsManager/GET_TRANSACTIONS_START",
-  },
-  Object {
-    "isInited": false,
-    "type": "market/INIT",
-  },
-  Object {
-    "type": "mainWallet/TOKENS_FETCH",
-  },
-  Object {
-    "type": "watcher/USER",
-  },
-  Object {
-    "payload": Object {
-      "args": Array [
-        "/dashboard",
-      ],
-      "method": "replace",
-    },
-    "type": "@@router/CALL_HISTORY_METHOD",
-  },
-]
+
 `;
 
 exports[`session actions should logout 1`] = `
-Array [
-  Object {
+  "0": {
     "isInited": false,
-    "type": "market/INIT",
+    "type": market/INIT,
   },
-  Object {
-    "payload": Object {
-      "args": Array [
-        "/",
-      ],
-      "method": "push",
+  "1": {
+    "payload": {
+      "args": {
+        "0": /,
+      },
+      "method": push,
     },
-    "type": "@@router/CALL_HISTORY_METHOD",
+    "type": @@router/CALL_HISTORY_METHOD,
   },
-]
+
 `;
