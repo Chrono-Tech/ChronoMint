@@ -13,3 +13,5 @@ report/
 .truffle-solidity-loader
 package-lock.json
 build.zip
+cert.pem
+key.pem

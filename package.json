@@ -1,6 +1,6 @@
 {
   "name": "chronoMint",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
@@ -75,7 +75,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "github:chronobank/smartcontracts#release/release-1.1.43",
+    "chronobank-smart-contracts": "1.1.43",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
@@ -149,7 +149,7 @@
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
-    "hs": "hs build -a localhost -o",
+    "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
     "rei": "rm -rf ./node_modules && npm i && npm run contracts:compile"
   },
   "pre-commit": [],

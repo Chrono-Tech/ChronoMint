@@ -1,5 +1,6 @@
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import customSerializer from 'utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
@@ -59,3 +60,4 @@ afterEach(async (done) => {
   done()
 })
 
+expect.addSnapshotSerializer(customSerializer)
