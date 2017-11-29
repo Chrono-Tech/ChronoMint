@@ -1,14 +1,20 @@
-import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
-import Web3 from 'web3'
-import configureMockStore from 'redux-mock-store'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import thunk from 'redux-thunk'
-import networkService from 'Login/redux/network/actions'
-import web3provider from 'Login/network/Web3Provider'
+import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import Enzyme from 'enzyme'
+import Adapter from 'enzyme-adapter-react-15'
+import 'jest-enzyme'
+import { BTC_TESTNET_NODE } from 'Login/network/BitcoinNode'
 import { LOCAL_ID } from 'Login/network/settings'
-import ls from './utils/LocalStorage'
+import web3provider from 'Login/network/Web3Provider'
+import networkService from 'Login/redux/network/actions'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import Web3 from 'web3'
 import AbstractContractDAO from './dao/AbstractContractDAO'
+import MarketSocket from './market/MarketSocket'
+import ls from './utils/LocalStorage'
 
+Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
@@ -19,11 +25,11 @@ web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
-AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
+AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([thunk])
+export const mockStore = configureMockStore([ thunk ])
 export let store = null
 
 beforeAll((done) => {
@@ -36,14 +42,15 @@ beforeAll((done) => {
 afterAll((done) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
+  BTC_TESTNET_NODE.disconnect()
+  MarketSocket.disconnect()
 })
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
+  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
   store = mockStore()
-  networkService
-    .connectStore(store)
+  networkService.connectStore(store)
 })
 
 afterEach(async (done) => {

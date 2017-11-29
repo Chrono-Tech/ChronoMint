@@ -33,12 +33,6 @@ export default {
     updated: 'Poll updated',
     removed: 'Poll removed',
   },
-  polls: {
-    title: 'Polls',
-    created: 'Poll created',
-    updated: 'Poll updated',
-    removed: 'Poll removed'
-  },
   transfer: {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',

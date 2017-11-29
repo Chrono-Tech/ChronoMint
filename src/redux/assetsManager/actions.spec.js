@@ -14,7 +14,7 @@ const mock = new Immutable.Map({
   },
 })
 
-describe('AssetsManager getters', () => {
+describe('AssetsManager tests', () => {
   store = mockStore(mock)
   networkService
     .connectStore(store)
@@ -35,7 +35,9 @@ describe('AssetsManager getters', () => {
 
     const locManagerDAO = await contractsManagerDAO.getPlatformManagerDAO()
     await locManagerDAO.watchCreatePlatform(watchCallback, accounts[0])
-    await store.dispatch(a.createPlatform(new Immutable.Map()))
+    await store.dispatch(a.createPlatform(new Immutable.Map({
+      platformAddress: accounts[0],
+    })))
   })
 
   it('should create token', async (done) => {
@@ -264,6 +266,4 @@ describe('AssetsManager getters', () => {
     expect(result.length).toEqual(4)
     done()
   })
-
 })
-

@@ -1,12 +1,12 @@
 import { abstractModel } from './AbstractModel'
 
 export const abstractFetchingModel = (defaultValues) => class AbstractFetchingModel extends abstractModel({
-  ...defaultValues,
   isFetching: false,
   isFetched: false,
   transactionHash: null,
   isPending: false,
   isFailed: false,
+  ...defaultValues,
 }) {
   isFetching (value) {
     return this._getSet('isFetching', value)

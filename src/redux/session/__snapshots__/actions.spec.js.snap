@@ -3,7 +3,7 @@
 exports[`session actions should create session 1`] = `
 Array [
   Object {
-    "account": "0x403b8e475905d5ef8280626e5349f7c1cee9bdbe",
+    "account": "0xb7237dd7dacd9da8e489b57d4631fc33342ff75f",
     "type": "session/CREATE",
   },
 ]
@@ -103,51 +103,51 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
 Array [
   Object {
     "isCBE": true,
-    "profile": Object {
-      "assetsManager": Object {},
-      "company": null,
-      "email": null,
-      "icon": null,
+    "profile": Immutable.Record {
       "id": null,
-      "name": null,
       "timestamp": null,
-      "tokens": Array [],
+      "name": null,
+      "email": null,
+      "company": null,
       "url": null,
+      "icon": null,
+      "tokens": Immutable.Set [],
+      "assetsManager": Immutable.Map {},
     },
     "type": "session/PROFILE",
   },
   Object {
     "type": "WALLET/switch_wallet",
-    "wallet": Object {
-      "address": null,
-      "bccAddress": null,
-      "btcAddress": null,
+    "wallet": Immutable.Record {
       "id": null,
-      "isFailed": false,
-      "isFetched": false,
-      "isFetching": false,
-      "isMainWallet": true,
-      "isMultisig": false,
-      "isPending": false,
-      "isTIMERequired": true,
-      "nemAddress": null,
-      "timeAddress": null,
-      "timeDeposit": "0",
       "timestamp": null,
-      "tokens": Object {},
+      "isFetching": false,
+      "isFetched": false,
       "transactionHash": null,
-      "transactions": Object {
-        "endOfList": false,
+      "isPending": false,
+      "isFailed": false,
+      "address": null,
+      "tokens": Immutable.Map {},
+      "transactions": Immutable.Record {
         "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isPending": false,
-        "list": Object {},
-        "selected": null,
         "timestamp": null,
+        "isFetching": false,
+        "isFetched": false,
         "transactionHash": null,
+        "isPending": false,
+        "isFailed": false,
+        "list": Immutable.Map {},
+        "selected": null,
+        "endOfList": false,
       },
+      "btcAddress": null,
+      "bccAddress": null,
+      "nemAddress": null,
+      "timeDeposit": "0",
+      "timeAddress": null,
+      "isMultisig": false,
+      "isMainWallet": true,
+      "isTIMERequired": true,
     },
   },
   Object {
@@ -240,6 +240,85 @@ Array [
   },
   Object {
     "isInited": true,
+    "type": "market/INIT",
+  },
+  Object {
+    "type": "mainWallet/TOKENS_FETCH",
+  },
+  Object {
+    "type": "watcher/USER",
+  },
+  Object {
+    "payload": Object {
+      "args": Array [
+        "/dashboard",
+      ],
+      "method": "replace",
+    },
+    "type": "@@router/CALL_HISTORY_METHOD",
+  },
+]
+`;
+
+exports[`session actions should login USER and go to default url (/wallet) 2`] = `
+Array [
+  Object {
+    "isCBE": false,
+    "profile": Immutable.Record {
+      "name": null,
+      "email": null,
+      "company": null,
+      "url": null,
+      "icon": null,
+      "tokens": Immutable.Set [],
+      "assetsManager": Immutable.Map {},
+      "id": null,
+      "timestamp": null,
+    },
+    "type": "session/PROFILE",
+  },
+  Object {
+    "type": "WALLET/switch_wallet",
+    "wallet": Immutable.Record {
+      "address": null,
+      "tokens": Immutable.Map {},
+      "transactions": Immutable.Record {
+        "list": Immutable.Map {},
+        "selected": null,
+        "endOfList": false,
+        "isFetching": false,
+        "isFetched": false,
+        "transactionHash": null,
+        "isPending": false,
+        "isFailed": false,
+        "id": null,
+        "timestamp": null,
+      },
+      "btcAddress": null,
+      "bccAddress": null,
+      "nemAddress": null,
+      "timeDeposit": "0",
+      "timeAddress": null,
+      "isMultisig": false,
+      "isMainWallet": true,
+      "isTIMERequired": true,
+      "isFetching": false,
+      "isFetched": false,
+      "transactionHash": null,
+      "isPending": false,
+      "isFailed": false,
+      "id": null,
+      "timestamp": null,
+    },
+  },
+  Object {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  },
+  Object {
+    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  },
+  Object {
+    "isInited": false,
     "type": "market/INIT",
   },
   Object {

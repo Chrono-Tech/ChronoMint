@@ -19,7 +19,7 @@ function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-export class PlatformInfo extends PureComponent {
+class PlatformInfo extends PureComponent {
   static propTypes = {
     tokensMap: PropTypes.instanceOf(Immutable.Map),
     selectedToken: PropTypes.string,
@@ -32,8 +32,8 @@ export class PlatformInfo extends PureComponent {
     handleRevokeDialog: PropTypes.func,
     isReissuable: PropTypes.func,
     getFee: PropTypes.func,
-    platformsList: PropTypes.arrayOf(PropTypes.string),
-    usersPlatforms: PropTypes.arrayOf(PropTypes.string),
+    platformsList: PropTypes.arrayOf(PropTypes.object),
+    usersPlatforms: PropTypes.arrayOf(PropTypes.object),
   }
 
   componentWillReceiveProps (newProps) {

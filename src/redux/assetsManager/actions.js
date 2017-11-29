@@ -29,6 +29,7 @@ export const getUsersPlatforms = () => async (dispatch, getState) => {
   const usersPlatforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
   dispatch({ type: GET_USER_PLATFORMS, payload: { usersPlatforms } })
 }
+
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
@@ -94,7 +95,7 @@ export const watchPlatformManager = (account) => async (dispatch) => {
 
 export const createAsset = (token: TokenModel) => async () => {
   try {
-    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(token.platform().address)
+    const tokenManagementExtension = await contractManager.getTokenManagementExtensionDAO(token.platform().address)
     if (token.withFee()) {
       await tokenManagementExtension.createAssetWithFee(token)
     } else {

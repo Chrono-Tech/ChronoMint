@@ -13,7 +13,7 @@ import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import { switchWallet } from 'redux/wallet/actions'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import Points from 'components/common/Points/Points'
-import Preloader from 'components/common/Preloader/Preloader'
+import WithLoader, { isPending } from 'components/common/Preloader/WithLoader'
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 
@@ -94,29 +94,32 @@ export default class WalletSelectDialog extends PureComponent {
           </div>
         </div>
         <div styleName='cell control'>
-          {wallet.isPending()
-            ? <Preloader />
-            : (
-              <div>
-                <i
-                  className='material-icons'
-                  styleName='controlItem'
-                  onTouchTap={() => this.handleEditManagers(wallet)}
-                >edit
-                </i>
-                <i
-                  className='material-icons'
-                  styleName='controlItem'
-                  onTouchTap={() => this.props.removeWallet(wallet)}
-                >delete
-                </i>
-              </div>
-            )
-          }
+          <WithLoader showLoader={isPending} payload={wallet}>
+            {this.renderWalletActions}
+          </WithLoader>
         </div>
       </div>
     )
   }
+
+  renderWalletActions = ({ payload: wallet }) => (
+    <div>
+      <i
+        className='material-icons'
+        styleName='controlItem'
+        onTouchTap={() => this.handleEditManagers(wallet)}
+      >
+        edit
+      </i>
+      <i
+        className='material-icons'
+        styleName='controlItem'
+        onTouchTap={() => this.props.removeWallet(wallet)}
+      >
+        delete
+      </i>
+    </div>
+  )
 
   render () {
     const wallets: Array = this.props.multisigWallet.items()

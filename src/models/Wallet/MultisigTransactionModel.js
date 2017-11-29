@@ -20,6 +20,9 @@ class MultisigTransactionModel extends abstractModel({
     return this.get('symbol')
   }
 
+  wallet () {
+    return this.get('wallet')
+  }
 }
 
 export default MultisigTransactionModel

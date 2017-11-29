@@ -6,13 +6,80 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_WALLET, getCurrentWallet } from 'redux/wallet/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './InfoPartial.scss'
+
+class SlideArrow extends PureComponent {
+
+  static propTypes = {
+    show: PropTypes.bool,
+    count: PropTypes.number,
+    onClick: PropTypes.func,
+    direction: PropTypes.string,
+  }
+
+  handleClick = () => this.props.onClick(this.props.count)
+
+  render () {
+    const direction = this.props.direction === 'left' ? 'arrowLeft' : 'arrowRight'
+    return (
+      <div styleName={direction} style={{ visibility: this.props.show ? 'visible' : 'hidden' }}>
+        <a href='#arrow' styleName='arrowAction' onTouchTap={this.handleClick}>
+          <i className='material-icons'>{`keyboard_arrow_${this.props.direction}`}</i>
+        </a>
+      </div>
+    )
+  }
+}
+
+class TokenItem extends PureComponent {
+
+  static propTypes = {
+    selectedCoin: PropTypes.string,
+    token: PropTypes.object,
+    open: PropTypes.bool,
+    onClick: PropTypes.func,
+  }
+
+  handleClick = () => this.props.onClick(this.props.token.symbol())
+
+  render () {
+    const {
+      token,
+      selectedCoin,
+      open,
+    } = this.props
+    const symbol = token.symbol()
+
+    return (
+      <div
+        styleName={classnames('outer', { selected: selectedCoin === symbol && open })}
+        onTouchTap={this.handleClick}
+      >
+        <Paper zDepth={1} style={{ background: 'transparent' }}>
+          <div styleName='inner'>
+            <div styleName='innerIcon'>
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+              <div styleName='innerIconLabel'>{symbol}</div>
+            </div>
+            <div styleName='info'>
+              <div styleName='infoLabel'><Translate value={prefix('balance')} />:</div>
+              <TokenValue
+                value={token.balance()}
+                symbol={symbol}
+              />
+            </div>
+          </div>
+        </Paper>
+      </div>
+    )
+  }
+}
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -29,6 +96,14 @@ const SCREEN_WIDTH_SCALE = [
   { width: 690, count: 2 },
   { width: 0, count: 1 },
 ]
+
+const calcVisibleCells = (w) => {
+  for (const { width, count } of SCREEN_WIDTH_SCALE) {
+    if (w >= width) {
+      return count
+    }
+  }
+}
 
 function prefix (token) {
   return `layouts.partials.InfoPartial.${token}`
@@ -71,8 +146,8 @@ export class InfoPartial extends PureComponent {
     open: PropTypes.bool,
   }
 
-  constructor (props) {
-    super(props)
+  constructor (props, context, updater) {
+    super(props, context, updater)
     this.state = {
       slideIndex: 0,
       visibleCount: 3,
@@ -80,92 +155,56 @@ export class InfoPartial extends PureComponent {
   }
 
   componentDidMount () {
-    this.resizeHandler = () => this.handleResize()
     this.handleResize()
-    window.addEventListener('resize', this.resizeHandler)
+    window.addEventListener('resize', this.handleResize)
   }
 
   componentWillUnmount () {
-    window.removeEventListener('resize', this.resizeHandler)
-    this.resizeHandler = null
+    window.removeEventListener('resize', this.handleResize)
   }
 
-  handleChangeSelectedCoin (newCoin) {
+  handleActionClick = () => this.props.addCurrency()
+
+  handleAddClick = () => this.props.addCurrency()
+
+  handleChangeSelectedCoin = (newCoin) => {
     const { selectedCoin, open } = this.props
     const openFlag = selectedCoin !== newCoin ? true : !open
     this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
-  render () {
-    const { wallet } = this.props
-    const { visibleCount } = this.state
-    const tokens = wallet.tokens().entrySeq().toArray()
-    const items = tokens.map(([name, token]) => ({ token, name }))
+  handleSlide = (diff) => {
+    const count = this.props.wallet.tokens().count()
+    const total = count + 1 <= this.state.visibleCount ? count + 1 : count
+    const cells = (total % this.state.visibleCount === 0)
+      ? total
+      : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
 
-    const tokensCount = this.props.wallet.isMultisig() ? tokens.length : tokens.length + 1
-    const withBigButton = tokensCount <= visibleCount
-    const showArrows = withBigButton
-      ? tokensCount + 1 > visibleCount
-      : tokensCount > visibleCount
-
-    return (
-      <div styleName='root'>
-        <div styleName='wrapper'>
-          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {wallet.isFetched() && !wallet.isFetching()
-              ? items.map((item) => this.renderItem(item))
-              : <Preloader />
-            }
-            {!this.props.wallet.isMultisig() && withBigButton && this.renderAction()}
-          </div>
-        </div>
-        {!withBigButton && (
-          <div styleName='addTokenFAB'>
-            <FloatingActionButton onTouchTap={() => this.props.addCurrency()}>
-              <div className='material-icons'>add</div>
-            </FloatingActionButton>
-          </div>
-        )}
-        <div styleName='arrow arrowLeft' style={{ visibility: showArrows ? 'visible' : 'hidden' }}>
-          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(-visibleCount)}>
-            <i className='material-icons'>keyboard_arrow_left</i>
-          </a>
-        </div>
-        <div styleName='arrow arrowRight' style={{ visibility: showArrows ? 'visible' : 'hidden' }}>
-          <a styleName='arrowAction' onTouchTap={() => this.handleSlide(visibleCount)}>
-            <i className='material-icons'>keyboard_arrow_right</i>
-          </a>
-        </div>
-      </div>
-    )
+    const slideIndex = this.state.slideIndex + diff + cells
+    this.setState({
+      slideIndex: slideIndex % cells,
+    })
   }
 
-  renderItem ({ token }) {
-    const symbol = token.symbol()
+  handleResize = () => {
+    const visibleCount = calcVisibleCells(window.innerWidth)
+    this.setState({
+      slideIndex: 0,
+      visibleCount,
+    })
+  }
+
+  renderItem = ({ token }) => {
     const { selectedCoin, open } = this.props
 
     return (
-      <div
-        styleName={classnames('outer', { selected: selectedCoin === symbol && open })}
+      <TokenItem
         key={token.id()}
-        onTouchTap={() => this.handleChangeSelectedCoin(symbol)}
-      >
-        <Paper zDepth={1} style={{ background: 'transparent' }}>
-          <div styleName='inner'>
-            <div styleName='innerIcon'>
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-              <div styleName='innerIconLabel'>{symbol}</div>
-            </div>
-            <div styleName='info'>
-              <div styleName='infoLabel'><Translate value={prefix('balance')} />:</div>
-              <TokenValue
-                value={token.balance()}
-                symbol={symbol}
-              />
-            </div>
-          </div>
-        </Paper>
-      </div>
+        selectedCoin={selectedCoin}
+        token={token}
+        open={open}
+        onClick={this.handleChangeSelectedCoin}
+      />
     )
   }
 
@@ -174,7 +213,7 @@ export class InfoPartial extends PureComponent {
       <div
         key='action'
         styleName='outer'
-        onTouchTap={() => this.props.addCurrency()}
+        onTouchTap={this.handleActionClick}
       >
         <Paper zDepth={1}>
           <div styleName='innerAction'>
@@ -188,33 +227,58 @@ export class InfoPartial extends PureComponent {
     )
   }
 
-  calcVisibleCells (w) {
-    for (const { width, count } of SCREEN_WIDTH_SCALE) {
-      if (w >= width) {
-        return count
-      }
+  render () {
+    const { wallet } = this.props
+    const { visibleCount } = this.state
+    const tokens = wallet.tokens().entrySeq().toArray()
+    const items = tokens.map(([name, token]) => ({ token, name }))
+    const isMainWallet = !wallet.isMultisig()
+
+    let slidesCount = tokens.length
+    let withBigButton = false
+    if (isMainWallet) {
+      // increase 'add' button for main wallet
+      slidesCount = tokens.length + 1
+      // check
+      withBigButton = slidesCount <= visibleCount
+      // decrease if 'add' button don't fit the screen, cause 'add' button will be as FAB
+      slidesCount = withBigButton ? slidesCount : slidesCount - 1
     }
-  }
 
-  handleResize () {
-    const visibleCount = this.calcVisibleCells(window.innerWidth)
-    this.setState({
-      slideIndex: 0,
-      visibleCount,
-    })
-  }
+    const showArrows = slidesCount > visibleCount
 
-  handleSlide (diff) {
-    const count = this.props.wallet.tokens().count()
-    const total = count + 1 <= this.state.visibleCount ? count + 1 : count
-    const cells = (total % this.state.visibleCount === 0)
-      ? total
-      : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
-
-    const slideIndex = this.state.slideIndex + diff + cells
-    this.setState({
-      slideIndex: slideIndex % cells,
-    })
+    return (
+      <div styleName='root'>
+        <div styleName='wrapper'>
+          <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
+            {wallet.isFetched() && !wallet.isFetching()
+              ? items.map(this.renderItem)
+              : <Preloader />
+            }
+            {isMainWallet && withBigButton && this.renderAction()}
+          </div>
+        </div>
+        {isMainWallet && !withBigButton && (
+          <div styleName='addTokenFAB'>
+            <FloatingActionButton onTouchTap={this.handleAddClick}>
+              <div className='material-icons'>add</div>
+            </FloatingActionButton>
+          </div>
+        )}
+        <SlideArrow
+          direction='left'
+          show={showArrows}
+          count={-visibleCount}
+          onClick={this.handleSlide}
+        />
+        <SlideArrow
+          direction='right'
+          show={showArrows}
+          count={visibleCount}
+          onClick={this.handleSlide}
+        />
+      </div>
+    )
   }
 }
 

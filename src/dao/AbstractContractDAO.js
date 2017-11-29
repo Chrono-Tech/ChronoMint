@@ -201,8 +201,7 @@ export default class AbstractContractDAO {
   }
 
   getContractName () {
-    /** @namespace this._json.contract_name */
-    return this._json.contract_name
+    return this._json.contractName
   }
 
   async getData (func: string, args: Array = []): string {
@@ -425,10 +424,10 @@ export default class AbstractContractDAO {
       }
 
       if (addDryRunFrom) {
-        const addDryResult = convertDryResult(await deployed[func].call.apply(null, [...args, {
+        const addDryResult = convertDryResult(await deployed[func].call(...args, {
+          ...txParams,
           from: addDryRunFrom,
-          value,
-        }]))
+        }))
         if (!addDryRunOkCodes.includes(addDryResult)) {
           throw new TxError('Additional dry run failed', addDryResult)
         }
@@ -465,8 +464,6 @@ export default class AbstractContractDAO {
           throw new TxError('Unknown out of gas error', TX_FRONTEND_ERROR_CODES.FRONTEND_OUT_OF_GAS)
         }
       }
-
-      console.log('--AbstractContractDAO#_tx', result)
 
       /** EVENT ERROR HANDLING */
       for (const log of result.logs) {
@@ -520,17 +517,18 @@ export default class AbstractContractDAO {
       throw this._error('_estimateGas func not found', func)
     }
 
-    // noinspection JSUnresolvedFunction
-    const estimatedGas = await deployed[func].estimateGas(...args, {
-      from: this.getAccount(),
-      value,
-      gas: DEFAULT_GAS,
-    })
+    const [ gasPrice, estimatedGas ] = await Promise.all([
+      this._web3Provider.getGasPrice(),
+      deployed[func].estimateGas(...args, {
+        from: this.getAccount(),
+        value,
+        gas: DEFAULT_GAS,
+      }),
+    ])
 
-    // +10% for dev
-    const gasLimit = process.env.NODE_ENV === 'development' ? Math.floor(estimatedGas * 1.50) : estimatedGas+1
-    const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
-    const gasFee = this._c.fromWei(gasPrice.mul(gasLimit))
+    const gasPriceBN = new BigNumber(gasPrice)
+    const gasLimit = process.env.NODE_ENV === 'development' ? estimatedGas * 2 : estimatedGas + 1
+    const gasFee = this._c.fromWei(gasPriceBN.mul(gasLimit))
 
     return { gasLimit, gasFee }
   }

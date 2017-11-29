@@ -1,108 +1,71 @@
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
-import SockJS from 'sockjs-client'
-import Stomp from 'webstomp-client'
-import BitcoinAbstractNode from './BitcoinAbstractNode'
+import AbstractNode from './AbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
-export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
-  constructor ({ api, socket, trace }) {
-    super()
-    this._api = api
-    this._trace = trace
-    this._socket = socket
+export default class BitcoinMiddlewareNode extends AbstractNode {
+  constructor () {
+    super(...arguments)
     this._subscriptions = {}
-    this._missedActions = []
-
-    this._handleSubscibe = this.addListener('subscribe', async (address) => {
-      if (this._socket) {
-        try {
-          await this._api.post('addr', {
-            address,
-          })
-          this.executeOrSschedule(() => {
-            this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
-              `${socket.channels.balance}.${address}`,
-              // `${socket.channels.balance}.*`,
-              (message) => {
-                try {
-                  const data = JSON.parse(message.body)
-                  this.trace('Address Balance', data)
-                  const ev = {
-                    address: data.address,
-                    balance0: data.balances.confirmations0,
-                    balance3: data.balances.confirmations3,
-                    balance6: data.balances.confirmations6,
-                  }
-                  this.emit('balance', ev)
-                } catch (e) {
-                  this.trace('Failed to decode message', e)
-                }
-              }
-            )
-          })
-        } catch (e) {
-          this.trace('Address subscription error', e)
-        }
-      }
-    })
-
-    this._handleUnsubscribe = this.addListener('unsubscribe', async (address) => {
-      if (this._socket) {
-        try {
-          await this._api.delete('addr', {
-            address,
-          })
-          this.executeOrSschedule(() => {
-            const subscription = this._subscriptions[ `balance:${address}` ]
-            if (subscription) {
-              delete this._subscriptions[ `balance:${address}` ]
-              subscription.unsubscribe()
-            }
-          })
-        } catch (e) {
-          this.trace('Address subscription error', e)
-        }
-      }
-    })
-
+    // TODO @dkchv: still can't combine async + arrow on class
+    this.addListener('subscribe', (address) => this._handleSubscribe(address))
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
     this.connect()
   }
 
-  connect () {
-    if (this._socket) {
-      let ws = new SockJS(this._socket.baseURL)
-      this._client = Stomp.over(ws, { heartbeat: false, debug: true })
-      this.trace('Socket connect credentials', this._socket.user, this._socket.password)
-      this._client.connect(this._socket.user, this._socket.password,
-        () => {
-          this.trace('Handle missed')
-          this.handleMissed()
-        },
-        (e) => {
-          this.trace('Failed to connect. Retry after 5 seconds', e)
-          setTimeout(() => {
-            this.connect()
-          }, 5000)
-        }
-      )
+  async _handleSubscribe (address) {
+    if (!this._socket) {
+      return
+    }
+    try {
+      await this._api.post('addr', { address })
+      this.executeOrSchedule(() => {
+        this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
+          `${this._socket.channels.balance}.${address}`,
+          // `${socket.channels.balance}.*`,
+          (message) => {
+            try {
+              const data = JSON.parse(message.body)
+              this.trace('Address Balance', data)
+              const ev = {
+                address: data.address,
+                balance0: data.balances.confirmations0,
+                balance3: data.balances.confirmations3,
+                balance6: data.balances.confirmations6,
+              }
+              this.emit('balance', ev)
+            } catch (e) {
+              this.trace('Failed to decode message', e)
+            }
+          },
+        )
+      })
+    } catch (e) {
+      this.trace('Address subscription error', e)
     }
   }
 
-  executeOrSschedule (action) {
+  async _handleUnsubscribe (address) {
     if (this._socket) {
-      action()
-    } else {
-      this._missedActions.push(action)
+      try {
+        await this._api.delete('addr', { address })
+        this.executeOrSchedule(() => {
+          const subscription = this._subscriptions[ `balance:${address}` ]
+          if (subscription) {
+            delete this._subscriptions[ `balance:${address}` ]
+            subscription.unsubscribe()
+          }
+        })
+      } catch (e) {
+        this.trace('Address unsubscription error', e)
+      }
     }
   }
 
-  handleMissed () {
-    const actions = this._missedActions
-    for (const action of actions) {
-      action()
+  disconnect () {
+    if (this._socket) {
+      this._ws.close()
     }
-    this._missedActions = []
   }
 
   async getTransactionInfo (txid) {

@@ -1,4 +1,3 @@
-import { I18n } from 'react-redux-i18n'
 import { store } from 'specsInit'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import fakeCoinDAO from 'dao/FakeCoinDAO'
@@ -17,8 +16,8 @@ describe('settings erc20 actions', () => {
       address: await fakeCoinDAO.getAddress(),
     }), store.dispatch, 'TEST')
 
-    expect(store.getActions()[1].payload).toEqual(4)
-    expect(store.getActions()[2].payload).toEqual('FAKE')
+    expect(store.getActions()[1].payload).toMatchSnapshot()
+    expect(store.getActions()[2].payload).toMatchSnapshot()
   })
 
   it('should throw symbolInUse error if token symbol is already in use', async () => {
@@ -28,7 +27,7 @@ describe('settings erc20 actions', () => {
         symbol: TIME,
       }), store.dispatch, 'TEST')
     } catch (e) {
-      expect(e).toEqual({ symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse') })
+      expect(e).toMatchSnapshot()
     }
   })
 
@@ -44,15 +43,9 @@ describe('settings erc20 actions', () => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchAdd((notice: TokenNoticeModel) => {
-      // eslint-disable-next-line
-      console.log('Handled!!!', notice)
-
-      expect(store.getActions()[0].token).toEqual(token.isFetching(true))
-
-      expect(notice.isRemoved()).toBeFalsy()
-      // eslint-disable-next-line
-      console.log(notice)
-      expect(notice.token()).toEqual(token)
+      expect(store.getActions()[0].token).toMatchSnapshot()
+      expect(notice.isRemoved()).toMatchSnapshot()
+      expect(notice.token()).toMatchSnapshot()
       resolve()
     })
 
@@ -61,7 +54,7 @@ describe('settings erc20 actions', () => {
 
   it('should list tokens', async () => {
     await store.dispatch(a.listTokens())
-    expect(store.getActions()[0].list.get(token.symbol())).toEqual(token)
+    expect(store.getActions()[0].list.get(token.symbol())).toMatchSnapshot()
   })
 
   it('should throw invalidAddress error if token is not valid ERC20', async () => {
@@ -70,7 +63,7 @@ describe('settings erc20 actions', () => {
         address: '0xc38f003c0a14a05f11421d793edc9696a25cb2b3',
       }), store.dispatch, 'TEST')
     } catch (e) {
-      expect(e).toEqual({ address: I18n.t('settings.erc20.tokens.errors.invalidAddress') })
+      expect(e).toMatchSnapshot()
     }
   })
 
@@ -79,14 +72,11 @@ describe('settings erc20 actions', () => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchModify((notice: TokenNoticeModel) => {
-      expect(store.getActions()).toEqual([
-        { type: a.TOKENS_SET, token: token.isFetching(true) },
-        { type: a.TOKENS_REMOVE, token },
-      ])
+      expect(store.getActions()).toMatchSnapshot()
 
-      expect(notice.isModified()).toBeTruthy()
-      expect(notice.token()).toEqual(newToken)
-      expect(notice.oldAddress()).toEqual(token.address())
+      expect(notice.isModified()).toMatchSnapshot()
+      expect(notice.token()).toMatchSnapshot()
+      expect(notice.oldAddress()).toMatchSnapshot()
       resolve()
     })
 
@@ -96,15 +86,11 @@ describe('settings erc20 actions', () => {
   it('should remove token', async (resolve) => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
-      expect(store.getActions()).toEqual([
-        { type: a.TOKENS_SET, token: newToken.isFetching(true) },
-      ])
-
-      expect(notice.isRemoved()).toBeTruthy()
-      expect(notice.token()).toEqual(newToken)
+      expect(store.getActions()).toMatchSnapshot()
+      expect(notice.isRemoved()).toMatchSnapshot()
+      expect(notice.token()).toMatchSnapshot()
       resolve()
     })
-
     await store.dispatch(a.revokeToken(newToken))
   })
 })

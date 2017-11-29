@@ -14,6 +14,7 @@ export default {
     selectToken: 'Select a token',
     createPlatform: 'Create Platform',
     createToken: 'Create Token',
+    addManagers: 'Add/edit managers',
   },
   ru: {
     reissue: 'Переиздать',
@@ -30,5 +31,6 @@ export default {
     selectToken: 'Выберите токен',
     createPlatform: 'Создайте платформу',
     createToken: 'Создайте токен',
+    addManagers: 'Добавить/редактировать менеджеров',
   },
 }

@@ -1,13 +1,13 @@
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import { RaisedButton } from 'material-ui'
-import { TextField, Checkbox } from 'redux-form-material-ui'
-import validate from './validate'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Checkbox, TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import './AddPlatformForm.scss'
 import { createPlatform } from 'redux/assetsManager/actions'
+import './AddPlatformForm.scss'
+import validate from './validate'
 
 function prefix (token) {
   return `Assets.AddPlatformForm.${token}`

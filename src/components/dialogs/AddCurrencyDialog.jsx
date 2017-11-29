@@ -5,19 +5,71 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import type TokenModel from 'models/TokenModel'
+import TokenModel from 'models/TokenModel'
 import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
 import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
-import Preloader from 'components/common/Preloader/Preloader'
+import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
 
 import './AddCurrencyDialog.scss'
+
+class TokenRow extends PureComponent {
+
+  static propTypes = {
+    token: PropTypes.instanceOf(TokenModel),
+    isSelected: PropTypes.bool,
+    symbol: PropTypes.string,
+    onClick: PropTypes.func,
+  }
+
+  handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
+
+  renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
+
+  render () {
+    const {
+      isSelected,
+      token,
+      symbol,
+    } = this.props
+
+    return (
+      <div
+        key={token.id()}
+        styleName={classnames('row', { rowSelected: isSelected })}
+        onTouchTap={this.handleClick}
+      >
+        <div styleName='cell'>
+          <div styleName='icon'>
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <div styleName='label'>{symbol}</div>
+          </div>
+        </div>
+        <div styleName='cell cellAuto'>
+          <div styleName='symbol'>{symbol}</div>
+          <div styleName='value'>
+            <TokenValue
+              value={token.balance()}
+              symbol={token.symbol()}
+              isLoading={!token.isFetched()}
+            />
+          </div>
+        </div>
+        <div styleName='cell'>
+          <WithLoader showLoader={isFetching} payload={token} isSelected={this.props.isSelected}>
+            {this.renderCheckbox}
+          </WithLoader>
+        </div>
+      </div>
+    )
+  }
+}
 
 // TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
 const ICON_OVERRIDES = {
@@ -71,6 +123,8 @@ export default class AddCurrencyDialog extends PureComponent {
 
   constructor () {
     super(...arguments)
+
+    this.handleSave = this.handleSave.bind(this)
     this.state = {
       selectedTokens: [],
     }
@@ -86,11 +140,10 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.modalsClose()
   }
 
-  handleCurrencyChecked (symbol, isSelect) {
+  handleCurrencyChecked = (symbol, isSelect) => {
     const { selectedTokens } = this.state
 
     this.setState({
-      ...this.state,
       selectedTokens: isSelect
         ? selectedTokens.concat(symbol)
         : selectedTokens.filter((item) => item !== symbol),
@@ -107,39 +160,25 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.initWallet()
   }
 
-  renderRow (token: TokenModel, symbol) {
-    const isSelected = this.state.selectedTokens.includes(token.symbol())
+  renderRow = (selectedTokens) => ([symbol, token]: [string, TokenModel]) => {
+    const isSelected = selectedTokens.includes(token.symbol())
 
     return (
-      <div
+      <TokenRow
         key={token.id()}
-        styleName={classnames('row', { rowSelected: isSelected })}
-        onTouchTap={() => this.handleCurrencyChecked(token.symbol(), !isSelected)}
-      >
-        <div styleName='cell'>
-          <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-            <div styleName='label'>{symbol}</div>
-          </div>
-        </div>
-        <div styleName='cell cellAuto'>
-          <div styleName='symbol'>{symbol}</div>
-          <div styleName='value'>
-            <TokenValue
-              value={token.balance()}
-              symbol={token.symbol()}
-              isLoading={!token.isFetched()}
-            />
-          </div>
-        </div>
-        <div styleName='cell'>
-          {token.isFetched()
-            ? token.isOptional() && <Checkbox checked={isSelected} />
-            : <Preloader />}
-        </div>
-      </div>
+        token={token}
+        isSelected={isSelected}
+        symbol={symbol}
+        onClick={this.handleCurrencyChecked}
+      />
     )
   }
+
+  renderTokens = ({ tokens, selectedTokens }) => (
+    <div styleName='table'>
+      {tokens.entrySeq().toArray().map(this.renderRow(selectedTokens))}
+    </div>
+  )
 
   render () {
     return (
@@ -152,7 +191,7 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='actions'>
             <div styleName='items'>
               <div styleName='item'>
-                <FloatingActionButton onTouchTap={() => this.props.handleAddToken()}>
+                <FloatingActionButton onTouchTap={this.props.handleAddToken}>
                   <FontIcon className='material-icons'>add</FontIcon>
                 </FloatingActionButton>
               </div>
@@ -161,14 +200,13 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
-              {this.props.isFetched
-                ? (
-                  <div styleName='table'>
-                    {this.props.tokens.entrySeq().toArray().map(([symbol, item]) => this.renderRow(item, symbol))}
-                  </div>
-                )
-                : <Preloader />
-              }
+              <WithLoader
+                showLoader={!this.props.isFetched}
+                selectedTokens={this.state.selectedTokens}
+                tokens={this.props.tokens}
+              >
+                {this.renderTokens}
+              </WithLoader>
             </div>
             <div styleName='column'>
               <h5><Translate value={prefix('howToAddYourToken')} /></h5>
@@ -195,7 +233,7 @@ export default class AddCurrencyDialog extends PureComponent {
               styleName='action'
               label={<Translate value={prefix('save')} />}
               primary
-              onTouchTap={() => this.handleSave()}
+              onTouchTap={this.handleSave}
             />
             <RaisedButton
               styleName='action'

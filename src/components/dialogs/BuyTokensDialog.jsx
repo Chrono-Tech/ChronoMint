@@ -41,12 +41,12 @@ export default class BuyTokensDialog extends PureComponent {
     return this.props.order
   }
 
-  handleChangeMain (v) {
+  handleChangeMain = (e, value) =>  {
     let main
     let second
 
     try {
-      main = new BigNumber(v)
+      main = new BigNumber(value)
     } catch (e) {
       main = new BigNumber(0)
     }
@@ -67,12 +67,12 @@ export default class BuyTokensDialog extends PureComponent {
     this.updateIsPossible()
   }
 
-  handleChangeSecond (v) {
+  handleChangeSecond = (e, value) => {
     let main
     let second
 
     try {
-      second = new BigNumber(v)
+      second = new BigNumber(value)
     } catch (e) {
       second = new BigNumber(0)
     }
@@ -204,7 +204,7 @@ export default class BuyTokensDialog extends PureComponent {
                         floatingLabelText='LHT:'
                         value={this.state.main.toString(10)}
                         style={{ width: 150 }}
-                        onChange={(e, value) => this.handleChangeMain(value)}
+                        onChange={this.handleChangeMain}
                       />
                     </div>
                     <div className='col-xs-2'>
@@ -212,7 +212,7 @@ export default class BuyTokensDialog extends PureComponent {
                         floatingLabelText='ETH:'
                         value={this.state.second.toString(10)}
                         style={{ width: 150 }}
-                        onChange={(e, value) => this.handleChangeSecond(value)}
+                        onChange={this.handleChangeSecond}
                       />
                     </div>
                   </div>
@@ -223,7 +223,7 @@ export default class BuyTokensDialog extends PureComponent {
                           label={`${this.order().isBuy() ? 'Buy' : 'Sell'} ${this.order().symbol()}`}
                           disabled={!this.state.isPossible || this.state.main <= 0}
                           primary
-                          onTouchTap={() => this.handleExchange()}
+                          onTouchTap={this.handleExchange}
                         />
                       </div>
                     </div>

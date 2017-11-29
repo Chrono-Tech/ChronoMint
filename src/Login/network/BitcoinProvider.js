@@ -1,43 +1,24 @@
 import type BigNumber from 'bignumber.js'
-import { networks } from 'bitcoinjs-lib'
-import EventEmitter from 'events'
-import { BitcoinEngine } from './BitcoinEngine'
-import { MAINNET, MAINNET_BCC, TESTNET, TESTNET_BCC } from './BitcoinNode'
+import AbstractProvider from './AbstractProvider'
+import { selectBCCNode, selectBTCNode } from './BitcoinNode'
 
-export class BitcoinProvider extends EventEmitter {
-  constructor (selectNode) {
-    super()
-    this._selectNode = selectNode
+export class BitcoinProvider extends AbstractProvider {
+  constructor () {
+    super(...arguments)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
   }
 
-  isInitialized () {
-    return this._engine != null
-  }
-
   subscribe (engine) {
-    const node = this._selectNode(engine)
-    node.emit('subscribe', engine.getAddress())
+    const node = super.subscribe(engine)
     node.addListener('tx', this._handleTransaction)
     node.addListener('balance', this._handleBalance)
   }
 
   unsubscribe (engine) {
-    const node = this._selectNode(engine)
-    node.emit('unsubscribe', engine.getAddress())
+    const node = super.unsubscribe(engine)
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
-  }
-
-  setEngine (engine: BitcoinEngine) {
-    this._engine && this.unsubscribe(this._engine)
-    this._engine = engine
-    this.subscribe(this._engine)
-  }
-
-  getAddress () {
-    return this._engine && this._engine.getAddress() || null
   }
 
   async getTransactionInfo (txid) {
@@ -73,16 +54,6 @@ export class BitcoinProvider extends EventEmitter {
       balance,
     })
   }
-}
-
-export function selectBTCNode (engine) {
-  if (engine.getNetwork() === networks.testnet) return TESTNET
-  return MAINNET
-}
-
-export function selectBCCNode (engine) {
-  if (engine.getNetwork() === networks.testnet) return TESTNET_BCC
-  return MAINNET_BCC
 }
 
 export const btcProvider = new BitcoinProvider(selectBTCNode)

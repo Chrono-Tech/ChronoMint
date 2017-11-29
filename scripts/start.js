@@ -112,7 +112,7 @@ compiler.plugin('done', function (stats) {
         let address = interfaces[k][k2]
         if (address.family === 'IPv4' && !address.internal) {
           // eslint-disable-next-line
-          console.log('http://' + address.address + ':3000/')
+          console.log('https://' + address.address + ':3000/')
         }
       }
     }
@@ -168,8 +168,14 @@ new WebpackDevServer(compiler, {
   // for local access
   quiet: true,
   host: '0.0.0.0',
+  https: true,
   open: true,
   disableHostCheck: true,
+  proxy: {
+    '/web3/*': {
+      target: 'http://localhost:8545',
+    },
+  },
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {
     // eslint-disable-next-line
