@@ -20,7 +20,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from 'utils/IPFS'
-import validate from './validate'
+import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
@@ -57,10 +57,10 @@ const onSubmit = (values, dispatch) => {
     icon: values.get('tokenImg'),
     fee: values.get('feePercent'),
     feeAddress: values.get('feeAddress'),
-    withFee: values.get('withFee'),
+    withFee: !!values.get('withFee'),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: values.get('reissuable'),
+    isReissuable: !!values.get('reissuable'),
   })))
 }
 
@@ -370,6 +370,7 @@ export default class AddTokenForm extends PureComponent {
                   name='smallestUnit'
                   fullWidth
                   floatingLabelText={<Translate value={prefix('smallestUnit')} />}
+                  normalize={normalizeSmallestUnit}
                 />
               </div>
             </div>

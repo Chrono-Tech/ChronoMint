@@ -11,7 +11,7 @@ const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
+export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
     baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io',
     timeout: 4000,

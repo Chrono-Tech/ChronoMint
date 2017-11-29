@@ -1,9 +1,10 @@
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import customSerializer from 'utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
-import { TESTNET } from 'Login/network/BitcoinNode'
+import { BTC_TESTNET_NODE } from 'Login/network/BitcoinNode'
 import { LOCAL_ID } from 'Login/network/settings'
 import web3provider from 'Login/network/Web3Provider'
 import networkService from 'Login/redux/network/actions'
@@ -42,7 +43,7 @@ beforeAll((done) => {
 afterAll((done) => {
   // noinspection JSUnresolvedFunction
   reverter.revert(done)
-  TESTNET.disconnect()
+  BTC_TESTNET_NODE.disconnect()
   MarketSocket.disconnect()
 })
 
@@ -59,3 +60,4 @@ afterEach(async (done) => {
   done()
 })
 
+expect.addSnapshotSerializer(customSerializer)
