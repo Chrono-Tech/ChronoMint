@@ -1,0 +1,349 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assetsManager reducer should handle GET_ASSETS_MANAGER_COUNTS 1`] = `
+  "assets":{
+    "a":1,
+  },
+  "assetsManagerCountsLoading":false,
+  "managersCount":3,
+  "managersList":{
+    "0":test,
+    "1":test1,
+    "2":test2,
+  },
+  "platformsList":{
+    "0":test,
+    "1":test1,
+    "2":test2,
+  },
+  "tokensCount":1,
+
+`;
+
+exports[`assetsManager reducer should handle GET_MANAGERS_FOR_TOKEN 1`] = `
+  "managersForTokenLoading":false,
+  "tokensMap":{
+    "LHT":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":{
+        "0":1,
+        "1":2,
+        "2":3,
+      },
+      "name":null,
+      "platform":null,
+      "symbol":null,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle GET_PLATFORMS 1`] = `
+  "platformsList":{
+    "0":test,
+    "1":test1,
+    "2":test2,
+  },
+
+`;
+
+exports[`assetsManager reducer should handle GET_TOKENS 1`] = `
+  "assets":{
+    "0":1,
+    "1":2,
+    "2":3,
+    "3":4,
+  },
+  "tokensCount":2,
+  "tokensMap":{
+    "a":1,
+    "b":2,
+  },
+
+`;
+
+exports[`assetsManager reducer should handle GET_TRANSACTIONS_DONE 1`] = `
+  "transactionsFetched":true,
+  "transactionsFetching":false,
+  "transactionsList":{
+    "0":{
+      "txHash":test,
+    },
+    "1":{
+      "txHash":test1,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle GET_USER_PLATFORMS 1`] = `
+  "usersPlatforms":{
+    "0":test,
+    "1":test1,
+    "2":test2,
+  },
+  "usersPlatformsCount":3,
+
+`;
+
+exports[`assetsManager reducer should handle SET_FEE 1`] = `
+  "tokensMap":{
+    "LHT":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":1,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":LHT,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":true,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle SET_IS_REISSUABLE 1`] = `
+  "tokensMap":{
+    "LHT":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":true,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":LHT,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle SET_NEW_MANAGERS_LIST 1`] = `
+  "managersCount":3,
+  "managersList":{
+    "0":test,
+    "1":test1,
+    "2":test2,
+  },
+  "tokensMap":{
+    "LHT":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":{
+        "0":test,
+        "1":test1,
+        "2":test2,
+      },
+      "name":null,
+      "platform":null,
+      "symbol":LHT,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle SET_TOKEN 1`] = `
+  "assets":{
+    "0":1,
+    "1":2,
+  },
+  "tokensCount":3,
+  "tokensMap":{
+    "aaa":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":null,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+    "bbb":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":null,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+    "ccc":{
+      "address":null,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":null,
+      "timestamp":null,
+      "totalSupply":0,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+  },
+
+`;
+
+exports[`assetsManager reducer should handle SET_TOTAL_SUPPLY 1`] = `
+  "assets":{
+    "1234":{
+      "totalSupply":5,
+    },
+    "test":{
+      "totalSupply":1,
+    },
+  },
+  "tokensMap":{
+    "LHT":{
+      "address":1234,
+      "allowance":{
+      },
+      "balance":0,
+      "dao":null,
+      "decimals":null,
+      "fee":null,
+      "feeAddress":null,
+      "icon":null,
+      "id":null,
+      "isFailed":false,
+      "isFetched":false,
+      "isFetching":false,
+      "isOptional":true,
+      "isPending":false,
+      "isReissuable":false,
+      "managersList":null,
+      "name":null,
+      "platform":null,
+      "symbol":LHT,
+      "timestamp":null,
+      "totalSupply":5,
+      "transactionHash":null,
+      "url":null,
+      "withFee":null,
+    },
+  },
+
+`;
