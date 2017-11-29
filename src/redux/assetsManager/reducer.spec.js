@@ -87,7 +87,6 @@ describe('assetsManager reducer', () => {
         assets: [ 1, 2, 3, 4 ],
       },
     })
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -106,7 +105,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -124,7 +122,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -146,7 +143,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -164,7 +160,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -183,7 +178,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
@@ -202,7 +196,6 @@ describe('assetsManager reducer', () => {
         },
       },
     )
-    result.tokensMap = result.tokensMap.toJSON()
     expect(result).toMatchSnapshot()
   })
 
