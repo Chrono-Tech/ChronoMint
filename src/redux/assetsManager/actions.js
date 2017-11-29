@@ -95,7 +95,7 @@ export const watchPlatformManager = (account) => async (dispatch) => {
 
 export const createAsset = (token: TokenModel) => async () => {
   try {
-    const tokenManagementExtension = await  contractManager.getTokenManagementExtensionDAO(token.platform().address)
+    const tokenManagementExtension = await contractManager.getTokenManagementExtensionDAO(token.platform().address)
     if (token.withFee()) {
       await tokenManagementExtension.createAssetWithFee(token)
     } else {
