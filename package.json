@@ -1,6 +1,6 @@
 {
   "name": "chronoMint",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
