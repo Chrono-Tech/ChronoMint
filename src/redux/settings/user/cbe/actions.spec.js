@@ -9,8 +9,8 @@ import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
 import validator from 'components/forms/validator'
 import * as a from './actions'
 
-const user = new ProfileModel({ name: Math.random().toString() })
-const cbe = new CBEModel({ address: accounts[9], name: user.name(), user })
+const user = new ProfileModel({ name: 'testUser' })
+const cbe = new CBEModel({ address: accounts[2], name: user.name(), user })
 
 describe('settings cbe actions', () => {
   it('should list CBE', async () => {
@@ -32,7 +32,7 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeFalsy()
-      expect(notice.cbe()).toEqual(cbe)
+      expect(notice.cbe()).toMatchSnapshot(cbe)
       resolve()
     })
     await store.dispatch(a.addCBE(cbe))
@@ -68,7 +68,7 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeTruthy()
-      expect(notice.cbe()).toEqual(cbe)
+      expect(notice.cbe()).toMatchSnapshot(cbe)
       resolve()
     })
     await store.dispatch(a.revokeCBE(cbe))

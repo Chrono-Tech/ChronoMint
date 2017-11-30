@@ -1,7 +1,7 @@
 import WalletModel from './WalletModel'
 import OwnerModel from './OwnerModel'
 
-const ADDRESS = '0x1234567890123456789012345678901234567890'
+const ADDRESS = '0x1234567890123456789012345678901234567899'
 const WALLET_NAME = 'Test Wallet'
 const DAY_LIMIT = 777
 const REQUIRED_SIGNATURES = 2
@@ -14,7 +14,7 @@ describe('Wallet model', () => {
       isNew: false,
       walletName: WALLET_NAME,
       dayLimit: DAY_LIMIT,
-      requiredSignatures: REQUIRED_SIGNATURES
+      requiredSignatures: REQUIRED_SIGNATURES,
     })
   })
 
@@ -30,14 +30,14 @@ describe('Wallet model', () => {
     expect(walletModel.requiredSignatures()).toEqual(REQUIRED_SIGNATURES)
   })
 
-  it('should get no owners', () => {
+  it('should get owners before adding', () => {
     expect(walletModel.owners().toArray().length).toEqual(0)
   })
 
   it('should add owner', () => {
     walletModel = walletModel.addOwner(new OwnerModel({
       address: ADDRESS,
-      editing: true
+      editing: true,
     }))
   })
 

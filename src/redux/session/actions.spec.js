@@ -35,10 +35,14 @@ const cbeSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
+    tokens:[],
+    currencies: [],
+    profile,
   },
   session: {
     isSession: true,
     account: accounts[ 0 ],
+    profile,
   },
   mainWallet,
 })
@@ -47,6 +51,8 @@ const userSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
+    tokens:[],
+    currencies: [],
   },
   session: {
     isSession: true,

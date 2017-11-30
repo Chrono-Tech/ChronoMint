@@ -7,7 +7,7 @@ describe('Owner model', () => {
   it('should construct and return data', () => {
     ownerModel = new OwnerModel({
       address: ADDRESS,
-      editing: true
+      editing: true,
     })
   })
 

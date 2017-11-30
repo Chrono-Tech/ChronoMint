@@ -1,17 +1,17 @@
 //noinspection JSUnresolvedVariable
 import Immutable from 'immutable'
-import OwnerModel from './OwnerModel'
 import { abstractModel } from '../AbstractModel'
+import OwnerModel from './OwnerModel'
 
 class WalletModel extends abstractModel({
   owners: new Immutable.Map(),
   isNew: true,
   walletName: null,
   dayLimit: null,
-  requiredSignatures: null
+  requiredSignatures: null,
 }) {
   addOwner (owner: OwnerModel) {
-    return this.set('owners', this.owners().set(owner.symbol(), owner))
+    return this.set('owners', this.owners().set(owner.address(), owner))
   }
 
   // alias
@@ -53,7 +53,7 @@ class WalletModel extends abstractModel({
       dayLimit: isNaN(this.dayLimit()) ? 'errors.wallet.dayLimit.haveToBeNumber' : null,
       requiredSignatures: this.requiredSignatures() >= 2 ? null : 'errors.wallet.requiredSignatures.haveToBeMoreThanTwoOrEqual',
       ownersCount: this.ownersCount() >= 2 ? null : 'errors.wallet.ownersCount.haveToBeMoreThanTwoOrEqual',
-      ownersCollection: this.ownersCollection().validate()
+      ownersCollection: this.ownersCollection().validate(),
     }
   }
 }
