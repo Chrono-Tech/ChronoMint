@@ -10,5 +10,5 @@ export const getStatistics = (state) => {
       inactive: polls.filter((p) => !p.poll().active()).length,
       outdated: polls.filter((p) => p.poll().deadline().getTime() < time).length,
     }
-    : null
+    : {}
 }

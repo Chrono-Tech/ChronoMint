@@ -53,11 +53,6 @@
 
 .contentStats {
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  height: 200px;
-
   @include xs-only {
     height: auto;
   }
@@ -68,7 +63,7 @@
   flex-direction: row;
   flex: 0 0 auto;
   position: relative;
-  width: 200px;
+  width: 50%;
   align-items: center;
   margin-bottom: 20px;
 
@@ -80,9 +75,11 @@
     border-radius: 50%;
     text-align: center;
 
-    :global(.material-icons) {
-      margin: 4px;
-      vertical-align: middle;
+    :global {
+      .material-icons {
+        margin: 4px;
+        vertical-align: middle;
+      }
     }
   }
 
@@ -122,17 +119,23 @@
   line-height: 22px;
 }
 
-.entry1 {
+.entryTitle {
   font-size: 14px;
   font-weight: 300;
 }
 
-.entry2 {
+.entryValue {
   font-size: 16px;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
+  :global {
+    .Preloader__root {
+      justify-content: flex-start;
+    }
+  }
+
 }
 
 .head {
@@ -183,7 +186,7 @@
 
 .accessDenied {
   text-align: center;
-  margin: 50px 0;
+  padding: 50px 0;
 }
 
 .accessDeniedIcon {
