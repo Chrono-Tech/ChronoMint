@@ -1,20 +1,20 @@
 import bitcoin from 'bitcoinjs-lib'
 import wallet from 'ethereumjs-wallet'
-import * as NEM from './nem'
-import NemWallet from './NemWallet'
 import { createBCCEngine, createBTCEngine } from './BitcoinUtils'
+import EthereumEngine from './EthereumEngine'
+import * as NEM from './nem'
 import { createNEMEngine } from './NemUtils'
-import Web3Utils from './Web3Utils'
+import NemWallet from './NemWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
-    const ethereum = this.createEthereumWallet(privateKey)
-    const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereum.privKey, bitcoin.networks[ network.bitcoin ])
+    const ethereumWallet = this.createEthereumWallet(privateKey)
+    const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[ network.bitcoin ])
     const bcc = btc
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, NEM.Network.data[network.nem])
 
     return {
-      ethereum: Web3Utils.createEngine(ethereum, url),
+      ethereum: new EthereumEngine(ethereumWallet, network, url),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[ network.bitcoin ]),
       bcc: network && network.bitcoin && createBCCEngine(bcc, bitcoin.networks[ network.bitcoin ]),
       nem: network && network.nem && createNEMEngine(nem, NEM.Network.data[network.nem]),

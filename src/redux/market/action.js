@@ -44,7 +44,7 @@ export const watchInitMarket = () => (dispatch, getState) => {
           },
         })
       } else {
-        update.LASTMARKET = lastMarket[symbol]
+        update.LASTMARKET = lastMarket[ symbol ]
       }
 
       lastMarket = update.LASTMARKET || get(lastMarket, symbol)
