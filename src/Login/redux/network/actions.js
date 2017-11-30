@@ -3,9 +3,11 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
-import { getNetworkById, getScannerById, LOCAL_ID, TESTRPC_URL } from '../../network/settings'
+import { getProviderById, getNetworksByProvider, getNetworkById, getScannerById, NETWORK_MAIN_ID, LOCAL_ID, TESTRPC_URL } from '../../network/settings'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '../../network/MonitorService'
 import uportProvider, { UPortAddress } from '../../network/uportProvider'
 import web3Provider, { Web3Provider } from '../../network/Web3Provider'
+import web3Utils from '../../network/Web3Utils'
 import { utils } from '../../settings'
 
 const { web3Converter } = utils
@@ -221,6 +223,67 @@ class NetworkService extends EventEmitter {
 
     this._dispatch({ type: NETWORK_SET_TEST_RPC })
     return true
+  }
+
+  async autoSelect () {
+    const { priority, preferMainnet } = this._store.getState().get('network')
+    const resolveNetwork = () => {
+      const web3 = new Web3()
+      web3Provider.setWeb3(web3)
+      web3Provider.setProvider(web3Utils.createStatusEngine(this.getProviderURL()))
+      web3Provider.resolve()
+    }
+    const selectAndResolve = (networkId, providerId) => {
+      this.selectProvider(providerId)
+      this.selectNetwork(networkId)
+      resolveNetwork()
+    }
+    let checkerIndex = 0
+
+    const checkers = []
+
+    const handleNetwork = (status) => {
+      switch (status) {
+        case NETWORK_STATUS_OFFLINE:
+          runNextChecker()
+          break
+        case NETWORK_STATUS_ONLINE:
+          resetCheckers()
+          break
+      }
+    }
+
+    const resetCheckers = () => {
+      checkerIndex = 0
+      checkers.length = checkerIndex
+      web3Provider.getMonitorService().removeListener('network', handleNetwork)
+    }
+
+    const runNextChecker = () => {
+      if (checkerIndex <= checkers.length) {
+        checkers[checkerIndex]()
+        checkerIndex++
+      } else {
+        resetCheckers()
+      }
+    }
+
+    priority.forEach((providerId) => {
+      const networks = getNetworksByProvider(providerId)
+      if (preferMainnet) {
+        checkers.push(() => selectAndResolve(NETWORK_MAIN_ID, providerId))
+      } else {
+        networks
+          .filter((network) => network.id !== NETWORK_MAIN_ID)
+          .forEach((network) => {
+            checkers.push(() => selectAndResolve(network.id, providerId))
+          })
+      }
+    })
+
+    web3Provider.getMonitorService()
+      .on('network', handleNetwork)
+    runNextChecker()
   }
 
   login (account) {

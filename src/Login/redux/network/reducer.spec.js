@@ -35,11 +35,6 @@ describe('network reducer', () => {
     expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_RPC }))
       .toEqual({
         isLocal: true,
-        providers: [ {
-          id: 6,
-          name: 'Local',
-          disabled: false,
-        } ],
       })
   })
 
@@ -49,11 +44,6 @@ describe('network reducer', () => {
     }
     expect(reducer(initialState, { type: actions.NETWORK_SET_TEST_METAMASK }))
       .toEqual({
-        providers: [ {
-          id: 1,
-          name: 'Metamask/Mist',
-          disabled: false,
-        } ],
       })
   })
 

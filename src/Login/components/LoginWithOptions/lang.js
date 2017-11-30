@@ -3,6 +3,8 @@ export const en = {
   walletFile: 'Wallet file',
   privateKey: 'Private key',
   ledgerNano: 'Ledger Nano',
+  local: 'Login to TestRPC',
+  metamask: 'Login to Metamask',
   selectLoginOption: 'Select login option:',
 }
 export const ru = {
@@ -10,5 +12,7 @@ export const ru = {
   walletFile: 'Файл кошелька',
   privateKey: 'Приватный ключ',
   ledgerNano: 'Ledger Nano',
+  local: 'Локальный TestRPC',
+  metamask: 'Metamask',
   selectLoginOption: 'Выберите вариант входа в систему:',
 }

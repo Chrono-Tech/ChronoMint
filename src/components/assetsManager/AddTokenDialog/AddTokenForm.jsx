@@ -57,10 +57,10 @@ const onSubmit = (values, dispatch) => {
     icon: values.get('tokenImg'),
     fee: values.get('feePercent'),
     feeAddress: values.get('feeAddress'),
-    withFee: values.get('withFee'),
+    withFee: !!values.get('withFee'),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: values.get('reissuable'),
+    isReissuable: !!values.get('reissuable'),
   })))
 }
 

@@ -1,4 +1,4 @@
-const NETWORK_MAIN_ID = 1
+export const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
 export const LOCAL_PROVIDER_ID = 6
 
@@ -99,7 +99,7 @@ if (process.env.NODE_ENV === 'development') {
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: TESTRPC_URL,
+  host: `localhost:3000${TESTRPC_URL}`,
   bitcoin: 'testnet',
   nem: 'Testnet',
 }
@@ -155,6 +155,10 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
       return []
     }
   }
+}
+
+export const getProviderById = (providerId) => {
+  return providerMap[Object.keys(providerMap).find((key) => providerMap[ key ].id === providerId)] || {}
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {

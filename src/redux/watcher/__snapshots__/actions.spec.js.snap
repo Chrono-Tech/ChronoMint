@@ -1,27 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`watcher actions should dispatch cbeWatcher 1`] = `
-Array [
-  Object {
-    "type": "watcher/CBE",
+  "0": {
+    "type": watcher/CBE,
   },
-]
+
 `;
 
 exports[`watcher actions should dispatch watcher 1`] = `
-Array [
-  Object {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START",
+  "0": {
+    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
   },
-  Object {
-    "type": "AssetsManager/GET_TRANSACTIONS_START",
+  "1": {
+    "type": AssetsManager/GET_TRANSACTIONS_START,
   },
-  Object {
+  "2": {
     "isInited": true,
-    "type": "market/INIT",
+    "type": market/INIT,
   },
-  Object {
-    "type": "watcher/USER",
+  "3": {
+    "type": watcher/USER,
   },
-]
+
 `;

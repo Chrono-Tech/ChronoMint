@@ -69,7 +69,7 @@ let KeyPair = function (privkey) {
   nacl.lowlevel.crypto_sign_keypair_hash(this.publicKey.data, this.secretKey, hashfunc)
 
   // Signature
-  this.sign = data => {
+  this.sign = (data) => {
     let sig = new Uint8Array(64)
     let hasher = new hashobj()
     let r = nacl.lowlevel.crypto_sign_hash(sig, this, data, hasher)

@@ -22,6 +22,7 @@ const promisifyFunctions = [
 ]
 
 export class Web3Provider {
+
   _web3Promise = null
   _web3instance = null
   _resolveCallback = null
@@ -44,7 +45,7 @@ export class Web3Provider {
   }
 
   resolve () {
-    this._resolveCallback()
+    return this._resolveCallback()
   }
 
   getWeb3 () {

@@ -527,7 +527,7 @@ export default class AbstractContractDAO {
     ])
 
     const gasPriceBN = new BigNumber(gasPrice)
-    const gasLimit = process.env.NODE_ENV === 'development' ? estimatedGas * 2 : estimatedGas + 1
+    const gasLimit = process.env.NODE_ENV === 'development' ? Math.min(DEFAULT_GAS, estimatedGas*2) : estimatedGas + 1
     const gasFee = this._c.fromWei(gasPriceBN.mul(gasLimit))
 
     return { gasLimit, gasFee }

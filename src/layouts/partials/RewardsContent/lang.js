@@ -25,7 +25,7 @@ export default {
     youHaveNoTimeDeposit: 'У вас нет депозита TIME.',
     pleaseDepositTimeTokens: 'Пожалуйста внесите TIME токены чтобы разблокировать страницу наград.',
     disabled: 'Отключено',
-    depositOfWithdrawTime: 'Внести Или Вывысни Time',
+    depositOfWithdrawTime: 'Внести или вывести Time',
     withdrawRevenue: 'Вывести Доход',
     closePeriod: 'Закрыть период',
   },
