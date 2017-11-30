@@ -26,7 +26,6 @@
 
 .dialogHeaderStuff {
   display: flex;
-  flex-direction: row;
   height: 24px;
 }
 
@@ -47,10 +46,6 @@
 
 .action {
   margin: 0 0 0 10px;
-}
-
-.tokenWrapper {
-
 }
 
 .tokenWrapperHeader {
@@ -144,10 +139,6 @@
   @include sm-only {
     flex-direction: column;
   }
-}
-
-.tokenSelectorItem {
-
 }
 
 .sm-show {

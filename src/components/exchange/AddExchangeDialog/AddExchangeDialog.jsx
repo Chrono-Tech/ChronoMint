@@ -9,7 +9,6 @@ import AddExchangeForm from './AddExchangeForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
     onSubmitSuccess: (exchange: ExchangeOrderModel) => {
       dispatch(createExchange(exchange))
       dispatch(modalsClose())
@@ -21,13 +20,12 @@ function mapDispatchToProps (dispatch) {
 export default class AddExchangeDialog extends PureComponent {
   static propTypes = {
     onSubmitSuccess: PropTypes.func,
-    onClose: PropTypes.func,
     closeModal: PropTypes.func,
   }
 
   render () {
     return (
-      <ModalDialog onClose={() => this.props.onClose()}>
+      <ModalDialog>
         <AddExchangeForm onSubmitSuccess={this.props.onSubmitSuccess} />
       </ModalDialog>
     )

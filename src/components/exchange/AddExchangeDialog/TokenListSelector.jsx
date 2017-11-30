@@ -16,7 +16,7 @@ function prefix (text) {
   return `components.exchange.AddExchangeForm.${text}`
 }
 
-export default class tokenListSelector extends PureComponent {
+export default class TokenListSelector extends PureComponent {
   static propTypes = {
     tokens: PropTypes.instanceOf(TokensCollection),
     input: PropTypes.object,
@@ -24,19 +24,18 @@ export default class tokenListSelector extends PureComponent {
   }
 
   render () {
-    const { tokens } = this.props
-    const token = this.props.input.value
+    const { tokens, token } = this.props
     const { meta } = this.props
     return (
-      <div styleName='tokenWrapper'>
+      <div>
         <div styleName={classnames('tokenWrapperHeader', 'sm-hide')}>
-          <div><Translate value={prefix('chooseToken')} /></div>
+          <div><Translate value={prefix('chooseToken')}/></div>
           <div styleName='tokenError'>{meta.touched && meta.error && meta.error}</div>
         </div>
         <div styleName={classnames('tokensList', 'sm-hide')}>
           {
             tokens.isFetching()
-              ? <Preloader />
+              ? <Preloader/>
               : tokens.items().map((tokenItem: TokenModel) => {
                 return (
                   <div
@@ -44,7 +43,7 @@ export default class tokenListSelector extends PureComponent {
                     styleName={classnames('tokenItem', { 'selected': token === tokenItem })}
                     onTouchTap={() => this.props.input.onChange(tokenItem)}
                   >
-                    <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon' fallback={iconTokenDefaultSVG} />
+                    <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon' fallback={iconTokenDefaultSVG}/>
                     <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
                   </div>
                 )
@@ -52,12 +51,12 @@ export default class tokenListSelector extends PureComponent {
           }
         </div>
         <div styleName={classnames('tokensListMobile', 'sm-show')}>
-          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
+          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={iconTokenDefaultSVG}/>
           <SelectField
             name='token'
             styleName='tokenMobileSelector'
             floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('chooseToken')} />}
+            floatingLabelText={<Translate value={prefix('chooseToken')}/>}
             input={this.props.input}
             meta={this.props.meta}
           >
@@ -67,15 +66,13 @@ export default class tokenListSelector extends PureComponent {
                   return (<MenuItem
                     key={token.symbol()}
                     value={token}
-                    primaryText={
-                      <span styleName='tokenSelectorItem'>{token.symbol()}</span>
-                    }
+                    primaryText={<span>{token.symbol()}</span>}
                   />)
                 })}
           </SelectField>
         </div>
         <div styleName={classnames('flexRight', 'sm-hide')}>
-          <FlatButton label={<Translate value={prefix('allAvailableTokens')} />} />
+          <FlatButton label={<Translate value={prefix('allAvailableTokens')}/>}/>
         </div>
       </div>
 

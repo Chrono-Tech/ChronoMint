@@ -38,7 +38,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (demo)',
+    exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Rewards',
     assets: 'My assets',

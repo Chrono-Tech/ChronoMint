@@ -1,14 +1,14 @@
-import { Field, reduxForm, change, formValueSelector } from 'redux-form/immutable'
+import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { MenuItem, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Immutable from 'immutable'
 import SwipeableViews from 'react-swipeable-views'
-import { TextField, SelectField } from 'redux-form-material-ui'
+import { SelectField, TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
-import { search } from 'redux/exchange/actions'
+import { DUCK_EXCHANGE, search } from 'redux/exchange/actions'
 import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
 import validate from './validate'
 
@@ -21,20 +21,20 @@ const MODES = [
 
 export const FORM_EXCHANGE = 'ExchangeForm'
 
-const mapStateToProps = state => {
-  const exchange = state.get('exchange')
+const mapStateToProps = (state) => {
+  const exchange = state.get(DUCK_EXCHANGE)
   const selector = formValueSelector(FORM_EXCHANGE)
   return {
     isFetching: exchange.isFetching(),
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
-    initialValues: new Immutable.Map({ filterMode: MODES[0] }),
+    initialValues: new Immutable.Map({ filterMode: MODES[ 0 ] }),
     showFilter: exchange.showFilter(),
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  openAddExchangeDialog: () => dispatch(modalsOpen({
+const mapDispatchToProps = (dispatch) => ({
+  handleOpenAddExchangeDialog: () => dispatch(modalsOpen({
     component: AddExchangeDialog,
   })),
 })
@@ -55,7 +55,7 @@ export default class ExchangeWidget extends React.Component {
     assetSymbols: PropTypes.arrayOf(PropTypes.string),
     handleSubmit: PropTypes.func,
     dispatch: PropTypes.func,
-    openAddExchangeDialog: PropTypes.func,
+    handleOpenAddExchangeDialog: PropTypes.func,
     showFilter: PropTypes.bool,
     filterMode: PropTypes.shape({
       index: PropTypes.number,
@@ -65,7 +65,7 @@ export default class ExchangeWidget extends React.Component {
   }
 
   handleChangeMode (value) {
-    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[value]))
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[ value ]))
   }
 
   render () {
@@ -75,7 +75,7 @@ export default class ExchangeWidget extends React.Component {
           <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
           <div styleName='createExchangeWrapper'><RaisedButton
             label={<Translate value={prefix('createExchange')} />}
-            onTouchTap={() => this.props.openAddExchangeDialog()}
+            onTouchTap={this.props.handleOpenAddExchangeDialog}
             primary
           />
           </div>
@@ -103,9 +103,9 @@ export default class ExchangeWidget extends React.Component {
               <form onSubmit={this.props.handleSubmit}>
                 <SwipeableViews
                   index={this.props.filterMode ? this.props.filterMode.index : 0}
-                  onChangeIndex={index => this.handleChangeMode(index)}
+                  onChangeIndex={(index) => this.handleChangeMode(index)}
                 >
-                  {MODES.map(el => (
+                  {MODES.map((el) => (
                     <div styleName='slide' key={el.name}>
                       <div styleName='wrapper'>
                         <div styleName='item'>
@@ -125,7 +125,7 @@ export default class ExchangeWidget extends React.Component {
                           >
                             {
                               this.props.assetSymbols
-                                .map(symbol => <MenuItem key={symbol} value={symbol} primaryText={symbol} />)
+                                .map((symbol) => <MenuItem key={symbol} value={symbol} primaryText={symbol} />)
                             }
                           </Field>
                         </div>

@@ -91,6 +91,7 @@ export default class AbstractContractDAO {
   }
 
   subscribeOnReset () {
+    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
     this._web3Provider.onReset(() => this.handleWeb3Reset())
   }
 

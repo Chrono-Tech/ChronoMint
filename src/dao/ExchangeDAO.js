@@ -15,11 +15,11 @@ export class ExchangeDAO extends AbstractContractDAO {
     super(
       ExchangeABI,
       at,
-      MultiEventsHistoryABI
+      MultiEventsHistoryABI,
     )
   }
 
-  async withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
+  withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
     return this._tx(
       TX_WITHDRAW_TOKENS,
       [
@@ -32,7 +32,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       })
   }
 
-  async withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
+  withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
     return this._tx(
       TX_WITHDRAW_ETH,
       [
@@ -50,7 +50,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     return assetDAO.approve(this.getInitAddress(), amount)
   }
 
-  async sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+  sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
     const priceInWei = this._c.toWei(exchange.buyPrice())
     const price = priceInWei.div(Math.pow(10, token.decimals()))
 
@@ -67,7 +67,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       })
   }
 
-  async buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+  buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
     const priceInWei = this._c.toWei(exchange.sellPrice())
     const price = priceInWei.div(Math.pow(10, token.decimals()))
     return this._tx(
@@ -80,7 +80,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       {
         amount: new Amount(amount, exchange.symbol()),
         price: new Amount(amount.mul(exchange.sellPrice()), 'ETH'),
-      }, priceInWei.mul(amount)
+      }, priceInWei.mul(amount),
     )
   }
 
@@ -95,23 +95,23 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchError (callback) {
-    this._watch('Error', callback)
+    return this._watch('Error', callback)
   }
 
   watchFeeUpdated (exchange, callback) {
-    this._watch('ExchangeFeeUpdated', callback, { exchange })
+    return this._watch('ExchangeFeeUpdated', callback, { exchange })
   }
 
   watchPricesUpdated (exchange, callback) {
-    this._watch('ExchangePricesUpdated', callback, { exchange })
+    return this._watch('ExchangePricesUpdated', callback, { exchange })
   }
 
   watchActiveChanged (exchange, callback) {
-    this._watch('ExchangeActiveChanged', callback, { exchange })
+    return this._watch('ExchangeActiveChanged', callback, { exchange })
   }
 
   watchBuy (exchange, callback) {
-    this._watch('ExchangeBuy', (tx) => {
+    return this._watch('ExchangeBuy', (tx) => {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
@@ -121,7 +121,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchSell (exchange, callback) {
-    this._watch('ExchangeSell', (tx) => {
+    return this._watch('ExchangeSell', (tx) => {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
@@ -131,7 +131,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchWithdrawEther (exchange, callback) {
-    this._watch('ExchangeWithdrawEther', (tx) => {
+    return this._watch('ExchangeWithdrawEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
         ethAmount: this._c.fromWei(tx.args.amount),
@@ -140,7 +140,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchWithdrawTokens (exchange, callback) {
-    this._watch('ExchangeWithdrawTokens', (tx) => {
+    return this._watch('ExchangeWithdrawTokens', (tx) => {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.amount,
@@ -149,7 +149,7 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   watchReceivedEther (exchange, callback) {
-    this._watch('ExchangeReceivedEther', (tx) => {
+    return this._watch('ExchangeReceivedEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
         ethAmount: this._c.fromWei(tx.args.amount),

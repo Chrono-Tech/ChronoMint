@@ -1,6 +1,5 @@
 import * as validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
-import { I18n } from 'react-redux-i18n'
 
 export default function validate (values, props) {
   let buyErrors = new ErrorList()
@@ -15,35 +14,11 @@ export default function validate (values, props) {
   const ethBalance = props.exchange.ethBalance()
 
   if (props.isBuy) {
-
-    if (values.get('buy') > assetBalance.toNumber()) {
-      buyErrors.add(I18n.t('components.exchange.BuyTokensDialog.amountMustBeLess', {
-        amount: assetBalance.toString().replace(/\./, ','),
-      }))
-    }
-
-    if (values.get('sell') > userEthBalance.toNumber()) {
-      sellErrors.add(I18n.t('components.exchange.BuyTokensDialog.amountMustBeLess', {
-        amount: userEthBalance.toString().replace(/\./, ','),
-      }))
-
-    }
-
+    buyErrors.add(validator.lowerThan(values.get('buy'), assetBalance.toNumber()))
+    sellErrors.add(validator.lowerThan(values.get('sell'), userEthBalance.toNumber()))
   } else {
-
-    if (values.get('buy') > exchangeTokenBalance.toNumber()) {
-      buyErrors.add(I18n.t('components.exchange.BuyTokensDialog.amountMustBeLess', {
-        amount: exchangeTokenBalance.toString().replace(/\./, ','),
-      }))
-    }
-
-    if (values.get('sell') > ethBalance.toNumber()) {
-      sellErrors.add(I18n.t('components.exchange.BuyTokensDialog.amountMustBeLess', {
-        amount: ethBalance.toString().replace(/\./, ','),
-      }))
-
-    }
-
+    buyErrors.add(validator.lowerThan(values.get('buy'), exchangeTokenBalance.toNumber()))
+    sellErrors.add(validator.lowerThan(values.get('sell'), ethBalance.toNumber()))
   }
 
   return {

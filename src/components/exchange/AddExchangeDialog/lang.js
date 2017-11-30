@@ -8,7 +8,6 @@ export default {
     buyPrice: 'Buy price (ETH)',
     sellPrice: 'Sell price (ETH)',
     create: 'Create',
-    buyPriceError: 'Buying price must be less than selling price',
   },
   ru: {
     chooseToken: 'Выберите токен',
@@ -19,6 +18,5 @@ export default {
     buyPrice: 'Цена покупки (ETH)',
     sellPrice: 'Цена продажи (ETH)',
     create: 'Создать',
-    buyPriceError: 'Цена продажи должна быть меньше чем цена покупки',
   },
 }

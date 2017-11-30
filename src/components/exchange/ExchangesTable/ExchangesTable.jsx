@@ -151,6 +151,7 @@ export default class ExchangesTable extends React.PureComponent {
         {
           this.state.showMyExchanges ?
             <div styleName='colActions'>
+              {!exchange.isPending() &&
               <div styleName='buttonWrapper'>
                 <RaisedButton
                   label={<Translate value={prefix('depositTokens')} />}
@@ -159,6 +160,8 @@ export default class ExchangesTable extends React.PureComponent {
                   }}
                 />
               </div>
+              }
+              {!exchange.isPending() &&
               <div styleName='buttonWrapper'>
                 <RaisedButton
                   label={<Translate value={prefix('depositEth')} />}
@@ -167,10 +170,12 @@ export default class ExchangesTable extends React.PureComponent {
                   }}
                 />
               </div>
+              }
+              {exchange.isPending() && <Preloader />}
             </div>
             :
             <div styleName='colActions'>
-              {showBuy && !exchange.isPending() &&
+              {showBuy &&
               <div styleName='buttonWrapper'>
                 <RaisedButton
                   label={<Translate value={prefix('buy')} />}
@@ -180,7 +185,7 @@ export default class ExchangesTable extends React.PureComponent {
                 />
               </div>
               }
-              {showSell && !exchange.isPending() &&
+              {showSell &&
               <div styleName='buttonWrapper'>
                 <RaisedButton
                   label={<Translate value={prefix('sell')} />}
@@ -190,7 +195,6 @@ export default class ExchangesTable extends React.PureComponent {
                 />
               </div>
               }
-              {exchange.isPending() && <Preloader />}
             </div>
         }
       </div>

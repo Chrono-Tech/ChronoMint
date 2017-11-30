@@ -192,11 +192,11 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_WALLETS_MANAGER)
   }
 
-  async getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
+  getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
     return this._getDAO(DAO_EXCHANGE_MANAGER)
   }
 
-  async getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {
+  getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {
     return this._getDAO(DAO_EXCHANGE, tokenAddress)
   }
 

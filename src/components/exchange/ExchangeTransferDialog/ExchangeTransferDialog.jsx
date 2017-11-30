@@ -6,11 +6,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { CSSTransitionGroup } from 'react-transition-group'
 import { withdrawFromExchange } from 'redux/exchange/actions'
-import { mainTransfer } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, mainTransfer } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
 
@@ -33,7 +31,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    userWallet: getCurrentWallet(state),
+    userWallet: state.get(DUCK_MAIN_WALLET),
   }
 }
 
@@ -54,7 +52,7 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     this.props.depositToExchange(
       this.props.userWallet.tokens().get(props.symbol),
       values.get('amount'),
-      this.props.exchange.address()
+      this.props.exchange.address(),
     )
   }
 
@@ -64,50 +62,42 @@ export default class ExchangeTransferDialog extends React.PureComponent {
       this.props.exchange,
       this.props.userWallet,
       values.get('amount'),
-      props.symbol
+      props.symbol,
     )
   }
 
   render () {
     const token = this.props.userWallet.tokens().get(this.props.tokenSymbol)
     return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}
-      >
-        <ModalDialog onClose={this.props.handleClose}>
-          <div styleName='root'>
-            <div styleName='header'>
-              <div styleName='headerWrapper'>
-                <div styleName='title'>
-                  <Translate
-                    value={prefix(`title`)}
-                  />{` ${this.props.tokenSymbol} `}
-                </div>
+      <ModalDialog>
+        <div styleName='root'>
+          <div styleName='header'>
+            <div styleName='headerWrapper'>
+              <div styleName='title'>
+                <Translate
+                  value={prefix(`title`)}
+                />{` ${this.props.tokenSymbol} `}
               </div>
             </div>
-            <div styleName='content'>
-              <ExchangeDepositForm
-                title={<span><Translate value={prefix('deposit')} /> {this.props.tokenSymbol}</span>}
-                form={FORM_EXCHANGE_DEPOSIT_FORM}
-                onSubmit={this.handleDeposit}
-                maxAmount={token.balance()}
-                symbol={token.symbol()}
-              />
-              <ExchangeDepositForm
-                title={<span><Translate value={prefix('withdrawal')} /> {this.props.tokenSymbol}</span>}
-                form={FORM_EXCHANGE_WITHDRAWAL_FORM}
-                onSubmit={this.handleWithdrawal}
-                maxAmount={this.props.tokenSymbol === 'ETH' ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}
-                symbol={this.props.tokenSymbol}
-              />
-            </div>
           </div>
-        </ModalDialog>
-      </CSSTransitionGroup>
+          <div styleName='content'>
+            <ExchangeDepositForm
+              title={<span><Translate value={prefix('deposit')}/> {this.props.tokenSymbol}</span>}
+              form={FORM_EXCHANGE_DEPOSIT_FORM}
+              onSubmit={this.handleDeposit}
+              maxAmount={token.balance()}
+              symbol={token.symbol()}
+            />
+            <ExchangeDepositForm
+              title={<span><Translate value={prefix('withdrawal')}/> {this.props.tokenSymbol}</span>}
+              form={FORM_EXCHANGE_WITHDRAWAL_FORM}
+              onSubmit={this.handleWithdrawal}
+              maxAmount={this.props.tokenSymbol === 'ETH' ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}
+              symbol={this.props.tokenSymbol}
+            />
+          </div>
+        </div>
+      </ModalDialog>
     )
   }
 }

@@ -74,7 +74,7 @@ export default class AddExchangeForm extends PureComponent {
               <div styleName={classnames('tokenName', 'sm-hide')}>{token.symbol()}</div>
               <div styleName='balanceSubTitle'><Translate value={prefix('availableExchangeBalance')} /></div>
               <TokenValue
-                value={new BigNumber(token.balance())}
+                value={token.balance()}
                 symbol={token.symbol()}
               />
             </div>
