@@ -99,7 +99,7 @@ if (process.env.NODE_ENV === 'development') {
 // local only
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
-  host: TESTRPC_URL,
+  host: `localhost:3000${TESTRPC_URL}`,
   bitcoin: 'testnet',
   nem: 'Testnet',
 }

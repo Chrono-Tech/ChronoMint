@@ -1,14 +1,18 @@
-import AbstractProvider from './AbstractProvider'
-import selector from './NemNode'
+import NemEngine from './NemEngine'
 
-export class NemProvider extends AbstractProvider {
-  // TODO @dkchv: continue to implement it
+export class NemProvider {
 
-  // TODO @dkchv: overrided for avoid subscription until set node settings @see ./NemNode
-  // eslint-disable-next-line
-  subscribe (engine) {}
-  // eslint-disable-next-line
-  unsubscribe (engine) {}
+  isInitialized () {
+    return this._engine != null
+  }
+
+  setEngine (engine: NemEngine) {
+    this._engine = engine
+  }
+
+  getAddress () {
+    return this._engine && this._engine.getAddress() || null
+  }
 }
 
-export const nemProvider = new NemProvider(selector)
+export const nemProvider = new NemProvider()
