@@ -5,7 +5,6 @@ import { login, createSession, destroySession } from 'redux/session/actions'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
   networkService.checkMetaMask()
-  networkService.checkTestRPC()
   if (networkService) {
     networkService
       .on('createSession', createSession)

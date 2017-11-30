@@ -95,7 +95,7 @@ class LoginWithWallet extends PureComponent {
       <div styleName='root'>
         <div styleName='back'>
           <BackButton
-            onClick={() => this.props.onBack()}
+            onClick={this.props.onBack}
             to='options'
           />
         </div>
@@ -152,9 +152,11 @@ class LoginWithWallet extends PureComponent {
           {...styles.textField}
         />
 
-        {isLoading && <div styleName='tip'>
-          <em>{<Translate value='LoginWithWallet.bePatient' />}</em>
-        </div>}
+        {isLoading && (
+          <div styleName='tip'>
+            <em>{<Translate value='LoginWithWallet.bePatient' />}</em>
+          </div>
+        )}
 
         <div styleName='actions'>
           <div styleName='action'>
@@ -162,7 +164,7 @@ class LoginWithWallet extends PureComponent {
               label={<Translate value='LoginWithWallet.generateNewWallet' />}
               fullWidth
               disabled={isLoading}
-              onTouchTap={() => this.props.onGenerate()}
+              onTouchTap={this.props.onGenerate}
               icon={<i className='material-icons' styleName='buttonIcon'>account_balance_wallet</i>}
               {...styles.flatButton}
             />

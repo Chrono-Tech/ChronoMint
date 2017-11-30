@@ -53,7 +53,7 @@ class TrezorProvider extends EventEmitter {
   _getAppConfig () {
     // we check for version for define is ETH opened.
     // If its true we get version number in callback
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this._trezor.getAppConfig((error, data) => {
         if (error) {
           resolve(false)
@@ -88,7 +88,7 @@ class TrezorProvider extends EventEmitter {
   async fetchAccount () {
     console.log('redux fetch account')
     console.log(this)
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       let timer = setInterval(() => {
         clearInterval(timer)
         this._trezor.getAccounts((error, data) => {

@@ -57,14 +57,14 @@ class LoginTrezor extends PureComponent {
     this.props.startTrezorSync()
   }
 
-  componentWillUnmount () {
-    this.props.stopTrezorSync()
-  }
-
   componentWillReceiveProps ({ trezor }) {
     if (!trezor.isFetched && !trezor.isFetching && trezor.isHttps && trezor.isU2F) {
       this.props.fetchAccount()
     }
+  }
+
+  componentWillUnmount () {
+    this.props.stopTrezorSync()
   }
 
   handleBackClick = () => {
