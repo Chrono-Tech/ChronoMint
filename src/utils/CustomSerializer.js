@@ -31,15 +31,15 @@ class CustomSerializer {
       let value = item[ key ]
       if (typeof value === 'object' && value !== null && value !== undefined) {
         if (value instanceof BigNumber || value instanceof Amount) {
-          result += `${spaces}"${key}":${value},\r`
+          result += `${spaces}"${key}": ${value},\r`
         } else {
           value = this._serialize(value, i + 1)
-          result += `${spaces}"${key}":{\r${value}${spaces}},\r`
+          result += `${spaces}"${key}": {\r${value}${spaces}},\r`
         }
       } else if (typeof value === 'function') {
-        result += `${spaces}"${key}":Function,\r`
+        result += `${spaces}"${key}": Function,\r`
       } else {
-        result += `${spaces}"${key}":${value},\r`
+        result += `${spaces}"${key}": ${value},\r`
       }
     }
     return result

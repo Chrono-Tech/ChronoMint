@@ -15,9 +15,10 @@ import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithP
 import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
 import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
+import { nemProvider } from '../../network/NemProvider'
+import { ethereumProvider } from '../../network/EthereumProvider'
 import ledgerProvider from '../../network/LedgerProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
-import { nemProvider } from '../../network/NemProvider'
 import privateKeyProvider from '../../network/privateKeyProvider'
 import trezorProvider from '../../network/TrezorProvider'
 import walletProvider from '../../network/walletProvider'
@@ -231,22 +232,26 @@ class LoginWithOptions extends PureComponent {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  setupAndLogin ({ ethereum, btc, bcc, nem }) {
+  async setupAndLogin ({ ethereum, btc, bcc, nem }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
-    web3Provider.setProvider(ethereum)
+    web3Provider.setProvider(ethereum.getProvider())
 
     // login
-    this.props.loadAccounts().then(() => {
-      this.props.selectAccount(this.props.accounts[ 0 ])
+    try {
+      await this.props.loadAccounts()
+      this.props.selectAccount(this.props.accounts[0])
+      ethereumProvider.setEngine(ethereum, nem)
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
       nemProvider.setEngine(nem)
       this.props.onLogin()
-    }).catch((e) => {
+    } catch (e) {
+      // eslint-disable-next-line
+      console.error('error', e.message)
       this.props.addError(e.message)
-    })
+    }
   }
 
   setStep (step) {
