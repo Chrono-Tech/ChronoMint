@@ -1,3 +1,4 @@
+import TokensCollection from 'models/exchange/TokensCollection'
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
 import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
@@ -78,10 +79,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * ETH, TIME will be added by flag isWithObligatory
    */
   async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
-    let timeDAO, promises
+    let promises
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     if (isWithObligatory) {
       // add TIME address to filters
-      timeDAO = await contractsManagerDAO.getTIMEDAO()
       addresses.push(timeDAO.getInitAddress())
     }
     // get data
@@ -93,10 +94,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
-   
-   for (let [i, address] of Object.entries(tokensAddresses)) {
+
+    for (let [i, address] of Object.entries(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-   }	    
+    }
 
     // get balances
     promises = []
@@ -282,5 +283,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback, account) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
+  }
+
+  async getTokensList () {
+    const addresses = await this._call('getTokenAddresses')
+    const tokens = await this.getTokensByAddresses(addresses, false)
+    return new TokensCollection({ list: tokens })
   }
 }

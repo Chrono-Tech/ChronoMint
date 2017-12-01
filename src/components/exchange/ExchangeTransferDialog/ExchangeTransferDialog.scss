@@ -1,0 +1,79 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  max-width: 928px;
+  background-color: $color-white;
+  @include sm-only {
+    width: 100vw;
+  }
+}
+
+.title {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+  @include sm-only {
+    font-size: 24px;
+  }
+}
+
+.header {
+  background-color: $color-primary-1;
+}
+
+.content {
+  color: $color-primary-0;
+  padding: 35px 8px;
+  display: block;
+}
+
+.headerWrapper {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: $color-white;
+}
+
+.formWrapper {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  @include sm-only {
+    display: block;
+  }
+}
+
+.fieldWrapper {
+  margin: 0 16px 0 0;
+  flex-grow: 1;
+}
+
+.actionWrapper {
+  margin: 0 0 0 16px;
+  @include sm-only {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+.subTitle {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 16px;
+}

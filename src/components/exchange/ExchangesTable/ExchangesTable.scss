@@ -1,0 +1,160 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$cell-padding: 16px 8px;
+
+.root {
+  overflow: hidden;
+}
+
+.content {
+  padding: 24px 8px;
+}
+
+.table {
+  width: 100%;
+  position: relative;
+}
+
+.tableHead {
+  opacity: 0.5;
+  font-size: 16px;
+}
+
+.tableHeadRow {
+  display: flex;
+  @include sm-only {
+    display: none;
+  }
+}
+
+.tableBody {
+  font-size: 14px;
+  font-weight: 400;
+  @include sm-only {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+}
+
+.row {
+  display: flex;
+  @include sm-only {
+    padding: $cell-padding;
+  }
+  &:nth-child(2n+1) {
+    background: $color-panel-bg-0;
+  }
+}
+
+.footer {
+  padding: 24px 16px;
+  text-align: center;
+}
+
+.header {
+  padding: 24px 16px 0 16px;
+}
+
+.title {
+  font-size: 24px;
+  display: block;
+  font-weight: normal;
+  padding: 0;
+  margin: 0;
+}
+
+.colTrader {
+  width: 30%;
+  overflow: hidden;
+  @include sm-only {
+    width: 100%;
+  }
+}
+
+.colPrice, .colLimits {
+  width: 35%;
+  @include sm-only {
+    width: 100%;
+  }
+}
+
+.colActions {
+  width: 30%;
+  overflow: hidden;
+  @include sm-only {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  :global {
+    .Preloader__root {
+      height: 100%;
+    }
+  }
+}
+
+.colTrader, .colPrice, .colLimits, .colActions {
+  padding: $cell-padding;
+  padding-bottom: 8px;
+  @include sm-only {
+    padding: 0;
+  }
+}
+
+.rowTitle {
+  display: none;
+  @include sm-only {
+    display: inline;
+  }
+}
+
+.ellipsis {
+  @include lg-plus {
+    max-width: 400px;
+  }
+  @include md-plus {
+    max-width: 200px;
+  }
+  @include md-only {
+    max-width: 200px;
+  }
+  @include ellipsis;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
+
+.colWrapper {
+  height: 46px;
+  @include sm-only {
+    height: auto;
+  }
+}
+
+.values {
+  width: 70%;
+  display: flex;
+  @include sm-only {
+    display: block;
+    width: 60%;
+  }
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: center;
+  padding-top: 15px;
+}
+
+.actionsWrapper {
+  display: flex;
+  justify-content: flex-end;
+  white-space: nowrap;
+}

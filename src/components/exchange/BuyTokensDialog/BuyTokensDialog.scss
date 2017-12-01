@@ -1,0 +1,205 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  max-width: 928px;
+  background-color: $color-white;
+  @include md-plus {
+    width: 928px;
+  }
+  @include md-only {
+    width: 100vw;
+  }
+
+  :global {
+    .ByTokensDialog {
+      &__icons {
+        @include grid(2, 16px, 16px);
+        transform: translateY(50px);
+      }
+      &__form {
+        @include grid(2, 16px, 16px);
+      }
+    }
+  }
+}
+
+.title {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+  @include sm-only {
+    font-size: 24px;
+  }
+}
+
+.header {
+  background-color: $color-primary-1;
+}
+
+.balanceHeader {
+  margin-top: 18px;
+  color: $color-white;
+}
+
+.balanceTitle {
+  font-size: 14px;
+}
+
+.balanceValue {
+  :global {
+    .TokenValue__integral {
+      font-size: 34px;
+    }
+    .TokenValue__fraction {
+      font-size: 24px;
+    }
+  }
+}
+
+.tokenTitle {
+  padding: 16px;
+  font-size: 34px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: $color-white;
+  position: absolute;
+  bottom: 0;
+}
+
+.tokenTitleMobile {
+  padding: 4px;
+  font-size: 8px;
+  text-transform: uppercase;
+  color: $color-white;
+  position: absolute;
+  bottom: 0;
+}
+
+.amountsWrap {
+  background: $color-panel-bg-0;
+  margin: 32px 0 0 0 !important;
+}
+
+.content {
+  color: $color-primary-0;
+  padding: 35px 8px;
+  display: block;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  > div {
+    margin-left: 16px;
+  }
+}
+
+.headerRow {
+  display: flex;
+  position: relative;
+}
+
+.headerRightCol {
+  flex: 1 1 384px;
+  padding: 24px 16px;
+  position: relative;
+}
+
+.headerLeftCol {
+  flex: 1 1 544px;
+  padding: 0 16px;
+  position: relative;
+  @include md-only {
+    display: none;
+  }
+}
+
+.row {
+  display: flex;
+  @include md-only {
+    flex-direction: column;
+  }
+}
+
+.leftCol {
+  flex: 1 1 384px;
+  @include md-only {
+    flex: 1;
+  }
+}
+
+.rightCol {
+  flex: 1 1 544px;
+  padding: 0 8px 0 16px;
+  @include md-only {
+    flex: 1;
+    padding: 0;
+  }
+}
+
+.property {
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.label {
+  height: 17px;
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.value {
+  font-size: 16px;
+  line-height: 20px;
+  vertical-align: baseline;
+  @include ellipsis;
+}
+
+.icon {
+  border-radius: 12px;
+  box-shadow: $box-shadow-0;
+  @include aspect-ratio(16, 10);
+  overflow: hidden;
+}
+
+.iconMobile {
+  display: none;
+  @include md-only {
+    display: block;
+    flex: 1;
+    margin-left: 16px;
+  }
+  border-radius: 5px;
+  box-shadow: $box-shadow-0;
+  @include aspect-ratio(16, 10);
+  overflow: hidden;
+}
+
+.iconTitle {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-size: 80% 80%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mobileFlex {
+  display: block;
+  @include md-only {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.input {
+  width: calc(100% - 100px);
+}
