@@ -6,22 +6,27 @@ import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import * as notifier from 'redux/notifier/actions'
 import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
-import validator from 'components/forms/validator'
+import * as validator from 'components/forms/validator'
 import * as a from './actions'
 
 const user = new ProfileModel({ name: 'testUser' })
-const cbe = new CBEModel({ address: accounts[2], name: user.name(), user })
+const cbe = new CBEModel({ address: accounts[ 2 ], name: user.name(), user })
 
 describe('settings cbe actions', () => {
+  afterEach(async (done) => {
+    await setTimeout(() => {
+      done()
+    }, 3000)
+  })
   it('should list CBE', async () => {
     await store.dispatch(a.listCBE())
 
-    const list = store.getActions()[0].list
+    const list = store.getActions()[ 0 ].list
     expect(list instanceof Immutable.Map).toBeTruthy()
 
-    const address = list.keySeq().toArray()[0]
+    const address = list.keySeq().toArray()[ 0 ]
     expect(validator.address(address)).toEqual(null)
-    expect(list.get(address).address()).toEqual(accounts[0])
+    expect(list.get(address).address()).toEqual(accounts[ 0 ])
   })
 
   it('should add CBE', async (resolve) => {
@@ -57,7 +62,7 @@ describe('settings cbe actions', () => {
         },
         payload: cbe.name(),
         type: '@@redux-form/CHANGE',
-      }])
+      } ])
   }))
 
   it('should revoke CBE', async (resolve) => {

@@ -80,6 +80,7 @@ class IPFS {
   // TODO @dkchv: remvoe from ipfs to image validator
   getImageDimensions (file) {
     return new Promise((resolve) => {
+      console.log(window)
       const URL: webkitURL = window.URL || window.webkitURL
       const img = new Image()
       img.onload = () => {

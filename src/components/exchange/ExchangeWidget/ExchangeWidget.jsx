@@ -70,7 +70,7 @@ export default class ExchangeWidget extends React.Component {
 
   render () {
     return (
-      <div styleName='root'>
+      <div>
         <div styleName='header'>
           <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
           <div styleName='createExchangeWrapper'><RaisedButton
