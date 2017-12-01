@@ -4,16 +4,19 @@ import * as actions from './actions'
 const initialState = {
   isLoading: false,
   isLocal: false,
+  isMetamask: false,
   accounts: [],
   selectedAccount: null,
   errors: [],
   providers: [
     providerMap.chronoBank,
     providerMap.infura,
-    providerMap.metamask,
-    providerMap.uport,
-    providerMap.local,
   ],
+  priority: [
+    providerMap.chronoBank.id,
+    providerMap.infura.id,
+  ],
+  preferMainnet: process.env.NODE_ENV === 'production',
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,
@@ -30,22 +33,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLocal: true,
-        providers: state.providers.map((item) => item.id === providerMap.local.id
-          ? {
-            ...item,
-            disabled: false,
-          }
-          : item),
       }
     case actions.NETWORK_SET_TEST_METAMASK:
       return {
         ...state,
-        providers: state.providers.map((item) => item.id === providerMap.metamask.id
-          ? {
-            ...item,
-            disabled: false,
-          }
-          : item),
+        isMetamask: true,
       }
     case actions.NETWORK_SET_NETWORK:
       return { ...state, selectedNetworkId: action.selectedNetworkId }

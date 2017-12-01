@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import AccountSelector from '../../components/AccountSelector/AccountSelector'
+import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 import { getNetworkById, LOCAL_ID, providerMap } from '../../network/settings'
 import web3Provider from '../../network/Web3Provider'
@@ -22,6 +23,15 @@ const mapDispatchToProps = (dispatch) => ({
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginMetamask extends PureComponent {
+  static propTypes = {
+    onBack: PropTypes.func.isRequired,
+    addError: PropTypes.func,
+    selectNetwork: PropTypes.func,
+    loadAccounts: PropTypes.func,
+    selectedNetworkId: PropTypes.number,
+    onLogin: PropTypes.func,
+  }
+
   componentWillMount () {
     web3Provider.setWeb3(window.web3)
     web3Provider.setProvider(window.web3.currentProvider)
@@ -39,24 +49,20 @@ class LoginMetamask extends PureComponent {
       || <Translate value='LoginMetamask.notDefined' />
     return (
       <div>
+        <BackButton
+          onClick={this.props.onBack}
+          to='options'
+        />
         <TextField
           floatingLabelText={<Translate value='LoginMetamask.network' />}
           value={name}
           fullWidth
           {...styles.textField}
         />
-        <AccountSelector onSelectAccount={() => this.props.onLogin()} />
+        <AccountSelector onSelectAccount={this.props.onLogin} />
       </div>
     )
   }
-}
-
-LoginMetamask.propTypes = {
-  addError: PropTypes.func,
-  selectNetwork: PropTypes.func,
-  loadAccounts: PropTypes.func,
-  selectedNetworkId: PropTypes.number,
-  onLogin: PropTypes.func,
 }
 
 export default LoginMetamask

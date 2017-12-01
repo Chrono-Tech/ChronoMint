@@ -1,7 +1,6 @@
 (function (nacl) {
   'use strict'
 
-
   // polyfill for TypedArray.prototype.slice()
   Uint8Array.prototype.slice = function (start, end) {
     var len = this.length
@@ -20,7 +19,6 @@
     }
     return a
   }
-
 
   Float64Array.prototype.slice = function (start, end) {
     var len = this.length
@@ -76,7 +74,6 @@
   function crypto_verify_32 (x, xi, y, yi) {
     return vn(x,xi,y,yi,32)
   }
-
 
   function set25519 (r, a) {
     var i
@@ -735,7 +732,6 @@
     hasher.finalize(result)
 
     reduce(result)
-
 
     // muladd - this is from original tweetnacl-js
     var x = new Float64Array(64)

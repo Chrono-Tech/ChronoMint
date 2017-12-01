@@ -24,7 +24,7 @@ export default (state = initialState, action) => {
         ...state,
         sync: {
           status: action.status,
-          progress: actions.progress,
+          progress: action.progress,
         },
       }
   }
