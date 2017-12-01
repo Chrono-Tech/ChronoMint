@@ -21,11 +21,15 @@ import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
+import { ExchangeDAO } from './ExchangeDAO'
+import ExchangeManagerDAO from './ExchangeManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_WALLETS_MANAGER = 'WalletsManager'
+const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
+const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING = 'PollManager'
 const DAO_VOTING_DETAILS = 'PollDetails'
@@ -47,6 +51,8 @@ const daoMap = {
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
   [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
+  [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
+  [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
@@ -184,6 +190,14 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
     return this._getDAO(DAO_WALLETS_MANAGER)
+  }
+
+  getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
+    return this._getDAO(DAO_EXCHANGE_MANAGER)
+  }
+
+  getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {
+    return this._getDAO(DAO_EXCHANGE, tokenAddress)
   }
 
   async getLOCManagerDAO (): Promise<LOCManagerDAO> {

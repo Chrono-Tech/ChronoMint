@@ -5,6 +5,7 @@ export const WalletABI = require('chronobank-smart-contracts/build/contracts/Wal
 export const ContractsManagerABI = require('chronobank-smart-contracts/build/contracts/ContractsManager.json')
 export const ERC20ManagerABI = require('chronobank-smart-contracts/build/contracts/ERC20Manager.json')
 export const ExchangeABI = require('chronobank-smart-contracts/build/contracts/Exchange.json')
+export const ExchangeManagerABI = require('chronobank-smart-contracts/build/contracts/ExchangeManager')
 export const FakeCoinABI = require('chronobank-smart-contracts/build/contracts/FakeCoin.json')
 export const FeeInterfaceABI = require('chronobank-smart-contracts/build/contracts/FeeInterface.json')
 export const ChronoBankAssetWithFeeProxyABI = require('chronobank-smart-contracts/build/contracts/ChronoBankAssetWithFeeProxy.json')

@@ -21,10 +21,6 @@ class MultisigWalletService extends EventEmitter {
     this._cache = {}
   }
 
-  init () {
-
-  }
-
   getWalletDAO (address) {
     return this._cache[ address ]
   }
