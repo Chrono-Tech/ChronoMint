@@ -33,16 +33,9 @@ class CustomSerializer {
   }
 
   _serialize (item) {
-    let result = ''
-
-    if (item === null) return `null`
-
-    if (typeof item === 'object') {
-      result += `${JSON.stringify(this._keysSort(item), null, '  ')}`
-    } else {
-      result = `${item},\r`
-    }
-    return `${result}`
+    return item !== null && typeof item === 'object'
+      ? `${JSON.stringify(this._keysSort(item), null, '  ')}`
+      : `${item}\r`
   }
 }
 
