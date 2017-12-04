@@ -1,40 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`session actions should create session 1`] = `
-  "0": {
-    "account": 0xb7237dd7dacd9da8e489b57d4631fc33342ff75f,
-    "type": session/CREATE,
-  },
-
+[
+  {
+    "account": "0xb7237dd7dacd9da8e489b57d4631fc33342ff75f",
+    "type": "session/CREATE"
+  }
+]
 `;
 
 exports[`session actions should destroy session 1`] = `
-  "0": {
-    "type": session/DESTROY,
-  },
-
+[
+  {
+    "type": "session/DESTROY"
+  }
+]
 `;
 
 exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
-  "0": {
+[
+  {
     "isCBE": true,
     "profile": {
-      "assetsManager": {
-      },
+      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
       "id": null,
       "name": null,
       "timestamp": null,
-      "tokens": {
-      },
-      "url": null,
+      "tokens": [],
+      "url": null
     },
-    "type": session/PROFILE,
+    "type": "session/PROFILE"
   },
-  "1": {
-    "type": WALLET/switch_wallet,
+  {
+    "type": "WALLET/switch_wallet",
     "wallet": {
       "address": null,
       "bccAddress": null,
@@ -49,10 +50,9 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
       "isTIMERequired": true,
       "nemAddress": null,
       "timeAddress": null,
-      "timeDeposit": 0,
+      "timeDeposit": "0",
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -61,71 +61,69 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
-  "10": {
-    "payload": {
-      "args": {
-        "0": /dashboard,
-      },
-      "method": replace,
-    },
-    "type": @@router/CALL_HISTORY_METHOD,
+  {
+    "type": "exchange/GET_DATA_START"
   },
-  "2": {
-    "type": exchange/GET_DATA_START,
+  {
+    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
   },
-  "3": {
-    "type": exchange/EXCHANGE_GET_TOKENS_LIST_START,
+  {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
   },
-  "4": {
-    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
+  {
+    "type": "AssetsManager/GET_TRANSACTIONS_START"
   },
-  "5": {
-    "type": AssetsManager/GET_TRANSACTIONS_START,
-  },
-  "6": {
+  {
     "isInited": true,
-    "type": market/INIT,
+    "type": "market/INIT"
   },
-  "7": {
-    "type": mainWallet/TOKENS_FETCH,
+  {
+    "type": "mainWallet/TOKENS_FETCH"
   },
-  "8": {
-    "type": watcher/USER,
+  {
+    "type": "watcher/USER"
   },
-  "9": {
-    "type": watcher/CBE,
+  {
+    "type": "watcher/CBE"
   },
-
+  {
+    "payload": {
+      "args": [
+        "/dashboard"
+      ],
+      "method": "replace"
+    },
+    "type": "@@router/CALL_HISTORY_METHOD"
+  }
+]
 `;
 
 exports[`session actions should login CBE and start watcher with cbeWatcher and go to last url 1`] = `
-  "0": {
+[
+  {
     "isCBE": true,
     "profile": {
-      "assetsManager": {
-      },
+      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
       "id": null,
       "name": null,
       "timestamp": null,
-      "tokens": {
-      },
-      "url": null,
+      "tokens": [],
+      "url": null
     },
-    "type": session/PROFILE,
+    "type": "session/PROFILE"
   },
-  "1": {
-    "type": WALLET/switch_wallet,
+  {
+    "type": "WALLET/switch_wallet",
     "wallet": {
       "address": null,
       "bccAddress": null,
@@ -140,10 +138,9 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
       "isTIMERequired": true,
       "nemAddress": null,
       "timeAddress": null,
-      "timeDeposit": 0,
+      "timeDeposit": "0",
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -152,71 +149,69 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
-  "10": {
-    "payload": {
-      "args": {
-        "0": /test-last-url,
-      },
-      "method": replace,
-    },
-    "type": @@router/CALL_HISTORY_METHOD,
+  {
+    "type": "exchange/GET_DATA_START"
   },
-  "2": {
-    "type": exchange/GET_DATA_START,
+  {
+    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
   },
-  "3": {
-    "type": exchange/EXCHANGE_GET_TOKENS_LIST_START,
+  {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
   },
-  "4": {
-    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
+  {
+    "type": "AssetsManager/GET_TRANSACTIONS_START"
   },
-  "5": {
-    "type": AssetsManager/GET_TRANSACTIONS_START,
-  },
-  "6": {
+  {
     "isInited": true,
-    "type": market/INIT,
+    "type": "market/INIT"
   },
-  "7": {
-    "type": mainWallet/TOKENS_FETCH,
+  {
+    "type": "mainWallet/TOKENS_FETCH"
   },
-  "8": {
-    "type": watcher/USER,
+  {
+    "type": "watcher/USER"
   },
-  "9": {
-    "type": watcher/CBE,
+  {
+    "type": "watcher/CBE"
   },
-
+  {
+    "payload": {
+      "args": [
+        "/test-last-url"
+      ],
+      "method": "replace"
+    },
+    "type": "@@router/CALL_HISTORY_METHOD"
+  }
+]
 `;
 
 exports[`session actions should login USER and go to default url (/wallet) 1`] = `
-  "0": {
+[
+  {
     "isCBE": false,
     "profile": {
-      "assetsManager": {
-      },
+      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
       "id": null,
       "name": null,
       "timestamp": null,
-      "tokens": {
-      },
-      "url": null,
+      "tokens": [],
+      "url": null
     },
-    "type": session/PROFILE,
+    "type": "session/PROFILE"
   },
-  "1": {
-    "type": WALLET/switch_wallet,
+  {
+    "type": "WALLET/switch_wallet",
     "wallet": {
       "address": null,
       "bccAddress": null,
@@ -231,10 +226,9 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
       "isTIMERequired": true,
       "nemAddress": null,
       "timeAddress": null,
-      "timeDeposit": 0,
+      "timeDeposit": "0",
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -243,61 +237,61 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
-  "2": {
-    "type": exchange/GET_DATA_START,
+  {
+    "type": "exchange/GET_DATA_START"
   },
-  "3": {
-    "type": exchange/EXCHANGE_GET_TOKENS_LIST_START,
+  {
+    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
   },
-  "4": {
-    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
+  {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
   },
-  "5": {
-    "type": AssetsManager/GET_TRANSACTIONS_START,
+  {
+    "type": "AssetsManager/GET_TRANSACTIONS_START"
   },
-  "6": {
+  {
     "isInited": true,
-    "type": market/INIT,
+    "type": "market/INIT"
   },
-  "7": {
-    "type": mainWallet/TOKENS_FETCH,
+  {
+    "type": "mainWallet/TOKENS_FETCH"
   },
-  "8": {
-    "type": watcher/USER,
+  {
+    "type": "watcher/USER"
   },
-  "9": {
+  {
     "payload": {
-      "args": {
-        "0": /dashboard,
-      },
-      "method": replace,
+      "args": [
+        "/dashboard"
+      ],
+      "method": "replace"
     },
-    "type": @@router/CALL_HISTORY_METHOD,
-  },
-
+    "type": "@@router/CALL_HISTORY_METHOD"
+  }
+]
 `;
 
 exports[`session actions should logout 1`] = `
-  "0": {
+[
+  {
     "isInited": false,
-    "type": market/INIT,
+    "type": "market/INIT"
   },
-  "1": {
+  {
     "payload": {
-      "args": {
-        "0": /,
-      },
-      "method": push,
+      "args": [
+        "/"
+      ],
+      "method": "push"
     },
-    "type": @@router/CALL_HISTORY_METHOD,
-  },
-
+    "type": "@@router/CALL_HISTORY_METHOD"
+  }
+]
 `;

@@ -10,39 +10,39 @@ class CustomSerializer {
     return this._serialize(val)
   }
 
-  _serialize (item, i = 0) {
-    let result = ''
-    let spaces = ''
-    for (let j = 0; j <= i; j++) {
-      spaces += '  '
+  _keysSort (object) {
+    let sortedObject = Array.isArray(object) ? [] : {}
+
+    if (typeof object.toJSON === 'function') {
+      object = object.toJSON()
     }
 
-    if (item === null || item === undefined) {
-      return item
-    }
-
-    if (typeof item.toJSON === 'function') {
-      item = item.toJSON()
-    }
-
-    let keys = Object.keys(item).sort()
+    let keys = Object.keys(object).sort()
 
     for (let key of keys) {
-      let value = item[ key ]
-      if (typeof value === 'object' && value !== null && value !== undefined) {
-        if (value instanceof BigNumber || value instanceof Amount) {
-          result += `${spaces}"${key}": ${value},\r`
-        } else {
-          value = this._serialize(value, i + 1)
-          result += `${spaces}"${key}": {\r${value}${spaces}},\r`
-        }
-      } else if (typeof value === 'function') {
-        result += `${spaces}"${key}": Function,\r`
+      if (typeof object[ key ] === 'object' && object[ key ] !== null) {
+        sortedObject[ key ] = object[ key ].constructor.name === 'BigNumber' || object[ key ].constructor.name === 'Amount'
+          ? object[ key ].toString()
+          : this._keysSort(object[ key ])
       } else {
-        result += `${spaces}"${key}": ${value},\r`
+        sortedObject[ key ] = object[ key ]
       }
     }
-    return result
+
+    return sortedObject
+  }
+
+  _serialize (item) {
+    let result = ''
+
+    if (item === null) return `null`
+
+    if (typeof item === 'object') {
+      result += `${JSON.stringify(this._keysSort(item), null, '  ')}`
+    } else {
+      result = `${item},\r`
+    }
+    return `${result}`
   }
 }
 

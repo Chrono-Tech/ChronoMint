@@ -21,8 +21,7 @@ describe('settings erc20 actions', () => {
       address: await fakeCoinDAO.getAddress(),
     }), store.dispatch, 'TEST')
 
-    expect(store.getActions()[ 1 ].payload).toMatchSnapshot()
-    expect(store.getActions()[ 2 ].payload).toMatchSnapshot()
+    expect(store.getActions()).toMatchSnapshot()
   })
 
   it('should throw symbolInUse error if token symbol is already in use', async () => {
@@ -48,9 +47,9 @@ describe('settings erc20 actions', () => {
 
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchAdd((notice: TokenNoticeModel) => {
-      expect(store.getActions()[ 0 ].token.address(null)).toMatchSnapshot()
-      expect(notice.isRemoved()).toMatchSnapshot()
-      expect(notice.token().address(null)).toMatchSnapshot()
+      expect(store.getActions()[ 0 ].token).toBeDefined()
+      expect(notice.isRemoved()).toBeFalsy()
+      expect(notice.token()).toBeDefined()
       done()
     })
 
@@ -59,7 +58,8 @@ describe('settings erc20 actions', () => {
 
   it('should list tokens', async () => {
     await store.dispatch(a.listTokens())
-    expect(store.getActions()[ 0 ].list.get(token.symbol()).address(null)).toMatchSnapshot()
+    console.log(store.getActions()[ 0 ].list.get(token.symbol()))
+    expect(store.getActions()[ 0 ].list.get(token.symbol())).toMatchSnapshot()
   })
 
   it('should throw invalidAddress error if token is not valid ERC20', async () => {
@@ -74,8 +74,8 @@ describe('settings erc20 actions', () => {
 
   it('should modify token', async (done) => {
     newToken = token.setSymbol('FAKE')
-    const result = await store.dispatch(a.modifyToken(token, newToken))
-    expect(result).toMatchSnapshot()
+    await store.dispatch(a.modifyToken(token, newToken))
+    expect(store.getActions()).toMatchSnapshot()
     done()
   })
 
@@ -83,7 +83,7 @@ describe('settings erc20 actions', () => {
     const dao = await contractsManagerDAO.getERC20ManagerDAO()
     await dao.watchRemove((notice: TokenNoticeModel) => {
       expect(store.getActions()).toMatchSnapshot()
-      expect(notice.isRemoved()).toMatchSnapshot()
+      expect(notice.isRemoved()).toBeTruthy()
       expect(notice.token()).toMatchSnapshot()
       done()
     })

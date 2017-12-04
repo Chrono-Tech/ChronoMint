@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Multisig Wallet Model should create new model 1`] = `
-  "address": a1,
+{
+  "address": "a1",
   "dao": null,
   "id": null,
   "is2FA": false,
@@ -10,11 +11,11 @@ exports[`Multisig Wallet Model should create new model 1`] = `
   "isFetching": false,
   "isMultisig": true,
   "isPending": false,
-  "name": Wallet Name,
-  "owners": {
-    "0": owner1,
-    "1": owner2,
-  },
+  "name": "Wallet Name",
+  "owners": [
+    "owner1",
+    "owner2"
+  ],
   "pendingTxList": {
     "id": null,
     "isFailed": false,
@@ -23,7 +24,7 @@ exports[`Multisig Wallet Model should create new model 1`] = `
     "isPending": false,
     "list": {
       "tx1": {
-        "id": tx1,
+        "id": "tx1",
         "initiator": null,
         "isConfirmed": false,
         "isFailed": false,
@@ -34,10 +35,10 @@ exports[`Multisig Wallet Model should create new model 1`] = `
         "timestamp": null,
         "to": null,
         "transactionHash": null,
-        "value": 0,
+        "value": "0"
       },
       "tx2": {
-        "id": tx2,
+        "id": "tx2",
         "initiator": null,
         "isConfirmed": false,
         "isFailed": false,
@@ -48,21 +49,20 @@ exports[`Multisig Wallet Model should create new model 1`] = `
         "timestamp": null,
         "to": null,
         "transactionHash": null,
-        "value": 0,
-      },
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
+    "transactionHash": null
   },
   "requiredSignatures": 2,
   "timestamp": null,
   "tokens": {
     "t1": {
       "address": null,
-      "allowance": {
-      },
-      "balance": 0,
+      "allowance": {},
+      "balance": "0",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -78,18 +78,17 @@ exports[`Multisig Wallet Model should create new model 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK1,
+      "symbol": "TK1",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
+      "withFee": false
     },
     "t2": {
       "address": null,
-      "allowance": {
-      },
-      "balance": 0,
+      "allowance": {},
+      "balance": "0",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -105,13 +104,13 @@ exports[`Multisig Wallet Model should create new model 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK2,
+      "symbol": "TK2",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
   "transactions": {
@@ -130,18 +129,18 @@ exports[`Multisig Wallet Model should create new model 1`] = `
         "credited": null,
         "from": null,
         "gas": null,
-        "gasFee": 0,
+        "gasFee": "0",
         "gasPrice": null,
         "id": null,
         "input": null,
-        "symbol": ,
+        "symbol": "",
         "time": null,
         "timestamp": null,
         "to": null,
         "transactionIndex": null,
-        "txHash": hash1,
-        "type": ,
-        "value": 0,
+        "txHash": "hash1",
+        "type": "",
+        "value": "0"
       },
       "tx2": {
         "args": null,
@@ -151,23 +150,23 @@ exports[`Multisig Wallet Model should create new model 1`] = `
         "credited": null,
         "from": null,
         "gas": null,
-        "gasFee": 0,
+        "gasFee": "0",
         "gasPrice": null,
         "id": null,
         "input": null,
-        "symbol": ,
+        "symbol": "",
         "time": null,
         "timestamp": null,
         "to": null,
         "transactionIndex": null,
-        "txHash": hash2,
-        "type": ,
-        "value": 0,
-      },
+        "txHash": "hash2",
+        "type": "",
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;

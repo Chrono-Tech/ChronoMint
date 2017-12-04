@@ -1,31 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`watcher actions should dispatch cbeWatcher 1`] = `
-  "0": {
-    "type": watcher/CBE,
-  },
-
+[
+  {
+    "type": "watcher/CBE"
+  }
+]
 `;
 
 exports[`watcher actions should dispatch watcher 1`] = `
-  "0": {
-    "type": exchange/GET_DATA_START,
+[
+  {
+    "type": "exchange/GET_DATA_START"
   },
-  "1": {
-    "type": exchange/EXCHANGE_GET_TOKENS_LIST_START,
+  {
+    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
   },
-  "2": {
-    "type": AssetsManager/GET_ASSETS_MANAGER_COUNTS_START,
+  {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
   },
-  "3": {
-    "type": AssetsManager/GET_TRANSACTIONS_START,
+  {
+    "type": "AssetsManager/GET_TRANSACTIONS_START"
   },
-  "4": {
+  {
     "isInited": true,
-    "type": market/INIT,
+    "type": "market/INIT"
   },
-  "5": {
-    "type": watcher/USER,
-  },
-
+  {
+    "type": "watcher/USER"
+  }
+]
 `;
