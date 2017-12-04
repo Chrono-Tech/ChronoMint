@@ -23,7 +23,7 @@ export default (values, props) => {
   return {
     recipient: new ErrorList()
       .add(validator.required(recipient))
-      .add(token.dao().getAddressValidator()(recipient, true, token.symbol()))
+      .add(token.dao().getAddressValidator()(recipient, true, token.blockchain()))
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),

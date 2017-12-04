@@ -454,7 +454,7 @@ export default {
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
-    invalidAddress: 'Should be valid %{symbol} address',
+    invalidAddress: 'Should be valid %{blockchain} address',
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
