@@ -157,10 +157,10 @@ function mapStateToProps (state) {
   const wallet = state.get('mainWallet')
 
   return {
-    list: voting.list,
+    list: voting.list(),
     timeDeposit: wallet.timeDeposit(),
-    isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched,
+    isFetched: voting.isFetched() && wallet.isFetched(),
+    isFetching: voting.isFetching() && !voting.isFetched(),
   }
 }
 

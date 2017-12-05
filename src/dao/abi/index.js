@@ -18,6 +18,7 @@ export const TimeHolderABI = require('chronobank-smart-contracts/build/contracts
 export const TokenManagementInterfaceABI = require('chronobank-smart-contracts/build/contracts/TokenManagementInterface.json')
 export const UserManagerABI = require('chronobank-smart-contracts/build/contracts/UserManager.json')
 export const VoteActorABI = require('chronobank-smart-contracts/build/contracts/VoteActor.json')
+export const VotingManagerABI = require('chronobank-smart-contracts/build/contracts/VotingManager.json')
 export const PollManagerABI = require('chronobank-smart-contracts/build/contracts/PollManager.json')
 export const PollDetailsABI = require('chronobank-smart-contracts/build/contracts/PollDetails.json')
 export const WalletsManagerABI = require('chronobank-smart-contracts/build/contracts/WalletsManager.json')

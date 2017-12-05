@@ -1,12 +1,12 @@
 export const getStatistics = (state) => {
-  const polls = state.list.valueSeq().toArray()
+  const polls = state.list().valueSeq().toArray()
   const time = new Date().getTime()
 
-  return state.isFetched
+  return state.isFetched()
     ? {
-      all: polls.length,
+      all: state.pollsCount().toString(),
       completed: polls.filter((p) => !p.poll().status()).length,
-      ongoing: polls.filter((p) => p.poll().active()).length,
+      ongoing: state.activePollsCount().toString(),
       inactive: polls.filter((p) => !p.poll().active()).length,
       outdated: polls.filter((p) => p.poll().deadline().getTime() < time).length,
     }

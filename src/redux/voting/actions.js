@@ -1,14 +1,21 @@
-import type BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { notify } from 'redux/notifier/actions'
-import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE, POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
+import {
+  POLLS_VOTE_LIMIT,
+  POLLS_LOAD,
+  VOTING_POLLS_COUNT, POLLS_LIST,
+  POLLS_CREATE,
+  POLLS_UPDATE,
+  POLLS_REMOVE,
+  POLLS_REMOVE_STUB,
+} from 'redux/voting/reducer'
 
 export const DUCK_VOTING = 'voting'
+const PAGE_SIZE = 10
 
 // used to create unique ID for fetching models
 let counter = 0
@@ -61,7 +68,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
   })
   try {
     dispatch(handlePollCreated(stub.isFetching(true)))
-    const dao = await contractsManagerDAO.getVotingDAO()
+    const dao = await contractsManagerDAO.getVotingManagerDAO()
     const transactionHash = await dao.createPoll(poll)
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
@@ -74,7 +81,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
 // eslint-disable-next-line
 export const updatePoll = (poll: PollModel) => async () => {
   // TODO @ipavlenko: Implement when contracts will support it
-  // const dao = await contractsManagerDAO.getVotingDAO()
+  // const dao = await contractsManagerDAO.getVotingManagerDAO()
   // await dao.updatePoll(poll)
 }
 
@@ -144,14 +151,18 @@ export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) =>
 
 export const listPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
-  let list = []
-  try {
-    const dao = await contractsManagerDAO.getVotingDetailsDAO()
-    list = await dao.getPolls()
-  } finally {
-    dispatch({
-      type: POLLS_LIST,
-      list: list.reduce((m, details) => m.set(details.poll().id(), details), new Immutable.Map()),
-    })
-  }
+  const dao = await contractsManagerDAO.getVotingManagerDAO()
+  const [count, activeCount] = await Promise.all([
+    dao.getPollsCount(),
+    dao.getActivePollsCount(),
+    dispatch(getNextPage()),
+  ])
+  dispatch({ type: VOTING_POLLS_COUNT, count, activeCount })
+  dispatch({ type: POLLS_LIST, list: [] })
+}
+
+export const getNextPage = () => async (dispatch, getState) => {
+  const dao = await contractsManagerDAO.getVotingManagerDAO()
+  const votingState = getState().get(DUCK_VOTING)
+  dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE)
 }
