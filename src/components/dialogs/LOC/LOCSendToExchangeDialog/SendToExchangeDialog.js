@@ -12,9 +12,9 @@ import SendToExchangeForm from './SendToExchangeForm'
 const mapDispatchToProps = (dispatch) => ({
   send: async (value) => {
     dispatch(sendAsset(
-      new TokenModel({ dao: lhtDAO }),
+      new TokenModel({ dao: lhtDAO, blockchain: 'Ethereum' }),
       await exchangeDAO.getAddress(),
-      value
+      value,
     ))
   },
   closeModal: () => dispatch(modalsClose()),

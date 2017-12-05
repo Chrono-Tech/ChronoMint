@@ -456,7 +456,7 @@ export default {
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
-    invalidAddress: 'Некорректный Ethereum адрес',
+    invalidAddress: 'Некорректный %{blockchain} адрес',
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
