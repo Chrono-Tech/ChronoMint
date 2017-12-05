@@ -3,14 +3,12 @@ import axios from 'axios'
 class ExchangeProvider {
 
   url () {
-    return 'http://localhost:8081'
+    return '/_exchange/'
   }
 
   async getAssetSymbols () {
-
-    const response = await axios.get(`${this.url()}/events/exchangecreated/`)
-    const assetSymbols = response ? await response.json() : []
-    return assetSymbols
+    const response = await fetch(`${this.url()}events/exchangecreated/`) //?distinct=symbol
+    return response ? await response.json() : []
   }
 
   async getExchangesWithFilter (symbol: string, sort: string) {
