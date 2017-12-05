@@ -141,9 +141,8 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
   }
 
   async getTokens () {
-    const addresses = await this._call('getTokenAddresses')
     const erc20managerDAO = await contractManagerDAO.getERC20ManagerDAO()
-    return erc20managerDAO.getTokensByAddresses(addresses, true, this.getInitAddress())
+    return erc20managerDAO.getTokensByAddresses([], true, this.getInitAddress())
   }
 
   async removeWallet (wallet, account: string) {

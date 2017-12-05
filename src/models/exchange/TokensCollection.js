@@ -1,7 +1,7 @@
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
-import TokenModel from '../TokenModel'
+import type TokenModel from '../TokenModel'
 
-export default class ExchangesCollection extends abstractFetchingCollection({}) {
+export default class TokensCollection extends abstractFetchingCollection({}) {
   getBySymbol (symbol: string) {
     let resultItem = null
     this.items().some((item: TokenModel) => {
