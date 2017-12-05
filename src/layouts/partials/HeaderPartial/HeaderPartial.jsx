@@ -37,6 +37,8 @@ class HeaderPartial extends PureComponent {
     network: PropTypes.string,
     account: PropTypes.string,
     btcAddress: PropTypes.string,
+    btgAddress: PropTypes.string,
+    ltcAddress: PropTypes.string,
     nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
@@ -326,6 +328,12 @@ class HeaderPartial extends PureComponent {
       ? []
       : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({ token, name }))
 
+    const addresses = [
+      { title: 'BTC', address: this.props.btcAddress },
+      { title: 'BTG', address: this.props.btgAddress },
+      { title: 'LTC', address: this.props.ltcAddress },
+      { title: 'NEM', address: this.props.nemAddress },
+    ]
     return (
       <div styleName='profile'>
         <div styleName='profile-body'>
@@ -334,12 +342,14 @@ class HeaderPartial extends PureComponent {
               <IPFSImage
                 styleName='avatarIconContent'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon
-                  style={{ fontSize: 96, cursor: 'default' }}
-                  color='white'
-                  className='material-icons'
-                >account_circle
-                </FontIcon>}
+                icon={
+                  <FontIcon
+                    style={{ fontSize: 96, cursor: 'default' }}
+                    color='white'
+                    className='material-icons'
+                  >account_circle
+                  </FontIcon>
+                }
               />
             </div>
           </div>
@@ -355,36 +365,18 @@ class HeaderPartial extends PureComponent {
                 onModalOpen={this.handleClickOutside}
               />
             </div>
-            {this.props.btcAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>BTC: </b>{this.props.btcAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.btcAddress} />
-                    <CopyIcon
-                      value={this.props.btcAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
+            {addresses.filter((a) => a.address).map((a) => (
+              <div>
+                <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
+                <div styleName='info-micros'>
+                  <QRIcon value={a.address} />
+                  <CopyIcon
+                    value={a.address}
+                    onModalOpen={this.handleClickOutside}
+                  />
                 </div>
-              )
-              : null
-            }
-            {this.props.nemAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>NEM: </b>{this.props.nemAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.nemAddress} />
-                    <CopyIcon
-                      value={this.props.nemAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
-                </div>
-              )
-              : null
-            }
+              </div>
+            ))}
             <div styleName='info-balances'>
               {items
                 .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
@@ -476,6 +468,8 @@ function mapStateToProps (state) {
   return {
     i18n: state.get('i18n'), // force update I18n.t
     btcAddress: wallet.btcAddress(),
+    btgAddress: wallet.btgAddress(),
+    ltcAddress: wallet.ltcAddress(),
     nemAddress: wallet.nemAddress(),
     account: session.account,
     profile: session.profile,

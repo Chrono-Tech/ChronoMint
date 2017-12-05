@@ -14,7 +14,7 @@ import LoginWithMnemonic from '../../components/LoginWithMnemonic/LoginWithMnemo
 import LoginWithPrivateKey from '../../components/LoginWithPrivateKey/LoginWithPrivateKey'
 import LoginTrezor from '../../components/LoginWithTrezor/LoginWithTrezor'
 import LoginWithWallet from '../../components/LoginWithWallet/LoginWithWallet'
-import { bccProvider, btcProvider } from '../../network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import ledgerProvider from '../../network/LedgerProvider'
@@ -232,7 +232,7 @@ class LoginWithOptions extends PureComponent {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  async setupAndLogin ({ ethereum, btc, bcc, nem }) {
+  async setupAndLogin ({ ethereum, btc, bcc, btg, ltc, nem }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -245,6 +245,8 @@ class LoginWithOptions extends PureComponent {
       ethereumProvider.setEngine(ethereum, nem)
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
+      btgProvider.setEngine(btg)
+      ltcProvider.setEngine(ltc)
       nemProvider.setEngine(nem)
       this.props.onLogin()
     } catch (e) {

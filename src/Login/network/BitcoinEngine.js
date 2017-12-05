@@ -80,6 +80,18 @@ export class BTCEngine extends BitcoinEngine {
   }
 }
 
+export class LTCEngine extends BTCEngine {
+  constructor (wallet, network) {
+    super(wallet, network)
+  }
+}
+
+export class BTGEngine extends BitcoinEngine {
+  constructor (wallet, network) {
+    super(wallet, network)
+  }
+}
+
 export class BCCEngine extends BitcoinEngine {
   constructor (wallet, network) {
     super(wallet, network)

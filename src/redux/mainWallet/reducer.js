@@ -36,6 +36,10 @@ export default (state = initialState, action) => {
       return state.btcAddress(action.address)
     case a.WALLET_BCC_ADDRESS:
       return state.bccAddress(action.address)
+    case a.WALLET_BTG_ADDRESS:
+      return state.btgAddress(action.address)
+    case a.WALLET_LTC_ADDRESS:
+      return state.ltcAddress(action.address)
     case a.WALLET_NEM_ADDRESS:
       return state.nemAddress(action.address)
     case a.WALLET_TRANSACTIONS_FETCH:

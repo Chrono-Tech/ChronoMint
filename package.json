@@ -74,7 +74,7 @@
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.1.0",
     "bip39": "^2.3.0",
-    "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
+    "bitcoinjs-lib": "github:ipavlenko/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
     "chronobank-smart-contracts": "1.1.43",
     "classnames": "^2.2.5",

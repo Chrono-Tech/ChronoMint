@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
-import { selectBCCNode, selectBTCNode } from './BitcoinNode'
+import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 
 export class BitcoinProvider extends AbstractProvider {
   constructor () {
@@ -58,3 +58,5 @@ export class BitcoinProvider extends AbstractProvider {
 
 export const btcProvider = new BitcoinProvider(selectBTCNode)
 export const bccProvider = new BitcoinProvider(selectBCCNode)
+export const btgProvider = new BitcoinProvider(selectBTGNode)
+export const ltcProvider = new BitcoinProvider(selectLTCNode)
