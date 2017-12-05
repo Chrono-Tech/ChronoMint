@@ -12,8 +12,8 @@ import * as a from './actions'
 
 const walletModel = new MultisigWalletModel({
   owners: new Immutable.List([
-    accounts[0],
-    accounts[1],
+    accounts[ 0 ],
+    accounts[ 1 ],
   ]),
   requiredSignatures: 2,
 })
@@ -88,10 +88,10 @@ describe('Multisig Wallet actions', () => {
 
       const dao: MultisigWalletDAO = await multisigWalletService.getWalletDAO(walletId)
       // 4.1 confirm from second account
-      dao.setAccount(accounts[1])
+      dao.setAccount(accounts[ 1 ])
       await store.dispatch(a.confirmMultisigTx(wallet, pendingTxModel))
       // 4.2 revert to first
-      dao.setAccount(accounts[0])
+      dao.setAccount(accounts[ 0 ])
     })
 
     multisigWalletService.on('MultiTransact', async (walletId, multisigTransactionModel: MultisigTransactionModel) => {
@@ -109,10 +109,11 @@ describe('Multisig Wallet actions', () => {
     await store.dispatch(a.watchMultisigWallet(wallet))
     // 3 send back
     const token = wallet.tokens().get('ETH')
-    await store.dispatch(a.multisigTransfer(wallet, token, amountToMSTransfer, accounts[0]))
+    await store.dispatch(a.multisigTransfer(wallet, token, amountToMSTransfer, accounts[ 0 ]))
   })
 
-  it('should add owner to wallet', async (done) => {
+  it.skip('should add owner to wallet', async (done) => {
+    const amountToMSTransfer = new BigNumber(1)
     const manager = await contractsManagerDAO.getWalletsManagerDAO()
     const wallets = await manager.getWallets()
     expect(wallets.size).toEqual(1)

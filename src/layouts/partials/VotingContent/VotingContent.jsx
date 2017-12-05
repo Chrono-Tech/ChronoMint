@@ -182,7 +182,7 @@ export default class VotingContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead(polls)}
-          {this.props.isFetched && this.props.timeDeposit.equals(new BigNumber(0)) &&
+          {this.props.isFetched && (!(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()) &&
           (
             <div styleName='accessDenied'>
               <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link

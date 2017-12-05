@@ -1,6 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`settings wallet reducer should handle WALLET_ALLOWANCE 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -14,15 +15,15 @@ exports[`settings wallet reducer should handle WALLET_ALLOWANCE 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
   "tokens": {
     "TK1": {
       "address": null,
       "allowance": {
-        "0x670dc68af4125b8137d706bdec4abd8950d86c20": 4,
+        "0x670dc68af4125b8137d706bdec4abd8950d86c20": 4
       },
-      "balance": 0,
+      "balance": "0",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -38,13 +39,13 @@ exports[`settings wallet reducer should handle WALLET_ALLOWANCE 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK1,
+      "symbol": "TK1",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
   "transactions": {
@@ -54,16 +55,16 @@ exports[`settings wallet reducer should handle WALLET_ALLOWANCE 1`] = `
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_BALANCE 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -77,14 +78,13 @@ exports[`settings wallet reducer should handle WALLET_BALANCE 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
   "tokens": {
     "TK1": {
       "address": null,
-      "allowance": {
-      },
-      "balance": 5,
+      "allowance": {},
+      "balance": "5",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -100,13 +100,13 @@ exports[`settings wallet reducer should handle WALLET_BALANCE 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK1,
+      "symbol": "TK1",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
   "transactions": {
@@ -116,16 +116,16 @@ exports[`settings wallet reducer should handle WALLET_BALANCE 1`] = `
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_IS_TIME_REQUIRED 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -139,10 +139,9 @@ exports[`settings wallet reducer should handle WALLET_IS_TIME_REQUIRED 1`] = `
   "isTIMERequired": false,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -151,16 +150,16 @@ exports[`settings wallet reducer should handle WALLET_IS_TIME_REQUIRED 1`] = `
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with empty wallet 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -173,11 +172,10 @@ exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with empty wa
   "isPending": false,
   "isTIMERequired": true,
   "nemAddress": null,
-  "timeAddress": 0x3ca0cbc8c9e2d629b13cfe7106535f532fb59c85,
-  "timeDeposit": 0,
+  "timeAddress": "0x3ca0cbc8c9e2d629b13cfe7106535f532fb59c85",
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -186,16 +184,16 @@ exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with empty wa
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with non empty wallet 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -211,8 +209,7 @@ exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with non empt
   "timeAddress": null,
   "timeDeposit": 3,
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -221,16 +218,16 @@ exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with non empt
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -244,14 +241,13 @@ exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
   "tokens": {
     "TK1": {
       "address": null,
-      "allowance": {
-      },
-      "balance": 0,
+      "allowance": {},
+      "balance": "0",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -267,18 +263,17 @@ exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK1,
+      "symbol": "TK1",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
+      "withFee": false
     },
     "TK2": {
       "address": null,
-      "allowance": {
-      },
-      "balance": 0,
+      "allowance": {},
+      "balance": "0",
       "dao": null,
       "decimals": null,
       "fee": null,
@@ -294,13 +289,13 @@ exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
       "managersList": null,
       "name": null,
       "platform": null,
-      "symbol": TK2,
+      "symbol": "TK2",
       "timestamp": null,
-      "totalSupply": 0,
+      "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": false,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
   "transactions": {
@@ -310,16 +305,16 @@ exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TOKENS_FETCH 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -333,10 +328,9 @@ exports[`settings wallet reducer should handle WALLET_TOKENS_FETCH 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -345,16 +339,16 @@ exports[`settings wallet reducer should handle WALLET_TOKENS_FETCH 1`] = `
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": {
-    },
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTION 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -368,10 +362,9 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTION 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -389,28 +382,29 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTION 1`] = `
         "credited": null,
         "from": 1,
         "gas": null,
-        "gasFee": 0,
+        "gasFee": "0",
         "gasPrice": null,
         "id": null,
         "input": null,
-        "symbol": ,
+        "symbol": "",
         "time": null,
         "timestamp": null,
         "to": 2,
         "transactionIndex": null,
-        "txHash": hash1,
-        "type": ,
-        "value": 0,
-      },
+        "txHash": "hash1",
+        "type": "",
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTIONS 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -424,10 +418,9 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTIONS 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -445,18 +438,18 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTIONS 1`] = `
         "credited": null,
         "from": 1,
         "gas": null,
-        "gasFee": 0,
+        "gasFee": "0",
         "gasPrice": null,
         "id": null,
         "input": null,
-        "symbol": ,
+        "symbol": "",
         "time": null,
         "timestamp": null,
         "to": 2,
         "transactionIndex": null,
-        "txHash": hash1,
-        "type": ,
-        "value": 0,
+        "txHash": "hash1",
+        "type": "",
+        "value": "0"
       },
       "tx2": {
         "args": null,
@@ -466,28 +459,29 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTIONS 1`] = `
         "credited": null,
         "from": 3,
         "gas": null,
-        "gasFee": 0,
+        "gasFee": "0",
         "gasPrice": null,
         "id": null,
         "input": null,
-        "symbol": ,
+        "symbol": "",
         "time": null,
         "timestamp": null,
         "to": 4,
         "transactionIndex": null,
-        "txHash": hash2,
-        "type": ,
-        "value": 0,
-      },
+        "txHash": "hash2",
+        "type": "",
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTIONS_FETCH 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
@@ -501,10 +495,9 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTIONS_FETCH 1`] = `
   "isTIMERequired": true,
   "nemAddress": null,
   "timeAddress": null,
-  "timeDeposit": 0,
+  "timeDeposit": "0",
   "timestamp": null,
-  "tokens": {
-  },
+  "tokens": {},
   "transactionHash": null,
   "transactions": {
     "endOfList": false,
@@ -514,11 +507,11 @@ exports[`settings wallet reducer should handle WALLET_TRANSACTIONS_FETCH 1`] = `
     "isFetching": true,
     "isPending": false,
     "list": {
-      "a": 1,
+      "a": 1
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-
+    "transactionHash": null
+  }
+}
 `;

@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 class ExchangeProvider {
 
   url () {
@@ -11,7 +13,7 @@ class ExchangeProvider {
 
   async getExchangesWithFilter (symbol: string, sort: string) {
     const symbolStr = symbol ? `?symbol=/^${symbol}/&` : `?`
-    const response = await fetch(`${this.url()}/events/exchangecreated/${symbolStr}${sort}`) //?distinct=symbol
+    const response = await axios.get(`${this.url()}/events/exchangecreated/${symbolStr}${sort}`)
     const exchanges = response ? await response.json() : []
     return exchanges.map((exchange) => exchange.exchange)
   }
