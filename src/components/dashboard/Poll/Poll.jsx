@@ -216,7 +216,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     primary
-                    disabled={model.isFetching() || this.props.timeDeposit.equals(new BigNumber(0))}
+                    disabled={model.isFetching() || !(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()}
                     onClick={this.props.handleVote}
                   />
                 )

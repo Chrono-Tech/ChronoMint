@@ -1,6 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
+{
   "id": null,
   "isFailed": false,
   "isFetched": true,
@@ -8,7 +9,7 @@ exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
   "isPending": false,
   "list": {
     "a1": {
-      "address": a1,
+      "address": "a1",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -17,25 +18,22 @@ exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -44,15 +42,14 @@ exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
+        "transactionHash": null
+      }
     },
     "a2": {
-      "address": a2,
+      "address": "a2",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -61,25 +58,22 @@ exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -88,35 +82,35 @@ exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
   "selected": null,
   "timestamp": null,
-  "transactionHash": null,
-
+  "transactionHash": null
+}
 `;
 
 exports[`Multisig Wallet reducer should handle MULTISIG_FETCHING 1`] = `
+{
   "id": null,
   "isFailed": false,
   "isFetched": false,
   "isFetching": true,
   "isPending": false,
-  "list": {
-  },
+  "list": {},
   "selected": null,
   "timestamp": null,
-  "transactionHash": null,
-
+  "transactionHash": null
+}
 `;
 
 exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
+{
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -124,7 +118,7 @@ exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
   "isPending": false,
   "list": {
     "a1": {
-      "address": a1,
+      "address": "a1",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -133,25 +127,22 @@ exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -160,15 +151,14 @@ exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
+        "transactionHash": null
+      }
     },
     "a2": {
-      "address": a2,
+      "address": "a2",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -177,25 +167,22 @@ exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -204,21 +191,21 @@ exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
   "selected": null,
   "timestamp": null,
-  "transactionHash": null,
-
+  "transactionHash": null
+}
 `;
 
 exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
+{
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -226,7 +213,7 @@ exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
   "isPending": false,
   "list": {
     "a1": {
-      "address": a1,
+      "address": "a1",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -235,25 +222,22 @@ exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
-      "tokens": {
-      },
+      "tokens": {},
       "transactionHash": null,
       "transactions": {
         "endOfList": false,
@@ -262,21 +246,21 @@ exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
-  "selected": a1,
+  "selected": "a1",
   "timestamp": null,
-  "transactionHash": null,
-
+  "transactionHash": null
+}
 `;
 
 exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing wallet) 1`] = `
+{
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -284,7 +268,7 @@ exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing 
   "isPending": false,
   "list": {
     "a1": {
-      "address": a1,
+      "address": "a1",
       "dao": null,
       "id": null,
       "is2FA": false,
@@ -293,29 +277,26 @@ exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing 
       "isFetching": false,
       "isMultisig": true,
       "isPending": false,
-      "name": No name,
-      "owners": {
-      },
+      "name": "No name",
+      "owners": [],
       "pendingTxList": {
         "id": null,
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
+        "transactionHash": null
       },
       "requiredSignatures": null,
       "timestamp": null,
       "tokens": {
         "t1": {
           "address": null,
-          "allowance": {
-          },
-          "balance": 0,
+          "allowance": {},
+          "balance": "0",
           "dao": null,
           "decimals": null,
           "fee": null,
@@ -333,11 +314,11 @@ exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing 
           "platform": null,
           "symbol": null,
           "timestamp": null,
-          "totalSupply": 0,
+          "totalSupply": "0",
           "transactionHash": null,
           "url": null,
-          "withFee": false,
-        },
+          "withFee": false
+        }
       },
       "transactionHash": null,
       "transactions": {
@@ -347,16 +328,15 @@ exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing 
         "isFetched": false,
         "isFetching": false,
         "isPending": false,
-        "list": {
-        },
+        "list": {},
         "selected": null,
         "timestamp": null,
-        "transactionHash": null,
-      },
-    },
+        "transactionHash": null
+      }
+    }
   },
   "selected": null,
   "timestamp": null,
-  "transactionHash": null,
-
+  "transactionHash": null
+}
 `;
