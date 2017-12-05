@@ -37,7 +37,7 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeFalsy()
-      expect(notice.cbe()).toMatchSnapshot(cbe)
+      expect(notice.cbe()).toMatchSnapshot()
       resolve()
     })
     await store.dispatch(a.addCBE(cbe))
@@ -73,7 +73,7 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeTruthy()
-      expect(notice.cbe()).toMatchSnapshot(cbe)
+      expect(notice.cbe()).toMatchSnapshot()
       resolve()
     })
     await store.dispatch(a.revokeCBE(cbe))
