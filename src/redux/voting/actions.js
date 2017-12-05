@@ -1,12 +1,19 @@
-import type BigNumber from 'bignumber.js'
-import Immutable from 'immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import Immutable from 'immutable'
+import type PollNoticeModel from 'models/notices/PollNoticeModel'
+import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
-import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { notify } from 'redux/notifier/actions'
-import { POLLS_VOTE_LIMIT, POLLS_LOAD, POLLS_LIST, POLLS_CREATE, POLLS_UPDATE, POLLS_REMOVE, POLLS_REMOVE_STUB } from 'redux/voting/reducer'
+
+export const POLLS_INIT = 'voting/INIT'
+export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
+export const POLLS_LOAD = 'voting/POLLS_LOAD'
+export const POLLS_LIST = 'voting/POLLS_LIST'
+export const POLLS_CREATE = 'voting/POLLS_CREATE'
+export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
+export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
+export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 
 export const DUCK_VOTING = 'voting'
 
@@ -38,7 +45,12 @@ const updateVoteLimit = () => async (dispatch) => {
   dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
 
-export const watchInitPolls = () => async (dispatch) => {
+export const watchInitPolls = () => async (dispatch, getState) => {
+  if (getState().get(DUCK_VOTING).isInited()) {
+    return
+  }
+  dispatch({ type: POLLS_INIT, isInited: true })
+
   const callback = (notice) => dispatch(watchPoll(notice))
 
   const dao = await contractsManagerDAO.getVotingDAO()

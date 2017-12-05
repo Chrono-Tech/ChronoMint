@@ -24,12 +24,12 @@ function mapStateToProps (state) {
   const voting = state.get(DUCK_VOTING)
   const wallet = state.get(DUCK_MAIN_WALLET)
   return {
-    list: voting.list,
+    list: voting.list(),
     timeDeposit: wallet.timeDeposit(),
     statistics: getStatistics(voting),
     isCBE: state.get(DUCK_SESSION).isCBE,
-    isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched,
+    isFetched: voting.isFetched() && wallet.isFetched(),
+    isFetching: voting.isFetching() && !voting.isFetched(),
   }
 }
 

@@ -30,7 +30,7 @@ function mapStateToProps (state) {
   return {
     options: selector(state, 'options'),
     account: state.get(DUCK_SESSION).account,
-    maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME,
+    maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
     locale: state.get(DUCK_I18N).locale,
   }
 }

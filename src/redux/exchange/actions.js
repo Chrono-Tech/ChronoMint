@@ -9,6 +9,7 @@ import TokenModel from 'models/TokenModel'
 
 export const DUCK_EXCHANGE = 'exchange'
 
+export const EXCHANGE_INIT = 'exchange/INIT'
 export const EXCHANGE_GET_ORDERS_START = 'exchange/GET_ORDERS_START'
 export const EXCHANGE_SET_PAGES_COUNT = 'exchange/EXCHANGE_SET_PAGES_COUNT'
 export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
@@ -139,6 +140,11 @@ export const getExchangeFromState = (state: Object, address: string) => {
 }
 
 export const watchExchanges = () => async (dispatch, getState) => {
+  if (getState().get(DUCK_EXCHANGE).isInited()) {
+    return
+  }
+  dispatch({ type: EXCHANGE_INIT, isInited: true })
+
   dispatch(getExchange())
   const account = getState().get(DUCK_SESSION).account
   try {

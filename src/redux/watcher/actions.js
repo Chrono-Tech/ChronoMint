@@ -78,7 +78,6 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = () => async (dispatch, getState) => {
   dispatch(watchPlatformManager(getState().get(DUCK_SESSION).account))
-  dispatch(watchExchanges())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())

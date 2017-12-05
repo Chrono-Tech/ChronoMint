@@ -139,9 +139,9 @@ export default class Poll extends PureComponent {
                 <div styleName='entry entryRequired'>
                   <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
                   <div styleName='entryValue'>
-                    {details.voteLimitInTIME === null
+                    {details.voteLimitInTIME() === null
                       ? (<i>Unlimited</i>)
-                      : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
+                      : (<span>{details.voteLimitInTIME().round(4).toString()} TIME</span>)
                     }
                   </div>
                 </div>

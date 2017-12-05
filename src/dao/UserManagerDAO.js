@@ -61,6 +61,8 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     }
     await Promise.all(promises)
 
+    console.log('--UserManagerDAO#getCBEList', map.toJS())
+
     return map
   }
 
