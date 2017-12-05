@@ -7,6 +7,7 @@ import TxExecModel from 'models/TxExecModel'
 import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
+import EventEmitter from 'events'
 
 const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
@@ -35,7 +36,7 @@ const DEFAULT_ERROR_CODES = {
   ...TX_FRONTEND_ERROR_CODES,
 }
 
-export default class AbstractContractDAO {
+export default class AbstractContractDAO extends EventEmitter {
   /**
    * @type Web3Converter
    * @protected
@@ -68,6 +69,7 @@ export default class AbstractContractDAO {
   static _filterCache = {}
 
   constructor (json = null, at = null, eventsJSON = null) {
+    super()
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }

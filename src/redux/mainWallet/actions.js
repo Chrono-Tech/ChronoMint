@@ -13,6 +13,7 @@ import TokenModel from 'models/TokenModel'
 import type TxModel from 'models/TxModel'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { addMarketToken } from '../market/action'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
@@ -98,6 +99,14 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
 export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => async (dispatch, getState) => {
   const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(symbol)
   dispatch(setBalance(token, balance))
+}
+
+export const watchInitWallet2 = () => (dispatch, getState) => {
+  tokenService.on(EVENT_NEW_TOKEN, (token: TokenModel) => {
+    const { profile } = getState().get(DUCK_SESSION)
+
+    console.log('--actions4444#', token.toJS(), profile.toJS())
+  })
 }
 
 export const watchInitWallet = () => async (dispatch, getState) => {

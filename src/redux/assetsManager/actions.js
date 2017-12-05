@@ -83,7 +83,8 @@ export const detachPlatform = (platform) => async (dispatch) => {
   }
 }
 
-export const watchPlatformManager = (account) => async (dispatch) => {
+export const watchPlatformManager = () => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   const callback = (tx) => {
     dispatch(setTx(tx))

@@ -1,21 +1,19 @@
-import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from 'dao/AbstractContractDAO'
+import { watchInitMonitor } from 'Login/redux/monitor/actions'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
 import type TxExecModel from 'models/TxExecModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { notify } from 'redux/notifier/actions'
-import { showConfirmTxModal } from 'redux/ui/modal'
-import { watchInitCBE } from 'redux/settings/user/cbe/actions'
-import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
+import { watchInitTokens, watchPlatformManager } from 'redux/assetsManager/actions'
 import { watchInitLOC } from 'redux/locs/actions'
+import { balanceMinus, balancePlus, DUCK_MAIN_WALLET, ETH, watchInitWallet, watchInitWallet2 } from 'redux/mainWallet/actions'
 import { watchInitMarket } from 'redux/market/action'
-import { watchInitMonitor } from 'Login/redux/monitor/actions'
-import { watchInitOperations } from 'redux/operations/actions'
-import { watchInitPolls } from 'redux/voting/actions'
-import { watchInitUserMonitor } from 'redux/userMonitor/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH, DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import { watchPlatformManager, watchInitTokens } from 'redux/assetsManager/actions'
 import { watchWalletManager } from 'redux/multisigWallet/actions'
-import { watchExchanges } from 'redux/exchange/actions'
+import { notify } from 'redux/notifier/actions'
+import { watchInitOperations } from 'redux/operations/actions'
+import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
+import { watchInitCBE } from 'redux/settings/user/cbe/actions'
+import { showConfirmTxModal } from 'redux/ui/modal'
+import { watchInitUserMonitor } from 'redux/userMonitor/actions'
+import { watchInitPolls } from 'redux/voting/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -76,13 +74,16 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch, getState) => {
-  dispatch(watchPlatformManager(getState().get(DUCK_SESSION).account))
+export const watcher = () => async (dispatch) => {
+
+  dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  dispatch(watchInitWallet())
+  // TODO @dkchv: !!! restore
+  // dispatch(watchInitWallet())
+  dispatch(watchInitWallet2())
   dispatch(watchWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())

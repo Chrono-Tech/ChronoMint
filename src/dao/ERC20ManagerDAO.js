@@ -16,9 +16,7 @@ export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
-const EVENT_TOKEN_ADD = 'LogAddToken'
-const EVENT_TOKEN_MODIFY = 'LogTokenChange'
-const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
+export const EVENT_NEW_ERC20_TOKEN = 'newERC20Token'
 
 const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
 
@@ -53,25 +51,31 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
+  async getTokens (tokenAddresses = []): Immutable.Map<TokenModel> {
     let map = new Immutable.Map()
 
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
 
-    for (const [i, address] of Object.entries(addresses)) {
+    addresses.forEach((address, i) => {
+      if (this.isEmptyAddress(address)) {
+        return
+      }
+
       const token = new TokenModel({
         address,
-        name: names[i],
-        symbol: symbols[i],
-        url: urls[i],
-        decimals: decimalsArr[i],
-        icon: ipfsHashes[i],
+        name: this._c.bytesToString(names[i]),
+        symbol: this._c.bytesToString(symbols[i]),
+        url: this._c.bytesToString(urls[i]),
+        decimals: decimalsArr[i].toNumber(),
+        icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
         blockchain: 'Ethereum',
       })
       map = map.set(token.id(), token)
-    }
+
+      this.emit(EVENT_NEW_ERC20_TOKEN, token)
+    })
 
     return map
   }
@@ -280,15 +284,15 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   watchAdd (callback) {
-    return this._watch(EVENT_TOKEN_ADD, this._watchCallback(callback))
+    return this._watch('LogAddToken', this._watchCallback(callback))
   }
 
   watchModify (callback, account) {
-    return this._watch(EVENT_TOKEN_MODIFY, this._watchCallback(callback, false, false), { from: account })
+    return this._watch('LogTokenChange', this._watchCallback(callback, false, false), { from: account })
   }
 
   watchRemove (callback, account) {
-    return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
+    return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
   }
 
   async getTokensList () {

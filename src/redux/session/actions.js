@@ -1,3 +1,4 @@
+import tokenService from 'services/TokenService'
 import { push, replace } from 'react-router-redux'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import networkService from 'Login/redux/network/actions'
@@ -64,6 +65,9 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+
+  await tokenService.init()
+
   dispatch(initWallet())
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
