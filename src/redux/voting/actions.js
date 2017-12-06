@@ -48,14 +48,14 @@ const updateVoteLimit = () => async (dispatch) => {
 export const watchInitPolls = () => async (dispatch) => {
   const callback = (notice) => dispatch(watchPoll(notice))
 
-  const dao = await contractsManagerDAO.getVotingDAO()
+  const dao = await contractsManagerDAO.getVotingManagerDAO()
   return await Promise.all([
-    dispatch(updateVoteLimit()),
+    // dispatch(updateVoteLimit()),
     dao.watchCreated(callback),
-    dao.watchRemoved(callback),
-    dao.watchActivated(callback),
-    dao.watchEnded(callback),
-    dao.watchVoted(callback),
+    // dao.watchRemoved(callback),
+    // dao.watchActivated(callback),
+    // dao.watchEnded(callback),
+    // dao.watchVoted(callback),
     // dao.watchUpdated(callback)
   ])
 }
