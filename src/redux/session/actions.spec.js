@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
-import { LOCAL_ID } from 'Login/network/settings'
-import networkService from 'Login/redux/network/actions'
+import { LOCAL_ID } from '@chronobank/login/network/settings'
+import networkService from '@chronobank/login/network/NetworkService'
 import ProfileModel from 'models/ProfileModel'
 import MainWalletModel from 'models/Wallet/MainWalletModel'
 import { MARKET_INIT } from 'redux/market/action'
