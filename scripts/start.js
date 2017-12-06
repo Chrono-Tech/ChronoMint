@@ -168,7 +168,7 @@ new WebpackDevServer(compiler, {
   // for local access
   quiet: true,
   host: '0.0.0.0',
-  https: true,
+  // https: true,
   open: true,
   disableHostCheck: true,
   proxy: {

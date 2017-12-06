@@ -5,7 +5,7 @@ import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { bccDAO, btcDAO } from './BitcoinDAO'
+import { bccDAO, btcDAO, ltcDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
@@ -20,7 +20,7 @@ const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
-const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'LTC']
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -122,50 +122,16 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      if (btcDAO.isInitialized()) {
-        try {
-          const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
-          const btcToken = new TokenModel({
-            dao: btcDAO,
-            name: btcDAO.getName(),
-            symbol: btcDAO.getSymbol(),
-            isApproveRequired: false,
-            balance,
-            balance0,
-            balance6,
-            isOptional: false,
-            isFetched: true,
-            blockchain: 'Bitcoin',
-          })
-          map = map.set(btcToken.id(), btcToken)
-        } catch (e) {
-          // eslint-disable-next-line
-          console.log('BTC support is not available', e)
-        }
-      }
-
-      if (bccDAO.isInitialized()) {
-        try {
-          const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
-          const bccToken = new TokenModel({
-            dao: bccDAO,
-            name: bccDAO.getName(),
-            symbol: bccDAO.getSymbol(),
-            isApproveRequired: false,
-            balance,
-            balance0,
-            balance6,
-            isOptional: false,
-            isFetched: true,
-            blockchain: 'Bitcoin Cash',
-          })
-          map = map.set(bccToken.id(), bccToken)
-        } catch (e) {
-          // eslint-disable-next-line
-          console.log('BCC support is not available', e)
-        }
+      const bitcoinLikeTokens = await Promise.all([
+        this._setupBitcoinDAO('BTC', 'Bitcoin', btcDAO),
+        this._setupBitcoinDAO('BCC', 'Bitcoin Cash', bccDAO),
+        this._setupBitcoinDAO('LTC', 'Litecoin', ltcDAO),
+      ])
+      for (let t of bitcoinLikeTokens) {
+        map = map.set(t.id(), t)
       }
     }
+
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
@@ -203,6 +169,31 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     }
 
     return map
+  }
+
+  async _setupBitcoinDAO (name, title, dao) {
+    if (dao.isInitialized()) {
+      try {
+        const { balance, balance0, balance6 } = await dao.getAccountBalances()
+        const token = new TokenModel({
+          dao,
+          name: dao.getName(),
+          symbol: dao.getSymbol(),
+          isApproveRequired: false,
+          balance,
+          balance0,
+          balance6,
+          isOptional: false,
+          isFetched: true,
+          blockchain: title,
+        })
+        return token
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log(`${name} support is not available`, e)
+      }
+    }
+    return null
   }
 
   /**

@@ -39,7 +39,8 @@ const RINKEBY_BASE = {
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin_testnet',
+  // Disabled until we have no https API
+  // litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
@@ -51,13 +52,14 @@ const KOVAN_BASE = {
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin_testnet',
+  // Disabled until we have no https API
+  // litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
-  protocol: 'https',
+  protocol: 'http',
   name: 'Localhost',
 }
 
@@ -103,7 +105,8 @@ if (process.env.NODE_ENV === 'development') {
     bitcoin: 'testnet',
     bitcoinCash: 'testnet',
     bitcoinGold: 'bitcoingold',
-    litecoin: 'litecoin_testnet',
+    // Disabled until we have no https API
+    // litecoin: 'litecoin_testnet',
     nem: 'Testnet',
   })
 }

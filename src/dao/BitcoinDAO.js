@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
-import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
+import { btcProvider, bccProvider, ltcProvider } from 'Login/network/BitcoinProvider'
 import { DECIMALS } from 'Login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
 
@@ -105,3 +105,4 @@ export class BitcoinDAO {
 
 export const btcDAO = new BitcoinDAO('Bitcoin', 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO('Bitcoin Cash', 'BCC', bccProvider)
+export const ltcDAO = new BitcoinDAO('Litecoin', 'LTC', ltcProvider)

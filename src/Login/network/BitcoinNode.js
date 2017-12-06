@@ -5,7 +5,7 @@ import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
 const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: '//blockexplorer.com/api/',
+    baseURL: 'https://blockexplorer.com/api/',
     timeout: 4000,
   }),
   trace: false,
@@ -13,11 +13,11 @@ const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-bitcoin-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
-    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -29,7 +29,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
 
 const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: '//bitcoincash.blockexplorer.com/api/',
+    baseURL: 'https://bitcoincash.blockexplorer.com/api/',
     timeout: 4000,
   }),
   trace: false,
@@ -37,7 +37,7 @@ const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: '//tbcc.blockdozer.com/insight-api/',
+    baseURL: 'https://tbcc.blockdozer.com/insight-api/',
     timeout: 4000,
   }),
   trace: true,
@@ -53,11 +53,11 @@ const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 export const BTG_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-bitcoingold-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-bitcoingold-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
-    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -70,27 +70,37 @@ export const BTG_TESTNET_NODE = new BitcoinMiddlewareNode({
 const LTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://insight.litecore.io/api',
-    // http://explorer.litecointools.com
+    // Only http API available
+    // baseURL: 'http://explorer.litecointools.com',
     timeout: 4000,
   }),
   trace: false,
 })
 
-export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
+export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: '//middleware-litecoin-testnet-rest.chronobank.io',
+    // Only http API available
+    baseURL: 'http://explorer.litecointools.com/api',
     timeout: 4000,
   }),
-  socket: {
-    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
-    user: 'rabbitmq_user',
-    password: '38309100024',
-    channels: {
-      balance: '/exchange/events/app_testnet-litecoin-middleware-chronobank-io_balance',
-    },
-  },
-  trace: true,
+  trace: false,
 })
+
+// export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
+//   api: axios.create({
+//     baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io',
+//     timeout: 4000,
+//   }),
+//   socket: {
+//     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+//     user: 'rabbitmq_user',
+//     password: '38309100024',
+//     channels: {
+//       balance: '/exchange/events/app_testnet-litecoin-middleware-chronobank-io_balance',
+//     },
+//   },
+//   trace: true,
+// })
 
 export function selectBTCNode (engine) {
   return engine.getNetwork() === networks.testnet

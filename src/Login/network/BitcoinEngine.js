@@ -3,7 +3,7 @@ import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 export const DECIMALS = 100000000
-const FEE_RATE = 75 // satoshis per byte
+const FEE_RATE = 125 // satoshis per byte
 
 export class BitcoinEngine {
   constructor (wallet, network) {
