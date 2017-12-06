@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
-export default class PollInterfaceDAO extends AbstractContractDAO {
+export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(PollInterfaceABI, at, MultiEventsHistoryABI)
   }
@@ -18,6 +18,10 @@ export default class PollInterfaceDAO extends AbstractContractDAO {
     const votes = new Immutable.List()
     options.map((option, i) => !values[i].isZero() && votes.set(option.toString(), values[i]))
     return votes
+  }
+
+  activatePoll () {
+    return this._multisigTx('activatePoll')
   }
 
 }

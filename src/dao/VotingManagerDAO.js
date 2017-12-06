@@ -101,17 +101,18 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
   async getPollsDetails (pollsAddresses: Array<string>) {
     try {
-      const [response, timeDAO] = await Promise.all([
+      const [response, timeDAO, timeHolderDAO] = await Promise.all([
         this._call('getPollsDetails', [pollsAddresses]),
         await contractsManagerDAO.getTIMEDAO(),
+        await contractsManagerDAO.getTIMEHolderDAO(),
       ])
       const [owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates] = response
 
       let result = {}
       for (let i = 0; i < pollsAddresses.length; i++) {
         const pollId = pollsAddresses[i]
-        const PollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
-        const votes = await PollInterface.getVotesBalances()
+        const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
+        const votes = await pollInterface.getVotesBalances()
         const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
         const { title, description, options, files } = await ipfs.get(hash)
         const poll = new PollModel({
@@ -129,6 +130,9 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
           options: new Immutable.List(options || []),
           files,
         })
+        const totalSupply = await timeDAO.totalSupply()
+        const shareholdersCount = await timeHolderDAO.shareholdersCount()
+        const pollFiles = poll && await ipfs.get(poll.files())
 
         result[pollId] = new PollDetailsModel({
           poll,
@@ -136,9 +140,9 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
           // statistics,
           // memberVote: memberVote && memberVote.toNumber(), // just an option index
           timeDAO,
-          // totalSupply,
-          // shareholdersCount,
-          files: new Immutable.List((files && files.links || [])
+          totalSupply,
+          shareholdersCount,
+          files: new Immutable.List((pollFiles && pollFiles.links || [])
             .map((item) => FileModel.createFromLink(item))),
         })
 
@@ -153,24 +157,11 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPoll (pollId): PollDetailsModel {
-    const [polls, timeDAO, timeHolderDAO] = await Promise.all([
+    const [polls] = await Promise.all([
       this.getPollsDetails([pollId]),
-      await contractsManagerDAO.getTIMEDAO(),
-      await contractsManagerDAO.getTIMEHolderDAO(),
     ])
-    const poll = polls[pollId]
-    const totalSupply = await timeDAO.totalSupply()
-    const shareholdersCount = await timeHolderDAO.shareholdersCount()
-    const files = poll && await ipfs.get(poll.files())
 
-    return poll && new PollDetailsModel({
-      poll,
-      timeDAO,
-      totalSupply,
-      shareholdersCount,
-      files: new Immutable.List((files && files.links || [])
-        .map((item) => FileModel.createFromLink(item))),
-    })
+    return polls[pollId]
   }
 
   /** @private */

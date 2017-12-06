@@ -112,8 +112,8 @@ export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
     dispatch(handlePollUpdated(poll
       .set('poll', poll.poll().set('active', true))
       .isFetching(true)))
-    const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.activatePoll(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    await dao.activatePoll()
   } catch (e) {
     dispatch(handlePollUpdated(poll))
   }
