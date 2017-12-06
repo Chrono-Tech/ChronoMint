@@ -1,16 +1,16 @@
 export const required = (value) => !value ? 'errors.required' : null
 
-export const address = (value, required = true) => {
+export const address = (value, required = true, blockchain = 'Ethereum') => {
   if ((!value && required) || (value && !/^0x[0-9a-f]{40}$/i.test(value))) {
-    return 'errors.invalidAddress'
+    return { value: 'errors.invalidAddress', blockchain }
   }
   return null
 }
 
-export const bitcoinAddress = (value, required = true) => {
+export const bitcoinAddress = (value, required = true, blockchain = 'Bitcoin') => {
   // TODO @ipavlenko: Provide better validation
   if ((!value && required) || (value && !/^[a-km-zA-HJ-NP-Z1-9]{24,34}$/.test(value))) {
-    return 'errors.invalidAddress'
+    return { value: 'errors.invalidAddress', blockchain }
   }
   return null
 }

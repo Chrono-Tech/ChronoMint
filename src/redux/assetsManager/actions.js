@@ -118,7 +118,8 @@ export const getManagersForAssetSymbol = (symbol) => async (dispatch) => {
 export const removeManager = (token: TokenModel, manager: String) => async () => {
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
+    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
+    return txHash
   }
   catch (e) {
     // eslint-disable-next-line

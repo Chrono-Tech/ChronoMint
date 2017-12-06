@@ -1,0 +1,154 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.content {
+  position: relative;
+  display: table;
+  width: 100%;
+  background-color: $color-white;
+}
+
+.slide {
+  overflow: hidden;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.actions {
+  text-align: center;
+  margin-top: 28px;
+  @include sm-only {
+    margin-top: 0;
+  }
+}
+
+.header {
+  position: relative;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 24px 16px 0 16px;
+  background-color: $color-panel-bg-3;
+}
+
+.headerTitle {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.tabs {
+  display: block;
+  padding: 0;
+  text-align: center;
+  @include sm-only {
+    margin: 0 -16px;
+  }
+  :global {
+    li.active {
+      border-bottom: solid 4px $color-underline;
+      .tabTitle {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.tab {
+
+  display: inline-block;
+  box-sizing: border-box;
+  border-bottom: solid 4px transparent;
+  @include sm-only {
+    width: 50%;
+  }
+  @include xs-only {
+    width: 50%;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.tabTitle {
+  cursor: pointer;
+  opacity: 0.5;
+  color: $color-white;
+  display: block;
+  font-size: 34px;
+  font-weight: 300;
+  padding: 12px 64px 8px 64px;
+  @include sm-only {
+    padding: 12px 0 8px 0;
+  }
+  @include xs-only {
+    font-size: 24px;
+  }
+  box-sizing: border-box;
+  text-decoration: none;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.wrapper {
+  max-width: 70%;
+  display: flex;
+  flex: 1;
+  @include md-only {
+    flex-direction: column;
+  }
+  @include sm-only {
+    flex-direction: column;
+    max-width: 100%;
+  }
+}
+
+.item {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  &:last-child {
+    justify-content: flex-end;
+  }
+  @include lg-only {
+    &:first-child {
+      margin-right: 64px;
+    }
+  }
+  @include lg-plus {
+    &:first-child {
+      margin-right: 64px;
+    }
+    &:last-child {
+      justify-content: center;
+    }
+  }
+  @include md-only {
+    &:first-child {
+      margin-right: 0;
+    }
+  }
+  @include sm-only {
+    margin: 0;
+    &:last-child {
+      margin-top: 32px;
+    }
+  }
+}
+
+.createExchangeWrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 70px 0 30px;
+}
+
+.noMiddleware {
+  padding: 16px;
+  text-align: center;
+}

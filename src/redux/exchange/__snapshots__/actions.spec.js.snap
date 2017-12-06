@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Exchange tests should create createExchange 1`] = `
+{
+  "buyPrice": "10000000000",
+  "sellPrice": "10000000000",
+  "symbol": "TIME"
+}
+`;

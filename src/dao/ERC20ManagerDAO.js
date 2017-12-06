@@ -1,3 +1,4 @@
+import TokensCollection from 'models/exchange/TokensCollection'
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
 import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
@@ -67,6 +68,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: ipfsHashes[i],
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
+        blockchain: 'Ethereum',
       })
       map = map.set(token.id(), token)
     }
@@ -78,10 +80,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * ETH, TIME will be added by flag isWithObligatory
    */
   async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
-    let timeDAO, promises
+    let promises
+    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     if (isWithObligatory) {
       // add TIME address to filters
-      timeDAO = await contractsManagerDAO.getTIMEDAO()
       addresses.push(timeDAO.getInitAddress())
     }
     // get data
@@ -93,10 +95,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
     }
     const daos = await Promise.all(promises)
-   
-   for (let [i, address] of Object.entries(tokensAddresses)) {
+
+    for (let [i, address] of Object.entries(tokensAddresses)) {
       this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-   }	    
+    }
 
     // get balances
     promises = []
@@ -116,6 +118,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: await ethereumDAO.getAccountBalance(account),
         isOptional: false,
         isFetched: true,
+        blockchain: 'Ethereum',
       })
       map = map.set(ethToken.id(), ethToken)
 
@@ -132,6 +135,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance6,
             isOptional: false,
             isFetched: true,
+            blockchain: 'Bitcoin',
           })
           map = map.set(btcToken.id(), btcToken)
         } catch (e) {
@@ -153,6 +157,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
             balance6,
             isOptional: false,
             isFetched: true,
+            blockchain: 'Bitcoin Cash',
           })
           map = map.set(bccToken.id(), bccToken)
         } catch (e) {
@@ -178,6 +183,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         totalSupply: additionalData[address] && TokenManagementExtensionDAO.removeDecimals(additionalData[address].totalSupply, decimalsArr[i]),
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
+        blockchain: 'Ethereum',
       })
 
       if (token.symbol() === TIME) {
@@ -267,6 +273,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
+        blockchain: 'Ethereum',
       }),
       time, isRemoved, isAdded, result.args.oldToken || null
     ))
@@ -282,5 +289,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback, account) {
     return this._watch(EVENT_TOKEN_REMOVE, this._watchCallback(callback, true), { from: account })
+  }
+
+  async getTokensList () {
+    const addresses = await this._call('getTokenAddresses')
+    const tokens = await this.getTokensByAddresses(addresses, false)
+    return new TokensCollection({ list: tokens })
   }
 }

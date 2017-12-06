@@ -175,6 +175,16 @@ new WebpackDevServer(compiler, {
     '/web3/*': {
       target: 'http://localhost:8545',
     },
+    "/_exchange": {
+      "target": {
+        "host": "localhost",
+        "protocol": 'http:',
+        "port": 8081,
+      },
+      ignorePath: true,
+      changeOrigin: true,
+      secure: false,
+    },
   },
 }).listen(3000, '0.0.0.0', function (err, result) {
   if (err) {

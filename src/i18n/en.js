@@ -12,7 +12,6 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
-
 import { en as components } from 'components/lang'
 
 export default {
@@ -39,7 +38,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
-    exchange: 'Exchange (demo)',
+    exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Rewards',
     assets: 'My assets',
@@ -434,10 +433,16 @@ export default {
     },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH',
+        title: 'Confirm buy tokens for ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH',
+        title: 'Confirm sell tokens for ETH',
+      },
+      [exchange.TX_WITHDRAW_TOKENS]: {
+        title: 'Confirm withdraw tokens',
+      },
+      [exchange.TX_WITHDRAW_ETH]: {
+        title: 'Confirm withdraw ETH',
       },
     },
   },
@@ -449,7 +454,7 @@ export default {
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
-    invalidAddress: 'Should be valid Ethereum address',
+    invalidAddress: 'Should be valid %{blockchain} address',
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',
     lowerThan: 'Should be lower than %{limit}',
@@ -637,6 +642,7 @@ export default {
     },
   },
   components: {
+    ...components.components,
     dashboard: {
       TransactionsTable: {
         latestTransactions: 'Latest transactions',
@@ -677,19 +683,6 @@ export default {
         percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
         dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
         yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
-      },
-      ExchangeWidget: {
-        exchange: 'Exchange',
-        search: 'Search',
-        currency: 'Currency',
-        buy: 'Buy',
-        sell: 'Sell',
-      },
-      OrdersTable: {
-        orderBook: 'Order Book',
-        trader: 'Trader',
-        paymentDescription: 'Payment description',
-        limits: 'Limits',
       },
       Poll: {
         new: 'New',

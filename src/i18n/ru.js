@@ -38,7 +38,7 @@ export default {
     operations: 'Операции',
     settings: 'Настройки',
     wallet: 'Кошелёк',
-    exchange: 'Обмен (demo)',
+    exchange: 'Обмен',
     voting: 'Голосование',
     rewards: 'Награды',
     assets: 'Мои активы',
@@ -423,7 +423,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Одрбрить списание TIME',
+        title: 'Одобрить списание TIME',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
@@ -435,10 +435,16 @@ export default {
     },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH',
+        title: 'Купить токены за ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH',
+        title: 'Продать токены за ETH',
+      },
+      [exchange.TX_WITHDRAW_TOKENS]: {
+        title: 'Подтвердите вывод токенов',
+      },
+      [exchange.TX_WITHDRAW_ETH]: {
+        title: 'Подтвердите вывод ETH',
       },
     },
   },
@@ -450,7 +456,7 @@ export default {
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
-    invalidAddress: 'Некорректный Ethereum адрес',
+    invalidAddress: 'Некорректный %{blockchain} адрес',
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
@@ -625,6 +631,7 @@ export default {
     },
   },
   components: {
+    ...components.components,
     dashboard: {
       TransactionsTable: {
         latestTransactions: 'Последние транзакции',
@@ -665,19 +672,6 @@ export default {
         percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
         dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
         yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период',
-      },
-      ExchangeWidget: {
-        exchange: 'Обмен',
-        search: 'Поиск',
-        currency: 'Валюта',
-        buy: 'Купить',
-        sell: 'Продать',
-      },
-      OrdersTable: {
-        orderBook: 'Книга Ордеров',
-        trader: 'Трейдер',
-        paymentDescription: 'Описание платежа',
-        limits: 'Лимиты',
       },
       Poll: {
         new: 'Новое',

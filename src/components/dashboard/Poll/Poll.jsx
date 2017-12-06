@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { FlatButton, Paper, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -47,6 +48,7 @@ export default class Poll extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     isCBE: PropTypes.bool,
+    timeDeposit: PropTypes.object,
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
@@ -184,7 +186,7 @@ export default class Poll extends PureComponent {
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={() => this.props.handlePollDetails()}
+                onTouchTap={this.props.handlePollDetails}
               />
               {isCBE && details.status && details.active
                 ? (
@@ -192,7 +194,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={() => this.props.handlePollEnd()}
+                    onTouchTap={this.props.handlePollEnd}
                   />
                 )
                 : null
@@ -203,7 +205,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={() => this.props.handlePollActivate()}
+                    onTouchTap={this.props.handlePollActivate}
                   />
                 )
                 : null
@@ -214,8 +216,8 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     primary
-                    disabled={model.isFetching()}
-                    onTouchTap={() => this.props.handleVote()}
+                    disabled={model.isFetching() || !(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()}
+                    onClick={this.props.handleVote}
                   />
                 )
                 : null

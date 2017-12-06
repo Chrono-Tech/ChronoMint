@@ -23,10 +23,15 @@ export default class TokenModel extends abstractFetchingModel({
   managersList: null,
   isReissuable: false,
   isOptional: true, // used in add token dialog for determine its selectable
+  blockchain: null,
   feeAddress: null,
 }) {
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
+  }
+
+  blockchain () {
+    return this.get('blockchain')
   }
 
   feeAddress () {
@@ -90,7 +95,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   updateBalance (isCredited, amount: BigNumber): TokenModel {
-    const newBalance = this.balance()[isCredited ? 'plus' : 'minus'](amount)
+    const newBalance = this.balance()[ isCredited ? 'plus' : 'minus' ](amount)
     return this.set('balance', newBalance)
   }
 

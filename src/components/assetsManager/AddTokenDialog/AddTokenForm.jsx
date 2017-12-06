@@ -61,6 +61,7 @@ const onSubmit = (values, dispatch) => {
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
     isReissuable: !!values.get('reissuable'),
+    blockchain: 'Ethereum',
   })))
 }
 
@@ -152,7 +153,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[0]
+    const file = e.target.files[ 0 ]
     if (!file) {
       return
     }
