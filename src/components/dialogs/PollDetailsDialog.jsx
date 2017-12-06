@@ -64,11 +64,13 @@ export default class VoteDialog extends PureComponent {
                 <div styleName='layer layerEntries'>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
-                    <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                    <div styleName='entryValue'>{details.published &&
+                    <Moment date={details.published} format={SHORT_DATE} /> || (<i>No</i>)}</div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
-                    <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                    <div styleName='entryValue'>{details.endDate &&
+                    <Moment date={details.endDate} format={SHORT_DATE} /> || (<i>No</i>)}</div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
@@ -85,11 +87,13 @@ export default class VoteDialog extends PureComponent {
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
-                    <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.options.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}</div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
-                    <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.files.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}</div>
                   </div>
                 </div>
               </div>
@@ -141,7 +145,9 @@ export default class VoteDialog extends PureComponent {
                           <div styleName='legendItem' key={index}>
                             <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }} />
                             <div styleName='itemTitle'>
-                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
+                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate
+                              value={prefix('numberVotes')} number={item.count.toNumber()}
+                              count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
                             </div>
                           </div>
                         ))}
@@ -183,12 +189,14 @@ export default class VoteDialog extends PureComponent {
                                 </div>
                               )
                               : (
-                                <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')} number={index + 1} /></div>
+                                <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')}
+                                                                                number={index + 1} /></div>
                               )
                             }
                           </div>
                           <div styleName='itemMain'>
-                            <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} /></div>
+                            <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} />
+                            </div>
                             <div styleName='mainOption'>{option}</div>
                           </div>
                         </div>

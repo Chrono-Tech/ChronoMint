@@ -152,17 +152,17 @@ export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) =>
 export const listPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   const dao = await contractsManagerDAO.getVotingManagerDAO()
-  const [count, activeCount] = await Promise.all([
+  const [count, activeCount, list] = await Promise.all([
     dao.getPollsCount(),
     dao.getActivePollsCount(),
     dispatch(getNextPage()),
   ])
   dispatch({ type: VOTING_POLLS_COUNT, count, activeCount })
-  dispatch({ type: POLLS_LIST, list: [] })
+  dispatch({ type: POLLS_LIST, list })
 }
 
 export const getNextPage = () => async (dispatch, getState) => {
   const dao = await contractsManagerDAO.getVotingManagerDAO()
   const votingState = getState().get(DUCK_VOTING)
-  dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE)
+  return await dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE)
 }

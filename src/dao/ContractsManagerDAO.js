@@ -21,6 +21,7 @@ import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
 import VotingManagerDAO from './VotingManagerDAO'
+import PollInterfaceDAO from './PollInterfaceDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 import { ExchangeDAO } from './ExchangeDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
@@ -35,6 +36,7 @@ const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING = 'PollManager'
 const DAO_VOTING_DETAILS = 'PollDetails'
 const DAO_VOTING_MANAGER = 'VotingManager'
+const DAO_POLL_INTERFACE = 'PollInterfaceDAO'
 const DAO_VOTING_ACTOR = 'VoteActor'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
@@ -59,6 +61,7 @@ const daoMap = {
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
   [DAO_VOTING_MANAGER]: VotingManagerDAO,
+  [DAO_POLL_INTERFACE]: PollInterfaceDAO,
   [DAO_VOTING_ACTOR]: VotingActorDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
@@ -224,6 +227,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   getVotingManagerDAO (): Promise<VotingManagerDAO> {
     return this._getDAO(DAO_VOTING_MANAGER)
+  }
+
+  getPollInterfaceDAO (address): Promise<PollInterfaceDAO> {
+    return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 
   getVotingActorDAO (): Promise<VotingActorDAO> {

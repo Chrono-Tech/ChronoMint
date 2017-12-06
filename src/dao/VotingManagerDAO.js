@@ -31,8 +31,6 @@ const EVENT_VOTE_CREATED = 'VoteCreated'
 export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(VotingManagerABI, at, MultiEventsHistoryABI)
-    // eslint-disable-next-line
-    console.log(VotingManagerABI)
   }
 
   async getPollsCount () {
@@ -51,8 +49,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
   async getPollsPaginated (startIndex, pageSize) {
     const addresses = await this._call('getPollsPaginated', [startIndex, pageSize])
-    // eslint-disable-next-line
-    console.log(addresses)
+    const details = await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
+    return details
   }
 
   vote () {
@@ -112,13 +110,15 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       let result = {}
       for (let i = 0; i < pollsAddresses.length; i++) {
         const pollId = pollsAddresses[i]
+        const PollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
+        const votes = await PollInterface.getVotesBalances()
         const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
         const { title, description, options, files } = await ipfs.get(hash)
-
-        result[pollId] = new PollModel({
+        const poll = new PollModel({
           id: pollId,
           owner: owners[i],
           hash,
+          votes,
           title: title,
           description: description[i],
           voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimits[i]),
@@ -129,6 +129,19 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
           options: new Immutable.List(options || []),
           files,
         })
+
+        result[pollId] = new PollDetailsModel({
+          poll,
+          votes,
+          // statistics,
+          // memberVote: memberVote && memberVote.toNumber(), // just an option index
+          timeDAO,
+          // totalSupply,
+          // shareholdersCount,
+          files: new Immutable.List((files && files.links || [])
+            .map((item) => FileModel.createFromLink(item))),
+        })
+
       }
 
       return result
