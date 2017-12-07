@@ -1,18 +1,22 @@
 import BigNumber from 'bignumber.js'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import type TxModel from 'models/TxModel'
-import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
-import { DECIMALS } from 'Login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
+import EventEmitter from 'events'
+import { DECIMALS } from 'Login/network/BitcoinEngine'
+import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
+import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TokenModel from 'models/TokenModel'
+import type TxModel from 'models/TxModel'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 
-export class BitcoinDAO {
+export class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
+    super()
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
+    this._bitcoinProvider.addListener('subscribe', () => this.onSubscribe())
   }
 
   getAddressValidator () {
@@ -100,6 +104,22 @@ export class BitcoinDAO {
 
   resetFilterCache () {
     // do nothing
+  }
+
+  getToken () {
+    if (!this.isInitialized()) {
+      console.warn(`${this._symbol} not initialized`)
+      return
+    }
+    return new TokenModel({
+      address: this.getAccount(),
+      name: this._name,
+      symbol: this._symbol,
+      isApproveRequired: false,
+      isOptional: false,
+      isFetched: true,
+      blockchain: 'Bitcoin',
+    })
   }
 }
 

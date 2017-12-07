@@ -57,12 +57,6 @@ export default class WalletChanger extends PureComponent {
     account: PropTypes.string,
   }
 
-  componentWillMount () {
-    if (!this.props.multisigWallet.isFetched() && !this.props.multisigWallet.isFetching()) {
-      this.props.getWallets()
-    }
-  }
-
   handleShowSelectDialog = () => this.props.walletSelectDialog()
 
   handleSwitchWallet = () => this.props.switchWallet(this.props.mainWallet)
@@ -86,7 +80,7 @@ export default class WalletChanger extends PureComponent {
               <div styleName='action' />
               <div styleName='action'>
                 <FlatButton
-                  label={multisigWallet.isFetching()
+                  label={!multisigWallet.isFetched()
                     ? <Preloader />
                     : (
                       <span styleName='buttonLabel'>
@@ -97,7 +91,7 @@ export default class WalletChanger extends PureComponent {
                   onTouchTap={multisigWallet.size() > 0
                     ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.props.walletAddEditDialog()}
-                  disabled={multisigWallet.isFetching()}
+                  disabled={!multisigWallet.isFetched()}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>

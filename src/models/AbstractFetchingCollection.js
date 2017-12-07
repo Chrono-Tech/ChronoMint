@@ -11,8 +11,12 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this._getSet('list', value)
   }
 
-  add (item: abstractFetchingModel) {
+  add (item) {
     return this.list(this.list().set(item.id(), item))
+  }
+
+  merge (items) {
+    return this.list(this.list().merge(items))
   }
 
   // alias
@@ -20,7 +24,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this.add(item)
   }
 
-  remove (item: abstractFetchingModel) {
+  remove (item) {
     return this.list(this.list().remove(item.id()))
   }
 

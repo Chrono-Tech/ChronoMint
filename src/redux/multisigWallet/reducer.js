@@ -6,6 +6,8 @@ const initialState = new MultisigWalletCollection()
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case a.MULTISIG_INIT:
+      return state.isInited(true)
     case a.MULTISIG_FETCHING:
       return state.isFetching(true)
     case a.MULTISIG_FETCHED:

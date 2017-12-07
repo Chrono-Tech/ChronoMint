@@ -1,7 +1,5 @@
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
+import ERC20DAO from 'dao/ERC20DAO'
 import EventEmitter from 'events'
-import type TokenModel from 'models/TokenModel'
 
 export const EVENT_NEW_TOKEN = 'newToken'
 
@@ -11,17 +9,23 @@ class TokenService extends EventEmitter {
     this._cache = {}
   }
 
-  async init () {
-    const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-    erc20.on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => this.emit(EVENT_NEW_TOKEN, token))
-  }
-
   getDAO (address) {
 
   }
 
-  createDAO (address) {
+  createDAO (token) {
+    // TODO @dkchv: unsubscribe if exists
+    if (!token.isERC20()) {
+      return
+    }
+    const dao = new ERC20DAO(token.address())
+    this._cache [ token.symbol() ] = dao
+    this.emit(EVENT_NEW_TOKEN, token, dao)
+  }
 
+  registerDAO (token, dao) {
+    this._cache [ token.symbol() ] = dao
+    this.emit(EVENT_NEW_TOKEN, token, dao)
   }
 
   subscribeToDAO (model) {

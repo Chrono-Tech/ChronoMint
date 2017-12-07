@@ -104,8 +104,6 @@ export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => as
 export const watchInitWallet2 = () => (dispatch, getState) => {
   tokenService.on(EVENT_NEW_TOKEN, (token: TokenModel) => {
     const { profile } = getState().get(DUCK_SESSION)
-
-    console.log('--actions4444#', token.toJS(), profile.toJS())
   })
 }
 

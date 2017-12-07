@@ -1,3 +1,4 @@
+import { initTokens } from 'redux/tokens/actions'
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from 'dao/AbstractContractDAO'
 import { watchInitMonitor } from 'Login/redux/monitor/actions'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
@@ -6,7 +7,6 @@ import { watchInitTokens, watchPlatformManager } from 'redux/assetsManager/actio
 import { watchInitLOC } from 'redux/locs/actions'
 import { balanceMinus, balancePlus, DUCK_MAIN_WALLET, ETH, watchInitWallet, watchInitWallet2 } from 'redux/mainWallet/actions'
 import { watchInitMarket } from 'redux/market/action'
-import { watchWalletManager } from 'redux/multisigWallet/actions'
 import { notify } from 'redux/notifier/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
@@ -75,16 +75,16 @@ export const globalWatcher = () => async (dispatch) => {
 
 // for all logged in users
 export const watcher = () => async (dispatch) => {
-
+  dispatch(initTokens())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
   // TODO @dkchv: !!! restore
-  // dispatch(watchInitWallet())
-  dispatch(watchInitWallet2())
-  dispatch(watchWalletManager())
+  dispatch(watchInitWallet())
+  // dispatch(watchInitWallet2())
+  // dispatch(initWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())

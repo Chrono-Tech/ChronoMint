@@ -66,8 +66,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
-  await tokenService.init()
-
   dispatch(initWallet())
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())

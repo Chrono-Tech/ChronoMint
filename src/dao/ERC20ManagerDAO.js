@@ -71,10 +71,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
         blockchain: 'Ethereum',
+        isERC20: true,
       })
       map = map.set(token.id(), token)
-
-      this.emit(EVENT_NEW_ERC20_TOKEN, token)
     })
 
     return map

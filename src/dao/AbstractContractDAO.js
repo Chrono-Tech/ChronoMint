@@ -44,9 +44,6 @@ export default class AbstractContractDAO extends EventEmitter {
   _c = web3Converter
 
   /** @protected */
-  _web3Provider = web3Provider
-
-  /** @protected */
   static _account: string
 
   /**
@@ -79,6 +76,11 @@ export default class AbstractContractDAO extends EventEmitter {
     this._eventsContract = null
     this._okCodes = DEFAULT_OK_CODES
     this._errorCodes = DEFAULT_ERROR_CODES
+
+    Object.defineProperty(this, '_web3Provider', {
+      value: web3Provider,
+      enumerable: false,
+    })
 
     if (json) {
       this.contract = this._initContract()

@@ -25,7 +25,12 @@ export default class TokenModel extends abstractFetchingModel({
   isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
   feeAddress: null,
+  isERC20: false,
 }) {
+  id () {
+    return this.symbol()
+  }
+
   dao (): AbstractTokenDAO | ERC20DAO {
     return this.get('dao')
   }
@@ -60,10 +65,6 @@ export default class TokenModel extends abstractFetchingModel({
 
   managersList (value): Array {
     return this._getSet('managersList', value)
-  }
-
-  id () {
-    return this.symbol()
   }
 
   name () {
@@ -137,6 +138,10 @@ export default class TokenModel extends abstractFetchingModel({
       feePercent: this.fee(),
       withFee: this.withFee(),
     }
+  }
+
+  isERC20 () {
+    return this.get('isERC20')
   }
 }
 

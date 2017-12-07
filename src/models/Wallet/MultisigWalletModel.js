@@ -12,7 +12,6 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   // TODO @dkchv: update functional
   name: 'No name',
   requiredSignatures: null,
-  dao: null,
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
 }) {
@@ -61,10 +60,6 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 
   isMultisig () {
     return this.get('isMultisig')
-  }
-
-  dao () {
-    return this.get('dao')
   }
 
   transactions (value) {

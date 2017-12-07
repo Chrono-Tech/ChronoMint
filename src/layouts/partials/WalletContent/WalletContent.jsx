@@ -1,14 +1,15 @@
+import classNames from 'classnames'
+import { DepositTokens, Points, SendTokens, TransactionsTable, WalletChanger, WalletPendingTransfers } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
+import { isTestingNetwork } from 'Login/network/settings'
+import { DUCK_NETWORK } from 'Login/redux/network/actions'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { SendTokens, DepositTokens, TransactionsTable, Points, WalletChanger, WalletPendingTransfers } from 'components'
-import { Translate } from 'react-redux-i18n'
-import classNames from 'classnames'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { getAccountTransactions } from 'redux/mainWallet/actions'
-import { DUCK_NETWORK } from 'Login/redux/network/actions'
-import { isTestingNetwork } from 'Login/network/settings'
+import { initWalletManager } from 'redux/multisigWallet/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
-import Preloader from 'components/common/Preloader/Preloader'
 
 import './WalletContent.scss'
 
@@ -33,6 +34,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getTransactions: (tokens) => dispatch(getAccountTransactions(tokens)),
+    initWalletManager: () => dispatch(initWalletManager()),
   }
 }
 
@@ -44,6 +46,11 @@ export default class WalletContent extends Component {
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
+    initWalletManager: PropTypes.func,
+  }
+
+  componentWillMount () {
+    this.props.initWalletManager()
   }
 
   renderWalletsInstructions () {

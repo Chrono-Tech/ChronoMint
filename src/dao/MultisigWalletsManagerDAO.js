@@ -67,7 +67,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       address,
       transactionHash,
       requiredSignatures,
-      dao: walletDAO,
       tokens,
       is2FA,
       isFetched: true,
