@@ -20,7 +20,7 @@ const watchMarket = (dispatch, getState) => async () => {
     return
   }
   const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
-  const prices = response && response.json ? await response.json() : {}
+  const prices = response ? response.data : {}
   dispatch({ type: MARKET_UPDATE_PRICES, prices })
 }
 
