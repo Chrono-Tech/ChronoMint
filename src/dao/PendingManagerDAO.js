@@ -28,7 +28,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return [
       contractsManagerDAO.getUserManagerDAO(),
       contractsManagerDAO.getLOCManagerDAO(),
-      contractsManagerDAO.getVotingDAO(),
+      contractsManagerDAO.getPollInterfaceDAO(),
     ]
   }
 

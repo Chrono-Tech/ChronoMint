@@ -2,6 +2,8 @@ import Immutable from 'immutable'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
+export const TX_ACTIVATE_POLL = 'activatePoll'
+
 export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(PollInterfaceABI, at, MultiEventsHistoryABI)
@@ -21,7 +23,7 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   activatePoll () {
-    return this._multisigTx('activatePoll')
+    return this._multisigTx(TX_ACTIVATE_POLL)
   }
 
 }

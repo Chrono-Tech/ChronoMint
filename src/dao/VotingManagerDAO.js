@@ -48,8 +48,14 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsPaginated (startIndex, pageSize) {
+    // eslint-disable-next-line
+    console.log(startIndex.toString(), pageSize)
     const addresses = await this._call('getPollsPaginated', [startIndex, pageSize])
+    // eslint-disable-next-line
+    console.log('addresses', addresses.filter((address) => !this.isEmptyAddress(address)))
     const details = await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
+    // eslint-disable-next-line
+    console.log('details', details)
     return details
   }
 
@@ -110,47 +116,53 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
       let result = {}
       for (let i = 0; i < pollsAddresses.length; i++) {
-        const pollId = pollsAddresses[i]
-        const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
-        const votes = await pollInterface.getVotesBalances()
-        const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
-        const { title, description, options, files } = await ipfs.get(hash)
-        const poll = new PollModel({
-          id: pollId,
-          owner: owners[i],
-          hash,
-          votes,
-          title: title,
-          description: description[i],
-          voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimits[i]),
-          deadline: deadlines[i].toNumber() ? new Date(deadlines[i].toNumber()) : null, // deadline is just a timestamp
-          published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp
-          status: statuses[i],
-          active: activeStatuses[i],
-          options: new Immutable.List(options || []),
-          files,
-        })
-        const totalSupply = await timeDAO.totalSupply()
-        const shareholdersCount = await timeHolderDAO.shareholdersCount()
-        const pollFiles = poll && await ipfs.get(poll.files())
+        try {
+          const pollId = pollsAddresses[i]
+          const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
+          const votes = await pollInterface.getVotesBalances()
+          const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
+          const { title, description, options, files } = await ipfs.get(hash)
+          const poll = new PollModel({
+            id: pollId,
+            owner: owners[i],
+            hash,
+            votes,
+            title: title,
+            description: description[i],
+            voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimits[i]),
+            deadline: deadlines[i].toNumber() ? new Date(deadlines[i].toNumber()) : null, // deadline is just a timestamp
+            published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp
+            status: statuses[i],
+            active: activeStatuses[i],
+            options: new Immutable.List(options || []),
+            files,
+          })
+          const totalSupply = await timeDAO.totalSupply()
+          const shareholdersCount = await timeHolderDAO.shareholdersCount()
+          const pollFiles = poll && await ipfs.get(poll.files())
 
-        result[pollId] = new PollDetailsModel({
-          poll,
-          votes,
-          // statistics,
-          // memberVote: memberVote && memberVote.toNumber(), // just an option index
-          timeDAO,
-          totalSupply,
-          shareholdersCount,
-          files: new Immutable.List((pollFiles && pollFiles.links || [])
-            .map((item) => FileModel.createFromLink(item))),
-        })
-
+          result[pollId] = new PollDetailsModel({
+            poll,
+            votes,
+            // statistics,
+            // memberVote: memberVote && memberVote.toNumber(), // just an option index
+            timeDAO,
+            totalSupply,
+            shareholdersCount,
+            files: new Immutable.List((pollFiles && pollFiles.links || [])
+              .map((item) => FileModel.createFromLink(item))),
+          })
+        } catch (e) {
+          // eslint-disable-next-line
+          console.error(e.message)
+        }
       }
 
       return result
 
     } catch (e) {
+      // eslint-disable-next-line
+      console.error(e.message)
       // ignore, poll doesn't exist
       return null
     }

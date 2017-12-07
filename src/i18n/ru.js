@@ -8,6 +8,7 @@ import * as exchange from 'dao/ExchangeDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
+import * as pollInterface from 'dao/PollInterfaceDAO'
 import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
@@ -445,6 +446,11 @@ export default {
       },
       [exchange.TX_WITHDRAW_ETH]: {
         title: 'Подтвердите вывод ETH',
+      },
+    },
+    PollInterface: {
+      [pollInterface.TX_ACTIVATE_POLL]: {
+        title: 'Activate poll',
       },
     },
   },

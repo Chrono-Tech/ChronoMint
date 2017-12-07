@@ -53,7 +53,7 @@ export const watchInitPolls = () => async (dispatch) => {
     // dispatch(updateVoteLimit()),
     dao.watchCreated(callback),
     // dao.watchRemoved(callback),
-    // dao.watchActivated(callback),
+    dao.watchActivated(callback),
     // dao.watchEnded(callback),
     // dao.watchVoted(callback),
     // dao.watchUpdated(callback)
