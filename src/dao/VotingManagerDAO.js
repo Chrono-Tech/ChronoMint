@@ -24,9 +24,9 @@ export const TX_ADMIN_END_POLL = 'adminEndPoll'
 const EVENT_POLL_CREATED = 'PollCreated'
 const EVENT_POLL_UPDATED = 'PollUpdated'
 const EVENT_POLL_ACTIVATED = 'PollActivated'
-const EVENT_POLL_DELETED = 'PollDeleted'
+const EVENT_POLL_REMOVED = 'PollRemoved'
 const EVENT_POLL_ENDED = 'PollEnded'
-const EVENT_VOTE_CREATED = 'VoteCreated'
+const EVENT_POLL_VOTED = 'PollVoted'
 
 export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -48,19 +48,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsPaginated (startIndex, pageSize) {
-    // eslint-disable-next-line
-    console.log(startIndex.toString(), pageSize)
     const addresses = await this._call('getPollsPaginated', [startIndex, pageSize])
-    // eslint-disable-next-line
-    console.log('addresses', addresses.filter((address) => !this.isEmptyAddress(address)))
-    const details = await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
-    // eslint-disable-next-line
-    console.log('details', details)
-    return details
-  }
-
-  vote () {
-
+    return await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
   async createPoll (poll: PollModel) {
@@ -205,10 +194,10 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async watchRemoved (callback) {
-    return this._watch(EVENT_POLL_DELETED, this._watchCallback(callback, IS_REMOVED))
+    return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
   }
 
   async watchVoted (callback) {
-    return this._watch(EVENT_VOTE_CREATED, this._watchCallback(callback, IS_VOTED))
+    return this._watch(EVENT_POLL_VOTED, this._watchCallback(callback, IS_VOTED))
   }
 }

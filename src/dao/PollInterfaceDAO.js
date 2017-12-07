@@ -3,6 +3,8 @@ import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ACTIVATE_POLL = 'activatePoll'
+export const TX_VOTE = 'vote'
+export const TX_REMOVE_POLL = 'killPoll'
 
 export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -24,6 +26,14 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
 
   activatePoll () {
     return this._multisigTx(TX_ACTIVATE_POLL)
+  }
+
+  vote (choice) {
+    return this._tx(TX_VOTE, [choice])
+  }
+
+  removePoll () {
+    return this._tx(TX_REMOVE_POLL)
   }
 
 }

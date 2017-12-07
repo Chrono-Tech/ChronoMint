@@ -54,12 +54,6 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     return tx.tx
   }
 
-  removePoll (id) {
-    return this._tx(TX_REMOVE_POLL, [
-      id,
-    ])
-  }
-
   // activatePoll (pollId) {
   //   return this._multisigTx(TX_ACTIVATE_POLL, [
   //     pollId,

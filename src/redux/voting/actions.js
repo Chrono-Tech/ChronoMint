@@ -40,7 +40,7 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 }
 
 const updateVoteLimit = () => async (dispatch) => {
-  const votingDAO = await contractsManagerDAO.getVotingDAO()
+  const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
   const voteLimitInTIME = await votingDAO.getVoteLimit()
   dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
@@ -50,12 +50,12 @@ export const watchInitPolls = () => async (dispatch) => {
 
   const dao = await contractsManagerDAO.getVotingManagerDAO()
   return await Promise.all([
-    // dispatch(updateVoteLimit()),
+    dispatch(updateVoteLimit()),
     dao.watchCreated(callback),
-    // dao.watchRemoved(callback),
+    dao.watchRemoved(callback),
     dao.watchActivated(callback),
     // dao.watchEnded(callback),
-    // dao.watchVoted(callback),
+    dao.watchVoted(callback),
     // dao.watchUpdated(callback)
   ])
 }
@@ -88,8 +88,8 @@ export const updatePoll = (poll: PollModel) => async () => {
 export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollRemoved(poll.poll().id()))
-    const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.removePoll(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    await dao.removePoll()
   } catch (e) {
     dispatch(handlePollCreated(poll))
     throw e
@@ -99,8 +99,8 @@ export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
 export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
-    const dao = await contractsManagerDAO.getVotingActorDAO()
-    await dao.vote(poll.poll().id(), choice)
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    await dao.vote(choice)
   } catch (e) {
     dispatch(handlePollUpdated(poll))
     throw e
