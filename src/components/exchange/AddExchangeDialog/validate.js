@@ -10,7 +10,7 @@ export default function validate (values) {
   sellPriceErrors.add(validator.positiveNumber(values.get('sellPrice'), true))
   sellPriceErrors.add(validator.required(values.get('sellPrice')))
 
-  buyPriceErrors.add(validator.lowerThan(values.get('buyPrice'), values.get('sellPrice')))
+  buyPriceErrors.add(validator.lowerThan(values.get('buyPrice'), values.get('sellPrice'), true))
 
   let tokenErrors = new ErrorList()
   tokenErrors.add(validator.required(values.get('token')))
