@@ -19,7 +19,6 @@ import FileModel from '../models/FileSelect/FileModel'
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
 export const TX_ACTIVATE_POLL = 'activatePoll'
-export const TX_ADMIN_END_POLL = 'adminEndPoll'
 
 const EVENT_POLL_CREATED = 'PollCreated'
 const EVENT_POLL_UPDATED = 'PollUpdated'
@@ -90,10 +89,6 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     return this._multisigTx(TX_ACTIVATE_POLL)
   }
 
-  endPoll () {
-    return this._multisigTx(TX_ADMIN_END_POLL)
-  }
-
   async getPollsDetails (pollsAddresses: Array<string>) {
     try {
       const [response, timeDAO, timeHolderDAO] = await Promise.all([
@@ -116,8 +111,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             owner: owners[i],
             hash,
             votes,
-            title: title,
-            description: description[i],
+            title,
+            description,
             voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimits[i]),
             deadline: deadlines[i].toNumber() ? new Date(deadlines[i].toNumber()) : null, // deadline is just a timestamp
             published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp

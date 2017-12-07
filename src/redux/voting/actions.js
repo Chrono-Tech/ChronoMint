@@ -54,7 +54,7 @@ export const watchInitPolls = () => async (dispatch) => {
     dao.watchCreated(callback),
     dao.watchRemoved(callback),
     dao.watchActivated(callback),
-    // dao.watchEnded(callback),
+    dao.watchEnded(callback),
     dao.watchVoted(callback),
     // dao.watchUpdated(callback)
   ])
@@ -126,8 +126,8 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
         .set('active', false)
         .set('status', false))
       .isFetching(true)))
-    const dao = await contractsManagerDAO.getVotingDAO()
-    await dao.endPoll(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    await dao.endPoll()
   } catch (e) {
     dispatch(handlePollUpdated(poll))
   }

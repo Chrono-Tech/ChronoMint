@@ -9,7 +9,7 @@ export default function validate (values, props) {
     title: ErrorList.toTranslate(validator.required(values.get('title'))),
     voteLimitInTIME: new ErrorList()
       .add(validator.required(voteLimitInTIME))
-      .add(validator.lowerThan(voteLimitInTIME || 0, props.maxVoteLimitInTIME))
+      .add(validator.lowerThan(voteLimitInTIME || 0, props.maxVoteLimitInTIME, true))
       .getErrors(),
     deadline: new ErrorList()
       .add(validator.required(deadline))

@@ -5,6 +5,7 @@ import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_VOTE = 'vote'
 export const TX_REMOVE_POLL = 'killPoll'
+export const TX_END_POLL = 'endPoll'
 
 export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -34,6 +35,10 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
 
   removePoll () {
     return this._tx(TX_REMOVE_POLL)
+  }
+
+  endPoll () {
+    return this._multisigTx(TX_END_POLL)
   }
 
 }
