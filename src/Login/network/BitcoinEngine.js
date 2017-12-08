@@ -32,15 +32,11 @@ export class BitcoinEngine {
       },
     ]
 
-    console.log('11', to, amount, feeRate)
-
     const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,
     })), targets, feeRate)
-
-    console.log('22', fee, inputs, outputs)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 

@@ -67,7 +67,9 @@ export class BitcoinDAO {
     try {
       return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
     } catch (e) {
-      console.log(e)
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
     }
   }
 
