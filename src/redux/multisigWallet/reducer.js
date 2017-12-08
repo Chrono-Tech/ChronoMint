@@ -18,6 +18,8 @@ export default (state = initialState, action) => {
       return state.selected(action.wallet.address())
     case a.MULTISIG_REMOVE:
       return state.list(state.list().remove(action.id))
+    case a.MULTISIG_BALANCE:
+      return state.balance(action.walletId, action.symbol, action.balance)
     default:
       return state
   }

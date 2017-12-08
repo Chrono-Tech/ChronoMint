@@ -18,8 +18,6 @@ const events = {
   WALLET_CREATED: 'WalletCreated',
 }
 
-let test = 1000
-
 export const EVENT_NEW_MS_WALLET = 'newMSWallet'
 export const EVENT_MS_WALLETS_COUNT = 'msWalletCount'
 
@@ -52,27 +50,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     })
   }
 
-  async getWallets () {
-    const [addresses, is2FA] = await this._call(functions.GET_WALLETS)
-    let models = new Immutable.Map()
-    let promises = []
-    addresses.forEach((address, i) => {
-      promises.push(this._createWalletModel(address, is2FA[i]))
-    })
-    const wallets = await Promise.all(promises)
-    for (let wallet of wallets) {
-      models = models.set(wallet.address(), wallet)
-    }
-    return models
-  }
-
   async _createWalletModel (address, is2FA, transactionHash) {
-
-    await new Promise((resolve) => {
-      test *= 2
-      setTimeout(() => resolve(), test)
-    })
-
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
     const [owners, requiredSignatures, tokens] = await Promise.all([
       walletDAO.getOwners(),

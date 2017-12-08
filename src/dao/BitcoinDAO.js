@@ -61,6 +61,11 @@ export class BitcoinDAO extends EventEmitter {
     }
   }
 
+  async getAccountBalance () {
+    const balances = await this.getAccountBalances()
+    return balances.balance
+  }
+
   // eslint-disable-next-line no-unused-vars
   async transfer (to, amount: BigNumber) {
     return await this._bitcoinProvider.transfer(to, amount)

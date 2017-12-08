@@ -9,8 +9,9 @@ class TokenService extends EventEmitter {
     this._cache = {}
   }
 
-  getDAO (address) {
-
+  getDAO (token) {
+    console.log('--TokenService#getDAO', this._cache)
+    return this._cache[ token.symbol() ]
   }
 
   createDAO (token) {

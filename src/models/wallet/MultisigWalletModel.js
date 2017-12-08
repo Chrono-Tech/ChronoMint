@@ -40,8 +40,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('address')
   }
 
-  balances () {
-    return this.get('balances')
+  balances (value) {
+    return this._getSet('balances', value)
   }
 
   isNew () {
