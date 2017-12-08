@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
-import web3Provider from 'Login/network/Web3Provider'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import TxModel from 'models/TxModel'
 import Web3Converter from 'utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'

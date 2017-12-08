@@ -1,4 +1,4 @@
-import exchangeProvider from 'Login/network/ExchangeProvider'
+import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
 import exchangeService from 'services/ExchangeService'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'

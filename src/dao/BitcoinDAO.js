@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
-import { btcProvider, bccProvider } from 'Login/network/BitcoinProvider'
-import { DECIMALS } from 'Login/network/BitcoinEngine'
+import { btcProvider, bccProvider } from '@chronobank/login/network/BitcoinProvider'
+import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
 
 const EVENT_TX = 'tx'
