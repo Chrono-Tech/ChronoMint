@@ -1,4 +1,4 @@
-import { en as Login } from '@chronobank/login/lang'
+import { en as Login } from '@chronobank/login-ui/lang'
 import { en as components } from 'components/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
