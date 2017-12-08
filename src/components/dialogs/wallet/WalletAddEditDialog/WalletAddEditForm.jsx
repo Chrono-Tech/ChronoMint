@@ -46,8 +46,7 @@ export default class WalletAddEditForm extends PureComponent {
   } & formPropTypes
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues } = this.props
-    const isNew = initialValues.get('isNew')
+    const { handleSubmit, pristine, valid } = this.props
 
     return (
       <form styleName='content' onSubmit={handleSubmit}>
@@ -60,13 +59,6 @@ export default class WalletAddEditForm extends PureComponent {
           </div>
         </div>
         <div styleName='dialogBody'>
-          <Field
-            component={TextField}
-            name='name'
-            fullWidth
-            disabled
-            floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
-          />
           <Field
             component={TextField}
             name='requiredSignatures'

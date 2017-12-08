@@ -58,6 +58,7 @@ const buildConfig = (factory) => {
         {
           test: /(\.js|\.jsx)$/,
           include: srcPath,
+          exclude: /node_modules(?![\\/]@chronobank)/,
           loader: 'babel-loader',
           query: babel,
         },

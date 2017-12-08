@@ -1,6 +1,6 @@
 import { push, replace } from 'react-router-redux'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import networkService from 'Login/redux/network/actions'
+import networkService from '@chronobank/login/network/NetworkService'
 import ProfileModel from 'models/ProfileModel'
 import { bootstrap } from 'redux/bootstrap/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
