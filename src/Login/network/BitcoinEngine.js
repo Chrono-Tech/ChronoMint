@@ -3,7 +3,7 @@ import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 export const DECIMALS = 100000000
-const FEE_RATE = 125000 // satoshis per byte
+const FEE_RATE = 200 // satoshis per byte
 
 export class BitcoinEngine {
   constructor (wallet, network) {
@@ -52,6 +52,7 @@ export class BitcoinEngine {
       txb.addInput(input.txId, input.vout)
       // txb.addInput(input.txId, input.vout, bitcoin.Transaction.DEFAULT_SEQUENCE, spk)
     }
+
     for (const output of outputs) {
       if (!output.address) {
         output.address = this.getAddress()
@@ -89,6 +90,17 @@ export class LTCEngine extends BTCEngine {
 export class BTGEngine extends BitcoinEngine {
   constructor (wallet, network) {
     super(wallet, network)
+  }
+
+  _signInputs (txb, inputs) {
+    txb.enableBitcoinGold(true)
+    txb.setVersion(2)
+
+    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+
+    for (let i = 0; i < inputs.length; i++) {
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ 0 ].value)
+    }
   }
 }
 

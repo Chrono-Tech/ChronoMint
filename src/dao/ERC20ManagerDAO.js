@@ -5,7 +5,7 @@ import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { bccDAO, btcDAO, ltcDAO } from './BitcoinDAO'
+import { bccDAO, btcDAO, btgDAO, ltcDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
@@ -20,7 +20,7 @@ const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
-const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'LTC']
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC']
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -125,10 +125,13 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const bitcoinLikeTokens = await Promise.all([
         this._setupBitcoinDAO('BTC', 'Bitcoin', btcDAO),
         this._setupBitcoinDAO('BCC', 'Bitcoin Cash', bccDAO),
+        this._setupBitcoinDAO('BTG', 'Bitcoin Gold', btgDAO),
         this._setupBitcoinDAO('LTC', 'Litecoin', ltcDAO),
       ])
       for (let t of bitcoinLikeTokens) {
-        map = map.set(t.id(), t)
+        if (t !== null) {
+          map = map.set(t.id(), t)
+        }
       }
     }
 

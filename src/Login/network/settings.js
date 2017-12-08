@@ -38,7 +38,7 @@ const RINKEBY_BASE = {
   scanner: scannerMap.rinkeby,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold',
+  bitcoinGold: 'bitcoingold_testnet',
   // Disabled until we have no https API
   // litecoin: 'litecoin_testnet',
   nem: 'Testnet',
@@ -51,7 +51,7 @@ const KOVAN_BASE = {
   scanner: scannerMap.kovan,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold',
+  bitcoinGold: 'bitcoingold_testnet',
   // Disabled until we have no https API
   // litecoin: 'litecoin_testnet',
   nem: 'Testnet',
@@ -104,7 +104,7 @@ if (process.env.NODE_ENV === 'development') {
     name: 'Private (develop network)',
     bitcoin: 'testnet',
     bitcoinCash: 'testnet',
-    bitcoinGold: 'bitcoingold',
+    bitcoinGold: 'bitcoingold_testnet',
     // Disabled until we have no https API
     // litecoin: 'litecoin_testnet',
     nem: 'Testnet',
@@ -115,10 +115,10 @@ if (process.env.NODE_ENV === 'development') {
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
   host: `localhost:3000${TESTRPC_URL}`,
-  bitcoin: 'testnet',
-  bitcoinCash: 'testnet',
+  bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
   bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin_testnet',
+  litecoin: 'litecoin',
   nem: 'Testnet',
 }
 

@@ -51,21 +51,29 @@ const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-export const BTG_TESTNET_NODE = new BitcoinMiddlewareNode({
+const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://middleware-bitcoingold-testnet-rest.chronobank.io',
+    baseURL: 'https://testnet.btgexplorer.com/api',
     timeout: 4000,
   }),
-  socket: {
-    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
-    user: 'rabbitmq_user',
-    password: '38309100024',
-    channels: {
-      balance: '/exchange/events/app_testnet-bitcoingold-middleware-chronobank-io_balance',
-    },
-  },
-  trace: true,
+  trace: false,
 })
+
+// export const BTG_TESTNET_NODE = new BitcoinMiddlewareNode({
+//   api: axios.create({
+//     baseURL: 'https://middleware-bitcoingold-testnet-rest.chronobank.io',
+//     timeout: 4000,
+//   }),
+//   socket: {
+//     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+//     user: 'rabbitmq_user',
+//     password: '38309100024',
+//     channels: {
+//       balance: '/exchange/events/app_testnet-bitcoingold-middleware-chronobank-io_balance',
+//     },
+//   },
+//   trace: true,
+// })
 
 const LTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
