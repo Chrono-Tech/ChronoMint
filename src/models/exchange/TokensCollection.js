@@ -1,5 +1,5 @@
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
-import type TokenModel from '../TokenModel'
+import type TokenModel from '../tokens/TokenModel'
 
 export default class TokensCollection extends abstractFetchingCollection({}) {
   getBySymbol (symbol: string) {

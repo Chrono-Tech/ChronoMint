@@ -1,4 +1,4 @@
-import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
+import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 
 import * as a from './actions'
 
@@ -9,12 +9,9 @@ export default (state = initialState, action) => {
     case a.MULTISIG_INIT:
       return state.isInited(true)
     case a.MULTISIG_FETCHING:
-      return state.isFetching(true)
+      return state.leftToFetch(action.count)
     case a.MULTISIG_FETCHED:
-      return state
-        .list(action.wallets)
-        .isFetched(true)
-        .isFetching(false)
+      return state.itemFetched(action.wallet)
     case a.MULTISIG_UPDATE:
       return state.list(state.list().set(action.wallet.id(), action.wallet))
     case a.MULTISIG_SELECT:

@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import TokensCollection from 'models/exchange/TokensCollection'

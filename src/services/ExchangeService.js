@@ -1,4 +1,4 @@
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeManagerDAO from 'dao/ExchangeManagerDAO'
 import { ExchangeDAO } from 'dao/ExchangeDAO'
 import EventEmitter from 'events'

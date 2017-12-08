@@ -4,7 +4,7 @@ import EventEmitter from 'events'
 import { DECIMALS } from 'Login/network/BitcoinEngine'
 import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 
 const EVENT_TX = 'tx'

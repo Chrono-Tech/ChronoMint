@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import { MultiEventsHistoryABI, TokenManagementInterfaceABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 

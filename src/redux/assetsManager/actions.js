@@ -1,6 +1,6 @@
 import Immutable from 'immutable'
 import contractManager from 'dao/ContractsManagerDAO'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Web3Converter from 'utils/Web3Converter'
 

@@ -1,10 +1,12 @@
 import Immutable from 'immutable'
-import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
-import TransactionsCollection from 'models/Wallet/TransactionsCollection'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
+import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
+  balances: new BalancesCollection(),
   tokens: new Immutable.Map(), //
   isMultisig: true, //
   transactions: new TransactionsCollection(),
@@ -36,6 +38,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 
   address () {
     return this.get('address')
+  }
+
+  balances () {
+    return this.get('balances')
   }
 
   isNew () {

@@ -4,6 +4,7 @@ import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export const abstractFetchingCollection = (defaultValues) => class AbstractFetchingCollection extends abstractFetchingModel({
   list: new Immutable.Map(),
+  leftToFetch: 0,
   selected: null,
   ...defaultValues,
 }) {
@@ -34,6 +35,21 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
 
   item (id) {
     return this.list().get(id)
+  }
+
+  leftToFetch (value) {
+    if (value === undefined) {
+      return this.get('leftToFetch')
+    }
+    const result = this.set('leftToFetch', value).isFetching(value > 0)
+    return value === 0 && !this.isFetched()
+      ? result.isFetched(true)
+      : result
+  }
+
+  itemFetched (item) {
+    const leftToFetch = Math.max(this.leftToFetch() - 1, 0)
+    return this.add(item).leftToFetch(leftToFetch)
   }
 
   selected (value) {

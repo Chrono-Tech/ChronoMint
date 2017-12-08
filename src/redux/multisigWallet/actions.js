@@ -1,12 +1,13 @@
-import multisigWalletService, { EVENT_CONFIRMATION, EVENT_CONFIRMATION_NEEDED, EVENT_DEPOSIT, EVENT_MULTI_TRANSACTION, EVENT_OWNER_ADDED, EVENT_OWNER_REMOVED, EVENT_REVOKE } from 'services/MultisigWalletService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import type MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import TokenModel from 'models/TokenModel'
+import { EVENT_MS_WALLETS_COUNT, EVENT_NEW_MS_WALLET } from 'dao/MultisigWalletsManagerDAO'
 import type WalletNoticeModel from 'models/notices/WalletNoticeModel'
-import { DUCK_SESSION } from 'redux/session/actions'
+import TokenModel from 'models/tokens/TokenModel'
+import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import { notify } from 'redux/notifier/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import multisigWalletService, { EVENT_CONFIRMATION, EVENT_CONFIRMATION_NEEDED, EVENT_DEPOSIT, EVENT_MULTI_TRANSACTION, EVENT_OWNER_ADDED, EVENT_OWNER_REMOVED, EVENT_REVOKE } from 'services/MultisigWalletService'
 
 export const DUCK_MULTISIG_WALLET = 'multisigWallet'
 
@@ -31,23 +32,6 @@ export const watchMultisigWallet = (wallet: MultisigWalletModel) => () => {
   }
 }
 
-export const getWallets = () => async (dispatch) => {
-  dispatch({ type: MULTISIG_FETCHING })
-  const wallets = await walletsManagerDAO.getWallets()
-  const walletsArray = wallets.toArray()
-
-  // watch for every wallet
-  for (let wallet of walletsArray) {
-    dispatch(watchMultisigWallet(wallet))
-  }
-
-  dispatch({ type: MULTISIG_FETCHED, wallets })
-  if (wallets.first()) {
-    dispatch(selectMultisigWallet(wallets.first()))
-  }
-  return wallets
-}
-
 export const initWalletManager = () => async (dispatch, getState) => {
   if (getState().get(DUCK_MULTISIG_WALLET).isInited()) {
     return
@@ -65,6 +49,18 @@ export const initWalletManager = () => async (dispatch, getState) => {
     if (wallets.size() === 1) {
       dispatch(selectMultisigWallet(wallets.first()))
     }
+  })
+
+  walletsManagerDAO.on(EVENT_NEW_MS_WALLET, (wallet: MultisigWalletModel) => {
+    dispatch({ type: MULTISIG_FETCHED, wallet })
+    // select first one
+    if (getState().get(DUCK_MULTISIG_WALLET).size() === 1) {
+      dispatch(selectMultisigWallet(wallet))
+    }
+  })
+
+  walletsManagerDAO.on(EVENT_MS_WALLETS_COUNT, (count) => {
+    dispatch({ type: MULTISIG_FETCHING, count })
   })
 
   // multisig wallet events
@@ -136,7 +132,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
   })
 
   // all ready, start fetching
-  dispatch(getWallets())
+  walletsManagerDAO.fetchWallets()
 }
 
 export const selectMultisigWallet = (wallet: MultisigWalletModel) => (dispatch) => {

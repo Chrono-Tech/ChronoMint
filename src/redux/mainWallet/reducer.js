@@ -1,4 +1,4 @@
-import MainWalletModel from 'models/Wallet/MainWalletModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import * as a from './actions'
 
 const initialState = new MainWalletModel()

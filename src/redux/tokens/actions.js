@@ -1,4 +1,4 @@
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ERC20ManagerDAO from 'dao/ERC20ManagerDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { btcDAO, bccDAO } from 'dao/BitcoinDAO'

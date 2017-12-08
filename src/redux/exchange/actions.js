@@ -5,7 +5,7 @@ import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
 import { DUCK_MAIN_WALLET, WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 
 export const DUCK_EXCHANGE = 'exchange'
 

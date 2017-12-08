@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
-import type TokenModel from 'models/TokenModel'
+import type TokenModel from 'models/tokens/TokenModel'
 import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 

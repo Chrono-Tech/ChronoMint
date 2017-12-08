@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 

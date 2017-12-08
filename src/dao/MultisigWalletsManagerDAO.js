@@ -3,7 +3,7 @@ import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import Immutable from 'immutable'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import multisigWalletService from 'services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
@@ -17,6 +17,11 @@ const events = {
   WALLET_ADDED: 'WalletAdded',
   WALLET_CREATED: 'WalletCreated',
 }
+
+let test = 1000
+
+export const EVENT_NEW_MS_WALLET = 'newMSWallet'
+export const EVENT_MS_WALLETS_COUNT = 'msWalletCount'
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
@@ -38,6 +43,15 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   // --------- actions ----------
 
+  async fetchWallets () {
+    const [addresses, is2FA] = await this._call(functions.GET_WALLETS)
+    this.emit(EVENT_MS_WALLETS_COUNT, addresses.length)
+
+    addresses.forEach((address, i) => {
+      this._createWalletModel(address, is2FA[i])
+    })
+  }
+
   async getWallets () {
     const [addresses, is2FA] = await this._call(functions.GET_WALLETS)
     let models = new Immutable.Map()
@@ -53,6 +67,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async _createWalletModel (address, is2FA, transactionHash) {
+
+    await new Promise((resolve) => {
+      test *= 2
+      setTimeout(() => resolve(), test)
+    })
+
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
     const [owners, requiredSignatures, tokens] = await Promise.all([
       walletDAO.getOwners(),
@@ -62,7 +82,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
     const pendingTxList = await walletDAO.getPendings(tokens)
 
-    return new MultisigWalletModel({
+    const multisigWalletModel =  new MultisigWalletModel({
       owners: new Immutable.List(owners),
       address,
       transactionHash,
@@ -72,6 +92,9 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       isFetched: true,
       pendingTxList,
     })
+    this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)
+
+    return multisigWalletModel
   }
 
   async createWallet (wallet: MultisigWalletModel) {

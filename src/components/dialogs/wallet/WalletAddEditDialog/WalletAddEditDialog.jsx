@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { createWallet } from 'redux/multisigWallet/actions'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import WalletAddEditForm from './WalletAddEditForm'
 
 function mapDispatchToProps (dispatch) {

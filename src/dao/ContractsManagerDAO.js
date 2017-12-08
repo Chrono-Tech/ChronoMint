@@ -1,6 +1,6 @@
 import validator from 'components/forms/validator'
 import type Immutable from 'immutable'
-import type TokenModel from 'models/TokenModel'
+import type TokenModel from 'models/tokens/TokenModel'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'

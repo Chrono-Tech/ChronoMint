@@ -107,6 +107,16 @@
   align-items: center;
 }
 
+.buttonPreloader {
+  display: flex;
+  margin-right: 5px;
+}
+
+.buttonCounter {
+  margin-left: 5px;
+  color: $color-grey;
+}
+
 .buttonIcon {
   margin-top: -5px;
   margin-right: 10px;
