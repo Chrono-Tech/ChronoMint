@@ -175,7 +175,7 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^@(.*)$": "<rootDir>/src/$1",
+      "^@chronobank(.*)$": "<rootDir>/packages/$1",
       "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
       "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
     }
