@@ -31,9 +31,15 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
               this.trace('Address Balance', data)
               const ev = {
                 address: data.address,
-                balance0: new BigNumber(data.balances.confirmations0),
-                balance3: new BigNumber(data.balances.confirmations3),
-                balance6: new BigNumber(data.balances.confirmations6),
+                balance0: data.balances.confirmations0 != null // nil check
+                  ? new BigNumber(data.balances.confirmations0)
+                  : null,
+                balance3: data.balances.confirmations3 != null // nil check
+                  ? new BigNumber(data.balances.confirmations3)
+                  : null,
+                balance6: data.balances.confirmations6 != null // nil check
+                  ? new BigNumber(data.balances.confirmations6)
+                  : null,
               }
               this.emit('balance', ev)
             } catch (e) {

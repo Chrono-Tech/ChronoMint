@@ -13,15 +13,18 @@ export default class AbstractProvider extends EventEmitter {
   }
 
   isInitialized () {
-    return this._isInited
-  }
+    // Initialized by design if and only if it has an associated engine
+    return !!this._engine
 
+  }
   setEngine (engine: NemEngine | BitcoinEngine) {
-    if (this._isInited) {
+    if (this._engine) {
       this.unsubscribe(this._engine)
     }
     this._engine = engine
-    this.subscribe(this._engine)
+    if (this._engine) {
+      this.subscribe(this._engine)
+    }
     this._isInited = true
   }
 

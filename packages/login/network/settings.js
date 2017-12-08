@@ -38,7 +38,7 @@ const RINKEBY_BASE = {
   scanner: scannerMap.rinkeby,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold_testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
@@ -50,7 +50,7 @@ const KOVAN_BASE = {
   scanner: scannerMap.kovan,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold_testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
@@ -112,7 +112,7 @@ if (process.env.NODE_ENV === 'development') {
     name: 'Private (develop network)',
     bitcoin: 'testnet',
     bitcoinCash: 'testnet',
-    bitcoinGold: 'bitcoingold_testnet',
+    // bitcoinGold: 'bitcoingold_testnet',
     litecoin: 'litecoin_testnet',
     nem: 'Testnet',
   })
@@ -124,7 +124,7 @@ export const infuraLocalNetwork = {
   host: `localhost:3000${TESTRPC_URL}`,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  bitcoinGold: 'bitcoingold_testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
