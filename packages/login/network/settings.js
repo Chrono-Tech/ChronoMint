@@ -5,7 +5,7 @@ export const LOCAL_PROVIDER_ID = 6
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
-export const TESTRPC_URL ='/web3/'
+export const TESTRPC_URL = '/web3/'
 
 const scannerMap = {
   // only for mainnet API url is different from web-interface url
@@ -59,6 +59,16 @@ const BASE_NETWORK_MAP = [
   RINKEBY_BASE,
   KOVAN_BASE,
 ]
+
+// --------- middleware
+
+export const MIDDLEWARE_MAP = {
+  eth: {
+    local: '/_exchange/',
+    mainnet: 'https://middleware-ethereum-mainnet-rest.chronobank.io/',
+    testnet: 'https://middleware-ethereum-testnet-rest.chronobank.io/',
+  },
+}
 
 // --------- providers
 
