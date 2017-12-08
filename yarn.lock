@@ -321,7 +321,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -9653,7 +9653,7 @@ truffle-contract@^3.0.1:
     truffle-contract-schema "^1.0.0"
     web3 "^0.20.1"
 
-"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
+truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

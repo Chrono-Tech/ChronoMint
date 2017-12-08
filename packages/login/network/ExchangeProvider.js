@@ -1,0 +1,34 @@
+import axios from 'axios'
+import networkService from '@chronobank/login/network/NetworkService'
+import { NETWORK_MAIN_ID, MIDDLEWARE_MAP } from './settings'
+
+class ExchangeProvider {
+
+  url () {
+    const { network } = networkService.getProviderSettings()
+
+    if (!network.id) {
+      return MIDDLEWARE_MAP.eth.local
+    }
+
+    if (network.id === NETWORK_MAIN_ID) {
+      return MIDDLEWARE_MAP.eth.mainnet
+    } else {
+      return MIDDLEWARE_MAP.eth.testnet
+    }
+  }
+
+  async getAssetSymbols () {
+    const response = await axios.get(`${this.url()}events/exchangecreated/`) //?distinct=symbol
+    return response ? response.data : []
+  }
+
+  async getExchangesWithFilter (symbol: string, sort: string) {
+    const symbolStr = symbol ? `?symbol=/^${symbol}/&` : `?`
+    const response = await axios.get(`${this.url()}events/exchangecreated/${symbolStr}${sort}`)
+    const exchanges = response ? response.data : []
+    return exchanges.map((exchange) => exchange.exchange)
+  }
+}
+
+export default new ExchangeProvider()

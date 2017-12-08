@@ -1,9 +1,11 @@
 {
-  "name": "chronoMint",
+  "name": "@chronobank/mint",
   "version": "0.3.2",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
+    "@chronobank/login": "*",
+    "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",
@@ -181,5 +183,8 @@
   "engines": {
     "node": ">=7.9.0",
     "yarn": ">=1.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

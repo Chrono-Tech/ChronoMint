@@ -7,14 +7,14 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-import { getNetworkById } from 'Login/network/settings'
+import { getNetworkById } from '@chronobank/login/network/settings'
 import {
   NETWORK_STATUS_UNKNOWN,
   NETWORK_STATUS_OFFLINE,
   NETWORK_STATUS_ONLINE,
   SYNC_STATUS_SYNCING,
   SYNC_STATUS_SYNCED,
-} from 'Login/network/MonitorService'
+} from '@chronobank/login/network/MonitorService'
 import { drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'

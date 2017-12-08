@@ -1,6 +1,6 @@
-import { LOCAL_ID } from 'Login/network/settings'
+import { LOCAL_ID } from '@chronobank/login/network/settings'
 import ls from 'utils/LocalStorage'
-import networkService from 'Login/redux/network/actions'
+import networkService from '@chronobank/login/network/NetworkService'
 import { login, createSession, destroySession } from 'redux/session/actions'
 
 export const bootstrap = (relogin = true) => async (dispatch) => {
