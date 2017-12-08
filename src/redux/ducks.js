@@ -1,4 +1,4 @@
-import Login from 'Login/redux/ducks'
+import Login from '@chronobank/login/redux/ducks'
 import * as assetsManager from './assetsManager/'
 import * as drawer from './drawer/'
 import * as exchange from './exchange/'
