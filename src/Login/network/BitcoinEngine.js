@@ -3,7 +3,6 @@ import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 export const DECIMALS = 100000000
-const FEE_RATE = 200 // satoshis per byte
 
 export class BitcoinEngine {
   constructor (wallet, network) {
@@ -24,7 +23,7 @@ export class BitcoinEngine {
    * @param to Destination address
    * @param amount BTC amount in BTC with decimals
    */
-  createTransaction (to, amount: BigNumber, utxos) {
+  createTransaction (to, amount: BigNumber, feeRate, utxos) {
     const targets = [
       {
         address: to,
@@ -37,7 +36,7 @@ export class BitcoinEngine {
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,
-    })), targets, FEE_RATE)
+    })), targets, feeRate)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 

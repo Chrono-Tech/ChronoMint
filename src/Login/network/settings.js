@@ -39,8 +39,7 @@ const RINKEBY_BASE = {
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   bitcoinGold: 'bitcoingold_testnet',
-  // Disabled until we have no https API
-  // litecoin: 'litecoin_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
@@ -52,8 +51,7 @@ const KOVAN_BASE = {
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   bitcoinGold: 'bitcoingold_testnet',
-  // Disabled until we have no https API
-  // litecoin: 'litecoin_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
@@ -105,8 +103,7 @@ if (process.env.NODE_ENV === 'development') {
     bitcoin: 'testnet',
     bitcoinCash: 'testnet',
     bitcoinGold: 'bitcoingold_testnet',
-    // Disabled until we have no https API
-    // litecoin: 'litecoin_testnet',
+    litecoin: 'litecoin_testnet',
     nem: 'Testnet',
   })
 }
@@ -115,10 +112,10 @@ if (process.env.NODE_ENV === 'development') {
 export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
   host: `localhost:3000${TESTRPC_URL}`,
-  bitcoin: 'bitcoin',
-  bitcoinCash: 'bitcoin',
-  bitcoinGold: 'bitcoingold',
-  litecoin: 'litecoin',
+  bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 

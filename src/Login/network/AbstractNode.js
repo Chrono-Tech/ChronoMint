@@ -88,15 +88,6 @@ export default class AbstractNode extends EventEmitter {
 
   /**
    * @abstract
-   * @param address
-   */
-  // eslint-disable-next-line
-  getAddressUTXOS (address) {
-    throw new Error('Not implemented')
-  }
-
-  /**
-   * @abstract
    * @param rawtx
    */
   // eslint-disable-next-line

@@ -177,15 +177,20 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   async _setupBitcoinDAO (name, title, dao) {
     if (dao.isInitialized()) {
       try {
-        const { balance, balance0, balance6 } = await dao.getAccountBalances()
+        const [
+          feeRate,
+          balances,
+        ] = await Promise.all([
+          dao.getFeeRate(),
+          dao.getAccountBalances(),
+        ])
         const token = new TokenModel({
           dao,
           name: dao.getName(),
           symbol: dao.getSymbol(),
           isApproveRequired: false,
-          balance,
-          balance0,
-          balance6,
+          feeRate,
+          ...balances,
           isOptional: false,
           isFetched: true,
           blockchain: title,

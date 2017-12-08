@@ -1,14 +1,28 @@
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
-import AbstractNode from './AbstractNode'
+import BitcoinAbstractNode from './BitcoinAbstractNode'
+import { DECIMALS } from './BitcoinEngine'
 
-export default class BitcoinBlockexplorerNode extends AbstractNode {
+export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getTransactionInfo (txid) {
     try {
       const res = await this._api.get(`/tx/${txid}`)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
+      throw e
+    }
+  }
+
+  async getFeeRate () {
+    try {
+      const res = await this._api.get(`/utils/estimatefee?nbBlocks=2`)
+      const rate = res.data['2']
+      return rate > 0
+        ? DECIMALS * rate / 1024
+        : 10000 // default satoshis per byte for testnets
+    } catch (e) {
+      this.trace(`getFeeRate failed`, e)
       throw e
     }
   }

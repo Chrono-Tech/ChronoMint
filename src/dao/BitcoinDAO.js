@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
+import type TokenModel from 'models/TokenModel'
 import { btcProvider, bccProvider, ltcProvider, btgProvider } from 'Login/network/BitcoinProvider'
 import { DECIMALS } from 'Login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
@@ -48,6 +49,10 @@ export class BitcoinDAO {
     return 8
   }
 
+  async getFeeRate () {
+    return this._bitcoinProvider.getFeeRate()
+  }
+
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
@@ -58,8 +63,8 @@ export class BitcoinDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber) {
-    return await this._bitcoinProvider.transfer(to, amount)
+  async transfer (to, amount: BigNumber, token: TokenModel) {
+    return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
   }
 
   // eslint-disable-next-line no-unused-vars

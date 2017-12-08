@@ -163,7 +163,7 @@ export const mainTransfer = (token: TokenModel, amount: string, recipient) => as
   // TODO @bshevchenko: sub balances with values of outcome pending transactions
   try {
     const dao = await token.dao()
-    await dao.transfer(recipient, amountLocal)
+    await dao.transfer(recipient, amountLocal, token)
   } finally {
     // compensation for update in watchTransfer
     dispatch(balancePlus(amountLocal, token))

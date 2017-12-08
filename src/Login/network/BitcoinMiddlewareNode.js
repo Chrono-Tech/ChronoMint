@@ -4,8 +4,10 @@ import AbstractNode from './AbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends AbstractNode {
-  constructor () {
-    super(...arguments)
+  constructor ({ feeRate, ...args }) {
+    super(args)
+    // TODO @ipavlenko: Remove it after the relevant REST will be implemented for on the middleware
+    this._feeRate = feeRate
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
@@ -76,6 +78,11 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
       this.trace(`getTransactionInfo ${txid} failed`, e)
       throw e
     }
+  }
+
+  async getFeeRate () {
+    // async by design
+    return this._feeRate
   }
 
   async getAddressInfo (address) {

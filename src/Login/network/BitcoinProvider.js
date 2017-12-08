@@ -26,16 +26,21 @@ export class BitcoinProvider extends AbstractProvider {
     return node.getTransactionInfo(txid)
   }
 
+  async getFeeRate () {
+    const node = this._selectNode(this._engine)
+    return node.getFeeRate()
+  }
+
   async getAccountBalances () {
     const node = this._selectNode(this._engine)
     const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
     return { balance0, balance6 }
   }
 
-  async transfer (to, amount: BigNumber) {
+  async transfer (to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos)
+    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, feeRate, utxos)
     return await node.send(this.getAddress(), tx.toHex())
   }
 
