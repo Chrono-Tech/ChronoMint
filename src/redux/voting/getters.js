@@ -7,7 +7,7 @@ export const getStatistics = (state) => {
       all: state.pollsCount().toString(),
       completed: polls.filter((p) => !p.poll().status()).length,
       ongoing: state.activePollsCount().toString(),
-      inactive: polls.filter((p) => !p.poll().active()).length,
+      inactive: state.pollsCount().minus(state.activePollsCount()).toString(),
       outdated: polls.filter((p) => p.poll().deadline().getTime() < time).length,
     }
     : {}

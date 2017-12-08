@@ -1,26 +1,33 @@
+import votingService from 'services/VotingService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { IS_CREATED, IS_REMOVED, IS_ACTIVATED, IS_ENDED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
+import type PollNoticeModel from 'models/notices/PollNoticeModel'
+import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
-import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { notify } from 'redux/notifier/actions'
 import {
-  POLLS_VOTE_LIMIT,
-  POLLS_LOAD,
-  VOTING_POLLS_COUNT, POLLS_LIST,
   POLLS_CREATE,
-  POLLS_UPDATE,
+  POLLS_LIST,
+  POLLS_LOAD,
   POLLS_REMOVE,
   POLLS_REMOVE_STUB,
+  POLLS_UPDATE,
+  POLLS_VOTE_LIMIT,
+  VOTING_POLLS_COUNT,
 } from 'redux/voting/reducer'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
 
 export const DUCK_VOTING = 'voting'
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20
 
 // used to create unique ID for fetching models
 let counter = 0
 
-export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
+export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState) => {
+  const state = getState().get(DUCK_VOTING)
+  // eslint-disable-next-line
+  console.log(notice)
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemovedStub(notice.transactionHash()))
@@ -30,7 +37,11 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
       dispatch(handlePollRemoved(notice.pollId()))
       break
     case IS_ACTIVATED:
+      dispatch(handlePollUpdated(notice.poll()), state.activePollsCount().plus(1))
+      break
     case IS_ENDED:
+      dispatch(handlePollUpdated(notice.poll()), state.activePollsCount().minus(1))
+      break
     case IS_VOTED:
     case IS_UPDATED:
       dispatch(handlePollUpdated(notice.poll()))
@@ -47,16 +58,18 @@ const updateVoteLimit = () => async (dispatch) => {
 
 export const watchInitPolls = () => async (dispatch) => {
   const callback = (notice) => dispatch(watchPoll(notice))
+  votingService
+    .subscribeToVoting()
 
-  const dao = await contractsManagerDAO.getVotingManagerDAO()
+  votingService
+    .on(EVENT_POLL_CREATED, callback)
+    .on(EVENT_POLL_REMOVED, callback)
+    .on(EVENT_POLL_ACTIVATED, callback)
+    .on(EVENT_POLL_ENDED, callback)
+    .on(EVENT_POLL_VOTED, callback)
+
   return await Promise.all([
     dispatch(updateVoteLimit()),
-    dao.watchCreated(callback),
-    dao.watchRemoved(callback),
-    dao.watchActivated(callback),
-    dao.watchEnded(callback),
-    dao.watchVoted(callback),
-    // dao.watchUpdated(callback)
   ])
 }
 
@@ -145,8 +158,8 @@ export const handlePollRemovedStub = (transactionHash: String) => async (dispatc
   dispatch({ type: POLLS_REMOVE_STUB, transactionHash })
 }
 
-export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
-  dispatch({ type: POLLS_UPDATE, poll })
+export const handlePollUpdated = (poll: PollDetailsModel, activeCount) => async (dispatch) => {
+  dispatch({ type: POLLS_UPDATE, poll, activeCount })
 }
 
 export const listPolls = () => async (dispatch) => {

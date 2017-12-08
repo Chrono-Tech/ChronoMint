@@ -17,11 +17,9 @@ import RewardsDAO from './RewardsDAO'
 import TIMEHolderDAO from './TIMEHolderDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import UserManagerDAO from './UserManagerDAO'
-import VotingActorDAO from './VotingActorDAO'
-import VotingDAO from './VotingDAO'
-import VotingDetailsDAO from './VotingDetailsDAO'
 import VotingManagerDAO from './VotingManagerDAO'
 import PollInterfaceDAO from './PollInterfaceDAO'
+import PollBackendDAO from './PollBackendDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 import { ExchangeDAO } from './ExchangeDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
@@ -33,11 +31,9 @@ const DAO_WALLETS_MANAGER = 'WalletsManager'
 const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
 const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_VOTING = 'PollManager'
-const DAO_VOTING_DETAILS = 'PollDetails'
 const DAO_VOTING_MANAGER = 'VotingManager'
 const DAO_POLL_INTERFACE = 'PollInterfaceDAO'
-const DAO_VOTING_ACTOR = 'VoteActor'
+const DAO_POLL_BACKEND = 'PollBackendDAO'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
@@ -58,11 +54,9 @@ const daoMap = {
   [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
   [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_VOTING]: VotingDAO,
-  [DAO_VOTING_DETAILS]: VotingDetailsDAO,
   [DAO_VOTING_MANAGER]: VotingManagerDAO,
   [DAO_POLL_INTERFACE]: PollInterfaceDAO,
-  [DAO_VOTING_ACTOR]: VotingActorDAO,
+  [DAO_POLL_BACKEND]: PollBackendDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
@@ -217,14 +211,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return locManager
   }
 
-  getVotingDAO (): Promise<VotingDAO> {
-    return this._getDAO(DAO_VOTING)
-  }
-
-  getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
-    return this._getDAO(DAO_VOTING_DETAILS)
-  }
-
   getVotingManagerDAO (): Promise<VotingManagerDAO> {
     return this._getDAO(DAO_VOTING_MANAGER)
   }
@@ -233,8 +219,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 
-  getVotingActorDAO (): Promise<VotingActorDAO> {
-    return this._getDAO(DAO_VOTING_ACTOR)
+  getPollBackendDAO (address): Promise<PollBackendDAO> {
+    return this._getDAO(DAO_POLL_BACKEND, address)
   }
 
   async isContract (account): Promise<boolean> {

@@ -12,7 +12,6 @@ import * as pollInterface from 'dao/PollInterfaceDAO'
 import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/TIMEHolderDAO'
 import * as user from 'dao/UserManagerDAO'
-import * as voting from 'dao/VotingDAO'
 import { ru as components } from 'components/lang'
 
 export default {
@@ -293,16 +292,6 @@ export default {
       },
     },
     ContractsManager: {},
-    Vote: {
-      [voting.TX_ADMIN_END_POLL]: {
-        title: 'Окончить Опрос',
-        id: 'Id',
-      },
-      [voting.TX_ACTIVATE_POLL]: {
-        title: 'Активировать Опрос',
-        id: 'Id',
-      },
-    },
     ChronoBankAssetProxy: {
       [erc20.TX_APPROVE]: {
         title: 'Одобить TIME',

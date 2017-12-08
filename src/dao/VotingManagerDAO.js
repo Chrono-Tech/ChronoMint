@@ -1,13 +1,11 @@
+import votingService from 'services/VotingService'
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollNoticeModel, {
-  IS_ACTIVATED,
   IS_CREATED,
-  IS_ENDED,
   IS_REMOVED,
   IS_UPDATED,
-  IS_VOTED,
 } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
@@ -20,12 +18,9 @@ export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
 export const TX_ACTIVATE_POLL = 'activatePoll'
 
-const EVENT_POLL_CREATED = 'PollCreated'
-const EVENT_POLL_UPDATED = 'PollUpdated'
-const EVENT_POLL_ACTIVATED = 'PollActivated'
-const EVENT_POLL_REMOVED = 'PollRemoved'
-const EVENT_POLL_ENDED = 'PollEnded'
-const EVENT_POLL_VOTED = 'PollVoted'
+export const EVENT_POLL_CREATED = 'PollCreated'
+export const EVENT_POLL_UPDATED = 'PollUpdated'
+export const EVENT_POLL_REMOVED = 'PollRemoved'
 
 export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -102,6 +97,14 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       for (let i = 0; i < pollsAddresses.length; i++) {
         try {
           const pollId = pollsAddresses[i]
+
+          try {
+            votingService.subscribeToPoll(pollId)
+          } catch (e) {
+            // eslint-disable-next-line
+            console.error('watch error', e.message)
+          }
+
           const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
           const votes = await pollInterface.getVotesBalances()
           const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
@@ -176,23 +179,11 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED))
   }
 
-  async watchActivated (callback) {
-    return this._watch(EVENT_POLL_ACTIVATED, this._watchCallback(callback, IS_ACTIVATED))
-  }
-
-  async watchEnded (callback) {
-    return this._watch(EVENT_POLL_ENDED, this._watchCallback(callback, IS_ENDED))
-  }
-
   async watchUpdated (callback) {
     return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
   async watchRemoved (callback) {
     return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
-  }
-
-  async watchVoted (callback) {
-    return this._watch(EVENT_POLL_VOTED, this._watchCallback(callback, IS_VOTED))
   }
 }
