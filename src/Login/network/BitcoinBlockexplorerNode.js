@@ -20,7 +20,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const rate = res.data['2']
       return rate > 0
         ? DECIMALS * rate / 1024
-        : 10000 // default satoshis per byte for testnets
+        : 900 // default satoshis per byte for testnets
     } catch (e) {
       this.trace(`getFeeRate failed`, e)
       throw e
@@ -32,8 +32,8 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
       const { balance, unconfirmedBalance } = res.data
       return {
-        balance0: balance + unconfirmedBalance,
-        balance6: balance,
+        balance0: new BigNumber(balance).plus(unconfirmedBalance),
+        balance6: new BigNumber(balance),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)

@@ -56,15 +56,19 @@ export class BitcoinDAO {
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
-      balance: new BigNumber(balance0 || balance6),
-      balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6),
+      balance: balance0 || balance6,
+      balance0: balance0,
+      balance6: balance6,
     }
   }
 
   // eslint-disable-next-line no-unused-vars
   async transfer (to, amount: BigNumber, token: TokenModel) {
-    return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
+    try {
+      return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -88,7 +92,7 @@ export class BitcoinDAO {
       callback({
         account,
         time,
-        balance: (new BigNumber(balance.balance0)).div(DECIMALS),
+        balance: balance.balance0.div(DECIMALS),
         symbol: this.getSymbol(),
       })
     })

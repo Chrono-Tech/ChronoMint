@@ -71,7 +71,7 @@ const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
 // })
 
 export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
-  feeRate: 1150,
+  feeRate: 900,
   api: axios.create({
     baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io',
     timeout: 4000,

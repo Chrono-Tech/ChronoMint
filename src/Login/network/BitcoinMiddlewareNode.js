@@ -6,7 +6,7 @@ import { DECIMALS } from './BitcoinEngine'
 export default class BitcoinMiddlewareNode extends AbstractNode {
   constructor ({ feeRate, ...args }) {
     super(args)
-    // TODO @ipavlenko: Remove it after the relevant REST will be implemented for on the middleware
+    // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
     this._feeRate = feeRate
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
@@ -31,9 +31,9 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
               this.trace('Address Balance', data)
               const ev = {
                 address: data.address,
-                balance0: data.balances.confirmations0,
-                balance3: data.balances.confirmations3,
-                balance6: data.balances.confirmations6,
+                balance0: new BigNumber(data.balances.confirmations0),
+                balance3: new BigNumber(data.balances.confirmations3),
+                balance6: new BigNumber(data.balances.confirmations6),
               }
               this.emit('balance', ev)
             } catch (e) {
@@ -94,9 +94,9 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
         confirmations6,
       } = res.data
       return {
-        balance0: confirmations0.amount,
-        balance3: confirmations3.amount,
-        balance6: confirmations6.amount,
+        balance0: new BigNumber(confirmations0.amount),
+        balance3: new BigNumber(confirmations3.amount),
+        balance6: new BigNumber(confirmations6.amount),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)

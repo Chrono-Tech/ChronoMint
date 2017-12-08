@@ -10,6 +10,8 @@ const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const config = require('../config/webpack.config.dev')
 
+const baseSchema = process.env.BASE_SCHEMA || 'https'
+
 // TODO: hide this behind a flag and eliminate dead code on eject.
 // This shouldn't be exposed to the user.
 let handleCompile
@@ -101,7 +103,7 @@ compiler.plugin('done', function (stats) {
     // eslint-disable-next-line
     console.log(chalk.green('Compiled successfully!'))
     // eslint-disable-next-line
-    console.log('The layout is running at http://localhost:3000/')
+    console.log(`The layout is running at ${baseSchema}://localhost:3000/`)
 
     // eslint-disable-next-line
     console.log('External access:')
@@ -112,7 +114,7 @@ compiler.plugin('done', function (stats) {
         let address = interfaces[k][k2]
         if (address.family === 'IPv4' && !address.internal) {
           // eslint-disable-next-line
-          console.log('https://' + address.address + ':3000/')
+          console.log(`${baseSchema}://${address.address}:3000/`)
         }
       }
     }
@@ -168,12 +170,12 @@ new WebpackDevServer(compiler, {
   // for local access
   quiet: true,
   host: '0.0.0.0',
-  // https: true,
+  https: baseSchema === 'https',
   open: true,
   disableHostCheck: true,
   proxy: {
     '/web3/*': {
-      target: 'http://localhost:8545',
+      target: `http://localhost:8545`,
     },
     "/_exchange": {
       "target": {

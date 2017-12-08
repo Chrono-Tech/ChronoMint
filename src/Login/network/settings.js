@@ -57,7 +57,7 @@ const KOVAN_BASE = {
 
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
-  protocol: 'http',
+  protocol: process.env.BASE_SCHEMA || 'https',
   name: 'Localhost',
 }
 
