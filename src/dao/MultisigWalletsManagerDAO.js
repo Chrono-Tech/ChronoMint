@@ -7,17 +7,6 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import multisigWalletService from 'services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
-const functions = {
-  GET_WALLETS: 'getWallets',
-  CREATE_WALLET: 'createWallet',
-}
-
-const events = {
-  ERROR: 'Error',
-  WALLET_ADDED: 'WalletAdded',
-  WALLET_CREATED: 'WalletCreated',
-}
-
 export const EVENT_NEW_MS_WALLET = 'newMSWallet'
 export const EVENT_MS_WALLETS_COUNT = 'msWalletCount'
 
@@ -30,7 +19,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // ---------- watchers ---------
 
   watchWalletCreate (callback) {
-    return this._watch(events.WALLET_CREATED, async (result) => {
+    return this._watch('WalletCreated', async (result) => {
       const wallet = await this._createWalletModel(result.args.wallet, false, result.transactionHash)
       callback(wallet, new WalletNoticeModel({
         address: wallet.address(),
@@ -42,7 +31,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async fetchWallets () {
-    const [addresses, is2FA] = await this._call(functions.GET_WALLETS)
+    const [addresses, is2FA] = await this._call('getWallets')
     this.emit(EVENT_MS_WALLETS_COUNT, addresses.length)
 
     addresses.forEach((address, i) => {
@@ -76,7 +65,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async createWallet (wallet: MultisigWalletModel) {
-    const result = await this._tx(functions.CREATE_WALLET, [
+    const result = await this._tx('createWallet', [
       wallet.ownersArray(),
       wallet.requiredSignatures(),
       new BigNumber(0),
