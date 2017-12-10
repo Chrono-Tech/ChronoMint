@@ -1,0 +1,36 @@
+@import "~styles/partials/mixins";
+
+.arrowLeft {
+  z-index: 200;
+  @include position(absolute, -60px, 50%, auto, auto);
+}
+
+.arrowRight {
+  z-index: 200;
+  @include position(absolute, -60px, auto, auto, 50%);
+}
+
+.arrowAction {
+  display: block;
+  margin: 16px 4px 4px 4px;
+  padding: 4px;
+  height: 40px;
+  color: $color-white;
+  text-decoration: none;
+  opacity: 0.6;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 50%;
+
+  :global(.material-icons) {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 32px;
+  }
+
+  &:hover {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}

@@ -11,31 +11,9 @@ import { modalsOpen } from 'redux/modals/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import Preloader from 'components/common/Preloader/Preloader'
+import SlideArrow from './SlideArrow'
 
 import './InfoPartial.scss'
-
-class SlideArrow extends PureComponent {
-
-  static propTypes = {
-    show: PropTypes.bool,
-    count: PropTypes.number,
-    onClick: PropTypes.func,
-    direction: PropTypes.string,
-  }
-
-  handleClick = () => this.props.onClick(this.props.count)
-
-  render () {
-    const direction = this.props.direction === 'left' ? 'arrowLeft' : 'arrowRight'
-    return (
-      <div styleName={direction} style={{ visibility: this.props.show ? 'visible' : 'hidden' }}>
-        <a href='#arrow' styleName='arrowAction' onTouchTap={this.handleClick}>
-          <i className='material-icons'>{`keyboard_arrow_${this.props.direction}`}</i>
-        </a>
-      </div>
-    )
-  }
-}
 
 class TokenItem extends PureComponent {
 
