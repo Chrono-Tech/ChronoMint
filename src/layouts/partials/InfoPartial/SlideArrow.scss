@@ -1,16 +1,16 @@
 @import "~styles/partials/mixins";
 
-.arrowLeft {
+.left {
   z-index: 200;
   @include position(absolute, -60px, 50%, auto, auto);
 }
 
-.arrowRight {
+.right {
   z-index: 200;
   @include position(absolute, -60px, auto, auto, 50%);
 }
 
-.arrowAction {
+.action {
   display: block;
   margin: 16px 4px 4px 4px;
   padding: 4px;

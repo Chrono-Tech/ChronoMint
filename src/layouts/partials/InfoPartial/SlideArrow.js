@@ -13,10 +13,10 @@ export default class SlideArrow extends PureComponent {
   handleClick = () => this.props.onClick(this.props.count)
 
   render () {
-    const direction = this.props.direction === 'left' ? 'arrowLeft' : 'arrowRight'
+    const direction = this.props.direction === 'left' ? 'left' : 'right'
     return (
       <div styleName={direction} style={{ visibility: this.props.show ? 'visible' : 'hidden' }}>
-        <a href='#arrow' styleName='arrowAction' onTouchTap={this.handleClick}>
+        <a href='#arrow' styleName='action' onTouchTap={this.handleClick}>
           <i className='material-icons'>{`keyboard_arrow_${this.props.direction}`}</i>
         </a>
       </div>

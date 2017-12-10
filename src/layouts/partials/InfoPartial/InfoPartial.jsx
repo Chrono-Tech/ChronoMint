@@ -1,71 +1,18 @@
-import { AddCurrencyDialog, IPFSImage, TokenValue } from 'components'
+import { AddCurrencyDialog } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
 import { FloatingActionButton, Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
-import { modalsOpen } from 'redux/modals/actions'
-import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import { Translate } from 'react-redux-i18n'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
-import Preloader from 'components/common/Preloader/Preloader'
-import SlideArrow from './SlideArrow'
-
+import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import './InfoPartial.scss'
-
-class TokenItem extends PureComponent {
-
-  static propTypes = {
-    selectedCoin: PropTypes.string,
-    token: PropTypes.object,
-    open: PropTypes.bool,
-    onClick: PropTypes.func,
-  }
-
-  handleClick = () => this.props.onClick(this.props.token.symbol())
-
-  render () {
-    const {
-      token,
-      selectedCoin,
-      open,
-    } = this.props
-    const symbol = token.symbol()
-
-    return (
-      <div
-        styleName={classnames('outer', { selected: selectedCoin === symbol && open })}
-        onTouchTap={this.handleClick}
-      >
-        <Paper zDepth={1} style={{ background: 'transparent' }}>
-          <div styleName='inner'>
-            <div styleName='innerIcon'>
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
-              <div styleName='innerIconLabel'>{symbol}</div>
-            </div>
-            <div styleName='info'>
-              <div styleName='infoLabel'><Translate value={prefix('balance')} />:</div>
-              <TokenValue
-                value={token.balance()}
-                symbol={symbol}
-              />
-            </div>
-          </div>
-        </Paper>
-      </div>
-    )
-  }
-}
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
+import SlideArrow from './SlideArrow'
+import TokenItem from './TokenItem'
 
 const SCREEN_WIDTH_SCALE = [
   { width: 1624, count: 5 },
@@ -81,10 +28,6 @@ const calcVisibleCells = (w) => {
       return count
     }
   }
-}
-
-function prefix (token) {
-  return `layouts.partials.InfoPartial.${token}`
 }
 
 function mapDispatchToProps (dispatch) {
@@ -194,10 +137,10 @@ export class InfoPartial extends PureComponent {
         onTouchTap={this.handleActionClick}
       >
         <Paper zDepth={1}>
-          <div styleName='innerAction'>
+          <div styleName='action'>
             <div styleName='actionIcon' />
             <div styleName='actionTitle'>
-              <h3><Translate value={prefix('addToken')} /></h3>
+              <h3><Translate value='layouts.partials.InfoPartial.addToken' /></h3>
             </div>
           </div>
         </Paper>
