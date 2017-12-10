@@ -1,11 +1,8 @@
 import AbstractNode from './AbstractNode'
 
 export default class BitcoinAbstractNode extends AbstractNode {
-  constructor ({ api, socket, trace }) {
-    super({ api, socket, trace })
-  }
 
-  getFeeRate () {
+  async getFeeRate () {
     throw new Error('Not implemented')
   }
 
@@ -14,7 +11,7 @@ export default class BitcoinAbstractNode extends AbstractNode {
    * @param address
    */
   // eslint-disable-next-line
-  getAddressUTXOS (address) {
+  async getAddressUTXOS (address) {
     throw new Error('Not implemented')
   }
 }

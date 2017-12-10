@@ -175,7 +175,7 @@ new WebpackDevServer(compiler, {
   disableHostCheck: true,
   proxy: {
     '/web3/*': {
-      target: `http://localhost:8545`,
+      target: 'http://localhost:8545',
     },
     "/_exchange": {
       "target": {

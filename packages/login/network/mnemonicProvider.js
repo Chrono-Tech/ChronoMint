@@ -7,6 +7,15 @@ import * as NEM from './nem'
 import { createNEMEngine } from './NemUtils'
 import NemWallet from './NemWallet'
 
+// coin_types 8, 9, 16, 17 used, but they are not standardized
+const COIN_TYPE_ETH = 60
+const COIN_TYPE_BTC_MAINNET = 0
+const COIN_TYPE_BTC_TESTNET = 1
+const COIN_TYPE_LTC_MAINNET = 9
+const COIN_TYPE_LTC_TESTNET = 8
+const COIN_TYPE_BTG_MAINNET = 17
+const COIN_TYPE_BTG_TESTNET = 16
+
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
     const ethereumWallet = this.createEthereumWallet(mnemonic, network, url)
@@ -29,28 +38,35 @@ class MnemonicProvider {
   createEthereumWallet (mnemonic) {
     const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
     // get the first account using the standard hd path
-    const walletHDPath = `m/44'/60'/0'/0/0`
+    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
     return hdWallet.derivePath(walletHDPath).getWallet()
   }
 
   createBitcoinWallet (mnemonic, network) {
+    const coinType = network === bitcoin.networks.testnet
+      ? COIN_TYPE_BTC_TESTNET
+      : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${network === bitcoin.networks.testnet ? 1 : 0}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createLitecoinWallet (mnemonic, network) {
-    // coin_types 8 and 9 used, but they are not standardized
+    const coinType = network === bitcoin.networks.litecoin_testnet
+      ? COIN_TYPE_LTC_TESTNET
+      : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${network === bitcoin.networks.litecoin_testnet ? 8 : 9}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createBitcoinGoldWallet (mnemonic, network) {
-    // coin_types 16 and 17 used, but they are not standardized
+    const coinType = network === bitcoin.networks.bitcoingold_testnet
+      ? COIN_TYPE_BTG_TESTNET
+      : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${network === bitcoin.networks.bitcoingold_testnet ? 16 : 17}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   validateMnemonic (mnemonic) {

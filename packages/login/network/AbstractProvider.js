@@ -7,7 +7,6 @@ export default class AbstractProvider extends EventEmitter {
     super()
     this._engine = null
     this._selectNode = selectNode
-    this._isInited = false
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
   }
@@ -25,7 +24,6 @@ export default class AbstractProvider extends EventEmitter {
     if (this._engine) {
       this.subscribe(this._engine)
     }
-    this._isInited = true
   }
 
   subscribe (engine: NemEngine | BitcoinEngine) {

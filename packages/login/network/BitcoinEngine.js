@@ -69,10 +69,6 @@ export class BitcoinEngine {
 }
 
 export class BTCEngine extends BitcoinEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
-
   _signInputs (txb, inputs) {
     for (let i = 0; i < inputs.length; i++) {
       txb.sign(i, this._wallet.keyPair)
@@ -81,16 +77,9 @@ export class BTCEngine extends BitcoinEngine {
 }
 
 export class LTCEngine extends BTCEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
 }
 
 export class BTGEngine extends BitcoinEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
-
   _signInputs (txb, inputs) {
     txb.enableBitcoinGold(true)
     txb.setVersion(2)
@@ -104,10 +93,6 @@ export class BTGEngine extends BitcoinEngine {
 }
 
 export class BCCEngine extends BitcoinEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
-
   _signInputs (txb, inputs) {
     txb.enableBitcoinCash(true)
     txb.setVersion(2)
