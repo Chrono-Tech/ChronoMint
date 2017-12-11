@@ -77,7 +77,7 @@ export default class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : usersPlatformsCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : usersPlatformsCount}
                       </span>
                     </div>
                   </div>
@@ -88,7 +88,7 @@ export default class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : tokensCount}
                       </span>
                     </div>
                   </div>
@@ -99,7 +99,7 @@ export default class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : managersCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : managersCount}
                       </span>
                     </div>
                   </div>
@@ -110,7 +110,7 @@ export default class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensOnCrowdsaleCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : tokensOnCrowdsaleCount}
                       </span>
                     </div>
                   </div>

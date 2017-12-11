@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { CircularProgress } from 'material-ui'
+import Preloader from 'components/common/Preloader/Preloader'
 import Amount from 'models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -61,16 +61,16 @@ class TokenValue extends PureComponent {
   render () {
     const { value, isInvert, symbol, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
-    return !value.isLoaded() ? (
-      <CircularProgress size={16} />
-    ) : (
-      <span styleName={defaultMod} className='TokenValue__root' style={style}>
-        {prefix}
-        <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(value)}</span>
-        <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(value)} {symbol}</span>
-        {!noRenderPrice && this.renderPrice()}
-      </span>
-    )
+    return !value.isLoaded()
+      ? <Preloader small />
+      : (
+        <span styleName={defaultMod} className='TokenValue__root' style={style}>
+          {prefix}
+          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(value)}</span>
+          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(value)} {symbol}</span>
+          {!noRenderPrice && this.renderPrice()}
+        </span>
+      )
   }
 }
 

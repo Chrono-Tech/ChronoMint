@@ -84,7 +84,7 @@ export default class WalletChanger extends PureComponent {
                       <span styleName='buttonLabel'>
                         {multisigWallet.isFetching() && (
                           <div styleName='buttonPreloader'>
-                            <Preloader size={16} />
+                            <Preloader small />
                             <div styleName='buttonCounter'>{`[${multisigWallet.size()}/${multisigWallet.size() + multisigWallet.leftToFetch()}]`}</div>
                           </div>)}
                         <img styleName='buttonIcon' src={WalletMultiSVG} />
