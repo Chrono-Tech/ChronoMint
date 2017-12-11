@@ -4,6 +4,7 @@ RUN apt-get update -qq && \
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN npm rebuild node-sass --force
+RUN npm rebuild node-sass --force && \
+    echo "test"
 EXPOSE 3000
 CMD yarn start
