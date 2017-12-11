@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
-class LoginPage extends Component {
+class LoginForm extends Component {
   static propTypes = {
     clearErrors: PropTypes.func,
     checkNetwork: PropTypes.func,
@@ -156,4 +156,4 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage
+export default LoginForm

@@ -1,5 +1,5 @@
 import { ru as layouts } from 'layouts/lang'
-import { ru as Login } from '@chronobank/login/lang'
+import { ru as Login } from '@chronobank/login-ui/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
