@@ -203,3 +203,10 @@
 .input {
   width: calc(100% - 100px);
 }
+
+.buttonLabel {
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
