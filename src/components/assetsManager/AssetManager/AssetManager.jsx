@@ -18,7 +18,33 @@ function prefix (token) {
   return `Assets.AssetManager.${token}`
 }
 
-export class AssetManager extends PureComponent {
+function mapStateToProps (state) {
+  const assetsManager = state.get('assetsManager')
+  return {
+    usersPlatformsCount: assetsManager.usersPlatformsCount,
+    tokensCount: assetsManager.tokensCount,
+    managersCount: assetsManager.managersCount,
+    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
+    selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    createPlatform: () => dispatch(createPlatform()),
+    getTokens: () => dispatch(getTokens()),
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      component: AddPlatformDialog,
+    })),
+    handleAddTokenDialog: () => dispatch(modalsOpen({
+      component: AddTokenDialog,
+    })),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AssetManager extends PureComponent {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
@@ -163,30 +189,3 @@ export class AssetManager extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
-  return {
-    usersPlatformsCount: assetsManager.usersPlatformsCount,
-    tokensCount: assetsManager.tokensCount,
-    managersCount: assetsManager.managersCount,
-    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    selectedPlatform: assetsManager.selectedPlatform,
-    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    createPlatform: () => dispatch(createPlatform()),
-    getTokens: () => dispatch(getTokens()),
-    handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
-    })),
-    handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
-    })),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssetManager)

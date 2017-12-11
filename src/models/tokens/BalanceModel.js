@@ -10,4 +10,8 @@ export default class BalanceModel extends abstractModel({
   id () {
     return this.get('symbol')
   }
+
+  amount () {
+    return this.get('amount')
+  }
 }

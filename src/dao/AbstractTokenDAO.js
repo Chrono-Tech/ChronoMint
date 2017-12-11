@@ -1,3 +1,4 @@
+import type TokenModel from 'models/tokens/TokenModel'
 import BigNumber from 'bignumber.js'
 import type TxModel from 'models/TxModel'
 import { address } from 'components/forms/validator'
@@ -38,11 +39,11 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  addDecimals (amount: BigNumber): BigNumber {
+  addDecimals (amount: BigNumber, token: TokenModel): BigNumber {
     return amount
   }
 
-  removeDecimals (amount: BigNumber): BigNumber {
+  removeDecimals (amount: BigNumber, token: TokenModel): BigNumber {
     return amount
   }
 

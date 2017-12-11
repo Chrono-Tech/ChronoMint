@@ -16,9 +16,10 @@ export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
-export const EVENT_NEW_ERC20_TOKEN = 'newERC20Token'
+const MANDATORY_TOKENS = ['TIME']
 
-const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC']
+export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
+export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -51,32 +52,26 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
   }
 
-  async getTokens (tokenAddresses = []): Immutable.Map<TokenModel> {
-    let map = new Immutable.Map()
-
+  async fetchTokens (tokenAddresses = []) {
     const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
+    this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
 
     addresses.forEach((address, i) => {
-      if (this.isEmptyAddress(address)) {
-        return
-      }
+      const symbol = this._c.bytesToString(symbols[i])
 
-      const token = new TokenModel({
+      this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
         address,
         name: this._c.bytesToString(names[i]),
-        symbol: this._c.bytesToString(symbols[i]),
+        symbol,
         url: this._c.bytesToString(urls[i]),
         decimals: decimalsArr[i].toNumber(),
         icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
-        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isOptional: MANDATORY_TOKENS.includes(symbol),
         isFetched: true,
         blockchain: 'Ethereum',
         isERC20: true,
-      })
-      map = map.set(token.id(), token)
+      }))
     })
-
-    return map
   }
 
   /**

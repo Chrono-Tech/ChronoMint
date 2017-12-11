@@ -1,13 +1,14 @@
 import { AddCurrencyDialog } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { FloatingActionButton, Paper } from 'material-ui'
+import Amount from 'models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import './InfoPartial.scss'
@@ -43,23 +44,20 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const { account, profile } = state.get(DUCK_SESSION)
   const ui = state.get('ui')
   const wallet = getCurrentWallet(state)
 
   return {
-    account,
-    profile,
     wallet,
     selectedCoin: state.get(DUCK_MARKET).selectedCoin,
     open: ui.open,
+    balances: wallet.balances(),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
 export class InfoPartial extends PureComponent {
   static propTypes = {
-    account: PropTypes.string,
-    profile: PropTypes.object,
     wallet: PropTypes.object,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
@@ -168,8 +166,16 @@ export class InfoPartial extends PureComponent {
 
     const showArrows = slidesCount > visibleCount
 
+    // TODO @dkchv: !!!
+
     return (
       <div styleName='root'>
+        <div>
+          {this.props.wallet.balances().items().map((balance => {
+            const amount: Amount = balance.amount()
+            console.log('--InfoPartial#', amount.toString(), amount.isLoaded())
+          }))}
+        </div>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {wallet.isFetched() && !wallet.isFetching()

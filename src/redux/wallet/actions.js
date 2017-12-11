@@ -7,10 +7,6 @@ export const WALLET_SWITCH_WALLET = 'WALLET/switch_wallet'
 
 export const initWallet = () => async (dispatch, getState) => {
   dispatch(switchWallet(getState().get(DUCK_MAIN_WALLET)))
-
-  // TODO @dkchv: !!! for tests
-  const erc20 = await contractsManagerDAO.getERC20ManagerDAO()
-  erc20.getTokens()
 }
 
 export const switchWallet = (wallet) => (dispatch) => {

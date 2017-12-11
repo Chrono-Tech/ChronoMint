@@ -6,9 +6,11 @@ import ethereumDAO from 'dao/EthereumDAO'
 import Immutable from 'immutable'
 import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
 import { nemProvider } from 'Login/network/NemProvider'
+import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type ProfileModel from 'models/ProfileModel'
+import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 import { notify } from 'redux/notifier/actions'
@@ -32,6 +34,7 @@ export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
+export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -101,9 +104,27 @@ export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => as
   dispatch(setBalance(token, balance))
 }
 
-export const watchInitWallet2 = () => (dispatch, getState) => {
-  tokenService.on(EVENT_NEW_TOKEN, (token: TokenModel) => {
-    const { profile } = getState().get(DUCK_SESSION)
+export const initMainWallet = () => (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const { profile } = getState().get(DUCK_SESSION)
+  const profileTokens = profile.tokens()
+
+  tokenService.on(EVENT_NEW_TOKEN, async (token: TokenModel) => {
+    console.log('--actions#', token.id(), token.isOptional(), profileTokens.toJS())
+    if (token.isOptional() && !profileTokens.get(token.id())) {
+      return
+    }
+
+    const tokenDAO = tokenService.getDAO(token)
+    const balance = await tokenDAO.getAccountBalance(account, token)
+    const symbol = token.symbol()
+    dispatch({
+      type: WALLET_TOKEN_BALANCE,
+      balance: new BalanceModel({
+        amount: new Amount(balance, symbol, true),
+        symbol,
+      }),
+    })
   })
 }
 

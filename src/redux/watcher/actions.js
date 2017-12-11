@@ -5,7 +5,7 @@ import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeMo
 import type TxExecModel from 'models/TxExecModel'
 import { watchInitTokens, watchPlatformManager } from 'redux/assetsManager/actions'
 import { watchInitLOC } from 'redux/locs/actions'
-import { balanceMinus, balancePlus, DUCK_MAIN_WALLET, ETH, watchInitWallet, watchInitWallet2 } from 'redux/mainWallet/actions'
+import { balanceMinus, balancePlus, DUCK_MAIN_WALLET, ETH, watchInitWallet, initMainWallet } from 'redux/mainWallet/actions'
 import { watchInitMarket } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { watchInitOperations } from 'redux/operations/actions'
@@ -76,6 +76,7 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(initTokens())
+  dispatch(initMainWallet())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
@@ -83,7 +84,6 @@ export const watcher = () => async (dispatch) => {
   dispatch(watchInitMarket())
   // TODO @dkchv: !!! restore
   dispatch(watchInitWallet())
-  // dispatch(watchInitWallet2())
   // dispatch(initWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())

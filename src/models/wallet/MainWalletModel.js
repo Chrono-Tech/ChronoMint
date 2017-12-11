@@ -1,3 +1,5 @@
+import BalanceModel from '@/models/tokens/BalanceModel'
+import BalancesCollection from '@/models/tokens/BalancesCollection'
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import ls from 'utils/LocalStorage'
@@ -17,6 +19,7 @@ export default class MainWallet extends abstractFetchingModel({
   isMainWallet: true,
   // TODO @dkchv: is a part of wallet ?
   isTIMERequired: true,
+  balances: new BalancesCollection(),
 }) {
 
   address () {
@@ -57,5 +60,13 @@ export default class MainWallet extends abstractFetchingModel({
 
   isMultisig () {
     return this.get('isMultisig')
+  }
+
+  balances (value) {
+    return this._getSet('balances', value)
+  }
+
+  balance (balance: BalanceModel) {
+    return this.balances(this.balances().update(balance))
   }
 }

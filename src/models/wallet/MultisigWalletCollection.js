@@ -5,7 +5,7 @@ import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 export default class MultisigWalletCollection extends abstractFetchingCollection({
   // defaults
 }) {
-  balance (walletId, symbol: string, balance: BalanceModel) {
+  balance (walletId, balance: BalanceModel) {
     const wallet: MultisigWalletModel = this.item(walletId)
     const balances = wallet.balances().update(balance)
     return this.update(wallet.balances(balances))

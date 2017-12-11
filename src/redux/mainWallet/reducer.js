@@ -52,6 +52,8 @@ export default (state = initialState, action) => {
       )
     case a.WALLET_IS_TIME_REQUIRED:
       return state.isTIMERequired(action.value)
+    case a.WALLET_TOKEN_BALANCE:
+      return state.balance(action.balance)
     default:
       return state
   }

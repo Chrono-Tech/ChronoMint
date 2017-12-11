@@ -49,9 +49,13 @@ export const getPlatforms = () => async (dispatch, getState) => {
 
 export const getTokens = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
-  const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
+
+  const [assetsManagerDao, ERC20ManagerDAO, assets] = await Promise.all([
+    contractManager.getAssetsManagerDAO(),
+    contractManager.getERC20ManagerDAO(),
+    assetsManagerDao.getSystemAssetsForOwner(account),
+  ])
+
   let tokensMap = new Immutable.Map()
   if (Object.keys(assets).length) {
     tokensMap = await ERC20ManagerDAO.getTokensByAddresses(Object.keys(assets), false, account, assets)

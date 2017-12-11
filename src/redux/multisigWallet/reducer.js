@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
     case a.MULTISIG_REMOVE:
       return state.list(state.list().remove(action.id))
     case a.MULTISIG_BALANCE:
-      return state.balance(action.walletId, action.symbol, action.balance)
+      return state.balance(action.walletId, action.balance)
     default:
       return state
   }

@@ -3,6 +3,7 @@ import debug from 'debug'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
@@ -50,20 +51,17 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._decimals
   }
 
-  addDecimals (amount: BigNumber): BigNumber {
+  addDecimals (amount: BigNumber, token: TokenModel): BigNumber {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
     const amountBN = new BigNumber(amount)
-    return amountBN.mul(Math.pow(10, this._decimals))
+    return amountBN.mul(Math.pow(10, this._decimals || token.decimals()))
   }
 
-  removeDecimals (amount: BigNumber): BigNumber {
-    if (this._decimals === null) {
-      throw new Error('removeDecimals: decimals is undefined')
-    }
+  removeDecimals (amount: BigNumber, token: TokenModel): BigNumber {
     const amountBN = new BigNumber(amount)
-    return amountBN.div(Math.pow(10, this._decimals))
+    return amountBN.div(Math.pow(10, this._decimals || token.decimals()))
   }
 
   async initMetaData () {
@@ -86,8 +84,9 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.removeDecimals(totalSupply)
   }
 
-  async getAccountBalance (account = this.getAccount()): BigNumber {
-    return this.removeDecimals(await this._call('balanceOf', [account]))
+  async getAccountBalance (account = this.getAccount(), token): BigNumber {
+    const balance = await this._call('balanceOf', [account])
+    return this.removeDecimals(balance, token)
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
