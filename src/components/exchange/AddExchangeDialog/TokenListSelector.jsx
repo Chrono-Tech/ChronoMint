@@ -2,7 +2,7 @@ import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
 import { IPFSImage } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton, MenuItem } from 'material-ui'
+import { FlatButton, MenuItem, TextField } from 'material-ui'
 import TokensCollection from 'models/exchange/TokensCollection'
 import TokenModel from 'models/TokenModel'
 import PropTypes from 'prop-types'
@@ -23,40 +23,67 @@ export default class TokenListSelector extends PureComponent {
     meta: PropTypes.object,
   }
 
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      symbolFilter: '',
+      foldTokensList: true,
+    }
+  }
+
+  handleChangeFilter = (e) => {
+    this.setState({ symbolFilter: e.target.value })
+  }
+
+  handleUnfoldTokenList = () => {
+    this.setState({ foldTokensList: !this.state.foldTokensList })
+  }
+
   render () {
     const { tokens, token } = this.props
     const { meta } = this.props
     return (
       <div>
         <div styleName={classnames('tokenWrapperHeader', 'sm-hide')}>
-          <div><Translate value={prefix('chooseToken')}/></div>
+          <div><Translate value={prefix('chooseToken')} /></div>
           <div styleName='tokenError'>{meta.touched && meta.error && meta.error}</div>
         </div>
-        <div styleName={classnames('tokensList', 'sm-hide')}>
+        <TextField
+          type="text"
+          onChange={this.handleChangeFilter}
+          hintText={<Translate value={prefix('enterTokenSymbol')} />}
+        />
+        <div styleName={classnames('tokensList', 'sm-hide', { 'tokensListFolded': this.state.foldTokensList })}>
           {
             tokens.isFetching()
-              ? <Preloader/>
-              : tokens.items().map((tokenItem: TokenModel) => {
-                return (
-                  <div
-                    key={tokenItem.symbol()}
-                    styleName={classnames('tokenItem', { 'selected': token === tokenItem })}
-                    onTouchTap={() => this.props.input.onChange(tokenItem)}
-                  >
-                    <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon' fallback={iconTokenDefaultSVG}/>
-                    <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
-                  </div>
-                )
-              })
+              ? <Preloader />
+              : tokens.items()
+                .filter((tokenItem: TokenModel) => {
+                  return tokenItem.symbol().toLowerCase().indexOf(this.state.symbolFilter.toLowerCase()) + 1
+                })
+                .map((tokenItem: TokenModel) => {
+                  return (
+                    <div
+                      key={tokenItem.symbol()}
+                      styleName={classnames('tokenItem', { 'selected': token === tokenItem })}
+                      onTouchTap={() => this.props.input.onChange(tokenItem)}
+                    >
+                      <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon'
+                                 fallback={iconTokenDefaultSVG} />
+                      <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
+                    </div>
+                  )
+                })
           }
         </div>
         <div styleName={classnames('tokensListMobile', 'sm-show')}>
-          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={iconTokenDefaultSVG}/>
+          <IPFSImage styleName='tokenIconMobile' multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
           <SelectField
             name='token'
             styleName='tokenMobileSelector'
             floatingLabelFixed
-            floatingLabelText={<Translate value={prefix('chooseToken')}/>}
+            floatingLabelText={<Translate value={prefix('chooseToken')} />}
             input={this.props.input}
             meta={this.props.meta}
           >
@@ -72,7 +99,10 @@ export default class TokenListSelector extends PureComponent {
           </SelectField>
         </div>
         <div styleName={classnames('flexRight', 'sm-hide')}>
-          <FlatButton label={<Translate value={prefix('allAvailableTokens')}/>}/>
+          <FlatButton
+            label={<Translate
+              value={prefix(this.state.foldTokensList ? 'showAllAvailableTokens' : 'HideAllAvailableTokens')} />}
+            onClick={this.handleUnfoldTokenList} />
         </div>
       </div>
 
