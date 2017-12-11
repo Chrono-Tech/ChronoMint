@@ -1,31 +1,25 @@
-import React, { PureComponent } from 'react'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import { IPFSImage } from 'components'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
 import { SelectField, TextField } from 'redux-form-material-ui'
-import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { IPFSImage } from 'components'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import IconSection from 'components/dashboard/IconSection/IconSection'
-import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
-import inversedTheme from 'styles/themes/inversed'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
-import TokenModel from 'models/tokens/TokenModel'
-import validate from './validate'
+import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import './SendTokensForm.scss'
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
+import validate from './validate'
+import tokenIcons from 'components/tokenIcons'
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -41,7 +35,7 @@ function mapStateToProps (state) {
   const symbol = selector(state, 'symbol')
 
   return {
-    account: state.get('session').account,
+    account: state.get(DUCK_SESSION).account,
     token: getCurrentWallet(state).tokens().get(symbol),
   }
 }
@@ -56,7 +50,8 @@ export class SendTokensForm extends PureComponent {
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   constructor () {
     super(...arguments)
@@ -81,7 +76,7 @@ export class SendTokensForm extends PureComponent {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]}
+              fallback={tokenIcons[symbol]}
             />
           )}
         >

@@ -131,7 +131,7 @@ export default class WalletContent extends Component {
                       className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
                       styleName='headLight'
                     >
-                      {wallet.isFetched() ? <SendTokens /> : <Preloader />}
+                      <SendTokens />
                     </div>
                     {!isMultisig && (
                       <div className={CLASS_NAME_HALF_COL}>

@@ -1,34 +1,23 @@
-import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
-import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
-import { Link } from 'react-router'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
+import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
+import Moment, { FULL_DATE } from 'components/common/Moment'
+import tokenIcons from 'components/tokenIcons'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from 'Login/network/MonitorService'
+import { getNetworkById } from 'Login/network/settings'
+import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
 import menu from 'menu'
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-import { getNetworkById } from 'Login/network/settings'
-import {
-  NETWORK_STATUS_UNKNOWN,
-  NETWORK_STATUS_OFFLINE,
-  NETWORK_STATUS_ONLINE,
-  SYNC_STATUS_SYNCING,
-  SYNC_STATUS_SYNCED,
-} from 'Login/network/MonitorService'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
 import { drawerToggle } from 'redux/drawer/actions'
-import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
-import Moment, { FULL_DATE } from 'components/common/Moment'
+import { logout } from 'redux/session/actions'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
 
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends PureComponent {
@@ -417,7 +406,7 @@ class HeaderPartial extends PureComponent {
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
           <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={tokenIcons[symbol]} />
           </div>
         </div>
         <div styleName='balance-info'>

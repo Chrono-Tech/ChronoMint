@@ -23,7 +23,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class SendTokens extends PureComponent {
+export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     multisigTransfer: PropTypes.func,
@@ -52,9 +52,11 @@ class SendTokens extends PureComponent {
   render () {
     const { wallet } = this.props
     const initialValues = {}
-    if (wallet.tokens().size > 0) {
-      initialValues.symbol = wallet.tokens().first().symbol()
+    if (wallet.balances().size() > 0) {
+      initialValues.symbol = wallet.balances().first().id()
     }
+
+    console.log('--SendTokens#render', wallet.toJS())
     return (
       <SendTokensForm
         initialValues={initialValues}
@@ -65,4 +67,3 @@ class SendTokens extends PureComponent {
   }
 }
 
-export default SendTokens
