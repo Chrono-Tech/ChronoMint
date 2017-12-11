@@ -76,11 +76,11 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       return exchangesCollection
     }
 
-    try {
-      const [symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
+    const [symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
-      exchangesAddresses.forEach((address, i) => {
-        const symbol = this._c.bytesToString(symbols[i])
+    exchangesAddresses.forEach((address, i) => {
+      const symbol = this._c.bytesToString(symbols[i]) // symbol may be empty, but exchange not be without token symbol
+      if (symbol) {
         const buyPrice = new BigNumber(buyPrices[i])
         const sellPrice = new BigNumber(sellPrices[i])
         const assetBalance = assetBalances[i]
@@ -103,11 +103,8 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
           assetBalance: token.dao().removeDecimals(assetBalance),
           ethBalance: this._c.fromWei(ethBalance),
         }))
-      })
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log(e.message)
-    }
+      }
+    })
     return exchangesCollection
   }
 
