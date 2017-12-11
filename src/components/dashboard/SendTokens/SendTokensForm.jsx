@@ -13,19 +13,12 @@ import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import inversedTheme from 'styles/themes/inversed'
+import { TOKEN_ICONS } from 'assets'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import TokenModel from 'models/TokenModel'
 import validate from './validate'
 import styles from '../styles'
 import './SendTokensForm.scss'
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -81,7 +74,7 @@ export class SendTokensForm extends PureComponent {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]}
+              fallback={TOKEN_ICONS[symbol]}
             />
           )}
         >

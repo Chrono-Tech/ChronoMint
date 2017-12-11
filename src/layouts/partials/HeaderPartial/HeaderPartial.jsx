@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
+import { TOKEN_ICONS } from 'assets'
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
 import { getNetworkById } from '@chronobank/login/network/settings'
 import {
@@ -23,12 +24,6 @@ import Moment, { FULL_DATE } from 'components/common/Moment'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
 
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends PureComponent {
@@ -409,7 +404,7 @@ class HeaderPartial extends PureComponent {
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
           <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
           </div>
         </div>
         <div styleName='balance-info'>
