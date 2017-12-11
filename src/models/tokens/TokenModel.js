@@ -1,9 +1,7 @@
-import BigNumber from 'bignumber.js/bignumber'
-import Immutable from 'immutable'
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
+import Immutable from 'immutable'
+import Amount from 'models/Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
@@ -12,20 +10,21 @@ export default class TokenModel extends abstractFetchingModel({
   decimals: null,
   name: null,
   symbol: null,
-  balance: new BigNumber(0),
+  balance: new Amount(0),
   allowance: new Immutable.Map(),
   url: null,
   icon: null,
   fee: null,
   withFee: false,
   platform: null,
-  totalSupply: new BigNumber(0),
+  totalSupply: new Amount(0),
   managersList: null,
   isReissuable: false,
   isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
   feeAddress: null,
   isERC20: false,
+
 }) {
   id () {
     return this.symbol()
@@ -91,21 +90,21 @@ export default class TokenModel extends abstractFetchingModel({
     return this.dao() ? this.dao().getDecimals() : this.get('decimals')
   }
 
-  balance (): BigNumber {
-    return isNaN(this.get('balance')) ? new BigNumber(0) : this.get('balance')
+  balance (): Amount {
+    return isNaN(this.get('balance')) ? new Amount(0) : this.get('balance')
   }
 
-  updateBalance (isCredited, amount: BigNumber): TokenModel {
+  updateBalance (isCredited, amount: Amount): TokenModel {
     const newBalance = this.balance()[ isCredited ? 'plus' : 'minus' ](amount)
     return this.set('balance', newBalance)
   }
 
-  setBalance (newBalance: BigNumber): TokenModel {
+  setBalance (newBalance: Amount): TokenModel {
     return this.set('balance', newBalance)
   }
 
-  allowance (spender): BigNumber {
-    return this.get('allowance').get(spender) || new BigNumber(0)
+  allowance (spender): Amount {
+    return this.get('allowance').get(spender) || new Amount(0)
   }
 
   setAllowance (spender, value): TokenModel {
@@ -118,11 +117,6 @@ export default class TokenModel extends abstractFetchingModel({
 
   icon () {
     return this.get('icon')
-  }
-
-  isApproveRequired () {
-    const dao = this.get('dao')
-    return dao && dao.isApproveRequired() || false
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -143,19 +137,4 @@ export default class TokenModel extends abstractFetchingModel({
   isERC20 () {
     return this.get('isERC20')
   }
-}
-
-// TODO @bshevchenko: MINT-315 add max length for bytes32 variables
-export const validate = (values) => {
-  const errors = {}
-  errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
-  errors.name = ErrorList.toTranslate(validator.name(values.get('name')))
-  errors.decimals = ErrorList.toTranslate(validator.between(values.get('decimals'), 0, 18))
-  errors.url = ErrorList.toTranslate(validator.url(values.get('url'), false))
-
-  if (!/^[A-Z]{2,4}$/.test(values.get('symbol'))) {
-    errors.symbol = ErrorList.toTranslate('settings.erc20.tokens.errors.invalidSymbol')
-  }
-
-  return errors
 }

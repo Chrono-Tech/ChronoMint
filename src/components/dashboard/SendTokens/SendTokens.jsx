@@ -1,11 +1,13 @@
+import TokensCollection from '@/models/tokens/TokensCollection'
+import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reset } from 'redux-form'
-import { getCurrentWallet } from 'redux/wallet/actions'
-import { mainTransfer, mainApprove } from 'redux/mainWallet/actions'
+import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
-import SendTokensForm, { ACTION_TRANSFER, ACTION_APPROVE, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -19,6 +21,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   return {
     wallet: getCurrentWallet(state),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
@@ -30,12 +33,13 @@ export default class SendTokens extends PureComponent {
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   handleSubmit = (values) => {
-    const { wallet, resetForm } = this.props
+    const { wallet, tokens, resetForm } = this.props
     const { action, symbol, amount, recipient } = values.toJS()
-    const token = wallet.tokens().get(symbol)
+    const token = tokens.get(symbol)
 
     resetForm()
 
@@ -56,7 +60,6 @@ export default class SendTokens extends PureComponent {
       initialValues.symbol = wallet.balances().first().id()
     }
 
-    console.log('--SendTokens#render', wallet.toJS())
     return (
       <SendTokensForm
         initialValues={initialValues}

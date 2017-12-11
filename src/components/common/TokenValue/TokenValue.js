@@ -47,8 +47,12 @@ class TokenValue extends PureComponent {
   }
 
   renderPrice () {
-    const { prices, value, symbol, selectedCurrency, isInited } = this.props
-    const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ] ? prices[ symbol ][ selectedCurrency ] : null
+    const { prices, value, selectedCurrency, isInited } = this.props
+    // TODO @dkchv: remove symbol from props
+    const symbol = this.props.symbol || value.symbol()
+    const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ]
+      ? prices[ symbol ][ selectedCurrency ]
+      : null
     if (price === null || price === 0) {
       return null
     }
@@ -59,8 +63,10 @@ class TokenValue extends PureComponent {
   }
 
   render () {
-    const { value, isInvert, symbol, prefix, noRenderPrice, style } = this.props
+    const { value, isInvert, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
+    const symbol = this.props.symbol || value.symbol()
+
     return !value.isLoaded()
       ? <Preloader small />
       : (

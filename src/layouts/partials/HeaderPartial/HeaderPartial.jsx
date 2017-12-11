@@ -1,7 +1,7 @@
 import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
 import Moment, { FULL_DATE } from 'components/common/Moment'
 import tokenIcons from 'components/tokenIcons'
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from 'Login/network/MonitorService'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from 'Login/network/MonitorService'
 import { getNetworkById } from 'Login/network/settings'
 import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
 import menu from 'menu'

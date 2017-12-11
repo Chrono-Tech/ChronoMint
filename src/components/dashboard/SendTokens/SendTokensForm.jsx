@@ -1,9 +1,13 @@
+import BalanceModel from '@/models/tokens/BalanceModel'
+import { getCurrentWallet } from '@/redux/wallet/actions'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import { IPFSImage } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
+import tokenIcons from 'components/tokenIcons'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
 import TokenModel from 'models/tokens/TokenModel'
@@ -14,12 +18,11 @@ import { Translate } from 'react-redux-i18n'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import './SendTokensForm.scss'
 import validate from './validate'
-import tokenIcons from 'components/tokenIcons'
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -35,18 +38,19 @@ function mapStateToProps (state) {
   const symbol = selector(state, 'symbol')
 
   return {
+    balance: getCurrentWallet(state).balances().item(symbol),
     account: state.get(DUCK_SESSION).account,
-    token: getCurrentWallet(state).tokens().get(symbol),
+    token: state.get(DUCK_TOKENS).item(symbol) || new TokenModel(),
   }
 }
 
 @connect(mapStateToProps, null)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export class SendTokensForm extends PureComponent {
+export default class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
-    token: PropTypes.object,
+    token: PropTypes.instanceOf(TokenModel),
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
@@ -65,8 +69,10 @@ export class SendTokensForm extends PureComponent {
     const isContact = contractsManagerDAO.isContract(address)
   }
 
-  renderHead (token = new TokenModel()) {
-    const symbol = token.symbol()
+  renderHead () {
+    const { token, wallet } = this.props
+    const balances = wallet.balances()
+    const currentBalance = balances.item(token.symbol()) || new BalanceModel()
 
     return (
       <div>
@@ -76,7 +82,7 @@ export class SendTokensForm extends PureComponent {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={tokenIcons[symbol]}
+              fallback={tokenIcons[ token.symbol() ]}
             />
           )}
         >
@@ -87,13 +93,19 @@ export class SendTokensForm extends PureComponent {
               fullWidth
               {...styles}
             >
-              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
-                <MenuItem
-                  key={symbol}
-                  value={symbol}
-                  primaryText={symbol}
-                />
-              ))}
+              {balances.size() > 0
+                ? balances.items().map((balance) => {
+                  const symbol = balance.id()
+                  return (
+                    <MenuItem
+                      key={symbol}
+                      value={symbol}
+                      primaryText={symbol}
+                    />
+                  )
+                })
+                : <Preloader />
+              }
             </Field>
           </MuiThemeProvider>
         </IconSection>
@@ -102,9 +114,7 @@ export class SendTokensForm extends PureComponent {
           <div styleName='value'>
             <TokenValue
               isInvert
-              isLoading={!token.isFetched()}
-              value={token.balance()}
-              symbol={token.symbol()}
+              value={currentBalance.amount()}
             />
           </div>
         </div>
@@ -151,7 +161,7 @@ export class SendTokensForm extends PureComponent {
               disabled={pristine || invalid}
               onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
             />
-            {token && token.dao().isApproveRequired() && (
+            {token.isERC20() && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
@@ -173,7 +183,7 @@ export class SendTokensForm extends PureComponent {
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
-            head={this.renderHead(token)}
+            head={this.renderHead()}
             body={this.renderBody({ token })}
           />
         </form>
@@ -182,4 +192,3 @@ export class SendTokensForm extends PureComponent {
   }
 }
 
-export default SendTokensForm
