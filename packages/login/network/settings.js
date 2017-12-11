@@ -13,8 +13,12 @@ const scannerMap = {
     'https://etherscan.io',
     'https://api.etherscan.io',
   ],
-  kovan: 'https://kovan.etherscan.io',
-  rinkeby: 'https://rinkeby.etherscan.io',
+  kovan: [
+    'https://kovan.etherscan.io',
+  ],
+  rinkeby: [
+    'https://rinkeby.etherscan.io',
+  ],
 }
 
 // ---------- network's base parameters
