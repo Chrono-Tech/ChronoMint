@@ -1,5 +1,6 @@
-import TokensCollection from '@/models/tokens/TokensCollection'
+import Amount from 'models/Amount'
 import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -37,20 +38,25 @@ export default class SendTokens extends PureComponent {
   }
 
   handleSubmit = (values) => {
-    const { wallet, tokens, resetForm } = this.props
+    const { wallet, tokens } = this.props
     const { action, symbol, amount, recipient } = values.toJS()
-    const token = tokens.get(symbol)
-
-    resetForm()
+    const value = new Amount(amount, symbol)
+    const token = tokens.item(symbol)
 
     switch (action) {
       case ACTION_APPROVE:
-        return !wallet.isMultisig() && this.props.mainApprove(token, amount, recipient)
+        !wallet.isMultisig() && this.props.mainApprove(token, value, recipient)
+        break
       case ACTION_TRANSFER:
-        return wallet.isMultisig()
-          ? this.props.multisigTransfer(wallet, token, amount, recipient)
-          : this.props.mainTransfer(token, amount, recipient)
+        wallet.isMultisig()
+          ? this.props.multisigTransfer(wallet, token, value, recipient)
+          : this.props.mainTransfer(token, value, recipient)
+        break
     }
+  }
+
+  handleSubmitSuccess = () => {
+    this.props.resetForm()
   }
 
   render () {
@@ -65,6 +71,7 @@ export default class SendTokens extends PureComponent {
         initialValues={initialValues}
         wallet={wallet}
         onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
       />
     )
   }

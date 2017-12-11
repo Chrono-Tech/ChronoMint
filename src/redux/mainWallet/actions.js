@@ -188,17 +188,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (token: TokenModel, amount: string, recipient) => async (dispatch) => {
-  const amountLocal = new BigNumber(amount)
-
-  dispatch(balanceMinus(amountLocal, token))
-  // TODO @bshevchenko: sub balances with values of outcome pending transactions
+export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string) => async (dispatch) => {
   try {
-    const dao = await token.dao()
-    await dao.transfer(recipient, amountLocal)
-  } finally {
-    // compensation for update in watchTransfer
-    dispatch(balancePlus(amountLocal, token))
+    const tokenDAO = tokenService.getDAO(token)
+    await tokenDAO.transfer(token, recipient, amount)
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('transfer error', e.message)
   }
 }
 

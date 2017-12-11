@@ -105,14 +105,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  transfer (account, amount: BigNumber) {
+  transfer (token, recipient, amount: Amount) {
     return this._tx(TX_TRANSFER, [
-      account,
-      this.addDecimals(amount),
+      recipient,
+      this.addDecimals(amount, token),
     ], {
-      account,
+      recipient,
       amount,
-      currency: this.getSymbol(),
+      currency: token.symbol(),
     })
   }
 
