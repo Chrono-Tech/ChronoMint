@@ -1,14 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { CircularProgress } from 'material-ui'
+import Amount from 'models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { DUCK_MARKET } from 'redux/market/action'
 import { integerWithDelimiter } from 'utils/formatter'
 
 import './TokenValue.scss'
 
 const mapStateToProps = (state) => {
-  const { isInited, prices, selectedCurrency } = state.get('market')
+  const { isInited, prices, selectedCurrency } = state.get(DUCK_MARKET)
   return {
     isInited,
     prices,
@@ -19,12 +21,11 @@ const mapStateToProps = (state) => {
 @connect(mapStateToProps, null)
 class TokenValue extends PureComponent {
   static propTypes = {
-    value: PropTypes.object,
+    value: PropTypes.instanceOf(Amount),
     symbol: PropTypes.string,
     className: PropTypes.string,
     prefix: PropTypes.string,
     isInvert: PropTypes.bool,
-    isLoading: PropTypes.bool,
     prices: PropTypes.object,
     selectedCurrency: PropTypes.string,
     isInited: PropTypes.bool,
@@ -46,10 +47,8 @@ class TokenValue extends PureComponent {
   }
 
   renderPrice () {
-    const {
-      prices, value, symbol, selectedCurrency, isInited,
-    } = this.props
-    const price = isInited && prices[symbol] && prices[symbol][selectedCurrency] ? prices[symbol][selectedCurrency] : null
+    const { prices, value, symbol, selectedCurrency, isInited } = this.props
+    const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ] ? prices[ symbol ][ selectedCurrency ] : null
     if (price === null || price === 0) {
       return null
     }
@@ -60,12 +59,10 @@ class TokenValue extends PureComponent {
   }
 
   render () {
-    const {
-      value, isInvert, isLoading, symbol, prefix, noRenderPrice, style,
-    } = this.props
+    const { value, isInvert, symbol, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
-    return isLoading ? (
-      <CircularProgress size={24} />
+    return !value.isLoaded() ? (
+      <CircularProgress size={16} />
     ) : (
       <span styleName={defaultMod} className='TokenValue__root' style={style}>
         {prefix}

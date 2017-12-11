@@ -1,3 +1,4 @@
+import TokenModel from 'models/tokens/TokenModel'
 import IconBitcoinCashSVG from 'assets/img/icn-bitcoin-cash.svg'
 import IconBitcoinSVG from 'assets/img/icn-bitcoin.svg'
 import IconEthereumSVG from 'assets/img/icn-ethereum.svg'
@@ -5,6 +6,7 @@ import IconTimeSVG from 'assets/img/icn-time.svg'
 import classnames from 'classnames'
 import { IPFSImage, TokenValue } from 'components'
 import { Paper } from 'material-ui'
+import Amount from 'models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -20,21 +22,21 @@ const ICON_OVERRIDES = {
 
 export default class TokenItem extends PureComponent {
   static propTypes = {
-    selectedCoin: PropTypes.string,
-    token: PropTypes.object,
-    open: PropTypes.bool,
+    token: PropTypes.instanceOf(TokenModel),
     onClick: PropTypes.func,
+    balance: PropTypes.instanceOf(Amount),
+    isSelected: PropTypes.bool,
   }
 
   handleClick = () => this.props.onClick(this.props.token.symbol())
 
   render () {
-    const { token, selectedCoin, open } = this.props
+    const { token, isSelected, balance } = this.props
     const symbol = token.symbol()
 
     return (
       <div
-        styleName={classnames('root', { selected: selectedCoin === symbol && open })}
+        styleName={classnames('root', { selected: isSelected })}
         onTouchTap={this.handleClick}
       >
         <Paper zDepth={1} style={{ background: 'transparent' }}>
@@ -46,7 +48,7 @@ export default class TokenItem extends PureComponent {
             <div styleName='info'>
               <div styleName='balance'><Translate value='layouts.partials.InfoPartial.balance' />:</div>
               <TokenValue
-                value={token.balance()}
+                value={balance}
                 symbol={symbol}
               />
             </div>

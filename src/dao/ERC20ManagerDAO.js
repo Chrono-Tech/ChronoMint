@@ -66,7 +66,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: this._c.bytesToString(urls[i]),
         decimals: decimalsArr[i].toNumber(),
         icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
-        isOptional: MANDATORY_TOKENS.includes(symbol),
+        isOptional: !MANDATORY_TOKENS.includes(symbol),
         isFetched: true,
         blockchain: 'Ethereum',
         isERC20: true,
@@ -179,7 +179,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         balance: balances[i],
         platform: additionalData[address] && additionalData[address].platform,
         totalSupply: additionalData[address] && TokenManagementExtensionDAO.removeDecimals(additionalData[address].totalSupply, decimalsArr[i]),
-        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isOptional: MANDATORY_TOKENS.includes(symbols[i]),
         isFetched: true,
         blockchain: 'Ethereum',
       })

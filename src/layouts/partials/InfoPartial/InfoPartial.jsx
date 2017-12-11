@@ -1,7 +1,6 @@
 import { AddCurrencyDialog } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
 import { FloatingActionButton, Paper } from 'material-ui'
-import Amount from 'models/Amount'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -36,6 +35,7 @@ function mapDispatchToProps (dispatch) {
     addCurrency: () => dispatch(modalsOpen({
       component: AddCurrencyDialog,
     })),
+    // TODO @dkchv: move to token redux and use token collection
     onChangeSelectedCoin: (symbol, open) => {
       dispatch({ type: SET_SELECTED_COIN, payload: { coin: symbol } })
       dispatch({ type: OPEN_BRAND_PARTIAL, payload: { open } })
@@ -56,17 +56,19 @@ function mapStateToProps (state) {
   }
 }
 
-export class InfoPartial extends PureComponent {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class InfoPartial extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
-  constructor (props, context, updater) {
-    super(props, context, updater)
+  constructor () {
+    super(...arguments)
     this.state = {
       slideIndex: 0,
       visibleCount: 3,
@@ -113,15 +115,14 @@ export class InfoPartial extends PureComponent {
     })
   }
 
-  renderItem = ({ token }) => {
-    const { selectedCoin, open } = this.props
-
+  renderItem = (balance) => {
+    const { selectedCoin, open, tokens } = this.props
     return (
       <TokenItem
-        key={token.id()}
-        selectedCoin={selectedCoin}
-        token={token}
-        open={open}
+        key={balance.id()}
+        isSelected={balance.id() === selectedCoin && open}
+        balance={balance.amount()}
+        token={tokens.item(balance.id())}
         onClick={this.handleChangeSelectedCoin}
       />
     )
@@ -149,15 +150,14 @@ export class InfoPartial extends PureComponent {
   render () {
     const { wallet } = this.props
     const { visibleCount } = this.state
-    const tokens = wallet.tokens().entrySeq().toArray()
-    const items = tokens.map(([name, token]) => ({ token, name }))
+    const balances = wallet.balances()
     const isMainWallet = !wallet.isMultisig()
 
-    let slidesCount = tokens.length
+    let slidesCount = balances.size()
     let withBigButton = false
     if (isMainWallet) {
       // increase 'add' button for main wallet
-      slidesCount = tokens.length + 1
+      slidesCount += 1
       // check
       withBigButton = slidesCount <= visibleCount
       // decrease if 'add' button don't fit the screen, cause 'add' button will be as FAB
@@ -166,22 +166,11 @@ export class InfoPartial extends PureComponent {
 
     const showArrows = slidesCount > visibleCount
 
-    // TODO @dkchv: !!!
-
     return (
       <div styleName='root'>
-        <div>
-          {this.props.wallet.balances().items().map((balance => {
-            const amount: Amount = balance.amount()
-            console.log('--InfoPartial#', amount.toString(), amount.isLoaded())
-          }))}
-        </div>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {wallet.isFetched() && !wallet.isFetching()
-              ? items.map(this.renderItem)
-              : <Preloader />
-            }
+            {balances.items().map(this.renderItem)}
             {isMainWallet && withBigButton && this.renderAction()}
           </div>
         </div>
@@ -208,5 +197,3 @@ export class InfoPartial extends PureComponent {
     )
   }
 }
-
-export default connect(mapStateToProps, mapDispatchToProps)(InfoPartial)

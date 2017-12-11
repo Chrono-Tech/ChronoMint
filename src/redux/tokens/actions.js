@@ -10,7 +10,8 @@ export const TOKENS_INIT = 'tokens/init'
 export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
 
-// increment on new tokens. [BTC, BCC]
+// increment on new tokens.
+// [BTC, BCC]
 const NON_ERC20_TOKENS_COUNT = 2
 
 export const initTokens = () => async (dispatch, getState) => {

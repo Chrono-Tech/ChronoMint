@@ -110,25 +110,33 @@ export const initMainWallet = () => (dispatch, getState) => {
   const profileTokens = profile.tokens()
 
   tokenService.on(EVENT_NEW_TOKEN, async (token: TokenModel) => {
-    console.log('--actions#', token.id(), token.isOptional(), profileTokens.toJS())
     if (token.isOptional() && !profileTokens.get(token.id())) {
       return
     }
-
-    const tokenDAO = tokenService.getDAO(token)
-    const balance = await tokenDAO.getAccountBalance(account, token)
     const symbol = token.symbol()
+
+    // set placeholder
     dispatch({
       type: WALLET_TOKEN_BALANCE,
       balance: new BalanceModel({
-        amount: new Amount(balance, symbol, true),
-        symbol,
+        amount: new Amount(0, symbol, false),
+      }),
+    })
+
+    // fetch actual
+    const tokenDAO = tokenService.getDAO(token)
+    const balance = await tokenDAO.getAccountBalance(account, token)
+    dispatch({
+      type: WALLET_TOKEN_BALANCE,
+      balance: new BalanceModel({
+        amount: new Amount(balance, symbol),
       }),
     })
   })
 }
 
 export const watchInitWallet = () => async (dispatch, getState) => {
+  return
   const state = getState()
 
   const profile: ProfileModel = state.get(DUCK_SESSION).profile
