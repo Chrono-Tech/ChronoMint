@@ -62,7 +62,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const token = new TokenModel({
         address,
         name: names[i],
-        symbol: (symbols[i] || '').toUpperCase(),
+        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
@@ -143,7 +143,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         address,
         dao: daos[i],
         name: names[i],
-        symbol: (symbols[i] || '').toUpperCase(),
+        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
