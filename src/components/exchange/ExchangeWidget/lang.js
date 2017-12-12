@@ -9,6 +9,7 @@ export default {
     amount: 'Amount',
     createExchange: 'Create an exchange',
     middlewareDisconnected: 'The search is not available because Middleware is disconnected',
+    emptyList: 'List is empty',
   },
   ru: {
     exchange: 'Обмен',
@@ -20,5 +21,6 @@ export default {
     amount: 'Сумма',
     createExchange: 'Создать обменник',
     middlewareDisconnected: 'Поиск недоступен, так как Middleware отключен',
+    emptyList: 'Список пуст',
   },
 }

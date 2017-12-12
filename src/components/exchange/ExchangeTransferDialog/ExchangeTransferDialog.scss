@@ -77,3 +77,9 @@
   margin-bottom: 12px;
   margin-top: 16px;
 }
+
+.warningMessage {
+  display: flex;
+  padding: 0 16px;
+  color: $color-warning;
+}
