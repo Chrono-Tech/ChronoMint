@@ -160,7 +160,8 @@ export default class AbstractContractDAO {
 
       return deployed
     } catch (e) {
-      throw new Error(`${this.getContractName()}#_initContract error: ${e.message}`)
+      console.log(`${this.getContractName()}#_initContract error: ${e.message}`) // eslint-disable-line no-console
+      return false
     }
   }
 
