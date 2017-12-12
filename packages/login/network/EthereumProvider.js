@@ -20,7 +20,7 @@ export class EthereumProvider extends AbstractProvider {
   }
 
   subscribe (ethEngine: EthereumEngine, nemEngine: NemEngine) {
-    const node = this._selectNode(nemEngine)
+    const node = this._selectNode(ethEngine)
 
     node.emit('subscribe', {
       ethAddress: ethEngine.getAddress(),
