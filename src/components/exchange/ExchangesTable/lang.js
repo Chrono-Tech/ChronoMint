@@ -12,8 +12,8 @@ export default {
     sell: 'Sell',
     statusPending: 'Status: pending',
     getNextPage: 'Load next page',
-    showOnlyMyExchanges: 'Show my exchanges',
-    depositTokens: 'deposit/withdrawal token',
+    showOnlyMyExchanges: 'Configure my exchanges',
+    depositTokens: 'deposit/withdrawal %{symbol}',
     depositEth: 'deposit/withdrawal ETH',
   },
   ru: {
@@ -29,8 +29,8 @@ export default {
     sell: 'Продать',
     statusPending: 'Статус: ожидает манинга',
     getNextPage: 'Загрузить слудующую страницу',
-    showOnlyMyExchanges: 'Показать мои обменники',
-    depositTokens: 'Внести/вывести токены',
+    showOnlyMyExchanges: 'Настроить мои обменники',
+    depositTokens: 'Внести/вывести %{symbol}',
     depositEth: 'Внести/вывести ETH',
   },
 }

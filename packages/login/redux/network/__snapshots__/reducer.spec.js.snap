@@ -52,8 +52,11 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER with local 1`] = `
   "networks": [
     {
       "bitcoin": "bitcoin",
+      "bitcoinCash": "bitcoin",
+      "bitcoinGold": "bitcoingold",
       "host": "mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 1,
+      "litecoin": "litecoin",
       "name": "Mainnet (production)",
       "nem": "Mainnet",
       "protocol": "https",
@@ -64,8 +67,10 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER with local 1`] = `
     },
     {
       "bitcoin": "testnet",
+      "bitcoinCash": "testnet",
       "host": "rinkeby.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 4,
+      "litecoin": "litecoin_testnet",
       "name": "Rinkeby (test network)",
       "nem": "Testnet",
       "protocol": "https",
@@ -73,8 +78,10 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER with local 1`] = `
     },
     {
       "bitcoin": "testnet",
+      "bitcoinCash": "testnet",
       "host": "kovan.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 42,
+      "litecoin": "litecoin_testnet",
       "name": "Kovan (test network)",
       "nem": "Testnet",
       "protocol": "https",
@@ -82,8 +89,10 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER with local 1`] = `
     },
     {
       "bitcoin": "testnet",
+      "bitcoinCash": "testnet",
       "host": "localhost:3000/web3/",
       "id": 9999999999,
+      "litecoin": "litecoin_testnet",
       "name": "Localhost",
       "nem": "Testnet",
       "protocol": "https"
@@ -106,8 +115,11 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER without local 1`] = 
   "networks": [
     {
       "bitcoin": "bitcoin",
+      "bitcoinCash": "bitcoin",
+      "bitcoinGold": "bitcoingold",
       "host": "mainnet.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 1,
+      "litecoin": "litecoin",
       "name": "Mainnet (production)",
       "nem": "Mainnet",
       "protocol": "https",
@@ -118,8 +130,10 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER without local 1`] = 
     },
     {
       "bitcoin": "testnet",
+      "bitcoinCash": "testnet",
       "host": "rinkeby.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 4,
+      "litecoin": "litecoin_testnet",
       "name": "Rinkeby (test network)",
       "nem": "Testnet",
       "protocol": "https",
@@ -127,8 +141,10 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER without local 1`] = 
     },
     {
       "bitcoin": "testnet",
+      "bitcoinCash": "testnet",
       "host": "kovan.infura.io/PVe9zSjxTKIP3eAuAHFA",
       "id": 42,
+      "litecoin": "litecoin_testnet",
       "name": "Kovan (test network)",
       "nem": "Testnet",
       "protocol": "https",

@@ -1,26 +1,19 @@
 language: node_js
-
 dist: trusty
-
 node_js:
   - "8.9.1"
-
 sudo: true
-
 git:
   depth: 1
-
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 build-essential -y
   - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.2.1
   - export PATH="$HOME/.yarn/bin:$PATH" CXX=g++-4.8
-
 branches:
   only:
     - master
     - develop
-
 jobs:
   include:
     - stage: build docker image
@@ -28,7 +21,7 @@ jobs:
         - yarn testrpc > /dev/null &
         - yarn contracts
       script:
-        - yarn test --coverage
+        - yarn test --coverage; export TEST_RESULT=$?
         - yarn build
       after_script:
         - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
@@ -44,9 +37,19 @@ jobs:
           elif [ "$TRAVIS_TAG" != "" ]; then
             IMAGE_TAG_NAME="$TRAVIS_TAG"
           fi;
-        - docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
-        - docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+        - echo "Test result is: $TEST_RESULT"
+        - |
+          if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" == "0" ]; then
+            IMAGE_TAG_NAME="latest"
+            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+            docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+          elif [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" != "0" ]; then
+            echo "Test result is: $TEST_RESULT for master branch. Skipping image build and push!"
+          elif [ "$TRAVIS_BRANCH" == "develop" ]; then
+            IMAGE_TAG_NAME="latest"
+            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+            docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
+          fi;
         - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
-
 cache:
   yarn: true

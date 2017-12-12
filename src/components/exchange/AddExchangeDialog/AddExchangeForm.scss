@@ -58,6 +58,11 @@
 .tokensList {
   display: flex;
   flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.tokensListFolded {
+  max-height: 110px;
 }
 
 .tokenItem {

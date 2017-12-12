@@ -1,4 +1,4 @@
-import { bccProvider, btcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
@@ -233,7 +233,7 @@ class LoginWithOptions extends PureComponent {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  async setupAndLogin ({ ethereum, btc, bcc, nem }) {
+  async setupAndLogin ({ ethereum, btc, bcc, btg, ltc, nem }) {
     // setup
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
@@ -246,6 +246,8 @@ class LoginWithOptions extends PureComponent {
       ethereumProvider.setEngine(ethereum, nem)
       bccProvider.setEngine(bcc)
       btcProvider.setEngine(btc)
+      btgProvider.setEngine(btg)
+      ltcProvider.setEngine(ltc)
       nemProvider.setEngine(nem)
       this.props.onLogin()
     } catch (e) {

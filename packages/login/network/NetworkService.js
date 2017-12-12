@@ -215,9 +215,10 @@ class NetworkService extends EventEmitter {
       this.selectNetwork(networkId)
       resolveNetwork()
     }
-    let checkerIndex = 0
 
-    const checkers = []
+    this.checkerIndex = 0
+
+    this.checkers = []
 
     const handleNetwork = (status) => {
       switch (status) {
@@ -231,15 +232,16 @@ class NetworkService extends EventEmitter {
     }
 
     const resetCheckers = () => {
-      checkerIndex = 0
-      checkers.length = checkerIndex
+      this.checkerIndex = 0
+      this.checkers.length = this.checkerIndex
       web3Provider.getMonitorService().removeListener('network', handleNetwork)
     }
 
     const runNextChecker = () => {
-      if (checkerIndex <= checkers.length) {
-        checkers[ checkerIndex ]()
-        checkerIndex++
+      if (this.checkerIndex <= this.checkers.length) {
+        web3Provider.reset()
+        this.checkers[ this.checkerIndex ]()
+        this.checkerIndex++
       } else {
         resetCheckers()
       }
@@ -248,12 +250,12 @@ class NetworkService extends EventEmitter {
     priority.forEach((providerId) => {
       const networks = getNetworksByProvider(providerId)
       if (preferMainnet) {
-        checkers.push(() => selectAndResolve(NETWORK_MAIN_ID, providerId))
+        this.checkers.push(() => selectAndResolve(NETWORK_MAIN_ID, providerId))
       } else {
         networks
           .filter((network) => network.id !== NETWORK_MAIN_ID)
           .forEach((network) => {
-            checkers.push(() => selectAndResolve(network.id, providerId))
+            this.checkers.push(() => selectAndResolve(network.id, providerId))
           })
       }
     })
