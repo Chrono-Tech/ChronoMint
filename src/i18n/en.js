@@ -666,6 +666,7 @@ export default {
         balance: 'Balance',
         recipientAddress: 'Recipient address',
         amount: 'Amount',
+        feeRate: 'Fee: %{multiplier} of average (%{total} sat/byte)',
         approve: 'Approve',
         send: 'Send',
       },
