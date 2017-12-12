@@ -12,22 +12,13 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
+import { TOKEN_ICONS } from 'assets'
 import { modalsClose } from 'redux/modals/actions'
 import styles from './styles'
 
 import './CrowdsaleForm.scss'
 
-const ICON_OVERRIDES = {
-  LHAU: require('assets/img/icn-lhau.svg'),
-  ETH: require('assets/img/icn-eth.png'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  LTC: require('assets/img/icn-lht.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-  LHUS: require('assets/img/icn-lhus.svg'),
-  LHEU: require('assets/img/icn-lheu.svg'),
-}
-
-const CROWDSALE_COINS = Object.keys(ICON_OVERRIDES).map((coin) => coin.toLowerCase())
+const CROWDSALE_COINS = Object.keys(TOKEN_ICONS).map((coin) => coin.toLowerCase())
 
 function prefix (token) {
   return `Assets.CrowdsaleForm.${token}`
@@ -76,7 +67,7 @@ class CrowdsaleCurrency extends PureComponent {
         onClick={this.handleClick}
         styleName={classnames('currencyItem', { selected: currentCurrency === currency })}
       >
-        <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES[currency.toUpperCase()]} />
+        <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS[currency.toUpperCase()]} />
         <div styleName='name'>Ethereum</div>
       </button>
     )
@@ -118,7 +109,7 @@ export default class CrowdsaleForm extends PureComponent {
     return (
       <div styleName='leftCol'>
         <div styleName='balanceRow'>
-          <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHAU} />
+          <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.LHAU} />
           <div styleName='title'>LHUS</div>
           <div styleName='balanceWrap'>
             <div styleName='balance'>
@@ -257,7 +248,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.eth'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.ETH} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.ETH} />
                     <div styleName='name'>Ethereum</div>
                     <div styleName='checkbox' />
                   </div>
@@ -274,7 +265,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.time'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.TIME} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.TIME} />
                     <div styleName='name'>TIME</div>
                     <div styleName='checkbox' />
                   </div>
@@ -291,7 +282,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.btc'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.BTC} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.BTC} />
                     <div styleName='name'>Bitcoin</div>
                     <div styleName='checkbox' />
                   </div>
@@ -308,7 +299,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.lheu'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHEU} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.LHEU} />
                     <div styleName='name'>lheu</div>
                     <div styleName='checkbox' />
                   </div>
@@ -325,7 +316,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.ltc'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LTC} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.LTC} />
                     <div styleName='name'>litecoin</div>
                     <div styleName='checkbox' />
                   </div>
@@ -342,7 +333,7 @@ export default class CrowdsaleForm extends PureComponent {
                 name='currencyAccepted.lhus'
                 label={(
                   <div styleName='checkboxLabel'>
-                    <IPFSImage styleName='tokenIcon' fallback={ICON_OVERRIDES.LHUS} />
+                    <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS.LHUS} />
                     <div styleName='name'>LHUS</div>
                     <div styleName='checkbox' />
                   </div>

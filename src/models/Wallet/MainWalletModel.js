@@ -10,6 +10,8 @@ export default class MainWallet extends abstractFetchingModel({
   transactions: new TransactionsCollection(),
   btcAddress: null,
   bccAddress: null,
+  btgAddress: null,
+  ltcAddress: null,
   nemAddress: null,
   timeDeposit: new BigNumber(0),
   timeAddress: null,
@@ -41,6 +43,14 @@ export default class MainWallet extends abstractFetchingModel({
 
   bccAddress (value) {
     return this._getSet('bccAddress', value)
+  }
+
+  btgAddress (value) {
+    return this._getSet('btgAddress', value)
+  }
+
+  ltcAddress (value) {
+    return this._getSet('ltcAddress', value)
   }
 
   nemAddress (value) {

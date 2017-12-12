@@ -72,7 +72,7 @@ class ExchangeService extends EventEmitter {
   }
 
   subscribeToToken (token: TokenModel, exchange: string) {
-    if (this._cache[`${token.id()}-${exchange}`]) return null
+    if (!token || this._cache[`${token.id()}-${exchange}`]) return null
 
     this._cache[`${token.id()}-${exchange}`] = token.dao()
     const dao = token.dao()

@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import menu from 'menu'
+import { TOKEN_ICONS } from 'assets'
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
 import { getNetworkById } from '@chronobank/login/network/settings'
 import {
@@ -24,12 +25,6 @@ import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
 
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
-
 @connect(mapStateToProps, mapDispatchToProps)
 class HeaderPartial extends PureComponent {
   static propTypes = {
@@ -37,6 +32,8 @@ class HeaderPartial extends PureComponent {
     network: PropTypes.string,
     account: PropTypes.string,
     btcAddress: PropTypes.string,
+    btgAddress: PropTypes.string,
+    ltcAddress: PropTypes.string,
     nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
@@ -326,6 +323,12 @@ class HeaderPartial extends PureComponent {
       ? []
       : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({ token, name }))
 
+    const addresses = [
+      { title: 'BTC', address: this.props.btcAddress },
+      { title: 'BTG', address: this.props.btgAddress },
+      { title: 'LTC', address: this.props.ltcAddress },
+      { title: 'NEM', address: this.props.nemAddress },
+    ]
     return (
       <div styleName='profile'>
         <div styleName='profile-body'>
@@ -334,12 +337,14 @@ class HeaderPartial extends PureComponent {
               <IPFSImage
                 styleName='avatarIconContent'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon
-                  style={{ fontSize: 96, cursor: 'default' }}
-                  color='white'
-                  className='material-icons'
-                >account_circle
-                </FontIcon>}
+                icon={
+                  <FontIcon
+                    style={{ fontSize: 96, cursor: 'default' }}
+                    color='white'
+                    className='material-icons'
+                  >account_circle
+                  </FontIcon>
+                }
               />
             </div>
           </div>
@@ -355,39 +360,21 @@ class HeaderPartial extends PureComponent {
                 onModalOpen={this.handleClickOutside}
               />
             </div>
-            {this.props.btcAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>BTC: </b>{this.props.btcAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.btcAddress} />
-                    <CopyIcon
-                      value={this.props.btcAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
+            {addresses.filter((a) => a.address).map((a) => (
+              <div>
+                <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
+                <div styleName='info-micros'>
+                  <QRIcon value={a.address} />
+                  <CopyIcon
+                    value={a.address}
+                    onModalOpen={this.handleClickOutside}
+                  />
                 </div>
-              )
-              : null
-            }
-            {this.props.nemAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>NEM: </b>{this.props.nemAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.nemAddress} />
-                    <CopyIcon
-                      value={this.props.nemAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
-                </div>
-              )
-              : null
-            }
+              </div>
+            ))}
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
@@ -417,7 +404,7 @@ class HeaderPartial extends PureComponent {
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
           <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
           </div>
         </div>
         <div styleName='balance-info'>
@@ -476,6 +463,8 @@ function mapStateToProps (state) {
   return {
     i18n: state.get('i18n'), // force update I18n.t
     btcAddress: wallet.btcAddress(),
+    btgAddress: wallet.btgAddress(),
+    ltcAddress: wallet.ltcAddress(),
     nemAddress: wallet.nemAddress(),
     account: session.account,
     profile: session.profile,

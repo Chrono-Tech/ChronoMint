@@ -40,6 +40,7 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
       "address": null,
       "bccAddress": null,
       "btcAddress": null,
+      "btgAddress": null,
       "id": null,
       "isFailed": false,
       "isFetched": false,
@@ -48,6 +49,97 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
       "isMultisig": false,
       "isPending": false,
       "isTIMERequired": true,
+      "ltcAddress": null,
+      "nemAddress": null,
+      "timeAddress": null,
+      "timeDeposit": "0",
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    }
+  },
+  {
+    "type": "exchange/GET_DATA_START"
+  },
+  {
+    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
+  },
+  {
+    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
+  },
+  {
+    "type": "AssetsManager/GET_TRANSACTIONS_START"
+  },
+  {
+    "isInited": true,
+    "type": "market/INIT"
+  },
+  {
+    "type": "mainWallet/TOKENS_FETCH"
+  },
+  {
+    "type": "watcher/USER"
+  },
+  {
+    "type": "watcher/CBE"
+  },
+  {
+    "payload": {
+      "args": [
+        "/dashboard"
+      ],
+      "method": "replace"
+    },
+    "type": "@@router/CALL_HISTORY_METHOD"
+  }
+]
+`;
+
+exports[`session actions should login CBE and go to default page (/cbe) 2`] = `
+[
+  {
+    "isCBE": true,
+    "profile": {
+      "assetsManager": {},
+      "company": null,
+      "email": null,
+      "icon": null,
+      "id": null,
+      "name": null,
+      "timestamp": null,
+      "tokens": [],
+      "url": null
+    },
+    "type": "session/PROFILE"
+  },
+  {
+    "type": "WALLET/switch_wallet",
+    "wallet": {
+      "address": null,
+      "bccAddress": null,
+      "btcAddress": null,
+      "btgAddress": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMainWallet": true,
+      "isMultisig": false,
+      "isPending": false,
+      "isTIMERequired": true,
+      "ltcAddress": null,
       "nemAddress": null,
       "timeAddress": null,
       "timeDeposit": "0",
@@ -128,6 +220,7 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
       "address": null,
       "bccAddress": null,
       "btcAddress": null,
+      "btgAddress": null,
       "id": null,
       "isFailed": false,
       "isFetched": false,
@@ -136,6 +229,7 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
       "isMultisig": false,
       "isPending": false,
       "isTIMERequired": true,
+      "ltcAddress": null,
       "nemAddress": null,
       "timeAddress": null,
       "timeDeposit": "0",
@@ -216,6 +310,7 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
       "address": null,
       "bccAddress": null,
       "btcAddress": null,
+      "btgAddress": null,
       "id": null,
       "isFailed": false,
       "isFetched": false,
@@ -224,6 +319,7 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
       "isMultisig": false,
       "isPending": false,
       "isTIMERequired": true,
+      "ltcAddress": null,
       "nemAddress": null,
       "timeAddress": null,
       "timeDeposit": "0",

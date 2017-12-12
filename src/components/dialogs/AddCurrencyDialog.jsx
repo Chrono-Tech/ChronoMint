@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import { TOKEN_ICONS } from 'assets'
 import TokenModel from 'models/TokenModel'
 import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
@@ -47,7 +48,7 @@ class TokenRow extends PureComponent {
       >
         <div styleName='cell'>
           <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
             <div styleName='label'>{symbol}</div>
           </div>
         </div>
@@ -69,14 +70,6 @@ class TokenRow extends PureComponent {
       </div>
     )
   }
-}
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
 }
 
 function prefix (token) {

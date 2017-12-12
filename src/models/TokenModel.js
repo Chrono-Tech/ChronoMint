@@ -17,6 +17,7 @@ export default class TokenModel extends abstractFetchingModel({
   url: null,
   icon: null,
   fee: null,
+  feeRate: null, // Default token fee per byte
   withFee: false,
   platform: null,
   totalSupply: new BigNumber(0),
@@ -76,6 +77,10 @@ export default class TokenModel extends abstractFetchingModel({
 
   fee (value) {
     return this._getSet('fee', value)
+  }
+
+  feeRate (value) {
+    return this._getSet('feeRate', value)
   }
 
   withFee (value) {

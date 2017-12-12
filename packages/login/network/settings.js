@@ -29,6 +29,9 @@ const MAINNET_BASE = {
   name: 'Mainnet (production)',
   scanner: scannerMap.main,
   bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
+  bitcoinGold: 'bitcoingold',
+  litecoin: 'litecoin',
   nem: 'Mainnet',
 }
 
@@ -38,6 +41,9 @@ const RINKEBY_BASE = {
   name: 'Rinkeby (test network)',
   scanner: scannerMap.rinkeby,
   bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
@@ -47,12 +53,15 @@ const KOVAN_BASE = {
   name: 'Kovan (test network)',
   scanner: scannerMap.kovan,
   bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
-  protocol: 'https',
+  protocol: process.env.BASE_SCHEMA || 'https',
   name: 'Localhost',
 }
 
@@ -106,6 +115,9 @@ if (process.env.NODE_ENV === 'development') {
     host: 'private.chronobank.io/',
     name: 'Private (develop network)',
     bitcoin: 'testnet',
+    bitcoinCash: 'testnet',
+    // bitcoinGold: 'bitcoingold_testnet',
+    litecoin: 'litecoin_testnet',
     nem: 'Testnet',
   })
 }
@@ -115,6 +127,9 @@ export const infuraLocalNetwork = {
   ...LOCALHOST_BASE,
   host: `localhost:3000${TESTRPC_URL}`,
   bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
   nem: 'Testnet',
 }
 

@@ -116,4 +116,14 @@ export default {
       color: variables.colorPrimary1,
     },
   },
+  buttonRaisedMultyLine: {
+    style: {
+      height: 'auto',
+      overflow: 'visible',
+      textAlign: 'left',
+    },
+    labelStyle: {
+      display: 'block',
+    },
+  },
 }
