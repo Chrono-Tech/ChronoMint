@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import { TOKEN_ICONS } from 'assets'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
@@ -64,7 +65,7 @@ class TokenItem extends PureComponent {
         <Paper zDepth={1} style={{ background: 'transparent' }}>
           <div styleName='inner'>
             <div styleName='innerIcon'>
-              <IPFSImage styleName='content' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+              <IPFSImage styleName='content' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
               <div styleName='innerIconLabel'>{symbol}</div>
             </div>
             <div styleName='info'>
@@ -79,14 +80,6 @@ class TokenItem extends PureComponent {
       </div>
     )
   }
-}
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
 }
 
 const SCREEN_WIDTH_SCALE = [

@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import type TxModel from 'models/TxModel'
-import { btcProvider, bccProvider } from '@chronobank/login/network/BitcoinProvider'
+import type TokenModel from 'models/TokenModel'
+import { btcProvider, bccProvider, ltcProvider, btgProvider } from '@chronobank/login/network/BitcoinProvider'
 import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import { bitcoinAddress } from 'components/forms/validator'
 
@@ -48,18 +49,28 @@ export class BitcoinDAO {
     return 8
   }
 
+  async getFeeRate () {
+    return this._bitcoinProvider.getFeeRate()
+  }
+
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
-      balance: new BigNumber(balance0 || balance6),
-      balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6),
+      balance: balance0 || balance6,
+      balance0: balance0,
+      balance6: balance6,
     }
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber) {
-    return await this._bitcoinProvider.transfer(to, amount)
+  async transfer (to, amount: BigNumber, token: TokenModel) {
+    try {
+      return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -83,7 +94,7 @@ export class BitcoinDAO {
       callback({
         account,
         time,
-        balance: (new BigNumber(balance.balance0)).div(DECIMALS),
+        balance: balance.balance0.div(DECIMALS),
         symbol: this.getSymbol(),
       })
     })
@@ -105,3 +116,5 @@ export class BitcoinDAO {
 
 export const btcDAO = new BitcoinDAO('Bitcoin', 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO('Bitcoin Cash', 'BCC', bccProvider)
+export const ltcDAO = new BitcoinDAO('Litecoin', 'LTC', ltcProvider)
+export const btgDAO = new BitcoinDAO('Bitcoin Gold ', 'BTG', btgProvider)
