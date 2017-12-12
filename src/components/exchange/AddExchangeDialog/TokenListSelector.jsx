@@ -21,6 +21,7 @@ export default class TokenListSelector extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
     input: PropTypes.object,
     meta: PropTypes.object,
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   constructor (props) {
@@ -50,7 +51,8 @@ export default class TokenListSelector extends PureComponent {
           <div styleName='tokenError'>{meta.touched && meta.error && meta.error}</div>
         </div>
         <TextField
-          type="text"
+          type='text'
+          name='symbolFilter'
           onChange={this.handleChangeFilter}
           hintText={<Translate value={prefix('enterTokenSymbol')} />}
         />
@@ -59,18 +61,24 @@ export default class TokenListSelector extends PureComponent {
             tokens.isFetching()
               ? <Preloader />
               : tokens.items()
-                .filter((tokenItem: TokenModel) => {
-                  return tokenItem.symbol().toLowerCase().indexOf(this.state.symbolFilter.toLowerCase()) + 1
-                })
                 .map((tokenItem: TokenModel) => {
                   return (
                     <div
                       key={tokenItem.symbol()}
-                      styleName={classnames('tokenItem', { 'selected': token === tokenItem })}
+                      styleName={classnames(
+                        'tokenItem',
+                        {
+                          'selected': token === tokenItem,
+                          'hide': !(tokenItem.symbol().toUpperCase().indexOf(`${this.state.symbolFilter}`.toUpperCase()) + 1),
+                        },
+                      )}
                       onTouchTap={() => this.props.input.onChange(tokenItem)}
                     >
-                      <IPFSImage multihash={tokenItem.icon()} styleName='tokenIcon'
-                                 fallback={iconTokenDefaultSVG} />
+                      <IPFSImage
+                        multihash={tokenItem.icon()}
+                        styleName='tokenIcon'
+                        fallback={iconTokenDefaultSVG}
+                      />
                       <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
                     </div>
                   )

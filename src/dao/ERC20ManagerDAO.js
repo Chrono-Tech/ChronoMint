@@ -62,7 +62,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       const token = new TokenModel({
         address,
         name: names[i],
-        symbol: symbols[i],
+        symbol: (symbols[i] || '').toUpperCase(),
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
@@ -143,7 +143,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         address,
         dao: daos[i],
         name: names[i],
-        symbol: symbols[i],
+        symbol: (symbols[i] || '').toUpperCase(),
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
@@ -187,7 +187,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         const token = new TokenModel({
           dao,
           name: dao.getName(),
-          symbol: dao.getSymbol(),
+          symbol: dao.getSymbol().toUpperCase(),
           isApproveRequired: false,
           feeRate,
           ...balances,
@@ -268,13 +268,13 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       new TokenModel({
         address: result.args.token,
         name: this._c.bytesToString(result.args.name),
-        symbol: this._c.bytesToString(result.args.symbol),
+        symbol: this._c.bytesToString(result.args.symbol).toUpperCase(),
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: 'Ethereum',
       }),
-      time, isRemoved, isAdded, result.args.oldToken || null
+      time, isRemoved, isAdded, result.args.oldToken || null,
     ))
   }
 
