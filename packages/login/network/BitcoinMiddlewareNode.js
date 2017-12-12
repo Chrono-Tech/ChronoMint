@@ -4,8 +4,10 @@ import AbstractNode from './AbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends AbstractNode {
-  constructor () {
-    super(...arguments)
+  constructor ({ feeRate, ...args }) {
+    super(args)
+    // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
+    this._feeRate = feeRate
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
@@ -29,9 +31,15 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
               this.trace('Address Balance', data)
               const ev = {
                 address: data.address,
-                balance0: data.balances.confirmations0,
-                balance3: data.balances.confirmations3,
-                balance6: data.balances.confirmations6,
+                balance0: data.balances.confirmations0 != null // nil check
+                  ? new BigNumber(data.balances.confirmations0)
+                  : null,
+                balance3: data.balances.confirmations3 != null // nil check
+                  ? new BigNumber(data.balances.confirmations3)
+                  : null,
+                balance6: data.balances.confirmations6 != null // nil check
+                  ? new BigNumber(data.balances.confirmations6)
+                  : null,
               }
               this.emit('balance', ev)
             } catch (e) {
@@ -78,6 +86,11 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     }
   }
 
+  async getFeeRate () {
+    // async by design
+    return this._feeRate
+  }
+
   async getAddressInfo (address) {
     try {
       const res = await this._api.get(`/addr/${address}/balance`)
@@ -87,9 +100,9 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
         confirmations6,
       } = res.data
       return {
-        balance0: confirmations0.amount,
-        balance3: confirmations3.amount,
-        balance6: confirmations6.amount,
+        balance0: new BigNumber(confirmations0.amount),
+        balance3: new BigNumber(confirmations3.amount),
+        balance6: new BigNumber(confirmations6.amount),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)

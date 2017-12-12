@@ -5,11 +5,11 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 // TODO @dkchv: update to actual config
 const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-ethereum-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
-    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
@@ -21,11 +21,11 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
 
 const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: '//middleware-ethereum-mainnet-rest.chronobank.io',
+    baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
-    baseURL: '//rabbitmq-webstomp.chronobank.io/stomp',
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {

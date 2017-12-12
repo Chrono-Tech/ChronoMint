@@ -33,6 +33,7 @@ module.exports = config.buildConfig(
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
+        'process.env.BASE_SCHEMA': `"${process.env.BASE_SCHEMA || 'https'}"`
       }),
       new webpack.HotModuleReplacementPlugin(),
     ],

@@ -1,31 +1,17 @@
-import EventEmitter from 'events'
+import AbstractNode from './AbstractNode'
 
-export default class BitcoinAbstractNode extends EventEmitter {
+export default class BitcoinAbstractNode extends AbstractNode {
 
-  trace () {
-    if (this._trace) {
-      // eslint-disable-next-line
-      console.log.apply(console, arguments)
-    }
-  }
-
-  // eslint-disable-next-line
-  async getTransactionInfo (txid) {
+  async getFeeRate () {
     throw new Error('Not implemented')
   }
 
-  // eslint-disable-next-line
-  async getAddressInfo (address) {
-    throw new Error('Not implemented')
-  }
-
+  /**
+   * @abstract
+   * @param address
+   */
   // eslint-disable-next-line
   async getAddressUTXOS (address) {
-    throw new Error('Not implemented')
-  }
-
-  // eslint-disable-next-line
-  async send (rawtx) {
     throw new Error('Not implemented')
   }
 }

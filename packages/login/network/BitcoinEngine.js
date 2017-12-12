@@ -3,7 +3,6 @@ import bitcoin from 'bitcoinjs-lib'
 import coinselect from 'coinselect'
 
 export const DECIMALS = 100000000
-const FEE_RATE = 75 // satoshis per byte
 
 export class BitcoinEngine {
   constructor (wallet, network) {
@@ -24,7 +23,7 @@ export class BitcoinEngine {
    * @param to Destination address
    * @param amount BTC amount in BTC with decimals
    */
-  createTransaction (to, amount: BigNumber, utxos) {
+  createTransaction (to, amount: BigNumber, feeRate, utxos) {
     const targets = [
       {
         address: to,
@@ -37,7 +36,7 @@ export class BitcoinEngine {
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,
-    })), targets, FEE_RATE)
+    })), targets, feeRate)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 
@@ -52,6 +51,7 @@ export class BitcoinEngine {
       txb.addInput(input.txId, input.vout)
       // txb.addInput(input.txId, input.vout, bitcoin.Transaction.DEFAULT_SEQUENCE, spk)
     }
+
     for (const output of outputs) {
       if (!output.address) {
         output.address = this.getAddress()
@@ -69,10 +69,6 @@ export class BitcoinEngine {
 }
 
 export class BTCEngine extends BitcoinEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
-
   _signInputs (txb, inputs) {
     for (let i = 0; i < inputs.length; i++) {
       txb.sign(i, this._wallet.keyPair)
@@ -80,11 +76,23 @@ export class BTCEngine extends BitcoinEngine {
   }
 }
 
-export class BCCEngine extends BitcoinEngine {
-  constructor (wallet, network) {
-    super(wallet, network)
-  }
+export class LTCEngine extends BTCEngine {
+}
 
+export class BTGEngine extends BitcoinEngine {
+  _signInputs (txb, inputs) {
+    txb.enableBitcoinGold(true)
+    txb.setVersion(2)
+
+    const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+
+    for (let i = 0; i < inputs.length; i++) {
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ 0 ].value)
+    }
+  }
+}
+
+export class BCCEngine extends BitcoinEngine {
   _signInputs (txb, inputs) {
     txb.enableBitcoinCash(true)
     txb.setVersion(2)
