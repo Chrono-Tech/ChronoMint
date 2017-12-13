@@ -85,7 +85,7 @@ export default {
       clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
       selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
-      owners: 'владельцев',
+      owners: '%{num} владельцев',
     },
   },
   exchange: {

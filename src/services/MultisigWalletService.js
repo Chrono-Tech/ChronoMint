@@ -36,7 +36,7 @@ class MultisigWalletService extends EventEmitter {
     return newDAO
   }
 
-  async subscribeToWalletDAO (wallet: MultisigWalletModel) {
+  subscribeToWalletDAO (wallet: MultisigWalletModel): Promise {
     const address = wallet.address()
     const dao = this.getWalletDAO(address)
 

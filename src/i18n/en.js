@@ -86,7 +86,7 @@ export default {
       clickPlusButtonAtTheTop: 'Click plus button at the top',
       selectOwnersAtLeastTwo: 'Select owners, at least two',
       selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
-      owners: 'owners',
+      owners: '%{num} owners',
     },
   },
   exchange: {

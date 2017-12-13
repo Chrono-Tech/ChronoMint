@@ -68,6 +68,7 @@ export default class WalletSelectDialog extends PureComponent {
 
   renderRow = (wallet: MultisigWalletModel) => {
     const isSelected = wallet.isSelected()
+    const owners = wallet.owners()
     return (
       <div key={wallet.id()} styleName={classNames('row', { 'rowSelected': isSelected })}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
@@ -76,21 +77,29 @@ export default class WalletSelectDialog extends PureComponent {
           </div>
         </div>
         <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div styleName='symbol'>{wallet.address()}</div>
-          <div>
-            <span styleName='ownersNum'>
-              {wallet.owners().size} <Translate value='wallet.walletSelectDialog.owners' />
-            </span>
-            <div>
-              {wallet.owners().valueSeq().toArray().map((owner, idx) => (
-                <i
-                  className='material-icons'
-                  key={owner}
-                  title={owner}
-                  styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
-                >account_circle
-                </i>
-              ))}
+          <div styleName='address'>{wallet.address()}</div>
+          <div styleName='details'>
+            <div styleName='owners'>
+              <div styleName='ownersCount'>
+                <Translate num={owners.size} value='wallet.walletSelectDialog.owners' />
+              </div>
+              <div>
+                {owners.valueSeq().toArray().map((owner, idx) => (
+                  <i
+                    className='material-icons'
+                    key={owner}
+                    title={owner}
+                    styleName={owners.size > 4 && idx ? 'faces tight' : 'faces'}
+                  >account_circle
+                  </i>
+                ))}
+              </div>
+            </div>
+            <div styleName='pendings'>
+              <div styleName='pendingsTitle'>
+                <Translate value='wallet.walletSelectDialog.pendings' />
+              </div>
+              <div styleName={classNames('pendingsCount', { disabled: wallet.pendingCount() === 0 })}>{wallet.pendingCount()}</div>
             </div>
           </div>
         </div>

@@ -1,7 +1,7 @@
 import * as a from './actions'
 
 const initialState = {
-  current: null, // address
+  current: null, // address or tx hash for pendings
   isMultisig: false,
 }
 

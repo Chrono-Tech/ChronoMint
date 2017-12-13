@@ -188,8 +188,12 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_USER_MANAGER)
   }
 
-  getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
-    return this._getDAO(DAO_WALLETS_MANAGER)
+  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
+    const walletManager = await this._getDAO(DAO_WALLETS_MANAGER)
+    if (!walletManager.isInited()) {
+      await walletManager.init()
+    }
+    return walletManager
   }
 
   getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {

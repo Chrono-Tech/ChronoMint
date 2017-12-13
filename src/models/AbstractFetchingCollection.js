@@ -62,6 +62,9 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     // setter
     let result = this.set('selected', value)
     const newSelectedItem = this.item(value)
+
+    console.log('--AbstractFetchingCollection#selected', 1, value,  currentSelectedItem, newSelectedItem)
+
     if (currentSelectedItem === newSelectedItem) {
       return result
     }
@@ -73,6 +76,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     if (newSelectedItem) {
       result = result.update(newSelectedItem.isSelected(true))
     }
+    console.log('--AbstractFetchingCollection#selected', 2, result)
     return result
   }
 
