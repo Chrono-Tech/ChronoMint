@@ -1,5 +1,5 @@
 import { I18n } from 'platform/i18n'
-import { TxError } from 'dao/AbstractContractDAO'
+import TxError from 'models/TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxExecModel from '../TxExecModel'
 
