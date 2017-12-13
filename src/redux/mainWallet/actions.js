@@ -16,7 +16,8 @@ import type TxModel from 'models/TxModel'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
-import { addMarketToken } from '../market/action'
+import { addMarketToken } from 'redux/market/action'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -78,7 +79,7 @@ export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
-  const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(tx.symbol())
+  const token: TokenModel = getState().get(DUCK_TOKENS).get(tx.symbol())
 
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
@@ -159,13 +160,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
+  const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
     timeHolderDAO.getAddress(),
     timeHolderDAO.getWalletAddress(),
   ])
 
   let contractNames = {}
-  contractNames[ timeHolderAddress ] = TIME + ' Holder'
+  contractNames[timeHolderAddress] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
   dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
 
@@ -298,12 +299,12 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
     let newTxs = []
     for (let pack of result) {
-      newTxs = [ ...newTxs, ...pack ]
+      newTxs = [...newTxs, ...pack]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
-    txs = [ ...txs, ...newTxs ]
+    txs = [...txs, ...newTxs]
     txsCache = txs.slice(TXS_PER_PAGE)
     txs = txs.slice(0, TXS_PER_PAGE)
   }

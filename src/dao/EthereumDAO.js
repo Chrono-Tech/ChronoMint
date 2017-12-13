@@ -2,10 +2,11 @@ import BigNumber from 'bignumber.js'
 import axios from 'axios'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxExecModel from 'models/TxExecModel'
+import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import networkService from '@chronobank/login/network/NetworkService'
 import ls from 'utils/LocalStorage'
-import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
@@ -38,6 +39,22 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   static getName () {
     return 'Ethereum'
+  }
+
+  getToken () {
+    if (!this.isInitialized()) {
+      // eslint-disable-next-line
+      console.warn(`${this._symbol} not initialized`)
+      return
+    }
+    return new TokenModel({
+      address: this.getAccount(),
+      name: 'Ethereum',
+      symbol: this.getSymbol(),
+      isOptional: false,
+      isFetched: true,
+      blockchain: 'Ethereum',
+    })
   }
 
   /** @private */
@@ -104,7 +121,8 @@ export class EthereumDAO extends AbstractTokenDAO {
             return
           }
 
-          filter.stopWatching(() => {})
+          filter.stopWatching(() => {
+          })
           filter = null
 
           const [receipt, transaction] = await Promise.all([

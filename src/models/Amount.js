@@ -17,4 +17,12 @@ export default class Amount extends BigNumber {
     }
     this._isLoaded = value
   }
+
+  plus (value: number | string | BigNumber, base?: number) {
+    return new Amount(super.plus(value, base), this._symbol, this._isLoaded)
+  }
+
+  minus (value: number | string | BigNumber, base?: number) {
+    return new Amount(super.minus(value, base), this._symbol, this._isLoaded)
+  }
 }

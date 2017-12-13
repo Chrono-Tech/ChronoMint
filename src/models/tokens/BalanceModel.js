@@ -1,4 +1,5 @@
 import Amount from 'models/Amount'
+import BigNumber from 'bignumber.js'
 import { abstractModel } from '../AbstractModel'
 
 export default class BalanceModel extends abstractModel({
@@ -11,5 +12,10 @@ export default class BalanceModel extends abstractModel({
 
   amount () {
     return this.get('amount')
+  }
+
+  updateBalance (isCredited, amount: BigNumber) {
+    const newBalance = this.amount()[isCredited ? 'plus' : 'minus'](amount)
+    return this.set('amount', newBalance)
   }
 }
