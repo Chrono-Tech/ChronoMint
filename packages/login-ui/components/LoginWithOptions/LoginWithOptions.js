@@ -1,10 +1,8 @@
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
+import { LOCAL_MNEMONIC } from '@chronobank/login/network/settings'
 import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -16,7 +14,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import Web3 from 'web3'
 import GenerateMnemonic from '../../components/GenerateMnemonic/GenerateMnemonic'
 import GenerateWallet from '../../components/GenerateWallet/GenerateWallet'
 import LoginLocal from '../../components/LoginLocal/LoginLocal'
@@ -177,6 +174,17 @@ class LoginWithOptions extends PureComponent {
     }
   }
 
+  handleLoginLocal = (account) => {
+    this.props.clearErrors()
+    try {
+      const nonce = this.props.accounts.indexOf(account) || 0
+      const provider = mnemonicProvider.getMnemonicProvider(LOCAL_MNEMONIC, this.props.getProviderSettings(), nonce)
+      this.setupAndLogin(provider)
+    } catch (e) {
+      this.props.addError(e.message)
+    }
+  }
+
   handleLedgerLogin = () => {
     this.props.loading()
     this.props.clearErrors()
@@ -233,27 +241,13 @@ class LoginWithOptions extends PureComponent {
     this.props.onToggleProvider(step !== STEP_GENERATE_WALLET && step !== STEP_GENERATE_MNEMONIC)
   }
 
-  async setupAndLogin ({ ethereum, btc, bcc, btg, ltc, nem }) {
-    // setup
-    const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(ethereum.getProvider())
-
-    // login
+  async setupAndLogin (provider) {
     try {
-      await this.props.loadAccounts()
-      this.props.selectAccount(this.props.accounts[ 0 ])
-      ethereumProvider.setEngine(ethereum, nem)
-      bccProvider.setEngine(bcc)
-      btcProvider.setEngine(btc)
-      btgProvider.setEngine(btg)
-      ltcProvider.setEngine(ltc)
-      nemProvider.setEngine(nem)
+      await networkService.setup(provider)
       this.props.onLogin()
     } catch (e) {
       // eslint-disable-next-line
-      console.error('error', e.message)
-      this.props.addError(e.message)
+      console.error('login error', e.message)
     }
   }
 
@@ -384,7 +378,7 @@ class LoginWithOptions extends PureComponent {
   renderStepLoginLocal () {
     return (
       <LoginLocal
-        onLogin={this.props.onLogin}
+        onLogin={this.handleLoginLocal}
         onBack={this.handleSelectStepSelectOption}
       />
     )

@@ -1,12 +1,17 @@
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
+import { LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 import Web3 from 'web3'
+import { addError, clearErrors, loading, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_ACCOUNTS, NETWORK_SET_NETWORK, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
 import { utils } from '../settings'
-import { loading, clearErrors, addError, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_NETWORK, NETWORK_SET_ACCOUNTS, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
+import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
+import mnemonicProvider from './mnemonicProvider'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
-import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
+import { nemProvider } from './NemProvider'
+import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, LOCAL_MNEMONIC, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
 import web3Utils from './Web3Utils'
@@ -142,10 +147,32 @@ class NetworkService extends EventEmitter {
   }
 
   async restoreLocalSession (account) {
-    this.selectProvider(LOCAL_ID)
+    this.selectProvider(LOCAL_PROVIDER_ID)
     this.selectNetwork(LOCAL_ID)
-    await this.loadAccounts()
+    const accounts = await this.loadAccounts()
     this.selectAccount(account)
+
+    const nonce = Math.max(accounts.indexOf(account), 0)
+    console.log('--LoginWithOptions#handleLoginLocal', accounts, account, nonce)
+    const provider = mnemonicProvider.getMnemonicProvider(LOCAL_MNEMONIC, this.getProviderSettings(), nonce)
+    await this.setup(provider)
+  }
+
+  async setup ({ ethereum, btc, bcc, btg, ltc, nem }) {
+    const { accounts } = this._store.getState().get('network')
+
+    const web3 = new Web3()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(ethereum.getProvider())
+
+    await this.loadAccounts()
+    this.selectAccount(accounts[ 0 ])
+    ethereumProvider.setEngine(ethereum, nem)
+    bccProvider.setEngine(bcc)
+    btcProvider.setEngine(btc)
+    btgProvider.setEngine(btg)
+    ltcProvider.setEngine(ltc)
+    nemProvider.setEngine(nem)
   }
 
   selectAccount = (selectedAccount) => {

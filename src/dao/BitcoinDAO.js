@@ -1,7 +1,6 @@
 import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
-import { bitcoinAddress } from 'components/forms/validator'
 import EventEmitter from 'events'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'

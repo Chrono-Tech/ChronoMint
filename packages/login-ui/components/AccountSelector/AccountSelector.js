@@ -46,6 +46,10 @@ class AccountSelector extends PureComponent {
     })
   }
 
+  handleSelect = () => {
+    this.props.onSelectAccount(this.props.selectedAccount)
+  }
+
   handleChange = (event, index, value) => {
     this.props.selectAccount(value)
   }
@@ -73,7 +77,7 @@ class AccountSelector extends PureComponent {
               /> : <Translate value='AccountSelector.selectAddress' />}
               primary
               fullWidth
-              onTouchTap={() => this.props.onSelectAccount()}
+              onTouchTap={this.handleSelect}
               disabled={!selectedAccount || isLoading}
               style={styles.primaryButton}
               labelStyle={styles.primaryButtonLabel}

@@ -1,6 +1,7 @@
 export const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
 export const LOCAL_PROVIDER_ID = 6
+export const LOCAL_MNEMONIC = 'video visa alcohol fault earth naive army senior major inherit convince electric'
 
 export const INFURA_TOKEN = 'PVe9zSjxTKIP3eAuAHFA'
 export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'

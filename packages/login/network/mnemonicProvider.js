@@ -17,8 +17,8 @@ const COIN_TYPE_BTG_MAINNET = 17
 const COIN_TYPE_BTG_TESTNET = 16
 
 class MnemonicProvider {
-  getMnemonicProvider (mnemonic, { url, network } = {}) {
-    const ethereumWallet = this.createEthereumWallet(mnemonic, network, url)
+  getMnemonicProvider (mnemonic, { url, network } = {}, nonce) {
+    const ethereumWallet = this.createEthereumWallet(mnemonic, nonce)
     const btc = network && network.bitcoin && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(mnemonic, bitcoin.networks[network.bitcoinGold])
@@ -35,10 +35,10 @@ class MnemonicProvider {
     }
   }
 
-  createEthereumWallet (mnemonic) {
+  createEthereumWallet (mnemonic, nonce = 0) {
     const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
     // get the first account using the standard hd path
-    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
+    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/${nonce}`
     return hdWallet.derivePath(walletHDPath).getWallet()
   }
 
