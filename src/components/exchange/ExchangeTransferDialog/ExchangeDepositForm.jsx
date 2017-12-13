@@ -49,6 +49,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
           </div>
           <div styleName='actionWrapper'>
             <RaisedButton
+              disabled={this.props.pristine || !this.props.valid}
               type='submit'
               label={<Translate value={prefix('sendRequest')} />}
               primary

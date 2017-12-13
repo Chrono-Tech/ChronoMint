@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
-import networkService from 'Login/redux/network/actions'
+import networkService from '@chronobank/login/network/NetworkService'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { accounts, mockStore } from 'specsInit'

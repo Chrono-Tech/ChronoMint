@@ -1,5 +1,4 @@
-import BalanceModel from '@/models/tokens/BalanceModel'
-import { getCurrentWallet } from '@/redux/wallet/actions'
+import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import { IPFSImage } from 'components'
@@ -7,18 +6,19 @@ import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
-import tokenIcons from 'components/tokenIcons'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, TextField } from 'redux-form-material-ui'
+import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import './SendTokensForm.scss'
@@ -29,6 +29,12 @@ export const FORM_SEND_TOKENS = 'FormSendTokens'
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
 
+const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 2,
+  step: 0.1,
+}
+
 function prefix (token) {
   return 'components.dashboard.SendTokens.' + token
 }
@@ -36,11 +42,12 @@ function prefix (token) {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
-
+  const feeMultiplier = selector(state, 'feeMultiplier')
   return {
     balance: getCurrentWallet(state).balances().item(symbol),
     account: state.get(DUCK_SESSION).account,
     token: state.get(DUCK_TOKENS).item(symbol) || new TokenModel(),
+    feeMultiplier,
   }
 }
 
@@ -51,6 +58,7 @@ export default class SendTokensForm extends PureComponent {
     account: PropTypes.string,
     wallet: PropTypes.object,
     token: PropTypes.instanceOf(TokenModel),
+    feeMultiplier: PropTypes.number,
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
@@ -82,7 +90,7 @@ export default class SendTokensForm extends PureComponent {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={tokenIcons[ token.symbol() ]}
+              fallback={TOKEN_ICONS[ token.symbol() ]}
             />
           )}
         >
@@ -123,7 +131,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, onSubmit, wallet } = this.props
     const { isContract } = this.state
 
     return (
@@ -152,6 +160,29 @@ export default class SendTokensForm extends PureComponent {
             />
           </div>
         </div>
+        {!(feeMultiplier && token.feeRate()) ? null : (
+          <div>
+            <div styleName='feeRate'>
+              <div>
+                <small>
+                  <Translate
+                    value={prefix('feeRate')}
+                    multiplier={feeMultiplier.toFixed(1)}
+                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
+                  />
+                </small>
+              </div>
+              <Field
+                component={Slider}
+                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+                step={FEE_RATE_MULTIPLIER.step}
+                min={FEE_RATE_MULTIPLIER.min}
+                max={FEE_RATE_MULTIPLIER.max}
+                name='feeMultiplier'
+              />
+            </div>
+          </div>
+        )}
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton

@@ -66,7 +66,7 @@ $cell-padding: 16px 8px;
 }
 
 .colTrader {
-  width: 30%;
+  width: 50%;
   overflow: hidden;
   @include sm-only {
     width: 100%;
@@ -74,14 +74,14 @@ $cell-padding: 16px 8px;
 }
 
 .colPrice, .colLimits {
-  width: 35%;
+  width: 25%;
   @include sm-only {
     width: 100%;
   }
 }
 
 .colActions {
-  width: 30%;
+  width: 25%;
   overflow: hidden;
   @include sm-only {
     width: 40%;
@@ -112,15 +112,7 @@ $cell-padding: 16px 8px;
 }
 
 .ellipsis {
-  @include lg-plus {
-    max-width: 400px;
-  }
-  @include md-plus {
-    max-width: 200px;
-  }
-  @include md-only {
-    max-width: 200px;
-  }
+  max-width: 100%;
   @include ellipsis;
 }
 
@@ -139,7 +131,7 @@ $cell-padding: 16px 8px;
 }
 
 .values {
-  width: 70%;
+  width: 75%;
   display: flex;
   @include sm-only {
     display: block;
@@ -157,4 +149,12 @@ $cell-padding: 16px 8px;
   display: flex;
   justify-content: flex-end;
   white-space: nowrap;
+}
+
+.buttonLabel {
+  display: flex;
+  align-items: center;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  white-space: normal;
 }

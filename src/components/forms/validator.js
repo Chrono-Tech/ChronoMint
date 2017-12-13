@@ -79,18 +79,18 @@ export const currencyNumber = (value, decimals) => {
   return invalidPositiveNumber
 }
 
-export function lowerThan (value, limit, strict = false) {
-  const result = strict ? value >= limit : value > limit
-  return result ? {
-    value: strict ? 'errors.lowerThanOrEqual' : 'errors.lowerThan',
+export function lowerThan (value, limit, isEqual = false) {
+  const isPassed = isEqual ? value <= limit : value < limit
+  return !isPassed ? {
+    value: isEqual ? 'errors.lowerThanOrEqual' : 'errors.lowerThan',
     limit,
   } : null
 }
 
-export function moreThan (value, limit, strict = false) {
-  const result = strict ? value <= limit : value < limit
-  return result ? {
-    value: strict ? 'errors.moreThanOrEqual' : 'errors.moreThan',
+export function moreThan (value, limit, isEqual = false) {
+  const isPassed = isEqual ? value >= limit : value > limit
+  return !isPassed ? {
+    value: isEqual ? 'errors.moreThanOrEqual' : 'errors.moreThan',
     limit,
   } : null
 }

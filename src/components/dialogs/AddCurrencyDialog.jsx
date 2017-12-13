@@ -1,12 +1,12 @@
+import { TOKEN_ICONS } from 'assets'
 import classnames from 'classnames'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
 import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import tokenIcons from 'components/tokenIcons'
 import Immutable from 'immutable'
 import { Checkbox, FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
-import TokenModel from 'models/tokens/TokenModel'
+import TokenModel from 'models/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -15,13 +15,11 @@ import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
-
 import './AddCurrencyDialog.scss'
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
 
 class TokenRow extends PureComponent {
-
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     isSelected: PropTypes.bool,
@@ -48,7 +46,7 @@ class TokenRow extends PureComponent {
       >
         <div styleName='cell'>
           <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={tokenIcons[symbol]} />
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
             <div styleName='label'>{symbol}</div>
           </div>
         </div>

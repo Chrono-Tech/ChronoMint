@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import validator from 'components/forms/validator'
-import web3Provider from 'Login/network/Web3Provider'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'
 import truffleContract from 'truffle-contract'
@@ -164,7 +164,8 @@ export default class AbstractContractDAO extends EventEmitter {
 
       return deployed
     } catch (e) {
-      throw new Error(`${this.getContractName()}#_initContract error: ${e.message}`)
+      console.log(`${this.getContractName()}#_initContract error: ${e.message}`) // eslint-disable-line no-console
+      return false
     }
   }
 

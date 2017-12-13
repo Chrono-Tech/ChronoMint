@@ -1,0 +1,7 @@
+{
+  "name": "@chronobank/login-ui",
+  "version": "0.3.2",
+  "dependencies": {
+    "@chronobank/login": "0.3.2"
+  }
+}

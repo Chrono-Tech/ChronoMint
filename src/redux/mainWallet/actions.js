@@ -1,11 +1,12 @@
+import Amount from '@/models/Amount'
 import BigNumber from 'bignumber.js'
 import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import Immutable from 'immutable'
-import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
-import { nemProvider } from 'Login/network/NemProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
@@ -29,6 +30,8 @@ export const WALLET_TIME_DEPOSIT = 'mainWallet/TIME_DEPOSIT'
 export const WALLET_TIME_ADDRESS = 'mainWallet/TIME_ADDRESS'
 export const WALLET_BTC_ADDRESS = 'mainWallet/BTC_ADDRESS'
 export const WALLET_BCC_ADDRESS = 'mainWallet/BCC_ADDRESS'
+export const WALLET_BTG_ADDRESS = 'mainWallet/BTG_ADDRESS'
+export const WALLET_LTC_ADDRESS = 'mainWallet/LTC_ADDRESS'
 export const WALLET_NEM_ADDRESS = 'mainWallet/NEM_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
@@ -171,6 +174,8 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   // Decided to manage them independently to simplify further works on multiple wallets. .
   dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
   dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
+  dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
+  dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
   dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
@@ -188,10 +193,10 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 }
 
-export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string) => async (dispatch) => {
+export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
   try {
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.transfer(token, recipient, amount)
+    await tokenDAO.transfer(token, recipient, amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('transfer error', e.message)

@@ -1,11 +1,11 @@
-import TokensCollection from 'models/exchange/TokensCollection'
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
 import Immutable from 'immutable'
+import TokensCollection from 'models/exchange/TokensCollection'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { bccDAO, btcDAO } from './BitcoinDAO'
+import { bccDAO, btcDAO, btgDAO, ltcDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
@@ -17,6 +17,7 @@ export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
 const MANDATORY_TOKENS = ['TIME']
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC']
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
@@ -74,6 +75,29 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     })
   }
 
+  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
+    let map = new Immutable.Map()
+
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
+
+    for (const [i, address] of Object.entries(addresses)) {
+      const token = new TokenModel({
+        address,
+        name: names[i],
+        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
+        url: urls[i],
+        decimals: decimalsArr[i],
+        icon: ipfsHashes[i],
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        isFetched: true,
+        blockchain: 'Ethereum',
+      })
+      map = map.set(token.id(), token)
+    }
+
+    return map
+  }
+
   /**
    * ETH, TIME will be added by flag isWithObligatory
    */
@@ -120,50 +144,19 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      if (btcDAO.isInitialized()) {
-        try {
-          const { balance, balance0, balance6 } = await btcDAO.getAccountBalances()
-          const btcToken = new TokenModel({
-            dao: btcDAO,
-            name: btcDAO.getName(),
-            symbol: btcDAO.getSymbol(),
-            isApproveRequired: false,
-            balance,
-            balance0,
-            balance6,
-            isOptional: false,
-            isFetched: true,
-            blockchain: 'Bitcoin',
-          })
-          map = map.set(btcToken.id(), btcToken)
-        } catch (e) {
-          // eslint-disable-next-line
-          console.log('BTC support is not available', e)
-        }
-      }
-
-      if (bccDAO.isInitialized()) {
-        try {
-          const { balance, balance0, balance6 } = await bccDAO.getAccountBalances()
-          const bccToken = new TokenModel({
-            dao: bccDAO,
-            name: bccDAO.getName(),
-            symbol: bccDAO.getSymbol(),
-            isApproveRequired: false,
-            balance,
-            balance0,
-            balance6,
-            isOptional: false,
-            isFetched: true,
-            blockchain: 'Bitcoin Cash',
-          })
-          map = map.set(bccToken.id(), bccToken)
-        } catch (e) {
-          // eslint-disable-next-line
-          console.log('BCC support is not available', e)
+      const bitcoinLikeTokens = await Promise.all([
+        this._setupBitcoinDAO('BTC', 'Bitcoin', btcDAO),
+        this._setupBitcoinDAO('BCC', 'Bitcoin Cash', bccDAO),
+        this._setupBitcoinDAO('BTG', 'Bitcoin Gold', btgDAO),
+        this._setupBitcoinDAO('LTC', 'Litecoin', ltcDAO),
+      ])
+      for (let t of bitcoinLikeTokens) {
+        if (t !== null) {
+          map = map.set(t.id(), t)
         }
       }
     }
+
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
@@ -172,14 +165,14 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         address,
         dao: daos[i],
         name: names[i],
-        symbol: symbols[i],
+        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
         url: urls[i],
         decimals: decimalsArr[i],
         icon: ipfsHashes[i],
         balance: balances[i],
         platform: additionalData[address] && additionalData[address].platform,
         totalSupply: additionalData[address] && TokenManagementExtensionDAO.removeDecimals(additionalData[address].totalSupply, decimalsArr[i]),
-        isOptional: MANDATORY_TOKENS.includes(symbols[i]),
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
         blockchain: 'Ethereum',
       })
@@ -201,6 +194,36 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     }
 
     return map
+  }
+
+  async _setupBitcoinDAO (name, title, dao) {
+    if (dao.isInitialized()) {
+      try {
+        const [
+          feeRate,
+          balances,
+        ] = await Promise.all([
+          dao.getFeeRate(),
+          dao.getAccountBalances(),
+        ])
+        const token = new TokenModel({
+          dao,
+          name: dao.getName(),
+          symbol: dao.getSymbol().toUpperCase(),
+          isApproveRequired: false,
+          feeRate,
+          ...balances,
+          isOptional: false,
+          isFetched: true,
+          blockchain: title,
+        })
+        return token
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log(`${name} support is not available`, e)
+      }
+    }
+    return null
   }
 
   /**
@@ -267,13 +290,13 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       new TokenModel({
         address: result.args.token,
         name: this._c.bytesToString(result.args.name),
-        symbol: this._c.bytesToString(result.args.symbol),
+        symbol: this._c.bytesToString(result.args.symbol).toUpperCase(),
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: 'Ethereum',
       }),
-      time, isRemoved, isAdded, result.args.oldToken || null
+      time, isRemoved, isAdded, result.args.oldToken || null,
     ))
   }
 

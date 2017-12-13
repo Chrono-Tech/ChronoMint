@@ -1,5 +1,5 @@
 import { ru as layouts } from 'layouts/lang'
-import { ru as Login } from 'Login/lang'
+import { ru as Login } from '@chronobank/login-ui/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
@@ -655,6 +655,7 @@ export default {
         balance: 'Баланс',
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
+        feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
         approve: 'Подтвердить',
         send: 'Отправить',
       },

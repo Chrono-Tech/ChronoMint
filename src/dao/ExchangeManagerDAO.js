@@ -1,4 +1,4 @@
-import exchangeProvider from 'Login/network/ExchangeProvider'
+import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
 import exchangeService from 'services/ExchangeService'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
@@ -14,7 +14,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     super(
       ExchangeManagerABI,
       at,
-      MultiEventsHistoryABI
+      MultiEventsHistoryABI,
     )
   }
 
@@ -33,7 +33,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         exchange.authorizedManager(),
         exchange.isActive(),
       ],
-      exchange
+      exchange,
     )
     return tx.tx
   }
@@ -47,7 +47,11 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     let result = {}
     try {
       const assetSymbols = await exchangeProvider.getAssetSymbols()
-      assetSymbols.map((exchange) => result[web3Converter.bytesToString(exchange.symbol)] = true)
+      assetSymbols.map((exchange) => {
+        if (exchange.symbol) {
+          result[web3Converter.bytesToString(exchange.symbol)] = true
+        }
+      })
     } catch (e) {
       throw new Error(`Middleware disconnected`)
     }
@@ -68,10 +72,14 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   async getExchangeData (exchangesAddresses: Array<string>, tokens: TokensCollection) {
     let exchangesCollection = new ExchangesCollection()
 
+    if (!exchangesAddresses.length) {
+      return exchangesCollection
+    }
+
     const [symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
 
     exchangesAddresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[i])
+      const symbol = this._c.bytesToString(symbols[i]) // symbol may be empty, but exchange not be without token symbol
       const buyPrice = new BigNumber(buyPrices[i])
       const sellPrice = new BigNumber(sellPrices[i])
       const assetBalance = assetBalances[i]
@@ -88,7 +96,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
-        symbol,
+        symbol: symbol || address,
         buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
         sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
         assetBalance: token.dao().removeDecimals(assetBalance),
@@ -104,7 +112,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   watchExchangeCreated (account, callback) {
-    this._watch('ExchangeCreated', (tx)=>{
+    this._watch('ExchangeCreated', (tx) => {
       tx.args.symbol = this._c.bytesToString(tx.args.symbol)
       callback(tx)
     })

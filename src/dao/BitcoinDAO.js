@@ -1,10 +1,10 @@
+import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
 import { bitcoinAddress } from 'components/forms/validator'
 import EventEmitter from 'events'
-import { DECIMALS } from 'Login/network/BitcoinEngine'
-import { bccProvider, btcProvider } from 'Login/network/BitcoinProvider'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import TokenModel from 'models/tokens/TokenModel'
+import type TokenModel from 'models/TokenModel'
 import type TxModel from 'models/TxModel'
 
 const EVENT_TX = 'tx'
@@ -16,7 +16,6 @@ export class BitcoinDAO extends EventEmitter {
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
-    this._bitcoinProvider.addListener('subscribe', () => this.onSubscribe())
   }
 
   getAddressValidator () {
@@ -52,12 +51,16 @@ export class BitcoinDAO extends EventEmitter {
     return 8
   }
 
+  async getFeeRate () {
+    return this._bitcoinProvider.getFeeRate()
+  }
+
   async getAccountBalances () {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
-      balance: new BigNumber(balance0 || balance6),
-      balance0: new BigNumber(balance0),
-      balance6: new BigNumber(balance6),
+      balance: balance0 || balance6,
+      balance0: balance0,
+      balance6: balance6,
     }
   }
 
@@ -66,9 +69,14 @@ export class BitcoinDAO extends EventEmitter {
     return balances.balance
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber) {
-    return await this._bitcoinProvider.transfer(to, amount)
+  async transfer (to, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+    try {
+      return await this._bitcoinProvider.transfer(to, amount, feeMultiplier * token.feeRate())
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e.message)
+      throw e
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -92,7 +100,7 @@ export class BitcoinDAO extends EventEmitter {
       callback({
         account,
         time,
-        balance: (new BigNumber(balance.balance0)).div(DECIMALS),
+        balance: balance.balance0.div(DECIMALS),
         symbol: this.getSymbol(),
       })
     })
@@ -130,3 +138,5 @@ export class BitcoinDAO extends EventEmitter {
 
 export const btcDAO = new BitcoinDAO('Bitcoin', 'BTC', btcProvider)
 export const bccDAO = new BitcoinDAO('Bitcoin Cash', 'BCC', bccProvider)
+export const ltcDAO = new BitcoinDAO('Litecoin', 'LTC', ltcProvider)
+export const btgDAO = new BitcoinDAO('Bitcoin Gold ', 'BTG', btgProvider)

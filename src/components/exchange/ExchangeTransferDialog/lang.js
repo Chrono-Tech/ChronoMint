@@ -6,6 +6,7 @@ export default {
     maxAmount: 'Maximum amount: ',
     amountIn: 'Amount in ',
     sendRequest: 'send request',
+    needToCreateWallet: 'You need to create %{symbol} wallet',
   },
   ru: {
     title: 'Внести/вывести ',
@@ -14,5 +15,6 @@ export default {
     maxAmount: 'Максимальное значение: ',
     amountIn: 'Сумма в ',
     sendRequest: 'отправить запрос',
+    needToCreateWallet: 'Вам нужно создать кошелек для %{symbol}',
   },
 }
