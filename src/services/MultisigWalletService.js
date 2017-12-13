@@ -4,6 +4,7 @@ import type MultisigTransactionModel from 'models/Wallet/MultisigTransactionMode
 import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
+
 export const EVENT_CONFIRMATION = 'Confirmation'
 export const EVENT_REVOKE = 'Revoke'
 export const EVENT_DEPOSIT = 'Deposit'
