@@ -9,6 +9,7 @@ import { bitcoinAddress } from 'models/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
+export const EVENT_NEW_BTC_LIKE_TOKEN = 'newBtcLikeToken'
 
 export class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
@@ -115,19 +116,21 @@ export class BitcoinDAO extends EventEmitter {
     // do nothing
   }
 
-  getToken () {
+  async fetchToken () {
     if (!this.isInitialized()) {
       console.warn(`${this._symbol} not initialized`)
       return
     }
-    return new TokenModel({
-      address: this.getAccount(),
+    const feeRate = await this.getFeeRate()
+
+    this.emit(EVENT_NEW_BTC_LIKE_TOKEN, new TokenModel({
       name: this._name,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,
-      blockchain: 'Bitcoin',
-    })
+      blockchain: this._name,
+      feeRate,
+    }), this)
   }
 }
 

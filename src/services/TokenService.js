@@ -10,7 +10,7 @@ class TokenService extends EventEmitter {
   }
 
   getDAO (token) {
-    return this._cache[ token.symbol() ]
+    return this._cache[ token.id() ]
   }
 
   createDAO (token) {
@@ -19,12 +19,12 @@ class TokenService extends EventEmitter {
       return
     }
     const dao = new ERC20DAO(token.address())
-    this._cache [ token.symbol() ] = dao
+    this._cache [ token.id() ] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
   }
 
   registerDAO (token, dao) {
-    this._cache [ token.symbol() ] = dao
+    this._cache [ token.id() ] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
   }
 

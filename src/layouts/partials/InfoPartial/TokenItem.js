@@ -1,13 +1,13 @@
-import TokenModel from 'models/tokens/TokenModel'
+import { TOKEN_ICONS } from 'assets'
 import classnames from 'classnames'
 import { IPFSImage, TokenValue } from 'components'
 import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import './TokenItem.scss'
-import tokenIcons from 'components/tokenIcons'
 
 export default class TokenItem extends PureComponent {
   static propTypes = {
@@ -31,15 +31,12 @@ export default class TokenItem extends PureComponent {
         <Paper zDepth={1} style={{ background: 'transparent' }}>
           <div styleName='content'>
             <div styleName='icon'>
-              <IPFSImage styleName='image' multihash={token.icon()} fallback={tokenIcons[symbol]} />
+              <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
               <div styleName='symbol'>{symbol}</div>
             </div>
             <div styleName='info'>
               <div styleName='balance'><Translate value='layouts.partials.InfoPartial.balance' />:</div>
-              <TokenValue
-                value={balance}
-                symbol={symbol}
-              />
+              <TokenValue value={balance} />
             </div>
           </div>
         </Paper>

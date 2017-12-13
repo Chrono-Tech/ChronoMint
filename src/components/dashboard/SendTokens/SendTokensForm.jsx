@@ -80,7 +80,9 @@ export default class SendTokensForm extends PureComponent {
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()
-    const currentBalance = balances.item(token.symbol()) || new BalanceModel()
+    const currentBalance = balances.item(token.symbol()) || new BalanceModel({
+      id: token.id(),
+    })
 
     return (
       <div>

@@ -48,7 +48,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       return
     }
     return new TokenModel({
-      address: this.getAccount(),
       name: 'Ethereum',
       symbol: this.getSymbol(),
       isOptional: false,

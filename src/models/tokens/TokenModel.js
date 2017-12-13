@@ -28,7 +28,7 @@ export default class TokenModel extends abstractFetchingModel({
 
 }) {
   id () {
-    return this.symbol()
+    return this.address() || this.symbol()
   }
 
   dao (): AbstractTokenDAO | ERC20DAO {

@@ -1,7 +1,7 @@
-import { bccDAO, btcDAO } from 'dao/BitcoinDAO'
-import ethDAO from 'dao/EthereumDAO'
+import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_NEW_BTC_LIKE_TOKEN, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
+import ethereumDAO from 'dao/EthereumDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import tokenService from 'services/TokenService'
 
@@ -12,14 +12,22 @@ export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
 
 // increment on new tokens.
-// [BTC, BCC, ETH]
-const NON_ERC20_TOKENS_COUNT = 3
+// [BTC, BCC, ETH, LTC, BTG]
+const NON_ERC20_TOKENS_COUNT = 5
 
 export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
   dispatch({ type: TOKENS_INIT, isInited: true })
+
+  // eth
+  const eth: TokenModel = ethereumDAO.getToken()
+  if (eth) {
+    dispatch({ type: TOKENS_FETCHED, token: eth })
+    tokenService.registerDAO(eth, ethereumDAO)
+  }
+
   // erc20
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   erc20.on(EVENT_ERC20_TOKENS_COUNT, (count) => {
@@ -31,24 +39,13 @@ export const initTokens = () => async (dispatch, getState) => {
   })
   erc20.fetchTokens()
 
-  // btc
-  const btc: TokenModel = btcDAO.getToken()
-  if (btc) {
-    dispatch({ type: TOKENS_FETCHED, token: btc })
-    tokenService.registerDAO(btc, btcDAO)
-  }
-
-  // bcc
-  const bcc: TokenModel = bccDAO.getToken()
-  if (bcc) {
-    dispatch({ type: TOKENS_FETCHED, token: bcc })
-    tokenService.registerDAO(bcc, bccDAO)
-  }
-
-  // eth
-  const eth: TokenModel = ethDAO.getToken()
-  if (eth) {
-    dispatch({ type: TOKENS_FETCHED, token: eth })
-    tokenService.registerDAO(eth, ethDAO)
-  }
+  // btc-likes
+  const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
+  btcLikeTokens.forEach((btcLikeDAO: BitcoinDAO) => {
+    btcLikeDAO.on(EVENT_NEW_BTC_LIKE_TOKEN, (token, dao) => {
+      dispatch({ type: TOKENS_FETCHED, token })
+      tokenService.registerDAO(token, dao)
+    })
+    btcLikeDAO.fetchToken()
+  })
 }

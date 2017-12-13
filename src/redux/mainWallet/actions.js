@@ -122,6 +122,7 @@ export const initMainWallet = () => (dispatch, getState) => {
     dispatch({
       type: WALLET_TOKEN_BALANCE,
       balance: new BalanceModel({
+        id: token.id(),
         amount: new Amount(0, symbol, false),
       }),
     })
@@ -132,6 +133,7 @@ export const initMainWallet = () => (dispatch, getState) => {
     dispatch({
       type: WALLET_TOKEN_BALANCE,
       balance: new BalanceModel({
+        id: token.id(),
         amount: new Amount(balance, symbol),
       }),
     })

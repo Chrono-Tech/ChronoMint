@@ -3,19 +3,22 @@ import BigNumber from 'bignumber.js'
 import { abstractModel } from '../AbstractModel'
 
 export default class BalanceModel extends abstractModel({
+  id: null,
   // TODO @dkchv: may be set as b0,b3,b6?
   amount: new Amount(),
 }) {
   id () {
-    return this.amount().symbol()
+    return this.get('id')
   }
 
-  amount () {
-    return this.get('amount')
+  amount (value) {
+    return this._getSet('amount', value)
   }
 
-  updateBalance (isCredited, amount: BigNumber) {
-    const newBalance = this.amount()[isCredited ? 'plus' : 'minus'](amount)
-    return this.set('amount', newBalance)
+  updateBalance (isCredited, value: BigNumber) {
+    const newBalance = isCredited
+      ? this.amount().plus(value)
+      : this.amount().minus(value)
+    return this.amount(newBalance)
   }
 }

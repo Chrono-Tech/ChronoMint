@@ -65,6 +65,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
         type: MULTISIG_BALANCE,
         walletId: wallet.id(),
         balance: new BalanceModel({
+          id: token.id(),
           amount: new Amount(balance, symbol, true),
           symbol,
         }),
