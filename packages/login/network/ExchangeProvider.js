@@ -5,6 +5,8 @@ import { NETWORK_MAIN_ID, MIDDLEWARE_MAP } from './settings'
 class ExchangeProvider {
 
   url () {
+    // TODO @abdulov remove it
+    throw new Error() // make an Error
     const { network } = networkService.getProviderSettings()
 
     if (!network.id) {

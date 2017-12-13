@@ -6,8 +6,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { withdrawFromExchange } from 'redux/exchange/actions'
+import { DUCK_EXCHANGE, withdrawFromExchange } from 'redux/exchange/actions'
 import { DUCK_MAIN_WALLET, mainTransfer } from 'redux/mainWallet/actions'
+import TokensCollection from 'models/exchange/TokensCollection'
 import { modalsClose } from 'redux/modals/actions'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
@@ -30,8 +31,10 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
+  const exchange = state.get(DUCK_EXCHANGE)
   return {
     userWallet: state.get(DUCK_MAIN_WALLET),
+    tokens: exchange.tokens(),
   }
 }
 
@@ -45,6 +48,7 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     dispatch: PropTypes.func,
     depositToExchange: PropTypes.func,
     withdrawFromExchange: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   handleDeposit = (values, dispatch, props) => {
@@ -67,7 +71,14 @@ export default class ExchangeTransferDialog extends React.PureComponent {
   }
 
   render () {
-    const token = this.props.userWallet.tokens().get(this.props.tokenSymbol)
+    let token = this.props.userWallet.tokens().get(this.props.tokenSymbol)
+    let showMessage = false
+
+    if (!token) {
+      token = this.props.tokens.getBySymbol(this.props.tokenSymbol)
+      showMessage = true
+    }
+
     return (
       <ModalDialog>
         <div styleName='root'>
@@ -81,15 +92,22 @@ export default class ExchangeTransferDialog extends React.PureComponent {
             </div>
           </div>
           <div styleName='content'>
+            {
+              showMessage &&
+              <div styleName='warningMessage'>
+                <i className='material-icons'>warning</i>
+                <Translate value={prefix('needToCreateWallet')} symbol={this.props.tokenSymbol} />
+              </div>
+            }
             <ExchangeDepositForm
-              title={<span><Translate value={prefix('deposit')}/> {this.props.tokenSymbol}</span>}
+              title={<span><Translate value={prefix('deposit')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_DEPOSIT_FORM}
               onSubmit={this.handleDeposit}
-              maxAmount={token.balance()}
+              maxAmount={token ? token.balance() : 0}
               symbol={token.symbol()}
             />
             <ExchangeDepositForm
-              title={<span><Translate value={prefix('withdrawal')}/> {this.props.tokenSymbol}</span>}
+              title={<span><Translate value={prefix('withdrawal')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_WITHDRAWAL_FORM}
               onSubmit={this.handleWithdrawal}
               maxAmount={this.props.tokenSymbol === 'ETH' ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}

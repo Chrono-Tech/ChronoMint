@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_EXCHANGE, exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
+import TokenModel from 'models/TokenModel'
 import './BuyTokensDialog.scss'
 import BuyTokensForm from './BuyTokensForm'
 
@@ -48,6 +49,10 @@ export default class BuyTokensDialog extends React.PureComponent {
 
   render () {
     const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
+    let userExchangeToken = this.props.usersTokens.get(this.props.exchange.symbol())
+    if (!userExchangeToken) {
+      userExchangeToken = new TokenModel({})
+    }
     const ethToken = this.props.usersTokens.get('ETH')
 
     return (
@@ -67,7 +72,7 @@ export default class BuyTokensDialog extends React.PureComponent {
                   <div styleName='balanceValue'>
                     <TokenValue
                       isInvert
-                      value={this.props.isBuy ? ethToken.balance() : exchangeToken.balance()}
+                      value={this.props.isBuy ? ethToken.balance() : userExchangeToken.balance()}
                       symbol={this.props.isBuy ? ethToken.symbol() : exchangeToken.symbol()}
                     />
                   </div>

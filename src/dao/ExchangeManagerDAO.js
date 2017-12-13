@@ -80,30 +80,28 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
     exchangesAddresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[i]) // symbol may be empty, but exchange not be without token symbol
-      if (symbol) {
-        const buyPrice = new BigNumber(buyPrices[i])
-        const sellPrice = new BigNumber(sellPrices[i])
-        const assetBalance = assetBalances[i]
-        const ethBalance = ethBalances[i]
-        const token = tokens.getBySymbol(symbol)
+      const buyPrice = new BigNumber(buyPrices[i])
+      const sellPrice = new BigNumber(sellPrices[i])
+      const assetBalance = assetBalances[i]
+      const ethBalance = ethBalances[i]
+      const token = tokens.getBySymbol(symbol)
 
-        try {
-          exchangeService.subscribeToExchange(address)
-          exchangeService.subscribeToToken(token, address)
-        } catch (e) {
-          // eslint-disable-next-line
-          console.error('watch error', e.message)
-        }
-
-        exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
-          address: address,
-          symbol,
-          buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
-          sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
-          assetBalance: token.dao().removeDecimals(assetBalance),
-          ethBalance: this._c.fromWei(ethBalance),
-        }))
+      try {
+        exchangeService.subscribeToExchange(address)
+        exchangeService.subscribeToToken(token, address)
+      } catch (e) {
+        // eslint-disable-next-line
+        console.error('watch error', e.message)
       }
+
+      exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
+        address: address,
+        symbol: symbol || address,
+        buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
+        sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
+        assetBalance: token.dao().removeDecimals(assetBalance),
+        ethBalance: this._c.fromWei(ethBalance),
+      }))
     })
     return exchangesCollection
   }
