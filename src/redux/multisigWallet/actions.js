@@ -10,7 +10,15 @@ import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendi
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import multisigWalletService, { EVENT_CONFIRMATION, EVENT_CONFIRMATION_NEEDED, EVENT_DEPOSIT, EVENT_MULTI_TRANSACTION, EVENT_OWNER_ADDED, EVENT_OWNER_REMOVED, EVENT_REVOKE } from 'services/MultisigWalletService'
+import multisigWalletService, {
+  EVENT_CONFIRMATION,
+  EVENT_CONFIRMATION_NEEDED,
+  EVENT_DEPOSIT,
+  EVENT_MULTI_TRANSACTION,
+  EVENT_OWNER_ADDED,
+  EVENT_OWNER_REMOVED,
+  EVENT_REVOKE,
+} from 'services/MultisigWalletService'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
 export const DUCK_MULTISIG_WALLET = 'multisigWallet'
@@ -68,6 +76,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
           id: token.id(),
           amount: new Amount(balance, symbol, true),
           symbol,
+          id: token.id(),
         }),
       })
     }

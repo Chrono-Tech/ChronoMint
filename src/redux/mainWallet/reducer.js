@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
         .isFetched(true)
     case a.WALLET_BALANCE:
       return state.balances(state.balances().update(
-        state.balances().item(action.token.symbol()).updateBalance(action.isCredited, action.amount),
+        state.balances().item(action.token.id()).updateBalance(action.isCredited, action.amount),
       ))
     case a.WALLET_BALANCE_SET:
       return state.tokens(state.tokens().set(

@@ -9,14 +9,17 @@ import { DUCK_WATCHER } from 'redux/watcher/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Value from 'components/common/Value/Value'
 
 import './ConfirmTxDialog.scss'
 
-const mapStateToProps = (state) => ({
-  balance: state.get(DUCK_MAIN_WALLET).balances().list().get(ETH).amount(),
-  tx: state.get(DUCK_WATCHER).confirmTx,
-})
+const mapStateToProps = (state) => {
+  return ({
+    balance: state.get(DUCK_MAIN_WALLET).balances().item(ETH).amount(),
+    tx: state.get(DUCK_WATCHER).confirmTx,
+  })
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -64,7 +67,7 @@ export default class ConfirmTxDialog extends PureComponent {
 
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
-      const arg = args[key]
+      const arg = args[ key ]
       let value
       if (arg === null || arg === undefined) return
       // parse value
