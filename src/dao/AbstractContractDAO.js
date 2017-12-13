@@ -364,8 +364,7 @@ export default class AbstractContractDAO {
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
    * @see AbstractModel.summary
-   * Keys is using for I18N, for details see...
-   * @see TxExecModel.description
+   * Keys is using for I18N
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes

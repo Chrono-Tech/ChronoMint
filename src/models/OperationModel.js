@@ -1,8 +1,6 @@
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
-import TxExecModel, { ARGS_TREATED } from './TxExecModel'
+import TxExecModel from './TxExecModel'
 
 class OperationModel extends abstractFetchingModel({
   remained: null,
@@ -56,20 +54,6 @@ class OperationModel extends abstractFetchingModel({
 
   isCancelled () {
     return this.isConfirmed() === null
-  }
-
-  summary () {
-    const a = this.tx().args()
-    const b = {
-      operation: <Translate value={this.tx().func()} />,
-    }
-    for (const i in a) {
-      if (a.hasOwnProperty(i)) {
-        b[this.tx().i18nFunc() + i] = a[i]
-      }
-    }
-    b[ARGS_TREATED] = true // this flag will prevent double substitution of i18n var path
-    return b
   }
 
   mockTxId (id) {

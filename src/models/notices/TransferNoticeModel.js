@@ -1,5 +1,5 @@
 import { I18n } from 'platform/i18n'
-import React from 'react'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
 
@@ -12,7 +12,7 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>account_balance_wallet</i>)
+    return Icons.get('notices.transfer.icon')
   }
 
   title () {

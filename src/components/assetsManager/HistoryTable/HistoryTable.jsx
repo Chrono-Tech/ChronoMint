@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 
-import Moment, { SHORT_DATE } from 'components/common/Moment/index'
+import Moment from 'components/common/Moment/index'
+import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 
 import './HistoryTable.scss'
@@ -186,4 +187,3 @@ export default class HistoryTable extends PureComponent {
     return value
   }
 }
-

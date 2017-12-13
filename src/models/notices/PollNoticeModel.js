@@ -1,5 +1,5 @@
 import { I18n } from 'platform/i18n'
-import React from 'react'
+import { Icons } from 'platform/icons'
 import type PollDetailsModel from 'models/PollDetailsModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -17,7 +17,7 @@ export default class PollNoticeModel extends abstractNoticeModel({
   transactionHash: null,
 }) {
   icon () {
-    return (<i className='material-icons'>poll</i>)
+    return Icons.get('notices.polls.icon')
   }
 
   title () {
