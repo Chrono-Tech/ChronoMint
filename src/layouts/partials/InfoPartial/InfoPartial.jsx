@@ -95,7 +95,7 @@ export default class InfoPartial extends PureComponent {
   }
 
   handleSlide = (diff) => {
-    const count = this.props.wallet.tokens().count()
+    const count = this.props.wallet.balances().size()
     const total = count + 1 <= this.state.visibleCount ? count + 1 : count
     const cells = (total % this.state.visibleCount === 0)
       ? total
