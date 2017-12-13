@@ -655,6 +655,7 @@ export default {
         balance: 'Баланс',
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
+        feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
         approve: 'Подтвердить',
         send: 'Отправить',
       },
