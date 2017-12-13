@@ -1,6 +1,6 @@
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'

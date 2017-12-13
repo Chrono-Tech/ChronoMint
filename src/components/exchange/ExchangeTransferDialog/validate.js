@@ -1,5 +1,5 @@
-import * as validator from 'components/forms/validator'
-import ErrorList from 'components/forms/ErrorList'
+import * as validator from 'models/validator'
+import ErrorList from 'platform/ErrorList'
 
 export default function validate (values, props) {
 

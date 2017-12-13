@@ -1,5 +1,5 @@
+import validator from 'models/validator'
 import { abstractModel } from '../AbstractModel'
-import validator from '../../components/forms/validator'
 
 class OwnerModel extends abstractModel({
   address: null,
