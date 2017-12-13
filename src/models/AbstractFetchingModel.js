@@ -7,6 +7,7 @@ export const abstractFetchingModel = (defaultValues) => class AbstractFetchingMo
   transactionHash: null,
   isPending: false,
   isFailed: false,
+  isSelected: false,
   ...defaultValues,
 }) {
 
@@ -44,6 +45,10 @@ export const abstractFetchingModel = (defaultValues) => class AbstractFetchingMo
     } else {
       return this.set('isFailed', value).set('isPending', false)
     }
+  }
+
+  isSelected (value) {
+    return this._getSet('isSelected', value)
   }
 }
 

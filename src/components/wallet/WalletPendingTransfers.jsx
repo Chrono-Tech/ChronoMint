@@ -31,7 +31,6 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
-    console.log('--WalletPendingTransfers#renderRow', wallet.toJS(), item.toJS())
     return (
       <div styleName='transfer' key={item.id()}>
         <div styleName='left'>

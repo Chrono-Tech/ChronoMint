@@ -53,11 +53,27 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   }
 
   selected (value) {
+    const currentSelectedItem = this.item(this.get('selected'))
+    // getter
     if (value === undefined) {
-      return this.list().get(this.get('selected'))
-    } else {
-      return this.set('selected', value)
+      return currentSelectedItem
     }
+
+    // setter
+    let result = this.set('selected', value)
+    const newSelectedItem = this.item(value)
+    if (currentSelectedItem === newSelectedItem) {
+      return result
+    }
+    // deselect previous
+    if (currentSelectedItem) {
+      result = result.update(currentSelectedItem.isSelected(false))
+    }
+    // select new one
+    if (newSelectedItem) {
+      result = result.update(newSelectedItem.isSelected(true))
+    }
+    return result
   }
 
   hasSelected () {

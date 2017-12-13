@@ -66,7 +66,8 @@ export default class WalletSelectDialog extends PureComponent {
     this.props.switchWallet(wallet)
   }
 
-  renderRow (wallet: MultisigWalletModel, isSelected: boolean) {
+  renderRow = (wallet: MultisigWalletModel) => {
+    const isSelected = wallet.isSelected()
     return (
       <div key={wallet.id()} styleName={classNames('row', { 'rowSelected': isSelected })}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
@@ -123,7 +124,6 @@ export default class WalletSelectDialog extends PureComponent {
 
   render () {
     const wallets: Array = this.props.multisigWallet.items()
-    const selected: string = this.props.multisigWallet.selected().address()
 
     return (
       <ModalDialog>
@@ -150,7 +150,7 @@ export default class WalletSelectDialog extends PureComponent {
                 />
               </h5>
               <div styleName='table'>
-                {wallets.map((item) => this.renderRow(item, selected === item.address))}
+                {wallets.map(this.renderRow)}
               </div>
             </div>
             <div styleName='column'>
