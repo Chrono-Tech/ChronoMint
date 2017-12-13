@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import { I18n } from 'platform/i18n'
-import React from 'react'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TokenModel from '../tokens/TokenModel'
 
@@ -38,12 +38,12 @@ export default class ApprovalNoticeModel extends abstractNoticeModel({
     return this.spender()
   }
 
-  icon () {
-    return (<i className='material-icons'>account_balance_wallet</i>)
-  }
-
   title () {
     return I18n.t('notices.approval.title')
+  }
+
+  icon () {
+    return Icons.get('notices.approval.icon')
   }
 
   message () {
