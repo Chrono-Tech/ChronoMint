@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
 import TxExecModel from 'models/TxExecModel'

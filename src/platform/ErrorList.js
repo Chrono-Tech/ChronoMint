@@ -9,6 +9,8 @@ import { Translate } from 'react-redux-i18n'
  * NOTE: for single token use static toTranslate(), e.g.:
  * errors.address = ErrorList.toTranslate(validator.address(values.get('address')))
  */
+
+// TODO @ipavlenko: It moved to platform folder as a temporary solution. You can move it to models after MINT-845 be fixed.
 class ErrorList {
   constructor () {
     this.errors = []

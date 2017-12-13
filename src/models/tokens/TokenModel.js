@@ -2,7 +2,7 @@ import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
 import Amount from 'models/Amount'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,

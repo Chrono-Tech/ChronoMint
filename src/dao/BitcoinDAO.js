@@ -6,6 +6,7 @@ import EventEmitter from 'events'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
+import { bitcoinAddress } from 'models/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'

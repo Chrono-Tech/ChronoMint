@@ -1,4 +1,4 @@
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import { TxError } from '../../dao/AbstractContractDAO'

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import Immutable from 'immutable'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
