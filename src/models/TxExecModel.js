@@ -1,12 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { I18n } from 'platform/i18n'
 import Immutable from 'immutable'
-import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import moment from 'moment'
 import uniqid from 'uniqid'
-import { FULL_DATE } from 'components/common/Moment/index'
-import Moment from 'components/common/Moment'
 import { abstractModel } from './AbstractModel'
 
 /** @see OperationModel.summary */
@@ -106,41 +102,6 @@ class TxExecModel extends abstractModel({
         ? value.toString(10)
         : (value == null ? null : `${value}`), // force to string if not nil
     }))
-  }
-
-  // TODO @bshevchenko: refactor this using new design markup
-  // TODO @bshevchenko: display BigNumber using TokenValue
-  // TODO @ipavlenko: remove ARGS_TREATED, do not overuse Translate from react-redux-i18n, refactor dependant code
-  description (withTime = true, style) {
-    const args = this.args()
-    let argsTreated = false
-    if (args.hasOwnProperty(ARGS_TREATED)) {
-      argsTreated = true
-      delete args[ARGS_TREATED]
-    }
-    const list = new Immutable.Map(Object.entries(args))
-    return (<div style={{ margin: '15px 0', ...style }}>
-      <Translate value={this.func()} /><br />
-      {this.hash() ? <span>{this.hash()}<br /></span> : ''}
-      {list.entrySeq().map(([key, value]) =>
-        (<span key={key}><Translate value={argsTreated ? key : this.i18nFunc() + key} />:&nbsp;
-          <b>{value && typeof value === 'object' && value.constructor &&
-          value.constructor.name === 'BigNumber' ? value.toString(10) : value}
-          </b><br />
-        </span>))}
-      {withTime ? <small><Moment date={this.time()} format={FULL_DATE} /></small> : ''}
-            </div>)
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock (additional, date) {
-    return (
-      <span>
-        {additional}
-        {this.description(false, { margin: 0, lineHeight: '25px' })}
-        <small style={{ display: 'block' }}>{date || <Moment date={this.time()} format={FULL_DATE} />}</small>
-      </span>
-    )
   }
 }
 

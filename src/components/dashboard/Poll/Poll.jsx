@@ -7,7 +7,8 @@ import { connect } from 'react-redux'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
+import Moment from 'components/common/Moment'
+import { SHORT_DATE } from 'models/constants'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -229,4 +230,3 @@ export default class Poll extends PureComponent {
     )
   }
 }
-

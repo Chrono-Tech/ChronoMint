@@ -1,5 +1,5 @@
 import { I18n } from 'platform/i18n'
-import React from 'react'
+import { Icons } from 'platform/icons'
 import type TokenModel from 'models/TokenModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
@@ -22,7 +22,7 @@ export default class TokenNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>settings</i>)
+    return Icons.get('notices.settings.icon')
   }
 
   title () {

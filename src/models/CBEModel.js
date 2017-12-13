@@ -1,4 +1,3 @@
-import React from 'react'
 import ErrorList from 'platform/ErrorList'
 import validator from 'models/validator'
 import { abstractFetchingModel } from './AbstractFetchingModel'
@@ -26,7 +25,7 @@ class CBEModel extends abstractFetchingModel({
 
   // TODO @ipavlenko: Proxy to user().name(), remove name from constructor
   name () {
-    return this.get('name') ? this.get('name') : <em>Unknown</em>
+    return this.get('name')
   }
 
   /** @returns {ProfileModel} */

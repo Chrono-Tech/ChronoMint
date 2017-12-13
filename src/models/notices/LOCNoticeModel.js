@@ -1,5 +1,5 @@
 import { I18n } from 'platform/i18n'
-import React from 'react'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const ADDED = 'notices.locs.added'
@@ -26,7 +26,7 @@ export default class LOCNoticeModel extends abstractNoticeModel({
   amount: null,
 }) {
   icon () {
-    return (<i className='material-icons'>group</i>)
+    return Icons.get('notices.locs.icon')
   }
 
   title () {
