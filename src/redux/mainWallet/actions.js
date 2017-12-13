@@ -107,39 +107,41 @@ export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => as
   dispatch(setBalance(token, balance))
 }
 
-export const initMainWallet = () => (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
-  const { profile } = getState().get(DUCK_SESSION)
-  const profileTokens = profile.tokens()
+const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
+  const { account, profile } = getState().get(DUCK_SESSION)
+  if (token.isOptional() && !profile.tokens().get(token.id())) {
+    return
+  }
+  const symbol = token.symbol()
 
-  tokenService.on(EVENT_NEW_TOKEN, async (token: TokenModel) => {
-    if (token.isOptional() && !profileTokens.get(token.id())) {
-      return
-    }
-    const symbol = token.symbol()
-
-    // set placeholder
-    dispatch({
-      type: WALLET_TOKEN_BALANCE,
-      balance: new BalanceModel({
-        id: token.id(),
-        amount: new Amount(0, symbol, false),
-        id: token.id(),
-      }),
-    })
-
-    // fetch actual
-    const tokenDAO = tokenService.getDAO(token)
-    const balance = await tokenDAO.getAccountBalance(account, token)
-    dispatch({
-      type: WALLET_TOKEN_BALANCE,
-      balance: new BalanceModel({
-        id: token.id(),
-        amount: new Amount(balance, symbol),
-        id: token.id(),
-      }),
-    })
+  // set placeholder
+  dispatch({
+    type: WALLET_TOKEN_BALANCE,
+    balance: new BalanceModel({
+      id: token.id(),
+      amount: new Amount(0, symbol, false),
+    }),
   })
+
+  // fetch actual
+  const tokenDAO = tokenService.getDAO(token)
+  const balance = await tokenDAO.getAccountBalance(account, token)
+  dispatch({
+    type: WALLET_TOKEN_BALANCE,
+    balance: new BalanceModel({
+      id: token.id(),
+      amount: new Amount(balance, symbol),
+    }),
+  })
+}
+
+export const initMainWallet = () => (dispatch, getState) => {
+  const callback = (token) => dispatch(fetchTokenBalance(token))
+  tokenService.on(EVENT_NEW_TOKEN, callback)
+
+  // fetch for existing tokens
+  const tokens = getState().get(DUCK_TOKENS)
+  tokens.list().forEach(callback)
 }
 
 export const watchInitWallet = () => async (dispatch, getState) => {

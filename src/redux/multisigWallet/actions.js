@@ -75,8 +75,6 @@ export const initWalletManager = () => async (dispatch, getState) => {
         balance: new BalanceModel({
           id: token.id(),
           amount: new Amount(balance, symbol, true),
-          symbol,
-          id: token.id(),
         }),
       })
     }
