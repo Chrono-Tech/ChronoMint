@@ -1,9 +1,9 @@
 import Immutable from 'immutable'
 import TokenModel from 'models/TokenModel'
 import TxModel from 'models/TxModel'
-import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
-import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
-import TransactionsCollection from 'models/Wallet/TransactionsCollection'
+import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
+import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import MultisigWalletModel from './MultisigWalletModel'
 
 const multisigWalletModel = new MultisigWalletModel({
