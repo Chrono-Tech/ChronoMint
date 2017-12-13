@@ -15,6 +15,10 @@ export default class BalanceModel extends abstractModel({
     return this._getSet('amount', value)
   }
 
+  symbol () {
+    return this.amount().symbol()
+  }
+
   updateBalance (isCredited, value: BigNumber) {
     const newBalance = isCredited
       ? this.amount().plus(value)

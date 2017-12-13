@@ -104,16 +104,13 @@ export default class SendTokensForm extends PureComponent {
               {...styles}
             >
               {balances.size() > 0
-                ? balances.items().map((balance) => {
-                  const symbol = balance.id()
-                  return (
-                    <MenuItem
-                      key={symbol}
-                      value={symbol}
-                      primaryText={symbol}
-                    />
-                  )
-                })
+                ? balances.items().map((balance) => (
+                  <MenuItem
+                    key={balance.id()}
+                    value={balance.symbol()}
+                    primaryText={balance.symbol()}
+                  />
+                ))
                 : <Preloader />
               }
             </Field>
