@@ -60,6 +60,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this._getSet('pendingTxList', value)
   }
 
+  pendingCount () {
+    return this.pendingTxList().size()
+  }
+
   tokens (value) {
     return this._getSet('tokens', value)
   }

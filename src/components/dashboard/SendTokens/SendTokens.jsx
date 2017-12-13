@@ -43,20 +43,20 @@ export default class SendTokens extends PureComponent {
 
   constructor (props) {
     super(props)
-    const { wallet } = props
+    const balances = props.wallet.balances()
     this.state = {
-      symbol: wallet.tokens().size > 0
-        ? wallet.tokens().first().symbol()
+      symbol: balances.size() > 0
+        ? balances.first().id()
         : null,
     }
   }
 
   componentWillReceiveProps (newProps) {
-    const { wallet } = newProps
-    const selectedToken = wallet.tokens().get(this.state.symbol)
+    const balances = newProps.wallet.balances()
+    const selectedToken = balances.item(this.state.symbol)
     if (!selectedToken) {
-      this.state.symbol = wallet.tokens().size > 0
-        ? wallet.tokens().first().symbol()
+      this.state.symbol = balances.size() > 0
+        ? balances.first().id()
         : null
     }
   }

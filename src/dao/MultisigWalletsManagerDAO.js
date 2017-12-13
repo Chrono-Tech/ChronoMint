@@ -42,22 +42,17 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
-    const [owners, requiredSignatures, tokens] = await Promise.all([
+    const [owners, requiredSignatures, pendingTxList] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
-      walletDAO.getTokens(),
+      walletDAO.getPendings(),
     ])
-
-    // TODO MINT-875 Workaround fix this after implementation new token subscribe infrastructure
-    // const pendingTxList = await walletDAO.getPendings(tokens)
-    const pendingTxList = new MultisigWalletPendingTxCollection() //await walletDAO.getPendings(tokens)
 
     const multisigWalletModel =  new MultisigWalletModel({
       owners: new Immutable.List(owners),
       address,
       transactionHash,
       requiredSignatures,
-      tokens,
       is2FA,
       isFetched: true,
       pendingTxList,

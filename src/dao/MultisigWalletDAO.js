@@ -98,30 +98,18 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
     }, { self: wallet.address() })
   }
 
-  async getPendings (tokens) {
+  async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [ to, value, symbol, id, isConfirmed ] = await this._call('getPendings')
+    const [ values, operations, isConfirmed ] = await this._call('getPendings')
 
-    to.forEach((item, i) => {
+    operations.forEach((id, i) => {
       let pendingTxModel
-      if (this.isEmptyAddress(symbol[i])) {
-        // this is transfer
-        const symbolString = this._c.bytesToString(symbol[ i ])
-        const tokenDAO = tokens.get(symbolString).dao()
-        pendingTxModel = new MultisigWalletPendingTxModel({
-          to: item,
-          value: tokenDAO.removeDecimals(value[ i ]),
-          symbol: symbolString,
-          id: id[ i ],
-          isConfirmed: isConfirmed[ i ],
-        })
-      } else {
-        // this is other confirmations: add/remove owners, etc
-        pendingTxModel = new MultisigWalletPendingTxModel({
-          id: id[ i ],
-          isConfirmed: isConfirmed[ i ],
-        })
-      }
+      pendingTxModel = new MultisigWalletPendingTxModel({
+        id,
+        // TODO @dkchv: remove decimal
+        value: values [i],
+        isConfirmed: isConfirmed[ i ],
+      })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
     return pendingTxCollection

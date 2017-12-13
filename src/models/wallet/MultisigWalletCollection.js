@@ -10,4 +10,8 @@ export default class MultisigWalletCollection extends abstractFetchingCollection
     const balances = wallet.balances().update(balance)
     return this.update(wallet.balances(balances))
   }
+
+  allPendingsCount () {
+    return this.list().reduce((memo, item: MultisigWalletModel) => memo + item.pendingCount(), 0)
+  }
 }

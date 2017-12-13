@@ -41,12 +41,12 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_SEND_TOKENS)
-  const symbol = selector(state, 'symbol')
+  const tokenId = selector(state, 'symbol')
   const feeMultiplier = selector(state, 'feeMultiplier')
   return {
-    balance: getCurrentWallet(state).balances().item(symbol),
+    balance: getCurrentWallet(state).balances().item(tokenId),
     account: state.get(DUCK_SESSION).account,
-    token: state.get(DUCK_TOKENS).item(symbol) || new TokenModel(),
+    token: state.get(DUCK_TOKENS).item(tokenId) || new TokenModel(),
     feeMultiplier,
   }
 }
@@ -80,7 +80,7 @@ export default class SendTokensForm extends PureComponent {
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()
-    const currentBalance = balances.item(token.symbol()) || new BalanceModel({
+    const currentBalance = balances.item(token.id()) || new BalanceModel({
       id: token.id(),
     })
 
@@ -107,7 +107,7 @@ export default class SendTokensForm extends PureComponent {
                 ? balances.items().map((balance) => (
                   <MenuItem
                     key={balance.id()}
-                    value={balance.symbol()}
+                    value={balance.id()}
                     primaryText={balance.symbol()}
                   />
                 ))

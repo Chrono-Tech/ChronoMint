@@ -85,10 +85,21 @@ export default class WalletChanger extends PureComponent {
                         {multisigWallet.isFetching() && (
                           <div styleName='buttonPreloader'>
                             <Preloader small />
-                            <div styleName='buttonCounter'>{`[${multisigWallet.size()}/${multisigWallet.size() + multisigWallet.leftToFetch()}]`}</div>
+                            <div
+                              styleName='buttonCounter'>
+                              {`[${multisigWallet.size()}/${multisigWallet.size() + multisigWallet.leftToFetch()}]`}
+                            </div>
                           </div>)}
                         <img styleName='buttonIcon' src={WalletMultiSVG} />
-                        <Translate value={multisigWallet.size() > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
+                        {multisigWallet.size() > 0
+                          ? (
+                            <span>
+                              <Translate value='wallet.switchToMultisignatureWallet' />
+                              {multisigWallet.allPendingsCount() > 0 && <span styleName='pendingCounter'>{multisigWallet.allPendingsCount()}</span>}
+                            </span>
+                          )
+                          : <Translate value='wallet.createMultisignatureWallet' />
+                        }
                       </span>
                     )}
                   onTouchTap={multisigWallet.size() > 0

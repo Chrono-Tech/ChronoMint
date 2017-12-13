@@ -31,18 +31,15 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
+    console.log('--WalletPendingTransfers#renderRow', wallet.toJS(), item.toJS())
     return (
       <div styleName='transfer' key={item.id()}>
         <div styleName='left'>
           <div styleName='toAccount'>
-            <div styleName='account'>{item.to()}</div>
+            <div styleName='account'>item.to()</div>
           </div>
           <div styleName='issue'>
-            <TokenValue
-              noRenderPrice
-              value={item.value()}
-              symbol={item.symbol()}
-            />
+            decription: TODO
           </div>
         </div>
         <div styleName='right'>
