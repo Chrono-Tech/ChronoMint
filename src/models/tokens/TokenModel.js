@@ -3,6 +3,9 @@ import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
 import Amount from 'models/Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import FeeModel from './FeeModel'
+import ManagersCollection from './ManagersCollection'
+import ReissuableModel from './ReissuableModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -14,16 +17,14 @@ export default class TokenModel extends abstractFetchingModel({
   allowance: new Immutable.Map(),
   url: null,
   icon: null,
-  fee: null,
+  fee: new FeeModel(),
   feeRate: null, // Default token fee per byte
-  withFee: false,
   platform: null,
   totalSupply: new Amount(0),
-  managersList: null,
-  isReissuable: false,
+  managersList: new ManagersCollection(),
+  isReissuable: new ReissuableModel(),
   isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
-  feeAddress: null,
   isERC20: false,
 
 }) {
@@ -40,7 +41,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   feeAddress () {
-    return this.get('feeAddress')
+    return this.fee().feeAddress()
   }
 
   symbol () {
@@ -83,8 +84,10 @@ export default class TokenModel extends abstractFetchingModel({
     return this._getSet('feeRate', value)
   }
 
-  withFee (value) {
-    return this._getSet('withFee', value)
+  withFee () {
+    // eslint-disable-next-line
+    console.log('TokenModel', this.fee())
+    return this.fee().withFee()
   }
 
   address () {
@@ -126,16 +129,17 @@ export default class TokenModel extends abstractFetchingModel({
 
   // noinspection JSUnusedGlobalSymbols
   txSummary () {
+    const fee = this.fee()
     return {
       symbol: this.symbol(),
       name: this.name(),
       totalSupply: this.totalSupply(),
       decimals: this.decimals(),
-      isReissuable: this.isReissuable(),
+      isReissuable: this.isReissuable().isReissuable(),
       icon: this.icon(),
-      feeAddress: this.feeAddress(),
-      feePercent: this.fee(),
-      withFee: this.withFee(),
+      feeAddress: fee.feeAddress(),
+      feePercent: fee.fee(),
+      withFee: fee.withFee(),
     }
   }
 

@@ -10,6 +10,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
   }
 
   async createAssetWithFee (token: TokenModel) {
+    const fee = token.fee()
     const tx = await this._tx(
       'createAssetWithFee',
       [
@@ -18,9 +19,9 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.name(),
         TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
         token.decimals(),
-        token.isReissuable(),
+        token.isReissuable().isReissuable(),
         token.feeAddress(),
-        token.fee() * 100,
+        TokenManagementExtensionDAO.addDecimals(fee.fee(), token.decimals()),
         token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
       ],
       token,
@@ -37,7 +38,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.name(),
         TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
         token.decimals(),
-        token.isReissuable(),
+        token.isReissuable().isReissuable(),
         token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
       ],
       token,

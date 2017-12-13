@@ -4,8 +4,12 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, SELECT_PLATFORM, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
+import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import Amount from 'models/Amount'
+import TokensCollection from 'models/tokens/TokensCollection'
 import WithLoader from 'components/common/Preloader/WithLoader'
 
 import './PlatformsList.scss'
@@ -21,7 +25,7 @@ class PlatformsList extends PureComponent {
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    tokensMap: PropTypes.object,
+    tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.object,
     assetsManagerCountsLoading: PropTypes.bool,
   }
@@ -30,41 +34,48 @@ class PlatformsList extends PureComponent {
     this.props.handleSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
   }
 
-  renderTokenList ({ tokensMap, selectedToken }) {
-    const filteredTokens = tokensMap.toArray()
-      .filter((token) => token.platform ? token.platform() === this.props.selectedPlatform : false)
+  renderTokenList ({ assets, tokens, selectedToken }) {
+    const filteredTokens = Object.values(assets)
+      .filter((asset) => asset.platform ? asset.platform === this.props.selectedPlatform : false)
     return (
       <div styleName='tokensList'>
         {
-          filteredTokens.map((token) => (
-            <div
-              key={token.address()}
-              styleName={classnames('tokenItem', { 'selected': selectedToken === token.symbol() })}
-              onTouchTap={() => this.props.handleSelectToken(token.symbol())}
-            >
-              <div styleName='tokenIcon'>
-                <IPFSImage styleName='content' multihash={token.icon()} />
+          filteredTokens.map((asset) => {
+            const token = tokens.item(asset.address)
+
+            if (!token) {
+              return null
+            }
+
+            return (
+              <div
+                key={token.address()}
+                styleName={classnames('tokenItem', { 'selected': selectedToken === token.symbol() })}
+                onTouchTap={() => this.props.handleSelectToken(token)}
+              >
+                <div styleName='tokenIcon'>
+                  <IPFSImage styleName='content' multihash={token.icon()} />
+                </div>
+                <div styleName='tokenTitle'>
+                  {token.symbol()}
+                  <div styleName='tokenSubTitle'>{token.address()}</div>
+                </div>
+                <div styleName='tokenBalance'>
+                  <TokenValue
+                    style={{ fontSize: '24px' }}
+                    value={new Amount(asset.totalSupply, token.symbol())}
+                  />
+                </div>
               </div>
-              <div styleName='tokenTitle'>
-                {token.symbol()}
-                <div styleName='tokenSubTitle'>{token.address()}</div>
-              </div>
-              <div styleName='tokenBalance'>
-                <TokenValue
-                  style={{ fontSize: '24px' }}
-                  value={token.totalSupply()}
-                  symbol={token.symbol()}
-                />
-              </div>
-            </div>
-          ))
+            )
+          })
         }
 
       </div>
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokensMap, selectedToken }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
     return (
       <div>
         {
@@ -85,7 +96,7 @@ class PlatformsList extends PureComponent {
                   }
                 </div>
               </div>
-              {selectedPlatform === address && this.renderTokenList({ tokensMap, selectedToken })}
+              {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}
             </div>
           ))
         }
@@ -102,8 +113,9 @@ class PlatformsList extends PureComponent {
             loader={<div styleName='preloaderWrap'><Preloader /></div>}
             selectedPlatform={this.props.selectedPlatform}
             platformsList={this.props.platformsList}
-            tokensMap={this.props.tokensMap}
+            tokens={this.props.tokens}
             selectedToken={this.props.selectedToken}
+            assets={this.props.assets}
           >
             {this.renderPlatformsList}
           </WithLoader>
@@ -114,10 +126,11 @@ class PlatformsList extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     platformsList: assetsManager.platformsList,
-    tokensMap: assetsManager.tokensMap,
+    tokens,
     assets: assetsManager.assets,
     selectedToken: assetsManager.selectedToken,
     selectedPlatform: assetsManager.selectedPlatform,
@@ -130,7 +143,7 @@ function mapDispatchToProps (dispatch) {
     handleSelectPlatform: (platformAddress) => {
       dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
     },
-    handleSelectToken: (symbol) => dispatch({ type: SELECT_TOKEN, payload: { symbol } }),
+    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
   }
 }
 

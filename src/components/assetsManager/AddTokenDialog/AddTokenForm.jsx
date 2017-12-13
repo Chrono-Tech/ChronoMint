@@ -20,6 +20,8 @@ import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from 'utils/IPFS'
+import FeeModel from 'models/tokens/FeeModel'
+import ReissuableModel from 'models/tokens/ReissuableModel'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
@@ -55,12 +57,14 @@ const onSubmit = (values, dispatch) => {
     symbol: values.get('tokenSymbol').toUpperCase(),
     balance: values.get('amount'),
     icon: values.get('tokenImg'),
-    fee: values.get('feePercent'),
-    feeAddress: values.get('feeAddress'),
-    withFee: !!values.get('withFee'),
+    fee: new FeeModel({
+      fee: values.get('feePercent'),
+      feeAddress: values.get('feeAddress'),
+      withFee: !!values.get('withFee'),
+    }),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: !!values.get('reissuable'),
+    isReissuable: new ReissuableModel({ isReissuable: !!values.get('reissuable') }),
     blockchain: 'Ethereum',
   })))
 }
@@ -153,7 +157,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[0]
+    const file = e.target.files[ 0 ]
     if (!file) {
       return
     }
