@@ -3,7 +3,10 @@ import contractManager from 'dao/ContractsManagerDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Web3Converter from 'utils/Web3Converter'
-import { TOKENS_UPDATE } from 'redux/tokens/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
+import ManagersCollection from 'models/tokens/ManagersCollection'
+import ReissuableModel from 'models/tokens/ReissuableModel'
+import FeeModel from 'models/tokens/FeeModel'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -37,7 +40,6 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
-
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers } })
 }
 
@@ -50,9 +52,9 @@ export const getPlatforms = () => async (dispatch, getState) => {
 
 export const getTokens = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
-  const [ assetsManagerDao, ERC20ManagerDAO, assets ] = await Promise.all([
-    contractManager.getAssetsManagerDAO(),
+  const [ ERC20ManagerDAO, assets ] = await Promise.all([
     contractManager.getERC20ManagerDAO(),
     assetsManagerDao.getSystemAssetsForOwner(account),
   ])
@@ -118,11 +120,14 @@ export const createAsset = (token: TokenModel) => async (dispatch) => {
   }
 }
 
-export const getManagersForAssetSymbol = (symbol) => async (dispatch) => {
-  dispatch({ type: GET_MANAGERS_FOR_TOKEN_LOADING })
+export const getManagersForAssetSymbol = (token: TokenModel) => async (dispatch) => {
+  dispatch({ type: TOKENS_FETCHED, token: token.managersList(new ManagersCollection().isFetching(true)) })
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
-  const managersForAssetSymbol = await assetsManagerDAO.getManagersForAssetSymbol(symbol)
-  dispatch({ type: GET_MANAGERS_FOR_TOKEN, payload: { symbol, managersForAssetSymbol } })
+  const managersList = await assetsManagerDAO.getManagersForAssetSymbol(token.symbol())
+  dispatch({
+    type: TOKENS_FETCHED,
+    token: token.managersList(managersList.isFetched(true)),
+  })
 }
 
 export const removeManager = (token: TokenModel, manager: String) => async () => {
@@ -171,15 +176,17 @@ export const revokeAsset = (token: TokenModel, amount: number) => async () => {
 }
 
 export const isReissuable = (token: TokenModel) => async (dispatch) => {
+  dispatch({ type: TOKENS_FETCHED, token: token.isReissuable(new ReissuableModel().isFetching(true)) })
+  let isReissuable = false
   try {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
-    const result = await chronoBankPlatformDAO.isReissuable(token.symbol())
-    dispatch({ type: SET_IS_REISSUABLE, payload: { symbol: token.symbol(), isReissuable: result } })
+    isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
   }
   catch (e) {
     // eslint-disable-next-line
     console.error(e.message)
   }
+  dispatch({ type: TOKENS_FETCHED, token: token.isReissuable(new ReissuableModel({ isReissuable }).isFetched(true)) })
 }
 
 export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) => {
@@ -248,7 +255,6 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getUsersPlatforms())
-  dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
   const [ ERC20ManagerDAO, assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
@@ -291,11 +297,51 @@ export const watchInitTokens = () => async (dispatch, getState) => {
 }
 
 export const getFee = (token: TokenModel) => async (dispatch) => {
+  dispatch({ type: TOKENS_FETCHED, token: token.fee(token.fee().isFetching(true)) })
+  let tokenFee = token.fee()
+    .withFee(false)
+    .isFetching(false)
+    .isFetched(true)
   try {
     const feeInterfaceDAO = await contractManager.getFeeInterfaceDAO(token.address())
     const res = await feeInterfaceDAO.getFeePercent()
-    dispatch({ type: SET_FEE, payload: { symbol: token.symbol(), fee: res / 100, withFee: true } })
+    tokenFee = tokenFee
+      .fee(res)
+      .withFee(true)
+
+    dispatch({ type: TOKENS_FETCHED, token: token.fee(tokenFee) })
   } catch (e) {
-    dispatch({ type: SET_FEE, payload: { symbol: token.symbol(), fee: null, withFee: false } })
+    dispatch({ type: TOKENS_FETCHED, token: token.fee(tokenFee) })
   }
+}
+export const selectToken = (token: TokenModel) => async (dispatch) => {
+  dispatch({
+    type: SELECT_TOKEN,
+    payload: { symbol: token.id() },
+  })
+  dispatch({
+    type: TOKENS_FETCHED,
+    token: token
+      .managersList(new ManagersCollection().isFetching(true))
+      .fee(token.fee().isFetching(true))
+      .isReissuable(token.isReissuable().isFetching(true)),
+  })
+
+  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(token.platform())
+  const feeInterfaceDAO = await contractManager.getFeeInterfaceDAO(token.address())
+  const [ managersList, isReissuable, fee ] = await Promise.all([
+    assetsManagerDAO.getManagersForAssetSymbol(token.symbol()),
+    chronoBankPlatformDAO.isReissuable(token.symbol()),
+    feeInterfaceDAO.getFeePercent(),
+  ])
+
+  dispatch({
+    type: TOKENS_FETCHED,
+    token: token
+      .managersList(managersList.isFetched(true))
+      .isReissuable(new ReissuableModel({ isReissuable }).isFetched(true))
+      .fee(new FeeModel({ fee, withFee: !!fee }).isFetched(true).isFetching(false)),
+  })
+
 }

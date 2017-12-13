@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, getTokens } from 'redux/assetsManager/actions'
+import { createPlatform, getAssetsManagerData } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
@@ -33,7 +33,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     createPlatform: () => dispatch(createPlatform()),
-    getTokens: () => dispatch(getTokens()),
+    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
@@ -49,15 +49,15 @@ export default class AssetManager extends PureComponent {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
     usersPlatformsCount: PropTypes.number,
-    getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
     assetsManagerCountsLoading: PropTypes.bool,
+    getAssetsManagerData: PropTypes.func,
   }
 
   componentDidMount () {
-    this.props.getTokens()
+    this.props.getAssetsManagerData()
   }
 
   renderHead () {
