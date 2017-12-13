@@ -52,7 +52,7 @@ const onSubmit = (values, dispatch) => {
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
-    symbol: values.get('tokenSymbol'),
+    symbol: values.get('tokenSymbol').toUpperCase(),
     balance: values.get('amount'),
     icon: values.get('tokenImg'),
     fee: values.get('feePercent'),
@@ -153,7 +153,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[ 0 ]
+    const file = e.target.files[0]
     if (!file) {
       return
     }
