@@ -1,4 +1,4 @@
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 import type Immutable from 'immutable'
 import type TokenModel from 'models/TokenModel'
 import { ContractsManagerABI } from './abi'

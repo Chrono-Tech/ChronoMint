@@ -1,5 +1,5 @@
 import type BigNumber from 'bignumber.js'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import React from 'react'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TokenModel from '../TokenModel'

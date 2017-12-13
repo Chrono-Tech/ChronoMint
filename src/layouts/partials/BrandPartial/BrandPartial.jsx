@@ -1,4 +1,4 @@
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import { MuiThemeProvider, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'

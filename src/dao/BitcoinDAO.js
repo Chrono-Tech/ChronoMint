@@ -4,7 +4,7 @@ import type TxModel from 'models/TxModel'
 import type TokenModel from 'models/TokenModel'
 import { btcProvider, bccProvider, ltcProvider, btgProvider } from '@chronobank/login/network/BitcoinProvider'
 import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
-import { bitcoinAddress } from 'components/forms/validator'
+import { bitcoinAddress } from 'models/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'

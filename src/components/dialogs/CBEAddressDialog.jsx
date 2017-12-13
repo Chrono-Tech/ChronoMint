@@ -9,7 +9,7 @@ import { validate } from 'models/CBEModel'
 import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 
 import './FormDialog.scss'
 
