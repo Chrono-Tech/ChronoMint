@@ -5,9 +5,10 @@ import { abstractModel } from '../AbstractModel'
 export default class BalanceModel extends abstractModel({
   // TODO @dkchv: may be set as b0,b3,b6?
   amount: new Amount(),
+  id: null,
 }) {
   id () {
-    return this.amount().symbol()
+    return this.get('id') || this.amount().symbol()
   }
 
   amount () {
@@ -15,7 +16,7 @@ export default class BalanceModel extends abstractModel({
   }
 
   updateBalance (isCredited, amount: BigNumber) {
-    const newBalance = this.amount()[isCredited ? 'plus' : 'minus'](amount)
+    const newBalance = this.amount()[ isCredited ? 'plus' : 'minus' ](amount)
     return this.set('amount', newBalance)
   }
 }

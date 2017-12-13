@@ -123,6 +123,7 @@ export const initMainWallet = () => (dispatch, getState) => {
       type: WALLET_TOKEN_BALANCE,
       balance: new BalanceModel({
         amount: new Amount(0, symbol, false),
+        id: token.id(),
       }),
     })
 
@@ -133,6 +134,7 @@ export const initMainWallet = () => (dispatch, getState) => {
       type: WALLET_TOKEN_BALANCE,
       balance: new BalanceModel({
         amount: new Amount(balance, symbol),
+        id: token.id(),
       }),
     })
   })
@@ -160,13 +162,13 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const [timeHolderAddress, timeHolderWalletAddress] = await Promise.all([
+  const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
     timeHolderDAO.getAddress(),
     timeHolderDAO.getWalletAddress(),
   ])
 
   let contractNames = {}
-  contractNames[timeHolderAddress] = TIME + ' Holder'
+  contractNames[ timeHolderAddress ] = TIME + ' Holder'
   ApprovalNoticeModel.setContractNames(contractNames)
   dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
 
@@ -299,12 +301,12 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
     let newTxs = []
     for (let pack of result) {
-      newTxs = [...newTxs, ...pack]
+      newTxs = [ ...newTxs, ...pack ]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
 
-    txs = [...txs, ...newTxs]
+    txs = [ ...txs, ...newTxs ]
     txsCache = txs.slice(TXS_PER_PAGE)
     txs = txs.slice(0, TXS_PER_PAGE)
   }
