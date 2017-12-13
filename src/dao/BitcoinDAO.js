@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { bitcoinAddress } from 'components/forms/validator'
 import EventEmitter from 'events'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import type TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 
 const EVENT_TX = 'tx'

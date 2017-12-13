@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_EXCHANGE, exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import './BuyTokensDialog.scss'
 import BuyTokensForm from './BuyTokensForm'
 

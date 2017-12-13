@@ -6,7 +6,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
-
 import './AccountSelector.scss'
 
 const mapStateToProps = (state) => ({
@@ -52,19 +51,18 @@ class AccountSelector extends PureComponent {
   }
 
   render () {
-    // TODO @dkchv: turn off until MINT-855
     const { accounts, selectedAccount, isLoading } = this.props
     return (
       <div>
-        {/*<SelectField*/}
-          {/*floatingLabelText={<Translate value='AccountSelector.address' />}*/}
-          {/*value={selectedAccount}*/}
-          {/*onChange={this.handleChange}*/}
-          {/*fullWidth*/}
-          {/*{...styles.selectField}*/}
-        {/*>*/}
-          {/*{accounts && accounts.map((a) => <MenuItem key={a} value={a} primaryText={a} />)}*/}
-        {/*</SelectField>*/}
+        <SelectField
+          floatingLabelText={<Translate value='AccountSelector.address' />}
+          value={selectedAccount}
+          onChange={this.handleChange}
+          fullWidth
+          {...styles.selectField}
+        >
+          {accounts && accounts.map((a) => <MenuItem key={a} value={a} primaryText={a} />)}
+        </SelectField>
         <div styleName='actions'>
           <div styleName='action'>
             <RaisedButton
@@ -76,7 +74,7 @@ class AccountSelector extends PureComponent {
               primary
               fullWidth
               onTouchTap={() => this.props.onSelectAccount()}
-              // disabled={!selectedAccount || isLoading}
+              disabled={!selectedAccount || isLoading}
               style={styles.primaryButton}
               labelStyle={styles.primaryButtonLabel}
             />

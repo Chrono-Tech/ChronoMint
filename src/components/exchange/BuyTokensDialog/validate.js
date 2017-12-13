@@ -1,6 +1,6 @@
 import * as validator from 'components/forms/validator'
 import ErrorList from 'components/forms/ErrorList'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 
 export default function validate (values, props) {
   let buyErrors = new ErrorList()
