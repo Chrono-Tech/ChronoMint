@@ -3,6 +3,7 @@ import contractManager from 'dao/ContractsManagerDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Web3Converter from 'utils/Web3Converter'
+import { TOKENS_UPDATE } from 'redux/tokens/actions'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -50,7 +51,7 @@ export const getPlatforms = () => async (dispatch, getState) => {
 export const getTokens = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
 
-  const [assetsManagerDao, ERC20ManagerDAO, assets] = await Promise.all([
+  const [ assetsManagerDao, ERC20ManagerDAO, assets ] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getERC20ManagerDAO(),
     assetsManagerDao.getSystemAssetsForOwner(account),
@@ -98,16 +99,20 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   platformManagerDAO.watchCreatePlatform(callback, account)
 }
 
-export const createAsset = (token: TokenModel) => async () => {
+export const createAsset = (token: TokenModel) => async (dispatch) => {
   try {
+    let txHash
     const tokenManagementExtension = await contractManager.getTokenManagementExtensionDAO(token.platform().address)
     if (token.withFee()) {
-      await tokenManagementExtension.createAssetWithFee(token)
+      txHash = await tokenManagementExtension.createAssetWithFee(token)
     } else {
-      await tokenManagementExtension.createAssetWithoutFee(token)
+      txHash = await tokenManagementExtension.createAssetWithoutFee(token)
     }
-  }
-  catch (e) {
+    dispatch({
+      type: TOKENS_UPDATE,
+      token: token.isPending(true).transactionHash(txHash),
+    })
+  } catch (e) {
     // eslint-disable-next-line
     console.error(e.message)
   }
@@ -179,7 +184,7 @@ export const isReissuable = (token: TokenModel) => async (dispatch) => {
 
 export const setTotalSupply = (token, value, isIssue) => (dispatch, getState) => {
   const amount = token.dao().removeDecimals(value)
-  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([token.symbol(), 'totalSupply'])
+  const totalSupply = getState().get(DUCK_ASSETS_MANAGER).tokensMap.getIn([ token.symbol(), 'totalSupply' ])
   if (!totalSupply) {
     return
   }
@@ -206,7 +211,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [txModel] } })
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [ txModel ] } })
 }
 
 export const setManagers = (tx) => async (dispatch, getState) => {
@@ -224,7 +229,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       const { from, to } = tx.args
       const assetsManagerDao = await contractManager.getAssetsManagerDAO()
       const managers = await assetsManagerDao.getManagers(account)
-      let managersList = [...(tokensMap.getIn([symbol, 'managersList']) || [])]
+      let managersList = [ ...(tokensMap.getIn([ symbol, 'managersList' ]) || []) ]
       if (assetsManagerDao.isEmptyAddress(from)) {
         if (managersList.indexOf(to) < 0) {
           managersList.push(to)
@@ -246,7 +251,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
-  const [ERC20ManagerDAO, assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO] = await Promise.all([
+  const [ ERC20ManagerDAO, assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
     contractManager.getERC20ManagerDAO(),
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
@@ -271,7 +276,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
     let tokensMap = new Immutable.Map()
     if (Object.keys(assets).length) {
-      tokensMap = await ERC20ManagerDAO.getTokensByAddresses([tx.args.token], false, account, assets)
+      tokensMap = await ERC20ManagerDAO.getTokensByAddresses([ tx.args.token ], false, account, assets)
     }
     dispatch({ type: SET_TOKEN, payload: { tokensMap, assets } })
     dispatch(setTx(tx))

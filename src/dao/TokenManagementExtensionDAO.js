@@ -9,8 +9,8 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
     super(TokenManagementInterfaceABI, at, MultiEventsHistoryABI)
   }
 
-  createAssetWithFee (token: TokenModel) {
-    return this._tx(
+  async createAssetWithFee (token: TokenModel) {
+    const tx = await this._tx(
       'createAssetWithFee',
       [
         token.symbol(),
@@ -25,10 +25,11 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       ],
       token,
     )
+    return tx.tx
   }
 
-  createAssetWithoutFee (token: TokenModel) {
-    return this._tx(
+  async createAssetWithoutFee (token: TokenModel) {
+    const tx = await this._tx(
       'createAssetWithoutFee',
       [
         token.symbol(),
@@ -41,6 +42,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
       ],
       token,
     )
+    return tx.tx
   }
 
   static addDecimals (value, decimals) {
