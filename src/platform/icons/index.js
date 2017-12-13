@@ -17,9 +17,7 @@ const Icons = {
       case 'notices.polls.icon':
         return <i className='material-icons'>poll</i>
       case 'notices.transfer.icon':
-        return <i className='material-icons'>alarm</i>
-
-      case 'notices.operations.icon':
+      default:
         return <i className='material-icons'>alarm</i>
     }
   },
