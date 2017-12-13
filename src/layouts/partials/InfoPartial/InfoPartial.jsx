@@ -1,4 +1,5 @@
 import { AddCurrencyDialog } from 'components'
+import BalanceModel from 'models/tokens/BalanceModel'
 import { FloatingActionButton, Paper } from 'material-ui'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'

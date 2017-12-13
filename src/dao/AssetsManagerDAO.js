@@ -3,6 +3,7 @@ import contractManager from 'dao/ContractsManagerDAO'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import TxModel from 'models/TxModel'
 import Web3Converter from 'utils/Web3Converter'
+import ManagersCollection from 'models/tokens/ManagersCollection'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
@@ -17,15 +18,15 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   getTokenExtension (platform) {
-    return this._call('getTokenExtension', [platform])
+    return this._call('getTokenExtension', [ platform ])
   }
 
   async getParticipatingPlatformsForUser (account) {
-    const platformsList = await this._call('getParticipatingPlatformsForUser', [account])
+    const platformsList = await this._call('getParticipatingPlatformsForUser', [ account ])
     let formatPlatformsList = {}
     if (platformsList.length) {
       for (let platform of platformsList) {
-        formatPlatformsList[platform] = {
+        formatPlatformsList[ platform ] = {
           address: platform,
           name: null,
         }
@@ -35,29 +36,31 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getSystemAssetsForOwner (owner) {
-    const assets = await this._call('getSystemAssetsForOwner', [owner])
+    const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}
     let currentPlatform
-    for (let i = 0; i < assets[0].length; i++) {
-
-      if (!this.isEmptyAddress(assets[1][i])) currentPlatform = assets[1][i]
-
-      assetsList[assets[0][i]] = {
-        address: assets[0][i],
-        platform: currentPlatform,
-        totalSupply: assets[2][i],
+    addresses.map((address, i) => {
+      if (!this.isEmptyAddress(platforms[ i ])) {
+        currentPlatform = platforms[ i ]
       }
-    }
+
+      assetsList[ address ] = {
+        address,
+        platform: currentPlatform,
+        totalSupply: totalSupply[ i ],
+      }
+
+    })
     return assetsList
   }
 
   async getManagers (owner) {
-    const managersList = await this._call('getManagers', [owner])
+    const managersList = await this._call('getManagers', [ owner ])
     let formatManagersList = {}
     managersList.map((manager) => {
-      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
-        formatManagersList[manager] = manager
+      if (!this.isEmptyAddress(manager) && !formatManagersList[ manager ]) {
+        formatManagersList[ manager ] = manager
       }
     })
 
@@ -65,15 +68,15 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getManagersForAssetSymbol (symbol) {
-    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [symbol])
+    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [ symbol ])
 
-    let formatManagersList = {}
+    let formatManagersList = new ManagersCollection()
     managersListForSymbol.map((manager) => {
-      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
-        formatManagersList[manager] = manager
+      if (!this.isEmptyAddress(manager)) {
+        formatManagersList = formatManagersList.add(manager)
       }
     })
-    return Object.keys(formatManagersList)
+    return formatManagersList
   }
 
   createTxModel (tx, account, block, time): TxModel {

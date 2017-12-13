@@ -3,14 +3,15 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import Immutable from 'immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getFee, getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
 
 import './PlatformInfo.scss'
@@ -21,7 +22,7 @@ function prefix (token) {
 
 class PlatformInfo extends PureComponent {
   static propTypes = {
-    tokensMap: PropTypes.instanceOf(Immutable.Map),
+    tokens: PropTypes.instanceOf(TokensCollection),
     selectedToken: PropTypes.string,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
@@ -34,23 +35,6 @@ class PlatformInfo extends PureComponent {
     getFee: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
-  }
-
-  componentWillReceiveProps (newProps) {
-    if (newProps.selectedToken) {
-      const token = newProps.tokensMap.get(newProps.selectedToken)
-      if (token) {
-        if (token.managersList() === null) {
-          this.props.getManagersForAssetSymbol(newProps.selectedToken)
-        }
-        if (token.isReissuable() === null) {
-          this.props.isReissuable(token)
-        }
-        if (token.withFee() === null) {
-          this.props.getFee(token)
-        }
-      }
-    }
   }
 
   renderInstructions () {
@@ -107,32 +91,33 @@ class PlatformInfo extends PureComponent {
     return (
       <div styleName='managersRow'>
         {
-          this.props.managersForTokenLoading
-            ? <div styleName='avatarsPreLoader'><Preloader /></div>
-            : (
-              <div styleName='title'>
-                {(managersList || 0).length}&nbsp;<Translate value={prefix('managers')} />
-                <div styleName='avatarsRow'>
-                  {
-                    managersList && managersList
-                      .map((manager) => <div key={manager}><i className='material-icons'>account_circle</i></div>)
-                  }
-                </div>
-
-                <div styleName='addManager'>
-                  <FlatButton
-                    onTouchTap={this.props.handleAddManagerDialog}
-                    styleName='addManagerButton'
-                    label={(
-                      <span>
-                        <i className='material-icons'>add_circle</i>
-                        <Translate value={prefix('addManagers')} />
-                      </span>
-                    )}
-                  />
-                </div>
+          managersList.isFetching() && <div styleName='avatarsPreLoader'><Preloader /></div>}
+        {
+          managersList.isFetched() && !managersList.isFetching() &&
+          (
+            <div styleName='title'>
+              {managersList.size}&nbsp;<Translate value={prefix('managers')} />
+              <div styleName='avatarsRow'>
+                {
+                  managersList.items()
+                    .map((manager) => <div key={manager}><i className='material-icons'>account_circle</i></div>)
+                }
               </div>
-            )
+
+              <div styleName='addManager'>
+                <FlatButton
+                  onTouchTap={this.props.handleAddManagerDialog}
+                  styleName='addManagerButton'
+                  label={(
+                    <span>
+                      <i className='material-icons'>add_circle</i>
+                      <Translate value={prefix('addManagers')} />
+                    </span>
+                  )}
+                />
+              </div>
+            </div>
+          )
 
         }
       </div>
@@ -141,11 +126,13 @@ class PlatformInfo extends PureComponent {
   }
 
   renderFee () {
-    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
+    const selectedToken = this.props.tokens.item(this.props.selectedToken)
     let value
+    // eslint-disable-next-line
+    console.log('selectedToken.withFee', selectedToken.withFee())
     switch (selectedToken.withFee()) {
       case true:
-        value = <span>{selectedToken.fee()}<span>%</span></span>
+        value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
         break
       case false:
         value = <Translate value={prefix('withoutFee')} />
@@ -164,7 +151,9 @@ class PlatformInfo extends PureComponent {
   }
 
   render () {
-    const selectedToken = this.props.tokensMap.get(this.props.selectedToken)
+    const selectedToken = this.props.tokens.item(this.props.selectedToken)
+    // eslint-disable-next-line
+    console.log('PlatformInfo', selectedToken && selectedToken.toJS())
 
     if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
 
@@ -191,7 +180,7 @@ class PlatformInfo extends PureComponent {
               </div>
             </div>
           </div>
-          {selectedToken.isReissuable() && <ReissueAssetForm />}
+          {selectedToken.isReissuable().isFetched() && <ReissueAssetForm />}
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
@@ -219,12 +208,13 @@ class PlatformInfo extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     selectedToken: assetsManager.selectedToken,
     selectedPlatform: assetsManager.selectedPlatform,
     managersForTokenLoading: assetsManager.managersForTokenLoading,
-    tokensMap: assetsManager.tokensMap,
+    tokens,
     platformsList: assetsManager.platformsList,
     usersPlatforms: assetsManager.usersPlatforms,
   }
