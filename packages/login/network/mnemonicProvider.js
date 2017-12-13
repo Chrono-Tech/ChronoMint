@@ -17,8 +17,8 @@ const COIN_TYPE_BTG_MAINNET = 17
 const COIN_TYPE_BTG_TESTNET = 16
 
 class MnemonicProvider {
-  getMnemonicProvider (mnemonic, { url, network } = {}, nonce) {
-    const ethereumWallet = this.createEthereumWallet(mnemonic, nonce)
+  getMnemonicProvider (mnemonic, { url, network } = {}) {
+    const ethereumWallet = this.createEthereumWallet(mnemonic)
     const btc = network && network.bitcoin && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(mnemonic, bitcoin.networks[network.bitcoinGold])

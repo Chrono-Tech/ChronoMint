@@ -2,7 +2,7 @@ import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import networkService from '@chronobank/login/network/NetworkService'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { LOCAL_MNEMONIC } from '@chronobank/login/network/settings'
+import { LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
 import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -119,11 +119,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addError: (error) => dispatch(addError(error)),
-  loadAccounts: () => networkService.loadAccounts(),
-  selectAccount: (value) => networkService.selectAccount(value),
   clearErrors: () => dispatch(clearErrors()),
-  getProviderURL: () => networkService.getProviderURL(),
-  getProviderSettings: () => networkService.getProviderSettings(),
   loading: () => dispatch(loading()),
   loginLedger: () => loginLedger(),
   loginTrezor: () => loginTrezor(),
@@ -134,11 +130,7 @@ class LoginWithOptions extends PureComponent {
   static propTypes = {
     isLocal: PropTypes.bool,
     isMetamask: PropTypes.bool,
-    loadAccounts: PropTypes.func,
     accounts: PropTypes.arrayOf(PropTypes.string),
-    selectAccount: PropTypes.func,
-    getProviderURL: PropTypes.func,
-    getProviderSettings: PropTypes.func,
     onLogin: PropTypes.func,
     addError: PropTypes.func,
     clearErrors: PropTypes.func,
@@ -159,7 +151,7 @@ class LoginWithOptions extends PureComponent {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, this.props.getProviderSettings())
+    const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, networkService.getProviderSettings())
     this.setupAndLogin(provider)
   }
 
@@ -167,7 +159,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, this.props.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -177,8 +169,8 @@ class LoginWithOptions extends PureComponent {
   handleLoginLocal = (account) => {
     this.props.clearErrors()
     try {
-      const nonce = this.props.accounts.indexOf(account) || 0
-      const provider = mnemonicProvider.getMnemonicProvider(LOCAL_MNEMONIC, this.props.getProviderSettings(), nonce)
+      const index = Math.max(this.props.accounts.indexOf(account), 0)
+      const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -189,7 +181,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      ledgerProvider.setupAndStart(this.props.getProviderURL())
+      ledgerProvider.setupAndStart(networkService.getProviderURL())
       web3Provider.setWeb3(ledgerProvider.getWeb3())
       web3Provider.setProvider(ledgerProvider.getProvider())
       this.props.onLogin()
@@ -202,7 +194,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      trezorProvider.setupAndStart(this.props.getProviderURL())
+      trezorProvider.setupAndStart(networkService.getProviderURL())
       web3Provider.setWeb3(trezorProvider.getWeb3())
       web3Provider.setProvider(trezorProvider.getProvider())
       this.props.onLogin()
@@ -215,7 +207,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = walletProvider.getProvider(wallet, password, this.props.getProviderSettings())
+      const provider = walletProvider.getProvider(wallet, password, networkService.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
