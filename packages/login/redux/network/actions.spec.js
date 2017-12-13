@@ -1,16 +1,14 @@
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import Immutable from 'immutable'
-import { createSession, destroySession } from 'redux/session/actions'
+import { createSession, destroySession, SESSION_CREATE, SESSION_DESTROY } from 'redux/session/actions'
 import { accounts, mockStore, store } from 'specsInit'
 import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
 import { LOCAL_ID, providerMap } from '../../network/settings'
 import web3Provider from '../../network/Web3Provider'
 import networkService from '../../network/NetworkService'
-import { constants } from '../../settings'
 import * as a from './actions'
 
-const { SESSION_CREATE, SESSION_DESTROY } = constants
 const LOCAL_HOST = 'http://localhost:8545'
 const WRONG_LOCAL_HOST = 'http://localhost:9999'
 
@@ -190,4 +188,3 @@ describe('network actions', () => {
     // TODO @dkchv: update
   })
 })
-
