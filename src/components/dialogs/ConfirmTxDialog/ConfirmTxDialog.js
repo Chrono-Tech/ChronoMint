@@ -1,3 +1,4 @@
+import Amount from 'models/Amount'
 import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -13,7 +14,7 @@ import Value from 'components/common/Value/Value'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = (state) => ({
-  balance: state.get(DUCK_MAIN_WALLET).tokens().get(ETH).balance(),
+  balance: state.get(DUCK_MAIN_WALLET).balances().list().get(ETH).amount(),
   tx: state.get(DUCK_WATCHER).confirmTx,
 })
 
@@ -117,8 +118,7 @@ export default class ConfirmTxDialog extends PureComponent {
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
-                          value={gasFee}
-                          symbol={ETH}
+                          value={new Amount(gasFee, ETH)}
                         />
                         : <CircularProgress size={16} thickness={1.5} />
                       }
@@ -133,8 +133,7 @@ export default class ConfirmTxDialog extends PureComponent {
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
-                          value={balance}
-                          symbol={ETH}
+                          value={new Amount(balance, ETH)}
                         />
                         : <CircularProgress size={16} thickness={1.5} />}
                     </TableRowColumn>

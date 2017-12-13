@@ -39,10 +39,6 @@ export class BitcoinDAO extends EventEmitter {
     return this._symbol
   }
 
-  isApproveRequired () {
-    return false
-  }
-
   isInitialized () {
     return this._bitcoinProvider.isInitialized()
   }
@@ -128,7 +124,6 @@ export class BitcoinDAO extends EventEmitter {
       address: this.getAccount(),
       name: this._name,
       symbol: this._symbol,
-      isApproveRequired: false,
       isOptional: false,
       isFetched: true,
       blockchain: 'Bitcoin',

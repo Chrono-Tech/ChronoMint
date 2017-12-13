@@ -1,4 +1,5 @@
 import { bccDAO, btcDAO } from 'dao/BitcoinDAO'
+import ethDAO from 'dao/EthereumDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import TokenModel from 'models/tokens/TokenModel'
@@ -11,8 +12,8 @@ export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
 
 // increment on new tokens.
-// [BTC, BCC]
-const NON_ERC20_TOKENS_COUNT = 2
+// [BTC, BCC, ETH]
+const NON_ERC20_TOKENS_COUNT = 3
 
 export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
@@ -42,5 +43,12 @@ export const initTokens = () => async (dispatch, getState) => {
   if (bcc) {
     dispatch({ type: TOKENS_FETCHED, token: bcc })
     tokenService.registerDAO(bcc, bccDAO)
+  }
+
+  // eth
+  const eth: TokenModel = ethDAO.getToken()
+  if (eth) {
+    dispatch({ type: TOKENS_FETCHED, token: eth })
+    tokenService.registerDAO(eth, ethDAO)
   }
 }

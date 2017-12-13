@@ -13,19 +13,18 @@ export default (state = initialState, action) => {
         .isFetching(false)
         .isFetched(true)
     case a.WALLET_BALANCE:
-      return state.tokens(state.tokens().set(
-        action.token.id(),
-        state.tokens().get(action.token.id()).updateBalance(action.isCredited, action.amount)
+      return state.balances(state.balances().update(
+        state.balances().item(action.token.symbol()).updateBalance(action.isCredited, action.amount),
       ))
     case a.WALLET_BALANCE_SET:
       return state.tokens(state.tokens().set(
         action.token.id(),
-        state.tokens().get(action.token.id()).setBalance(action.amount)
+        state.tokens().get(action.token.id()).setBalance(action.amount),
       ))
     case a.WALLET_ALLOWANCE:
       return state.tokens(state.tokens().set(
         action.token.id(),
-        state.tokens().get(action.token.id()).setAllowance(action.spender, action.value)
+        state.tokens().get(action.token.id()).setAllowance(action.spender, action.value),
       ))
     case a.WALLET_TIME_DEPOSIT:
       // TODO @dkchv: !!! action.isCredited
@@ -46,13 +45,13 @@ export default (state = initialState, action) => {
       return state.transactions(state.transactions().isFetching(true))
     case a.WALLET_TRANSACTION:
       return state.transactions(state.transactions().list(
-        state.transactions().list().set(action.tx.id(), action.tx)
+        state.transactions().list().set(action.tx.id(), action.tx),
       ))
     case a.WALLET_TRANSACTIONS:
       return state.transactions(state.transactions()
         .isFetching(false)
         .list(state.transactions().list().merge(action.map))
-        .endOfList(action.map.size)
+        .endOfList(action.map.size),
       )
     case a.WALLET_IS_TIME_REQUIRED:
       return state.isTIMERequired(action.value)

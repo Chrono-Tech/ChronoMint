@@ -19,10 +19,6 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  isApproveRequired () {
-    return true
-  }
-
   getAddressValidator () {
     return address
   }
