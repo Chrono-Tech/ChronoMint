@@ -76,7 +76,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "github:ahiatsevich/SmartContracts#feature/mint-687-fix-wallet",
+    "chronobank-smart-contracts": "github:chronobank/SmartContracts#release/release-1.1.44",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
