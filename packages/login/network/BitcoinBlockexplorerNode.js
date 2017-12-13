@@ -20,7 +20,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const rate = res.data['2']
       return rate > 0
         ? DECIMALS * rate / 1024
-        : 900 // default satoshis per byte for testnets
+        : 450 // default satoshis per byte for testnets
     } catch (e) {
       this.trace(`getFeeRate failed`, e)
       throw e
