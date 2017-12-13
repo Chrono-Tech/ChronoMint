@@ -4,6 +4,7 @@ import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import Immutable from 'immutable'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
 import multisigWalletService from 'services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
@@ -60,7 +61,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       walletDAO.getTokens(),
     ])
 
-    const pendingTxList = await walletDAO.getPendings(tokens)
+    // TODO MINT-875 Workaround fix this after implementation new token subscribe infrastructure
+    const pendingTxList = new MultisigWalletPendingTxCollection() //await walletDAO.getPendings(tokens)
 
     return new MultisigWalletModel({
       owners: new Immutable.List(owners),

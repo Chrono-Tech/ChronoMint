@@ -62,10 +62,9 @@ export class BitcoinDAO {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber, token: TokenModel) {
+  async transfer (to, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
-      return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
+      return await this._bitcoinProvider.transfer(to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
