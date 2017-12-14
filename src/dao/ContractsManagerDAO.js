@@ -144,32 +144,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
   }
 
-  /**
-   * @deprecated
-   */
-  async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
-    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew)
-    if (!dao.isInitialized() && !isInitialized) {
-      if (!isNew) {
-        const managerDAO = await this.getERC20ManagerDAO()
-        await managerDAO.initTokenMetaData(dao)
-      } else {
-        await Promise.all([
-          dao.totalSupply(),
-          dao.initMetaData(),
-        ])
-      }
-    }
-    return dao
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  async getERC20DAOBySymbol (symbol: string): Promise<ERC20DAO> {
-    const managerDAO = await this.getERC20ManagerDAO()
-    const address = await managerDAO.getTokenAddressBySymbol(symbol)
-    return this.getERC20DAO(address)
-  }
-
   getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }

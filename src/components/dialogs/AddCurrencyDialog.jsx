@@ -6,15 +6,15 @@ import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Immutable from 'immutable'
 import { Checkbox, FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
+import TokensCollection from 'models/exchange/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
-import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './AddCurrencyDialog.scss'
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
@@ -23,7 +23,6 @@ class TokenRow extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     isSelected: PropTypes.bool,
-    symbol: PropTypes.string,
     onClick: PropTypes.func,
   }
 
@@ -32,11 +31,8 @@ class TokenRow extends PureComponent {
   renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
 
   render () {
-    const {
-      isSelected,
-      token,
-      symbol,
-    } = this.props
+    const { isSelected, token } = this.props
+    const symbol = token.symbol()
 
     return (
       <div
@@ -75,27 +71,19 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const { profile } = state.get(DUCK_SESSION)
-  const wallet = state.get(DUCK_MAIN_WALLET)
-  const settings = state.get(DUCK_SETTINGS_ERC20_TOKENS)
-
   return {
-    profile,
-    wallet,
-    tokens: settings.list.merge(wallet.tokens()).sortBy((token) => token.symbol()),
-    isFetched: settings.isFetched && !wallet.isFetching() && wallet.isFetched(),
+    profile: state.get(DUCK_SESSION),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    loadTokens: () => dispatch(listTokens()),
     handleAddToken: () => dispatch(modalsOpen({
       component: AddTokenDialog,
     })),
     modalsClose: () => dispatch(modalsClose()),
     updateUserProfile: (profile) => dispatch(updateUserProfile(profile)),
-    initWallet: () => dispatch(watchInitWallet()),
   }
 }
 
@@ -103,13 +91,10 @@ function mapDispatchToProps (dispatch) {
 export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
     profile: PropTypes.object,
-    tokens: PropTypes.object,
-    isFetched: PropTypes.bool,
-    loadTokens: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
     handleAddToken: PropTypes.func,
     modalsClose: PropTypes.func,
     updateUserProfile: PropTypes.func,
-    initWallet: PropTypes.func,
   }
 
   constructor () {
@@ -118,12 +103,6 @@ export default class AddCurrencyDialog extends PureComponent {
     this.handleSave = this.handleSave.bind(this)
     this.state = {
       selectedTokens: [],
-    }
-  }
-
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.loadTokens()
     }
   }
 
@@ -148,10 +127,9 @@ export default class AddCurrencyDialog extends PureComponent {
 
     this.props.modalsClose()
     await this.props.updateUserProfile(profile)
-    this.props.initWallet()
   }
 
-  renderRow = (selectedTokens) => ([symbol, token]: [string, TokenModel]) => {
+  renderRow = (selectedTokens) => (token) => {
     const isSelected = selectedTokens.includes(token.symbol())
 
     return (
@@ -159,7 +137,6 @@ export default class AddCurrencyDialog extends PureComponent {
         key={token.id()}
         token={token}
         isSelected={isSelected}
-        symbol={symbol}
         onClick={this.handleCurrencyChecked}
       />
     )
@@ -167,7 +144,7 @@ export default class AddCurrencyDialog extends PureComponent {
 
   renderTokens = ({ tokens, selectedTokens }) => (
     <div styleName='table'>
-      {tokens.entrySeq().toArray().map(this.renderRow(selectedTokens))}
+      {tokens.items().map(this.renderRow(selectedTokens))}
     </div>
   )
 
@@ -192,7 +169,7 @@ export default class AddCurrencyDialog extends PureComponent {
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
               <WithLoader
-                showLoader={!this.props.isFetched}
+                showLoader={!this.props.tokens.isFetched()}
                 selectedTokens={this.state.selectedTokens}
                 tokens={this.props.tokens}
               >

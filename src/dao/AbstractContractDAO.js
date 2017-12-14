@@ -190,7 +190,7 @@ export default class AbstractContractDAO extends EventEmitter {
     }
   }
 
-  async getAddress () {
+  async getAddress (): Promise {
     return this._at || this.contract.then((i) => i.address)
   }
 

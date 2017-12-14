@@ -9,15 +9,15 @@ import Immutable from 'immutable'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
-import type ProfileModel from 'models/ProfileModel'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
+import { addMarketToken } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
-import { addMarketToken } from 'redux/market/action'
+import { initTimeHolder } from 'redux/timeHolder/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -135,23 +135,36 @@ const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
   })
 }
 
-export const initMainWallet = () => (dispatch, getState) => {
-  const callback = (token) => dispatch(fetchTokenBalance(token))
-  tokenService.on(EVENT_NEW_TOKEN, callback)
+const initWalletToken = (token: TokenModel) => (dispatch) => {
+  dispatch(fetchTokenBalance(token))
+  if (token.symbol() === 'TIME') {
+    dispatch(initTimeHolder(token))
+  }
+}
 
+export const initMainWallet = () => (dispatch, getState) => {
+  const callback = (token) => dispatch(initWalletToken(token))
+  tokenService.on(EVENT_NEW_TOKEN, callback)
   // fetch for existing tokens
   const tokens = getState().get(DUCK_TOKENS)
   tokens.list().forEach(callback)
+
+  dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
+  dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
+  dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
+  dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
+  dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 }
 
+// TODO @dkchv: review: invoked on token updates and profile
 export const watchInitWallet = () => async (dispatch, getState) => {
   return
   const state = getState()
 
-  const profile: ProfileModel = state.get(DUCK_SESSION).profile
+  // const profile: ProfileModel = state.get(DUCK_SESSION).profile
   const previous = state.get(DUCK_MAIN_WALLET).tokens()
 
-  dispatch({ type: WALLET_TOKENS_FETCH })
+  // dispatch({ type: WALLET_TOKENS_FETCH })
   // const dao = await contractsManagerDAO.getERC20ManagerDAO()
   // let tokens = await dao.getUserTokens(profile.tokens().toArray())
   let tokens = state.get(DUCK_TOKENS)
@@ -166,24 +179,24 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   //   await Promise.all(toStopArray)
   // }
 
-  const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
-    timeHolderDAO.getAddress(),
-    timeHolderDAO.getWalletAddress(),
-  ])
+  // const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+  // const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
+  //   timeHolderDAO.getAddress(),
+  //   timeHolderDAO.getWalletAddress(),
+  // ])
 
-  let contractNames = {}
-  contractNames[ timeHolderAddress ] = TIME + ' Holder'
-  ApprovalNoticeModel.setContractNames(contractNames)
-  dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
+  // let contractNames = {}
+  // contractNames[ timeHolderAddress ] = TIME + ' Holder'
+  // ApprovalNoticeModel.setContractNames(contractNames)
+  // dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
 
   // NOTE @ipavlenko: BCC and BTC addresses usually the same.
   // Decided to manage them independently to simplify further works on multiple wallets. .
-  dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
-  dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
-  dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
-  dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
-  dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
+  // dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
+  // dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
+  // dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
+  // dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
+  // dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 
   tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
   for (let token: TokenModel of tokens) {

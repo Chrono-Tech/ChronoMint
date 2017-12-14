@@ -25,7 +25,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return tokenService.getDAO(assetAddress)
   }
 
-  getWalletAddress () {
+  getWalletAddress (): Promise {
     return this._call('wallet')
   }
 

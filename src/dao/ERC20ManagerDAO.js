@@ -16,8 +16,8 @@ export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
-const MANDATORY_TOKENS = ['TIME']
-const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC']
+const MANDATORY_TOKENS = [ 'TIME' ]
+const NON_OPTIONAL_TOKENS = [ 'ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC' ]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
@@ -27,46 +27,34 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     super(ERC20ManagerABI, at)
   }
 
-  async initTokenMetaData (dao: ERC20DAO, symbol = null, decimals = null) {
-    if (!symbol) {
-      const address = await dao.getAddress()
-      const data = await this._call('getTokenMetaData', [address])
-      symbol = this._c.bytesToString(data[2])
-      decimals = data[4].toNumber()
-    }
-    dao.setSymbol(symbol)
-    dao.setDecimals(decimals)
-    dao.initialized()
-  }
-
   async _getTokens (addresses = []) {
-    const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [addresses])
+    const [ tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ addresses ])
 
-    for (const [i, name] of Object.entries(names)) {
-      names[i] = this._c.bytesToString(name)
-      symbols[i] = this._c.bytesToString(symbols[i])
-      urls[i] = this._c.bytesToString(urls[i])
-      decimalsArr[i] = decimalsArr[i].toNumber()
-      ipfsHashes[i] = this._c.bytes32ToIPFSHash(ipfsHashes[i])
+    for (const [ i, name ] of Object.entries(names)) {
+      names[ i ] = this._c.bytesToString(name)
+      symbols[ i ] = this._c.bytesToString(symbols[ i ])
+      urls[ i ] = this._c.bytesToString(urls[ i ])
+      decimalsArr[ i ] = decimalsArr[ i ].toNumber()
+      ipfsHashes[ i ] = this._c.bytes32ToIPFSHash(ipfsHashes[ i ])
     }
 
-    return [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes]
+    return [ tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes ]
   }
 
   async fetchTokens (tokenAddresses = []) {
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
+    const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ tokenAddresses ])
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
 
     addresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[i])
+      const symbol = this._c.bytesToString(symbols[ i ])
 
       this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
         address,
-        name: this._c.bytesToString(names[i]),
+        name: this._c.bytesToString(names[ i ]),
         symbol,
-        url: this._c.bytesToString(urls[i]),
-        decimals: decimalsArr[i].toNumber(),
-        icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
+        url: this._c.bytesToString(urls[ i ]),
+        decimals: decimalsArr[ i ].toNumber(),
+        icon: this._c.bytes32ToIPFSHash(ipfsHashes[ i ]),
         isOptional: !MANDATORY_TOKENS.includes(symbol),
         isFetched: true,
         blockchain: 'Ethereum',
@@ -78,17 +66,17 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
     let map = new Immutable.Map()
 
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(tokenAddresses)
+    const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._getTokens(tokenAddresses)
 
-    for (const [i, address] of Object.entries(addresses)) {
+    for (const [ i, address ] of Object.entries(addresses)) {
       const token = new TokenModel({
         address,
-        name: names[i],
-        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
-        url: urls[i],
-        decimals: decimalsArr[i],
-        icon: ipfsHashes[i],
-        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
+        name: names[ i ],
+        symbol: symbols[ i ] ? symbols[ i ].toUpperCase() : address,
+        url: urls[ i ],
+        decimals: decimalsArr[ i ],
+        icon: ipfsHashes[ i ],
+        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[ i ]),
         isFetched: true,
         blockchain: 'Ethereum',
       })
@@ -98,67 +86,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  /**
-   * ETH, TIME will be added by flag isWithObligatory
-   * @deprecated
-   */
-  async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
-
-    const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-    const timeHolderAddress = timeHolderDAO.getInitAddress()
-
-    for (const [i, address] of Object.entries(tokensAddresses)) {
-      if (token.symbol() === TIME) {
-        const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
-
-        const [timeHolderAllowance, timeHolderWalletAllowance] = await Promise.all([
-          timeDAO.getAccountAllowance(timeHolderAddress),
-          timeDAO.getAccountAllowance(timeHolderWalletAddress),
-        ])
-
-        token = token
-          .setAllowance(timeHolderAddress, timeHolderAllowance)
-          .setAllowance(timeHolderWalletAddress, timeHolderWalletAllowance)
-      }
-
-      map = map.set(token.id(), token)
-    }
-
-    return map
-  }
-
-  async _setupBitcoinDAO (name, title, dao) {
-    if (dao.isInitialized()) {
-      try {
-        const [ feeRate, balances ] = await Promise.all([
-          dao.getFeeRate(),
-          dao.getAccountBalances(),
-        ])
-        const token = new TokenModel({
-          dao,
-          name: dao.getName(),
-          symbol: dao.getSymbol().toUpperCase(),
-          isApproveRequired: false,
-          feeRate,
-          ...balances,
-          isOptional: false,
-          isFetched: true,
-          blockchain: title,
-        })
-        return token
-      } catch (e) {
-        // eslint-disable-next-line
-        console.log(`${name} support is not available`, e)
-      }
-    }
-    return null
-  }
-
   async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null
     }
-    const address = await this._call('getTokenAddressBySymbol', [symbol])
+    const address = await this._call('getTokenAddressBySymbol', [ symbol ])
     return this.isEmptyAddress(address) ? null : address
   }
 
@@ -186,14 +118,14 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * Only for CBE
    */
   modifyToken (oldToken: TokenModel, newToken: TokenModel) {
-    return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], newToken)
+    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], newToken)
   }
 
   /**
    * Only for CBE
    */
   removeToken (token: TokenModel) {
-    return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
+    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], token)
   }
 
   /** @private */

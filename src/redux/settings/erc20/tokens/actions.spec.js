@@ -57,7 +57,7 @@ describe('settings erc20 actions', () => {
   })
 
   it('should list tokens', async () => {
-    await store.dispatch(a.listTokens())
+    // await store.dispatch(a.listTokens())
     console.log(store.getActions()[ 0 ].list.get(token.symbol()))
     expect(store.getActions()[ 0 ].list.get(token.symbol())).toMatchSnapshot()
   })

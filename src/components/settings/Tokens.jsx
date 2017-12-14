@@ -1,14 +1,15 @@
-import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import CBETokenDialog from 'components/dialogs/CBETokenDialog'
+import { CircularProgress, FlatButton, FontIcon, RaisedButton } from 'material-ui'
+import TokensCollection from 'models/exchange/TokensCollection'
+import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import TokenModel from 'models/tokens/TokenModel'
-import { listTokens, revokeToken } from 'redux/settings/erc20/tokens/actions'
+import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-
+import { revokeToken } from 'redux/settings/erc20/tokens/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './Tokens.scss'
 
 function prefix (token) {
@@ -19,20 +20,13 @@ function prefix (token) {
 export default class Tokens extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
-    getList: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
     form: PropTypes.func,
-    list: PropTypes.object,
     remove: PropTypes.func,
   }
 
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.getList()
-    }
-  }
-
   render () {
-    const list = this.props.list.entrySeq().toArray()
+    const { tokens } = this.props
 
     return (
       <div styleName='panel'>
@@ -63,19 +57,19 @@ export default class Tokens extends PureComponent {
                 </div>
               </div>
               <div styleName='tableBody'>
-                {list.map(([address, item]) => (
-                  <div key={address} styleName='tableRow'>
+                {tokens.items().map((token: TokenModel) => (
+                  <div key={token.id()} styleName='tableRow'>
                     <div styleName='bodyTableCell tableCellName'>
                       <div styleName='cellTitle'>Name:&nbsp;</div>
                       <div styleName='cellName'>
                         <div styleName='nameIcon'>
                           <IPFSImage
                             styleName='iconContent'
-                            multihash={item.icon()}
+                            multihash={token.icon()}
                           />
                         </div>
                         <div styleName='nameTitle'>
-                          {item.symbol()}
+                          {token.symbol()}
                         </div>
                       </div>
                     </div>
@@ -83,31 +77,26 @@ export default class Tokens extends PureComponent {
                       <div styleName='ellipsis'>
                         <div styleName='ellipsisInner'>
                           <div styleName='cellTitle'>Address:&nbsp;</div>
-                          {item.address()}
+                          {token.address()}
                         </div>
                       </div>
                     </div>
                     <div styleName='bodyTableCell'>
-                      {item.isFetching()
-                        ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
-                        : (
-                          <div styleName='tableCellActions'>
-                            <div styleName='actionsItem'>
-                              <RaisedButton
-                                label={<Translate value='terms.modify' />}
-                                primary
-                                onTouchTap={() => this.props.form(item, true)}
-                              />
-                            </div>
-                            <div styleName='actionsItem'>
-                              <RaisedButton
-                                label={<Translate value='terms.remove' />}
-                                onTouchTap={() => this.props.remove(item)}
-                              />
-                            </div>
-                          </div>
-                        )
-                      }
+                      <div styleName='tableCellActions'>
+                        <div styleName='actionsItem'>
+                          <RaisedButton
+                            label={<Translate value='terms.modify' />}
+                            primary
+                            onTouchTap={() => this.props.form(token, true)}
+                          />
+                        </div>
+                        <div styleName='actionsItem'>
+                          <RaisedButton
+                            label={<Translate value='terms.remove' />}
+                            onTouchTap={() => this.props.remove(token)}
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -121,21 +110,16 @@ export default class Tokens extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  const settingsERC20Tokens = state.get('settingsERC20Tokens')
-  return {
-    list: settingsERC20Tokens.list,
-    isFetched: settingsERC20Tokens.isFetched,
-  }
+  return state.get(DUCK_TOKENS)
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    getList: () => dispatch(listTokens()),
     remove: (token) => dispatch(revokeToken(token)),
     form: (token, isModify) => dispatch(modalsOpen({
       component: CBETokenDialog,
       props: {
-        initialValues: token || new TokenModel(),
+        initialValues: token,
         isModify,
       },
     })),
