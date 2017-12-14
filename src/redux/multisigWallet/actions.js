@@ -47,7 +47,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
 
   walletsManagerDAO.on(EVENT_NEW_MS_WALLET, (oldWallet: MultisigWalletModel) => {
     const fetchBalanceForToken = async (token) => {
-      const tokenDao = tokenService.getDAO(token)
+      const tokenDao = tokenService.getDAO(token.id())
       const balance = await tokenDao.getAccountBalance(wallet.address())
       const symbol = token.symbol()
       dispatch({

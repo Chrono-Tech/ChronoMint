@@ -124,7 +124,7 @@ const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
   })
 
   // fetch actual
-  const tokenDAO = tokenService.getDAO(token)
+  const tokenDAO = tokenService.getDAO(token.id())
   const balance = await tokenDAO.getAccountBalance(account)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
@@ -202,7 +202,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
   try {
-    const tokenDAO = tokenService.getDAO(token)
+    const tokenDAO = tokenService.getDAO(token.id())
     await tokenDAO.transfer(recipient, amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line

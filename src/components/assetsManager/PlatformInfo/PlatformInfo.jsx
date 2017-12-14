@@ -156,7 +156,7 @@ class PlatformInfo extends PureComponent {
       return null
     }
     const selectedToken = this.props.tokens.item(this.props.selectedToken)
-    const tokenDao = tokenService.getDAO(selectedToken)
+    const tokenDao = tokenService.getDAO(selectedToken.id())
 
     if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
     const totalSupply = tokenDao.removeDecimals(this.props.assets[ selectedToken.id() ].totalSupply, selectedToken)

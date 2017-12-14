@@ -9,8 +9,8 @@ class TokenService extends EventEmitter {
     this._cache = {}
   }
 
-  getDAO (token) {
-    return this._cache[ token.id() ]
+  getDAO (id: string) {
+    return this._cache[ id ]
   }
 
   createDAO (token) {
