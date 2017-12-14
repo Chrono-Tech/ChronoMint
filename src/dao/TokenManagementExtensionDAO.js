@@ -21,7 +21,7 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.decimals(),
         token.isReissuable().isReissuable(),
         token.feeAddress(),
-        TokenManagementExtensionDAO.addDecimals(fee.fee(), token.decimals()),
+        fee.fee() * 100,
         token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
       ],
       token,

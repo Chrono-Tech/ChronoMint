@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokenModel from 'models/tokens/TokenModel'
+import ManagersCollection from 'models/tokens/ManagersCollection'
 import { connect } from 'react-redux'
 import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
@@ -8,8 +11,9 @@ import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditMana
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
-  const { selectedToken, tokensMap } = state.get(DUCK_ASSETS_MANAGER)
-  const token = tokensMap.get(selectedToken)
+  const { selectedToken } = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
+  const token = tokens.item(selectedToken)
 
   return {
     token,
@@ -31,8 +35,8 @@ export default class AssetManagerForm extends PureComponent {
     handleAddManager: PropTypes.func,
     handleRemoveManager: PropTypes.func,
     handleClose: PropTypes.func,
-    token: PropTypes.object,
-    managers: PropTypes.array,
+    token: PropTypes.instanceOf(TokenModel),
+    managers: PropTypes.instanceOf(ManagersCollection),
   }
 
   handleRemove = (address) => {

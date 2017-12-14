@@ -1,3 +1,5 @@
+import Amount from 'models/Amount'
+import tokenService from 'services/TokenService'
 import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
@@ -35,6 +37,7 @@ class PlatformInfo extends PureComponent {
     getFee: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
+    assets: PropTypes.objectOf(PropTypes.object),
   }
 
   renderInstructions () {
@@ -128,8 +131,6 @@ class PlatformInfo extends PureComponent {
   renderFee () {
     const selectedToken = this.props.tokens.item(this.props.selectedToken)
     let value
-    // eslint-disable-next-line
-    console.log('selectedToken.withFee', selectedToken.withFee())
     switch (selectedToken.withFee()) {
       case true:
         value = <span>{selectedToken.fee().fee().toString()}<span>%</span></span>
@@ -151,11 +152,14 @@ class PlatformInfo extends PureComponent {
   }
 
   render () {
+    if (!this.props.selectedToken) {
+      return null
+    }
     const selectedToken = this.props.tokens.item(this.props.selectedToken)
-    // eslint-disable-next-line
-    console.log('PlatformInfo', selectedToken && selectedToken.toJS())
+    const tokenDao = tokenService.getDAO(selectedToken)
 
     if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
+    const totalSupply = tokenDao.removeDecimals(this.props.assets[ selectedToken.id() ].totalSupply, selectedToken)
 
     return (
       <div styleName='root'>
@@ -172,8 +176,7 @@ class PlatformInfo extends PureComponent {
                   <div styleName='title'><Translate value={prefix('issuedAmount')} />:</div>
                   <TokenValue
                     style={{ fontSize: '24px' }}
-                    value={selectedToken.totalSupply()}
-                    symbol={selectedToken.symbol()}
+                    value={new Amount(totalSupply, selectedToken.symbol())}
                   />
                 </div>
                 {this.renderFee()}
@@ -212,6 +215,7 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   return {
     selectedToken: assetsManager.selectedToken,
+    assets: assetsManager.assets,
     selectedPlatform: assetsManager.selectedPlatform,
     managersForTokenLoading: assetsManager.managersForTokenLoading,
     tokens,

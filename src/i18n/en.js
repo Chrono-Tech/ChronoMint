@@ -234,10 +234,10 @@ export default {
     feeLeft: 'Transaction fee left',
     TokenManagementInterface: {
       createAssetWithoutFee: {
-        title: 'Confirm create token without fee',
+        title: 'Confirm create token',
       },
       createAssetWithFee: {
-        title: 'Confirm create token with fee',
+        title: 'Confirm create token',
       },
     },
     ChronoBankPlatform: {

@@ -19,4 +19,8 @@ export default class ManagersCollection extends abstractFetchingModel({
   items () {
     return this.list().valueSeq().toArray()
   }
+
+  remove (item) {
+    return this.list(this.list().remove(item))
+  }
 }

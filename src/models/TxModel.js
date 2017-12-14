@@ -19,9 +19,14 @@ class TxModel extends abstractModel({
   input: null,
   credited: null,
   symbol: '',
+  tokenAddress: null,
   type: '',
   args: null,
 }) {
+  tokenAddress (value) {
+    return this._getSet('tokenAddress', value)
+  }
+
   to () {
     return this.get('to')
   }
