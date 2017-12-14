@@ -1,6 +1,5 @@
 import TokenManagementExtensionDAO from 'dao/TokenManagementExtensionDAO'
 import Immutable from 'immutable'
-import TokensCollection from 'models/exchange/TokensCollection'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
@@ -9,7 +8,6 @@ import { bccDAO, btcDAO, btgDAO, ltcDAO } from './BitcoinDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
-import lhtDAO from './LHTDAO'
 import { TIME } from './TIMEHolderDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
@@ -91,6 +89,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
         isFetched: true,
         blockchain: 'Ethereum',
+        isERC20: true,
       })
       map = map.set(token.id(), token)
     }

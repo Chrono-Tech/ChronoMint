@@ -14,7 +14,7 @@ export const TOKENS_REMOVE = 'tokens/remove'
 
 // increment on new tokens.
 // [BTC, BCC, ETH, LTC, BTG]
-const NON_ERC20_TOKENS_COUNT = 5
+const NON_ERC20_TOKENS_COUNT = 4
 
 export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
@@ -25,28 +25,26 @@ export const initTokens = () => async (dispatch, getState) => {
   // eth
   const eth: TokenModel = ethereumDAO.getToken()
   if (eth) {
-    dispatch({ type: TOKENS_FETCHED, token: eth })
+    dispatch({ type: TOKENS_UPDATE, token: eth })
     tokenService.registerDAO(eth, ethereumDAO)
   }
 
-  // erc20
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-  erc20.on(EVENT_ERC20_TOKENS_COUNT, (count) => {
-    dispatch({ type: TOKENS_FETCHING, count: count + NON_ERC20_TOKENS_COUNT })
-  })
-  erc20.on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
-    dispatch({ type: TOKENS_FETCHED, token })
+  const tokens = await erc20.getTokens()
+  tokens.forEach((token: TokenModel) => {
+    dispatch({ type: TOKENS_UPDATE, token })
     tokenService.createDAO(token)
   })
-  erc20.fetchTokens()
 
   // btc-likes
   const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
   btcLikeTokens.forEach((btcLikeDAO: BitcoinDAO) => {
     btcLikeDAO.on(EVENT_NEW_BTC_LIKE_TOKEN, (token, dao) => {
-      dispatch({ type: TOKENS_FETCHED, token })
+      dispatch({ type: TOKENS_UPDATE, token })
       tokenService.registerDAO(token, dao)
     })
     btcLikeDAO.fetchToken()
   })
+  dispatch({ type: TOKENS_FETCHED })
+  tokenService.tokensFetched()
 }

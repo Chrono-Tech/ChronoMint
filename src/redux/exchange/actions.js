@@ -1,3 +1,4 @@
+import tokenService, { EVENT_TOKENS_FETCHED } from 'services/TokenService'
 import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
@@ -6,6 +7,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
 import { DUCK_MAIN_WALLET, WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 
 export const DUCK_EXCHANGE = 'exchange'
 
@@ -31,7 +33,7 @@ const PAGE_SIZE = 10
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   try {
     const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
-    const tokens = getState().get(DUCK_EXCHANGE).tokens()
+    const tokens = getState().get(DUCK_TOKENS)
     if (isBuy) {
       await exchangeDAO.buy(amount, exchange, tokens.getBySymbol(exchange.symbol()))
     } else {
@@ -50,12 +52,9 @@ export const search = (values: Immutable.Map) => async (dispatch) => {
   }))
 }
 
-export const getExchange = () => async (dispatch) => {
+export const getExchange = () => async (dispatch, getState) => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
-  // await dispatch(getTokenList())
   await dispatch(getExchangesCount())
-  // not await
-  dispatch(getExchangesForOwner())
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   let assetSymbols
   try {
@@ -63,21 +62,36 @@ export const getExchange = () => async (dispatch) => {
   } catch (e) {
     dispatch({ type: EXCHANGE_MIDDLEWARE_DISCONNECTED })
   }
+
   dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
-  dispatch(getNextPage())
+  const tokens = getState().get(DUCK_TOKENS)
+  if (tokens.isFetched()) {
+    dispatch(getExchangesForOwner())
+    dispatch(getNextPage())
+  } else {
+    tokenService.on(EVENT_TOKENS_FETCHED, async () => {
+      dispatch(getExchangesForOwner())
+      dispatch(getNextPage())
+    })
+  }
 }
 
 export const getExchangesForOwner = () => async (dispatch, getState) => {
-  dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_START })
-  const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const exchanges = await exchangeManagerDAO
-    .getExchangesForOwner(getState().get(DUCK_SESSION).account, getState().get(DUCK_EXCHANGE).tokens())
-  dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_FINISH, exchanges })
+  const tokens = getState().get(DUCK_TOKENS)
+  const exchange = getState().get(DUCK_EXCHANGE)
+  if (tokens.isFetched() && !exchange.exchangesForOwner().isFetching()) {
+    dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_START })
+    const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
+    const exchanges = await exchangeManagerDAO
+      .getExchangesForOwner(getState().get(DUCK_SESSION).account, tokens)
+    dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_FINISH, exchanges })
+  }
 }
 
 export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
-  const token = getState().get(DUCK_EXCHANGE).tokens().getBySymbol(exchange.symbol())
-  const allowance = await token.dao().getAccountAllowance(exchange.address())
+  const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+  const dao = tokenService.getDAO(token)
+  const allowance = await dao.getAccountAllowance(exchange.address())
   dispatch({ type: WALLET_ALLOWANCE, token, value: allowance, spender: exchange.address() })
 }
 
@@ -97,11 +111,12 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
 
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const state = getState().get(DUCK_EXCHANGE)
+  const tokens = getState().get(DUCK_TOKENS)
 
   const exchanges = await exchangeManagerDAO.getExchanges(
     state.lastPages(),
     PAGE_SIZE,
-    state.tokens(),
+    tokens,
     filter,
     {
       fromMiddleWare: state.showFilter(),
@@ -119,15 +134,16 @@ export const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getSt
 }
 
 export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
-  const tokens = getState().get(DUCK_EXCHANGE).tokens()
+  const tokens = getState().get(DUCK_TOKENS)
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const txHash = await exchangeManagerDAO.createExchange(exchange, tokens.getBySymbol(exchange.symbol()))
   dispatch({ type: EXCHANGE_UPDATE_FOR_OWNER, exchange: exchange.isPending(true).transactionHash(txHash) })
 }
 
-export const withdrawFromExchange = (exchange: ExchangeOrderModel, wallet, amount: string, symbol: string) => async () => {
+export const withdrawFromExchange = (exchange: ExchangeOrderModel, wallet, amount: string, symbol: string) => async (dispatch, getState) => {
   const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
-  const token = wallet.tokens().get(symbol)
+  const tokens = getState().get(DUCK_TOKENS)
+  const token = tokens.getBySymbol(symbol)
   if (symbol.toLowerCase() === 'eth') {
     await exchangeDAO.withdrawEth(wallet, new BigNumber(amount), token)
   } else {
@@ -158,7 +174,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
     if (account === tx.args.user) {
       const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
       const exchangeAddress = tx.args.exchange
-      const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_EXCHANGE).tokens())
+      const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
       dispatch({
         type: EXCHANGE_REMOVE_FOR_OWNER,
@@ -191,9 +207,10 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Buy', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const token = state.tokens().getBySymbol(exchange.symbol())
+    const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+    const dao = tokenService.getDAO(token)
     dispatch(updateExchange(exchange
-      .assetBalance(exchange.assetBalance().minus(token.dao().removeDecimals(tx.tokenAmount)))
+      .assetBalance(exchange.assetBalance().minus(dao.removeDecimals(tx.tokenAmount, token)))
       .ethBalance(exchange.ethBalance().plus(tx.ethAmount)),
     ))
   })
@@ -217,9 +234,10 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('WithdrawTokens', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const token = state.tokens().getBySymbol(exchange.symbol())
+    const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+    const dao = tokenService.getDAO(token)
     dispatch(updateExchange(exchange
-      .assetBalance(exchange.assetBalance().minus(token.dao().removeDecimals(tx.tokenAmount))),
+      .assetBalance(exchange.assetBalance().minus(dao.removeDecimals(tx.tokenAmount, token))),
     ))
   })
 
@@ -236,12 +254,3 @@ export const watchExchanges = () => async (dispatch, getState) => {
     exchange && dispatch(updateExchange(exchange.assetBalance(exchange.assetBalance().plus(tx.value()))))
   })
 }
-
-export const getTokenList = () => async (dispatch) => {
-  // TODO @dkchv: should subscribe on tokens
-  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START })
-  // const ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-  // const tokens = await ERC20ManagerDAO.getTokensList()
-  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_FINISH, tokens })
-}
-

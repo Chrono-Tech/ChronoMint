@@ -1,14 +1,12 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from 'models/AbstractFetchingModel'
 import ExchangesCollection from './ExchangesCollection'
-import TokensCollection from './TokensCollection'
 
 export default class ExchangeModel extends abstractFetchingModel({
   exchanges: new ExchangesCollection(),
   exchangesForOwner: new ExchangesCollection(),
   assetSymbols: [],
   filter: new Immutable.Map(),
-  tokens: new TokensCollection(),
   showFilter: true,
   lastPages: 0,
   pagesCount: 0,
@@ -39,9 +37,5 @@ export default class ExchangeModel extends abstractFetchingModel({
 
   filter (value) {
     return this._getSet('filter', value)
-  }
-
-  tokens (value) {
-    return this._getSet('tokens', value)
   }
 }

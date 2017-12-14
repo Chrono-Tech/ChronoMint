@@ -9,8 +9,8 @@ export default function validate (values, props) {
   let sellErrors = new ErrorList()
   sellErrors.add(validator.positiveNumber(values.get('sell'), true))
 
-  const userEthBalance = props.usersTokens.get('ETH').balance()
-  let userExchangeTokenBalance = props.usersTokens.get(props.exchange.symbol())
+  const userEthBalance = props.balances.item('ETH').amount()
+  let userExchangeTokenBalance = props.balances.item(props.exchangeToken.id())
   if (!userExchangeTokenBalance) {
     userExchangeTokenBalance = new TokenModel({})
   }
@@ -21,7 +21,7 @@ export default function validate (values, props) {
     buyErrors.add(validator.lowerThan(values.get('buy'), assetBalance.toNumber()))
     sellErrors.add(validator.lowerThan(values.get('sell'), userEthBalance.toNumber()))
   } else {
-    buyErrors.add(validator.lowerThan(values.get('buy'), userExchangeTokenBalance.balance().toNumber()))
+    buyErrors.add(validator.lowerThan(values.get('buy'), userExchangeTokenBalance.amount().toNumber()))
     sellErrors.add(validator.lowerThan(values.get('sell'), ethBalance.toNumber()))
   }
 

@@ -6,10 +6,12 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_EXCHANGE, withdrawFromExchange } from 'redux/exchange/actions'
+import { withdrawFromExchange } from 'redux/exchange/actions'
 import { DUCK_MAIN_WALLET, mainTransfer } from 'redux/mainWallet/actions'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
+import Amount from 'models/Amount'
 import { modalsClose } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
 
@@ -31,10 +33,10 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
-  const exchange = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     userWallet: state.get(DUCK_MAIN_WALLET),
-    tokens: exchange.tokens(),
+    tokens,
   }
 }
 
@@ -53,9 +55,15 @@ export default class ExchangeTransferDialog extends React.PureComponent {
 
   handleDeposit = (values, dispatch, props) => {
     this.props.handleClose()
+    // eslint-disable-next-line
+    console.log('handleDeposit',
+      this.props.tokens.getBySymbol(props.symbol),
+      new Amount(values.get('amount'), props.symbol),
+      this.props.exchange.address(),
+    )
     this.props.depositToExchange(
-      this.props.userWallet.tokens().get(props.symbol),
-      values.get('amount'),
+      this.props.tokens.getBySymbol(props.symbol),
+      new Amount(values.get('amount'), props.symbol),
       this.props.exchange.address(),
     )
   }
@@ -71,11 +79,11 @@ export default class ExchangeTransferDialog extends React.PureComponent {
   }
 
   render () {
-    let token = this.props.userWallet.tokens().get(this.props.tokenSymbol)
+    let token = this.props.tokens.getBySymbol(this.props.tokenSymbol)
     let showMessage = false
 
-    if (!token) {
-      token = this.props.tokens.getBySymbol(this.props.tokenSymbol)
+    let balance = this.props.userWallet.balances().item(token.id())
+    if (!balance) {
       showMessage = true
     }
 
@@ -103,7 +111,7 @@ export default class ExchangeTransferDialog extends React.PureComponent {
               title={<span><Translate value={prefix('deposit')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_DEPOSIT_FORM}
               onSubmit={this.handleDeposit}
-              maxAmount={token ? token.balance() : 0}
+              maxAmount={balance ? balance.amount() : 0}
               symbol={token.symbol()}
             />
             <ExchangeDepositForm

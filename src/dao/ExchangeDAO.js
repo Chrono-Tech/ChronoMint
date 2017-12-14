@@ -1,3 +1,4 @@
+import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
@@ -20,11 +21,12 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
+    const dao = tokenService.getDAO(token)
     return this._tx(
       TX_WITHDRAW_TOKENS,
       [
         wallet.address(),
-        token.dao().addDecimals(amount),
+        dao.addDecimals(amount, token),
       ],
       {
         recipient: wallet.address(),
@@ -33,11 +35,12 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
+    const dao = tokenService.getDAO(token)
     return this._tx(
       TX_WITHDRAW_ETH,
       [
         wallet.address(),
-        token.dao().addDecimals(amount),
+        dao.addDecimals(amount, token),
       ],
       {
         recipient: wallet.address(),
@@ -46,7 +49,9 @@ export class ExchangeDAO extends AbstractContractDAO {
   }
 
   async approveSell (token: TokenModel, amount: BigNumber) {
-    const assetDAO = await token.dao()
+    const assetDAO = tokenService.getDAO(token)
+    // eslint-disable-next-line
+    console.log('approveSell', assetDAO)
     return assetDAO.approve(this.getInitAddress(), amount)
   }
 
@@ -70,10 +75,11 @@ export class ExchangeDAO extends AbstractContractDAO {
   buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
     const priceInWei = this._c.toWei(exchange.sellPrice())
     const price = priceInWei.div(Math.pow(10, token.decimals()))
+    const dao = tokenService.getDAO(token)
     return this._tx(
       TX_BUY,
       [
-        token.dao().addDecimals(amount),
+        dao.addDecimals(amount, token),
         price.mul(Math.pow(10, price.decimalPlaces())),
         price.decimalPlaces(),
       ],
