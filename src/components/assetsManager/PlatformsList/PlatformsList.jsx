@@ -1,3 +1,4 @@
+import tokenService from 'services/TokenService'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -36,12 +37,19 @@ class PlatformsList extends PureComponent {
 
   renderTokenList ({ assets, tokens, selectedToken }) {
     const filteredTokens = Object.values(assets)
-      .filter((asset) => asset.platform ? asset.platform === this.props.selectedPlatform : false)
+      .filter((asset) => {
+        return asset.platform ? asset.platform === this.props.selectedPlatform : false
+      })
+
     return (
       <div styleName='tokensList'>
         {
           filteredTokens.map((asset) => {
             const token = tokens.item(asset.address)
+            if (!token) {
+              return null
+            }
+            const tokenDao = tokenService.getDAO(token)
 
             if (!token) {
               return null
@@ -49,21 +57,24 @@ class PlatformsList extends PureComponent {
 
             return (
               <div
-                key={token.address()}
+                key={token.id()}
                 styleName={classnames('tokenItem', { 'selected': selectedToken === token.symbol() })}
-                onTouchTap={() => this.props.handleSelectToken(token)}
+                onTouchTap={() => !token.isPending() && this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
                 <div styleName='tokenTitle'>
                   {token.symbol()}
-                  <div styleName='tokenSubTitle'>{token.address()}</div>
+                  {
+                    token.isPending() && <Translate value={prefix('pending')} />
+                  }
+                  <div styleName='tokenSubTitle'>{token.id()}</div>
                 </div>
                 <div styleName='tokenBalance'>
                   <TokenValue
                     style={{ fontSize: '24px' }}
-                    value={new Amount(asset.totalSupply, token.symbol())}
+                    value={new Amount(tokenDao ? tokenDao.removeDecimals(asset.totalSupply, token) : asset.totalSupply, token.symbol())}
                   />
                 </div>
               </div>

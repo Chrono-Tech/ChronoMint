@@ -11,6 +11,8 @@ export default (state = initialState, action) => {
       return state.leftToFetch(action.count)
     case a.TOKENS_FETCHED:
       return state.itemFetched(action.token)
+    case a.TOKENS_REMOVE:
+      return state.remove(action.token)
     // TODO @dkchv: useless?
     case a.TOKENS_UPDATE:
       return state.update(action.token)

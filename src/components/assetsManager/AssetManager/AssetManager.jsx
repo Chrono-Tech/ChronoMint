@@ -22,7 +22,7 @@ function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
   return {
     usersPlatformsCount: assetsManager.usersPlatformsCount,
-    tokensCount: assetsManager.tokensCount,
+    tokensCount: Object.keys(assetsManager.assets).length,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
     selectedPlatform: assetsManager.selectedPlatform,

@@ -1,3 +1,4 @@
+import Amount from 'models/Amount'
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -5,7 +6,8 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
-
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import Moment from 'components/common/Moment/index'
 import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -18,11 +20,12 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     locale: state.get('i18n').locale,
     transactionsList: assetsManager.transactionsList,
     transactionsFetching: assetsManager.transactionsFetching,
-    tokensMap: assetsManager.tokensMap,
+    tokens,
   }
 }
 
@@ -33,7 +36,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class HistoryTable extends PureComponent {
   static propTypes = {
-    tokensMap: PropTypes.object,
+    tokens: PropTypes.instanceOf(TokensCollection),
     transactionsList: PropTypes.array,
     transactionsFetched: PropTypes.bool,
     transactionsFetching: PropTypes.bool,
@@ -122,12 +125,12 @@ export default class HistoryTable extends PureComponent {
     const groups = historyItems
       .reduce((data, trx) => {
         const groupBy = trx.date('YYYY-MM-DD')
-        data[groupBy] = data[groupBy] || {
+        data[ groupBy ] = data[ groupBy ] || {
           dateBy: trx.date('YYYY-MM-DD'),
           dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format={SHORT_DATE} />,
           transactions: [],
         }
-        data[groupBy].transactions.push({
+        data[ groupBy ].transactions.push({
           trx,
           timeBy: trx.date('HH:mm:ss'),
           timeTitle: trx.date('HH:mm'),
@@ -148,10 +151,10 @@ export default class HistoryTable extends PureComponent {
     switch (trx.type()) {
       case 'Issue':
       case 'Revoke':
-        const token = this.props.tokensMap.get(trx.symbol())
+        const token = this.props.tokens.item(trx.tokenAddress())
         if (trx.symbol() && token) {
           value = (
-            <TokenValue value={token.dao().removeDecimals(trx.value())} symbol={trx.symbol()} />
+            <TokenValue value={new Amount(token.dao().removeDecimals(trx.value()), trx.symbol())} />
           )
         } else {
           value = ''

@@ -95,6 +95,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gasPrice,
       time,
       symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol),
+      tokenAddress: tx.args.token,
       args: tx.args,
     })
   }
@@ -127,6 +128,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
-    return Promise.all(promises)
+    const transactions = await Promise.all(promises)
+    return transactions
   }
 }

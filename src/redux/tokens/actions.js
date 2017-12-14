@@ -10,6 +10,7 @@ export const TOKENS_UPDATE = 'tokens/update'
 export const TOKENS_INIT = 'tokens/init'
 export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
+export const TOKENS_REMOVE = 'tokens/remove'
 
 // increment on new tokens.
 // [BTC, BCC, ETH, LTC, BTG]
