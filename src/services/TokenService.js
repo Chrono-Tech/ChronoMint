@@ -1,7 +1,9 @@
 import ERC20DAO from 'dao/ERC20DAO'
 import EventEmitter from 'events'
+import TokenModel from 'models/TokenModel'
 
 export const EVENT_NEW_TOKEN = 'newToken'
+export const EVENT_TOKENS_FETCHED = 'tokensFetched'
 
 class TokenService extends EventEmitter {
   constructor () {
@@ -9,8 +11,8 @@ class TokenService extends EventEmitter {
     this._cache = {}
   }
 
-  getDAO (id: string) {
-    return this._cache[ id ]
+  getDAO (token: TokenModel | string) {
+    return this._cache[ token.id ? token.id() : token ]
   }
 
   createDAO (token) {
@@ -47,6 +49,10 @@ class TokenService extends EventEmitter {
 
   getBitcoinDAO () {
 
+  }
+
+  tokensFetched () {
+    this.emit(EVENT_TOKENS_FETCHED)
   }
 }
 

@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import { IPFSImage } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { FlatButton, MenuItem, TextField } from 'material-ui'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -62,6 +62,9 @@ export default class TokenListSelector extends PureComponent {
               ? <Preloader />
               : tokens.items()
                 .map((tokenItem: TokenModel) => {
+                  if (!tokenItem.isERC20()) {
+                    return null
+                  }
                   return (
                     <div
                       key={tokenItem.symbol()}

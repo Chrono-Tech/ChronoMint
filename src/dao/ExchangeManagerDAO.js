@@ -1,8 +1,9 @@
+import tokenService from 'services/TokenService'
 import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
 import exchangeService from 'services/ExchangeService'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import BigNumber from 'bignumber.js'
 import web3Converter from 'utils/Web3Converter'
@@ -39,7 +40,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async getExchangesForOwner (owner: string, tokens: TokensCollection) {
-    const addresses = await this._call('getExchangesForOwner', [owner])
+    const addresses = await this._call('getExchangesForOwner', [ owner ])
     return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
   }
 
@@ -49,7 +50,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       const assetSymbols = await exchangeProvider.getAssetSymbols()
       assetSymbols.map((exchange) => {
         if (exchange.symbol) {
-          result[web3Converter.bytesToString(exchange.symbol)] = true
+          result[ web3Converter.bytesToString(exchange.symbol) ] = true
         }
       })
     } catch (e) {
@@ -64,7 +65,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       const sort = filter.isBuy ? `sort=buyPrice,-age` : `sort=sellPrice,-age`
       addresses = await exchangeProvider.getExchangesWithFilter(filter.symbol && web3Converter.stringToBytes(filter.symbol), sort)
     } else {
-      addresses = await this._call('getExchanges', [fromId, length])
+      addresses = await this._call('getExchanges', [ fromId, length ])
     }
     return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
   }
@@ -76,14 +77,14 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       return exchangesCollection
     }
 
-    const [symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances] = await this._call('getExchangeData', [exchangesAddresses])
+    const [ symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
 
     exchangesAddresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[i]) // symbol may be empty, but exchange not be without token symbol
-      const buyPrice = new BigNumber(buyPrices[i])
-      const sellPrice = new BigNumber(sellPrices[i])
-      const assetBalance = assetBalances[i]
-      const ethBalance = ethBalances[i]
+      const symbol = this._c.bytesToString(symbols[ i ]) // symbol may be empty, but exchange not be without token symbol
+      const buyPrice = new BigNumber(buyPrices[ i ])
+      const sellPrice = new BigNumber(sellPrices[ i ])
+      const assetBalance = assetBalances[ i ]
+      const ethBalance = ethBalances[ i ]
       const token = tokens.getBySymbol(symbol)
 
       try {
@@ -99,7 +100,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         symbol: symbol || address,
         buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
         sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
-        assetBalance: token.dao().removeDecimals(assetBalance),
+        assetBalance: tokenService.getDAO(token.address()).removeDecimals(assetBalance, token),
         ethBalance: this._c.fromWei(ethBalance),
       }))
     })

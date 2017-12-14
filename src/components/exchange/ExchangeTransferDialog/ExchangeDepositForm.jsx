@@ -6,6 +6,7 @@ import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import Amount from 'models/Amount'
 import './ExchangeTransferDialog.scss'
 import styles from './styles'
 import validate from './validate'
@@ -30,10 +31,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
         <div styleName='subTitle'>{this.props.title}</div>
         <div>
           <Translate value={prefix('maxAmount')} />
-          <TokenValue
-            value={this.props.maxAmount}
-            symbol={this.props.symbol}
-          />
+          <TokenValue value={new Amount(this.props.maxAmount, this.props.symbol)} />
         </div>
         <form styleName='fieldRow' onSubmit={this.props.handleSubmit(this.props.onSubmit)}>
           <div styleName='fieldWrapper'>

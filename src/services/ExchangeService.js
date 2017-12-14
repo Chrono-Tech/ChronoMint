@@ -1,3 +1,4 @@
+import tokenService from 'services/TokenService'
 import TokenModel from 'models/tokens/TokenModel'
 import ExchangeManagerDAO from 'dao/ExchangeManagerDAO'
 import { ExchangeDAO } from 'dao/ExchangeDAO'
@@ -11,15 +12,15 @@ class ExchangeService extends EventEmitter {
   }
 
   getExchangeManagerDAO (address) {
-    if (!this._cache[address]) {
-      this._cache[address] = new ExchangeManagerDAO(address)
+    if (!this._cache[ address ]) {
+      this._cache[ address ] = new ExchangeManagerDAO(address)
     }
-    return this._cache[address]
+    return this._cache[ address ]
   }
 
   getExchangeDAO (address) {
-    this._cache[address] = new ExchangeDAO(address)
-    return this._cache[address]
+    this._cache[ address ] = new ExchangeDAO(address)
+    return this._cache[ address ]
   }
 
   subscribeToCreateExchange (account) {
@@ -33,7 +34,7 @@ class ExchangeService extends EventEmitter {
   }
 
   subscribeToExchange (address) {
-    if (this._cache[address]) return null
+    if (this._cache[ address ]) return null
 
     // const dao = token.dao()
     // await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
@@ -72,10 +73,10 @@ class ExchangeService extends EventEmitter {
   }
 
   subscribeToToken (token: TokenModel, exchange: string) {
-    if (!token || this._cache[`${token.id()}-${exchange}`]) return null
+    if (!token || this._cache[ `${token.id()}-${exchange}` ]) return null
 
-    this._cache[`${token.id()}-${exchange}`] = token.dao()
-    const dao = token.dao()
+    const dao = tokenService.getDAO(token.id())
+    this._cache[ `${token.id()}-${exchange}` ] = dao
 
     return Promise.all([
       dao.watchTransfer((result) => {
