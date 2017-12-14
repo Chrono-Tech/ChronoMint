@@ -236,10 +236,10 @@ export default {
     feeLeft: 'Комиссия оставшихся транзакций',
     TokenManagementInterface: {
       createAssetWithoutFee: {
-        title: 'Подтвердите создание токена без коммиссии',
+        title: 'Подтвердите создание токена',
       },
       createAssetWithFee: {
-        title: 'Подтвердите создание токена c коммиссией',
+        title: 'Подтвердите создание токена',
       },
     },
     ChronoBankPlatform: {

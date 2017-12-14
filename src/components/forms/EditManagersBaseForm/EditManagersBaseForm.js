@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
+import ManagersCollection from 'models/tokens/ManagersCollection'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
 import validate from './validate'
@@ -32,7 +33,7 @@ function mapStateToProps (state) {
 export default class EditManagersBase extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    managers: PropTypes.arrayOf(PropTypes.string),
+    managers: PropTypes.instanceOf(ManagersCollection),
   } & formPropTypes
 
   renderManager = (manager) => (
@@ -68,7 +69,7 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
           </div>
-          {this.props.managers.map(this.renderManager)}
+          {this.props.managers.items().map(this.renderManager)}
         </div>
       </form>
     )
