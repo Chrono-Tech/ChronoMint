@@ -22,10 +22,7 @@ export default (state = initialState, action) => {
         state.tokens().get(action.token.id()).setBalance(action.amount),
       ))
     case a.WALLET_ALLOWANCE:
-      return state.tokens(state.tokens().set(
-        action.token.id(),
-        state.tokens().get(action.token.id()).setAllowance(action.spender, action.value),
-      ))
+      return state.setAllowance(action.token.id(), action.spender, action.value)
     case a.WALLET_TIME_DEPOSIT:
       // TODO @dkchv: !!! action.isCredited
       return state.timeDeposit(action.amount)

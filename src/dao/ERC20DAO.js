@@ -41,7 +41,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   async initMetaData () {
     try {
-      const [symbol, decimals] = await Promise.all([
+      const [ symbol, decimals ] = await Promise.all([
         this._call('symbol'),
         this._callNum('decimals'),
       ])
@@ -60,17 +60,19 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   async getAccountBalance (account = this.getAccount()): BigNumber {
-    const balance = await this._call('balanceOf', [account])
+    const balance = await this._call('balanceOf', [ account ])
     return this.removeDecimals(balance)
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    const allowance = await this._call('allowance', [account, spender])
+    const allowance = await this._call('allowance', [ account, spender ])
     return this.removeDecimals(allowance)
   }
 
   approve (account: string, amount: BigNumber) {
     logInfo('approve', account, amount)
+    // eslint-disable-next-line
+    console.log('approve', this.addDecimals)
     return this._tx(TX_APPROVE, [
       account,
       this.addDecimals(amount),
@@ -110,7 +112,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       credited: tx.args.to === account,
-      symbol: this.getSymbol(),
+      // symbol: this.getSymbol(),
     })
   }
 

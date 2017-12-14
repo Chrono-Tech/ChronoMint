@@ -10,6 +10,7 @@ import React from 'react'
 import globalStyles from 'layouts/partials/styles'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import Amount from 'models/Amount'
 import { getNextPage } from 'redux/exchange/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import './ExchangesTable.scss'
@@ -95,29 +96,21 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='colPrice'>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
           </div>
           <div styleName='colLimits'>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-              <TokenValue
-                value={exchange.assetBalance()}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-              <TokenValue
-                value={exchange.ethBalance()}
-                symbol='ETH'
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
             </div>
           </div>
         </div>
@@ -174,13 +167,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             }
             {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
             }
           </div>
@@ -188,21 +181,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-              <TokenValue
-                value={exchange.assetBalance()}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             }
             {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-              <TokenValue
-                value={exchange.ethBalance()}
-                symbol='ETH'
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
             </div>
             }
           </div>
@@ -275,6 +260,7 @@ export default class ExchangesTable extends React.PureComponent {
     } else {
       filteredItems = this.props.exchanges.items()
     }
+
     return (
       <div styleName='root'>
         <div styleName='header'>
