@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
-import { SelectField, TextField } from 'redux-form-material-ui'
+import { SelectField, TextField, Slider } from 'redux-form-material-ui'
 import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -25,6 +25,12 @@ export const FORM_SEND_TOKENS = 'FormSendTokens'
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
 
+const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 2,
+  step: 0.1,
+}
+
 function prefix (token) {
   return 'components.dashboard.SendTokens.' + token
 }
@@ -32,10 +38,11 @@ function prefix (token) {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
-
+  const feeMultiplier = selector(state, 'feeMultiplier')
   return {
     account: state.get('session').account,
     token: getCurrentWallet(state).tokens().get(symbol),
+    feeMultiplier: feeMultiplier,
   }
 }
 
@@ -46,6 +53,7 @@ export class SendTokensForm extends PureComponent {
     account: PropTypes.string,
     wallet: PropTypes.object,
     token: PropTypes.object,
+    feeMultiplier: PropTypes.number,
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
@@ -111,9 +119,8 @@ export class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, onSubmit, wallet } = this.props
     const { isContract } = this.state
-
     return (
       <div>
         <div styleName='from'>From:
@@ -140,6 +147,29 @@ export class SendTokensForm extends PureComponent {
             />
           </div>
         </div>
+        {!(feeMultiplier && token.feeRate()) ? null : (
+          <div>
+            <div styleName='feeRate'>
+              <div>
+                <small>
+                  <Translate
+                    value={prefix('feeRate')}
+                    multiplier={feeMultiplier.toFixed(1)}
+                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
+                  />
+                </small>
+              </div>
+              <Field
+                component={Slider}
+                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+                step={FEE_RATE_MULTIPLIER.step}
+                min={FEE_RATE_MULTIPLIER.min}
+                max={FEE_RATE_MULTIPLIER.max}
+                name='feeMultiplier'
+              />
+            </div>
+          </div>
+        )}
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton

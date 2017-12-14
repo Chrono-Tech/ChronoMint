@@ -1,4 +1,5 @@
-import Moment, { SHORT_DATE } from 'components/common/Moment'
+import Moment from 'components/common/Moment'
+import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import type RewardsModel from 'models/RewardsModel'

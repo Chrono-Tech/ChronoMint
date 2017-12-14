@@ -162,24 +162,24 @@ export const watchExchanges = () => async (dispatch, getState) => {
     }
     dispatch(getExchangesCount())
   })
-  exchangeService.on('Error', async (tx) => {
+  exchangeService.on('Error', async (/*tx*/) => {
     // eslint-disable-next-line
-    console.error(tx)
+    // console.error('event error', tx)
   })
 
-  exchangeService.on('FeeUpdated', async (tx) => {
+  exchangeService.on('FeeUpdated', async (/*tx*/) => {
     // eslint-disable-next-line
-    console.log('--actions#FeeUpdated', tx)
+    // console.log('--actions#FeeUpdated', tx)
   })
 
-  exchangeService.on('PricesUpdated', async (tx) => {
+  exchangeService.on('PricesUpdated', async (/*tx*/) => {
     // eslint-disable-next-line
-    console.log('--actions#PricesUpdated', tx)
+    // console.log('--actions#PricesUpdated', tx)
   })
 
-  exchangeService.on('ActiveChanged', async (tx) => {
+  exchangeService.on('ActiveChanged', async (/*tx*/) => {
     // eslint-disable-next-line
-    console.log('--actions#ActiveChanged', tx)
+    // console.log('--actions#ActiveChanged', tx)
   })
 
   exchangeService.on('Buy', async (tx) => {

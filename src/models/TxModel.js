@@ -1,4 +1,4 @@
-import { FULL_DATE } from 'components/common/Moment'
+import { FULL_DATE } from 'models/constants'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'

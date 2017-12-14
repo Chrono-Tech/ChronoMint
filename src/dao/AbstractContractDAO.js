@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
+import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
@@ -11,14 +12,6 @@ import web3Converter from 'utils/Web3Converter'
 const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
-
-export class TxError extends Error {
-  constructor (message, code, codeValue = null) {
-    super(message)
-    this.code = code
-    this.codeValue = codeValue
-  }
-}
 
 export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',
@@ -364,8 +357,7 @@ export default class AbstractContractDAO {
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
    * @see AbstractModel.summary
-   * Keys is using for I18N, for details see...
-   * @see TxExecModel.description
+   * Keys is using for I18N
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes

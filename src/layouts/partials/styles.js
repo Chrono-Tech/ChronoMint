@@ -122,6 +122,9 @@ export default {
       overflow: 'visible',
       textAlign: 'left',
     },
+    buttonStyle: {
+      lineHeight: 'normal',
+    },
     labelStyle: {
       display: 'block',
     },

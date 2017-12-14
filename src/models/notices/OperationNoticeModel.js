@@ -1,5 +1,5 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n } from 'platform/i18n'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'
@@ -22,7 +22,7 @@ export default class OperationNoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>alarm</i>)
+    return Icons.get('notices.operations.icon')
   }
 
   title () {
@@ -65,23 +65,5 @@ export default class OperationNoticeModel extends abstractNoticeModel({
       })
     }
     return details
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock () {
-    return this.operation().tx().historyBlock(this._status(), this.date())
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this._status()}
-        {this.operation().tx().description(false, { marginTop: '10px' })}
-        <p style={{ marginBottom: '0' }}>
-          <small>{this.date()}</small>
-        </p>
-      </div>
-    )
   }
 }

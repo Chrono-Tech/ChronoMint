@@ -1,5 +1,5 @@
-import ErrorList from 'components/forms/ErrorList'
-import * as validator from 'components/forms/validator'
+import ErrorList from 'platform/ErrorList'
+import * as validator from 'models/validator'
 
 const OWNER_LIMIT = 2
 

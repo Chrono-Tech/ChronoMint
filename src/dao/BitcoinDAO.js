@@ -4,7 +4,7 @@ import type TxModel from 'models/TxModel'
 import type TokenModel from 'models/TokenModel'
 import { btcProvider, bccProvider, ltcProvider, btgProvider } from '@chronobank/login/network/BitcoinProvider'
 import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
-import { bitcoinAddress } from 'components/forms/validator'
+import { bitcoinAddress } from 'models/validator'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -62,10 +62,9 @@ export class BitcoinDAO {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber, token: TokenModel) {
+  async transfer (to, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
-      return await this._bitcoinProvider.transfer(to, amount, token.feeRate())
+      return await this._bitcoinProvider.transfer(to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)

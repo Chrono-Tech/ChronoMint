@@ -1,9 +1,10 @@
 import MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import EventEmitter from 'events'
-import type MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
-import type MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import type MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
+import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
+import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+
 export const EVENT_CONFIRMATION = 'Confirmation'
 export const EVENT_REVOKE = 'Revoke'
 export const EVENT_DEPOSIT = 'Deposit'

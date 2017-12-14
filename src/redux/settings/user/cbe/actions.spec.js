@@ -6,7 +6,7 @@ import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import * as notifier from 'redux/notifier/actions'
 import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
-import * as validator from 'components/forms/validator'
+import * as validator from 'models/validator'
 import * as a from './actions'
 
 const user = new ProfileModel({ name: 'testUser' })

@@ -55,7 +55,9 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   componentDidMount () {
-    !this.props.isBuy && this.props.dispatch(getTokensAllowance(this.props.exchange))
+    this.props.usersTokens.get(this.props.exchange.symbol()) &&
+    !this.props.isBuy &&
+    this.props.dispatch(getTokensAllowance(this.props.exchange))
   }
 
   handleSetPrice = (e) => {
@@ -82,6 +84,10 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   render () {
+    let showWarningMessage = false
+    if (!this.props.usersTokens.get(this.props.exchange.symbol())) {
+      showWarningMessage = true
+    }
     const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
     const ethToken = this.props.usersTokens.get('ETH')
 
@@ -92,6 +98,13 @@ export default class BuyTokensForm extends React.PureComponent {
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='row'>
           <div styleName='leftCol'>
+            {
+              showWarningMessage &&
+              <div styleName='warningMessage'>
+                <i className='material-icons'>warning</i>
+                <Translate value={prefix('needToCreateWallet')} symbol={this.props.exchange.symbol()} />
+              </div>
+            }
             <div styleName='property'>
               <div styleName='label'><Translate value={prefix('traderAddress')} />:</div>
               <div styleName='value'>
@@ -191,7 +204,7 @@ export default class BuyTokensForm extends React.PureComponent {
                           {...globalStyles.buttonRaisedMultyLine}
                         />
                         : <RaisedButton
-                          disabled={this.props.pristine || !this.props.valid}
+                          disabled={this.props.pristine || !this.props.valid || showWarningMessage}
                           type='button'
                           label={(
                             <span styleName='buttonLabel'>
@@ -199,14 +212,14 @@ export default class BuyTokensForm extends React.PureComponent {
                             </span>
                           )}
                           primary
-                          onTouchTap={this.handleApprove}
+                          onClick={this.handleApprove}
                           {...globalStyles.buttonRaisedMultyLine}
                         />
                       }
                     </div>
                     }
                     <RaisedButton
-                      disabled={!this.props.valid || (!this.props.isBuy && allowance.toString() !== this.props.buy)}
+                      disabled={!this.props.valid || (!this.props.isBuy && allowance.toString() !== this.props.buy) || showWarningMessage}
                       type='submit'
                       label={<span styleName='buttonLabel'><Translate value={prefix('sendRequest')} /></span>}
                       {...globalStyles.buttonRaisedMultyLine}

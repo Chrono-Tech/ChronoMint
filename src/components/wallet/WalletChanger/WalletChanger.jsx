@@ -8,7 +8,7 @@ import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/W
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
 import globalStyles from 'layouts/partials/styles'
 import { FlatButton, Paper } from 'material-ui'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
