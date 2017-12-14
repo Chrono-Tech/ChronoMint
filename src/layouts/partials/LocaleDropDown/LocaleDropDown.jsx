@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
-import { changeMomentLocale } from 'redux/ui/locale'
+import { changeMomentLocale } from 'redux/ui/actions'
 import styles from './styles'
 
 import './LocaleDropDown.scss'
