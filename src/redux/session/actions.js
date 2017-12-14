@@ -7,7 +7,7 @@ import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { watchStopMarket } from 'redux/market/action'
 import ls from 'utils/LocalStorage'
-import { LOCAL_ID } from '@chronobank/login/network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 
 export const DUCK_SESSION = 'session'
 
@@ -87,7 +87,7 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
     await networkService.restoreLocalSession(localAccount)
-    networkService.createNetworkSession(localAccount, LOCAL_ID, LOCAL_ID)
+    networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {
     // eslint-disable-next-line
