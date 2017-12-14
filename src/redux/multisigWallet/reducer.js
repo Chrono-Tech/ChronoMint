@@ -1,4 +1,4 @@
-import MultisigWalletCollection from 'models/Wallet/MultisigWalletCollection'
+import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 
 import * as a from './actions'
 

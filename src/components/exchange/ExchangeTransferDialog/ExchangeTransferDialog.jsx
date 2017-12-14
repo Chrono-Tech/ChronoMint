@@ -1,7 +1,7 @@
 import ModalDialog from 'components/dialogs/ModalDialog'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokenModel from 'models/TokenModel'
-import MainWallet from 'models/Wallet/MainWalletModel'
+import MainWallet from 'models/wallet/MainWalletModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'

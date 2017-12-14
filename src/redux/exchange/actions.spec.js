@@ -1,4 +1,4 @@
-import MainWalletModel from 'models/Wallet/MainWalletModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import ExchangesCollection from 'models/exchange/TokensCollection'
 import BigNumber from 'bignumber.js'
 import { WALLET_ALLOWANCE, mainTransfer } from 'redux/mainWallet/actions'
