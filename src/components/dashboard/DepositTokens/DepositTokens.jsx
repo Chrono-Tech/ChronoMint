@@ -1,18 +1,22 @@
+import Amount from 'models/Amount'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import IconTimeSVG from 'assets/img/icn-time.svg'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { FlatButton, Paper, RaisedButton, TextField } from 'material-ui'
-import type TokenModel from 'models/tokens/TokenModel'
+import BalanceModel from 'models/tokens/BalanceModel'
+import TokenModel from 'models/tokens/TokenModel'
 import validator from 'models/validator'
-import type MainWallet from 'models/wallet/MainWalletModel'
+import MainWallet from 'models/wallet/MainWalletModel'
 import ErrorList from 'platform/ErrorList'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { depositTIME, DUCK_MAIN_WALLET, initTIMEDeposit, mainApprove, requireTIME, TIME, updateIsTIMERequired, withdrawTIME } from 'redux/mainWallet/actions'
+import { depositTIME, DUCK_MAIN_WALLET, initTIMEDeposit, mainApprove, requireTIME, updateIsTIMERequired, withdrawTIME } from 'redux/mainWallet/actions'
+import { DUCK_TIME_HOLDER } from 'redux/timeHolder/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
 import './DepositTokens.scss'
@@ -25,14 +29,18 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
-  const token: TokenModel = wallet.tokens().get(TIME)
+  const timeAddress = state.get(DUCK_TIME_HOLDER).timeAddress()
+  const token = state.get(DUCK_TOKENS).item(timeAddress) || new TokenModel()
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const timeAddress = wallet.timeAddress()
   const allowance = token ? token.allowance(timeAddress) : new BigNumber(0)
+  const balance = wallet.balances().item(token.id())
+
+  console.log('--DepositTokens#mapStateToProps', balance)
 
   return {
     token,
+    balance: balance ? balance.amount() : new Amount(),
     deposit: wallet.timeDeposit(),
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && token && token.balance().eq(0),
     timeAddress,
@@ -68,6 +76,7 @@ export default class DepositTokens extends PureComponent {
     errors: PropTypes.object,
     timeAddress: PropTypes.string,
     allowance: PropTypes.instanceOf(BigNumber),
+    wallet: PropTypes.instanceOf(MainWallet),
   }
 
   constructor (props) {
@@ -83,7 +92,6 @@ export default class DepositTokens extends PureComponent {
           .add(validator.required(amount))
           .add(validator.positiveNumberOrZero(amount))
           .getErrors(),
-
     }
   }
 
@@ -139,36 +147,38 @@ export default class DepositTokens extends PureComponent {
   }
 
   renderHead () {
-    const { deposit, allowance, token } = this.props
+    const { deposit, allowance, token, balance } = this.props
     const symbol = token.symbol()
+
+    console.log('--DepositTokens#renderHead', balance)
+    // TODO @dkchv: !!!!
 
     return (
       <div>
         <IconSection title={<Translate value={prefix('depositTime')} />} icon={IconTimeSVG}>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
-            <TokenValue
-              isInvert
-              value={token.balance()}
-              symbol={symbol}
-            />
+            {/*<TokenValue*/}
+              {/*isInvert*/}
+              {/*value={balance}*/}
+            {/*/>*/}
           </div>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
-            <TokenValue
-              isInvert
-              isLoading={deposit === null}
-              value={deposit || new BigNumber(0)}
-              symbol={symbol}
-            />
+            {/*<TokenValue*/}
+              {/*isInvert*/}
+              {/*isLoading={deposit === null}*/}
+              {/*value={deposit || new BigNumber(0)}*/}
+              {/*symbol={symbol}*/}
+            {/*/>*/}
           </div>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:</div>
-            <TokenValue
-              isInvert
-              value={allowance}
-              symbol={symbol}
-            />
+            {/*<TokenValue*/}
+              {/*isInvert*/}
+              {/*value={allowance}*/}
+              {/*symbol={symbol}*/}
+            {/*/>*/}
           </div>
         </IconSection>
       </div>
@@ -251,14 +261,12 @@ export default class DepositTokens extends PureComponent {
   render () {
     return (
       <Paper>
-        {this.props.token && (
-          <ColoredSection
-            styleName='root'
-            head={this.renderHead()}
-            body={this.renderBody()}
-            foot={this.renderFoot()}
-          />
-        )}
+        <ColoredSection
+          styleName='root'
+          head={this.renderHead()}
+          body={this.renderBody()}
+          foot={this.renderFoot()}
+        />
       </Paper>
     )
   }

@@ -4,7 +4,7 @@ import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import tokenService from 'services/TokenService'
 
-const DUCK_TIME_HOLDER = 'timeHolder'
+export const DUCK_TIME_HOLDER = 'timeHolder'
 
 export const TIME_HOLDER_INIT = 'timeHolder/INIT'
 export const TIME_HOLDER_TIME_ADDRESS = 'timeHolder/timeAddress'

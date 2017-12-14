@@ -17,6 +17,7 @@ import * as voting from './voting'
 import * as wallet from './wallet'
 import * as watcher from './watcher'
 import * as tokens from './tokens'
+import * as timeHolder from './timeHolder'
 
 export default {
   ui,
@@ -37,5 +38,6 @@ export default {
   market,
   assetsManager,
   tokens,
+  timeHolder,
   ...Login,
 }
