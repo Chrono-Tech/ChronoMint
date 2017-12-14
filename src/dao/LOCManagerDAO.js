@@ -5,6 +5,8 @@ import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import type TokenModel from 'models/tokens/TokenModel'
 import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import contractManager from './ContractsManagerDAO'
+import tokenService from 'services/TokenService'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
@@ -31,41 +33,24 @@ const events = {
   REVOKE: 'Revoke',
 }
 
-const DEFAULT_TOKEN = 'LHT'
-
 /** @namespace result.args.locName */
 /** @namespace result.args.newName */
 
 export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
     super(LOCManagerABI, at, MultiEventsHistoryABI)
-    this.tokens = null
-    this._isInitialized = false
   }
 
-  isInitialized (value) {
-    if (value === undefined) {
-      return this._isInitialized
-    }
-    this._isInitialized = value
-  }
-
-  setTokens (tokens: Immutable.Map<TokenModel>) {
-    this.tokens = tokens
-  }
-
-  getTokenDAO (symbol) {
-    return this.tokens.get(symbol).dao()
-  }
-
-  getDefaultToken () {
-    return this.tokens.get(DEFAULT_TOKEN)
+  async getTokenDAO (symbol) {
+    const erc20 = await contractManager.getERC20ManagerDAO()
+    const tokenAddress = await erc20.getTokenAddressBySymbol(symbol)
+    return tokenService.getDAO(tokenAddress)
   }
 
   /** @private */
-  _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+  async _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
     const symbol = this._c.bytesToString(currency)
-    const tokenDAO = this.getTokenDAO(symbol)
+    const tokenDAO = await this.getTokenDAO(symbol)
 
     return new LOCModel({
       name: this._c.bytesToString(name),
@@ -77,7 +62,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       createDate: createDate.toNumber() * 1000,
       status: status.toNumber(),
       securityPercentage: securityPercentage.toNumber(),
-      token: this.tokens.get(symbol),
+      symbol,
       isNew: false,
       isPending: false,
     })

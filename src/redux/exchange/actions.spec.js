@@ -26,7 +26,7 @@ describe('Exchange tests', () => {
   let tokens = null
   let exchange = null
   it('should get tokens', async (done: Function) => {
-    await store.dispatch(a.getTokenList())
+    // await store.dispatch(a.getTokenList())
     const actions = store.getActions()
     expect(actions[ 0 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_START)
     expect(actions[ 1 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_FINISH)

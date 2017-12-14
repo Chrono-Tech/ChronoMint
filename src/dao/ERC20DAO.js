@@ -17,51 +17,26 @@ const EVENT_APPROVAL = 'Approval'
 const logInfo = debug('chronobank:info:dao:erc20')
 
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at, json) {
-    super(json || ERC20DAODefaultABI, at)
-  }
-
-  isInitialized () {
-    return this._initialized
-  }
-
-  initialized () {
-    this._initialized = true
-  }
-
-  setSymbol (symbol: string) {
-    this._symbol = symbol
-  }
-
-  getSymbol () {
-    if (!this._symbol) {
-      throw new Error('symbol is undefined')
-    }
-    return this._symbol
-  }
-
-  setDecimals (n: number) {
-    if (n < 0 || n > 20) {
-      throw new Error(`invalid decimals ${n}`)
-    }
-    this._decimals = n
+  constructor (token: TokenModel, abi) {
+    super(abi || ERC20DAODefaultABI, token.address())
+    this._decimals = Math.max(Math.min(token.decimals(), 20), 0)
   }
 
   getDecimals () {
     return this._decimals
   }
 
-  addDecimals (amount: BigNumber, token: TokenModel): BigNumber {
+  addDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')
     }
     const amountBN = new BigNumber(amount)
-    return amountBN.mul(Math.pow(10, this._decimals || token.decimals()))
+    return amountBN.mul(Math.pow(10, this._decimals))
   }
 
-  removeDecimals (amount: BigNumber, token: TokenModel): BigNumber {
+  removeDecimals (amount: BigNumber): BigNumber {
     const amountBN = new BigNumber(amount)
-    return amountBN.div(Math.pow(10, this._decimals || token.decimals()))
+    return amountBN.div(Math.pow(10, this._decimals))
   }
 
   async initMetaData () {
@@ -84,13 +59,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.removeDecimals(totalSupply)
   }
 
-  async getAccountBalance (account = this.getAccount(), token): BigNumber {
+  async getAccountBalance (account = this.getAccount()): BigNumber {
     const balance = await this._call('balanceOf', [account])
-    return this.removeDecimals(balance, token)
+    return this.removeDecimals(balance)
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('allowance', [account, spender]))
+    const allowance = await this._call('allowance', [account, spender])
+    return this.removeDecimals(allowance)
   }
 
   approve (account: string, amount: BigNumber) {
@@ -105,14 +81,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  transfer (token, recipient, amount: Amount) {
+  transfer (recipient, amount: Amount) {
     return this._tx(TX_TRANSFER, [
       recipient,
-      this.addDecimals(amount, token),
+      this.addDecimals(amount),
     ], {
       recipient,
       amount,
-      currency: token.symbol(),
+      currency: amount.symbol(),
     })
   }
 

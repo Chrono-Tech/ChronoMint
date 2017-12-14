@@ -100,6 +100,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /**
    * ETH, TIME will be added by flag isWithObligatory
+   * @deprecated
    */
   async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
     let promises
@@ -223,13 +224,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return null
   }
 
-  /**
-   * With ETH, TIME (because they are obligatory) and balances for each token.
-   */
-  getUserTokens (addresses: Array = []) {
-    return this.getTokensByAddresses(addresses, true)
-  }
-
   async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null
@@ -272,15 +266,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return this._tx(TX_REMOVE_TOKEN, [token.address()], token)
   }
 
-  /**
-   * Only for LOC
-   */
-  async getLOCTokens () {
-    // TODO @dkchv: for now LHT only
-    const lhtAddress = await lhtDAO.getAddress()
-    return this.getTokensByAddresses([lhtAddress], false)
-  }
-
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
     callback(new TokenNoticeModel(
@@ -307,11 +292,5 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   watchRemove (callback, account) {
     return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
-  }
-
-  async getTokensList () {
-    const addresses = await this._call('getTokenAddresses')
-    const tokens = await this.getTokensByAddresses(addresses, false)
-    return new TokensCollection({ list: tokens })
   }
 }

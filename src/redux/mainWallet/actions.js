@@ -125,7 +125,7 @@ const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
 
   // fetch actual
   const tokenDAO = tokenService.getDAO(token)
-  const balance = await tokenDAO.getAccountBalance(account, token)
+  const balance = await tokenDAO.getAccountBalance(account)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({
@@ -152,18 +152,19 @@ export const watchInitWallet = () => async (dispatch, getState) => {
   const previous = state.get(DUCK_MAIN_WALLET).tokens()
 
   dispatch({ type: WALLET_TOKENS_FETCH })
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  let tokens = await dao.getUserTokens(profile.tokens().toArray())
-  dispatch({ type: WALLET_TOKENS, tokens })
-  dispatch(getAccountTransactions(tokens))
+  // const dao = await contractsManagerDAO.getERC20ManagerDAO()
+  // let tokens = await dao.getUserTokens(profile.tokens().toArray())
+  let tokens = state.get(DUCK_TOKENS)
+  // dispatch({ type: WALLET_TOKENS, tokens })
+  dispatch(getAccountTransactions(tokens.list()))
 
-  const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
-    const dao = token.dao()
-    return dao.stopWatching()
-  })
-  if (toStopArray.length) {
-    await Promise.all(toStopArray)
-  }
+  // const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
+    // const dao = token.dao()
+    // return dao.stopWatching()
+  // })
+  // if (toStopArray.length) {
+  //   await Promise.all(toStopArray)
+  // }
 
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
   const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
@@ -202,7 +203,7 @@ export const watchInitWallet = () => async (dispatch, getState) => {
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
   try {
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.transfer(token, recipient, amount, feeMultiplier)
+    await tokenDAO.transfer(recipient, amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('transfer error', e.message)

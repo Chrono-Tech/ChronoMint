@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
+import tokenService from 'services/TokenService'
 import { TimeHolderABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import contractsManagerDAO from './ContractsManagerDAO'
 import type ERC20DAO from './ERC20DAO'
 
 export const TX_DEPOSIT = 'deposit'
@@ -22,7 +22,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const assetAddress = await this._call('sharesContract')
-    return contractsManagerDAO.getERC20DAO(assetAddress)
+    return tokenService.getDAO(assetAddress)
   }
 
   getWalletAddress () {

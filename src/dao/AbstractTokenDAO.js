@@ -35,11 +35,11 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  addDecimals (amount: BigNumber, token: TokenModel): BigNumber {
+  addDecimals (amount: BigNumber): BigNumber {
     return amount
   }
 
-  removeDecimals (amount: BigNumber, token: TokenModel): BigNumber {
+  removeDecimals (amount: BigNumber): BigNumber {
     return amount
   }
 

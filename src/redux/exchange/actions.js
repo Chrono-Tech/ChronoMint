@@ -52,7 +52,7 @@ export const search = (values: Immutable.Map) => async (dispatch) => {
 
 export const getExchange = () => async (dispatch) => {
   dispatch({ type: EXCHANGE_GET_DATA_START })
-  await dispatch(getTokenList())
+  // await dispatch(getTokenList())
   await dispatch(getExchangesCount())
   // not await
   dispatch(getExchangesForOwner())
@@ -238,9 +238,10 @@ export const watchExchanges = () => async (dispatch, getState) => {
 }
 
 export const getTokenList = () => async (dispatch) => {
-  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START })
-  const ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-  const tokens = await ERC20ManagerDAO.getTokensList()
-  dispatch({ type: EXCHANGE_GET_TOKENS_LIST_FINISH, tokens })
+  // TODO @dkchv: should subscribe on tokens
+  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_START })
+  // const ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+  // const tokens = await ERC20ManagerDAO.getTokensList()
+  // dispatch({ type: EXCHANGE_GET_TOKENS_LIST_FINISH, tokens })
 }
 

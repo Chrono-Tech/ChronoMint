@@ -4,9 +4,10 @@ import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
 import RewardsModel from 'models/RewardsModel'
 import RewardsPeriodModel from 'models/RewardsPeriodModel'
+import tokenService from 'services/TokenService'
+import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
-import { RewardsABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
@@ -19,7 +20,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const addresses = await this._call('getAssets')
-    return contractsManagerDAO.getERC20DAO(addresses[ 0 ])
+    return tokenService.getDAO(addresses[ 0 ])
   }
 
   getPeriodLength () {

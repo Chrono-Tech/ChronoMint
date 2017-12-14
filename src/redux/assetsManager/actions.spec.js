@@ -105,7 +105,7 @@ describe('AssetsManager tests', () => {
   })
 
   it('should get Tokens', async (done) => {
-    await store.dispatch(a.getTokens())
+    // await store.dispatch(a.getTokens())
     const actions = store.getActions()
     const action = actions[ actions.length - 1 ]
     expect(action.type).toEqual(a.GET_TOKENS)

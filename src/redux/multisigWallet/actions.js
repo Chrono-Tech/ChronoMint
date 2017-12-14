@@ -48,7 +48,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO.on(EVENT_NEW_MS_WALLET, (oldWallet: MultisigWalletModel) => {
     const fetchBalanceForToken = async (token) => {
       const tokenDao = tokenService.getDAO(token)
-      const balance = await tokenDao.getAccountBalance(wallet.address(), token)
+      const balance = await tokenDao.getAccountBalance(wallet.address())
       const symbol = token.symbol()
       dispatch({
         type: MULTISIG_BALANCE,
@@ -213,7 +213,7 @@ export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
   }
 }
 
-export const multisigTransfer = (wallet, token, amount, recipient) => async (dispatch, getState) => {
+export const multisigTransfer = (wallet, token, amount, recipient) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.transfer(wallet, token, amount, recipient)
@@ -223,7 +223,7 @@ export const multisigTransfer = (wallet, token, amount, recipient) => async (dis
   }
 }
 
-export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
+export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.confirmPendingTx(tx)

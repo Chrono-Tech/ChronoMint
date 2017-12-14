@@ -18,7 +18,7 @@ class TokenService extends EventEmitter {
     if (!token.isERC20()) {
       return
     }
-    const dao = new ERC20DAO(token.address())
+    const dao = new ERC20DAO(token)
     this._cache [ token.id() ] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
   }

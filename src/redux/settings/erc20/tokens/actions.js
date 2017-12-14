@@ -7,6 +7,7 @@ import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { notify } from 'redux/notifier/actions'
 import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
+import tokenService from 'services/TokenService'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -67,7 +68,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
 
   let dao
   try {
-    dao = await contractsManagerDAO.getERC20DAO(token.address(), true)
+    dao = tokenService.getDAO(token)
   } catch (e) {
     dispatch({ type: TOKENS_FORM_FETCH, end: true })
     throw { address: I18n.t('settings.erc20.tokens.errors.invalidAddress') }

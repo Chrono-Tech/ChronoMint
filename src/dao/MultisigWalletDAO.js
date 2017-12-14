@@ -128,11 +128,6 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
     return this._callNum('m_required')
   }
 
-  async getTokens () {
-    const erc20managerDAO = await contractManagerDAO.getERC20ManagerDAO()
-    return erc20managerDAO.getTokensByAddresses([], true, this.getInitAddress())
-  }
-
   async removeWallet (wallet, account: string) {
     const result = await this._tx('kill', [
       account,

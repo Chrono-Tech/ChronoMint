@@ -144,6 +144,9 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
   }
 
+  /**
+   * @deprecated
+   */
   async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
     const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew)
     if (!dao.isInitialized() && !isInitialized) {
@@ -204,15 +207,8 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_EXCHANGE, tokenAddress)
   }
 
-  async getLOCManagerDAO (): Promise<LOCManagerDAO> {
-    const locManager = await this._getDAO(DAO_LOC_MANAGER)
-    if (!locManager.isInitialized()) {
-      const ercManager = await this.getERC20ManagerDAO()
-      const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
-      locManager.setTokens(tokens)
-      locManager.isInitialized(true)
-    }
-    return locManager
+  getLOCManagerDAO (): Promise<LOCManagerDAO> {
+    return this._getDAO(DAO_LOC_MANAGER)
   }
 
   getVotingDAO (): Promise<VotingDAO> {
