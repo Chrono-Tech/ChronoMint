@@ -157,13 +157,11 @@ class NetworkService extends EventEmitter {
   }
 
   async setup ({ ethereum, btc, bcc, btg, ltc, nem }) {
-    const { accounts } = this._store.getState().get('network')
-
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(ethereum.getProvider())
 
-    await this.loadAccounts()
+    const accounts = await this.loadAccounts()
     this.selectAccount(accounts[ 0 ])
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
