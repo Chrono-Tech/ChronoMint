@@ -3,6 +3,7 @@ import Immutable from 'immutable'
 import FileModel from 'models/FileSelect/FileModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
+import tokenService from 'services/TokenService'
 import ipfs from 'utils/IPFS'
 import { MultiEventsHistoryABI, PollDetailsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -14,11 +15,11 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   }
 
   async getPolls () {
-    const [activeIds, inactiveIds] = await Promise.all([
+    const [ activeIds, inactiveIds ] = await Promise.all([
       await this.getActivePollIds(),
       await this.getInactivePollIds(),
     ])
-    return await Promise.all([...activeIds, ...inactiveIds].map((id) => this.getPollDetails(id)))
+    return await Promise.all([ ...activeIds, ...inactiveIds ].map((id) => this.getPollDetails(id)))
   }
 
   async getActivePollIds () {
@@ -33,11 +34,9 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
 
   async getPoll (pollId): PollDetailsModel {
     try {
-      const [response, timeDAO] = await Promise.all([
-        this._call('getPoll', [pollId]),
-        await contractsManagerDAO.getTIMEDAO(),
-      ])
-      const [id, owner, hashBytes, voteLimit, deadline, status, active, published] = response
+      const response = this._call('getPoll', [ pollId ])
+      const timeDAO = tokenService.getTIMEDAO()
+      const [ id, owner, hashBytes, voteLimit, deadline, status, active, published ] = response
 
       const hash = this._c.bytes32ToIPFSHash(hashBytes)
       const {
@@ -64,14 +63,14 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   }
 
   async getPollDetails (pollId): PollDetailsModel {
-    const [poll, votes, statistics, memberVote, timeDAO, timeHolderDAO] = await Promise.all([
+    const [ poll, votes, statistics, memberVote, timeHolderDAO ] = await Promise.all([
       this.getPoll(pollId),
-      this._call('getOptionsVotesForPoll', [pollId]),
-      this._call('getOptionsVotesStatisticForPoll', [pollId]),
-      this._call('getMemberVotesForPoll', [pollId]),
-      await contractsManagerDAO.getTIMEDAO(),
+      this._call('getOptionsVotesForPoll', [ pollId ]),
+      this._call('getOptionsVotesStatisticForPoll', [ pollId ]),
+      this._call('getMemberVotesForPoll', [ pollId ]),
       await contractsManagerDAO.getTIMEHolderDAO(),
     ])
+    const timeDAO = tokenService.getTIMEDAO()
     const totalSupply = await timeDAO.totalSupply()
     const shareholdersCount = await timeHolderDAO.shareholdersCount()
     const files = poll && await ipfs.get(poll.files())

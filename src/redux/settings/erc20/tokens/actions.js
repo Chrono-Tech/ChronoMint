@@ -68,7 +68,7 @@ export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formNam
 
   let dao
   try {
-    dao = tokenService.getDAO(token)
+    dao = tokenService.getDAO(token.id())
   } catch (e) {
     dispatch({ type: TOKENS_FORM_FETCH, end: true })
     throw { address: I18n.t('settings.erc20.tokens.errors.invalidAddress') }

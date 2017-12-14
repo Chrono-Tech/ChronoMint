@@ -49,7 +49,7 @@ class PlatformsList extends PureComponent {
             if (!token) {
               return null
             }
-            const tokenDao = tokenService.getDAO(token)
+            const tokenDao = tokenService.getDAO(token.id())
 
             if (!token) {
               return null

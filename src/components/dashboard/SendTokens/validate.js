@@ -21,7 +21,7 @@ export default (values, props) => {
     amountErrors.add(balance.amount().minus(amount).lt(0) ? 'error.notEnoughTokens' : null)
   }
 
-  const tokenDAO = tokenService.getDAO(token)
+  const tokenDAO = tokenService.getDAO(token.id())
   const addressValidator = tokenDAO
     ? tokenDAO.getAddressValidator()
     : () => ''

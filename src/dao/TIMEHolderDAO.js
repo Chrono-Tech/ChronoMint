@@ -34,7 +34,7 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], { amount })
   }
 
-  shareholdersCount () {
+  shareholdersCount (): Promise {
     return this._call('shareholdersCount')
   }
 

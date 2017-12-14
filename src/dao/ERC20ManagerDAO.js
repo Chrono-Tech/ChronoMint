@@ -102,81 +102,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    * @deprecated
    */
   async getTokensByAddresses (addresses: Array = [], isWithObligatory = true, account = this.getAccount(), additionalData = {}): Immutable.Map<TokenModel> {
-    let promises
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    if (isWithObligatory) {
-      // add TIME address to filters
-      addresses.push(timeDAO.getInitAddress())
-    }
-    // get data
-    const [tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._getTokens(addresses)
-
-    // init DAOs
-    promises = []
-    for (const address of tokensAddresses) {
-      promises.push(contractsManagerDAO.getERC20DAO(address, false, true))
-    }
-    const daos = await Promise.all(promises)
-
-    for (let [i, address] of Object.entries(tokensAddresses)) {
-      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-    }
-
-    // get balances
-    promises = []
-    for (const i of Object.keys(tokensAddresses)) {
-      this.initTokenMetaData(daos[i], symbols[i], decimalsArr[i])
-      promises.push(daos[i].getAccountBalance(account))
-    }
-    const balances = await Promise.all(promises)
-    // prepare result
-    let map = new Immutable.Map()
-
-    if (isWithObligatory) {
-      // add ETH to result map
-      const ethToken = new TokenModel({
-        dao: ethereumDAO,
-        name: EthereumDAO.getName(),
-        balance: await ethereumDAO.getAccountBalance(account),
-        isOptional: false,
-        isFetched: true,
-        blockchain: 'Ethereum',
-      })
-      map = map.set(ethToken.id(), ethToken)
-
-      const bitcoinLikeTokens = await Promise.all([
-        this._setupBitcoinDAO('BTC', 'Bitcoin', btcDAO),
-        this._setupBitcoinDAO('BCC', 'Bitcoin Cash', bccDAO),
-        this._setupBitcoinDAO('BTG', 'Bitcoin Gold', btgDAO),
-        this._setupBitcoinDAO('LTC', 'Litecoin', ltcDAO),
-      ])
-      for (let t of bitcoinLikeTokens) {
-        if (t !== null) {
-          map = map.set(t.id(), t)
-        }
-      }
-    }
 
     const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
     const timeHolderAddress = timeHolderDAO.getInitAddress()
 
     for (const [i, address] of Object.entries(tokensAddresses)) {
-      let token = new TokenModel({
-        address,
-        dao: daos[i],
-        name: names[i],
-        symbol: symbols[i] ? symbols[i].toUpperCase() : address,
-        url: urls[i],
-        decimals: decimalsArr[i],
-        icon: ipfsHashes[i],
-        balance: balances[i],
-        platform: additionalData[address] && additionalData[address].platform,
-        totalSupply: additionalData[address] && TokenManagementExtensionDAO.removeDecimals(additionalData[address].totalSupply, decimalsArr[i]),
-        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[i]),
-        isFetched: true,
-        blockchain: 'Ethereum',
-      })
-
       if (token.symbol() === TIME) {
         const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
 
