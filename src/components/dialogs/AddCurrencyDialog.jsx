@@ -10,11 +10,15 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import BalancesCollection from 'models/tokens/BalancesCollection'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import BalanceModel from 'models/tokens/BalanceModel'
+import Amount from 'models/Amount'
 import './AddCurrencyDialog.scss'
 import AddTokenDialog from './AddTokenDialog'
 import ModalDialog from './ModalDialog'
@@ -22,6 +26,7 @@ import ModalDialog from './ModalDialog'
 class TokenRow extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
+    balances: PropTypes.instanceOf(BalancesCollection),
     isSelected: PropTypes.bool,
     onClick: PropTypes.func,
   }
@@ -31,8 +36,12 @@ class TokenRow extends PureComponent {
   renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
 
   render () {
-    const { isSelected, token } = this.props
+    const { isSelected, token, balances } = this.props
     const symbol = token.symbol()
+    let balance = balances.item(token.id())
+    if (!balance) {
+      balance = new BalanceModel({ amount: new Amount(0, token.symbol()) })
+    }
 
     return (
       <div
@@ -42,18 +51,14 @@ class TokenRow extends PureComponent {
       >
         <div styleName='cell'>
           <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
             <div styleName='label'>{symbol}</div>
           </div>
         </div>
         <div styleName='cell cellAuto'>
           <div styleName='symbol'>{symbol}</div>
           <div styleName='value'>
-            <TokenValue
-              value={token.balance()}
-              symbol={token.symbol()}
-              isLoading={!token.isFetched()}
-            />
+            <TokenValue value={balance.amount()} />
           </div>
         </div>
         <div styleName='cell'>
@@ -71,9 +76,11 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
+  const wallet = state.get(DUCK_MAIN_WALLET)
   return {
     profile: state.get(DUCK_SESSION),
     tokens: state.get(DUCK_TOKENS),
+    balances: wallet.balances(),
   }
 }
 
@@ -92,6 +99,7 @@ export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
     profile: PropTypes.object,
     tokens: PropTypes.instanceOf(TokensCollection),
+    balances: PropTypes.instanceOf(BalancesCollection),
     handleAddToken: PropTypes.func,
     modalsClose: PropTypes.func,
     updateUserProfile: PropTypes.func,
@@ -120,20 +128,21 @@ export default class AddCurrencyDialog extends PureComponent {
     })
   }
 
-  async handleSave () {
-    const tokens = this.props.tokens.filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
-    const tokensAddresses = tokens.toArray().map((item) => item.address())
+  handleSave () {
+    const tokens = this.props.tokens.items().filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
+    const tokensAddresses = tokens.map((item) => item.address())
     const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
 
     this.props.modalsClose()
-    await this.props.updateUserProfile(profile)
+    this.props.updateUserProfile(profile)
   }
 
-  renderRow = (selectedTokens) => (token) => {
+  renderRow = (selectedTokens, balances) => (token) => {
     const isSelected = selectedTokens.includes(token.symbol())
 
     return (
       <TokenRow
+        balances={balances}
         key={token.id()}
         token={token}
         isSelected={isSelected}
@@ -142,9 +151,9 @@ export default class AddCurrencyDialog extends PureComponent {
     )
   }
 
-  renderTokens = ({ tokens, selectedTokens }) => (
+  renderTokens = ({ balances, tokens, selectedTokens }) => (
     <div styleName='table'>
-      {tokens.items().map(this.renderRow(selectedTokens))}
+      {tokens.items().map(this.renderRow(selectedTokens, balances))}
     </div>
   )
 
@@ -172,6 +181,7 @@ export default class AddCurrencyDialog extends PureComponent {
                 showLoader={!this.props.tokens.isFetched()}
                 selectedTokens={this.state.selectedTokens}
                 tokens={this.props.tokens}
+                balances={this.props.balances}
               >
                 {this.renderTokens}
               </WithLoader>
