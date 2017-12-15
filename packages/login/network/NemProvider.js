@@ -40,7 +40,6 @@ export class NemProvider extends AbstractProvider {
   async getAccountBalances (mosaic = null) {
     const node = this._selectNode(this._engine)
     const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
-    console.log(balance, mosaics, mosaic)
     return mosaic === null
       ? { balance }
       : { balance: mosaics[mosaic] }
