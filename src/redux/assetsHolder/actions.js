@@ -51,7 +51,7 @@ const subscribeOnTokens = (token: TokenModel) => async (dispatch) => {
   //   .setAllowance(timeHolderWalletAddress, timeHolderWalletAllowance)
 }
 
-export const initTimeHolder = () => async (dispatch, getState) => {
+export const initAssetsHolder = () => async (dispatch, getState) => {
   if (getState().get(DUCK_ASSETS_HOLDER).isInited()) {
     return
   }

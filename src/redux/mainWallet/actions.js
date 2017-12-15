@@ -239,12 +239,6 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string) 
   }
 }
 
-export const initTIMEDeposit = () => async (dispatch) => {
-  const dao = await contractsManagerDAO.getTIMEHolderDAO()
-  const deposit = await dao.getAccountDepositBalance()
-  dispatch(updateDeposit(deposit, null))
-}
-
 export const updateIsTIMERequired = () => async (dispatch) => {
   dispatch({ type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired() })
 }
