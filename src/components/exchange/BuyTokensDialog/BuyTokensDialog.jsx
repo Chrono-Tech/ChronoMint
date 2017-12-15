@@ -12,8 +12,9 @@ import { Translate } from 'react-redux-i18n'
 import { exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import Amount from 'models/Amount'
 import BalancesCollection from 'models/tokens/BalancesCollection'
-import TokenModel from 'models/tokens/TokenModel'
+import BalanceModel from 'models/tokens/BalanceModel'
 import './BuyTokensDialog.scss'
 import BuyTokensForm from './BuyTokensForm'
 
@@ -52,8 +53,9 @@ export default class BuyTokensDialog extends React.PureComponent {
     const exchangeToken = this.props.tokens.item(this.props.exchange.asset())
     let userExchangeBalance = this.props.balances.item(exchangeToken.id())
     if (!userExchangeBalance) {
-      userExchangeBalance = new TokenModel({})
+      userExchangeBalance = new BalanceModel({ amount: new Amount(0, exchangeToken.symbol()) })
     }
+
     const ethToken = this.props.tokens.item('ETH')
     const ethBalance = this.props.balances.item('ETH')
 
