@@ -31,7 +31,8 @@ function mapStateToProps (state) {
   const token = state.get(DUCK_TOKENS).item(timeAddress)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const allowance = token ? token.allowance(timeAddress) : new BigNumber(0)
+  // TODO @dkchv: !!!
+  // const allowance = token ? token.allowance(timeAddress) : new BigNumber(0)
   const balance = wallet.balances().item(token.id())
 
   return {
@@ -40,7 +41,7 @@ function mapStateToProps (state) {
     deposit: wallet.timeDeposit(),
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && token && token.balance().eq(0),
     timeAddress,
-    allowance,
+    allowance: new Amount(0, null, false),
     isTesting,
   }
 }

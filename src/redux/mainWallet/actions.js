@@ -1,3 +1,4 @@
+import AllowanceModel from '@/models/wallet/AllowanceModel'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
@@ -59,22 +60,7 @@ export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalan
 
 export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
 
-export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
-  type: WALLET_TIME_DEPOSIT,
-  isCredited,
-  amount: new Amount(amount),
-})
-
-export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
-
-export const depositMinus = (amount: BigNumber) => updateDeposit(amount, false)
-
-export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
-  type: WALLET_ALLOWANCE,
-  token,
-  value,
-  spender,
-})
+export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
@@ -88,15 +74,21 @@ export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, g
   const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let updateTIMEAllowance = false
   if (tx.to() === timeHolderWalletAddress) {
-    dispatch(depositPlus(tx.value()))
+    // dispatch(depositPlus(tx.value()))
     updateTIMEAllowance = true
   } else if (tx.from() === timeHolderWalletAddress) {
-    dispatch(depositMinus(tx.value()))
+    // dispatch(depositMinus(tx.value()))
     updateTIMEAllowance = true
   }
   if (updateTIMEAllowance) {
-    const dao = await token.dao()
-    dispatch(allowance(token, await dao.getAccountAllowance(timeHolderWalletAddress), timeHolderWalletAddress))
+    const tokenDAO = tokenService.getDAO(token)
+    const amount = await tokenDAO.getAccountAllowance(timeHolderWalletAddress)
+    // TODO @dkchv: !!! review again: token needed?, return amount as Amount?
+    dispatch(allowance(new AllowanceModel({
+      spender: timeHolderWalletAddress,
+      amount: new Amount(amount, token.symbol()),
+      token,
+    })))
   }
 
   dispatch(notify(notice))
@@ -131,7 +123,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   if (tokenDAO.watchBalance) {
     await tokenDAO.watchBalance((balance) => dispatch(watchBalance(balance)))
   }
-  await tokenDAO.watchApproval((notice: ApprovalNoticeModel) => {
+  await tokenDAO.watchApproval(account, (notice: ApprovalNoticeModel) => {
     dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
     dispatch(notify(notice.setToken(token)))
   })
@@ -154,58 +146,10 @@ export const initMainWallet = () => (dispatch, getState) => {
 // TODO @dkchv: review: invoked on token updates and profile
 export const watchInitWallet = () => async (dispatch, getState) => {
   return
-  const state = getState()
 
-  // const profile: ProfileModel = state.get(DUCK_SESSION).profile
-  const previous = state.get(DUCK_MAIN_WALLET).tokens()
-
-  // dispatch({ type: WALLET_TOKENS_FETCH })
-  // const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  // let tokens = await dao.getUserTokens(profile.tokens().toArray())
-  let tokens = state.get(DUCK_TOKENS)
-  // dispatch({ type: WALLET_TOKENS, tokens })
   dispatch(getAccountTransactions(tokens.list()))
 
-  // const toStopArray = previous.filter((k) => !tokens.get(k)).valueSeq().toArray().map((token: TokenModel) => {
-    // const dao = token.dao()
-    // return dao.stopWatching()
-  // })
-  // if (toStopArray.length) {
-  //   await Promise.all(toStopArray)
-  // }
 
-  // const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  // const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
-  //   timeHolderDAO.getAddress(),
-  //   timeHolderDAO.getWalletAddress(),
-  // ])
-
-  // let contractNames = {}
-  // contractNames[ timeHolderAddress ] = TIME + ' Holder'
-  // ApprovalNoticeModel.setContractNames(contractNames)
-  // dispatch({ type: WALLET_TIME_ADDRESS, address: timeHolderWalletAddress })
-
-  // NOTE @ipavlenko: BCC and BTC addresses usually the same.
-  // Decided to manage them independently to simplify further works on multiple wallets. .
-  // dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
-  // dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
-  // dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
-  // dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
-  // dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
-
-  tokens = tokens.filter((k) => !previous.get(k)).valueSeq().toArray()
-  for (let token: TokenModel of tokens) {
-    dispatch(addMarketToken(token.symbol()))
-    const dao = token.dao()
-    await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
-    if (dao.watchBalance) {
-      await dao.watchBalance((balance) => dispatch(watchBalance(balance)))
-    }
-    await dao.watchApproval((notice: ApprovalNoticeModel) => {
-      dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
-      dispatch(notify(notice.setToken(token)))
-    })
-  }
 }
 
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {

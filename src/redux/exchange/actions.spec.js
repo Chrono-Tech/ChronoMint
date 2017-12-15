@@ -96,15 +96,15 @@ describe('Exchange tests', () => {
     })
     await store.dispatch(a.createExchange(newExchange))
   })
-
-  it('should get allowance for token', async (done: Function) => {
-    store.clearActions()
-    await store.dispatch(a.getTokensAllowance(exchange))
-    const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(WALLET_ALLOWANCE)
-    expect(actions[ 0 ].token.allowance(exchange.address)).toEqual(new BigNumber(0))
-    done()
-  })
+  //
+  // it('should get allowance for token', async (done: Function) => {
+  //   store.clearActions()
+  //   await store.dispatch(a.getTokensAllowance(exchange))
+  //   const actions = store.getActions()
+  //   expect(actions[ 0 ].type).toEqual(WALLET_ALLOWANCE)
+  //   expect(actions[ 0 ].token.allowance(exchange.address)).toEqual(new BigNumber(0))
+  //   done()
+  // })
 
   it('should get exchanges count', async (done: Function) => {
     store.clearActions()

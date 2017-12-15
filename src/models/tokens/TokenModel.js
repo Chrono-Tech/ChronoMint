@@ -14,7 +14,6 @@ export default class TokenModel extends abstractFetchingModel({
   name: null,
   symbol: null,
   balance: new Amount(0, null, false),
-  allowance: new Immutable.Map(),
   url: null,
   icon: null,
   fee: new FeeModel(),
@@ -111,13 +110,13 @@ export default class TokenModel extends abstractFetchingModel({
     return this.set('balance', newBalance)
   }
 
-  allowance (spender): Amount {
-    return this.get('allowance').get(spender) || new Amount(0)
-  }
+  // allowance (spender): Amount {
+  //   return this.get('allowance').get(spender) || new Amount(0)
+  // }
 
-  setAllowance (spender, value): TokenModel {
-    return this.set('allowance', this.get('allowance').set(spender, value))
-  }
+  // setAllowance (spender, value): TokenModel {
+  //   return this.set('allowance', this.get('allowance').set(spender, value))
+  // }
 
   url () {
     return this.get('url')

@@ -1,3 +1,4 @@
+import AllowanceCollection from '@/models/wallet/AllowanceCollection'
 import Immutable from 'immutable'
 import Amount from 'models/Amount'
 import BalanceModel from 'models/tokens/BalanceModel'
@@ -22,6 +23,7 @@ export default class MainWallet extends abstractFetchingModel({
   // TODO @dkchv: is a part of wallet ?
   isTIMERequired: true,
   balances: new BalancesCollection(),
+  allowances: new AllowanceCollection(),
 }) {
 
   address () {
@@ -78,5 +80,9 @@ export default class MainWallet extends abstractFetchingModel({
 
   balance (balance: BalanceModel) {
     return this.balances(this.balances().update(balance))
+  }
+
+  allowances (value) {
+    return this._getSet('allowances', value)
   }
 }
