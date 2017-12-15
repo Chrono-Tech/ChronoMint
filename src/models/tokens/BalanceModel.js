@@ -4,8 +4,8 @@ import { abstractModel } from '../AbstractModel'
 
 export default class BalanceModel extends abstractModel({
   id: null,
-  // TODO @dkchv: may be set as b0,b3,b6?
-  amount: new Amount(),
+  amount: new Amount(0, null , false),
+  // TODO @dkchv: add pendings here
 }) {
   id () {
     return this.get('id')

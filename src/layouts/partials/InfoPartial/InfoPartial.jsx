@@ -1,3 +1,5 @@
+import TokenPlaceHolder from '@/layouts/partials/InfoPartial/TokenPlaceHolder'
+import BalancesCollection from '@/models/tokens/BalancesCollection'
 import { AddCurrencyDialog } from 'components'
 import BalanceModel from 'models/tokens/BalanceModel'
 import { FloatingActionButton, Paper } from 'material-ui'
@@ -49,7 +51,7 @@ function mapStateToProps (state) {
   const wallet = getCurrentWallet(state)
 
   return {
-    wallet,
+    isMultisig: wallet.isMultisig(),
     selectedCoin: state.get(DUCK_MARKET).selectedCoin,
     open: ui.open,
     balances: wallet.balances(),
@@ -60,12 +62,13 @@ function mapStateToProps (state) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class InfoPartial extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.object,
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,
     open: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
+    isMultisig: PropTypes.bool,
+    balances: PropTypes.instanceOf(BalancesCollection),
   }
 
   constructor () {
@@ -96,11 +99,14 @@ export default class InfoPartial extends PureComponent {
   }
 
   handleSlide = (diff) => {
-    const count = this.props.wallet.balances().size()
-    const total = count + 1 <= this.state.visibleCount ? count + 1 : count
-    const cells = (total % this.state.visibleCount === 0)
+    const { balances, tokens } = this.props
+    const { visibleCount } = this.state
+
+    const count = balances.size() + tokens.leftToFetch()
+    const total = count + 1 <= visibleCount ? count + 1 : count
+    const cells = (total % visibleCount === 0)
       ? total
-      : ((parseInt(total / this.state.visibleCount) + 1) * this.state.visibleCount)
+      : ((parseInt(total / visibleCount) + 1) * visibleCount)
 
     const slideIndex = this.state.slideIndex + diff + cells
     this.setState({
@@ -129,6 +135,14 @@ export default class InfoPartial extends PureComponent {
     )
   }
 
+  renderPlaceHolders (count) {
+    const placeHolders = []
+    for (let i = 0; i < count; i++) {
+      placeHolders.push(<TokenPlaceHolder key={i} />)
+    }
+    return placeHolders
+  }
+
   renderAction () {
     return (
       <div
@@ -149,14 +163,13 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { wallet } = this.props
+    const { balances, isMultisig, tokens } = this.props
     const { visibleCount } = this.state
-    const balances = wallet.balances()
-    const isMainWallet = !wallet.isMultisig()
+    const leftToFetch = tokens.leftToFetch()
 
-    let slidesCount = balances.size()
+    let slidesCount = tokens.size() + leftToFetch
     let withBigButton = false
-    if (isMainWallet) {
+    if (!isMultisig) {
       // increase 'add' button for main wallet
       slidesCount += 1
       // check
@@ -172,10 +185,11 @@ export default class InfoPartial extends PureComponent {
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {balances.items().map(this.renderItem)}
-            {isMainWallet && withBigButton && this.renderAction()}
+            {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
+            {!isMultisig && withBigButton && this.renderAction()}
           </div>
         </div>
-        {isMainWallet && !withBigButton && (
+        {!isMultisig && !withBigButton && (
           <div styleName='addTokenFAB'>
             <FloatingActionButton onTouchTap={this.handleAddClick}>
               <div className='material-icons'>add</div>

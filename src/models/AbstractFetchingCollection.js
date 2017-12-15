@@ -35,8 +35,8 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
 
   item (id) {
     const item = this.list().get(id)
-    return !item && this.get('model')
-      ? this.get('model')
+    return !item && this.get('emptyModel')
+      ? this.get('emptyModel')
       : item
   }
 

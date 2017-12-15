@@ -74,6 +74,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
 
   /** @private */
   _watchCallback = (callback, status) => async (result) => {
+    console.log('--VotingDAO#', result)
     const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
     const poll = await detailsDAO.getPollDetails(result.args.pollId)
     callback(new PollNoticeModel({

@@ -115,16 +115,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   }
   const symbol = token.symbol()
 
-  // set placeholder
-  dispatch({
-    type: WALLET_TOKEN_BALANCE,
-    balance: new BalanceModel({
-      id: token.id(),
-      amount: new Amount(0, symbol, false),
-    }),
-  })
-
-  // fetch actual
   const tokenDAO = tokenService.getDAO(token.id())
   const balance = await tokenDAO.getAccountBalance(account)
   dispatch({
