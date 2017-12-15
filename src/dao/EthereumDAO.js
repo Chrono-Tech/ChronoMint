@@ -76,7 +76,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       gasFee,
       input: tx.input,
       credited: tx.to === account,
-      symbol: this.getSymbol(),
+      token: this.getSymbol(),
     })
   }
 
