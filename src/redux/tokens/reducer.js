@@ -8,9 +8,11 @@ export default (state = initialState, action) => {
     case a.TOKENS_INIT:
       return state.isInited(action.isInited)
     case a.TOKENS_FETCHING:
-      return state.isFetching(true)
+      return state.leftToFetch(action.count)
+    case a.TOKENS_FAILED:
+      return state.leftToFetch(state.leftToFetch() - 1)
     case a.TOKENS_FETCHED:
-      return state.isFetched(true).isFetching(false)
+      return state.itemFetched(action.token)
     case a.TOKENS_REMOVE:
       return state.remove(action.token)
     // TODO @dkchv: useless?

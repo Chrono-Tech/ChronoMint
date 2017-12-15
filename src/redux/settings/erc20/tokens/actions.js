@@ -55,12 +55,6 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
   ])
 }
 
-export const listTokens = () => async (dispatch) => {
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  const list = await dao.getTokens()
-  dispatch({ type: TOKENS_LIST, list })
-}
-
 export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formName) => {
   dispatch({ type: TOKENS_FORM_FETCH })
 
