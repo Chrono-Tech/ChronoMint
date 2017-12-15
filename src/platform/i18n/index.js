@@ -1,5 +1,8 @@
-import { I18n } from 'react-redux-i18n'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
 
 export {
-  I18n
+  loadTranslations,
+  setLocale,
+  i18nReducer,
+  I18n,
 }

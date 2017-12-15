@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { closeNotifier } from 'redux/notifier/actions'
-import ModalContainer from 'components/modals/Modal'
 import theme from 'styles/themes/default'
 import { HeaderPartial, DrawerPartial } from './partials'
 
@@ -50,7 +49,6 @@ class Markup extends PureComponent {
           </div>
           <div styleName='middleBottom' />
           <ModalStack />
-          <ModalContainer />
         </div>
       </MuiThemeProvider>
     )

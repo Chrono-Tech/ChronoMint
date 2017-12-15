@@ -21,7 +21,7 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    formCBELoadName: (e, newValue) => dispatch(formCBELoadName(newValue)),
+    formCBELoadName: (e, newValue) => dispatch(formCBELoadName(newValue, FORM_CBE_ADDRESS)),
     modalsClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
