@@ -12,10 +12,15 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
   address: null,
   authorizedManager: null,
   isActive: true,
+  asset: null,
 }) {
 
   id () {
     return this.get('transactionHash') || this.get('address')
+  }
+
+  asset (value): string {
+    return this._getSet('asset', value)
   }
 
   address (): string {

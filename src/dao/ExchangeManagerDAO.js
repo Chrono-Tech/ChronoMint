@@ -77,15 +77,14 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       return exchangesCollection
     }
 
-    const [ symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
+    const [ assets, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
 
     exchangesAddresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[ i ]) // symbol may be empty, but exchange not be without token symbol
       const buyPrice = new BigNumber(buyPrices[ i ])
       const sellPrice = new BigNumber(sellPrices[ i ])
       const assetBalance = assetBalances[ i ]
       const ethBalance = ethBalances[ i ]
-      const token = tokens.getBySymbol(symbol)
+      const token = tokens.item(assets[ i ])
 
       try {
         exchangeService.subscribeToExchange(address)
@@ -97,7 +96,8 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
-        symbol: symbol || address,
+        asset: assets[ i ],
+        symbol: token.symbol(),
         buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
         sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
         assetBalance: tokenService.getDAO(token.address()).removeDecimals(assetBalance, token),
@@ -114,7 +114,6 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
   watchExchangeCreated (account, callback) {
     this._watch('ExchangeCreated', (tx) => {
-      tx.args.symbol = this._c.bytesToString(tx.args.symbol)
       callback(tx)
     })
   }
