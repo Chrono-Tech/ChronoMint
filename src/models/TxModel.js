@@ -21,6 +21,7 @@ class TxModel extends abstractModel({
   symbol: '',
   tokenAddress: null,
   type: '',
+  token: null, // address
   args: null,
 }) {
   tokenAddress (value) {
@@ -78,6 +79,10 @@ class TxModel extends abstractModel({
 
   isFromEmpty () {
     return this.from() === '0x0000000000000000000000000000000000000000'
+  }
+
+  token (value) {
+    return this._getSet('token', value)
   }
 }
 

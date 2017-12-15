@@ -107,11 +107,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: this.removeDecimals(tx.args.value),
+      value: new Amount(this.removeDecimals(tx.args.value), this.getInitAddress()),
       gas: tx.gas,
       gasPrice,
       gasFee,
       time,
+      token: this.getInitAddress(),
       credited: tx.args.to === account,
     })
   }
@@ -121,6 +122,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     if (!tx.args.value) {
       return null
     }
+
+    console.log('--ERC20DAO#_getTxModel', tx)
 
     const txDetails = await this._web3Provider.getTransaction(tx.transactionHash)
     tx.gasPrice = txDetails.gasPrice
@@ -147,6 +150,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   async watchTransfer (callback, options: Object = {}) {
     const account = this.getAccount()
     const internalCallback = async (result, block, time) => {
+      console.log('--ERC20DAO#internalCallback', result)
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
         callback(new TransferNoticeModel({ tx, account, time }))

@@ -97,8 +97,7 @@ export const withdrawAsset = (amount: Amount, token: TokenModel) => async () => 
   const assetDAO = tokenService.getDAO(token)
 
   try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.withdraw(amount, assetDAO)
+    await timeHolderDAO.withdraw(amount, assetDAO)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)

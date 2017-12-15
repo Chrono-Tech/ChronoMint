@@ -78,10 +78,12 @@ export const allowance = (token: TokenModel, value: BigNumber, spender) => ({
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
-  const token: TokenModel = getState().get(DUCK_TOKENS).get(tx.symbol())
+  console.log('--actions#', tx.toJS())
+  const token: TokenModel = getState().get(DUCK_TOKENS).item(tx.token())
 
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
 
+  // TODO @dkchv: !!! rework
   const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
   const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
   let updateTIMEAllowance = false
@@ -106,7 +108,7 @@ export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => as
   dispatch(setBalance(token, balance))
 }
 
-const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
+const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account, profile } = getState().get(DUCK_SESSION)
   if (token.isOptional() && !profile.tokens().get(token.id())) {
     return
@@ -132,10 +134,21 @@ const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
       amount: new Amount(balance, symbol),
     }),
   })
+
+  // TODO @dkchv: review again !!!
+  dispatch(addMarketToken(token.symbol()))
+  await tokenDAO.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+  if (tokenDAO.watchBalance) {
+    await tokenDAO.watchBalance((balance) => dispatch(watchBalance(balance)))
+  }
+  await tokenDAO.watchApproval((notice: ApprovalNoticeModel) => {
+    dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
+    dispatch(notify(notice.setToken(token)))
+  })
 }
 
 export const initMainWallet = () => (dispatch, getState) => {
-  const callback = (token) => dispatch(fetchTokenBalance(token))
+  const callback = (token) => dispatch(handleToken(token))
   tokenService.on(EVENT_NEW_TOKEN, callback)
   // fetch for existing tokens
   const tokens = getState().get(DUCK_TOKENS)
