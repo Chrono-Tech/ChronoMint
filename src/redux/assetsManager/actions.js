@@ -200,16 +200,11 @@ export const setManagers = (tx) => async (dispatch, getState) => {
     const symbol = Web3Converter.bytesToString(tx.args.symbol)
     const { account } = getState().get(DUCK_SESSION)
 
-    let { selectedToken, assets } = getState().get(DUCK_ASSETS_MANAGER)
+    let { selectedToken } = getState().get(DUCK_ASSETS_MANAGER)
     const tokens = getState().get(DUCK_TOKENS)
-    let token = null
-    Object.keys(assets).map((address) => {
-      if (tokens.item(address) && tokens.item(address).symbol() === symbol) {
-        token = tokens.item(address)
-      }
-    })
+    let token = tokens.getBySymbol(symbol)
 
-    if (!token || tx.args.from === account) {
+    if (tx.args.from === account) {
       if (selectedToken === symbol) {
         dispatch({ type: SELECT_TOKEN, payload: { selectedToken: null } })
       }
@@ -220,7 +215,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       if (token && token.managersList().isFetched()) {
         let managersList = token.managersList()
         if (assetsManagerDao.isEmptyAddress(from)) {
-          managersList.add(to)
+          managersList = managersList.add(to)
         } else {
           managersList = managersList.remove(from)
         }
@@ -274,8 +269,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   }
   const assetCallback = async (tx) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-
-    const erc20: ERC20ManagerDAO = await contractsManager.getERC20ManagerDAO()
+    const erc20: ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
     await erc20.fetchTokens([ tx.args.token ])
     let removedToken = new TokenModel()
     dispatch({ type: TOKENS_REMOVE, token: removedToken.transactionHash(tx.transactionHash) })
