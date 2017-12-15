@@ -49,7 +49,7 @@ export default class BuyTokensDialog extends React.PureComponent {
   }
 
   render () {
-    const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
+    const exchangeToken = this.props.tokens.item(this.props.exchange.asset())
     let userExchangeBalance = this.props.balances.item(exchangeToken.id())
     if (!userExchangeBalance) {
       userExchangeBalance = new TokenModel({})

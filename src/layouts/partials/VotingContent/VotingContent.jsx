@@ -10,6 +10,7 @@ import PollModel from 'models/PollModel'
 import { getStatistics } from 'redux/voting/getters'
 import { DUCK_MAIN_WALLET, initTIMEDeposit } from 'redux/mainWallet/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import Preloader from 'components/common/Preloader/Preloader'
@@ -23,12 +24,14 @@ function prefix (token) {
 function mapStateToProps (state) {
   const voting = state.get(DUCK_VOTING)
   const wallet = state.get(DUCK_MAIN_WALLET)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     list: voting.list(),
+    tokens,
     timeDeposit: wallet.timeDeposit(),
     statistics: getStatistics(voting),
     isCBE: state.get(DUCK_SESSION).isCBE,
-    isFetched: voting.isFetched() && wallet.isFetched(),
+    isFetched: voting.isFetched(),
     isFetching: voting.isFetching() && !voting.isFetched(),
   }
 }
@@ -136,7 +139,7 @@ export default class VotingContent extends Component {
                   <div styleName='entries' />
                   <div>
                     <RaisedButton
-                      disabled={this.props.timeDeposit.equals(new BigNumber(0))}
+                      disabled={false &&this.props.timeDeposit.equals(new BigNumber(0))}
                       label={<Translate value={prefix('newPoll')} />}
                       styleName='action'
                       onClick={this.props.handleNewPoll}
@@ -173,7 +176,6 @@ export default class VotingContent extends Component {
   }
 
   render () {
-
     const polls = this.props.isFetched
       ? this.props.list.reverse().toArray()
       : []
@@ -182,7 +184,7 @@ export default class VotingContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead(polls)}
-          {this.props.isFetched && (!(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()) &&
+          {this.props.isFetched && (!(this.props.timeDeposit > 0) || this.props.timeDeposit.isZero()) &&
           (
             <div styleName='accessDenied'>
               <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link

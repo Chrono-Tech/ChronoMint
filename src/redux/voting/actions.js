@@ -1,3 +1,4 @@
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
@@ -5,6 +6,8 @@ import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } 
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokenModel from 'models/tokens/TokenModel'
 
 export const POLLS_INIT = 'voting/INIT'
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
@@ -154,12 +157,27 @@ export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) =>
   dispatch({ type: POLLS_UPDATE, poll })
 }
 
-export const listPolls = () => async (dispatch) => {
+export const listPolls = () => async (dispatch, getState) => {
+  const tokens = getState().get(DUCK_TOKENS)
+  const timeToken = tokens.getBySymbol('TIME')
+  if (!timeToken) {
+    const callback = (token) => {
+      if (token.symbol() === 'TIME') {
+        dispatch(getPolls(token))
+      }
+    }
+    tokenService.on(EVENT_NEW_TOKEN, callback)
+  } else {
+    dispatch(getPolls(timeToken))
+  }
+
+}
+const getPolls = (timeToken: TokenModel) => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   let list = []
   try {
     const dao = await contractsManagerDAO.getVotingDetailsDAO()
-    list = await dao.getPolls()
+    list = await dao.getPolls(timeToken)
   } finally {
     dispatch({
       type: POLLS_LIST,

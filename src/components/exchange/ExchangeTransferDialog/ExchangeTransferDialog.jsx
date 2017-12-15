@@ -55,12 +55,6 @@ export default class ExchangeTransferDialog extends React.PureComponent {
 
   handleDeposit = (values, dispatch, props) => {
     this.props.handleClose()
-    // eslint-disable-next-line
-    console.log('handleDeposit',
-      this.props.tokens.getBySymbol(props.symbol),
-      new Amount(values.get('amount'), props.symbol),
-      this.props.exchange.address(),
-    )
     this.props.depositToExchange(
       this.props.tokens.getBySymbol(props.symbol),
       new Amount(values.get('amount'), props.symbol),

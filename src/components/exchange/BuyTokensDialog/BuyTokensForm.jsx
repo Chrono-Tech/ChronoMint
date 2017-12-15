@@ -94,7 +94,7 @@ export default class BuyTokensForm extends React.PureComponent {
     if (!this.props.balances.item(this.props.exchangeToken.id())) {
       showWarningMessage = true
     }
-    const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
+    const exchangeToken = this.props.tokens.item(this.props.exchange.asset())
     const ethToken = this.props.tokens.item('ETH')
 
     const allowance = this.props.allowances.get(this.props.exchangeToken.id())

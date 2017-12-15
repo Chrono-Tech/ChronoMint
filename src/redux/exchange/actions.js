@@ -35,7 +35,7 @@ export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOr
     const exchangeDAO = await contractsManagerDAO.getExchangeDAO(exchange.address())
     const tokens = getState().get(DUCK_TOKENS)
     if (isBuy) {
-      await exchangeDAO.buy(amount, exchange, tokens.getBySymbol(exchange.symbol()))
+      await exchangeDAO.buy(amount, exchange, tokens.item(exchange.asset()))
     } else {
       await exchangeDAO.sell(amount, exchange, getState().get(DUCK_MAIN_WALLET).tokens().get(exchange.symbol()))
     }
@@ -89,7 +89,7 @@ export const getExchangesForOwner = () => async (dispatch, getState) => {
 }
 
 export const getTokensAllowance = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
-  const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+  const token = getState().get(DUCK_TOKENS).item(exchange.asset())
   const dao = tokenService.getDAO(token)
   const allowance = await dao.getAccountAllowance(exchange.address())
   dispatch({ type: WALLET_ALLOWANCE, token, value: allowance, spender: exchange.address() })
@@ -136,7 +136,7 @@ export const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getSt
 export const createExchange = (exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   const tokens = getState().get(DUCK_TOKENS)
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
-  const txHash = await exchangeManagerDAO.createExchange(exchange, tokens.getBySymbol(exchange.symbol()))
+  const txHash = await exchangeManagerDAO.createExchange(exchange, tokens.item(exchange.asset()))
   dispatch({ type: EXCHANGE_UPDATE_FOR_OWNER, exchange: exchange.isPending(true).transactionHash(txHash) })
 }
 
@@ -207,7 +207,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Buy', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+    const token = getState().get(DUCK_TOKENS).item(exchange.asset())
     const dao = tokenService.getDAO(token)
     dispatch(updateExchange(exchange
       .assetBalance(exchange.assetBalance().minus(dao.removeDecimals(tx.tokenAmount, token)))
@@ -234,7 +234,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('WithdrawTokens', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const token = getState().get(DUCK_TOKENS).getBySymbol(exchange.symbol())
+    const token = getState().get(DUCK_TOKENS).item(exchange.asset())
     const dao = tokenService.getDAO(token)
     dispatch(updateExchange(exchange
       .assetBalance(exchange.assetBalance().minus(dao.removeDecimals(tx.tokenAmount, token))),
