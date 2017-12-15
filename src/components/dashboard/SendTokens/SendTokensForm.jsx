@@ -93,7 +93,7 @@ export class SendTokensForm extends PureComponent {
               fullWidth
               {...styles}
             >
-              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
+              {this.props.wallet.tokens().filter((t) => !t.dao().isTransferLocked).keySeq().toArray().map((symbol) => (
                 <MenuItem
                   key={symbol}
                   value={symbol}

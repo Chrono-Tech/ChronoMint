@@ -29,19 +29,9 @@ export default class NemMiddlewareNode extends AbstractNode {
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)
+              // eslint-disable-next-line
               console.log('Balance from socket', data)
-              // const ev = {
-              //   address: data.address,
-              //   balance: data.balances.confirmations0 != null // nil check
-              //     ? new BigNumber(data.balances.confirmations0)
-              //     : null,
-              //   balance3: data.balances.confirmations3 != null // nil check
-              //     ? new BigNumber(data.balances.confirmations3)
-              //     : null,
-              //   balance6: data.balances.confirmations6 != null // nil check
-              //     ? new BigNumber(data.balances.confirmations6)
-              //     : null,
-              // }
+              // TODO @ipavlenko: Implement
               // this.emit('balance', ev)
             } catch (e) {
               this.trace('Failed to decode message', e)

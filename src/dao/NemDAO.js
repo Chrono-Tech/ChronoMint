@@ -16,6 +16,9 @@ export default class NemDAO {
     this._mosaic = mosaic
     this._decimals = decimals
     this._nemProvider = nemProvider
+
+    // TODO @ipavlenko: Sorry, will remove this soon
+    this.isTransferLocked = true
   }
 
   getAddressValidator () {
@@ -56,11 +59,10 @@ export default class NemDAO {
   }
 
   async getAccountBalances () {
-    const { balance, vestedBalance, unvestedBalance } = await this._nemProvider.getAccountBalances(this._mosaic)
+    // TODO @ipavlenko: Implement vestedBalance & unvestedBalance
+    const { balance /*, vestedBalance, unvestedBalance */ } = await this._nemProvider.getAccountBalances(this._mosaic)
     return {
-      balance,
-      vestedBalance,
-      unvestedBalance,
+      balance: balance && balance.div(Math.pow(10, this._decimals)),
     }
   }
 

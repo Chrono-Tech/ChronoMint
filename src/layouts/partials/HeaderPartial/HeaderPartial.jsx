@@ -362,7 +362,7 @@ class HeaderPartial extends PureComponent {
               />
             </div>
             {addresses.filter((a) => a.address).map((a) => (
-              <div key={a.address}>
+              <div key={a.title}>
                 <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
                 <div styleName='info-micros'>
                   <QRIcon value={a.address} />
