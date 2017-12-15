@@ -132,7 +132,9 @@ export default class SendTokensForm extends PureComponent {
 
   renderBody () {
     const { invalid, pristine, token, handleSubmit, feeMultiplier, onSubmit, wallet } = this.props
-    const { isContract } = this.state
+    // TODO @dkchv: !!! restore
+    // const { isContract } = this.state
+    const isContract = true
 
     return (
       <div>

@@ -8,7 +8,6 @@ import TxModel from 'models/TxModel'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
-export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
 const EVENT_TRANSFER = 'Transfer'
@@ -70,17 +69,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.removeDecimals(allowance)
   }
 
-  approve (account: string, amount: BigNumber) {
-    logInfo('approve', account, amount)
-    // eslint-disable-next-line
-    console.log('approve', this.addDecimals)
-    return this._tx(TX_APPROVE, [
+  approve (account: string, amount: Amount) {
+    return this._tx('approve', [
       account,
       this.addDecimals(amount),
     ], {
       account,
-      amount: new Amount(amount, this.getSymbol()),
-      currency: this.getSymbol(),
+      amount,
+      currency: amount.symbol(),
     })
   }
 
