@@ -61,7 +61,9 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DepositTokens extends PureComponent {
   static propTypes = {
-    deposit: PropTypes.object,
+    deposit: PropTypes.instanceOf(Amount),
+    allowance: PropTypes.instanceOf(Amount),
+    balance: PropTypes.instanceOf(Amount),
     initTIMEDeposit: PropTypes.func,
     mainApprove: PropTypes.func,
     depositTIME: PropTypes.func,
@@ -73,7 +75,6 @@ export default class DepositTokens extends PureComponent {
     token: PropTypes.object,
     errors: PropTypes.object,
     timeAddress: PropTypes.string,
-    allowance: PropTypes.instanceOf(BigNumber),
     wallet: PropTypes.instanceOf(MainWallet),
   }
 
@@ -148,34 +149,20 @@ export default class DepositTokens extends PureComponent {
     const { deposit, allowance, token, balance } = this.props
     const symbol = token.symbol()
 
-    // TODO @dkchv: !!!!
-
     return (
       <div>
         <IconSection title={<Translate value={prefix('depositTime')} />} icon={IconTimeSVG}>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
-            {/*<TokenValue*/}
-              {/*isInvert*/}
-              {/*value={balance}*/}
-            {/*/>*/}
+            <TokenValue isInvert value={balance} />
           </div>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
-            {/*<TokenValue*/}
-              {/*isInvert*/}
-              {/*isLoading={deposit === null}*/}
-              {/*value={deposit || new BigNumber(0)}*/}
-              {/*symbol={symbol}*/}
-            {/*/>*/}
+            <TokenValue isInvert value={deposit} />
           </div>
           <div styleName='balance'>
             <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:</div>
-            {/*<TokenValue*/}
-              {/*isInvert*/}
-              {/*value={allowance}*/}
-              {/*symbol={symbol}*/}
-            {/*/>*/}
+            <TokenValue isInvert value={allowance} />
           </div>
         </IconSection>
       </div>

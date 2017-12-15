@@ -13,14 +13,14 @@ export default class TokenModel extends abstractFetchingModel({
   decimals: null,
   name: null,
   symbol: null,
-  balance: new Amount(0),
+  balance: new Amount(0, null, false),
   allowance: new Immutable.Map(),
   url: null,
   icon: null,
   fee: new FeeModel(),
   feeRate: null, // Default token fee per byte
   platform: null,
-  totalSupply: new Amount(0),
+  totalSupply: new Amount(0, null, false),
   managersList: new ManagersCollection(),
   isReissuable: new ReissuableModel(),
   isOptional: true, // used in add token dialog for determine its selectable
