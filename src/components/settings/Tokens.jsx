@@ -41,7 +41,7 @@ export default class Tokens extends PureComponent {
             />
           </div>
         </div>
-        {!this.props.isFetched
+        {!tokens.isFetched
           ? (
             <div styleName='panelProgress'>
               <CircularProgress size={24} thickness={1.5} />
@@ -110,7 +110,10 @@ export default class Tokens extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  return state.get(DUCK_TOKENS)
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    tokens,
+  }
 }
 
 function mapDispatchToProps (dispatch) {

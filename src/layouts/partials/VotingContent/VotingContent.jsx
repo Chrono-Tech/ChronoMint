@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getStatistics } from 'redux/voting/getters'
-import { DUCK_MAIN_WALLET, initTIMEDeposit } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { Translate } from 'react-redux-i18n'
@@ -140,7 +140,7 @@ export default class VotingContent extends Component {
                   <div styleName='entries' />
                   <div>
                     <RaisedButton
-                      disabled={false &&this.props.timeDeposit.equals(new BigNumber(0))}
+                      disabled={this.props.timeDeposit.equals(new BigNumber(0))}
                       label={<Translate value={prefix('newPoll')} />}
                       styleName='action'
                       onClick={this.props.handleNewPoll}

@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
         action.poll
       ))
     case a.POLLS_REMOVE:
-      return state.remove(action.id)
+      return state.remove(action.item)
     default:
       return state
   }

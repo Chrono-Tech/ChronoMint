@@ -1,3 +1,4 @@
+import tokenService from 'services/TokenService'
 import Amount from 'models/Amount'
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -152,9 +153,9 @@ export default class HistoryTable extends PureComponent {
       case 'Issue':
       case 'Revoke':
         const token = this.props.tokens.item(trx.tokenAddress())
-        if (trx.symbol() && token) {
+        if (trx.symbol() && token && tokenService.getDAO(token)) {
           value = (
-            <TokenValue value={new Amount(token.dao().removeDecimals(trx.value()), trx.symbol())} />
+            <TokenValue value={new Amount(tokenService.getDAO(token).removeDecimals(trx.value()), trx.symbol())} />
           )
         } else {
           value = ''
