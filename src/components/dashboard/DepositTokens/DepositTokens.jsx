@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { depositAsset, DUCK_ASSETS_HOLDER, initTimeHolder, withdrawAsset } from 'redux/assetsHolder/actions'
+import { depositAsset, DUCK_ASSETS_HOLDER, initAssetsHolder, withdrawAsset } from 'redux/assetsHolder/actions'
 import { DUCK_MAIN_WALLET, mainApprove, requireTIME, updateIsTIMERequired } from 'redux/mainWallet/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ColoredSection from '../ColoredSection/ColoredSection'
@@ -47,7 +47,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    initTimeHolder: () => dispatch(initTimeHolder()),
+    initAssetsHolder: () => dispatch(initAssetsHolder()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
     depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
@@ -62,7 +62,7 @@ export default class DepositTokens extends PureComponent {
     deposit: PropTypes.instanceOf(Amount),
     allowance: PropTypes.instanceOf(Amount),
     balance: PropTypes.instanceOf(Amount),
-    initTimeHolder: PropTypes.func,
+    initAssetsHolder: PropTypes.func,
     mainApprove: PropTypes.func,
     depositAsset: PropTypes.func,
     withdrawAsset: PropTypes.func,
@@ -93,7 +93,7 @@ export default class DepositTokens extends PureComponent {
   }
 
   componentWillMount () {
-    this.props.initTimeHolder()
+    this.props.initAssetsHolder()
     this.props.updateRequireTIME()
   }
 

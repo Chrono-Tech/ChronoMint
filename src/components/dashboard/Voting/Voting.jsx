@@ -1,17 +1,16 @@
-import { Link } from 'react-router'
-import { Paper } from 'material-ui'
-import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import { initTIMEDeposit } from 'redux/mainWallet/actions'
-import { listPolls } from 'redux/voting/actions'
-import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
+import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
+import { Paper, RaisedButton } from 'material-ui'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
+import { initAssetsHolder } from 'redux/assetsHolder/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import { listPolls } from 'redux/voting/actions'
 
 import './Voting.scss'
 
@@ -19,7 +18,31 @@ function prefix (token) {
   return `Dashboard.Voting.${token}`
 }
 
-class Voting extends PureComponent {
+function mapStateToProps (state) {
+  const voting = state.get('voting')
+  const wallet = state.get('mainWallet')
+
+  return {
+    list: voting.list,
+    timeDeposit: wallet.timeDeposit(),
+    isFetched: voting.isFetched && wallet.isFetched(),
+    isFetching: voting.isFetching && !voting.isFetched,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getList: () => dispatch(listPolls()),
+    initAssetsHolder: () => dispatch(initAssetsHolder()),
+    handlePollDetails: (model) => dispatch(modalsOpen({
+      component: PollDetailsDialog,
+      props: { model },
+    })),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Voting extends PureComponent {
   static propTypes = {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -35,7 +58,7 @@ class Voting extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.initTIMEDeposit()
+    this.props.initAssetsHolder()
 
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
@@ -151,28 +174,3 @@ class Voting extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const voting = state.get('voting')
-  const wallet = state.get('mainWallet')
-
-  return {
-    list: voting.list,
-    timeDeposit: wallet.timeDeposit(),
-    isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    getList: () => dispatch(listPolls()),
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
-    handlePollDetails: (model) => dispatch(modalsOpen({
-      component: PollDetailsDialog,
-      props: { model },
-    })),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Voting)

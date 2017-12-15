@@ -1,3 +1,4 @@
+import Amount from '@/models/Amount'
 import type TokenModel from 'models/tokens/TokenModel'
 import BigNumber from 'bignumber.js'
 import type TxModel from 'models/TxModel'
@@ -35,11 +36,11 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  addDecimals (amount: BigNumber): BigNumber {
+  addDecimals (amount: Amount): Amount {
     return amount
   }
 
-  removeDecimals (amount: BigNumber): BigNumber {
+  removeDecimals (amount: Amount): Amount {
     return amount
   }
 
@@ -48,7 +49,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (account, amount: BigNumber) {
+  transfer (account, amount: Amount) {
     throw new Error('should be overridden')
   }
 

@@ -88,7 +88,7 @@ export class BitcoinDAO extends EventEmitter {
       callback(new TransferNoticeModel({
         account,
         time,
-        tx: tx.set('symbol', this.getSymbol()),
+        tx: tx.token(this.getSymbol()),
       }))
     })
   }

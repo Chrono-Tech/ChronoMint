@@ -1,19 +1,20 @@
 import BigNumber from 'bignumber.js'
-import { Link } from 'react-router'
 import { Poll, PollEditDialog } from 'components'
-import PropTypes from 'prop-types'
+import Preloader from 'components/common/Preloader/Preloader'
 import { RaisedButton } from 'material-ui'
-import React, { Component } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
 import PollModel from 'models/PollModel'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { getStatistics } from 'redux/voting/getters'
 import { DUCK_MAIN_WALLET, initTIMEDeposit } from 'redux/mainWallet/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
+import { initAssetsHolder } from 'redux/assetsHolder/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import Preloader from 'components/common/Preloader/Preloader'
 
 import './VotingContent.scss'
 
@@ -39,7 +40,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
+    initAssetsHolder: () => dispatch(initAssetsHolder()),
     handleNewPoll: async () => dispatch(modalsOpen({
       component: PollEditDialog,
       props: {
@@ -59,13 +60,13 @@ export default class VotingContent extends Component {
     list: PropTypes.object,
     timeDeposit: PropTypes.object,
     statistics: PropTypes.object,
-    initTIMEDeposit: PropTypes.func,
+    initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func,
   }
 
   componentWillMount () {
-    this.props.initTIMEDeposit()
+    this.props.initAssetsHolder()
 
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()

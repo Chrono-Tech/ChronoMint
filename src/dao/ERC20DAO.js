@@ -8,7 +8,6 @@ import TxModel from 'models/TxModel'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 
-export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
 
 const EVENT_TRANSFER = 'Transfer'
@@ -70,17 +69,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this.removeDecimals(allowance)
   }
 
-  approve (account: string, amount: BigNumber) {
-    logInfo('approve', account, amount)
-    // eslint-disable-next-line
-    console.log('approve', this.addDecimals)
-    return this._tx(TX_APPROVE, [
+  approve (account: string, amount: Amount) {
+    return this._tx('approve', [
       account,
       this.addDecimals(amount),
     ], {
       account,
-      amount: new Amount(amount, this.getSymbol()),
-      currency: this.getSymbol(),
+      amount,
+      currency: amount.symbol(),
     })
   }
 
@@ -107,11 +103,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: this.removeDecimals(tx.args.value),
+      value: new Amount(this.removeDecimals(tx.args.value), this.getInitAddress()),
       gas: tx.gas,
       gasPrice,
       gasFee,
       time,
+      token: this.getInitAddress(),
       credited: tx.args.to === account,
     })
   }
@@ -121,6 +118,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     if (!tx.args.value) {
       return null
     }
+
+    console.log('--ERC20DAO#_getTxModel', tx)
 
     const txDetails = await this._web3Provider.getTransaction(tx.transactionHash)
     tx.gasPrice = txDetails.gasPrice
@@ -147,6 +146,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   async watchTransfer (callback, options: Object = {}) {
     const account = this.getAccount()
     const internalCallback = async (result, block, time) => {
+      console.log('--ERC20DAO#internalCallback', result)
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
         callback(new TransferNoticeModel({ tx, account, time }))
