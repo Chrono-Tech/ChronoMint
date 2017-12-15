@@ -95,7 +95,7 @@ export const updatePoll = (poll: PollModel) => async () => {
 
 export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
-    dispatch(handlePollRemoved(poll.poll().id()))
+    dispatch(handlePollRemoved(poll.poll()))
     const dao = await contractsManagerDAO.getVotingDAO()
     await dao.removePoll(poll.poll().id())
   } catch (e) {
@@ -145,8 +145,8 @@ export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) =>
   dispatch({ type: POLLS_CREATE, poll })
 }
 
-export const handlePollRemoved = (id: Number) => async (dispatch) => {
-  dispatch({ type: POLLS_REMOVE, id })
+export const handlePollRemoved = (item: PollModel) => async (dispatch) => {
+  dispatch({ type: POLLS_REMOVE, item })
 }
 
 export const handlePollRemovedStub = (transactionHash: String) => async (dispatch) => {

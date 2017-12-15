@@ -134,9 +134,9 @@ export default class VoteDialog extends PureComponent {
                   <div styleName='entry entryRequired'>
                     <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
                     <div styleName='entryValue'>
-                      {details.voteLimitInTIME() === null
+                      {details.voteLimitInTIME === null
                         ? <i>Unlimited</i>
-                        : <span>{details.voteLimitInTIME().toString()} TIME</span>
+                        : <span>{details.voteLimitInTIME.toString()} TIME</span>
                       }
                     </div>
                   </div>
