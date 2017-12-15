@@ -85,8 +85,6 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   withFee () {
-    // eslint-disable-next-line
-    console.log('TokenModel', this.fee())
     return this.fee().withFee()
   }
 
