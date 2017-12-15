@@ -375,7 +375,7 @@ class HeaderPartial extends PureComponent {
             ))}
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN'].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
