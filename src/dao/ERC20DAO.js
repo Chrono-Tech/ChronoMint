@@ -113,7 +113,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       credited: tx.args.to === account,
-      // symbol: this.getSymbol(),
     })
   }
 

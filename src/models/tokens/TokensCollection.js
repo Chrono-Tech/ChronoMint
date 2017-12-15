@@ -3,6 +3,7 @@ import TokenModel from './TokenModel'
 
 export default class TokensCollection extends abstractFetchingCollection({
   // default collection
+  model: new TokenModel(),
 }) {
   getBySymbol (symbol: string) {
     let resultItem = null

@@ -30,13 +30,11 @@ function prefix (token) {
 function mapStateToProps (state) {
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const timeAddress = state.get(DUCK_TIME_HOLDER).timeAddress()
-  const token = state.get(DUCK_TOKENS).item(timeAddress) || new TokenModel()
+  const token = state.get(DUCK_TOKENS).item(timeAddress)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
   const allowance = token ? token.allowance(timeAddress) : new BigNumber(0)
   const balance = wallet.balances().item(token.id())
-
-  console.log('--DepositTokens#mapStateToProps', balance)
 
   return {
     token,
@@ -150,7 +148,6 @@ export default class DepositTokens extends PureComponent {
     const { deposit, allowance, token, balance } = this.props
     const symbol = token.symbol()
 
-    console.log('--DepositTokens#renderHead', balance)
     // TODO @dkchv: !!!!
 
     return (

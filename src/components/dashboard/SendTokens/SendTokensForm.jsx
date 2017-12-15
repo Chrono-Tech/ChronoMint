@@ -43,10 +43,11 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const tokenId = selector(state, 'symbol')
   const feeMultiplier = selector(state, 'feeMultiplier')
+
   return {
     balance: getCurrentWallet(state).balances().item(tokenId),
     account: state.get(DUCK_SESSION).account,
-    token: state.get(DUCK_TOKENS).item(tokenId) || new TokenModel(),
+    token: state.get(DUCK_TOKENS).item(tokenId),
     feeMultiplier,
   }
 }
