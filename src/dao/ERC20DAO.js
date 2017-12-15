@@ -19,6 +19,7 @@ const logInfo = debug('chronobank:info:dao:erc20')
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(abi || ERC20DAODefaultABI, token.address())
+    // TODO @dkchv: throw if > 20 !!!
     this._decimals = Math.max(Math.min(token.decimals(), 20), 0)
   }
 

@@ -1,7 +1,7 @@
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CBETokenDialog from 'components/dialogs/CBETokenDialog'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton } from 'material-ui'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
