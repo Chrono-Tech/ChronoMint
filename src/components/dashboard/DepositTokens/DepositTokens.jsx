@@ -12,8 +12,8 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { depositTIME, DUCK_MAIN_WALLET, initTIMEDeposit, mainApprove, requireTIME, updateIsTIMERequired, withdrawTIME } from 'redux/mainWallet/actions'
-import { DUCK_TIME_HOLDER } from 'redux/timeHolder/actions'
+import { depositAsset, DUCK_ASSETS_HOLDER, initTimeHolder, withdrawAsset } from 'redux/assetsHolder/actions'
+import { DUCK_MAIN_WALLET, mainApprove, requireTIME, updateIsTIMERequired } from 'redux/mainWallet/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
@@ -27,7 +27,7 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
-  const timeAddress = state.get(DUCK_TIME_HOLDER).timeAddress()
+  const timeAddress = state.get(DUCK_ASSETS_HOLDER).timeAddress()
   const token = state.get(DUCK_TOKENS).item(timeAddress)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
@@ -47,11 +47,11 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
+    initTimeHolder: () => dispatch(initTimeHolder()),
     updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    depositTIME: (amount) => dispatch(depositTIME(amount)),
-    withdrawTIME: (amount) => dispatch(withdrawTIME(amount)),
+    depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
+    withdrawAsset: (amount) => dispatch(withdrawAsset(amount)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
@@ -62,10 +62,10 @@ export default class DepositTokens extends PureComponent {
     deposit: PropTypes.instanceOf(Amount),
     allowance: PropTypes.instanceOf(Amount),
     balance: PropTypes.instanceOf(Amount),
-    initTIMEDeposit: PropTypes.func,
+    initTimeHolder: PropTypes.func,
     mainApprove: PropTypes.func,
-    depositTIME: PropTypes.func,
-    withdrawTIME: PropTypes.func,
+    depositAsset: PropTypes.func,
+    withdrawAsset: PropTypes.func,
     requireTIME: PropTypes.func,
     isShowTIMERequired: PropTypes.bool,
     isTesting: PropTypes.bool,
@@ -93,7 +93,7 @@ export default class DepositTokens extends PureComponent {
   }
 
   componentWillMount () {
-    this.props.initTIMEDeposit()
+    this.props.initTimeHolder()
     this.props.updateRequireTIME()
   }
 
@@ -115,13 +115,15 @@ export default class DepositTokens extends PureComponent {
     this.props.mainApprove(this.props.token, 0, this.props.timeAddress)
   }
 
-  handleDepositTIME = () => {
-    this.props.depositTIME(this.state.amount)
+  handleDepositAsset = () => {
+    const { token } = this.props
+    this.props.depositAsset(new Amount(this.state.amount, token.symbol(), token))
     this.setState({ amount: '' })
   }
 
-  handleWithdrawTIME = () => {
-    this.props.withdrawTIME(this.state.amount)
+  handleWithdrawAsset = () => {
+    const { token } = this.props
+    this.props.withdrawAsset(new Amount(this.state.amount, token.symbol()), token)
     this.setState({ amount: '' })
   }
 
@@ -222,7 +224,7 @@ export default class DepositTokens extends PureComponent {
               styleName='actionButton'
               label='Lock'
               primary
-              onTouchTap={this.handleDepositTIME}
+              onTouchTap={this.handleDepositAsset}
               disabled={!isLock}
             />
           </span>
@@ -232,7 +234,7 @@ export default class DepositTokens extends PureComponent {
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
-            onTouchTap={this.handleWithdrawTIME}
+            onTouchTap={this.handleWithdrawAsset}
             disabled={!isWithdraw}
           />
         </span>

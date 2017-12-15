@@ -15,7 +15,6 @@ import type TxModel from 'models/TxModel'
 import { addMarketToken } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { initTimeHolder } from 'redux/timeHolder/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
@@ -63,7 +62,7 @@ export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBala
 export const updateDeposit = (amount: BigNumber, isCredited: ?boolean) => ({
   type: WALLET_TIME_DEPOSIT,
   isCredited,
-  amount,
+  amount: new Amount(amount),
 })
 
 export const depositPlus = (amount: BigNumber) => updateDeposit(amount, true)
@@ -135,15 +134,8 @@ const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
   })
 }
 
-const initWalletToken = (token: TokenModel) => (dispatch) => {
-  dispatch(fetchTokenBalance(token))
-  if (token.symbol() === 'TIME') {
-    dispatch(initTimeHolder(token))
-  }
-}
-
 export const initMainWallet = () => (dispatch, getState) => {
-  const callback = (token) => dispatch(initWalletToken(token))
+  const callback = (token) => dispatch(fetchTokenBalance(token))
   tokenService.on(EVENT_NEW_TOKEN, callback)
   // fetch for existing tokens
   const tokens = getState().get(DUCK_TOKENS)
@@ -232,34 +224,6 @@ export const mainApprove = (token: TokenModel, amount: Number, spender: string) 
     // no rollback
     // eslint-disable-next-line
     console.error('approve error', e.message)
-  }
-}
-
-export const depositTIME = (amount: string) => async (dispatch, getState) => {
-  const amountBN = new BigNumber(amount)
-  const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(TIME)
-
-  dispatch(balanceMinus(amountBN, token))
-
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.deposit(amountBN)
-  } finally {
-    // compensation for update in watchTransfer
-    dispatch(balancePlus(amountBN, token))
-  }
-}
-
-export const withdrawTIME = (amount: string) => async (dispatch) => {
-  const amountBN = new BigNumber(amount)
-
-  dispatch(depositMinus(amountBN))
-
-  try {
-    const dao = await contractsManagerDAO.getTIMEHolderDAO()
-    await dao.withdraw(amountBN)
-  } finally {
-    dispatch(depositPlus(amountBN))
   }
 }
 

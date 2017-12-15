@@ -1,3 +1,4 @@
+import Amount from 'models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from 'services/TokenService'
@@ -20,6 +21,10 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     ]
   }
 
+  getSharesContract (): Promise {
+    return this._call('sharesContract')
+  }
+
   async getAssetDAO (): Promise<ERC20DAO> {
     const assetAddress = await this._call('sharesContract')
     return tokenService.getDAO(assetAddress)
@@ -29,9 +34,12 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return this._call('wallet')
   }
 
-  async deposit (amount: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-    return this._tx(TX_DEPOSIT, [assetDAO.addDecimals(amount)], { amount })
+  async deposit (amount: Amount, assetDAO) {
+    return this._tx(TX_DEPOSIT, [
+      assetDAO.addDecimals(amount),
+    ], {
+      amount,
+    })
   }
 
   shareholdersCount (): Promise {
@@ -41,6 +49,10 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   async withdraw (amount: BigNumber) {
     const assetDAO = await this.getAssetDAO()
     return this._tx(TX_WITHDRAW_SHARES, [assetDAO.addDecimals(amount)], { amount })
+  }
+
+  getDeposit (account): Promise {
+    return this._call('depositBalance', [account])
   }
 
   async getAccountDepositBalance (account = this.getAccount()): BigNumber {
