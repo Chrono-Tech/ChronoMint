@@ -1,4 +1,6 @@
-export default class NemEngine {
+import type BigNumber from 'bignumber.js'
+
+export class NemEngine {
   constructor (wallet, network) {
     this._wallet = wallet
     this._network = network
@@ -10,5 +12,11 @@ export default class NemEngine {
 
   getAddress () {
     return this._wallet.getAddress()
+  }
+
+  createTransaction (to, amount: BigNumber, feeRate, utxos) {
+    // TODO @ipavlenko: Implement, return { tx, fee }, tx should have toHex method
+    // return { tx, fee }
+    throw new Error('Not implemened. Method: createTransaction. Args:', to, amount, feeRate, utxos)
   }
 }
