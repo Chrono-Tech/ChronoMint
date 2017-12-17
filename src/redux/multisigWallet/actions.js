@@ -27,8 +27,9 @@ export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 let walletsManagerDAO
 
 const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => dispatch({ type: MULTISIG_UPDATE, wallet })
+export const selectMultisigWallet = (id) => (dispatch) => dispatch({ type: MULTISIG_SELECT, id })
 
-export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => () => {
+export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => {
   try {
     return multisigWalletService.subscribeToWalletDAO(wallet)
   } catch (e) {
@@ -45,14 +46,14 @@ export const initWalletManager = () => async (dispatch, getState) => {
 
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
 
-  walletsManagerDAO.on(EVENT_NEW_MS_WALLET, (oldWallet: MultisigWalletModel) => {
+  walletsManagerDAO.on(EVENT_NEW_MS_WALLET, (wallet: MultisigWalletModel) => {
     const fetchBalanceForToken = async (token) => {
       const tokenDao = tokenService.getDAO(token.id())
       const balance = await tokenDao.getAccountBalance(wallet.address())
       const symbol = token.symbol()
       dispatch({
         type: MULTISIG_BALANCE,
-        walletId: wallet.id(),
+        walletId: wallet.address(),
         balance: new BalanceModel({
           id: token.id(),
           amount: new Amount(balance, symbol, true),
@@ -60,19 +61,28 @@ export const initWalletManager = () => async (dispatch, getState) => {
       })
     }
 
-    let wallet = oldWallet
-    if (wallet.transactionHash()) {
+    const updatedWallet = wallet.transactionHash(null).isPending(false)
+    dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
+
+    const txHash = wallet.transactionHash()
+
+    if (txHash) {
+      // reselect
+      const selectedWallet = getState().get(DUCK_MULTISIG_WALLET).selected()
+      if (selectedWallet.transactionHash() && selectedWallet.transactionHash() === txHash) {
+        dispatch(selectMultisigWallet(wallet.address()))
+      }
+
       // created via event
       // address arrived, delete temporary hash
-      dispatch({ type: MULTISIG_REMOVE, id: wallet.id() })
+      dispatch({ type: MULTISIG_REMOVE, id: txHash })
       dispatch(notify(new WalletNoticeModel({
         address: wallet.address(),
         action: statuses.CREATED,
       })))
-      wallet = oldWallet.transactionHash(null).isPending(false)
     }
 
-    watchMultisigWallet(wallet)
+    watchMultisigWallet(updatedWallet)
 
     // subcscribe
     tokenService.on(EVENT_NEW_TOKEN, fetchBalanceForToken)
@@ -80,13 +90,7 @@ export const initWalletManager = () => async (dispatch, getState) => {
     const tokens = getState().get(DUCK_TOKENS)
     tokens.list().forEach(fetchBalanceForToken)
 
-    // push to state
-    dispatch({ type: MULTISIG_FETCHED, wallet })
-    // select first one
-    const wallets = getState().get(DUCK_MULTISIG_WALLET)
-    if (wallets.size() === 1) {
-      dispatch(selectMultisigWallet(wallet))
-    }
+    dispatch(selectWalletIfOne())
   })
 
   walletsManagerDAO.on(EVENT_MS_WALLETS_COUNT, (count) => {
@@ -164,14 +168,18 @@ export const initWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO.fetchWallets()
 }
 
-export const selectMultisigWallet = (wallet: MultisigWalletModel) => (dispatch) => {
-  dispatch({ type: MULTISIG_SELECT, wallet })
+const selectWalletIfOne = () => (dispatch, getState) => {
+  const wallets = getState().get(DUCK_MULTISIG_WALLET)
+  if (wallets.size() === 1) {
+    dispatch(selectMultisigWallet(wallets.first().id()))
+  }
 }
 
 export const createWallet = (wallet: MultisigWalletModel) => async (dispatch) => {
   try {
     const txHash = await walletsManagerDAO.createWallet(wallet)
     dispatch(updateWallet(wallet.isPending(true).transactionHash(txHash)))
+    dispatch(selectWalletIfOne())
     return txHash
   } catch (e) {
     // eslint-disable-next-line

@@ -105,6 +105,11 @@
   &:hover {
     background-color: $color-panel-bg-0;
   }
+
+  &.selected {
+    background-color: $color-panel-bg-0;
+    cursor: initial;
+  }
 }
 
 .cell {
@@ -114,10 +119,6 @@
 .cellAuto {
   flex-grow: 1;
   overflow: hidden;
-}
-
-.rowSelected {
-  background-color: $color-panel-bg-0;
 }
 
 .address {
@@ -152,6 +153,7 @@
 
 .controlItem {
   padding: 4px;
+  cursor: pointer;
 }
 
 .faces {

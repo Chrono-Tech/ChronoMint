@@ -126,9 +126,8 @@ export default class WalletChanger extends PureComponent {
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMultiBigSVG} />
             <div styleName='headerInfo'>
-              <div styleName='headerTitle'>{selectedWallet.name() || 'No name'}</div>
               <div styleName='headerSubtitle'>Multisignature wallet</div>
-              <div styleName='headerSubtitle'>{selectedWallet.address()}</div>
+              <div styleName='headerSubtitle'>{selectedWallet.isPending() ? 'Pending...' : selectedWallet.address()}</div>
               <div>
                 <div styleName='ownersNum'>
                   {owners.size} <Translate value='wallet.owners' />:

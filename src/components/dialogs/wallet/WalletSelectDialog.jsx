@@ -70,7 +70,7 @@ export default class WalletSelectDialog extends PureComponent {
     const isSelected = wallet.isSelected()
     const owners = wallet.owners()
     return (
-      <div key={wallet.id()} styleName={classNames('row', { 'rowSelected': isSelected })}>
+      <div key={wallet.id()} styleName={classNames('row', { selected: isSelected })}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div>
             <img styleName='bigIcon' src={WalletMultiBigSVG} />

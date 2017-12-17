@@ -1,6 +1,8 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
+// TODO @dkchv: must be collection??
+
 export default class ManagersCollection extends abstractFetchingModel({
   managersList: new Immutable.Map(),
 }) {
@@ -20,7 +22,7 @@ export default class ManagersCollection extends abstractFetchingModel({
     return this.list().valueSeq().toArray()
   }
 
-  remove (item) {
-    return this.list(this.list().remove(item))
+  remove (id) {
+    return this.list(this.list().remove(id))
   }
 }

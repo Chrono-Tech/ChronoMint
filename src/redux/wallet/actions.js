@@ -12,7 +12,7 @@ export const initWallet = () => async (dispatch, getState) => {
 export const switchWallet = (wallet) => (dispatch) => {
   dispatch({ type: WALLET_SWITCH_WALLET, wallet })
   if (wallet.isMultisig()) {
-    dispatch(selectMultisigWallet(wallet))
+    dispatch(selectMultisigWallet(wallet.id()))
   }
 }
 

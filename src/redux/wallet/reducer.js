@@ -10,7 +10,7 @@ export default (state = initialState, action) => {
     case a.WALLET_SWITCH_WALLET:
       return {
         ...state,
-        current: action.wallet.address(),
+        current: action.wallet.id(),
         isMultisig: action.wallet.isMultisig(),
       }
     default:
