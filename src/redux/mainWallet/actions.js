@@ -195,12 +195,11 @@ const getTransferId = 'wallet'
 let lastCacheId
 let txsCache = []
 
-export const getAccountTransactions = (tokens) => async (dispatch) => {
+export const getAccountTransactions = () => async (dispatch, getState) => {
+  const tokens = getState().get(DUCK_TOKENS).item()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  const tokensLocal = tokens.valueSeq().toArray()
-
-  const cacheId = Object.values(tokensLocal).map((v: TokenModel) => v.symbol()).join(',')
+  const cacheId = Object.values(tokens).map((v: TokenModel) => v.symbol()).join(',')
 
   const reset = lastCacheId && cacheId !== lastCacheId
   lastCacheId = cacheId
@@ -213,7 +212,7 @@ export const getAccountTransactions = (tokens) => async (dispatch) => {
 
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
-    for (let token: TokenModel of tokensLocal) {
+    for (let token: TokenModel of tokens) {
       if (reset) {
         token.dao().resetFilterCache()
       }

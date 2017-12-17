@@ -6,9 +6,8 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getAccountTransactions } from 'redux/mainWallet/actions'
-import { initWalletManager } from 'redux/multisigWallet/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
+import { initMultisigWalletManager } from 'redux/multisigWallet/actions'
+import { DUCK_WALLET } from 'redux/wallet/actions'
 
 import './WalletContent.scss'
 
@@ -23,7 +22,7 @@ function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
 
   return {
-    wallet: getCurrentWallet(state),
+    isMultisig: state.get(DUCK_WALLET).isMultisig,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -32,24 +31,22 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getTransactions: (tokens) => dispatch(getAccountTransactions(tokens)),
-    initWalletManager: () => dispatch(initWalletManager()),
+    initMultisigWalletManager: () => dispatch(initMultisigWalletManager()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletContent extends Component {
   static propTypes = {
-    getTransactions: PropTypes.func,
-    wallet: PropTypes.object,
+    isMultisig: PropTypes.bool,
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    initWalletManager: PropTypes.func,
+    initMultisigWalletManager: PropTypes.func,
   }
 
   componentWillMount () {
-    this.props.initWalletManager()
+    this.props.initMultisigWalletManager()
   }
 
   renderWalletsInstructions () {
@@ -101,8 +98,7 @@ export default class WalletContent extends Component {
   }
 
   render () {
-    const { wallet } = this.props
-    const isMultisig = wallet.isMultisig()
+    const { isMultisig } = this.props
 
     return (
       <div styleName='root'>
@@ -161,13 +157,7 @@ export default class WalletContent extends Component {
 
             <div className='row'>
               <div className='col-md-6 col-xl-4'>
-                <TransactionsTable
-                  tokens={wallet.tokens()}
-                  transactions={wallet.transactions()}
-                  selectedNetworkId={this.props.selectedNetworkId}
-                  selectedProviderId={this.props.selectedProviderId}
-                  onLoadMore={() => this.props.getTransactions(wallet.tokens())}
-                />
+                <TransactionsTable />
               </div>
             </div>
           </div>

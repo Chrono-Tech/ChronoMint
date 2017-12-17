@@ -38,7 +38,7 @@ export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => {
   }
 }
 
-export const initWalletManager = () => async (dispatch, getState) => {
+export const initMultisigWalletManager = () => async (dispatch, getState) => {
   if (getState().get(DUCK_MULTISIG_WALLET).isInited()) {
     return
   }

@@ -26,6 +26,14 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._decimals
   }
 
+  // addDecimals (amount: Amount): Amount {
+  //   return amount.mul(Math.pow(10, this._decimals))
+  // }
+  //
+  // removeDecimals (amount: Amount): Amount {
+  //   return amount.div(Math.pow(10, this._decimals))
+  // }
+
   addDecimals (amount: BigNumber): BigNumber {
     if (this._decimals === null) {
       throw new Error('addDecimals: decimals is undefined')

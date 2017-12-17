@@ -25,4 +25,12 @@ export default class Amount extends BigNumber {
   minus (value: number | string | BigNumber, base?: number) {
     return new Amount(super.minus(value, base), this._symbol, this._isLoaded)
   }
+
+  mul (value: number | string | BigNumber, base?: number) {
+    return new Amount(super.mul(value, base), this._symbol, this._isLoaded)
+  }
+
+  div (value: number | string | BigNumber, base?: number) {
+    return new Amount(super.div(value, base), this._symbol, this._isLoaded)
+  }
 }

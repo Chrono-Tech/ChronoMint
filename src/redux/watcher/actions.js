@@ -84,7 +84,6 @@ export const watcher = () => async (dispatch) => {
   dispatch(watchInitMarket())
   // TODO @dkchv: !!! restore
   dispatch(watchInitWallet())
-  // dispatch(initWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())
