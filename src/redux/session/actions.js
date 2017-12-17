@@ -5,7 +5,6 @@ import ProfileModel from 'models/ProfileModel'
 import { push, replace } from 'react-router-redux'
 import { watchStopMarket } from 'redux/market/action'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
-import { initWallet } from 'redux/wallet/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
 
@@ -65,7 +64,6 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
-  dispatch(initWallet())
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))

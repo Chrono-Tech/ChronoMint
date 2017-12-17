@@ -1,7 +1,6 @@
 import * as a from './actions'
 
 const initialState = {
-  current: null, // address or tx hash for pendings
   isMultisig: false,
 }
 
@@ -10,8 +9,7 @@ export default (state = initialState, action) => {
     case a.WALLET_SWITCH_WALLET:
       return {
         ...state,
-        current: action.wallet.id(),
-        isMultisig: action.wallet.isMultisig(),
+        isMultisig: action.isMultisig,
       }
     default:
       return state
