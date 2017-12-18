@@ -5,6 +5,8 @@ const initialState = new MainWalletModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case a.WALLET_INIT:
+      return state.isInited(action.isInited)
     case a.WALLET_TOKENS_FETCH:
       return state.isFetching(true)
     case a.WALLET_TOKENS:

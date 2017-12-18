@@ -1,6 +1,6 @@
+import BigNumber from 'bignumber.js'
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
-import Immutable from 'immutable'
 import Amount from 'models/Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import FeeModel from './FeeModel'
@@ -10,7 +10,7 @@ import ReissuableModel from './ReissuableModel'
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
   address: null,
-  decimals: null,
+  decimals: 1,
   name: null,
   symbol: null,
   balance: new Amount(0, null, false),
@@ -93,6 +93,16 @@ export default class TokenModel extends abstractFetchingModel({
 
   decimals () {
     return this.dao() ? this.dao().getDecimals() : this.get('decimals')
+  }
+
+  addDecimals (amount: BigNumber): BigNumber {
+    const amountBN = new BigNumber(amount)
+    return amountBN.mul(Math.pow(10, this.decimals()))
+  }
+
+  removeDecimals (amount: Amount | BigNumber): Amount {
+    const amountBN = new BigNumber(amount)
+    return amountBN.div(Math.pow(10, this.decimals()))
   }
 
   balance (): Amount {

@@ -7,7 +7,7 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
-import contractManagerDAO from './ContractsManagerDAO'
+import tokenService from 'services/TokenService'
 
 export default class MultisigWalletDAO extends AbstractContractDAO {
 
@@ -18,35 +18,34 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
 
   watchConfirmationNeeded (wallet, callback) {
     return this._watch('MultisigWalletConfirmationNeeded', (result) => {
-      const { operation, value, to, symbol } = result.args
-      const symbolString = this._c.bytesToString(symbol)
-      if (!symbolString) {
-        // eslint-disable-next-line
-        console.error('symbol not found', symbolString)
-        return
-      }
-      const tokenDAO = wallet.tokens().get(symbolString).dao()
+      const { operation, initiator, value, to, data } = result.args
+
+      console.log('--MultisigWalletDAO#', result, initiator, data)
+
+      // TODO @dkchv: !!!!
       callback(new MultisigWalletPendingTxModel({
         id: operation,
-        value: tokenDAO.removeDecimals(value),
+        value,
         to,
-        symbol: symbolString,
-        isConfirmed: true,
+        isConfirmed: initiator === this.getAccount(),
+        data,
       }))
     }, { self: wallet.address() })
   }
 
   watchMultiTransact (wallet, callback) {
     return this._watch('MultisigWalletMultiTransact', (result) => {
-      const { operation, owner, self, symbol, value } = result.args
-      const symbolString = this._c.bytesToString(symbol)
-      const token = wallet.tokens().get(symbolString)
+      const { self, owner, operation, value, to, data } = result.args
+
+      console.log('--MultisigWalletDAO#', data)
+
       callback(new MultisigTransactionModel({
         id: operation,
         owner,
-        wallet: self,
-        symbol: symbolString,
-        value: token.dao().removeDecimals(value),
+        wallet: wallet.address(),
+        value,
+        to,
+        data,
       }))
     }, { self: wallet.address() })
   }
@@ -159,7 +158,8 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
   }
 
   async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to) {
-    const value = token.dao().addDecimals(new BigNumber(amount))
+    const tokenDAO = tokenService.getDAO(token.id())
+    const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
       to,
       value,

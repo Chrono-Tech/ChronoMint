@@ -98,23 +98,25 @@ export default class SendTokensForm extends PureComponent {
           )}
         >
           <MuiThemeProvider theme={inversedTheme}>
-            <Field
-              component={SelectField}
-              name='symbol'
-              fullWidth
-              {...styles}
-            >
-              {balances.size() > 0
-                ? balances.items().map((balance) => (
-                  <MenuItem
-                    key={balance.id()}
-                    value={balance.id()}
-                    primaryText={balance.symbol()}
-                  />
-                ))
-                : <Preloader />
-              }
-            </Field>
+            {balances.size() === 0
+              ? <Preloader />
+              : (
+                <Field
+                  component={SelectField}
+                  name='symbol'
+                  fullWidth
+                  {...styles}
+                >
+                  {balances.items().map((balance) => (
+                    <MenuItem
+                      key={balance.id()}
+                      value={balance.id()}
+                      primaryText={balance.symbol()}
+                    />
+                  ))}
+                </Field>
+              )
+            }
           </MuiThemeProvider>
         </IconSection>
         <div styleName='balance'>

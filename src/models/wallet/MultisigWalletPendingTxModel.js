@@ -4,10 +4,10 @@ import { abstractFetchingModel } from '../AbstractFetchingModel'
 class MultisigWalletPendingTxModel extends abstractFetchingModel({
   id: null, // operation hash
   initiator: null,
-  symbol: null,
   to: null,
   value: new BigNumber(0),
   isConfirmed: false,
+  data: null,
 }) {
   id () {
     return this.get('id') || Math.random()
@@ -21,10 +21,6 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
     return this.get('value')
   }
 
-  symbol () {
-    return this.get('symbol')
-  }
-
   isConfirmed (value: boolean) {
     return this._getSet('isConfirmed', value)
   }
@@ -33,7 +29,6 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
     return {
       to: this.to(),
       value: this.value(),
-      symbol: this.symbol(),
     }
   }
 }

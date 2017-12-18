@@ -1,4 +1,3 @@
-import AllowanceModel from '@/models/wallet/AllowanceModel'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
@@ -13,6 +12,7 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
+import AllowanceModel from 'models/wallet/AllowanceModel'
 import { addMarketToken } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -38,6 +38,7 @@ export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
+export const WALLET_INIT = 'mainWallet/INIT'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -64,7 +65,6 @@ export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANC
 
 export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
   const tx: TxModel = notice.tx()
-  console.log('--actions#', tx.toJS())
   const token: TokenModel = getState().get(DUCK_TOKENS).item(tx.token())
 
   dispatch(updateBalance(token, tx.isCredited(), tx.value()))
@@ -119,7 +119,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   // TODO @dkchv: review again !!!
   dispatch(addMarketToken(token.symbol()))
-  await tokenDAO.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+  await tokenDAO.watchTransfer(account, (notice) => dispatch(watchTransfer(notice)))
   if (tokenDAO.watchBalance) {
     await tokenDAO.watchBalance((balance) => dispatch(watchBalance(balance)))
   }
@@ -130,6 +130,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 }
 
 export const initMainWallet = () => (dispatch, getState) => {
+  if (getState().get(DUCK_MAIN_WALLET).isInited()) {
+    return
+  }
+  dispatch({ type: WALLET_INIT, isInited: true })
+
   const callback = (token) => dispatch(handleToken(token))
   tokenService.on(EVENT_NEW_TOKEN, callback)
   // fetch for existing tokens
@@ -213,10 +218,11 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
     for (let token: TokenModel of tokens) {
+      const tokenDAO = tokenService.getDAO(token.id())
       if (reset) {
-        token.dao().resetFilterCache()
+        tokenDAO.resetFilterCache()
       }
-      promises.push(token.dao().getTransfer(getTransferId))
+      promises.push(tokenDAO.getTransfer(getTransferId))
     }
     const result = await Promise.all(promises)
 

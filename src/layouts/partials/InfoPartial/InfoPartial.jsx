@@ -1,3 +1,4 @@
+import Preloader from '@/components/common/Preloader/Preloader'
 import TokenPlaceHolder from '@/layouts/partials/InfoPartial/TokenPlaceHolder'
 import BalancesCollection from '@/models/tokens/BalancesCollection'
 import { AddCurrencyDialog } from 'components'
@@ -52,6 +53,7 @@ function mapStateToProps (state) {
 
   return {
     isMultisig: wallet.isMultisig(),
+    isPending: wallet.isPending(),
     selectedCoin: state.get(DUCK_MARKET).selectedCoin,
     open: ui.open,
     balances: wallet.balances(),
@@ -163,7 +165,7 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens } = this.props
+    const { balances, isMultisig, tokens, isPending } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
 
@@ -184,7 +186,9 @@ export default class InfoPartial extends PureComponent {
       <div styleName='root'>
         <div styleName='wrapper'>
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
-            {balances.items().map(this.renderItem)}
+            {isPending
+              ? <Preloader />
+              : balances.items().map(this.renderItem)}
             {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
             {!isMultisig && withBigButton && this.renderAction()}
           </div>

@@ -83,7 +83,7 @@ export class BitcoinDAO extends EventEmitter {
     return []
   }
 
-  async watchTransfer (callback) {
+  async watchTransfer (account, callback) {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
       callback(new TransferNoticeModel({
         account,

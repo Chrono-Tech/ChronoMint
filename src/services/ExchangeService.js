@@ -37,7 +37,7 @@ class ExchangeService extends EventEmitter {
     if (this._cache[ address ]) return null
 
     // const dao = token.dao()
-    // await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+    // await dao.watchTransfer(account, (notice) => dispatch(watchTransfer(notice)))
 
     const dao = this.getExchangeDAO(address)
 
@@ -79,7 +79,8 @@ class ExchangeService extends EventEmitter {
     this._cache[ `${token.id()}-${exchange}` ] = dao
 
     return Promise.all([
-      dao.watchTransfer((result) => {
+      // TODO @dkchv: @abdulov review update, plz
+      dao.watchTransfer(exchange, (result) => {
         this.emit('Transfer', result.tx())
       }, { account: exchange }),
     ])

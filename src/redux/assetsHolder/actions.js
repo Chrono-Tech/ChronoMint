@@ -44,7 +44,7 @@ const subscribeOnTokens = (token: TokenModel) => async (dispatch) => {
     timeDAO.getAccountAllowance(timeHolderWalletAddress),
   ])
 
-  console.log('--actions#', timeHolderAllowance, timeHolderWalletAllowance)
+  console.log('--assetHolder: ', +timeHolderAllowance, +timeHolderWalletAllowance)
 
   // token = token
   //   .setAllowance(timeHolderAddress, timeHolderAllowance)
@@ -63,7 +63,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
     timeHolderDAO.getSharesContract(),
     timeHolderDAO.getDeposit(account),
   ])
-  console.log('--actions#', assets, deposit)
+  console.log('--deposit', assets, +deposit)
 
   // subscribe to tokens
   const callback = (token) => dispatch(subscribeOnTokens(token))

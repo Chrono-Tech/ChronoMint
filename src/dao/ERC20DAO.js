@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import debug from 'debug'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
@@ -12,8 +11,6 @@ export const TX_TRANSFER = 'transfer'
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
-
-const logInfo = debug('chronobank:info:dao:erc20')
 
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
@@ -127,8 +124,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
       return null
     }
 
-    console.log('--ERC20DAO#_getTxModel', tx)
-
     const txDetails = await this._web3Provider.getTransaction(tx.transactionHash)
     tx.gasPrice = txDetails.gasPrice
     tx.gas = txDetails.gas
@@ -142,7 +137,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
   watchApproval (from, callback) {
     return this._watch(EVENT_APPROVAL, (result, block, time) => {
-      console.log('--ERC20DAO#', result)
       callback(new ApprovalNoticeModel({
         value: this.removeDecimals(result.args.value),
         spender: result.args.spender,
@@ -152,18 +146,16 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /** @inheritDoc */
-  async watchTransfer (callback, options: Object = {}) {
-    const account = this.getAccount()
+  async watchTransfer (account, callback) {
     const internalCallback = async (result, block, time) => {
-      console.log('--ERC20DAO#internalCallback', result)
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
         callback(new TransferNoticeModel({ tx, account, time }))
       }
     }
     await Promise.all([
-      this._watch(EVENT_TRANSFER, internalCallback, { from: options.account || account }),
-      this._watch(EVENT_TRANSFER, internalCallback, { to: options.account || account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { from: account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { to: account }),
     ])
   }
 

@@ -54,6 +54,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       isOptional: false,
       isFetched: true,
       blockchain: 'Ethereum',
+      isERC20: true, //erc20-like
     })
   }
 
@@ -154,7 +155,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   /** @inheritDoc */
-  async watchTransfer (callback) {
+  async watchTransfer (account, callback) {
     this._transferCallback = callback
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
@@ -173,10 +174,10 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       const txs = block.transactions || []
       txs.forEach((tx) => {
-        if (tx.value.toNumber() > 0 && (tx.from === this.getAccount() || tx.to === this.getAccount())) {
+        if (tx.value.toNumber() > 0 && (tx.from === account || tx.to === account)) {
           this._transferCallback(new TransferNoticeModel({
-            tx: this._getTxModel(tx, this.getAccount()),
-            account: this.getAccount(),
+            tx: this._getTxModel(tx, account),
+            account,
             time,
           }))
         }

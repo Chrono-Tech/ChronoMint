@@ -64,7 +64,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
    * @see TxModel
    */
   // eslint-disable-next-line no-unused-vars
-  watchTransfer (callback) {
+  watchTransfer (account, callback) {
     throw new Error('should be overridden')
   }
 
