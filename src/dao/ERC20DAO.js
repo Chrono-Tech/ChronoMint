@@ -80,7 +80,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   /** @private */
   _createTxModel (tx, account, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
+    const gasFee = gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.transactionHash,
@@ -89,7 +89,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: new Amount(this.removeDecimals(tx.args.value), this.getInitAddress()),
+      value: new Amount(tx.args.value, this._symbol),
       gas: tx.gas,
       gasPrice,
       gasFee,

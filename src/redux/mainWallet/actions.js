@@ -110,7 +110,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   const tokenDAO = tokenService.getDAO(token.id())
   const balance = await tokenDAO.getAccountBalance(account)
-  console.log('--actions#', symbol, +balance)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({

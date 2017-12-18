@@ -56,7 +56,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
+    const gasFee = gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.hash,
@@ -65,7 +65,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: this._c.fromWei(tx.value),
+      value: tx.value,
       time,
       gasPrice,
       gas: tx.gas,
@@ -77,8 +77,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer (account, amount: BigNumber) {
-    const value = this._c.toWei(amount)
+  async transfer (account, value: BigNumber) {
     const txData = {
       from: this.getAccount(),
       to: account,
@@ -93,11 +92,11 @@ export class EthereumDAO extends AbstractTokenDAO {
     let tx = new TxExecModel({
       contract: this.getContractName(),
       func: TX_TRANSFER,
-      value: amount,
-      gas: this._c.fromWei(new BigNumber(estimateGas).mul(gasPrice)),
+      value,
+      gas: new BigNumber(estimateGas).mul(gasPrice),
       args: {
         to: account,
-        value: amount,
+        value,
       },
     })
     AbstractContractDAO.txGas(tx)
@@ -127,7 +126,7 @@ export class EthereumDAO extends AbstractTokenDAO {
             this._web3Provider.getTransaction(txHash),
           ])
 
-          const gasUsed = this._c.fromWei(transaction.gasPrice.mul(receipt.gasUsed))
+          const gasUsed = transaction.gasPrice.mul(receipt.gasUsed)
           tx = tx.setGas(gasUsed, true)
           AbstractContractDAO.txEnd(tx)
 

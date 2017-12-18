@@ -383,7 +383,7 @@ export default class AbstractContractDAO extends EventEmitter {
       contract: this.getContractName(),
       func,
       args: infoArgs,
-      value: this._c.fromWei(value),
+      value,
     })
 
     /** ESTIMATE GAS */
@@ -449,7 +449,7 @@ export default class AbstractContractDAO extends EventEmitter {
       /** OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
       if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
         const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
-        tx = tx.setGas(this._c.fromWei(gasPrice.mul(result.receipt.gasUsed)), true)
+        tx = tx.setGas(gasPrice.mul(result.receipt.gasUsed), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
           // uncomment line below if you want to log estimate gas laxity
@@ -525,7 +525,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const gasPriceBN = new BigNumber(gasPrice)
     const gasLimit = process.env.NODE_ENV === 'development' ? Math.min(DEFAULT_GAS, estimatedGas*2) : estimatedGas + 1
-    const gasFee = this._c.fromWei(gasPriceBN.mul(gasLimit))
+    const gasFee = gasPriceBN.mul(gasLimit)
 
     return { gasLimit, gasFee }
   }

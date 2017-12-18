@@ -1,16 +1,16 @@
-import Amount from 'models/Amount'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import Value from 'components/common/Value/Value'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import Amount from 'models/Amount'
+import TxExecModel from 'models/TxExecModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
-import { DUCK_WATCHER } from 'redux/watcher/actions'
 import { modalsClose } from 'redux/modals/actions'
-import ModalDialog from 'components/dialogs/ModalDialog'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import Value from 'components/common/Value/Value'
+import { DUCK_WATCHER } from 'redux/watcher/actions'
 
 import './ConfirmTxDialog.scss'
 
@@ -33,8 +33,8 @@ export default class ConfirmTxDialog extends PureComponent {
     callback: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    tx: PropTypes.object,
-    balance: PropTypes.object,
+    tx: PropTypes.instanceOf(TxExecModel),
+    balance: PropTypes.instanceOf(Amount),
   }
 
   handleConfirm = () => {
