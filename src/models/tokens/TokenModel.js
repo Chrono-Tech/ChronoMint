@@ -142,7 +142,7 @@ export default class TokenModel extends abstractFetchingModel({
       name: this.name(),
       totalSupply: this.totalSupply(),
       decimals: this.decimals(),
-      isReissuable: this.isReissuable().isReissuable(),
+      isReissuable: this.isReissuable().value(),
       icon: this.icon(),
       feeAddress: fee.feeAddress(),
       feePercent: fee.fee(),

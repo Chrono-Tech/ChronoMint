@@ -1,10 +1,9 @@
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class ReissuableModel extends abstractFetchingModel({
-  isReissuable: null,
+  value: null,
 }) {
-  isReissuable (value) {
-    return this._getSet('isReissuable', value)
+  value (value) {
+    return this._getSet('value', value)
   }
-
 }

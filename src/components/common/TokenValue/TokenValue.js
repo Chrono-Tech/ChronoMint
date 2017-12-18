@@ -73,8 +73,6 @@ class TokenValue extends PureComponent {
     const symbol = this.props.symbol || value.symbol()
     const token: TokenModel = this.props.tokens.list().get(symbol)
 
-    console.log('--TokenValue#render', token)
-
     return !value.isLoaded() || !token
       ? <Preloader small />
       : (
