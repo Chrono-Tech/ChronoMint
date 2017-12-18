@@ -4,8 +4,10 @@ import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/TokenModel'
 import { ERC20ManagerABI } from './abi'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
 import AbstractContractDAO from './AbstractContractDAO'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from './BitcoinDAO'
+import NemDAO from './NemDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import ethereumDAO, { EthereumDAO } from './EthereumDAO'
@@ -20,7 +22,7 @@ const EVENT_TOKEN_ADD = 'LogAddToken'
 const EVENT_TOKEN_MODIFY = 'LogTokenChange'
 const EVENT_TOKEN_REMOVE = 'LogRemoveToken'
 
-const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC']
+const NON_OPTIONAL_TOKENS = ['ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN']
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -122,13 +124,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
       })
       map = map.set(ethToken.id(), ethToken)
 
-      const bitcoinLikeTokens = await Promise.all([
-        this._setupBitcoinDAO('BTC', 'Bitcoin', btcDAO),
-        this._setupBitcoinDAO('BCC', 'Bitcoin Cash', bccDAO),
-        this._setupBitcoinDAO('BTG', 'Bitcoin Gold', btgDAO),
-        this._setupBitcoinDAO('LTC', 'Litecoin', ltcDAO),
+      const [bitcoinLikeTokens, nemTokens] = await Promise.all([
+        this._setupBitcoinLikeTokens(),
+        this._setupNemTokens(),
       ])
-      for (let t of bitcoinLikeTokens) {
+      for (let t of [...bitcoinLikeTokens, ...nemTokens]) {
         if (t !== null) {
           map = map.set(t.id(), t)
         }
@@ -174,9 +174,50 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  async _setupBitcoinDAO (name, title, dao) {
+  async _setupNemTokens () {
+    return await Promise.all([
+      this._setupNemMosaic('XEM', 'XEM', new NemDAO('XEM', 'XEM', nemProvider, null, 6)),
+      ...(nemProvider.getMosaics() || []).map((m) => this._setupNemMosaic(m.name, m.title, new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))),
+    ])
+  }
+
+  async _setupNemMosaic (name, title, dao) {
     if (dao.isInitialized()) {
       try {
+        const symbol = dao.getSymbol().toUpperCase()
+        const balances = await dao.getAccountBalances()
+        const token = new TokenModel({
+          dao,
+          name: dao.getName(),
+          symbol,
+          isApproveRequired: false,
+          ...balances,
+          isOptional: !NON_OPTIONAL_TOKENS.includes(symbol),
+          isFetched: true,
+          blockchain: title,
+        })
+        return token
+      } catch (e) {
+        // eslint-disable-next-line
+        console.log(`${name} support is not available`, e)
+      }
+    }
+    return null
+  }
+
+  async _setupBitcoinLikeTokens () {
+    return await Promise.all([
+      this._setupBitcoinLikeToken('BTC', 'Bitcoin', btcDAO),
+      this._setupBitcoinLikeToken('BCC', 'Bitcoin Cash', bccDAO),
+      this._setupBitcoinLikeToken('BTG', 'Bitcoin Gold', btgDAO),
+      this._setupBitcoinLikeToken('LTC', 'Litecoin', ltcDAO),
+    ])
+  }
+
+  async _setupBitcoinLikeToken (name, title, dao) {
+    if (dao.isInitialized()) {
+      try {
+        const symbol = dao.getSymbol().toUpperCase()
         const [
           feeRate,
           balances,
@@ -187,11 +228,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         const token = new TokenModel({
           dao,
           name: dao.getName(),
-          symbol: dao.getSymbol().toUpperCase(),
+          symbol,
           isApproveRequired: false,
           feeRate,
           ...balances,
-          isOptional: false,
+          isOptional: !NON_OPTIONAL_TOKENS.includes(symbol),
           isFetched: true,
           blockchain: title,
         })
