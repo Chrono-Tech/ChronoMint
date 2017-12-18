@@ -1,15 +1,15 @@
-import BigNumber from 'bignumber.js'
+import TxExecModel from '@/models/TxExecModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
+import AbstractMultisigContractDAO from 'dao/AbstractMultisigContractDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
-import { MultiEventsHistoryABI, WalletABI } from './abi'
 import tokenService from 'services/TokenService'
+import { MultiEventsHistoryABI, WalletABI } from './abi'
 
-export default class MultisigWalletDAO extends AbstractContractDAO {
+export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   constructor (at) {
     super(WalletABI, at, MultiEventsHistoryABI)
@@ -185,5 +185,29 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
       tx.id(),
     ], tx.txRevokeSummary())
     return result.tx
+  }
+
+  async getPendingData (pending: MultisigWalletPendingTxModel) {
+    const data = await this._call('getData', [pending.id()])
+    const result: TxExecModel = await this.decodeData(data)
+    console.log('--MultisigWalletDAO#getPendingData', result.toJS())
+
+
+    // TODO @dkchv: continue here!!!
+
+
+  }
+
+  async _decodeArgs (func, args) {
+
+    switch (func) {
+      case 'transfer':
+        return {
+          symbol: this._c.bytesToString(args._symbol),
+          value: args._value,
+          to: args._to,
+        }
+    }
+    console.log('--MultisigWalletDAO#_decodeArgs', func, args)
   }
 }

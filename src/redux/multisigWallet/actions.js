@@ -262,3 +262,13 @@ export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWallet
     console.error('revoke ms tx error', e.message)
   }
 }
+
+export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) => async (dispatch) => {
+  try {
+    const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
+    await walletDAO.getPendingData(pending)
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('get pending data error', e.message)
+  }
+}

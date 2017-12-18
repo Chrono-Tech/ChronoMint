@@ -135,7 +135,7 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async _decodeArgs (func, args) {
+  async _decodeArgs (func, args: Object) {
     let profile
     switch (func) {
       case TX_ADD_CBE:
