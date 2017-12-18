@@ -64,26 +64,18 @@ export const getExchange = () => async (dispatch, getState) => {
   }
 
   dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
-  const tokens = getState().get(DUCK_TOKENS)
-  if (tokens.isFetched()) {
-    dispatch(getExchangesForOwner())
-    dispatch(getNextPage())
-  } else {
-    tokenService.on(EVENT_TOKENS_FETCHED, async () => {
-      dispatch(getExchangesForOwner())
-      dispatch(getNextPage())
-    })
-  }
+
+  dispatch(getExchangesForOwner())
+  dispatch(getNextPage())
 }
 
 export const getExchangesForOwner = () => async (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS)
   const exchange = getState().get(DUCK_EXCHANGE)
-  if (tokens.isFetched() && !exchange.exchangesForOwner().isFetching()) {
+  if (!exchange.exchangesForOwner().isFetching()) {
     dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_START })
     const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
     const exchanges = await exchangeManagerDAO
-      .getExchangesForOwner(getState().get(DUCK_SESSION).account, tokens)
+      .getExchangesForOwner(getState().get(DUCK_SESSION).account)
     dispatch({ type: EXCHANGE_GET_OWNERS_EXCHANGES_FINISH, exchanges })
   }
 }
@@ -111,12 +103,10 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
 
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const state = getState().get(DUCK_EXCHANGE)
-  const tokens = getState().get(DUCK_TOKENS)
 
   const exchanges = await exchangeManagerDAO.getExchanges(
     state.lastPages(),
     PAGE_SIZE,
-    tokens,
     filter,
     {
       fromMiddleWare: state.showFilter(),

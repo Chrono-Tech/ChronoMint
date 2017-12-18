@@ -10,7 +10,7 @@ import ReissuableModel from './ReissuableModel'
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
   address: null,
-  decimals: 1,
+  decimals: 0,
   name: null,
   symbol: null,
   balance: new Amount(0, null, false),

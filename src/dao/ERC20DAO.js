@@ -72,18 +72,15 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   async totalSupply (): BigNumber {
-    const totalSupply = await this._call('totalSupply')
-    return this.removeDecimals(totalSupply)
+    return await this._call('totalSupply')
   }
 
   async getAccountBalance (account = this.getAccount()): BigNumber {
-    const balance = await this._call('balanceOf', [ account ])
-    return this.removeDecimals(balance)
+    return await this._call('balanceOf', [ account ])
   }
 
   async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    const allowance = await this._call('allowance', [ account, spender ])
-    return this.removeDecimals(allowance)
+    return await this._call('allowance', [ account, spender ])
   }
 
   approve (account: string, amount: Amount) {
