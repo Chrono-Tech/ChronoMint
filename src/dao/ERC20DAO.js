@@ -23,7 +23,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   /**
-   * Will be removed after SC refactoring with addresses
    * @deprecated
    */
   getSymbol () {

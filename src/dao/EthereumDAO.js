@@ -15,14 +15,18 @@ export const TX_TRANSFER = 'transfer'
 export class EthereumDAO extends AbstractTokenDAO {
   constructor () {
     super(...arguments)
+
     this._decimals = 18
+    this._symbol = 'ETH'
+    this._contractName = 'Ethereum'
   }
+
   getAccountBalance (account): Promise {
     return this._web3Provider.getBalance(account)
   }
 
-  isInitialized () {
-    return true
+  getContractName () {
+    return this._contractName
   }
 
   addDecimals (amount: BigNumber): BigNumber {
@@ -34,22 +38,13 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   getSymbol () {
-    return 'ETH'
-  }
-
-  static getName () {
-    return 'Ethereum'
+    return this._symbol
   }
 
   getToken () {
-    if (!this.isInitialized()) {
-      // eslint-disable-next-line
-      console.warn(`${this._symbol} not initialized`)
-      return
-    }
     return new TokenModel({
       name: 'Ethereum',
-      symbol: this.getSymbol(),
+      symbol: this._symbol,
       isOptional: false,
       isFetched: true,
       blockchain: 'Ethereum',
@@ -77,7 +72,8 @@ export class EthereumDAO extends AbstractTokenDAO {
       gasFee,
       input: tx.input,
       credited: tx.to === account,
-      token: this.getSymbol(),
+      // TODO @dkchv: token ???
+      token: this._symbol,
     })
   }
 
@@ -95,7 +91,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     ])
 
     let tx = new TxExecModel({
-      contract: EthereumDAO.getName(),
+      contract: this.getContractName(),
       func: TX_TRANSFER,
       value: amount,
       gas: this._c.fromWei(new BigNumber(estimateGas).mul(gasPrice)),

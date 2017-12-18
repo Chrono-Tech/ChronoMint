@@ -26,10 +26,6 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  initMetaData () {
-    throw new Error('should be overridden')
-  }
-
   addDecimals (amount: Amount): Amount {
     return amount
   }
@@ -38,6 +34,9 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     return amount
   }
 
+  /**
+   * @abstract
+   */
   getSymbol () {
     throw new Error('should be overridden')
   }

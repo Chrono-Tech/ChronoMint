@@ -38,10 +38,6 @@ export class BitcoinDAO extends EventEmitter {
     return this._name
   }
 
-  getSymbol () {
-    return this._symbol
-  }
-
   isInitialized () {
     return this._bitcoinProvider.isInitialized()
   }
@@ -85,7 +81,7 @@ export class BitcoinDAO extends EventEmitter {
       callback(new TransferNoticeModel({
         account,
         time,
-        tx: tx.token(this.getSymbol()),
+        tx: tx.token(this._symbol),
       }))
     })
   }
@@ -96,7 +92,7 @@ export class BitcoinDAO extends EventEmitter {
         account,
         time,
         balance: balance.balance0.div(DECIMALS),
-        symbol: this.getSymbol(),
+        symbol: this._symbol,
       })
     })
   }
