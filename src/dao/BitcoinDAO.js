@@ -1,11 +1,10 @@
-import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -32,10 +31,6 @@ export class BitcoinDAO extends EventEmitter {
   getInitAddress () {
     // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
     return `Bitcoin/${this._symbol}`
-  }
-
-  getName () {
-    return this._name
   }
 
   isInitialized () {
@@ -76,30 +71,23 @@ export class BitcoinDAO extends EventEmitter {
     return []
   }
 
-  async watchTransfer (account, callback) {
-    this._bitcoinProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
-      callback(new TransferNoticeModel({
-        account,
-        time,
-        tx: tx.token(this._symbol),
-      }))
+  watch (/*account*/): Promise {
+    return Promise.all([
+      this.watchTransfer(),
+      this.watchBalance(),
+    ])
+  }
+
+  async watchTransfer () {
+    this._bitcoinProvider.addListener(EVENT_TX, async ({ tx }) => {
+      this.emit(EVENT_NEW_TRANSFER, tx)
     })
   }
 
-  async watchBalance (callback) {
+  async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
-      callback({
-        account,
-        time,
-        balance: balance.balance0.div(DECIMALS),
-        symbol: this._symbol,
-      })
+      this.emit(EVENT_UPDATE_BALANCE, balance)
     })
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  async watchApproval (callback) {
-    // Ignore
   }
 
   async stopWatching () {

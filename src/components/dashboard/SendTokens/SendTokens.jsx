@@ -64,8 +64,9 @@ export default class SendTokens extends PureComponent {
   handleSubmit = (values) => {
     const { wallet, tokens } = this.props
     const { action, symbol, amount, recipient, feeMultiplier } = values.toJS()
-    const value = new Amount(amount, symbol)
     const token = tokens.item(symbol)
+
+    const value = new Amount(token.addDecimals(amount), symbol)
 
     switch (action) {
       case ACTION_APPROVE:

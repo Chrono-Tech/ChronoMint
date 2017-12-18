@@ -8,7 +8,6 @@ import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
-import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -45,7 +44,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   return {
-    balance: getCurrentWallet(state).balances().item(tokenId),
+    balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     account: state.get(DUCK_SESSION).account,
     token: state.get(DUCK_TOKENS).item(tokenId),
     feeMultiplier,
@@ -81,9 +80,7 @@ export default class SendTokensForm extends PureComponent {
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()
-    const currentBalance = balances.item(token.id()) || new BalanceModel({
-      id: token.id(),
-    })
+    const currentBalance = balances.item(token.id())
 
     return (
       <div>
@@ -122,10 +119,7 @@ export default class SendTokensForm extends PureComponent {
         <div styleName='balance'>
           <div styleName='label'><Translate value={prefix('balance')} />:</div>
           <div styleName='value'>
-            <TokenValue
-              isInvert
-              value={currentBalance.amount()}
-            />
+            <TokenValue isInvert value={currentBalance.amount()} />
           </div>
         </div>
       </div>
@@ -179,10 +173,8 @@ export default class SendTokensForm extends PureComponent {
               <Field
                 component={Slider}
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
-                step={FEE_RATE_MULTIPLIER.step}
-                min={FEE_RATE_MULTIPLIER.min}
-                max={FEE_RATE_MULTIPLIER.max}
                 name='feeMultiplier'
+                {...FEE_RATE_MULTIPLIER}
               />
             </div>
           </div>

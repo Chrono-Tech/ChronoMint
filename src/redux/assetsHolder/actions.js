@@ -33,9 +33,9 @@ const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
   dispatch({ type: TIME_HOLDER_WALLET_ADDRESS, address: timeHolderWalletAddress })
 
   // TODO @dkchv: review again
-  const contractNames = {}
-  contractNames[ timeHolderAddress ] = 'TIME Holder'
-  ApprovalNoticeModel.setContractNames(contractNames)
+  // const contractNames = {}
+  // contractNames[ timeHolderAddress ] = 'TIME Holder'
+  // ApprovalNoticeModel.setContractNames(contractNames)
 
   // update allowance
   const timeDAO = tokenService.getDAO(token.id())

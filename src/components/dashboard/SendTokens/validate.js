@@ -18,7 +18,8 @@ export default (values, props) => {
 
   if (!amountFormatError) {
     // validate only numbers
-    amountErrors.add(balance.amount().minus(amount).lt(0) ? 'error.notEnoughTokens' : null)
+    const amountWithDecimals = token.addDecimals(amount)
+    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'error.notEnoughTokens' : null)
   }
 
   const tokenDAO = tokenService.getDAO(token.id())

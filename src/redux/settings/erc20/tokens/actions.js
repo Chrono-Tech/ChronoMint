@@ -1,13 +1,11 @@
-import { I18n } from 'platform/i18n'
-import { change } from 'redux-form'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import type TokenModel from 'models/tokens/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-import { DUCK_SESSION } from 'redux/session/actions'
+import type TokenModel from 'models/tokens/TokenModel'
+import { I18n } from 'platform/i18n'
+import { TIME } from 'redux/mainWallet/actions'
 import { notify } from 'redux/notifier/actions'
-import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
-import tokenService from 'services/TokenService'
+import { DUCK_SESSION } from 'redux/session/actions'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -32,7 +30,7 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
   if (notice.isModified() || notice.isRemoved()) {
     if (getState().get(DUCK_SESSION).profile.tokens().toArray().includes(notice.token().address())
       || notice.token().symbol() === TIME) {
-      dispatch(watchInitWallet())
+      // dispatch(watchInitWallet())
     }
   }
   dispatch(notice.isRemoved()

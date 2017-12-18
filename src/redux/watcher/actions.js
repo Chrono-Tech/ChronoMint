@@ -5,14 +5,14 @@ import TxError from 'models/TxError'
 import type TxExecModel from 'models/TxExecModel'
 import { watchInitTokens, watchPlatformManager } from 'redux/assetsManager/actions'
 import { watchInitLOC } from 'redux/locs/actions'
-import { balanceMinus, balancePlus, ETH, initMainWallet, watchInitWallet } from 'redux/mainWallet/actions'
+import { balanceMinus, balancePlus, ETH, initMainWallet } from 'redux/mainWallet/actions'
 import { watchInitMarket } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { DUCK_TOKENS, initTokens } from 'redux/tokens/actions'
-import { watchInitUserMonitor, showConfirmTxModal } from 'redux/ui/actions'
+import { showConfirmTxModal, watchInitUserMonitor } from 'redux/ui/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 
 export const DUCK_WATCHER = 'watcher'
@@ -82,8 +82,6 @@ export const watcher = () => async (dispatch) => {
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  // TODO @dkchv: !!! restore
-  dispatch(watchInitWallet())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())

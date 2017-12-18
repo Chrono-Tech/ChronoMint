@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
-import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
-import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -58,7 +56,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   approve (account: string, amount: Amount): Promise {
     return this._tx('approve', [
       account,
-      this.addDecimals(amount),
+      new BigNumber(amount),
     ], {
       account,
       amount,
@@ -69,7 +67,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   transfer (recipient, amount: Amount): Promise {
     return this._tx(TX_TRANSFER, [
       recipient,
-      this.addDecimals(amount),
+      new BigNumber(amount),
     ], {
       recipient,
       amount,
@@ -116,22 +114,30 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._createTxModel(tx, account, tx.blockNumber, minedBlock.timestamp)
   }
 
-  watchApproval (from, callback) {
-    return this._watch(EVENT_APPROVAL, (result, block, time) => {
-      callback(new ApprovalNoticeModel({
-        value: this.removeDecimals(result.args.value),
-        spender: result.args.spender,
-        time,
-      }))
-    }, { from })
+  watch (account): Promise {
+    return Promise.all([
+      this.watchTransfer(account),
+      this.watchApproval(account),
+    ])
   }
 
-  /** @inheritDoc */
-  async watchTransfer (account, callback) {
+  watchApproval (account) {
+    return this._watch(EVENT_APPROVAL, (result, block, time) => {
+      console.log('--ERC20DAO#', result)
+      this.emit(EVENT_APPROVAL_TRANSFER, result.args)
+      // callback(new ApprovalNoticeModel({
+      //   value: result.args.value,
+      //   spender: result.args.spender,
+      //   time,
+      // }))
+    }, { from: account })
+  }
+
+  async watchTransfer (account) {
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
-        callback(new TransferNoticeModel({ tx, account, time }))
+        this.emit(EVENT_NEW_TRANSFER, tx)
       }
     }
     await Promise.all([

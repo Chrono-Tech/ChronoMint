@@ -1,9 +1,8 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
-import { TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import Immutable from 'immutable'
 import Amount from 'models/Amount'
@@ -63,52 +62,49 @@ export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBala
 
 export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
 
-export const watchTransfer = (notice: TransferNoticeModel) => async (dispatch, getState) => {
-  const tx: TxModel = notice.tx()
-  const token: TokenModel = getState().get(DUCK_TOKENS).item(tx.token())
-
-  dispatch(updateBalance(token, tx.isCredited(), tx.value()))
-
-  // TODO @dkchv: !!! rework
-  const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const timeHolderWalletAddress = await timeHolderDAO.getWalletAddress()
-  let updateTIMEAllowance = false
-  if (tx.to() === timeHolderWalletAddress) {
-    // dispatch(depositPlus(tx.value()))
-    updateTIMEAllowance = true
-  } else if (tx.from() === timeHolderWalletAddress) {
-    // dispatch(depositMinus(tx.value()))
-    updateTIMEAllowance = true
-  }
-  if (updateTIMEAllowance) {
-    const tokenDAO = tokenService.getDAO(token)
-    const account = getState().get(DUCK_SESSION)
-    const amount = await tokenDAO.getAccountAllowance(timeHolderWalletAddress, account)
-    // TODO @dkchv: !!! review again: token needed?, return amount as Amount?
-    dispatch(allowance(new AllowanceModel({
-      spender: timeHolderWalletAddress,
-      amount: new Amount(amount, token.symbol()),
-      token,
-    })))
-  }
-
-  dispatch(notify(notice))
-  dispatch({ type: WALLET_TRANSACTION, tx })
-}
-
-export const watchBalance = ({ symbol, balance /* balance3, balance6 */ }) => async (dispatch, getState) => {
-  const token: TokenModel = getState().get(DUCK_MAIN_WALLET).tokens().get(symbol)
-  dispatch(setBalance(token, balance))
-}
-
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
+  console.log('--actions#', 333)
   const { account, profile } = getState().get(DUCK_SESSION)
   if (token.isOptional() && !profile.tokens().get(token.id())) {
     return
   }
-  const symbol = token.symbol()
 
+  const symbol = token.symbol()
   const tokenDAO = tokenService.getDAO(token.id())
+
+  // subscribe
+  tokenDAO
+    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+      dispatch(notify(new TransferNoticeModel({
+        value: token.removeDecimals(tx.value()),
+        symbol,
+        from: tx.from(),
+        to: tx.to(),
+        credited: tx.isCredited(),
+      })))
+
+      // TODO @dkchv: !!!!
+      // dispatch(updateBalance(token, tx.isCredited(), tx.value()))
+
+      // add to table
+      dispatch({ type: WALLET_TRANSACTION, tx })
+    })
+    .on(EVENT_UPDATE_BALANCE, ({ balance /* balance3, balance6 */ }) => {
+      dispatch(setBalance(token, balance.balance0))
+    })
+    .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
+      dispatch(notify(new ApprovalNoticeModel({
+        value: token.removeDecimals(value),
+        symbol,
+        spender,
+      })))
+
+      // TODO @dkchv: !!!
+      // dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
+    })
+
+  await tokenDAO.watch(account)
+
   const balance = await tokenDAO.getAccountBalance(account)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
@@ -118,16 +114,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     }),
   })
 
-  // TODO @dkchv: review again !!!
   dispatch(addMarketToken(token.symbol()))
-  await tokenDAO.watchTransfer(account, (notice) => dispatch(watchTransfer(notice)))
-  if (tokenDAO.watchBalance) {
-    await tokenDAO.watchBalance((balance) => dispatch(watchBalance(balance)))
-  }
-  await tokenDAO.watchApproval(account, (notice: ApprovalNoticeModel) => {
-    dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
-    dispatch(notify(notice.setToken(token)))
-  })
 }
 
 export const initMainWallet = () => (dispatch, getState) => {
@@ -147,15 +134,9 @@ export const initMainWallet = () => (dispatch, getState) => {
   dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
   dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
   dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
-}
 
-// TODO @dkchv: review: invoked on token updates and profile
-export const watchInitWallet = () => async (dispatch, getState) => {
-  return
-
-  dispatch(getAccountTransactions(tokens.list()))
-
-
+  // TODO @dkchv: !!! review again
+  // dispatch(getAccountTransactions(tokens.list()))
 }
 
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
