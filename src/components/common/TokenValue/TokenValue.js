@@ -1,3 +1,6 @@
+import TokenModel from '@/models/tokens/TokenModel'
+import TokensCollection from '@/models/tokens/TokensCollection'
+import { DUCK_TOKENS } from '@/redux/tokens/actions'
 import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
 import Amount from 'models/Amount'
@@ -15,6 +18,7 @@ const mapStateToProps = (state) => {
     isInited,
     prices,
     selectedCurrency,
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
@@ -22,6 +26,7 @@ const mapStateToProps = (state) => {
 class TokenValue extends PureComponent {
   static propTypes = {
     value: PropTypes.instanceOf(Amount),
+    tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
     className: PropTypes.string,
     prefix: PropTypes.string,
@@ -66,14 +71,17 @@ class TokenValue extends PureComponent {
     const { value, isInvert, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
     const symbol = this.props.symbol || value.symbol()
+    const token: TokenModel = this.props.tokens.list().get(symbol)
 
-    return !value.isLoaded()
+    console.log('--TokenValue#render', token)
+
+    return !value.isLoaded() || !token
       ? <Preloader small />
       : (
         <span styleName={defaultMod} className='TokenValue__root' style={style}>
           {prefix}
-          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(value)}</span>
-          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(value)} {symbol}</span>
+          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(token.removeDecimals(value))}</span>
+          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(token.removeDecimals(value))} {symbol}</span>
           {!noRenderPrice && this.renderPrice()}
         </span>
       )

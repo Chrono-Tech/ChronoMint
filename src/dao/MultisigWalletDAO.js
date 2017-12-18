@@ -200,11 +200,15 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async _decodeArgs (func, args) {
 
+    const symbol = this._c.bytesToString(args._symbol)
+    const tokenDAO = tokenService.getDAO(symbol)
+    console.log('--MultisigWalletDAO#_decodeArgs', symbol, tokenDAO)
+
     switch (func) {
       case 'transfer':
         return {
-          symbol: this._c.bytesToString(args._symbol),
-          value: args._value,
+          symbol,
+          value: tokenDAO.removeDecimals(args._value),
           to: args._to,
         }
     }

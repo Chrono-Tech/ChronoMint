@@ -1,9 +1,11 @@
+import Amount from 'models/Amount'
 import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import classNames from 'classnames'
 import Preloader from 'components/common/Preloader/Preloader'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
 import globalStyles from 'layouts/partials/styles'
@@ -64,6 +66,10 @@ export default class WalletChanger extends PureComponent {
 
     return (
       <div styleName={classNames('walletBox', { 'isMultisig': isMultisig })}>
+        <div>
+          <div>test:</div>
+          <TokenValue value={new Amount(10, 'TIME')} />
+        </div>
         <Paper>
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMainBigSVG} />

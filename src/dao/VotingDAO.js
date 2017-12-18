@@ -4,6 +4,7 @@ import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
 import { PollManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import tokenService from 'services/TokenService'
 
 export const TX_CREATE_POLL = 'NewPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -23,7 +24,7 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
   }
 
   async getVoteLimit () {
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
+    const timeDAO = tokenService.getDAO('TIME')
     const voteLimit = await this._call('getVoteLimit')
     return timeDAO.removeDecimals(voteLimit)
   }

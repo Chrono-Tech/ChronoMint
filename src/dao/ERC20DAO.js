@@ -16,7 +16,19 @@ export default class ERC20DAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(abi || ERC20DAODefaultABI, token.address())
     // TODO @dkchv: throw if > 20 !!!
-    this._decimals = Math.max(Math.min(token.decimals(), 20), 0)
+    if (token.decimals() > 20) {
+      throw new Error(`decimals for token ${token.id()} must be lower than 20`)
+    }
+    this._decimals = token.decimals()
+    this._symbol = token.symbol()
+  }
+
+  /**
+   * Will be removed after SC refactoring with addresses
+   * @deprecated
+   */
+  getSymbol () {
+    return this._symbol
   }
 
   getDecimals () {
