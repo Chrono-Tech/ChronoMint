@@ -18,6 +18,7 @@ export class BitcoinDAO extends EventEmitter {
     this._name = name
     this._symbol = symbol
     this._bitcoinProvider = bitcoinProvider
+    this._decimals = 8
   }
 
   getAddressValidator () {
@@ -43,10 +44,6 @@ export class BitcoinDAO extends EventEmitter {
 
   isInitialized () {
     return this._bitcoinProvider.isInitialized()
-  }
-
-  getDecimals () {
-    return 8
   }
 
   async getFeeRate () {

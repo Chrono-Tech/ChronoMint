@@ -1,6 +1,4 @@
-import Amount from '@/models/Amount'
-import type TokenModel from 'models/tokens/TokenModel'
-import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
 import type TxModel from 'models/TxModel'
 import { address } from 'models/validator'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -16,7 +14,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAccountBalance (account = this.getAccount()): BigNumber {
+  getAccountBalance (account): Promise {
     throw new Error('should be overridden')
   }
 
@@ -29,10 +27,6 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   initMetaData () {
-    throw new Error('should be overridden')
-  }
-
-  getDecimals () {
     throw new Error('should be overridden')
   }
 

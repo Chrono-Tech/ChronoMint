@@ -10,8 +10,6 @@ import { ChronoBankAssetWithFeeProxyABI } from './abi'
 class LHTDAO extends ERC20DAO {
   constructor (token: TokenModel) {
     super(token, ChronoBankAssetWithFeeProxyABI)
-
-    this.initMetaData()
   }
 
   async getAssetsManagerBalance (): BigNumber {

@@ -10,7 +10,7 @@ import ReissuableModel from './ReissuableModel'
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
   address: null,
-  decimals: 1,
+  decimals: 0,
   name: null,
   symbol: null,
   balance: new Amount(0, null, false),
@@ -92,7 +92,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   decimals () {
-    return this.dao() ? this.dao().getDecimals() : this.get('decimals')
+    return this.get('decimals')
   }
 
   addDecimals (amount: BigNumber): BigNumber {

@@ -51,17 +51,15 @@ class TokenValue extends PureComponent {
     return `.${fractionString}`
   }
 
-  renderPrice () {
-    const { prices, value, selectedCurrency, isInited } = this.props
-    // TODO @dkchv: remove symbol from props
-    const symbol = this.props.symbol || value.symbol()
+  renderPrice (valueWithoutDecimals, symbol) {
+    const { prices, selectedCurrency, isInited } = this.props
     const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ]
       ? prices[ symbol ][ selectedCurrency ]
       : null
     if (price === null || price === 0) {
       return null
     }
-    const valueInCurrency = integerWithDelimiter(value.mul(price), true)
+    const valueInCurrency = integerWithDelimiter(valueWithoutDecimals.mul(price), true)
     return (
       <span styleName='price'>{`(US$${valueInCurrency})`}</span>
     )
@@ -70,19 +68,20 @@ class TokenValue extends PureComponent {
   render () {
     const { value, isInvert, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
+
+    // TODO @dkchv: remove symbol from props!!!!
     const symbol = this.props.symbol || value.symbol()
-    const token: TokenModel = this.props.tokens.list().get(symbol)
+    const token: TokenModel = this.props.tokens.item(symbol)
+    const valueWithoutDecimals = token.removeDecimals(value)
 
-    console.log('--TokenValue#render', token)
-
-    return !value.isLoaded() || !token
+    return !value.isLoaded() || !token.isFetched()
       ? <Preloader small />
       : (
         <span styleName={defaultMod} className='TokenValue__root' style={style}>
           {prefix}
-          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(token.removeDecimals(value))}</span>
-          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(token.removeDecimals(value))} {symbol}</span>
-          {!noRenderPrice && this.renderPrice()}
+          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(valueWithoutDecimals)}</span>
+          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(valueWithoutDecimals)} {symbol}</span>
+          {!noRenderPrice && this.renderPrice(valueWithoutDecimals, symbol)}
         </span>
       )
   }

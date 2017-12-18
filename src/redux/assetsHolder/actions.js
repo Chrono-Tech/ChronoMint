@@ -16,7 +16,7 @@ export const TIME_HOLDER_ADDRESS = 'timeHolder/timeHolderAddress'
 
 let timeHolderDAO: TIMEHolderDAO = null
 
-const subscribeOnTokens = (token: TokenModel) => async (dispatch) => {
+const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
   if (token.symbol() !== 'TIME') {
     return
   }
@@ -39,9 +39,10 @@ const subscribeOnTokens = (token: TokenModel) => async (dispatch) => {
 
   // update allowance
   const timeDAO = tokenService.getDAO(token.id())
+  const { account } = getState().get(DUCK_SESSION)
   const [ timeHolderAllowance, timeHolderWalletAllowance ] = await Promise.all([
-    timeDAO.getAccountAllowance(timeHolderAddress),
-    timeDAO.getAccountAllowance(timeHolderWalletAddress),
+    timeDAO.getAccountAllowance(timeHolderAddress, account),
+    timeDAO.getAccountAllowance(timeHolderWalletAddress, account),
   ])
 
   console.log('--assetHolder: ', +timeHolderAllowance, +timeHolderWalletAllowance)

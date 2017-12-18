@@ -13,25 +13,24 @@ import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
 export const TX_TRANSFER = 'transfer'
 
 export class EthereumDAO extends AbstractTokenDAO {
-  async getAccountBalance (account = this.getAccount()): BigNumber {
-    const balance = await this._web3Provider.getBalance(account)
-    return this._c.fromWei(balance)
+  constructor () {
+    super(...arguments)
+    this._decimals = 18
+  }
+  getAccountBalance (account): Promise {
+    return this._web3Provider.getBalance(account)
   }
 
   isInitialized () {
     return true
   }
 
-  getDecimals () {
-    return 18
-  }
-
   addDecimals (amount: BigNumber): BigNumber {
-    return amount.mul(Math.pow(10, this.getDecimals()))
+    return amount.mul(Math.pow(10, this._decimals))
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
-    return amount.div(Math.pow(10, this.getDecimals()))
+    return amount.div(Math.pow(10, this._decimals))
   }
 
   getSymbol () {
@@ -54,6 +53,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       isOptional: false,
       isFetched: true,
       blockchain: 'Ethereum',
+      decimals: this._decimals,
       isERC20: true, //erc20-like
     })
   }

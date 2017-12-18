@@ -55,34 +55,10 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
   ])
 }
 
-export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formName) => {
+export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   dispatch({ type: TOKENS_FORM_FETCH })
-
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-
-  let dao
-  try {
-    dao = tokenService.getDAO(token.id())
-  } catch (e) {
-    dispatch({ type: TOKENS_FORM_FETCH, end: true })
-    throw { address: I18n.t('settings.erc20.tokens.errors.invalidAddress') }
-  }
-
-  try {
-    if (!token.decimals()) {
-      dispatch(change(formName, 'decimals', dao.getDecimals()))
-    }
-    if (!token.symbol()) {
-      dispatch(change(formName, 'symbol', dao.getSymbol()))
-      token = token.setSymbol(dao.getSymbol())
-    }
-  } catch (e) {
-    // eslint-disable-next-line
-    console.warn('Load meta data error', e)
-  }
-
   const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())
-
   dispatch({ type: TOKENS_FORM_FETCH, end: true })
 
   if ((symbolAddress !== null && token.address() !== symbolAddress) || token.symbol().toUpperCase() === 'ETH') {
