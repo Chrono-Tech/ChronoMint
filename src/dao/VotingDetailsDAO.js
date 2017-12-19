@@ -33,7 +33,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     return ids.map((id) => id.toNumber())
   }
 
-  async getPoll (pollId, timeDAO): PollDetailsModel {
+  async getPoll (pollId, timeToken: TokenModel): PollDetailsModel {
     try {
       const response = this._call('getPoll', [ pollId ])
       const [ id, owner, hashBytes, voteLimit, deadline, status, active, published ] = await response
@@ -48,7 +48,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
         hash,
         title,
         description,
-        voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimit),
+        voteLimitInTIME: voteLimit.equals(new BigNumber(0)) ? null : timeToken.removeDecimals(voteLimit),
         deadline: deadline.toNumber() ? new Date(deadline.toNumber()) : null, // deadline is just a timestamp
         published: published.toNumber() ? new Date(published.toNumber() * 1000) : null, // published is just a timestamp
         status,
@@ -63,9 +63,8 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
   }
 
   async getPollDetails (pollId, timeToken: TokenModel): PollDetailsModel {
-    const timeDAO = tokenService.getDAO(timeToken.address())
     const [ poll, votes, statistics, memberVote, timeHolderDAO ] = await Promise.all([
-      this.getPoll(pollId, timeDAO),
+      this.getPoll(pollId, timeToken),
       this._call('getOptionsVotesForPoll', [ pollId ]),
       this._call('getOptionsVotesStatisticForPoll', [ pollId ]),
       this._call('getMemberVotesForPoll', [ pollId ]),
@@ -73,7 +72,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
     ])
     let totalSupply = new BigNumber(0)
     try {
-      totalSupply = await timeDAO.totalSupply()
+      totalSupply = await timeToken.totalSupply()
     } catch (e) {
       // eslint-disable-next-line
       console.log('getPollDetails', e.message)
@@ -86,7 +85,6 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       votes,
       statistics,
       memberVote: memberVote && memberVote.toNumber(), // just an option index
-      timeDAO,
       totalSupply,
       shareholdersCount,
       files: new Immutable.List((files && files.links || [])

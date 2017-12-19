@@ -29,7 +29,7 @@ function mapStateToProps (state) {
   return {
     list: voting.list(),
     tokens,
-    timeDeposit: wallet.timeDeposit(),
+    timeDeposit: new BigNumber(11) || wallet.timeDeposit(),
     statistics: getStatistics(voting),
     isCBE: state.get(DUCK_SESSION).isCBE,
     isFetched: voting.isFetched(),
