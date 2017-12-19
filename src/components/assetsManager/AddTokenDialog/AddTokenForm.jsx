@@ -64,7 +64,7 @@ const onSubmit = (values, dispatch) => {
     }),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: new ReissuableModel({ isReissuable: !!values.get('reissuable') }),
+    isReissuable: new ReissuableModel({ value: !!values.get('reissuable') }),
     blockchain: 'Ethereum',
   })))
 }

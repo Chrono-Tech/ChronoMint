@@ -5,9 +5,20 @@ export default class TokensCollection extends abstractFetchingCollection({
   emptyModel: new TokenModel(),
 }) {
   getBySymbol (symbol: string) {
-    let resultItem = null
+    let resultItem = this.get('emptyModel')
     this.items().some((item: TokenModel) => {
       if (item.symbol() === symbol) {
+        resultItem = item
+        return true
+      }
+    })
+    return resultItem
+  }
+
+  getByAddress (address: string) {
+    let resultItem = this.get('emptyModel')
+    this.items().some((item: TokenModel) => {
+      if (item.transactionHash() === address || item.address() === address) {
         resultItem = item
         return true
       }

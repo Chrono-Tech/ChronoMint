@@ -10,7 +10,7 @@ import ReissuableModel from './ReissuableModel'
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
   address: null,
-  decimals: 1,
+  decimals: 0,
   name: null,
   symbol: null,
   balance: new Amount(0, null, false),
@@ -142,7 +142,7 @@ export default class TokenModel extends abstractFetchingModel({
       name: this.name(),
       totalSupply: this.totalSupply(),
       decimals: this.decimals(),
-      isReissuable: this.isReissuable().isReissuable(),
+      isReissuable: this.isReissuable().value(),
       icon: this.icon(),
       feeAddress: fee.feeAddress(),
       feePercent: fee.fee(),

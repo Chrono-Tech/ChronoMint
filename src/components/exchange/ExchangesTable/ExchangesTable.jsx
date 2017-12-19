@@ -11,8 +11,10 @@ import globalStyles from 'layouts/partials/styles'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Amount from 'models/Amount'
-import { getNextPage } from 'redux/exchange/actions'
+import { DUCK_EXCHANGE, getNextPage } from 'redux/exchange/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import './ExchangesTable.scss'
 import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
@@ -21,8 +23,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const exchange = state.get('exchange')
+  const exchange = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   return {
+    tokens,
     exchanges: exchange.exchanges(),
     exchangesForOwner: exchange.exchangesForOwner(),
     pagesCount: exchange.pagesCount(),
@@ -57,6 +61,7 @@ export default class ExchangesTable extends React.PureComponent {
   static propTypes = {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
     exchangesForOwner: PropTypes.instanceOf(ExchangesCollection),
+    tokens: PropTypes.instanceOf(TokensCollection),
     handleOpenDetails: PropTypes.func,
     handleOpenTransfer: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),

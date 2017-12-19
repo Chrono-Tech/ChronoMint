@@ -119,7 +119,7 @@ export const getManagersForAssetSymbol = async (symbol: string) => {
 export const removeManager = (token: TokenModel, manager: String) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.id() ].platform)
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
     const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
     return txHash
   }
@@ -132,7 +132,7 @@ export const removeManager = (token: TokenModel, manager: String) => async (disp
 export const addManager = (token: TokenModel, manager: String) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.id() ].platform)
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
     await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), manager)
   }
   catch (e) {
@@ -144,7 +144,7 @@ export const addManager = (token: TokenModel, manager: String) => async (dispatc
 export const reissueAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.id() ].platform)
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
     await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
   catch (e) {
@@ -156,7 +156,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
 export const revokeAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.id() ].platform)
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
     await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
   catch (e) {
@@ -165,17 +165,17 @@ export const revokeAsset = (token: TokenModel, amount: number) => async (dispatc
   }
 }
 
-export const checkIsReissuable = async (token: TokenModel) => {
+export const checkIsReissuable = async (token: TokenModel, asset) => {
   let isReissuable = false
   try {
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(asset.platform)
     isReissuable = await chronoBankPlatformDAO.isReissuable(token.symbol())
   }
   catch (e) {
     // eslint-disable-next-line
     console.error(e.message)
   }
-  return new ReissuableModel({ isReissuable }).isFetched(true)
+  return new ReissuableModel({ value: isReissuable }).isFetched(true)
 }
 
 export const getTransactions = () => async (dispatch, getState) => {
@@ -274,7 +274,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     let removedToken = new TokenModel()
     dispatch({ type: TOKENS_REMOVE, token: removedToken.transactionHash(tx.transactionHash) })
     dispatch({ type: SET_ASSETS, payload: { assets } })
-
     dispatch(setTx(tx))
   }
 
@@ -305,7 +304,9 @@ export const getFee = async (token: TokenModel) => {
   }
   return tokenFee
 }
-export const selectToken = (token: TokenModel) => async (dispatch) => {
+
+export const selectToken = (token: TokenModel) => async (dispatch, getState) => {
+  const { assets } = getState().get(DUCK_ASSETS_MANAGER)
   dispatch({
     type: SELECT_TOKEN,
     payload: { symbol: token.id() },
@@ -320,7 +321,7 @@ export const selectToken = (token: TokenModel) => async (dispatch) => {
 
   const [ managersList, isReissuable, fee ] = await Promise.all([
     getManagersForAssetSymbol(token.symbol()),
-    checkIsReissuable(token),
+    checkIsReissuable(token, assets[token.address()]),
     getFee(token),
   ])
 
