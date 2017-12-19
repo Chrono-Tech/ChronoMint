@@ -356,7 +356,7 @@ class HeaderPartial extends PureComponent {
               />
             </div>
             {addresses.filter((a) => a.address).map((a) => (
-              <div key={a.address}>
+              <div key={a.title}>
                 <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
                 <div styleName='info-micros'>
                   <QRIcon value={a.address} />
@@ -369,7 +369,7 @@ class HeaderPartial extends PureComponent {
             ))}
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN'].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>

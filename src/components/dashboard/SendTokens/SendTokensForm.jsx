@@ -77,6 +77,9 @@ export default class SendTokensForm extends PureComponent {
     const isContact = contractsManagerDAO.isContract(address)
   }
 
+  // TODO @dkchv: !!! merge
+  // !t.dao().isTransferLocked
+
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()

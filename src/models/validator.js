@@ -15,6 +15,13 @@ export const bitcoinAddress = (value, required = true, blockchain = 'Bitcoin') =
   return null
 }
 
+export const nemAddress = (value, required = true, blockchain = 'NEM') => {
+  if ((!value && required) || (value && !/^[a-zA-Z0-9]{40}$/.test(value))) {
+    return { value: 'errors.invalidAddress' , blockchain }
+  }
+  return null
+}
+
 export const name = (value, required = true) => {
   if (value && !/^[A-z]/.test(value)) {
     return 'errors.invalidLatinString'
