@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import TokenModel from 'models/tokens/TokenModel'
 import { MultiEventsHistoryABI, TokenManagementInterfaceABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -17,9 +16,9 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.symbol(),
         token.symbol(),
         token.name(),
-        TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
+        token.addDecimals(token.totalSupply()),
         token.decimals(),
-        token.isReissuable().isReissuable(),
+        token.isReissuable().value(),
         token.feeAddress(),
         fee.fee() * 100,
         token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
@@ -36,29 +35,13 @@ export default class TokenManagementExtensionDAO extends AbstractContractDAO {
         token.symbol(),
         token.symbol(),
         token.name(),
-        TokenManagementExtensionDAO.addDecimals(token.totalSupply(), token.decimals()),
+        token.addDecimals(token.totalSupply()),
         token.decimals(),
-        token.isReissuable().isReissuable(),
+        token.isReissuable().value(),
         token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : '',
       ],
       token,
     )
     return tx.tx
-  }
-
-  static addDecimals (value, decimals) {
-    if (decimals === null) {
-      throw new Error('addDecimals: decimals is undefined')
-    }
-    const amount = new BigNumber(value.toString(10))
-    return amount.mul(Math.pow(10, decimals))
-  }
-
-  static removeDecimals (value, decimals) {
-    if (decimals === null) {
-      throw new Error('addDecimals: decimals is undefined')
-    }
-    const amount = new BigNumber(value.toString(10))
-    return amount.div(Math.pow(10, decimals))
   }
 }

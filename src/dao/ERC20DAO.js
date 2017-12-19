@@ -40,9 +40,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return amountBN.div(Math.pow(10, this._decimals))
   }
 
-  async totalSupply (): BigNumber {
-    const totalSupply = await this._call('totalSupply')
-    return this.removeDecimals(totalSupply)
+  totalSupply (): Promise {
+    return this._call('totalSupply')
   }
 
   getAccountBalance (account): Promise {

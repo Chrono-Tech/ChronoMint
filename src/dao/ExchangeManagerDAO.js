@@ -39,9 +39,9 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async getExchangesForOwner (owner: string, tokens: TokensCollection) {
+  async getExchangesForOwner (owner: string) {
     const addresses = await this._call('getExchangesForOwner', [ owner ])
-    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
+    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
   async getAssetSymbols () {
@@ -59,7 +59,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     return Object.keys(result)
   }
 
-  async getExchanges (fromId: number, length: number, tokens: TokensCollection, filter: Object = {}, options: Object = {}): Array<string> {
+  async getExchanges (fromId: number, length: number, filter: Object = {}, options: Object = {}): Array<string> {
     let addresses
     if (options.fromMiddleWare) {
       const sort = filter.isBuy ? `sort=buyPrice,-age` : `sort=sellPrice,-age`
@@ -67,40 +67,40 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     } else {
       addresses = await this._call('getExchanges', [ fromId, length ])
     }
-    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)), tokens)
+    return await this.getExchangeData(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
-  async getExchangeData (exchangesAddresses: Array<string>, tokens: TokensCollection) {
+  async getExchangeData (exchangesAddresses: Array<string>) {
     let exchangesCollection = new ExchangesCollection()
 
     if (!exchangesAddresses.length) {
       return exchangesCollection
     }
 
-    const [ assets, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
+    const [ symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
 
     exchangesAddresses.forEach((address, i) => {
+      const symbol = this._c.bytesToString(symbols[ i ])
       const buyPrice = new BigNumber(buyPrices[ i ])
       const sellPrice = new BigNumber(sellPrices[ i ])
       const assetBalance = assetBalances[ i ]
       const ethBalance = ethBalances[ i ]
-      const token = tokens.item(assets[ i ])
 
-      try {
-        exchangeService.subscribeToExchange(address)
-        exchangeService.subscribeToToken(token, address)
-      } catch (e) {
-        // eslint-disable-next-line
-        console.error('watch error', e.message)
-      }
+      // TODO @abdulov fix watchers
+      // try {
+      //   exchangeService.subscribeToExchange(address)
+      //   exchangeService.subscribeToToken(token, address)
+      // } catch (e) {
+      //   eslint-disable-next-line
+      //   console.error('watch error', e.message)
+      // }
 
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
-        asset: assets[ i ],
-        symbol: token.symbol(),
-        buyPrice: this._c.fromWei(buyPrice).mul(Math.pow(10, token.decimals())),
-        sellPrice: this._c.fromWei(sellPrice).mul(Math.pow(10, token.decimals())),
-        assetBalance: tokenService.getDAO(token.address()).removeDecimals(assetBalance, token),
+        symbol,
+        buyPrice: this._c.fromWei(buyPrice),
+        sellPrice: this._c.fromWei(sellPrice),
+        assetBalance: assetBalance,
         ethBalance: this._c.fromWei(ethBalance),
       }))
     })

@@ -1,4 +1,3 @@
-import tokenService from 'services/TokenService'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -40,42 +39,46 @@ class PlatformsList extends PureComponent {
       .filter((asset) => {
         return asset.platform ? asset.platform === this.props.selectedPlatform : false
       })
+    const showTitle = (token: TokenModel, asset) => {
+      if (token.isPending()) {
+        return <Translate value={prefix('pending')} />
+      }
+      return token.isFetched() ? asset.address : <Translate value={prefix('loading')} />
+    }
 
     return (
       <div styleName='tokensList'>
         {
+          filteredTokens.length === 0 &&
+          <div styleName='noTokens'>
+            <Translate value={prefix('noTokens')} />
+          </div>
+        }
+        {
           filteredTokens.map((asset) => {
-            const token = tokens.item(asset.address)
-            if (!token) {
-              return null
-            }
-            const tokenDao = tokenService.getDAO(token.id())
-
-            if (!token || !token.isFetched()) {
-              return null
-            }
+            const token = tokens.getByAddress(asset.address)
 
             return (
               <div
-                key={token.id()}
-                styleName={classnames('tokenItem', { 'selected': selectedToken === token.symbol() })}
-                onTouchTap={() => !token.isPending() && this.props.handleSelectToken(token)}
+                key={asset.address}
+                styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
+                onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
                 <div styleName='tokenTitle'>
-                  {token.symbol()}
-                  {
-                    token.isPending() && <Translate value={prefix('pending')} />
-                  }
-                  <div styleName='tokenSubTitle'>{token.id()}</div>
+                  <div styleName='tokenSubTitle'>{token.isFetched() ? token.id() : asset.address}</div>
                 </div>
+                {showTitle(token, asset)}
                 <div styleName='tokenBalance'>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={new Amount(tokenDao ? tokenDao.removeDecimals(asset.totalSupply, token) : asset.totalSupply, token.symbol())}
-                  />
+                  {
+                    token.isFetched() &&
+                    <TokenValue
+                      style={{ fontSize: '24px' }}
+                      value={new Amount(token ? asset.totalSupply : asset.totalSupply, token.symbol())}
+                    />
+                  }
                 </div>
               </div>
             )

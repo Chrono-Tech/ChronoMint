@@ -156,10 +156,9 @@ class PlatformInfo extends PureComponent {
       return null
     }
     const selectedToken = this.props.tokens.item(this.props.selectedToken)
-    const tokenDao = tokenService.getDAO(selectedToken.id())
 
     if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
-    const totalSupply = tokenDao.removeDecimals(this.props.assets[ selectedToken.id() ].totalSupply, selectedToken)
+    const totalSupply = this.props.assets[ selectedToken.address() ].totalSupply
 
     return (
       <div styleName='root'>
@@ -183,7 +182,7 @@ class PlatformInfo extends PureComponent {
               </div>
             </div>
           </div>
-          {selectedToken.isReissuable().isFetched() && <ReissueAssetForm />}
+          {selectedToken.isReissuable().isFetched() && selectedToken.isReissuable().value() && <ReissueAssetForm />}
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
