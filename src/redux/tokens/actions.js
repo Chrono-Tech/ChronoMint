@@ -1,7 +1,9 @@
-import { bccDAO, BitcoinDAO, btcDAO, btgDAO, ltcDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED } from 'dao/BitcoinDAO'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
+import NemDAO, { EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import tokenService from 'services/TokenService'
 
@@ -14,7 +16,7 @@ export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
 // add new tokens here
-const MANDATORY_TOKENS_COUNT = ['TIME', 'BTC', 'BCC', 'ETH', 'LTC', 'BTG']
+const MANDATORY_TOKENS_COUNT = ['TIME', 'BTC', 'BCC', 'ETH', 'LTC', 'BTG', 'XEM', 'XMIN']
 
 // TODO @dkchv: remove after subscriptions changes in exchange
 const checkFetched = () => (dispatch, getState) => {
@@ -65,6 +67,27 @@ export const initTokens = () => async (dispatch, getState) => {
       })
       .on(EVENT_BTC_LIKE_TOKEN_FAILED, () => {
         dispatch({ type: TOKENS_FAILED })
+        dispatch(checkFetched())
+      })
+      .fetchToken()
+  })
+
+  // nem tokens
+  const mosaicsDAOs = nemProvider.getMosaics().map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))
+  const nemDAOs =  [
+    new NemDAO('XEM', 'XEM', nemProvider, null, 6),
+    ...mosaicsDAOs,
+  ]
+
+  nemDAOs.forEach((nemDAO: NemDAO) => {
+    nemDAO
+      .on(EVENT_NEM_LIKE_TOKEN_FAILED, () => {
+        dispatch({ type: TOKENS_FAILED })
+        dispatch(checkFetched())
+      })
+      .on(EVENT_NEM_LIKE_TOKEN_CREATED, (token: TokenModel, dao) => {
+        dispatch({ type: TOKENS_FETCHED, token })
+        tokenService.registerDAO(token, dao)
         dispatch(checkFetched())
       })
       .fetchToken()

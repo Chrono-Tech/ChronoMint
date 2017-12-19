@@ -162,14 +162,12 @@ export class EthereumDAO extends AbstractTokenDAO {
     const filter = web3.eth.filter('latest')
     const startTime = AbstractContractDAO._eventsWatchStartTime
     this._addFilterEvent(filter)
-    console.log('--EthereumDAO#watchTransfer', 666)
     filter.watch(async (e, r) => {
       if (e) {
         // eslint-disable-next-line
         console.error('EthereumDAO watchTransfer', e)
         return
       }
-      console.log('--EthereumDAO#', 555)
       const block = await this._web3Provider.getBlock(r, true)
       const time = block.timestamp * 1000
       if (time < startTime) {
@@ -178,7 +176,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       const txs = block.transactions || []
       txs.forEach((tx) => {
         if (tx.value.toNumber() > 0 && (tx.from === account || tx.to === account)) {
-          console.log('--EthereumDAO#', 11111)
           this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account))
           // this._transferCallback(new TransferNoticeModel({
           //   tx: this._getTxModel(tx, account),

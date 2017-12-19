@@ -79,38 +79,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
-  // TODO @dkchv: !!! merge
-  // async _setupNemTokens () {
-  //   return await Promise.all([
-  //     this._setupNemMosaic('XEM', 'XEM', new NemDAO('XEM', 'XEM', nemProvider, null, 6)),
-  //     ...(nemProvider.getMosaics() || []).map((m) => this._setupNemMosaic(m.name, m.title, new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))),
-  //   ])
-  // }
-  //
-  // async _setupNemMosaic (name, title, dao) {
-  //   if (dao.isInitialized()) {
-  //     try {
-  //       const symbol = dao.getSymbol().toUpperCase()
-  //       const balances = await dao.getAccountBalances()
-  //       const token = new TokenModel({
-  //         dao,
-  //         name: dao.getName(),
-  //         symbol,
-  //         isApproveRequired: false,
-  //         ...balances,
-  //         isOptional: !NON_OPTIONAL_TOKENS.includes(symbol),
-  //         isFetched: true,
-  //         blockchain: title,
-  //       })
-  //       return token
-  //     } catch (e) {
-  //       // eslint-disable-next-line
-  //       console.log(`${name} support is not available`, e)
-  //     }
-  //   }
-  //   return null
-  // }
-
   async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null

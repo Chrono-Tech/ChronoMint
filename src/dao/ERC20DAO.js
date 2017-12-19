@@ -121,14 +121,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   watchApproval (account) {
-    return this._watch(EVENT_APPROVAL, (result, block, time) => {
-      console.log('--ERC20DAO#', result)
+    return this._watch(EVENT_APPROVAL, (result) => {
       this.emit(EVENT_APPROVAL_TRANSFER, result.args)
-      // callback(new ApprovalNoticeModel({
-      //   value: result.args.value,
-      //   spender: result.args.spender,
-      //   time,
-      // }))
     }, { from: account })
   }
 

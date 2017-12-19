@@ -1,9 +1,8 @@
-import { DUCK_SESSION } from '@/redux/session/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import TIMEHolderDAO from 'dao/TIMEHolderDAO'
 import Amount from 'models/Amount'
-import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 

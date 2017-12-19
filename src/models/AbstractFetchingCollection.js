@@ -34,6 +34,10 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this.list().valueSeq().toArray()
   }
 
+  sortBy (predicate) {
+    return this.list().valueSeq().sortBy(predicate).toArray()
+  }
+
   item (id) {
     const item = this.list().get(id)
     return !item && this.get('emptyModel')

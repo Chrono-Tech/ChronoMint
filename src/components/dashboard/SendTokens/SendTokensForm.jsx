@@ -77,9 +77,6 @@ export default class SendTokensForm extends PureComponent {
     const isContact = contractsManagerDAO.isContract(address)
   }
 
-  // TODO @dkchv: !!! merge
-  // !t.dao().isTransferLocked
-
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()
@@ -188,7 +185,7 @@ export default class SendTokensForm extends PureComponent {
               label={<Translate value={prefix('send')} />}
               primary
               style={{ float: 'right', marginTop: '20px' }}
-              disabled={pristine || invalid}
+              disabled={pristine || invalid || token.isLocked()}
               onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
             />
             {token.isERC20() && (

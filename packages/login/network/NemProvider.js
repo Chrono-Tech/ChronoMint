@@ -34,7 +34,7 @@ export class NemProvider extends AbstractProvider {
 
   getMosaics () {
     const node = this._selectNode(this._engine)
-    return node.getMosaics()
+    return node.getMosaics() || []
   }
 
   async getAccountBalances (mosaic = null) {

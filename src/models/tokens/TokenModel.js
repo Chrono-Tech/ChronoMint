@@ -25,7 +25,7 @@ export default class TokenModel extends abstractFetchingModel({
   isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
   isERC20: false,
-
+  isLocked: false, // flag for do not operate this token
 }) {
   id () {
     return this.get('transactionHash') || this.symbol() || this.address()
@@ -152,5 +152,9 @@ export default class TokenModel extends abstractFetchingModel({
 
   isERC20 () {
     return this.get('isERC20')
+  }
+
+  isLocked () {
+    return this.get('isLocked')
   }
 }

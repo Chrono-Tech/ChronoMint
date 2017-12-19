@@ -20,8 +20,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return this._watch('MultisigWalletConfirmationNeeded', (result) => {
       const { operation, initiator, value, to, data } = result.args
 
-      console.log('--MultisigWalletDAO#', result, initiator, data)
-
       // TODO @dkchv: !!!!
       callback(new MultisigWalletPendingTxModel({
         id: operation,
