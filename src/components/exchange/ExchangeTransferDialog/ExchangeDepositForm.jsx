@@ -1,25 +1,25 @@
-import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
+import TokenModel from 'models/tokens/TokenModel'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import Amount from 'models/Amount'
 import './ExchangeTransferDialog.scss'
 import styles from './styles'
 import validate from './validate'
 
-function prefix (token) {
-  return `components.exchange.ExchangeTransferDialog.${token}`
+function prefix (text) {
+  return `components.exchange.ExchangeTransferDialog.${text}`
 }
 
 @reduxForm({ validate })
 export default class ExchangeDepositForm extends React.PureComponent {
   static propTypes = {
-    maxAmount: PropTypes.instanceOf(BigNumber).isRequired,
-    symbol: PropTypes.string.isRequired,
+    maxAmount: PropTypes.instanceOf(Amount).isRequired,
+    token: PropTypes.instanceOf(TokenModel).isRequired,
     title: PropTypes.node,
     dispatch: PropTypes.func,
     ...formPropTypes,
@@ -31,7 +31,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
         <div styleName='subTitle'>{this.props.title}</div>
         <div>
           <Translate value={prefix('maxAmount')} />
-          <TokenValue value={new Amount(this.props.maxAmount, this.props.symbol)} />
+          <TokenValue value={this.props.maxAmount} />
         </div>
         <form styleName='fieldRow' onSubmit={this.props.handleSubmit(this.props.onSubmit)}>
           <div styleName='fieldWrapper'>
@@ -41,7 +41,7 @@ export default class ExchangeDepositForm extends React.PureComponent {
               fullWidth
               floatingLabelStyle={styles.TextField.floatingLabelStyle}
               floatingLabelText={(
-                <span><Translate value={prefix('amountIn')} />&nbsp;{this.props.symbol}</span>)}
+                <span><Translate value={prefix('amountIn')} />&nbsp;{this.props.token.symbol()}</span>)}
               style={styles.TextField.style}
             />
           </div>
