@@ -20,73 +20,71 @@ export class ExchangeDAO extends AbstractContractDAO {
     )
   }
 
-  withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
-    const dao = tokenService.getDAO(token)
+  withdrawTokens (wallet, amount: Amount): Promise {
     return this._tx(
       TX_WITHDRAW_TOKENS,
       [
         wallet.address(),
-        dao.addDecimals(amount, token),
+        new BigNumber(amount),
       ],
       {
         recipient: wallet.address(),
-        amount: new Amount(amount, token.symbol()),
+        amount,
       })
   }
 
-  withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
-    const dao = tokenService.getDAO(token)
+  withdrawEth (wallet, amount: Amount): Promise {
     return this._tx(
       TX_WITHDRAW_ETH,
       [
         wallet.address(),
-        dao.addDecimals(amount, token),
+        new BigNumber(amount),
       ],
       {
         recipient: wallet.address(),
-        amount: new Amount(amount, 'ETH'),
+        amount,
       })
   }
 
-  async approveSell (token: TokenModel, amount: BigNumber) {
+  async approveSell (token: TokenModel, amount: Amount) {
     const assetDAO = tokenService.getDAO(token)
-    // eslint-disable-next-line
-    console.log('approveSell', assetDAO)
     return assetDAO.approve(this.getInitAddress(), amount)
   }
 
   sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
-    const priceInWei = this._c.toWei(exchange.buyPrice())
-    const price = priceInWei.div(Math.pow(10, token.decimals()))
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.buyPrice()
+    let price = this._c.fromWei(priceInWei).mul(Math.pow(10, token.decimals()))
 
     return this._tx(
       TX_SELL,
       [
-        token.dao().addDecimals(amount),
-        price.mul(Math.pow(10, price.decimalPlaces())),
-        price.decimalPlaces(),
+        token.addDecimals(amount),
+        priceInWei,
+        priceInWei.div(Math.pow(10, token.decimals())).decimalPlaces(),
       ],
       {
-        amount: new Amount(amount, exchange.symbol()),
-        price: new Amount(amount.mul(exchange.buyPrice()), 'ETH'),
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
       })
   }
 
   buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
-    const priceInWei = this._c.toWei(exchange.sellPrice())
-    const price = priceInWei.div(Math.pow(10, token.decimals()))
-    const dao = tokenService.getDAO(token)
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.sellPrice()
+    let price = this._c.fromWei(priceInWei).mul(Math.pow(10, token.decimals()))
+
     return this._tx(
       TX_BUY,
       [
-        dao.addDecimals(amount, token),
-        price.mul(Math.pow(10, price.decimalPlaces())),
-        price.decimalPlaces(),
+        token.addDecimals(amount),
+        priceInWei,
+        priceInWei.div(Math.pow(10, token.decimals())).decimalPlaces(),
       ],
       {
-        amount: new Amount(amount, exchange.symbol()),
-        price: new Amount(amount.mul(exchange.sellPrice()), 'ETH'),
-      }, priceInWei.mul(amount),
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
+      }, this._c.toWei(amount.mul(price)),
     )
   }
 

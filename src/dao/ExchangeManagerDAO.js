@@ -86,22 +86,13 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       const assetBalance = assetBalances[ i ]
       const ethBalance = ethBalances[ i ]
 
-      // TODO @abdulov fix watchers
-      // try {
-      //   exchangeService.subscribeToExchange(address)
-      //   exchangeService.subscribeToToken(token, address)
-      // } catch (e) {
-      //   eslint-disable-next-line
-      //   console.error('watch error', e.message)
-      // }
-
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
         address: address,
         symbol,
-        buyPrice: this._c.fromWei(buyPrice),
-        sellPrice: this._c.fromWei(sellPrice),
+        buyPrice: buyPrice,
+        sellPrice: sellPrice,
         assetBalance: assetBalance,
-        ethBalance: this._c.fromWei(ethBalance),
+        ethBalance: ethBalance,
       }))
     })
     return exchangesCollection

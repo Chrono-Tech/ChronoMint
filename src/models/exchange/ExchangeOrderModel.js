@@ -67,8 +67,8 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
   txSummary () {
     return {
       symbol: this.symbol(),
-      buyPrice: new Amount(this.buyPrice(), 'ETH'),
-      sellPrice: new Amount(this.sellPrice(), 'ETH'),
+      buyPrice: `${this.buyPrice()} ETH`,
+      sellPrice: `${this.sellPrice()} ETH`,
       isActive: this.isActive(),
     }
   }

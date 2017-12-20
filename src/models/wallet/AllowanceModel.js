@@ -9,4 +9,8 @@ export default class AllowanceModel extends abstractFetchingModel({
   id () {
     return this.get('spender')
   }
+
+  amount (value) {
+    return this._getSet('amount', value)
+  }
 }

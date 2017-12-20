@@ -42,9 +42,9 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
 }
 
-const updateVoteLimit = () => async (dispatch) => {
+const updateVoteLimit = () => async (dispatch, getState) => {
   const votingDAO = await contractsManagerDAO.getVotingDAO()
-  const voteLimitInTIME = await votingDAO.getVoteLimit()
+  const voteLimitInTIME = await votingDAO.getVoteLimit(getState().get(DUCK_TOKENS).item('TIME'))
   dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
 
@@ -68,16 +68,15 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   ])
 }
 
-export const createPoll = (poll: PollModel) => async (dispatch) => {
-  const timeDAO = await contractsManagerDAO.getTIMEDAO()
+export const createPoll = (poll: PollModel) => async (dispatch, getState) => {
+  const time = getState().get(DUCK_TOKENS).item('TIME')
   const stub = new PollDetailsModel({
     poll: poll.set('id', --counter),
-    timeDAO,
   })
   try {
     dispatch(handlePollCreated(stub.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingDAO()
-    const transactionHash = await dao.createPoll(poll)
+    const transactionHash = await dao.createPoll(poll, time)
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
     // eslint-disable-next-line
@@ -172,6 +171,7 @@ export const listPolls = () => async (dispatch, getState) => {
   }
 
 }
+
 const getPolls = (timeToken: TokenModel) => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   let list = []

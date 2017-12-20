@@ -98,8 +98,13 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         spender,
       })))
 
-      // TODO @dkchv: !!!
-      // dispatch({ type: WALLET_ALLOWANCE, token, value: notice.value(), spender: notice.spender() })
+      dispatch({
+        type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
+          amount: new Amount(value, token.id()),
+          spender,
+          token: token.id,
+        }),
+      })
     })
 
   await tokenDAO.watch(account)
@@ -138,7 +143,7 @@ export const initMainWallet = () => (dispatch, getState) => {
   // dispatch(getAccountTransactions(tokens.list()))
 }
 
-export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch) => {
+export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async () => {
   try {
     const tokenDAO = tokenService.getDAO(token.id())
     await tokenDAO.transfer(recipient, amount, feeMultiplier)
