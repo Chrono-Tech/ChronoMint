@@ -8,7 +8,7 @@ import exchangeService from 'services/ExchangeService'
 import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import AllowanceModel from 'models/Wallet/AllowanceModel'
+import AllowanceModel from 'models/wallet/AllowanceModel'
 import Amount from 'models/Amount'
 
 export const DUCK_EXCHANGE = 'exchange'
