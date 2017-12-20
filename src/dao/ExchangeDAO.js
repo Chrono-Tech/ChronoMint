@@ -119,7 +119,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
-        ethAmount: this._c.fromWei(tx.args.eth),
+        ethAmount: tx.args.eth,
       })
     }, { exchange })
   }
@@ -129,7 +129,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
-        ethAmount: this._c.fromWei(tx.args.eth),
+        ethAmount: tx.args.eth,
       })
     }, { exchange })
   }
@@ -138,7 +138,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     return this._watch('ExchangeWithdrawEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
-        ethAmount: this._c.fromWei(tx.args.amount),
+        ethAmount: tx.args.amount,
       })
     }, { exchange })
   }
@@ -156,7 +156,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     return this._watch('ExchangeReceivedEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
-        ethAmount: this._c.fromWei(tx.args.amount),
+        ethAmount: tx.args.amount,
       })
     }, { exchange })
   }

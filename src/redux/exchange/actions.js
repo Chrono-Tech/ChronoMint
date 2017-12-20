@@ -220,28 +220,25 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Buy', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const ethToken = getState().get(DUCK_TOKENS).item('ETH')
     dispatch(updateExchange(exchange
       .assetBalance(exchange.assetBalance().minus(tx.tokenAmount))
-      .ethBalance(exchange.ethBalance().plus(ethToken.addDecimals(tx.ethAmount))),
+      .ethBalance(exchange.ethBalance().plus(tx.ethAmount)),
     ))
   })
 
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const ethToken = getState().get(DUCK_TOKENS).item('ETH')
     dispatch(updateExchange(exchange
-      .ethBalance(exchange.ethBalance().minus(ethToken.addDecimals(tx.ethAmount))),
+      .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))
   })
 
   exchangeService.on('WithdrawEther', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    const ethToken = getState().get(DUCK_TOKENS).item('ETH')
     dispatch(updateExchange(exchange
-      .ethBalance(exchange.ethBalance().minus(ethToken.addDecimals(tx.ethAmount))),
+      .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))
   })
 
@@ -256,8 +253,8 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('ReceivedEther', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const exchange = getExchangeFromState(state, tx.exchange)
-    dispatch(updateExchange(exchange.ethBalance(exchange.ethBalance().plus(tx.ethAmount))))
-
+    dispatch(updateExchange(exchange
+      .ethBalance(exchange.ethBalance().plus(tx.ethAmount))))
   })
 
   exchangeService.on('Transfer', async (tx) => {
