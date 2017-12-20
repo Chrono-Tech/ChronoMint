@@ -18,10 +18,11 @@ import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import BalanceModel from 'models/tokens/BalanceModel'
+import ProfileModel from 'models/ProfileModel'
 import Amount from 'models/Amount'
-import './AddCurrencyDialog.scss'
-import AddTokenDialog from './AddTokenDialog'
+import AddTokenDialog from './AddTokenDialog/AddTokenDialog'
 import ModalDialog from './ModalDialog'
+import './AddCurrencyDialog.scss'
 
 class TokenRow extends PureComponent {
   static propTypes = {
@@ -29,20 +30,30 @@ class TokenRow extends PureComponent {
     balances: PropTypes.instanceOf(BalancesCollection),
     isSelected: PropTypes.bool,
     onClick: PropTypes.func,
+    profile: PropTypes.instanceOf(ProfileModel),
   }
 
   handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
 
-  renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
+  renderCheckbox = ({ isSelected }) => {
+    if (this.props.token.isOptional() && !this.props.profile.tokens().get(this.props.token.address())) {
+      return <Checkbox checked={isSelected} />
+    }
+    return null
+  }
 
   render () {
     const { isSelected, token, balances } = this.props
     const symbol = token.symbol()
     let balance = balances.item(token.id())
-    if (!balance) {
+    // eslint-disable-next-line
+    console.log('render 1', balance.toJS())
+    if (!balance.amount().isLoaded()) {
       balance = new BalanceModel({ amount: new Amount(0, token.symbol()) })
     }
 
+    // eslint-disable-next-line
+    console.log('render 2', balance.toJS())
     return (
       <div
         key={token.id()}
@@ -77,8 +88,9 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const wallet = state.get(DUCK_MAIN_WALLET)
+  const session = state.get(DUCK_SESSION)
   return {
-    profile: state.get(DUCK_SESSION),
+    profile: session.profile,
     tokens: state.get(DUCK_TOKENS),
     balances: wallet.balances(),
   }
@@ -137,11 +149,12 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.updateUserProfile(profile)
   }
 
-  renderRow = (selectedTokens, balances) => (token) => {
+  renderRow = (selectedTokens, balances, profile) => (token) => {
     const isSelected = selectedTokens.includes(token.symbol())
 
     return (
       <TokenRow
+        profile={profile}
         balances={balances}
         key={token.id()}
         token={token}
@@ -151,9 +164,9 @@ export default class AddCurrencyDialog extends PureComponent {
     )
   }
 
-  renderTokens = ({ balances, tokens, selectedTokens }) => (
+  renderTokens = ({ balances, tokens, selectedTokens, profile }) => (
     <div styleName='table'>
-      {tokens.items().map(this.renderRow(selectedTokens, balances))}
+      {tokens.items().map(this.renderRow(selectedTokens, balances, profile))}
     </div>
   )
 
@@ -182,6 +195,7 @@ export default class AddCurrencyDialog extends PureComponent {
                 selectedTokens={this.state.selectedTokens}
                 tokens={this.props.tokens}
                 balances={this.props.balances}
+                profile={this.props.profile}
               >
                 {this.renderTokens}
               </WithLoader>

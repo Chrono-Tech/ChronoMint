@@ -19,7 +19,7 @@ export const TOKENS_FAILED = 'tokens/failed'
 const MANDATORY_TOKENS_COUNT = ['TIME', 'BTC', 'BCC', 'ETH', 'LTC', 'BTG', 'XEM', 'XMIN']
 
 // TODO @dkchv: remove after subscriptions changes in exchange
-const checkFetched = () => (dispatch, getState) => {
+export const checkFetched = () => (dispatch, getState) => {
   const tokens = getState().get(DUCK_TOKENS)
   if (tokens.isFetched()) {
     tokenService.tokensFetched()

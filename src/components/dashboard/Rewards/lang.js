@@ -1,10 +1,10 @@
 export default {
   en: {
-    title: 'Rewards',
+    title: 'Bonuses',
     allPeriods: 'All Periods',
   },
   ru: {
-    title: 'Награды',
+    title: 'Бонусы',
     allPeriods: 'Все периоды',
   },
 }
