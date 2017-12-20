@@ -93,7 +93,7 @@ export class EthereumDAO extends AbstractTokenDAO {
 
     const [ gasPrice, estimateGas ] = await Promise.all([
       this._web3Provider.getGasPrice(),
-      this._web3Provider.estimateGas({ to: account, value: value }),
+      this._web3Provider.estimateGas({ to: account, value }),
     ])
 
     let tx = new TxExecModel({

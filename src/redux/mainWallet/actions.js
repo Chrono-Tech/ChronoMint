@@ -20,13 +20,9 @@ import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
-export const WALLET_TOKENS_FETCH = 'mainWallet/TOKENS_FETCH'
-export const WALLET_TOKENS = 'mainWallet/TOKENS'
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
-export const WALLET_TIME_DEPOSIT = 'mainWallet/TIME_DEPOSIT'
-export const WALLET_TIME_ADDRESS = 'mainWallet/TIME_ADDRESS'
 export const WALLET_BTC_ADDRESS = 'mainWallet/BTC_ADDRESS'
 export const WALLET_BCC_ADDRESS = 'mainWallet/BCC_ADDRESS'
 export const WALLET_BTG_ADDRESS = 'mainWallet/BTG_ADDRESS'

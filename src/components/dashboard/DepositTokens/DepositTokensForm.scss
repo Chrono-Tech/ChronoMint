@@ -7,6 +7,16 @@
 .form {
 }
 
+// TODO @dkchv: !!! review again
+.content {
+  @include position(absolute, 10px, 10px, 10px, 10px);
+  @include xs-only {
+    @include position(absolute, 5px, 5px, 5px, 5px);
+  }
+  background: transparent none no-repeat center center;
+  background-size: contain;
+}
+
 .balance {
 
   margin-top: 15px;

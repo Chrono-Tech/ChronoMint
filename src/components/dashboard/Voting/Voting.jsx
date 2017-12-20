@@ -24,7 +24,6 @@ function mapStateToProps (state) {
 
   return {
     list: voting.list,
-    timeDeposit: wallet.timeDeposit(),
     isFetched: voting.isFetched && wallet.isFetched(),
     isFetching: voting.isFetching && !voting.isFetched,
   }
@@ -48,8 +47,6 @@ export default class Voting extends PureComponent {
     isFetching: PropTypes.bool,
     list: PropTypes.object,
     handlePollDetails: PropTypes.func,
-    timeDeposit: PropTypes.object,
-    initTIMEDeposit: PropTypes.func,
     getList: PropTypes.func,
   }
 

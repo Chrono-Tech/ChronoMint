@@ -1,18 +1,42 @@
-import { Link } from 'react-router'
-import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
-import React, { Component } from 'react'
+import Amount from 'models/Amount'
 import { RewardsPeriod } from 'components'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
 import styles from 'layouts/partials/styles'
+import { CircularProgress, FlatButton, Paper, RaisedButton } from 'material-ui'
 import type RewardsModel from 'models/RewardsModel'
-import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
-
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
+import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
+import { closePeriod, DUCK_REWARDS, getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import './RewardsContent.scss'
 
 function prefix (token) {
   return `layouts.partials.RewardsContent.${token}`
+}
+
+function mapStateToProps (state) {
+  const rewards = state.get(DUCK_REWARDS)
+  const session = state.get(DUCK_SESSION)
+
+  return {
+    rewardsData: rewards.data,
+    deposit: state.get(DUCK_ASSETS_HOLDER).deposit(),
+    isFetching: rewards.isFetching,
+    isFetched: rewards.isFetched,
+    isCBE: session.isCBE,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    getRewardsData: () => dispatch(getRewardsData()),
+    watchInitRewards: () => dispatch(watchInitRewards()),
+    handleClosePeriod: () => dispatch(closePeriod()),
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -23,7 +47,7 @@ export default class RewardsContent extends Component {
     isCBE: PropTypes.bool,
 
     rewardsData: PropTypes.object,
-    timeDeposit: PropTypes.object,
+    deposit: PropTypes.instanceOf(Amount),
 
     watchInitRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
@@ -79,7 +103,7 @@ export default class RewardsContent extends Component {
               <div className='col-sm-1'>
                 <div styleName='alignRight'>
                   <div styleName='entries'>
-                    {this.props.timeDeposit && this.props.timeDeposit.gt(0)
+                    {!this.props.deposit.isZero()
                       ? <div styleName='entry'>
                         <span styleName='entry1'>
                           <span><Translate value={prefix('rewardsForYourAccountIs')} />:</span>
@@ -153,29 +177,5 @@ export default class RewardsContent extends Component {
         </div>
       </div>
     )
-  }
-}
-
-function mapStateToProps (state) {
-  const rewards = state.get('rewards')
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-
-  return {
-    rewardsData: rewards.data,
-    // just to subscribe RewardsContent on time deposit updates
-    timeDeposit: wallet.timeDeposit(),
-    isFetching: rewards.isFetching,
-    isFetched: rewards.isFetched,
-    isCBE: session.isCBE,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
-    handleClosePeriod: () => dispatch(closePeriod()),
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
   }
 }

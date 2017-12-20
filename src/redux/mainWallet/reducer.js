@@ -7,13 +7,6 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case a.WALLET_INIT:
       return state.isInited(action.isInited)
-    case a.WALLET_TOKENS_FETCH:
-      return state.isFetching(true)
-    case a.WALLET_TOKENS:
-      return state
-        .tokens(action.tokens)
-        .isFetching(false)
-        .isFetched(true)
     case a.WALLET_BALANCE:
       return state.balances(state.balances().update(
         state.balances().item(action.token.id()).updateBalance(action.isCredited, action.amount),
@@ -26,11 +19,6 @@ export default (state = initialState, action) => {
     case a.WALLET_ALLOWANCE:
       return state.allowances(state.allowances().update(action.allowance))
       // return state.setAllowance(action.token.id(), action.spender, action.value)
-    case a.WALLET_TIME_DEPOSIT:
-      // TODO @dkchv: !!! action.isCredited
-      return state.timeDeposit(action.amount)
-    case a.WALLET_TIME_ADDRESS:
-      return state.timeAddress(action.address)
     case a.WALLET_BTC_ADDRESS:
       return state.btcAddress(action.address)
     case a.WALLET_BCC_ADDRESS:

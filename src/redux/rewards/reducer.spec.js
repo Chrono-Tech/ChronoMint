@@ -1,4 +1,5 @@
-import reducer, * as a from './rewards'
+import reducer from './reducer'
+import * as a from './actions'
 import RewardsModel from '../../models/RewardsModel'
 import RewardsPeriodModel from '../../models/RewardsPeriodModel'
 import { store } from '../../specsInit'

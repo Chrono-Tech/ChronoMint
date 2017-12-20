@@ -1,3 +1,4 @@
+import Amount from '@/models/Amount'
 import BigNumber from 'bignumber.js'
 import { FlatButton, Paper, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -49,7 +50,7 @@ export default class Poll extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
     isCBE: PropTypes.bool,
-    timeDeposit: PropTypes.object,
+    deposit: PropTypes.instanceOf(Amount),
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
@@ -217,7 +218,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     primary
-                    disabled={model.isFetching() || !(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()}
+                    disabled={model.isFetching() || this.props.deposit.isZero()}
                     onClick={this.props.handleVote}
                   />
                 )

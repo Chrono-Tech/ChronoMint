@@ -204,14 +204,12 @@ export default class SendTokensForm extends PureComponent {
   }
 
   render () {
-    const { token } = this.props
-
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
             head={this.renderHead()}
-            body={this.renderBody({ token })}
+            body={this.renderBody()}
           />
         </form>
       </Paper>

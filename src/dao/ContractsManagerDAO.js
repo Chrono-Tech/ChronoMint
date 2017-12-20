@@ -1,6 +1,4 @@
 import validator from 'models/validator'
-import type Immutable from 'immutable'
-import type TokenModel from 'models/tokens/TokenModel'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
@@ -14,7 +12,7 @@ import PendingManagerDAO from './PendingManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import RewardsDAO from './RewardsDAO'
-import TIMEHolderDAO from './TIMEHolderDAO'
+import AssetHolderDAO from './AssetHolderDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
@@ -42,7 +40,8 @@ const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
 const DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER = 'PlatformTokenExtensionGatewayManagerEmitterDAO'
 const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
 const DAO_FEE_INTERFACE = 'FeeInterfaceDAO'
-const DAO_TIME_HOLDER = 'TimeHolder'
+// TODO @dkchv: update after SC refactor
+const DAO_ASSET_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
 
@@ -65,7 +64,7 @@ const daoMap = {
   [DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER]: PlatformTokenExtensionGatewayManagerEmitterDAO,
   [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
   [DAO_FEE_INTERFACE]: FeeInterfaceDAO,
-  [DAO_TIME_HOLDER]: TIMEHolderDAO,
+  [DAO_ASSET_HOLDER]: AssetHolderDAO,
   [DAO_ERC20]: ERC20DAO,
 }
 
@@ -148,13 +147,13 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_REWARDS)
   }
 
-  getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
-    return this._getDAO(DAO_TIME_HOLDER)
+  getAssetHolderDAO (): Promise<AssetHolderDAO> {
+    return this._getDAO(DAO_ASSET_HOLDER)
   }
 
   async getTIMEDAO (): Promise<ERC20DAO> {
-    const timeHolderDAO: TIMEHolderDAO = await this.getTIMEHolderDAO()
-    return timeHolderDAO.getAssetDAO()
+    const assetHolderDAO: AssetHolderDAO = await this.getAssetHolderDAO()
+    return assetHolderDAO.getAssetDAO()
   }
 
   getPendingManagerDAO (): Promise<PendingManagerDAO> {

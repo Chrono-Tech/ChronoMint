@@ -64,12 +64,12 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
 
   async getPollDetails (pollId, timeToken: TokenModel): PollDetailsModel {
     const timeDAO = tokenService.getDAO(timeToken.address())
-    const [ poll, votes, statistics, memberVote, timeHolderDAO ] = await Promise.all([
+    const [ poll, votes, statistics, memberVote, assetHolderDAO ] = await Promise.all([
       this.getPoll(pollId, timeDAO),
       this._call('getOptionsVotesForPoll', [ pollId ]),
       this._call('getOptionsVotesStatisticForPoll', [ pollId ]),
       this._call('getMemberVotesForPoll', [ pollId ]),
-      await contractsManagerDAO.getTIMEHolderDAO(),
+      await contractsManagerDAO.getAssetHolderDAO(),
     ])
     let totalSupply = new BigNumber(0)
     try {
@@ -78,7 +78,7 @@ export default class VotingDetailsDAO extends AbstractContractDAO {
       // eslint-disable-next-line
       console.log('getPollDetails', e.message)
     }
-    const shareholdersCount = await timeHolderDAO.shareholdersCount()
+    const shareholdersCount = await assetHolderDAO.shareholdersCount()
     const files = poll && await ipfs.get(poll.files())
 
     return poll && new PollDetailsModel({

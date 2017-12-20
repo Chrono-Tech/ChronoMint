@@ -1,5 +1,7 @@
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
+import AssetModel from 'models/assetHolder/AssetModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TIMEHolderDAO from 'dao/TIMEHolderDAO'
+import AssetHolderDAO from 'dao/AssetHolderDAO'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -8,62 +10,78 @@ import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
-export const TIME_HOLDER_INIT = 'timeHolder/INIT'
-export const TIME_HOLDER_TIME_ADDRESS = 'timeHolder/timeAddress'
-export const TIME_HOLDER_WALLET_ADDRESS = 'timeHolder/timeHolderWalletAddress'
-export const TIME_HOLDER_ADDRESS = 'timeHolder/timeHolderAddress'
+export const ASSET_HOLDER_INIT = 'assetHolder/INIT'
+export const ASSET_HOLDER_ADDRESS = 'assetHolder/timeHolderAddress'
+export const ASSET_HOLDER_ASSET_UPDATE = 'assetHolder/assetUpdate'
 
-let timeHolderDAO: TIMEHolderDAO = null
+let assetHolderDAO: AssetHolderDAO = null
 
 const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
-  if (token.symbol() !== 'TIME') {
+  const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
+  const assets = assetHolder.assets()
+  if (!token.isERC20() || !assets.list().has(token.address())) {
     return
   }
 
-  dispatch({ type: TIME_HOLDER_TIME_ADDRESS, address: token.address() })
+  const holderAccount = assetHolder.account()
+  const holderWallet = assetHolder.wallet()
 
-  // init
-  const [ timeHolderAddress, timeHolderWalletAddress ] = await Promise.all([
-    timeHolderDAO.getAddress(),
-    timeHolderDAO.getWalletAddress(),
-  ])
+  // set symbol for asset
+  const asset = assets.item(token.address()).symbol(token.symbol())
+  dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
 
-  dispatch({ type: TIME_HOLDER_ADDRESS, address: timeHolderAddress })
-  dispatch({ type: TIME_HOLDER_WALLET_ADDRESS, address: timeHolderWalletAddress })
+  // subscribe to token
+  const tokenDAO = tokenService.getDAO(token.id())
+  tokenDAO
+    .on(EVENT_APPROVAL_TRANSFER, (results) => {
+      console.log('--actions#approve', 1111, results)
+    })
+    .on(EVENT_NEW_TRANSFER, (tx) => {
+      console.log('--actions#deposit', 2222, tx.toJS())
+    })
+    .watch(holderAccount)
 
-  // TODO @dkchv: review again
-  // const contractNames = {}
-  // contractNames[ timeHolderAddress ] = 'TIME Holder'
-  // ApprovalNoticeModel.setContractNames(contractNames)
-
-  // update allowance
-  const timeDAO = tokenService.getDAO(token.id())
+  // fetch allowance
   const { account } = getState().get(DUCK_SESSION)
-  const [ timeHolderAllowance, timeHolderWalletAllowance ] = await Promise.all([
-    timeDAO.getAccountAllowance(timeHolderAddress, account),
-    timeDAO.getAccountAllowance(timeHolderWalletAddress, account),
+  const [ assetHolderAllowance, assetHolderWalletAllowance ] = await Promise.all([
+    tokenDAO.getAccountAllowance(holderAccount, account),
+    tokenDAO.getAccountAllowance(holderWallet, account),
   ])
 
-  console.log('--assetHolder: ', +timeHolderAllowance, +timeHolderWalletAllowance)
+  console.log('--assetHolder: ', +assetHolderAllowance, +assetHolderWalletAllowance)
 
   // token = token
-  //   .setAllowance(timeHolderAddress, timeHolderAllowance)
-  //   .setAllowance(timeHolderWalletAddress, timeHolderWalletAllowance)
+  //   .setAllowance(assetHolderAddress, assetHolderAllowance)
+  //   .setAllowance(assetHolderWalletAddress, assetHolderWalletAllowance)
 }
 
 export const initAssetsHolder = () => async (dispatch, getState) => {
   if (getState().get(DUCK_ASSETS_HOLDER).isInited()) {
     return
   }
-  dispatch({ type: TIME_HOLDER_INIT, inInited: true })
+  dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
-  const { account } = getState().get(DUCK_SESSION)
-  timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
-  const [ assets, deposit ] = await Promise.all([
-    timeHolderDAO.getSharesContract(),
-    timeHolderDAO.getDeposit(account),
+  // init holder
+  assetHolderDAO = await contractsManagerDAO.getAssetHolderDAO()
+  const [ account, wallet ] = await Promise.all([
+    assetHolderDAO.getAddress(),
+    assetHolderDAO.getWalletAddress(),
   ])
-  console.log('--deposit', assets, +deposit)
+  dispatch({ type: ASSET_HOLDER_ADDRESS, account, wallet })
+
+  // get assets list
+  const [ timeAddress ] = await Promise.all([
+    assetHolderDAO.getSharesContract(),
+  ])
+  const assets = [ timeAddress ]
+  assets.forEach((address) => {
+    dispatch({
+      type: ASSET_HOLDER_ASSET_UPDATE,
+      asset: new AssetModel({
+        address,
+      }),
+    })
+  })
 
   // subscribe to tokens
   const callback = (token) => dispatch(subscribeOnTokens(token))
@@ -73,14 +91,12 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   tokens.list().forEach(callback)
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel) => async (dispatch) => {
+export const depositAsset = (amount: Amount) => async (dispatch) => {
   // const amountBN = new BigNumber(amount)
-
   // dispatch(balanceMinus(amountBN, token))
-  const assetDAO = tokenService.getDAO(token)
 
   try {
-    await timeHolderDAO.deposit(amount, assetDAO)
+    await assetHolderDAO.deposit(amount)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)
@@ -90,14 +106,12 @@ export const depositAsset = (amount: Amount, token: TokenModel) => async (dispat
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel) => async () => {
+export const withdrawAsset = (amount: Amount) => async () => {
   // const amountBN = new BigNumber(amount)
-
   // dispatch(depositMinus(amountBN))
-  const assetDAO = tokenService.getDAO(token)
 
   try {
-    await timeHolderDAO.withdraw(amount, assetDAO)
+    await assetHolderDAO.withdraw(amount)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)

@@ -87,7 +87,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   async getRewardsData (): Promise<RewardsModel> {
-    const timeHolderDAO = await contractsManagerDAO.getTIMEHolderDAO()
+    const assetHolderDAO = await contractsManagerDAO.getAssetHolderDAO()
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const [
       address,
@@ -106,7 +106,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       this.getPeriodLength(),
       this.getLastPeriod(),
       this.getLastClosedPeriod(),
-      timeHolderDAO.getAccountDepositBalance(),
+      assetHolderDAO.getAccountDepositBalance(),
       timeDAO.totalSupply(),
       this.getPeriods(),
       this.getCurrentAccumulated(),

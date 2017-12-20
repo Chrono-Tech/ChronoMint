@@ -30,16 +30,11 @@ export default class MainWallet extends abstractFetchingModel({
     return ls.getAccount()
   }
 
+  /**
+   * @deprecated
+   */
   tokens (value) {
     return this._getSet('tokens', value)
-  }
-
-  timeDeposit (value) {
-    return this._getSet('timeDeposit', value)
-  }
-
-  timeAddress (value) {
-    return this._getSet('timeAddress', value)
   }
 
   btcAddress (value) {

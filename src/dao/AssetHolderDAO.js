@@ -2,7 +2,7 @@ import Amount from 'models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from 'services/TokenService'
-import { TimeHolderABI } from './abi'
+import { AssetHolderABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
 
@@ -11,9 +11,9 @@ export const TX_WITHDRAW_SHARES = 'withdrawShares'
 
 export const TIME = 'TIME'
 
-export default class TIMEHolderDAO extends AbstractContractDAO {
+export default class AssetHolderDAO extends AbstractContractDAO {
   constructor (at) {
-    super(TimeHolderABI, at)
+    super(AssetHolderABI, at)
     this._okCodes = [
       resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,
@@ -21,12 +21,15 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     ]
   }
 
-  getSharesContract (): Promise {
-    return this._call('sharesContract')
+  async getSharesContract (): Promise {
+    const a = await this._call('sharesContract')
+    console.log('--TIMEHolderDAO#getSharesContract', a)
+    return a
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {
-    const assetAddress = await this._call('sharesContract')
+    const assetAddress = await this.getSharesContract()
+    console.log('--AssetHolderDAO#getAssetDAO', assetAddress)
     return tokenService.getDAO(assetAddress)
   }
 
@@ -34,9 +37,9 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
     return this._call('wallet')
   }
 
-  async deposit (amount: Amount, assetDAO) {
+  async deposit (amount: Amount) {
     return this._tx(TX_DEPOSIT, [
-      assetDAO.addDecimals(amount),
+      new BigNumber(amount),
     ], {
       amount,
     })
@@ -47,18 +50,19 @@ export default class TIMEHolderDAO extends AbstractContractDAO {
   }
 
   async withdraw (amount: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-    return this._tx(TX_WITHDRAW_SHARES, [assetDAO.addDecimals(amount)], { amount })
+    return this._tx(TX_WITHDRAW_SHARES, [
+      new BigNumber(amount),
+    ], { amount })
   }
 
   getDeposit (account): Promise {
-    return this._call('depositBalance', [account])
+    return this._call('depositBalance', [ account ])
   }
 
   async getAccountDepositBalance (account = this.getAccount()): BigNumber {
-    const [assetDAO, depositBalance] = await Promise.all([
+    const [ assetDAO, depositBalance ] = await Promise.all([
       this.getAssetDAO(),
-      this._call('depositBalance', [account]),
+      this._call('depositBalance', [ account ]),
     ])
     return assetDAO.removeDecimals(depositBalance)
   }

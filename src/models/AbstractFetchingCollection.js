@@ -6,6 +6,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   list: new Immutable.Map(),
   leftToFetch: 0,
   selected: null,
+  emptyModel: null,
   ...defaultValues,
 }) {
   list (value) {
@@ -38,11 +39,12 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this.list().valueSeq().sortBy(predicate).toArray()
   }
 
+  filter (predicate) {
+    return this.list().valueSeq().filter(predicate)
+  }
+
   item (id) {
-    const item = this.list().get(id)
-    return !item && this.get('emptyModel')
-      ? this.get('emptyModel')
-      : item
+    return this.list().get(id) || this.get('emptyModel')
   }
 
   leftToFetch (value) {
@@ -95,6 +97,10 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
 
   first () {
     return this.list().first()
+  }
+
+  emptyModel (value) {
+    return this._getSet('emptyModel', value)
   }
 }
 

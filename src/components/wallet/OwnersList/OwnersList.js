@@ -1,18 +1,18 @@
 import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
-import { Field } from 'redux-form/immutable'
+import globalStyles from 'layouts/partials/styles'
 import { FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { TextField } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import globalStyles from 'layouts/partials/styles'
-
+import { Translate } from 'react-redux-i18n'
+import { TextField } from 'redux-form-material-ui'
+import { Field } from 'redux-form/immutable'
+import { DUCK_SESSION } from 'redux/session/actions'
 import './OwnersList.scss'
 
 function mapStateToProps (state) {
   return {
-    account: state.get('session').account,
+    account: state.get(DUCK_SESSION).account,
   }
 }
 
@@ -71,8 +71,8 @@ class OwnersList extends PureComponent {
       <div>
         <div styleName='counterBox'>
           <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-            styleName='counter'
-          >{fields.length + 1}
+          styleName='counter'
+        >{fields.length + 1}
           </span>
         </div>
         <div styleName='counterError'>{this.props.meta.error}</div>

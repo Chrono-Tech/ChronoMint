@@ -1,25 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import classnames from 'classnames'
-
+import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
+import PollModel from 'models/PollModel'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
-import { TextField, DatePicker } from 'redux-form-material-ui'
-import { Field, FieldArray, reduxForm, formValueSelector } from 'redux-form/immutable'
-
-import { RaisedButton, FlatButton, FontIcon, IconButton } from 'material-ui'
-
-import PollModel, { validate } from 'models/PollModel'
+import { DatePicker, TextField } from 'redux-form-material-ui'
+import { Field, FieldArray, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, updatePoll } from 'redux/voting/actions'
-
 import ModalDialog from './ModalDialog'
-
 import './PollDialog.scss'
+import validate from './PollDialogValidate'
 
 export const FORM_POLL_DIALOG = 'PollDialog'
 
-@reduxForm({form: FORM_POLL_DIALOG, validate})
+@reduxForm({ form: FORM_POLL_DIALOG, validate })
 export class PollDialog extends React.Component {
 
   static propTypes = {
@@ -32,14 +29,14 @@ export class PollDialog extends React.Component {
     handleSubmit: PropTypes.func,
 
     submitting: PropTypes.bool,
-    initialValues: PropTypes.object
+    initialValues: PropTypes.object,
   }
 
   constructor (props) {
     super(props)
 
     this.state = {
-      selectedOptionIndex: 0
+      selectedOptionIndex: 0,
     }
   }
 
@@ -60,9 +57,11 @@ export class PollDialog extends React.Component {
             <div styleName='body'>
               <div styleName='column'>
                 <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
-                <Field component={TextField} name='description' fullWidth multiLine floatingLabelText='Poll description' />
+                <Field component={TextField} name='description' fullWidth multiLine
+                       floatingLabelText='Poll description' />
                 <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
-                <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date' style={{ width: '180px' }} />
+                <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date'
+                       style={{ width: '180px' }} />
                 <div styleName='actions'>
                   <FlatButton
                     label='Add Attachments'
@@ -72,7 +71,8 @@ export class PollDialog extends React.Component {
                 </div>
               </div>
               <div styleName='column'>
-                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth floatingLabelText='Option' />
+                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth
+                       floatingLabelText='Option' />
                 <FieldArray name='options' component={({ fields }) => this.renderOptions(this, fields)} />
               </div>
             </div>
@@ -106,7 +106,7 @@ export class PollDialog extends React.Component {
             {options.getAll().toArray().map((option, index) => (
               <div
                 key={index}
-                styleName={classnames('table-item', {active: this.state.selectedOptionIndex === index})}
+                styleName={classnames('table-item', { active: this.state.selectedOptionIndex === index })}
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
                 <div styleName='item-left'>
@@ -121,7 +121,8 @@ export class PollDialog extends React.Component {
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>
                   <IconButton>
-                    <FontIcon className='material-icons' onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
+                    <FontIcon className='material-icons'
+                              onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
                   </IconButton>
                 </div>
               </div>
@@ -134,14 +135,14 @@ export class PollDialog extends React.Component {
 
   handleOptionSelect (index) {
     this.setState({
-      selectedOptionIndex: index
+      selectedOptionIndex: index,
     })
   }
 
   handleOptionCreate (options) {
     options.push()
     this.setState({
-      selectedOptionIndex: options.length
+      selectedOptionIndex: options.length,
     })
   }
 
@@ -149,7 +150,7 @@ export class PollDialog extends React.Component {
     options.remove(index)
     if (this.state.selectedOptionIndex >= options.length) {
       this.setState({
-        selectedOptionIndex: options.length - 1
+        selectedOptionIndex: options.length - 1,
       })
     }
   }
@@ -157,10 +158,9 @@ export class PollDialog extends React.Component {
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_POLL_DIALOG)
-  const session = state.get('session')
   return {
     options: selector(state, 'options'),
-    account: session.account
+    account: state.get(DUCK_SESSION).account,
   }
 }
 
@@ -169,12 +169,12 @@ function mapDispatchToProps (dispatch, op) {
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
-      if (op.isModify){
+      if (op.isModify) {
         dispatch(updatePoll(new PollModel(values)))
       } else {
         dispatch(createPoll(new PollModel(values)))
       }
-    }
+    },
   }
 }
 
