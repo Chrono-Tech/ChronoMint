@@ -1,10 +1,13 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import PollNoticeModel, {
+  IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED,
+  IS_VOTED,
+} from 'models/notices/PollNoticeModel'
+import TokenModel from 'models/tokens/TokenModel'
 import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
-import { PollManagerABI, MultiEventsHistoryABI } from './abi'
+import { MultiEventsHistoryABI, PollManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import tokenService from 'services/TokenService'
 
 export const TX_CREATE_POLL = 'NewPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -23,13 +26,12 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
     super(PollManagerABI, at, MultiEventsHistoryABI)
   }
 
-  async getVoteLimit () {
-    const timeDAO = tokenService.getDAO('TIME')
+  async getVoteLimit (token: TokenModel) {
     const voteLimit = await this._call('getVoteLimit')
-    return timeDAO.removeDecimals(voteLimit)
+    return token.removeDecimals(voteLimit)
   }
 
-  async createPoll (poll: PollModel) {
+  async createPoll (poll: PollModel, token: TokenModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     const hash = await ipfs.put({
@@ -38,21 +40,25 @@ export default class VotingDAO extends AbstractMultisigContractDAO {
       files: poll.files() && poll.files(),
       options: poll.options() && poll.options().toArray(),
     })
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const voteLimitInTIME = poll.voteLimitInTIME()
 
-    const tx = await this._tx(TX_CREATE_POLL, [
-      // TODO @ipavlenko: There are no reasons to store options in contracts.
-      // We can get them from the IPFS.
-      poll.options() && poll.options().toArray().map((element, index) => `Option${index}`),
-      // TODO @ipavlenko: There are no reasons to store files in contracts.
-      // We can get them from the IPFS.
-      [],
-      this._c.ipfsHashToBytes32(hash),
-      voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
-      poll.deadline().getTime(),
-    ], poll)
-    return tx.tx
+    try {
+      const tx = await this._tx(TX_CREATE_POLL, [
+        // TODO @ipavlenko: There are no reasons to store options in contracts.
+        // We can get them from the IPFS.
+        poll.options() && poll.options().toArray().map((element, index) => `Option${index}`),
+        // TODO @ipavlenko: There are no reasons to store files in contracts.
+        // We can get them from the IPFS.
+        [],
+        this._c.ipfsHashToBytes32(hash),
+        voteLimitInTIME && token.addDecimals(voteLimitInTIME),
+        poll.deadline().getTime(),
+      ], poll)
+      return tx.tx
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('createPoll', e)
+    }
   }
 
   removePoll (id) {

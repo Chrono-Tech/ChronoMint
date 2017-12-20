@@ -6,6 +6,7 @@ import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
+export const TX_APPROVE = 'approve'
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'

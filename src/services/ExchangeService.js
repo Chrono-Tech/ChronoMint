@@ -3,6 +3,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import ExchangeManagerDAO from 'dao/ExchangeManagerDAO'
 import { ExchangeDAO } from 'dao/ExchangeDAO'
 import EventEmitter from 'events'
+import { EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
+import TxModel from 'models/TxModel'
 
 class ExchangeService extends EventEmitter {
 
@@ -75,15 +77,15 @@ class ExchangeService extends EventEmitter {
   subscribeToToken (token: TokenModel, exchange: string) {
     if (!token || this._cache[ `${token.id()}-${exchange}` ]) return null
 
-    const dao = tokenService.getDAO(token.id())
-    this._cache[ `${token.id()}-${exchange}` ] = dao
+    const tokenDAO = tokenService.getDAO(token.id())
+    this._cache[ `${token.id()}-${exchange}` ] = tokenDAO
 
-    return Promise.all([
-      // TODO @dkchv: @abdulov review update, plz
-      dao.watchTransfer(exchange, (result) => {
-        this.emit('Transfer', result.tx())
-      }, { account: exchange }),
-    ])
+    tokenDAO
+      .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+        if (tx.to() === exchange) {
+          this.emit('Transfer', tx)
+        }
+      })
   }
 }
 

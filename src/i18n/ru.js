@@ -423,7 +423,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Одобрить списание TIME',
+        title: 'Одобрить списание токенов',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
@@ -431,6 +431,11 @@ export default {
         title: 'Перевести токены',
         account: 'Аккаунт',
         amount: 'Сумма',
+      },
+    },
+    ExchangeManager:{
+      createExchange: {
+        title: 'Создать обменник',
       },
     },
     Exchange: {

@@ -431,6 +431,11 @@ export default {
         amount: 'Amount',
       },
     },
+    ExchangeManager:{
+      createExchange: {
+        title: 'Create an exchange',
+      },
+    },
     Exchange: {
       [exchange.TX_BUY]: {
         title: 'Confirm buy tokens for ETH',

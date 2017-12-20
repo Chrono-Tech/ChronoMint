@@ -67,8 +67,11 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   handleSetPrice = (e) => {
+    const ethToken = this.props.tokens.item('ETH')
     let value = e.target.value
-    const price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
+    let price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
+    price = ethToken.removeDecimals(price).mul(Math.pow(10, this.props.exchangeToken.decimals()))
+
     if (e.target.name === 'buy') {
       this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(parseFloat(value) || 0).mul(price)))
     } else {
@@ -77,15 +80,13 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   handleApprove = () => {
-    const allowance = this.props.allowances.get(this.props.exchangeToken.id())
-      ? this.props.allowances.get(this.props.exchangeToken.id()).get(this.props.exchange.address())
-      : 0
+    const allowance = this.props.allowances.item(this.props.exchange.id()).amount()
     const token = this.props.tokens.item(this.props.exchangeToken.id())
 
     if (allowance > 0) {
-      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new BigNumber(0)))
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new Amount(0, 'ETH')))
     } else {
-      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new BigNumber(this.props.buy)))
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new Amount(token.addDecimals(this.props.buy), token.symbol())))
     }
   }
 
@@ -94,12 +95,17 @@ export default class BuyTokensForm extends React.PureComponent {
     if (!this.props.balances.item(this.props.exchangeToken.id())) {
       showWarningMessage = true
     }
-    const exchangeToken = this.props.tokens.item(this.props.exchange.asset())
+    const exchangeToken = this.props.tokens.item(this.props.exchange.symbol())
     const ethToken = this.props.tokens.item('ETH')
 
-    const allowance = this.props.allowances.get(this.props.exchangeToken.id())
-      ? this.props.allowances.get(this.props.exchangeToken.id())
-      : 0
+    const allowance = this.props.allowances.item(this.props.exchange.id()).amount()
+
+    const price = new Amount(
+      this.props.isBuy
+        ? exchangeToken.addDecimals(this.props.exchange.sellPrice())
+        : exchangeToken.addDecimals(this.props.exchange.buyPrice()),
+      ethToken.symbol()
+    )
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='row'>
@@ -121,7 +127,7 @@ export default class BuyTokensForm extends React.PureComponent {
               <div styleName='label'><Translate value={prefix('price')} />:</div>
               <div>
                 <TokenValue
-                  value={new Amount(this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice(), ethToken.symbol())}
+                  value={price}
                 />
               </div>
             </div>
@@ -141,10 +147,7 @@ export default class BuyTokensForm extends React.PureComponent {
               <div styleName='property'>
                 <div styleName='label'><Translate value={prefix('allowance')} />:</div>
                 <div>
-                  <TokenValue
-                    value={allowance}
-                    symbol={exchangeToken.symbol()}
-                  />
+                  <TokenValue value={allowance} />
                 </div>
               </div>
             }
@@ -226,7 +229,7 @@ export default class BuyTokensForm extends React.PureComponent {
                     </div>
                     }
                     <RaisedButton
-                      disabled={!this.props.valid || (!this.props.isBuy && allowance.toString() !== this.props.buy) || showWarningMessage}
+                      disabled={!this.props.valid || (!this.props.isBuy && exchangeToken.removeDecimals(allowance).toString() !== this.props.buy) || showWarningMessage}
                       type='submit'
                       label={<span styleName='buttonLabel'><Translate value={prefix('sendRequest')} /></span>}
                       {...globalStyles.buttonRaisedMultyLine}
