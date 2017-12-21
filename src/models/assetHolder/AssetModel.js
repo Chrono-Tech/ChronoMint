@@ -7,7 +7,7 @@ export default class AssetModel extends abstractFetchingModel({
   symbol: null,
 }) {
   id () {
-    this.get('address')
+    return this.get('address')
   }
 
   deposit (value) {

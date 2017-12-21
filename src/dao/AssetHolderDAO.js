@@ -22,9 +22,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   }
 
   async getSharesContract (): Promise {
-    const a = await this._call('sharesContract')
-    console.log('--TIMEHolderDAO#getSharesContract', a)
-    return a
+    return this._call('sharesContract')
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {

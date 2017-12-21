@@ -1,19 +1,18 @@
-import DepositTokensForm from 'components/dashboard/DepositTokens/DepositTokensForm'
+import Amount from 'models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { initAssetsHolder } from 'redux/assetsHolder/actions'
-import { updateIsTIMERequired } from 'redux/mainWallet/actions'
+import { depositAsset, initAssetsHolder, withdrawAsset } from 'redux/assetsHolder/actions'
+import { mainApprove } from 'redux/mainWallet/actions'
+import DepositTokensForm, { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW } from './DepositTokensForm'
 import './DepositTokensForm.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    updateRequireTIME: () => dispatch(updateIsTIMERequired()),
-    // mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    // depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
-    // withdrawAsset: (amount) => dispatch(withdrawAsset(amount)),
-    // requireTIME: () => dispatch(requireTIME()),
+    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
+    withdrawAsset: (amount) => dispatch(withdrawAsset(amount)),
   }
 }
 
@@ -21,21 +20,34 @@ function mapDispatchToProps (dispatch) {
 export default class DepositTokens extends PureComponent {
   static propTypes = {
     initAssetsHolder: PropTypes.func,
-    updateRequireTIME: PropTypes.func,
+    mainApprove: PropTypes.func,
+    depositAsset: PropTypes.func,
+    withdrawAsset: PropTypes.func,
   }
 
   componentWillMount () {
     this.props.initAssetsHolder()
-    // TODO @dkchv: !!! move to asset holders' subscription
-    this.props.updateRequireTIME()
   }
 
   handleSubmit = (values) => {
-    console.log('--DepositTokens#handleSubmit', 1, values.toJS())
+    const token = values.get('token')
+    const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
+
+    switch (values.get('action')) {
+      case ACTION_APPROVE:
+        this.props.mainApprove(token, amount, values.get('spender'))
+        break
+      case ACTION_DEPOSIT:
+        this.props.depositAsset(amount)
+        break
+      case ACTION_WITHDRAW:
+        this.props.withdrawAsset(amount)
+        break
+    }
   }
 
-  handleSubmitSuccess = (values) => {
-    console.log('--DepositTokens#handleSubmitSuccess', 2, values.toJS())
+  handleSubmitSuccess = () => {
+    // reset form here
   }
 
   render () {

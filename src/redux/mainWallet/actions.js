@@ -98,7 +98,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
           amount: new Amount(value, token.id()),
           spender,
-          token: token.id,
+          token: token.id(),
         }),
       })
     })
@@ -115,9 +115,13 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   })
 
   dispatch(addMarketToken(token.symbol()))
+
+  if (token.symbol() === 'TIME') {
+    dispatch(updateIsTIMERequired())
+  }
 }
 
-export const initMainWallet = () => (dispatch, getState) => {
+export const initMainWallet = () => async (dispatch, getState) => {
   if (getState().get(DUCK_MAIN_WALLET).isInited()) {
     return
   }
@@ -160,8 +164,14 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string) 
   }
 }
 
-export const updateIsTIMERequired = () => async (dispatch) => {
-  dispatch({ type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired() })
+export const updateIsTIMERequired = () => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  try {
+    dispatch({ type: WALLET_IS_TIME_REQUIRED, value: await assetDonatorDAO.isTIMERequired(account) })
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('require time error', e.message)
+  }
 }
 
 export const requireTIME = () => async (dispatch) => {
@@ -171,8 +181,10 @@ export const requireTIME = () => async (dispatch) => {
     // no rollback
     // eslint-disable-next-line
     console.error('require time error', e.message)
+  } finally {
+    dispatch(updateIsTIMERequired())
+    // TODO @dkchv: update balance
   }
-  await dispatch(updateIsTIMERequired())
 }
 
 /**

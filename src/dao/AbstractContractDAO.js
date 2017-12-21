@@ -10,7 +10,7 @@ import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 import EventEmitter from 'events'
 
-const DEFAULT_GAS = 4700000
+export const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
 

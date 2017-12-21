@@ -1,9 +1,12 @@
+import { DUCK_REWARDS } from '@/redux/rewards/actions'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
-import AssetModel from 'models/assetHolder/AssetModel'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import AssetHolderDAO from 'dao/AssetHolderDAO'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Amount from 'models/Amount'
+import AssetModel from 'models/assetHolder/AssetModel'
 import TokenModel from 'models/tokens/TokenModel'
+import AllowanceModel from 'models/wallet/AllowanceModel'
+import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
@@ -19,12 +22,12 @@ let assetHolderDAO: AssetHolderDAO = null
 const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
   const assets = assetHolder.assets()
+
   if (!token.isERC20() || !assets.list().has(token.address())) {
     return
   }
 
   const holderAccount = assetHolder.account()
-  const holderWallet = assetHolder.wallet()
 
   // set symbol for asset
   const asset = assets.item(token.address()).symbol(token.symbol())
@@ -41,18 +44,38 @@ const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
     })
     .watch(holderAccount)
 
+  // fetch deposit
+  dispatch(updateAssetDeposit(token))
+
   // fetch allowance
+  dispatch(updateAssetAllowance(token))
+}
+
+export const updateAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const [ assetHolderAllowance, assetHolderWalletAllowance ] = await Promise.all([
-    tokenDAO.getAccountAllowance(holderAccount, account),
-    tokenDAO.getAccountAllowance(holderWallet, account),
-  ])
+  const deposit = await assetHolderDAO.getDeposit(account)
+  const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
+    deposit,
+    token.symbol()
+  ))
+  dispatch({ type: ASSET_HOLDER_ASSET_UPDATE, asset })
+}
 
-  console.log('--assetHolder: ', +assetHolderAllowance, +assetHolderWalletAllowance)
+export const updateAssetAllowance = (token: TokenModel) => async (dispatch, getState) => {
+  const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
+  const { account } = getState().get(DUCK_SESSION)
 
-  // token = token
-  //   .setAllowance(assetHolderAddress, assetHolderAllowance)
-  //   .setAllowance(assetHolderWalletAddress, assetHolderWalletAllowance)
+  const holderWallet = assetHolder.wallet()
+  const tokenDAO = tokenService.getDAO(token.id())
+  const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
+
+  dispatch({
+    type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
+      amount: new Amount(assetHolderWalletAllowance, token.id()),
+      spender: holderWallet,
+      token: token.id(),
+    }),
+  })
 }
 
 export const initAssetsHolder = () => async (dispatch, getState) => {
@@ -91,24 +114,23 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   tokens.list().forEach(callback)
 }
 
-export const depositAsset = (amount: Amount) => async (dispatch) => {
-  // const amountBN = new BigNumber(amount)
-  // dispatch(balanceMinus(amountBN, token))
-
+export const depositAsset = (amount: Amount) => async (dispatch, getState) => {
   try {
     await assetHolderDAO.deposit(amount)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)
   } finally {
-    // compensation for update in watchTransfer
-    // dispatch(balancePlus(amount, token))
+    const tokenTIME = getState().get(DUCK_TOKENS).item('TIME')
+    dispatch(updateAssetAllowance(tokenTIME))
+    dispatch(updateAssetDeposit(tokenTIME))
   }
 }
 
-export const withdrawAsset = (amount: Amount) => async () => {
+export const withdrawAsset = (amount: Amount) => async (dispatch, getState) => {
   // const amountBN = new BigNumber(amount)
   // dispatch(depositMinus(amountBN))
+  const tokenTIME = getState().get(DUCK_TOKENS).item('TIME')
 
   try {
     await assetHolderDAO.withdraw(amount)
@@ -116,6 +138,7 @@ export const withdrawAsset = (amount: Amount) => async () => {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)
   } finally {
+    dispatch(updateAssetDeposit(tokenTIME))
     // dispatch(depositPlus(amountBN))
   }
 }

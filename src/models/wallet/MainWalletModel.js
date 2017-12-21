@@ -1,10 +1,9 @@
-import AllowanceCollection from '@/models/wallet/AllowanceCollection'
 import Immutable from 'immutable'
-import Amount from 'models/Amount'
 import BalanceModel from 'models/tokens/BalanceModel'
 import BalancesCollection from 'models/tokens/BalancesCollection'
 import ls from 'utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'
 
 export default class MainWallet extends abstractFetchingModel({
@@ -16,7 +15,6 @@ export default class MainWallet extends abstractFetchingModel({
   btgAddress: null,
   ltcAddress: null,
   nemAddress: null,
-  timeDeposit: new Amount(0, null, false),
   timeAddress: null,
   isMultisig: false,
   isMainWallet: true,

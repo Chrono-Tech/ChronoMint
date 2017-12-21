@@ -8,7 +8,9 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import styles from 'components/dashboard/styles'
 import { FlatButton, MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
+import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import TokenModel from 'models/tokens/TokenModel'
+import TokensCollection from 'models/tokens/TokensCollection'
 import MainWallet from 'models/wallet/MainWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -16,8 +18,8 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { depositAsset, DUCK_ASSETS_HOLDER, initAssetsHolder, withdrawAsset } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, mainApprove, requireTIME, updateIsTIMERequired } from 'redux/mainWallet/actions'
+import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
+import { DUCK_MAIN_WALLET, mainApprove, requireTIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import inversedTheme from 'styles/themes/inversed'
@@ -29,6 +31,10 @@ import validate from './validate'
 const DEPOSIT_LIMIT = 1
 const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 
+export const ACTION_APPROVE = 'deposit/approve'
+export const ACTION_DEPOSIT = 'deposit/deposit'
+export const ACTION_WITHDRAW = 'deposit/withdraw'
+
 function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
 }
@@ -36,37 +42,39 @@ function prefix (token) {
 function mapStateToProps (state) {
   // form
   const selector = formValueSelector(FORM_DEPOSIT_TOKENS)
-  const selectedToken = selector(state, 'symbol')
+  const tokenId = selector(state, 'symbol')
+  const amount = selector(state, 'amount')
   // state
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
-  const token = tokens.item(selectedToken)
+  const token = tokens.item(tokenId)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const balance = wallet.balances().item(selectedToken).amount()
+  const balance = wallet.balances().item(tokenId).amount()
+
+  const assets = assetHolder.assets()
+  const spender = assetHolder.wallet()
 
   return {
-    selectedToken,
-    token,
-    tokens: tokens.filter((item) => item.isERC20()).toArray(),
     balance,
-    deposit: assetHolder.deposit(),
-    isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero(),
+    deposit: assets.item(token.address()).deposit(),
+    allowance: wallet.allowances().item(spender, token.id()).amount(),
+    spender,
+    amount,
+    token,
+    tokens,
+    assets,
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
-    allowance: assetHolder.allowance(),
     isTesting,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    initAssetsHolder: () => dispatch(initAssetsHolder()),
-    updateRequireTIME: () => dispatch(updateIsTIMERequired()),
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
-    withdrawAsset: (amount) => dispatch(withdrawAsset(amount)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
@@ -78,96 +86,81 @@ export default class DepositTokensForm extends PureComponent {
     deposit: PropTypes.instanceOf(Amount),
     allowance: PropTypes.instanceOf(Amount),
     balance: PropTypes.instanceOf(Amount),
-    initAssetsHolder: PropTypes.func,
-    mainApprove: PropTypes.func,
-    depositAsset: PropTypes.func,
-    withdrawAsset: PropTypes.func,
-    requireTIME: PropTypes.func,
     isShowTIMERequired: PropTypes.bool,
     isTesting: PropTypes.bool,
-    updateRequireTIME: PropTypes.func,
     token: PropTypes.instanceOf(TokenModel),
-    errors: PropTypes.object,
     account: PropTypes.string,
     wallet: PropTypes.instanceOf(MainWallet),
-    tokens: PropTypes.arrayOf(TokenModel),
+    tokens: PropTypes.instanceOf(TokensCollection),
     selectedToken: PropTypes.string,
+    assets: PropTypes.instanceOf(AssetsCollection),
+    requireTIME: PropTypes.func,
+    mainApprove: PropTypes.func,
     ...formPropTypes,
   }
 
-  constructor (props) {
-    super(props)
-    this.state = {
-      amount: '',
-      errors: null,
-    }
+  handleApproveAsset = (values) => {
+    this.props.onSubmit(values
+      .set('action', ACTION_APPROVE)
+      .set('token', this.props.token)
+      .set('spender', this.props.spender)
+    )
   }
 
-  componentWillMount () {
-    this.props.initAssetsHolder()
-    this.props.updateRequireTIME()
+  handleRevokeAsset = () => {
+    const { token, spender } = this.props
+    this.props.mainApprove(this.props.token, new Amount(0, token.id()), spender)
   }
 
-  handleApproveTIME = () => {
-    this.props.mainApprove(this.props.token, +this.state.amount, this.props.account)
-    if (Number(this.state.amount) === 0) {
-      this.setState({ amount: '' })
-    }
+  handleDepositAsset = (values) => {
+    this.props.onSubmit(values
+      .set('action', ACTION_DEPOSIT)
+      .set('token', this.props.token),
+    )
   }
 
-  handleRevokeTIME = () => {
-    this.props.mainApprove(this.props.token, 0, this.props.account)
+  handleWithdrawAsset = (values) => {
+    this.props.onSubmit(values
+      .set('action', ACTION_WITHDRAW)
+      .set('token', this.props.token),
+    )
   }
 
-  handleDepositAsset = () => {
-    const { token } = this.props
-    this.props.depositAsset(new Amount(this.state.amount, token.symbol(), token))
-    this.setState({ amount: '' })
+  handleRequireTime = () => {
+    this.props.requireTIME()
   }
 
-  handleWithdrawAsset = () => {
-    const { token } = this.props
-    this.props.withdrawAsset(new Amount(this.state.amount, token.symbol()), token)
-    this.setState({ amount: '' })
-  }
-
-  handleRequireTime = () => this.props.requireTIME()
-
-  getIsLockValid () {
-    const { token, isTesting, allowance, deposit } = this.props
+  getIsLockValid (amount) {
+    const { balance, isTesting, allowance, deposit } = this.props
     const limit = isTesting
-      ? BigNumber.min(
-        token.balance(),
-        allowance,
-      )
+      ? BigNumber.min(balance, allowance)
       : BigNumber.min(
         DEPOSIT_LIMIT,
-        token.balance(),
+        balance,
         BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
         allowance,
       )
-    return limit.gte(this.state.amount)
+    return limit.gte(amount)
   }
 
   renderHead () {
-    const { deposit, allowance, token, balance, tokens, selectedToken } = this.props
+    const { deposit, allowance, token, balance, assets } = this.props
     const symbol = token.symbol()
-
     return (
       <div>
         <IconSection
           title={<Translate value={prefix('depositTime')} />}
-          iconComponent={selectedToken && (
+          iconComponent={token.isFetched() && (
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={TOKEN_ICONS[ token.symbol() ]}
+              fallback={TOKEN_ICONS[ symbol ]}
             />
           )}
         >
           <MuiThemeProvider theme={inversedTheme}>
             <div>
-              {tokens.size === 0
+              {assets.size() === 0
                 ? <Preloader />
                 : (
                   <Field
@@ -176,17 +169,17 @@ export default class DepositTokensForm extends PureComponent {
                     fullWidth
                     {...styles}
                   >
-                    {tokens.map((item) => (
+                    {assets.items().map((item) => (
                       <MenuItem
                         key={item.id()}
-                        value={item.id()}
+                        value={item.symbol()}
                         primaryText={item.symbol()}
                       />
                     ))}
                   </Field>
                 )
               }
-              {selectedToken
+              {token.isFetched()
                 ? (
                   <div>
                     <div styleName='balance'>
@@ -205,7 +198,7 @@ export default class DepositTokensForm extends PureComponent {
                   </div>
                 )
                 : (
-                  <div>Select token</div>
+                  <div styleName='hint'>Select token</div>
                 )}
             </div>
           </MuiThemeProvider>
@@ -216,60 +209,60 @@ export default class DepositTokensForm extends PureComponent {
 
   renderBody () {
     return (
-      <div styleName='form'>
-        <div>
-          <Field
-            component={TextField}
-            hintText='0.00'
-            floatingLabelText={<Translate value={prefix('amount')} />}
-            name='amount'
-            style={{ width: '150px' }}
-          />
-          {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
-        </div>
+      <div>
+        <Field
+          component={TextField}
+          hintText='0.00'
+          floatingLabelText={<Translate value={prefix('amount')} />}
+          name='amount'
+          style={{ width: '150px' }}
+        />
+        {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
       </div>
     )
   }
 
   renderFoot () {
-    const { amount } = this.state
-    const { isShowTIMERequired, deposit, errors, token, allowance } = this.props
-    const isValid = !errors && String(amount).length > 0 && +amount > 0
-
-    const isApprove = isValid && token.balance().gte(amount)
-    const isLock = isValid && this.getIsLockValid()
-    const isWithdraw = isValid && +amount <= deposit
+    const { isShowTIMERequired, amount, balance, deposit, token, allowance, pristine, invalid, handleSubmit } = this.props
+    const isInvalid = pristine || invalid
     const isRevoke = !allowance.isZero()
+    const amountWithDecimals = isInvalid
+      ? new BigNumber(0)
+      : token.addDecimals(amount || 0)
+
+    const isRevokeDisabled = isInvalid
+    const isApproveDisabled = isInvalid || balance.lte(amountWithDecimals)
+    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals)
+    const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
     return (
       <div styleName='actions'>
-        {isShowTIMERequired
-          ? (
-            <span styleName='action'>
+        <span styleName='action'>
+          {isShowTIMERequired
+            ? (
               <FlatButton
                 styleName='actionButton'
                 label={<Translate value={prefix('requireTime')} />}
                 onTouchTap={this.handleRequireTime}
               />
-            </span>
-          ) : (
-            <span styleName='action'>
+            ) : (
               <RaisedButton
                 styleName='actionButton'
                 label={isRevoke ? 'Revoke' : 'Approve'}
-                onTouchTap={isRevoke ? this.handleRevokeTIME : this.handleApproveTIME}
-                disabled={!isRevoke && !isApprove}
+                onTouchTap={isRevoke ? this.handleRevokeAsset : handleSubmit(this.handleApproveAsset)}
+                disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
               />
-            </span>
-          )
-        }
+            )
+          }
+        </span>
+
         {!isShowTIMERequired && (
           <span styleName='action'>
             <RaisedButton
               styleName='actionButton'
               label='Lock'
               primary
-              onTouchTap={this.handleDepositAsset}
-              disabled={!isLock}
+              onTouchTap={handleSubmit(this.handleDepositAsset)}
+              disabled={isLockDisabled}
             />
           </span>
         )}
@@ -278,8 +271,8 @@ export default class DepositTokensForm extends PureComponent {
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
-            onTouchTap={this.handleWithdrawAsset}
-            disabled={!isWithdraw}
+            onTouchTap={handleSubmit(this.handleWithdrawAsset)}
+            disabled={isWithdrawDisabled}
           />
         </span>
       </div>
@@ -291,7 +284,6 @@ export default class DepositTokensForm extends PureComponent {
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
-            styleName='root'
             head={this.renderHead()}
             body={this.renderBody()}
             foot={this.renderFoot()}

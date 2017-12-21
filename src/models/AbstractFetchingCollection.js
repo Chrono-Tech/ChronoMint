@@ -44,7 +44,7 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   }
 
   item (id) {
-    return this.list().get(id) || this.get('emptyModel')
+    return this.list().get(id) || this.emptyModel()
   }
 
   leftToFetch (value) {

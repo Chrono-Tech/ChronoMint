@@ -7,7 +7,7 @@ import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
 import ls from 'utils/LocalStorage'
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
+import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
@@ -89,6 +89,11 @@ export class EthereumDAO extends AbstractTokenDAO {
       from: this.getAccount(),
       to: account,
       value,
+    }
+
+    // TODO @dkchv: !!! reserach again
+    if (process.env.NODE_ENV === 'development') {
+      txData.gas = DEFAULT_GAS
     }
 
     const [ gasPrice, estimateGas ] = await Promise.all([

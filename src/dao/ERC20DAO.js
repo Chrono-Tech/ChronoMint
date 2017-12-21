@@ -49,7 +49,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('balanceOf', [ account ])
   }
 
-  getAccountAllowance (spender, account): Promise {
+  getAccountAllowance (account, spender): Promise {
     return this._call('allowance', [ account, spender ])
   }
 

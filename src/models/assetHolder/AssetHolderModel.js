@@ -8,8 +8,6 @@ export default class AssetHolderModel extends abstractFetchingModel({
   wallet: null, // address of holder wallet
   assetHolderAddress: null,
   assetHolderWalletAddress: null,
-  // TODO @dkchv: !!! placeholder
-  allowance: new Amount(2, 'TIME', true),
   // TODO @dkchv: !!! placeholder for non-block
   deposit: new Amount(1, 'TIME', true),
   assets: new AssetsCollection(),
@@ -20,14 +18,6 @@ export default class AssetHolderModel extends abstractFetchingModel({
 
   wallet (value) {
     return this._getSet('wallet', value)
-  }
-
-  assetHolderAddress (value) {
-    return this._getSet('assetHolderAddress', value)
-  }
-
-  assetHolderWalletAddress (value) {
-    return this._getSet('assetHolderWalletAddress', value)
   }
 
   deposit (value) {

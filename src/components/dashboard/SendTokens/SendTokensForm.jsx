@@ -77,6 +77,14 @@ export default class SendTokensForm extends PureComponent {
     const isContact = contractsManagerDAO.isContract(address)
   }
 
+  handleTransfer = (values) => {
+    this.props.onSubmit(values.set('action', ACTION_TRANSFER))
+  }
+
+  handleApprove = (values) => {
+    this.props.onSubmit(values.set('action', ACTION_APPROVE))
+  }
+
   renderHead () {
     const { token, wallet } = this.props
     const balances = wallet.balances()
@@ -127,7 +135,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, feeMultiplier, onSubmit, wallet } = this.props
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
     // TODO @dkchv: !!! restore
     // const { isContract } = this.state
     const isContract = true
@@ -186,7 +194,7 @@ export default class SendTokensForm extends PureComponent {
               primary
               style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid || token.isLocked()}
-              onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
+              onTouchTap={handleSubmit(this.handleTransfer)}
             />
             {token.isERC20() && (
               <RaisedButton
@@ -194,7 +202,7 @@ export default class SendTokensForm extends PureComponent {
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_APPROVE)))}
+                onTouchTap={handleSubmit(this.handleApprove)}
               />
             )}
           </div>

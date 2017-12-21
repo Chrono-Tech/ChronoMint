@@ -7,7 +7,8 @@ export default class AllowanceModel extends abstractFetchingModel({
   token: null, // id
 }) {
   id () {
-    return this.get('spender')
+    // double key
+    return `${this.get('spender')}-${this.get('token')}`
   }
 
   amount (value) {

@@ -1,12 +1,6 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.root {
-}
-
-.form {
-}
-
 // TODO @dkchv: !!! review again
 .content {
   @include position(absolute, 10px, 10px, 10px, 10px);
@@ -63,4 +57,8 @@
 .warning {
   color: $color-warning;
   font-size: 12px;
+}
+
+.hint {
+  color: $color-white;
 }
