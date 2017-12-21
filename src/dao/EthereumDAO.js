@@ -4,7 +4,6 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
 import networkService from '@chronobank/login/network/NetworkService'
-import ls from 'utils/LocalStorage'
 import TxError from 'models/TxError'
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
@@ -168,7 +167,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getTransfer (id, account = this.getAccount()): Array<TxModel> {
-    const apiURL = networkService.getScanner(ls.getNetwork(), ls.getProvider(), true)
+    const apiURL = networkService.getScanner()
     if (apiURL) {
       try {
         const test = await axios.get(`${apiURL}/api`)

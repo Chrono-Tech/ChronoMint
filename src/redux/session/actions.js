@@ -6,7 +6,7 @@ import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import { initWallet } from 'redux/wallet/actions'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { watchStopMarket } from 'redux/market/action'
-import ls from 'utils/LocalStorage'
+import { WALLET_ADDRESS } from 'redux/mainWallet/actions'
 import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 
 export const DUCK_SESSION = 'session'
@@ -20,15 +20,13 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/dashboard'
 export const DEFAULT_CBE_URL = '/dashboard'
 
-export const createSession = ({ account, provider, network, dispatch }) => {
-  ls.createSession(account, provider, network)
-  dispatch({ type: SESSION_CREATE, account })
+export const createSession = ({ account, provider, network, lastUrl, dispatch }) => {
+  dispatch({ type: WALLET_ADDRESS, address: account })
+  dispatch({ type: SESSION_CREATE, account, provider, network, lastUrl })
 }
 
 export const destroySession = ({ lastURL, dispatch }) => {
-  ls.setLastURL(lastURL)
-  ls.destroySession()
-  dispatch({ type: SESSION_DESTROY })
+  dispatch({ type: SESSION_DESTROY, lastURL })
 }
 
 export const logout = () => async (dispatch) => {
@@ -45,7 +43,9 @@ export const logout = () => async (dispatch) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
-  if (!getState().get(DUCK_SESSION).isSession) {
+  const state = getState()
+  const session = state.get(DUCK_SESSION)
+  if (!session.isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
@@ -67,10 +67,10 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(initWallet())
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
-  dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
+  dispatch(replace((isCBE && session.lastURL) || defaultURL))
 }
 
-export const bootstrap = (relogin = true) => async (dispatch) => {
+export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   networkService.checkMetaMask()
   if (networkService) {
     networkService
@@ -83,7 +83,10 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
     return
   }
 
-  const localAccount = ls.getLocalAccount()
+  const state = getState()
+  const session = state.get(DUCK_SESSION)
+
+  const localAccount = session.account
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
     await networkService.restoreLocalSession(localAccount)

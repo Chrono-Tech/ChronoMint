@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import ls from 'utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import TransactionsCollection from './TransactionsCollection'
 
@@ -21,8 +20,8 @@ export default class MainWallet extends abstractFetchingModel({
   isTIMERequired: true,
 }) {
 
-  address () {
-    return ls.getAccount()
+  address (address) {
+    return this._getSet('address', address)
   }
 
   tokens (value) {

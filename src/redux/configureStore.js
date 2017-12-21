@@ -8,7 +8,6 @@ import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import ls from 'utils/LocalStorage'
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
@@ -107,7 +106,8 @@ export const DUCK_I18N = 'i18n'
 I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
 I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
-const locale = ls.getLocale()
+// TODO @ipavlenko: Get locale from redux backed from LocalStorage
+const locale = 'en'
 // set moment locale
 moment.locale(locale)
 

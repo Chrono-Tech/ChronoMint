@@ -152,7 +152,12 @@ class NetworkService extends EventEmitter {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 
-  getScanner = (params) => getScannerById(...params)
+  getScanner = () => {
+    const state = this._store.getState()
+    const { selectedNetworkId, selectedProviderId } = state.get('network')
+    return getScannerById(selectedNetworkId, selectedProviderId, true)
+
+  }
 
   getProviderSettings = () => {
     const state = this._store.getState()

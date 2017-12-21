@@ -13,7 +13,7 @@ import thunk from 'redux-thunk'
 import Web3 from 'web3'
 import AbstractContractDAO from './dao/AbstractContractDAO'
 import MarketSocket from './market/MarketSocket'
-import ls from './utils/LocalStorage'
+import { createSession, destroySession } from './redux/session/actions'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
@@ -49,13 +49,13 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
   store = mockStore()
+  store.dispatch(createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID))
   networkService.connectStore(store)
 })
 
 afterEach(async (done) => {
-  ls.destroySession()
+  store.dispatch(destroySession())
   await AbstractContractDAO.stopWholeWatching()
   done()
 })
