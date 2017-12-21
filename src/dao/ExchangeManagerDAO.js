@@ -77,15 +77,15 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
 
     const [ symbols, buyPrices, sellPrices, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
 
-    exchangesAddresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[ i ])
+    symbols.forEach((symbolInBytes, i) => {
+      const symbol = this._c.bytesToString(symbolInBytes)
       const buyPrice = new BigNumber(buyPrices[ i ])
       const sellPrice = new BigNumber(sellPrices[ i ])
       const assetBalance = assetBalances[ i ]
       const ethBalance = ethBalances[ i ]
 
       exchangesCollection = exchangesCollection.add(new ExchangeOrderModel({
-        address: address,
+        address: exchangesAddresses[ i ],
         symbol,
         buyPrice: buyPrice,
         sellPrice: sellPrice,

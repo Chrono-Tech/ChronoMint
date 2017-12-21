@@ -80,7 +80,11 @@ export default class AddExchangeForm extends PureComponent {
             <div styleName='balanceWrapper'>
               <div styleName={classnames('tokenName', 'sm-hide')}>{token.symbol()}</div>
               <div styleName='balanceSubTitle'><Translate value={prefix('availableExchangeBalance')} /></div>
-              <TokenValue value={tokenBalance ? tokenBalance.amount() : new Amount(0, token.symbol())} />
+              <TokenValue
+                value={tokenBalance && tokenBalance.amount().isLoaded()
+                  ? tokenBalance.amount()
+                  : new Amount(0, token.symbol())}
+              />
             </div>
           }
           <div styleName='pricesWrapper'>

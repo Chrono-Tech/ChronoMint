@@ -1,17 +1,32 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import TokenModel from 'models/tokens/TokenModel'
 
 export const DUCK_REWARDS = 'rewards'
 
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
 export const REWARDS_DATA = 'rewards/DATA'
 
-export const getRewardsData = (silent = false) => async (dispatch) => {
+export const getRewardsData = (silent = false) => async (dispatch, getState) => {
   if (!silent) {
     dispatch({ type: REWARDS_FETCH_START })
   }
   const dao = await contractsManagerDAO.getRewardsDAO()
-  const data = await dao.getRewardsData()
-  dispatch({ type: REWARDS_DATA, data })
+  const tokens = getState().get(DUCK_TOKENS)
+  const callback = async (token: TokenModel) => {
+    const data = await dao.getRewardsData(token)
+    dispatch({ type: REWARDS_DATA, data })
+  }
+  if (tokens.item('TIME').isFetched()) {
+    await callback(tokens.item('TIME'))
+  } else {
+    tokenService.on(EVENT_NEW_TOKEN, async (token) => {
+      if (token.symbol() === 'TIME') {
+        await callback(token)
+      }
+    })
+  }
 }
 
 export const withdrawRevenue = () => async (dispatch) => {

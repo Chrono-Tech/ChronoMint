@@ -1,4 +1,10 @@
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from '@chronobank/login/network/MonitorService'
+import {
+  NETWORK_STATUS_OFFLINE,
+  NETWORK_STATUS_ONLINE,
+  NETWORK_STATUS_UNKNOWN,
+  SYNC_STATUS_SYNCED,
+  SYNC_STATUS_SYNCING,
+} from '@chronobank/login/network/MonitorService'
 import { getNetworkById } from '@chronobank/login/network/settings'
 import { TOKEN_ICONS } from 'assets'
 import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
@@ -316,7 +322,7 @@ class HeaderPartial extends PureComponent {
   renderProfile () {
     const items = !this.props.isTokensLoaded
       ? []
-      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({ token, name }))
+      : this.props.tokens.entrySeq().toArray().map(([ name, token ]) => ({ token, name }))
 
     const addresses = [
       { title: 'BTC', address: this.props.btcAddress },
@@ -369,7 +375,7 @@ class HeaderPartial extends PureComponent {
             ))}
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => ([ 'TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN' ].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
@@ -399,7 +405,7 @@ class HeaderPartial extends PureComponent {
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
           <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[symbol]} />
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
           </div>
         </div>
         <div styleName='balance-info'>
