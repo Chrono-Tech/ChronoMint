@@ -1,5 +1,4 @@
 import Amount from '@/models/Amount'
-import BigNumber from 'bignumber.js'
 import { FlatButton, Paper, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -13,6 +12,8 @@ import { SHORT_DATE } from 'models/constants'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import { DUCK_SESSION } from 'redux/session/actions'
+import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './Poll.scss'
 
 function prefix (token) {
@@ -20,8 +21,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
+  const tokens = state.get(DUCK_TOKENS)
   return {
     isCBE: state.get(DUCK_SESSION).isCBE,
+    timeToken: tokens.item('TIME'),
   }
 }
 
@@ -49,6 +52,7 @@ function mapDispatchToProps (dispatch, props) {
 export default class Poll extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
+    timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
     handleVote: PropTypes.func,
@@ -143,7 +147,7 @@ export default class Poll extends PureComponent {
                   <div styleName='entryValue'>
                     {details.voteLimitInTIME === null
                       ? (<i>Unlimited</i>)
-                      : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
+                      : (<span>{this.props.timeToken.removeDecimals(details.voteLimit).toString()} TIME</span>)
                     }
                   </div>
                 </div>

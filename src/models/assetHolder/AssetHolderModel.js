@@ -22,14 +22,6 @@ export default class AssetHolderModel extends abstractFetchingModel({
     return this._getSet('wallet', value)
   }
 
-  assetHolderAddress (value) {
-    return this._getSet('assetHolderAddress', value)
-  }
-
-  assetHolderWalletAddress (value) {
-    return this._getSet('assetHolderWalletAddress', value)
-  }
-
   deposit (value) {
     return this._getSet('deposit', value)
   }

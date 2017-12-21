@@ -6,6 +6,8 @@ import { I18n } from 'platform/i18n'
 import { TIME } from 'redux/mainWallet/actions'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { checkFetched, TOKENS_FETCHED } from 'redux/tokens/actions'
+import tokenService from 'services/TokenService'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -19,6 +21,13 @@ const setToken = (token: TokenModel) => ({ type: TOKENS_SET, token })
 const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
+
+  if (notice.token()) {
+    const token = notice.token().isFetching(false).isFetched(true)
+    dispatch({ type: TOKENS_FETCHED, token })
+    tokenService.createDAO(token)
+    dispatch(checkFetched())
+  }
   if (notice.isModified()) {
     for (const token: TokenModel of getState().get(DUCK_SETTINGS_ERC20_TOKENS).list.valueSeq().toArray()) {
       if (token.address() === notice.oldAddress()) {
