@@ -43,9 +43,23 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 }
 
 const updateVoteLimit = () => async (dispatch, getState) => {
-  const votingDAO = await contractsManagerDAO.getVotingDAO()
-  const voteLimitInTIME = await votingDAO.getVoteLimit(getState().get(DUCK_TOKENS).item('TIME'))
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
+  const tokens = getState().get(DUCK_TOKENS)
+
+  const callback = async (token: TokenModel) => {
+    const votingDAO = await contractsManagerDAO.getVotingDAO()
+    const voteLimitInTIME = await votingDAO.getVoteLimit(token)
+    dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
+  }
+
+  if (tokens.item('TIME').isFetched()) {
+    await callback(tokens.item('TIME'))
+  } else {
+    tokenService.on(EVENT_NEW_TOKEN, async (token: TokenModel) => {
+      if (token.symbol() === 'TIME') {
+        await callback(token)
+      }
+    })
+  }
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
@@ -156,28 +170,16 @@ export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) =>
   dispatch({ type: POLLS_UPDATE, poll })
 }
 
-export const listPolls = () => async (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS)
-  const timeToken = tokens.getBySymbol('TIME')
-  if (!timeToken) {
-    const callback = (token) => {
-      if (token.symbol() === 'TIME') {
-        dispatch(getPolls(token))
-      }
-    }
-    tokenService.on(EVENT_NEW_TOKEN, callback)
-  } else {
-    dispatch(getPolls(timeToken))
-  }
-
+export const listPolls = () => async (dispatch) => {
+  dispatch(getPolls())
 }
 
-const getPolls = (timeToken: TokenModel) => async (dispatch) => {
+const getPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   let list = []
   try {
     const dao = await contractsManagerDAO.getVotingDetailsDAO()
-    list = await dao.getPolls(timeToken)
+    list = await dao.getPolls()
   } finally {
     dispatch({
       type: POLLS_LIST,

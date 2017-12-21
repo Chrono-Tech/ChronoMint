@@ -6,7 +6,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import TokenModel, { validate } from 'models/tokens/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -14,7 +14,9 @@ import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import TokenIcon from 'components/common/HashedIcon/TokenIcon'
-import ModalDialog from './ModalDialog'
+import ProfileModel from 'models/ProfileModel'
+import ModalDialog from '../ModalDialog'
+import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenDialog.scss'
 
@@ -25,7 +27,7 @@ const asyncValidate = (values, dispatch) => {
     return formTokenLoadMetaData(
       new TokenModel(values),
       dispatch,
-      FORM_ADD_TOKEN_DIALOG
+      FORM_ADD_TOKEN_DIALOG,
     )
   } catch (e) {
     throw e
@@ -68,7 +70,7 @@ function mapDispatchToProps (dispatch) {
 export default class AddTokenDialog extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    profile: PropTypes.object,
+    profile: PropTypes.instanceOf(ProfileModel),
     modalsClose: PropTypes.func,
     address: PropTypes.string,
     name: PropTypes.string,
@@ -101,11 +103,37 @@ export default class AddTokenDialog extends PureComponent {
             </div>
           </div>
           <div styleName='body'>
-            <Field component={TextField} name='address' fullWidth floatingLabelText={<Translate value={prefix('tokenContractAddress')} />} />
-            <Field component={TextField} name='name' fullWidth floatingLabelText={<Translate value={prefix('tokenName')} />} />
-            <Field component={TextField} name='symbol' fullWidth floatingLabelText={<Translate value={prefix('tokenSymbol')} />} />
-            <Field component={TextField} name='decimals' fullWidth floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />} />
-            <Field component={TextField} name='url' fullWidth floatingLabelText={<Translate value={prefix('projectURL')} />} />
+            <Field
+              component={TextField}
+              name='address'
+              fullWidth
+              floatingLabelText={<Translate value={prefix('tokenContractAddress')} />}
+            />
+            <Field
+              component={TextField}
+              name='name'
+              fullWidth
+              floatingLabelText={<Translate value={prefix('tokenName')} />}
+            />
+            <Field
+              component={TextField}
+              name='symbol'
+              fullWidth
+              floatingLabelText={<Translate value={prefix('tokenSymbol')} />}
+            />
+            <Field
+              component={TextField}
+              name='decimals'
+              fullWidth
+              floatingLabelText={<Translate value={prefix('decimalsPlacesOfSmallestUnit')} />}
+              normalize={normalizeSmallestUnit}
+            />
+            <Field
+              component={TextField}
+              name='url'
+              fullWidth
+              floatingLabelText={<Translate value={prefix('projectURL')} />}
+            />
             <Field
               component={FileSelect}
               name='icon'
