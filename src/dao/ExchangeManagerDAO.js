@@ -20,17 +20,15 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
   }
 
   async createExchange (exchange: ExchangeOrderModel, token: TokenModel) {
-    const buyPrice = this._c.toWei(exchange.buyPrice()).div(Math.pow(10, token.decimals()))
-    const sellPrice = this._c.toWei(exchange.sellPrice()).div(Math.pow(10, token.decimals()))
+    const buyPrice = this._c.toWei(exchange.buyPrice())
+    const sellPrice = this._c.toWei(exchange.sellPrice())
 
     const tx = await this._tx(
       'createExchange',
       [
         exchange.symbol(),
-        buyPrice.mul(Math.pow(10, buyPrice.decimalPlaces())),
-        buyPrice.decimalPlaces(),
-        sellPrice.mul(Math.pow(10, sellPrice.decimalPlaces())),
-        sellPrice.decimalPlaces(),
+        buyPrice,
+        sellPrice,
         exchange.authorizedManager(),
         exchange.isActive(),
       ],
@@ -77,7 +75,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       return exchangesCollection
     }
 
-    const [ symbols, buyPrices, buyDecimals, sellPrices, sellDecimals, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
+    const [ symbols, buyPrices, sellPrices, assetBalances, ethBalances ] = await this._call('getExchangeData', [ exchangesAddresses ])
 
     exchangesAddresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ])
