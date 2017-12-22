@@ -1,7 +1,6 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import TokenModel from 'models/tokens/TokenModel'
+import { subscribeOnTokens } from 'redux/tokens/actions'
 
 export const DUCK_REWARDS = 'rewards'
 
@@ -9,22 +8,18 @@ export const REWARDS_INIT = 'rewards/init'
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
 export const REWARDS_DATA = 'rewards/DATA'
 
-export const getRewardsData = () => async (dispatch, getState) => {
-  const dao = await contractsManagerDAO.getRewardsDAO()
-  const tokens = getState().get(DUCK_TOKENS)
-  const callback = async (token: TokenModel) => {
-    const data = await dao.getRewardsData(token)
-    dispatch({ type: REWARDS_DATA, data })
+let rewardDAO = null
+
+export const handleToken = (token: TokenModel) => async (dispatch) => {
+  if (token.symbol() !== 'TIME') {
+    return
   }
-  if (tokens.item('TIME').isFetched()) {
-    await callback(tokens.item('TIME'))
-  } else {
-    tokenService.on(EVENT_NEW_TOKEN, async (token) => {
-      if (token.symbol() === 'TIME') {
-        await callback(token)
-      }
-    })
-  }
+  dispatch(getRewardsData(token))
+}
+
+export const getRewardsData = (token) => async (dispatch) => {
+  const data = await rewardDAO.getRewardsData(token)
+  dispatch({ type: REWARDS_DATA, data })
 }
 
 export const withdrawRevenue = () => async (dispatch) => {
@@ -55,8 +50,8 @@ export const initRewards = () => async (dispatch, getState) => {
     return
   }
   dispatch({ type: REWARDS_INIT, isInited: true })
-
-  const dao = await contractsManagerDAO.getRewardsDAO()
-  dao.watchPeriodClosed(() => dispatch(getRewardsData()))
-  dispatch(getRewardsData())
+  // init
+  rewardDAO = await contractsManagerDAO.getRewardsDAO()
+  await rewardDAO.watchPeriodClosed(() => dispatch(getRewardsData()))
+  dispatch(subscribeOnTokens(handleToken))
 }

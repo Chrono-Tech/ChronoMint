@@ -1,7 +1,8 @@
 import Moment from 'components/common/Moment'
-import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
+import Amount from 'models/Amount'
+import { SHORT_DATE } from 'models/constants'
 import RewardsModel from 'models/rewards/RewardsModel'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -9,6 +10,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TIME } from 'redux/mainWallet/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
 function prefix (token) {
@@ -18,6 +20,7 @@ function prefix (token) {
 function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
+    totalSupply: state.get(DUCK_TOKENS).item('TIME').totalSupply(),
   }
 }
 
@@ -27,6 +30,7 @@ export default class RewardsPeriod extends PureComponent {
     rewardsData: PropTypes.instanceOf(RewardsModel),
     period: PropTypes.object,
     locale: PropTypes.string,
+    totalSupply: PropTypes.instanceOf(Amount),
   }
 
   componentWillReceiveProps (newProps) {
@@ -92,12 +96,11 @@ export default class RewardsPeriod extends PureComponent {
                         bold
                         noRenderPrice
                         value={period.totalDeposit()}
-                        symbol={TIME}
                       />
                       &nbsp;(
                       <Translate
                         value={prefix('percentOfTotalCount')}
-                        percent={period.totalDepositPercent(rewardsData.timeTotalSupply())}
+                        percent={period.totalDepositPercent(this.props.totalSupply)}
                       />)
                     </span>
                   </span>

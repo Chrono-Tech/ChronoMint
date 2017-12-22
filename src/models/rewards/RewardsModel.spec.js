@@ -18,10 +18,6 @@ describe('rewards model', () => {
     expect(model.lastPeriodIndex()).toEqual(2)
   })
 
-  it('should get account deposit', () => {
-    expect(model.accountDeposit()).toEqual(100)
-  })
-
   it('should get account rewards in LH', () => {
     expect(model.accountRewards()).toEqual(10)
   })
@@ -30,7 +26,7 @@ describe('rewards model', () => {
     expect(model.currentAccumulated()).toEqual(20)
   })
 
-  it('should get time total supply', () => {
-    expect(model.timeTotalSupply()).toEqual(300)
-  })
+  // it('should get time total supply', () => {
+  //   expect(model.timeTotalSupply()).toEqual(300)
+  // })
 })

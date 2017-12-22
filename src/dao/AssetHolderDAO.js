@@ -56,15 +56,4 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   getDeposit (account): Promise {
     return this._call('depositBalance', [ account ])
   }
-
-  /**
-   * @deprecated
-   */
-  async getAccountDepositBalance (account = this.getAccount()): BigNumber {
-    const [ assetDAO, depositBalance ] = await Promise.all([
-      this.getAssetDAO(),
-      this._call('depositBalance', [ account ]),
-    ])
-    return assetDAO.removeDecimals(depositBalance)
-  }
 }

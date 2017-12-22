@@ -8,9 +8,7 @@ export default class RewardsModel extends abstractFetchingModel({
   periodLength: null,
   lastPeriod: null,
   lastClosedPeriod: null,
-  accountDeposit: new Amount(0, null, false),
   accountRewards: new Amount(0, null, false),
-  timeTotalSupply: new Amount(0, null, false),
   currentAccumulated: new Amount(0, null, false),
   periods: new Immutable.Map(), /** @see RewardsPeriodModel */
 }) {
@@ -34,19 +32,11 @@ export default class RewardsModel extends abstractFetchingModel({
     return this.lastPeriod + 1
   }
 
-  accountDeposit (): Amount {
-    return this.get('accountDeposit')
-  }
-
   accountRewards (): Amount {
     return this.get('accountRewards')
   }
 
   currentAccumulated (): Amount {
     return this.get('currentAccumulated')
-  }
-
-  timeTotalSupply (): Amount {
-    return this.get('timeTotalSupply')
   }
 }
