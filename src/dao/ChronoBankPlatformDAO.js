@@ -1,3 +1,4 @@
+import OwnerModel from '@/models/wallet/OwnerModel'
 import tokenService from 'services/TokenService'
 import AbstractContractDAO from './AbstractContractDAO'
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'

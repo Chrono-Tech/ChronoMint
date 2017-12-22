@@ -1,11 +1,12 @@
+import OwnerModel from '@/models/wallet/OwnerModel'
 import contractManager from 'dao/ContractsManagerDAO'
-import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import Web3Converter from 'utils/Web3Converter'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
-import ManagersCollection from 'models/tokens/ManagersCollection'
-import ReissuableModel from 'models/tokens/ReissuableModel'
 import ERC20ManagerDAO from 'dao/ERC20ManagerDAO'
+import ReissuableModel from 'models/tokens/ReissuableModel'
+import TokenModel from 'models/tokens/TokenModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
+import Web3Converter from 'utils/Web3Converter'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -116,11 +117,11 @@ export const getManagersForAssetSymbol = async (symbol: string) => {
   return managersList.isFetched(true)
 }
 
-export const removeManager = (token: TokenModel, manager: String) => async (dispatch, getState) => {
+export const removeManager = (token: TokenModel, owner: OwnerModel) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), manager)
+    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner.address())
     return txHash
   }
   catch (e) {
@@ -129,11 +130,11 @@ export const removeManager = (token: TokenModel, manager: String) => async (disp
   }
 }
 
-export const addManager = (token: TokenModel, manager: String) => async (dispatch, getState) => {
+export const addManager = (token: TokenModel, owner: OwnerModel) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), manager)
+    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner.address())
   }
   catch (e) {
     // eslint-disable-next-line
@@ -215,15 +216,14 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       if (token && token.managersList().isFetched()) {
         let managersList = token.managersList()
         if (assetsManagerDao.isEmptyAddress(from)) {
-          managersList = managersList.add(to)
+          managersList = managersList.add(new OwnerModel({ address: to }))
         } else {
-          managersList = managersList.remove(from)
+          managersList = managersList.remove(new OwnerModel({ address: from }))
         }
 
         dispatch({
           type: TOKENS_FETCHED,
-          token: token
-            .managersList(managersList),
+          token: token.managersList(managersList),
         })
       }
     }
@@ -314,7 +314,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   dispatch({
     type: TOKENS_FETCHED,
     token: token
-      .managersList(new ManagersCollection().isFetching(true))
+      .managersList(new OwnerCollection().isFetching(true))
       .fee(token.fee().isFetching(true))
       .isReissuable(token.isReissuable().isFetching(true)),
   })

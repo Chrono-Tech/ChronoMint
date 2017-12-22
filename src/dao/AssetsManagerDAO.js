@@ -1,8 +1,9 @@
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
-import ManagersCollection from 'models/tokens/ManagersCollection'
 import TxModel from 'models/TxModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import Web3Converter from 'utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
@@ -70,11 +71,12 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   async getManagersForAssetSymbol (symbol) {
     const managersListForSymbol = await this._call('getManagersForAssetSymbol', [ symbol ])
 
-    let formatManagersList = new ManagersCollection()
-    managersListForSymbol.map((manager) => {
-      if (!this.isEmptyAddress(manager)) {
-        formatManagersList = formatManagersList.add(manager)
+    let formatManagersList = new OwnerCollection()
+    managersListForSymbol.map((address) => {
+      if (this.isEmptyAddress(address)) {
+        return
       }
+      formatManagersList = formatManagersList.add(new OwnerModel({ address }))
     })
     return formatManagersList
   }

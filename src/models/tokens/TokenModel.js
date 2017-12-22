@@ -1,10 +1,10 @@
+import OwnerCollection from 'models/wallet/OwnerCollection'
 import BigNumber from 'bignumber.js'
 import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
 import type ERC20DAO from 'dao/ERC20DAO'
 import Amount from 'models/Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import FeeModel from './FeeModel'
-import ManagersCollection from './ManagersCollection'
 import ReissuableModel from './ReissuableModel'
 
 export default class TokenModel extends abstractFetchingModel({
@@ -20,7 +20,7 @@ export default class TokenModel extends abstractFetchingModel({
   feeRate: null, // Default token fee per byte
   platform: null,
   totalSupply: new Amount(0, null, false),
-  managersList: new ManagersCollection(),
+  managersList: new OwnerCollection(),
   isReissuable: new ReissuableModel(),
   isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
