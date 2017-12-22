@@ -24,8 +24,8 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
 
   if (notice.token()) {
     const token = notice.token().isFetching(false).isFetched(true)
-    dispatch({ type: TOKENS_FETCHED, token })
-    tokenService.createDAO(token)
+    dispatch({ type: TOKENS_FETCHED, token: token.isERC20(true) })
+    tokenService.createDAO(token.isERC20(true))
     dispatch(checkFetched())
   }
   if (notice.isModified()) {

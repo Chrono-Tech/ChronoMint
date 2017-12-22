@@ -32,10 +32,11 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
   const invalidSelector = isInvalid(FORM_EXCHANGE_BUY_TOKENS)
+  const wallet = state.get(DUCK_MAIN_WALLET)
   return {
     tokens,
-    balances: state.get(DUCK_MAIN_WALLET).balances(),
-    allowances: state.get(DUCK_MAIN_WALLET).allowances(),
+    balances: wallet.balances(),
+    allowances: wallet.allowances(),
     buy: selector(state, 'buy'),
     sell: selector(state, 'sell'),
     formInvalid: invalidSelector(state),
@@ -70,7 +71,7 @@ export default class BuyTokensForm extends React.PureComponent {
     const ethToken = this.props.tokens.item('ETH')
     let value = e.target.value
     let price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
-    price = ethToken.removeDecimals(price).mul(Math.pow(10, this.props.exchangeToken.decimals()))
+    price = ethToken.removeDecimals(price)
 
     if (e.target.name === 'buy') {
       this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(parseFloat(value) || 0).mul(price)))
@@ -80,8 +81,8 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   handleApprove = () => {
-    const allowance = this.props.allowances.item(this.props.exchange.id()).amount()
     const token = this.props.tokens.item(this.props.exchangeToken.id())
+    const allowance = this.props.allowances.item(this.props.exchange.address(), token.id()).amount()
 
     if (allowance > 0) {
       this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new Amount(0, 'ETH')))
@@ -98,13 +99,13 @@ export default class BuyTokensForm extends React.PureComponent {
     const exchangeToken = this.props.tokens.item(this.props.exchange.symbol())
     const ethToken = this.props.tokens.item('ETH')
 
-    const allowance = this.props.allowances.item(this.props.exchange.id()).amount()
+    const allowance = this.props.allowances.item(this.props.exchange.address(), exchangeToken.id()).amount()
 
     const price = new Amount(
       this.props.isBuy
-        ? exchangeToken.addDecimals(this.props.exchange.sellPrice())
-        : exchangeToken.addDecimals(this.props.exchange.buyPrice()),
-      ethToken.symbol()
+        ? this.props.exchange.sellPrice()
+        : this.props.exchange.buyPrice(),
+      ethToken.symbol(),
     )
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>

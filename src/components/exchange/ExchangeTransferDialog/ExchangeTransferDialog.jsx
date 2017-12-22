@@ -76,10 +76,12 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     let token = this.props.tokens.getBySymbol(this.props.tokenSymbol)
     let showMessage = false
 
-    let balance = this.props.userWallet.balances().item(token.id())
-    if (!balance) {
+    let amount = this.props.userWallet.balances().item(token.id()).amount()
+    if (!amount.isLoaded()) {
       showMessage = true
+      amount = new Amount('0', token.symbol())
     }
+
     const assetBalance = this.props.tokenSymbol === 'ETH'
       ? new Amount(this.props.exchange.ethBalance(), 'ETH')
       : new Amount(this.props.exchange.assetBalance(), this.props.exchange.symbol())
@@ -108,7 +110,7 @@ export default class ExchangeTransferDialog extends React.PureComponent {
               title={<span><Translate value={prefix('deposit')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_DEPOSIT_FORM}
               onSubmit={this.handleDeposit}
-              maxAmount={balance ? balance.amount() : new Amount('0', token.symbol())}
+              maxAmount={amount}
               token={token}
             />
             <ExchangeDepositForm

@@ -12,6 +12,8 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import ProfileModel from 'models/ProfileModel'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import './InfoPartial.scss'
@@ -50,8 +52,10 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   const ui = state.get('ui')
   const wallet = getCurrentWallet(state)
+  const session = state.get(DUCK_SESSION)
 
   return {
+    profile: session.profile,
     isMultisig: wallet.isMultisig(),
     isPending: wallet.isPending(),
     selectedCoin: state.get(DUCK_MARKET).selectedCoin,
@@ -64,6 +68,7 @@ function mapStateToProps (state) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class InfoPartial extends PureComponent {
   static propTypes = {
+    profile: PropTypes.instanceOf(ProfileModel),
     addCurrency: PropTypes.func,
     onChangeSelectedCoin: PropTypes.func,
     selectedCoin: PropTypes.string,

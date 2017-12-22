@@ -30,7 +30,7 @@ export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGE
 export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
 export const EXCHANGE_GET_OWNERS_EXCHANGES_START = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START'
 export const EXCHANGE_GET_OWNERS_EXCHANGES_FINISH = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_FINISH'
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20
 
 export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOrderModel) => async (dispatch, getState) => {
   try {
@@ -127,7 +127,7 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
   }
   exchanges.items().map((exchange) => {
     const tokens = getState().get(DUCK_TOKENS)
-    if (tokens.item(exchange.symbol())) {
+    if (tokens.item(exchange.symbol()).isFetched()) {
       subscribe(exchange, tokens.item(exchange.symbol()))
     } else {
       tokenService.on(EVENT_NEW_TOKEN, (token) => {

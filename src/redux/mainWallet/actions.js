@@ -61,7 +61,7 @@ export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANC
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account, profile } = getState().get(DUCK_SESSION)
-  if (token.isOptional() && !profile.tokens().get(token.id())) {
+  if (token.isOptional() && !profile.tokens().get(token.address())) {
     return
   }
 
