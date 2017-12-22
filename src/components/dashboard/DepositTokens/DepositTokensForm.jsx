@@ -22,6 +22,7 @@ import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
 import { DUCK_MAIN_WALLET, mainApprove, requireTIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import AllowanceModel from 'models/wallet/AllowanceModel'
 import inversedTheme from 'styles/themes/inversed'
 import ColoredSection from '../ColoredSection/ColoredSection'
 import IconSection from '../IconSection/IconSection'
@@ -60,7 +61,7 @@ function mapStateToProps (state) {
   return {
     balance,
     deposit: assets.item(token.address()).deposit(),
-    allowance: wallet.allowances().item(spender, token.id()).amount(),
+    allowance: wallet.allowances().item(spender, token.id()),
     spender,
     amount,
     token,
@@ -84,7 +85,7 @@ function mapDispatchToProps (dispatch) {
 export default class DepositTokensForm extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
-    allowance: PropTypes.instanceOf(Amount),
+    allowance: PropTypes.instanceOf(AllowanceModel),
     balance: PropTypes.instanceOf(Amount),
     isShowTIMERequired: PropTypes.bool,
     isTesting: PropTypes.bool,
@@ -103,7 +104,7 @@ export default class DepositTokensForm extends PureComponent {
     this.props.onSubmit(values
       .set('action', ACTION_APPROVE)
       .set('token', this.props.token)
-      .set('spender', this.props.spender)
+      .set('spender', this.props.spender),
     )
   }
 
@@ -133,12 +134,12 @@ export default class DepositTokensForm extends PureComponent {
   getIsLockValid (amount) {
     const { balance, isTesting, allowance, deposit } = this.props
     const limit = isTesting
-      ? BigNumber.min(balance, allowance)
+      ? BigNumber.min(balance, allowance.amount())
       : BigNumber.min(
         DEPOSIT_LIMIT,
         balance,
         BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
-        allowance,
+        allowance.amount(),
       )
     return limit.gte(amount)
   }
@@ -193,7 +194,7 @@ export default class DepositTokensForm extends PureComponent {
                     <div styleName='balance'>
                       <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:
                       </div>
-                      <TokenValue isInvert value={allowance} />
+                      <TokenValue isInvert value={allowance.amount()} />
                     </div>
                   </div>
                 )
@@ -225,14 +226,14 @@ export default class DepositTokensForm extends PureComponent {
   renderFoot () {
     const { isShowTIMERequired, amount, balance, deposit, token, allowance, pristine, invalid, handleSubmit } = this.props
     const isInvalid = pristine || invalid
-    const isRevoke = !allowance.isZero()
+    const isRevoke = !allowance.amount().isZero()
     const amountWithDecimals = isInvalid
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
 
-    const isRevokeDisabled = isInvalid
-    const isApproveDisabled = isInvalid || balance.lte(amountWithDecimals)
-    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals)
+    const isRevokeDisabled = isInvalid || allowance.isFetching()
+    const isApproveDisabled = isInvalid || balance.lte(amountWithDecimals) || allowance.isFetching()
+    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching()
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
     return (
       <div styleName='actions'>
@@ -248,7 +249,7 @@ export default class DepositTokensForm extends PureComponent {
               <RaisedButton
                 styleName='actionButton'
                 label={isRevoke ? 'Revoke' : 'Approve'}
-                onTouchTap={isRevoke ? this.handleRevokeAsset : handleSubmit(this.handleApproveAsset)}
+                onClick={isRevoke ? this.handleRevokeAsset : handleSubmit(this.handleApproveAsset)}
                 disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
               />
             )
@@ -261,7 +262,7 @@ export default class DepositTokensForm extends PureComponent {
               styleName='actionButton'
               label='Lock'
               primary
-              onTouchTap={handleSubmit(this.handleDepositAsset)}
+              onClick={handleSubmit(this.handleDepositAsset)}
               disabled={isLockDisabled}
             />
           </span>
@@ -271,7 +272,7 @@ export default class DepositTokensForm extends PureComponent {
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
-            onTouchTap={handleSubmit(this.handleWithdrawAsset)}
+            onClick={handleSubmit(this.handleWithdrawAsset)}
             disabled={isWithdrawDisabled}
           />
         </span>

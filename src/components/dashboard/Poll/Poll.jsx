@@ -15,6 +15,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import './Poll.scss'
+import Preloader from '../../common/Preloader/Preloader'
 
 function prefix (token) {
   return `components.dashboard.Poll.${token}`
@@ -147,13 +148,26 @@ export default class Poll extends PureComponent {
                   <div styleName='entryValue'>
                     {details.voteLimitInTIME === null
                       ? (<i>Unlimited</i>)
-                      : (<span>{this.props.timeToken.removeDecimals(details.voteLimit).toString()} TIME</span>)
+                      : (
+                        <span>{this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.voteLimit)} TIME`
+                          : <Preloader />
+                        }
+                        </span>)
                     }
                   </div>
                 </div>
                 <div styleName='entry entryReceived'>
                   <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                  <div styleName='entryValue'>{details.received.round(4).toString()} TIME</div>
+                  <div styleName='entryValue'>
+                    <span>
+                      {
+                        this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          : <Preloader />
+                      }
+                    </span>
+                  </div>
                 </div>
                 <div styleName='entry entryVariants'>
                   <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
