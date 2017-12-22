@@ -84,7 +84,6 @@ export default class ExchangesTable extends React.PureComponent {
   }
 
   renderMyExchanges (exchange: ExchangeOrderModel) {
-    const token = this.props.tokens.item(exchange.symbol())
     return (
       <div styleName='row' key={exchange.id()}>
         <div styleName='values'>
@@ -102,11 +101,11 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='colPrice'>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={new Amount(token.addDecimals(exchange.sellPrice()), 'ETH')} />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={new Amount(token.addDecimals(exchange.buyPrice()), 'ETH')} />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
           </div>
           <div styleName='colLimits'>
@@ -154,7 +153,6 @@ export default class ExchangesTable extends React.PureComponent {
     if (exchange.assetBalance() <= 0 && exchange.ethBalance() <= 0) {
       return null
     }
-    const token = this.props.tokens.item(exchange.symbol())
 
     const filterMode = this.props.filter.get('filterMode')
     let showBuy = true
@@ -174,13 +172,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={new Amount(token.addDecimals(exchange.sellPrice()), 'ETH')} />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             }
             {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={new Amount(token.addDecimals(exchange.buyPrice()), 'ETH')} />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
             }
           </div>

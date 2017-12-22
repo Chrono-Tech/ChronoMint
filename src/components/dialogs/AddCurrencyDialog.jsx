@@ -46,14 +46,10 @@ class TokenRow extends PureComponent {
     const { isSelected, token, balances } = this.props
     const symbol = token.symbol()
     let balance = balances.item(token.id())
-    // eslint-disable-next-line
-    console.log('render 1', balance.toJS())
     if (!balance.amount().isLoaded()) {
       balance = new BalanceModel({ amount: new Amount(0, token.symbol()) })
     }
 
-    // eslint-disable-next-line
-    console.log('render 2', balance.toJS())
     return (
       <div
         key={token.id()}
