@@ -1,4 +1,4 @@
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import Immutable from 'immutable'
@@ -7,7 +7,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
 import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
 import Amount from 'models/Amount'
 
@@ -121,21 +121,13 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
       fromMiddleWare: state.showFilter(),
     })
 
-  const subscribe = (exchange: ExchangeOrderModel, token: TokenModel) => {
-    exchangeService.subscribeToExchange(exchange.address())
-    exchangeService.subscribeToToken(token, exchange.address())
-  }
   exchanges.items().map((exchange) => {
-    const tokens = getState().get(DUCK_TOKENS)
-    if (tokens.item(exchange.symbol()).isFetched()) {
-      subscribe(exchange, tokens.item(exchange.symbol()))
-    } else {
-      tokenService.on(EVENT_NEW_TOKEN, (token) => {
-        if (token.symbol() === exchange.symbol()) {
-          subscribe(exchange, token)
-        }
-      })
-    }
+    dispatch(subscribeOnTokens((token: TokenModel) => () => {
+      if (token.symbol() === exchange.symbol()) {
+        exchangeService.subscribeToExchange(exchange.address())
+        exchangeService.subscribeToToken(token, exchange.address())
+      }
+    }))
   })
   dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + exchanges.size() })
 }
@@ -189,6 +181,12 @@ export const watchExchanges = () => async (dispatch, getState) => {
       const exchangeAddress = tx.args.exchange
       const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
+      dispatch(subscribeOnTokens((token: TokenModel) => () => {
+        if (token.symbol() === exchange.symbol()) {
+          exchangeService.subscribeToExchange(exchange.address())
+          exchangeService.subscribeToToken(token, exchange.address())
+        }
+      }))
       dispatch({
         type: EXCHANGE_REMOVE_FOR_OWNER,
         exchange: exchange.transactionHash(tx.transactionHash),

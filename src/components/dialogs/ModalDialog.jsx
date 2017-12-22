@@ -20,11 +20,14 @@ export default class ModalDialog extends PureComponent {
     children: PropTypes.node,
     className: PropTypes.string,
     modalsClose: PropTypes.func,
+    onModalClose: PropTypes.func,
   }
 
   handleClose = (e) => {
+    this.props.onModalClose ?
+      this.props.onModalClose()
+      : this.props.modalsClose()
     e.stopPropagation()
-    this.props.modalsClose()
   }
 
   handleStopPropagation = (e) => {
@@ -43,7 +46,6 @@ export default class ModalDialog extends PureComponent {
         <div
           styleName='root'
           className={classnames('ModalDialog__backdrop', this.props.className)}
-          onTouchTap={this.handleClose}
         >
           <div
             styleName='dialog'

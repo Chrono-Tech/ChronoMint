@@ -9,13 +9,13 @@ import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import Preloader from 'components/common/Preloader/Preloader'
 import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import './Poll.scss'
-import Preloader from '../../common/Preloader/Preloader'
 
 function prefix (token) {
   return `components.dashboard.Poll.${token}`
@@ -237,7 +237,7 @@ export default class Poll extends PureComponent {
                     styleName='action'
                     primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onClick={this.props.handleVote}
+                    onClick={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
                   />
                 )
                 : null
