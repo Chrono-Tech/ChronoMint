@@ -1,3 +1,4 @@
+import { EVENT_NEW_TOKEN } from '@/services/TokenService'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -92,4 +93,12 @@ export const initTokens = () => async (dispatch, getState) => {
       })
       .fetchToken()
   })
+}
+
+export const subscribeOnTokens = (callback) => (dispatch, getState) => {
+  const handleToken = (token) => dispatch(callback(token))
+  tokenService.on(EVENT_NEW_TOKEN, handleToken)
+  // fetch for existing tokens
+  const tokens = getState().get(DUCK_TOKENS)
+  tokens.list().forEach(handleToken)
 }

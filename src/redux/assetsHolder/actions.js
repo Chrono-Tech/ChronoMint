@@ -7,8 +7,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
 import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import { subscribeOnTokens } from 'redux/tokens/actions'
+import tokenService from 'services/TokenService'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
@@ -18,7 +18,7 @@ export const ASSET_HOLDER_ASSET_UPDATE = 'assetHolder/assetUpdate'
 
 let assetHolderDAO: AssetHolderDAO = null
 
-const subscribeOnTokens = (token: TokenModel) => async (dispatch, getState) => {
+const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const assetHolder = getState().get(DUCK_ASSETS_HOLDER)
   const assets = assetHolder.assets()
 
@@ -110,12 +110,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
     })
   })
 
-  // subscribe to tokens
-  const callback = (token) => dispatch(subscribeOnTokens(token))
-  tokenService.on(EVENT_NEW_TOKEN, callback)
-  // fetch for existing tokens
-  const tokens = getState().get(DUCK_TOKENS)
-  tokens.list().forEach(callback)
+  dispatch(subscribeOnTokens(handleToken))
 }
 
 export const depositAsset = (amount: Amount) => async () => {

@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { closePeriod, DUCK_REWARDS, getRewardsData, initRewards, withdrawRevenue } from 'redux/rewards/actions'
+import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from 'redux/rewards/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import './RewardsContent.scss'
 
@@ -29,7 +29,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getRewardsData: () => dispatch(getRewardsData()),
     initRewards: () => dispatch(initRewards()),
     handleClosePeriod: () => dispatch(closePeriod()),
     handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
@@ -43,7 +42,6 @@ export default class RewardsContent extends Component {
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
     initRewards: PropTypes.func,
-    getRewardsData: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
     handleClosePeriod: PropTypes.func,
   }

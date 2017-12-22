@@ -53,35 +53,33 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
-    console.log('--WalletPendingTransfers#renderRow', item.decodedTx().title(), item.decodedTx().details())
     return (
       <div styleName='row' key={item.id()}>
         <div styleName='left'>
           <div styleName='itemTitle'>{item.title()}</div>
-          {item.details().map((item, index) => (
-            <div key={index} styleName='detail'>
-              <span styleName='detailKey'>{item.label}:</span>
-              <span styleName='detailValue'>{item.value}</span>
-            </div>
-          ))}
-          {/*<div>{this.renderDetails(item.func(), item.details())}</div>*/}
+          {item.isFetched()
+            ? <Preloader />
+            : item.details().map((item, index) => (
+              <div key={index} styleName='detail'>
+                <span styleName='detailKey'>{item.label}:</span>
+                <span styleName='detailValue'>{item.value}</span>
+              </div>
+            ))}
         </div>
         <div styleName='right'>
-          <div styleName='revoke'>
+          <div styleName='action'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
               disabled={!item.isConfirmed()}
               onTouchTap={() => this.props.revoke(wallet, item)}
             />
           </div>
-          <div styleName='sign'>
-            <RaisedButton
-              label={<Translate value='wallet.sign' />}
-              disabled={item.isConfirmed()}
-              onTouchTap={() => this.props.confirm(wallet, item)}
-              primary
-            />
-          </div>
+          <RaisedButton
+            label={<Translate value='wallet.sign' />}
+            disabled={item.isConfirmed()}
+            onTouchTap={() => this.props.confirm(wallet, item)}
+            primary
+          />
         </div>
       </div>
     )

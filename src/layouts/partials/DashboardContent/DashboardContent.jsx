@@ -4,7 +4,7 @@ import RewardsModel from 'models/rewards/RewardsModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_REWARDS, getRewardsData, initRewards } from 'redux/rewards/actions'
+import { DUCK_REWARDS, initRewards } from 'redux/rewards/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import './DashboardContent.scss'
 
@@ -20,7 +20,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    getRewardsData: () => dispatch(getRewardsData()),
     initRewards: () => dispatch(initRewards()),
   }
 }
@@ -31,7 +30,6 @@ export default class DashboardContent extends Component {
     rewards: PropTypes.instanceOf(RewardsModel),
     isVotingFetched: PropTypes.bool,
     initRewards: PropTypes.func,
-    getRewardsData: PropTypes.func,
   }
 
   componentWillMount () {

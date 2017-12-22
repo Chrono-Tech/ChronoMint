@@ -33,7 +33,8 @@ export const withdrawRevenue = () => async (dispatch) => {
   try {
     await dao.withdraw()
   } catch (e) {
-    // no rollback
+    // eslint-disable-next-line
+    console.error('withdraw revenue error', e.message)
   }
   return dispatch(getRewardsData())
 }
@@ -44,7 +45,8 @@ export const closePeriod = () => async (dispatch) => {
   try {
     await dao.closePeriod()
   } catch (e) {
-    // no rollback
+    // eslint-disable-next-line
+    console.error('close period error', e.message)
   }
 }
 

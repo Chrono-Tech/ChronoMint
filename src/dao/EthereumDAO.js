@@ -56,7 +56,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       isFetched: true,
       blockchain: 'Ethereum',
       decimals: this._decimals,
-      isERC20: true, //erc20-like
+      isERC20: false,
     })
   }
 

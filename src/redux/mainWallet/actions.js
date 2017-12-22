@@ -16,8 +16,8 @@ import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
+import tokenService from 'services/TokenService'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -142,11 +142,7 @@ export const initMainWallet = () => async (dispatch, getState) => {
   }
   dispatch({ type: WALLET_INIT, isInited: true })
 
-  const callback = (token) => dispatch(handleToken(token))
-  tokenService.on(EVENT_NEW_TOKEN, callback)
-  // fetch for existing tokens
-  const tokens = getState().get(DUCK_TOKENS)
-  tokens.list().forEach(callback)
+  dispatch(subscribeOnTokens(handleToken))
 
   dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
   dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
