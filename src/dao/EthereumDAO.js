@@ -1,14 +1,15 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
-import type Amount from 'models/Amount'
+import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ls from 'utils/LocalStorage'
 import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -71,7 +72,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: tx.value,
+      value: new Amount(tx.value, this._symbol),
       time,
       gasPrice,
       gas: tx.gas,
@@ -80,6 +81,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       credited: tx.to === account,
       // TODO @dkchv: token ???
       token: this._symbol,
+      symbol: this._symbol,
     })
   }
 
@@ -181,18 +183,13 @@ export class EthereumDAO extends AbstractTokenDAO {
       const txs = block.transactions || []
       txs.forEach((tx) => {
         if (tx.value.toNumber() > 0 && (tx.from === account || tx.to === account)) {
-          this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account))
-          // this._transferCallback(new TransferNoticeModel({
-          //   tx: this._getTxModel(tx, account),
-          //   account,
-          //   time,
-          // }))
+          this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account), account)
         }
       })
     })
   }
 
-  async getTransfer (id, account = this.getAccount()): Array<TxModel> {
+  async getTransfer (id, account): Promise<TxModel> {
     const apiURL = networkService.getScanner(ls.getNetwork(), ls.getProvider(), true)
     if (apiURL) {
       try {

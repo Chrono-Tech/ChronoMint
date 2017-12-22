@@ -33,16 +33,19 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   componentWillMount () {
-    const { wallet } = this.props
-    wallet.pendingTxList().list().forEach((item) => {
-      if (!item.isFetched() && !item.isFetching()) {
-        this.props.getPendingData(wallet, item)
-      }
-    })
+    this.checkAndFetchPendings(this.props.wallet)
   }
 
   componentWillReceiveProps ({ wallet }) {
-    wallet.pendingTxList().list().forEach((item) => {
+    this.checkAndFetchPendings(wallet)
+  }
+
+  checkAndFetchPendings (wallet) {
+    if (wallet.pendingTxList().isFetched()) {
+      return
+    }
+
+    wallet.pendingTxList().items().forEach((item) => {
       if (!item.isFetched() && !item.isFetching()) {
         this.props.getPendingData(wallet, item)
       }
@@ -50,15 +53,18 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
+    console.log('--WalletPendingTransfers#renderRow', item.decodedTx().title(), item.decodedTx().details())
     return (
-      <div styleName='transfer' key={item.id()}>
+      <div styleName='row' key={item.id()}>
         <div styleName='left'>
-          <div styleName='toAccount'>
-            <div styleName='account'>item.to()</div>
-          </div>
-          <div styleName='issue'>
-            decription: TODO
-          </div>
+          <div styleName='itemTitle'>{item.title()}</div>
+          {item.details().map((item, index) => (
+            <div key={index} styleName='detail'>
+              <span styleName='detailKey'>{item.label}:</span>
+              <span styleName='detailValue'>{item.value}</span>
+            </div>
+          ))}
+          {/*<div>{this.renderDetails(item.func(), item.details())}</div>*/}
         </div>
         <div styleName='right'>
           <div styleName='revoke'>
@@ -87,15 +93,10 @@ export default class WalletPendingTransfers extends PureComponent {
       <div>
         <div styleName='tableHead'>
           <div styleName='left'>
-            <div styleName='toAccount tableHeadElem'><Translate value='wallet.to' /></div>
-            <div styleName='issue'>
-              <div styleName='value tableHeadElem'><Translate value='wallet.value' /></div>
-              <div styleName='currency'>token</div>
-            </div>
+            <div styleName='tableHeadElem'><Translate value='wallet.transaction' /></div>
           </div>
           <div styleName='right'>
-            <div styleName='revoke' />
-            <div styleName='sign' />
+            <div styleName='tableHeadElem'><Translate value='wallet.actions' /></div>
           </div>
         </div>
         {wallet.pendingTxList().items().map((item) => this.renderRow(wallet, item))}

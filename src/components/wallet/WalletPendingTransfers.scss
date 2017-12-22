@@ -24,7 +24,7 @@
   align-items: center;
 }
 
-.transfer {
+.row {
   padding: 6px 8px;
   display: flex;
   flex-direction: row;
@@ -32,18 +32,9 @@
 }
 
 .left {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex: 1;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-}
-
-.issue {
-  display: flex;
-  flex-direction: row;
 }
 
 .right {
@@ -58,36 +49,6 @@
   opacity: 0.5;
   font-size: 16px;
   color: $color-primary-0;
-}
-
-.toAccount {
-  display: flex;
-  padding-right: 16px;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.account {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.value {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.currency {
-  display: flex;
-  opacity: 0.6;
-  font-size: 14px;
-  text-align: left;
-  color: $color-primary-0;
-  align-items: flex-end;
-  padding-left: 4px;
-  padding-right: 16px;
 }
 
 .revoke {
@@ -105,4 +66,25 @@
 
 .invisible {
   visibility: hidden;
+}
+
+.detail {
+  display: flex;
+  align-items: flex-start;
+  font-size: 14px;
+}
+
+.detailKey {
+  font-weight: bold;
+}
+
+.detailValue {
+  margin-left: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemTitle {
+  margin-bottom: 5px;
+  font-size: 18px;
 }

@@ -1,17 +1,17 @@
-import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import { abstractModel } from './AbstractModel'
+import Amount from 'models/Amount'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-class RewardsModel extends abstractModel({
+export default class RewardsModel extends abstractFetchingModel({
   address: null,
   symbol: null,
   periodLength: null,
   lastPeriod: null,
   lastClosedPeriod: null,
-  accountDeposit: new BigNumber(0),
-  accountRewards: new BigNumber(0),
-  timeTotalSupply: new BigNumber(0),
-  currentAccumulated: new BigNumber(0),
+  accountDeposit: new Amount(0, null, false),
+  accountRewards: new Amount(0, null, false),
+  timeTotalSupply: new Amount(0, null, false),
+  currentAccumulated: new Amount(0, null, false),
   periods: new Immutable.Map(), /** @see RewardsPeriodModel */
 }) {
   address () {
@@ -34,21 +34,19 @@ class RewardsModel extends abstractModel({
     return this.lastPeriod + 1
   }
 
-  accountDeposit (): BigNumber {
+  accountDeposit (): Amount {
     return this.get('accountDeposit')
   }
 
-  accountRewards (): BigNumber {
+  accountRewards (): Amount {
     return this.get('accountRewards')
   }
 
-  currentAccumulated (): BigNumber {
+  currentAccumulated (): Amount {
     return this.get('currentAccumulated')
   }
 
-  timeTotalSupply (): BigNumber {
+  timeTotalSupply (): Amount {
     return this.get('timeTotalSupply')
   }
 }
-
-export default RewardsModel

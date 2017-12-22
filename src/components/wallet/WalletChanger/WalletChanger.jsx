@@ -118,7 +118,7 @@ export default class WalletChanger extends PureComponent {
   renderMultisigWallet () {
     const { multisigWallet } = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
-    const owners = selectedWallet.owners()
+    const owners = selectedWallet.owners().items()
 
     return (
       <div styleName='walletBox'>

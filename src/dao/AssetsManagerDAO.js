@@ -1,16 +1,16 @@
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import TxModel from 'models/TxModel'
-import Web3Converter from 'utils/Web3Converter'
 import ManagersCollection from 'models/tokens/ManagersCollection'
+import TxModel from 'models/TxModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
+import Web3Converter from 'utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 
 const TX_ASSET_CREATED = 'AssetCreated'
-const TXS_PER_PAGE = 10
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {

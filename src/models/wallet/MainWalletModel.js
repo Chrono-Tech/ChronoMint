@@ -9,7 +9,6 @@ import TransactionsCollection from './TransactionsCollection'
 export default class MainWallet extends abstractFetchingModel({
   address: null,
   tokens: new Immutable.Map(),
-  transactions: new TransactionsCollection(),
   btcAddress: null,
   bccAddress: null,
   btgAddress: null,
@@ -22,6 +21,7 @@ export default class MainWallet extends abstractFetchingModel({
   isTIMERequired: true,
   balances: new BalancesCollection(),
   allowances: new AllowanceCollection(),
+  transactions: new TransactionsCollection(),
 }) {
 
   address () {

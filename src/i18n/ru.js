@@ -72,6 +72,8 @@ export default {
     switchToMainWallet: 'Переключить на основной кошелёк',
     pendingTransfers: 'Проводимые переводы',
     to: 'Кому',
+    transaction: 'Транзакция',
+    actions: 'Действия',
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',
     sign: 'ПОДПИСАТЬ',

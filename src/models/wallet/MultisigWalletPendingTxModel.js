@@ -1,3 +1,4 @@
+import TxExecModel from 'models/TxExecModel'
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
@@ -7,7 +8,7 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
   to: null,
   value: new BigNumber(0),
   isConfirmed: false,
-  data: null,
+  decodedTx: new TxExecModel(), // decoded data
 }) {
   id () {
     return this.get('id') || Math.random()
@@ -25,11 +26,23 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
     return this._getSet('isConfirmed', value)
   }
 
+  decodedTx (value) {
+    return this._getSet('decodedTx', value)
+  }
+
   txRevokeSummary () {
     return {
       to: this.to(),
       value: this.value(),
     }
+  }
+
+  title () {
+    return this.decodedTx().title()
+  }
+
+  details () {
+    return this.decodedTx().details()
   }
 }
 

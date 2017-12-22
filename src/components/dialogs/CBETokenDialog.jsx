@@ -49,7 +49,8 @@ export default class CBETokenDialog extends PureComponent {
     isFetching: PropTypes.bool,
     handleAddressChange: PropTypes.func,
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (

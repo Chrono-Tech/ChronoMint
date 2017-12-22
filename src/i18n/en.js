@@ -73,6 +73,8 @@ export default {
     switchToMainWallet: 'Switch to main wallet',
     pendingTransfers: 'Pending transfers',
     to: 'To',
+    transaction: 'Transaction',
+    actions: 'Actions',
     value: 'Value',
     revoke: 'REVOKE',
     sign: 'SIGN',
@@ -448,6 +450,19 @@ export default {
       },
       [exchange.TX_WITHDRAW_ETH]: {
         title: 'Confirm withdraw ETH',
+      },
+    },
+    Wallet: {
+      addOwner: {
+        title: 'Add owner',
+        owner: 'New Owner',
+      },
+      removeOwner: {
+        title: 'Remove owner',
+        Owner: 'Owner',
+      },
+      kill: {
+        title: 'Kill wallet',
       },
     },
   },

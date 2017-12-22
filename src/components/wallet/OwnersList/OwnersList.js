@@ -17,7 +17,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, null)
-class OwnersList extends PureComponent {
+export default class OwnersList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     meta: PropTypes.object,
@@ -87,5 +87,3 @@ class OwnersList extends PureComponent {
     )
   }
 }
-
-export default OwnersList

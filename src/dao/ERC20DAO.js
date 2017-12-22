@@ -131,7 +131,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
-        this.emit(EVENT_NEW_TRANSFER, tx)
+        this.emit(EVENT_NEW_TRANSFER, tx, account)
       }
     }
     await Promise.all([
@@ -140,7 +140,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     ])
   }
 
-  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  async getTransfer (id, account): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
 

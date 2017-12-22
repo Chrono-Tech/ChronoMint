@@ -4,11 +4,13 @@ import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { CircularProgress, Paper, RaisedButton } from 'material-ui'
 import { SHORT_DATE } from 'models/constants'
+import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { DUCK_I18N } from 'redux/configureStore'
 import { getAccountTransactions } from 'redux/mainWallet/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import { integerWithDelimiter } from 'utils/formatter'
@@ -18,7 +20,7 @@ function mapStateToProps (state) {
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   return {
-    locale: state.get('i18n').locale,
+    locale: state.get(DUCK_I18N).locale,
     transactions: getCurrentWallet(state).transactions(),
     selectedNetworkId,
     selectedProviderId,
@@ -34,7 +36,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
-    transactions: PropTypes.object,
+    transactions: PropTypes.instanceOf(TransactionsCollection),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
@@ -97,10 +99,7 @@ export default class TransactionsTable extends PureComponent {
           <div styleName='label'>Value:</div>
           <div styleName='property'>
             <div styleName='value'>
-              <TokenValue
-                value={trx.value()}
-                symbol={trx.symbol()}
-              />
+              <TokenValue value={trx.value()} />
             </div>
           </div>
         </div>

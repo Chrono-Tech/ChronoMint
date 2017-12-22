@@ -37,7 +37,8 @@ export default class OperationsSettingsDialog extends PureComponent {
     handleAddressChange: PropTypes.func,
     name: PropTypes.string,
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (

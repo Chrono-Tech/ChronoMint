@@ -1,7 +1,8 @@
-import TxExecModel from '@/models/TxExecModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import AbstractMultisigContractDAO from 'dao/AbstractMultisigContractDAO'
+import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
+import TxExecModel from 'models/TxExecModel'
 import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
@@ -104,7 +105,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
         // TODO @dkchv: remove decimal
-        value: values [i],
+        value: values [ i ],
         isConfirmed: isConfirmed[ i ],
       })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
@@ -186,30 +187,26 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getPendingData (pending: MultisigWalletPendingTxModel) {
-    const data = await this._call('getData', [pending.id()])
+    const data = await this._call('getData', [ pending.id() ])
     const result: TxExecModel = await this.decodeData(data)
-    console.log('--MultisigWalletDAO#getPendingData', result.toJS())
-
-
-    // TODO @dkchv: continue here!!!
-
-
+    return result
   }
 
-  async _decodeArgs (func, args) {
-
-    const symbol = this._c.bytesToString(args._symbol)
-    const tokenDAO = tokenService.getDAO(symbol)
-    console.log('--MultisigWalletDAO#_decodeArgs', symbol, tokenDAO)
+  async _decodeArgs (func: string, args: Object) {
+    console.log('--MultisigWalletDAO#_decodeArgs', 5, args, func)
 
     switch (func) {
       case 'transfer':
+        const symbol = this._c.bytesToString(args._symbol)
         return {
           symbol,
-          value: tokenDAO.removeDecimals(args._value),
+          value: new Amount(args._value, symbol),
           to: args._to,
         }
+      case 'addOwner':
+        return {
+          owner: args._owner,
+        }
     }
-    console.log('--MultisigWalletDAO#_decodeArgs', func, args)
   }
 }

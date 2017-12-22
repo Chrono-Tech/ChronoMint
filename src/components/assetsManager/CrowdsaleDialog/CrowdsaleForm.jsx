@@ -80,7 +80,8 @@ export default class CrowdsaleForm extends PureComponent {
     dispatch: PropTypes.func,
     locale: PropTypes.string,
     formValues: PropTypes.object,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   handleSelectType = (e) => {
     this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))

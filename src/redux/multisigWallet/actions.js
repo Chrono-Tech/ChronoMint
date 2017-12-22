@@ -1,3 +1,4 @@
+import TxExecModel from 'models/TxExecModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import { EVENT_MS_WALLETS_COUNT, EVENT_NEW_MS_WALLET } from 'dao/MultisigWalletsManagerDAO'
@@ -23,6 +24,7 @@ export const MULTISIG_UPDATE = 'multisigWallet/UPDATE'
 export const MULTISIG_BALANCE = 'multisigWallet/BALANCE'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'
 export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
+export const MULTISIG_PENDING_TX = 'multisigWallet/PENDING_TX'
 
 let walletsManagerDAO
 
@@ -46,9 +48,10 @@ const subscribeOnTokenService = (wallet) => (dispatch, getState) => {
 
     const tokenDao = tokenService.getDAO(token.id())
 
-    tokenDao.watchTransfer(wallet.address(), (notice) => {
-      console.log('--actions#', notice.toJS())
-    })
+    // TODO @dkchv: !!! subscribe
+    // tokenDao.watchTransfer(wallet.address(), (notice) => {
+    //   console.log('--actions#', notice.toJS())
+    // })
 
     const balance = await tokenDao.getAccountBalance(wallet.address())
     dispatch({
@@ -107,7 +110,7 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
   multisigWalletService
     .on(EVENT_OWNER_ADDED, (walletId, ownerAddress) => {
       const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const owners = wallet.owners().push(ownerAddress)
+      const owners = wallet.owners().update(ownerAddress)
       dispatch(updateWallet(wallet.owners(owners)))
     })
     .on(EVENT_OWNER_REMOVED, (walletId, ownerAddress) => {
@@ -117,17 +120,18 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
     })
     .on(EVENT_MULTI_TRANSACTION, (walletId, multisigTransactionModel) => {
       let wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+      const tokens = getState().get(DUCK_TOKENS)
       const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
-      const tokens = wallet.tokens()
-      let token: TokenModel = tokens.get(multisigTransactionModel.symbol())
-      if (!token) {
+      let token: TokenModel = tokens.item(multisigTransactionModel.symbol())
+      if (!token.isFetched()) {
         // eslint-disable-next-line
         console.error('token not found', multisigTransactionModel.symbol())
         return
       }
       token = token.updateBalance(false, multisigTransactionModel.value())
 
-      dispatch(updateWallet(wallet.pendingTxList(pendingTxList).tokens(tokens.set(token.id(), token))))
+      // TODO @dkchv: !!!
+      // dispatch(updateWallet(wallet.pendingTxList(pendingTxList).tokens(tokens.set(token.id(), token))))
     })
     .on('SingleTransact', (walletId, result) => {
       // eslint-disable-next-line
@@ -264,9 +268,11 @@ export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWallet
 }
 
 export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) => async (dispatch) => {
+  console.log('--actions#', 1)
   try {
     const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
-    await walletDAO.getPendingData(pending)
+    const decodedTx: TxExecModel = await walletDAO.getPendingData(pending)
+    dispatch({ type: MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.decodedTx(decodedTx) })
   } catch (e) {
     // eslint-disable-next-line
     console.error('get pending data error', e.message)

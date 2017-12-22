@@ -3,6 +3,7 @@ import BalancesCollection from 'models/tokens/BalancesCollection'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import OwnerCollection from './OwnerCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
@@ -10,30 +11,18 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   tokens: new Immutable.Map(), //
   isMultisig: true, //
   transactions: new TransactionsCollection(),
-  owners: new Immutable.List(),
-  // TODO @dkchv: update functional
-  name: 'No name',
-  requiredSignatures: null,
+  owners: new OwnerCollection(),
+  // owners: new Immutable.List(),
+  requiredSignatures: 0,
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
 }) {
-  constructor (data = {}) {
-    super({
-      ...data,
-      owners: new Immutable.List(data.owners),
-    })
-  }
-
   id () {
     return this.get('transactionHash') || this.get('address')
   }
 
   owners () {
     return this.get('owners')
-  }
-
-  ownersArray () {
-    return this.owners().toArray()
   }
 
   address () {
@@ -46,10 +35,6 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 
   isNew () {
     return !this.address()
-  }
-
-  name () {
-    return this.get('name')
   }
 
   requiredSignatures () {
@@ -78,18 +63,20 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 
   txSummary () {
     return {
-      owners: this.owners(),
+      owners: this.ownersArray(),
       requiredSignatures: this.requiredSignatures(),
-      walletName: this.name(),
     }
+  }
+
+  ownersArray () {
+    return this.owners().items().map((items) => items.address())
   }
 
   toAddEditFormJS () {
     return {
       isNew: this.isNew(),
-      name: this.name(),
       requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().map((address) => ({ address })),
+      owners: this.ownersArray(),
     }
   }
 

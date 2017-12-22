@@ -2,7 +2,7 @@ import Moment from 'components/common/Moment'
 import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
-import type RewardsModel from 'models/RewardsModel'
+import RewardsModel from 'models/rewards/RewardsModel'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -24,7 +24,7 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class RewardsPeriod extends PureComponent {
   static propTypes = {
-    rewardsData: PropTypes.object,
+    rewardsData: PropTypes.instanceOf(RewardsModel),
     period: PropTypes.object,
     locale: PropTypes.string,
   }

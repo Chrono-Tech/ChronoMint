@@ -32,13 +32,11 @@ export default (state = initialState, action) => {
     case a.WALLET_TRANSACTIONS_FETCH:
       return state.transactions(state.transactions().isFetching(true))
     case a.WALLET_TRANSACTION:
-      return state.transactions(state.transactions().list(
-        state.transactions().list().set(action.tx.id(), action.tx),
-      ))
+      return state.transactions(state.transactions().update(action.tx))
     case a.WALLET_TRANSACTIONS:
       return state.transactions(state.transactions()
+        .merge(action.map)
         .isFetching(false)
-        .list(state.transactions().list().merge(action.map))
         .endOfList(action.map.size),
       )
     case a.WALLET_IS_TIME_REQUIRED:

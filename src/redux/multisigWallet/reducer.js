@@ -20,6 +20,8 @@ export default (state = initialState, action) => {
       return state.remove(action.id)
     case a.MULTISIG_BALANCE:
       return state.balance(action.walletId, action.balance)
+    case a.MULTISIG_PENDING_TX:
+      return state.pending(action.walletId, action.pending)
     default:
       return state
   }

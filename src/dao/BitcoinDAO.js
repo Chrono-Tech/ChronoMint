@@ -66,7 +66,7 @@ export class BitcoinDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  async getTransfer (id, account): Promise<Array<TxModel>> {
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
     return []
   }

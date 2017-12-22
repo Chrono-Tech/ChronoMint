@@ -81,6 +81,9 @@ class TxModel extends abstractModel({
     return this.from() === '0x0000000000000000000000000000000000000000'
   }
 
+  /**
+   * @deprecated
+   */
   token (value) {
     return this._getSet('token', value)
   }

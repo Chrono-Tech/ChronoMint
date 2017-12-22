@@ -151,6 +151,9 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_ASSET_HOLDER)
   }
 
+  /**
+   * @deprecated
+   */
   async getTIMEDAO (): Promise<ERC20DAO> {
     const assetHolderDAO: AssetHolderDAO = await this.getAssetHolderDAO()
     return assetHolderDAO.getAssetDAO()

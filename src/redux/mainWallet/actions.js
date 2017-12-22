@@ -1,7 +1,7 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, TXS_PER_PAGE } from 'dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import Immutable from 'immutable'
@@ -12,6 +12,7 @@ import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -69,7 +70,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   // subscribe
   tokenDAO
-    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+    .on(EVENT_NEW_TRANSFER, (tx: TxModel, txAccount) => {
+      // TODO @dkchv: will be moved to notifications
       dispatch(notify(new TransferNoticeModel({
         value: token.removeDecimals(tx.value()),
         symbol,
@@ -78,11 +80,19 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         credited: tx.isCredited(),
       })))
 
-      // TODO @dkchv: !!!!
-      // dispatch(updateBalance(token, tx.isCredited(), tx.value()))
-
       // add to table
+      // TODO @dkchv: !!! restore after fix
       dispatch({ type: WALLET_TRANSACTION, tx })
+      // update balance
+      if (account !== txAccount) {
+        return
+      }
+      dispatch(fetchTokenBalance(token))
+
+      // update donator
+      if (tx.from() === assetDonatorDAO.getInitAddress()) {
+        dispatch(updateIsTIMERequired())
+      }
     })
     .on(EVENT_UPDATE_BALANCE, ({ balance /* balance3, balance6 */ }) => {
       dispatch(setBalance(token, balance.balance0))
@@ -105,20 +115,25 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   await tokenDAO.watch(account)
 
-  const balance = await tokenDAO.getAccountBalance(account)
-  dispatch({
-    type: WALLET_TOKEN_BALANCE,
-    balance: new BalanceModel({
-      id: token.id(),
-      amount: new Amount(balance, symbol),
-    }),
-  })
-
+  dispatch(fetchTokenBalance(token))
   dispatch(addMarketToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
     dispatch(updateIsTIMERequired())
   }
+}
+
+const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
+  const tokenDAO = tokenService.getDAO(token.id())
+  const { account } = getState().get(DUCK_SESSION)
+  const balance = await tokenDAO.getAccountBalance(account)
+  dispatch({
+    type: WALLET_TOKEN_BALANCE,
+    balance: new BalanceModel({
+      id: token.id(),
+      amount: new Amount(balance, token.symbol()),
+    }),
+  })
 }
 
 export const initMainWallet = () => async (dispatch, getState) => {
@@ -140,7 +155,7 @@ export const initMainWallet = () => async (dispatch, getState) => {
   dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
 
   // TODO @dkchv: !!! review again
-  // dispatch(getAccountTransactions(tokens.list()))
+  dispatch(getAccountTransactions())
 }
 
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async () => {
@@ -174,16 +189,12 @@ export const updateIsTIMERequired = () => async (dispatch, getState) => {
   }
 }
 
-export const requireTIME = () => async (dispatch) => {
+export const requireTIME = () => async () => {
   try {
     await assetDonatorDAO.requireTIME()
   } catch (e) {
-    // no rollback
     // eslint-disable-next-line
     console.error('require time error', e.message)
-  } finally {
-    dispatch(updateIsTIMERequired())
-    // TODO @dkchv: update balance
   }
 }
 
@@ -195,10 +206,11 @@ let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = () => async (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS).item()
+  const { account } = getState().get(DUCK_SESSION)
+  const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  const cacheId = Object.values(tokens).map((v: TokenModel) => v.symbol()).join(',')
+  const cacheId = tokens.map((v: TokenModel) => v.symbol()).join(',')
 
   const reset = lastCacheId && cacheId !== lastCacheId
   lastCacheId = cacheId
@@ -216,7 +228,7 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
       if (reset) {
         tokenDAO.resetFilterCache()
       }
-      promises.push(tokenDAO.getTransfer(getTransferId))
+      promises.push(tokenDAO.getTransfer(getTransferId, account))
     }
     const result = await Promise.all(promises)
 

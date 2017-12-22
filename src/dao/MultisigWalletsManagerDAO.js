@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import Immutable from 'immutable'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
 import multisigWalletService from 'services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
@@ -46,6 +47,17 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     })
   }
 
+  _createOwnersCollection (owners: Array, account) {
+    let ownersCollection = new OwnerCollection()
+    owners.forEach((address) => {
+      ownersCollection = ownersCollection.update(new OwnerModel({
+        address,
+        isSelf: account === address,
+      }))
+    })
+    return ownersCollection
+  }
+
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
     const [ owners, requiredSignatures, pendingTxList ] = await Promise.all([
@@ -55,7 +67,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     ])
 
     const multisigWalletModel = new MultisigWalletModel({
-      owners: new Immutable.List(owners),
+      owners: this._createOwnersCollection(owners, address),
       address,
       transactionHash,
       requiredSignatures,
@@ -64,13 +76,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       pendingTxList,
     })
     this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)
-
-    return multisigWalletModel
   }
 
   async createWallet (wallet: MultisigWalletModel) {
+    const owners = wallet.owners().items().map((item) => item.address())
     const result = await this._tx('createWallet', [
-      wallet.ownersArray(),
+      owners,
       wallet.requiredSignatures(),
       new BigNumber(0),
     ], wallet.toCreateWalletTx())

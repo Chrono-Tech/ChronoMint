@@ -70,6 +70,7 @@ export default class WalletSelectDialog extends PureComponent {
   renderRow = (wallet: MultisigWalletModel) => {
     const isSelected = wallet.isSelected()
     const owners = wallet.owners()
+
     return (
       <div key={wallet.id()} styleName={classNames('row', { selected: isSelected })}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
@@ -82,15 +83,15 @@ export default class WalletSelectDialog extends PureComponent {
           <div styleName='details'>
             <div styleName='owners'>
               <div styleName='ownersCount'>
-                <Translate num={owners.size} value='wallet.walletSelectDialog.owners' />
+                <Translate num={owners.size()} value='wallet.walletSelectDialog.owners' />
               </div>
               <div>
-                {owners.valueSeq().toArray().map((owner, idx) => (
+                {owners.items().map((owner, idx) => (
                   <i
                     className='material-icons'
                     key={owner}
                     title={owner}
-                    styleName={owners.size > 4 && idx ? 'faces tight' : 'faces'}
+                    styleName={owners.size() > 4 && idx ? 'faces tight' : 'faces'}
                   >account_circle
                   </i>
                 ))}
@@ -155,9 +156,7 @@ export default class WalletSelectDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5 styleName='colName'>
-                <Translate
-                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')}
-                />
+                <Translate value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')} />
               </h5>
               <div styleName='table'>
                 {wallets.map(this.renderRow)}

@@ -3,8 +3,6 @@ import type TxModel from 'models/TxModel'
 import { address } from 'models/validator'
 import AbstractContractDAO from './AbstractContractDAO'
 
-export const TXS_PER_PAGE = 10
-
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
 export const EVENT_APPROVAL_TRANSFER = 'TokenApprovalTransfer'
@@ -51,7 +49,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  getTransfer (id, account): Promise<Array<TxModel>> {
     throw new Error('should be overridden')
   }
 

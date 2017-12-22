@@ -1,9 +1,10 @@
+import Amount from '@/models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
-import RewardsModel from 'models/RewardsModel'
-import RewardsPeriodModel from 'models/RewardsPeriodModel'
+import RewardsModel from 'models/rewards/RewardsModel'
+import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import tokenService from 'services/TokenService'
 import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -20,6 +21,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const addresses = await this._call('getAssets')
+    console.log('--RewardsDAO#getAssetDAO', addresses)
     return tokenService.getDAO(addresses[ 0 ])
   }
 
@@ -36,12 +38,6 @@ export default class RewardsDAO extends AbstractContractDAO {
       .catch(() => 0) // no closed periods yet
   }
 
-  async getDepositBalanceInPeriod (account, periodId: number): Promise<BigNumber> {
-    const balance = await this._call('depositBalanceInPeriod', [ account, periodId ])
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    return timeDAO.removeDecimals(balance)
-  }
-
   async getAssetBalanceInPeriod (periodId: number): Promise<BigNumber> {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
@@ -56,12 +52,6 @@ export default class RewardsDAO extends AbstractContractDAO {
       // no closed periods yet
       return false
     }
-  }
-
-  async getTotalDepositInPeriod (id: number): Promise<BigNumber> {
-    const deposit = await this._call('totalDepositInPeriod', [ id ])
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    return timeDAO.removeDecimals(deposit)
   }
 
   async getCurrentAccumulated (): Promise<BigNumber> {
@@ -88,6 +78,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getRewardsData (): Promise<RewardsModel> {
     const assetHolderDAO = await contractsManagerDAO.getAssetHolderDAO()
+
     const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const [
       address,
@@ -147,8 +138,8 @@ export default class RewardsDAO extends AbstractContractDAO {
   async _getPeriod (id, account): Promise<RewardsPeriodModel> {
     const periodLength = await this.getPeriodLength()
     const values = await Promise.all([
-      this.getTotalDepositInPeriod(id), // 0
-      this.getDepositBalanceInPeriod(account, id), // 1
+      this._call('totalDepositInPeriod', [ id ]), // 0
+      this._call('depositBalanceInPeriod', [ account, id ]),
       this.getPeriodClosedState(id), // 2
       this.getAssetBalanceInPeriod(id), // 3
       this._callNum('periodUnique', [ id ]), // 4
@@ -156,10 +147,10 @@ export default class RewardsDAO extends AbstractContractDAO {
     ])
     return new RewardsPeriodModel({
       id,
-      totalDeposit: values[ 0 ],
-      userDeposit: values[ 1 ],
+      totalDeposit: new Amount(values[ 0 ], 'TIME'),
+      userDeposit: new Amount(values[ 1 ], 'TIME'),
       isClosed: values[ 2 ],
-      assetBalance: values[ 3 ],
+      assetBalance: new Amount(values[ 3 ], 'TIME'),
       uniqueShareholders: values[ 4 ],
       startDate: values[ 5 ],
       periodLength,

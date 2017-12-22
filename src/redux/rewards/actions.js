@@ -2,6 +2,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 
 export const DUCK_REWARDS = 'rewards'
 
+export const REWARDS_INIT = 'rewards/init'
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
 export const REWARDS_DATA = 'rewards/DATA'
 
