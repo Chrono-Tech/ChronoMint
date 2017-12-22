@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { closePeriod, DUCK_REWARDS, getRewardsData, watchInitRewards, withdrawRevenue } from 'redux/rewards/actions'
+import { closePeriod, DUCK_REWARDS, getRewardsData, initRewards, withdrawRevenue } from 'redux/rewards/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import './RewardsContent.scss'
 
@@ -30,7 +30,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
+    initRewards: () => dispatch(initRewards()),
     handleClosePeriod: () => dispatch(closePeriod()),
     handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
   }
@@ -42,18 +42,14 @@ export default class RewardsContent extends Component {
     rewards: PropTypes.instanceOf(RewardsModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
-    watchInitRewards: PropTypes.func,
+    initRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
     handleClosePeriod: PropTypes.func,
   }
 
   componentWillMount () {
-    if (this.props.rewards.isFetched() || this.props.rewards.isFetching()) {
-      return
-    }
-    this.props.watchInitRewards()
-    this.props.getRewardsData()
+    this.props.initRewards()
   }
 
   renderHead () {

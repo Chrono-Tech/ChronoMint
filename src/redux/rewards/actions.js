@@ -9,10 +9,7 @@ export const REWARDS_INIT = 'rewards/init'
 export const REWARDS_FETCH_START = 'rewards/FETCH_START'
 export const REWARDS_DATA = 'rewards/DATA'
 
-export const getRewardsData = (silent = false) => async (dispatch, getState) => {
-  if (!silent) {
-    dispatch({ type: REWARDS_FETCH_START })
-  }
+export const getRewardsData = () => async (dispatch, getState) => {
   const dao = await contractsManagerDAO.getRewardsDAO()
   const tokens = getState().get(DUCK_TOKENS)
   const callback = async (token: TokenModel) => {
@@ -51,7 +48,13 @@ export const closePeriod = () => async (dispatch) => {
   }
 }
 
-export const watchInitRewards = () => async (dispatch) => {
+export const initRewards = () => async (dispatch, getState) => {
+  if (getState().get(DUCK_REWARDS).isInited()) {
+    return
+  }
+  dispatch({ type: REWARDS_INIT, isInited: true })
+
   const dao = await contractsManagerDAO.getRewardsDAO()
-  dao.watchPeriodClosed(() => dispatch(getRewardsData(true)))
+  dao.watchPeriodClosed(() => dispatch(getRewardsData()))
+  dispatch(getRewardsData())
 }

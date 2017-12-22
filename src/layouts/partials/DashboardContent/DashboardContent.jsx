@@ -1,11 +1,10 @@
-import RewardsModel from '@/models/rewards/RewardsModel'
-import { DUCK_REWARDS } from '@/redux/rewards/actions'
 import { DepositTokens, Rewards, SendTokens, Voting } from 'components'
 import { Paper } from 'material-ui'
+import RewardsModel from 'models/rewards/RewardsModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { getRewardsData, watchInitRewards } from 'redux/rewards/actions'
+import { DUCK_REWARDS, getRewardsData, initRewards } from 'redux/rewards/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import './DashboardContent.scss'
 
@@ -22,7 +21,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
+    initRewards: () => dispatch(initRewards()),
   }
 }
 
@@ -31,15 +30,12 @@ export default class DashboardContent extends Component {
   static propTypes = {
     rewards: PropTypes.instanceOf(RewardsModel),
     isVotingFetched: PropTypes.bool,
-    watchInitRewards: PropTypes.func,
+    initRewards: PropTypes.func,
     getRewardsData: PropTypes.func,
   }
 
   componentWillMount () {
-    if (!this.props.rewards.isFetched()) {
-      this.props.watchInitRewards()
-      this.props.getRewardsData()
-    }
+    this.props.initRewards()
   }
 
   render () {
