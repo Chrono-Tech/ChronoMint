@@ -1,8 +1,10 @@
+import RewardsModel from 'models/rewards/RewardsModel'
+import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import { RewardsPeriod } from 'components'
 import styles from 'layouts/partials/styles'
 import { FlatButton, Paper, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
-import RewardsModel from 'models/rewards/RewardsModel'
+import RewardsCollection from 'models/rewards/RewardsCollection'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -20,8 +22,11 @@ function prefix (token) {
 function mapStateToProps (state) {
   const { isCBE } = state.get(DUCK_SESSION)
 
+  const rewards: RewardsCollection = state.get(DUCK_REWARDS)
+
   return {
-    rewards: state.get(DUCK_REWARDS),
+    rewards,
+    currentPeriod: rewards.currentPeriod(),
     deposit: state.get(DUCK_ASSETS_HOLDER).deposit(),
     isCBE,
   }
@@ -38,7 +43,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
   static propTypes = {
-    rewards: PropTypes.instanceOf(RewardsModel),
+    rewards: PropTypes.instanceOf(RewardsCollection),
+    currentPeriod: PropTypes.instanceOf(RewardsPeriodModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
     initRewards: PropTypes.func,
@@ -51,7 +57,7 @@ export default class RewardsContent extends Component {
   }
 
   renderHead () {
-    const { rewards } = this.props
+    const { currentPeriod, rewards } = this.props
 
     return (
       <div styleName='head'>
@@ -70,7 +76,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
-                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewards.periodLength()} /></span>
+                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={currentPeriod.periodLength()} /></span>
                 </div>
               </div>
               <div className='col-sm-1'>
@@ -103,7 +109,7 @@ export default class RewardsContent extends Component {
                         <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
-                    {rewards.accountRewards().gt(0) && (
+                    {currentPeriod.accountRewards().gt(0) && (
                       <RaisedButton
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
@@ -133,12 +139,10 @@ export default class RewardsContent extends Component {
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
-            {this.props.rewards.periods().valueSeq().map((item) => (
+            {this.props.rewards.periods().items().map((item) => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
-                  <Paper>
-                    <RewardsPeriod period={item} rewardsData={this.props.rewards} />
-                  </Paper>
+                  {/*<RewardsPeriod period={item} />*/}
                 </div>
               </div>
             ))}
@@ -153,7 +157,7 @@ export default class RewardsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead()}
-          {this.renderBody()}
+          {/*{this.renderBody()}*/}
         </div>
       </div>
     )

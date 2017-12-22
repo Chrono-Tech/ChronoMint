@@ -9,6 +9,7 @@ export const DUCK_REWARDS = 'rewards'
 export const REWARDS_INIT = 'rewards/init'
 export const REWARDS_DATA = 'rewards/DATA'
 export const REWARDS_ASSET = 'rewards/ASSET'
+export const REWARDS_BASE_INFO = 'rewards/baseInfo'
 
 let rewardDAO = null
 
@@ -16,9 +17,6 @@ export const handleToken = (token: TokenModel) => async (dispatch, getState) => 
   const rewardsHolder = getState().get(DUCK_REWARDS)
   const assets = rewardsHolder.assets()
 
-  console.log('--actions#', 1111, assets, token.address(), token.symbol(), assets.list().has(token.address()))
-
-  console.log('--actions#', !token.isERC20(), !assets.list().has(token.address()))
   if (!token.isERC20() || !assets.list().has(token.address())) {
     return
   }
@@ -29,7 +27,8 @@ export const handleToken = (token: TokenModel) => async (dispatch, getState) => 
 export const fetchRewardsData = (token) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const data = await rewardDAO.getRewardsData(account, token)
-  dispatch({ type: REWARDS_DATA, data })
+  // TODO @dkchv: !!!
+  // dispatch({ type: REWARDS_DATA, data })
 }
 
 export const withdrawRevenue = () => async (dispatch) => {
@@ -56,13 +55,18 @@ export const initRewards = () => async (dispatch, getState) => {
     return
   }
   dispatch({ type: REWARDS_INIT, isInited: true })
-  // init
+  // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
-  // init assets
-  let [ addresses ] = await Promise.all([
+
+  return
+
+  let [ addresses, periodCount, address ] = await Promise.all([
     rewardDAO.getAssets(),
+    rewardDAO.getPeriodLength(),
+    rewardDAO.getAddress(),
     rewardDAO.watchPeriodClosed(() => dispatch(fetchRewardsData())),
   ])
+  dispatch({ type: REWARDS_BASE_INFO, address, periodCount })
 
   addresses.forEach((address) => {
     dispatch({ type: REWARDS_ASSET, asset: new AssetModel({ address }) })

@@ -1,4 +1,5 @@
 import Amount from '@/models/Amount'
+import AssetModel from '@/models/assetHolder/AssetModel'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from 'dao/ERC20DAO'
@@ -12,6 +13,8 @@ import contractsManagerDAO from './ContractsManagerDAO'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
+
+export const EE_REWARDS_PERIODS_COUNT = 'rewards/periodCount'
 
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
@@ -30,7 +33,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   getPeriodLength (): Promise {
-    return this._callNum('getCloseInterval')
+    return this._callNum('periodsLength')
   }
 
   getLastPeriod (): Promise {
@@ -71,7 +74,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   //   return r.lt(0) ? new BigNumber(0) : r
   // }
 
-  async getRewardsFor (account): Promise<BigNumber> {
+  async getRewardsFor (account, asset: AssetModel): Promise<BigNumber> {
     const assetDAO = await this.getAssetDAO()
     const assetAddress = await assetDAO.getAddress()
     const r = await this._call('rewardsFor', [ assetAddress, account ])
@@ -80,38 +83,33 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getRewardsData (account, /* token */): Promise<RewardsModel> {
     const [
-      address,
       periodLength,
       lastPeriod,
       lastClosedPeriod,
       periods,
-      // rewardsLeft,
-      // currentAccumulated,
-      accountRewards,
-      assets,
+      // accountRewards,
     ] = await Promise.all([
-      this.getAddress(),
       this.getPeriodLength(),
       this.getLastPeriod(),
       this.getLastClosedPeriod(),
+
       this.getPeriods(account),
-      // this.getRewardsLeft(),
-      // this.getCurrentAccumulated(),
-      this.getRewardsFor(account),
-      this.getAssets(),
+      // this.getRewardsFor(account),
     ])
 
-    console.log('--RewardsDAO#getRewardsData', assets, periods.toJS())
+
+
+    console.log('--RewardsDAO#getRewardsData', periodLength, lastPeriod, lastClosedPeriod, periods.toJS())
 
     return {
-      address,
+      // address,
       periodLength,
       lastPeriod,
       lastClosedPeriod,
       periods,
       // currentAccumulated,
       // rewardsLeft,
-      accountRewards,
+      // accountRewards,
     }
   }
 
@@ -138,7 +136,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       this._call('totalDepositInPeriod', [ id ]), // 0
       this._call('depositBalanceInPeriod', [ account, id ]),
       this.getPeriodClosedState(id), // 2
-      this.getAssetBalanceInPeriod(id), // 3
+      // this.getAssetBalanceInPeriod(id), // 3
       this._callNum('periodUnique', [ id ]), // 4
       this._callNum('getPeriodStartDate', [ id ]), // 5
     ])
@@ -147,7 +145,7 @@ export default class RewardsDAO extends AbstractContractDAO {
       totalDeposit: new Amount(values[ 0 ], 'TIME'),
       userDeposit: new Amount(values[ 1 ], 'TIME'),
       isClosed: values[ 2 ],
-      assetBalance: new Amount(values[ 3 ], 'TIME'),
+      // assetBalance: new Amount(values[ 3 ], 'TIME'),
       uniqueShareholders: values[ 4 ],
       startDate: values[ 5 ],
       periodLength,

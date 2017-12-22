@@ -1,6 +1,6 @@
-import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import Immutable from 'immutable'
 import Amount from 'models/Amount'
+import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class RewardsModel extends abstractFetchingModel({
@@ -15,8 +15,12 @@ export default class RewardsModel extends abstractFetchingModel({
   periods: new Immutable.Map(), /** @see RewardsPeriodModel */
   assets: new AssetsCollection(),
 }) {
-  address () {
-    return this.get('address')
+  id () {
+    return this.address()
+  }
+
+  address (value) {
+    return this._getSet('address', value)
   }
 
   /**

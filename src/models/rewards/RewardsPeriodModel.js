@@ -11,6 +11,7 @@ class RewardsPeriodModel extends abstractModel({
   assetBalance: new Amount(0, null, false),
   uniqueShareholders: null,
   periodLength: null,
+  accountRewards: new Amount(0, null, false),
 }) {
   index () {
     return this.id() + 1
@@ -78,6 +79,10 @@ class RewardsPeriodModel extends abstractModel({
 
   isClosable () {
     return !this.get('isClosed') && moment().diff(this.endMoment(), 'seconds') >= 0
+  }
+
+  accountRewards (value) {
+    return this._getSet('accountRewards', value)
   }
 }
 

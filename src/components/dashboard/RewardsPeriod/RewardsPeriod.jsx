@@ -1,6 +1,8 @@
+import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
+import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import { SHORT_DATE } from 'models/constants'
 import RewardsModel from 'models/rewards/RewardsModel'
@@ -27,8 +29,7 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 export default class RewardsPeriod extends PureComponent {
   static propTypes = {
-    rewardsData: PropTypes.instanceOf(RewardsModel),
-    period: PropTypes.object,
+    period: PropTypes.instanceOf(RewardsPeriodModel),
     locale: PropTypes.string,
     totalSupply: PropTypes.instanceOf(Amount),
   }
@@ -38,15 +39,18 @@ export default class RewardsPeriod extends PureComponent {
   }
 
   render () {
-    const rewardsData: RewardsModel = this.props.rewardsData
-    const period = this.props.period
-    const symbol = rewardsData.symbol()
-    const isOngoing = period.index() === rewardsData.lastPeriodIndex()
-    const totalDividends = isOngoing
-      // ? rewardsData.currentAccumulated()
-      ? rewardsData.rewardsLeft()
-      : period.assetBalance()
-    const revenue = period.userRevenue(totalDividends)
+    // const rewardsData: RewardsModel = this.props.rewardsData
+    const { period } = this.props
+    // const symbol = rewardsData.symbol()
+    // const isOngoing = period.index() === rewardsData.lastPeriodIndex()
+    // const totalDividends = isOngoing
+    //   ? rewardsData.rewardsLeft()
+    //   : period.assetBalance()
+    // const revenue = period.userRevenue(totalDividends)
+
+    const totalDividends = 0
+    const revenue = 0
+    const isOngoing = true
 
     let progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
     if (!isFinite(progress) || period.periodLength() === 0) {
@@ -54,50 +58,51 @@ export default class RewardsPeriod extends PureComponent {
     }
 
     return (
-      <div styleName='root' className='RewardsPeriod__root'>
-        <div styleName='marker' className='RewardsPeriod__marker'>
-          <div styleName='number'>#{period.index()}</div>
-        </div>
-        <div styleName='main' className='RewardsPeriod__main'>
-          <div styleName='info'>
-            <div styleName='table'>
-              <div styleName='col1'>
-                <h5><Translate value={prefix('rewardsPeriodIndex')} index={period.index()} /></h5>
-              </div>
-              <div styleName='col2'>
-                <div styleName='status'>
-                  {isOngoing
-                    ? (<span styleName='badgeOrange'><Translate value={prefix('ongoing')} /></span>)
-                    : (<span styleName='badgeGreen'><Translate value={prefix('closed')} /></span>)
-                  }
+      <Paper>
+        <div styleName='root' className='RewardsPeriod__root'>
+          <div styleName='marker' className='RewardsPeriod__marker'>
+            <div styleName='number'>#{period.index()}</div>
+          </div>
+          <div styleName='main' className='RewardsPeriod__main'>
+            <div styleName='info'>
+              <div styleName='table'>
+                <div styleName='col1'>
+                  <h5><Translate value={prefix('rewardsPeriodIndex')} index={period.index()} /></h5>
+                </div>
+                <div styleName='col2'>
+                  <div styleName='status'>
+                    {isOngoing
+                      ? (<span styleName='badgeOrange'><Translate value={prefix('ongoing')} /></span>)
+                      : (<span styleName='badgeGreen'><Translate value={prefix('closed')} /></span>)
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-            <div styleName='table'>
-              <div styleName='col1'>
-                <div styleName='row'>
-                  <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('startDate')} />: </span>
-                    <span styleName='entry2'><Moment date={period.startDate()} format={SHORT_DATE} /></span>
-                  </span>
-                  <span styleName='entry'>
-                    <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
-                    <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE} /> (<Translate
-                      value={prefix('inDaysDays')}
-                      days={period.daysRemaining()}
-                    />)
+              <div styleName='table'>
+                <div styleName='col1'>
+                  <div styleName='row'>
+                    <span styleName='entry'>
+                      <span styleName='entry1'><Translate value={prefix('startDate')} />: </span>
+                      <span styleName='entry2'><Moment date={period.startDate()} format={SHORT_DATE} /></span>
                     </span>
+                    <span styleName='entry'>
+                      <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
+                        <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE} /> (<Translate
+                          value={prefix('inDaysDays')}
+                          days={period.daysRemaining()}
+                        />)
+                      </span>
                   </span>
-                </div>
-                <div styleName='row'>
-                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')} />: </span>
-                    <span styleName='entry2'>
-                      <TokenValue
-                        bold
-                        noRenderPrice
-                        value={period.totalDeposit()}
-                      />
+                  </div>
+                  <div styleName='row'>
+                    <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                      <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')} />: </span>
+                      <span styleName='entry2'>
+                        <TokenValue
+                          bold
+                          noRenderPrice
+                          value={period.totalDeposit()}
+                        />
                       &nbsp;(
                       <Translate
                         value={prefix('percentOfTotalCount')}
@@ -105,14 +110,14 @@ export default class RewardsPeriod extends PureComponent {
                       />)
                     </span>
                   </span>
-                </div>
-                <div styleName='row'>
+                  </div>
+                  <div styleName='row'>
                   <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
                     <span styleName='entry1'><Translate value={prefix('uniqueShareholders')} />: </span>
                     <span styleName='entry2'>{period.uniqueShareholders()}</span>
                   </span>
-                </div>
-                <div styleName='row'>
+                  </div>
+                  <div styleName='row'>
                   <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
                     <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')} />: </span>
                     <span styleName='entry2'>
@@ -120,7 +125,7 @@ export default class RewardsPeriod extends PureComponent {
                         bold
                         noRenderPrice
                         value={period.userDeposit()}
-                        symbol={TIME}
+                        symbol={'TIME'}
                       />
                       &nbsp;(
                       <Translate
@@ -129,41 +134,42 @@ export default class RewardsPeriod extends PureComponent {
                       />)
                     </span>
                   </span>
-                </div>
-              </div>
-              <div styleName='col2'>
-                <div styleName='row'>
-                  <Translate value={prefix('dividendsAccumulatedForPeriod')} />:
-                </div>
-                <div styleName='row'>
-                  <div>
-                    <TokenValue
-                      style={{ fontSize: '24px' }}
-                      value={totalDividends}
-                      symbol={symbol}
-                    />
                   </div>
                 </div>
-                <div styleName='row'>
-                  <Translate value={prefix('yourApproximateRevenueForPeriod')} />:
-                </div>
-                <div styleName='row'>
-                  <div>
-                    <TokenValue
-                      style={{ fontSize: '24px' }}
-                      value={revenue}
-                      symbol={symbol}
-                    />
+                <div styleName='col2'>
+                  <div styleName='row'>
+                    <Translate value={prefix('dividendsAccumulatedForPeriod')} />:
+                  </div>
+                  <div styleName='row'>
+                    <div>
+                      <TokenValue
+                        style={{ fontSize: '24px' }}
+                        value={totalDividends}
+                        symbol={'TIME'}
+                      />
+                    </div>
+                  </div>
+                  <div styleName='row'>
+                    <Translate value={prefix('yourApproximateRevenueForPeriod')} />:
+                  </div>
+                  <div styleName='row'>
+                    <div>
+                      <TokenValue
+                        style={{ fontSize: '24px' }}
+                        value={revenue}
+                        symbol={'ITME'}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div styleName='progress'>
-              <ProgressSection value={progress} />
+              <div styleName='progress'>
+                <ProgressSection value={progress} />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Paper>
     )
   }
 }
