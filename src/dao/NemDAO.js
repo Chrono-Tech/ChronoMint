@@ -92,8 +92,8 @@ export default class NemDAO {
   async watchBalance (callback) {
     this._nemProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
       const b = this._mosaic
-        ? balance.balance
-        : balance.mosaics[this._mosaic]
+        ? balance.balance.value
+        : balance.mosaics[this._mosaic].value
       callback({
         account,
         time,

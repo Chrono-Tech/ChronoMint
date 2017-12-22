@@ -175,10 +175,13 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   async _setupNemTokens () {
-    return await Promise.all([
-      this._setupNemMosaic('XEM', 'XEM', new NemDAO('XEM', 'XEM', nemProvider, null, 6)),
-      ...(nemProvider.getMosaics() || []).map((m) => this._setupNemMosaic(m.name, m.title, new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))),
-    ])
+    if (nemProvider.isInitialized()) {
+      return await Promise.all([
+        this._setupNemMosaic('XEM', 'XEM', new NemDAO('XEM', 'XEM', nemProvider, null, 6)),
+        ...(nemProvider.getMosaics() || []).map((m) => this._setupNemMosaic(m.name, m.title, new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))),
+      ])
+    }
+    return []
   }
 
   async _setupNemMosaic (name, title, dao) {
