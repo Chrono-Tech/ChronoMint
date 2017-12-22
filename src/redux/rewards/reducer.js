@@ -7,13 +7,13 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case a.REWARDS_INIT:
       return state.isInited(action.isInited)
+    case a.REWARDS_ASSET:
+      return state.assets(state.assets().update(action.asset))
     case a.REWARDS_DATA:
       return state
         .merge(action.data)
         .isFetching(false)
         .isFetched(true)
-    case a.REWARDS_FETCH_START:
-      return state.isFetching(true)
     default:
       return state
   }

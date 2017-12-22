@@ -243,6 +243,11 @@ export default class AbstractContractDAO extends EventEmitter {
     return r.toNumber()
   }
 
+  async _callArray (): Array {
+    const result = await this._call(...arguments)
+    return result instanceof Array ? result : [ result ]
+  }
+
   isEmptyAddress (v): boolean {
     return v === '0x0000000000000000000000000000000000000000'
   }

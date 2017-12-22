@@ -23,35 +23,35 @@ describe('rewards', () => {
     })
   })
 
-  it('should handle REWARDS_FETCH_START', () => {
-    expect(reducer([], { type: a.REWARDS_FETCH_START, data })).toEqual({
-      isFetching: true,
-    })
-  })
+  // it('should handle REWARDS_FETCH_START', () => {
+  //   expect(reducer([], { type: a.REWARDS_FETCH_START, data })).toEqual({
+  //     isFetching: true,
+  //   })
+  // })
 
-  it.skip('should get rewards data', () => store.dispatch(a.getRewardsData()).then(() => {
-    data = store.getActions()[1].data
-    expect(store.getActions()).toEqual([
-      { type: a.REWARDS_FETCH_START },
-      { type: a.REWARDS_DATA, data },
-    ])
-    expect(data instanceof RewardsModel).toBeTruthy()
-    expect(data.periods.size).toBeGreaterThanOrEqual(1)
-    expect(data.periods.get(0) instanceof RewardsPeriodModel).toBeTruthy()
-  }))
+  // it.skip('should get rewards data', () => store.dispatch(a.getRewardsData()).then(() => {
+  //   data = store.getActions()[1].data
+  //   expect(store.getActions()).toEqual([
+  //     { type: a.REWARDS_FETCH_START },
+  //     { type: a.REWARDS_DATA, data },
+  //   ])
+  //   expect(data instanceof RewardsModel).toBeTruthy()
+  //   expect(data.periods.size).toBeGreaterThanOrEqual(1)
+  //   expect(data.periods.get(0) instanceof RewardsPeriodModel).toBeTruthy()
+  // }))
 
   it.skip('should withdraw revenue', () => store.dispatch(a.withdrawRevenue()).then(() => {
     data = store.getActions()[2].data
     expect(store.getActions()).toEqual([
-      { type: a.REWARDS_FETCH_START },
-      { type: a.REWARDS_FETCH_START },
+      // { type: a.REWARDS_FETCH_START },
+      // { type: a.REWARDS_FETCH_START },
       { type: a.REWARDS_DATA, data },
     ])
   }))
 
-  it('should close period', () => store.dispatch(a.closePeriod()).then(() => {
-    expect(store.getActions()).toEqual([
-      { type: a.REWARDS_FETCH_START },
-    ])
-  }))
+  // it('should close period', () => store.dispatch(a.closePeriod()).then(() => {
+  //   expect(store.getActions()).toEqual([
+  //     { type: a.REWARDS_FETCH_START },
+  //   ])
+  // }))
 })

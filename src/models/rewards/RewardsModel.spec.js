@@ -5,7 +5,7 @@ const model = new RewardsModel({
   lastPeriod: 1,
   accountDeposit: 100,
   accountRewards: 10,
-  currentAccumulated: 20,
+  // currentAccumulated: 20,
   timeTotalSupply: 300,
 })
 
@@ -22,9 +22,9 @@ describe('rewards model', () => {
     expect(model.accountRewards()).toEqual(10)
   })
 
-  it('should get current accumulated rewards in LH', () => {
-    expect(model.currentAccumulated()).toEqual(20)
-  })
+  // it('should get current accumulated rewards in LH', () => {
+  //   expect(model.currentAccumulated()).toEqual(20)
+  // })
 
   // it('should get time total supply', () => {
   //   expect(model.timeTotalSupply()).toEqual(300)

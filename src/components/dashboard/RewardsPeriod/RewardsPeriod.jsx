@@ -43,7 +43,8 @@ export default class RewardsPeriod extends PureComponent {
     const symbol = rewardsData.symbol()
     const isOngoing = period.index() === rewardsData.lastPeriodIndex()
     const totalDividends = isOngoing
-      ? rewardsData.currentAccumulated()
+      // ? rewardsData.currentAccumulated()
+      ? rewardsData.rewardsLeft()
       : period.assetBalance()
     const revenue = period.userRevenue(totalDividends)
 
