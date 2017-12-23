@@ -1,17 +1,19 @@
-import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
 import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import { SHORT_DATE } from 'models/constants'
-import RewardsModel from 'models/rewards/RewardsModel'
+import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
+import TokenModel from 'models/tokens/TokenModel'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { TIME } from 'redux/mainWallet/actions'
+import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
+import { DUCK_I18N } from 'redux/configureStore'
+import { DUCK_REWARDS } from 'redux/rewards/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
@@ -20,9 +22,12 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
+  // TODO @dkchv: hardcoded to only one asset here
+  const asset = state.get(DUCK_REWARDS).assets().first(true)
   return {
-    locale: state.get('i18n').locale,
-    totalSupply: state.get(DUCK_TOKENS).item('TIME').totalSupply(),
+    locale: state.get(DUCK_I18N).locale,
+    token: state.get(DUCK_TOKENS).getByAddress(asset.id()),
+    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(asset.id()).deposit(),
   }
 }
 
@@ -31,7 +36,8 @@ export default class RewardsPeriod extends PureComponent {
   static propTypes = {
     period: PropTypes.instanceOf(RewardsPeriodModel),
     locale: PropTypes.string,
-    totalSupply: PropTypes.instanceOf(Amount),
+    token: PropTypes.instanceOf(TokenModel),
+    deposit: PropTypes.instanceOf(Amount),
   }
 
   componentWillReceiveProps (newProps) {
@@ -39,9 +45,10 @@ export default class RewardsPeriod extends PureComponent {
   }
 
   render () {
+    const { token, deposit } = this.props
     // const rewardsData: RewardsModel = this.props.rewardsData
     const { period } = this.props
-    // const symbol = rewardsData.symbol()
+    const symbol = token.symbol()
     // const isOngoing = period.index() === rewardsData.lastPeriodIndex()
     // const totalDividends = isOngoing
     //   ? rewardsData.rewardsLeft()
@@ -101,12 +108,12 @@ export default class RewardsPeriod extends PureComponent {
                         <TokenValue
                           bold
                           noRenderPrice
-                          value={period.totalDeposit()}
+                          value={deposit}
                         />
                       &nbsp;(
                       <Translate
                         value={prefix('percentOfTotalCount')}
-                        percent={period.totalDepositPercent(this.props.totalSupply)}
+                        percent={period.totalDepositPercent(token.totalSupply())}
                       />)
                     </span>
                   </span>
@@ -125,7 +132,7 @@ export default class RewardsPeriod extends PureComponent {
                         bold
                         noRenderPrice
                         value={period.userDeposit()}
-                        symbol={'TIME'}
+                        symbol={symbol}
                       />
                       &nbsp;(
                       <Translate
@@ -145,7 +152,7 @@ export default class RewardsPeriod extends PureComponent {
                       <TokenValue
                         style={{ fontSize: '24px' }}
                         value={totalDividends}
-                        symbol={'TIME'}
+                        symbol={symbol}
                       />
                     </div>
                   </div>
@@ -157,7 +164,7 @@ export default class RewardsPeriod extends PureComponent {
                       <TokenValue
                         style={{ fontSize: '24px' }}
                         value={revenue}
-                        symbol={'ITME'}
+                        symbol={symbol}
                       />
                     </div>
                   </div>

@@ -1,5 +1,6 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import AssetModel from 'models/assetHolder/AssetModel'
+import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from 'dao/RewardsDAO'
+import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { subscribeOnTokens } from 'redux/tokens/actions'
@@ -10,18 +11,22 @@ export const REWARDS_INIT = 'rewards/init'
 export const REWARDS_DATA = 'rewards/DATA'
 export const REWARDS_ASSET = 'rewards/ASSET'
 export const REWARDS_BASE_INFO = 'rewards/baseInfo'
+export const REWARDS_PERIOD = 'rewards/period'
 
 let rewardDAO = null
 
 export const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const rewardsHolder = getState().get(DUCK_REWARDS)
   const assets = rewardsHolder.assets()
+  const { account } = getState().get(DUCK_SESSION)
 
   if (!token.isERC20() || !assets.list().has(token.address())) {
     return
   }
 
-  dispatch(fetchRewardsData(token))
+  rewardDAO.fetchPeriods(rewardsHolder.periodCount(), token.address(), account)
+
+  // dispatch(fetchRewardsData(token))
 }
 
 export const fetchRewardsData = (token) => async (dispatch, getState) => {
@@ -55,23 +60,29 @@ export const initRewards = () => async (dispatch, getState) => {
     return
   }
   dispatch({ type: REWARDS_INIT, isInited: true })
+
   // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
-
-  return
-
-  let [ addresses, periodCount, address ] = await Promise.all([
+  let [ assets, periodCount, address ] = await Promise.all([
     rewardDAO.getAssets(),
     rewardDAO.getPeriodLength(),
     rewardDAO.getAddress(),
-    rewardDAO.watchPeriodClosed(() => dispatch(fetchRewardsData())),
   ])
-  dispatch({ type: REWARDS_BASE_INFO, address, periodCount })
+  dispatch({ type: REWARDS_BASE_INFO, address, periodCount, assets })
 
-  addresses.forEach((address) => {
-    dispatch({ type: REWARDS_ASSET, asset: new AssetModel({ address }) })
-  })
+  // subscribe
+  rewardDAO
+    .on(EE_REWARDS_PERIOD_CLOSED, (result) => {
+      console.log('--actions#1', 1, result)
+    })
+    .on(EE_REWARDS_PERIOD, (period: RewardsPeriodModel) => {
+      console.log('--actions#', period.toJS())
+      dispatch({ type: REWARDS_PERIOD, period })
+    })
+    .on(EE_REWARDS_ERROR, (result) => {
+      console.log('--actions#', result)
+    })
 
-  // init tokens
+  await rewardDAO.watch()
   dispatch(subscribeOnTokens(handleToken))
 }

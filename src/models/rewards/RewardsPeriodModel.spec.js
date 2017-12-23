@@ -43,7 +43,7 @@ describe('rewards contract model', () => {
   })
 
   it('should get start moment', () => {
-    expect(model.startMoment()).toEqual(moment.unix(model.get('startDate')))
+    expect(model.startDate()).toEqual(moment.unix(model.get('startDate')))
   })
 
   it('should get start date', () => {
@@ -51,11 +51,11 @@ describe('rewards contract model', () => {
   })
 
   it('should get end moment', () => {
-    expect(model.endMoment()).toEqual(model.startMoment().add(model.periodLength(), 'days'))
+    expect(model.endMoment()).toEqual(model.startDate().add(model.periodLength(), 'days'))
   })
 
   it('should get end date', () => {
-    expect(model.endDate()).toEqual(model.endMoment())
+    expect(model.endDate()).toEqual(model.endDate())
   })
 
   it('should get days remaining', () => {

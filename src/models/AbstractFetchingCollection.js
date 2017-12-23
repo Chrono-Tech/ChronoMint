@@ -95,8 +95,12 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this.list().size
   }
 
-  first () {
-    return this.list().first()
+  first (forceEmptyModel = false) {
+    const item = this.list().first()
+    if (!item && forceEmptyModel) {
+      return this.emptyModel()
+    }
+    return item
   }
 
   emptyModel (value) {

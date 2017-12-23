@@ -58,6 +58,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const deposit = await assetHolderDAO.getDeposit(account)
+  console.log('--actions#deposit: ', token.symbol(), deposit, new Amount(deposit, token.symbol()))
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),

@@ -1,10 +1,9 @@
-import RewardsModel from 'models/rewards/RewardsModel'
-import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
-import { RewardsPeriod } from 'components'
+import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import styles from 'layouts/partials/styles'
-import { FlatButton, Paper, RaisedButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
 import RewardsCollection from 'models/rewards/RewardsCollection'
+import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -23,11 +22,11 @@ function mapStateToProps (state) {
   const { isCBE } = state.get(DUCK_SESSION)
 
   const rewards: RewardsCollection = state.get(DUCK_REWARDS)
-
+  const asset = rewards.assets().first(true)
   return {
     rewards,
     currentPeriod: rewards.currentPeriod(),
-    deposit: state.get(DUCK_ASSETS_HOLDER).deposit(),
+    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(asset.id()).deposit(),
     isCBE,
   }
 }
@@ -44,7 +43,7 @@ function mapDispatchToProps (dispatch) {
 export default class RewardsContent extends Component {
   static propTypes = {
     rewards: PropTypes.instanceOf(RewardsCollection),
-    currentPeriod: PropTypes.instanceOf(RewardsPeriodModel),
+    currentPeriod: PropTypes.instanceOf(RewardsCurrentPeriodModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
     initRewards: PropTypes.func,
@@ -72,7 +71,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
-                  <span styleName='entry2'>{rewards.lastPeriodIndex()}</span>
+                  <span styleName='entry2'>{currentPeriod.id()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
@@ -109,11 +108,10 @@ export default class RewardsContent extends Component {
                         <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
-                    {currentPeriod.accountRewards().gt(0) && (
+                    {currentPeriod.rewards().gt(0) && (
                       <RaisedButton
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
-                        disabled={!rewards.accountRewards().gt(0)}
                         onTouchTap={this.props.handleWithdrawRevenue}
                       />
                     )}
@@ -139,10 +137,10 @@ export default class RewardsContent extends Component {
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
-            {this.props.rewards.periods().items().map((item) => (
+            {this.props.rewards.items().map((item) => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
-                  {/*<RewardsPeriod period={item} />*/}
+                  <RewardsPeriod period={item} />
                 </div>
               </div>
             ))}
@@ -157,7 +155,7 @@ export default class RewardsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead()}
-          {/*{this.renderBody()}*/}
+          {this.renderBody()}
         </div>
       </div>
     )

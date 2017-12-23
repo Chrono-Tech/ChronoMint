@@ -1,20 +1,22 @@
-import Amount from '@/models/Amount'
-import AssetModel from '@/models/assetHolder/AssetModel'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type ERC20DAO from 'dao/ERC20DAO'
 import Immutable from 'immutable'
+import Amount from 'models/Amount'
+import AssetModel from 'models/assetHolder/AssetModel'
+import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import RewardsModel from 'models/rewards/RewardsModel'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import tokenService from 'services/TokenService'
 import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import contractsManagerDAO from './ContractsManagerDAO'
 
 export const TX_WITHDRAW_REWARD = 'withdrawReward'
 export const TX_CLOSE_PERIOD = 'closePeriod'
 
-export const EE_REWARDS_PERIODS_COUNT = 'rewards/periodCount'
+export const EE_REWARDS_PERIOD = 'rewards/newPeriod'
+export const EE_REWARDS_PERIOD_CLOSED = 'rewards/periodClosed'
+export const EE_REWARDS_ERROR = 'rewards/error'
 
 export default class RewardsDAO extends AbstractContractDAO {
   constructor (at) {
@@ -22,8 +24,20 @@ export default class RewardsDAO extends AbstractContractDAO {
     this._okCodes = [ resultCodes.OK, resultCodes.REWARD_CALCULATION_FAILED ]
   }
 
-  getAssets (): Promise {
-    return this._callArray('getAssets')
+  async getAssets (): Promise {
+    const assetsAddresses: Array = await this._callArray('getAssets')
+    let assets = new AssetsCollection()
+    assetsAddresses.forEach((address) => {
+      assets = assets.add(new AssetModel({ address }))
+    })
+    return assets
+  }
+
+  fetchPeriods (count, asset: string, account: string) {
+    console.log('--RewardsDAO#fetchPeriods', count, asset, account)
+    for (let i = 0; i < count; i++) {
+      this._getPeriod(i, asset, account)
+    }
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {
@@ -97,8 +111,6 @@ export default class RewardsDAO extends AbstractContractDAO {
       // this.getRewardsFor(account),
     ])
 
-
-
     console.log('--RewardsDAO#getRewardsData', periodLength, lastPeriod, lastClosedPeriod, periods.toJS())
 
     return {
@@ -130,26 +142,27 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getPeriod (id, account): Promise<RewardsPeriodModel> {
-    const periodLength = await this.getPeriodLength()
+  async _getPeriod (id, assetAddress, account): Promise<RewardsPeriodModel> {
     const values = await Promise.all([
       this._call('totalDepositInPeriod', [ id ]), // 0
-      this._call('depositBalanceInPeriod', [ account, id ]),
-      this.getPeriodClosedState(id), // 2
-      // this.getAssetBalanceInPeriod(id), // 3
+      this._call('depositBalanceInPeriod', [ account, id ]), // 1
+      this._call('isClosed', [ id ]), // 2
+      this._call('assetBalanceInPeriod', [ assetAddress, id ]), // 3
       this._callNum('periodUnique', [ id ]), // 4
       this._callNum('getPeriodStartDate', [ id ]), // 5
+      this.getPeriodLength(), // 6
     ])
-    return new RewardsPeriodModel({
+
+    this.emit(EE_REWARDS_PERIOD, new RewardsPeriodModel({
       id,
       totalDeposit: new Amount(values[ 0 ], 'TIME'),
       userDeposit: new Amount(values[ 1 ], 'TIME'),
       isClosed: values[ 2 ],
-      // assetBalance: new Amount(values[ 3 ], 'TIME'),
+      assetBalance: new Amount(values[ 3 ], 'TIME'),
       uniqueShareholders: values[ 4 ],
       startDate: values[ 5 ],
-      periodLength,
-    })
+      periodLength: values [ 6 ],
+    }))
   }
 
   async withdraw () {
@@ -165,12 +178,22 @@ export default class RewardsDAO extends AbstractContractDAO {
     return this._tx(TX_CLOSE_PERIOD)
   }
 
-  async watchPeriodClosed (callback) {
-    await this._watch('Error', () => {
-      callback()
-    }, { self: this.getInitAddress() })
-    return this._watch('PeriodClosed', () => {
-      callback()
+  watch (): Promise {
+    return Promise.all([
+      this.watchPeriodClosed(),
+      this.watchError(),
+    ])
+  }
+
+  async watchPeriodClosed () {
+    return this._watch('PeriodClosed', (result) => {
+      this.emit(EE_REWARDS_PERIOD_CLOSED, result)
     })
+  }
+
+  async watchError () {
+    return this._watch('Error', (result) => {
+      this.emit(EE_REWARDS_ERROR, result)
+    }, { self: this.getInitAddress() })
   }
 }
