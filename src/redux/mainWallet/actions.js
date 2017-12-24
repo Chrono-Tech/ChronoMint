@@ -1,3 +1,4 @@
+import validator from 'models/validator'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
@@ -254,4 +255,20 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   }
 
   dispatch({ type: WALLET_TRANSACTIONS, map })
+}
+
+export const getSpendersAllowance = (tokenId: string, spender: string) => async (dispatch, getState) => {
+  if (validator.address(spender) !== null || !tokenId) {
+    return null
+  }
+  const { account } = getState().get(DUCK_SESSION)
+  const dao = tokenService.getDAO(tokenId)
+  const allowance = await dao.getAccountAllowance(account, spender)
+  dispatch({
+    type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
+      amount: new Amount(allowance, tokenId),
+      spender, //address
+      token: tokenId, // id
+    }),
+  })
 }
