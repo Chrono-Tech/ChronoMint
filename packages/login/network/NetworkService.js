@@ -42,7 +42,7 @@ class NetworkService extends EventEmitter {
     // this unlock login
     // dispatch(createSession(account))
     this.emit('createSession', {
-      account, provider, network, dispatch: this._dispatch,
+      account, provider, network,
     })
   }
 
@@ -54,7 +54,7 @@ class NetworkService extends EventEmitter {
       web3Provider.reset()
     }
 
-    this.emit('destroySession', { lastURL, dispatch: this._dispatch })
+    this.emit('destroySession', { lastURL })
   }
 
   async checkLocalSession (account, providerURL) {

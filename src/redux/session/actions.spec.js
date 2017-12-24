@@ -62,15 +62,15 @@ const userSessionMock = new Immutable.Map({
 
 describe('session actions', () => {
 
-  it('should create session', () => {
+  it('should create session', async () => {
     store = mockStore(emptySessionMock)
-    a.createSession({ account: accounts[ 0 ], dispatch: store.dispatch })
+    await store.dispatch(a.createSession({ account: accounts[ 0 ] }))
     expect(store.getActions()).toMatchSnapshot()
   })
 
-  it('should destroy session', () => {
+  it('should destroy session', async () => {
     store = mockStore(emptySessionMock)
-    a.destroySession({ dispatch: store.dispatch })
+    await store.dispatch(a.destroySession())
     expect(store.getActions()).toMatchSnapshot()
   })
 

@@ -20,12 +20,12 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/dashboard'
 export const DEFAULT_CBE_URL = '/dashboard'
 
-export const createSession = ({ account, provider, network, lastUrl, dispatch }) => {
+export const createSession = ({ account, provider, network, lastUrl }) => (dispatch) => {
   dispatch({ type: WALLET_ADDRESS, address: account })
   dispatch({ type: SESSION_CREATE, account, provider, network, lastUrl })
 }
 
-export const destroySession = ({ lastURL, dispatch }) => {
+export const destroySession = ({ lastURL = null } = {}) => (dispatch) => {
   dispatch({ type: SESSION_DESTROY, lastURL })
 }
 
@@ -74,8 +74,8 @@ export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   networkService.checkMetaMask()
   if (networkService) {
     networkService
-      .on('createSession', createSession)
-      .on('destroySession', destroySession)
+      .on('createSession', (...args) => dispatch(createSession(...args)))
+      .on('destroySession', (...args) => dispatch(destroySession(...args)))
       .on('login', ({ account, dispatch }) => dispatch(login(account)))
   }
 
