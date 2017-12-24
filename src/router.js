@@ -16,7 +16,7 @@ import {
   VotingPage,
   WalletPage,
 } from 'pages/lib'
-import { store, history } from './redux/configureStore'
+import { store, persistor, history } from './redux/configureStore'
 import './styles/themes/default.scss'
 
 const requireAuth = (store) => (nextState, replace) => {
