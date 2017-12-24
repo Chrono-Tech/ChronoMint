@@ -64,12 +64,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
-  transfer (recipient, amount: Amount): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
     return this._tx(TX_TRANSFER, [
-      recipient,
+      to,
       new BigNumber(amount),
     ], {
-      recipient,
+      to,
       amount,
       currency: amount.symbol(),
     })

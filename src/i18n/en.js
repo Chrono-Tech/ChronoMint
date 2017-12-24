@@ -688,6 +688,8 @@ export default {
         amount: 'Amount',
         feeRate: 'Fee: %{multiplier} of average (%{total} sat/byte)',
         approve: 'Approve',
+        revoke: 'Revoke',
+        allowance: 'Allowance',
         send: 'Send',
       },
       RewardsPeriod: {

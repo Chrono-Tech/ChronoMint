@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
@@ -15,6 +16,9 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import MainWallet from 'models/wallet/MainWalletModel'
+import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
+import AllowanceModel from 'models/wallet/AllowanceModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
@@ -39,14 +43,18 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
+  const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const tokenId = selector(state, 'symbol')
   const feeMultiplier = selector(state, 'feeMultiplier')
+  const recipient = selector(state, 'recipient')
 
   return {
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
+    allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
     token: state.get(DUCK_TOKENS).item(tokenId),
+    recipient,
     feeMultiplier,
   }
 }
@@ -57,6 +65,8 @@ export default class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
+    allowance: PropTypes.instanceOf(AllowanceModel),
+    recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     feeMultiplier: PropTypes.number,
     transfer: PropTypes.func,
@@ -72,9 +82,23 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
-  // TODO @dkchv: !!! restore
-  async checkIsContract (address) {
-    const isContact = contractsManagerDAO.isContract(address)
+  componentWillReceiveProps (newProps) {
+    if (newProps.token.address() !== this.props.token.address()) {
+      this.checkIsContract(newProps.token.address())
+        .then((result) => {
+          this.setState({
+            isContract: result,
+          })
+        })
+    }
+
+    if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
+      this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
+    }
+  }
+
+  checkIsContract (address): Promise {
+    return contractsManagerDAO.isContract(address)
   }
 
   handleTransfer = (values) => {
@@ -82,7 +106,19 @@ export default class SendTokensForm extends PureComponent {
   }
 
   handleApprove = (values) => {
+    if (this.props.allowance.amount().gt(0)) {
+      values = values.set('amount', 0)
+    }
     this.props.onSubmit(values.set('action', ACTION_APPROVE))
+  }
+
+  handleRevoke = () => {
+    this.props.onSubmit(new Immutable.Map({
+      action: ACTION_APPROVE,
+      symbol: this.props.token.symbol(),
+      amount: 0,
+      recipient: this.props.recipient,
+    }))
   }
 
   renderHead () {
@@ -130,15 +166,22 @@ export default class SendTokensForm extends PureComponent {
             <TokenValue isInvert value={currentBalance.amount()} />
           </div>
         </div>
+        {
+          token.isERC20() && this.props.allowance &&
+          <div styleName='balance'>
+            <div styleName='label'><Translate value={prefix('allowance')} />: <TokenValue isInvert
+                                                                                          value={this.props.allowance.amount()} />
+            </div>
+          </div>
+        }
       </div>
     )
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
-    // TODO @dkchv: !!! restore
-    // const { isContract } = this.state
-    const isContract = true
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance, recipient } = this.props
+    const { isContract } = this.state
+    const isApprove = allowance.amount().lte(0)
 
     return (
       <div>
@@ -146,7 +189,7 @@ export default class SendTokensForm extends PureComponent {
           <img
             styleName='fromIcon'
             src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
-          /> {wallet.address()}
+          /> {wallet.addresses().item(token.blockchain()).address()}
         </div>
         <div>
           <Field
@@ -194,17 +237,27 @@ export default class SendTokensForm extends PureComponent {
               primary
               style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid || token.isLocked()}
-              onTouchTap={handleSubmit(this.handleTransfer)}
+              onTouchTap={!pristine && !invalid && !token.isLocked() && handleSubmit(this.handleTransfer)}
             />
-            {token.isERC20() && (
+            {token.isERC20() && isApprove && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit(this.handleApprove)}
+                onTouchTap={!pristine && !invalid && isContract && handleSubmit(this.handleApprove)}
               />
             )}
+            {token.isERC20() && !isApprove && (
+              <RaisedButton
+                label={<Translate value={prefix('revoke')} />}
+                primary
+                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
+                disabled={!isContract}
+                onTouchTap={isContract && token && recipient && this.handleRevoke}
+              />
+            )}
+
           </div>
         </div>
       </div>

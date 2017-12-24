@@ -60,18 +60,6 @@ const RINKEBY_BASE = {
   nem: 'Testnet',
 }
 
-const KOVAN_BASE = {
-  id: 42,
-  protocol: 'https',
-  name: 'Kovan (test network)',
-  scanner: scannerMap.kovan,
-  bitcoin: 'testnet',
-  bitcoinCash: 'testnet',
-  // bitcoinGold: 'bitcoingold_testnet',
-  litecoin: 'litecoin_testnet',
-  nem: 'Testnet',
-}
-
 const LOCALHOST_BASE = {
   id: LOCAL_ID,
   protocol: process.env.BASE_SCHEMA || 'https',
@@ -83,7 +71,6 @@ const BASE_NETWORK_MAP = [
   LOCALHOST_BASE,
   MAINNET_BASE,
   RINKEBY_BASE,
-  KOVAN_BASE,
 ]
 
 // --------- middleware
@@ -98,27 +85,27 @@ export const MIDDLEWARE_MAP = {
 
 // --------- providers
 
-export const infuraNetworkMap = [ {
-  ...MAINNET_BASE,
-  host: `mainnet.infura.io/${INFURA_TOKEN}`,
-}, {
-  ...RINKEBY_BASE,
-  host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-}, {
-  ...KOVAN_BASE,
-  host: `kovan.infura.io/${INFURA_TOKEN}`,
-} ]
+export const infuraNetworkMap = [
+  {
+    ...MAINNET_BASE,
+    host: `mainnet.infura.io/${INFURA_TOKEN}`,
+  },
+  {
+    ...RINKEBY_BASE,
+    host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+  },
+]
 
-const chronoBankMap = [ {
-  ...MAINNET_BASE,
-  host: 'mainnet-full-parity-rpc.chronobank.io/',
-}, {
-  ...RINKEBY_BASE,
-  host: 'rinkeby-full-geth-rpc.chronobank.io/',
-}, {
-  ...KOVAN_BASE,
-  host: 'kovan-fast-parity-rpc.chronobank.io/',
-} ]
+const chronoBankMap = [
+  {
+    ...MAINNET_BASE,
+    host: 'mainnet-full-parity-rpc.chronobank.io/',
+  },
+  {
+    ...RINKEBY_BASE,
+    host: 'rinkeby-full-geth-rpc.chronobank.io/',
+  },
+]
 
 // dev only
 if (process.env.NODE_ENV === 'development') {
@@ -200,7 +187,7 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 }
 
 export const getProviderById = (providerId) => {
-  return providerMap[Object.keys(providerMap).find((key) => providerMap[ key ].id === providerId)] || {}
+  return providerMap[ Object.keys(providerMap).find((key) => providerMap[ key ].id === providerId) ] || {}
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
