@@ -29,11 +29,6 @@ export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
-export const WALLET_BTC_ADDRESS = 'mainWallet/BTC_ADDRESS'
-export const WALLET_BCC_ADDRESS = 'mainWallet/BCC_ADDRESS'
-export const WALLET_BTG_ADDRESS = 'mainWallet/BTG_ADDRESS'
-export const WALLET_LTC_ADDRESS = 'mainWallet/LTC_ADDRESS'
-export const WALLET_NEM_ADDRESS = 'mainWallet/NEM_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
 export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
@@ -173,7 +168,7 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
   try {
     const wallet: MainWalletModel = getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
-    await tokenDAO.transfer(wallet.addresses(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
+    await tokenDAO.transfer(wallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('transfer error', e.message)
