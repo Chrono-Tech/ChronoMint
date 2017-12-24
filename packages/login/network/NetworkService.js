@@ -10,6 +10,7 @@ import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
 import privateKeyProvider from './privateKeyProvider'
+import networkProvider from './NetworkProvider'
 import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
@@ -156,10 +157,11 @@ class NetworkService extends EventEmitter {
     await this.setup(provider)
   }
 
-  async setup ({ ethereum, btc, bcc, btg, ltc, nem }) {
+  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
     const web3 = new Web3()
     web3Provider.setWeb3(web3)
     web3Provider.setProvider(ethereum.getProvider())
+    networkProvider.setNetworkCode(networkCode)
 
     const accounts = await this.loadAccounts()
     this.selectAccount(accounts[ 0 ])
