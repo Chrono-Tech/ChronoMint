@@ -131,7 +131,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     const internalCallback = async (result, block, time) => {
       const tx = await this._getTxModel(result, account, block, time / 1000)
       if (tx) {
-        this.emit(EVENT_NEW_TRANSFER, tx, account)
+        this.emit(EVENT_NEW_TRANSFER, tx)
       }
     }
     await Promise.all([

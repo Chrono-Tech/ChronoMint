@@ -41,14 +41,15 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         dispatch(fetchAssetAllowance(token))
       }
     })
-    .on(EVENT_NEW_TRANSFER, (tx, account) => {
-      if (account !== holderWallet) {
+    .on(EVENT_NEW_TRANSFER, (tx) => {
+      if (!(tx.from() === holderWallet || tx.to() === holderWallet)) {
         return
       }
       dispatch(fetchAssetDeposit(token))
       dispatch(fetchAssetAllowance(token))
     })
-    .watch(holderAccount)
+
+  await tokenDAO.watch(holderAccount)
 
   // fetch deposit and allowance
   dispatch(fetchAssetDeposit(token))
@@ -58,7 +59,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const deposit = await assetHolderDAO.getDeposit(account)
-  console.log('--actions#deposit: ', token.symbol(), deposit, new Amount(deposit, token.symbol()))
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),

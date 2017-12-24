@@ -70,7 +70,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   // subscribe
   tokenDAO
-    .on(EVENT_NEW_TRANSFER, (tx: TxModel, txAccount) => {
+    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
       // TODO @dkchv: will be moved to notifications
       dispatch(notify(new TransferNoticeModel({
         value: token.removeDecimals(tx.value()),
@@ -83,12 +83,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       // add to table
       // TODO @dkchv: !!! restore after fix
       dispatch({ type: WALLET_TRANSACTION, tx })
-      // update balance
-      if (account !== txAccount) {
+      if (!(tx.from() === account || tx.to() === account)) {
         return
       }
+      // update balance
       dispatch(fetchTokenBalance(token))
-
       // update donator
       if (tx.from() === assetDonatorDAO.getInitAddress()) {
         dispatch(updateIsTIMERequired())
