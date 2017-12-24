@@ -32,6 +32,9 @@ function mapStateToProps (state) {
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
     locale: state.get(DUCK_I18N).locale,
+    initialValues: {
+      deadline: new Date(),
+    },
   }
 }
 
@@ -118,7 +121,8 @@ export default class PollEditForm extends Component {
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>
                   <IconButton>
-                    <FontIcon className='material-icons' onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
+                    <FontIcon className='material-icons'
+                              onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
                   </IconButton>
                 </div>
               </div>

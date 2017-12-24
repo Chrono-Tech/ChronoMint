@@ -9,6 +9,7 @@ import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import Preloader from 'components/common/Preloader/Preloader'
 import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -147,13 +148,26 @@ export default class Poll extends PureComponent {
                   <div styleName='entryValue'>
                     {details.voteLimitInTIME === null
                       ? (<i>Unlimited</i>)
-                      : (<span>{this.props.timeToken.removeDecimals(details.voteLimit).toString()} TIME</span>)
+                      : (
+                        <span>{this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.voteLimit)} TIME`
+                          : <Preloader />
+                        }
+                        </span>)
                     }
                   </div>
                 </div>
                 <div styleName='entry entryReceived'>
                   <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                  <div styleName='entryValue'>{details.received.round(4).toString()} TIME</div>
+                  <div styleName='entryValue'>
+                    <span>
+                      {
+                        this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          : <Preloader />
+                      }
+                    </span>
+                  </div>
                 </div>
                 <div styleName='entry entryVariants'>
                   <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
@@ -223,7 +237,7 @@ export default class Poll extends PureComponent {
                     styleName='action'
                     primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onClick={this.props.handleVote}
+                    onClick={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
                   />
                 )
                 : null

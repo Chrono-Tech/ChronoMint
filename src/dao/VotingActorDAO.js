@@ -1,7 +1,10 @@
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import PollNoticeModel, { IS_VOTED } from 'models/notices/PollNoticeModel'
+import { MultiEventsHistoryABI, VoteActorABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { VoteActorABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_VOTE = 'vote'
+const EVENT_VOTE_CREATED = 'VoteCreated'
 
 export default class VotingActorDAO extends AbstractContractDAO {
   constructor (at) {
@@ -9,6 +12,24 @@ export default class VotingActorDAO extends AbstractContractDAO {
   }
 
   vote (pollId, choice) {
-    return this._tx(TX_VOTE, [pollId, choice])
+    return this._tx(TX_VOTE, [ pollId, choice ])
+  }
+
+  /** @private */
+  _watchCallback = (callback, status) => async (result) => {
+    // eslint-disable-next-line
+    console.log('--VotingDAO#', result)
+    const detailsDAO = await contractsManagerDAO.getVotingDetailsDAO()
+    const poll = await detailsDAO.getPollDetails(result.args.pollId)
+    callback(new PollNoticeModel({
+      pollId: result.args.pollId.toNumber(), // just a long
+      poll,
+      status,
+      transactionHash: result.transactionHash,
+    }))
+  }
+
+  async watchVoted (callback) {
+    return this._watch(EVENT_VOTE_CREATED, this._watchCallback(callback, IS_VOTED))
   }
 }

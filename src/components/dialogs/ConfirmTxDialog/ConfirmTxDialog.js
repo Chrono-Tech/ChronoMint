@@ -104,7 +104,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (
-      <ModalDialog>
+      <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
           <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
           <div styleName='content'>

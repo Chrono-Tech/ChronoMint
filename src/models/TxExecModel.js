@@ -86,7 +86,6 @@ class TxExecModel extends abstractModel({
   }
 
   title () {
-    console.log('--TxExecModel#title', this.func())
     return I18n.t(this.func())
   }
 
