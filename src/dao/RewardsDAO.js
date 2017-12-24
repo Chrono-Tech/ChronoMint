@@ -33,7 +33,7 @@ export default class RewardsDAO extends AbstractContractDAO {
     return assets
   }
 
-  fetchPeriods (count, asset: string, account: string) {
+  fetchPeriods (count, asset: AssetModel, account: string) {
     console.log('--RewardsDAO#fetchPeriods', count, asset, account)
     for (let i = 0; i < count; i++) {
       this._getPeriod(i, asset, account)
@@ -142,12 +142,12 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getPeriod (id, assetAddress, account): Promise<RewardsPeriodModel> {
+  async _getPeriod (id, asset: AssetModel, account): Promise<RewardsPeriodModel> {
     const values = await Promise.all([
       this._call('totalDepositInPeriod', [ id ]), // 0
       this._call('depositBalanceInPeriod', [ account, id ]), // 1
       this._call('isClosed', [ id ]), // 2
-      this._call('assetBalanceInPeriod', [ assetAddress, id ]), // 3
+      this._call('assetBalanceInPeriod', [ asset.id(), id ]), // 3
       this._callNum('periodUnique', [ id ]), // 4
       this._callNum('getPeriodStartDate', [ id ]), // 5
       this.getPeriodLength(), // 6
@@ -155,10 +155,10 @@ export default class RewardsDAO extends AbstractContractDAO {
 
     this.emit(EE_REWARDS_PERIOD, new RewardsPeriodModel({
       id,
-      totalDeposit: new Amount(values[ 0 ], 'TIME'),
-      userDeposit: new Amount(values[ 1 ], 'TIME'),
+      totalDeposit: new Amount(values[ 0 ], asset.symbol()),
+      userDeposit: new Amount(values[ 1 ], asset.symbol()),
       isClosed: values[ 2 ],
-      assetBalance: new Amount(values[ 3 ], 'TIME'),
+      assetBalance: new Amount(values[ 3 ], asset.symbol()),
       uniqueShareholders: values[ 4 ],
       startDate: values[ 5 ],
       periodLength: values [ 6 ],

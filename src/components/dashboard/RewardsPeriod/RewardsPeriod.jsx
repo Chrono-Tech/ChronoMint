@@ -128,12 +128,12 @@ export default class RewardsPeriod extends PureComponent {
                   <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
                     <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')} />: </span>
                     <span styleName='entry2'>
-                      <TokenValue
-                        bold
-                        noRenderPrice
-                        value={period.userDeposit()}
-                        symbol={symbol}
-                      />
+                      {/*<TokenValue*/}
+                        {/*bold*/}
+                        {/*noRenderPrice*/}
+                        {/*value={period.userDeposit()}*/}
+                        {/*symbol={symbol}*/}
+                      {/*/>*/}
                       &nbsp;(
                       <Translate
                         value={prefix('percentOfTotalDepositedAmount')}
@@ -149,11 +149,11 @@ export default class RewardsPeriod extends PureComponent {
                   </div>
                   <div styleName='row'>
                     <div>
-                      <TokenValue
-                        style={{ fontSize: '24px' }}
-                        value={totalDividends}
-                        symbol={symbol}
-                      />
+                      {/*<TokenValue*/}
+                        {/*style={{ fontSize: '24px' }}*/}
+                        {/*value={totalDividends}*/}
+                        {/*symbol={symbol}*/}
+                      {/*/>*/}
                     </div>
                   </div>
                   <div styleName='row'>
@@ -161,11 +161,11 @@ export default class RewardsPeriod extends PureComponent {
                   </div>
                   <div styleName='row'>
                     <div>
-                      <TokenValue
-                        style={{ fontSize: '24px' }}
-                        value={revenue}
-                        symbol={symbol}
-                      />
+                      {/*<TokenValue*/}
+                        {/*style={{ fontSize: '24px' }}*/}
+                        {/*value={revenue}*/}
+                        {/*symbol={symbol}*/}
+                      {/*/>*/}
                     </div>
                   </div>
                 </div>

@@ -15,6 +15,10 @@ export default class AssetModel extends abstractFetchingModel({
   }
 
   symbol (value) {
-    return this._getSet('symbol', value)
+    if (value === undefined) {
+      return this.get('symbol')
+    }
+
+    return this.deposit(this.deposit().symbol(value)).set('symbol', value)
   }
 }

@@ -1,3 +1,4 @@
+import AssetModel from '@/models/assetHolder/AssetModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from 'dao/RewardsDAO'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
@@ -24,7 +25,11 @@ export const handleToken = (token: TokenModel) => async (dispatch, getState) => 
     return
   }
 
-  rewardDAO.fetchPeriods(rewardsHolder.periodCount(), token.address(), account)
+  // init asset
+  const asset: AssetModel = assets.item(token.address()).symbol(token.symbol())
+  dispatch({ type: REWARDS_ASSET, asset })
+  // fetch period for asset
+  rewardDAO.fetchPeriods(rewardsHolder.periodCount(), asset, account)
 
   // dispatch(fetchRewardsData(token))
 }
