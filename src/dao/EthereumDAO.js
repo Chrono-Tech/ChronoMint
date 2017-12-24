@@ -85,11 +85,11 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer (account, amount: Amount, /* feeMultiplier */): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
     const value = new BigNumber(amount)
     const txData = {
-      from: this.getAccount(),
-      to: account,
+      from,
+      to,
       value,
     }
 
@@ -100,7 +100,7 @@ export class EthereumDAO extends AbstractTokenDAO {
 
     const [ gasPrice, estimateGas ] = await Promise.all([
       this._web3Provider.getGasPrice(),
-      this._web3Provider.estimateGas({ to: account, value }),
+      this._web3Provider.estimateGas({ to, value }),
     ])
 
     let tx = new TxExecModel({
@@ -109,7 +109,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       value,
       gas: new BigNumber(estimateGas).mul(gasPrice),
       args: {
-        to: account,
+        to,
         value: amount,
         // value,
       },

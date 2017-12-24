@@ -41,26 +41,6 @@ export default class SendTokens extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
   }
 
-  constructor (props) {
-    super(props)
-    const balances = props.wallet.balances()
-    this.state = {
-      symbol: balances.size() > 0
-        ? balances.first().id()
-        : null,
-    }
-  }
-
-  componentWillReceiveProps (newProps) {
-    const balances = newProps.wallet.balances()
-    const selectedToken = balances.item(this.state.symbol)
-    if (!selectedToken) {
-      this.state.symbol = balances.size() > 0
-        ? balances.first().id()
-        : null
-    }
-  }
-
   handleSubmit = (values) => {
     const { wallet, tokens } = this.props
     const { action, symbol, amount, recipient, feeMultiplier } = values.toJS()

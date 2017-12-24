@@ -18,7 +18,9 @@ export default (state = initialState, action) => {
       ))
     case a.WALLET_ALLOWANCE:
       return state.allowances(state.allowances().update(action.allowance))
-      // return state.setAllowance(action.token.id(), action.spender, action.value)
+    // return state.setAllowance(action.token.id(), action.spender, action.value)
+    case a.WALLET_ADDRESS:
+      return state.addresses(state.addresses().update(action.address))
     case a.WALLET_BTC_ADDRESS:
       return state.btcAddress(action.address)
     case a.WALLET_BCC_ADDRESS:

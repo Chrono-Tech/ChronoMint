@@ -1,6 +1,7 @@
 import type Amount from 'models/Amount'
 import type TxModel from 'models/TxModel'
 import { address } from 'models/validator'
+import TokenModel from 'models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
@@ -44,7 +45,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (account, amount: Amount): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, fee): Promise {
     throw new Error('should be overridden')
   }
 

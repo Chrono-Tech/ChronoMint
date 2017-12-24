@@ -5,6 +5,7 @@ import ls from 'utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'
+import AddressesCollection from './AddressesCollection'
 
 export default class MainWallet extends abstractFetchingModel({
   address: null,
@@ -22,10 +23,15 @@ export default class MainWallet extends abstractFetchingModel({
   balances: new BalancesCollection(),
   allowances: new AllowanceCollection(),
   transactions: new TransactionsCollection(),
+  addresses: new AddressesCollection(),
 }) {
 
   address () {
     return ls.getAccount()
+  }
+
+  addresses (value) {
+    return this._getSet('addresses', value)
   }
 
   /**

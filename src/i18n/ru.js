@@ -664,6 +664,8 @@ export default {
         amount: 'Сумма',
         feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
         approve: 'Подтвердить',
+        revoke: 'Отозвать',
+        allowance: 'allowance',
         send: 'Отправить',
       },
       RewardsPeriod: {
