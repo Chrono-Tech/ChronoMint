@@ -164,11 +164,20 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string) => async () => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string) => async (dispatch, getState) => {
+  const currentAllowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
   try {
+    dispatch({
+      type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
+        amount,
+        spender: spender, //address
+        token: token.id(), // id
+      }).isFetching(true),
+    })
     const tokenDAO = tokenService.getDAO(token)
     await tokenDAO.approve(spender, amount)
   } catch (e) {
+    dispatch({ type: WALLET_ALLOWANCE, allowance: currentAllowance })
     // no rollback
     // eslint-disable-next-line
     console.error('approve error', e.message)

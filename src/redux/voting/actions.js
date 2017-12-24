@@ -6,7 +6,7 @@ import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } 
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
 
 export const POLLS_INIT = 'voting/INIT'
@@ -42,24 +42,18 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
 }
 
-const updateVoteLimit = () => async (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS)
-
+const updateVoteLimit = () => async (dispatch) => {
   const callback = async (token: TokenModel) => {
     const votingDAO = await contractsManagerDAO.getVotingDAO()
     const voteLimitInTIME = await votingDAO.getVoteLimit(token)
     dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
   }
 
-  if (tokens.item('TIME').isFetched()) {
-    await callback(tokens.item('TIME'))
-  } else {
-    tokenService.on(EVENT_NEW_TOKEN, async (token: TokenModel) => {
-      if (token.symbol() === 'TIME') {
-        await callback(token)
-      }
-    })
-  }
+  dispatch(subscribeOnTokens((token: TokenModel) => async () => {
+    if (token.symbol() === 'TIME') {
+      await callback(token)
+    }
+  }))
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
@@ -71,13 +65,15 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   const callback = (notice) => dispatch(watchPoll(notice))
 
   const dao = await contractsManagerDAO.getVotingDAO()
+  const votingActorDAO = await contractsManagerDAO.getVotingActorDAO()
+
   return await Promise.all([
     dispatch(updateVoteLimit()),
     dao.watchCreated(callback),
     dao.watchRemoved(callback),
     dao.watchActivated(callback),
     dao.watchEnded(callback),
-    dao.watchVoted(callback),
+    votingActorDAO.watchVoted(callback),
     // dao.watchUpdated(callback)
   ])
 }

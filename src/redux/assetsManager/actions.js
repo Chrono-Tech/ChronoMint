@@ -117,11 +117,11 @@ export const getManagersForAssetSymbol = async (symbol: string) => {
   return managersList.isFetched(true)
 }
 
-export const removeManager = (token: TokenModel, owner: OwnerModel) => async (dispatch, getState) => {
+export const removeManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner.address())
+    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
     return txHash
   }
   catch (e) {
@@ -130,11 +130,11 @@ export const removeManager = (token: TokenModel, owner: OwnerModel) => async (di
   }
 }
 
-export const addManager = (token: TokenModel, owner: OwnerModel) => async (dispatch, getState) => {
+export const addManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner.address())
+    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -296,7 +296,7 @@ export const getFee = async (token: TokenModel) => {
     const res = await feeInterfaceDAO.getFeePercent()
     tokenFee = tokenFee
       .fee(res / 100)
-      .withFee(true)
+      .withFee(!!res.toNumber())
 
   } catch (e) {
     // eslint-disable-next-line
@@ -321,7 +321,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
 
   const [ managersList, isReissuable, fee ] = await Promise.all([
     getManagersForAssetSymbol(token.symbol()),
-    checkIsReissuable(token, assets[token.address()]),
+    checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
   ])
 
