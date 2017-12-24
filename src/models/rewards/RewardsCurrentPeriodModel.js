@@ -6,6 +6,10 @@ export default class RewardsCurrentPeriodModel extends abstractFetchingModel({
   periodLength: 0,
   rewards: new Amount(0, null, false),
 }) {
+  index () {
+    return this.id() + 1
+  }
+
   periodLength (value) {
     return this._getSet('periodLength', value)
   }

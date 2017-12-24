@@ -25,4 +25,10 @@ export default class AssetHolderModel extends abstractFetchingModel({
   assets (value) {
     return this._getSet('assets', value)
   }
+
+  isDeposited () {
+    return this.assets().list().some((item) => {
+      return item.deposit().gt(0)
+    })
+  }
 }

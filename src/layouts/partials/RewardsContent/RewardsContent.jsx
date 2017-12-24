@@ -1,7 +1,6 @@
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import styles from 'layouts/partials/styles'
 import { FlatButton, RaisedButton } from 'material-ui'
-import Amount from 'models/Amount'
 import RewardsCollection from 'models/rewards/RewardsCollection'
 import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
@@ -22,11 +21,11 @@ function mapStateToProps (state) {
   const { isCBE } = state.get(DUCK_SESSION)
 
   const rewards: RewardsCollection = state.get(DUCK_REWARDS)
-  const asset = rewards.assets().first(true)
   return {
     rewards,
     currentPeriod: rewards.currentPeriod(),
-    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(asset.id()).deposit(),
+    // TODO @dkchv: hardcoded to TIME
+    isDeposited: state.get(DUCK_ASSETS_HOLDER).isDeposited(),
     isCBE,
   }
 }
@@ -45,7 +44,7 @@ export default class RewardsContent extends Component {
     rewards: PropTypes.instanceOf(RewardsCollection),
     currentPeriod: PropTypes.instanceOf(RewardsCurrentPeriodModel),
     isCBE: PropTypes.bool,
-    deposit: PropTypes.instanceOf(Amount),
+    isDeposited: PropTypes.bool,
     initRewards: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
     handleClosePeriod: PropTypes.func,
@@ -71,7 +70,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
-                  <span styleName='entry2'>{currentPeriod.id()}</span>
+                  <span styleName='entry2'>{currentPeriod.index()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
@@ -81,7 +80,7 @@ export default class RewardsContent extends Component {
               <div className='col-sm-1'>
                 <div styleName='alignRight'>
                   <div styleName='entries'>
-                    {!this.props.deposit.isZero()
+                    {this.props.isDeposited
                       ? (
                         <div styleName='entry'>
                           <span styleName='entry1'><Translate value={prefix('rewardsForYourAccountIs')} />:</span><br />
