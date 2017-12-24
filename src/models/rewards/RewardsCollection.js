@@ -34,4 +34,8 @@ export default class RewardsCollection extends abstractFetchingCollection({
   periodCount (value) {
     return this._getSet('periodCount', value)
   }
+
+  currentIndex () {
+    return this.size() + this.leftToFetch() + 1
+  }
 }

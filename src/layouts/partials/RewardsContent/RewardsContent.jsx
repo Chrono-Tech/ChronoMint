@@ -70,7 +70,7 @@ export default class RewardsContent extends Component {
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
-                  <span styleName='entry2'>{currentPeriod.index()}</span>
+                  <span styleName='entry2'>{rewards.currentIndex()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />

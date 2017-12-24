@@ -28,6 +28,10 @@ export default class AssetHolderModel extends abstractFetchingModel({
 
   isDeposited () {
     return this.assets().list().some((item) => {
+      // TODO @dkchv: why??
+      if (item.deposit() === null) {
+        return false
+      }
       return item.deposit().gt(0)
     })
   }

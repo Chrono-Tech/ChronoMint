@@ -4,6 +4,7 @@ import ProgressSection from 'components/dashboard/ProgressSection/ProgressSectio
 import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import { SHORT_DATE } from 'models/constants'
+import RewardsCollection from 'models/rewards/RewardsCollection'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import TokenModel from 'models/tokens/TokenModel'
 import moment from 'moment'
@@ -17,14 +18,22 @@ import { DUCK_REWARDS } from 'redux/rewards/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
+
 function prefix (token) {
   return `components.dashboard.RewardsPeriod.${token}`
 }
 
 function mapStateToProps (state) {
+  const rewards = state.get(DUCK_REWARDS)
   // TODO @dkchv: hardcoded to only one asset here
-  const asset = state.get(DUCK_REWARDS).assets().first(true)
+  // const asset = rewards.assets().first(true)
+  // const timeToken = state.get(DUCK_TOKENS).item('TIME')
+  // const asset = state.get(DUCK_ASSETS_HOLDER).assets.item(timeToken.address())
+  const asset = state.get(DUCK_ASSETS_HOLDER).assets().first(true)
+  console.log('--RewardsPeriod#mapStateToProps', asset)
+
   return {
+    rewards,
     locale: state.get(DUCK_I18N).locale,
     token: state.get(DUCK_TOKENS).getByAddress(asset.id()),
     deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(asset.id()).deposit(),
@@ -38,6 +47,7 @@ export default class RewardsPeriod extends PureComponent {
     locale: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     deposit: PropTypes.instanceOf(Amount),
+    rewards: PropTypes.instanceOf(RewardsCollection),
   }
 
   componentWillReceiveProps (newProps) {
@@ -45,19 +55,10 @@ export default class RewardsPeriod extends PureComponent {
   }
 
   render () {
-    const { token, deposit } = this.props
-    // const rewardsData: RewardsModel = this.props.rewardsData
+    const { token, deposit, rewards } = this.props
     const { period } = this.props
-    const symbol = token.symbol()
-    // const isOngoing = period.index() === rewardsData.lastPeriodIndex()
-    // const totalDividends = isOngoing
-    //   ? rewardsData.rewardsLeft()
-    //   : period.assetBalance()
-    // const revenue = period.userRevenue(totalDividends)
 
-    const totalDividends = 0
-    const revenue = 0
-    const isOngoing = true
+    console.log('--RewardsPeriod#render', +token.totalSupply())
 
     let progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
     if (!isFinite(progress) || period.periodLength() === 0) {
@@ -78,10 +79,7 @@ export default class RewardsPeriod extends PureComponent {
                 </div>
                 <div styleName='col2'>
                   <div styleName='status'>
-                    {isOngoing
-                      ? (<span styleName='badgeOrange'><Translate value={prefix('ongoing')} /></span>)
-                      : (<span styleName='badgeGreen'><Translate value={prefix('closed')} /></span>)
-                    }
+                    <span styleName='badgeGreen'><Translate value={prefix('closed')} /></span>
                   </div>
                 </div>
               </div>
@@ -104,18 +102,7 @@ export default class RewardsPeriod extends PureComponent {
                   <div styleName='row'>
                     <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
                       <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')} />: </span>
-                      <span styleName='entry2'>
-                        <TokenValue
-                          bold
-                          noRenderPrice
-                          value={deposit}
-                        />
-                      &nbsp;(
-                      <Translate
-                        value={prefix('percentOfTotalCount')}
-                        percent={period.totalDepositPercent(token.totalSupply())}
-                      />)
-                    </span>
+                      <span styleName='entry2'><TokenValue bold noRenderPrice value={deposit} />&nbsp;(<Translate value={prefix('percentOfTotalCount')} percent={period.totalDepositPercent(token.totalSupply())} />)</span>
                   </span>
                   </div>
                   <div styleName='row'>
@@ -148,30 +135,20 @@ export default class RewardsPeriod extends PureComponent {
                     <Translate value={prefix('dividendsAccumulatedForPeriod')} />:
                   </div>
                   <div styleName='row'>
-                    <div>
-                      {/*<TokenValue*/}
-                        {/*style={{ fontSize: '24px' }}*/}
-                        {/*value={totalDividends}*/}
-                        {/*symbol={symbol}*/}
-                      {/*/>*/}
-                    </div>
+                    <div><TokenValue value={period.assetBalance()} /></div>
                   </div>
                   <div styleName='row'>
                     <Translate value={prefix('yourApproximateRevenueForPeriod')} />:
                   </div>
                   <div styleName='row'>
                     <div>
-                      {/*<TokenValue*/}
-                        {/*style={{ fontSize: '24px' }}*/}
-                        {/*value={revenue}*/}
-                        {/*symbol={symbol}*/}
-                      {/*/>*/}
+                      <TokenValue value={period.userRevenue()} />
                     </div>
                   </div>
                 </div>
               </div>
               <div styleName='progress'>
-                <ProgressSection value={progress} />
+                <ProgressSection value={period.progress()} />
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@ class RewardsPeriodModel extends abstractModel({
   startDate: null,
   assetBalance: new Amount(0, null, false),
   uniqueShareholders: 0,
-  periodLength: null,
+  periodLength: 0,
   accountRewards: new Amount(0, null, false),
 }) {
   index () {
@@ -22,8 +22,10 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   totalDepositPercent (value: Amount): string {
-    const r = this.totalDeposit().div(value.div(100)).toString(10)
-    return isNaN(r) ? '0' : r
+    if (value.isZero()) {
+      return 0
+    }
+    return this.totalDeposit().div(value.div(100))
   }
 
   userDeposit (): Amount {
@@ -35,9 +37,13 @@ class RewardsPeriodModel extends abstractModel({
     return isNaN(r) ? '0' : r
   }
 
-  userRevenue (value): BigNumber {
-    const r = value.mul(this.userDeposit()).div(this.totalDeposit())
-    return isNaN(r.toString(10)) ? new BigNumber(0) : r
+  userRevenue (): BigNumber {
+    const assetBalance = this.assetBalance()
+    console.log('--RewardsPeriodModel#userRevenue', assetBalance.symbol())
+    if (this.totalDeposit().isZero()) {
+      return new Amount(0, assetBalance.symbol())
+    }
+    return assetBalance.mul(this.userDeposit()).div(this.totalDeposit())
   }
 
   assetBalance (): Amount {
@@ -75,6 +81,14 @@ class RewardsPeriodModel extends abstractModel({
 
   accountRewards (value) {
     return this._getSet('accountRewards', value)
+  }
+
+  progress () {
+    console.log('--RewardsPeriodModel#progress', this.periodLength(), this.daysPassed())
+    if (this.periodLength() === 0) {
+      return 100
+    }
+    return Math.round(100 * (this.daysPassed() / this.periodLength()))
   }
 }
 
