@@ -55,9 +55,9 @@ export class BitcoinDAO extends EventEmitter {
     return balances.balance
   }
 
-  async transfer (to, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
-      return await this._bitcoinProvider.transfer(to, amount, feeMultiplier * token.feeRate())
+      return await this._bitcoinProvider.transfer(from, to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e.message)

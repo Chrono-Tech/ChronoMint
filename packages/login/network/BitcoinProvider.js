@@ -3,10 +3,11 @@ import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 
 export class BitcoinProvider extends AbstractProvider {
-  constructor () {
+  constructor (selectNode, id) {
     super(...arguments)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
+    this._id = id
   }
 
   subscribe (engine) {
@@ -37,11 +38,11 @@ export class BitcoinProvider extends AbstractProvider {
     return { balance0, balance6 }
   }
 
-  async transfer (to, amount: BigNumber, feeRate: Number) {
+  async transfer (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, feeRate, utxos)
-    return await node.send(this.getAddress(), tx.toHex())
+    return await node.send(from, tx.toHex())
   }
 
   async onTransaction (tx) {
@@ -61,7 +62,7 @@ export class BitcoinProvider extends AbstractProvider {
   }
 }
 
-export const btcProvider = new BitcoinProvider(selectBTCNode)
-export const bccProvider = new BitcoinProvider(selectBCCNode)
-export const btgProvider = new BitcoinProvider(selectBTGNode)
-export const ltcProvider = new BitcoinProvider(selectLTCNode)
+export const btcProvider = new BitcoinProvider(selectBTCNode, 'Bitcoin')
+export const bccProvider = new BitcoinProvider(selectBCCNode, 'Bitcoin Cash')
+export const btgProvider = new BitcoinProvider(selectBTGNode, 'Bitcoin Gold')
+export const ltcProvider = new BitcoinProvider(selectLTCNode, 'Litecoin')

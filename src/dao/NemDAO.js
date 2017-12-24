@@ -76,7 +76,7 @@ export default class NemDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (to, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Nem transactions
   }
 

@@ -1,6 +1,7 @@
 import validator from 'models/validator'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
@@ -19,12 +20,15 @@ import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
+import AddressModel from 'models/wallet/AddressModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
+export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
 export const WALLET_BTC_ADDRESS = 'mainWallet/BTC_ADDRESS'
 export const WALLET_BCC_ADDRESS = 'mainWallet/BCC_ADDRESS'
 export const WALLET_BTG_ADDRESS = 'mainWallet/BTG_ADDRESS'
@@ -144,20 +148,32 @@ export const initMainWallet = () => async (dispatch, getState) => {
 
   dispatch(subscribeOnTokens(handleToken))
 
-  dispatch({ type: WALLET_BTC_ADDRESS, address: btcProvider.getAddress() })
-  dispatch({ type: WALLET_BCC_ADDRESS, address: bccProvider.getAddress() })
-  dispatch({ type: WALLET_BTG_ADDRESS, address: btgProvider.getAddress() })
-  dispatch({ type: WALLET_LTC_ADDRESS, address: ltcProvider.getAddress() })
-  dispatch({ type: WALLET_NEM_ADDRESS, address: nemProvider.getAddress() })
+  const providers = [
+    bccProvider,
+    btgProvider,
+    ltcProvider,
+    btcProvider,
+    nemProvider,
+    ethereumProvider,
+  ]
+  providers.map((provider) => {
+    dispatch({
+      type: WALLET_ADDRESS, address: new AddressModel({
+        id: provider.id(),
+        address: provider.getAddress(),
+      }),
+    })
+  })
 
   // TODO @dkchv: !!! review again
   dispatch(getAccountTransactions())
 }
 
-export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async () => {
+export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
+    const wallet: MainWalletModel = getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
-    await tokenDAO.transfer(recipient, amount, feeMultiplier)
+    await tokenDAO.transfer(wallet.addresses(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('transfer error', e.message)

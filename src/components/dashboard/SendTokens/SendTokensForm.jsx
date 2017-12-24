@@ -92,13 +92,13 @@ export default class SendTokensForm extends PureComponent {
         })
     }
 
-    if (newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) {
+    if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
   }
 
-  async checkIsContract (address) {
-    return await contractsManagerDAO.isContract(address)
+  checkIsContract (address): Promise {
+    return contractsManagerDAO.isContract(address)
   }
 
   handleTransfer = (values) => {
@@ -106,7 +106,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   handleApprove = (values) => {
-    if (this.props.allowance.amount().toNumber() > 0) {
+    if (this.props.allowance.amount().gt(0)) {
       values = values.set('amount', 0)
     }
     this.props.onSubmit(values.set('action', ACTION_APPROVE))
@@ -181,7 +181,7 @@ export default class SendTokensForm extends PureComponent {
   renderBody () {
     const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance, recipient } = this.props
     const { isContract } = this.state
-    const isApprove = allowance.amount().toNumber() <= 0
+    const isApprove = allowance.amount().lte(0)
 
     return (
       <div>
@@ -189,7 +189,7 @@ export default class SendTokensForm extends PureComponent {
           <img
             styleName='fromIcon'
             src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
-          /> {wallet.address()}
+          /> {wallet.addresses().item(token.blockchain()).address()}
         </div>
         <div>
           <Field
