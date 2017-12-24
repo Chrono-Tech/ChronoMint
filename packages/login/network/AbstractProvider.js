@@ -1,6 +1,6 @@
 import EventEmitter from 'events'
 import type { BitcoinEngine } from './BitcoinEngine'
-import type NemEngine from './NemEngine'
+import type { NemEngine } from './NemEngine'
 
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
