@@ -1,6 +1,7 @@
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
 import hdKey from 'ethereumjs-wallet/hdkey'
+import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import * as NEM from './nem'
@@ -18,6 +19,7 @@ const COIN_TYPE_BTG_TESTNET = 16
 
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
+    const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(mnemonic)
     const btc = network && network.bitcoin && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoinCash])
@@ -26,6 +28,7 @@ class MnemonicProvider {
     const nem = network && network.nem && NemWallet.fromMnemonic(mnemonic, NEM.Network.data[network.nem])
 
     return {
+      networkCode,
       ethereum: new EthereumEngine(ethereumWallet, network, url),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
