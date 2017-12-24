@@ -25,10 +25,12 @@ function mapStateToProps (state) {
   const voting = state.get(DUCK_VOTING)
   const tokens = state.get(DUCK_TOKENS)
 
+  const timeToken = tokens.item('TIME')
+
   return {
     list: voting.list(),
     tokens,
-    deposit: state.get(DUCK_ASSETS_HOLDER).deposit(),
+    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(timeToken.address()).deposit(),
     statistics: getStatistics(voting),
     isCBE: state.get(DUCK_SESSION).isCBE,
     isFetched: voting.isFetched(),
