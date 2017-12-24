@@ -3,9 +3,12 @@ import ProfileModel from '../../models/ProfileModel'
 
 const initialState = {
   account: null,
+  provider: null,
+  network: null,
   isSession: false,
   profile: new ProfileModel(),
   isCBE: false,
+  lastURL: null,
 }
 
 export default (state = initialState, action) => {
@@ -15,10 +18,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         account: action.account,
+        provider: action.provider,
+        network: action.network,
         isSession: true,
+        lastURL: action.lastURL,
       }
     case types.SESSION_DESTROY: {
-      return initialState
+      return {
+        ...initialState,
+        lastURL: action.lastURL,
+      }
     }
     // profile CRUD
     case types.SESSION_PROFILE:

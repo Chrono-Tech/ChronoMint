@@ -1,6 +1,5 @@
 import moment from 'moment'
 import { setLocale } from 'platform/i18n'
-import ls from 'utils/LocalStorage'
 import ipfs from 'utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
@@ -34,7 +33,6 @@ export const showConfirmTxModal = () => (dispatch) => new Promise((resolve) => {
 
 export const changeMomentLocale = (locale, dispatch) => {
   moment.locale(locale)
-  ls.setLocale(locale)
   dispatch(setLocale(locale))
 }
 

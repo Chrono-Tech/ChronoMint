@@ -140,25 +140,16 @@ describe('network actions', () => {
         accounts,
       },
     }))
-    createSession({
-      account: accounts[ 0 ],
-      provider: LOCAL_ID,
-      network: LOCAL_ID,
-      dispatch: store.dispatch,
-    })
+    store.dispatch(
+      createSession({
+        account: accounts[ 0 ],
+        provider: LOCAL_ID,
+        network: LOCAL_ID,
+      })
+    )
     expect(store.getActions()).toEqual([
       { type: SESSION_CREATE, account: accounts[ 0 ] },
     ])
-  })
-
-  it('should not create session', () => {
-    let error = null
-    try {
-      createSession()
-    } catch (e) {
-      error = e
-    }
-    expect(error).not.toBeNull()
   })
 
   it('should destroy session', async () => {
@@ -168,16 +159,17 @@ describe('network actions', () => {
         accounts,
       },
     }))
-    createSession({
-      account: accounts[ 0 ],
-      provider: LOCAL_ID,
-      network: LOCAL_ID,
-      dispatch: store.dispatch,
-    })
+    store.dispatch(
+      createSession({
+        account: accounts[ 0 ],
+        provider: LOCAL_ID,
+        network: LOCAL_ID,
+      })
+    )
     store.clearActions()
 
     // test
-    destroySession({ dispatch: store.dispatch })
+    store.dispatch(destroySession())
     expect(store.getActions()).toEqual([
       { type: SESSION_DESTROY },
     ])

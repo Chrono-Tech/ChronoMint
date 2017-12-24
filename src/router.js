@@ -16,13 +16,13 @@ import {
   VotingPage,
   WalletPage,
 } from 'pages/lib'
-import { store, history } from './redux/configureStore'
-import ls from './utils/LocalStorage'
+import { store, persistor, history } from './redux/configureStore'
 import './styles/themes/default.scss'
 
-const requireAuth = (nextState, replace) => {
-  if (!ls.isSession()) {
-    // pass here only for Test RPC session.
+const requireAuth = (store) => (nextState, replace) => {
+  const session = store.getState().get('session')
+  // pass here only for Test RPC session.
+  if (!session.isSession) {
     // Others through handle clicks on loginPage
     return replace({
       pathname: '/',
@@ -45,7 +45,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-      <Route component={Markup} onEnter={requireAuth}>
+      <Route component={Markup} onEnter={requireAuth(store)}>
         <Route path='wallet' component={WalletPage} />
         <Route path='dashboard' component={DashboardPage} />
         <Route path='exchange' component={ExchangePage} />

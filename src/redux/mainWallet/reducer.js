@@ -27,6 +27,8 @@ export default (state = initialState, action) => {
         action.token.id(),
         state.tokens().get(action.token.id()).setAllowance(action.spender, action.value)
       ))
+    case a.WALLET_ADDRESS:
+      return state.address(action.address)
     case a.WALLET_TIME_DEPOSIT:
       // TODO @dkchv: !!! action.isCredited
       return state.timeDeposit(action.amount)

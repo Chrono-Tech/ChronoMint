@@ -17,6 +17,7 @@ import { addMarketToken } from '../market/action'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
+export const WALLET_ADDRESS = 'mainWallet/ADDRESS'
 export const WALLET_TOKENS_FETCH = 'mainWallet/TOKENS_FETCH'
 export const WALLET_TOKENS = 'mainWallet/TOKENS'
 export const WALLET_BALANCE = 'mainWallet/BALANCE'

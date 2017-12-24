@@ -3,12 +3,12 @@ import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
+import { persistStore, autoRehydrate } from 'redux-persist-immutable'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import ls from 'utils/LocalStorage'
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
@@ -78,6 +78,7 @@ const configureStore = () => {
 
   // noinspection JSUnresolvedVariable,JSUnresolvedFunction
   const createStoreWithMiddleware = compose(
+    autoRehydrate(),
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine),
@@ -94,20 +95,26 @@ const configureStore = () => {
   )
 }
 
+export const DUCK_I18N = 'i18n'
+
 export const store = configureStore()
+export const persistor = persistStore(store, {
+  key: 'root',
+  whitelist: [
+    DUCK_I18N
+  ]
+})
 store.dispatch(globalWatcher())
 
 export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState(),
 })
 
-export const DUCK_I18N = 'i18n'
-
 // syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
 I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
 I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
-const locale = ls.getLocale()
+const locale = store.getState().get(DUCK_I18N).locale || 'en'
 // set moment locale
 moment.locale(locale)
 

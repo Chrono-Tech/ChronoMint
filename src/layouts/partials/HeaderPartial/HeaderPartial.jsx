@@ -22,7 +22,6 @@ import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
 import Moment from 'components/common/Moment'
 import { FULL_DATE }  from 'models/constants'
-import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
 
@@ -472,7 +471,7 @@ function mapStateToProps (state) {
     noticesList: notifier.list,
     unreadNotices: notifier.unreadNotices,
     transactionsList: watcher.pendingTxs,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    network: getNetworkById(session.network, session.provider, true).name,
     isTokensLoaded: !wallet.isFetching(),
     isCBE: session.isCBE,
     tokens: wallet.tokens(),
