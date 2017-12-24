@@ -108,8 +108,8 @@ export default class NemDAO extends EventEmitter {
   async watchBalance () {
     this._nemProvider.addListener(EVENT_BALANCE, async ({ /* account, time,*/ balance }) => {
       this.emit(EVENT_UPDATE_BALANCE, this._mosaic
-        ? balance.balance
-        : balance.mosaics[ this._mosaic ],
+        ? balance.balance.value
+        : balance.mosaics[ this._mosaic ].value,
       )
     })
   }

@@ -79,6 +79,11 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     return map
   }
 
+  // TODO @dkchv: !!! merge fix
+  //
+  // async _setupNemTokens () {
+  //   if (nemProvider.isInitialized()) {
+
   async getTokenAddressBySymbol (symbol: string): string | null {
     if (!symbol) {
       return null

@@ -94,7 +94,7 @@ export default class NemMiddlewareNode extends AbstractNode {
         balance: new BigNumber(balance.value),
         mosaics: Object.entries(mosaics).reduce((t, [k, v]) => ({
           ...t,
-          [k]: new BigNumber(v),
+          [k]: new BigNumber(v.value),
         }), {}),
       }
     } catch (e) {
