@@ -15,7 +15,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
-import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import MainWallet from 'models/wallet/MainWalletModel'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -95,6 +95,11 @@ export default class SendTokensForm extends PureComponent {
     if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
+
+    const firstBalance = newProps.wallet.balances().first()
+    if (!newProps.token.isFetched() && firstBalance) {
+      this.props.dispatch(change(FORM_SEND_TOKENS, 'symbol', firstBalance.id()))
+    }
   }
 
   checkIsContract (address): Promise {
@@ -148,13 +153,15 @@ export default class SendTokensForm extends PureComponent {
                   fullWidth
                   {...styles}
                 >
-                  {balances.items().map((balance) => (
-                    <MenuItem
-                      key={balance.id()}
-                      value={balance.id()}
-                      primaryText={balance.symbol()}
-                    />
-                  ))}
+                  {balances
+                    .sortBy(balance => balance.symbol())
+                    .map((balance) => (
+                      <MenuItem
+                        key={balance.id()}
+                        value={balance.id()}
+                        primaryText={balance.symbol()}
+                      />
+                    ))}
                 </Field>
               )
             }
