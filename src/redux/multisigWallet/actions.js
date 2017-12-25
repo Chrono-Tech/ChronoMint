@@ -59,7 +59,7 @@ const fetchBalanceForToken = (token, wallet) => async (dispatch) => {
 
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
-    .on(EVENT_NEW_MS_WALLET, (wallet: MultisigWalletModel) => {
+    .on(EVENT_NEW_MS_WALLET, async (wallet: MultisigWalletModel) => {
       const updatedWallet = wallet.transactionHash(null).isPending(false)
       dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
 
@@ -81,7 +81,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         })))
       }
 
-      watchMultisigWallet(updatedWallet)
+      await watchMultisigWallet(updatedWallet)
 
       dispatch(subscribeOnTokens((token) => fetchBalanceForToken(token, wallet)))
       dispatch(selectWalletIfOne())
@@ -104,19 +104,17 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       dispatch(updateWallet(wallet.owners(owners)))
     })
     .on(EVENT_MULTI_TRANSACTION, (walletId, multisigTransactionModel) => {
-      let wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const tokens = getState().get(DUCK_TOKENS)
+      const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
       const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
-      let token: TokenModel = tokens.item(multisigTransactionModel.symbol())
+      dispatch(updateWallet(wallet.pendingTxList(pendingTxList)))
+
+      const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
       if (!token.isFetched()) {
         // eslint-disable-next-line
         console.error('token not found', multisigTransactionModel.symbol())
         return
       }
-      token = token.updateBalance(false, multisigTransactionModel.value())
-
-      // TODO @dkchv: !!!
-      // dispatch(updateWallet(wallet.pendingTxList(pendingTxList).tokens(tokens.set(token.id(), token))))
+      dispatch(fetchBalanceForToken(token, wallet))
     })
     .on('SingleTransact', (walletId, result) => {
       // eslint-disable-next-line
@@ -149,8 +147,8 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
     })
     .on(EVENT_DEPOSIT, (walletId, tokenId, amount) => {
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const token: TokenModel = wallet.tokens().get(tokenId)
-      dispatch(updateWallet(wallet.tokens(wallet.tokens().set(token.id(), token.updateBalance(true, amount)))))
+      const token = getState().get(DUCK_TOKENS).item(tokenId)
+      dispatch(fetchBalanceForToken(token, wallet))
     })
 }
 

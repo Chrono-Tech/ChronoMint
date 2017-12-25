@@ -26,10 +26,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('owners')
   }
 
-  /**
-   * @deprecated
-   * use addresses() collection
-   */
+  // shortcut for eth-address
   address () {
     return this.get('address')
   }
@@ -54,6 +51,9 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.pendingTxList().size()
   }
 
+  /**
+   * @deprecated
+   */
   tokens (value) {
     return this._getSet('tokens', value)
   }

@@ -105,26 +105,27 @@ export default class TokenModel extends abstractFetchingModel({
     return amountBN.div(Math.pow(10, this.decimals()))
   }
 
+  /**
+   * @deprecated
+   */
   balance (): Amount {
     return isNaN(this.get('balance')) ? new Amount(0) : this.get('balance')
   }
 
+  /**
+   * @deprecated
+   */
   updateBalance (isCredited, amount: Amount): TokenModel {
     const newBalance = this.balance()[ isCredited ? 'plus' : 'minus' ](amount)
     return this.set('balance', newBalance)
   }
 
+  /**
+   * @deprecated
+   */
   setBalance (newBalance: Amount): TokenModel {
     return this.set('balance', newBalance)
   }
-
-  // allowance (spender): Amount {
-  //   return this.get('allowance').get(spender) || new Amount(0)
-  // }
-
-  // setAllowance (spender, value): TokenModel {
-  //   return this.set('allowance', this.get('allowance').set(spender, value))
-  // }
 
   url () {
     return this.get('url')
