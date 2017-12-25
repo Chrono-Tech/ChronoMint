@@ -33,9 +33,9 @@ export class BitcoinProvider extends AbstractProvider {
     return node.getTransactionInfo(txid)
   }
 
-  async getTransactionsList () {
+  async getTransactionsList (address) {
     const node = this._selectNode(this._engine)
-    return node.getTransactionsList()
+    return node.getTransactionsList(address)
   }
 
   async getFeeRate () {

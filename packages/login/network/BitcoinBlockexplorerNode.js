@@ -5,7 +5,7 @@ import { DECIMALS } from './BitcoinEngine'
 export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getTransactionInfo (txid) {
     try {
-      const res = await this._api.get(`/tx/${txid}`)
+      const res = await this._api.get(`tx/${txid}`)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
@@ -13,9 +13,20 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
     }
   }
 
+  async getTransactionsList (address) {
+    try {
+      const res = await this._api.get(`addrs/${address}/txs`)
+      console.log(res.data)
+      return []
+    } catch (e) {
+      this.trace(`getTransactionsList ${address} failed`, e)
+      throw e
+    }
+  }
+
   async getFeeRate () {
     try {
-      const res = await this._api.get(`/utils/estimatefee?nbBlocks=2`)
+      const res = await this._api.get(`utils/estimatefee?nbBlocks=2`)
       const rate = res.data['2']
       return rate > 0
         ? DECIMALS * rate / 1024
@@ -29,8 +40,8 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getAddressInfo (address) {
     try {
       const [ confirmed, unconfirmed ] = await Promise.all([
-        this._api.get(`/addr/${address}/balance`),
-        this._api.get(`/addr/${address}/unconfirmedBalance`),
+        this._api.get(`addr/${address}/balance`),
+        this._api.get(`addr/${address}/unconfirmedBalance`),
       ])
       const [ balanceSat, unconfirmedBalanceSat ] = [confirmed.data, unconfirmed.data]
       return {
@@ -46,7 +57,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   async getAddressUTXOS (address) {
     try {
-      const res = await this._api.get(`/addr/${address}/utxo`)
+      const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -59,7 +70,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const balances = await this.getAddressInfo(account)
       const params = new URLSearchParams()
       params.append('rawtx', rawtx)
-      const res = await this._api.post('/tx/send', params)
+      const res = await this._api.post('tx/send', params)
       const tx = await this.getTransactionInfo(res.data.txid)
       const model = this._createTxModel(tx, account)
       setImmediate(() => {

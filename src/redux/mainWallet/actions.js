@@ -226,10 +226,12 @@ let txsCache = []
 
 export const getAccountTransactions = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
+  // TODO @ipavlenk: It seems it is wrong tokens source, odd code, there is only ETH token
   const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  const cacheId = tokens.map((v: TokenModel) => v.symbol()).join(',')
+  // TODO: For the reason unknown we have tokens with undefined symbols)
+  const cacheId = tokens.map((v: TokenModel) => v.symbol()).filter((s) => s != null).join(',')
 
   const reset = lastCacheId && cacheId !== lastCacheId
   lastCacheId = cacheId
@@ -243,11 +245,13 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
     for (let token: TokenModel of tokens) {
-      const tokenDAO = tokenService.getDAO(token.id())
-      if (reset) {
-        tokenDAO.resetFilterCache()
+      if (token.symbol()) {
+        const tokenDAO = tokenService.getDAO(token.id())
+        if (reset) {
+          tokenDAO.resetFilterCache()
+        }
+        promises.push(tokenDAO.getTransfer(getTransferId, account))
       }
-      promises.push(tokenDAO.getTransfer(getTransferId, account))
     }
     const result = await Promise.all(promises)
 
