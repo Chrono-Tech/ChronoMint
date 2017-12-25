@@ -10,7 +10,7 @@ export default class Amount extends BigNumber {
   symbol (value) {
     if (value) {
       this._symbol = value
-      return this
+      return new Amount(this.toNumber(), this.symbol(), this.isLoaded())
     }
     return this._symbol
   }
