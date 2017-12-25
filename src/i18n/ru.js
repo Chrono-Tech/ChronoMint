@@ -605,9 +605,9 @@ export default {
     VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Голос: лимит активного голосования достигнут',
     VOTE_UNABLE_TO_ACTIVATE_POLL: 'Голос: не могу активировать голосование',
 
-    REWARD_NOT_FOUND: 'Награда: не найдена',
-    REWARD_INVALID_PARAMETER: 'Награда: неправильный параметр запроса',
-    REWARD_INVALID_INVOCATION: 'Награда: неправильный вызов',
+    REWARD_NOT_FOUND: 'Бонус: не найден',
+    REWARD_INVALID_PARAMETER: 'Бонус: неправильный параметр запроса',
+    REWARD_INVALID_INVOCATION: 'Бонус: неправильный вызов',
     REWARD_INVALID_STATE: 'Бонусы: неправильное состояние',
     REWARD_INVALID_PERIOD: 'Бонусы: неправильный период',
     REWARD_NO_REWARDS_LEFT: 'Бонусы: не осталось бонусов',
@@ -683,7 +683,7 @@ export default {
         send: 'Отправить',
       },
       RewardsPeriod: {
-        rewardsPeriodIndex: 'Наградной период #%{index}',
+        rewardsPeriodIndex: 'Бонусный период #%{index}',
         ongoing: 'Продолжается',
         closed: 'Закрыт',
         startDate: 'Дата начала',
