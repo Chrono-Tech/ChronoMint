@@ -3,14 +3,17 @@ import classnames from 'classnames'
 import { TokenValue } from 'components'
 import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import Amount from 'models/Amount'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { DUCK_EXCHANGE } from 'redux/exchange/actions'
 import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
@@ -23,10 +26,12 @@ export const FORM_CREATE_EXCHANGE = 'createExchangeForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CREATE_EXCHANGE)
-  const exchange = state.get(DUCK_EXCHANGE)
+  const balances = state.get(DUCK_MAIN_WALLET).balances()
+  const tokens = state.get(DUCK_TOKENS)
   return {
     token: selector(state, 'token'),
-    tokens: exchange.tokens(),
+    tokens,
+    balances,
   }
 }
 
@@ -48,11 +53,13 @@ export default class AddExchangeForm extends PureComponent {
     onSubmitFunc: PropTypes.func,
     onSubmitSuccess: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
+    balances: PropTypes.instanceOf(BalancesCollection),
     ...formPropTypes,
   }
 
   render () {
     const { token } = this.props
+    const tokenBalance = token && this.props.balances.item(token.id())
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='dialogHeader'>
@@ -74,8 +81,9 @@ export default class AddExchangeForm extends PureComponent {
               <div styleName={classnames('tokenName', 'sm-hide')}>{token.symbol()}</div>
               <div styleName='balanceSubTitle'><Translate value={prefix('availableExchangeBalance')} /></div>
               <TokenValue
-                value={token.balance()}
-                symbol={token.symbol()}
+                value={tokenBalance && tokenBalance.amount().isLoaded()
+                  ? tokenBalance.amount()
+                  : new Amount(0, token.symbol())}
               />
             </div>
           }

@@ -24,9 +24,13 @@ export class UserMonitorService extends EventEmitter {
     // remove old Listeners
     this._removeListeners()
 
+    // prod only
+    if (process.env.NODE_ENV === 'development') {
+      return
+    }
+
     document.addEventListener('mousemove', this._listener)
     document.addEventListener('keypress', this._listener)
-
     this._timer = setTimeout(this._sendIdleSignal, this._idleInterval)
   }
 

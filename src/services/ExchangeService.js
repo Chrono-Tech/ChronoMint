@@ -1,7 +1,10 @@
-import TokenModel from 'models/TokenModel'
+import tokenService from 'services/TokenService'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeManagerDAO from 'dao/ExchangeManagerDAO'
 import { ExchangeDAO } from 'dao/ExchangeDAO'
 import EventEmitter from 'events'
+import { EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
+import TxModel from 'models/TxModel'
 
 class ExchangeService extends EventEmitter {
 
@@ -11,15 +14,15 @@ class ExchangeService extends EventEmitter {
   }
 
   getExchangeManagerDAO (address) {
-    if (!this._cache[address]) {
-      this._cache[address] = new ExchangeManagerDAO(address)
+    if (!this._cache[ address ]) {
+      this._cache[ address ] = new ExchangeManagerDAO(address)
     }
-    return this._cache[address]
+    return this._cache[ address ]
   }
 
   getExchangeDAO (address) {
-    this._cache[address] = new ExchangeDAO(address)
-    return this._cache[address]
+    this._cache[ address ] = new ExchangeDAO(address)
+    return this._cache[ address ]
   }
 
   subscribeToCreateExchange (account) {
@@ -33,10 +36,10 @@ class ExchangeService extends EventEmitter {
   }
 
   subscribeToExchange (address) {
-    if (this._cache[address]) return null
+    if (this._cache[ address ]) return null
 
     // const dao = token.dao()
-    // await dao.watchTransfer((notice) => dispatch(watchTransfer(notice)))
+    // await dao.watchTransfer(account, (notice) => dispatch(watchTransfer(notice)))
 
     const dao = this.getExchangeDAO(address)
 
@@ -72,16 +75,17 @@ class ExchangeService extends EventEmitter {
   }
 
   subscribeToToken (token: TokenModel, exchange: string) {
-    if (!token || this._cache[`${token.id()}-${exchange}`]) return null
+    if (!token || this._cache[ `${token.id()}-${exchange}` ]) return null
 
-    this._cache[`${token.id()}-${exchange}`] = token.dao()
-    const dao = token.dao()
+    const tokenDAO = tokenService.getDAO(token.id())
+    this._cache[ `${token.id()}-${exchange}` ] = tokenDAO
 
-    return Promise.all([
-      dao.watchTransfer((result) => {
-        this.emit('Transfer', result.tx())
-      }, { account: exchange }),
-    ])
+    tokenDAO
+      .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+        if (tx.to() === exchange) {
+          this.emit('Transfer', tx)
+        }
+      })
   }
 }
 

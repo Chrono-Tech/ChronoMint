@@ -8,6 +8,7 @@ export class NemProvider extends AbstractProvider {
     super(...arguments)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
+    this._id = 'NEM'
   }
 
   subscribe (engine) {
@@ -34,7 +35,7 @@ export class NemProvider extends AbstractProvider {
 
   getMosaics () {
     const node = this._selectNode(this._engine)
-    return node.getMosaics()
+    return node.getMosaics() || []
   }
 
   async getAccountBalances (mosaic = null) {
@@ -42,11 +43,11 @@ export class NemProvider extends AbstractProvider {
     const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
     return mosaic === null
       ? { balance }
-      : { balance: mosaics[mosaic] }
+      : { balance: mosaics[ mosaic ] }
   }
 
   // eslint-disable-next-line
-  async transfer (to, amount: BigNumber, feeRate: Number) {
+  async transfer (from: string, to: string, amount: BigNumber, feeRate: Number) {
     // TODO @ipavlenko: Implement for XEM and Mosaics
     throw new Error('Not implemented')
   }

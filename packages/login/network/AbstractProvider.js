@@ -11,11 +11,16 @@ export default class AbstractProvider extends EventEmitter {
     this._handleBalance = (balance) => this.onBalance(balance)
   }
 
+  id () {
+    return this._id
+  }
+
   isInitialized () {
     // Initialized by design if and only if it has an associated engine
     return !!this._engine
 
   }
+
   setEngine (engine: NemEngine | BitcoinEngine) {
     if (this._engine) {
       this.unsubscribe(this._engine)

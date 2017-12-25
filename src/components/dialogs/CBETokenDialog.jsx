@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import { validate } from 'models/TokenModel'
+import { validate } from 'models/tokens/TokenModel'
 import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
@@ -49,7 +49,8 @@ export default class CBETokenDialog extends PureComponent {
     isFetching: PropTypes.bool,
     handleAddressChange: PropTypes.func,
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (

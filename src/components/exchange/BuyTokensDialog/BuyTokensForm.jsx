@@ -7,14 +7,18 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import Immutable from 'immutable'
 import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, isInvalid, reduxForm } from 'redux-form/immutable'
-import { approveTokensForExchange, DUCK_EXCHANGE, getTokensAllowance } from 'redux/exchange/actions'
+import { approveTokensForExchange, getTokensAllowance } from 'redux/exchange/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import TokenModel from 'models/tokens/TokenModel'
+import Amount from 'models/Amount'
 import './BuyTokensDialog.scss'
 import validate from './validate'
 
@@ -25,12 +29,14 @@ function prefix (token) {
 export const FORM_EXCHANGE_BUY_TOKENS = 'ExchangeTokensForm'
 
 function mapStateToProps (state) {
-  const exchangeState = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
   const invalidSelector = isInvalid(FORM_EXCHANGE_BUY_TOKENS)
+  const wallet = state.get(DUCK_MAIN_WALLET)
   return {
-    tokens: exchangeState.tokens(),
-    usersTokens: state.get(DUCK_MAIN_WALLET).tokens(),
+    tokens,
+    balances: wallet.balances(),
+    allowances: wallet.allowances(),
     buy: selector(state, 'buy'),
     sell: selector(state, 'sell'),
     formInvalid: invalidSelector(state),
@@ -45,24 +51,28 @@ const onSubmit = (values) => {
 @reduxForm({ form: FORM_EXCHANGE_BUY_TOKENS, validate, onSubmit })
 export default class BuyTokensForm extends React.PureComponent {
   static propTypes = {
+    exchangeToken: PropTypes.instanceOf(TokenModel),
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
     filter: PropTypes.instanceOf(Immutable.Map),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
-    usersTokens: PropTypes.instanceOf(Immutable.Map),
+    balances: PropTypes.instanceOf(BalancesCollection),
     dispatch: PropTypes.func,
     ...formPropTypes,
   }
 
   componentDidMount () {
-    this.props.usersTokens.get(this.props.exchange.symbol()) &&
+    this.props.balances.item(this.props.exchangeToken.id()) &&
     !this.props.isBuy &&
     this.props.dispatch(getTokensAllowance(this.props.exchange))
   }
 
   handleSetPrice = (e) => {
+    const ethToken = this.props.tokens.item('ETH')
     let value = e.target.value
-    const price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
+    let price = this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()
+    price = ethToken.removeDecimals(price)
+
     if (e.target.name === 'buy') {
       this.props.dispatch(change(FORM_EXCHANGE_BUY_TOKENS, 'sell', new BigNumber(parseFloat(value) || 0).mul(price)))
     } else {
@@ -71,29 +81,32 @@ export default class BuyTokensForm extends React.PureComponent {
   }
 
   handleApprove = () => {
-    const allowance = this.props.usersTokens.get(this.props.exchange.symbol())
-      ? this.props.usersTokens.get(this.props.exchange.symbol()).allowance(this.props.exchange.address())
-      : 0
-    const token = this.props.usersTokens.get(this.props.exchange.symbol())
+    const token = this.props.tokens.item(this.props.exchangeToken.id())
+    const allowance = this.props.allowances.item(this.props.exchange.address(), token.id()).amount()
 
     if (allowance > 0) {
-      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new BigNumber(0)))
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new Amount(0, 'ETH')))
     } else {
-      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, this.props.buy))
+      this.props.dispatch(approveTokensForExchange(this.props.exchange, token, new Amount(token.addDecimals(this.props.buy), token.symbol())))
     }
   }
 
   render () {
     let showWarningMessage = false
-    if (!this.props.usersTokens.get(this.props.exchange.symbol())) {
+    if (!this.props.balances.item(this.props.exchangeToken.id())) {
       showWarningMessage = true
     }
-    const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
-    const ethToken = this.props.usersTokens.get('ETH')
+    const exchangeToken = this.props.tokens.item(this.props.exchange.symbol())
+    const ethToken = this.props.tokens.item('ETH')
 
-    const allowance = this.props.usersTokens.get(this.props.exchange.symbol())
-      ? this.props.usersTokens.get(this.props.exchange.symbol()).allowance(this.props.exchange.address())
-      : 0
+    const allowance = this.props.allowances.item(this.props.exchange.address(), exchangeToken.id()).amount()
+
+    const price = new Amount(
+      this.props.isBuy
+        ? this.props.exchange.sellPrice()
+        : this.props.exchange.buyPrice(),
+      ethToken.symbol(),
+    )
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
         <div styleName='row'>
@@ -115,8 +128,7 @@ export default class BuyTokensForm extends React.PureComponent {
               <div styleName='label'><Translate value={prefix('price')} />:</div>
               <div>
                 <TokenValue
-                  value={this.props.isBuy ? this.props.exchange.sellPrice() : this.props.exchange.buyPrice()}
-                  symbol={ethToken.symbol()}
+                  value={price}
                 />
               </div>
             </div>
@@ -124,8 +136,10 @@ export default class BuyTokensForm extends React.PureComponent {
               <div styleName='label'><Translate value={prefix('tradeLimits')} />:</div>
               <div>
                 <TokenValue
-                  value={this.props.isBuy ? this.props.exchange.assetBalance() : this.props.exchange.ethBalance()}
-                  symbol={this.props.isBuy ? exchangeToken.symbol() : ethToken.symbol()}
+                  value={new Amount(
+                    this.props.isBuy ? this.props.exchange.assetBalance() : this.props.exchange.ethBalance(),
+                    this.props.isBuy ? exchangeToken.symbol() : ethToken.symbol(),
+                  )}
                 />
               </div>
             </div>
@@ -134,10 +148,7 @@ export default class BuyTokensForm extends React.PureComponent {
               <div styleName='property'>
                 <div styleName='label'><Translate value={prefix('allowance')} />:</div>
                 <div>
-                  <TokenValue
-                    value={allowance}
-                    symbol={exchangeToken.symbol()}
-                  />
+                  <TokenValue value={allowance} />
                 </div>
               </div>
             }
@@ -219,7 +230,7 @@ export default class BuyTokensForm extends React.PureComponent {
                     </div>
                     }
                     <RaisedButton
-                      disabled={!this.props.valid || (!this.props.isBuy && allowance.toString() !== this.props.buy) || showWarningMessage}
+                      disabled={!this.props.valid || (!this.props.isBuy && exchangeToken.removeDecimals(allowance).toString() !== this.props.buy) || showWarningMessage}
                       type='submit'
                       label={<span styleName='buttonLabel'><Translate value={prefix('sendRequest')} /></span>}
                       {...globalStyles.buttonRaisedMultyLine}

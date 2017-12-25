@@ -6,7 +6,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
-
 import './AccountSelector.scss'
 
 const mapStateToProps = (state) => ({
@@ -47,6 +46,10 @@ class AccountSelector extends PureComponent {
     })
   }
 
+  handleSelect = () => {
+    this.props.onSelectAccount(this.props.selectedAccount)
+  }
+
   handleChange = (event, index, value) => {
     this.props.selectAccount(value)
   }
@@ -74,7 +77,7 @@ class AccountSelector extends PureComponent {
               /> : <Translate value='AccountSelector.selectAddress' />}
               primary
               fullWidth
-              onTouchTap={() => this.props.onSelectAccount()}
+              onTouchTap={this.handleSelect}
               disabled={!selectedAccount || isLoading}
               style={styles.primaryButton}
               labelStyle={styles.primaryButtonLabel}

@@ -5,9 +5,6 @@ import moment from 'moment'
 import uniqid from 'uniqid'
 import { abstractModel } from './AbstractModel'
 
-/** @see OperationModel.summary */
-export const ARGS_TREATED = '__treated'
-
 class TxExecModel extends abstractModel({
   contract: '',
   func: '',

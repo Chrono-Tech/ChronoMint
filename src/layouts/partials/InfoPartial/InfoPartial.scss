@@ -1,6 +1,8 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
+$itemWidth: 280px;
+
 .root {
   margin: -80px 10px 0px 10px;
   height: 260px;
@@ -15,7 +17,24 @@
   margin: 0 auto;
   display: flex;
   overflow: hidden;
-  width: 280px;
+  width: $itemWidth;
+
+  @media only screen and (min-width: 690px) {
+    margin: 0;
+    width: $itemWidth * 2;
+  }
+
+  @media only screen and (min-width: $media-size-md) {
+    width: $itemWidth * 3;
+  }
+
+  @media only screen and (min-width: 1344px) {
+    width: $itemWidth * 4;
+  }
+
+  @media only screen and (min-width: 1624px) {
+    width: $itemWidth * 5;
+  }
 }
 
 .gallery {
@@ -26,78 +45,6 @@
   transform: translateX(0);
 }
 
-.arrowLeft {
-  z-index: 200;
-  @include position(absolute, -60px, 50%, auto, auto);
-}
-
-.arrowRight {
-  z-index: 200;
-  @include position(absolute, -60px, auto, auto, 50%);
-}
-
-.arrowAction {
-  display: block;
-  margin: 16px 4px 4px 4px;
-  padding: 4px;
-  height: 40px;
-  color: $color-white;
-  text-decoration: none;
-  opacity: 0.6;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 50%;
-
-  :global(.material-icons) {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    font-size: 32px;
-  }
-
-  &:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.1);
-  }
-}
-
-@media only screen and (min-width: 690px) {
-  display: flex;
-
-  .arrow {
-    &.arrowLeft,
-    &.arrowRight {
-      flex: 0 0 auto;
-      @include position(relative, auto, auto, auto, auto);
-    }
-  }
-
-  .wrapper {
-    flex: 0 0 auto;
-    margin: 0;
-    position: relative;
-    width: 560px;
-  }
-}
-
-@media only screen and (min-width: 1024px) {
-  .wrapper {
-    width: 840px;
-  }
-}
-
-@media only screen and (min-width: 1344px) {
-  .wrapper {
-    width: 1120px;
-  }
-}
-
-@media only screen and (min-width: 1624px) {
-  .wrapper {
-    width: 1400px;
-  }
-}
-
 .outer {
   flex: 0 0 auto;
   margin: 12px 12px;
@@ -106,22 +53,7 @@
   position: relative;
 }
 
-.selected {
-  &::before {
-    content: '';
-    background-image: url('assets/img/checkbox-marked-circle.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
-  }
-}
-
-.innerAction {
+.action {
   position: relative;
   width: 256px;
   height: 246px;
@@ -153,68 +85,6 @@
     color: $color-white;
     text-shadow: $text-shadow-title;
   }
-}
-
-.inner {
-  box-sizing: border-box;
-  position: relative;
-  height: 246px;
-  color: $color-primary-0;
-  background-color: $color-white;
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.innerTitle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 20px;
-  max-width: 150px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: left;
-  text-transform: uppercase;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
-.innerIcon {
-  position: relative;
-  display: table;
-  width: 100%;
-  background-color: #05326a;
-}
-
-.content {
-  position: relative;
-  min-width: 216px;
-  height: 128px;
-  margin: 20px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
-
-  @include md-only {
-    margin: 20px auto;
-  }
-}
-
-.innerIconLabel {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  font-size: 40px;
-  font-weight: 500;
-  color: $color-white;
-}
-
-.info {
-  padding: 16px;
-}
-
-.infoLabel {
-  opacity: 0.6;
 }
 
 .addTokenFAB {

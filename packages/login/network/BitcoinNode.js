@@ -96,25 +96,25 @@ export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 })
 
 export function selectBTCNode (engine) {
-  return engine.getNetwork() === networks.testnet
+  return engine.getNetwork() !== networks.bitcoin
     ? BTC_TESTNET_NODE
     : BTC_MAINNET_NODE
 }
 
 export function selectBCCNode (engine) {
-  return engine.getNetwork() === networks.testnet
+  return engine.getNetwork() !== networks.bitcoin
     ? BCC_TESTNET_NODE
     : BCC_MAINNET_NODE
 }
 
 export function selectBTGNode (engine) {
-  return engine.getNetwork() === networks.bitcoingold_testnet
+  return engine.getNetwork() !== networks.bitcoingold
     ? BTG_TESTNET_NODE
     : BTG_MAINNET_NODE
 }
 
 export function selectLTCNode (engine) {
-  return engine.getNetwork() === networks.litecoin_testnet
+  return engine.getNetwork() !== networks.litecoin
     ? LTC_TESTNET_NODE
     : LTC_MAINNET_NODE
 }

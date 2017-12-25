@@ -10,8 +10,11 @@ import React from 'react'
 import globalStyles from 'layouts/partials/styles'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getNextPage } from 'redux/exchange/actions'
+import Amount from 'models/Amount'
+import { DUCK_EXCHANGE, getNextPage } from 'redux/exchange/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import './ExchangesTable.scss'
 import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
@@ -20,8 +23,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const exchange = state.get('exchange')
+  const exchange = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   return {
+    tokens,
     exchanges: exchange.exchanges(),
     exchangesForOwner: exchange.exchangesForOwner(),
     pagesCount: exchange.pagesCount(),
@@ -56,6 +61,7 @@ export default class ExchangesTable extends React.PureComponent {
   static propTypes = {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
     exchangesForOwner: PropTypes.instanceOf(ExchangesCollection),
+    tokens: PropTypes.instanceOf(TokensCollection),
     handleOpenDetails: PropTypes.func,
     handleOpenTransfer: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
@@ -95,29 +101,21 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='colPrice'>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
           </div>
           <div styleName='colLimits'>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-              <TokenValue
-                value={exchange.assetBalance()}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-              <TokenValue
-                value={exchange.ethBalance()}
-                symbol='ETH'
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
             </div>
           </div>
         </div>
@@ -174,13 +172,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             }
             {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
             }
           </div>
@@ -188,21 +186,13 @@ export default class ExchangesTable extends React.PureComponent {
             {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-              <TokenValue
-                value={exchange.assetBalance()}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             }
             {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-              <TokenValue
-                value={exchange.ethBalance()}
-                symbol='ETH'
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
             </div>
             }
           </div>
@@ -275,6 +265,7 @@ export default class ExchangesTable extends React.PureComponent {
     } else {
       filteredItems = this.props.exchanges.items()
     }
+
     return (
       <div styleName='root'>
         <div styleName='header'>

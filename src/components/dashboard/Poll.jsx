@@ -8,8 +8,9 @@ import { FlatButton, RaisedButton } from 'material-ui'
 
 import { modalsOpen } from 'redux/modals/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
-
-// import PollDialog from 'components/dialogs/PollDialog'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import TokenModel from 'models/tokens/TokenModel'
 import VoteDialog from 'components/dialogs/VoteDialog'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
@@ -21,6 +22,7 @@ export default class Poll extends React.Component {
 
   static propTypes = {
     model: PropTypes.object,
+    timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
@@ -28,7 +30,7 @@ export default class Poll extends React.Component {
     // handlePollUpdate: PropTypes.func,
     // handlePollEdit: PropTypes.func,
     handlePollActivate: PropTypes.func,
-    handlePollEnd: PropTypes.func
+    handlePollEnd: PropTypes.func,
   }
 
   render () {
@@ -71,37 +73,40 @@ export default class Poll extends React.Component {
               <div styleName='chart chart-1'>
                 <DoughnutChart key={details} weight={0.08} items={[
                   { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
-                  { value: details.daysLeft, fill: 'transparent' }
+                  { value: details.daysLeft, fill: 'transparent' },
                 ]} />
               </div>
               <div styleName='chart chart-2'>
                 <DoughnutChart key={details} weight={0.20} items={[
                   { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
-                  { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' }
+                  { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' },
                 ]} />
               </div>
             </div>
             <div styleName='layer layer-entries'>
               <div styleName='entry entry-published'>
                 <div styleName='entry-label'>Published:</div>
-                <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.published && moment(details.published).format('MMM Do, YYYY') || (
+                  <i>No</i>)}</div>
               </div>
               <div styleName='entry entry-finished'>
                 <div styleName='entry-label'>End date:</div>
-                <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (<i>No</i>)}</div>
+                <div styleName='entry-value'>{details.endDate && moment(details.endDate).format('MMM Do, YYYY') || (
+                  <i>No</i>)}</div>
               </div>
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
                 <div styleName='entry-value'>
                   {details.voteLimit === null
                     ? (<i>No</i>)
-                    : (<span>{details.voteLimit.toString()} TIME</span>)
+                    : (<span>{this.props.timeToken.removeDecimals(details.voteLimit).toString()} TIME</span>)
                   }
                 </div>
               </div>
               <div styleName='entry entry-received'>
                 <div styleName='entry-label'>Received votes:</div>
-                <div styleName='entry-value'>{details.received.toString()} TIME</div>
+                <div styleName='entry-value'>{this.props.timeToken.removeDecimals(details.received).toString()} TIME
+                </div>
               </div>
               <div styleName='entry entry-variants'>
                 <div styleName='entry-label'>Variants:</div>
@@ -178,9 +183,11 @@ export default class Poll extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const session = state.get('session')
+  const session = state.get(DUCK_SESSION)
+  const tokens = state.get(DUCK_TOKENS)
   return {
-    isCBE: session.isCBE
+    isCBE: session.isCBE,
+    timeToken: tokens.item('TIME'),
   }
 }
 
@@ -189,14 +196,14 @@ function mapDispatchToProps (dispatch, op) {
     handleVote: () => dispatch(modalsOpen({
       component: VoteDialog,
       props: {
-        model: op.model
-      }
+        model: op.model,
+      },
     })),
     handlePollDetails: () => dispatch(modalsOpen({
       component: PollDetailsDialog,
       props: {
-        model: op.model
-      }
+        model: op.model,
+      },
     })),
     // handlePollEdit: () => dispatch(modalsOpen({
     //   component: PollDialog,
@@ -208,6 +215,6 @@ function mapDispatchToProps (dispatch, op) {
     handlePollRemove: () => dispatch(removePoll(op.model)),
     handlePollActivate: () => dispatch(activatePoll(op.model)),
     // handlePollUpdate: () => dispatch(updatePoll(op.model.poll().id())),
-    handlePollEnd: () => dispatch(endPoll(op.model))
+    handlePollEnd: () => dispatch(endPoll(op.model)),
   }
 }

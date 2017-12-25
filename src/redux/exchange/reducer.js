@@ -5,6 +5,8 @@ export const initialState = new ExchangeModel()
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case a.EXCHANGE_INIT:
+      return state.isInited(action.isInited)
     case a.EXCHANGE_GET_ORDERS_START:
       return state.exchanges(state.exchanges().isFetched(false).isFetching(true))
     case a.EXCHANGE_GET_ORDERS_FINISH:
@@ -21,12 +23,6 @@ const reducer = (state = initialState, action) => {
       return state
         .showFilter(false)
         .isFetched(true).isFetching(false)
-    case a.EXCHANGE_GET_TOKENS_LIST_START:
-      return state
-        .tokens(state.tokens().isFetching(true))
-    case a.EXCHANGE_GET_TOKENS_LIST_FINISH:
-      return state
-        .tokens(action.tokens.isFetched(true).isFetching(false))
     case a.EXCHANGE_REMOVE_FOR_OWNER:
       return state.exchangesForOwner(state.exchangesForOwner().remove(action.exchange))
     case a.EXCHANGE_UPDATE_FOR_OWNER:

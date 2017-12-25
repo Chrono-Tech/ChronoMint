@@ -1,7 +1,8 @@
+import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 
@@ -19,68 +20,69 @@ export class ExchangeDAO extends AbstractContractDAO {
     )
   }
 
-  withdrawTokens (wallet, amount: BigNumber, token: TokenModel): Promise {
+  withdrawTokens (wallet, amount: Amount): Promise {
     return this._tx(
       TX_WITHDRAW_TOKENS,
       [
         wallet.address(),
-        token.dao().addDecimals(amount),
+        new BigNumber(amount),
       ],
       {
         recipient: wallet.address(),
-        amount: new Amount(amount, token.symbol()),
+        amount,
       })
   }
 
-  withdrawEth (wallet, amount: BigNumber, token: TokenModel): Promise {
+  withdrawEth (wallet, amount: Amount): Promise {
     return this._tx(
       TX_WITHDRAW_ETH,
       [
         wallet.address(),
-        token.dao().addDecimals(amount),
+        new BigNumber(amount),
       ],
       {
         recipient: wallet.address(),
-        amount: new Amount(amount, 'ETH'),
+        amount,
       })
   }
 
-  async approveSell (token: TokenModel, amount: BigNumber) {
-    const assetDAO = await token.dao()
+  async approveSell (token: TokenModel, amount: Amount) {
+    const assetDAO = tokenService.getDAO(token)
     return assetDAO.approve(this.getInitAddress(), amount)
   }
 
   sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
-    const priceInWei = this._c.toWei(exchange.buyPrice())
-    const price = priceInWei.div(Math.pow(10, token.decimals()))
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.buyPrice()
+    let price = this._c.fromWei(priceInWei)
 
     return this._tx(
       TX_SELL,
       [
-        token.dao().addDecimals(amount),
-        price.mul(Math.pow(10, price.decimalPlaces())),
-        price.decimalPlaces(),
+        token.addDecimals(amount),
+        priceInWei,
       ],
       {
-        amount: new Amount(amount, exchange.symbol()),
-        price: new Amount(amount.mul(exchange.buyPrice()), 'ETH'),
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
       })
   }
 
   buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
-    const priceInWei = this._c.toWei(exchange.sellPrice())
-    const price = priceInWei.div(Math.pow(10, token.decimals()))
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.sellPrice()
+    let price = this._c.fromWei(priceInWei)
+
     return this._tx(
       TX_BUY,
       [
-        token.dao().addDecimals(amount),
-        price.mul(Math.pow(10, price.decimalPlaces())),
-        price.decimalPlaces(),
+        token.addDecimals(amount),
+        priceInWei,
       ],
       {
-        amount: new Amount(amount, exchange.symbol()),
-        price: new Amount(amount.mul(exchange.sellPrice()), 'ETH'),
-      }, priceInWei.mul(amount),
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
+      }, this._c.toWei(amount.mul(price)),
     )
   }
 
@@ -115,7 +117,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
-        ethAmount: this._c.fromWei(tx.args.eth),
+        ethAmount: tx.args.eth,
       })
     }, { exchange })
   }
@@ -125,7 +127,7 @@ export class ExchangeDAO extends AbstractContractDAO {
       callback({
         exchange: tx.args.exchange,
         tokenAmount: tx.args.token,
-        ethAmount: this._c.fromWei(tx.args.eth),
+        ethAmount: tx.args.eth,
       })
     }, { exchange })
   }
@@ -134,7 +136,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     return this._watch('ExchangeWithdrawEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
-        ethAmount: this._c.fromWei(tx.args.amount),
+        ethAmount: tx.args.amount,
       })
     }, { exchange })
   }
@@ -152,7 +154,7 @@ export class ExchangeDAO extends AbstractContractDAO {
     return this._watch('ExchangeReceivedEther', (tx) => {
       callback({
         exchange: tx.args.exchange,
-        ethAmount: this._c.fromWei(tx.args.amount),
+        ethAmount: tx.args.amount,
       })
     }, { exchange })
   }

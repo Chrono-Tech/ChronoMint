@@ -21,8 +21,8 @@ const STRATEGY_MANUAL = 'manual'
 const STRATEGY_AUTOMATIC = 'automatic'
 
 const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
+  [ STRATEGY_AUTOMATIC ]: STRATEGY_MANUAL,
+  [ STRATEGY_MANUAL ]: STRATEGY_AUTOMATIC,
 }
 
 const mapStateToProps = (state) => {
@@ -72,13 +72,13 @@ class LoginForm extends Component {
     const isPassed = await this.props.checkNetwork(
       this.props.selectedAccount,
       this.props.selectedProviderId,
-      this.props.selectedNetworkId
+      this.props.selectedNetworkId,
     )
     if (isPassed) {
       this.props.createNetworkSession(
         this.props.selectedAccount,
         this.props.selectedProviderId,
-        this.props.selectedNetworkId
+        this.props.selectedNetworkId,
       )
       this.props.login(this.props.selectedAccount)
     }
