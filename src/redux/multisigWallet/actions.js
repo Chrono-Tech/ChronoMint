@@ -1,3 +1,5 @@
+import { EVENT_NEW_TRANSFER } from '@/dao/AbstractTokenDAO'
+import type TxModel from '@/models/TxModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import { EVENT_MS_WALLETS_COUNT, EVENT_NEW_MS_WALLET } from 'dao/MultisigWalletsManagerDAO'
@@ -57,6 +59,19 @@ const fetchBalanceForToken = (token, wallet) => async (dispatch) => {
   })
 }
 
+const handleToken = (token, wallet) => (dispatch) => {
+  dispatch(fetchBalanceForToken(token, wallet))
+  const tokenDAO = tokenService.getDAO(token.id())
+
+  tokenDAO
+    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
+      if (!(tx.from() === wallet.address() || tx.to() === wallet.address())) {
+        return
+      }
+      dispatch(fetchBalanceForToken(token, wallet))
+    })
+}
+
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
     .on(EVENT_NEW_MS_WALLET, async (wallet: MultisigWalletModel) => {
@@ -83,7 +98,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
 
       await watchMultisigWallet(updatedWallet)
 
-      dispatch(subscribeOnTokens((token) => fetchBalanceForToken(token, wallet)))
+      dispatch(subscribeOnTokens((token) => handleToken(token, wallet)))
       dispatch(selectWalletIfOne())
     })
     .on(EVENT_MS_WALLETS_COUNT, (count) => {
@@ -254,9 +269,10 @@ export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWallet
 export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) => async (dispatch) => {
   console.log('--actions#', 1)
   try {
+    dispatch({ type: MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.isPending(true) })
     const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     const decodedTx: TxExecModel = await walletDAO.getPendingData(pending.id())
-    dispatch({ type: MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.decodedTx(decodedTx) })
+    dispatch({ type: MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.decodedTx(decodedTx).isPending(false) })
   } catch (e) {
     // eslint-disable-next-line
     console.error('get pending data error', e.message)
