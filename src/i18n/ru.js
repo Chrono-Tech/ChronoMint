@@ -454,6 +454,20 @@ export default {
         title: 'Подтвердите вывод ETH',
       },
     },
+    Wallet: {
+      addOwner: {
+        title: 'Добавить менеждера',
+        owner: 'Новый менеджер',
+      },
+      removeOwner: {
+        title: 'Удалить мееджера',
+        owner: 'Адрес',
+      },
+      kill: {
+        title: 'Удалить кошелек',
+        to: 'Перевести средства на адрес',
+      },
+    },
   },
   errors: {
     required: 'Обязательное поле',

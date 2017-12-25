@@ -191,7 +191,7 @@ export const createWallet = (wallet: MultisigWalletModel) => async (dispatch) =>
 export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, getState) => {
   try {
     const { account } = getState().get(DUCK_SESSION)
-    dispatch(updateWallet(wallet.isPending(true)))
+    // dispatch(updateWallet(wallet.isPending(true)))
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.removeWallet(wallet, account)
   } catch (e) {

@@ -459,10 +459,11 @@ export default {
       },
       removeOwner: {
         title: 'Remove owner',
-        Owner: 'Owner',
+        owner: 'Owner',
       },
       kill: {
         title: 'Kill wallet',
+        to: 'Transfer tokens to',
       },
     },
   },

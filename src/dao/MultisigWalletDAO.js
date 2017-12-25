@@ -205,7 +205,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
           owner: args._owner,
         }
       case 'kill':
-        return {}
+        return {
+          to: args._to,
+        }
       default:
         console.warn('warn: decoder not implemented for function: ', func)
         return args
