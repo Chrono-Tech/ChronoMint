@@ -1,5 +1,5 @@
+import RewardsCollection from '@/models/rewards/RewardsCollection'
 import { DepositTokens, Rewards, SendTokens, Voting } from 'components'
-import { Paper } from 'material-ui'
 import RewardsModel from 'models/rewards/RewardsModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -27,7 +27,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DashboardContent extends Component {
   static propTypes = {
-    rewards: PropTypes.instanceOf(RewardsModel),
+    rewards: PropTypes.instanceOf(RewardsCollection),
     isVotingFetched: PropTypes.bool,
     initRewards: PropTypes.func,
   }
@@ -37,6 +37,8 @@ export default class DashboardContent extends Component {
   }
 
   render () {
+    const { rewards } = this.props
+
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -53,19 +55,15 @@ export default class DashboardContent extends Component {
               {this.props.isVotingFetched && (
                 <div className='row'>
                   <div className='col-xs-6'>
-                    <Paper>
-                      <Voting />
-                    </Paper>
+                    <Voting />
                   </div>
                 </div>
               )}
-              {this.props.rewards.isFetched() && (
+              {rewards.isFetched() && (
                 <div className='row'>
-                  {this.props.rewards.periods().valueSeq().map((item) => (
+                  {rewards.items().map((item) => (
                     <div className='col-xs-6' key={item.index()}>
-                      <Paper>
-                        <Rewards period={item} rewardsData={this.props.rewards} />
-                      </Paper>
+                      <Rewards period={item} />
                     </div>
                   ))}
                 </div>
