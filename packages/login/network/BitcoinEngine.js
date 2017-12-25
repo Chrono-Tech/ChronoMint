@@ -28,10 +28,9 @@ export class BitcoinEngine {
       {
         address: to,
         // TODO @ipavlenko: Check if the String allowed
-        value: amount.mul(DECIMALS).toNumber(),
+        value: amount.toNumber(),
       },
     ]
-
     const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
       txId: output.txid,
       vout: output.vout,

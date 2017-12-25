@@ -67,7 +67,6 @@ export class BitcoinDAO extends EventEmitter {
 
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Promise<Array<TxModel>> {
-    console.log(id, account)
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
     return []
   }
@@ -81,13 +80,13 @@ export class BitcoinDAO extends EventEmitter {
 
   async watchTransfer () {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ tx }) => {
-      this.emit(EVENT_NEW_TRANSFER, tx)
+      this.emit(EVENT_NEW_TRANSFER, tx.symbol(this._symbol))
     })
   }
 
   async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
-      this.emit(EVENT_UPDATE_BALANCE, balance)
+      this.emit(EVENT_UPDATE_BALANCE, { account, time, balance: balance.balance0 })
     })
   }
 
@@ -109,6 +108,7 @@ export class BitcoinDAO extends EventEmitter {
 
     this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
       name: this._name,
+      decimals: this._decimals,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,

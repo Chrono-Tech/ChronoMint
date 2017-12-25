@@ -74,6 +74,7 @@ class TokenValue extends PureComponent {
     const token: TokenModel = this.props.tokens.item(symbol)
     const valueWithoutDecimals = token.removeDecimals(value)
 
+    console.log(token, value, value.isLoaded(), token.isFetched())
     return !value.isLoaded() || !token.isFetched()
       ? <Preloader small />
       : (

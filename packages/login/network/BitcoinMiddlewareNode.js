@@ -87,13 +87,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
   }
 
   async getTransactionsList (address) {
-    try {
-      const res = await this._api.get(`addrs/${address}/txs`)
-      return res.data
-    } catch (e) {
-      this.trace(`getTransactionInfo ${txid} failed`, e)
-      throw e
-    }
+    return []
   }
 
   getFeeRate (): Promise {

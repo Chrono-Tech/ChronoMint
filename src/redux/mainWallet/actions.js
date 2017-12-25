@@ -26,7 +26,6 @@ import MainWalletModel from 'models/wallet/MainWalletModel'
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
-export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
@@ -39,12 +38,6 @@ export const WALLET_INIT = 'mainWallet/INIT'
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
-
-export const setBalance = (token: TokenModel, amount: BigNumber) => ({
-  type: WALLET_BALANCE_SET,
-  token,
-  amount,
-})
 
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
   type: WALLET_BALANCE,
@@ -86,6 +79,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       if (!(tx.from() === account || tx.to() === account)) {
         return
       }
+      console.log('fetchTokenBalance', token)
       // update balance
       dispatch(fetchTokenBalance(token))
       // update donator
@@ -93,8 +87,15 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         dispatch(updateIsTIMERequired())
       }
     })
-    .on(EVENT_UPDATE_BALANCE, ({ balance /* balance3, balance6 */ }) => {
-      dispatch(setBalance(token, balance.balance0))
+    .on(EVENT_UPDATE_BALANCE, ({ /* account, time, */ balance }) => {
+      // TODO @ipavlenko: Always check user account
+      dispatch({
+        type: WALLET_TOKEN_BALANCE,
+        balance: new BalanceModel({
+          id: token.id(),
+          amount: new Amount(balance, token.symbol()),
+        }),
+      })
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
       dispatch(notify(new ApprovalNoticeModel({

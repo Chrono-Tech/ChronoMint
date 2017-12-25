@@ -15,6 +15,7 @@ class TxModel extends abstractModel({
   time: null,
   gasPrice: null,
   gas: null,
+  fee: new BigNumber(0), // TODO @ipavlenko: remove gasFee, use fee
   gasFee: new BigNumber(0),
   input: null,
   credited: null,
@@ -73,8 +74,15 @@ class TxModel extends abstractModel({
     return this.isCredited() ? '+' : '-'
   }
 
-  symbol () {
-    return this.get('symbol')
+  symbol (symbol) {
+    // TODO @ipavlenko: This is a temorary solution. The reason of this hotfix:
+    // DAO layer is subscribed to events from the Provider layer.
+    // We have no info about symbol at the Provider level and sometimes we need extend tx info at the DAO layer.
+    return this._getSet('symbol', symbol)
+  }
+
+  fee () {
+    return this.get('fee')
   }
 
   isFromEmpty () {

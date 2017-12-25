@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
 import TxModel from 'models/TxModel'
 import BitcoinAbstractNode from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
@@ -20,7 +21,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const rate = res.data['2']
       return rate > 0
         ? DECIMALS * rate / 1024
-        : 450 // default satoshis per byte for testnets
+        : 150 // default satoshis per byte for testnets
     } catch (e) {
       this.trace(`getFeeRate failed`, e)
       throw e
@@ -30,10 +31,11 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getAddressInfo (address) {
     try {
       const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
-      const { balance, unconfirmedBalance } = res.data
+      const { balanceSat, unconfirmedBalanceSat } = res.data
+      console.log(balanceSat, unconfirmedBalanceSat)
       return {
-        balance0: new BigNumber(balance).plus(unconfirmedBalance),
-        balance6: new BigNumber(balance),
+        balance0: new BigNumber(balanceSat).plus(unconfirmedBalanceSat),
+        balance6: new BigNumber(balanceSat),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -53,6 +55,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   async send (account, rawtx) {
     try {
+      const balances = await this.getAddressInfo(account)
       const params = new URLSearchParams()
       params.append('rawtx', rawtx)
       const res = await this._api.post('/tx/send', params)
@@ -60,6 +63,10 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const model = this._createTxModel(tx, account)
       setImmediate(() => {
         this.emit('tx', model)
+        this.emit('balance', {
+          ...balances,
+          balance0: balances.balance0.minus(model.value()).minus(model.fee()),
+        })
       })
       return model
     } catch (e) {
@@ -87,8 +94,8 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       time: tx.time,
       from,
       to,
-      value,
-      fee: new BigNumber(tx.fees),
+      value: new Amount(value.mul(DECIMALS), this._symbol),
+      fee: new Amount(new BigNumber(tx.fees).mul(DECIMALS), this._symbol),
       credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
     })
   }

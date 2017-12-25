@@ -138,6 +138,7 @@ export default class NemDAO extends EventEmitter {
 
     this.emit(EVENT_NEM_LIKE_TOKEN_CREATED, new TokenModel({
       name: this._name,
+      decimals: this._decimals,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,
