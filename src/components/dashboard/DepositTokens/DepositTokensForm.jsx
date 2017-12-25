@@ -17,7 +17,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, TextField } from 'redux-form-material-ui'
-import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
 import { DUCK_MAIN_WALLET, mainApprove, requireTIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -100,6 +100,13 @@ export default class DepositTokensForm extends PureComponent {
     ...formPropTypes,
   }
 
+  componentWillReceiveProps (newProps) {
+    const firstAsset = newProps.assets.first()
+    if (!newProps.token.isFetched() && firstAsset) {
+      this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'symbol', firstAsset.symbol()))
+    }
+  }
+
   handleApproveAsset = (values) => {
     this.props.onSubmit(values
       .set('action', ACTION_APPROVE)
@@ -170,13 +177,15 @@ export default class DepositTokensForm extends PureComponent {
                     fullWidth
                     {...styles}
                   >
-                    {assets.items().map((item) => (
-                      <MenuItem
-                        key={item.id()}
-                        value={item.symbol()}
-                        primaryText={item.symbol()}
-                      />
-                    ))}
+                    {assets
+                      .sortBy(balance => balance.symbol())
+                      .map((item) => (
+                        <MenuItem
+                          key={item.id()}
+                          value={item.symbol()}
+                          primaryText={item.symbol()}
+                        />
+                      ))}
                   </Field>
                 )
               }
