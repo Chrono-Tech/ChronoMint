@@ -43,9 +43,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async fetchWallets () {
     const [ addresses, is2FA ] = await this._call('getWallets')
-    this.emit(EVENT_MS_WALLETS_COUNT, addresses.length)
+    const validAddresses  = addresses.filter((address) => !this.isEmptyAddress(address))
+    this.emit(EVENT_MS_WALLETS_COUNT, validAddresses.length)
 
-    addresses.forEach((address, i) => {
+    validAddresses.forEach((address, i) => {
       this._createWalletModel(address, is2FA[ i ])
     })
   }

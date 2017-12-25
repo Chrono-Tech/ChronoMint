@@ -267,7 +267,6 @@ export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWallet
 }
 
 export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) => async (dispatch) => {
-  console.log('--actions#', 1)
   try {
     dispatch({ type: MULTISIG_PENDING_TX, walletId: wallet.id(), pending: pending.isPending(true) })
     const walletDAO: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())

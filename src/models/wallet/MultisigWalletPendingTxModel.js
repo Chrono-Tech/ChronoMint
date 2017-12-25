@@ -32,8 +32,7 @@ class MultisigWalletPendingTxModel extends abstractFetchingModel({
 
   txRevokeSummary () {
     return {
-      to: this.to(),
-      value: this.value(),
+      transaction: this.id(),
     }
   }
 
