@@ -78,7 +78,17 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getTransactionInfo (txid) {
     try {
-      const res = await this._api.get(`/tx/${txid}`)
+      const res = await this._api.get(`tx/${txid}`)
+      return res.data
+    } catch (e) {
+      this.trace(`getTransactionInfo ${txid} failed`, e)
+      throw e
+    }
+  }
+
+  async getTransactionsList (address) {
+    try {
+      const res = await this._api.get(`addrs/${address}/txs`)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
@@ -93,7 +103,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getAddressInfo (address) {
     try {
-      const res = await this._api.get(`/addr/${address}/balance`)
+      const res = await this._api.get(`addr/${address}/balance`)
       const {
         confirmations0,
         confirmations3,
@@ -112,7 +122,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getAddressUTXOS (address) {
     try {
-      const res = await this._api.get(`/addr/${address}/utxo`)
+      const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -124,7 +134,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     try {
       const params = new URLSearchParams()
       params.append('tx', rawtx)
-      const res = await this._api.post('/tx/send', params)
+      const res = await this._api.post('tx/send', params)
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
         this.emit('tx', model)

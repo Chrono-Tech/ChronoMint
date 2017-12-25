@@ -74,6 +74,7 @@ export class BitcoinDAO {
 
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+    console.log(id, account)
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
     return []
   }
