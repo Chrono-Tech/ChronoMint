@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import AbstractMultisigContractDAO from 'dao/AbstractMultisigContractDAO'
 import Amount from 'models/Amount'
@@ -7,7 +8,6 @@ import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
-import tokenService from 'services/TokenService'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
@@ -18,25 +18,22 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   watchConfirmationNeeded (wallet, callback) {
-    return this._watch('MultisigWalletConfirmationNeeded', (result) => {
+    return this._watch('MultisigWalletConfirmationNeeded', async (result) => {
       const { operation, initiator, value, to, data } = result.args
 
-      // TODO @dkchv: !!!!
       callback(new MultisigWalletPendingTxModel({
         id: operation,
         value,
         to,
         isConfirmed: initiator === this.getAccount(),
-        data,
+        decodedTx: await this.decodeData(data),
       }))
     }, { self: wallet.address() })
   }
 
   watchMultiTransact (wallet, callback) {
-    return this._watch('MultisigWalletMultiTransact', (result) => {
-      const { self, owner, operation, value, to, data } = result.args
-
-      console.log('--MultisigWalletDAO#', data)
+    return this._watch('MultisigWalletMultiTransact', async (result) => {
+      const { owner, operation, value, to, data } = result.args
 
       callback(new MultisigTransactionModel({
         id: operation,
@@ -44,7 +41,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         wallet: wallet.address(),
         value,
         to,
-        data,
+        data: await this.decodeData(data),
       }))
     }, { self: wallet.address() })
   }
@@ -55,7 +52,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchDeposit (wallet, callback) {
     return this._watch('MultisigWalletDeposit', (result) => {
-      callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
+      callback(result.args.value)
     }, { self: wallet.address() })
   }
 
@@ -104,7 +101,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
-        // TODO @dkchv: remove decimal
         value: values [ i ],
         isConfirmed: isConfirmed[ i ],
       })
@@ -157,11 +153,11 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to) {
-    const tokenDAO = tokenService.getDAO(token.id())
-    const value = tokenDAO.addDecimals(amount)
+    // const tokenDAO = tokenService.getDAO(token.id())
+    // const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
       to,
-      value,
+      new BigNumber(amount),
       token.symbol(),
     ], {
       from: wallet.address(),
@@ -186,10 +182,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async getPendingData (pending: MultisigWalletPendingTxModel) {
-    const data = await this._call('getData', [ pending.id() ])
-    const result: TxExecModel = await this.decodeData(data)
-    return result
+  async getPendingData (id: string): Promise<TxExecModel> {
+    const data = await this._call('getData', [ id ])
+    return this.decodeData(data)
   }
 
   async _decodeArgs (func: string, args: Object) {
