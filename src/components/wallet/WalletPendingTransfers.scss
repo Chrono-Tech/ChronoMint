@@ -29,6 +29,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  :global {
+    .Preloader__root {
+      justify-content: left;
+    }
+  }
 }
 
 .left {

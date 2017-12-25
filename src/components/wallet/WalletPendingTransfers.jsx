@@ -55,17 +55,18 @@ export default class WalletPendingTransfers extends PureComponent {
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
     return (
       <div styleName='row' key={item.id()}>
-        <div styleName='left'>
-          <div styleName='itemTitle'>{item.title()}</div>
-          {item.isFetched()
-            ? <Preloader />
-            : item.details().map((item, index) => (
+        {item.isPending()
+          ? <Preloader />
+          : <div styleName='left'>
+            <div styleName='itemTitle'>{item.title()}</div>
+            {item.details().map((item, index) => (
               <div key={index} styleName='detail'>
                 <span styleName='detailKey'>{item.label}:</span>
                 <span styleName='detailValue'>{item.value}</span>
               </div>
             ))}
-        </div>
+          </div>
+        }
         <div styleName='right'>
           <div styleName='action'>
             <RaisedButton
