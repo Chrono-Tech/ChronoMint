@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
@@ -78,7 +78,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.43",
+    "chronobank-smart-contracts": "github:chronobank/SmartContracts#release/release-1.1.44",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",

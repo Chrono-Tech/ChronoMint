@@ -1,5 +1,5 @@
 import networkService from '@chronobank/login/network/NetworkService'
-import { LOCAL_ID, TESTRPC_URL } from '@chronobank/login/network/settings'
+import { LOCAL_ID, TESTRPC_URL, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -10,6 +10,7 @@ import BackButton from '../../components/BackButton/BackButton'
 
 const mapDispatchToProps = () => ({
   selectNetwork: (networkId) => networkService.selectNetwork(networkId),
+  selectProvider: (id) => networkService.selectProvider(id),
 })
 
 @connect(null, mapDispatchToProps)
@@ -18,6 +19,7 @@ class LoginLocal extends PureComponent {
     selectNetwork: PropTypes.func,
     onLogin: PropTypes.func,
     onBack: PropTypes.func.isRequired,
+    selectProvider: PropTypes.func,
   }
 
   componentWillMount () {
@@ -26,9 +28,10 @@ class LoginLocal extends PureComponent {
     web3Provider.setProvider(new web3.providers.HttpProvider(TESTRPC_URL))
   }
 
-  handleSelectAccount = () => {
+  handleSelectAccount = (account) => {
+    this.props.selectProvider(LOCAL_PROVIDER_ID)
     this.props.selectNetwork(LOCAL_ID)
-    this.props.onLogin()
+    this.props.onLogin(account)
   }
 
   render () {

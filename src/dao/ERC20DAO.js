@@ -1,53 +1,31 @@
 import BigNumber from 'bignumber.js'
-import debug from 'debug'
 import Amount from 'models/Amount'
-import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
-import TransferNoticeModel from 'models/notices/TransferNoticeModel'
+import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
-import AbstractTokenDAO, { TXS_PER_PAGE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
 
-export const TX_APPROVE = 'approve'
 export const TX_TRANSFER = 'transfer'
+export const TX_APPROVE = 'approve'
 
 const EVENT_TRANSFER = 'Transfer'
 const EVENT_APPROVAL = 'Approval'
 
-const logInfo = debug('chronobank:info:dao:erc20')
-
 export default class ERC20DAO extends AbstractTokenDAO {
-  constructor (at, json) {
-    super(json || ERC20DAODefaultABI, at)
+  constructor (token: TokenModel, abi) {
+    super(abi || ERC20DAODefaultABI, token.address())
+    if (token.decimals() > 20) {
+      throw new Error(`decimals for token ${token.id()} must be lower than 20`)
+    }
+    this._decimals = token.decimals()
+    this._symbol = token.symbol()
   }
 
-  isInitialized () {
-    return this._initialized
-  }
-
-  initialized () {
-    this._initialized = true
-  }
-
-  setSymbol (symbol: string) {
-    this._symbol = symbol
-  }
-
+  /**
+   * @deprecated
+   */
   getSymbol () {
-    if (!this._symbol) {
-      throw new Error('symbol is undefined')
-    }
     return this._symbol
-  }
-
-  setDecimals (n: number) {
-    if (n < 0 || n > 20) {
-      throw new Error(`invalid decimals ${n}`)
-    }
-    this._decimals = n
-  }
-
-  getDecimals () {
-    return this._decimals
   }
 
   addDecimals (amount: BigNumber): BigNumber {
@@ -59,68 +37,49 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   removeDecimals (amount: BigNumber): BigNumber {
-    if (this._decimals === null) {
-      throw new Error('removeDecimals: decimals is undefined')
-    }
     const amountBN = new BigNumber(amount)
     return amountBN.div(Math.pow(10, this._decimals))
   }
 
-  async initMetaData () {
-    try {
-      const [symbol, decimals] = await Promise.all([
-        this._call('symbol'),
-        this._callNum('decimals'),
-      ])
-      this.setSymbol(symbol)
-      this.setDecimals(decimals)
-    } catch (e) {
-      // eslint-disable-next-line
-      console.warn('initMetaData', e)
-      // decimals & symbol may be absent in contract, so we simply go further
-    }
+  totalSupply (): Promise {
+    return this._call('totalSupply')
   }
 
-  async totalSupply (): BigNumber {
-    const totalSupply = await this._call('totalSupply')
-    return this.removeDecimals(totalSupply)
+  getAccountBalance (account): Promise {
+    return this._call('balanceOf', [ account ])
   }
 
-  async getAccountBalance (account = this.getAccount()): BigNumber {
-    return this.removeDecimals(await this._call('balanceOf', [account]))
+  getAccountAllowance (account, spender): Promise {
+    return this._call('allowance', [ account, spender ])
   }
 
-  async getAccountAllowance (spender, account = this.getAccount()): Promise<BigNumber> {
-    return this.removeDecimals(await this._call('allowance', [account, spender]))
-  }
-
-  approve (account: string, amount: BigNumber) {
-    logInfo('approve', account, amount)
-    return this._tx(TX_APPROVE, [
+  approve (account: string, amount: Amount): Promise {
+    return this._tx('approve', [
       account,
-      this.addDecimals(amount),
-    ], {
-      account,
-      amount: new Amount(amount, this.getSymbol()),
-      currency: this.getSymbol(),
-    })
-  }
-
-  transfer (account, amount: BigNumber) {
-    return this._tx(TX_TRANSFER, [
-      account,
-      this.addDecimals(amount),
+      new BigNumber(amount),
     ], {
       account,
       amount,
-      currency: this.getSymbol(),
+      currency: amount.symbol(),
+    })
+  }
+
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
+    return this._tx(TX_TRANSFER, [
+      to,
+      new BigNumber(amount),
+    ], {
+      from,
+      to,
+      amount,
+      currency: amount.symbol(),
     })
   }
 
   /** @private */
   _createTxModel (tx, account, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = this._c.fromWei(gasPrice.mul(tx.gas))
+    const gasFee = gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.transactionHash,
@@ -129,13 +88,13 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
-      value: this.removeDecimals(tx.args.value),
+      value: new Amount(tx.args.value, this._symbol),
       gas: tx.gas,
       gasPrice,
       gasFee,
       time,
+      token: this.getInitAddress(),
       credited: tx.args.to === account,
-      symbol: this.getSymbol(),
     })
   }
 
@@ -156,32 +115,33 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._createTxModel(tx, account, tx.blockNumber, minedBlock.timestamp)
   }
 
-  watchApproval (callback) {
-    return this._watch(EVENT_APPROVAL, (result, block, time) => {
-      callback(new ApprovalNoticeModel({
-        value: this.removeDecimals(result.args.value),
-        spender: result.args.spender,
-        time,
-      }))
-    }, { from: this.getAccount() })
-  }
-
-  /** @inheritDoc */
-  async watchTransfer (callback, options: Object = {}) {
-    const account = this.getAccount()
-    const internalCallback = async (result, block, time) => {
-      const tx = await this._getTxModel(result, account, block, time / 1000)
-      if (tx) {
-        callback(new TransferNoticeModel({ tx, account, time }))
-      }
-    }
-    await Promise.all([
-      this._watch(EVENT_TRANSFER, internalCallback, { from: options.account || account }),
-      this._watch(EVENT_TRANSFER, internalCallback, { to: options.account || account }),
+  watch (account): Promise {
+    return Promise.all([
+      this.watchTransfer(account),
+      this.watchApproval(account),
     ])
   }
 
-  async getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  watchApproval (account) {
+    return this._watch(EVENT_APPROVAL, (result) => {
+      this.emit(EVENT_APPROVAL_TRANSFER, result.args)
+    }, { from: account })
+  }
+
+  async watchTransfer (account) {
+    const internalCallback = async (result, block, time) => {
+      const tx = await this._getTxModel(result, account, block, time / 1000)
+      if (tx) {
+        this.emit(EVENT_NEW_TRANSFER, tx)
+      }
+    }
+    await Promise.all([
+      this._watch(EVENT_TRANSFER, internalCallback, { from: account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { to: account }),
+    ])
+  }
+
+  async getTransfer (id, account): Promise<Array<TxModel>> {
     const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
     const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
 

@@ -3,16 +3,18 @@ import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { IPFSImage } from 'components'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_EXCHANGE, exchange, getTokensAllowance } from 'redux/exchange/actions'
+import { exchange, getTokensAllowance } from 'redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
-import TokenModel from 'models/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import Amount from 'models/Amount'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import BalanceModel from 'models/tokens/BalanceModel'
 import './BuyTokensDialog.scss'
 import BuyTokensForm from './BuyTokensForm'
 
@@ -21,10 +23,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const exchangeState = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   return {
-    tokens: exchangeState.tokens(),
-    usersTokens: state.get(DUCK_MAIN_WALLET).tokens(),
+    tokens,
+    balances: state.get(DUCK_MAIN_WALLET).balances(),
   }
 }
 
@@ -39,7 +41,7 @@ export default class BuyTokensDialog extends React.PureComponent {
     exchange: PropTypes.instanceOf(ExchangeOrderModel),
     isBuy: PropTypes.bool,
     tokens: PropTypes.instanceOf(TokensCollection),
-    usersTokens: PropTypes.instanceOf(Immutable.Map),
+    balances: PropTypes.instanceOf(BalancesCollection),
     dispatch: PropTypes.func,
   }
 
@@ -48,12 +50,14 @@ export default class BuyTokensDialog extends React.PureComponent {
   }
 
   render () {
-    const exchangeToken = this.props.tokens.getBySymbol(this.props.exchange.symbol())
-    let userExchangeToken = this.props.usersTokens.get(this.props.exchange.symbol())
-    if (!userExchangeToken) {
-      userExchangeToken = new TokenModel({})
+    const exchangeToken = this.props.tokens.item(this.props.exchange.symbol())
+    let userExchangeBalance = this.props.balances.item(exchangeToken.id())
+    if (!userExchangeBalance) {
+      userExchangeBalance = new BalanceModel({ amount: new Amount(0, exchangeToken.symbol()) })
     }
-    const ethToken = this.props.usersTokens.get('ETH')
+
+    const ethToken = this.props.tokens.item('ETH')
+    const ethBalance = this.props.balances.item('ETH')
 
     return (
       <ModalDialog>
@@ -72,8 +76,7 @@ export default class BuyTokensDialog extends React.PureComponent {
                   <div styleName='balanceValue'>
                     <TokenValue
                       isInvert
-                      value={this.props.isBuy ? ethToken.balance() : userExchangeToken.balance()}
-                      symbol={this.props.isBuy ? ethToken.symbol() : exchangeToken.symbol()}
+                      value={this.props.isBuy ? ethBalance.amount() : userExchangeBalance.amount()}
                     />
                   </div>
                 </div>
@@ -107,6 +110,7 @@ export default class BuyTokensDialog extends React.PureComponent {
             </div>
           </div>
           <BuyTokensForm
+            exchangeToken={exchangeToken}
             exchange={this.props.exchange}
             isBuy={this.props.isBuy}
             onSubmitSuccess={onSubmitSuccess}

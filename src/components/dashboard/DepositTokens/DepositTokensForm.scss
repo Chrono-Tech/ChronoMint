@@ -1,0 +1,64 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+// TODO @dkchv: !!! review again
+.content {
+  @include position(absolute, 10px, 10px, 10px, 10px);
+  @include xs-only {
+    @include position(absolute, 5px, 5px, 5px, 5px);
+  }
+  background: transparent none no-repeat center center;
+  background-size: contain;
+}
+
+.balance {
+
+  margin-top: 15px;
+  text-shadow: $text-shadow-title;
+
+  .label {
+    height: 17px;
+    font-size: 14px;
+    color: $color-white;
+  }
+}
+
+.actions {
+  text-align: right;
+  @include xs-only {
+    display: flex;
+    flex-direction: column;
+  }
+  .action {
+    margin-left: 40px;
+
+    @include md-only {
+      margin-left: 20px;
+      margin-bottom: 20px;
+      display: inline-block;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+    @include xs-only {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .actionButton {
+      @include xs-only {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.warning {
+  color: $color-warning;
+  font-size: 12px;
+}
+
+.hint {
+  color: $color-white;
+}

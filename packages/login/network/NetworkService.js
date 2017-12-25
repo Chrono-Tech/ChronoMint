@@ -2,11 +2,16 @@ import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
+import { addError, clearErrors, loading, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_ACCOUNTS, NETWORK_SET_NETWORK, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
 import { utils } from '../settings'
-import { loading, clearErrors, addError, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_NETWORK, NETWORK_SET_ACCOUNTS, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
+import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
+import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
-import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
+import { nemProvider } from './NemProvider'
+import privateKeyProvider from './privateKeyProvider'
+import networkProvider from './NetworkProvider'
+import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
 import web3Utils from './Web3Utils'
@@ -142,10 +147,30 @@ class NetworkService extends EventEmitter {
   }
 
   async restoreLocalSession (account) {
-    this.selectProvider(LOCAL_ID)
+    this.selectProvider(LOCAL_PROVIDER_ID)
     this.selectNetwork(LOCAL_ID)
-    await this.loadAccounts()
+    const accounts = await this.loadAccounts()
     this.selectAccount(account)
+
+    const index = Math.max(accounts.indexOf(account), 0)
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings())
+    await this.setup(provider)
+  }
+
+  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
+    const web3 = new Web3()
+    web3Provider.setWeb3(web3)
+    web3Provider.setProvider(ethereum.getProvider())
+    networkProvider.setNetworkCode(networkCode)
+
+    const accounts = await this.loadAccounts()
+    this.selectAccount(accounts[ 0 ])
+    ethereumProvider.setEngine(ethereum, nem)
+    bccProvider.setEngine(bcc)
+    btcProvider.setEngine(btc)
+    btgProvider.setEngine(btg)
+    ltcProvider.setEngine(ltc)
+    nemProvider.setEngine(nem)
   }
 
   selectAccount = (selectedAccount) => {

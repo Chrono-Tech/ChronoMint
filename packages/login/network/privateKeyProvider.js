@@ -1,6 +1,7 @@
 import bitcoin from 'bitcoinjs-lib'
 import bigi from 'bigi'
 import wallet from 'ethereumjs-wallet'
+import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import * as NEM from './nem'
@@ -9,6 +10,7 @@ import NemWallet from './NemWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
+    const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
@@ -17,6 +19,7 @@ class PrivateKeyProvider {
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, NEM.Network.data[network.nem])
 
     return {
+      networkCode,
       ethereum: new EthereumEngine(ethereumWallet, network, url),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),

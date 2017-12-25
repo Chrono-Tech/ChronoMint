@@ -7,7 +7,7 @@ export default function validate (values, props) {
     title: ErrorList.toTranslate(validator.required(values.get('title'))),
     voteLimitInTIME: new ErrorList()
       .add(validator.required(voteLimitInTIME))
-      .add(validator.lowerThan(voteLimitInTIME || 0, props.maxVoteLimitInTIME, false))
+      .add(validator.lowerThan(voteLimitInTIME || 0, props.maxVoteLimitInTIME.toNumber(), false))
       .getErrors(),
     files: ErrorList.toTranslate(validator.validIpfsFileList(values.get('files'))),
   }

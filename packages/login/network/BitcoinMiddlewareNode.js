@@ -86,7 +86,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     }
   }
 
-  async getFeeRate () {
+  getFeeRate (): Promise {
     // async by design
     return this._feeRate
   }

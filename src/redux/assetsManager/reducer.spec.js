@@ -1,5 +1,5 @@
 import Immutable from 'immutable'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import * as a from './actions'
 import reducer, { initialState } from './reducer'
 

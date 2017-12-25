@@ -89,10 +89,7 @@ export default class NemMiddlewareNode extends AbstractNode {
   async getAddressInfo (address) {
     try {
       const res = await this._api.get(`/addr/${address}/balance`)
-      const {
-        balance,
-        mosaics,
-      } = res.data
+      const { balance, mosaics } = res.data
       return {
         balance: new BigNumber(balance.value),
         mosaics: Object.entries(mosaics).reduce((t, [k, v]) => ({

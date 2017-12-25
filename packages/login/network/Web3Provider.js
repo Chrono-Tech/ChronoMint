@@ -7,7 +7,6 @@ const ERROR_WEB3_UNDEFINED = 'Web3 is undefined. Please use setWeb3() first.'
  * will be injected to class on set web3
  * @see Web3Provider.setWeb3
  */
-// TODO @bshevchenko: IDE can't resolve this functions, fix it and then remove noinspection comments
 const promisifyFunctions = [
   'getBlock',
   'getBlockNumber',

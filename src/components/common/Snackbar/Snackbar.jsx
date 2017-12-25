@@ -51,24 +51,9 @@ export default class Snackbar extends PureComponent {
         <span styleName='snackbar-entry'>
           <span styleName='entry-status'>{notice.title()}</span>
         </span>
-        {/*
-        <span styleName='snackbar-entry'>
-          <span styleName='entry-datetime'>{notice.date('HH:mm, MMMM Do, YYYY')}</span>
-        </span>
-        */}
         <span styleName='snackbar-entry'>
           <span styleName='entry-value'>{notice.message()}</span>
         </span>
-        {/*
-        <span styleName='snackbar-entry'>
-          <span styleName='entry-label'>Operation confirmed, signatures:</span>&nbsp;
-          <span styleName='entry-value'>1</span>
-        </span>
-        <span styleName='snackbar-entry'>
-          <span styleName='entry-label'>Name:</span>&nbsp;
-          <span styleName='entry-value'>Orlando</span>
-        </span>
-        */}
         {address
           ? (
             <span styleName='snackbar-entry'>

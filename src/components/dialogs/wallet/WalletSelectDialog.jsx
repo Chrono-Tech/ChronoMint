@@ -1,19 +1,20 @@
-import { FloatingActionButton, FontIcon } from 'material-ui'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import classNames from 'classnames'
-import { connect } from 'react-redux'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import { addOwner, removeWallet, multisigTransfer, DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
-import { switchWallet } from 'redux/wallet/actions'
-import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import Points from 'components/common/Points/Points'
 import WithLoader, { isPending } from 'components/common/Preloader/WithLoader'
+import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import { FloatingActionButton, FontIcon } from 'material-ui'
+import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { modalsClose, modalsOpen } from 'redux/modals/actions'
+import { addOwner, DUCK_MULTISIG_WALLET, multisigTransfer, removeWallet } from 'redux/multisigWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { switchWallet } from 'redux/wallet/actions'
 import ModalDialog from '../ModalDialog'
 import WalletAddEditDialog from './WalletAddEditDialog/WalletAddEditDialog'
 
@@ -47,7 +48,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletSelectDialog extends PureComponent {
   static propTypes = {
-    multisigWallet: PropTypes.object,
+    multisigWallet: PropTypes.instanceOf(MultisigWalletCollection),
     modalsClose: PropTypes.func,
     handleEditManagersDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
@@ -66,30 +67,41 @@ export default class WalletSelectDialog extends PureComponent {
     this.props.switchWallet(wallet)
   }
 
-  renderRow (wallet: MultisigWalletModel, isSelected: boolean) {
+  renderRow = (wallet: MultisigWalletModel) => {
+    const isSelected = wallet.isSelected()
+    const owners = wallet.owners()
+
     return (
-      <div key={wallet.id()} styleName={classNames('row', { 'rowSelected': isSelected })}>
+      <div key={wallet.id()} styleName={classNames('row', { selected: isSelected })}>
         <div styleName='cell' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
           <div>
             <img styleName='bigIcon' src={WalletMultiBigSVG} />
           </div>
         </div>
         <div styleName='cell cellAuto' onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div styleName='symbol'>{wallet.address()}</div>
-          <div>
-            <span styleName='ownersNum'>
-              {wallet.owners().size} <Translate value='wallet.walletSelectDialog.owners' />
-            </span>
-            <div>
-              {wallet.owners().valueSeq().toArray().map((owner, idx) => (
-                <i
-                  className='material-icons'
-                  key={owner}
-                  title={owner}
-                  styleName={wallet.owners().size > 4 && idx ? 'faces tight' : 'faces'}
-                >account_circle
-                </i>
-              ))}
+          <div styleName='address'>{wallet.isPending() ? 'Pending...' : wallet.address()}</div>
+          <div styleName='details'>
+            <div styleName='owners'>
+              <div styleName='ownersCount'>
+                <Translate num={owners.size()} value='wallet.walletSelectDialog.owners' />
+              </div>
+              <div>
+                {owners.items().map((owner, idx) => (
+                  <i
+                    className='material-icons'
+                    key={owner}
+                    title={owner}
+                    styleName={owners.size() > 4 && idx ? 'faces tight' : 'faces'}
+                  >account_circle
+                  </i>
+                ))}
+              </div>
+            </div>
+            <div styleName='pendings'>
+              <div styleName='pendingsTitle'>
+                <Translate value='wallet.walletSelectDialog.pendings' />
+              </div>
+              <div styleName={classNames('pendingsCount', { disabled: wallet.pendingCount() === 0 })}>{wallet.pendingCount()}</div>
             </div>
           </div>
         </div>
@@ -123,7 +135,6 @@ export default class WalletSelectDialog extends PureComponent {
 
   render () {
     const wallets: Array = this.props.multisigWallet.items()
-    const selected: string = this.props.multisigWallet.selected().address()
 
     return (
       <ModalDialog>
@@ -145,12 +156,10 @@ export default class WalletSelectDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5 styleName='colName'>
-                <Translate
-                  value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')}
-                />
+                <Translate value={'wallet.walletSelectDialog.' + (wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets')} />
               </h5>
               <div styleName='table'>
-                {wallets.map((item) => this.renderRow(item, selected === item.address))}
+                {wallets.map(this.renderRow)}
               </div>
             </div>
             <div styleName='column'>

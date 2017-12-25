@@ -1,3 +1,4 @@
+import OwnerModel from 'models/wallet/OwnerModel'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -5,34 +6,29 @@ import './EditManagersBaseForm.scss'
 
 class ManagerItem extends PureComponent {
   static propTypes = {
-    manager: PropTypes.string.isRequired,
-    account: PropTypes.string.isRequired,
+    manager: PropTypes.instanceOf(OwnerModel),
     onRemove: PropTypes.func.isRequired,
+    account: PropTypes.string.isRequired,
   }
 
   handleRemoveManager = () => {
-    this.props.onRemove(this.props.manager)
-  }
-
-  renderRemoveIcon () {
-    const { account, manager } = this.props
-
-    return account !== manager && (
-      <div onTouchTap={this.handleRemoveManager} styleName='action' role='button'>
-        <i className='material-icons'>delete</i>
-      </div>
-    )
+    this.props.onRemove(this.props.manager.address())
   }
 
   render () {
-    const { manager } = this.props
+    const { manager, account } = this.props
+    const address = manager.address()
     return (
       <div styleName='row'>
         <div styleName='iconBox'>
-          <UserIcon styleName='icon' account={manager} />
+          <UserIcon styleName='icon' account={address} />
         </div>
-        <div styleName='address'>{manager}</div>
-        {this.renderRemoveIcon()}
+        <div styleName='address'>{address}</div>
+        {address !== account && (
+          <div onTouchTap={this.handleRemoveManager} styleName='action' role='button'>
+            <i className='material-icons'>delete</i>
+          </div>
+        )}
       </div>
     )
   }

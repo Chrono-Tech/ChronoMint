@@ -1,28 +1,23 @@
 import Immutable from 'immutable'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import OwnerCollection from './OwnerCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   address: null, //
+  balances: new BalancesCollection(),
   tokens: new Immutable.Map(), //
   isMultisig: true, //
   transactions: new TransactionsCollection(),
-  owners: new Immutable.List(),
-  // TODO @dkchv: update functional
-  name: 'No name',
-  requiredSignatures: null,
-  dao: null,
+  owners: new OwnerCollection(),
+  requiredSignatures: 0,
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
+  addresses: new AddressesCollection(),
 }) {
-  constructor (data = {}) {
-    super({
-      ...data,
-      owners: new Immutable.List(data.owners),
-    })
-  }
-
   id () {
     return this.get('transactionHash') || this.get('address')
   }
@@ -31,20 +26,17 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('owners')
   }
 
-  ownersArray () {
-    return this.owners().toArray()
-  }
-
+  // shortcut for eth-address
   address () {
     return this.get('address')
   }
 
-  isNew () {
-    return !this.address()
+  balances (value) {
+    return this._getSet('balances', value)
   }
 
-  name () {
-    return this.get('name')
+  isNew () {
+    return !this.address()
   }
 
   requiredSignatures () {
@@ -55,6 +47,13 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this._getSet('pendingTxList', value)
   }
 
+  pendingCount () {
+    return this.pendingTxList().size()
+  }
+
+  /**
+   * @deprecated
+   */
   tokens (value) {
     return this._getSet('tokens', value)
   }
@@ -63,28 +62,26 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('isMultisig')
   }
 
-  dao () {
-    return this.get('dao')
-  }
-
   transactions (value) {
     return this._getSet('transactions', value)
   }
 
   txSummary () {
     return {
-      owners: this.owners(),
+      owners: this.ownersArray(),
       requiredSignatures: this.requiredSignatures(),
-      walletName: this.name(),
     }
+  }
+
+  ownersArray () {
+    return this.owners().items().map((items) => items.address())
   }
 
   toAddEditFormJS () {
     return {
       isNew: this.isNew(),
-      name: this.name(),
       requiredSignatures: this.requiredSignatures(),
-      owners: this.owners().map((address) => ({ address })),
+      owners: this.ownersArray(),
     }
   }
 
@@ -93,5 +90,9 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),
     }
+  }
+
+  addresses (value) {
+    return this._getSet('addresses', value)
   }
 }

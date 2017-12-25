@@ -5,9 +5,6 @@ import moment from 'moment'
 import uniqid from 'uniqid'
 import { abstractModel } from './AbstractModel'
 
-/** @see OperationModel.summary */
-export const ARGS_TREATED = '__treated'
-
 class TxExecModel extends abstractModel({
   contract: '',
   func: '',
@@ -98,9 +95,7 @@ class TxExecModel extends abstractModel({
 
     return list.entrySeq().map(([key, value]) => ({
       label: I18n.t(this.i18nFunc() + key),
-      value: (value && typeof value === 'object' && value.constructor.name === 'BigNumber')
-        ? value.toString(10)
-        : (value == null ? null : `${value}`), // force to string if not nil
+      value,
     }))
   }
 }

@@ -7,6 +7,7 @@ export class EthereumProvider extends AbstractProvider {
   constructor () {
     super(...arguments)
     this._nemEngine = null
+    this._id = 'Ethereum'
   }
 
   setEngine (ethEngine: EthereumEngine, nemEngine: NemEngine) {
