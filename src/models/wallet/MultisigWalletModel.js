@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import BalancesCollection from 'models/tokens/BalancesCollection'
+import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
@@ -12,10 +13,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   isMultisig: true, //
   transactions: new TransactionsCollection(),
   owners: new OwnerCollection(),
-  // owners: new Immutable.List(),
   requiredSignatures: 0,
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
+  addresses: new AddressesCollection(),
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
@@ -25,6 +26,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('owners')
   }
 
+  /**
+   * @deprecated
+   * use addresses() collection
+   */
   address () {
     return this.get('address')
   }
@@ -85,5 +90,9 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),
     }
+  }
+
+  addresses (value) {
+    return this._getSet('addresses', value)
   }
 }

@@ -109,6 +109,10 @@ export default class AbstractContractDAO extends EventEmitter {
     // Should dispose contract resources and subscriptions in other case.
   }
 
+  isAddress (address) {
+    return /^0x[0-9a-f]{40}$/i.test(address)
+  }
+
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
   async _initContract (web3 = null) {
     if (this._at !== null && validator.address(this._at) !== null) {

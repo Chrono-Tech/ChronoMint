@@ -2,6 +2,11 @@ import type BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 
+export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
+export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
+export const BLOCKCHAIN_BITCOIN_GOLD = 'Bitcoin Gold'
+export const BLOCKCHAIN_LITECOIN = 'Litecoin'
+
 export class BitcoinProvider extends AbstractProvider {
   constructor (selectNode, id) {
     super(...arguments)
@@ -62,7 +67,7 @@ export class BitcoinProvider extends AbstractProvider {
   }
 }
 
-export const btcProvider = new BitcoinProvider(selectBTCNode, 'Bitcoin')
-export const bccProvider = new BitcoinProvider(selectBCCNode, 'Bitcoin Cash')
-export const btgProvider = new BitcoinProvider(selectBTGNode, 'Bitcoin Gold')
-export const ltcProvider = new BitcoinProvider(selectLTCNode, 'Litecoin')
+export const btcProvider = new BitcoinProvider(selectBTCNode, BLOCKCHAIN_BITCOIN)
+export const bccProvider = new BitcoinProvider(selectBCCNode, BLOCKCHAIN_BITCOIN_CASH)
+export const btgProvider = new BitcoinProvider(selectBTGNode, BLOCKCHAIN_BITCOIN_GOLD)
+export const ltcProvider = new BitcoinProvider(selectLTCNode, BLOCKCHAIN_LITECOIN)

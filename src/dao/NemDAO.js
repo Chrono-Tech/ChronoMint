@@ -5,6 +5,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
 import { nemAddress } from 'models/validator'
 
+const BLOCKCHAIN_NEM = 'NEM'
+
 // const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 
@@ -139,7 +141,7 @@ export default class NemDAO extends EventEmitter {
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,
-      blockchain: 'NEM',
+      blockchain: BLOCKCHAIN_NEM,
       isLocked: this.isTransferLocked,
     }), this)
   }

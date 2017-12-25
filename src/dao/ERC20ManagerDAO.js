@@ -3,6 +3,7 @@ import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
+import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
@@ -49,7 +50,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: this._c.bytes32ToIPFSHash(ipfsHashes[ i ]),
         isOptional: !MANDATORY_TOKENS.includes(symbol),
         isFetched: true,
-        blockchain: 'Ethereum',
+        blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
       }))
     })
@@ -70,7 +71,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: ipfsHashes[ i ],
         isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[ i ]),
         isFetched: true,
-        blockchain: 'Ethereum',
+        blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
       })
       map = map.set(token.id(), token)
@@ -131,7 +132,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
-        blockchain: 'Ethereum',
+        blockchain: BLOCKCHAIN_ETHEREUM,
       }),
       time, isRemoved, isAdded, result.args.oldToken || null,
     ))

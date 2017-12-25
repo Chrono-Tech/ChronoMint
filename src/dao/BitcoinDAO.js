@@ -1,4 +1,4 @@
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, btcProvider, btgProvider, ltcProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
@@ -117,7 +117,7 @@ export class BitcoinDAO extends EventEmitter {
   }
 }
 
-export const btcDAO = new BitcoinDAO('Bitcoin', 'BTC', btcProvider)
-export const bccDAO = new BitcoinDAO('Bitcoin Cash', 'BCC', bccProvider)
-export const ltcDAO = new BitcoinDAO('Litecoin', 'LTC', ltcProvider)
-export const btgDAO = new BitcoinDAO('Bitcoin Gold ', 'BTG', btgProvider)
+export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
+export const bccDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_CASH, 'BCC', bccProvider)
+export const btgDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN_GOLD, 'BTG', btgProvider)
+export const ltcDAO = new BitcoinDAO(BLOCKCHAIN_LITECOIN, 'LTC', ltcProvider)

@@ -103,31 +103,26 @@ export default class RewardsPeriod extends PureComponent {
                     <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
                       <span styleName='entry1'><Translate value={prefix('totalTimeTokensDeposited')} />: </span>
                       <span styleName='entry2'><TokenValue bold noRenderPrice value={deposit} />&nbsp;(<Translate value={prefix('percentOfTotalCount')} percent={period.totalDepositPercent(token.totalSupply())} />)</span>
-                  </span>
-                  </div>
-                  <div styleName='row'>
-                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('uniqueShareholders')} />: </span>
-                    <span styleName='entry2'>{period.uniqueShareholders()}</span>
-                  </span>
-                  </div>
-                  <div styleName='row'>
-                  <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
-                    <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')} />: </span>
-                    <span styleName='entry2'>
-                      {/*<TokenValue*/}
-                        {/*bold*/}
-                        {/*noRenderPrice*/}
-                        {/*value={period.userDeposit()}*/}
-                        {/*symbol={symbol}*/}
-                      {/*/>*/}
-                      &nbsp;(
-                      <Translate
-                        value={prefix('percentOfTotalDepositedAmount')}
-                        percent={period.userDepositPercent()}
-                      />)
                     </span>
-                  </span>
+                  </div>
+                  <div styleName='row'>
+                    <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                      <span styleName='entry1'><Translate value={prefix('uniqueShareholders')} />: </span>
+                      <span styleName='entry2'>{period.uniqueShareholders()}</span>
+                    </span>
+                  </div>
+                  <div styleName='row'>
+                    <span styleName='entry' className='RewardsPeriod__entry___flex____column'>
+                      <span styleName='entry1'><Translate value={prefix('yourTimeTokensEligible')} />: </span>
+                      <span styleName='entry2'>
+                        <TokenValue bold noRenderPrice value={period.userDeposit()} />
+                        &nbsp;(
+                        <Translate
+                          value={prefix('percentOfTotalDepositedAmount')}
+                          percent={period.userDepositPercent()}
+                        />)
+                      </span>
+                    </span>
                   </div>
                 </div>
                 <div styleName='col2'>

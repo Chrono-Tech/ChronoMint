@@ -19,7 +19,6 @@ export const DUCK_MULTISIG_WALLET = 'multisigWallet'
 export const MULTISIG_INIT = 'multisig/INIT'
 export const MULTISIG_FETCHING = 'multisig/FETCHING'
 export const MULTISIG_FETCHED = 'multisig/FETCHED'
-
 export const MULTISIG_UPDATE = 'multisigWallet/UPDATE'
 export const MULTISIG_BALANCE = 'multisigWallet/BALANCE'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'

@@ -193,8 +193,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async _decodeArgs (func: string, args: Object) {
-    console.log('--MultisigWalletDAO#_decodeArgs', 5, args, func)
-
     switch (func) {
       case 'transfer':
         const symbol = this._c.bytesToString(args._symbol)
@@ -207,6 +205,15 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         return {
           owner: args._owner,
         }
+      case 'removeOwner':
+        return {
+          owner: args._owner,
+        }
+      case 'kill':
+        return {}
+      default:
+        console.warn('warn: decoder not implemented for function: ', func)
+        return args
     }
   }
 }

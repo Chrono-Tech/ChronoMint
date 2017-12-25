@@ -26,8 +26,43 @@ import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
 
+function mapStateToProps (state) {
+  const session = state.get('session')
+  const wallet = state.get('mainWallet')
+  const notifier = state.get('notifier')
+  const watcher = state.get('watcher')
+  const monitor = state.get('monitor')
+  return {
+    i18n: state.get('i18n'), // force update I18n.t
+    wallet,
+    account: session.account,
+    profile: session.profile,
+    noticesList: notifier.list,
+    unreadNotices: notifier.unreadNotices,
+    transactionsList: watcher.pendingTxs,
+    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    isTokensLoaded: !wallet.isFetching(),
+    isCBE: session.isCBE,
+    tokens: wallet.tokens(),
+    networkStatus: monitor.network,
+    syncStatus: monitor.sync,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleLogout: () => dispatch(logout()),
+    handleDrawerToggle: () => dispatch(drawerToggle()),
+    handleProfileEdit: (data) => dispatch(modalsOpen({
+      component: UpdateProfileDialog,
+      data,
+    })),
+    readNotices: () => dispatch(readNotices()),
+  }
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
-class HeaderPartial extends PureComponent {
+export default class HeaderPartial extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
@@ -452,39 +487,3 @@ class HeaderPartial extends PureComponent {
   }
 }
 
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-  const notifier = state.get('notifier')
-  const watcher = state.get('watcher')
-  const monitor = state.get('monitor')
-  return {
-    i18n: state.get('i18n'), // force update I18n.t
-    wallet,
-    account: session.account,
-    profile: session.profile,
-    noticesList: notifier.list,
-    unreadNotices: notifier.unreadNotices,
-    transactionsList: watcher.pendingTxs,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
-    isTokensLoaded: !wallet.isFetching(),
-    isCBE: session.isCBE,
-    tokens: wallet.tokens(),
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleLogout: () => dispatch(logout()),
-    handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
-      data,
-    })),
-    readNotices: () => dispatch(readNotices()),
-  }
-}
-
-export default HeaderPartial

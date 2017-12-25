@@ -13,6 +13,8 @@ import AbstractTokenDAO, { EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
+export const BLOCKCHAIN_ETHEREUM = 'Ethereum'
+
 export class EthereumDAO extends AbstractTokenDAO {
   constructor () {
     super(...arguments)
@@ -50,11 +52,11 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   getToken () {
     return new TokenModel({
-      name: 'Ethereum',
+      name: 'Ethereum', // ???
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,
-      blockchain: 'Ethereum',
+      blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,
       isERC20: false,
     })

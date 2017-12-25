@@ -1,6 +1,9 @@
 import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
+import AddressesCollection from 'models/wallet/AddressesCollection'
+import AddressModel from 'models/wallet/AddressModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
@@ -66,14 +69,21 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       walletDAO.getPendings(),
     ])
 
-    const multisigWalletModel = new MultisigWalletModel({
-      owners: this._createOwnersCollection(owners, address),
+    let addresses = new AddressesCollection()
+    addresses = addresses.add(new AddressModel({
+      id: BLOCKCHAIN_ETHEREUM,
       address,
+    }))
+
+    const multisigWalletModel = new MultisigWalletModel({
+      address,
+      owners: this._createOwnersCollection(owners, address),
       transactionHash,
       requiredSignatures,
       is2FA,
       isFetched: true,
       pendingTxList,
+      addresses,
     })
     this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)
   }
