@@ -15,8 +15,8 @@ function prefix (token) {
   return `layouts.partials.WalletContent.${token}`
 }
 
-const CLASS_NAME_FULL_COL = 'col-xs-12 col-md-6 col-xl-4'
-const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3 col-xl-2'
+const CLASS_NAME_FULL_COL = 'col-xs-12 col-md-6'
+const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)

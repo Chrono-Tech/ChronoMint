@@ -1,3 +1,4 @@
+import { DUCK_TOKENS } from '@/redux/tokens/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import { Paper, RaisedButton } from 'material-ui'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -8,10 +9,12 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
 import './WalletPendingTransfers.scss'
+import Amount from 'models/Amount'
 
 function mapStateToProps (state) {
   return {
     wallet: state.get(DUCK_MULTISIG_WALLET).selected(),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
@@ -59,12 +62,19 @@ export default class WalletPendingTransfers extends PureComponent {
           ? <Preloader />
           : <div styleName='left'>
             <div styleName='itemTitle'>{item.title()}</div>
-            {item.details().map((item, index) => (
-              <div key={index} styleName='detail'>
-                <span styleName='detailKey'>{item.label}:</span>
-                <span styleName='detailValue'>{item.value}</span>
-              </div>
-            ))}
+            {item.details().map((item, index) => {
+              let value = item.value
+              if (item.value instanceof Amount) {
+               value = +this.props.tokens.getBySymbol(item.value.symbol()).removeDecimals(item.value)
+              } else {
+              }
+              return (
+                <div key={index} styleName='detail'>
+                  <span styleName='detailKey'>{item.label}:</span>
+                  <span styleName='detailValue'>{value}</span>
+                </div>
+              )
+            })}
           </div>
         }
         <div styleName='right'>
