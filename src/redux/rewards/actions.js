@@ -59,6 +59,7 @@ export const initRewards = () => async (dispatch, getState) => {
   }
   dispatch({ type: REWARDS_INIT, isInited: true })
 
+
   // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
   let [ assets, count, address ] = await Promise.all([
@@ -85,9 +86,9 @@ export const initRewards = () => async (dispatch, getState) => {
     .on(EE_REWARDS_PERIOD, (period: RewardsPeriodModel) => {
       dispatch({ type: REWARDS_PERIOD, period })
     })
-    .on(EE_REWARDS_ERROR, (result) => {
+    .on(EE_REWARDS_ERROR, (errorCode) => {
       // eslint-disable-next-line
-      console.error('rewards error', e.message, result.args)
+      console.error('rewards error, code: ', errorCode)
     })
 
   await rewardDAO.watch()

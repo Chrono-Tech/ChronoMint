@@ -113,7 +113,7 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async watchError () {
     return this._watch('Error', (result) => {
-      this.emit(EE_REWARDS_ERROR, result)
+      this.emit(EE_REWARDS_ERROR, +result.errorCode)
     }, { self: this.getInitAddress() })
   }
 }
