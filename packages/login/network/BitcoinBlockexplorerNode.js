@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
-import TxModel from 'models/TxModel'
-import BitcoinAbstractNode from './BitcoinAbstractNode'
+import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
@@ -30,11 +28,14 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   async getAddressInfo (address) {
     try {
-      const res = await this._api.get(`/addr/${address}?noTxList=1&noCache=1`)
-      const { balanceSat, unconfirmedBalanceSat } = res.data
-      console.log(balanceSat, unconfirmedBalanceSat)
+      const [ confirmed, unconfirmed ] = await Promise.all([
+        this._api.get(`/addr/${address}/balance`),
+        this._api.get(`/addr/${address}/unconfirmedBalance`),
+      ])
+      const [ balanceSat, unconfirmedBalanceSat ] = [confirmed.data, unconfirmed.data]
       return {
         balance0: new BigNumber(balanceSat).plus(unconfirmedBalanceSat),
+        balance3: new BigNumber(balanceSat),
         balance6: new BigNumber(balanceSat),
       }
     } catch (e) {
@@ -63,10 +64,11 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const model = this._createTxModel(tx, account)
       setImmediate(() => {
         this.emit('tx', model)
-        this.emit('balance', {
+        this.emit('balance', new BitcoinBalance({
+          address: account,
           ...balances,
-          balance0: balances.balance0.minus(model.value()).minus(model.fee()),
-        })
+          balance0: balances.balance0.minus(model.value).minus(model.fee),
+        }))
       })
       return model
     } catch (e) {
@@ -75,7 +77,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
     }
   }
 
-  _createTxModel (tx, account): TxModel {
+  _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
     const to = tx.vout.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
 
@@ -86,16 +88,13 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       }
     }
 
-    return new TxModel({
+    return new BitcoinTx({
       txHash: tx.txid,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
-      blockNumber: null,
       time: tx.time,
       from,
       to,
-      value: new Amount(value.mul(DECIMALS), this._symbol),
-      fee: new Amount(new BigNumber(tx.fees).mul(DECIMALS), this._symbol),
+      value: value.mul(DECIMALS),
+      fee: new BigNumber(tx.fees).mul(DECIMALS),
       credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
     })
   }

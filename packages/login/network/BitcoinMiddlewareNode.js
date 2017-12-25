@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
-import TxModel from 'models/TxModel'
-import AbstractNode from './AbstractNode'
+import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
-export default class BitcoinMiddlewareNode extends AbstractNode {
+export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
     super(args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
@@ -29,8 +28,8 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)
-              const ev = {
-                address: data.address,
+              this.emit('balance', new BitcoinBalance({
+                address,
                 balance0: data.balances.confirmations0 != null // nil check
                   ? new BigNumber(data.balances.confirmations0)
                   : null,
@@ -40,8 +39,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
                 balance6: data.balances.confirmations6 != null // nil check
                   ? new BigNumber(data.balances.confirmations6)
                   : null,
-              }
-              this.emit('balance', ev)
+              }))
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
@@ -104,9 +102,9 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
         confirmations6,
       } = res.data
       return {
-        balance0: new BigNumber(confirmations0.amount),
-        balance3: new BigNumber(confirmations3.amount),
-        balance6: new BigNumber(confirmations6.amount),
+        balance0: new BigNumber(confirmations0.satoshis),
+        balance3: new BigNumber(confirmations3.satoshis),
+        balance6: new BigNumber(confirmations6.satoshis),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -140,7 +138,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     }
   }
 
-  _createTxModel (tx, account): TxModel {
+  _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
     const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
 
@@ -150,19 +148,15 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
         value = value.add(new BigNumber(output.value))
       }
     }
-    value = value.div(DECIMALS)
 
-    const txmodel = new TxModel({
+    return new BitcoinTx({
       txHash: tx.txid,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
-      blockNumber: null,
+      time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee),
+      fee: new BigNumber(tx.fee).mul(DECIMALS),
       credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
     })
-    return txmodel
   }
 }

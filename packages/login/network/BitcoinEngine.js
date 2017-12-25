@@ -86,7 +86,7 @@ export class BTGEngine extends BitcoinEngine {
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ 0 ].value)
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ i ].value)
     }
   }
 }
@@ -99,7 +99,7 @@ export class BCCEngine extends BitcoinEngine {
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ 0 ].value)
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ i ].value)
     }
   }
 }

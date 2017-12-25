@@ -1,6 +1,7 @@
 import type BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
+import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
 
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
@@ -55,7 +56,7 @@ export class BitcoinProvider extends AbstractProvider {
     return await node.send(from, tx.toHex())
   }
 
-  async onTransaction (tx) {
+  async onTransaction (tx: BitcoinTx) {
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),
@@ -63,7 +64,7 @@ export class BitcoinProvider extends AbstractProvider {
     })
   }
 
-  async onBalance (balance) {
+  async onBalance (balance: BitcoinBalance) {
     this.emit('balance', {
       account: this.getAddress(),
       time: new Date().getTime(),

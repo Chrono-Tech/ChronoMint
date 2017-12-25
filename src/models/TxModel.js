@@ -74,11 +74,8 @@ class TxModel extends abstractModel({
     return this.isCredited() ? '+' : '-'
   }
 
-  symbol (symbol) {
-    // TODO @ipavlenko: This is a temorary solution. The reason of this hotfix:
-    // DAO layer is subscribed to events from the Provider layer.
-    // We have no info about symbol at the Provider level and sometimes we need extend tx info at the DAO layer.
-    return this._getSet('symbol', symbol)
+  symbol () {
+    return this.get('symbol')
   }
 
   fee () {

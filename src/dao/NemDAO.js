@@ -56,6 +56,12 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.isInitialized()
   }
 
+  hasBalancesStream () {
+    // Balance should not be fetched after transfer notification,
+    // it will be updated from the balances event stream
+    return true
+  }
+
   getDecimals () {
     return this._decimals
   }

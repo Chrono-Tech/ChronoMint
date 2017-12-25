@@ -79,9 +79,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       if (!(tx.from() === account || tx.to() === account)) {
         return
       }
-      console.log('fetchTokenBalance', token)
-      // update balance
-      dispatch(fetchTokenBalance(token))
+      // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
+      if (!tokenDAO.hasBalancesStream()) {
+        // update balance
+        dispatch(fetchTokenBalance(token))
+      }
       // update donator
       if (tx.from() === assetDonatorDAO.getInitAddress()) {
         dispatch(updateIsTIMERequired())
