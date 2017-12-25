@@ -18,7 +18,6 @@ import { DUCK_REWARDS } from 'redux/rewards/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
-
 function prefix (token) {
   return `components.dashboard.RewardsPeriod.${token}`
 }
@@ -30,7 +29,6 @@ function mapStateToProps (state) {
   // const timeToken = state.get(DUCK_TOKENS).item('TIME')
   // const asset = state.get(DUCK_ASSETS_HOLDER).assets.item(timeToken.address())
   const asset = state.get(DUCK_ASSETS_HOLDER).assets().first(true)
-  console.log('--RewardsPeriod#mapStateToProps', asset)
 
   return {
     rewards,
@@ -55,15 +53,8 @@ export default class RewardsPeriod extends PureComponent {
   }
 
   render () {
-    const { token, deposit, rewards } = this.props
+    const { token, deposit } = this.props
     const { period } = this.props
-
-    console.log('--RewardsPeriod#render', +token.totalSupply())
-
-    let progress = Math.round(100 * (period.daysPassed() / period.periodLength())) || 0
-    if (!isFinite(progress) || period.periodLength() === 0) {
-      progress = 100
-    }
 
     return (
       <Paper>
@@ -92,12 +83,12 @@ export default class RewardsPeriod extends PureComponent {
                     </span>
                     <span styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('endDate')} />: </span>
-                        <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE} /> (<Translate
-                          value={prefix('inDaysDays')}
-                          days={period.daysRemaining()}
-                        />)
+                      <span styleName='entry2'><Moment date={period.endDate()} format={SHORT_DATE} /> (<Translate
+                        value={prefix('inDaysDays')}
+                        days={period.daysRemaining()}
+                      />)
                       </span>
-                  </span>
+                    </span>
                   </div>
                   <div styleName='row'>
                     <span styleName='entry' className='RewardsPeriod__entry___flex____column'>

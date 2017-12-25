@@ -36,13 +36,13 @@ export default class RewardsDAO extends AbstractContractDAO {
   fetchPeriods (count, asset: AssetModel, account: string) {
     console.log('--RewardsDAO#fetchPeriods', count, asset, account)
     for (let i = 0; i < count; i++) {
-      this._getPeriod(i, asset, account)
+      this.fetchPeriod(i, asset, account)
     }
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const addresses = await this._call('getAssets')
-    console.log('--RewardsDAO#getAssetDAO', addresses)
+    console.log('--RewardsDAO#getAssetDAO', '!!!!!!!!!!!!!!', addresses)
     return tokenService.getDAO(addresses[ 0 ])
   }
 
@@ -56,7 +56,6 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   getLastClosedPeriod (): Promise {
     return this._callNum('lastClosedPeriod')
-    // .catch(() => 0) // no closed periods yet
   }
 
   async getAssetBalanceInPeriod (periodId: number): Promise<BigNumber> {
@@ -142,7 +141,7 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   /** @private */
-  async _getPeriod (id, asset: AssetModel, account): Promise<RewardsPeriodModel> {
+  async fetchPeriod (id, asset: AssetModel, account): Promise<RewardsPeriodModel> {
     const values = await Promise.all([
       this._call('totalDepositInPeriod', [ id ]), // 0
       this._call('depositBalanceInPeriod', [ account, id ]), // 1
@@ -186,8 +185,8 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   async watchPeriodClosed () {
-    return this._watch('PeriodClosed', (result) => {
-      this.emit(EE_REWARDS_PERIOD_CLOSED, result)
+    return this._watch('PeriodClosed', () => {
+      this.emit(EE_REWARDS_PERIOD_CLOSED)
     })
   }
 

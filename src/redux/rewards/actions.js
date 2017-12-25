@@ -1,6 +1,6 @@
-import AssetModel from '@/models/assetHolder/AssetModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from 'dao/RewardsDAO'
+import AssetModel from 'models/assetHolder/AssetModel'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -9,10 +9,10 @@ import { subscribeOnTokens } from 'redux/tokens/actions'
 export const DUCK_REWARDS = 'rewards'
 
 export const REWARDS_INIT = 'rewards/init'
-export const REWARDS_DATA = 'rewards/DATA'
 export const REWARDS_ASSET = 'rewards/ASSET'
 export const REWARDS_BASE_INFO = 'rewards/baseInfo'
 export const REWARDS_PERIOD = 'rewards/period'
+export const REWARDS_PERIOD_COUNT = 'rewards/periodCount'
 
 let rewardDAO = null
 
@@ -30,25 +30,15 @@ export const handleToken = (token: TokenModel) => async (dispatch, getState) => 
   dispatch({ type: REWARDS_ASSET, asset })
   // fetch period for asset
   rewardDAO.fetchPeriods(rewardsHolder.periodCount(), asset, account)
-
-  // dispatch(fetchRewardsData(token))
 }
 
-export const fetchRewardsData = (token) => async (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
-  const data = await rewardDAO.getRewardsData(account, token)
-  // TODO @dkchv: !!!
-  // dispatch({ type: REWARDS_DATA, data })
-}
-
-export const withdrawRevenue = () => async (dispatch) => {
+export const withdrawRevenue = () => async () => {
   try {
     await rewardDAO.withdraw()
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw revenue error', e.message)
   }
-  return dispatch(fetchRewardsData())
 }
 
 export const closePeriod = () => async () => {
@@ -68,24 +58,33 @@ export const initRewards = () => async (dispatch, getState) => {
 
   // init base info
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
-  let [ assets, periodCount, address ] = await Promise.all([
+  let [ assets, count, address ] = await Promise.all([
     rewardDAO.getAssets(),
     rewardDAO.getPeriodLength(),
     rewardDAO.getAddress(),
   ])
-  dispatch({ type: REWARDS_BASE_INFO, address, periodCount, assets })
+  dispatch({ type: REWARDS_PERIOD_COUNT, count })
+  dispatch({ type: REWARDS_BASE_INFO, address, assets })
 
   // subscribe
   rewardDAO
-    .on(EE_REWARDS_PERIOD_CLOSED, (result) => {
-      console.log('--actions#1', 1, result)
+    .on(EE_REWARDS_PERIOD_CLOSED, () => {
+      const { account } = getState().get(DUCK_SESSION)
+      // fetch new period
+      const rewardsHolder = getState().get(DUCK_REWARDS)
+      const count = rewardsHolder.size()
+      dispatch({ type: REWARDS_PERIOD_COUNT, count: 1 })
+      const assets = rewardsHolder.assets()
+      assets.items().forEach((asset: AssetModel) => {
+        rewardDAO.fetchPeriod(count, asset, account)
+      })
     })
     .on(EE_REWARDS_PERIOD, (period: RewardsPeriodModel) => {
-      console.log('--actions#', period.toJS())
       dispatch({ type: REWARDS_PERIOD, period })
     })
     .on(EE_REWARDS_ERROR, (result) => {
-      console.log('--actions#', result)
+      // eslint-disable-next-line
+      console.error('rewards error', e.message, result.args)
     })
 
   await rewardDAO.watch()

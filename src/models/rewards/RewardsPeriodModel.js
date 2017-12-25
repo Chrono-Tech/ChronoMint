@@ -84,7 +84,6 @@ class RewardsPeriodModel extends abstractModel({
   }
 
   progress () {
-    console.log('--RewardsPeriodModel#progress', this.periodLength(), this.daysPassed())
     if (this.periodLength() === 0) {
       return 100
     }
