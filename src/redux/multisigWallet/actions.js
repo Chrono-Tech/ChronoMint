@@ -160,9 +160,9 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       const pendingTxList = wallet.pendingTxList()
       dispatch(updateWallet(wallet.pendingTxList(pendingTxList.update(pendingTxModel))))
     })
-    .on(EVENT_DEPOSIT, (walletId, tokenId, amount) => {
+    .on(EVENT_DEPOSIT, (walletId, symbol) => {
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const token = getState().get(DUCK_TOKENS).item(tokenId)
+      const token = getState().get(DUCK_TOKENS).getBySymbol(symbol)
       dispatch(fetchBalanceForToken(token, wallet))
     })
 }
