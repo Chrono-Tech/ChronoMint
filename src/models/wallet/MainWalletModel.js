@@ -10,11 +10,6 @@ import AddressesCollection from './AddressesCollection'
 export default class MainWallet extends abstractFetchingModel({
   address: null,
   tokens: new Immutable.Map(),
-  btcAddress: null,
-  bccAddress: null,
-  btgAddress: null,
-  ltcAddress: null,
-  nemAddress: null,
   timeAddress: null,
   isMultisig: false,
   isMainWallet: true,
@@ -39,26 +34,6 @@ export default class MainWallet extends abstractFetchingModel({
    */
   tokens (value) {
     return this._getSet('tokens', value)
-  }
-
-  btcAddress (value) {
-    return this._getSet('btcAddress', value)
-  }
-
-  bccAddress (value) {
-    return this._getSet('bccAddress', value)
-  }
-
-  btgAddress (value) {
-    return this._getSet('btgAddress', value)
-  }
-
-  ltcAddress (value) {
-    return this._getSet('ltcAddress', value)
-  }
-
-  nemAddress (value) {
-    return this._getSet('nemAddress', value)
   }
 
   transactions (value) {

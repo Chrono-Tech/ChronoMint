@@ -69,6 +69,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       to,
       new BigNumber(amount),
     ], {
+      from,
       to,
       amount,
       currency: amount.symbol(),

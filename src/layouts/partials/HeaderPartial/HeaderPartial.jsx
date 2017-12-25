@@ -32,10 +32,6 @@ class HeaderPartial extends PureComponent {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
-    btcAddress: PropTypes.string,
-    btgAddress: PropTypes.string,
-    ltcAddress: PropTypes.string,
-    nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
@@ -324,11 +320,12 @@ class HeaderPartial extends PureComponent {
       ? []
       : this.props.tokens.entrySeq().toArray().map(([ name, token ]) => ({ token, name }))
 
+    const addressesInWallet = this.props.wallet.addresses()
     const addresses = [
-      { title: 'BTC', address: this.props.btcAddress },
-      { title: 'BTG', address: this.props.btgAddress },
-      { title: 'LTC', address: this.props.ltcAddress },
-      { title: 'NEM', address: this.props.nemAddress },
+      { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
+      { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
+      { title: 'LTC', address: addressesInWallet.item('Litecoin').address() },
+      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
     ]
     return (
       <div styleName='profile'>
@@ -463,10 +460,7 @@ function mapStateToProps (state) {
   const monitor = state.get('monitor')
   return {
     i18n: state.get('i18n'), // force update I18n.t
-    btcAddress: wallet.btcAddress(),
-    btgAddress: wallet.btgAddress(),
-    ltcAddress: wallet.ltcAddress(),
-    nemAddress: wallet.nemAddress(),
+    wallet,
     account: session.account,
     profile: session.profile,
     noticesList: notifier.list,
