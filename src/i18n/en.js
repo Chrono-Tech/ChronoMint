@@ -601,9 +601,9 @@ export default {
     VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Vote: active poll limit reached',
     VOTE_UNABLE_TO_ACTIVATE_POLL: 'Vote: unable to activate poll',
 
-    REWARD_NOT_FOUND: 'Reward: not found',
-    REWARD_INVALID_PARAMETER: 'Reward: invalid request parameter',
-    REWARD_INVALID_INVOCATION: 'Reward: invalid invocation',
+    REWARD_NOT_FOUND: 'Bonus: not found',
+    REWARD_INVALID_PARAMETER: 'Bonus: invalid request parameter',
+    REWARD_INVALID_INVOCATION: 'Bonus: invalid invocation',
     REWARD_INVALID_STATE: 'Bonuses: invalid state',
     REWARD_INVALID_PERIOD: 'Bonuses: invalid period',
     REWARD_NO_REWARDS_LEFT: 'Bonuses: no bonuses left',
@@ -694,7 +694,7 @@ export default {
         send: 'Send',
       },
       RewardsPeriod: {
-        rewardsPeriodIndex: 'Rewards period #%{index}',
+        rewardsPeriodIndex: 'Bonus period #%{index}',
         ongoing: 'Ongoing',
         closed: 'Closed',
         startDate: 'Start date',
