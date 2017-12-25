@@ -1,17 +1,19 @@
-import { en as layouts } from 'layouts/lang'
+import { en as Login } from '@chronobank/login-ui/lang'
+import { en as components } from 'components/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
 import * as exchange from 'dao/ExchangeDAO'
-import { en as Login } from 'Login/lang'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
 import * as pollInterface from 'dao/PollInterfaceDAO'
 import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/TIMEHolderDAO'
+import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
+import * as voting from 'dao/VotingDAO'
+import { en as layouts } from 'layouts/lang'
 import { en as components } from 'components/lang'
 
 export default {
@@ -40,7 +42,7 @@ export default {
     wallet: 'Wallet',
     exchange: 'Exchange',
     voting: 'Voting',
-    rewards: 'Rewards',
+    rewards: 'Bonuses',
     assets: 'My assets',
     profile: 'Profile',
     signOut: 'Sign out',
@@ -49,7 +51,7 @@ export default {
     loadMore: 'Load More',
     markupDashboard: 'Dashboard',
     markupWallet: 'New Wallet',
-    newRewards: 'New Rewards',
+    newRewards: 'New Bonuses',
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
   },
@@ -73,6 +75,8 @@ export default {
     switchToMainWallet: 'Switch to main wallet',
     pendingTransfers: 'Pending transfers',
     to: 'To',
+    transaction: 'Transaction',
+    actions: 'Actions',
     value: 'Value',
     revoke: 'REVOKE',
     sign: 'SIGN',
@@ -86,7 +90,7 @@ export default {
       clickPlusButtonAtTheTop: 'Click plus button at the top',
       selectOwnersAtLeastTwo: 'Select owners, at least two',
       selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
-      owners: 'owners',
+      owners: '%{num} owners',
     },
   },
   exchange: {
@@ -234,10 +238,10 @@ export default {
     feeLeft: 'Transaction fee left',
     TokenManagementInterface: {
       createAssetWithoutFee: {
-        title: 'Confirm create token without fee',
+        title: 'Confirm create token',
       },
       createAssetWithFee: {
-        title: 'Confirm create token with fee',
+        title: 'Confirm create token',
       },
     },
     ChronoBankPlatform: {
@@ -338,7 +342,7 @@ export default {
         amount: 'Amount',
       },
       [rewards.TX_CLOSE_PERIOD]: {
-        title: 'Close Rewards Period',
+        title: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
@@ -421,6 +425,11 @@ export default {
         amount: 'Amount',
       },
     },
+    ExchangeManager:{
+      createExchange: {
+        title: 'Create an exchange',
+      },
+    },
     Exchange: {
       [exchange.TX_BUY]: {
         title: 'Confirm buy tokens for ETH',
@@ -433,6 +442,20 @@ export default {
       },
       [exchange.TX_WITHDRAW_ETH]: {
         title: 'Confirm withdraw ETH',
+      },
+    },
+    Wallet: {
+      addOwner: {
+        title: 'Add owner',
+        owner: 'New Owner',
+      },
+      removeOwner: {
+        title: 'Remove owner',
+        owner: 'Owner',
+      },
+      kill: {
+        title: 'Kill wallet',
+        to: 'Transfer tokens to',
       },
     },
     PollInterface: {
@@ -576,17 +599,17 @@ export default {
     VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Vote: active poll limit reached',
     VOTE_UNABLE_TO_ACTIVATE_POLL: 'Vote: unable to activate poll',
 
-    REWARD_NOT_FOUND: 'Reward: not found',
-    REWARD_INVALID_PARAMETER: 'Reward: invalid request parameter',
-    REWARD_INVALID_INVOCATION: 'Reward: invalid invocation',
-    REWARD_INVALID_STATE: 'Reward: invalid state',
-    REWARD_INVALID_PERIOD: 'Reward: invalid period',
-    REWARD_NO_REWARDS_LEFT: 'Reward: no rewards left',
+    REWARD_NOT_FOUND: 'Bonus: not found',
+    REWARD_INVALID_PARAMETER: 'Bonus: invalid request parameter',
+    REWARD_INVALID_INVOCATION: 'Bonus: invalid invocation',
+    REWARD_INVALID_STATE: 'Bonuses: invalid state',
+    REWARD_INVALID_PERIOD: 'Bonuses: invalid period',
+    REWARD_NO_REWARDS_LEFT: 'Bonuses: no bonuses left',
     REWARD_ASSET_TRANSFER_FAILED: 'Reward: asset transfer failed',
-    REWARD_ALREADY_CALCULATED: 'Reward: already calculated',
-    REWARD_CALCULATION_FAILED: 'Reward: calculation failed',
-    REWARD_CANNOT_CLOSE_PERIOD: 'Reward: cannot close period',
-    REWARD_ASSET_ALREADY_REGISTERED: 'Reward: asset already registered',
+    REWARD_ALREADY_CALCULATED: 'Bonus: already calculated',
+    REWARD_CALCULATION_FAILED: 'Bonus: calculation failed',
+    REWARD_CANNOT_CLOSE_PERIOD: 'Bonus: cannot close period',
+    REWARD_ASSET_ALREADY_REGISTERED: 'Bonus: asset already registered',
 
     CONTRACT_EXISTS: 'Contract already exists',
     CONTRACT_NOT_EXISTS: 'Contract not exists',
@@ -662,11 +685,14 @@ export default {
         balance: 'Balance',
         recipientAddress: 'Recipient address',
         amount: 'Amount',
+        feeRate: 'Fee: %{multiplier} of average (%{total} sat/byte)',
         approve: 'Approve',
+        revoke: 'Revoke',
+        allowance: 'Allowance',
         send: 'Send',
       },
       RewardsPeriod: {
-        rewardsPeriodIndex: 'Rewards period #%{index}',
+        rewardsPeriodIndex: 'Bonus period #%{index}',
         ongoing: 'Ongoing',
         closed: 'Closed',
         startDate: 'Start date',

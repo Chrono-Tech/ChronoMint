@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import TokensCollection from 'models/exchange/TokensCollection'
+import TokensCollection from 'models/tokens/TokensCollection'
 import * as a from './actions'
 import reducer, { initialState } from './reducer'
 
@@ -15,7 +15,7 @@ describe('assetsManager reducer', () => {
     expect(
       reducer(undefined, {
         type: a.EXCHANGE_GET_ORDERS_START,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -25,7 +25,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_GET_ORDERS_FINISH,
         exchanges: new ExchangesCollection().add(exchange),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -36,7 +36,7 @@ describe('assetsManager reducer', () => {
         filter: new Immutable.Map({
           symbol: 'TIME',
         }),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -44,17 +44,17 @@ describe('assetsManager reducer', () => {
     expect(
       reducer(undefined, {
         type: a.EXCHANGE_GET_DATA_START,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
   it('sould handle EXCHANGE_GET_DATA_FINISH', () => {
-    const assetSymbols = ['TIME']
+    const assetSymbols = [ 'TIME' ]
     expect(
       reducer(undefined, {
         type: a.EXCHANGE_GET_DATA_FINISH,
         assetSymbols,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -62,7 +62,7 @@ describe('assetsManager reducer', () => {
     expect(
       reducer(undefined, {
         type: a.EXCHANGE_MIDDLEWARE_DISCONNECTED,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -72,7 +72,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_GET_TOKENS_LIST_START,
         tokens: new TokensCollection().add(token),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -82,7 +82,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_GET_TOKENS_LIST_FINISH,
         tokens: new TokensCollection().add(token),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -93,7 +93,7 @@ describe('assetsManager reducer', () => {
       reducer(state, {
         type: a.EXCHANGE_REMOVE_FOR_OWNER,
         exchange: exchange,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -104,7 +104,7 @@ describe('assetsManager reducer', () => {
       reducer(state, {
         type: a.EXCHANGE_REMOVE_FOR_OWNER,
         exchange: exchange,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -115,7 +115,7 @@ describe('assetsManager reducer', () => {
       reducer(state, {
         type: a.EXCHANGE_UPDATE,
         exchange: exchange,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -125,7 +125,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_EXCHANGES_LIST_GETTING_START,
         exchanges: new ExchangesCollection().add(exchange),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -136,7 +136,7 @@ describe('assetsManager reducer', () => {
         type: a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
         exchanges: new ExchangesCollection().add(exchange),
         lastPages: 1,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -145,7 +145,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_SET_PAGES_COUNT,
         count: 1,
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -155,7 +155,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_GET_OWNERS_EXCHANGES_START,
         exchangesForOwner: new ExchangesCollection().add(exchange),
-      })
+      }),
     ).toMatchSnapshot()
   })
 
@@ -165,7 +165,7 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH,
         exchanges: new ExchangesCollection(),
-      })
+      }),
     ).toMatchSnapshot()
   })
 })

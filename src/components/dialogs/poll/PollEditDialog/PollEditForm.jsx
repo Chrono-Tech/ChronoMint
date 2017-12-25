@@ -32,6 +32,9 @@ function mapStateToProps (state) {
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
     locale: state.get(DUCK_I18N).locale,
+    initialValues: {
+      deadline: new Date(),
+    },
   }
 }
 

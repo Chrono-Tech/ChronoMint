@@ -4,7 +4,6 @@ import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type CBEModel from 'models/CBEModel'
 import type CBENoticeModel from 'models/notices/CBENoticeModel'
 import { notify } from 'redux/notifier/actions'
-import { FORM_CBE_ADDRESS } from 'components/dialogs/CBEAddressDialog'
 
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'
@@ -21,12 +20,12 @@ export const listCBE = () => async (dispatch) => {
   dispatch({ type: CBE_LIST, list })
 }
 
-export const formCBELoadName = (account) => async (dispatch) => {
+export const formCBELoadName = (account, formName) => async (dispatch) => {
   dispatch({ type: CBE_LOADING, isLoading: true })
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const profile = await dao.getMemberProfile(account)
   dispatch({ type: CBE_LOADING, isLoading: false })
-  dispatch(change(FORM_CBE_ADDRESS, 'name', profile.name()))
+  dispatch(change(formName, 'name', profile.name()))
 }
 
 export const addCBE = (cbe: CBEModel | AbstractFetchingModel) => async (dispatch) => {

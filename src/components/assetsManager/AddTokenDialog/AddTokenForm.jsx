@@ -14,12 +14,14 @@ import platformIcon from 'assets/img/folder-multiple.svg'
 import platformIconInCircle from 'assets/img/assets1.svg'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
-import TokenModel from 'models/TokenModel'
+import TokenModel from 'models/tokens/TokenModel'
 import { createAsset } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ipfs from 'utils/IPFS'
+import FeeModel from 'models/tokens/FeeModel'
+import ReissuableModel from 'models/tokens/ReissuableModel'
 import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
@@ -52,15 +54,17 @@ const onSubmit = (values, dispatch) => {
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
-    symbol: values.get('tokenSymbol'),
+    symbol: values.get('tokenSymbol').toUpperCase(),
     balance: values.get('amount'),
     icon: values.get('tokenImg'),
-    fee: values.get('feePercent'),
-    feeAddress: values.get('feeAddress'),
-    withFee: !!values.get('withFee'),
+    fee: new FeeModel({
+      fee: values.get('feePercent'),
+      feeAddress: values.get('feeAddress'),
+      withFee: !!values.get('withFee'),
+    }),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: !!values.get('reissuable'),
+    isReissuable: new ReissuableModel({ value: !!values.get('reissuable') }),
     blockchain: 'Ethereum',
   })))
 }

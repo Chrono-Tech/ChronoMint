@@ -4,15 +4,26 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { closeNotifier } from 'redux/notifier/actions'
-import ModalContainer from 'components/modals/Modal'
+import { DUCK_SESSION } from 'redux/session/actions'
 import theme from 'styles/themes/default'
-import { HeaderPartial, DrawerPartial } from './partials'
-
 import './Markup.scss'
+import { DrawerPartial, HeaderPartial } from './partials'
 
-// import 'styles/globals/index.global.css'
+function mapStateToProps (state) {
+  return {
+    isCBE: state.get(DUCK_SESSION).isCBE,
+    notice: state.get('notifier').notice,
+  }
+}
 
-class Markup extends PureComponent {
+function mapDispatchToProps (dispatch) {
+  return {
+    handleCloseNotifier: () => dispatch(closeNotifier()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class Markup extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     notice: PropTypes.instanceOf(Object),
@@ -50,26 +61,8 @@ class Markup extends PureComponent {
           </div>
           <div styleName='middleBottom' />
           <ModalStack />
-          <ModalContainer />
         </div>
       </MuiThemeProvider>
     )
   }
 }
-
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const notifier = state.get('notifier')
-  return {
-    isCBE: session.isCBE,
-    notice: notifier.notice, /** @see null | AbstractNoticeModel */
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleCloseNotifier: () => dispatch(closeNotifier()),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Markup)

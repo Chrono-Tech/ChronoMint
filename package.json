@@ -1,9 +1,11 @@
 {
-  "name": "chronoMint",
-  "version": "0.3.2",
+  "name": "@chronobank/mint",
+  "version": "0.4.0",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
+    "@chronobank/login": "*",
+    "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",
@@ -76,7 +78,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.43",
+    "chronobank-smart-contracts": "github:chronobank/SmartContracts#release/release-1.1.44",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
@@ -133,13 +135,13 @@
     "webstomp-client": "^1.2.0"
   },
   "scripts": {
-    "dev": "node ./scripts/start.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx --debug --fix .",
     "lint:pr": "bash -c \"node node_modules/eslint/bin/eslint --format node_modules/eslint-friendly-formatter/index.js --ext .js,.jsx `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:report": "bash -c \"node ./node_modules/eslint/bin/eslint --format node_modules/eslint-html-reporter/reporter-team-city.js --output-file ./report/eslint-report-`date +%F`.html --debug --ext .js,.jsx .\"",
     "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
-    "start": "npm run dev",
+    "start": "node ./scripts/start.js",
+    "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
     "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
@@ -173,7 +175,7 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^@(.*)$": "<rootDir>/src/$1",
+      "^@chronobank(.*)$": "<rootDir>/packages/$1",
       "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
       "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
     }
@@ -181,5 +183,8 @@
   "engines": {
     "node": ">=7.9.0",
     "yarn": ">=1.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

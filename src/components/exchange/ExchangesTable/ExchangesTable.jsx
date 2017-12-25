@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
@@ -8,10 +7,14 @@ import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
+import globalStyles from 'layouts/partials/styles'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { getNextPage } from 'redux/exchange/actions'
+import Amount from 'models/Amount'
+import { DUCK_EXCHANGE, getNextPage } from 'redux/exchange/actions'
 import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import './ExchangesTable.scss'
 import ExchangeTransferDialog from '../ExchangeTransferDialog/ExchangeTransferDialog'
 
@@ -20,8 +23,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const exchange = state.get('exchange')
+  const exchange = state.get(DUCK_EXCHANGE)
+  const tokens = state.get(DUCK_TOKENS)
   return {
+    tokens,
     exchanges: exchange.exchanges(),
     exchangesForOwner: exchange.exchangesForOwner(),
     pagesCount: exchange.pagesCount(),
@@ -56,6 +61,7 @@ export default class ExchangesTable extends React.PureComponent {
   static propTypes = {
     exchanges: PropTypes.instanceOf(ExchangesCollection),
     exchangesForOwner: PropTypes.instanceOf(ExchangesCollection),
+    tokens: PropTypes.instanceOf(TokensCollection),
     handleOpenDetails: PropTypes.func,
     handleOpenTransfer: PropTypes.func,
     filter: PropTypes.instanceOf(Immutable.Map),
@@ -77,14 +83,7 @@ export default class ExchangesTable extends React.PureComponent {
     this.setState({ showMyExchanges: isInputChecked })
   }
 
-  renderRow (exchange: ExchangeOrderModel) {
-    const filterMode = this.props.filter.get('filterMode')
-    let showBuy = true
-    let showSell = true
-    if (filterMode) {
-      showBuy = filterMode.name === 'BUY'
-      showSell = filterMode.name === 'SELL'
-    }
+  renderMyExchanges (exchange: ExchangeOrderModel) {
     return (
       <div styleName='row' key={exchange.id()}>
         <div styleName='values'>
@@ -100,103 +99,126 @@ export default class ExchangesTable extends React.PureComponent {
             }
           </div>
           <div styleName='colPrice'>
-            {showBuy &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
-              <TokenValue value={exchange.sellPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
-            }
-            {showSell &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
-              <TokenValue value={exchange.buyPrice()} symbol='ETH' />
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
+            </div>
+          </div>
+          <div styleName='colLimits'>
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
+            </div>
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
+            </div>
+          </div>
+        </div>
+        {!exchange.isPending() ?
+          <div styleName='colActions'>
+            <div styleName='buttonWrapper'>
+              <RaisedButton
+                label={(
+                  <span styleName='buttonLabel'>
+                    <Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />
+                  </span>)}
+                onTouchTap={() => {
+                  this.props.handleOpenTransfer(exchange, exchange.symbol())
+                }}
+                {...globalStyles.buttonRaisedMultyLine}
+              />
+            </div>
+            <div styleName='buttonWrapper'>
+              <RaisedButton
+                label={<span styleName='buttonLabel'><Translate value={prefix('depositEth')} /></span>}
+                onTouchTap={() => {
+                  this.props.handleOpenTransfer(exchange, 'ETH')
+                }}
+                {...globalStyles.buttonRaisedMultyLine}
+              />
+            </div>
+          </div>
+          : <div styleName='colActions'><Preloader /></div>
+        }
+      </div>
+    )
+  }
+
+  renderRow (exchange: ExchangeOrderModel) {
+    if (exchange.assetBalance() <= 0 && exchange.ethBalance() <= 0) {
+      return null
+    }
+
+    const filterMode = this.props.filter.get('filterMode')
+    let showBuy = true
+    let showSell = true
+    if (filterMode) {
+      showBuy = filterMode.name === 'BUY'
+      showSell = filterMode.name === 'SELL'
+    }
+    return (
+      <div styleName='row' key={exchange.id()}>
+        <div styleName='values'>
+          <div styleName='colTrader'>
+            <span styleName='rowTitle'><Translate value={prefix('exchangeAddress')} />: </span>
+            <div styleName='ellipsis'>{exchange.address()}</div>
+          </div>
+          <div styleName='colPrice'>
+            {showBuy && exchange.assetBalance() > 0 &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
+              <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
+            </div>
+            }
+            {showSell && exchange.ethBalance() > 0 &&
+            <div styleName='colWrapper'>
+              <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
+              <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
             </div>
             }
           </div>
           <div styleName='colLimits'>
-            {showBuy &&
+            {showBuy && exchange.assetBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
-              <TokenValue
-                value={new BigNumber(0)}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
-              -
-              <TokenValue
-                value={exchange.assetBalance()}
-                symbol={exchange.symbol()}
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             }
-            {showSell &&
+            {showSell && exchange.ethBalance() > 0 &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
-              <TokenValue
-                value={new BigNumber(0)}
-                symbol='ETH'
-                noRenderPrice
-              />
-              -
-              <TokenValue
-                value={exchange.ethBalance()}
-                symbol='ETH'
-                noRenderPrice
-              />
+              <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
             </div>
             }
           </div>
         </div>
-        {
-          this.state.showMyExchanges ?
-            <div styleName='colActions'>
-              {!exchange.isPending() &&
-              <div styleName='buttonWrapper'>
-                <RaisedButton
-                  label={<Translate value={prefix('depositTokens')} />}
-                  onTouchTap={() => {
-                    this.props.handleOpenTransfer(exchange, exchange.symbol())
-                  }}
-                />
-              </div>
-              }
-              {!exchange.isPending() &&
-              <div styleName='buttonWrapper'>
-                <RaisedButton
-                  label={<Translate value={prefix('depositEth')} />}
-                  onTouchTap={() => {
-                    this.props.handleOpenTransfer(exchange, 'ETH')
-                  }}
-                />
-              </div>
-              }
-              {exchange.isPending() && <Preloader />}
-            </div>
-            :
-            <div styleName='colActions'>
-              {showBuy &&
-              <div styleName='buttonWrapper'>
-                <RaisedButton
-                  label={<Translate value={prefix('buy')} />}
-                  onTouchTap={() => {
-                    this.props.handleOpenDetails(exchange, true)
-                  }}
-                />
-              </div>
-              }
-              {showSell &&
-              <div styleName='buttonWrapper'>
-                <RaisedButton
-                  label={<Translate value={prefix('sell')} />}
-                  onTouchTap={() => {
-                    this.props.handleOpenDetails(exchange, false)
-                  }}
-                />
-              </div>
-              }
-            </div>
-        }
+        <div styleName='colActions'>
+          {showBuy && exchange.assetBalance() > 0 &&
+          <div styleName='buttonWrapper'>
+            <RaisedButton
+              label={<span><Translate value={prefix('buy')} /> {exchange.symbol()}</span>}
+              onTouchTap={() => {
+                this.props.handleOpenDetails(exchange, true)
+              }}
+            />
+          </div>
+          }
+          {showSell && exchange.ethBalance() > 0 &&
+          <div styleName='buttonWrapper'>
+            <RaisedButton
+              label={<span><Translate value={prefix('sell')} /> {exchange.symbol()}</span>}
+              onTouchTap={() => {
+                this.props.handleOpenDetails(exchange, false)
+              }}
+            />
+          </div>
+          }
+        </div>
       </div>
     )
   }
@@ -243,6 +265,7 @@ export default class ExchangesTable extends React.PureComponent {
     } else {
       filteredItems = this.props.exchanges.items()
     }
+
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -275,7 +298,10 @@ export default class ExchangesTable extends React.PureComponent {
                     if (b.isPending()) return 1
                     return 0
                   })
-                  .map((exchange) => this.renderRow(exchange))
+                  .map((exchange) =>
+                    this.state.showMyExchanges
+                      ? this.renderMyExchanges(exchange)
+                      : this.renderRow(exchange))
               }
             </div>
             <div styleName='tableFooter'>

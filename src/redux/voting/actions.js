@@ -1,22 +1,26 @@
 import votingService from 'services/VotingService'
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
+import type PollNoticeModel from 'models/notices/PollNoticeModel'
+import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
+import Immutable from 'immutable'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
-import {
-  POLLS_CREATE,
-  POLLS_LIST,
-  POLLS_LOAD,
-  POLLS_REMOVE,
-  POLLS_REMOVE_STUB,
-  POLLS_UPDATE,
-  POLLS_VOTE_LIMIT,
-  VOTING_POLLS_COUNT,
-} from 'redux/voting/reducer'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
+import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
+import TokenModel from 'models/tokens/TokenModel'
+
+export const POLLS_INIT = 'voting/INIT'
+export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
+export const POLLS_LOAD = 'voting/POLLS_LOAD'
+export const POLLS_LIST = 'voting/POLLS_LIST'
+export const POLLS_CREATE = 'voting/POLLS_CREATE'
+export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
+export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
+export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 
 export const DUCK_VOTING = 'voting'
 const PAGE_SIZE = 20

@@ -1,30 +1,36 @@
 import BigNumber from 'bignumber.js'
-import { CircularProgress } from 'material-ui'
+import Preloader from 'components/common/Preloader/Preloader'
+import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { DUCK_MARKET } from 'redux/market/action'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { integerWithDelimiter } from 'utils/formatter'
 
 import './TokenValue.scss'
 
 const mapStateToProps = (state) => {
-  const { isInited, prices, selectedCurrency } = state.get('market')
+  const { isInited, prices, selectedCurrency } = state.get(DUCK_MARKET)
   return {
     isInited,
     prices,
     selectedCurrency,
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
 @connect(mapStateToProps, null)
 class TokenValue extends PureComponent {
   static propTypes = {
-    value: PropTypes.object,
+    value: PropTypes.instanceOf(Amount),
+    tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
     className: PropTypes.string,
     prefix: PropTypes.string,
     isInvert: PropTypes.bool,
-    isLoading: PropTypes.bool,
     prices: PropTypes.object,
     selectedCurrency: PropTypes.string,
     isInited: PropTypes.bool,
@@ -45,35 +51,39 @@ class TokenValue extends PureComponent {
     return `.${fractionString}`
   }
 
-  renderPrice () {
-    const {
-      prices, value, symbol, selectedCurrency, isInited,
-    } = this.props
-    const price = isInited && prices[symbol] && prices[symbol][selectedCurrency] ? prices[symbol][selectedCurrency] : null
+  renderPrice (valueWithoutDecimals, symbol) {
+    const { prices, selectedCurrency, isInited } = this.props
+    const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ]
+      ? prices[ symbol ][ selectedCurrency ]
+      : null
     if (price === null || price === 0) {
       return null
     }
-    const valueInCurrency = integerWithDelimiter(value.mul(price), true)
+    const valueInCurrency = integerWithDelimiter(valueWithoutDecimals.mul(price), true)
     return (
       <span styleName='price'>{`(US$${valueInCurrency})`}</span>
     )
   }
 
   render () {
-    const {
-      value, isInvert, isLoading, symbol, prefix, noRenderPrice, style,
-    } = this.props
+    const { value, isInvert, prefix, noRenderPrice, style } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
-    return isLoading ? (
-      <CircularProgress size={24} />
-    ) : (
-      <span styleName={defaultMod} className='TokenValue__root' style={style}>
-        {prefix}
-        <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(value)}</span>
-        <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(value)} {symbol}</span>
-        {!noRenderPrice && this.renderPrice()}
-      </span>
-    )
+
+    // TODO @dkchv: remove symbol from props!!!!
+    const symbol = this.props.symbol || value.symbol()
+    const token: TokenModel = this.props.tokens.item(symbol)
+    const valueWithoutDecimals = token.removeDecimals(value)
+
+    return !value.isLoaded() || !token.isFetched()
+      ? <Preloader small />
+      : (
+        <span styleName={defaultMod} className='TokenValue__root' style={style}>
+          {prefix}
+          <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(valueWithoutDecimals)}</span>
+          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(valueWithoutDecimals)} {symbol}</span>
+          {!noRenderPrice && this.renderPrice(valueWithoutDecimals, symbol)}
+        </span>
+      )
   }
 }
 

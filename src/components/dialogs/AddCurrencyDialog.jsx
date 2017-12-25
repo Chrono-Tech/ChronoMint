@@ -1,43 +1,54 @@
-import Immutable from 'immutable'
-import PropTypes from 'prop-types'
-import { RaisedButton, FloatingActionButton, FontIcon, Checkbox } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { TOKEN_ICONS } from 'assets'
 import classnames from 'classnames'
-import { connect } from 'react-redux'
-import TokenModel from 'models/TokenModel'
-import { DUCK_MAIN_WALLET, watchInitWallet } from 'redux/mainWallet/actions'
-import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
-import { DUCK_SETTINGS_ERC20_TOKENS, listTokens } from 'redux/settings/erc20/tokens/actions'
-import { modalsOpen, modalsClose } from 'redux/modals/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
 import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import AddTokenDialog from './AddTokenDialog'
+import Immutable from 'immutable'
+import { Checkbox, FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
+import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from 'models/tokens/TokenModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import BalancesCollection from 'models/tokens/BalancesCollection'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { modalsClose, modalsOpen } from 'redux/modals/actions'
+import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import BalanceModel from 'models/tokens/BalanceModel'
+import ProfileModel from 'models/ProfileModel'
+import Amount from 'models/Amount'
+import AddTokenDialog from './AddTokenDialog/AddTokenDialog'
 import ModalDialog from './ModalDialog'
-
 import './AddCurrencyDialog.scss'
 
 class TokenRow extends PureComponent {
-
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
+    balances: PropTypes.instanceOf(BalancesCollection),
     isSelected: PropTypes.bool,
-    symbol: PropTypes.string,
     onClick: PropTypes.func,
+    profile: PropTypes.instanceOf(ProfileModel),
   }
 
   handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
 
-  renderCheckbox = ({ isSelected }) => this.props.token.isOptional() ? <Checkbox checked={isSelected} /> : null
+  renderCheckbox = ({ isSelected }) => {
+    if (this.props.token.isOptional() && !this.props.profile.tokens().get(this.props.token.address())) {
+      return <Checkbox checked={isSelected} />
+    }
+    return null
+  }
 
   render () {
-    const {
-      isSelected,
-      token,
-      symbol,
-    } = this.props
+    const { isSelected, token, balances } = this.props
+    const symbol = token.symbol()
+    let balance = balances.item(token.id())
+    if (!balance.amount().isLoaded()) {
+      balance = new BalanceModel({ amount: new Amount(0, token.symbol()) })
+    }
 
     return (
       <div
@@ -47,18 +58,14 @@ class TokenRow extends PureComponent {
       >
         <div styleName='cell'>
           <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
             <div styleName='label'>{symbol}</div>
           </div>
         </div>
         <div styleName='cell cellAuto'>
           <div styleName='symbol'>{symbol}</div>
           <div styleName='value'>
-            <TokenValue
-              value={token.balance()}
-              symbol={token.symbol()}
-              isLoading={!token.isFetched()}
-            />
+            <TokenValue value={balance.amount()} />
           </div>
         </div>
         <div styleName='cell'>
@@ -71,40 +78,27 @@ class TokenRow extends PureComponent {
   }
 }
 
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
-
 function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
 }
 
 function mapStateToProps (state) {
-  const { profile } = state.get(DUCK_SESSION)
   const wallet = state.get(DUCK_MAIN_WALLET)
-  const settings = state.get(DUCK_SETTINGS_ERC20_TOKENS)
-
+  const session = state.get(DUCK_SESSION)
   return {
-    profile,
-    wallet,
-    tokens: settings.list.merge(wallet.tokens()).sortBy((token) => token.symbol()),
-    isFetched: settings.isFetched && !wallet.isFetching() && wallet.isFetched(),
+    profile: session.profile,
+    tokens: state.get(DUCK_TOKENS),
+    balances: wallet.balances(),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    loadTokens: () => dispatch(listTokens()),
     handleAddToken: () => dispatch(modalsOpen({
       component: AddTokenDialog,
     })),
     modalsClose: () => dispatch(modalsClose()),
     updateUserProfile: (profile) => dispatch(updateUserProfile(profile)),
-    initWallet: () => dispatch(watchInitWallet()),
   }
 }
 
@@ -112,13 +106,11 @@ function mapDispatchToProps (dispatch) {
 export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
     profile: PropTypes.object,
-    tokens: PropTypes.object,
-    isFetched: PropTypes.bool,
-    loadTokens: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
+    balances: PropTypes.instanceOf(BalancesCollection),
     handleAddToken: PropTypes.func,
     modalsClose: PropTypes.func,
     updateUserProfile: PropTypes.func,
-    initWallet: PropTypes.func,
   }
 
   constructor () {
@@ -127,12 +119,6 @@ export default class AddCurrencyDialog extends PureComponent {
     this.handleSave = this.handleSave.bind(this)
     this.state = {
       selectedTokens: [],
-    }
-  }
-
-  componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.loadTokens()
     }
   }
 
@@ -150,33 +136,33 @@ export default class AddCurrencyDialog extends PureComponent {
     })
   }
 
-  async handleSave () {
-    const tokens = this.props.tokens.filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
-    const tokensAddresses = tokens.toArray().map((item) => item.address())
+  handleSave () {
+    const tokens = this.props.tokens.items().filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
+    const tokensAddresses = tokens.map((item) => item.address())
     const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
 
     this.props.modalsClose()
-    await this.props.updateUserProfile(profile)
-    this.props.initWallet()
+    this.props.updateUserProfile(profile)
   }
 
-  renderRow = (selectedTokens) => ([symbol, token]: [string, TokenModel]) => {
+  renderRow = (selectedTokens, balances, profile) => (token) => {
     const isSelected = selectedTokens.includes(token.symbol())
 
     return (
       <TokenRow
+        profile={profile}
+        balances={balances}
         key={token.id()}
         token={token}
         isSelected={isSelected}
-        symbol={symbol}
         onClick={this.handleCurrencyChecked}
       />
     )
   }
 
-  renderTokens = ({ tokens, selectedTokens }) => (
+  renderTokens = ({ balances, tokens, selectedTokens, profile }) => (
     <div styleName='table'>
-      {tokens.entrySeq().toArray().map(this.renderRow(selectedTokens))}
+      {tokens.items().map(this.renderRow(selectedTokens, balances, profile))}
     </div>
   )
 
@@ -201,9 +187,11 @@ export default class AddCurrencyDialog extends PureComponent {
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
               <WithLoader
-                showLoader={!this.props.isFetched}
+                showLoader={!this.props.tokens.isFetched()}
                 selectedTokens={this.state.selectedTokens}
                 tokens={this.props.tokens}
+                balances={this.props.balances}
+                profile={this.props.profile}
               >
                 {this.renderTokens}
               </WithLoader>

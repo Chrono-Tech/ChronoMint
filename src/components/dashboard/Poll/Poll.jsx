@@ -1,16 +1,20 @@
-import BigNumber from 'bignumber.js'
-import { FlatButton, Paper, RaisedButton } from 'material-ui'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
-import { modalsOpen } from 'redux/modals/actions'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
+import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
+import { FlatButton, Paper, RaisedButton } from 'material-ui'
+import Amount from 'models/Amount'
+import { SHORT_DATE } from 'models/constants'
+import TokenModel from 'models/tokens/TokenModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import Preloader from 'components/common/Preloader/Preloader'
+import { Translate } from 'react-redux-i18n'
+import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import './Poll.scss'
 
 function prefix (token) {
@@ -18,8 +22,10 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
+  const tokens = state.get(DUCK_TOKENS)
   return {
     isCBE: state.get(DUCK_SESSION).isCBE,
+    timeToken: tokens.item('TIME'),
   }
 }
 
@@ -47,8 +53,9 @@ function mapDispatchToProps (dispatch, props) {
 export default class Poll extends PureComponent {
   static propTypes = {
     model: PropTypes.object,
+    timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
-    timeDeposit: PropTypes.object,
+    deposit: PropTypes.instanceOf(Amount),
     handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
@@ -141,13 +148,26 @@ export default class Poll extends PureComponent {
                   <div styleName='entryValue'>
                     {details.voteLimitInTIME === null
                       ? (<i>Unlimited</i>)
-                      : (<span>{details.voteLimitInTIME.round(4).toString()} TIME</span>)
+                      : (
+                        <span>{this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.voteLimit)} TIME`
+                          : <Preloader />
+                        }
+                        </span>)
                     }
                   </div>
                 </div>
                 <div styleName='entry entryReceived'>
                   <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                  <div styleName='entryValue'>{details.received.round(4).toString()} TIME</div>
+                  <div styleName='entryValue'>
+                    <span>
+                      {
+                        this.props.timeToken.isFetched()
+                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          : <Preloader />
+                      }
+                    </span>
+                  </div>
                 </div>
                 <div styleName='entry entryVariants'>
                   <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
@@ -216,8 +236,8 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     primary
-                    disabled={model.isFetching() || !(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()}
-                    onClick={this.props.handleVote}
+                    disabled={model.isFetching() || this.props.deposit.isZero()}
+                    onClick={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
                   />
                 )
                 : null
@@ -229,4 +249,3 @@ export default class Poll extends PureComponent {
     )
   }
 }
-

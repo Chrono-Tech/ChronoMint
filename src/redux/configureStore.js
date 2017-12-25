@@ -3,7 +3,7 @@ import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'react-redux-i18n'
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
 import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
@@ -42,6 +42,7 @@ const createSelectLocationState = () => {
 const IGNORED_ACTIONS = [
   'market/UPDATE_RATES',
   'market/UPDATE_LAST_MARKET',
+  'market/UPDATE_PRICES',
 ]
 
 let logActions = process.env.NODE_ENV === 'development'
@@ -84,7 +85,9 @@ const configureStore = () => {
       saveAccountMiddleWare
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        actionsBlacklist: IGNORED_ACTIONS,
+      })()
       : (f) => f,
   )(createStore)
 

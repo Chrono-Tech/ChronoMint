@@ -1,62 +1,79 @@
-import React, { PureComponent } from 'react'
+import Immutable from 'immutable'
+import { TOKEN_ICONS } from 'assets'
+import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
+import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
+import { IPFSImage } from 'components'
+import Preloader from 'components/common/Preloader/Preloader'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
+import IconSection from 'components/dashboard/IconSection/IconSection'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { reduxForm, formValueSelector, Field, formPropTypes } from 'redux-form/immutable'
-import { SelectField, TextField } from 'redux-form-material-ui'
-import { MuiThemeProvider, MenuItem, RaisedButton, Paper } from 'material-ui'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import TokenValue from 'components/common/TokenValue/TokenValue'
-import { IPFSImage } from 'components'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import IconSection from 'components/dashboard/IconSection/IconSection'
-import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
-import inversedTheme from 'styles/themes/inversed'
+import { SelectField, Slider, TextField } from 'redux-form-material-ui'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import MainWallet from 'models/wallet/MainWalletModel'
+import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
+import AllowanceModel from 'models/wallet/AllowanceModel'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
-import TokenModel from 'models/TokenModel'
-import validate from './validate'
+import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import './SendTokensForm.scss'
-
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  BTC: require('assets/img/icn-bitcoin.svg'),
-  BCC: require('assets/img/icn-bitcoin-cash.svg'),
-  TIME: require('assets/img/icn-time.svg'),
-}
+import validate from './validate'
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
 
+const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 2,
+  step: 0.1,
+}
+
 function prefix (token) {
   return 'components.dashboard.SendTokens.' + token
 }
 
 function mapStateToProps (state) {
+  const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const selector = formValueSelector(FORM_SEND_TOKENS)
-  const symbol = selector(state, 'symbol')
+  const tokenId = selector(state, 'symbol')
+  const feeMultiplier = selector(state, 'feeMultiplier')
+  const recipient = selector(state, 'recipient')
 
   return {
-    account: state.get('session').account,
-    token: getCurrentWallet(state).tokens().get(symbol),
+    balance: getCurrentWallet(state).balances().item(tokenId).amount(),
+    allowance: wallet.allowances().item(recipient, tokenId),
+    account: state.get(DUCK_SESSION).account,
+    token: state.get(DUCK_TOKENS).item(tokenId),
+    recipient,
+    feeMultiplier,
   }
 }
 
 @connect(mapStateToProps, null)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
-export class SendTokensForm extends PureComponent {
+export default class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     wallet: PropTypes.object,
-    token: PropTypes.object,
+    allowance: PropTypes.instanceOf(AllowanceModel),
+    recipient: PropTypes.string,
+    token: PropTypes.instanceOf(TokenModel),
+    feeMultiplier: PropTypes.number,
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   constructor () {
     super(...arguments)
@@ -65,13 +82,49 @@ export class SendTokensForm extends PureComponent {
     }
   }
 
-  // TODO @dkchv: !!! restore
-  async checkIsContract (address) {
-    const isContact = contractsManagerDAO.isContract(address)
+  componentWillReceiveProps (newProps) {
+    if (newProps.token.address() !== this.props.token.address()) {
+      this.checkIsContract(newProps.token.address())
+        .then((result) => {
+          this.setState({
+            isContract: result,
+          })
+        })
+    }
+
+    if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
+      this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
+    }
   }
 
-  renderHead (token = new TokenModel()) {
-    const symbol = token.symbol()
+  checkIsContract (address): Promise {
+    return contractsManagerDAO.isContract(address)
+  }
+
+  handleTransfer = (values) => {
+    this.props.onSubmit(values.set('action', ACTION_TRANSFER))
+  }
+
+  handleApprove = (values) => {
+    if (this.props.allowance.amount().gt(0)) {
+      values = values.set('amount', 0)
+    }
+    this.props.onSubmit(values.set('action', ACTION_APPROVE))
+  }
+
+  handleRevoke = () => {
+    this.props.onSubmit(new Immutable.Map({
+      action: ACTION_APPROVE,
+      symbol: this.props.token.symbol(),
+      amount: 0,
+      recipient: this.props.recipient,
+    }))
+  }
+
+  renderHead () {
+    const { token, wallet } = this.props
+    const balances = wallet.balances()
+    const currentBalance = balances.item(token.id())
 
     return (
       <div>
@@ -81,45 +134,54 @@ export class SendTokensForm extends PureComponent {
             <IPFSImage
               styleName='content'
               multihash={token.icon()}
-              fallback={ICON_OVERRIDES[symbol]}
+              fallback={TOKEN_ICONS[ token.symbol() ]}
             />
           )}
         >
           <MuiThemeProvider theme={inversedTheme}>
-            <Field
-              component={SelectField}
-              name='symbol'
-              fullWidth
-              {...styles}
-            >
-              {this.props.wallet.tokens().keySeq().toArray().map((symbol) => (
-                <MenuItem
-                  key={symbol}
-                  value={symbol}
-                  primaryText={symbol}
-                />
-              ))}
-            </Field>
+            {balances.size() === 0
+              ? <Preloader />
+              : (
+                <Field
+                  component={SelectField}
+                  name='symbol'
+                  fullWidth
+                  {...styles}
+                >
+                  {balances.items().map((balance) => (
+                    <MenuItem
+                      key={balance.id()}
+                      value={balance.id()}
+                      primaryText={balance.symbol()}
+                    />
+                  ))}
+                </Field>
+              )
+            }
           </MuiThemeProvider>
         </IconSection>
         <div styleName='balance'>
           <div styleName='label'><Translate value={prefix('balance')} />:</div>
           <div styleName='value'>
-            <TokenValue
-              isInvert
-              isLoading={!token.isFetched()}
-              value={token.balance()}
-              symbol={token.symbol()}
-            />
+            <TokenValue isInvert value={currentBalance.amount()} />
           </div>
         </div>
+        {
+          token.isERC20() && this.props.allowance &&
+          <div styleName='balance'>
+            <div styleName='label'><Translate value={prefix('allowance')} />: <TokenValue isInvert
+                                                                                          value={this.props.allowance.amount()} />
+            </div>
+          </div>
+        }
       </div>
     )
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, onSubmit, wallet } = this.props
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance, recipient } = this.props
     const { isContract } = this.state
+    const isApprove = allowance.amount().lte(0)
 
     return (
       <div>
@@ -127,7 +189,7 @@ export class SendTokensForm extends PureComponent {
           <img
             styleName='fromIcon'
             src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
-          /> {wallet.address()}
+          /> {wallet.addresses().item(token.blockchain()).address()}
         </div>
         <div>
           <Field
@@ -147,24 +209,55 @@ export class SendTokensForm extends PureComponent {
             />
           </div>
         </div>
+        {!(feeMultiplier && token.feeRate()) ? null : (
+          <div>
+            <div styleName='feeRate'>
+              <div>
+                <small>
+                  <Translate
+                    value={prefix('feeRate')}
+                    multiplier={feeMultiplier.toFixed(1)}
+                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
+                  />
+                </small>
+              </div>
+              <Field
+                component={Slider}
+                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+                name='feeMultiplier'
+                {...FEE_RATE_MULTIPLIER}
+              />
+            </div>
+          </div>
+        )}
         <div styleName='row'>
           <div styleName='send'>
             <RaisedButton
               label={<Translate value={prefix('send')} />}
               primary
               style={{ float: 'right', marginTop: '20px' }}
-              disabled={pristine || invalid}
-              onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_TRANSFER)))}
+              disabled={pristine || invalid || token.isLocked()}
+              onTouchTap={!pristine && !invalid && !token.isLocked() && handleSubmit(this.handleTransfer)}
             />
-            {token && token.dao().isApproveRequired() && (
+            {token.isERC20() && isApprove && (
               <RaisedButton
                 label={<Translate value={prefix('approve')} />}
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract}
-                onTouchTap={handleSubmit((values) => onSubmit(values.set('action', ACTION_APPROVE)))}
+                onTouchTap={!pristine && !invalid && isContract && handleSubmit(this.handleApprove)}
               />
             )}
+            {token.isERC20() && !isApprove && (
+              <RaisedButton
+                label={<Translate value={prefix('revoke')} />}
+                primary
+                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
+                disabled={!isContract}
+                onTouchTap={isContract && token && recipient && this.handleRevoke}
+              />
+            )}
+
           </div>
         </div>
       </div>
@@ -172,14 +265,12 @@ export class SendTokensForm extends PureComponent {
   }
 
   render () {
-    const { token } = this.props
-
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
-            head={this.renderHead(token)}
-            body={this.renderBody({ token })}
+            head={this.renderHead()}
+            body={this.renderBody()}
           />
         </form>
       </Paper>
@@ -187,4 +278,3 @@ export class SendTokensForm extends PureComponent {
   }
 }
 
-export default SendTokensForm

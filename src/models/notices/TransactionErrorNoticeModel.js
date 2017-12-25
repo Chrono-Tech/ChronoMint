@@ -1,7 +1,6 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n } from 'platform/i18n'
+import TxError from 'models/TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
-import { TxError } from '../../dao/AbstractContractDAO'
 import type TxExecModel from '../TxExecModel'
 
 export default class TransactionErrorNoticeModel extends abstractNoticeModel({
@@ -42,23 +41,5 @@ export default class TransactionErrorNoticeModel extends abstractNoticeModel({
       })
     }
     return details
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock () {
-    return this.tx().historyBlock(this._error(), this.date())
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this._error()}
-        {this.tx().description(false, { marginTop: '10px' })}
-        <p style={{ marginBottom: '0' }}>
-          <small>{this.date()}</small>
-        </p>
-      </div>
-    )
   }
 }

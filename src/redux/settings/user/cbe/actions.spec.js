@@ -5,8 +5,7 @@ import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import * as notifier from 'redux/notifier/actions'
-import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
-import * as validator from 'components/forms/validator'
+import * as validator from 'models/validator'
 import * as a from './actions'
 
 const user = new ProfileModel({ name: 'testUser' })
@@ -43,7 +42,7 @@ describe('settings cbe actions', () => {
     await store.dispatch(a.addCBE(cbe))
   })
 
-  it('should show load name to CBE form', () => store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
+  it('should show load name to CBE form', () => store.dispatch(a.formCBELoadName(cbe.address(), 'TEST_FORM')).then(() => {
     expect(store.getActions()).toEqual([
       {
         isLoading: true,
@@ -56,7 +55,7 @@ describe('settings cbe actions', () => {
       {
         meta: {
           field: 'name',
-          form: FORM_CBE_ADDRESS,
+          form: 'TEST_FORM',
           persistentSubmitErrors: undefined,
           touch: undefined,
         },

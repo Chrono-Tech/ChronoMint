@@ -1,9 +1,12 @@
-import BigNumber from 'bignumber.js'
+import type Amount from 'models/Amount'
 import type TxModel from 'models/TxModel'
-import { address } from 'components/forms/validator'
+import { address } from 'models/validator'
+import TokenModel from 'models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
-export const TXS_PER_PAGE = 10
+export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
+export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
+export const EVENT_APPROVAL_TRANSFER = 'TokenApprovalTransfer'
 
 export default class AbstractTokenDAO extends AbstractContractDAO {
   constructor (json, at) {
@@ -14,12 +17,8 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAccountBalance (account = this.getAccount()): BigNumber {
+  getAccountBalance (account): Promise {
     throw new Error('should be overridden')
-  }
-
-  isApproveRequired () {
-    return true
   }
 
   getAddressValidator () {
@@ -30,33 +29,28 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
     throw new Error('should be overridden')
   }
 
-  initMetaData () {
-    throw new Error('should be overridden')
-  }
-
-  getDecimals () {
-    throw new Error('should be overridden')
-  }
-
-  addDecimals (amount: BigNumber): BigNumber {
+  addDecimals (amount: Amount): Amount {
     return amount
   }
 
-  removeDecimals (amount: BigNumber): BigNumber {
+  removeDecimals (amount: Amount): Amount {
     return amount
   }
 
+  /**
+   * @abstract
+   */
   getSymbol () {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  transfer (account, amount: BigNumber) {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, fee): Promise {
     throw new Error('should be overridden')
   }
 
   // eslint-disable-next-line no-unused-vars
-  getTransfer (id, account = this.getAccount()): Promise<Array<TxModel>> {
+  getTransfer (id, account): Promise<Array<TxModel>> {
     throw new Error('should be overridden')
   }
 
@@ -66,7 +60,7 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
    * @see TxModel
    */
   // eslint-disable-next-line no-unused-vars
-  watchTransfer (callback) {
+  watchTransfer (account, callback) {
     throw new Error('should be overridden')
   }
 

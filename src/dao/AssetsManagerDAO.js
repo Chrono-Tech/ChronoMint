@@ -1,7 +1,10 @@
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
-import web3Provider from 'Login/network/Web3Provider'
 import TxModel from 'models/TxModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import Web3Converter from 'utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -9,7 +12,6 @@ import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDA
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 
 const TX_ASSET_CREATED = 'AssetCreated'
-const TXS_PER_PAGE = 10
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -17,15 +19,15 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   getTokenExtension (platform) {
-    return this._call('getTokenExtension', [platform])
+    return this._call('getTokenExtension', [ platform ])
   }
 
   async getParticipatingPlatformsForUser (account) {
-    const platformsList = await this._call('getParticipatingPlatformsForUser', [account])
+    const platformsList = await this._call('getParticipatingPlatformsForUser', [ account ])
     let formatPlatformsList = {}
     if (platformsList.length) {
       for (let platform of platformsList) {
-        formatPlatformsList[platform] = {
+        formatPlatformsList[ platform ] = {
           address: platform,
           name: null,
         }
@@ -35,29 +37,31 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getSystemAssetsForOwner (owner) {
-    const assets = await this._call('getSystemAssetsForOwner', [owner])
+    const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}
     let currentPlatform
-    for (let i = 0; i < assets[0].length; i++) {
-
-      if (!this.isEmptyAddress(assets[1][i])) currentPlatform = assets[1][i]
-
-      assetsList[assets[0][i]] = {
-        address: assets[0][i],
-        platform: currentPlatform,
-        totalSupply: assets[2][i],
+    addresses.map((address, i) => {
+      if (!this.isEmptyAddress(platforms[ i ])) {
+        currentPlatform = platforms[ i ]
       }
-    }
+
+      assetsList[ address ] = {
+        address,
+        platform: currentPlatform,
+        totalSupply: totalSupply[ i ],
+      }
+
+    })
     return assetsList
   }
 
   async getManagers (owner) {
-    const managersList = await this._call('getManagers', [owner])
+    const managersList = await this._call('getManagers', [ owner ])
     let formatManagersList = {}
     managersList.map((manager) => {
-      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
-        formatManagersList[manager] = manager
+      if (!this.isEmptyAddress(manager) && !formatManagersList[ manager ]) {
+        formatManagersList[ manager ] = manager
       }
     })
 
@@ -65,15 +69,16 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getManagersForAssetSymbol (symbol) {
-    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [symbol])
+    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [ symbol ])
 
-    let formatManagersList = {}
-    managersListForSymbol.map((manager) => {
-      if (!this.isEmptyAddress(manager) && !formatManagersList[manager]) {
-        formatManagersList[manager] = manager
+    let formatManagersList = new OwnerCollection()
+    managersListForSymbol.map((address) => {
+      if (this.isEmptyAddress(address)) {
+        return
       }
+      formatManagersList = formatManagersList.add(new OwnerModel({ address }))
     })
-    return Object.keys(formatManagersList)
+    return formatManagersList
   }
 
   createTxModel (tx, account, block, time): TxModel {
@@ -92,6 +97,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gasPrice,
       time,
       symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol),
+      tokenAddress: tx.args.token,
       args: tx.args,
     })
   }
@@ -124,6 +130,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
-    return Promise.all(promises)
+    const transactions = await Promise.all(promises)
+    return transactions
   }
 }

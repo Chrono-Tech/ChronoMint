@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, getTokens } from 'redux/assetsManager/actions'
+import { createPlatform, getAssetsManagerData } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
@@ -18,20 +18,46 @@ function prefix (token) {
   return `Assets.AssetManager.${token}`
 }
 
-export class AssetManager extends PureComponent {
+function mapStateToProps (state) {
+  const assetsManager = state.get('assetsManager')
+  return {
+    usersPlatformsCount: assetsManager.usersPlatformsCount,
+    tokensCount: Object.keys(assetsManager.assets).length,
+    managersCount: assetsManager.managersCount,
+    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
+    selectedPlatform: assetsManager.selectedPlatform,
+    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    createPlatform: () => dispatch(createPlatform()),
+    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
+    handleAddPlatformDialog: () => dispatch(modalsOpen({
+      component: AddPlatformDialog,
+    })),
+    handleAddTokenDialog: () => dispatch(modalsOpen({
+      component: AddTokenDialog,
+    })),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class AssetManager extends PureComponent {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
     usersPlatformsCount: PropTypes.number,
-    getTokens: PropTypes.func,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
     assetsManagerCountsLoading: PropTypes.bool,
+    getAssetsManagerData: PropTypes.func,
   }
 
   componentDidMount () {
-    this.props.getTokens()
+    this.props.getAssetsManagerData()
   }
 
   renderHead () {
@@ -51,7 +77,7 @@ export class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : usersPlatformsCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : usersPlatformsCount}
                       </span>
                     </div>
                   </div>
@@ -62,7 +88,7 @@ export class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : tokensCount}
                       </span>
                     </div>
                   </div>
@@ -73,7 +99,7 @@ export class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : managersCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : managersCount}
                       </span>
                     </div>
                   </div>
@@ -84,7 +110,7 @@ export class AssetManager extends PureComponent {
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader size={22} /> : tokensOnCrowdsaleCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : tokensOnCrowdsaleCount}
                       </span>
                     </div>
                   </div>
@@ -163,30 +189,3 @@ export class AssetManager extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
-  return {
-    usersPlatformsCount: assetsManager.usersPlatformsCount,
-    tokensCount: assetsManager.tokensCount,
-    managersCount: assetsManager.managersCount,
-    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    selectedPlatform: assetsManager.selectedPlatform,
-    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    createPlatform: () => dispatch(createPlatform()),
-    getTokens: () => dispatch(getTokens()),
-    handleAddPlatformDialog: () => dispatch(modalsOpen({
-      component: AddPlatformDialog,
-    })),
-    handleAddTokenDialog: () => dispatch(modalsOpen({
-      component: AddTokenDialog,
-    })),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssetManager)

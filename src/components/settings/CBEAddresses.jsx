@@ -76,7 +76,7 @@ export default class CBEAddresses extends PureComponent {
                           />
                         </div>
                         <div styleName='nameTitle'>
-                          {item.name()}
+                          {item.name() || <em>Unknown</em>}
                         </div>
                       </div>
                     </div>

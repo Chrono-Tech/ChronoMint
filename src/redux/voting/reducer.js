@@ -1,17 +1,8 @@
 import Immutable from 'immutable'
-import VotingMainModel from '../../models/voting/VotingMainModel'
+import VotingModel from 'models/voting/VotingCollection'
+import * as a from './actions'
 
-export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
-export const POLLS_LOAD = 'voting/POLLS_LOAD'
-export const POLLS_LIST = 'voting/POLLS_LIST'
-export const POLLS_CREATE = 'voting/POLLS_CREATE'
-export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
-export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
-export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
-
-export const VOTING_POLLS_COUNT = 'voting/POLLS_COUNT'
-
-const initialState = new VotingMainModel()
+const initialState = new VotingModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {

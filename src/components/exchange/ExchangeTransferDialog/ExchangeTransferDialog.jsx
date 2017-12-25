@@ -1,14 +1,17 @@
 import ModalDialog from 'components/dialogs/ModalDialog'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import TokenModel from 'models/TokenModel'
-import MainWallet from 'models/Wallet/MainWalletModel'
+import TokenModel from 'models/tokens/TokenModel'
+import MainWallet from 'models/wallet/MainWalletModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { withdrawFromExchange } from 'redux/exchange/actions'
 import { DUCK_MAIN_WALLET, mainTransfer } from 'redux/mainWallet/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
+import Amount from 'models/Amount'
 import { modalsClose } from 'redux/modals/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ExchangeDepositForm from './ExchangeDepositForm'
 import './ExchangeTransferDialog.scss'
 
@@ -30,8 +33,10 @@ function mapDispatchToProps (dispatch) {
 }
 
 function mapStateToProps (state) {
+  const tokens = state.get(DUCK_TOKENS)
   return {
     userWallet: state.get(DUCK_MAIN_WALLET),
+    tokens,
   }
 }
 
@@ -45,13 +50,14 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     dispatch: PropTypes.func,
     depositToExchange: PropTypes.func,
     withdrawFromExchange: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   handleDeposit = (values, dispatch, props) => {
     this.props.handleClose()
     this.props.depositToExchange(
-      this.props.userWallet.tokens().get(props.symbol),
-      values.get('amount'),
+      props.token,
+      new Amount(props.token.addDecimals(values.get('amount')), props.token.symbol()),
       this.props.exchange.address(),
     )
   }
@@ -61,13 +67,25 @@ export default class ExchangeTransferDialog extends React.PureComponent {
     this.props.withdrawFromExchange(
       this.props.exchange,
       this.props.userWallet,
-      values.get('amount'),
-      props.symbol,
+      new Amount(props.token.addDecimals(values.get('amount')), props.token.symbol()),
+      props.token.symbol(),
     )
   }
 
   render () {
-    const token = this.props.userWallet.tokens().get(this.props.tokenSymbol)
+    let token = this.props.tokens.getBySymbol(this.props.tokenSymbol)
+    let showMessage = false
+
+    let amount = this.props.userWallet.balances().item(token.id()).amount()
+    if (!amount.isLoaded()) {
+      showMessage = true
+      amount = new Amount('0', token.symbol())
+    }
+
+    const assetBalance = this.props.tokenSymbol === 'ETH'
+      ? new Amount(this.props.exchange.ethBalance(), 'ETH')
+      : new Amount(this.props.exchange.assetBalance(), this.props.exchange.symbol())
+
     return (
       <ModalDialog>
         <div styleName='root'>
@@ -81,19 +99,26 @@ export default class ExchangeTransferDialog extends React.PureComponent {
             </div>
           </div>
           <div styleName='content'>
+            {
+              showMessage &&
+              <div styleName='warningMessage'>
+                <i className='material-icons'>warning</i>
+                <Translate value={prefix('needToCreateWallet')} symbol={this.props.tokenSymbol} />
+              </div>
+            }
             <ExchangeDepositForm
-              title={<span><Translate value={prefix('deposit')}/> {this.props.tokenSymbol}</span>}
+              title={<span><Translate value={prefix('deposit')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_DEPOSIT_FORM}
               onSubmit={this.handleDeposit}
-              maxAmount={token.balance()}
-              symbol={token.symbol()}
+              maxAmount={amount}
+              token={token}
             />
             <ExchangeDepositForm
-              title={<span><Translate value={prefix('withdrawal')}/> {this.props.tokenSymbol}</span>}
+              title={<span><Translate value={prefix('withdrawal')} /> {this.props.tokenSymbol}</span>}
               form={FORM_EXCHANGE_WITHDRAWAL_FORM}
               onSubmit={this.handleWithdrawal}
-              maxAmount={this.props.tokenSymbol === 'ETH' ? this.props.exchange.ethBalance() : this.props.exchange.assetBalance()}
-              symbol={this.props.tokenSymbol}
+              maxAmount={assetBalance}
+              token={token}
             />
           </div>
         </div>

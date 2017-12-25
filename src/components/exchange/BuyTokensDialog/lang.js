@@ -13,6 +13,7 @@ export default {
     allowance: 'Your allowance',
     approve: 'Approve tokens',
     revoke: 'Revoke tokens',
+    needToCreateWallet: 'You need to create %{symbol} wallet',
   },
   ru: {
     orderBook: 'Книга Ордеров',
@@ -28,5 +29,6 @@ export default {
     allowance: 'Подтвержденная сумма',
     approve: 'Подтвердить перевод токенов',
     revoke: 'Отменить перевод токенов',
+    needToCreateWallet: 'Вам нужно создать кошелек для %{symbol}',
   },
 }

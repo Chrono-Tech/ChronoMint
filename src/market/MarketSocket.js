@@ -107,7 +107,8 @@ class MarketSocket extends EventEmitter {
   }
 
   start () {
-    this.socket = openSocket('//streamer.cryptocompare.com/')
+    // Only https endpoint available
+    this.socket = openSocket('https://streamer.cryptocompare.com/')
     this.socket.emit('SubAdd', { subs: this.subscription })
     this.socket.on('m', this._onSocketUpdate)
   }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { createWallet } from 'redux/multisigWallet/actions'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import WalletAddEditForm from './WalletAddEditForm'
 
 function mapDispatchToProps (dispatch) {
@@ -19,7 +19,7 @@ export default class WalletAddEditDialog extends PureComponent {
   static propTypes = {
     modalsClose: PropTypes.func,
     createWallet: PropTypes.func,
-    wallet: PropTypes.object,
+    wallet: PropTypes.instanceOf(MultisigWalletModel),
   }
 
   handleSubmitSuccess = (wallet: MultisigWalletModel) => {

@@ -1,21 +1,13 @@
-import { abstractModel } from '../AbstractModel'
-import validator from '../../components/forms/validator'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-class OwnerModel extends abstractModel({
+export default class OwnerModel extends abstractFetchingModel({
   address: null,
-  editing: false,
 }) {
-  address () {
-    return this.get('address')
+  id () {
+    return this.address()
   }
 
-  editing () {
-    return this.get('editing')
-  }
-
-  validate () {
-    return validator.address(this.address())
+  address (value) {
+    return this._getSet('address', value)
   }
 }
-
-export default OwnerModel

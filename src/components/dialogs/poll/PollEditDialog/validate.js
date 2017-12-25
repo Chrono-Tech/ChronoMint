@@ -1,5 +1,5 @@
-import ErrorList from 'components/forms/ErrorList'
-import * as validator from 'components/forms/validator'
+import ErrorList from 'platform/ErrorList'
+import * as validator from 'models/validator'
 
 export default function validate (values, props) {
   const voteLimitInTIME = values.get('voteLimitInTIME')

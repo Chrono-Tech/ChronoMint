@@ -1,5 +1,2 @@
-import rewards from './rewards'
-
-export {
-  rewards,
-}
+import rewards from './reducer'
+export { rewards }

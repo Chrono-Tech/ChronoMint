@@ -1,21 +1,25 @@
-import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
-import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
-import { DUCK_WATCHER } from 'redux/watcher/actions'
-import { modalsClose } from 'redux/modals/actions'
-import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Value from 'components/common/Value/Value'
+import ModalDialog from 'components/dialogs/ModalDialog'
+import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import Amount from 'models/Amount'
+import TxExecModel from 'models/TxExecModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
+import { modalsClose } from 'redux/modals/actions'
+import { DUCK_WATCHER } from 'redux/watcher/actions'
 
 import './ConfirmTxDialog.scss'
 
-const mapStateToProps = (state) => ({
-  balance: state.get(DUCK_MAIN_WALLET).tokens().get(ETH).balance(),
-  tx: state.get(DUCK_WATCHER).confirmTx,
-})
+const mapStateToProps = (state) => {
+  return ({
+    balance: state.get(DUCK_MAIN_WALLET).balances().item(ETH).amount(),
+    tx: state.get(DUCK_WATCHER).confirmTx,
+  })
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -29,8 +33,8 @@ export default class ConfirmTxDialog extends PureComponent {
     callback: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
-    tx: PropTypes.object,
-    balance: PropTypes.object,
+    tx: PropTypes.instanceOf(TxExecModel),
+    balance: PropTypes.instanceOf(Amount),
   }
 
   handleConfirm = () => {
@@ -63,7 +67,7 @@ export default class ConfirmTxDialog extends PureComponent {
 
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
-      const arg = args[key]
+      const arg = args[ key ]
       let value
       if (arg === null || arg === undefined) return
       // parse value
@@ -100,7 +104,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
     return (
-      <ModalDialog>
+      <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
           <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
           <div styleName='content'>
@@ -117,8 +121,7 @@ export default class ConfirmTxDialog extends PureComponent {
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
-                          value={gasFee}
-                          symbol={ETH}
+                          value={new Amount(gasFee, ETH)}
                         />
                         : <CircularProgress size={16} thickness={1.5} />
                       }
@@ -133,8 +136,7 @@ export default class ConfirmTxDialog extends PureComponent {
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
-                          value={balance}
-                          symbol={ETH}
+                          value={new Amount(balance, ETH)}
                         />
                         : <CircularProgress size={16} thickness={1.5} />}
                     </TableRowColumn>
