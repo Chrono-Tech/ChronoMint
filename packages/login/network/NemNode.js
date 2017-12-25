@@ -51,7 +51,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
 })
 
 export function selectNemNode (engine) {
-  return engine.getNetwork() === NEM.Network.data.Testnet
+  return engine.getNetwork() !== NEM.Network.data.Mainnet
     ? NEM_TESTNET_NODE
     : NEM_MAINNET_NODE
 }

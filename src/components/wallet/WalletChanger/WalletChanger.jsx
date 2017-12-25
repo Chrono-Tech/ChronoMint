@@ -15,7 +15,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_MULTISIG_WALLET, getWallets } from 'redux/multisigWallet/actions'
+import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getCurrentWallet, switchWallet } from 'redux/wallet/actions'
 
@@ -39,8 +39,7 @@ function mapDispatchToProps (dispatch) {
       component: WalletAddEditDialog,
       props: { wallet: new MultisigWalletModel() },
     })),
-    getWallets: () => dispatch(getWallets()),
-    switchWallet: wallet => dispatch(switchWallet(wallet)),
+    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
   }
 }
 
@@ -52,15 +51,8 @@ export default class WalletChanger extends PureComponent {
     multisigWallet: PropTypes.object,
     walletSelectDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
-    getWallets: PropTypes.func,
     switchWallet: PropTypes.func,
     account: PropTypes.string,
-  }
-
-  componentWillMount () {
-    if (!this.props.multisigWallet.isFetched() && !this.props.multisigWallet.isFetching()) {
-      this.props.getWallets()
-    }
   }
 
   handleShowSelectDialog = () => this.props.walletSelectDialog()
@@ -86,18 +78,33 @@ export default class WalletChanger extends PureComponent {
               <div styleName='action' />
               <div styleName='action'>
                 <FlatButton
-                  label={multisigWallet.isFetching()
+                  label={!multisigWallet.isFetching() && !multisigWallet.isFetched()
                     ? <Preloader />
                     : (
                       <span styleName='buttonLabel'>
+                        {multisigWallet.isFetching() && (
+                          <div styleName='buttonPreloader'>
+                            <Preloader small />
+                            <div
+                              styleName='buttonCounter'>
+                              {`[${multisigWallet.size()}/${multisigWallet.size() + multisigWallet.leftToFetch()}]`}
+                            </div>
+                          </div>)}
                         <img styleName='buttonIcon' src={WalletMultiSVG} />
-                        <Translate value={multisigWallet.size() > 0 ? 'wallet.switchToMultisignatureWallet' : 'wallet.createMultisignatureWallet'} />
+                        {multisigWallet.size() > 0
+                          ? (
+                            <span>
+                              <Translate value='wallet.switchToMultisignatureWallet' />
+                              {multisigWallet.allPendingsCount() > 0 && <span styleName='pendingCounter'>{multisigWallet.allPendingsCount()}</span>}
+                            </span>
+                          )
+                          : <Translate value='wallet.createMultisignatureWallet' />
+                        }
                       </span>
                     )}
                   onTouchTap={multisigWallet.size() > 0
                     ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.props.walletAddEditDialog()}
-                  disabled={multisigWallet.isFetching()}
                   {...globalStyles.buttonWithIconStyles}
                 />
               </div>
@@ -111,7 +118,7 @@ export default class WalletChanger extends PureComponent {
   renderMultisigWallet () {
     const { multisigWallet } = this.props
     const selectedWallet: MultisigWalletModel = multisigWallet.selected()
-    const owners = selectedWallet.owners()
+    const owners = selectedWallet.owners().items()
 
     return (
       <div styleName='walletBox'>
@@ -119,9 +126,8 @@ export default class WalletChanger extends PureComponent {
           <div styleName='header'>
             <img styleName='headerIcon' src={WalletMultiBigSVG} />
             <div styleName='headerInfo'>
-              <div styleName='headerTitle'>{selectedWallet.name() || 'No name'}</div>
               <div styleName='headerSubtitle'>Multisignature wallet</div>
-              <div styleName='headerSubtitle'>{selectedWallet.address()}</div>
+              <div styleName='headerSubtitle'>{selectedWallet.isPending() ? 'Pending...' : selectedWallet.address()}</div>
               <div>
                 <div styleName='ownersNum'>
                   {owners.size} <Translate value='wallet.owners' />:

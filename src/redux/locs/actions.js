@@ -4,7 +4,7 @@ import type LOCManagerDAO from 'dao/LOCManagerDAO'
 import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel from 'models/notices/LOCNoticeModel'
-import type TokenModel from 'models/TokenModel'
+import type TokenModel from 'models/tokens/TokenModel'
 import { notify } from 'redux/notifier/actions'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'

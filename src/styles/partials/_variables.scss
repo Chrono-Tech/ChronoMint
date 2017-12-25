@@ -12,8 +12,12 @@ $color-white: #FFFFFF;
 $color-blue: #2962FF;
 $color-green: #{material-color('green', 'a400')};
 $color-grey: #{material-color('grey', '600')};
+$color-grey300: #{material-color('grey', '300')};
+$color-grey400: #{material-color('grey', '400')};
+$color-grey500: #{material-color('grey', '500')};
+$color-red: #FF1744;
 
-$color-error: #FF1744;
+$color-error: $color-red;
 $color-warning: #{material-color('orange', 'a400')};
 $color-success: #{material-color('green', 'a400')};
 

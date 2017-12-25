@@ -1,3 +1,4 @@
+import TokenModel from 'models/tokens/TokenModel'
 import type BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
@@ -7,10 +8,8 @@ import { ChronoBankAssetWithFeeProxyABI } from './abi'
  * Only for intermediate development
  */
 class LHTDAO extends ERC20DAO {
-  constructor () {
-    super(null, ChronoBankAssetWithFeeProxyABI)
-
-    this.initMetaData()
+  constructor (token: TokenModel) {
+    super(token, ChronoBankAssetWithFeeProxyABI)
   }
 
   async getAssetsManagerBalance (): BigNumber {
@@ -29,4 +28,4 @@ class LHTDAO extends ERC20DAO {
   }
 }
 
-export default new LHTDAO()
+export default new LHTDAO(new TokenModel())

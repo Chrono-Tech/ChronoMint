@@ -1,11 +1,14 @@
+import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
+import Amount from 'models/Amount'
+import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
-import { getCurrentWallet } from 'redux/wallet/actions'
-import { mainTransfer, mainApprove } from 'redux/mainWallet/actions'
+import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
-import SendTokensForm, { ACTION_TRANSFER, ACTION_APPROVE, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { getCurrentWallet } from 'redux/wallet/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -23,69 +26,60 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   return {
     wallet: getCurrentWallet(state),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class SendTokens extends PureComponent {
+export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     multisigTransfer: PropTypes.func,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,
-  }
-
-  constructor (props) {
-    super(props)
-    const { wallet } = props
-    this.state = {
-      symbol: wallet.tokens().size > 0
-        ? wallet.tokens().first().symbol()
-        : null,
-    }
-  }
-
-  componentWillReceiveProps (newProps) {
-    const { wallet } = newProps
-    const selectedToken = wallet.tokens().get(this.state.symbol)
-    if (!selectedToken) {
-      this.state.symbol = wallet.tokens().size > 0
-        ? wallet.tokens().first().symbol()
-        : null
-    }
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   handleSubmit = (values) => {
-    const { wallet, resetForm } = this.props
+    const { wallet, tokens } = this.props
     const { action, symbol, amount, recipient, feeMultiplier } = values.toJS()
-    const token = wallet.tokens().get(symbol)
+    const token = tokens.item(symbol)
 
-    resetForm()
+    const value = new Amount(token.addDecimals(amount), symbol)
 
     switch (action) {
       case ACTION_APPROVE:
-        return !wallet.isMultisig() && this.props.mainApprove(token, amount, recipient)
+        !wallet.isMultisig() && this.props.mainApprove(token, value, recipient)
+        break
       case ACTION_TRANSFER:
-        return wallet.isMultisig()
-          ? this.props.multisigTransfer(wallet, token, amount, recipient, feeMultiplier)
-          : this.props.mainTransfer(token, amount, recipient, feeMultiplier)
+        wallet.isMultisig()
+          ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier)
+          : this.props.mainTransfer(token, value, recipient, feeMultiplier)
     }
+  }
+
+  handleSubmitSuccess = () => {
+    this.props.resetForm()
   }
 
   render () {
     const { wallet } = this.props
-    const symbol = wallet.tokens().size > 0
-      ? wallet.tokens().first().symbol()
-      : undefined
+    const initialValues = {
+      feeMultiplier: 1,
+    }
+    if (wallet.balances().size() > 0) {
+      initialValues.symbol = wallet.balances().first().id()
+    }
+
     return (
       <SendTokensForm
-        initialValues={{ symbol, feeMultiplier: 1 }}
+        initialValues={initialValues}
         wallet={wallet}
         onSubmit={this.handleSubmit}
+        onSubmitSuccess={this.handleSubmitSuccess}
       />
     )
   }
 }
 
-export default SendTokens

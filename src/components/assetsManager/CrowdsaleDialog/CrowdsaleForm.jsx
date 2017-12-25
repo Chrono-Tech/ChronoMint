@@ -1,22 +1,20 @@
-import BigNumber from 'bignumber.js'
-import { Field, reduxForm, change, formPropTypes } from 'redux-form/immutable'
-// import validator from 'models/validator'
-// import ErrorList from 'platform/ErrorList'
-import { IPFSImage, TokenValue } from 'components'
-import PropTypes from 'prop-types'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-import { RaisedButton, DatePicker, FlatButton } from 'material-ui'
-import React, { PureComponent } from 'react'
-import { TextField, Checkbox } from 'redux-form-material-ui'
-import { Translate } from 'react-redux-i18n'
-import classnames from 'classnames'
-import { connect } from 'react-redux'
-import { get } from 'lodash'
 import { TOKEN_ICONS } from 'assets'
+import BigNumber from 'bignumber.js'
+import classnames from 'classnames'
+import { IPFSImage, TokenValue } from 'components'
+import { get } from 'lodash'
+import { DatePicker, FlatButton, RaisedButton } from 'material-ui'
+import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Checkbox, TextField } from 'redux-form-material-ui'
+import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
-import styles from './styles'
 
 import './CrowdsaleForm.scss'
+import styles from './styles'
 
 const CROWDSALE_COINS = Object.keys(TOKEN_ICONS).map((coin) => coin.toLowerCase())
 
@@ -82,7 +80,8 @@ export default class CrowdsaleForm extends PureComponent {
     dispatch: PropTypes.func,
     locale: PropTypes.string,
     formValues: PropTypes.object,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   handleSelectType = (e) => {
     this.props.dispatch(change(FORM_CROWDSALE_DIALOG, 'crowdsaleType', e.target.value))

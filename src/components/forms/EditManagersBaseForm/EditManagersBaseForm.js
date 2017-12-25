@@ -1,15 +1,16 @@
 import { FlatButton } from 'material-ui'
-import { connect } from 'react-redux'
+import OwnerCollection from 'models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
-import validate from './validate'
-import ManagerItem from './ManagerItem'
 
 import './EditManagersBaseForm.scss'
+import ManagerItem from './ManagerItem'
+import validate from './validate'
 
 export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
@@ -32,12 +33,13 @@ function mapStateToProps (state) {
 export default class EditManagersBase extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    managers: PropTypes.arrayOf(PropTypes.string),
-  } & formPropTypes
+    managers: PropTypes.instanceOf(OwnerCollection),
+    ...formPropTypes,
+  }
 
   renderManager = (manager) => (
     <ManagerItem
-      key={manager}
+      key={manager.id()}
       manager={manager}
       account={this.props.account}
       onRemove={this.props.onRemove}
@@ -68,7 +70,7 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
           </div>
-          {this.props.managers.map(this.renderManager)}
+          {this.props.managers.items().map(this.renderManager)}
         </div>
       </form>
     )

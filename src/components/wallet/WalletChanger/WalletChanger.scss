@@ -107,6 +107,16 @@
   align-items: center;
 }
 
+.buttonPreloader {
+  display: flex;
+  margin-right: 5px;
+}
+
+.buttonCounter {
+  margin-left: 5px;
+  color: $color-grey;
+}
+
 .buttonIcon {
   margin-top: -5px;
   margin-right: 10px;
@@ -137,4 +147,17 @@
   font-size: 16px;
   opacity: 0.6;
   color: $color-primary-0;
+}
+
+.pendingCounter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  background-color: $color-error;
+  color: $color-white;
+  margin-left: 10px;
+  padding: 5px 9px;
+  border-radius: 12px;
 }

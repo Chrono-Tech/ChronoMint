@@ -12,10 +12,15 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
   address: null,
   authorizedManager: null,
   isActive: true,
+  asset: null,
 }) {
 
   id () {
     return this.get('transactionHash') || this.get('address')
+  }
+
+  asset (value): string {
+    return this._getSet('asset', value)
   }
 
   address (): string {
@@ -62,8 +67,8 @@ export default class ExchangeOrderModel extends abstractFetchingModel({
   txSummary () {
     return {
       symbol: this.symbol(),
-      buyPrice: new Amount(this.buyPrice(), 'ETH'),
-      sellPrice: new Amount(this.sellPrice(), 'ETH'),
+      buyPrice: `${this.buyPrice()} ETH`,
+      sellPrice: `${this.sellPrice()} ETH`,
       isActive: this.isActive(),
     }
   }

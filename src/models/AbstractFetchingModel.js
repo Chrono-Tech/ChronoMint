@@ -1,13 +1,20 @@
 import { abstractModel } from './AbstractModel'
 
 export const abstractFetchingModel = (defaultValues) => class AbstractFetchingModel extends abstractModel({
+  isInited: false,
   isFetching: false,
   isFetched: false,
   transactionHash: null,
   isPending: false,
   isFailed: false,
+  isSelected: false,
   ...defaultValues,
 }) {
+
+  isInited (value) {
+    return this._getSet('isInited', value)
+  }
+
   isFetching (value) {
     return this._getSet('isFetching', value)
   }
@@ -18,10 +25,6 @@ export const abstractFetchingModel = (defaultValues) => class AbstractFetchingMo
 
   transactionHash (value) {
     return this._getSet('transactionHash', value)
-  }
-
-  isTransactionHash () {
-    return !!this.transactionHash()
   }
 
   isPending (value) {
@@ -38,6 +41,10 @@ export const abstractFetchingModel = (defaultValues) => class AbstractFetchingMo
     } else {
       return this.set('isFailed', value).set('isPending', false)
     }
+  }
+
+  isSelected (value) {
+    return this._getSet('isSelected', value)
   }
 }
 

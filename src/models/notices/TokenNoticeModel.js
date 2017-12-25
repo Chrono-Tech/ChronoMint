@@ -1,6 +1,6 @@
 import { I18n } from 'platform/i18n'
 import { Icons } from 'platform/icons'
-import type TokenModel from 'models/TokenModel'
+import type TokenModel from 'models/tokens/TokenModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_ADDED = 'isAdded'

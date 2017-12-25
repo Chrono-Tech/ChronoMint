@@ -42,6 +42,7 @@ const createSelectLocationState = () => {
 const IGNORED_ACTIONS = [
   'market/UPDATE_RATES',
   'market/UPDATE_LAST_MARKET',
+  'market/UPDATE_PRICES',
 ]
 
 let logActions = process.env.NODE_ENV === 'development'
@@ -84,7 +85,9 @@ const configureStore = () => {
       saveAccountMiddleWare
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__()
+      ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        actionsBlacklist: IGNORED_ACTIONS,
+      })()
       : (f) => f,
   )(createStore)
 

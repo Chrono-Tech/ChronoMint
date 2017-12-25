@@ -12,7 +12,7 @@ export default {
     title: 'Менеджер активов',
     myPlatforms: 'мои платформы',
     managers: 'менеджеры',
-    myTokens: 'мои жетоны',
+    myTokens: 'мои токены',
     addToken: 'добавить токен',
     tokensOnCrowdsale: 'Токены на crowdsale',
     addNewPlatforms: 'добавить платформу',

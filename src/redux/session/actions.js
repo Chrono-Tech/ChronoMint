@@ -1,13 +1,12 @@
-import { push, replace } from 'react-router-redux'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import networkService from '@chronobank/login/network/NetworkService'
-import ProfileModel from 'models/ProfileModel'
-import { cbeWatcher, watcher } from 'redux/watcher/actions'
-import { initWallet } from 'redux/wallet/actions'
-import { removeWatchersUserMonitor } from 'redux/ui/actions'
-import { watchStopMarket } from 'redux/market/action'
-import ls from 'utils/LocalStorage'
 import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import ProfileModel from 'models/ProfileModel'
+import { push, replace } from 'react-router-redux'
+import { watchStopMarket } from 'redux/market/action'
+import { removeWatchersUserMonitor } from 'redux/ui/actions'
+import { cbeWatcher, watcher } from 'redux/watcher/actions'
+import ls from 'utils/LocalStorage'
 
 export const DUCK_SESSION = 'session'
 
@@ -64,7 +63,7 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  dispatch(initWallet())
+
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))

@@ -9,7 +9,7 @@ import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
 import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/TIMEHolderDAO'
+import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
 import { ru as components } from 'components/lang'
@@ -40,7 +40,7 @@ export default {
     wallet: 'Кошелёк',
     exchange: 'Обмен',
     voting: 'Голосование',
-    rewards: 'Награды',
+    rewards: 'Бонусы',
     assets: 'Мои активы',
     profile: 'Профайл',
     signOut: 'Выйти',
@@ -49,7 +49,7 @@ export default {
     loadMore: 'Загрузить еще',
     markupDashboard: 'Панель управления',
     markupWallet: 'Новый Кошелёк',
-    newRewards: 'Новые Награды',
+    newRewards: 'Новые Бонусы',
     pageNotFound: 'Страница не найдена',
     backToMain: 'Вернуться на главную',
   },
@@ -72,6 +72,8 @@ export default {
     switchToMainWallet: 'Переключить на основной кошелёк',
     pendingTransfers: 'Проводимые переводы',
     to: 'Кому',
+    transaction: 'Транзакция',
+    actions: 'Действия',
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',
     sign: 'ПОДПИСАТЬ',
@@ -85,7 +87,7 @@ export default {
       clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
       selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
-      owners: 'владельцев',
+      owners: '%{num} владельцев',
     },
   },
   exchange: {
@@ -236,10 +238,10 @@ export default {
     feeLeft: 'Комиссия оставшихся транзакций',
     TokenManagementInterface: {
       createAssetWithoutFee: {
-        title: 'Подтвердите создание токена без коммиссии',
+        title: 'Подтвердите создание токена',
       },
       createAssetWithFee: {
-        title: 'Подтвердите создание токена c коммиссией',
+        title: 'Подтвердите создание токена',
       },
     },
     ChronoBankPlatform: {
@@ -423,7 +425,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Одобрить списание TIME',
+        title: 'Одобрить списание токенов',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
@@ -431,6 +433,11 @@ export default {
         title: 'Перевести токены',
         account: 'Аккаунт',
         amount: 'Сумма',
+      },
+    },
+    ExchangeManager:{
+      createExchange: {
+        title: 'Создать обменник',
       },
     },
     Exchange: {
@@ -445,6 +452,20 @@ export default {
       },
       [exchange.TX_WITHDRAW_ETH]: {
         title: 'Подтвердите вывод ETH',
+      },
+    },
+    Wallet: {
+      addOwner: {
+        title: 'Добавить менеждера',
+        owner: 'Новый менеджер',
+      },
+      removeOwner: {
+        title: 'Удалить мееджера',
+        owner: 'Адрес',
+      },
+      kill: {
+        title: 'Удалить кошелек',
+        to: 'Перевести средства на адрес',
       },
     },
   },
@@ -584,17 +605,17 @@ export default {
     VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Голос: лимит активного голосования достигнут',
     VOTE_UNABLE_TO_ACTIVATE_POLL: 'Голос: не могу активировать голосование',
 
-    REWARD_NOT_FOUND: 'Награда: не найдена',
-    REWARD_INVALID_PARAMETER: 'Награда: неправильный параметр запроса',
-    REWARD_INVALID_INVOCATION: 'Награда: неправильный вызов',
-    REWARD_INVALID_STATE: 'Награда: неправильное состояние',
-    REWARD_INVALID_PERIOD: 'Награда: неправильный период',
-    REWARD_NO_REWARDS_LEFT: 'Награда: не осталось наград',
-    REWARD_ASSET_TRANSFER_FAILED: 'Награда: неудача трансфера ассета',
-    REWARD_ALREADY_CALCULATED: 'Награда: уже посчитана',
-    REWARD_CALCULATION_FAILED: 'Награда: неудача подсчета',
-    REWARD_CANNOT_CLOSE_PERIOD: 'Награда: не могу закрыть период',
-    REWARD_ASSET_ALREADY_REGISTERED: 'Награда: ассет уже зарегистрирован',
+    REWARD_NOT_FOUND: 'Бонус: не найден',
+    REWARD_INVALID_PARAMETER: 'Бонус: неправильный параметр запроса',
+    REWARD_INVALID_INVOCATION: 'Бонус: неправильный вызов',
+    REWARD_INVALID_STATE: 'Бонусы: неправильное состояние',
+    REWARD_INVALID_PERIOD: 'Бонусы: неправильный период',
+    REWARD_NO_REWARDS_LEFT: 'Бонусы: не осталось бонусов',
+    REWARD_ASSET_TRANSFER_FAILED: 'Бонус: неудача трансфера ассета',
+    REWARD_ALREADY_CALCULATED: 'Бонус: уже посчитана',
+    REWARD_CALCULATION_FAILED: 'Бонус: неудача подсчета',
+    REWARD_CANNOT_CLOSE_PERIOD: 'Бонус: не могу закрыть период',
+    REWARD_ASSET_ALREADY_REGISTERED: 'Бонус: ассет уже зарегистрирован',
 
     CONTRACT_EXISTS: 'Контракт уже существует',
     CONTRACT_NOT_EXISTS: 'Контракт не существует',
@@ -657,10 +678,12 @@ export default {
         amount: 'Сумма',
         feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
         approve: 'Подтвердить',
+        revoke: 'Отозвать',
+        allowance: 'allowance',
         send: 'Отправить',
       },
       RewardsPeriod: {
-        rewardsPeriodIndex: 'Наградной период #%{index}',
+        rewardsPeriodIndex: 'Бонусный период #%{index}',
         ongoing: 'Продолжается',
         closed: 'Закрыт',
         startDate: 'Дата начала',

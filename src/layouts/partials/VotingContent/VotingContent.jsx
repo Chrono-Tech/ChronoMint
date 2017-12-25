@@ -1,18 +1,19 @@
-import BigNumber from 'bignumber.js'
-import { Link } from 'react-router'
 import { Poll, PollEditDialog } from 'components'
-import PropTypes from 'prop-types'
+import Preloader from 'components/common/Preloader/Preloader'
 import { RaisedButton } from 'material-ui'
-import React, { Component } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
+import Amount from 'models/Amount'
 import PollModel from 'models/PollModel'
-import { getStatistics } from 'redux/voting/getters'
-import { DUCK_MAIN_WALLET, initTIMEDeposit } from 'redux/mainWallet/actions'
-import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
+import { DUCK_ASSETS_HOLDER, initAssetsHolder } from 'redux/assetsHolder/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import Preloader from 'components/common/Preloader/Preloader'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
+import { getStatistics } from 'redux/voting/getters'
 
 import './VotingContent.scss'
 
@@ -22,21 +23,25 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const voting = state.get(DUCK_VOTING)
-  const wallet = state.get(DUCK_MAIN_WALLET)
+  const tokens = state.get(DUCK_TOKENS)
+
+  const timeToken = tokens.item('TIME')
+
   return {
-    list: voting.list,
-    timeDeposit: wallet.timeDeposit(),
+    list: voting.list(),
+    tokens,
+    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(timeToken.address()).deposit(),
     statistics: getStatistics(voting),
     isCBE: state.get(DUCK_SESSION).isCBE,
-    isFetched: voting.isFetched && wallet.isFetched(),
-    isFetching: voting.isFetching && !voting.isFetched,
+    isFetched: voting.isFetched(),
+    isFetching: voting.isFetching() && !voting.isFetched(),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
-    initTIMEDeposit: () => dispatch(initTIMEDeposit()),
+    initAssetsHolder: () => dispatch(initAssetsHolder()),
     handleNewPoll: async () => dispatch(modalsOpen({
       component: PollEditDialog,
       props: {
@@ -54,15 +59,15 @@ export default class VotingContent extends Component {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     list: PropTypes.object,
-    timeDeposit: PropTypes.object,
     statistics: PropTypes.object,
-    initTIMEDeposit: PropTypes.func,
+    initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func,
+    deposit: PropTypes.instanceOf(Amount),
   }
 
   componentWillMount () {
-    this.props.initTIMEDeposit()
+    this.props.initAssetsHolder()
 
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
@@ -136,7 +141,7 @@ export default class VotingContent extends Component {
                   <div styleName='entries' />
                   <div>
                     <RaisedButton
-                      disabled={this.props.timeDeposit.equals(new BigNumber(0))}
+                      disabled={this.props.deposit.isZero()}
                       label={<Translate value={prefix('newPoll')} />}
                       styleName='action'
                       onClick={this.props.handleNewPoll}
@@ -161,7 +166,7 @@ export default class VotingContent extends Component {
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
                   <Poll
                     model={poll}
-                    timeDeposit={this.props.timeDeposit}
+                    deposit={this.props.deposit}
                   />
                 </div>
               ))}
@@ -173,7 +178,6 @@ export default class VotingContent extends Component {
   }
 
   render () {
-
     const polls = this.props.isFetched
       ? this.props.list.reverse().toArray()
       : []
@@ -182,7 +186,7 @@ export default class VotingContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           {this.renderHead(polls)}
-          {this.props.isFetched && (!(this.props.timeDeposit instanceof BigNumber) || this.props.timeDeposit.isZero()) &&
+          {this.props.isFetched && this.props.deposit.isZero() &&
           (
             <div styleName='accessDenied'>
               <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link

@@ -19,7 +19,7 @@ export default class WalletAddEditDialog extends PureComponent {
   static propTypes = {
     modalsClose: PropTypes.func,
     createWallet: PropTypes.func,
-    wallet: PropTypes.object,
+    wallet: PropTypes.instanceOf(MultisigWalletModel),
   }
 
   handleSubmitSuccess = (wallet: MultisigWalletModel) => {

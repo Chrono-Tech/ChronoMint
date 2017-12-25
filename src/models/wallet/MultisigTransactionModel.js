@@ -7,6 +7,8 @@ class MultisigTransactionModel extends abstractModel({
   wallet: null,
   symbol: null,
   value: new BigNumber(0),
+  to: null,
+  data: null,
 }) {
   id () {
     return this.get('id') || Math.random()
@@ -22,6 +24,10 @@ class MultisigTransactionModel extends abstractModel({
 
   wallet () {
     return this.get('wallet')
+  }
+
+  data () {
+    return this.get('data')
   }
 }
 

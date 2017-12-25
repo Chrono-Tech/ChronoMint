@@ -12,10 +12,8 @@ class AssetDonatorDAO extends AbstractContractDAO {
     return this._tx(TX_REQUIRE_TIME)
   }
 
-  isTIMERequired (): boolean {
-    return this._call('timeDonations', [this.getAccount()])
-      .catch(() => false) // no required yet
-      .then((r) => r)
+  isTIMERequired (account): Promise {
+    return this._call('timeDonations', [ account ])
   }
 
   subscribeOnReset () {

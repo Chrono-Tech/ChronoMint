@@ -36,7 +36,6 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
 })
 
 export default function selectEthereumNode (engine) {
-  console.log('--EthereumNode#selectEthereumNode', engine, engine.getNetwork())
   return engine.getNetwork() !== networks.Mainnet
     ? ETHEREUM_TESTNET_NODE
     : ETHEREUM_MAINNET_NODE
