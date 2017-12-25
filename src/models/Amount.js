@@ -7,7 +7,11 @@ export default class Amount extends BigNumber {
     this._isLoaded = isLoaded
   }
 
-  symbol () {
+  symbol (value) {
+    if (value) {
+      this._symbol = value
+      return this
+    }
     return this._symbol
   }
 
