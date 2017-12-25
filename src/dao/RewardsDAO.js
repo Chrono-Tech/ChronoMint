@@ -34,7 +34,6 @@ export default class RewardsDAO extends AbstractContractDAO {
   }
 
   fetchPeriods (count, asset: AssetModel, account: string) {
-    console.log('--RewardsDAO#fetchPeriods', count, asset, account)
     for (let i = 0; i < count; i++) {
       this.fetchPeriod(i, asset, account)
     }
@@ -42,7 +41,6 @@ export default class RewardsDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const addresses = await this._call('getAssets')
-    console.log('--RewardsDAO#getAssetDAO', '!!!!!!!!!!!!!!', addresses)
     return tokenService.getDAO(addresses[ 0 ])
   }
 
@@ -54,90 +52,12 @@ export default class RewardsDAO extends AbstractContractDAO {
     return this._callNum('lastPeriod')
   }
 
-  getLastClosedPeriod (): Promise {
-    return this._callNum('lastClosedPeriod')
-  }
-
-  async getAssetBalanceInPeriod (periodId: number): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    const assetAddress = await assetDAO.getAddress()
-    return this._call('assetBalanceInPeriod', [ assetAddress, periodId ])
-  }
-
-  async getPeriodClosedState (id: number): Promise<boolean> {
-    try {
-      return this._call('isClosed', [ id ])
-    } catch (e) {
-      // no closed periods yet
-      return false
-    }
-  }
-
   getRewardsLeft (address): Promise {
     return this._call('getRewardsLeft', [ address ])
   }
 
-  // async getCurrentAccumulated (): Promise<BigNumber> {
-  //   const address = await this.getAddress()
-  //   const assetDAO = await this.getAssetDAO()
-  //   const assetBalance = await assetDAO.getAccountBalance(address)
-  //   const assetAddress = await assetDAO.getAddress()
-  //   const rewardsLeft = await this._call('getRewardsLeft', [ assetAddress ])
-  //   const r = assetBalance.minus(assetDAO.removeDecimals(rewardsLeft))
-  //   return r.lt(0) ? new BigNumber(0) : r
-  // }
-
-  async getRewardsFor (account, asset: AssetModel): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    const assetAddress = await assetDAO.getAddress()
-    const r = await this._call('rewardsFor', [ assetAddress, account ])
-    return assetDAO.removeDecimals(r)
-  }
-
-  async getRewardsData (account, /* token */): Promise<RewardsModel> {
-    const [
-      periodLength,
-      lastPeriod,
-      lastClosedPeriod,
-      periods,
-      // accountRewards,
-    ] = await Promise.all([
-      this.getPeriodLength(),
-      this.getLastPeriod(),
-      this.getLastClosedPeriod(),
-
-      this.getPeriods(account),
-      // this.getRewardsFor(account),
-    ])
-
-    console.log('--RewardsDAO#getRewardsData', periodLength, lastPeriod, lastClosedPeriod, periods.toJS())
-
-    return {
-      // address,
-      periodLength,
-      lastPeriod,
-      lastClosedPeriod,
-      periods,
-      // currentAccumulated,
-      // rewardsLeft,
-      // accountRewards,
-    }
-  }
-
-  async getPeriods (account): Promise<Immutable.Map<RewardsPeriodModel>> {
-    const length = await this._callNum('periodsLength')
-    const promises = []
-    for (let i = 0; i <= length; i++) {
-      promises.push(this._getPeriod(i, account))
-    }
-    const values = await Promise.all(promises)
-
-    let map = new Immutable.Map()
-    for (let j = values.length - 1; j >= 0; j--) {
-      const period: RewardsPeriodModel = values[ j ]
-      map = map.set(period.id(), period)
-    }
-    return map
+  getRewardsFor (account, asset: AssetModel): Promise<BigNumber> {
+    return this._call('rewardsFor', [ asset.id(), account ])
   }
 
   /** @private */
@@ -164,13 +84,14 @@ export default class RewardsDAO extends AbstractContractDAO {
     }))
   }
 
-  async withdraw () {
-    const [ amount, assetDAO ] = await Promise.all([
-      await this.getRewardsFor(this.getAccount()),
-      await this.getAssetDAO(),
-    ])
-    const assetAddress = await assetDAO.getAddress()
-    return this._tx(TX_WITHDRAW_REWARD, [ assetAddress, assetDAO.addDecimals(amount) ], { amount })
+  async withdraw (account, asset: AssetModel) {
+    const amount = await this.getRewardsFor(account)
+    return this._tx(TX_WITHDRAW_REWARD, [
+      asset.id(),
+      amount,
+    ], {
+      amount: new Amount(amount, asset.symbol()),
+    })
   }
 
   async closePeriod () {

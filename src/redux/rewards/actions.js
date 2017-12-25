@@ -32,9 +32,12 @@ export const handleToken = (token: TokenModel) => async (dispatch, getState) => 
   rewardDAO.fetchPeriods(rewardsHolder.periodCount(), asset, account)
 }
 
-export const withdrawRevenue = () => async () => {
+export const withdrawRevenue = () => async (dispatch, getState) => {
   try {
-    await rewardDAO.withdraw()
+    // TODO @dkchv: !!! hardcoded for TIME
+    const asset: AssetModel = getState().get(DUCK_REWARDS).assets().first(true)
+    const { account } = getState().get(DUCK_SESSION)
+    await rewardDAO.withdraw(account, asset)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw revenue error', e.message)
@@ -60,7 +63,7 @@ export const initRewards = () => async (dispatch, getState) => {
   rewardDAO = await contractsManagerDAO.getRewardsDAO()
   let [ assets, count, address ] = await Promise.all([
     rewardDAO.getAssets(),
-    rewardDAO.getPeriodLength(),
+    rewardDAO.getLastPeriod(),
     rewardDAO.getAddress(),
   ])
   dispatch({ type: REWARDS_PERIOD_COUNT, count })
