@@ -165,7 +165,7 @@ export default class VotingContent extends Component {
           <div className='VotingContent__body'>
             <div className='row'>
               {polls.items().map((poll) => (
-                <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
+                <div className='col-sm-6 col-md-3' key={poll.id()}>
                   <Poll
                     model={poll}
                     deposit={this.props.deposit}

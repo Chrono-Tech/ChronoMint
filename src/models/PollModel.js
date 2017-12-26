@@ -2,6 +2,7 @@ import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({
+  id: null,
   hash: null,
   owner: null,
   title: '',
@@ -21,6 +22,10 @@ class PollModel extends abstractFetchingModel({
       published: data.published || new Date(new Date().getTime()),
       deadline: data.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
     })
+  }
+
+  id (value) {
+    return this._getSet('id', value)
   }
 
   hash () {

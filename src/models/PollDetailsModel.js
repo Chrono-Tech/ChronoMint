@@ -13,8 +13,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
   shareholdersCount: new BigNumber(0),
   files: Immutable.List(),
 }) {
-  id () {
-    return this.get('id')
+  id (value) {
+    return this._getSet('id', value)
   }
 
   poll (value) {

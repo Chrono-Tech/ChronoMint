@@ -22,7 +22,7 @@ export const DUCK_VOTING = 'voting'
 const PAGE_SIZE = 20
 
 // used to create unique ID for fetching models
-let counter = 0
+let counter = 1
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState) => {
   const state = getState().get(DUCK_VOTING)
@@ -74,10 +74,9 @@ export const watchInitPolls = () => async (dispatch) => {
 }
 
 export const createPoll = (poll: PollModel) => async (dispatch) => {
-  const timeDAO = await contractsManagerDAO.getTIMEDAO()
   const stub = new PollDetailsModel({
-    poll: poll.set('id', --counter),
-    timeDAO,
+    id: `stub_${--counter}`,
+    poll: poll.id(`stub_${counter}`),
   })
   try {
     dispatch(handlePollCreated(stub.isFetching(true)))
@@ -87,7 +86,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
   } catch (e) {
     // eslint-disable-next-line
     console.error('create poll error', e.message)
-    dispatch(handlePollRemoved(stub.poll().id()))
+    dispatch(handlePollRemoved(stub.id()))
   }
 }
 
@@ -100,7 +99,7 @@ export const updatePoll = (poll: PollModel) => async () => {
 
 export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
-    dispatch(handlePollRemoved(poll.poll().id()))
+    dispatch(handlePollRemoved(poll.id()))
     const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
     await dao.removePoll()
   } catch (e) {

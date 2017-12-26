@@ -19,7 +19,7 @@ export default (state = initialState, action) => {
         .list(action.list)
     case POLLS_CREATE:
       return state
-        .list(state.list().set(action.poll.poll().id(), action.poll))
+        .list(state.list().update(action.poll))
         .pollsCount(state.pollsCount().plus(1))
     case POLLS_REMOVE_STUB:
       return state
@@ -32,7 +32,7 @@ export default (state = initialState, action) => {
         )
     case POLLS_UPDATE:
       return state
-        .list(state.list().set(action.poll.poll().id(), action.poll))
+        .list(state.list().update(action.poll.id(), action.poll))
         .activePollsCount(action.activeCount || state.activePollsCount())
     case POLLS_REMOVE:
       return state
