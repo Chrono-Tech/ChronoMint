@@ -144,7 +144,7 @@
     "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
+    "build-archive": "yarn build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",
     "testrpc": "testrpc --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev \"FilterSubprovider|eth_getFilterChanges\"",
@@ -153,7 +153,7 @@
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
-    "rei": "rm -rf ./node_modules && npm i && npm run contracts:compile"
+    "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "pre-commit": [],
   "jest": {

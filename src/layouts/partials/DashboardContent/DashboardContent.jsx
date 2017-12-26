@@ -1,6 +1,5 @@
-import RewardsCollection from '@/models/rewards/RewardsCollection'
 import { DepositTokens, Rewards, SendTokens, Voting } from 'components'
-import RewardsModel from 'models/rewards/RewardsModel'
+import RewardsCollection from 'models/rewards/RewardsCollection'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
