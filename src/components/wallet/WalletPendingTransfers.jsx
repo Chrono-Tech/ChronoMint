@@ -1,6 +1,6 @@
-import { DUCK_TOKENS } from '@/redux/tokens/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import { Paper, RaisedButton } from 'material-ui'
+import Amount from 'models/Amount'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import PropTypes from 'prop-types'
@@ -8,8 +8,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './WalletPendingTransfers.scss'
-import Amount from 'models/Amount'
 
 function mapStateToProps (state) {
   return {
@@ -44,14 +44,19 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   checkAndFetchPendings (wallet) {
-    if (wallet.pendingTxList().isFetched()) {
+    console.log('--WalletPendingTransfers#checkAndFetchPendings', 1)
+    if (wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
       return
     }
 
+    console.log('--WalletPendingTransfers#checkAndFetchPendings', 2)
+
     wallet.pendingTxList().items().forEach((item) => {
-      if (!item.isFetched() && !item.isFetching()) {
-        this.props.getPendingData(wallet, item)
+      if (item.isFetched() || item.isFetching()) {
+        return
       }
+      console.log('--WalletPendingTransfers#', 3)
+      this.props.getPendingData(wallet, item)
     })
   }
 

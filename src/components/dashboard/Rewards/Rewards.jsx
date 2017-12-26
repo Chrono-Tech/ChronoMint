@@ -1,8 +1,6 @@
-import RewardsCollection from '@/models/rewards/RewardsCollection'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import { Paper, RaisedButton } from 'material-ui'
-import RewardsModel from 'models/rewards/RewardsModel'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
