@@ -1,4 +1,3 @@
-import { EVENT_NEW_TOKEN } from '@/services/TokenService'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -6,7 +5,7 @@ import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from
 import ethereumDAO from 'dao/EthereumDAO'
 import NemDAO, { EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
-import tokenService from 'services/TokenService'
+import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'

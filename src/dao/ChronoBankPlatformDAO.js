@@ -1,7 +1,5 @@
-import OwnerModel from '@/models/wallet/OwnerModel'
-import tokenService from 'services/TokenService'
-import AbstractContractDAO from './AbstractContractDAO'
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_REVOKE_ASSET = 'revokeAsset'
