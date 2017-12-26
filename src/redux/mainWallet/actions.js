@@ -26,7 +26,6 @@ import MainWalletModel from 'models/wallet/MainWalletModel'
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
-export const WALLET_BALANCE_SET = 'mainWallet/BALANCE_SET'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
@@ -39,12 +38,6 @@ export const WALLET_INIT = 'mainWallet/INIT'
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
-
-export const setBalance = (token: TokenModel, amount: BigNumber) => ({
-  type: WALLET_BALANCE_SET,
-  token,
-  amount,
-})
 
 export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
   type: WALLET_BALANCE,
@@ -86,15 +79,25 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       if (!(tx.from() === account || tx.to() === account)) {
         return
       }
-      // update balance
-      dispatch(fetchTokenBalance(token))
+      // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
+      if (!tokenDAO.hasBalancesStream()) {
+        // update balance
+        dispatch(fetchTokenBalance(token))
+      }
       // update donator
       if (tx.from() === assetDonatorDAO.getInitAddress()) {
         dispatch(updateIsTIMERequired())
       }
     })
-    .on(EVENT_UPDATE_BALANCE, ({ balance /* balance3, balance6 */ }) => {
-      dispatch(setBalance(token, balance.balance0))
+    .on(EVENT_UPDATE_BALANCE, ({ /* account, time, */ balance }) => {
+      // TODO @ipavlenko: Always check user account
+      dispatch({
+        type: WALLET_TOKEN_BALANCE,
+        balance: new BalanceModel({
+          id: token.id(),
+          amount: new Amount(balance, token.symbol()),
+        }),
+      })
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
       dispatch(notify(new ApprovalNoticeModel({
@@ -223,10 +226,12 @@ let txsCache = []
 
 export const getAccountTransactions = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
+  // TODO @ipavlenk: It seems it is wrong tokens source, odd code, there is only ETH token
   const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  const cacheId = tokens.map((v: TokenModel) => v.symbol()).join(',')
+  // TODO: For the reason unknown we have tokens with undefined symbols)
+  const cacheId = tokens.map((v: TokenModel) => v.symbol()).filter((s) => s != null).join(',')
 
   const reset = lastCacheId && cacheId !== lastCacheId
   lastCacheId = cacheId
@@ -240,11 +245,13 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   if (txs.length < TXS_PER_PAGE) { // so cache is empty
     const promises = []
     for (let token: TokenModel of tokens) {
-      const tokenDAO = tokenService.getDAO(token.id())
-      if (reset) {
-        tokenDAO.resetFilterCache()
+      if (token.symbol()) {
+        const tokenDAO = tokenService.getDAO(token.id())
+        if (reset) {
+          tokenDAO.resetFilterCache()
+        }
+        promises.push(tokenDAO.getTransfer(getTransferId, account))
       }
-      promises.push(tokenDAO.getTransfer(getTransferId, account))
     }
     const result = await Promise.all(promises)
 

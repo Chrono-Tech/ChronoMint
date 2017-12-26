@@ -1,8 +1,9 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
+import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
-import type TxModel from 'models/TxModel'
+import TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
@@ -37,6 +38,12 @@ export class BitcoinDAO extends EventEmitter {
     return this._bitcoinProvider.isInitialized()
   }
 
+  hasBalancesStream () {
+    // Balance should not be fetched after transfer notification,
+    // it will be updated from the balances event stream
+    return true
+  }
+
   async getFeeRate () {
     return this._bitcoinProvider.getFeeRate()
   }
@@ -45,8 +52,6 @@ export class BitcoinDAO extends EventEmitter {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
     return {
       balance: balance0 || balance6,
-      balance0: balance0,
-      balance6: balance6,
     }
   }
 
@@ -60,15 +65,21 @@ export class BitcoinDAO extends EventEmitter {
       return await this._bitcoinProvider.transfer(from, to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e.message)
+      console.log('Transfer failed', e)
       throw e
     }
   }
 
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Promise<Array<TxModel>> {
+    try {
+      return await this._bitcoinProvider.getTransactionsList(account)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
     // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
-    return []
   }
 
   watch (/*account*/): Promise {
@@ -80,13 +91,27 @@ export class BitcoinDAO extends EventEmitter {
 
   async watchTransfer () {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ tx }) => {
-      this.emit(EVENT_NEW_TRANSFER, tx)
+      this.emit(
+        EVENT_NEW_TRANSFER,
+        new TxModel({
+          txHash: tx.txHash,
+          // blockHash: tx.blockhash,
+          // blockNumber: tx.blockheight,
+          blockNumber: null,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          value: new Amount(tx.value, this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
+        })
+      )
     })
   }
 
   async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
-      this.emit(EVENT_UPDATE_BALANCE, balance)
+      this.emit(EVENT_UPDATE_BALANCE, { account, time, balance: balance.balance0 })
     })
   }
 
@@ -101,6 +126,7 @@ export class BitcoinDAO extends EventEmitter {
   async fetchToken () {
     if (!this.isInitialized()) {
       this.emit(EVENT_BTC_LIKE_TOKEN_FAILED)
+      // eslint-disable-next-line
       console.warn(`${this._symbol} not initialized`)
       return
     }
@@ -108,6 +134,7 @@ export class BitcoinDAO extends EventEmitter {
 
     this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
       name: this._name,
+      decimals: this._decimals,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,

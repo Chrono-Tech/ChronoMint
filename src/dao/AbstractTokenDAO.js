@@ -6,6 +6,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
+export const EVENT_MODIFY_BALANCE = 'TokenModifyBalance'
 export const EVENT_APPROVAL_TRANSFER = 'TokenApprovalTransfer'
 
 export default class AbstractTokenDAO extends AbstractContractDAO {
@@ -27,6 +28,11 @@ export default class AbstractTokenDAO extends AbstractContractDAO {
 
   isInitialized () {
     throw new Error('should be overridden')
+  }
+
+  hasBalancesStream () {
+    // Balance should be fetched after transfer notification
+    return false
   }
 
   addDecimals (amount: Amount): Amount {
