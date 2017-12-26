@@ -374,7 +374,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
+"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -488,8 +488,8 @@ babel-core@^6.0.0, babel-core@^6.0.14, babel-core@^6.26.0:
     source-map "^0.5.6"
 
 babel-eslint@^8.1.1:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.1.1.tgz#a0637faf5ba160ae9e445b360f4d5be295edf1ed"
+  version "8.1.2"
+  resolved "https://registry.yarnpkg.com/babel-eslint/-/babel-eslint-8.1.2.tgz#a39230b0c20ecbaa19a35d5633bf9b9ca2c8116f"
   dependencies:
     "@babel/code-frame" "7.0.0-beta.31"
     "@babel/traverse" "7.0.0-beta.31"
@@ -5870,6 +5870,10 @@ lodash.isequal@^3.0:
     lodash._baseisequal "^3.0.0"
     lodash._bindcallback "^3.0.0"
 
+lodash.isplainobject@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/lodash.isplainobject/-/lodash.isplainobject-4.0.6.tgz#7c526a52d89b45c45cc690b88163be0497f550cb"
+
 lodash.istypedarray@^3.0.0:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/lodash.istypedarray/-/lodash.istypedarray-3.0.6.tgz#c9a477498607501d8e8494d283b87c39281cef62"
@@ -7404,15 +7408,9 @@ postcss-mixins@^2.1.0:
     postcss "^5.0.10"
     postcss-simple-vars "^1.0.1"
 
-postcss-modules-extract-imports@1.1.0:
+postcss-modules-extract-imports@1.1.0, postcss-modules-extract-imports@^1.0.0, postcss-modules-extract-imports@^1.0.1:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-1.1.0.tgz#b614c9720be6816eaee35fb3a5faa1dba6a05ddb"
-  dependencies:
-    postcss "^6.0.1"
-
-postcss-modules-extract-imports@^1.0.0, postcss-modules-extract-imports@^1.0.1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-1.2.0.tgz#66140ecece38ef06bf0d3e355d69bf59d141ea85"
   dependencies:
     postcss "^6.0.1"
 
@@ -8376,8 +8374,10 @@ redux-immutable@^3.0.10:
     immutable "^3.8.1"
 
 redux-mock-store@^1.2.3:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.3.0.tgz#6edfef0d2332f20576381069d6d889a6d0a4451c"
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.4.0.tgz#cdc87650f5759f293588fecc9cac2b057d95190d"
+  dependencies:
+    lodash.isplainobject "^4.0.6"
 
 redux-thunk@^2.2.0:
   version "2.2.0"
@@ -9676,15 +9676,15 @@ ua-parser-js@^0.7.9:
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.17.tgz#e9ec5f9498b9ec910e7ae3ac626a805c4d09ecac"
 
 "uglify-es@github:mishoo/UglifyJS2#harmony", "uglify-js@github:mishoo/UglifyJS2#harmony":
-  version "3.3.1"
-  resolved "https://codeload.github.com/mishoo/UglifyJS2/tar.gz/a53784e0c59d5a242ba99965fcc24bdb8ef6ad52"
+  version "3.3.2"
+  resolved "https://codeload.github.com/mishoo/UglifyJS2/tar.gz/ef74f2eaafdcec9505752d6ebdd2ecd9f1dbd15f"
   dependencies:
     commander "~2.12.1"
     source-map "~0.6.1"
 
 uglify-js@3.3.x:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.3.1.tgz#bed6f6a2e2b3f1a73dfe000f04d47ee540dd080b"
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.3.2.tgz#517af20aad7abe15e1e4c9aa33c0cc72aa0107ab"
   dependencies:
     commander "~2.12.1"
     source-map "~0.6.1"
