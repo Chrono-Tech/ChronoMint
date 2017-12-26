@@ -22,9 +22,6 @@ export default class NemDAO extends EventEmitter {
     this._mosaic = mosaic
     this._decimals = decimals
     this._nemProvider = nemProvider
-
-    // TODO @ipavlenko: Sorry, will remove this soon
-    this.isTransferLocked = true
   }
 
   getAddressValidator () {
@@ -84,8 +81,14 @@ export default class NemDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Nem transactions
+  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel/*, feeMultiplier: Number = 1*/) {
+    try {
+      return await this._nemProvider.transfer(from, to, amount)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -149,7 +152,6 @@ export default class NemDAO extends EventEmitter {
       isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
-      isLocked: this.isTransferLocked,
     }), this)
   }
 }

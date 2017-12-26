@@ -49,7 +49,9 @@ export class NemProvider extends AbstractProvider {
   // eslint-disable-next-line
   async transfer (from: string, to: string, amount: BigNumber, feeRate: Number) {
     // TODO @ipavlenko: Implement for XEM and Mosaics
-    throw new Error('Not implemented')
+    const node = this._selectNode(this._engine)
+    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, feeRate)
+    return await node.send(from, tx)
   }
 
   async onTransaction (tx) {

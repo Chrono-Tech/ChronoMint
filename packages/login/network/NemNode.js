@@ -1,5 +1,5 @@
 import axios from 'axios'
-import * as NEM from './nem'
+import nem from 'nem-sdk'
 import NemMiddlewareNode from './NemMiddlewareNode'
 
 export const NEM_MAINNET_NODE = new NemMiddlewareNode({
@@ -13,7 +13,7 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
   }],
   api: axios.create({
     baseURL: 'https://test-4.chronobank.io',
-    timeout: 4000,
+    timeout: 60000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -37,7 +37,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
   }],
   api: axios.create({
     baseURL: 'https://test-3.chronobank.io',
-    timeout: 4000,
+    timeout: 60000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -51,7 +51,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
 })
 
 export function selectNemNode (engine) {
-  return engine.getNetwork() !== NEM.Network.data.Mainnet
+  return engine.getNetwork() !== nem.model.network.data.mainnet
     ? NEM_TESTNET_NODE
     : NEM_MAINNET_NODE
 }
