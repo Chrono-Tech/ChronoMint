@@ -11,11 +11,6 @@ export default (state = initialState, action) => {
       return state.balances(state.balances().update(
         state.balances().item(action.token.id()).updateBalance(action.isCredited, action.amount),
       ))
-    case a.WALLET_BALANCE_SET:
-      return state.tokens(state.tokens().set(
-        action.token.id(),
-        state.tokens().get(action.token.id()).setBalance(action.amount),
-      ))
     case a.WALLET_ALLOWANCE:
       return state.allowances(state.allowances().update(action.allowance))
     // return state.setAllowance(action.token.id(), action.spender, action.value)

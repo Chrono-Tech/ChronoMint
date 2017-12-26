@@ -56,6 +56,12 @@ export default class NemDAO extends EventEmitter {
     return this._nemProvider.isInitialized()
   }
 
+  hasBalancesStream () {
+    // Balance should not be fetched after transfer notification,
+    // it will be updated from the balances event stream
+    return true
+  }
+
   getDecimals () {
     return this._decimals
   }
@@ -138,6 +144,7 @@ export default class NemDAO extends EventEmitter {
 
     this.emit(EVENT_NEM_LIKE_TOKEN_CREATED, new TokenModel({
       name: this._name,
+      decimals: this._decimals,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,

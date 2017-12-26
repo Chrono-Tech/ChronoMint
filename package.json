@@ -9,7 +9,7 @@
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.1.1",
     "babel-jest": "21.2.0",
     "babel-loader": "7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",

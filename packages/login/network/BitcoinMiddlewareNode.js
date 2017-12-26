@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
-import TxModel from 'models/TxModel'
-import AbstractNode from './AbstractNode'
+import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
-export default class BitcoinMiddlewareNode extends AbstractNode {
+export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
     super(args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
@@ -29,8 +28,8 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)
-              const ev = {
-                address: data.address,
+              this.emit('balance', new BitcoinBalance({
+                address,
                 balance0: data.balances.confirmations0 != null // nil check
                   ? new BigNumber(data.balances.confirmations0)
                   : null,
@@ -40,8 +39,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
                 balance6: data.balances.confirmations6 != null // nil check
                   ? new BigNumber(data.balances.confirmations6)
                   : null,
-              }
-              this.emit('balance', ev)
+              }))
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
@@ -78,12 +76,16 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getTransactionInfo (txid) {
     try {
-      const res = await this._api.get(`/tx/${txid}`)
+      const res = await this._api.get(`tx/${txid}`)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
       throw e
     }
+  }
+
+  async getTransactionsList (address) {
+    return []
   }
 
   getFeeRate (): Promise {
@@ -93,16 +95,16 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getAddressInfo (address) {
     try {
-      const res = await this._api.get(`/addr/${address}/balance`)
+      const res = await this._api.get(`addr/${address}/balance`)
       const {
         confirmations0,
         confirmations3,
         confirmations6,
       } = res.data
       return {
-        balance0: new BigNumber(confirmations0.amount),
-        balance3: new BigNumber(confirmations3.amount),
-        balance6: new BigNumber(confirmations6.amount),
+        balance0: new BigNumber(confirmations0.satoshis),
+        balance3: new BigNumber(confirmations3.satoshis),
+        balance6: new BigNumber(confirmations6.satoshis),
       }
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -112,7 +114,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
 
   async getAddressUTXOS (address) {
     try {
-      const res = await this._api.get(`/addr/${address}/utxo`)
+      const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -124,7 +126,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     try {
       const params = new URLSearchParams()
       params.append('tx', rawtx)
-      const res = await this._api.post('/tx/send', params)
+      const res = await this._api.post('tx/send', params)
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
         this.emit('tx', model)
@@ -136,7 +138,7 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
     }
   }
 
-  _createTxModel (tx, account): TxModel {
+  _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
     const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
 
@@ -146,19 +148,15 @@ export default class BitcoinMiddlewareNode extends AbstractNode {
         value = value.add(new BigNumber(output.value))
       }
     }
-    value = value.div(DECIMALS)
 
-    const txmodel = new TxModel({
+    return new BitcoinTx({
       txHash: tx.txid,
-      // blockHash: tx.blockhash,
-      // blockNumber: tx.blockheight,
-      blockNumber: null,
+      time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee),
+      fee: new BigNumber(tx.fee).mul(DECIMALS),
       credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
     })
-    return txmodel
   }
 }
