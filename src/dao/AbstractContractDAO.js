@@ -126,7 +126,6 @@ export default class AbstractContractDAO extends EventEmitter {
       contract.setProvider(web3.currentProvider)
       // noinspection JSUnresolvedFunction
       await contract.detectNetwork()
-      contract.address = this._at || contract.address
       // noinspection JSUnresolvedFunction
       const deployed = await contract.deployed()
 
