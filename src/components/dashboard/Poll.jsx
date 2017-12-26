@@ -97,6 +97,13 @@ export default class Poll extends React.Component {
               <div styleName='entry entry-required'>
                 <div styleName='entry-label'>Required votes:</div>
                 <div styleName='entry-value'>
+                  {
+                    // eslint-disable-next-line
+                    console.log('render this.props.timeToken', this.props.timeToken.toJS())
+                  }{
+                    // eslint-disable-next-line
+                    console.log('render details.voteLimit', this.props.timeToken.removeDecimals(details.voteLimit).toString())
+                  }
                   {details.voteLimit === null
                     ? (<i>No</i>)
                     : (<span>{this.props.timeToken.removeDecimals(details.voteLimit).toString()} TIME</span>)

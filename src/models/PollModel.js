@@ -9,7 +9,7 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new Immutable.List(['Support', 'Decline']),
+  options: new Immutable.List([ 'Support', 'Decline' ]),
   files: null, // hash
   active: false,
   status: false,
@@ -43,8 +43,8 @@ class PollModel extends abstractFetchingModel({
     return this.get('files')
   }
 
-  active () {
-    return this.get('active')
+  active (value) {
+    return this._getSet('active', value)
   }
 
   status () {

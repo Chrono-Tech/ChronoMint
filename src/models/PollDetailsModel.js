@@ -4,6 +4,7 @@ import moment from 'moment'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 export default class PollDetailsModel extends abstractFetchingModel({
+  id: null,
   poll: null,
   votes: Immutable.List(),
   statistics: Immutable.List(),
@@ -12,8 +13,12 @@ export default class PollDetailsModel extends abstractFetchingModel({
   shareholdersCount: new BigNumber(0),
   files: Immutable.List(),
 }) {
-  poll () {
-    return this.get('poll')
+  id () {
+    return this.get('id')
+  }
+
+  poll (value) {
+    return this._getSet('poll', value)
   }
 
   votes () {

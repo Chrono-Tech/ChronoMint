@@ -16,6 +16,7 @@ import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
 import { getStatistics } from 'redux/voting/getters'
 
 import './VotingContent.scss'
+import VotingCollection from '../../../models/voting/VotingCollection'
 
 function prefix (token) {
   return `layouts.partials.VotingContent.${token}`
@@ -163,7 +164,7 @@ export default class VotingContent extends Component {
         <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map((poll) => (
+              {polls.items().map((poll) => (
                 <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
                   <Poll
                     model={poll}
@@ -180,8 +181,8 @@ export default class VotingContent extends Component {
 
   render () {
     const polls = this.props.isFetched
-      ? this.props.list.reverse().toArray()
-      : []
+      ? this.props.list.reverse()
+      : new VotingCollection()
 
     return (
       <div styleName='root'>

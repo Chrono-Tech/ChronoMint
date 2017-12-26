@@ -13,6 +13,7 @@ import { MultiEventsHistoryABI, VotingManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'
+import VotingCollection from '../models/voting/VotingCollection'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -32,9 +33,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getVoteLimit () {
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
-    const voteLimit = await this._call('getVoteLimit')
-    return timeDAO.removeDecimals(voteLimit)
+    return await this._call('getVoteLimit')
   }
 
   async getActivePollsCount () {
@@ -42,7 +41,9 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsPaginated (startIndex, pageSize) {
-    const addresses = await this._call('getPollsPaginated', [startIndex, pageSize])
+    // eslint-disable-next-line
+    console.log('getPollsPaginated', [ startIndex, pageSize ])
+    const addresses = await this._call('getPollsPaginated', [ startIndex, pageSize ])
     return await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
@@ -62,7 +63,6 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       console.error(e.message)
     }
 
-    const timeDAO = await contractsManagerDAO.getTIMEDAO()
     const voteLimitInTIME = poll.voteLimitInTIME()
     const options = poll.options() && poll.options().toArray().map((element, index) => `Option${index}`)
 
@@ -70,7 +70,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       options,
       [],
       this._c.ipfsHashToBytes32(hash),
-      voteLimitInTIME && timeDAO.addDecimals(voteLimitInTIME),
+      voteLimitInTIME,
       poll.deadline().getTime(),
     ], poll)
     return tx.tx
@@ -85,18 +85,15 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsDetails (pollsAddresses: Array<string>) {
+    // eslint-disable-next-line
+    console.log('getPollsDetails pollsAddresses', pollsAddresses)
     try {
-      const [response, timeDAO, timeHolderDAO] = await Promise.all([
-        this._call('getPollsDetails', [pollsAddresses]),
-        await contractsManagerDAO.getTIMEDAO(),
-        await contractsManagerDAO.getTIMEHolderDAO(),
-      ])
-      const [owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates] = response
+      const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = await this._call('getPollsDetails', [ pollsAddresses ])
 
-      let result = {}
+      let result = new VotingCollection()
       for (let i = 0; i < pollsAddresses.length; i++) {
         try {
-          const pollId = pollsAddresses[i]
+          const pollId = pollsAddresses[ i ]
 
           try {
             votingService.subscribeToPoll(pollId)
@@ -107,38 +104,34 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
           const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
           const votes = await pollInterface.getVotesBalances()
-          const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
+          const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
           const { title, description, options, files } = await ipfs.get(hash)
           const poll = new PollModel({
             id: pollId,
-            owner: owners[i],
+            owner: owners[ i ],
             hash,
             votes,
             title,
             description,
-            voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : timeDAO.removeDecimals(voteLimits[i]),
-            deadline: deadlines[i].toNumber() ? new Date(deadlines[i].toNumber()) : null, // deadline is just a timestamp
-            published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp
-            status: statuses[i],
-            active: activeStatuses[i],
+            voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : voteLimits[ i ],
+            deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
+            published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
+            status: statuses[ i ],
+            active: activeStatuses[ i ],
             options: new Immutable.List(options || []),
             files,
           })
-          const totalSupply = await timeDAO.totalSupply()
-          const shareholdersCount = await timeHolderDAO.shareholdersCount()
           const pollFiles = poll && await ipfs.get(poll.files())
 
-          result[pollId] = new PollDetailsModel({
+          result = result.add(new PollDetailsModel({
+            id: pollId,
             poll,
             votes,
             // statistics,
             // memberVote: memberVote && memberVote.toNumber(), // just an option index
-            timeDAO,
-            totalSupply,
-            shareholdersCount,
             files: new Immutable.List((pollFiles && pollFiles.links || [])
               .map((item) => FileModel.createFromLink(item))),
-          })
+          }))
         } catch (e) {
           // eslint-disable-next-line
           console.error(e.message)
@@ -156,11 +149,11 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPoll (pollId): PollDetailsModel {
-    const [polls] = await Promise.all([
-      this.getPollsDetails([pollId]),
+    const [ polls ] = await Promise.all([
+      this.getPollsDetails([ pollId ]),
     ])
 
-    return polls[pollId]
+    return polls[ pollId ]
   }
 
   /** @private */

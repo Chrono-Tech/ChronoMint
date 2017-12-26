@@ -12,9 +12,7 @@ import * as pollInterface from 'dao/PollInterfaceDAO'
 import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
-import * as voting from 'dao/VotingDAO'
 import { en as layouts } from 'layouts/lang'
-import { en as components } from 'components/lang'
 
 export default {
   title: 'Eng',

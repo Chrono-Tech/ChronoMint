@@ -1,17 +1,12 @@
 import votingService from 'services/VotingService'
-import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
-import type PollNoticeModel from 'models/notices/PollNoticeModel'
-import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
-import Immutable from 'immutable'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
-import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
-import TokenModel from 'models/tokens/TokenModel'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
 
 export const POLLS_INIT = 'voting/INIT'
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
@@ -21,6 +16,7 @@ export const POLLS_CREATE = 'voting/POLLS_CREATE'
 export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
 export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
+export const VOTING_POLLS_COUNT = 'voting/VOTING_POLLS_COUNT'
 
 export const DUCK_VOTING = 'voting'
 const PAGE_SIZE = 20
@@ -127,9 +123,9 @@ export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch)
 export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll
-      .set('poll', poll.poll().set('active', true))
+      .poll(poll.poll().active(true))
       .isFetching(true)))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
     await dao.activatePoll()
   } catch (e) {
     dispatch(handlePollUpdated(poll))
@@ -169,7 +165,7 @@ export const handlePollUpdated = (poll: PollDetailsModel, activeCount) => async 
 export const listPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
   const dao = await contractsManagerDAO.getVotingManagerDAO()
-  const [count, activeCount, list] = await Promise.all([
+  const [ count, activeCount, list ] = await Promise.all([
     dao.getPollsCount(),
     dao.getActivePollsCount(),
     dispatch(getNextPage()),

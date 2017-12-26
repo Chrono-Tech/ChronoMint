@@ -1,4 +1,3 @@
-import { ru as layouts } from 'layouts/lang'
 import { ru as Login } from '@chronobank/login-ui/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
@@ -13,6 +12,7 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { ru as components } from 'components/lang'
+import { ru as layouts } from 'layouts/lang'
 
 export default {
   title: 'Рус',

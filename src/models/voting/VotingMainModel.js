@@ -1,12 +1,13 @@
 import Immutable from 'immutable'
 import { abstractFetchingModel } from 'models/AbstractFetchingModel'
 import BigNumber from 'bignumber.js'
+import VotingCollection from './VotingCollection'
 
 export default class VotingMainModel extends abstractFetchingModel({
   voteLimitInTIME: null,
-  list: new Immutable.Map(),
   pollsCount: new BigNumber(0),
   activePollsCount: new BigNumber(0),
+  list: new VotingCollection(),
   lastPoll: new BigNumber(0),
 }) {
   pollsCount (value) {

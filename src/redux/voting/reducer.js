@@ -1,8 +1,10 @@
-import Immutable from 'immutable'
-import VotingModel from 'models/voting/VotingCollection'
-import * as a from './actions'
+import VotingMainModel from 'models/voting/VotingMainModel'
+import {
+  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_REMOVE_STUB, POLLS_UPDATE, POLLS_VOTE_LIMIT,
+  VOTING_POLLS_COUNT,
+} from './actions'
 
-const initialState = new VotingModel()
+const initialState = new VotingMainModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -14,7 +16,7 @@ export default (state = initialState, action) => {
       return state
         .isFetching(false)
         .isFetched(true)
-        .list(new Immutable.Map(action.list))
+        .list(action.list)
     case POLLS_CREATE:
       return state
         .list(state.list().set(action.poll.poll().id(), action.poll))

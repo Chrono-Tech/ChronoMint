@@ -150,7 +150,7 @@ export default class Poll extends PureComponent {
                       ? (<i>Unlimited</i>)
                       : (
                         <span>{this.props.timeToken.isFetched()
-                          ? `${this.props.timeToken.removeDecimals(details.voteLimit)} TIME`
+                          ? `${details.voteLimit} TIME`
                           : <Preloader />
                         }
                         </span>)
@@ -163,7 +163,7 @@ export default class Poll extends PureComponent {
                     <span>
                       {
                         this.props.timeToken.isFetched()
-                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          ? `${details.received} TIME`
                           : <Preloader />
                       }
                     </span>

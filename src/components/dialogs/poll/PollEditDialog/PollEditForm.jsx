@@ -17,6 +17,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
 import './PollEditForm.scss'
 import validate from './validate'
+import { DUCK_TOKENS } from '../../../../redux/tokens/actions'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
@@ -31,6 +32,7 @@ function mapStateToProps (state) {
     options: selector(state, 'options'),
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
+    timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
       deadline: new Date(),
