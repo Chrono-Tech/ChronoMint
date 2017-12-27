@@ -61,7 +61,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     let addresses
     if (options.fromMiddleWare) {
       const sort = filter.isBuy ? `sort=buyPrice,-age` : `sort=sellPrice,-age`
-      addresses = await exchangeProvider.getExchangesWithFilter(filter.symbol && web3Converter.stringToBytes(filter.symbol), sort)
+      addresses = await exchangeProvider.getExchangesWithFilter(filter.symbol && web3Converter.stringToBytes(filter.symbol), sort, fromId, length)
     } else {
       addresses = await this._call('getExchanges', [ fromId, length ])
     }

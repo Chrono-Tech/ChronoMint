@@ -33,6 +33,10 @@ const reducer = (state = initialState, action) => {
       return state.exchanges(state.exchanges().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:
       return state
+        .exchanges(action.exchanges.isFetching(false).isFetched(true))
+        .lastPages(action.lastPages)
+    case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT:
+      return state
         .exchanges(state.exchanges().concat(action.exchanges).isFetching(false).isFetched(true))
         .lastPages(action.lastPages)
     case a.EXCHANGE_SET_PAGES_COUNT:

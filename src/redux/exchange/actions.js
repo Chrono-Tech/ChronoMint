@@ -28,6 +28,7 @@ export const EXCHANGE_UPDATE_FOR_OWNER = 'exchange/EXCHANGE_UPDATE_FOR_OWNER'
 export const EXCHANGE_MIDDLEWARE_DISCONNECTED = 'exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_START = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START'
 export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH'
+export const EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT = 'exchange/EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT0'
 export const EXCHANGE_GET_OWNERS_EXCHANGES_START = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START'
 export const EXCHANGE_GET_OWNERS_EXCHANGES_FINISH = 'exchange/EXCHANGE_GET_OWNERS_EXCHANGES_FINISH'
 const PAGE_SIZE = 20
@@ -54,9 +55,7 @@ export const search = (values: Immutable.Map) => async (dispatch) => {
   }))
 }
 
-export const getExchange = () => async (dispatch) => {
-  dispatch({ type: EXCHANGE_GET_DATA_START })
-  await dispatch(getExchangesCount())
+const getAssetsSymbols = () => async (dispatch) => {
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   let assetSymbols
   try {
@@ -66,6 +65,12 @@ export const getExchange = () => async (dispatch) => {
   }
 
   dispatch({ type: EXCHANGE_GET_DATA_FINISH, assetSymbols })
+}
+
+export const getExchange = () => async (dispatch) => {
+  dispatch({ type: EXCHANGE_GET_DATA_START })
+  await dispatch(getExchangesCount())
+  await dispatch(getAssetsSymbols())
 
   dispatch(getExchangesForOwner())
   dispatch(getNextPage())
@@ -129,7 +134,19 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
       }
     }))
   })
-  dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH, exchanges, lastPages: state.lastPages() + exchanges.size() })
+  if (filter) {
+    dispatch({
+      type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
+      exchanges,
+      lastPages: state.lastPages() + exchanges.size(),
+    })
+  } else {
+    dispatch({
+      type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT,
+      exchanges,
+      lastPages: state.lastPages() + exchanges.size(),
+    })
+  }
 }
 
 export const updateExchange = (exchange: ExchangeOrderModel) => (dispatch, getState) => {
@@ -181,6 +198,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
       const exchangeAddress = tx.args.exchange
       const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
+      dispatch(getAssetsSymbols())
       dispatch(subscribeOnTokens((token: TokenModel) => () => {
         if (token.symbol() === exchange.symbol()) {
           exchangeService.subscribeToExchange(exchange.address())
