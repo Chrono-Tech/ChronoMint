@@ -39,7 +39,6 @@ export default class Value extends PureComponent {
     if (value instanceof Amount) {
       return (<TokenValue
         value={value}
-        symbol={value.symbol()}
         {...params}
       />)
     }
