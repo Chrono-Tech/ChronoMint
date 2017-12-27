@@ -93,11 +93,15 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     }, { self: wallet.address() })
   }
 
+  isValidId (id) {
+    return id !== '0x0000000000000000000000000000000000000000000000000000000000000000'
+  }
+
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
     const [ values, operations, isConfirmed ] = await this._call('getPendings')
 
-    operations.forEach((id, i) => {
+    operations.filter(this.isValidId).forEach((id, i) => {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
