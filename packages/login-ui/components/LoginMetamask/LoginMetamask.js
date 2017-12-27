@@ -34,8 +34,7 @@ class LoginMetamask extends PureComponent {
   }
 
   componentWillMount () {
-    web3Provider.setWeb3(window.web3)
-    web3Provider.setProvider(window.web3.currentProvider)
+    web3Provider.reinit(window.web3, window.web3.currentProvider)
     window.web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)

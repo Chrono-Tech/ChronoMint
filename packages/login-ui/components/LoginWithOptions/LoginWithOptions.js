@@ -182,8 +182,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       ledgerProvider.setupAndStart(networkService.getProviderURL())
-      web3Provider.setWeb3(ledgerProvider.getWeb3())
-      web3Provider.setProvider(ledgerProvider.getProvider())
+      web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
@@ -195,8 +194,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       trezorProvider.setupAndStart(networkService.getProviderURL())
-      web3Provider.setWeb3(trezorProvider.getWeb3())
-      web3Provider.setProvider(trezorProvider.getProvider())
+      web3Provider.reinit(trezorProvider.getWeb3(), trezorProvider.getProvider())
       this.props.onLogin()
     } catch (e) {
       this.props.addError(e.message)
