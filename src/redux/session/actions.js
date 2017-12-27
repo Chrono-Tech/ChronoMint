@@ -1,5 +1,6 @@
 import networkService from '@chronobank/login/network/NetworkService'
-import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
+import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ProfileModel from 'models/ProfileModel'
 import { push, replace } from 'react-router-redux'
@@ -30,13 +31,18 @@ export const destroySession = ({ lastURL, dispatch }) => {
   dispatch({ type: SESSION_DESTROY })
 }
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async (dispatch, getState) => {
   try {
+    const { selectedNetworkId } = getState().get(DUCK_NETWORK)
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
     await networkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`)
     await dispatch(push('/'))
-    await dispatch(bootstrap(false))
+    if (selectedNetworkId === NETWORK_MAIN_ID) {
+      location.reload()
+    } else {
+      await dispatch(bootstrap(false))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.warn('logout error:', e)

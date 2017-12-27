@@ -1,7 +1,7 @@
 export default {
   en: {
     rewards: 'Bonuses',
-    rewardsSmartContractAddress: 'Rewards smart contract address',
+    rewardsSmartContractAddress: 'Bonuses smart contract address',
     currentRewardsPeriod: 'Current bonus period',
     periodLength: 'Period length',
     daysDays: '%{days} days',

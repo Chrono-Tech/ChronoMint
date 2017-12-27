@@ -1,8 +1,5 @@
 import {
-  NETWORK_STATUS_OFFLINE,
-  NETWORK_STATUS_ONLINE,
-  NETWORK_STATUS_UNKNOWN,
-  SYNC_STATUS_SYNCED,
+  NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED,
   SYNC_STATUS_SYNCING,
 } from '@chronobank/login/network/MonitorService'
 import { getNetworkById } from '@chronobank/login/network/settings'
@@ -22,6 +19,7 @@ import { drawerToggle } from 'redux/drawer/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
 import { logout } from 'redux/session/actions'
+import Value from 'components/common/Value/Value'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
@@ -305,7 +303,7 @@ export default class HeaderPartial extends PureComponent {
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
               <span styleName='infoLabel'>{item.label}:</span>&nbsp;
-              <span styleName='infoValue'>{item.value}</span>
+              <span styleName='infoValue'><Value value={item.value} /></span>
             </div>
           ))}
           <div styleName='infoRow'>
@@ -339,7 +337,7 @@ export default class HeaderPartial extends PureComponent {
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
               <span styleName='infoLabel'>{item.label}:</span>&nbsp;
-              <span styleName='infoValue'>{item.value}</span>
+              <span styleName='infoValue'><Value value={item.value} /></span>
             </div>
           ))}
           <div styleName='infoRow'>
