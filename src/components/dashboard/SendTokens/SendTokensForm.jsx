@@ -50,6 +50,7 @@ function mapStateToProps (state) {
   const recipient = selector(state, 'recipient')
 
   return {
+    tokens: state.get(DUCK_TOKENS),
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
@@ -154,14 +155,20 @@ export default class SendTokensForm extends PureComponent {
                   {...styles}
                 >
                   {balances
-                    .sortBy(balance => balance.symbol())
-                    .map((balance) => (
-                      <MenuItem
-                        key={balance.id()}
-                        value={balance.id()}
-                        primaryText={balance.symbol()}
-                      />
-                    ))}
+                    .sortBy((balance) => balance.symbol())
+                    .map((balance) => {
+                      const token: TokenModel = this.props.tokens.item(balance.id())
+                      if (token.isLocked()) {
+                        return
+                      }
+                      return (
+                        <MenuItem
+                          key={balance.id()}
+                          value={balance.id()}
+                          primaryText={balance.symbol()}
+                        />
+                      )
+                    })}
                 </Field>
               )
             }
@@ -243,8 +250,8 @@ export default class SendTokensForm extends PureComponent {
               label={<Translate value={prefix('send')} />}
               primary
               style={{ float: 'right', marginTop: '20px' }}
-              disabled={pristine || invalid || token.isLocked()}
-              onTouchTap={!pristine && !invalid && !token.isLocked() && handleSubmit(this.handleTransfer)}
+              disabled={pristine || invalid}
+              onTouchTap={!pristine && !invalid && handleSubmit(this.handleTransfer)}
             />
             {token.isERC20() && isApprove && (
               <RaisedButton
