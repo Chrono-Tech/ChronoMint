@@ -1,6 +1,7 @@
 import Preloader from 'components/common/Preloader/Preloader'
 import { Paper, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
+import TokensCollection from 'models/tokens/TokensCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import PropTypes from 'prop-types'
@@ -33,6 +34,7 @@ export default class WalletPendingTransfers extends PureComponent {
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   componentWillMount () {
@@ -44,18 +46,14 @@ export default class WalletPendingTransfers extends PureComponent {
   }
 
   checkAndFetchPendings (wallet) {
-    console.log('--WalletPendingTransfers#checkAndFetchPendings', 1)
     if (wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
       return
     }
-
-    console.log('--WalletPendingTransfers#checkAndFetchPendings', 2)
 
     wallet.pendingTxList().items().forEach((item) => {
       if (item.isFetched() || item.isFetching()) {
         return
       }
-      console.log('--WalletPendingTransfers#', 3)
       this.props.getPendingData(wallet, item)
     })
   }
@@ -68,11 +66,9 @@ export default class WalletPendingTransfers extends PureComponent {
           : <div styleName='left'>
             <div styleName='itemTitle'>{item.title()}</div>
             {item.details().map((item, index) => {
-              let value = item.value
-              if (item.value instanceof Amount) {
-               value = +this.props.tokens.getBySymbol(item.value.symbol()).removeDecimals(item.value)
-              } else {
-              }
+              const value = item.value instanceof Amount
+                ? +this.props.tokens.getBySymbol(item.value.symbol()).removeDecimals(item.value)
+                : item.value
               return (
                 <div key={index} styleName='detail'>
                   <span styleName='detailKey'>{item.label}:</span>

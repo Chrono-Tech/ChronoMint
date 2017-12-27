@@ -162,10 +162,6 @@ class NetworkService extends EventEmitter {
 
     const accounts = await this.loadAccounts()
 
-    const state = this._store.getState().get(DUCK_NETWORK)
-
-    console.log('--NetworkService#setup', state)
-
     this.selectAccount(accounts[ 0 ])
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
