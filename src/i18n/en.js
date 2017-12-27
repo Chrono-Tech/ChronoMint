@@ -346,7 +346,7 @@ export default {
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
-        title: 'Withdraw Reward',
+        title: 'Withdraw Bonus',
         amount: 'Amount',
       },
       [rewards.TX_CLOSE_PERIOD]: {
@@ -607,7 +607,7 @@ export default {
     REWARD_INVALID_STATE: 'Bonuses: invalid state',
     REWARD_INVALID_PERIOD: 'Bonuses: invalid period',
     REWARD_NO_REWARDS_LEFT: 'Bonuses: no bonuses left',
-    REWARD_ASSET_TRANSFER_FAILED: 'Reward: asset transfer failed',
+    REWARD_ASSET_TRANSFER_FAILED: 'Bonus: asset transfer failed',
     REWARD_ALREADY_CALCULATED: 'Bonus: already calculated',
     REWARD_CALCULATION_FAILED: 'Bonus: calculation failed',
     REWARD_CANNOT_CLOSE_PERIOD: 'Bonus: cannot close period',
@@ -703,7 +703,7 @@ export default {
         totalTimeTokensDeposited: 'Total TIME tokens deposited',
         percentOfTotalCount: '%{percent}% of total count',
         uniqueShareholders: 'Unique shareholders',
-        yourTimeTokensEligible: 'Your TIME tokens eligible for rewards in the period',
+        yourTimeTokensEligible: 'Your TIME tokens eligible for bonuses in the period',
         percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
         dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
         yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
