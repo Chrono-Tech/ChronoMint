@@ -30,7 +30,7 @@ export class Web3Provider {
 
   constructor (web3Instance = null, withMonitor = false) {
     if (web3Instance) {
-      this.setWeb3((web3Instance))
+      this.setWeb3(web3Instance)
     }
     this._web3Promise = this._getWeb3Promise()
     // for redux-devtool
@@ -62,8 +62,14 @@ export class Web3Provider {
     return this._monitorService
   }
 
+  reinit (Web3ClassOrInstance, provider) {
+    this.beforeReset()
+    this.setWeb3(Web3ClassOrInstance)
+    this.setProvider(provider)
+    this.afterReset()
+  }
+
   setWeb3 (Web3ClassOrInstance) {
-    this.reset()
     typeof Web3ClassOrInstance === 'function'
       ? this._web3instance = new Web3ClassOrInstance()
       : this._web3instance = Web3ClassOrInstance
@@ -106,7 +112,7 @@ export class Web3Provider {
     this._permanentResetCallbacks.push(callback)
   }
 
-  reset () {
+  beforeReset () {
     if (this._monitorService) {
       this._monitorService.reset()
     }
@@ -118,8 +124,11 @@ export class Web3Provider {
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
-    this._resetCallbacks.forEach((callback) => callback())
+  }
+
+  afterReset () {
     this._permanentResetCallbacks.forEach((callback) => callback())
+    this._resetCallbacks.forEach((callback) => callback())
     this._resetCallbacks = []
   }
 }

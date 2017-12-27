@@ -49,6 +49,5 @@ export const fetchAccount = () => async (dispatch) => {
 export const loginLedger = () => {
   const providerURL = networkService.getProviderURL()
   ledgerProvider.setupAndStart(providerURL)
-  web3Provider.setWeb3(ledgerProvider.getWeb3())
-  web3Provider.setProvider(ledgerProvider.getProvider())
+  web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
 }

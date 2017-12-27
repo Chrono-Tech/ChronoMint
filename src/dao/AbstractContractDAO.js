@@ -80,6 +80,7 @@ export default class AbstractContractDAO extends EventEmitter {
       this.contract.catch(() => false)
     }
 
+    this._web3Provider.onResetPermanent(() => this._handleWeb3Reset())
     this.subscribeOnReset()
 
     this._uniqId = `${this.constructor.name}-${Math.random()}`
@@ -101,6 +102,10 @@ export default class AbstractContractDAO extends EventEmitter {
 
   setAccount (account) {
     AbstractContractDAO._account = account
+  }
+
+  _handleWeb3Reset () {
+    this._at = null
   }
 
   // Call anly for singleton contracts
@@ -126,6 +131,7 @@ export default class AbstractContractDAO extends EventEmitter {
       contract.setProvider(web3.currentProvider)
       // noinspection JSUnresolvedFunction
       await contract.detectNetwork()
+      contract.address = this._at || contract.address
       // noinspection JSUnresolvedFunction
       const deployed = await contract.deployed()
 
@@ -176,7 +182,7 @@ export default class AbstractContractDAO extends EventEmitter {
   // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): bool {
   async isDeployed (web3Provider = this._web3Provider): bool {
     try {
-      await this._initContract(web3Provider.getWeb3instance(), true)
+      await this._initContract(web3Provider.getWeb3instance())
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
       if (!code) {
         throw new Error(`${this.getContractName()} isDeployed code is empty, address: ${this.getInitAddress()}`)
