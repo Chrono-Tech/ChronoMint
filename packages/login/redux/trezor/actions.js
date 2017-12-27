@@ -46,6 +46,5 @@ export const fetchAccount = () => async (dispatch) => {
 export const loginTrezor = () => {
   const providerURL = networkService.getProviderURL()
   trezorProvider.setupAndStart(providerURL)
-  web3Provider.setWeb3(trezorProvider.getWeb3())
-  web3Provider.setProvider(trezorProvider.getProvider())
+  web3Provider.reinit(trezorProvider.getWeb3(), trezorProvider.getProvider())
 }

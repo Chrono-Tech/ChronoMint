@@ -70,8 +70,7 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
+    web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -117,8 +116,7 @@ class NetworkService extends EventEmitter {
     const provider = uportProvider.getUportProvider()
     dispatch(loading())
     dispatch(clearErrors())
-    web3Provider.setWeb3(provider.getWeb3())
-    web3Provider.setProvider(provider.getProvider())
+    web3Provider.reinit(provider.getWeb3(), provider.getProvider())
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
@@ -159,8 +157,7 @@ class NetworkService extends EventEmitter {
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(ethereum.getProvider())
+    web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
 
     const accounts = await this.loadAccounts()
@@ -236,8 +233,7 @@ class NetworkService extends EventEmitter {
     const { priority, preferMainnet } = this._store.getState().get('network')
     const resolveNetwork = () => {
       const web3 = new Web3()
-      web3Provider.setWeb3(web3)
-      web3Provider.setProvider(web3Utils.createStatusEngine(this.getProviderURL()))
+      web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
       web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
@@ -269,7 +265,8 @@ class NetworkService extends EventEmitter {
 
     const runNextChecker = () => {
       if (this.checkerIndex <= this.checkers.length) {
-        web3Provider.reset()
+        web3Provider.beforeReset()
+        web3Provider.afterReset()
         this.checkers[ this.checkerIndex ]()
         this.checkerIndex++
       } else {

@@ -122,8 +122,7 @@ describe('network actions', () => {
     // setup web3
     const account = accounts[ 0 ]
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(LOCAL_HOST))
+    web3Provider.reinit(web3, new web3.providers.HttpProvider(LOCAL_HOST))
 
     await networkService.restoreLocalSession(account)
     const actions = store.getActions()
