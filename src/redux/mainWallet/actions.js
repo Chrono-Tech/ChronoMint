@@ -125,7 +125,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   }
 }
 
-const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
+export const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
   const tokenDAO = tokenService.getDAO(token.id())
   const { account } = getState().get(DUCK_SESSION)
   const balance = await tokenDAO.getAccountBalance(account)
