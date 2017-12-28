@@ -34,7 +34,7 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error('Wrong session arguments')
     }
-    const accounts = this._store.getState().get('network').accounts || []
+    const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
     if (!accounts.includes(account)) {
       throw new Error('Account not registered')
     }
@@ -56,7 +56,8 @@ class NetworkService extends EventEmitter {
     AbstractContractDAO.resetWholeFilterCache()
     if (isReset) {
       // for tests
-      web3Provider.reset()
+      web3Provider.beforeReset()
+      web3Provider.afterReset()
     }
 
     this.emit('destroySession', { lastURL, dispatch: this._dispatch })
@@ -179,7 +180,7 @@ class NetworkService extends EventEmitter {
 
   getProviderSettings = () => {
     const state = this._store.getState()
-    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
     const { protocol, host } = network
 
@@ -191,7 +192,7 @@ class NetworkService extends EventEmitter {
 
   getProviderURL = () => {
     const state = this._store.getState()
-    const { selectedNetworkId, selectedProviderId, isLocal } = state.get('network')
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const { protocol, host } = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
     return protocol ? `${protocol}://${host}` : `//${host}`
   }
@@ -226,7 +227,7 @@ class NetworkService extends EventEmitter {
   }
 
   async autoSelect () {
-    const { priority, preferMainnet } = this._store.getState().get('network')
+    const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
     const resolveNetwork = () => {
       const web3 = new Web3()
       web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))

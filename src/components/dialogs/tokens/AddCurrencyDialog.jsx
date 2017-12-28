@@ -1,82 +1,21 @@
-import { TOKEN_ICONS } from 'assets'
-import classnames from 'classnames'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Points from 'components/common/Points/Points'
-import WithLoader, { isFetching } from 'components/common/Preloader/WithLoader'
-import TokenValue from 'components/common/TokenValue/TokenValue'
 import Immutable from 'immutable'
-import { Checkbox, FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
+import { FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
+import BalancesCollection from 'models/tokens/BalancesCollection'
 import TokensCollection from 'models/tokens/TokensCollection'
-import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import BalancesCollection from 'models/tokens/BalancesCollection'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import BalanceModel from 'models/tokens/BalanceModel'
-import ProfileModel from 'models/ProfileModel'
-import Amount from 'models/Amount'
-import AddTokenDialog from './AddTokenDialog/AddTokenDialog'
-import ModalDialog from './ModalDialog'
+import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
+import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
-
-class TokenRow extends PureComponent {
-  static propTypes = {
-    token: PropTypes.instanceOf(TokenModel),
-    balances: PropTypes.instanceOf(BalancesCollection),
-    isSelected: PropTypes.bool,
-    onClick: PropTypes.func,
-    profile: PropTypes.instanceOf(ProfileModel),
-  }
-
-  handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
-
-  renderCheckbox = ({ isSelected }) => {
-    if (this.props.token.isOptional() && !this.props.profile.tokens().get(this.props.token.address())) {
-      return <Checkbox checked={isSelected} />
-    }
-    return null
-  }
-
-  render () {
-    const { isSelected, token, balances } = this.props
-    const symbol = token.symbol()
-    let balance = balances.item(token.id())
-    if (!balance.amount().isLoaded()) {
-      balance = new BalanceModel({ amount: new Amount(0, token.symbol()) })
-    }
-
-    return (
-      <div
-        key={token.id()}
-        styleName={classnames('row', { rowSelected: isSelected })}
-        onTouchTap={this.handleClick}
-      >
-        <div styleName='cell'>
-          <div styleName='icon'>
-            <IPFSImage styleName='iconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
-            <div styleName='label'>{symbol}</div>
-          </div>
-        </div>
-        <div styleName='cell cellAuto'>
-          <div styleName='symbol'>{symbol}</div>
-          <div styleName='value'>
-            <TokenValue value={balance.amount()} />
-          </div>
-        </div>
-        <div styleName='cell'>
-          <WithLoader showLoader={isFetching} payload={token} isSelected={this.props.isSelected}>
-            {this.renderCheckbox}
-          </WithLoader>
-        </div>
-      </div>
-    )
-  }
-}
+import TokenRow from './TokenRow'
+import TokenRowPlaceholder from './TokenRowPlaceholder'
 
 function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
@@ -160,11 +99,25 @@ export default class AddCurrencyDialog extends PureComponent {
     )
   }
 
-  renderTokens = ({ balances, tokens, selectedTokens, profile }) => (
-    <div styleName='table'>
-      {tokens.items().map(this.renderRow(selectedTokens, balances, profile))}
-    </div>
-  )
+  renderPlaceholders (count) {
+    const placeHolders = []
+    for (let i = 0; i < count; i++) {
+      placeHolders.push(<TokenRowPlaceholder key={i} />)
+    }
+    return placeHolders
+  }
+
+  renderTokens () {
+    const { balances, tokens, profile } = this.props
+    const { selectedTokens } = this.state
+
+    return (
+      <div styleName='table'>
+        {tokens.items().map(this.renderRow(selectedTokens, balances, profile))}
+        {this.renderPlaceholders(tokens.leftToFetch())}
+      </div>
+    )
+  }
 
   render () {
     return (
@@ -186,15 +139,7 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='body'>
             <div styleName='column'>
               <h5><Translate value={prefix('allTokens')} /></h5>
-              <WithLoader
-                showLoader={!this.props.tokens.isFetched()}
-                selectedTokens={this.state.selectedTokens}
-                tokens={this.props.tokens}
-                balances={this.props.balances}
-                profile={this.props.profile}
-              >
-                {this.renderTokens}
-              </WithLoader>
+              {this.renderTokens()}
             </div>
             <div styleName='column'>
               <h5><Translate value={prefix('howToAddYourToken')} /></h5>
