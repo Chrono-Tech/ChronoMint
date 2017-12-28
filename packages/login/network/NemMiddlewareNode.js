@@ -91,7 +91,7 @@ export default class NemMiddlewareNode extends AbstractNode {
       const res = await this._api.get(`/addr/${address}/balance`)
       const { balance, mosaics } = res.data
       return {
-        balance: new BigNumber(balance instanceof Object ? balance.value : balance),
+        balance: new BigNumber(balance.value),
         mosaics: Object.entries(mosaics).reduce((t, [ k, v ]) => ({
           ...t,
           [ k ]: new BigNumber(v.value),

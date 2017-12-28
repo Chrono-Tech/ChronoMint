@@ -18,6 +18,15 @@ export class BitcoinEngine {
     return this._wallet.getAddress()
   }
 
+  isAddressValid (address) {
+    try {
+      bitcoin.address.toOutputScript(address, this._network)
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
   /**
    * Creates raw transaction encoded in HEX string
    * @param to Destination address
