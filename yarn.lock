@@ -1881,6 +1881,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
+circular-json-es6@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/circular-json-es6/-/circular-json-es6-2.0.1.tgz#c9f4e37df74a655ced7245d31020bf5b5cd34ef6"
+
 circular-json@^0.3.1:
   version "0.3.3"
   resolved "https://registry.yarnpkg.com/circular-json/-/circular-json-0.3.3.tgz#815c99ea84f6809529d2f45791bdf82711352d66"
@@ -3055,13 +3059,14 @@ enzyme-adapter-utils@^1.1.0:
     object.assign "^4.0.4"
     prop-types "^15.6.0"
 
-enzyme-matchers@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-4.0.1.tgz#f3fb5e5e5e5ec9a19144d172605433fc7e9d9f5a"
+enzyme-matchers@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-4.0.2.tgz#3f4457d0d0da3e268af4bee9f222439dfca26214"
   dependencies:
+    circular-json-es6 "^2.0.1"
     deep-equal-ident "^1.1.1"
 
-enzyme-to-json@^3.0.0:
+enzyme-to-json@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/enzyme-to-json/-/enzyme-to-json-3.3.0.tgz#553e23a09ffb4b0cf09287e2edf9c6539fddaa84"
   dependencies:
@@ -5200,11 +5205,11 @@ jest-environment-node@^21.2.1:
     jest-util "^21.2.1"
 
 jest-enzyme@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/jest-enzyme/-/jest-enzyme-4.0.1.tgz#9d13de2d194e09e12b71c9689afb2c066df30b0e"
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/jest-enzyme/-/jest-enzyme-4.0.2.tgz#c3a87f311889819d51ae2639c9da412da07cfc4a"
   dependencies:
-    enzyme-matchers "^4.0.1"
-    enzyme-to-json "^3.0.0"
+    enzyme-matchers "^4.0.2"
+    enzyme-to-json "^3.3.0"
 
 jest-get-type@^21.2.0:
   version "21.2.0"
@@ -8007,13 +8012,13 @@ react-event-listener@^0.5.1:
     warning "^3.0.0"
 
 react-hot-loader@next:
-  version "4.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.0.0-beta.4.tgz#57e1b75f519267431ed66ef2364e1349bbc634d6"
+  version "4.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.0.0-beta.6.tgz#8a32e3ae4291ad42187212ca9ffa5f1d763d0692"
   dependencies:
     fast-levenshtein "^2.0.6"
     global "^4.3.0"
     hoist-non-react-statics "^2.3.1"
-    react-stand-in "^4.0.0-beta.4"
+    react-stand-in "^4.0.0-beta.6"
     redbox-react "^1.3.6"
     source-map "^0.6.1"
 
@@ -8086,9 +8091,9 @@ react-smooth@^0.1.15:
     raf "^3.2.0"
     react-addons-transition-group "^0.14.0 || ^15.0.0"
 
-react-stand-in@^4.0.0-beta.4:
-  version "4.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/react-stand-in/-/react-stand-in-4.0.0-beta.4.tgz#1c33fe0645dfb8f76250e2b1540c8f4a9e0e50a2"
+react-stand-in@^4.0.0-beta.6:
+  version "4.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/react-stand-in/-/react-stand-in-4.0.0-beta.6.tgz#6dd28cc11665a1a51e4dbbb248bc3e1c77e93add"
 
 react-stockcharts@^0.6.1:
   version "0.6.1"
@@ -9677,7 +9682,7 @@ ua-parser-js@^0.7.9:
 
 "uglify-es@github:mishoo/UglifyJS2#harmony", "uglify-js@github:mishoo/UglifyJS2#harmony":
   version "3.3.2"
-  resolved "https://codeload.github.com/mishoo/UglifyJS2/tar.gz/9f7d1f7ac62e80e3f7f83600d28aeeaef60d0d86"
+  resolved "https://codeload.github.com/mishoo/UglifyJS2/tar.gz/0a3fac6e684eb2bd484602e39615cd1f067588d5"
   dependencies:
     commander "~2.12.1"
     source-map "~0.6.1"

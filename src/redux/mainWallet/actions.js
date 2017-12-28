@@ -54,6 +54,9 @@ export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANC
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account, profile } = getState().get(DUCK_SESSION)
+
+  dispatch(fetchTokenBalance(token))
+
   if (token.isOptional() && !profile.tokens().get(token.address())) {
     return
   }
@@ -117,7 +120,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   await tokenDAO.watch(account)
 
-  dispatch(fetchTokenBalance(token))
   dispatch(addMarketToken(token.symbol()))
 
   if (token.symbol() === 'TIME') {
