@@ -2,15 +2,15 @@ import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
-import { addError, clearErrors, loading, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_ACCOUNTS, NETWORK_SET_NETWORK, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
+import { addError, clearErrors, DUCK_NETWORK, loading, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_ACCOUNTS, NETWORK_SET_NETWORK, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
 import { utils } from '../settings'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
 import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
-import privateKeyProvider from './privateKeyProvider'
 import networkProvider from './NetworkProvider'
+import privateKeyProvider from './privateKeyProvider'
 import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
@@ -70,8 +70,7 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
+    web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -117,8 +116,7 @@ class NetworkService extends EventEmitter {
     const provider = uportProvider.getUportProvider()
     dispatch(loading())
     dispatch(clearErrors())
-    web3Provider.setWeb3(provider.getWeb3())
-    web3Provider.setProvider(provider.getProvider())
+    web3Provider.reinit(provider.getWeb3(), provider.getProvider())
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
@@ -159,11 +157,11 @@ class NetworkService extends EventEmitter {
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
     const web3 = new Web3()
-    web3Provider.setWeb3(web3)
-    web3Provider.setProvider(ethereum.getProvider())
+    web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
 
     const accounts = await this.loadAccounts()
+
     this.selectAccount(accounts[ 0 ])
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
@@ -231,8 +229,7 @@ class NetworkService extends EventEmitter {
     const { priority, preferMainnet } = this._store.getState().get('network')
     const resolveNetwork = () => {
       const web3 = new Web3()
-      web3Provider.setWeb3(web3)
-      web3Provider.setProvider(web3Utils.createStatusEngine(this.getProviderURL()))
+      web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
       web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
@@ -264,7 +261,8 @@ class NetworkService extends EventEmitter {
 
     const runNextChecker = () => {
       if (this.checkerIndex <= this.checkers.length) {
-        web3Provider.reset()
+        web3Provider.beforeReset()
+        web3Provider.afterReset()
         this.checkers[ this.checkerIndex ]()
         this.checkerIndex++
       } else {

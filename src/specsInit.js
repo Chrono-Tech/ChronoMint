@@ -21,8 +21,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
 const web3 = new Web3()
 
-web3provider.setWeb3(web3)
-web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 

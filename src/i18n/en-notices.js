@@ -10,6 +10,9 @@ export default {
   arbitrary: {
     title: 'Notice',
   },
+  error: {
+    title: 'Error',
+  },
   cbe: {
     added: 'CBE %{address} was added',
     removed: 'CBE %{address} was removed',

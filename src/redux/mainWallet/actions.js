@@ -1,7 +1,6 @@
-import validator from 'models/validator'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
-import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
@@ -13,15 +12,16 @@ import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import type TxModel from 'models/TxModel'
+import validator from 'models/validator'
+import AddressModel from 'models/wallet/AddressModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
-import { notify } from 'redux/notifier/actions'
+import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
-import AddressModel from 'models/wallet/AddressModel'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -173,8 +173,7 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
     const tokenDAO = tokenService.getDAO(token.id())
     await tokenDAO.transfer(wallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
   } catch (e) {
-    // eslint-disable-next-line
-    console.error('transfer error', e.message)
+    dispatch(notifyError(e, 'mainTransfer'))
   }
 }
 
