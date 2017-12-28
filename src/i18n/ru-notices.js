@@ -10,6 +10,9 @@ export default {
   arbitrary: {
     title: 'Сообщение',
   },
+  error: {
+    title: 'Ошибка',
+  },
   cbe: {
     added: 'CBE %{address} добавлен',
     removed: 'CBE %{address} удалён',

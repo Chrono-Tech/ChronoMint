@@ -1,0 +1,58 @@
+@import "~styles/partials/variables";
+
+.cell {
+  flex: 0 0 auto;
+  padding: 12px 8px;
+
+  &.cellAuto {
+    flex: 1 1 auto;
+  }
+}
+
+.row {
+  display: flex;
+  position: relative;
+  align-items: center;
+  margin: -5px;
+  padding: 5px;
+  cursor: pointer;
+
+  &.selected {
+    background-color: $color-panel-bg-0;
+  }
+}
+
+.icon {
+  position: relative;
+  display: table;
+  background-color: $color-panel-bg-1;
+}
+
+.iconContent {
+  position: relative;
+  width: 54px;
+  height: 30px;
+  margin: 5px;
+  border-radius: 3px;
+  box-shadow: $box-shadow-2;
+  background-color: transparent;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.label {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  color: $color-white;
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.symbol {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 2px;
+}

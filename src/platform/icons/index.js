@@ -3,6 +3,7 @@ import React from 'react'
 const Icons = {
   get (name) {
     switch (name) {
+      case 'notices.error.icon':
       case 'notices.arbitrary.icon':
         return <i className='material-icons'>error_outline</i>
       case 'notices.approval.icon':
