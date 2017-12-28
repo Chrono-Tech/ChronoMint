@@ -79,7 +79,6 @@ class MultisigWalletService extends EventEmitter {
             // TODO @dkchv: no id (operation here) :(
           }))
         }
-        console.log('--MultisigWalletService#', errorCode)
       }),
     ])
   }

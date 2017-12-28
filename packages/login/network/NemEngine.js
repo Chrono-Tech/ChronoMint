@@ -20,11 +20,15 @@ export class NemEngine {
 
   createTransaction (to, amount: BigNumber/*, feeRate*/) {
     const common = nem.model.objects.get("common")
-    const transferTransaction = nem.model.objects.get("transferTransaction")
-    // nem-sdk have primitive API, sorry
-    transferTransaction.amount = amount.toNumber()
-    transferTransaction.recipient = to
+    common.privateKey = this._wallet.getPrivateKey()
+    const transferTransaction = nem.model.objects.create("transferTransaction")(
+      to,
+      // nem-sdk have primitive API, sorry
+      amount.div(DECIMALS).toNumber(),
+      'Hello from ChronoMint'
+    )
     const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
+
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
     return {
