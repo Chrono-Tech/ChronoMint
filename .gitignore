@@ -15,4 +15,3 @@ package-lock.json
 build.zip
 cert.pem
 key.pem
-yarn.lock
