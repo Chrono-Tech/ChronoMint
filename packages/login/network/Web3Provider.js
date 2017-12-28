@@ -97,6 +97,7 @@ export class Web3Provider {
     if (!web3) {
       throw new Error(ERROR_WEB3_UNDEFINED)
     }
+    this._provider = provider
     web3.setProvider(provider)
     if (this._monitorService) {
       this._monitorService.sync()
@@ -124,6 +125,9 @@ export class Web3Provider {
     // create new instance
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
+
+    // stop block polling
+    this._provider && this._provider.stop()
   }
 
   afterReset () {
