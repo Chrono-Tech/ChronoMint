@@ -49,10 +49,7 @@ export const exchange = (isBuy: boolean, amount: BigNumber, exchange: ExchangeOr
 
 export const search = (values: Immutable.Map) => async (dispatch) => {
   dispatch({ type: EXCHANGE_SET_FILTER, filter: values })
-  dispatch(getNextPage({
-    symbol: values.get('token'),
-    isBuy: values.get('filterMode').name.toLowerCase(),
-  }))
+  dispatch(getNextPage())
 }
 
 const getAssetsSymbols = () => async (dispatch) => {
@@ -112,11 +109,18 @@ export const getExchangesCount = () => async (dispatch) => {
   dispatch({ type: EXCHANGE_SET_PAGES_COUNT, count })
 }
 
-export const getNextPage = (filter: Object) => async (dispatch, getState) => {
+export const getNextPage = () => async (dispatch, getState) => {
   dispatch({ type: EXCHANGE_EXCHANGES_LIST_GETTING_START })
 
   const exchangeManagerDAO = await contractsManagerDAO.getExchangeManagerDAO()
   const state = getState().get(DUCK_EXCHANGE)
+  let filter = {}
+  if (state.filter().get('token')) {
+    filter.symbol = state.filter().get('token')
+  }
+  if (state.filter().get('filterMode')) {
+    filter.isBuy = state.filter().get('filterMode').name === 'BUY'
+  }
 
   const exchanges = await exchangeManagerDAO.getExchanges(
     state.lastPages(),
@@ -134,7 +138,8 @@ export const getNextPage = (filter: Object) => async (dispatch, getState) => {
       }
     }))
   })
-  if (filter) {
+
+  if (state.lastPages() === 0) {
     dispatch({
       type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
       exchanges,

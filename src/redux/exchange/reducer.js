@@ -13,6 +13,7 @@ const reducer = (state = initialState, action) => {
       return state.exchanges(action.exchanges.isFetched(true).isFetching(false)).lastPages(action.lastPages || state.lastPages)
     case a.EXCHANGE_SET_FILTER:
       return state.filter(action.filter)
+        .lastPages(0)
     case a.EXCHANGE_GET_DATA_START:
       return state.isFetched(false).isFetching(true)
     case a.EXCHANGE_GET_DATA_FINISH:

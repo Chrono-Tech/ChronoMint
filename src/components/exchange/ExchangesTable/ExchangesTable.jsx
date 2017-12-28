@@ -229,6 +229,7 @@ export default class ExchangesTable extends React.PureComponent {
   renderFooter () {
 
     if (this.state.showMyExchanges) return null
+    if (this.props.showFilter && !this.props.filter.size) return null
 
     if (this.props.exchanges.isFetching()) {
       return <Preloader />
