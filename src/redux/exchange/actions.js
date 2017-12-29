@@ -140,10 +140,12 @@ export const getNextPage = () => async (dispatch, getState) => {
   })
 
   if (state.lastPages() === 0) {
+    const lastPages = state.lastPages() + exchanges.size()
     dispatch({
       type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
       exchanges,
-      lastPages: state.lastPages() + exchanges.size(),
+      lastPages,
+      pagesCount: lastPages < PAGE_SIZE ? lastPages : PAGE_SIZE,
     })
   } else {
     dispatch({

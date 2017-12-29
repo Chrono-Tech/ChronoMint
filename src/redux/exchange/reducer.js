@@ -1,4 +1,5 @@
 import ExchangeModel from 'models/exchange/ExchangeModel'
+import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import * as a from './actions'
 
 export const initialState = new ExchangeModel()
@@ -31,11 +32,12 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_UPDATE:
       return state.exchanges(state.exchanges().update(action.exchange))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_START:
-      return state.exchanges(state.exchanges().isFetching(true))
+      return state.exchanges(new ExchangesCollection().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:
       return state
         .exchanges(action.exchanges.isFetching(false).isFetched(true))
         .lastPages(action.lastPages)
+        .pagesCount(action.pagesCount || state.pagesCount())
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT:
       return state
         .exchanges(state.exchanges().concat(action.exchanges).isFetching(false).isFetched(true))
