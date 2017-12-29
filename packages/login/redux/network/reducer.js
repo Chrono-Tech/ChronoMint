@@ -9,12 +9,12 @@ const initialState = {
   selectedAccount: null,
   errors: [],
   providers: [
-    providerMap.infura,
     providerMap.chronoBank,
+    providerMap.infura,
   ],
   priority: [
-    providerMap.infura.id,
     providerMap.chronoBank.id,
+    providerMap.infura.id,
   ],
   preferMainnet: process.env.NODE_ENV === 'production',
   selectedProviderId: null,

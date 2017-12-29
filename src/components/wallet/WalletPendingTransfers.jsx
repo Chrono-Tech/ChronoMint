@@ -58,38 +58,56 @@ export default class WalletPendingTransfers extends PureComponent {
     })
   }
 
+  handleRevoke = (wallet, item) => () => {
+    this.props.revoke(wallet, item)
+  }
+
+  handleConfirm = (wallet, item) => () => {
+    this.props.confirm(wallet, item)
+  }
+
   renderRow (wallet, item: MultisigWalletPendingTxModel) {
+    const isConfirmed = item.isConfirmed()
+
     return (
       <div styleName='row' key={item.id()}>
         {item.isPending()
           ? <Preloader />
-          : <div styleName='left'>
-            <div styleName='itemTitle'>{item.title()}</div>
-            {item.details().map((item, index) => {
-              const value = item.value instanceof Amount
-                ? +this.props.tokens.getBySymbol(item.value.symbol()).removeDecimals(item.value)
-                : item.value
-              return (
-                <div key={index} styleName='detail'>
-                  <span styleName='detailKey'>{item.label}:</span>
-                  <span styleName='detailValue'>{value}</span>
-                </div>
-              )
-            })}
-          </div>
+          : (
+            <div styleName='left'>
+              <div styleName='itemTitle'>{item.title()}</div>
+              {item.details().map((item, index) => {
+                const value = item.value instanceof Amount
+                  ? +this.props.tokens.getBySymbol(item.value.symbol()).removeDecimals(item.value)
+                  : item.value
+                return (
+                  <div key={index} styleName='detail'>
+                    <span styleName='detailKey'>{item.label}:</span>
+                    <span styleName='detailValue'>{value}</span>
+                  </div>
+                )
+              })}
+            </div>
+          )
         }
         <div styleName='right'>
           <div styleName='action'>
             <RaisedButton
               label={<Translate value='wallet.revoke' />}
-              disabled={!item.isConfirmed()}
-              onTouchTap={() => this.props.revoke(wallet, item)}
+              disabled={!isConfirmed}
+              onTouchTap={isConfirmed
+                ? this.handleRevoke(wallet, item)
+                : null
+              }
             />
           </div>
           <RaisedButton
             label={<Translate value='wallet.sign' />}
-            disabled={item.isConfirmed()}
-            onTouchTap={() => this.props.confirm(wallet, item)}
+            disabled={isConfirmed}
+            onTouchTap={!isConfirmed
+              ? this.handleConfirm(wallet, item)
+              : null
+            }
             primary
           />
         </div>
