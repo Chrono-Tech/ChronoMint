@@ -1,4 +1,11 @@
-import { BLOCKCHAIN_BITCOIN } from '@chronobank/login/network/BitcoinProvider'
+import bitcoin from 'bitcoinjs-lib'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN
+} from '@chronobank/login/network/BitcoinProvider'
+
 // TODO @dkchv: circular dependency
 // import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 
@@ -11,9 +18,9 @@ export const address = (value, required = true, blockchain = 'Ethereum') => {
   return null
 }
 
-export const bitcoinAddress = (value, required = true, blockchain = BLOCKCHAIN_BITCOIN) => {
+export const bitcoinAddress = (validateAddress, blockchain) => (value, required = true,) => {
   // TODO @ipavlenko: Provide better validation
-  if ((!value && required) || (value && !/^[a-km-zA-HJ-NP-Z1-9]{24,34}$/.test(value))) {
+  if ((!value && required) || (value && !validateAddress(value))) {
     return { value: 'errors.invalidAddress', blockchain }
   }
   return null

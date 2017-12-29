@@ -1,4 +1,5 @@
 import bip39 from 'bip39'
+import xor from 'buffer-xor'
 import { KeyPair, Address } from './nem/index'
 
 export default class NemWallet {
@@ -16,6 +17,10 @@ export default class NemWallet {
   }
 
   static fromMnemonic (mnemonic, network) {
-    return new NemWallet(KeyPair.create(bip39.mnemonicToSeed(mnemonic).toString('hex')), network)
+    const original = bip39.mnemonicToSeedHex(mnemonic)
+    const part1 = Buffer.from(original.substr(0, 64), 'hex')
+    const part2 = Buffer.from(original.substr(64, 64), 'hex')
+    const hex = xor(part1, part2).toString('hex')
+    return new NemWallet(KeyPair.create(hex), network)
   }
 }

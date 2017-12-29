@@ -455,6 +455,12 @@ export default {
       },
     },
     Wallet: {
+      transfer: {
+        title: 'Перевод',
+        value: 'Количество',
+        to: 'Кому',
+        symbol: 'Символ',
+      },
       addOwner: {
         title: 'Добавить менеждера',
         owner: 'Новый менеджер',
