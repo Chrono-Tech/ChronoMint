@@ -126,7 +126,7 @@ export class Web3Provider {
     this._web3instance = null
     this._web3Promise = this._getWeb3Promise()
 
-    // stop block polling testrpc don't have
+    // stop block polling testrpc provider didnt have stop method
     if (this._provider && this._provider.stop) {
       this._provider.stop()
     }
