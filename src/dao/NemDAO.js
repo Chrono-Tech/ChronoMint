@@ -119,8 +119,8 @@ export default class NemDAO extends EventEmitter {
         account,
         time,
         balance: this._mosaic
-          ? balance.balance
-          : balance.mosaics[ this._mosaic ],
+          ? balance.mosaics[ this._mosaic ]
+          : balance.balance,
       })
     })
   }
