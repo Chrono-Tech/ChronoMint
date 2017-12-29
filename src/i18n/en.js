@@ -453,6 +453,12 @@ export default {
       },
     },
     Wallet: {
+      transfer: {
+        title: 'Transfer',
+        value: 'Value',
+        to: 'To',
+        symbol: 'Symbol',
+      },
       addOwner: {
         title: 'Add owner',
         owner: 'New Owner',
