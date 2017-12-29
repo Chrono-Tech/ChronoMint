@@ -5,7 +5,7 @@ import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
-import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
+import { WALLET_ALLOWANCE, fetchTokenBalance } from 'redux/mainWallet/actions'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -249,7 +249,9 @@ export const watchExchanges = () => async (dispatch, getState) => {
 
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
+    const tokens = getState().get(DUCK_TOKENS)
     const exchange = getExchangeFromState(state, tx.exchange)
+    dispatch(fetchTokenBalance(tokens.item('ETH')))
     dispatch(updateExchange(exchange
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))

@@ -46,4 +46,8 @@ export default class AbstractProvider extends EventEmitter {
   getAddress () {
     return this._engine && this._engine.getAddress() || null
   }
+
+  isAddressValid (address) {
+    return this._engine && this._engine.isAddressValid(address)
+  }
 }
