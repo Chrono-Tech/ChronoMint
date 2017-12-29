@@ -98,11 +98,4 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     ], wallet.toCreateWalletTx())
     return result.tx
   }
-
-  async removeWallet (wallet) {
-    const result = await this._tx('removeWallet', [], {
-      address: wallet.address(),
-    })
-    return result.tx
-  }
 }
