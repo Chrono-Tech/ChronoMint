@@ -1,4 +1,5 @@
 import ExchangeModel from 'models/exchange/ExchangeModel'
+import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import * as a from './actions'
 
 export const initialState = new ExchangeModel()
@@ -13,6 +14,7 @@ const reducer = (state = initialState, action) => {
       return state.exchanges(action.exchanges.isFetched(true).isFetching(false)).lastPages(action.lastPages || state.lastPages)
     case a.EXCHANGE_SET_FILTER:
       return state.filter(action.filter)
+        .lastPages(0)
     case a.EXCHANGE_GET_DATA_START:
       return state.isFetched(false).isFetching(true)
     case a.EXCHANGE_GET_DATA_FINISH:
@@ -30,8 +32,13 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_UPDATE:
       return state.exchanges(state.exchanges().update(action.exchange))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_START:
-      return state.exchanges(state.exchanges().isFetching(true))
+      return state.exchanges(new ExchangesCollection().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:
+      return state
+        .exchanges(action.exchanges.isFetching(false).isFetched(true))
+        .lastPages(action.lastPages)
+        .pagesCount(action.pagesCount || state.pagesCount())
+    case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT:
       return state
         .exchanges(state.exchanges().concat(action.exchanges).isFetching(false).isFetched(true))
         .lastPages(action.lastPages)
