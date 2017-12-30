@@ -1,5 +1,7 @@
 import type BigNumber from 'bignumber.js'
 
+export const DECIMALS = 1000000
+
 export class NemEngine {
   constructor (wallet, network) {
     this._wallet = wallet

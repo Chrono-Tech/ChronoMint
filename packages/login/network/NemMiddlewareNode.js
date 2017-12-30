@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
-import AbstractNode from './AbstractNode'
+import NemAbstractNode, { NemBalance } from './NemAbstractNode'
 
-export default class NemMiddlewareNode extends AbstractNode {
-  constructor ({ feeRate, mosaics, ...args }) {
+export default class NemMiddlewareNode extends NemAbstractNode {
+  constructor ({ mosaics, ...args }) {
     super(args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
-    this._feeRate = feeRate
     this._mosaics = mosaics
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
@@ -29,10 +28,17 @@ export default class NemMiddlewareNode extends AbstractNode {
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)
-              // eslint-disable-next-line
-              console.log('Balance from socket', data)
+              // // eslint-disable-next-line
+              // console.log('Balance from socket', data)
               // TODO @ipavlenko: Implement
-              // this.emit('balance', ev)
+              this.emit('balance', new NemBalance({
+                address,
+                balance: data.balance,
+                mosaics: Object.entries(data.mosaics).reduce((t, [ k, v ]) => ({
+                  ...t,
+                  [ k ]: new BigNumber(v),
+                }), {}),
+              }))
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
