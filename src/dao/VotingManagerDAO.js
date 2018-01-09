@@ -85,12 +85,10 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsDetails (pollsAddresses: Array<string>) {
-    // eslint-disable-next-line
-    console.log('getPollsDetails pollsAddresses', pollsAddresses)
+    let result = new VotingCollection()
     try {
       const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = await this._call('getPollsDetails', [ pollsAddresses ])
 
-      let result = new VotingCollection()
       for (let i = 0; i < pollsAddresses.length; i++) {
         try {
           const pollId = pollsAddresses[ i ]
@@ -138,22 +136,17 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
         }
       }
 
-      return result
-
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
-      // ignore, poll doesn't exist
-      return null
     }
+
+    return result
   }
 
   async getPoll (pollId): PollDetailsModel {
-    const [ polls ] = await Promise.all([
-      this.getPollsDetails([ pollId ]),
-    ])
-
-    return polls[ pollId ]
+    const polls = await this.getPollsDetails([ pollId ])
+    return polls.item(pollId)
   }
 
   /** @private */
@@ -162,7 +155,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
     callback(new PollNoticeModel({
       pollId: result.args.pollAddress, // just a long
-      poll,
+      poll: poll,
       status,
       transactionHash: result.transactionHash,
     }))

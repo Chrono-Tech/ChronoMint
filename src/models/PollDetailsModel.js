@@ -2,10 +2,11 @@ import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
 import { abstractFetchingModel } from './AbstractFetchingModel'
+import PollModel from './PollModel'
 
 export default class PollDetailsModel extends abstractFetchingModel({
   id: null,
-  poll: null,
+  poll: new PollModel(),
   votes: Immutable.List(),
   statistics: Immutable.List(),
   memberVote: null,
@@ -13,8 +14,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
   shareholdersCount: new BigNumber(0),
   files: Immutable.List(),
 }) {
-  id (value) {
-    return this._getSet('id', value)
+  id () {
+    return this.get('transactionHash') || this.get('id')
   }
 
   poll (value) {

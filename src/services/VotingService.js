@@ -32,8 +32,6 @@ class VotingService extends EventEmitter {
 
     return Promise.all([
       dao.watchVoted((result) => {
-        // eslint-disable-next-line
-        console.log(result)
         this.emit(EVENT_POLL_VOTED, result)
       }, {
         self: address,

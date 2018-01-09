@@ -14,7 +14,6 @@ export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
 export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
-export const POLLS_REMOVE_STUB = 'voting/POLLS_REMOVE_STUB'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
 export const VOTING_POLLS_COUNT = 'voting/VOTING_POLLS_COUNT'
 
@@ -26,11 +25,9 @@ let counter = 1
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState) => {
   const state = getState().get(DUCK_VOTING)
-  // eslint-disable-next-line
-  console.log(notice)
   switch (notice.status()) {
     case IS_CREATED:
-      dispatch(handlePollRemovedStub(notice.transactionHash()))
+      dispatch(handlePollRemoved(notice.transactionHash()))
       dispatch(handlePollCreated(notice.poll()))
       break
     case IS_REMOVED:
@@ -82,6 +79,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
     dispatch(handlePollCreated(stub.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingManagerDAO()
     const transactionHash = await dao.createPoll(poll)
+    dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
     // eslint-disable-next-line
@@ -146,15 +144,11 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
 }
 
 export const handlePollCreated = (poll: PollDetailsModel) => async (dispatch) => {
-  dispatch({ type: POLLS_CREATE, poll })
+  poll && dispatch({ type: POLLS_CREATE, poll })
 }
 
 export const handlePollRemoved = (id: Number) => async (dispatch) => {
   dispatch({ type: POLLS_REMOVE, id })
-}
-
-export const handlePollRemovedStub = (transactionHash: String) => async (dispatch) => {
-  dispatch({ type: POLLS_REMOVE_STUB, transactionHash })
 }
 
 export const handlePollUpdated = (poll: PollDetailsModel, activeCount) => async (dispatch) => {

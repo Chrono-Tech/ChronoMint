@@ -1,6 +1,6 @@
 import VotingMainModel from 'models/voting/VotingMainModel'
 import {
-  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_REMOVE_STUB, POLLS_UPDATE, POLLS_VOTE_LIMIT,
+  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT,
   VOTING_POLLS_COUNT,
 } from './actions'
 
@@ -21,22 +21,13 @@ export default (state = initialState, action) => {
       return state
         .list(state.list().update(action.poll))
         .pollsCount(state.pollsCount().plus(1))
-    case POLLS_REMOVE_STUB:
-      return state
-        .list(
-          state.list()
-            .filter((poll) => {
-              const hash = poll.transactionHash()
-              return hash === null || hash !== action.transactionHash
-            }),
-        )
     case POLLS_UPDATE:
       return state
-        .list(state.list().update(action.poll.id(), action.poll))
+        .list(state.list().update(action.poll))
         .activePollsCount(action.activeCount || state.activePollsCount())
     case POLLS_REMOVE:
       return state
-        .list(state.list().delete(action.id))
+        .list(state.list().remove(action.id))
     case VOTING_POLLS_COUNT:
       return state
         .pollsCount(action.count || state.pollsCount())
