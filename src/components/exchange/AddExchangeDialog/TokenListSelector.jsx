@@ -19,7 +19,13 @@ function prefix (text) {
 export default class TokenListSelector extends PureComponent {
   static propTypes = {
     tokens: PropTypes.instanceOf(TokensCollection),
-    input: PropTypes.object,
+    input: PropTypes.shape({
+      name: PropTypes.string,
+      value: PropTypes.oneOfType([
+        PropTypes.instanceOf(TokenModel),
+        PropTypes.string,
+      ]),
+    }),
     meta: PropTypes.object,
     token: PropTypes.instanceOf(TokenModel),
   }
@@ -58,34 +64,32 @@ export default class TokenListSelector extends PureComponent {
         />
         <div styleName={classnames('tokensList', 'sm-hide', { 'tokensListFolded': this.state.foldTokensList })}>
           {
-            tokens.isFetching()
-              ? <Preloader />
-              : tokens.items()
-                .map((tokenItem: TokenModel) => {
-                  if (!tokenItem.isERC20()) {
-                    return null
-                  }
-                  return (
-                    <div
-                      key={tokenItem.symbol()}
-                      styleName={classnames(
-                        'tokenItem',
-                        {
-                          'selected': token === tokenItem,
-                          'hide': !(tokenItem.symbol().toUpperCase().indexOf(`${this.state.symbolFilter}`.toUpperCase()) + 1),
-                        },
-                      )}
-                      onTouchTap={() => this.props.input.onChange(tokenItem)}
-                    >
-                      <IPFSImage
-                        multihash={tokenItem.icon()}
-                        styleName='tokenIcon'
-                        fallback={iconTokenDefaultSVG}
-                      />
-                      <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
-                    </div>
-                  )
-                })
+            tokens.items()
+              .map((tokenItem: TokenModel) => {
+                if (!tokenItem.isERC20()) {
+                  return null
+                }
+                return (
+                  <div
+                    key={tokenItem.symbol()}
+                    styleName={classnames(
+                      'tokenItem',
+                      {
+                        'selected': token === tokenItem,
+                        'hide': !(tokenItem.symbol().toUpperCase().indexOf(`${this.state.symbolFilter}`.toUpperCase()) + 1),
+                      },
+                    )}
+                    onTouchTap={() => this.props.input.onChange(tokenItem)}
+                  >
+                    <IPFSImage
+                      multihash={tokenItem.icon()}
+                      styleName='tokenIcon'
+                      fallback={iconTokenDefaultSVG}
+                    />
+                    <div styleName='tokenTitle'>{tokenItem.symbol()}</div>
+                  </div>
+                )
+              })
           }
         </div>
         <div styleName={classnames('tokensListMobile', 'sm-show')}>
@@ -113,7 +117,8 @@ export default class TokenListSelector extends PureComponent {
           <FlatButton
             label={<Translate
               value={prefix(this.state.foldTokensList ? 'showAllAvailableTokens' : 'HideAllAvailableTokens')} />}
-            onClick={this.handleUnfoldTokenList} />
+            onClick={this.handleUnfoldTokenList}
+          />
         </div>
       </div>
 

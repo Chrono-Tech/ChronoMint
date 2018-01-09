@@ -150,7 +150,7 @@ export default class ExchangesTable extends React.PureComponent {
   }
 
   renderRow (exchange: ExchangeOrderModel) {
-    if (exchange.assetBalance() <= 0 && exchange.ethBalance() <= 0) {
+    if (exchange.assetBalance().lte(0) && exchange.ethBalance().lte(0)) {
       return null
     }
 
@@ -160,6 +160,9 @@ export default class ExchangesTable extends React.PureComponent {
     if (filterMode) {
       showBuy = filterMode.name === 'BUY'
       showSell = filterMode.name === 'SELL'
+      if (showBuy && exchange.assetBalance().lte(0) || showSell && exchange.ethBalance().lte(0)) {
+        return null
+      }
     }
     return (
       <div styleName='row' key={exchange.id()}>
@@ -169,13 +172,13 @@ export default class ExchangesTable extends React.PureComponent {
             <div styleName='ellipsis'>{exchange.address()}</div>
           </div>
           <div styleName='colPrice'>
-            {showBuy && exchange.assetBalance() > 0 &&
+            {showBuy && exchange.assetBalance().gt(0) &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyPrice')} />: </span>
               <TokenValue value={new Amount(exchange.sellPrice(), 'ETH')} />
             </div>
             }
-            {showSell && exchange.ethBalance() > 0 &&
+            {showSell && exchange.ethBalance().gt(0) &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellPrice')} />: </span>
               <TokenValue value={new Amount(exchange.buyPrice(), 'ETH')} />
@@ -183,13 +186,13 @@ export default class ExchangesTable extends React.PureComponent {
             }
           </div>
           <div styleName='colLimits'>
-            {showBuy && exchange.assetBalance() > 0 &&
+            {showBuy && exchange.assetBalance().gt(0) &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('buyLimits')} />: </span>
               <TokenValue value={new Amount(exchange.assetBalance(), exchange.symbol())} noRenderPrice />
             </div>
             }
-            {showSell && exchange.ethBalance() > 0 &&
+            {showSell && exchange.ethBalance().gt(0) &&
             <div styleName='colWrapper'>
               <span styleName='rowTitle'><Translate value={prefix('sellLimits')} />: </span>
               <TokenValue value={new Amount(exchange.ethBalance(), 'ETH')} noRenderPrice />
@@ -198,7 +201,7 @@ export default class ExchangesTable extends React.PureComponent {
           </div>
         </div>
         <div styleName='colActions'>
-          {showBuy && exchange.assetBalance() > 0 &&
+          {showBuy && exchange.assetBalance().gt(0) &&
           <div styleName='buttonWrapper'>
             <RaisedButton
               label={<span><Translate value={prefix('buy')} /> {exchange.symbol()}</span>}
@@ -208,7 +211,7 @@ export default class ExchangesTable extends React.PureComponent {
             />
           </div>
           }
-          {showSell && exchange.ethBalance() > 0 &&
+          {showSell && exchange.ethBalance().gt(0) &&
           <div styleName='buttonWrapper'>
             <RaisedButton
               label={<span><Translate value={prefix('sell')} /> {exchange.symbol()}</span>}
@@ -226,6 +229,7 @@ export default class ExchangesTable extends React.PureComponent {
   renderFooter () {
 
     if (this.state.showMyExchanges) return null
+    if (this.props.showFilter && !this.props.filter.size) return null
 
     if (this.props.exchanges.isFetching()) {
       return <Preloader />
@@ -247,6 +251,7 @@ export default class ExchangesTable extends React.PureComponent {
   render () {
     let filteredItems
     const amount = this.props.filter.get('amount')
+    const tokens = this.props.tokens
     if (this.state.showMyExchanges) {
 
       filteredItems = this.props.exchangesForOwner.items()
@@ -256,9 +261,9 @@ export default class ExchangesTable extends React.PureComponent {
       filteredItems = this.props.exchanges.items()
         .filter((item: ExchangeOrderModel) => {
           if (this.props.filter.get('filterMode').name === 'BUY') {
-            return amount < item.assetBalance().toNumber()
+            return tokens.item(item.symbol()).removeDecimals(item.assetBalance()).gt(amount)
           } else {
-            return amount < item.ethBalance().toNumber()
+            return tokens.item('ETH').removeDecimals(item.ethBalance()).gt(amount)
           }
         })
 

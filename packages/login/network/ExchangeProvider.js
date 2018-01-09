@@ -27,9 +27,11 @@ class ExchangeProvider {
     return response ? response.data : []
   }
 
-  async getExchangesWithFilter (symbol: string, sort: string) {
+  async getExchangesWithFilter (symbol: string, sort: string, from: number, length: number) {
     const symbolStr = symbol ? `?symbol=/^${symbol}/&` : `?`
-    const response = await axios.get(`${this.url()}events/exchangecreated/${symbolStr}${sort}`)
+    const offset = `&offset=${from}`
+    const limit = `&limit=${length}`
+    const response = await axios.get(`${this.url()}events/exchangecreated/${symbolStr}${sort}${offset}${limit}`)
     const exchanges = response ? response.data : []
     return exchanges.map((exchange) => exchange.exchange)
   }

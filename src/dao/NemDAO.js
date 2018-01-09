@@ -114,11 +114,14 @@ export default class NemDAO extends EventEmitter {
   }
 
   async watchBalance () {
-    this._nemProvider.addListener(EVENT_BALANCE, async ({ /* account, time,*/ balance }) => {
-      this.emit(EVENT_UPDATE_BALANCE, this._mosaic
-        ? balance.balance.value
-        : balance.mosaics[ this._mosaic ].value,
-      )
+    this._nemProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
+      this.emit(EVENT_UPDATE_BALANCE, {
+        account,
+        time,
+        balance: this._mosaic
+          ? balance.mosaics[ this._mosaic ]
+          : balance.balance,
+      })
     })
   }
 
@@ -137,6 +140,7 @@ export default class NemDAO extends EventEmitter {
 
   fetchToken () {
     if (!this.isInitialized()) {
+      // eslint-disable-next-line
       console.warn(`${this._name} support is not available`)
       this.emit(EVENT_NEM_LIKE_TOKEN_FAILED)
       return

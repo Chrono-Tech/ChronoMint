@@ -39,7 +39,6 @@ class RewardsPeriodModel extends abstractModel({
 
   userRevenue (): BigNumber {
     const assetBalance = this.assetBalance()
-    console.log('--RewardsPeriodModel#userRevenue', assetBalance.symbol())
     if (this.totalDeposit().isZero()) {
       return new Amount(0, assetBalance.symbol())
     }

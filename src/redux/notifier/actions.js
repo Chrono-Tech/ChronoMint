@@ -1,15 +1,22 @@
-import type AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
+import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
+import ErrorNoticeModel from 'models/notices/ErrorNoticeModel'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_READ = 'notifier/READ'
 export const NOTIFIER_CLOSE = 'notifier/CLOSE'
 
-const notify = (notice: AbstractNoticeModel, isStorable = true) => ({ type: NOTIFIER_MESSAGE, notice, isStorable })
-const readNotices = () => ({ type: NOTIFIER_READ })
-const closeNotifier = () => ({ type: NOTIFIER_CLOSE })
+export const notify = (notice: AbstractNoticeModel, isStorable = true) => ({
+  type: NOTIFIER_MESSAGE,
+  notice,
+  isStorable,
+})
+export const readNotices = () => ({ type: NOTIFIER_READ })
+export const closeNotifier = () => ({ type: NOTIFIER_CLOSE })
 
-export {
-  notify,
-  readNotices,
-  closeNotifier,
+export const notifyError = (e: Error, invoker: string = '') => (dispatch) => {
+  // eslint-disable-next-line
+  console.error(`${invoker} error`, e.message)
+  dispatch(notify(new ErrorNoticeModel({
+    message: e.message,
+  })))
 }

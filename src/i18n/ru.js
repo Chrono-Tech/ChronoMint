@@ -338,11 +338,11 @@ export default {
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
-        title: 'Вывести Вознаграждение',
+        title: 'Вывести Бонусы',
         amount: 'Объем',
       },
       [rewards.TX_CLOSE_PERIOD]: {
-        title: 'Закрыть Период Вознаграждений',
+        title: 'Закрыть Бонусный Период',
       },
     },
     AssetDonator: {
@@ -445,6 +445,12 @@ export default {
       },
     },
     Wallet: {
+      transfer: {
+        title: 'Перевод',
+        value: 'Количество',
+        to: 'Кому',
+        symbol: 'Символ',
+      },
       addOwner: {
         title: 'Добавить менеждера',
         owner: 'Новый менеджер',
@@ -687,7 +693,7 @@ export default {
         totalTimeTokensDeposited: 'Всего внесено TIME токенов',
         percentOfTotalCount: '%{percent}% то общего числа',
         uniqueShareholders: 'Уникальные акционеры',
-        yourTimeTokensEligible: 'Ваши TIME токены претендующие на вознаграждение за период',
+        yourTimeTokensEligible: 'Ваши TIME токены претендующие на бонусы за период',
         percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
         dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
         yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период',
