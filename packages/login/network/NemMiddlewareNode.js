@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import NemAbstractNode from './NemAbstractNode'
+import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
+import { DECIMALS } from './NemEngine'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
   constructor ({ mosaics, ...args }) {
@@ -26,10 +27,17 @@ export default class NemMiddlewareNode extends NemAbstractNode {
             try {
               const data = JSON.parse(message.body)
               this.trace('Address Balance', data)
-              // eslint-disable-next-line
-              console.log('Balance from socket', data)
+              // // eslint-disable-next-line
+              // console.log('Balance from socket', data)
               // TODO @ipavlenko: Implement
-              // this.emit('balance', ev)
+              this.emit('balance', new NemBalance({
+                address,
+                balance: data.balance,
+                mosaics: Object.entries(data.mosaics).reduce((t, [ k, v ]) => ({
+                  ...t,
+                  [ k ]: new BigNumber(v),
+                }), {}),
+              }))
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
@@ -104,7 +112,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     try {
       const res = await this._api.post('tx/send', tx)
       console.log('Send:', res.data)
-      const model = this._createTxModel(res.data, account)
+      const model = this._createTxModel(tx, res.data, account)
       console.log('Sent:', model)
       setImmediate(() => {
         this.emit('tx', model)
@@ -116,25 +124,26 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     }
   }
 
-  _createTxModel (tx, account): BitcoinTx {
-    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
+  _createTxModel (tx, response, account): NemTx {
+    console.log(tx, response)
+    const from = response.isCoinBase ? 'coinbase' : response.inputs.map((input) => input.addresses.join(',')).join(',')
+    const to = response.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
 
     let value = new BigNumber(0)
-    for (const output of tx.outputs) {
+    for (const output of response.outputs) {
       if (output.scriptPubKey.addresses.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
 
-    return new BitcoinTx({
-      txHash: tx.txid,
+    return new NemTx({
+      txHash: response.txid,
       time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee).mul(DECIMALS),
-      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
+      fee: new BigNumber(response.fee).mul(DECIMALS),
+      credited: tx.isCoinBase || !response.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
     })
   }
 }

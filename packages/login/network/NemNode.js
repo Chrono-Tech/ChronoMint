@@ -13,7 +13,7 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
   }],
   api: axios.create({
     baseURL: 'https://test-4.chronobank.io',
-    timeout: 60000,
+    timeout: 30000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
@@ -37,7 +37,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
   }],
   api: axios.create({
     baseURL: 'https://test-3.chronobank.io',
-    timeout: 60000,
+    timeout: 30000,
   }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',

@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
-
+import { NemTx, NemBalance } from './NemAbstractNode'
 import { selectNemNode } from './NemNode'
 
 export class NemProvider extends AbstractProvider {
@@ -54,7 +54,7 @@ export class NemProvider extends AbstractProvider {
     return await node.send(from, tx)
   }
 
-  async onTransaction (tx) {
+  async onTransaction (tx: NemTx) {
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),
@@ -62,7 +62,7 @@ export class NemProvider extends AbstractProvider {
     })
   }
 
-  async onBalance (balance) {
+  async onBalance (balance: NemBalance) {
     this.emit('balance', {
       account: this.getAddress(),
       time: new Date().getTime(),

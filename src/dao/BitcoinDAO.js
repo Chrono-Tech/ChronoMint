@@ -22,7 +22,7 @@ export class BitcoinDAO extends EventEmitter {
   }
 
   getAddressValidator () {
-    return bitcoinAddress
+    return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
   }
 
   getAccount () {

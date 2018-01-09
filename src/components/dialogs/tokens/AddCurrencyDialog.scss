@@ -1,5 +1,5 @@
-@import '~styles/partials/mixins';
-@import '~styles/partials/variables';
+@import '~styles/partials/_mixins';
+@import '~styles/partials/_variables';
 
 .root {
   :global(.ModalDialog__close) {
@@ -40,7 +40,7 @@
 
 .actions {
   position: relative;
-  height: 0px;
+  height: 0;
 }
 
 .items {
@@ -57,7 +57,7 @@
 .body {
   color: $color-primary-0;
   display: flex;
-  padding: 36px 0px;
+  padding: 36px 0;
 
   @include md-only {
     display: block;
@@ -97,82 +97,11 @@
   margin: 8px -8px;
 }
 
-.row {
-  display: flex;
-  position: relative;
-  align-items: center;
-  margin: -5px;
-  padding: 5px;
-  cursor: pointer;
-}
-
-.cell {
-  flex: 0 0 auto;
-  padding: 12px 8px;
-
-  &.cellAuto {
-    flex: 1 1 auto;
-  }
-}
-
-.rowSelected {
-  background-color: $color-panel-bg-0;
-}
-
-.icon {
-  position: relative;
-  display: table;
-  background-color: $color-panel-bg-1;
-}
-
-.iconContent {
-  position: relative;
-  width: 54px;
-  height: 30px;
-  margin: 5px;
-  border-radius: 3px;
-  box-shadow: $box-shadow-2;
-  background-color: transparent;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center center;
-}
-
-.label {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  color: $color-white;
-  text-transform: uppercase;
-  font-size: 9px;
-  font-weight: 500;
-}
-
-.symbol {
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 2px;
-}
-
-.value {
-}
-
-.value1 {
-  font-size: 16px;
-  vertical-align: baseline;
-}
-
-.value2, .value3 {
-  font-size: 12px;
-  vertical-align: baseline;
-  opacity: 0.5;
-}
-
 .footer {
   padding: 24px 16px;
   text-align: right;
 }
 
 .action {
-  margin: 0px 0px 0px 10px;
+  margin: 0 0 0 10px;
 }

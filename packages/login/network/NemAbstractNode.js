@@ -33,9 +33,11 @@ export class NemBalance {
   constructor ({
     address,
     balance,
+    mosaics,
   }) {
     this.address = address
     this.balance = balance
+    this.mosaics = mosaics,
     // TODO @ipavlenko: Add vested & unvested balances when the middlewar will be ready
     Object.freeze(this)
   }
