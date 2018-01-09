@@ -90,7 +90,7 @@
     "ipfs-api": "^16.0.0",
     "js-file-download": "^0.4.1",
     "keythereum": "^0.5.2",
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",
+    "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider",
     "lodash": "^4.17.4",
     "material-colors-scss": "^1.0.0",
     "material-ui": "^0.19.4",
