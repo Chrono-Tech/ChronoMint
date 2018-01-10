@@ -43,7 +43,7 @@ class PlatformsList extends PureComponent {
       if (token.isPending()) {
         return <Translate value={prefix('pending')} />
       }
-      return token.isFetched() ? asset.address : <Translate value={prefix('loading')} />
+      return token.isFetched() ? <div styleName='addressWrap'>{asset.address}</div> : <Translate value={prefix('loading')} />
     }
 
     return (

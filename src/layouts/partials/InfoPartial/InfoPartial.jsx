@@ -171,7 +171,7 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens, isPending } = this.props
+    const { balances, isMultisig, tokens, isPending, profile } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
 
@@ -194,7 +194,13 @@ export default class InfoPartial extends PureComponent {
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isPending
               ? <Preloader />
-              : balances.sortBy((item) => item.id()).map(this.renderItem)}
+              : balances
+                .filter((balance) => {
+                  const token = tokens.item(balance.symbol())
+                  return !token.isOptional() || profile.tokens().get(token.address())
+                })
+                .sortBy((balance) => balance.symbol())
+                .map(this.renderItem)}
             {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
             {!isMultisig && withBigButton && this.renderAction()}
           </div>
