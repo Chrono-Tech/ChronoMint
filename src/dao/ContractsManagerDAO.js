@@ -1,4 +1,4 @@
-import validator from 'models/validator'
+import * as validator from 'models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'

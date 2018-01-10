@@ -98,7 +98,7 @@ export const updatePoll = (poll: PollModel) => async () => {
 export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollRemoved(poll.id()))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
     await dao.removePoll()
   } catch (e) {
     dispatch(handlePollCreated(poll))
@@ -109,7 +109,7 @@ export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
 export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
     await dao.vote(choice)
   } catch (e) {
     dispatch(handlePollUpdated(poll))
@@ -136,7 +136,7 @@ export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
         .set('active', false)
         .set('status', false))
       .isFetching(true)))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.poll().id())
+    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
     await dao.endPoll()
   } catch (e) {
     dispatch(handlePollUpdated(poll))

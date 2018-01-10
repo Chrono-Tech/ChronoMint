@@ -1,9 +1,6 @@
-import PollBackendDAO, { EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
+import PollBackendDAO, { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
 import EventEmitter from 'events'
-import VotingManagerDAO, {
-  EVENT_POLL_ACTIVATED, EVENT_POLL_CREATED, EVENT_POLL_ENDED,
-  EVENT_POLL_REMOVED,
-} from '../dao/VotingManagerDAO'
+import VotingManagerDAO, { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
 
 class VotingService extends EventEmitter {
 
@@ -13,21 +10,21 @@ class VotingService extends EventEmitter {
   }
 
   getPollBackendDAO (address) {
-    if (!this._cache[address]) {
-      this._cache[address] = new PollBackendDAO(address)
+    if (!this._cache[ address ]) {
+      this._cache[ address ] = new PollBackendDAO(address)
     }
-    return this._cache[address]
+    return this._cache[ address ]
   }
 
   getVotingManager () {
-    if (!this._cache['VotingManager']) {
-      this._cache['VotingManager'] = new VotingManagerDAO()
+    if (!this._cache[ 'VotingManager' ]) {
+      this._cache[ 'VotingManager' ] = new VotingManagerDAO()
     }
-    return this._cache['VotingManager']
+    return this._cache[ 'VotingManager' ]
   }
 
   subscribeToPoll (address) {
-    if (this._cache[address]) return null
+    if (this._cache[ address ]) return null
     const dao = this.getPollBackendDAO(address)
 
     return Promise.all([

@@ -19,9 +19,9 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   async getVotesBalances () {
-    const [options, values] = await this._call('getVotesBalances') // [Array(options), Array(values)]
+    const [ options, values ] = await this._call('getVotesBalances') // [Array(options), Array(values)]
     const votes = new Immutable.List()
-    options.map((option, i) => !values[i].isZero() && votes.set(option.toString(), values[i]))
+    options.map((option, i) => !values[ i ].isZero() && votes.set(option.toString(), values[ i ]))
     return votes
   }
 
@@ -30,11 +30,11 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   vote (choice) {
-    return this._tx(TX_VOTE, [choice])
+    return this._tx(TX_VOTE, [ choice ])
   }
 
   removePoll () {
-    return this._tx(TX_REMOVE_POLL)
+    return this._tx(TX_REMOVE_POLL, [])
   }
 
   endPoll () {

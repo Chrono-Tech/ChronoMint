@@ -63,6 +63,28 @@ export default class Poll extends PureComponent {
     handlePollEnd: PropTypes.func,
   }
 
+  renderStatus () {
+    const { model } = this.props
+    const details = model.details()
+
+    if (model.isFetching()) {
+      return <div styleName='entry entryStatus'><Preloader /></div>
+    } else {
+      return (
+        <div styleName='entry entryStatus'>
+          {details.status && details.active &&
+          (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)}
+
+          {details.status && !details.active &&
+          (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)}
+
+          {!details.status &&
+          (<div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>)}
+        </div>
+      )
+    }
+  }
+
   render () {
     const { model, isCBE } = this.props
     const poll = model.poll()
@@ -84,21 +106,7 @@ export default class Poll extends PureComponent {
                     />
                   </div>
                 </div>
-                {details.status
-                  ? (
-                    <div styleName='entry entryStatus'>
-                      {details.active
-                        ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
-                        : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
-                      }
-                    </div>
-                  )
-                  : (
-                    <div styleName='entry entryStatus'>
-                      <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
-                    </div>
-                  )
-                }
+                {this.renderStatus()}
               </div>
               <div styleName='layer layerChart'>
                 <div styleName='entry entryTotal'>
@@ -194,7 +202,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('remove')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={() => this.props.handlePollRemove()}
+                    onTouchTap={!model.isFetching() && this.props.handlePollRemove}
                   />
                 )
                 : null
@@ -206,7 +214,7 @@ export default class Poll extends PureComponent {
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={this.props.handlePollDetails}
+                onTouchTap={!model.isFetching() && this.props.handlePollDetails}
               />
               {isCBE && details.status && details.active
                 ? (
@@ -214,7 +222,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollEnd}
+                    onTouchTap={!model.isFetching() && this.props.handlePollEnd}
                   />
                 )
                 : null
@@ -225,7 +233,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollActivate}
+                    onTouchTap={!model.isFetching() && this.props.handlePollActivate}
                   />
                 )
                 : null
