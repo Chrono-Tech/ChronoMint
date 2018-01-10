@@ -151,8 +151,8 @@ export default class TokenModel extends abstractFetchingModel({
     }
   }
 
-  isERC20 () {
-    return this.get('isERC20')
+  isERC20 (value) {
+    return this._getSet('isERC20', value)
   }
 
   isLocked () {

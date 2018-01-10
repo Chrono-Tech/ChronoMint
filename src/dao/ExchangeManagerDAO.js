@@ -1,9 +1,6 @@
-import tokenService from 'services/TokenService'
 import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
-import exchangeService from 'services/ExchangeService'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import BigNumber from 'bignumber.js'
 import web3Converter from 'utils/Web3Converter'
@@ -48,7 +45,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
       const assetSymbols = await exchangeProvider.getAssetSymbols()
       assetSymbols.map((exchange) => {
         if (exchange.symbol) {
-          result[ web3Converter.bytesToString(exchange.symbol) ] = true
+          result[ web3Converter.bytesToString(exchange.symbol).toUpperCase() ] = true
         }
       })
     } catch (e) {
