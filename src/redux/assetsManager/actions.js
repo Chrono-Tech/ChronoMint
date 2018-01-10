@@ -11,20 +11,14 @@ import Web3Converter from 'utils/Web3Converter'
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
 export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
-export const GET_TOKENS = 'AssetsManager/GET_TOKENS'
 export const SET_ASSETS = 'AssetsManager/SET_ASSETS'
 export const GET_ASSETS_MANAGER_COUNTS = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS'
 export const GET_ASSETS_MANAGER_COUNTS_START = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS_START'
-export const GET_MANAGERS_FOR_TOKEN = 'AssetsManager/GET_MANAGERS_FOR_TOKEN'
 export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
 export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
-export const GET_MANAGERS_FOR_TOKEN_LOADING = 'AssetsManager/GET_MANAGERS_FOR_TOKEN_LOADING'
-export const SET_TOTAL_SUPPLY = 'AssetsManager/SET_TOTAL_SUPPLY'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
-export const SET_IS_REISSUABLE = 'AssetsManager/SET_IS_REISSUABLE'
 export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
-export const SET_FEE = 'AssetsManager/SET_FEE'
 export const GET_USER_PLATFORMS = 'AssetsManager/GET_USER_PLATFORMS'
 
 export const getUsersPlatforms = () => async (dispatch, getState) => {
@@ -120,9 +114,9 @@ export const getManagersForAssetSymbol = async (symbol: string) => {
 export const removeManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    const txHash = await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
-    return txHash
+    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    return await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -133,8 +127,9 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
 export const addManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
-    await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
+    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
+    return await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
   }
   catch (e) {
     // eslint-disable-next-line
@@ -145,7 +140,8 @@ export const addManager = (token: TokenModel, owner: string) => async (dispatch,
 export const reissueAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
+    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
   catch (e) {
@@ -157,7 +153,8 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
 export const revokeAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(assets[ token.address() ].platform)
+    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
   catch (e) {
