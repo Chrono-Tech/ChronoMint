@@ -20,8 +20,12 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
 
   async getVotesBalances () {
     const [ options, values ] = await this._call('getVotesBalances') // [Array(options), Array(values)]
-    const votes = new Immutable.List()
-    options.map((option, i) => !values[ i ].isZero() && votes.set(option.toString(), values[ i ]))
+    let votes = new Immutable.Map()
+    options.map((option, i) => {
+      if (!values[ i ].isZero()) {
+        votes = votes.set(option.toString(), values[ i ])
+      }
+    })
     return votes
   }
 

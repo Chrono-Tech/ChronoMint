@@ -41,8 +41,6 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsPaginated (startIndex, pageSize) {
-    // eslint-disable-next-line
-    console.log('getPollsPaginated', [ startIndex, pageSize ])
     const addresses = await this._call('getPollsPaginated', [ startIndex, pageSize ])
     return await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
@@ -87,7 +85,13 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   async getPollsDetails (pollsAddresses: Array<string>) {
     let result = new VotingCollection()
     try {
-      const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = await this._call('getPollsDetails', [ pollsAddresses ])
+      const [ pollsDetails, assetHolderDAO ] = await Promise.all([
+        await contractsManagerDAO.getAssetHolderDAO(),
+        await this._call('getPollsDetails', [ pollsAddresses ]),
+      ])
+
+      const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
+      const shareholdersCount = await assetHolderDAO.shareholdersCount()
 
       for (let i = 0; i < pollsAddresses.length; i++) {
         try {
@@ -125,8 +129,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             id: pollId,
             poll,
             votes,
-            // statistics,
-            // memberVote: memberVote && memberVote.toNumber(), // just an option index
+            shareholdersCount,
             files: new Immutable.List((pollFiles && pollFiles.links || [])
               .map((item) => FileModel.createFromLink(item))),
           }))

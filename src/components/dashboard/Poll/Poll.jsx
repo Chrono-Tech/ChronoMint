@@ -171,7 +171,7 @@ export default class Poll extends PureComponent {
                     <span>
                       {
                         this.props.timeToken.isFetched()
-                          ? `${details.received} TIME`
+                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
                           : <Preloader />
                       }
                     </span>
@@ -245,7 +245,7 @@ export default class Poll extends PureComponent {
                     styleName='action'
                     primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onClick={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
+                    onTouchTap={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
                   />
                 )
                 : null
