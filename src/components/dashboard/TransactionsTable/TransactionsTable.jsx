@@ -143,7 +143,7 @@ export default class TransactionsTable extends PureComponent {
             }
             {!size && endOfList
               ? (
-                <div styleName='section'>
+                <div styleName='no-transactions-section'>
                   <div styleName='section-header'>
                     <h5 styleName='no-transactions'>No transactions found.</h5>
                   </div>
