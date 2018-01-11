@@ -10,12 +10,21 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import { SHORT_DATE } from 'models/constants'
+import PollDetailsModel from 'models/PollDetailsModel'
+import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import ModalDialog from './ModalDialog'
-
 import './VoteDialog.scss'
 
 function prefix (token) {
   return `components.dialogs.VoteDialog.${token}`
+}
+
+function mapStateToProps (state) {
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    timeToken: tokens.item('TIME'),
+  }
 }
 
 function mapDispatchToProps (dispatch, op) {
@@ -28,12 +37,13 @@ function mapDispatchToProps (dispatch, op) {
   }
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class VoteDialog extends PureComponent {
   static propTypes = {
-    model: PropTypes.object,
+    model: PropTypes.instanceOf(PollDetailsModel),
     modalsClose: PropTypes.func,
     handleSubmit: PropTypes.func,
+    timeToken: PropTypes.instanceOf(TokenModel),
   }
 
   constructor () {
@@ -55,7 +65,7 @@ export default class VoteDialog extends PureComponent {
   }
 
   render () {
-    const { model } = this.props
+    const { model, timeToken } = this.props
     const poll = model.poll()
     const details = model.details()
 
@@ -68,7 +78,12 @@ export default class VoteDialog extends PureComponent {
                 <div styleName='layer layerHead'>
                   <div styleName='entry entryDate'>
                     <div styleName='entryTitle'>{details.daysLeft}</div>
-                    <div styleName='entryLabel'><Translate value={prefix('daysLeft')} count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10} /></div>
+                    <div styleName='entryLabel'>
+                      <Translate
+                        value={prefix('daysLeft')}
+                        count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10}
+                      />
+                    </div>
                   </div>
                   <div styleName='entry entryStatus'>
                     <div styleName='entryBadge'><Translate value={prefix('ongoing')} /></div>
@@ -102,14 +117,11 @@ export default class VoteDialog extends PureComponent {
                       weight={0.20}
                       items={[
                         {
-                          value: details.votedCount.toNumber(),
+                          value: details.received.toNumber(),
                           fillFrom: '#311b92',
                           fillTo: '#d500f9',
                         },
-                        {
-                          value: (details.shareholdersCount.minus(details.votedCount)).toNumber(),
-                          fill: 'transparent',
-                        },
+                        { value: details.voteLimit.minus(details.received).toNumber(), fill: 'transparent' },
                       ]}
                     />
                   </div>
@@ -122,7 +134,8 @@ export default class VoteDialog extends PureComponent {
                   <div styleName='entry entryPublished'>
                     <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
                     <div styleName='entryValue'>{details.published &&
-                    <Moment date={details.published} format={SHORT_DATE} /> || <i><Translate value={prefix('no')} /></i>}
+                    <Moment date={details.published} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
                     </div>
                   </div>
                   <div styleName='entry entryFinished'>
@@ -136,21 +149,23 @@ export default class VoteDialog extends PureComponent {
                     <div styleName='entryValue'>
                       {details.voteLimitInTIME === null
                         ? <i>Unlimited</i>
-                        : <span>{details.voteLimitInTIME.toString()} TIME</span>
+                        : <span>{timeToken.removeDecimals(details.voteLimitInTIME).toString()} TIME</span>
                       }
                     </div>
                   </div>
                   <div styleName='entry entryReceived'>
                     <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                    <div styleName='entryValue'>{details.received.toString()} TIME</div>
+                    <div styleName='entryValue'>{timeToken.removeDecimals(details.received).toString()} TIME</div>
                   </div>
                   <div styleName='entry entryVariants'>
                     <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
-                    <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.options.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}</div>
                   </div>
                   <div styleName='entry entryDocuments'>
                     <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
-                    <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.files.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}</div>
                   </div>
                 </div>
               </div>

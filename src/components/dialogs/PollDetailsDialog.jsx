@@ -1,3 +1,4 @@
+import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
@@ -6,13 +7,22 @@ import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Moment from 'components/common/Moment'
 import { SHORT_DATE } from 'models/constants'
+import PollDetailsModel from 'models/PollDetailsModel'
 import ModalDialog from './ModalDialog'
 import './PollDetailsDialog.scss'
 
 function prefix (token) {
   return `components.dialogs.PollDetailsDialog.${token}`
+}
+
+function mapStateToProps (state) {
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    timeToken: tokens.item('TIME'),
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -21,13 +31,14 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class VoteDialog extends PureComponent {
   static propTypes = {
-    model: PropTypes.object,
-    palette: PropTypes.array,
+    model: PropTypes.instanceOf(PollDetailsModel),
+    palette: PropTypes.arrayOf(PropTypes.string),
     handleSubmit: PropTypes.func,
     modalsClose: PropTypes.func,
+    timeToken: PropTypes.instanceOf(TokenModel),
   }
 
   static defaultProps = {
@@ -51,7 +62,7 @@ export default class VoteDialog extends PureComponent {
   }
 
   render () {
-    const { model, palette } = this.props
+    const { model, palette, timeToken } = this.props
     const poll = model.poll()
     const details = model.details()
     const entries = model.voteEntries()
@@ -78,13 +89,13 @@ export default class VoteDialog extends PureComponent {
                     <div styleName='entryValue'>
                       {details.voteLimitInTIME === null
                         ? (<i>Unlimited</i>)
-                        : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
+                        : (<span>{timeToken.removeDecimals(details.voteLimitInTIME).toString()} TIME</span>)
                       }
                     </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                    <div styleName='entryValue'>{details.received.toString()} TIME</div>
+                    <div styleName='entryValue'>{timeToken.removeDecimals(details.received).toString()} TIME</div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
@@ -127,10 +138,12 @@ export default class VoteDialog extends PureComponent {
                     <DoughnutChart
                       weight={0.24}
                       rounded={false}
-                      items={entries.toArray().map((item, index) => ({
-                        value: item.count.toNumber(),
-                        fill: palette[index % palette.length],
-                      }))}
+                      items={entries.toArray().map((item, index) => {
+                        return {
+                          value: item.count.toNumber(),
+                          fill: palette[ index % palette.length ],
+                        }
+                      })}
                     />
                   </div>
                 </div>
@@ -144,11 +157,15 @@ export default class VoteDialog extends PureComponent {
                       <div styleName='legend'>
                         {entries.map((item, index) => (
                           <div styleName='legendItem' key={index}>
-                            <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }} />
+                            <div styleName='itemPoint' style={{ backgroundColor: palette[ index % palette.length ] }} />
                             <div styleName='itemTitle'>
-                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate
-                              value={prefix('numberVotes')} number={item.count.toNumber()}
-                              count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
+                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash;
+                              <b>
+                                <Translate
+                                  value={prefix('numberVotes')}
+                                  number={timeToken.removeDecimals(item.count.toNumber())}
+                                />
+                              </b>
                             </div>
                           </div>
                         ))}
@@ -190,8 +207,9 @@ export default class VoteDialog extends PureComponent {
                                 </div>
                               )
                               : (
-                                <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')}
-                                                                                number={index + 1} /></div>
+                                <div styleName='symbol symbolStroke'>
+                                  <Translate value={prefix('idxNumber')} number={index + 1} />
+                                </div>
                               )
                             }
                           </div>

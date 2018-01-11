@@ -15,6 +15,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
+import PollDetailsModel from 'models/PollDetailsModel'
 import './Poll.scss'
 
 function prefix (token) {
@@ -52,7 +53,7 @@ function mapDispatchToProps (dispatch, props) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends PureComponent {
   static propTypes = {
-    model: PropTypes.object,
+    model: PropTypes.instanceOf(PollDetailsModel),
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
@@ -86,7 +87,7 @@ export default class Poll extends PureComponent {
   }
 
   render () {
-    const { model, isCBE } = this.props
+    const { model, isCBE, timeToken } = this.props
     const poll = model.poll()
 
     const details = model.details()
@@ -128,8 +129,12 @@ export default class Poll extends PureComponent {
                     key={details}
                     weight={0.20}
                     items={[
-                      { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
-                      { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' },
+                      {
+                        value: details.received.toNumber(),
+                        fillFrom: '#311b92',
+                        fillTo: '#d500f9',
+                      },
+                      { value: details.voteLimit.minus(details.received).toNumber(), fill: 'transparent' },
                     ]}
                   />
                 </div>
@@ -158,7 +163,7 @@ export default class Poll extends PureComponent {
                       ? (<i>Unlimited</i>)
                       : (
                         <span>{this.props.timeToken.isFetched()
-                          ? `${details.voteLimit} TIME`
+                          ? `${timeToken.removeDecimals(details.voteLimit)} TIME`
                           : <Preloader />
                         }
                         </span>)

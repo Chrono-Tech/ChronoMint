@@ -9,11 +9,12 @@ import PollNoticeModel, {
 } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
+import PollDetailsModel from 'models/PollDetailsModel'
+import FileModel from 'models/FileSelect/FileModel'
+import VotingCollection from 'models/voting/VotingCollection'
+import TokenModel from 'models/tokens/TokenModel'
 import { MultiEventsHistoryABI, VotingManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import PollDetailsModel from '../models/PollDetailsModel'
-import FileModel from '../models/FileSelect/FileModel'
-import VotingCollection from '../models/voting/VotingCollection'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -45,7 +46,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     return await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)))
   }
 
-  async createPoll (poll: PollModel) {
+  async createPoll (poll: PollModel, timeToken: TokenModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     let hash
@@ -64,13 +65,18 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     const voteLimitInTIME = poll.voteLimitInTIME()
     const options = poll.options() && poll.options().toArray().map((element, index) => `Option${index}`)
 
+    const summary = poll.txSummary()
+    summary.voteLimit = timeToken.removeDecimals(voteLimitInTIME)
+
+    // eslint-disable-next-line
+    console.log('createPoll voteLimitInTIME', voteLimitInTIME.toString())
     const tx = await this._tx(TX_CREATE_POLL, [
       options,
       [],
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME,
       poll.deadline().getTime(),
-    ], poll)
+    ], summary)
     return tx.tx
   }
 
@@ -86,8 +92,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     let result = new VotingCollection()
     try {
       const [ pollsDetails, assetHolderDAO ] = await Promise.all([
-        await contractsManagerDAO.getAssetHolderDAO(),
         await this._call('getPollsDetails', [ pollsAddresses ]),
+        await contractsManagerDAO.getAssetHolderDAO(),
       ])
 
       const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
@@ -123,6 +129,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             options: new Immutable.List(options || []),
             files,
           })
+          // eslint-disable-next-line
+          console.log('getPollsDetails', statuses[ i ], activeStatuses[ i ])
           const pollFiles = poll && await ipfs.get(poll.files())
 
           result = result.add(new PollDetailsModel({

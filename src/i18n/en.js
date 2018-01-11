@@ -335,32 +335,32 @@ export default {
       },
     },
     Rewards: {
-      [rewards.TX_WITHDRAW_REWARD]: {
+      [ rewards.TX_WITHDRAW_REWARD ]: {
         title: 'Withdraw Bonus',
         amount: 'Amount',
       },
-      [rewards.TX_CLOSE_PERIOD]: {
+      [ rewards.TX_CLOSE_PERIOD ]: {
         title: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
-      [assetDonator.TX_REQUIRE_TIME]: {
+      [ assetDonator.TX_REQUIRE_TIME ]: {
         title: 'Require TIME',
       },
     },
     PlatformsManager: {
-      [platformsManager.TX_CREATE_PLATFORM]: {
+      [ platformsManager.TX_CREATE_PLATFORM ]: {
         title: 'Confirm create platform',
       },
-      [platformsManager.TX_ATTACH_PLATFORM]: {
+      [ platformsManager.TX_ATTACH_PLATFORM ]: {
         title: 'Confirm attach platform',
       },
-      [platformsManager.TX_DETACH_PLATFORM]: {
+      [ platformsManager.TX_DETACH_PLATFORM ]: {
         title: 'Confirm detach platform',
       },
     },
     LOCManager: {
-      [loc.standardFuncs.ADD_LOC]: {
+      [ loc.standardFuncs.ADD_LOC ]: {
         title: 'Add LOC',
         name: 'Name',
         website: 'Website',
@@ -369,7 +369,7 @@ export default {
         expDate: 'Expiration Date',
         currency: 'Currency',
       },
-      [loc.standardFuncs.SET_LOC]: {
+      [ loc.standardFuncs.SET_LOC ]: {
         title: 'Update LOC',
         name: 'Name',
         website: 'Website',
@@ -377,68 +377,68 @@ export default {
         publishedHash: 'Contract',
         expDate: 'Expiration Date',
       },
-      [loc.multisigFuncs.REMOVE_LOC]: {
+      [ loc.multisigFuncs.REMOVE_LOC ]: {
         title: 'Remove LOC',
         name: 'Name',
       },
-      [loc.multisigFuncs.REISSUE_ASSET]: {
+      [ loc.multisigFuncs.REISSUE_ASSET ]: {
         title: 'Issue asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [loc.multisigFuncs.REVOKE_ASSET]: {
+      [ loc.multisigFuncs.REVOKE_ASSET ]: {
         title: 'Revoke Asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
+      [ loc.multisigFuncs.UPDATE_LOC_STATUS ]: {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status',
       },
-      [loc.multisigFuncs.SEND_ASSET]: {
+      [ loc.multisigFuncs.SEND_ASSET ]: {
         title: 'Send Asset',
       },
     },
     ERC20Manager: {
-      [erc20Manager.TX_MODIFY_TOKEN]: {
+      [ erc20Manager.TX_MODIFY_TOKEN ]: {
         title: 'Modify Token',
       },
-      [erc20Manager.TX_REMOVE_TOKEN]: {
+      [ erc20Manager.TX_REMOVE_TOKEN ]: {
         title: 'Remove Token',
       },
-      [erc20Manager.TX_ADD_TOKEN]: {
+      [ erc20Manager.TX_ADD_TOKEN ]: {
         title: 'Add Token',
       },
     },
     ERC20Interface: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Approve to transfer your tokens',
         account: 'Account',
         amount: 'Amount',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
       },
     },
-    ExchangeManager:{
+    ExchangeManager: {
       createExchange: {
         title: 'Create an exchange',
       },
     },
     Exchange: {
-      [exchange.TX_BUY]: {
+      [ exchange.TX_BUY ]: {
         title: 'Confirm buy tokens for ETH',
       },
-      [exchange.TX_SELL]: {
+      [ exchange.TX_SELL ]: {
         title: 'Confirm sell tokens for ETH',
       },
-      [exchange.TX_WITHDRAW_TOKENS]: {
+      [ exchange.TX_WITHDRAW_TOKENS ]: {
         title: 'Confirm withdraw tokens',
       },
-      [exchange.TX_WITHDRAW_ETH]: {
+      [ exchange.TX_WITHDRAW_ETH ]: {
         title: 'Confirm withdraw ETH',
       },
     },
@@ -463,7 +463,7 @@ export default {
       },
     },
     PollInterface: {
-      [pollInterface.TX_ACTIVATE_POLL]: {
+      [ pollInterface.TX_ACTIVATE_POLL ]: {
         title: 'Activate poll',
       },
     },
@@ -718,8 +718,8 @@ export default {
         finished: 'Finished',
         timeHoldersAlreadyVoted: 'TIME Holders already voted',
         no: 'No',
-        requiredVotes: 'Required Votes',
-        receivedVotes: 'Received votes',
+        requiredVotes: 'Required TIME',
+        receivedVotes: 'Received TIME',
         variants: 'Variants',
         documents: 'Documents',
         remove: 'Remove',
@@ -777,7 +777,7 @@ export default {
         newPoll: 'New Poll',
         pollTitle: 'Poll title',
         pollDescriptions: 'Poll description',
-        voteLimit: 'Vote Limit',
+        voteLimit: 'Vote Limit in TIME',
         finishedDate: 'Finished date',
         addAttachments: 'Add Attachments',
         option: 'Option',
@@ -799,8 +799,7 @@ export default {
         new: 'New',
         timeHoldersAlreadyVoted: 'TIME Holders already voted',
         optionNumber: 'Option #%{number}',
-        numberVotes: '%{number} votes',
-        numberVotes_1: '%(number} vote',
+        numberVotes: '%{number} TIME',
         pollOptions: 'Poll options',
         idxNumber: '#%{number}',
       },

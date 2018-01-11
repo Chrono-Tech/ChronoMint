@@ -49,9 +49,9 @@ export default class PollDetailsModel extends abstractFetchingModel({
   voteEntries () {
     const options = this.get('poll').options()
     const votes = this.get('votes')
-    const statistics = this.get('statistics')
-
-    return options.zipWith((option, total, count) => ({ option, total, count }), votes, statistics)
+    return options.zipWith((option) => {
+      return { option, count: votes.get(option, new BigNumber(0)) }
+    })
   }
 
   details () {
@@ -62,9 +62,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
-    const percents = shareholdersCount.equals(new BigNumber(0))
-      ? 0
-      : votedCount.mul(100).div(shareholdersCount).round(0)
+    const percents = received.mul(100).div(voteLimitInTIME).round(0)
 
     return {
       endDate,

@@ -7,8 +7,10 @@ import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { TIME } from 'redux/mainWallet/actions'
+import TokenModel from 'models/tokens/TokenModel'
 
-export const POLLS_INIT = 'voting/INIT'
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
 export const POLLS_LIST = 'voting/POLLS_LIST'
@@ -70,7 +72,8 @@ export const watchInitPolls = () => async (dispatch) => {
   ])
 }
 
-export const createPoll = (poll: PollModel) => async (dispatch) => {
+export const createPoll = (poll: PollModel) => async (dispatch, getState) => {
+  const time: TokenModel = getState().get(DUCK_TOKENS).item(TIME)
   const stub = new PollDetailsModel({
     id: `stub_${--counter}`,
     poll: poll.id(`stub_${counter}`),
@@ -78,7 +81,7 @@ export const createPoll = (poll: PollModel) => async (dispatch) => {
   try {
     dispatch(handlePollCreated(stub.isFetching(true)))
     const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll)
+    const transactionHash = await dao.createPoll(poll, time)
     dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {

@@ -259,28 +259,28 @@ export default {
       },
     },
     UserManager: {
-      [user.TX_ADD_CBE]: {
+      [ user.TX_ADD_CBE ]: {
         title: 'Добавить CBE',
         name: 'Имя',
         address: 'Адрес',
       },
-      [user.TX_REVOKE_CBE]: {
+      [ user.TX_REVOKE_CBE ]: {
         title: 'Отозвать CBE',
         name: 'Имя',
         address: 'Адрес',
       },
-      [user.TX_SET_REQUIRED_SIGNS]: {
+      [ user.TX_SET_REQUIRED_SIGNS ]: {
         title: 'Мультиподпись',
         _required: 'Кол-во',
       },
-      [user.TX_SET_OWN_HASH]: {
+      [ user.TX_SET_OWN_HASH ]: {
         title: 'Обновить свой профиль',
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания',
         tokens: 'Токены',
       },
-      [user.TX_SET_MEMBER_HASH]: {
+      [ user.TX_SET_MEMBER_HASH ]: {
         title: 'Обновить профиль',
         address: 'Адрес',
         name: 'Имя',
@@ -289,80 +289,80 @@ export default {
       },
     },
     Ethereum: {
-      [eth.TX_TRANSFER]: {
+      [ eth.TX_TRANSFER ]: {
         title: 'Перевод ETH',
       },
     },
     ContractsManager: {},
     ChronoBankAssetProxy: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Одобить TIME',
         account: 'Аккаунт',
         amount: 'Объем',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Перевести TIME',
         recipient: 'Получатель',
         amount: 'Объем',
       },
     },
     ChronoBankAssetWithFeeProxy: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Одобрить LHT',
         account: 'Аккаунт',
         amount: 'Объем',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Перевести LHT',
         recipient: 'Получатель',
         amount: 'Объем',
       },
     },
     PendingManager: {
-      [operations.TX_CONFIRM]: {
+      [ operations.TX_CONFIRM ]: {
         title: 'Подтвердить Операцию',
       },
-      [operations.TX_REVOKE]: {
+      [ operations.TX_REVOKE ]: {
         title: 'Отозвать Операцию',
       },
     },
     TimeHolder: {
-      [time.TX_DEPOSIT]: {
+      [ time.TX_DEPOSIT ]: {
         title: 'Внести TIME',
         amount: 'Объем',
       },
-      [time.TX_WITHDRAW_SHARES]: {
+      [ time.TX_WITHDRAW_SHARES ]: {
         title: 'Вывести TIME',
         amount: 'Объем',
       },
     },
     Rewards: {
-      [rewards.TX_WITHDRAW_REWARD]: {
+      [ rewards.TX_WITHDRAW_REWARD ]: {
         title: 'Вывести Бонусы',
         amount: 'Объем',
       },
-      [rewards.TX_CLOSE_PERIOD]: {
+      [ rewards.TX_CLOSE_PERIOD ]: {
         title: 'Закрыть Бонусный Период',
       },
     },
     AssetDonator: {
-      [assetDonator.TX_REQUIRE_TIME]: {
+      [ assetDonator.TX_REQUIRE_TIME ]: {
         title: 'Требуется TIME',
       },
     },
     PlatformsManager: {
-      [platformsManager.TX_CREATE_PLATFORM]: {
+      [ platformsManager.TX_CREATE_PLATFORM ]: {
         title: 'Confirm create platform',
       },
-      [platformsManager.TX_ATTACH_PLATFORM]: {
+      [ platformsManager.TX_ATTACH_PLATFORM ]: {
         title: 'Confirm attach platform',
       },
-      [platformsManager.TX_DETACH_PLATFORM]: {
+      [ platformsManager.TX_DETACH_PLATFORM ]: {
         title: 'Confirm detach platform',
       },
     },
     LOCManager: {
-      [loc.standardFuncs.ADD_LOC]: {
+      [ loc.standardFuncs.ADD_LOC ]: {
         title: 'Добавить LOC',
         name: 'Имя',
         website: 'Вебсайт',
@@ -371,7 +371,7 @@ export default {
         expDate: 'Дата экспирации',
         currency: 'Валюта',
       },
-      [loc.standardFuncs.SET_LOC]: {
+      [ loc.standardFuncs.SET_LOC ]: {
         title: 'Обновить LOC',
         name: 'Имя',
         website: 'Вебсайт',
@@ -379,68 +379,68 @@ export default {
         publishedHash: 'Published Hash',
         expDate: 'Дата экспирации',
       },
-      [loc.multisigFuncs.REMOVE_LOC]: {
+      [ loc.multisigFuncs.REMOVE_LOC ]: {
         title: 'Удалить LOC',
         name: 'Имя',
       },
-      [loc.multisigFuncs.REISSUE_ASSET]: {
+      [ loc.multisigFuncs.REISSUE_ASSET ]: {
         title: 'Выпустить актив',
         amount: 'Объем',
         name: 'Имя',
       },
-      [loc.multisigFuncs.REVOKE_ASSET]: {
+      [ loc.multisigFuncs.REVOKE_ASSET ]: {
         title: 'Отозвать актив',
         amount: 'Объем',
         name: 'Имя',
       },
-      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
+      [ loc.multisigFuncs.UPDATE_LOC_STATUS ]: {
         title: 'Обновить статус LOC',
         name: 'Имя',
         status: 'Статус',
       },
-      [loc.multisigFuncs.SEND_ASSET]: {
+      [ loc.multisigFuncs.SEND_ASSET ]: {
         title: 'Отправить Ассет',
       },
     },
     ERC20Manager: {
-      [erc20Manager.TX_MODIFY_TOKEN]: {
+      [ erc20Manager.TX_MODIFY_TOKEN ]: {
         title: 'Изменить Токен',
       },
-      [erc20Manager.TX_REMOVE_TOKEN]: {
+      [ erc20Manager.TX_REMOVE_TOKEN ]: {
         title: 'Удаленный Токен',
       },
-      [erc20Manager.TX_ADD_TOKEN]: {
+      [ erc20Manager.TX_ADD_TOKEN ]: {
         title: 'Добавить Токен',
       },
     },
     ERC20Interface: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Одобрить списание токенов',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Перевести токены',
         account: 'Аккаунт',
         amount: 'Сумма',
       },
     },
-    ExchangeManager:{
+    ExchangeManager: {
       createExchange: {
         title: 'Создать обменник',
       },
     },
     Exchange: {
-      [exchange.TX_BUY]: {
+      [ exchange.TX_BUY ]: {
         title: 'Купить токены за ETH',
       },
-      [exchange.TX_SELL]: {
+      [ exchange.TX_SELL ]: {
         title: 'Продать токены за ETH',
       },
-      [exchange.TX_WITHDRAW_TOKENS]: {
+      [ exchange.TX_WITHDRAW_TOKENS ]: {
         title: 'Подтвердите вывод токенов',
       },
-      [exchange.TX_WITHDRAW_ETH]: {
+      [ exchange.TX_WITHDRAW_ETH ]: {
         title: 'Подтвердите вывод ETH',
       },
     },
@@ -465,7 +465,7 @@ export default {
       },
     },
     PollInterface: {
-      [pollInterface.TX_ACTIVATE_POLL]: {
+      [ pollInterface.TX_ACTIVATE_POLL ]: {
         title: 'Activate poll',
       },
     },
@@ -709,8 +709,8 @@ export default {
         finished: 'Окончено',
         timeHoldersAlreadyVoted: 'Держателей TIME проголосовало',
         no: 'Нет',
-        requiredVotes: 'Требуется Голосов',
-        receivedVotes: 'Получено голосов',
+        requiredVotes: 'Требуется TIME',
+        receivedVotes: 'Получено TIME',
         variants: 'Варианты',
         documents: 'Документы',
         remove: 'Удалить',
@@ -768,7 +768,7 @@ export default {
         newPoll: 'Новое Голосование',
         pollTitle: 'Название голосования',
         pollDescriptions: 'Описание голосования',
-        voteLimit: 'Лимит голосов',
+        voteLimit: 'Лимит в TIME',
         finishedDate: 'Дата окончания',
         addAttachments: 'Добавить Вложения',
         option: 'Вариант',
@@ -790,11 +790,7 @@ export default {
         new: 'Новое',
         timeHoldersAlreadyVoted: 'Деражателей TIME проголосовало',
         optionNumber: 'Вариант №%{number}',
-        numberVotes: '%{number} голосов',
-        numberVotes_1: '%{number} голос',
-        numberVotes_2: '%{number} голоса',
-        numberVotes_3: '%{number} голоса',
-        numberVotes_4: '%{number} голоса',
+        numberVotes: '%{number} TIME',
         pollOptions: 'Варианты голосования',
         idxNumber: '№%{number}',
       },

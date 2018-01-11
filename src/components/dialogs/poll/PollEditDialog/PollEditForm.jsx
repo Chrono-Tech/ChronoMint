@@ -12,12 +12,12 @@ import { Translate } from 'react-redux-i18n'
 import { DatePicker, TextField } from 'redux-form-material-ui'
 import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_I18N } from 'redux/configureStore'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
 import './PollEditForm.scss'
 import validate from './validate'
-import { DUCK_TOKENS } from '../../../../redux/tokens/actions'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
@@ -40,12 +40,12 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, props) {
+function mapDispatchToProps () {
   return {
-    onSubmit: (values) => {
+    onSubmit: (values, dispatch, props) => {
       const poll = new PollModel({
         ...values.toJS(),
-        voteLimitInTIME: new BigNumber(values.get('voteLimitInTIME')),
+        voteLimitInTIME: props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))),
         options: new Immutable.List(values.get('options')),
       })
       dispatch(modalsClose())
