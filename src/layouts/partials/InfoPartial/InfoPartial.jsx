@@ -110,7 +110,8 @@ export default class InfoPartial extends PureComponent {
     const { balances, tokens } = this.props
     const { visibleCount } = this.state
 
-    const count = balances.size() + tokens.leftToFetch()
+    const filteredBalances = balances.filter(this.filterCallback)
+    const count = filteredBalances.toArray().length + tokens.leftToFetch()
     const total = count + 1 <= visibleCount ? count + 1 : count
     const cells = (total % visibleCount === 0)
       ? total
@@ -128,6 +129,12 @@ export default class InfoPartial extends PureComponent {
       slideIndex: 0,
       visibleCount,
     })
+  }
+
+  filterCallback = (balance) => {
+    const { tokens, profile } = this.props
+    const token = tokens.item(balance.symbol())
+    return !token.isOptional() || profile.tokens().get(token.address())
   }
 
   renderItem = (balance: BalanceModel) => {
@@ -171,11 +178,12 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens, isPending, profile } = this.props
+    const { balances, isMultisig, tokens, isPending } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
 
-    let slidesCount = tokens.size() + leftToFetch
+    const filteredBalances = balances.filter(this.filterCallback)
+    let slidesCount = filteredBalances.toArray().length
     let withBigButton = false
     if (!isMultisig) {
       // increase 'add' button for main wallet
@@ -194,11 +202,7 @@ export default class InfoPartial extends PureComponent {
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isPending
               ? <Preloader />
-              : balances
-                .filter((balance) => {
-                  const token = tokens.item(balance.symbol())
-                  return !token.isOptional() || profile.tokens().get(token.address())
-                })
+              : filteredBalances
                 .sortBy((balance) => balance.symbol())
                 .map(this.renderItem)}
             {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
