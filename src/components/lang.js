@@ -4,6 +4,7 @@ import * as Timer from 'components/common/Timer/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
 import * as exchange from 'components/exchange/lang'
+import TwoFA from 'components/dialogs/TwoFA/lang'
 
 export default {
   en: {
@@ -16,6 +17,7 @@ export default {
     components: {
       exchange: exchange.en,
     },
+    TwoFA: TwoFA.en,
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,
@@ -27,5 +29,6 @@ export default {
     components: {
       exchange: exchange.ru,
     },
+    TwoFA: TwoFA.ru,
   },
 }

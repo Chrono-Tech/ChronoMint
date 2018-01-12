@@ -4,10 +4,13 @@ import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import classNames from 'classnames'
 import Preloader from 'components/common/Preloader/Preloader'
+import TwoFADialog from 'components/dialogs/TwoFA/TwoFADialog'
 import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddEditDialog/WalletAddEditDialog'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog'
 import globalStyles from 'layouts/partials/styles'
 import { FlatButton, Paper } from 'material-ui'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -40,6 +43,9 @@ function mapDispatchToProps (dispatch) {
       props: { wallet: new MultisigWalletModel() },
     })),
     switchWallet: (wallet) => dispatch(switchWallet(wallet)),
+    openCreate2FADialog: () => dispatch(modalsOpen({
+      component: TwoFADialog,
+    })),
   }
 }
 
@@ -47,17 +53,20 @@ function mapDispatchToProps (dispatch) {
 export default class WalletChanger extends PureComponent {
   static propTypes = {
     isMultisig: PropTypes.bool,
-    mainWallet: PropTypes.object,
-    multisigWallet: PropTypes.object,
+    mainWallet: PropTypes.instanceOf(MainWalletModel),
+    multisigWallet: PropTypes.instanceOf(MultisigWalletCollection),
     walletSelectDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
     switchWallet: PropTypes.func,
     account: PropTypes.string,
+    openCreate2FADialog: PropTypes.func,
   }
 
   handleShowSelectDialog = () => this.props.walletSelectDialog()
 
   handleSwitchWallet = () => this.props.switchWallet(this.props.mainWallet)
+
+  handleCreate2FAWallet = () => this.props.openCreate2FADialog()
 
   renderMainWallet () {
     const { isMultisig, mainWallet, multisigWallet } = this.props
@@ -106,6 +115,10 @@ export default class WalletChanger extends PureComponent {
                     ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.props.walletAddEditDialog()}
                   {...globalStyles.buttonWithIconStyles}
+                />
+                <FlatButton
+                  label='2fa'
+                  onTouchTap={this.handleCreate2FAWallet}
                 />
               </div>
             </div>

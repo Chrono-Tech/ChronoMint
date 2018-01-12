@@ -276,3 +276,8 @@ export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) =>
     console.error('get pending data error', e.message)
   }
 }
+
+export const create2FAWallet = () => (dispatch) => {
+  // TODO @dkchv: implement
+  console.log('--actions#', 1)
+}
