@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
-import { DECIMALS } from './NemEngine'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
   constructor ({ mosaics, ...args }) {
@@ -33,7 +32,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
               this.emit('balance', new NemBalance({
                 address,
                 balance: data.balance,
-                mosaics: Object.entries(data.mosaics).reduce((t, [ k, v ]) => ({
+                mosaics: data.mosaics && Object.entries(data.mosaics).reduce((t, [ k, v ]) => ({
                   ...t,
                   [ k ]: new BigNumber(v),
                 }), {}),
@@ -75,6 +74,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
   async getTransactionInfo (txid) {
     try {
       const res = await this._api.get(`tx/${txid}`)
+      console.log(res)
       return res.data
     } catch (e) {
       this.trace(`getTransactionInfo ${txid} failed`, e)
@@ -108,12 +108,16 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     }
   }
 
-  async send (account, tx) {
+  async send (account, rawtx) {
     try {
-      const res = await this._api.post('tx/send', tx)
-      console.log('Send:', res.data)
-      const model = this._createTxModel(tx, res.data, account)
-      console.log('Sent:', model)
+      const { data } = await this._api.post('tx/send', rawtx)
+      console.log(data.transactionHash.data, data)
+      const tx = await this.getTransactionInfo(data.transactionHash.data)
+      // {"innerTransactionHash":{},"code":1,"type":1,"message":"SUCCESS","transactionHash":{"data":"7fc8813eefb04577e603f6179601ae3250602d6a76da6d1c411e8e418bc35b49"}}
+      const model = this._createTxModel({
+        ...tx,
+        transactionHash: data.transactionHash.data,
+      }, account)
       setImmediate(() => {
         this.emit('tx', model)
       })
@@ -124,26 +128,15 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     }
   }
 
-  _createTxModel (tx, response, account): NemTx {
-    console.log(tx, response)
-    const from = response.isCoinBase ? 'coinbase' : response.inputs.map((input) => input.addresses.join(',')).join(',')
-    const to = response.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
-
-    let value = new BigNumber(0)
-    for (const output of response.outputs) {
-      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
-        value = value.add(new BigNumber(output.value))
-      }
-    }
-
+  _createTxModel (tx, account): NemTx {
     return new NemTx({
-      txHash: response.txid,
+      txHash: tx.transactionHash,
       time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
-      from,
-      to,
-      value,
-      fee: new BigNumber(response.fee).mul(DECIMALS),
-      credited: tx.isCoinBase || !response.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
+      from: tx.sender,
+      to: tx.recipient,
+      value: new BigNumber(tx.amount),
+      fee: new BigNumber(tx.fee),
+      credited: tx.sender !== account,
     })
   }
 }

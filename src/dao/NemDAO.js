@@ -81,7 +81,7 @@ export default class NemDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel/*, feeMultiplier: Number = 1*/) {
+  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number) {
     try {
       return await this._nemProvider.transfer(from, to, amount)
     } catch (e) {
