@@ -5,7 +5,7 @@ import { colorFromString } from './utils'
 function stateFromProps (props) {
   const token = props.token.toUpperCase()
   return {
-    color: colorFromString(token, 1.25),
+    color: token ? colorFromString(token, 1.25) : 'transparent',
     borderColor: colorFromString(token, 0.75),
     textColor: colorFromString(token, 3),
     borderWidth: 9,
@@ -72,8 +72,6 @@ class TokenIcon extends PureComponent {
     const centerY = canvasHeight / 2
     const radius = centerX * 0.92
 
-    context.scale(window.devicePixelRatio, window.devicePixelRatio)
-
     context.fillStyle = color
     context.fillRect(0, 0, canvas.width, canvas.height)
     context.beginPath()
@@ -87,7 +85,9 @@ class TokenIcon extends PureComponent {
     context.fillText(this.props.token.toUpperCase(), canvasCssWidth / 2, canvasCssHeight / 1.67)
   }
 
-  refCanvas = (element) => { this.canvas = element }
+  refCanvas = (element) => {
+    this.canvas = element
+  }
 
   renderScaled () {
     const {
