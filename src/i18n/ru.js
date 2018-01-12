@@ -683,6 +683,7 @@ export default {
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
         feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
+        gasPrice: 'Цена газа: %{multiplier} of среднего (%{total} Gwei)',
         approve: 'Подтвердить',
         revoke: 'Отозвать',
         allowance: 'allowance',

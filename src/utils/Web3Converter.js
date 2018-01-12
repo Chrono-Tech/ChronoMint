@@ -2,6 +2,11 @@ import BigNumber from 'bignumber.js'
 import bs58 from 'bs58'
 import web3utils from 'web3/lib/utils/utils'
 
+const unitMap = {
+  wei: 1000000000000000000,
+  gwei: 1000000000,
+}
+
 class Web3Converter {
   // from utils as is
   hexToDecimal = web3utils.toDecimal
@@ -11,16 +16,17 @@ class Web3Converter {
   /**
    * @param n
    * @param isToWei
+   * @param unit
    * @private
    */
-  _weiConvert (n: BigNumber, isToWei: boolean = true): BigNumber {
+  _weiConvert (n: BigNumber, isToWei: boolean = true, unit: string): BigNumber {
     if (n === null) {
       return n
     }
     // convert old web3's BigNumber to new version
     const newBigNumber = new BigNumber(typeof n === 'object' ? n.toFixed() : n)
 
-    return newBigNumber[isToWei ? 'times' : 'dividedBy'](1000000000000000000)
+    return newBigNumber[ isToWei ? 'times' : 'dividedBy' ](unitMap[ unit ])
   }
 
   /**
@@ -28,18 +34,20 @@ class Web3Converter {
    * So you should use this function and...
    * @see toWei instead
    * @param n
+   * @param unit
    */
-  fromWei (n: BigNumber): BigNumber {
-    return this._weiConvert(n, false)
+  fromWei (n: BigNumber, unit: string = 'wei'): BigNumber {
+    return this._weiConvert(n, false, unit)
   }
 
   /**
    * @link https://github.com/ethereum/web3.js/blob/master/lib/utils/utils.js
    * @see fromWei
    * @param n
+   * @param unit
    */
-  toWei (n: BigNumber): BigNumber {
-    return this._weiConvert(n, true)
+  toWei (n: BigNumber, unit: string = 'wei'): BigNumber {
+    return this._weiConvert(n, true, unit)
   }
 
   /**
