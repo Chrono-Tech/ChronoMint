@@ -201,7 +201,7 @@ export default class Poll extends PureComponent {
           </div>
           <div styleName='foot'>
             <div styleName='left'>
-              {isCBE && details.status && !details.active
+              {isCBE && !details.status && !details.active
                 ? (
                   <RaisedButton
                     label={<Translate value={prefix('remove')} />}

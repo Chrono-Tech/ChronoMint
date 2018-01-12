@@ -68,8 +68,6 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     const summary = poll.txSummary()
     summary.voteLimit = timeToken.removeDecimals(voteLimitInTIME)
 
-    // eslint-disable-next-line
-    console.log('createPoll voteLimitInTIME', voteLimitInTIME.toString())
     const tx = await this._tx(TX_CREATE_POLL, [
       options,
       [],
@@ -129,8 +127,6 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             options: new Immutable.List(options || []),
             files,
           })
-          // eslint-disable-next-line
-          console.log('getPollsDetails', statuses[ i ], activeStatuses[ i ])
           const pollFiles = poll && await ipfs.get(poll.files())
 
           result = result.add(new PollDetailsModel({
@@ -140,7 +136,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             shareholdersCount,
             files: new Immutable.List((pollFiles && pollFiles.links || [])
               .map((item) => FileModel.createFromLink(item))),
-          }))
+          }).isFetched(true))
         } catch (e) {
           // eslint-disable-next-line
           console.error(e.message)

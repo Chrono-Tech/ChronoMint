@@ -91,13 +91,6 @@ export const createPoll = (poll: PollModel) => async (dispatch, getState) => {
   }
 }
 
-// eslint-disable-next-line
-export const updatePoll = (poll: PollModel) => async () => {
-  // TODO @ipavlenko: Implement when contracts will support it
-  // const dao = await contractsManagerDAO.getVotingManagerDAO()
-  // await dao.updatePoll(poll)
-}
-
 export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
   try {
     dispatch(handlePollRemoved(poll.id()))
