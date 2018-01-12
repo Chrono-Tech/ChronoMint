@@ -6,15 +6,20 @@ const noopURL = {
   },
 }
 
-const noopFileReader = {
-  onload: () => {},
-  readAsDataURL (file) {
-    this.onload(new Buffer(file))
-  },
+class NoopFileReader {
+  constructor () {
+    this.result = null
+  }
+
+  onload: () => {}
+
+  readAsDataURL () {
+    this.onload()
+  }
 }
 
 export const url = window ? (window.URL || window.webkitURL) : noopURL
-export const FileReader = window ? window.FileReader : noopFileReader
+export const FileReader = window ? window.FileReader : NoopFileReader
 
 function getImageDimensions (file) {
   return new Promise((resolve) => {
