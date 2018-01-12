@@ -29,31 +29,30 @@
     display: flex;
     flex-direction: column;
   }
-  > span:first-child {
+}
+
+.action {
+  margin-left: 40px;
+
+  @include md-only {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+
+  @include xs-only {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  &:first-child {
     margin-left: 0;
   }
-  .action {
-    margin-left: 40px;
+}
 
-    @include md-only {
-      margin-left: 20px;
-      margin-bottom: 20px;
-      display: inline-block;
-
-      &:first-child {
-        margin-left: 0;
-      }
-    }
-    @include xs-only {
-      margin-left: 0;
-      width: 100%;
-    }
-
-    .actionButton {
-      @include xs-only {
-        width: 100%;
-      }
-    }
+.actionButton {
+  @include xs-only {
+    width: 100%;
   }
 }
 
