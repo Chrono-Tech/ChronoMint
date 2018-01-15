@@ -1,10 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`settings wallet reducer should handle WALLET_ALLOWANCE 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -13,21 +14,24 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {
-    "TK1": Object {
+  "tokens": {
+    "TK1": {
       "address": null,
-      "allowance": Object {
-        "0xee42d0ea34b0b40d1930ed05ed2845d08ea7cfd1": 4,
+      "allowance": {
+        "0x670dc68af4125b8137d706bdec4abd8950d86c20": 4
       },
       "balance": "0",
+      "blockchain": null,
       "dao": null,
       "decimals": null,
       "fee": null,
       "feeAddress": null,
+      "feeRate": null,
       "icon": null,
       "id": null,
       "isFailed": false,
@@ -35,7 +39,7 @@ Object {
       "isFetching": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": null,
+      "isReissuable": false,
       "managersList": null,
       "name": null,
       "platform": null,
@@ -44,30 +48,31 @@ Object {
       "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": null,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_BALANCE 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -76,19 +81,22 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {
-    "TK1": Object {
+  "tokens": {
+    "TK1": {
       "address": null,
-      "allowance": Object {},
+      "allowance": {},
       "balance": "5",
+      "blockchain": null,
       "dao": null,
       "decimals": null,
       "fee": null,
       "feeAddress": null,
+      "feeRate": null,
       "icon": null,
       "id": null,
       "isFailed": false,
@@ -96,7 +104,7 @@ Object {
       "isFetching": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": null,
+      "isReissuable": false,
       "managersList": null,
       "name": null,
       "platform": null,
@@ -105,30 +113,31 @@ Object {
       "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": null,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_IS_TIME_REQUIRED 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -137,32 +146,34 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": false,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
-exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT 1`] = `
-Object {
+exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with empty wallet 1`] = `
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -171,66 +182,70 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
+  "nemAddress": null,
+  "timeAddress": "0x3ca0cbc8c9e2d629b13cfe7106535f532fb59c85",
+  "timeDeposit": "0",
+  "timestamp": null,
+  "tokens": {},
+  "transactionHash": null,
+  "transactions": {
+    "endOfList": false,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isPending": false,
+    "list": {},
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  }
+}
+`;
+
+exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT with non empty wallet 1`] = `
+{
+  "address": null,
+  "bccAddress": null,
+  "btcAddress": null,
+  "btgAddress": null,
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isMainWallet": true,
+  "isMultisig": false,
+  "isPending": false,
+  "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": 3,
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
-}
-`;
-
-exports[`settings wallet reducer should handle WALLET_TIME_DEPOSIT 2`] = `
-Object {
-  "address": null,
-  "bccAddress": null,
-  "btcAddress": null,
-  "id": null,
-  "isFailed": false,
-  "isFetched": false,
-  "isFetching": false,
-  "isMainWallet": true,
-  "isMultisig": false,
-  "isPending": false,
-  "isTIMERequired": true,
-  "nemAddress": null,
-  "timeAddress": "0xec8a163d2ebc655fd44a7b159ca637abb380339c",
-  "timeDeposit": "0",
-  "timestamp": null,
-  "tokens": Object {},
-  "transactionHash": null,
-  "transactions": Object {
-    "endOfList": false,
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": Object {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_TOKENS 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": true,
@@ -239,19 +254,22 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {
-    "TK1": Object {
+  "tokens": {
+    "TK1": {
       "address": null,
-      "allowance": Object {},
+      "allowance": {},
       "balance": "0",
+      "blockchain": null,
       "dao": null,
       "decimals": null,
       "fee": null,
       "feeAddress": null,
+      "feeRate": null,
       "icon": null,
       "id": null,
       "isFailed": false,
@@ -259,7 +277,7 @@ Object {
       "isFetching": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": null,
+      "isReissuable": false,
       "managersList": null,
       "name": null,
       "platform": null,
@@ -268,16 +286,18 @@ Object {
       "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": null,
+      "withFee": false
     },
-    "TK2": Object {
+    "TK2": {
       "address": null,
-      "allowance": Object {},
+      "allowance": {},
       "balance": "0",
+      "blockchain": null,
       "dao": null,
       "decimals": null,
       "fee": null,
       "feeAddress": null,
+      "feeRate": null,
       "icon": null,
       "id": null,
       "isFailed": false,
@@ -285,7 +305,7 @@ Object {
       "isFetching": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": null,
+      "isReissuable": false,
       "managersList": null,
       "name": null,
       "platform": null,
@@ -294,30 +314,31 @@ Object {
       "totalSupply": "0",
       "transactionHash": null,
       "url": null,
-      "withFee": null,
-    },
+      "withFee": false
+    }
   },
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_TOKENS_FETCH 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -326,32 +347,34 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {},
+    "list": {},
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTION 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -360,21 +383,22 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {
-      "hash1 - 1 - 2": Object {
+    "list": {
+      "hash1 - 1 - 2": {
         "args": null,
         "blockHash": null,
         "blockNumber": 10,
@@ -393,21 +417,22 @@ Object {
         "transactionIndex": null,
         "txHash": "hash1",
         "type": "",
-        "value": "0",
-      },
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTIONS 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -416,21 +441,22 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
     "isPending": false,
-    "list": Object {
-      "tx1": Object {
+    "list": {
+      "tx1": {
         "args": null,
         "blockHash": null,
         "blockNumber": null,
@@ -449,9 +475,9 @@ Object {
         "transactionIndex": null,
         "txHash": "hash1",
         "type": "",
-        "value": "0",
+        "value": "0"
       },
-      "tx2": Object {
+      "tx2": {
         "args": null,
         "blockHash": null,
         "blockNumber": null,
@@ -470,21 +496,22 @@ Object {
         "transactionIndex": null,
         "txHash": "hash2",
         "type": "",
-        "value": "0",
-      },
+        "value": "0"
+      }
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;
 
 exports[`settings wallet reducer should handle WALLET_TRANSACTIONS_FETCH 1`] = `
-Object {
+{
   "address": null,
   "bccAddress": null,
   "btcAddress": null,
+  "btgAddress": null,
   "id": null,
   "isFailed": false,
   "isFetched": false,
@@ -493,25 +520,26 @@ Object {
   "isMultisig": false,
   "isPending": false,
   "isTIMERequired": true,
+  "ltcAddress": null,
   "nemAddress": null,
   "timeAddress": null,
   "timeDeposit": "0",
   "timestamp": null,
-  "tokens": Object {},
+  "tokens": {},
   "transactionHash": null,
-  "transactions": Object {
+  "transactions": {
     "endOfList": false,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": true,
     "isPending": false,
-    "list": Object {
-      "a": 1,
+    "list": {
+      "a": 1
     },
     "selected": null,
     "timestamp": null,
-    "transactionHash": null,
-  },
+    "transactionHash": null
+  }
 }
 `;

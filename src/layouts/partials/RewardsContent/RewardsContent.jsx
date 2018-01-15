@@ -1,61 +1,62 @@
-import { Link } from 'react-router'
-import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton, Paper, CircularProgress } from 'material-ui'
-import React, { Component } from 'react'
-import { RewardsPeriod } from 'components'
-import { Translate } from 'react-redux-i18n'
-import { connect } from 'react-redux'
+import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import styles from 'layouts/partials/styles'
-import type RewardsModel from 'models/RewardsModel'
-import { getRewardsData, watchInitRewards, withdrawRevenue, closePeriod } from 'redux/rewards/rewards'
-
+import { FlatButton, RaisedButton } from 'material-ui'
+import RewardsCollection from 'models/rewards/RewardsCollection'
+import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
+import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
+import { closePeriod, DUCK_REWARDS, initRewards, withdrawRevenue } from 'redux/rewards/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import './RewardsContent.scss'
 
 function prefix (token) {
   return `layouts.partials.RewardsContent.${token}`
 }
 
+function mapStateToProps (state) {
+  const { isCBE } = state.get(DUCK_SESSION)
+
+  const rewards: RewardsCollection = state.get(DUCK_REWARDS)
+  return {
+    rewards,
+    currentPeriod: rewards.currentPeriod(),
+    // TODO @dkchv: hardcoded to TIME
+    isDeposited: state.get(DUCK_ASSETS_HOLDER).isDeposited(),
+    isCBE,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    initRewards: () => dispatch(initRewards()),
+    handleClosePeriod: () => dispatch(closePeriod()),
+    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+  }
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RewardsContent extends Component {
   static propTypes = {
-    isFetched: PropTypes.bool,
-    isFetching: PropTypes.bool,
+    rewards: PropTypes.instanceOf(RewardsCollection),
+    currentPeriod: PropTypes.instanceOf(RewardsCurrentPeriodModel),
     isCBE: PropTypes.bool,
-
-    rewardsData: PropTypes.object,
-    timeDeposit: PropTypes.object,
-
-    watchInitRewards: PropTypes.func,
-    getRewardsData: PropTypes.func,
+    isDeposited: PropTypes.bool,
+    initRewards: PropTypes.func,
     handleWithdrawRevenue: PropTypes.func,
     handleClosePeriod: PropTypes.func,
   }
 
   componentWillMount () {
-    if (!this.props.isFetched) {
-      this.props.watchInitRewards()
-    }
-
-    if (!this.props.isFetching) {
-      this.props.getRewardsData()
-    }
-  }
-
-  render () {
-    return !this.props.isFetched
-      ? (<div styleName='progress'><CircularProgress size={24} thickness={1.5} /></div>)
-      : (
-        <div styleName='root'>
-          <div styleName='content'>
-            {this.renderHead()}
-            {this.renderBody()}
-          </div>
-        </div>
-      )
+    this.props.initRewards()
   }
 
   renderHead () {
-    const rewardsData: RewardsModel = this.props.rewardsData
+    const { currentPeriod, rewards } = this.props
+
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('rewards')} /></h3>
@@ -65,38 +66,34 @@ export default class RewardsContent extends Component {
               <div className='col-sm-1'>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('rewardsSmartContractAddress')} />:</span><br />
-                  <span styleName='entry2'>{rewardsData.address()}</span>
+                  <span styleName='entry2'>{rewards.address()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('currentRewardsPeriod')} />:</span><br />
-                  <span styleName='entry2'>{rewardsData.lastPeriodIndex()}</span>
+                  <span styleName='entry2'>{rewards.currentIndex()}</span>
                 </div>
                 <div styleName='entry'>
                   <span styleName='entry1'><Translate value={prefix('periodLength')} />:</span><br />
-                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={rewardsData.periodLength()} /></span>
+                  <span styleName='entry2'><Translate value={prefix('daysDays')} days={currentPeriod.periodLength()} /></span>
                 </div>
               </div>
               <div className='col-sm-1'>
                 <div styleName='alignRight'>
                   <div styleName='entries'>
-                    {this.props.timeDeposit && this.props.timeDeposit.gt(0)
-                      ? <div styleName='entry'>
-                        <span styleName='entry1'>
-                          <span><Translate value={prefix('rewardsForYourAccountIs')} />:</span>
-                        </span><br />
-                        <span styleName='entry2'>
-                          <a styleName='highlightGreen'><Translate value={prefix('enabled')} /></a>
-                        </span>
-                      </div>
+                    {this.props.isDeposited
+                      ? (
+                        <div styleName='entry'>
+                          <span styleName='entry1'><Translate value={prefix('rewardsForYourAccountIs')} />:</span><br />
+                          <span styleName='entry2'><a styleName='highlightGreen'><Translate value={prefix('enabled')} /></a></span>
+                        </div>
+                      )
                       : (
                         <div styleName='entry'>
                           <span styleName='entry1'>
-                            <span><Translate value={prefix('youHaveNoTimeDeposit')} /></span><br />
-                            <span><Translate value={prefix('pleaseDepositTimeTokens')} /></span>
+                            <Translate value={prefix('youHaveNoTimeDeposit')} /><br />
+                            <Translate value={prefix('pleaseDepositTimeTokens')} />
                           </span><br />
-                          <span styleName='entry2'>
-                            <a styleName='highlightRed'><Translate value={prefix('disabled')} /></a>
-                          </span>
+                          <span styleName='entry2'><a styleName='highlightRed'><Translate value={prefix('disabled')} /></a></span>
                         </div>
                       )
                     }
@@ -110,19 +107,18 @@ export default class RewardsContent extends Component {
                         <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
                       }
                     />
-                    {rewardsData.accountRewards().gt(0) && (
+                    {currentPeriod.rewards().gt(0) && (
                       <RaisedButton
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
-                        disabled={!rewardsData.accountRewards().gt(0)}
-                        onTouchTap={() => this.props.handleWithdrawRevenue()}
+                        onTouchTap={this.props.handleWithdrawRevenue}
                       />
                     )}
                     {this.props.isCBE && (
                       <RaisedButton
                         label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
-                        onTouchTap={() => this.props.handleClosePeriod()}
+                        onTouchTap={this.props.handleClosePeriod}
                       />
                     )}
                   </div>
@@ -140,12 +136,10 @@ export default class RewardsContent extends Component {
       <div styleName='body'>
         <div styleName='bodyInner'>
           <div className='RewardsContent__grid'>
-            {this.props.rewardsData.periods().valueSeq().map((item) => (
+            {this.props.rewards.items().map((item) => (
               <div className='row' key={item.index()}>
                 <div className='col-xs-2'>
-                  <Paper>
-                    <RewardsPeriod period={item} rewardsData={this.props.rewardsData} />
-                  </Paper>
+                  <RewardsPeriod period={item} />
                 </div>
               </div>
             ))}
@@ -154,28 +148,15 @@ export default class RewardsContent extends Component {
       </div>
     )
   }
-}
 
-function mapStateToProps (state) {
-  const rewards = state.get('rewards')
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-
-  return {
-    rewardsData: rewards.data,
-    // just to subscribe RewardsContent on time deposit updates
-    timeDeposit: wallet.timeDeposit(),
-    isFetching: rewards.isFetching,
-    isFetched: rewards.isFetched,
-    isCBE: session.isCBE,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    getRewardsData: () => dispatch(getRewardsData()),
-    watchInitRewards: () => dispatch(watchInitRewards()),
-    handleClosePeriod: () => dispatch(closePeriod()),
-    handleWithdrawRevenue: () => dispatch(withdrawRevenue()),
+  render () {
+    return (
+      <div styleName='root'>
+        <div styleName='content'>
+          {this.renderHead()}
+          {this.renderBody()}
+        </div>
+      </div>
+    )
   }
 }

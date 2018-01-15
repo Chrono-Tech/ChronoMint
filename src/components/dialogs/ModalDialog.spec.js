@@ -9,7 +9,7 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 injectTapEventPlugin()
 
 describe('ModalDialog', () => {
-  it('should mount and render content', () => {
+  it.skip('should mount and render content', async () => {
     const store = mockStore(Immutable.Map({}))
     const wrapper = mount(
       <Provider store={store}>

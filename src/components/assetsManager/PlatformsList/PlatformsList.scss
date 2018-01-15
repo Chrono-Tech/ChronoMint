@@ -134,3 +134,17 @@
   font-weight: normal;
   @include ellipsis;
 }
+
+.noTokens {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 125px;
+  height: 50px;
+  margin-right: 16px;
+}
+
+.addressWrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

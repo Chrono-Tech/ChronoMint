@@ -10,9 +10,6 @@ import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog
 import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
 import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
 import IPFS from '../../../utils/IPFS'
-import {
-  showUploadedFileModal,
-} from '../../../redux/ui/modal'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
@@ -31,7 +28,12 @@ const mapDispatchToProps = (dispatch) => ({
     component: LOCRedeemDialog,
     props: { loc },
   })),
-  showUploadedFileModal: (loc: LOCModel) => dispatch(showUploadedFileModal(loc)),
+  showUploadedFileModal: (loc: LOCModel) => {
+    // eslint-disable-next-line
+    console.warn('showUploadedFileModal is not implemented. Args:', loc)
+    // TODO @ipavlenko: Dead code, showUploadedFileModal doesn't exist
+    // dispatch(showUploadedFileModal(loc))
+  },
 })
 
 @connect(null, mapDispatchToProps)

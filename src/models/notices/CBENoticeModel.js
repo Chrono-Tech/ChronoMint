@@ -1,5 +1,5 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n } from 'platform/i18n'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type CBEModel from '../CBEModel'
 
@@ -12,7 +12,7 @@ export default class CBENoticeModel extends abstractNoticeModel({
   }
 
   icon () {
-    return (<i className='material-icons'>settings</i>)
+    return Icons.get('notices.settings.icon')
   }
 
   title () {

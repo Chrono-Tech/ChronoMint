@@ -1,5 +1,5 @@
-import React from 'react'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const CREATED = 'notices.wallet.created'
@@ -26,7 +26,7 @@ export default class WalletNoticeModel extends abstractNoticeModel({
 }) {
 
   icon () {
-    return (<i className='material-icons'>group</i>)
+    return Icons.get('notices.wallet.icon')
   }
 
   title () {

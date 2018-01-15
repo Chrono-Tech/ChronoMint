@@ -5,7 +5,9 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { reissueAsset } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, reissueAsset } from 'redux/assetsManager/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import validate from './validate'
 
 import './ReissueAssetForm.scss'
@@ -17,15 +19,16 @@ function prefix (token) {
 const FORM_REISSUE_FORM = 'reissueForm'
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     selectedToken: assetsManager.selectedToken,
-    tokensMap: assetsManager.tokensMap,
+    tokens,
   }
 }
 
 const onSubmit = (values, dispatch, props) => {
-  dispatch(reissueAsset(props.tokensMap.get(props.selectedToken), values.get('amount')))
+  dispatch(reissueAsset(props.tokens.item(props.selectedToken), values.get('amount')))
   dispatch(reset(FORM_REISSUE_FORM))
 }
 
@@ -33,7 +36,7 @@ const onSubmit = (values, dispatch, props) => {
 @reduxForm({ form: FORM_REISSUE_FORM, validate, onSubmit })
 export default class ReissueAssetForm extends PureComponent {
   static propTypes = {
-    tokensMap: PropTypes.object,
+    tokens: PropTypes.instanceOf(TokensCollection),
     handleSubmit: PropTypes.func,
     selectedToken: PropTypes.string,
   }

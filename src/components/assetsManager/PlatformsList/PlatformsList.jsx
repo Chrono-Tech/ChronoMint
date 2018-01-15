@@ -1,12 +1,16 @@
-import BigNumber from 'bignumber.js'
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { SELECT_PLATFORM, SELECT_TOKEN } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, SELECT_PLATFORM, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
+import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import Amount from 'models/Amount'
+import TokensCollection from 'models/tokens/TokensCollection'
+import WithLoader from 'components/common/Preloader/WithLoader'
 
 import './PlatformsList.scss'
 
@@ -14,14 +18,14 @@ function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
-export class PlatformsList extends PureComponent {
+class PlatformsList extends PureComponent {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
     platformsList: PropTypes.array,
-    tokensMap: PropTypes.object,
+    tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.object,
     assetsManagerCountsLoading: PropTypes.bool,
   }
@@ -30,43 +34,62 @@ export class PlatformsList extends PureComponent {
     this.props.handleSelectPlatform(this.props.selectedPlatform === platformAddress ? null : platformAddress)
   }
 
-  renderTokenList () {
-    const filteredTokens = this.props.tokensMap.toArray()
-      .filter((token) => token.platform ? token.platform() === this.props.selectedPlatform : false)
+  renderTokenList ({ assets, tokens, selectedToken }) {
+    const filteredTokens = Object.values(assets)
+      .filter((asset) => {
+        return asset.platform ? asset.platform === this.props.selectedPlatform : false
+      })
+    const showTitle = (token: TokenModel, asset) => {
+      if (token.isPending()) {
+        return <Translate value={prefix('pending')} />
+      }
+      return token.isFetched() ? <div styleName='addressWrap'>{asset.address}</div> : <Translate value={prefix('loading')} />
+    }
+
     return (
       <div styleName='tokensList'>
         {
-          filteredTokens
-            .map((token) => {
-              return (<div
-                key={token.address()}
-                styleName={classnames('tokenItem', { 'selected': this.props.selectedToken === token.symbol() })}
-                onTouchTap={() => this.props.handleSelectToken(token.symbol())}
+          filteredTokens.length === 0 &&
+          <div styleName='noTokens'>
+            <Translate value={prefix('noTokens')} />
+          </div>
+        }
+        {
+          filteredTokens.map((asset) => {
+            const token = tokens.getByAddress(asset.address)
+
+            return (
+              <div
+                key={asset.address}
+                styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
+                onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
                 <div styleName='tokenTitle'>
-                  {token.symbol()}
-                  <div styleName='tokenSubTitle'>{token.address()}</div>
+                  <div styleName='tokenSubTitle'>{token.isFetched() ? token.id() : asset.address}</div>
                 </div>
+                {showTitle(token, asset)}
                 <div styleName='tokenBalance'>
-                  <TokenValue
-                    style={{ fontSize: '24px' }}
-                    value={token.totalSupply()}
-                    symbol={token.symbol()}
-                  />
+                  {
+                    token.isFetched() &&
+                    <TokenValue
+                      style={{ fontSize: '24px' }}
+                      value={new Amount(token ? asset.totalSupply : asset.totalSupply, token.symbol())}
+                    />
+                  }
                 </div>
-              </div>)
-            })
+              </div>
+            )
+          })
         }
 
       </div>
     )
   }
 
-  renderPlatformsList () {
-    const { selectedPlatform, platformsList } = this.props
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
     return (
       <div>
         {
@@ -79,21 +102,15 @@ export class PlatformsList extends PureComponent {
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
-                  {
-                    name
-                      ? <div styleName='platformTitle'>{name}&nbsp;(
-                        <small>{address}</small>
-                        )
-                      </div>
-                      : <div styleName='platformTitle'>{address}</div>
+                  {name
+                    ? <div styleName='platformTitle'>{name}&nbsp;(
+                      <small>{address}</small>
+                      )</div>
+                    : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
               </div>
-              {
-                selectedPlatform === address
-                  ? this.renderTokenList(address)
-                  : null
-              }
+              {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}
             </div>
           ))
         }
@@ -105,11 +122,17 @@ export class PlatformsList extends PureComponent {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          {
-            this.props.assetsManagerCountsLoading
-              ? <div styleName='preloaderWrap'><Preloader /></div>
-              : this.renderPlatformsList()
-          }
+          <WithLoader
+            showLoader={this.props.assetsManagerCountsLoading}
+            loader={<div styleName='preloaderWrap'><Preloader /></div>}
+            selectedPlatform={this.props.selectedPlatform}
+            platformsList={this.props.platformsList}
+            tokens={this.props.tokens}
+            selectedToken={this.props.selectedToken}
+            assets={this.props.assets}
+          >
+            {this.renderPlatformsList}
+          </WithLoader>
         </div>
       </div>
     )
@@ -117,10 +140,11 @@ export class PlatformsList extends PureComponent {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
   return {
     platformsList: assetsManager.platformsList,
-    tokensMap: assetsManager.tokensMap,
+    tokens,
     assets: assetsManager.assets,
     selectedToken: assetsManager.selectedToken,
     selectedPlatform: assetsManager.selectedPlatform,
@@ -133,7 +157,7 @@ function mapDispatchToProps (dispatch) {
     handleSelectPlatform: (platformAddress) => {
       dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
     },
-    handleSelectToken: (symbol) => dispatch({ type: SELECT_TOKEN, payload: { symbol } }),
+    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
   }
 }
 

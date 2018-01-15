@@ -8,18 +8,11 @@ import { Translate } from 'react-redux-i18n'
 import globalStyles from 'styles'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileCollection from 'models/FileSelect/FileCollection'
-import FileModel from 'models/FileSelect/FileModel'
+import FileModel, { fileConfig } from 'models/FileSelect/FileModel'
 import ipfs from 'utils/IPFS'
 import FileItem from './FileItem'
 
 import './FileSelect.scss'
-
-export type fileConfig = {
-  accept: Array,
-  maxFileSize: number,
-  aspectRatio: number,
-  maxFiles: number
-}
 
 // defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb

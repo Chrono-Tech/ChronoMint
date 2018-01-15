@@ -105,6 +105,11 @@
   &:hover {
     background-color: $color-panel-bg-0;
   }
+
+  &.selected {
+    background-color: $color-panel-bg-0;
+    cursor: initial;
+  }
 }
 
 .cell {
@@ -112,21 +117,21 @@
 }
 
 .cellAuto {
-  flex: 1;
+  flex-grow: 1;
   overflow: hidden;
 }
 
-.rowSelected {
-  background-color: $color-panel-bg-0;
-}
-
-.symbol {
+.address {
   margin-bottom: 2px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-.ownersNum {
+.owners {
+  flex-grow: 0;
+}
+
+.ownersCount {
   font-size: 16px;
   vertical-align: baseline;
 }
@@ -148,6 +153,7 @@
 
 .controlItem {
   padding: 4px;
+  cursor: pointer;
 }
 
 .faces {
@@ -156,4 +162,36 @@
 
 .tight {
   margin-left: -10px;
+}
+
+.details {
+  display: flex;
+  align-items: flex-start;
+}
+
+.pendings {
+  flex-grow: 0;
+  margin-left: 20px;
+}
+
+.pendingsTitle {
+
+}
+
+.pendingsCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  background-color: $color-error;
+  color: $color-white;
+  padding: 5px 9px;
+  border-radius: 12px;
+
+  &.disabled {
+    background-color: transparent;
+    color: $color-grey;
+    padding: 0;
+  }
 }

@@ -1,3 +1,4 @@
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -17,7 +18,7 @@ function mapDispatchToProps (dispatch) {
 @connect(null, mapDispatchToProps)
 class EditManagersDialog extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.object.isRequired,
+    wallet: PropTypes.instanceOf(MultisigWalletModel),
     modalsClose: PropTypes.func,
     handleRemoveOwner: PropTypes.func,
     handleAddOwner: PropTypes.func,
@@ -34,11 +35,10 @@ class EditManagersDialog extends PureComponent {
   }
 
   render () {
-    const { wallet } = this.props
     return (
       <ModalDialog>
         <EditManagersBaseForm
-          managers={wallet.owners().valueSeq().toArray()}
+          managers={this.props.wallet.owners()}
           onRemove={this.handleRemove}
           onSubmitSuccess={this.handleAdd}
         />

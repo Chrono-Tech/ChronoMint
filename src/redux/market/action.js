@@ -1,5 +1,6 @@
 import MarketSocket from 'market/MarketSocket'
 import get from 'lodash/get'
+import axios from 'axios'
 
 export const DUCK_MARKET = 'market'
 
@@ -18,8 +19,8 @@ const watchMarket = (dispatch, getState) => async () => {
   if (tokens.length === 0 || !currencies.length === 0) {
     return
   }
-  const response = await fetch(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
-  const prices = response ? await response.json() : {}
+  const response = await axios.get(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tokens.join(',')}&tsyms=${currencies.join(',')}`)
+  const prices = response ? response.data : {}
   dispatch({ type: MARKET_UPDATE_PRICES, prices })
 }
 
@@ -43,7 +44,7 @@ export const watchInitMarket = () => (dispatch, getState) => {
           },
         })
       } else {
-        update.LASTMARKET = lastMarket[symbol]
+        update.LASTMARKET = lastMarket[ symbol ]
       }
 
       lastMarket = update.LASTMARKET || get(lastMarket, symbol)

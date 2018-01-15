@@ -1,17 +1,13 @@
 import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
-import FileCollection from '../models/FileSelect/FileCollection'
-import { fileConfig } from '../components/common/FileSelect/FileSelect'
-import FileModel from '../models/FileSelect/FileModel'
+import FileCollection from 'models/FileSelect/FileCollection'
+import FileModel, { fileConfig } from 'models/FileSelect/FileModel'
+import { imageValidator, FileReader } from 'platform/imageValidator'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.infura.io',
   port: 5001,
   protocol: 'https',
-}
-
-type webkitURL = {
-  createObjectURL: Function
 }
 
 class IPFS {
@@ -49,8 +45,6 @@ class IPFS {
   }
 
   /**
-   * @param hash
-   * @returns {Promise<any|null>}
    * @deprecated
    */
   async get (hash, timeout = 3000) {
@@ -75,49 +69,6 @@ class IPFS {
         resolve(null)
       }
     })
-  }
-
-  // TODO @dkchv: remvoe from ipfs to image validator
-  getImageDimensions (file) {
-    return new Promise((resolve) => {
-      const URL: webkitURL = window.URL || window.webkitURL
-      const img = new Image()
-      img.onload = () => {
-        resolve({
-          width: img.width,
-          height: img.height,
-        })
-      }
-      img.onerror = () => {
-        resolve({
-          width: 0,
-          height: 0,
-        })
-      }
-      img.src = URL.createObjectURL(file.file())
-    })
-  }
-
-  async checkImageFile (file: FileModel, config: fileConfig) {
-    const errors = []
-
-    // parse dimensions
-    const { width, height } = await this.getImageDimensions(file)
-    if (width === 0 || height === 0) {
-      errors.push('Wrong image dimensions')
-    } else {
-      // parse ratio
-      const ratio = width / height
-      if (ratio > config.aspectRatio || ratio < 1 / config.aspectRatio) {
-        errors.push({
-          value: 'Wrong image aspect ratio (Limit from 1:2 to 2:1)',
-          // TODO @dkchv: !!!
-          min: '1:2',
-          max: '2:1',
-        })
-      }
-    }
-    return errors
   }
 
   async parseFile (file: FileModel, config: fileConfig) {
@@ -146,7 +97,7 @@ class IPFS {
 
     // check image
     if (file.isImage()) {
-      const imageErrors = await this.checkImageFile(file, config)
+      const imageErrors = await imageValidator(file, config)
       errors = errors.concat(imageErrors)
     }
 
@@ -156,7 +107,7 @@ class IPFS {
   getRawData (file: FileModel) {
     return new Promise((resolve) => {
       // TODO @dkchv: add timeout
-      const reader = new window.FileReader()
+      const reader = new FileReader()
       reader.onload = () => resolve(reader.result)
       // TODO: use array buffers instead of base64 strings
       reader.readAsDataURL(file.file())

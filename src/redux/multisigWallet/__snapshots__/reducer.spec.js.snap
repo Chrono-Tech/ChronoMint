@@ -1,0 +1,344 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Multisig Wallet reducer should handle MULTISIG_FETCHED 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": true,
+  "isFetching": false,
+  "isPending": false,
+  "list": {
+    "a1": {
+      "address": "a1",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    },
+    "a2": {
+      "address": "a2",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    }
+  },
+  "selected": null,
+  "timestamp": null,
+  "transactionHash": null
+}
+`;
+
+exports[`Multisig Wallet reducer should handle MULTISIG_FETCHING 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": true,
+  "isPending": false,
+  "list": {},
+  "selected": null,
+  "timestamp": null,
+  "transactionHash": null
+}
+`;
+
+exports[`Multisig Wallet reducer should handle MULTISIG_REMOVE 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "list": {
+    "a1": {
+      "address": "a1",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    },
+    "a2": {
+      "address": "a2",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    }
+  },
+  "selected": null,
+  "timestamp": null,
+  "transactionHash": null
+}
+`;
+
+exports[`Multisig Wallet reducer should handle MULTISIG_SELECT 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "list": {
+    "a1": {
+      "address": "a1",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {},
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    }
+  },
+  "selected": "a1",
+  "timestamp": null,
+  "transactionHash": null
+}
+`;
+
+exports[`Multisig Wallet reducer should handle MULTISIG_UPDATE (update existing wallet) 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "list": {
+    "a1": {
+      "address": "a1",
+      "dao": null,
+      "id": null,
+      "is2FA": false,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isMultisig": true,
+      "isPending": false,
+      "name": "No name",
+      "owners": [],
+      "pendingTxList": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
+      "requiredSignatures": null,
+      "timestamp": null,
+      "tokens": {
+        "t1": {
+          "address": null,
+          "allowance": {},
+          "balance": "0",
+          "blockchain": null,
+          "dao": null,
+          "decimals": null,
+          "fee": null,
+          "feeAddress": null,
+          "feeRate": null,
+          "icon": null,
+          "id": null,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isOptional": true,
+          "isPending": false,
+          "isReissuable": false,
+          "managersList": null,
+          "name": null,
+          "platform": null,
+          "symbol": null,
+          "timestamp": null,
+          "totalSupply": "0",
+          "transactionHash": null,
+          "url": null,
+          "withFee": false
+        }
+      },
+      "transactionHash": null,
+      "transactions": {
+        "endOfList": false,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isPending": false,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    }
+  },
+  "selected": null,
+  "timestamp": null,
+  "transactionHash": null
+}
+`;

@@ -1,43 +1,70 @@
-import { FontIcon, FlatButton, Popover, IconButton, CircularProgress } from 'material-ui'
-import { IPFSImage, UpdateProfileDialog, TokenValue, CopyIcon, QRIcon } from 'components'
-import { Link } from 'react-router'
+import {
+  NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED,
+  SYNC_STATUS_SYNCING,
+} from '@chronobank/login/network/MonitorService'
+import { getNetworkById } from '@chronobank/login/network/settings'
+import { TOKEN_ICONS } from 'assets'
+import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
+import Moment from 'components/common/Moment'
+import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
+import menu from 'menu'
+import { FULL_DATE } from 'models/constants'
+import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import menu from 'menu'
-import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-import { getNetworkById } from 'Login/network/settings'
-import {
-  NETWORK_STATUS_UNKNOWN,
-  NETWORK_STATUS_OFFLINE,
-  NETWORK_STATUS_ONLINE,
-  SYNC_STATUS_SYNCING,
-  SYNC_STATUS_SYNCED,
-} from 'Login/network/MonitorService'
+import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router'
 import { drawerToggle } from 'redux/drawer/actions'
-import { logout } from 'redux/session/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { readNotices } from 'redux/notifier/actions'
-import Moment, { FULL_DATE } from 'components/common/Moment'
+import { logout } from 'redux/session/actions'
+import Value from 'components/common/Value/Value'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
 
-// TODO: @ipavlenko: MINT-234 - Remove when icon property will be implemented
-const ICON_OVERRIDES = {
-  ETH: require('assets/img/icn-ethereum.svg'),
-  TIME: require('assets/img/icn-time.svg'),
+function mapStateToProps (state) {
+  const session = state.get('session')
+  const wallet = state.get('mainWallet')
+  const notifier = state.get('notifier')
+  const watcher = state.get('watcher')
+  const monitor = state.get('monitor')
+  return {
+    i18n: state.get('i18n'), // force update I18n.t
+    wallet,
+    account: session.account,
+    profile: session.profile,
+    noticesList: notifier.list,
+    unreadNotices: notifier.unreadNotices,
+    transactionsList: watcher.pendingTxs,
+    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    isTokensLoaded: !wallet.isFetching(),
+    isCBE: session.isCBE,
+    tokens: wallet.tokens(),
+    networkStatus: monitor.network,
+    syncStatus: monitor.sync,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleLogout: () => dispatch(logout()),
+    handleDrawerToggle: () => dispatch(drawerToggle()),
+    handleProfileEdit: (data) => dispatch(modalsOpen({
+      component: UpdateProfileDialog,
+      data,
+    })),
+    readNotices: () => dispatch(readNotices()),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class HeaderPartial extends PureComponent {
+export default class HeaderPartial extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     network: PropTypes.string,
     account: PropTypes.string,
-    btcAddress: PropTypes.string,
-    nemAddress: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
     isTokensLoaded: PropTypes.bool,
@@ -276,7 +303,7 @@ class HeaderPartial extends PureComponent {
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
               <span styleName='infoLabel'>{item.label}:</span>&nbsp;
-              <span styleName='infoValue'>{item.value}</span>
+              <span styleName='infoValue'><Value value={item.value} /></span>
             </div>
           ))}
           <div styleName='infoRow'>
@@ -310,7 +337,7 @@ class HeaderPartial extends PureComponent {
           {details && details.map((item, index) => (
             <div key={index} styleName='infoRow'>
               <span styleName='infoLabel'>{item.label}:</span>&nbsp;
-              <span styleName='infoValue'>{item.value}</span>
+              <span styleName='infoValue'><Value value={item.value} /></span>
             </div>
           ))}
           <div styleName='infoRow'>
@@ -324,8 +351,15 @@ class HeaderPartial extends PureComponent {
   renderProfile () {
     const items = !this.props.isTokensLoaded
       ? []
-      : this.props.tokens.entrySeq().toArray().map(([name, token]) => ({ token, name }))
+      : this.props.tokens.entrySeq().toArray().map(([ name, token ]) => ({ token, name }))
 
+    const addressesInWallet = this.props.wallet.addresses()
+    const addresses = [
+      { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
+      { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
+      { title: 'LTC', address: addressesInWallet.item('Litecoin').address() },
+      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
+    ]
     return (
       <div styleName='profile'>
         <div styleName='profile-body'>
@@ -334,12 +368,14 @@ class HeaderPartial extends PureComponent {
               <IPFSImage
                 styleName='avatarIconContent'
                 multihash={this.props.profile.icon()}
-                icon={<FontIcon
-                  style={{ fontSize: 96, cursor: 'default' }}
-                  color='white'
-                  className='material-icons'
-                >account_circle
-                </FontIcon>}
+                icon={
+                  <FontIcon
+                    style={{ fontSize: 96, cursor: 'default' }}
+                    color='white'
+                    className='material-icons'
+                  >account_circle
+                  </FontIcon>
+                }
               />
             </div>
           </div>
@@ -355,39 +391,21 @@ class HeaderPartial extends PureComponent {
                 onModalOpen={this.handleClickOutside}
               />
             </div>
-            {this.props.btcAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>BTC: </b>{this.props.btcAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.btcAddress} />
-                    <CopyIcon
-                      value={this.props.btcAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
+            {addresses.filter((a) => a.address).map((a) => (
+              <div key={a.title}>
+                <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
+                <div styleName='info-micros'>
+                  <QRIcon value={a.address} />
+                  <CopyIcon
+                    value={a.address}
+                    onModalOpen={this.handleClickOutside}
+                  />
                 </div>
-              )
-              : null
-            }
-            {this.props.nemAddress
-              ? (
-                <div>
-                  <div styleName='infoAddress'><b>NEM: </b>{this.props.nemAddress}</div>
-                  <div styleName='info-micros'>
-                    <QRIcon value={this.props.nemAddress} />
-                    <CopyIcon
-                      value={this.props.nemAddress}
-                      onModalOpen={this.handleClickOutside}
-                    />
-                  </div>
-                </div>
-              )
-              : null
-            }
+              </div>
+            ))}
             <div styleName='info-balances'>
               {items
-                .filter((item) => (['TIME', 'ETH', 'BTC', 'BCC'].indexOf(item.token.symbol().toUpperCase()) >= 0))
+                .filter((item) => ([ 'TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN' ].indexOf(item.token.symbol().toUpperCase()) >= 0))
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
@@ -417,7 +435,7 @@ class HeaderPartial extends PureComponent {
       <div styleName='balance' key={token.id()}>
         <div styleName='balance-icon'>
           <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={ICON_OVERRIDES[symbol]} />
+            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
           </div>
         </div>
         <div styleName='balance-info'>
@@ -467,40 +485,3 @@ class HeaderPartial extends PureComponent {
   }
 }
 
-function mapStateToProps (state) {
-  const session = state.get('session')
-  const wallet = state.get('mainWallet')
-  const notifier = state.get('notifier')
-  const watcher = state.get('watcher')
-  const monitor = state.get('monitor')
-  return {
-    i18n: state.get('i18n'), // force update I18n.t
-    btcAddress: wallet.btcAddress(),
-    nemAddress: wallet.nemAddress(),
-    account: session.account,
-    profile: session.profile,
-    noticesList: notifier.list,
-    unreadNotices: notifier.unreadNotices,
-    transactionsList: watcher.pendingTxs,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
-    isTokensLoaded: !wallet.isFetching(),
-    isCBE: session.isCBE,
-    tokens: wallet.tokens(),
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleLogout: () => dispatch(logout()),
-    handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
-      data,
-    })),
-    readNotices: () => dispatch(readNotices()),
-  }
-}
-
-export default HeaderPartial

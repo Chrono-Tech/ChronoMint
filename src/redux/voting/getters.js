@@ -1,8 +1,8 @@
 export const getStatistics = (state) => {
-  const polls = state.list.valueSeq().toArray()
+  const polls = state.list().valueSeq().toArray()
   const time = new Date().getTime()
 
-  return state.isFetched
+  return state.isFetched()
     ? {
       all: polls.length,
       completed: polls.filter((p) => !p.poll().status()).length,
@@ -10,5 +10,5 @@ export const getStatistics = (state) => {
       inactive: polls.filter((p) => !p.poll().active()).length,
       outdated: polls.filter((p) => p.poll().deadline().getTime() < time).length,
     }
-    : null
+    : {}
 }

@@ -1,6 +1,4 @@
-import validator from 'components/forms/validator'
-import type Immutable from 'immutable'
-import type TokenModel from 'models/TokenModel'
+import validator from 'models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
@@ -14,18 +12,22 @@ import PendingManagerDAO from './PendingManagerDAO'
 import PlatformsManagerDAO from './PlatformsManagerDAO'
 import PlatformTokenExtensionGatewayManagerEmitterDAO from './PlatformTokenExtensionGatewayManagerEmitterDAO'
 import RewardsDAO from './RewardsDAO'
-import TIMEHolderDAO from './TIMEHolderDAO'
+import AssetHolderDAO from './AssetHolderDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import UserManagerDAO from './UserManagerDAO'
 import VotingActorDAO from './VotingActorDAO'
 import VotingDAO from './VotingDAO'
 import VotingDetailsDAO from './VotingDetailsDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
+import { ExchangeDAO } from './ExchangeDAO'
+import ExchangeManagerDAO from './ExchangeManagerDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_WALLETS_MANAGER = 'WalletsManager'
+const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
+const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING = 'PollManager'
 const DAO_VOTING_DETAILS = 'PollDetails'
@@ -38,7 +40,8 @@ const DAO_TOKEN_MANAGEMENT_EXTENSION = 'TokenManagementExtension'
 const DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER = 'PlatformTokenExtensionGatewayManagerEmitterDAO'
 const DAO_CHRONOBANK_ASSET_PROXY = 'ChronoBankAssetProxyDAO'
 const DAO_FEE_INTERFACE = 'FeeInterfaceDAO'
-const DAO_TIME_HOLDER = 'TimeHolder'
+// TODO @dkchv: update after SC refactor
+const DAO_ASSET_HOLDER = 'TimeHolder'
 
 const DAO_ERC20 = 'erc20'
 
@@ -47,6 +50,8 @@ const daoMap = {
   [DAO_PENDING_MANAGER]: PendingManagerDAO,
   [DAO_USER_MANAGER]: UserManagerDAO,
   [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
+  [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
+  [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
   [DAO_VOTING]: VotingDAO,
   [DAO_VOTING_DETAILS]: VotingDetailsDAO,
@@ -59,7 +64,7 @@ const daoMap = {
   [DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER]: PlatformTokenExtensionGatewayManagerEmitterDAO,
   [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
   [DAO_FEE_INTERFACE]: FeeInterfaceDAO,
-  [DAO_TIME_HOLDER]: TIMEHolderDAO,
+  [DAO_ASSET_HOLDER]: AssetHolderDAO,
   [DAO_ERC20]: ERC20DAO,
 }
 
@@ -138,40 +143,20 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER)
   }
 
-  async getERC20DAO (account, isNew = false, isInitialized = false): Promise<ERC20DAO> {
-    const dao: ERC20DAO = await this._getDAO(DAO_ERC20, account, isNew)
-    if (!dao.isInitialized() && !isInitialized) {
-      if (!isNew) {
-        const managerDAO = await this.getERC20ManagerDAO()
-        await managerDAO.initTokenMetaData(dao)
-      } else {
-        await Promise.all([
-          dao.totalSupply(),
-          dao.initMetaData(),
-        ])
-      }
-    }
-    return dao
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  async getERC20DAOBySymbol (symbol: string): Promise<ERC20DAO> {
-    const managerDAO = await this.getERC20ManagerDAO()
-    const address = await managerDAO.getTokenAddressBySymbol(symbol)
-    return this.getERC20DAO(address)
-  }
-
   getRewardsDAO (): Promise<RewardsDAO> {
     return this._getDAO(DAO_REWARDS)
   }
 
-  getTIMEHolderDAO (): Promise<TIMEHolderDAO> {
-    return this._getDAO(DAO_TIME_HOLDER)
+  getAssetHolderDAO (): Promise<AssetHolderDAO> {
+    return this._getDAO(DAO_ASSET_HOLDER)
   }
 
+  /**
+   * @deprecated
+   */
   async getTIMEDAO (): Promise<ERC20DAO> {
-    const timeHolderDAO: TIMEHolderDAO = await this.getTIMEHolderDAO()
-    return timeHolderDAO.getAssetDAO()
+    const assetHolderDAO: AssetHolderDAO = await this.getAssetHolderDAO()
+    return assetHolderDAO.getAssetDAO()
   }
 
   getPendingManagerDAO (): Promise<PendingManagerDAO> {
@@ -182,19 +167,24 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_USER_MANAGER)
   }
 
-  getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
-    return this._getDAO(DAO_WALLETS_MANAGER)
+  async getWalletsManagerDAO (): Promise<WalletsManagerDAO> {
+    const walletManager = await this._getDAO(DAO_WALLETS_MANAGER)
+    if (!walletManager.isInited()) {
+      await walletManager.init()
+    }
+    return walletManager
   }
 
-  async getLOCManagerDAO (): Promise<LOCManagerDAO> {
-    const locManager = await this._getDAO(DAO_LOC_MANAGER)
-    if (!locManager.isInitialized()) {
-      const ercManager = await this.getERC20ManagerDAO()
-      const tokens: Immutable.Map<TokenModel> = await ercManager.getLOCTokens()
-      locManager.setTokens(tokens)
-      locManager.isInitialized(true)
-    }
-    return locManager
+  getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
+    return this._getDAO(DAO_EXCHANGE_MANAGER)
+  }
+
+  getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {
+    return this._getDAO(DAO_EXCHANGE, tokenAddress)
+  }
+
+  getLOCManagerDAO (): Promise<LOCManagerDAO> {
+    return this._getDAO(DAO_LOC_MANAGER)
   }
 
   getVotingDAO (): Promise<VotingDAO> {

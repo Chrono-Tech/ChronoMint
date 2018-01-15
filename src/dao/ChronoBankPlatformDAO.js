@@ -1,5 +1,5 @@
-import AbstractContractDAO from './AbstractContractDAO'
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
+import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_REVOKE_ASSET = 'revokeAsset'
@@ -17,22 +17,27 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   async reissueAsset (token, value) {
-    const amount = token.dao().addDecimals(value)
-    const tx = await this._tx(
-      TX_REISSUE_ASSET,
-      [
-        token.symbol(),
-        amount,
-      ],
-      {
-        symbol: token.symbol(),
-        amount: value,
-      })
-    return tx.tx
+    try {
+      const amount = token.addDecimals(value, token)
+      const tx = await this._tx(
+        TX_REISSUE_ASSET,
+        [
+          token.symbol(),
+          amount,
+        ],
+        {
+          symbol: token.symbol(),
+          amount: value,
+        })
+      return tx.tx
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log(e.message)
+    }
   }
 
   async revokeAsset (token, value) {
-    const amount = token.dao().addDecimals(value)
+    const amount = token.addDecimals(value, token)
     const tx = await this._tx(
       TX_REVOKE_ASSET,
       [
@@ -47,16 +52,16 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   isReissuable (symbol) {
-    return this._call(TX_IS_REISSUABLE, [symbol])
+    return this._call(TX_IS_REISSUABLE, [ symbol ])
   }
 
   async addAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_ADD_ASSET_PART_OWNER, [symbol, address])
+    const tx = await this._tx(TX_ADD_ASSET_PART_OWNER, [ symbol, address ])
     return tx.tx
   }
 
   async removeAssetPartOwner (symbol, address) {
-    const tx = await this._tx(TX_REMOVE_ASSET_PART_OWNER, [symbol, address])
+    const tx = await this._tx(TX_REMOVE_ASSET_PART_OWNER, [ symbol, address ])
     return tx.tx
   }
 

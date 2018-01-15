@@ -6,7 +6,8 @@ import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import Moment, { SHORT_DATE } from 'components/common/Moment'
+import Moment from 'components/common/Moment'
+import { SHORT_DATE } from 'models/constants'
 import ModalDialog from './ModalDialog'
 import './PollDetailsDialog.scss'
 
@@ -57,7 +58,7 @@ export default class VoteDialog extends PureComponent {
 
     return (
       <ModalDialog styleName='root'>
-        <form styleName='content' onSubmit={() => this.props.handleSubmit()}>
+        <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <div styleName='column column1'>
               <div styleName='inner'>

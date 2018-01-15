@@ -1,8 +1,7 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n } from 'platform/i18n'
+import { Icons } from 'platform/icons'
 import moment from 'moment'
 import uniqid from 'uniqid'
-import Moment, { FULL_DATE } from 'components/common/Moment'
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols
@@ -18,6 +17,10 @@ export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel 
 
   title () {
     return I18n.t('notices.arbitrary.title')
+  }
+
+  icon () {
+    return Icons.get('notices.arbitrary.icon')
   }
 
   address () {
@@ -40,10 +43,6 @@ export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel 
     return null
   }
 
-  icon () {
-    return (<i className='material-icons'>error_outline</i>)
-  }
-
   time () {
     return this.get('timestamp')
   }
@@ -51,28 +50,6 @@ export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel 
   date () {
     const time = this.time() / 1000
     return time && moment.unix(time) || null
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  historyBlock () {
-    return (
-      <span>
-        {this.message()}
-        <small style={{ display: 'block', marginTop: '-25px' }}><Moment date={this.date()} format={FULL_DATE} /></small>
-      </span>
-    )
-  }
-
-  // TODO @ipavlenko: Refactor admin pages and remove
-  fullHistoryBlock () {
-    return (
-      <div>
-        {this.message()}
-        <p style={{ marginBottom: '0' }}>
-          <small><Moment date={this.date()} format={FULL_DATE} /></small>
-        </p>
-      </div>
-    )
   }
 }
 

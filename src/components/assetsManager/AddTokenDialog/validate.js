@@ -1,5 +1,9 @@
-import ErrorList from 'components/forms/ErrorList'
-import * as validator from 'components/forms/validator'
+import ErrorList from 'platform/ErrorList'
+import * as validator from 'models/validator'
+
+const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)
+
+export const normalizeSmallestUnit = (value) => validateSmallestUnit(value) ? 0 : value
 
 export default function validate (values) {
   const result = {}
@@ -22,7 +26,7 @@ export default function validate (values) {
   }
 
   let smallestUnitErrors = new ErrorList()
-  smallestUnitErrors.add(validator.between(values.get('smallestUnit'), 0, 20, true))
+  smallestUnitErrors.add(validateSmallestUnit(values.get('smallestUnit')))
   if (smallestUnitErrors.getErrors()) {
     result.smallestUnit = smallestUnitErrors.getErrors()
   }

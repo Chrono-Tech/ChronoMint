@@ -85,13 +85,27 @@ $cell-padding: 24px 0px;
         }
       }
 
-      .col-time { width: 8% }
-      .col-block { width: 12% }
-      .col-type { width: 8% }
-      .col-txid { width: 18% }
-      .col-from { width: 18% }
-      .col-to { width: 18% }
-      .col-value { width: 18% }
+      .col-time {
+        width: 8%
+      }
+      .col-block {
+        width: 12%
+      }
+      .col-type {
+        width: 8%
+      }
+      .col-txid {
+        width: 18%
+      }
+      .col-from {
+        width: 18%
+      }
+      .col-to {
+        width: 18%
+      }
+      .col-value {
+        width: 18%
+      }
 
       .value {
         :global(.TokenValue__root) {
@@ -183,7 +197,11 @@ $cell-padding: 24px 0px;
       }
     }
 
-    .section {
+    .no-transactions-section {
+      margin: 0 -8px;
+    }
+
+    .section, .no-transactions-section {
 
       .section-header {
 

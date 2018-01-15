@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import RaisedButton from 'material-ui/RaisedButton'
-// TODO @dkchv: not finished due to old design mockup
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -51,10 +50,7 @@ class PageTitle extends PureComponent {
   }
 
   async handleShowLOCModal () {
-    const locManager = await contractManagerDAO.getLOCManagerDAO()
-    const newLOC = new LOCModel({
-      token: locManager.getDefaultToken(),
-    })
+    const newLOC = new LOCModel()
     this.props.showCreateLOCModal(newLOC)
   }
 

@@ -5,23 +5,27 @@ import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import * as notifier from 'redux/notifier/actions'
-import { FORM_CBE_ADDRESS } from 'components/dialogs//CBEAddressDialog'
-import validator from 'components/forms/validator'
+import * as validator from 'models/validator'
 import * as a from './actions'
 
-const user = new ProfileModel({ name: Math.random().toString() })
-const cbe = new CBEModel({ address: accounts[9], name: user.name(), user })
+const user = new ProfileModel({ name: 'testUser' })
+const cbe = new CBEModel({ address: accounts[ 2 ], name: user.name(), user })
 
 describe('settings cbe actions', () => {
+  afterEach(async (done) => {
+    await setTimeout(() => {
+      done()
+    }, 3000)
+  })
   it('should list CBE', async () => {
     await store.dispatch(a.listCBE())
 
-    const list = store.getActions()[0].list
+    const list = store.getActions()[ 0 ].list
     expect(list instanceof Immutable.Map).toBeTruthy()
 
-    const address = list.keySeq().toArray()[0]
+    const address = list.keySeq().toArray()[ 0 ]
     expect(validator.address(address)).toEqual(null)
-    expect(list.get(address).address()).toEqual(accounts[0])
+    expect(list.get(address).address()).toEqual(accounts[ 0 ])
   })
 
   it('should add CBE', async (resolve) => {
@@ -32,13 +36,13 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeFalsy()
-      expect(notice.cbe()).toEqual(cbe)
+      expect(notice.cbe()).toMatchSnapshot()
       resolve()
     })
     await store.dispatch(a.addCBE(cbe))
   })
 
-  it('should show load name to CBE form', () => store.dispatch(a.formCBELoadName(cbe.address())).then(() => {
+  it('should show load name to CBE form', () => store.dispatch(a.formCBELoadName(cbe.address(), 'TEST_FORM')).then(() => {
     expect(store.getActions()).toEqual([
       {
         isLoading: true,
@@ -51,13 +55,13 @@ describe('settings cbe actions', () => {
       {
         meta: {
           field: 'name',
-          form: FORM_CBE_ADDRESS,
+          form: 'TEST_FORM',
           persistentSubmitErrors: undefined,
           touch: undefined,
         },
         payload: cbe.name(),
         type: '@@redux-form/CHANGE',
-      }])
+      } ])
   }))
 
   it('should revoke CBE', async (resolve) => {
@@ -68,7 +72,7 @@ describe('settings cbe actions', () => {
       ])
 
       expect(notice.isRevoked()).toBeTruthy()
-      expect(notice.cbe()).toEqual(cbe)
+      expect(notice.cbe()).toMatchSnapshot()
       resolve()
     })
     await store.dispatch(a.revokeCBE(cbe))

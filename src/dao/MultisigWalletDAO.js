@@ -1,56 +1,47 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import TokenModel from 'models/TokenModel'
-import MultisigTransactionModel from 'models/Wallet/MultisigTransactionModel'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import MultisigWalletPendingTxCollection from 'models/Wallet/MultisigWalletPendingTxCollection'
-import MultisigWalletPendingTxModel from 'models/Wallet/MultisigWalletPendingTxModel'
+import AbstractMultisigContractDAO from 'dao/AbstractMultisigContractDAO'
+import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
+import TxExecModel from 'models/TxExecModel'
+import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
+import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
-import contractManagerDAO from './ContractsManagerDAO'
 
-export default class MultisigWalletDAO extends AbstractContractDAO {
+export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   constructor (at) {
     super(WalletABI, at, MultiEventsHistoryABI)
     this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
-  watchOwnerRemoved (wallet, callback) {
-    return this._watch('MultisigWalletOwnerRemoved', callback, { self: wallet.address() })
-  }
-
   watchConfirmationNeeded (wallet, callback) {
-    return this._watch('MultisigWalletConfirmationNeeded', (result) => {
-      const { operation, value, to, symbol } = result.args
-      const symbolString = this._c.bytesToString(symbol)
-      if (!symbolString) {
-        // eslint-disable-next-line
-        console.error('symbol not found', symbolString)
-        return
-      }
-      const tokenDAO = wallet.tokens().get(symbolString).dao()
+    return this._watch('MultisigWalletConfirmationNeeded', async (result) => {
+      const { operation, initiator, value, to, data } = result.args
+
       callback(new MultisigWalletPendingTxModel({
         id: operation,
-        value: tokenDAO.removeDecimals(value),
+        value,
         to,
-        symbol: symbolString,
-        isConfirmed: true,
+        isConfirmed: initiator === this.getAccount(),
+        decodedTx: await this.decodeData(data),
       }))
     }, { self: wallet.address() })
   }
 
   watchMultiTransact (wallet, callback) {
-    return this._watch('MultisigWalletMultiTransact', (result) => {
-      const { operation, owner, self, symbol, value } = result.args
-      const symbolString = this._c.bytesToString(symbol)
-      const token = wallet.tokens().get(symbolString)
+    return this._watch('MultisigWalletMultiTransact', async (result) => {
+      const { owner, operation, value, to, data } = result.args
+
       callback(new MultisigTransactionModel({
         id: operation,
         owner,
-        wallet: self,
-        symbol: symbolString,
-        value: token.dao().removeDecimals(value),
+        wallet: wallet.address(),
+        value,
+        to,
+        data: await this.decodeData(data),
       }))
     }, { self: wallet.address() })
   }
@@ -61,7 +52,7 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
 
   watchDeposit (wallet, callback) {
     return this._watch('MultisigWalletDeposit', (result) => {
-      callback(wallet.tokens().get('ETH').dao().removeDecimals(result.args.value))
+      callback(result.args.value)
     }, { self: wallet.address() })
   }
 
@@ -81,24 +72,43 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
     }, { self: wallet.address() })
   }
 
-  async getPendings (tokens) {
-    let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [to, value, symbol, id, isConfirmed] = await this._call('getPendings')
+  watchOwnerAdded (wallet, callback) {
+    return this._watch('MultisigWalletOwnerAdded', (result) => {
+      callback(result.args.newOwner)
+    }, { self: wallet.address() })
+  }
 
-    to.forEach((item, i) => {
-      const symbolString = this._c.bytesToString(symbol[i])
-      if (!symbolString) {
-        // TODO @dkchv: something wrong in contract
-        return
-      }
-      const tokenDAO = tokens.get(symbolString).dao()
-      pendingTxCollection = pendingTxCollection.add(new MultisigWalletPendingTxModel({
-        to: item,
-        value: tokenDAO.removeDecimals(value[i]),
-        symbol: symbolString,
-        id: id[i],
-        isConfirmed: isConfirmed[i],
-      }))
+  watchOwnerRemoved (wallet, callback) {
+    return this._watch('MultisigWalletOwnerRemoved', (result) => {
+      // TODO @dkchv: if its me - remove wallet!
+      callback(result.args.oldOwner)
+    }, { self: wallet.address() })
+  }
+
+  watchError (wallet, callback) {
+    return this._watch('Error', (result) => {
+      console.log('--MultisigWalletDAO#', result)
+      callback(this._c.hexToDecimal(result.args.errorCode))
+      // callback(result.args.errorCode)
+    }, { self: wallet.address() })
+  }
+
+  isValidId (id) {
+    return id !== '0x0000000000000000000000000000000000000000000000000000000000000000'
+  }
+
+  async getPendings () {
+    let pendingTxCollection = new MultisigWalletPendingTxCollection()
+    const [ values, operations, isConfirmed ] = await this._call('getPendings')
+
+    operations.filter(this.isValidId).forEach((id, i) => {
+      let pendingTxModel
+      pendingTxModel = new MultisigWalletPendingTxModel({
+        id,
+        value: values [ i ],
+        isConfirmed: isConfirmed[ i ],
+      })
+      pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
     return pendingTxCollection
   }
@@ -107,7 +117,7 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
     const counter = await this._callNum('m_numOwners')
     let promises = []
     for (let i = 0; i < counter; i++) {
-      promises.push(this._call('getOwner', [i]))
+      promises.push(this._call('getOwner', [ i ]))
     }
     return Promise.all(promises)
   }
@@ -116,14 +126,8 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
     return this._callNum('m_required')
   }
 
-  async getTokens () {
-    const addresses = await this._call('getTokenAddresses')
-    const erc20managerDAO = await contractManagerDAO.getERC20ManagerDAO()
-    return erc20managerDAO.getTokensByAddresses(addresses, true, this.getInitAddress())
-  }
-
   async removeWallet (wallet, account: string) {
-    const result = await this._tx('removeWallet', [
+    const result = await this._tx('kill', [
       account,
     ], {
       address: wallet.address(),
@@ -153,10 +157,11 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
   }
 
   async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to) {
-    const value = token.dao().addDecimals(new BigNumber(amount))
+    // const tokenDAO = tokenService.getDAO(token.id())
+    // const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
       to,
-      value,
+      new BigNumber(amount),
       token.symbol(),
     ], {
       from: wallet.address(),
@@ -179,5 +184,37 @@ export default class MultisigWalletDAO extends AbstractContractDAO {
       tx.id(),
     ], tx.txRevokeSummary())
     return result.tx
+  }
+
+  async getPendingData (id: string): Promise<TxExecModel> {
+    const data = await this._call('getData', [ id ])
+    return this.decodeData(data)
+  }
+
+  async _decodeArgs (func: string, args: Object) {
+    switch (func) {
+      case 'transfer':
+        const symbol = this._c.bytesToString(args._symbol)
+        return {
+          symbol,
+          value: new Amount(args._value, symbol),
+          to: args._to,
+        }
+      case 'addOwner':
+        return {
+          owner: args._owner,
+        }
+      case 'removeOwner':
+        return {
+          owner: args._owner,
+        }
+      case 'kill':
+        return {
+          to: args._to,
+        }
+      default:
+        console.warn('warn: decoder not implemented for function: ', func)
+        return args
+    }
   }
 }

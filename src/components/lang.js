@@ -3,6 +3,7 @@ import * as Dashboard from 'components/dashboard/lang'
 import * as Timer from 'components/common/Timer/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import * as WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
+import * as exchange from 'components/exchange/lang'
 
 export default {
   en: {
@@ -11,6 +12,10 @@ export default {
     Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
+    // TODO @Abdulov refactor this
+    components: {
+      exchange: exchange.en,
+    },
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,
@@ -18,5 +23,9 @@ export default {
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru,
+    // TODO @Abdulov refactor this
+    components: {
+      exchange: exchange.ru,
+    },
   },
 }

@@ -16,6 +16,7 @@ if (isInDebugMode) {
 }
 
 let srcPath = path.resolve(__dirname, relativePath, 'src')
+let packagesPath = path.resolve(__dirname, relativePath, 'packages')
 let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
@@ -57,7 +58,10 @@ const buildConfig = (factory) => {
       rules: [
         {
           test: /(\.js|\.jsx)$/,
-          include: srcPath,
+          include: [
+            srcPath,
+            packagesPath,
+          ],
           loader: 'babel-loader',
           query: babel,
         },

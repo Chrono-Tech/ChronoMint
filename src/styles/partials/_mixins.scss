@@ -128,6 +128,12 @@ $media-sizes: (
   }
 }
 
+@mixin lg-plus {
+  @media only screen and (min-width: $media-size-lg) {
+    @content;
+  }
+}
+
 @mixin ellipsis {
   white-space: nowrap;
   overflow: hidden;

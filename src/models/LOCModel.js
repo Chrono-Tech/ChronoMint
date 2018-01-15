@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
-import { I18n } from 'react-redux-i18n'
 import moment from 'moment'
+import { I18n } from 'platform/i18n'
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import { dateFormatOptions } from '../config'
+import { dateFormatOptions } from './constants'
 
 export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 
@@ -47,7 +47,7 @@ class LOCModel extends abstractFetchingModel({
   status: 0,
   securityPercentage: 0,
   isNew: true,
-  token: null,
+  symbol: null,
 }) {
   name (value) {
     return this._getSet('name', value)
@@ -102,12 +102,12 @@ class LOCModel extends abstractFetchingModel({
     return statusesMeta[this.status()].styleName
   }
 
-  currency () {
-    return this.get('token').symbol()
+  symbol (value) {
+    return this._getSet('symbol', value)
   }
 
-  token (value) {
-    return this._getSet('token', value)
+  currency () {
+    return this.symbol()
   }
 
   publishedHash () {

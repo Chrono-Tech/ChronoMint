@@ -1,9 +1,11 @@
-import ethABI from 'ethereumjs-abi'
+import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type PendingManagerDAO from 'dao/PendingManagerDAO'
+import ethABI from 'ethereumjs-abi'
 import type AbstractModel from 'models/AbstractModel'
+import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES, TxError } from './AbstractContractDAO'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
@@ -83,7 +85,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
             continue
           }
           if (/^[u]?int/i.test(t)) {
-            inputs[key] = v.toNumber()
+            inputs[key] = new BigNumber(v)
             continue
           }
           switch (t) {
@@ -123,4 +125,3 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     return tx.set('args', args)
   }
 }
-

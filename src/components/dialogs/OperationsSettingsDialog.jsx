@@ -7,9 +7,9 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import { setRequiredSignatures } from 'redux/operations/actions'
-import ErrorList from 'components/forms/ErrorList'
+import ErrorList from 'platform/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 
 import './FormDialog.scss'
 
@@ -37,7 +37,8 @@ export default class OperationsSettingsDialog extends PureComponent {
     handleAddressChange: PropTypes.func,
     name: PropTypes.string,
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (
