@@ -9,6 +9,7 @@ import {
   BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/BitcoinProvider'
 import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
+import { BitcoinTx } from '@chronobank/login/network/BitcoinAbstractNode'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import Amount from 'models/Amount'
@@ -83,40 +84,32 @@ export class BitcoinDAO extends EventEmitter {
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Array<TxModel> {
     try {
-      let result = []
       const txs = await this._bitcoinProvider.getTransactionsList(account)
-      for (let tx of txs) {
-        const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-        let to = []
-        tx.vout.map((output) => {
-          const addr = output.scriptPubKey.addresses.filter((a) => a !== account).join(',')
-          if (addr) {
-            to.push(addr)
-          }
+      return (txs || []).map((tx: BitcoinTx) => {
+        // eslint-disable-next-line
+        console.log('', {
+          txHash: tx.txHash,
+          blockHash: tx.blockHash,
+          blockNumber: tx.blockNumber,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          value: new Amount(tx.value.mul(DECIMALS), this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
         })
-
-        let value = new BigNumber(0)
-        for (const output of tx.vout) {
-          if (output.scriptPubKey.addresses.indexOf(account) < 0) {
-            value = value.add(new BigNumber(output.value))
-          }
-        }
-
-        if (to.length > 0) {
-          result.push(new TxModel({
-            txHash: tx.txid,
-            blockHash: tx.blockhash,
-            blockNumber: tx.blockheight,
-            time: tx.time,
-            from,
-            to,
-            value: new Amount(value.mul(DECIMALS), this._symbol),
-            fee: new Amount(new BigNumber(tx.fees).mul(DECIMALS), this._symbol),
-            credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
-          }))
-        }
-      }
-      return result
+        return new TxModel({
+          txHash: tx.txHash,
+          blockHash: tx.blockHash,
+          blockNumber: tx.blockNumber,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          value: new Amount(tx.value.mul(DECIMALS), this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
+        })
+      })
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)

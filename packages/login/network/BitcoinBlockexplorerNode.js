@@ -13,10 +13,10 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
     }
   }
 
-  async getTransactionsList (address) {
+  async getTransactionsList (address): Array<BitcoinTx> {
     try {
       const response = await this._api.get(`addrs/${address}/txs`)
-      return response.data.items
+      return (response.data.items || []).map((tx) => this._createTxModel(tx, address))
     } catch (e) {
       this.trace(`getTransactionsList ${address} failed`, e)
       throw e
@@ -100,6 +100,8 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
     return new BitcoinTx({
       txHash: tx.txid,
+      blockHash: tx.blockhash,
+      blockNumber: tx.blockheight,
       time: tx.time,
       from,
       to,
