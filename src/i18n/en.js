@@ -690,6 +690,8 @@ export default {
         withdraw: 'Withdraw',
       },
       SendTokens: {
+        fast: 'Fast',
+        slow: 'Slow',
         balance: 'Balance',
         recipientAddress: 'Recipient address',
         amount: 'Amount',

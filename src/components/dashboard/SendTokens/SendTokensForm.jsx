@@ -41,7 +41,7 @@ export const ACTION_APPROVE = 'action/approve'
 
 const FEE_RATE_MULTIPLIER = {
   min: 0.1,
-  max: 5,
+  max: 1.9,
   step: 0.1,
 }
 
@@ -264,6 +264,11 @@ export default class SendTokensForm extends PureComponent {
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
               />
+              <div styleName='tagsWrap'>
+                <div><Translate value={prefix('fast')} /></div>
+                <div styleName='tagDefault' />
+                <div><Translate value={prefix('slow')} /></div>
+              </div>
             </div>
           </div>
         )}

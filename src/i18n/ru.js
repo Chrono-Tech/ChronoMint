@@ -679,6 +679,8 @@ export default {
         withdraw: 'Вывести',
       },
       SendTokens: {
+        fast: 'Быстро',
+        slow: 'Медленно',
         balance: 'Баланс',
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
