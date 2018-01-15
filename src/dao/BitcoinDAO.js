@@ -8,6 +8,7 @@ import {
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/BitcoinProvider'
+import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import Amount from 'models/Amount'
@@ -15,7 +16,6 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
-import { DECIMALS } from '../../packages/login/network/BitcoinEngine'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -81,7 +81,7 @@ export class BitcoinDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async getTransfer (id, account): Promise<Array<TxModel>> {
+  async getTransfer (id, account): Array<TxModel> {
     try {
       let result = []
       const txs = await this._bitcoinProvider.getTransactionsList(account)
