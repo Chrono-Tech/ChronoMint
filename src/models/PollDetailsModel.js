@@ -59,10 +59,11 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const endDate = poll.deadline()
     const published = poll.published()
     const voteLimitInTIME = poll.voteLimitInTIME()
+    const maxOptionTime = this.votes().max((a, b) => a > b)
     const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
-    const percents = received.mul(100).div(voteLimitInTIME).round(0)
+    const percents = maxOptionTime.mul(100).div(voteLimitInTIME).round(0)
 
     return {
       endDate,
@@ -80,7 +81,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
       totalSupply: this.totalSupply(),
       votedCount,
       shareholdersCount,
-      percents,
+      percents: percents.gt(100) ? new BigNumber(100) : percents,
+      maxOptionTime: maxOptionTime || new BigNumber(0),
     }
   }
 }

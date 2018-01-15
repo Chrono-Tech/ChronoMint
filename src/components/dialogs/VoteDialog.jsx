@@ -121,7 +121,7 @@ export default class VoteDialog extends PureComponent {
                           fillFrom: '#311b92',
                           fillTo: '#d500f9',
                         },
-                        { value: details.voteLimit.minus(details.received).toNumber(), fill: 'transparent' },
+                        { value: details.voteLimit.minus(details.maxOptionTime).toNumber(), fill: 'transparent' },
                       ]}
                     />
                   </div>

@@ -829,7 +829,7 @@ export default {
       VoteDialog: {
         chooseOption: 'Choose option',
         ongoing: 'Ongoing',
-        timeHoldersAlreadyVoted: 'TIME Holders already voted',
+        timeHoldersAlreadyVoted: 'percent of TIME received',
         published: 'Published',
         endDate: 'End date',
         requiredVotes: 'Required votes',
