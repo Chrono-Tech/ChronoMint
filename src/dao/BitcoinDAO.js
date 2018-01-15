@@ -86,18 +86,6 @@ export class BitcoinDAO extends EventEmitter {
     try {
       const txs = await this._bitcoinProvider.getTransactionsList(account)
       return (txs || []).map((tx: BitcoinTx) => {
-        // eslint-disable-next-line
-        console.log('', {
-          txHash: tx.txHash,
-          blockHash: tx.blockHash,
-          blockNumber: tx.blockNumber,
-          time: tx.time,
-          from: tx.from,
-          to: tx.to,
-          value: new Amount(tx.value.mul(DECIMALS), this._symbol),
-          fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
-        })
         return new TxModel({
           txHash: tx.txHash,
           blockHash: tx.blockHash,
