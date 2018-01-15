@@ -1,4 +1,13 @@
-import { bccProvider, btcProvider, btgProvider, ltcProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/BitcoinProvider'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import Amount from 'models/Amount'
@@ -6,6 +15,7 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import { DECIMALS } from '../../packages/login/network/BitcoinEngine'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -73,7 +83,40 @@ export class BitcoinDAO extends EventEmitter {
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Promise<Array<TxModel>> {
     try {
-      return await this._bitcoinProvider.getTransactionsList(account)
+      let result = []
+      const txs = await this._bitcoinProvider.getTransactionsList(account)
+      for (let tx of txs) {
+        const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
+        let to = []
+        tx.vout.map((output) => {
+          const addr = output.scriptPubKey.addresses.filter((a) => a !== account).join(',')
+          if (addr) {
+            to.push(addr)
+          }
+        })
+
+        let value = new BigNumber(0)
+        for (const output of tx.vout) {
+          if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+            value = value.add(new BigNumber(output.value))
+          }
+        }
+
+        if (to.length > 0) {
+          result.push(new TxModel({
+            txHash: tx.txid,
+            blockHash: tx.blockhash,
+            blockNumber: tx.blockheight,
+            time: tx.time,
+            from,
+            to,
+            value: new Amount(value.mul(DECIMALS), this._symbol),
+            fee: new Amount(new BigNumber(tx.fees).mul(DECIMALS), this._symbol),
+            credited: tx.isCoinBase || !tx.vin.filter((input) => input.addr === account).length,
+          }))
+        }
+      }
+      return result
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
@@ -104,7 +147,7 @@ export class BitcoinDAO extends EventEmitter {
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
-        })
+        }),
       )
     })
   }

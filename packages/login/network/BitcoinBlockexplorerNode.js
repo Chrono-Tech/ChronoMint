@@ -15,9 +15,8 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   async getTransactionsList (address) {
     try {
-      const res = await this._api.get(`addrs/${address}/txs`)
-      console.log(res.data)
-      return []
+      const response = await this._api.get(`addrs/${address}/txs`)
+      return response.data.items
     } catch (e) {
       this.trace(`getTransactionsList ${address} failed`, e)
       throw e
@@ -27,7 +26,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getFeeRate () {
     try {
       const res = await this._api.get(`utils/estimatefee?nbBlocks=2`)
-      const rate = res.data['2']
+      const rate = res.data[ '2' ]
       return rate > 0
         ? DECIMALS * rate / 1024
         : 150 // default satoshis per byte for testnets
@@ -43,7 +42,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
         this._api.get(`addr/${address}/balance`),
         this._api.get(`addr/${address}/unconfirmedBalance`),
       ])
-      const [ balanceSat, unconfirmedBalanceSat ] = [confirmed.data, unconfirmed.data]
+      const [ balanceSat, unconfirmedBalanceSat ] = [ confirmed.data, unconfirmed.data ]
       return {
         balance0: new BigNumber(balanceSat).plus(unconfirmedBalanceSat),
         balance3: new BigNumber(balanceSat),
