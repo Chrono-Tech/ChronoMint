@@ -152,7 +152,8 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPoll (pollId): PollDetailsModel {
-    const polls = await this.getPollsDetails([ pollId ])
+    const votingManagerDAO = await contractsManagerDAO.getVotingManagerDAO()
+    const polls = await votingManagerDAO.getPollsDetails([ pollId ])
     return polls.item(pollId)
   }
 
