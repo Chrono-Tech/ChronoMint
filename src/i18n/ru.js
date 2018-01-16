@@ -483,6 +483,7 @@ export default {
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
+    invalidMaxLength: 'Не более 32-х символов',
     invalidAddress: 'Некорректный %{blockchain} адрес',
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',

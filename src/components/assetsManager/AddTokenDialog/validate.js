@@ -15,6 +15,7 @@ export default function validate (values) {
 
   let tokenSymbolErrors = new ErrorList()
   tokenSymbolErrors.add(validator.name(values.get('tokenSymbol'), true))
+  tokenSymbolErrors.add(validator.bytes32(values.get('tokenSymbol')))
   if (tokenSymbolErrors.getErrors()) {
     result.tokenSymbol = tokenSymbolErrors.getErrors()
   }
