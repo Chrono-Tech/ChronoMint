@@ -143,3 +143,8 @@
   height: 50px;
   margin-right: 16px;
 }
+
+.addressWrap {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

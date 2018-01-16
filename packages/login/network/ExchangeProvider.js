@@ -1,22 +1,19 @@
 import axios from 'axios'
 import networkService from '@chronobank/login/network/NetworkService'
-import { NETWORK_MAIN_ID, MIDDLEWARE_MAP } from './settings'
+import { NETWORK_MAIN_ID, MIDDLEWARE_MAP, LOCAL_ID } from './settings'
 
 class ExchangeProvider {
 
   url () {
-    // TODO @abdulov remove it
-    // throw new Error() // make an Error
     const { network } = networkService.getProviderSettings()
 
-    if (!network.id) {
-      return MIDDLEWARE_MAP.eth.local
-    }
-
-    if (network.id === NETWORK_MAIN_ID) {
-      return MIDDLEWARE_MAP.eth.mainnet
-    } else {
-      return MIDDLEWARE_MAP.eth.testnet
+    switch (network.id) {
+      case NETWORK_MAIN_ID:
+        return MIDDLEWARE_MAP.eth.mainnet
+      case LOCAL_ID:
+        return MIDDLEWARE_MAP.eth.local
+      default:
+        return MIDDLEWARE_MAP.eth.testnet
     }
   }
 

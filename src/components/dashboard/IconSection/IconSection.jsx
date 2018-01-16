@@ -5,8 +5,7 @@ import './IconSection.scss'
 
 class IconSection extends PureComponent {
   static propTypes = {
-    // TODO @abdulov Change the use of this component
-    title: PropTypes.object, // Translate object
+    title: PropTypes.node,
     icon: PropTypes.string,
     iconComponent: PropTypes.node,
     children: PropTypes.node,

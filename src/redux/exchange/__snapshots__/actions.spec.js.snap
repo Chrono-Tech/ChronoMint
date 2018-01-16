@@ -2,8 +2,30 @@
 
 exports[`Exchange tests should create createExchange 1`] = `
 {
-  "buyPrice": "10000000000",
-  "sellPrice": "10000000000",
-  "symbol": "TIME"
+  "symbol": "0x54494d4500000000000000000000000000000000000000000000000000000000"
 }
+`;
+
+exports[`Exchange tests should get exchange data 1`] = `
+[
+  {
+    "type": "exchange/GET_DATA_START"
+  },
+  {
+    "count": 0,
+    "type": "exchange/EXCHANGE_SET_PAGES_COUNT"
+  },
+  {
+    "type": "exchange/EXCHANGE_MIDDLEWARE_DISCONNECTED"
+  },
+  {
+    "type": "exchange/GET_DATA_FINISH"
+  },
+  {
+    "type": "exchange/EXCHANGE_GET_OWNERS_EXCHANGES_START"
+  },
+  {
+    "type": "exchange/EXCHANGE_EXCHANGES_LIST_GETTING_START"
+  }
+]
 `;

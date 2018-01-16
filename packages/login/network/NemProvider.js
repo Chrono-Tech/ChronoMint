@@ -41,9 +41,9 @@ export class NemProvider extends AbstractProvider {
   async getAccountBalances (mosaic = null) {
     const node = this._selectNode(this._engine)
     const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
-    return mosaic === null
-      ? { balance }
-      : { balance: mosaics[ mosaic ] }
+    return mosaic !== null
+      ? mosaics[mosaic]
+      : balance
   }
 
   // eslint-disable-next-line

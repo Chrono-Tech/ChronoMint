@@ -1634,10 +1634,10 @@ browserslist@^1.0.0, browserslist@^1.3.6, browserslist@^1.5.2, browserslist@^1.7
     electron-to-chromium "^1.2.7"
 
 browserslist@^2.1.2:
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-2.11.2.tgz#76ad768b97a689512fcd9724a8b9d76cdffb18fd"
+  version "2.11.3"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-2.11.3.tgz#fe36167aed1bbcde4827ebfe71347a2cc70b99b2"
   dependencies:
-    caniuse-lite "^1.0.30000791"
+    caniuse-lite "^1.0.30000792"
     electron-to-chromium "^1.3.30"
 
 bs58@^2.0.1:
@@ -1784,7 +1784,7 @@ caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
   version "1.0.30000792"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000792.tgz#a7dac6dc9f5181b675fd69e5cb06fefb523157f8"
 
-caniuse-lite@^1.0.30000669, caniuse-lite@^1.0.30000791:
+caniuse-lite@^1.0.30000669, caniuse-lite@^1.0.30000792:
   version "1.0.30000792"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000792.tgz#d0cea981f8118f3961471afbb43c9a1e5bbf0332"
 
@@ -1869,9 +1869,9 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
-"chronobank-smart-contracts@github:chronobank/SmartContracts#release/release-1.1.44":
+chronobank-smart-contracts@1.1.44:
   version "1.1.44"
-  resolved "https://codeload.github.com/chronobank/SmartContracts/tar.gz/1b4372a0f5766e314a5ccb7aceb93353761a2aeb"
+  resolved "https://registry.yarnpkg.com/chronobank-smart-contracts/-/chronobank-smart-contracts-1.1.44.tgz#7d572c226bd1a5328988099f24c8e7bb03519453"
   dependencies:
     browser-stdout "1.3.0"
     bs58 "^4.0.1"
@@ -3168,17 +3168,17 @@ es-to-primitive@^1.1.1:
     is-symbol "^1.0.1"
 
 es5-ext@^0.10.14, es5-ext@^0.10.35, es5-ext@^0.10.9, es5-ext@~0.10.14:
-  version "0.10.37"
-  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.37.tgz#0ee741d148b80069ba27d020393756af257defc3"
+  version "0.10.38"
+  resolved "https://registry.yarnpkg.com/es5-ext/-/es5-ext-0.10.38.tgz#fa7d40d65bbc9bb8a67e1d3f9cc656a00530eed3"
   dependencies:
-    es6-iterator "~2.0.1"
+    es6-iterator "~2.0.3"
     es6-symbol "~3.1.1"
 
 es6-error@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/es6-error/-/es6-error-4.1.1.tgz#9e3af407459deed47e9a91f9b885a84eb05c561d"
 
-es6-iterator@^2.0.1, es6-iterator@~2.0.1:
+es6-iterator@^2.0.1, es6-iterator@~2.0.1, es6-iterator@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/es6-iterator/-/es6-iterator-2.0.3.tgz#a7de889141a05a94b0854403b2d0a0fbfa98f3b7"
   dependencies:
@@ -8107,13 +8107,13 @@ react-event-listener@^0.5.1:
     warning "^3.0.0"
 
 react-hot-loader@next:
-  version "4.0.0-beta.13"
-  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.0.0-beta.13.tgz#0d145579124e44bd0c9d517f86462a1231a9c9d9"
+  version "4.0.0-beta.15"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.0.0-beta.15.tgz#d32d23bad2f2f1f7d084e5a28bebca127066c5bc"
   dependencies:
     fast-levenshtein "^2.0.6"
     global "^4.3.0"
     hoist-non-react-statics "^2.3.1"
-    react-stand-in "^4.0.0-beta.13"
+    react-stand-in "^4.0.0-beta.15"
     redbox-react "^1.3.6"
     source-map "^0.6.1"
 
@@ -8186,9 +8186,9 @@ react-smooth@^0.1.15:
     raf "^3.2.0"
     react-addons-transition-group "^0.14.0 || ^15.0.0"
 
-react-stand-in@^4.0.0-beta.13:
-  version "4.0.0-beta.14"
-  resolved "https://registry.yarnpkg.com/react-stand-in/-/react-stand-in-4.0.0-beta.14.tgz#0a06a94b44bc4ca1d06575414acf400585d84e35"
+react-stand-in@^4.0.0-beta.15:
+  version "4.0.0-beta.15"
+  resolved "https://registry.yarnpkg.com/react-stand-in/-/react-stand-in-4.0.0-beta.15.tgz#8c97cb1e6207c86c4deb04913fc5e23e04bdcc13"
   dependencies:
     shallowequal "^1.0.2"
 
@@ -9711,7 +9711,7 @@ truffle-contract@^3.0.1:
     truffle-contract-schema "^1.0.0"
     web3 "^0.20.1"
 
-truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
+"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

@@ -5,7 +5,7 @@ import Immutable from 'immutable'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import exchangeService from 'services/ExchangeService'
-import { WALLET_ALLOWANCE, fetchTokenBalance } from 'redux/mainWallet/actions'
+import { fetchTokenBalance, WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -19,8 +19,6 @@ export const EXCHANGE_SET_PAGES_COUNT = 'exchange/EXCHANGE_SET_PAGES_COUNT'
 export const EXCHANGE_GET_ORDERS_FINISH = 'exchange/GET_ORDERS_FINISH'
 export const EXCHANGE_GET_DATA_START = 'exchange/GET_DATA_START'
 export const EXCHANGE_GET_DATA_FINISH = 'exchange/GET_DATA_FINISH'
-export const EXCHANGE_GET_TOKENS_LIST_START = 'exchange/EXCHANGE_GET_TOKENS_LIST_START'
-export const EXCHANGE_GET_TOKENS_LIST_FINISH = 'exchange/EXCHANGE_GET_TOKENS_LIST_FINISH'
 export const EXCHANGE_SET_FILTER = 'exchange/EXCHANGE_SET_FILTER'
 export const EXCHANGE_REMOVE_FOR_OWNER = 'exchange/EXCHANGE_REMOVE_FOR_OWNER'
 export const EXCHANGE_UPDATE = 'exchange/EXCHANGE_UPDATE'
@@ -145,7 +143,7 @@ export const getNextPage = () => async (dispatch, getState) => {
       type: EXCHANGE_EXCHANGES_LIST_GETTING_FINISH,
       exchanges,
       lastPages,
-      pagesCount: lastPages < PAGE_SIZE ? lastPages : PAGE_SIZE,
+      pagesCount: lastPages < PAGE_SIZE ? lastPages : state.pagesCount(),
     })
   } else {
     dispatch({

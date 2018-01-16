@@ -64,7 +64,8 @@ export default class TokenListSelector extends PureComponent {
         />
         <div styleName={classnames('tokensList', 'sm-hide', { 'tokensListFolded': this.state.foldTokensList })}>
           {
-            tokens.items()
+            tokens
+              .sortBy((token) => token.symbol())
               .map((tokenItem: TokenModel) => {
                 if (!tokenItem.isERC20()) {
                   return null
@@ -103,7 +104,8 @@ export default class TokenListSelector extends PureComponent {
             meta={this.props.meta}
           >
             {
-              tokens.items()
+              tokens
+                .sortBy((token) => token.symbol())
                 .map((token: TokenModel) => {
                   return (<MenuItem
                     key={token.symbol()}

@@ -60,6 +60,12 @@ export default class AbstractNode extends EventEmitter {
     )
   }
 
+  disconnect () {
+    if (this._socket) {
+      this._ws.close()
+    }
+  }
+
   executeOrSchedule (action) {
     if (this._socket) {
       action()

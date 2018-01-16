@@ -39,7 +39,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
 
     addresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[ i ])
+      const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
 
       this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
         address,

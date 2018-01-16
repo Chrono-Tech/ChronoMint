@@ -46,6 +46,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_balance',
+      tx: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_tx',
     },
   },
   trace: true,

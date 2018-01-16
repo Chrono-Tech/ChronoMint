@@ -20,6 +20,8 @@ export default class BitcoinAbstractNode extends AbstractNode {
 export class BitcoinTx {
   constructor ({
     txHash,
+    blockHash,
+    blockNumber,
     time,
     from,
     to,
@@ -28,6 +30,8 @@ export class BitcoinTx {
     credited,
   }) {
     this.txHash = txHash
+    this.blockHash = blockHash
+    this.blockNumber = blockNumber
     this.time = time
     this.from = from
     this.to = to

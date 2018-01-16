@@ -68,16 +68,17 @@ export default class NemDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    // TODO @ipavlenko: Implement vestedBalance & unvestedBalance
-    const { balance /*, vestedBalance, unvestedBalance */ } = await this._nemProvider.getAccountBalances(this._mosaic)
+    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._mosaic)
     return {
-      balance,
+      confirmed,
+      unconfirmed: unconfirmed ? confirmed.plus(unconfirmed) : confirmed, // Unconfirmed balance is a "delta"-value
+      vested,
     }
   }
 
   async getAccountBalance () {
-    const balances = await this.getAccountBalances()
-    return balances.balance
+    const { unconfirmed } = await this.getAccountBalances()
+    return unconfirmed
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -121,9 +122,7 @@ export default class NemDAO extends EventEmitter {
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
-        balance: this._mosaic
-          ? balance.mosaics[ this._mosaic ]
-          : balance.balance,
+        balance: readBalanceValue(balance, this._mosaic),
       })
     })
   }
@@ -158,4 +157,13 @@ export default class NemDAO extends EventEmitter {
       blockchain: BLOCKCHAIN_NEM,
     }), this)
   }
+}
+
+function readBalanceValue (balance, mosaic = null) {
+  console.log('balance', balance, mosaic)
+  return mosaic
+    ? balance.mosaics[mosaic].confirmed // TODO @ipavlenko: Change to "unconfirmed" when such balance be implemented on the middleware
+    : balance.unconfirmed != null // nil check
+      ? balance.confirmed.plus(balance.unconfirmed)
+      : balance.confirmed
 }

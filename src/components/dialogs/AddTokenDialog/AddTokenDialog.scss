@@ -1,7 +1,6 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
-
 .root {
   :global(.ModalDialog__close) {
     color: $color-white;
@@ -31,7 +30,7 @@
 .icon {
   position: relative;
   display: table;
-  background-color: $color-panel-bg-0;
+  background-color: rgba(255, 255, 255, .2);
   border-radius: 50%;
   overflow: hidden;
   line-height: 0;

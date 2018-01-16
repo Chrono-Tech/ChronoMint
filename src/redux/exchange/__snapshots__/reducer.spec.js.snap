@@ -4,14 +4,19 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINI
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": true,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {
       "test": {
         "address": "test",
+        "asset": null,
         "assetBalance": "0",
         "authorizedManager": null,
         "buyPrice": "0",
@@ -21,7 +26,9 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINI
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
+        "isInited": false,
         "isPending": false,
+        "isSelected": false,
         "owner": null,
         "sellPrice": "0",
         "symbol": null,
@@ -34,11 +41,15 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINI
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -49,22 +60,84 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINI
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 1,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
+  "transactionHash": null
+}
+`;
+
+exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT 1`] = `
+{
+  "assetSymbols": [],
+  "exchanges": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": true,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "test": {
+        "address": "test",
+        "asset": null,
+        "assetBalance": "0",
+        "authorizedManager": null,
+        "buyPrice": "0",
+        "ethBalance": "0",
+        "id": null,
+        "isActive": true,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "owner": null,
+        "sellPrice": "0",
+        "symbol": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    },
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
+  "filter": {},
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPages": 1,
+  "pagesCount": 0,
+  "showFilter": true,
+  "timestamp": null,
   "transactionHash": null
 }
 `;
@@ -73,22 +146,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_STAR
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": true,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -99,22 +180,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_EXCHANGES_LIST_GETTING_STAR
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -125,22 +197,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_DATA_FINISH 1`] = `
     "TIME"
   ],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -151,22 +231,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_DATA_FINISH 1`] = `
   "isFailed": false,
   "isFetched": true,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -175,22 +246,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_DATA_START 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -201,22 +280,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_DATA_START 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": true,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -225,14 +295,19 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_FINISH 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": true,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {
       "null": {
         "address": null,
+        "asset": null,
         "assetBalance": "0",
         "authorizedManager": null,
         "buyPrice": "0",
@@ -242,7 +317,9 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_FINISH 1`] = `
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
+        "isInited": false,
         "isPending": false,
+        "isSelected": false,
         "owner": null,
         "sellPrice": "0",
         "symbol": null,
@@ -255,11 +332,15 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_FINISH 1`] = `
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -270,21 +351,12 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_FINISH 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -293,22 +365,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_START 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": true,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -319,22 +399,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_ORDERS_START 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -343,22 +414,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_OWNERS_EXCHANGES_FINISH
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": true,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -369,22 +448,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_OWNERS_EXCHANGES_FINISH
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -393,22 +463,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_OWNERS_EXCHANGES_START 
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": true,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -419,151 +497,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_GET_OWNERS_EXCHANGES_START 
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "transactionHash": null
-}
-`;
-
-exports[`assetsManager reducer sould handle EXCHANGE_GET_TOKENS_LIST_FINISH 1`] = `
-{
-  "assetSymbols": [],
-  "exchanges": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "exchangesForOwner": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "filter": {},
-  "id": null,
-  "isFailed": false,
-  "isFetched": false,
-  "isFetching": false,
-  "isPending": false,
-  "lastPages": 0,
-  "pagesCount": 0,
-  "showFilter": true,
-  "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": true,
-    "isFetching": false,
-    "isPending": false,
-    "list": {
-      "null": {
-        "address": null,
-        "allowance": {},
-        "balance": "0",
-        "blockchain": null,
-        "dao": null,
-        "decimals": null,
-        "fee": null,
-        "feeAddress": null,
-        "feeRate": null,
-        "icon": null,
-        "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isOptional": true,
-        "isPending": false,
-        "isReissuable": false,
-        "managersList": null,
-        "name": null,
-        "platform": null,
-        "symbol": null,
-        "timestamp": null,
-        "totalSupply": "0",
-        "transactionHash": null,
-        "url": null,
-        "withFee": false
-      }
-    },
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "transactionHash": null
-}
-`;
-
-exports[`assetsManager reducer sould handle EXCHANGE_GET_TOKENS_LIST_START 1`] = `
-{
-  "assetSymbols": [],
-  "exchanges": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "exchangesForOwner": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
-  "filter": {},
-  "id": null,
-  "isFailed": false,
-  "isFetched": false,
-  "isFetching": false,
-  "isPending": false,
-  "lastPages": 0,
-  "pagesCount": 0,
-  "showFilter": true,
-  "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": true,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -572,22 +512,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_MIDDLEWARE_DISCONNECTED 1`]
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -598,22 +546,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_MIDDLEWARE_DISCONNECTED 1`]
   "isFailed": false,
   "isFetched": true,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": false,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -622,22 +561,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_REMOVE_FOR_OWNER 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -648,22 +595,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_REMOVE_FOR_OWNER 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -672,22 +610,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_SET_FILTER 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -700,22 +646,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_SET_FILTER 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -724,22 +661,30 @@ exports[`assetsManager reducer sould handle EXCHANGE_SET_PAGES_COUNT 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
@@ -750,22 +695,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_SET_PAGES_COUNT 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 1,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -774,14 +710,19 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {
       "test": {
         "address": "test",
+        "asset": null,
         "assetBalance": "0",
         "authorizedManager": null,
         "buyPrice": "0",
@@ -791,7 +732,9 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE 1`] = `
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
+        "isInited": false,
         "isPending": false,
+        "isSelected": false,
         "owner": null,
         "sellPrice": "0",
         "symbol": null,
@@ -804,14 +747,19 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE 1`] = `
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {
       "test": {
         "address": "test",
+        "asset": null,
         "assetBalance": "0",
         "authorizedManager": null,
         "buyPrice": "0",
@@ -821,7 +769,9 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE 1`] = `
         "isFailed": false,
         "isFetched": false,
         "isFetching": false,
+        "isInited": false,
         "isPending": false,
+        "isSelected": false,
         "owner": null,
         "sellPrice": "0",
         "symbol": null,
@@ -838,22 +788,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
@@ -862,23 +803,53 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE_FOR_OWNER 1`] = `
 {
   "assetSymbols": [],
   "exchanges": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
     "list": {},
     "selected": null,
     "timestamp": null,
     "transactionHash": null
   },
   "exchangesForOwner": {
+    "emptyModel": null,
     "id": null,
     "isFailed": false,
     "isFetched": false,
     "isFetching": false,
+    "isInited": false,
     "isPending": false,
-    "list": {},
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "test": {
+        "address": "test",
+        "asset": null,
+        "assetBalance": "0",
+        "authorizedManager": null,
+        "buyPrice": "0",
+        "ethBalance": "0",
+        "id": null,
+        "isActive": true,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "owner": null,
+        "sellPrice": "0",
+        "symbol": null,
+        "timestamp": null,
+        "transactionHash": null
+      }
+    },
     "selected": null,
     "timestamp": null,
     "transactionHash": null
@@ -888,22 +859,13 @@ exports[`assetsManager reducer sould handle EXCHANGE_UPDATE_FOR_OWNER 1`] = `
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
   "isPending": false,
+  "isSelected": false,
   "lastPages": 0,
   "pagesCount": 0,
   "showFilter": true,
   "timestamp": null,
-  "tokens": {
-    "id": null,
-    "isFailed": false,
-    "isFetched": false,
-    "isFetching": false,
-    "isPending": false,
-    "list": {},
-    "selected": null,
-    "timestamp": null,
-    "transactionHash": null
-  },
   "transactionHash": null
 }
 `;
