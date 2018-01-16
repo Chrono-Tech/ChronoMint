@@ -1,3 +1,10 @@
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import Immutable from 'immutable'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
@@ -34,7 +41,7 @@ export const ACTION_APPROVE = 'action/approve'
 
 const FEE_RATE_MULTIPLIER = {
   min: 0.1,
-  max: 2,
+  max: 1.9,
   step: 0.1,
 }
 
@@ -65,7 +72,7 @@ function mapStateToProps (state) {
 export default class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    wallet: PropTypes.object,
+    wallet: PropTypes.instanceOf(MainWallet),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -125,6 +132,22 @@ export default class SendTokensForm extends PureComponent {
       amount: 0,
       recipient: this.props.recipient,
     }))
+  }
+
+  getFeeTitle () {
+    const { token } = this.props
+
+    switch (token.blockchain()) {
+      case BLOCKCHAIN_BITCOIN:
+      case BLOCKCHAIN_BITCOIN_CASH:
+      case BLOCKCHAIN_BITCOIN_GOLD:
+      case BLOCKCHAIN_LITECOIN:
+        return 'feeRate'
+      case BLOCKCHAIN_ETHEREUM:
+        return 'gasPrice'
+      default:
+        return ''
+    }
   }
 
   renderHead () {
@@ -229,7 +252,7 @@ export default class SendTokensForm extends PureComponent {
               <div>
                 <small>
                   <Translate
-                    value={prefix('feeRate')}
+                    value={prefix(this.getFeeTitle())}
                     multiplier={feeMultiplier.toFixed(1)}
                     total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
                   />
@@ -241,6 +264,11 @@ export default class SendTokensForm extends PureComponent {
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
               />
+              <div styleName='tagsWrap'>
+                <div><Translate value={prefix('fast')} /></div>
+                <div styleName='tagDefault' />
+                <div><Translate value={prefix('slow')} /></div>
+              </div>
             </div>
           </div>
         )}
