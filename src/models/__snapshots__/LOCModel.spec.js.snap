@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LOC model should construct and return data 1`] = `
+{
+  "createDate": 1516092519216,
+  "expDate": 1523868519216,
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isNew": false,
+  "isPending": false,
+  "isSelected": false,
+  "issueLimit": 1000,
+  "issued": 10,
+  "name": "name",
+  "oldName": "oldName",
+  "publishedHash": "",
+  "securityPercentage": 0,
+  "status": 1,
+  "symbol": null,
+  "timestamp": null,
+  "transactionHash": null,
+  "website": "www"
+}
+`;
