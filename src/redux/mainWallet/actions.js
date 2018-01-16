@@ -53,13 +53,9 @@ export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBala
 export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
-  const { account, profile } = getState().get(DUCK_SESSION)
+  const { account } = getState().get(DUCK_SESSION)
 
   dispatch(fetchTokenBalance(token))
-
-  if (token.isOptional() && !profile.tokens().get(token.address())) {
-    return
-  }
 
   const symbol = token.symbol()
   const tokenDAO = tokenService.getDAO(token.id())

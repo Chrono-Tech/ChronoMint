@@ -17,8 +17,8 @@ export default function validate (values, props) {
   if (!userExchangeTokenBalance) {
     userExchangeTokenBalance = new BigNumber(0)
   }
-  const assetBalance = props.exchange.assetBalance()
-  const ethBalance = props.exchange.ethBalance()
+  const assetBalance = exchangeToken.removeDecimals(props.exchange.assetBalance())
+  const ethBalance = ethToken.removeDecimals(props.exchange.ethBalance())
 
   if (props.isBuy) {
     buyErrors.add(validator.lowerThan(values.get('buy'), assetBalance.toNumber()))

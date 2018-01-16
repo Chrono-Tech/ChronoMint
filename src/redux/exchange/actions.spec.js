@@ -1,3 +1,5 @@
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import tokenService from 'services/TokenService'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import BigNumber from 'bignumber.js'
@@ -9,6 +11,10 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { accounts, mockStore } from 'specsInit'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangeModel from 'models/exchange/ExchangeModel'
+import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import * as a from './actions'
 
 let store
@@ -20,44 +26,34 @@ const mock = new Immutable.Map({
 })
 
 describe('Exchange tests', () => {
+  let tokens = new TokensCollection()
+  let exchange = null
   store = mockStore(mock)
   networkService.connectStore(store)
 
-  let tokens = null
-  let exchange = null
-  it('should get tokens', async (done: Function) => {
-    // await store.dispatch(a.getTokenList())
-    const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_START)
-    expect(actions[ 1 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_FINISH)
-    expect(actions[ 1 ].tokens.size()).toBeGreaterThan(1)
-    tokens = actions[ 1 ].tokens
-    done()
-  })
-
-  it.skip('should get exchange data', async (done: Function) => {
-    await store.dispatch(a.getExchange())
-    expect(await store.dispatch(a.getExchange())).toThrow()
-    const actions = store.getActions()
-    expect(actions[ 0 ].type).toEqual(a.EXCHANGE_GET_DATA_START)
-    expect(actions[ 1 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_START)
-    expect(actions[ 2 ].type).toEqual(a.EXCHANGE_GET_TOKENS_LIST_FINISH)
-    expect(actions[ 2 ].tokens.size()).toEqual(2)
-    expect(actions[ 3 ].type).toEqual(a.EXCHANGE_SET_PAGES_COUNT)
-    expect(actions[ 3 ].count).toEqual(0)
-    expect(actions[ 4 ].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_START)
-    expect(actions[ 5 ].type).toEqual(a.EXCHANGE_MIDDLEWARE_DISCONNECTED)
-    expect(actions[ 6 ].type).toEqual(a.EXCHANGE_GET_DATA_FINISH)
-    expect(actions[ 7 ].type).toEqual(a.EXCHANGE_EXCHANGES_LIST_GETTING_START)
-    done()
+  it('should get exchange data', async (done: Function) => {
+    const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+    erc20
+      .on(EVENT_NEW_ERC20_TOKEN, async (token: TokenModel) => {
+        if (token.symbol() === 'TIME') {
+          tokenService.createDAO(token)
+          tokens = tokens.add(token)
+          store = mockStore(mock.set(DUCK_TOKENS, tokens))
+          await store.dispatch(a.getExchange())
+          const actions = store.getActions()
+          expect(actions).toMatchSnapshot()
+          done()
+        }
+      })
+      .fetchTokens()
   })
 
   it('should get exchanges for owner', async (done: Function) => {
-    const testMock = mock.set(a.DUCK_EXCHANGE, new ExchangeModel({ tokens }))
-    store = mockStore(testMock)
-    networkService.connectStore(store)
-    await store.dispatch(a.getExchangesForOwner())
-    const actions = store.getActions()
+    const testMock = mock.set(a.DUCK_EXCHANGE, new ExchangeModel())
+    const tesstStore = mockStore(testMock)
+    networkService.connectStore(tesstStore)
+    await tesstStore.dispatch(a.getExchangesForOwner())
+    const actions = tesstStore.getActions()
     expect(actions[ 0 ].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_START)
     expect(actions[ 1 ].type).toEqual(a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH)
     expect(actions[ 1 ].exchanges.size()).toEqual(jasmine.any(Number))
@@ -65,16 +61,6 @@ describe('Exchange tests', () => {
   })
 
   it('should create createExchange', async (done: Function) => {
-    const testMock = mock.set(
-      a.DUCK_EXCHANGE,
-      new ExchangeModel({
-        tokens,
-        showFilter: false,
-      }),
-    )
-    store = mockStore(testMock)
-    networkService.connectStore(store)
-
     const newExchange = new ExchangeOrderModel({
       buyPrice: new BigNumber(1),
       sellPrice: new BigNumber(1),
@@ -83,28 +69,26 @@ describe('Exchange tests', () => {
     exchangeService.subscribeToCreateExchange(accounts[ 0 ])
     await exchangeService.on('ExchangeCreated', async (tx: Object) => {
       expect({
-        buyPrice: tx.args.buyPrice,
-        sellPrice: tx.args.sellPrice,
         symbol: tx.args.symbol,
       }).toMatchSnapshot()
 
       exchange = new ExchangeOrderModel({
         address: tx.args.exchange,
-        symbol: tx.args.symbol,
+        symbol: 'TIME',
       })
       done()
     })
     await store.dispatch(a.createExchange(newExchange))
   })
-  //
-  // it('should get allowance for token', async (done: Function) => {
-  //   store.clearActions()
-  //   await store.dispatch(a.getTokensAllowance(exchange))
-  //   const actions = store.getActions()
-  //   expect(actions[ 0 ].type).toEqual(WALLET_ALLOWANCE)
-  //   expect(actions[ 0 ].token.allowance(exchange.address)).toEqual(new BigNumber(0))
-  //   done()
-  // })
+
+  it('should get allowance for token', async (done: Function) => {
+    store.clearActions()
+    await store.dispatch(a.getTokensAllowance(exchange))
+    const actions = store.getActions()
+    expect(actions[ 0 ].type).toEqual(WALLET_ALLOWANCE)
+    expect(actions[ 0 ].allowance.id()).toEqual(`${exchange.address()}-${exchange.symbol()}`)
+    done()
+  })
 
   it('should get exchanges count', async (done: Function) => {
     store.clearActions()
@@ -129,16 +113,15 @@ describe('Exchange tests', () => {
     const testMock = mock.set(
       a.DUCK_EXCHANGE,
       new ExchangeModel({
-        tokens,
         exchanges: new ExchangesCollection().add(exchange),
         exchangesForOwner: new ExchangesCollection().add(exchange),
       }),
     )
-    store = mockStore(testMock)
-    networkService.connectStore(store)
+    const testStore = mockStore(testMock)
+    networkService.connectStore(testStore)
 
-    await store.dispatch(a.updateExchange(exchange))
-    const actions = store.getActions()
+    await testStore.dispatch(a.updateExchange(exchange))
+    const actions = testStore.getActions()
     expect(actions[ 0 ].type).toEqual(a.EXCHANGE_UPDATE_FOR_OWNER)
     expect(actions[ 1 ].type).toEqual(a.EXCHANGE_UPDATE)
     done()
@@ -161,7 +144,7 @@ describe('Exchange tests', () => {
       tokens: new Immutable.Map({ TIME: token }),
     })
     exchangeService.subscribeToExchange(address)
-    await exchangeService.on('WithdrawTokens', async tx => {
+    await exchangeService.on('WithdrawTokens', (tx) => {
       expect(tx.exchange).toEqual(address)
       done()
     })
