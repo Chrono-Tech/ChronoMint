@@ -480,7 +480,8 @@ export default {
     invalidPositiveNumberOrZero: 'Should be positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
-    invalidLength: 'Should have length more than or equal 3 symbols', // TODO @bshevchenko: get rid of this odd error
+    invalidLength: 'Should have length more than or equal 3 symbols',
+    invalidMaxLength: 'Should have length less than or equal 32 symbols',
     invalidAddress: 'Should be valid %{blockchain} address',
     validIpfsFileList: 'Should be valid file list',
     between: 'Should be between %{min} and %{max}',

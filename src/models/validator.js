@@ -43,6 +43,10 @@ export const name = (value, required = true) => {
   return null
 }
 
+export const bytes32 = (value) => {
+  return value && value.length > 32 ? 'errors.invalidMaxLength' : null
+}
+
 export const email = (value, required = true) => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   if ((!value && required) || (value && !re.test(value))) {
