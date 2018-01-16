@@ -373,7 +373,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -1813,9 +1813,9 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
-"chronobank-smart-contracts@github:chronobank/SmartContracts#release/release-1.1.44":
+chronobank-smart-contracts@1.1.44:
   version "1.1.44"
-  resolved "https://codeload.github.com/chronobank/SmartContracts/tar.gz/753168d935187e0f8a6a3e9f9f5ca8a4233a0802"
+  resolved "https://registry.yarnpkg.com/chronobank-smart-contracts/-/chronobank-smart-contracts-1.1.44.tgz#7d572c226bd1a5328988099f24c8e7bb03519453"
   dependencies:
     browser-stdout "1.3.0"
     bs58 "^4.0.1"
@@ -7417,9 +7417,15 @@ postcss-mixins@^2.1.0:
     postcss "^5.0.10"
     postcss-simple-vars "^1.0.1"
 
-postcss-modules-extract-imports@1.1.0, postcss-modules-extract-imports@^1.0.0, postcss-modules-extract-imports@^1.0.1:
+postcss-modules-extract-imports@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-1.1.0.tgz#b614c9720be6816eaee35fb3a5faa1dba6a05ddb"
+  dependencies:
+    postcss "^6.0.1"
+
+postcss-modules-extract-imports@^1.0.0, postcss-modules-extract-imports@^1.0.1:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/postcss-modules-extract-imports/-/postcss-modules-extract-imports-1.2.0.tgz#66140ecece38ef06bf0d3e355d69bf59d141ea85"
   dependencies:
     postcss "^6.0.1"
 
@@ -9620,7 +9626,7 @@ truffle-contract@^3.0.1:
     truffle-contract-schema "^1.0.0"
     web3 "^0.20.1"
 
-truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
+"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:
