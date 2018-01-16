@@ -13,6 +13,7 @@ import * as rewards from 'dao/RewardsDAO'
 import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { en as layouts } from 'layouts/lang'
+import * as votingManager from 'dao/VotingManagerDAO'
 
 export default {
   title: 'Eng',
@@ -466,8 +467,18 @@ export default {
       [ pollInterface.TX_ACTIVATE_POLL ]: {
         title: 'Activate poll',
       },
+      [ pollInterface.TX_REMOVE_POLL ]: {
+        title: 'Remove Poll',
+      },
+      [ pollInterface.TX_END_POLL ]: {
+        title: 'End Poll',
+      },
     },
-
+    VotingManager: {
+      [ votingManager.TX_CREATE_POLL ]: {
+        title: 'Create Poll',
+      },
+    },
   },
   errors: {
     required: 'Required',

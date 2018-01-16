@@ -12,10 +12,8 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
     super(PollInterfaceABI, at, MultiEventsHistoryABI)
   }
 
-  async getDetails () {
-    const result = await this._call('getDetails')
-    // eslint-disable-next-line
-    console.log('getDetails', result)
+  getDetails () {
+    return this._call('getDetails')
   }
 
   async getVotesBalances () {
@@ -38,7 +36,7 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   removePoll () {
-    return this._tx(TX_REMOVE_POLL, [])
+    return this._tx(TX_REMOVE_POLL)
   }
 
   endPoll () {

@@ -13,6 +13,7 @@ import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { ru as components } from 'components/lang'
 import { ru as layouts } from 'layouts/lang'
+import * as votingManager from 'dao/VotingManagerDAO'
 
 export default {
   title: 'Рус',
@@ -466,7 +467,18 @@ export default {
     },
     PollInterface: {
       [ pollInterface.TX_ACTIVATE_POLL ]: {
-        title: 'Activate poll',
+        title: 'Активировать голосование',
+      },
+      [ pollInterface.TX_REMOVE_POLL ]: {
+        title: 'Удалить голосование',
+      },
+      [ pollInterface.TX_END_POLL ]: {
+        title: 'Завершить голосование',
+      },
+    },
+    VotingManager: {
+      [ votingManager.TX_CREATE_POLL ]: {
+        title: 'Создать голосование',
       },
     },
   },

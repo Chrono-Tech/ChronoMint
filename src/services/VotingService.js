@@ -1,6 +1,7 @@
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollBackendDAO, { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
 import EventEmitter from 'events'
-import VotingManagerDAO, { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
 
 class VotingService extends EventEmitter {
 
@@ -16,9 +17,9 @@ class VotingService extends EventEmitter {
     return this._cache[ address ]
   }
 
-  getVotingManager () {
+  async getVotingManager () {
     if (!this._cache[ 'VotingManager' ]) {
-      this._cache[ 'VotingManager' ] = new VotingManagerDAO()
+      this._cache[ 'VotingManager' ] = await contractsManagerDAO.getVotingManagerDAO()
     }
     return this._cache[ 'VotingManager' ]
   }
@@ -46,8 +47,8 @@ class VotingService extends EventEmitter {
     ])
   }
 
-  subscribeToVoting () {
-    const dao = this.getVotingManager()
+  async subscribeToVoting () {
+    const dao = await this.getVotingManager()
 
     return Promise.all([
       dao.watchCreated((result) => {

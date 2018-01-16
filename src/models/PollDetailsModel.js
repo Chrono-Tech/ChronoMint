@@ -63,7 +63,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
-    const percents = maxOptionTime.mul(100).div(voteLimitInTIME).round(0)
+    const percents = (maxOptionTime || new BigNumber(0)).mul(100).div(voteLimitInTIME).round(0)
 
     return {
       endDate,
