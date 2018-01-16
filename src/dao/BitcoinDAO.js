@@ -1,4 +1,15 @@
-import { bccProvider, btcProvider, btgProvider, ltcProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/BitcoinProvider'
+import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
+import { BitcoinTx } from '@chronobank/login/network/BitcoinAbstractNode'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import Amount from 'models/Amount'
@@ -71,9 +82,22 @@ export class BitcoinDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async getTransfer (id, account): Promise<Array<TxModel>> {
+  async getTransfer (id, account): Array<TxModel> {
     try {
-      return await this._bitcoinProvider.getTransactionsList(account)
+      const txs = await this._bitcoinProvider.getTransactionsList(account)
+      return (txs || []).map((tx: BitcoinTx) => {
+        return new TxModel({
+          txHash: tx.txHash,
+          blockHash: tx.blockHash,
+          blockNumber: tx.blockNumber,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          value: new Amount(tx.value.mul(DECIMALS), this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
+        })
+      })
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
@@ -104,7 +128,7 @@ export class BitcoinDAO extends EventEmitter {
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
-        })
+        }),
       )
     })
   }

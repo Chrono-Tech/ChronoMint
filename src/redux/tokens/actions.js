@@ -35,7 +35,7 @@ export const initTokens = () => async (dispatch, getState) => {
   dispatch({ type: TOKENS_FETCHING, count: MANDATORY_TOKENS_COUNT.length })
 
   // eth
-  const eth: TokenModel = ethereumDAO.getToken()
+  const eth: TokenModel = await ethereumDAO.getToken()
   if (eth) {
     dispatch({ type: TOKENS_FETCHED, token: eth })
     tokenService.registerDAO(eth, ethereumDAO)

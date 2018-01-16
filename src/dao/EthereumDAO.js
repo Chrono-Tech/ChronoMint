@@ -30,6 +30,10 @@ export class EthereumDAO extends AbstractTokenDAO {
     ])
   }
 
+  async getGasPrice () {
+    return await this._web3Provider.getGasPrice()
+  }
+
   getAccountBalance (account): Promise {
     return this._web3Provider.getBalance(account)
   }
@@ -50,7 +54,8 @@ export class EthereumDAO extends AbstractTokenDAO {
     return this._symbol
   }
 
-  getToken () {
+  async getToken () {
+    const feeRate = await this.getGasPrice()
     return new TokenModel({
       name: 'Ethereum', // ???
       symbol: this._symbol,
@@ -59,6 +64,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,
       isERC20: false,
+      feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
     })
   }
 
@@ -87,7 +93,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -109,7 +115,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       contract: this.getContractName(),
       func: TX_TRANSFER,
       value,
-      gas: new BigNumber(estimateGas).mul(gasPrice),
+      gas: new BigNumber(estimateGas).mul(gasPrice * feeMultiplier),
       args: {
         from,
         to,

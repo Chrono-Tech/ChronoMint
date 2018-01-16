@@ -28,7 +28,7 @@
   position: relative;
   height: 246px;
   color: $color-primary-0;
-  background-color: $color-white;
+  background-color: transparent;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -43,7 +43,7 @@
 .image {
   position: relative;
   min-width: 216px;
-  height: 128px;
+  height: 130px;
   margin: 20px;
   background-size: contain;
   background-repeat: no-repeat;
@@ -65,6 +65,7 @@
 
 .info {
   padding: 16px;
+  background-color: $color-white;
 }
 
 .balance {

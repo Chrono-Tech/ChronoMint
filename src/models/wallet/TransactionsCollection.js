@@ -8,6 +8,6 @@ export default class TransactionsCollection extends abstractFetchingCollection({
   emptyModel: new TxModel(),
 }) {
   endOfList (value) {
-    return this._getSet('endOfList', value < TXS_PER_PAGE)
+    return this._getSet('endOfList', value && value < TXS_PER_PAGE)
   }
 }
