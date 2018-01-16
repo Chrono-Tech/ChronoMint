@@ -690,10 +690,13 @@ export default {
         withdraw: 'Withdraw',
       },
       SendTokens: {
+        fast: 'Fast',
+        slow: 'Slow',
         balance: 'Balance',
         recipientAddress: 'Recipient address',
         amount: 'Amount',
         feeRate: 'Fee: %{multiplier} of average (%{total} sat/byte)',
+        gasPrice: 'Gas Price: %{multiplier} of average (%{total} Gwei)',
         approve: 'Approve',
         revoke: 'Revoke',
         allowance: 'Allowance',
