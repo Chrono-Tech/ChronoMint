@@ -5,6 +5,7 @@ node_js:
 sudo: true
 git:
   depth: 1
+  
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 build-essential -y
