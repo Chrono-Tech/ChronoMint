@@ -1,7 +1,6 @@
 import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import TokenModel from 'models/tokens/TokenModel'
 import BigNumber from 'bignumber.js'
 import web3Converter from 'utils/Web3Converter'
 import { ExchangeManagerABI, MultiEventsHistoryABI } from './abi'
@@ -16,7 +15,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
     )
   }
 
-  async createExchange (exchange: ExchangeOrderModel, token: TokenModel) {
+  async createExchange (exchange: ExchangeOrderModel/*, token: TokenModel*/) {
     const buyPrice = this._c.toWei(exchange.buyPrice())
     const sellPrice = this._c.toWei(exchange.sellPrice())
 
@@ -26,6 +25,7 @@ export default class ExchangeManagerDAO extends AbstractContractDAO {
         exchange.symbol(),
         buyPrice,
         sellPrice,
+        false, // _useExternalPriceTicker
         exchange.authorizedManager(),
         exchange.isActive(),
       ],
