@@ -2,7 +2,7 @@ import { getEtherscanUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { CircularProgress, Paper, RaisedButton } from 'material-ui'
+import { Paper, RaisedButton } from 'material-ui'
 import { SHORT_DATE } from 'models/constants'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import moment from 'moment'
@@ -13,6 +13,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_I18N } from 'redux/configureStore'
 import { getAccountTransactions } from 'redux/mainWallet/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
+import Preloader from 'components/common/Preloader/Preloader'
 import { integerWithDelimiter } from 'utils/formatter'
 import './TransactionsTable.scss'
 
@@ -155,7 +156,7 @@ export default class TransactionsTable extends PureComponent {
               ? (
                 <div styleName='section'>
                   <div styleName='section-header'>
-                    <div styleName='txs-loading'><CircularProgress size={24} thickness={1.5} /></div>
+                    <div styleName='txs-loading'><Preloader size={24} thickness={1.5} /></div>
                   </div>
                 </div>
               )
@@ -179,7 +180,7 @@ export default class TransactionsTable extends PureComponent {
             : (
               <div styleName='footer'>
                 <RaisedButton
-                  label={isFetching ? <CircularProgress
+                  label={isFetching ? <Preloader
                     style={{ verticalAlign: 'middle', marginTop: -2 }}
                     size={24}
                     thickness={1.5}
