@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { data as networks } from './nem/lib/Network'
+import { NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
 // TODO @dkchv: update to actual config
@@ -29,14 +29,14 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/app_mainnett-ethereum-middleware-chronobank-io_balance',
+      balance: '/exchange/events/app_mainnet-ethereum-middleware-chronobank-io_balance',
     },
   },
   trace: true,
 })
 
 export default function selectEthereumNode (engine) {
-  return engine.getNetwork() !== networks.Mainnet
-    ? ETHEREUM_TESTNET_NODE
-    : ETHEREUM_MAINNET_NODE
+  return engine.getNetwork().id === NETWORK_MAIN_ID
+    ? ETHEREUM_MAINNET_NODE
+    : ETHEREUM_TESTNET_NODE
 }

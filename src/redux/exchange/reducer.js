@@ -13,7 +13,9 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_GET_ORDERS_FINISH:
       return state.exchanges(action.exchanges.isFetched(true).isFetching(false)).lastPages(action.lastPages || state.lastPages)
     case a.EXCHANGE_SET_FILTER:
-      return state.filter(action.filter)
+      return state
+        .exchanges(new ExchangesCollection())
+        .filter(action.filter)
         .lastPages(0)
     case a.EXCHANGE_GET_DATA_START:
       return state.isFetched(false).isFetching(true)
@@ -32,7 +34,7 @@ const reducer = (state = initialState, action) => {
     case a.EXCHANGE_UPDATE:
       return state.exchanges(state.exchanges().update(action.exchange))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_START:
-      return state.exchanges(new ExchangesCollection().isFetching(true))
+      return state.exchanges(state.exchanges().isFetching(true))
     case a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH:
       return state
         .exchanges(action.exchanges.isFetching(false).isFetched(true))

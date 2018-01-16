@@ -178,7 +178,7 @@ export default class DepositTokensForm extends PureComponent {
                     {...styles}
                   >
                     {assets
-                      .sortBy(balance => balance.symbol())
+                      .sortBy((balance) => balance.symbol())
                       .map((item) => (
                         <MenuItem
                           key={item.id()}
@@ -194,17 +194,20 @@ export default class DepositTokensForm extends PureComponent {
                   <div>
                     <div styleName='balance'>
                       <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
-                      <TokenValue isInvert value={balance} />
+                      <div styleName='ellipsis'><TokenValue isInvert value={balance} /></div>
                     </div>
                     <div styleName='balance'>
                       <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
-                      <TokenValue isInvert value={deposit} />
+                      <div styleName='ellipsis'><TokenValue isInvert value={deposit} /></div>
                     </div>
-                    <div styleName='balance'>
-                      <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:
+                    {
+                      allowance.amount().gt(0) &&
+                      <div styleName='balance'>
+                        <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:
+                        </div>
+                        <div styleName='ellipsis'><TokenValue isInvert value={allowance.amount()} /></div>
                       </div>
-                      <TokenValue isInvert value={allowance.amount()} />
-                    </div>
+                    }
                   </div>
                 )
                 : (

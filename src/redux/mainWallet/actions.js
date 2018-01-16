@@ -53,12 +53,12 @@ export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBala
 export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
-  const { account, profile } = getState().get(DUCK_SESSION)
+  const { account } = getState().get(DUCK_SESSION)
+  const tokens = getState().get(DUCK_TOKENS)
 
   dispatch(fetchTokenBalance(token))
-
-  if (token.isOptional() && !profile.tokens().get(token.address())) {
-    return
+  if (tokens.leftToFetch() === 0) {
+    dispatch(getAccountTransactions())
   }
 
   const symbol = token.symbol()
@@ -165,8 +165,6 @@ export const initMainWallet = () => async (dispatch, getState) => {
     })
   })
 
-  // TODO @dkchv: !!! review again
-  dispatch(getAccountTransactions())
 }
 
 export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
@@ -226,7 +224,7 @@ let lastCacheId
 let txsCache = []
 
 export const getAccountTransactions = () => async (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
+  const wallet = getState().get(DUCK_MAIN_WALLET)
   // TODO @ipavlenk: It seems it is wrong tokens source, odd code, there is only ETH token
   const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
@@ -251,11 +249,10 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
         if (reset) {
           tokenDAO.resetFilterCache()
         }
-        promises.push(tokenDAO.getTransfer(getTransferId, account))
+        promises.push(tokenDAO.getTransfer(getTransferId, wallet.addresses().item(token.blockchain()).address()))
       }
     }
     const result = await Promise.all(promises)
-
     let newTxs = []
     for (let pack of result) {
       newTxs = [ ...newTxs, ...pack ]

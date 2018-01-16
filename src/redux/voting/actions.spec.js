@@ -1,24 +1,26 @@
+import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import { store } from 'specsInit'
+import { accounts, mockStore } from 'specsInit'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollModel from 'models/PollModel'
-// import type PollDetailsModel from 'models/PollDetailsModel'
 import PollNoticeModel, {
-  IS_CREATED,
-  IS_REMOVED,
-  IS_ACTIVATED,
-  IS_ENDED,
+  IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED,
   IS_VOTED,
 } from 'models/notices/PollNoticeModel'
-import { createPoll, removePoll, activatePoll, endPoll, vote } from './actions'
+import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
+import TokenModel from 'models/tokens/TokenModel'
+import TokensCollection from 'models/tokens/TokensCollection'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { activatePoll, createPoll, endPoll, removePoll, vote } from './actions'
 
 const poll1 = {
   proto: new PollModel({
     title: 'First poll',
     description: 'First poll description',
     voteLimitInTIME: new BigNumber(1),
-    options: new Immutable.List(['option1', 'option2']),
+    options: new Immutable.List([ 'option1', 'option2' ]),
   }),
   details: null,
 }
@@ -28,12 +30,35 @@ const poll2 = {
     title: 'Second poll',
     description: 'Second poll description',
     voteLimitInTIME: new BigNumber(1),
-    options: new Immutable.List(['First', 'Second']),
+    options: new Immutable.List([ 'First', 'Second' ]),
   }),
   details: null,
 }
 
+let store
+let tokens = new TokensCollection()
+const mock = new Immutable.Map({
+  [ DUCK_SESSION ]: {
+    account: accounts[ 0 ],
+  },
+  [ DUCK_TOKENS ]: tokens,
+})
+
 describe('Voting actions', () => {
+  it('init Time', async (done) => {
+    const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+    erc20
+      .on(EVENT_NEW_ERC20_TOKEN, async (token: TokenModel) => {
+        if (token.symbol() === 'TIME') {
+          tokenService.createDAO(token)
+          tokens = tokens.add(token)
+          store = mockStore(mock.set(DUCK_TOKENS, tokens))
+          done()
+        }
+      })
+      .fetchTokens()
+  })
+
   it.skip('should create poll1', async (done) => {
     await store.dispatch(createPoll(poll1.proto))
     const dao = await contractsManagerDAO.getVotingManagerDAO()

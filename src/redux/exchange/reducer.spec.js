@@ -1,8 +1,6 @@
 import Immutable from 'immutable'
-import TokenModel from 'models/tokens/TokenModel'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
-import TokensCollection from 'models/tokens/TokensCollection'
 import * as a from './actions'
 import reducer, { initialState } from './reducer'
 
@@ -66,26 +64,6 @@ describe('assetsManager reducer', () => {
     ).toMatchSnapshot()
   })
 
-  it('sould handle EXCHANGE_GET_TOKENS_LIST_START', () => {
-    const token = new TokenModel({})
-    expect(
-      reducer(undefined, {
-        type: a.EXCHANGE_GET_TOKENS_LIST_START,
-        tokens: new TokensCollection().add(token),
-      }),
-    ).toMatchSnapshot()
-  })
-
-  it('sould handle EXCHANGE_GET_TOKENS_LIST_FINISH', () => {
-    const token = new TokenModel({})
-    expect(
-      reducer(undefined, {
-        type: a.EXCHANGE_GET_TOKENS_LIST_FINISH,
-        tokens: new TokensCollection().add(token),
-      }),
-    ).toMatchSnapshot()
-  })
-
   it('sould handle EXCHANGE_REMOVE_FOR_OWNER', () => {
     const exchange = new ExchangeOrderModel({ address: 'test' })
     const state = initialState.exchangesForOwner(new ExchangesCollection().add(exchange))
@@ -102,7 +80,7 @@ describe('assetsManager reducer', () => {
     const state = initialState.exchangesForOwner(new ExchangesCollection().add(exchange))
     expect(
       reducer(state, {
-        type: a.EXCHANGE_REMOVE_FOR_OWNER,
+        type: a.EXCHANGE_UPDATE_FOR_OWNER,
         exchange: exchange,
       }),
     ).toMatchSnapshot()
@@ -140,6 +118,18 @@ describe('assetsManager reducer', () => {
     ).toMatchSnapshot()
   })
 
+  it('sould handle EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT', () => {
+    const exchange = new ExchangeOrderModel({ address: 'test' })
+    expect(
+      reducer(undefined, {
+        type: a.EXCHANGE_EXCHANGES_LIST_GETTING_FINISH_CONCAT,
+        exchanges: new ExchangesCollection().add(exchange),
+        lastPages: 1,
+        pagesCount: 1,
+      }),
+    ).toMatchSnapshot()
+  })
+
   it('sould handle EXCHANGE_SET_PAGES_COUNT', () => {
     expect(
       reducer(undefined, {
@@ -160,7 +150,6 @@ describe('assetsManager reducer', () => {
   })
 
   it('sould handle EXCHANGE_GET_OWNERS_EXCHANGES_FINISH', () => {
-    const exchange = new ExchangeOrderModel({ address: 'test' })
     expect(
       reducer(undefined, {
         type: a.EXCHANGE_GET_OWNERS_EXCHANGES_FINISH,
