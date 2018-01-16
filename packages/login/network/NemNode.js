@@ -21,6 +21,7 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/mainnet-nem-middleware-chronobank-io_balance',
+      tx: '/exchange/events/mainnet-nem-middleware-chronobank-io_tx',
     },
   },
   trace: true,
@@ -36,7 +37,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
     decimals: 2,
   }],
   api: axios.create({
-    baseURL: 'https://test-3.chronobank.io',
+    baseURL: 'https://test-5.chronobank.io',
     timeout: 30000,
   }),
   socket: {
@@ -44,7 +45,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/testnet-nem-middleware-chronobank-io_balance',
+      balance: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_balance',
     },
   },
   trace: true,
