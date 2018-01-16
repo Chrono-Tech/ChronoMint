@@ -1,125 +1,166 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`settings erc20 actions should dispatch changes for decimals and symbol fields for valid ERC20 1`] = `
-[
-  {
-    "type": "settings/TOKENS_FORM_FETCH"
-  },
-  {
-    "meta": {
-      "field": "decimals",
-      "form": "TEST"
-    },
-    "payload": 4,
-    "type": "@@redux-form/CHANGE"
-  },
-  {
-    "meta": {
-      "field": "symbol",
-      "form": "TEST"
-    },
-    "payload": "FAKE",
-    "type": "@@redux-form/CHANGE"
-  },
-  {
-    "end": true,
-    "type": "settings/TOKENS_FORM_FETCH"
-  }
-]
-`;
-
-exports[`settings erc20 actions should list tokens 1`] = `
-{
-  "address": "0x9509cca5fa3f90e95fc1374df0951d4ae62050c2",
-  "allowance": {},
-  "balance": "0",
-  "blockchain": "Ethereum",
-  "dao": null,
-  "decimals": 3,
-  "fee": null,
-  "feeAddress": null,
-  "feeRate": null,
-  "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
-  "id": null,
-  "isFailed": false,
-  "isFetched": true,
-  "isFetching": false,
-  "isOptional": true,
-  "isPending": false,
-  "isReissuable": false,
-  "managersList": null,
-  "name": "Fake",
-  "platform": null,
-  "symbol": "FAKE",
-  "timestamp": null,
-  "totalSupply": "0",
-  "transactionHash": null,
-  "url": "http://fakecoin.io",
-  "withFee": false
-}
-`;
-
 exports[`settings erc20 actions should modify token 1`] = `
 [
   {
     "token": {
       "address": "0x9509cca5fa3f90e95fc1374df0951d4ae62050c2",
-      "allowance": {},
       "balance": "0",
       "blockchain": null,
       "dao": null,
       "decimals": 3,
-      "fee": null,
-      "feeAddress": null,
+      "fee": {
+        "fee": null,
+        "feeAddress": null,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "withFee": null
+      },
       "feeRate": null,
       "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
       "id": null,
+      "isERC20": false,
       "isFailed": false,
       "isFetched": false,
       "isFetching": true,
+      "isInited": false,
+      "isLocked": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": false,
-      "managersList": null,
+      "isReissuable": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "value": null
+      },
+      "isSelected": false,
+      "managersList": {
+        "emptyModel": {
+          "address": null,
+          "id": null,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "timestamp": null,
+          "transactionHash": null
+        },
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "leftToFetch": 0,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
       "name": "Fake",
       "platform": null,
       "symbol": "FAKE",
       "timestamp": null,
       "totalSupply": "0",
       "transactionHash": null,
-      "url": "http://fakecoin.io",
-      "withFee": false
+      "url": "http://fakecoin.io"
     },
     "type": "settings/TOKENS_SET"
   },
   {
     "token": {
       "address": "0x9509cca5fa3f90e95fc1374df0951d4ae62050c2",
-      "allowance": {},
       "balance": "0",
       "blockchain": null,
       "dao": null,
       "decimals": 3,
-      "fee": null,
-      "feeAddress": null,
+      "fee": {
+        "fee": null,
+        "feeAddress": null,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "withFee": null
+      },
       "feeRate": null,
       "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
       "id": null,
+      "isERC20": false,
       "isFailed": false,
       "isFetched": false,
       "isFetching": false,
+      "isInited": false,
+      "isLocked": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": false,
-      "managersList": null,
+      "isReissuable": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "value": null
+      },
+      "isSelected": false,
+      "managersList": {
+        "emptyModel": {
+          "address": null,
+          "id": null,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "timestamp": null,
+          "transactionHash": null
+        },
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "leftToFetch": 0,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
       "name": "Fake",
       "platform": null,
       "symbol": "FAKE",
       "timestamp": null,
       "totalSupply": "0",
       "transactionHash": null,
-      "url": "http://fakecoin.io",
-      "withFee": false
+      "url": "http://fakecoin.io"
     },
     "type": "settings/TOKENS_SET"
   }
@@ -131,31 +172,81 @@ exports[`settings erc20 actions should remove token 1`] = `
   {
     "token": {
       "address": "0x9509cca5fa3f90e95fc1374df0951d4ae62050c2",
-      "allowance": {},
       "balance": "0",
       "blockchain": null,
       "dao": null,
       "decimals": 3,
-      "fee": null,
-      "feeAddress": null,
+      "fee": {
+        "fee": null,
+        "feeAddress": null,
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "withFee": null
+      },
       "feeRate": null,
       "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
       "id": null,
+      "isERC20": false,
       "isFailed": false,
       "isFetched": false,
       "isFetching": true,
+      "isInited": false,
+      "isLocked": false,
       "isOptional": true,
       "isPending": false,
-      "isReissuable": false,
-      "managersList": null,
+      "isReissuable": {
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "timestamp": null,
+        "transactionHash": null,
+        "value": null
+      },
+      "isSelected": false,
+      "managersList": {
+        "emptyModel": {
+          "address": null,
+          "id": null,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "timestamp": null,
+          "transactionHash": null
+        },
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "leftToFetch": 0,
+        "list": {},
+        "selected": null,
+        "timestamp": null,
+        "transactionHash": null
+      },
       "name": "Fake",
       "platform": null,
       "symbol": "FAKE",
       "timestamp": null,
       "totalSupply": "0",
       "transactionHash": null,
-      "url": "http://fakecoin.io",
-      "withFee": false
+      "url": "http://fakecoin.io"
     },
     "type": "settings/TOKENS_SET"
   }
@@ -165,39 +256,85 @@ exports[`settings erc20 actions should remove token 1`] = `
 exports[`settings erc20 actions should remove token 2`] = `
 {
   "address": "0x9509cca5fa3f90e95fc1374df0951d4ae62050c2",
-  "allowance": {},
   "balance": "0",
   "blockchain": "Ethereum",
   "dao": null,
   "decimals": 3,
-  "fee": null,
-  "feeAddress": null,
+  "fee": {
+    "fee": null,
+    "feeAddress": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "timestamp": null,
+    "transactionHash": null,
+    "withFee": null
+  },
   "feeRate": null,
   "icon": "QmaJUTXy22JyWnjoy3d34j89ifzqdwKZC2QziKWMja7GsS",
   "id": null,
+  "isERC20": false,
   "isFailed": false,
   "isFetched": false,
   "isFetching": false,
+  "isInited": false,
+  "isLocked": false,
   "isOptional": true,
   "isPending": false,
-  "isReissuable": false,
-  "managersList": null,
+  "isReissuable": {
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "timestamp": null,
+    "transactionHash": null,
+    "value": null
+  },
+  "isSelected": false,
+  "managersList": {
+    "emptyModel": {
+      "address": null,
+      "id": null,
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {},
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
   "name": "Fake",
   "platform": null,
   "symbol": "FAKE",
   "timestamp": null,
   "totalSupply": "0",
   "transactionHash": null,
-  "url": "http://fakecoin.io",
-  "withFee": false
+  "url": "http://fakecoin.io"
 }
 `;
 
-exports[`settings erc20 actions should throw invalidAddress error if token is not valid ERC20 1`] = `
-{
-  "address": "Invalid Address"
-}
-`;
+exports[`settings erc20 actions should throw invalidAddress error if token is not valid ERC20 1`] = `{}`;
 
 exports[`settings erc20 actions should throw symbolInUse error if token symbol is already in use 1`] = `
 {

@@ -2,8 +2,8 @@
 
 exports[`LOC model should construct and return data 1`] = `
 {
-  "createDate": 1516092519216,
-  "expDate": 1523868519216,
+  "createDate": "222222222222",
+  "expDate": "11111111111",
   "id": null,
   "isFailed": false,
   "isFetched": false,

@@ -5616,7 +5616,7 @@ lcov-parse@0.0.10:
   resolved "https://codeload.github.com/dkchv/ledger-wallet-provider/tar.gz/cdf284f13b410641c6fbe3f15922899db403e952"
   dependencies:
     babel-runtime "^6.23.0"
-    ledgerco "1.1.3"
+    ledgerco "^1.1.3"
     promise-timeout "^1.1.1"
     strip-hex-prefix "^1.0.0"
     u2f-api "^0.0.9"
@@ -9626,7 +9626,7 @@ truffle-contract@^3.0.1:
     truffle-contract-schema "^1.0.0"
     web3 "^0.20.1"
 
-"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
+truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

@@ -74,18 +74,9 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER with local 1`] = `
       "name": "Rinkeby (test network)",
       "nem": "Testnet",
       "protocol": "https",
-      "scanner": "https://rinkeby.etherscan.io"
-    },
-    {
-      "bitcoin": "testnet",
-      "bitcoinCash": "testnet",
-      "host": "kovan.infura.io/PVe9zSjxTKIP3eAuAHFA",
-      "id": 42,
-      "litecoin": "litecoin_testnet",
-      "name": "Kovan (test network)",
-      "nem": "Testnet",
-      "protocol": "https",
-      "scanner": "https://kovan.etherscan.io"
+      "scanner": [
+        "https://rinkeby.etherscan.io"
+      ]
     },
     {
       "bitcoin": "testnet",
@@ -137,18 +128,9 @@ exports[`network reducer should handle NETWORK_SET_PROVIDER without local 1`] = 
       "name": "Rinkeby (test network)",
       "nem": "Testnet",
       "protocol": "https",
-      "scanner": "https://rinkeby.etherscan.io"
-    },
-    {
-      "bitcoin": "testnet",
-      "bitcoinCash": "testnet",
-      "host": "kovan.infura.io/PVe9zSjxTKIP3eAuAHFA",
-      "id": 42,
-      "litecoin": "litecoin_testnet",
-      "name": "Kovan (test network)",
-      "nem": "Testnet",
-      "protocol": "https",
-      "scanner": "https://kovan.etherscan.io"
+      "scanner": [
+        "https://rinkeby.etherscan.io"
+      ]
     }
   ],
   "providers": [
@@ -198,19 +180,19 @@ exports[`network reducer should return initial state 1`] = `
   "networks": [],
   "preferMainnet": false,
   "priority": [
-    4,
-    2
+    2,
+    4
   ],
   "providers": [
     {
       "disabled": false,
-      "id": 4,
-      "name": "ChronoBank"
+      "id": 2,
+      "name": "Infura"
     },
     {
       "disabled": false,
-      "id": 2,
-      "name": "Infura"
+      "id": 4,
+      "name": "ChronoBank"
     }
   ],
   "selectedAccount": null,
