@@ -33,6 +33,7 @@ class ProfileModel extends abstractModel({
     return this.get('url')
   }
 
+
   icon () {
     return this.get('icon')
   }
