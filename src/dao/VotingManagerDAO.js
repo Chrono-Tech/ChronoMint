@@ -159,14 +159,18 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
 
   /** @private */
   _watchCallback = (callback, status) => async (result) => {
-    const poll = await this.getPoll(result.args.pollAddress)
-
-    callback(new PollNoticeModel({
+    let notice = new PollNoticeModel({
       pollId: result.args.pollAddress, // just a long
-      poll: poll,
       status,
       transactionHash: result.transactionHash,
-    }))
+    })
+
+    if (status !== IS_REMOVED) {
+      const poll = await this.getPoll(result.args.pollAddress)
+      notice = notice.poll(poll)
+    }
+
+    callback(notice)
   }
 
   async watchCreated (callback) {
