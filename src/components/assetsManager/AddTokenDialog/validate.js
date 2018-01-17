@@ -5,6 +5,10 @@ const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)
 
 export const normalizeSmallestUnit = (value) => validateSmallestUnit(value) ? 0 : value
 
+const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)
+
+export const normalizeSmallestUnit = (value) => validateSmallestUnit(value) ? 0 : value
+
 export default function validate (values) {
   const result = {}
   let platformErrors = new ErrorList()
