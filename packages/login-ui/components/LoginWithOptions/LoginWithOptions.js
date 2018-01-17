@@ -7,7 +7,7 @@ import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import { loginLedger } from '@chronobank/login/redux/ledger/actions'
-import { addError, clearErrors, loading } from '@chronobank/login/redux/network/actions'
+import { addError, clearErrors, loading, setCanExportPK } from '@chronobank/login/redux/network/actions'
 import { loginTrezor } from '@chronobank/login/redux/trezor/actions'
 import pascalCase from 'pascal-case'
 import PropTypes from 'prop-types'
@@ -41,6 +41,9 @@ const STEP_LOGIN_WITH_UPORT = 'step/LOGIN_WITH_UPORT'
 const STEP_LOGIN_LOCAL = 'step/LOGIN_LOCAL'
 
 const T = () => true
+
+const checkStep = (currentStep) =>
+  currentStep === STEP_LOGIN_WITH_MNEMONIC || currentStep === STEP_LOGIN_WITH_WALLET || currentStep === STEP_LOGIN_WITH_PRIVATE_KEY
 
 const loginOptions = [
   {
@@ -123,6 +126,7 @@ const mapDispatchToProps = (dispatch) => ({
   loading: () => dispatch(loading()),
   loginLedger: () => loginLedger(),
   loginTrezor: () => loginTrezor(),
+  setCanExportPK: (canExport) => dispatch(setCanExportPK(canExport)),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -139,6 +143,7 @@ class LoginWithOptions extends PureComponent {
     loading: PropTypes.func,
     loginLedger: PropTypes.func,
     loginTrezor: PropTypes.func,
+    setCanExportPK: PropTypes.func,
   }
 
   constructor (props, context, updater) {
@@ -234,6 +239,7 @@ class LoginWithOptions extends PureComponent {
   async setupAndLogin (provider) {
     try {
       await networkService.setup(provider)
+      this.props.setCanExportPK(checkStep(this.state.step))
       this.props.onLogin()
     } catch (e) {
       // eslint-disable-next-line

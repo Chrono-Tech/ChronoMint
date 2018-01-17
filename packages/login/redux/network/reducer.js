@@ -20,6 +20,7 @@ const initialState = {
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,
+  canExport: false,
 }
 
 export default (state = initialState, action) => {
@@ -49,6 +50,8 @@ export default (state = initialState, action) => {
       }
     case actions.NETWORK_SET_ACCOUNTS:
       return { ...state, accounts: action.accounts }
+    case actions.NETWORK_CAN_EXPORT_PK:
+      return { ...state, canExport: action.canExport }
     case actions.NETWORK_SELECT_ACCOUNT:
       return { ...state, selectedAccount: action.selectedAccount }
     case actions.NETWORK_CLEAR_ERRORS:
