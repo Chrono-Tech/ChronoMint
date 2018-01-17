@@ -13,6 +13,7 @@ export class NemTx {
     txHash,
     time,
     from,
+    signer, // PublicKey
     to,
     value,
     fee,
@@ -21,6 +22,7 @@ export class NemTx {
     this.txHash = txHash
     this.time = time
     this.from = from
+    this.signer = signer
     this.to = to
     this.value = value
     this.fee = fee

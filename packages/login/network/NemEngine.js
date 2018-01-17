@@ -33,6 +33,7 @@ export class NemEngine {
     const signature = this._wallet.sign(serialized)
     return {
       tx: {
+        address: this._wallet.getAddress(),
         data: nem.utils.convert.ua2hex(serialized),
         signature: signature.toString(),
       },

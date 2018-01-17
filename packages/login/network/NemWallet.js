@@ -35,3 +35,7 @@ export default class NemWallet {
     return new NemWallet(hex, nem.crypto.keyPair.create(hex), network)
   }
 }
+
+export const signerToAddress = (signer, network) => {
+  return nem.model.address.toAddress(signer, network.id)
+}

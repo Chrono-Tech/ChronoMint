@@ -1,4 +1,4 @@
-import type BigNumber from 'bignumber.js'
+import BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
 import { NemTx, NemBalance } from './NemAbstractNode'
 import { selectNemNode } from './NemNode'
@@ -41,9 +41,12 @@ export class NemProvider extends AbstractProvider {
   async getAccountBalances (mosaic = null) {
     const node = this._selectNode(this._engine)
     const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
-    return mosaic !== null
-      ? mosaics[mosaic]
-      : balance
+    if (mosaic) {
+      return (mosaics && (mosaic in mosaics))
+        ? mosaics[mosaic]
+        : { confirmed: new BigNumber(0) } // When no such mosaic specified
+    }
+    return balance
   }
 
   // eslint-disable-next-line

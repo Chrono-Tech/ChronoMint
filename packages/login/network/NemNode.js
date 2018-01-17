@@ -21,7 +21,7 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/mainnet-nem-middleware-chronobank-io_balance',
-      tx: '/exchange/events/mainnet-nem-middleware-chronobank-io_tx',
+      transaction: '/exchange/events/mainnet-nem-middleware-chronobank-io_transaction',
     },
   },
   trace: true,
@@ -46,7 +46,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_balance',
-      tx: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_tx',
+      transaction: '/exchange/events/internal-testnet-nem-middleware-chronobank-io_transaction',
     },
   },
   trace: true,

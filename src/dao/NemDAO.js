@@ -1,13 +1,14 @@
 import BigNumber from 'bignumber.js'
-import { EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
-import type TxModel from 'models/TxModel'
+import TxModel from 'models/TxModel'
+import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 
 const BLOCKCHAIN_NEM = 'NEM'
 
-// const EVENT_TX = 'tx'
+const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 
 export const EVENT_NEM_LIKE_TOKEN_CREATED = 'nemLikeTokenCreated'
@@ -82,7 +83,7 @@ export default class NemDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number) {
+  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
       return await this._nemProvider.transfer(from, to, amount)
     } catch (e) {
@@ -105,16 +106,21 @@ export default class NemDAO extends EventEmitter {
     ])
   }
 
-  // eslint-disable-next-line no-unused-vars
   async watchTransfer () {
-    // TODO @ipavlenko: Implement for XEM
-    // this._nemProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
-    //   callback(new TransferNoticeModel({
-    //     account,
-    //     time,
-    //     tx: tx.set('symbol', this.getSymbol()),
-    //   }))
-    // })
+    this._nemProvider.addListener(EVENT_TX, async ({ tx }) => {
+      this.emit(EVENT_NEW_TRANSFER, new TxModel({
+        txHash: tx.txHash,
+        // blockHash: tx.blockhash,
+        // blockNumber: tx.blockheight,
+        blockNumber: null,
+        time: tx.time,
+        from: tx.from || tx.signer,
+        to: tx.to,
+        value: new Amount(tx.value, this._symbol),
+        fee: new Amount(tx.fee, this._symbol),
+        credited: tx.credited,
+      }))
+    })
   }
 
   async watchBalance () {
@@ -122,7 +128,7 @@ export default class NemDAO extends EventEmitter {
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
-        balance: readBalanceValue(balance, this._mosaic),
+        balance: readBalanceValue(this._symbol, balance, this._mosaic),
       })
     })
   }
@@ -159,11 +165,14 @@ export default class NemDAO extends EventEmitter {
   }
 }
 
-function readBalanceValue (balance, mosaic = null) {
-  console.log('balance', balance, mosaic)
-  return mosaic
-    ? balance.mosaics[mosaic].confirmed // TODO @ipavlenko: Change to "unconfirmed" when such balance be implemented on the middleware
-    : balance.unconfirmed != null // nil check
-      ? balance.confirmed.plus(balance.unconfirmed)
-      : balance.confirmed
+function readBalanceValue (symbol, balance, mosaic = null) {
+  if (mosaic) {
+    return (mosaic in balance.mosaics)
+      ? balance.mosaics[mosaic].confirmed
+      : new Amount(0, symbol)
+  }
+  const b = balance.balance
+  return b.unconfirmed != null // nil check
+    ? b.confirmed.plus(b.unconfirmed)
+    : b.confirmed
 }
