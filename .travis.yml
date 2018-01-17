@@ -52,7 +52,7 @@ jobs:
             docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "release" ]; then
-            IMAGE_TAG_NAME="lastest"
+            IMAGE_TAG_NAME="latest"
             docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
