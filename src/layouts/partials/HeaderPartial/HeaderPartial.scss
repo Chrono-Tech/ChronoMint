@@ -244,17 +244,15 @@ $default-padding: 8px 0px;
 }
 
 .infoAddress {
+  @include ellipsis;
   position: relative;
   display: block;
   float: left;
   color: $color-primary-1;
   line-height: 25px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   width: 85px;
   font-size: 14px;
   vertical-align: baseline;
-  white-space: nowrap;
 }
 
 .infoIcon {

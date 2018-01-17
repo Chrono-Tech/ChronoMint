@@ -114,10 +114,8 @@ $cell-padding: 24px 0px;
       }
 
       .text-normal, .text-faded, .text-light {
+        @include ellipsis;
         position: relative;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         margin-right: 20px;
 
         @include md-only {
