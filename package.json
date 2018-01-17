@@ -1,13 +1,15 @@
 {
-  "name": "chronoMint",
-  "version": "0.3.2",
+  "name": "@chronobank/mint",
+  "version": "0.4.1",
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
+    "@chronobank/login": "*",
+    "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",
     "autoprefixer": "7.1.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.1.1",
     "babel-jest": "21.2.0",
     "babel-loader": "7.0.0",
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -72,10 +74,11 @@
   "dependencies": {
     "axios": "^0.16.2",
     "babel-plugin-react-css-modules": "^2.7.1",
+    "bignumber.js": "^4.1.0",
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.43",
+    "chronobank-smart-contracts": "1.1.44",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
@@ -87,12 +90,13 @@
     "ipfs-api": "^16.0.0",
     "js-file-download": "^0.4.1",
     "keythereum": "^0.5.2",
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",
+    "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider",
     "lodash": "^4.17.4",
     "material-colors-scss": "^1.0.0",
     "material-ui": "^0.19.4",
     "mnid": "^0.1.1",
     "moment": "^2.17.1",
+    "pascal-case": "^2.0.1",
     "postcss-scss": "^1.0.0",
     "pre-commit": "^1.2.2",
     "prop-types": "latest",
@@ -131,16 +135,16 @@
     "webstomp-client": "^1.2.0"
   },
   "scripts": {
-    "dev": "node ./scripts/start.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx --debug --fix .",
     "lint:pr": "bash -c \"node node_modules/eslint/bin/eslint --format node_modules/eslint-friendly-formatter/index.js --ext .js,.jsx `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:report": "bash -c \"node ./node_modules/eslint/bin/eslint --format node_modules/eslint-html-reporter/reporter-team-city.js --output-file ./report/eslint-report-`date +%F`.html --debug --ext .js,.jsx .\"",
     "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
-    "start": "npm run dev",
+    "start": "node ./scripts/start.js",
+    "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
-    "build-archive": "npm run build && node ./scripts/compress.js build build.zip",
+    "build-archive": "yarn build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",
     "testrpc": "testrpc --mnemonic \"video visa alcohol fault earth naive army senior major inherit convince electric\" --trace_request true | grep -Ev \"FilterSubprovider|eth_getFilterChanges\"",
@@ -149,7 +153,7 @@
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
-    "rei": "rm -rf ./node_modules && npm i && npm run contracts:compile"
+    "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "pre-commit": [],
   "jest": {
@@ -171,7 +175,7 @@
       "src"
     ],
     "moduleNameMapper": {
-      "^@(.*)$": "<rootDir>/src/$1",
+      "^@chronobank(.*)$": "<rootDir>/packages/$1",
       "\\.(css|scss)$": "<rootDir>/mocks/styleMock.js",
       "\\.(png|jpg|jpeg|gif|ttf|eot|woff|otf|svg)$": "<rootDir>/mocks/fileMock.js"
     }
@@ -179,5 +183,8 @@
   "engines": {
     "node": ">=7.9.0",
     "yarn": ">=1.0.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

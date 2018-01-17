@@ -1,12 +1,12 @@
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
-import { I18n } from 'react-redux-i18n'
+import { I18n } from 'platform/i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import { validate } from 'models/TokenModel'
+import { validate } from 'models/tokens/TokenModel'
 import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
@@ -49,7 +49,8 @@ export default class CBETokenDialog extends PureComponent {
     isFetching: PropTypes.bool,
     handleAddressChange: PropTypes.func,
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
     return (

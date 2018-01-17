@@ -101,10 +101,16 @@
 
 .row {
   display: flex;
+  justify-content: space-between;
 }
 
 .amount {
-  max-width: 150px;
+  width: 220px;
+}
+
+.feeRate {
+  margin-top: 20px;
+  width: 220px;
 }
 
 .send {

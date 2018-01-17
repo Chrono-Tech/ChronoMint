@@ -1,14 +1,16 @@
-import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { RaisedButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-import { Field, reduxForm, FieldArray, formPropTypes } from 'redux-form/immutable'
-import MultisigWalletModel from 'models/Wallet/MultisigWalletModel'
-import { modalsClose } from 'redux/modals/actions'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
+import { RaisedButton } from 'material-ui'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { TextField } from 'redux-form-material-ui'
+import { Field, FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import validate from './validate'
 import './WalletAddEditForm.scss'
@@ -28,13 +30,24 @@ function mapStateToProps (state) {
 }
 
 const onSubmit = (values, dispatch, props) => {
+  const owners = values.get('owners')
+  let ownersCollection = new OwnerCollection()
+  ownersCollection = ownersCollection.add(new OwnerModel({
+    address: props.account,
+  }))
+  owners.forEach((owner) => {
+    ownersCollection = ownersCollection.add(new OwnerModel({
+      address: owner.get('address'),
+    }))
+  })
   return new MultisigWalletModel({
     ...props.initialValues.toJS(),
     ...values.toJS(),
-    owners: [
-      props.account,
-      ...values.get('owners').toArray().map((item) => item.get('address')),
-    ],
+    owners: ownersCollection,
+    // owners: [
+    //   props.account,
+    //   ...values.get('owners').toArray().map((item) => item.get('address')),
+    // ],
   })
 }
 
@@ -43,11 +56,11 @@ const onSubmit = (values, dispatch, props) => {
 export default class WalletAddEditForm extends PureComponent {
   static propTypes = {
     onClose: PropTypes.func,
-  } & formPropTypes
+    ...formPropTypes,
+  }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues } = this.props
-    const isNew = initialValues.get('isNew')
+    const { handleSubmit, pristine, valid } = this.props
 
     return (
       <form styleName='content' onSubmit={handleSubmit}>
@@ -60,13 +73,6 @@ export default class WalletAddEditForm extends PureComponent {
           </div>
         </div>
         <div styleName='dialogBody'>
-          <Field
-            component={TextField}
-            name='name'
-            fullWidth
-            disabled
-            floatingLabelText={<Translate value='WalletAddEditDialog.walletName' />}
-          />
           <Field
             component={TextField}
             name='requiredSignatures'

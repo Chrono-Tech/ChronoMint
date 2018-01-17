@@ -1,5 +1,5 @@
 import { ru as layouts } from 'layouts/lang'
-import { ru as Login } from 'Login/lang'
+import { ru as Login } from '@chronobank/login-ui/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
@@ -9,7 +9,7 @@ import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
 import * as platformsManager from 'dao/PlatformsManagerDAO'
 import * as rewards from 'dao/RewardsDAO'
-import * as time from 'dao/TIMEHolderDAO'
+import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import * as voting from 'dao/VotingDAO'
 import { ru as components } from 'components/lang'
@@ -38,9 +38,9 @@ export default {
     operations: 'Операции',
     settings: 'Настройки',
     wallet: 'Кошелёк',
-    exchange: 'Обмен (demo)',
+    exchange: 'Обмен',
     voting: 'Голосование',
-    rewards: 'Награды',
+    rewards: 'Бонусы',
     assets: 'Мои активы',
     profile: 'Профайл',
     signOut: 'Выйти',
@@ -49,7 +49,7 @@ export default {
     loadMore: 'Загрузить еще',
     markupDashboard: 'Панель управления',
     markupWallet: 'Новый Кошелёк',
-    newRewards: 'Новые Награды',
+    newRewards: 'Новые Бонусы',
     pageNotFound: 'Страница не найдена',
     backToMain: 'Вернуться на главную',
   },
@@ -72,6 +72,8 @@ export default {
     switchToMainWallet: 'Переключить на основной кошелёк',
     pendingTransfers: 'Проводимые переводы',
     to: 'Кому',
+    transaction: 'Транзакция',
+    actions: 'Действия',
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',
     sign: 'ПОДПИСАТЬ',
@@ -85,7 +87,7 @@ export default {
       clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
       selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
       selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
-      owners: 'владельцев',
+      owners: '%{num} владельцев',
     },
   },
   exchange: {
@@ -236,10 +238,10 @@ export default {
     feeLeft: 'Комиссия оставшихся транзакций',
     TokenManagementInterface: {
       createAssetWithoutFee: {
-        title: 'Подтвердите создание токена без коммиссии',
+        title: 'Подтвердите создание токена',
       },
       createAssetWithFee: {
-        title: 'Подтвердите создание токена c коммиссией',
+        title: 'Подтвердите создание токена',
       },
     },
     ChronoBankPlatform: {
@@ -346,11 +348,11 @@ export default {
     },
     Rewards: {
       [rewards.TX_WITHDRAW_REWARD]: {
-        title: 'Вывести Вознаграждение',
+        title: 'Вывести Бонусы',
         amount: 'Объем',
       },
       [rewards.TX_CLOSE_PERIOD]: {
-        title: 'Закрыть Период Вознаграждений',
+        title: 'Закрыть Бонусный Период',
       },
     },
     AssetDonator: {
@@ -423,7 +425,7 @@ export default {
     },
     ERC20Interface: {
       [erc20.TX_APPROVE]: {
-        title: 'Одрбрить списание TIME',
+        title: 'Одобрить списание токенов',
         account: 'Аккаунт',
         amount: 'Колическтво',
       },
@@ -433,12 +435,43 @@ export default {
         amount: 'Сумма',
       },
     },
+    ExchangeManager:{
+      createExchange: {
+        title: 'Создать обменник',
+      },
+    },
     Exchange: {
       [exchange.TX_BUY]: {
-        title: 'Buy LHT for ETH',
+        title: 'Купить токены за ETH',
       },
       [exchange.TX_SELL]: {
-        title: 'Sell LHT for ETH',
+        title: 'Продать токены за ETH',
+      },
+      [exchange.TX_WITHDRAW_TOKENS]: {
+        title: 'Подтвердите вывод токенов',
+      },
+      [exchange.TX_WITHDRAW_ETH]: {
+        title: 'Подтвердите вывод ETH',
+      },
+    },
+    Wallet: {
+      transfer: {
+        title: 'Перевод',
+        value: 'Количество',
+        to: 'Кому',
+        symbol: 'Символ',
+      },
+      addOwner: {
+        title: 'Добавить менеждера',
+        owner: 'Новый менеджер',
+      },
+      removeOwner: {
+        title: 'Удалить мееджера',
+        owner: 'Адрес',
+      },
+      kill: {
+        title: 'Удалить кошелек',
+        to: 'Перевести средства на адрес',
       },
     },
   },
@@ -450,7 +483,7 @@ export default {
     invalidURL: 'Некорректный адрес',
     invalidEmail: 'Некорректный е-майл',
     invalidLength: 'Не меньше 3-х символов',
-    invalidAddress: 'Некорректный Ethereum адрес',
+    invalidAddress: 'Некорректный %{blockchain} адрес',
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
@@ -578,17 +611,17 @@ export default {
     VOTE_ACTIVE_POLL_LIMIT_REACHED: 'Голос: лимит активного голосования достигнут',
     VOTE_UNABLE_TO_ACTIVATE_POLL: 'Голос: не могу активировать голосование',
 
-    REWARD_NOT_FOUND: 'Награда: не найдена',
-    REWARD_INVALID_PARAMETER: 'Награда: неправильный параметр запроса',
-    REWARD_INVALID_INVOCATION: 'Награда: неправильный вызов',
-    REWARD_INVALID_STATE: 'Награда: неправильное состояние',
-    REWARD_INVALID_PERIOD: 'Награда: неправильный период',
-    REWARD_NO_REWARDS_LEFT: 'Награда: не осталось наград',
-    REWARD_ASSET_TRANSFER_FAILED: 'Награда: неудача трансфера ассета',
-    REWARD_ALREADY_CALCULATED: 'Награда: уже посчитана',
-    REWARD_CALCULATION_FAILED: 'Награда: неудача подсчета',
-    REWARD_CANNOT_CLOSE_PERIOD: 'Награда: не могу закрыть период',
-    REWARD_ASSET_ALREADY_REGISTERED: 'Награда: ассет уже зарегистрирован',
+    REWARD_NOT_FOUND: 'Бонус: не найден',
+    REWARD_INVALID_PARAMETER: 'Бонус: неправильный параметр запроса',
+    REWARD_INVALID_INVOCATION: 'Бонус: неправильный вызов',
+    REWARD_INVALID_STATE: 'Бонусы: неправильное состояние',
+    REWARD_INVALID_PERIOD: 'Бонусы: неправильный период',
+    REWARD_NO_REWARDS_LEFT: 'Бонусы: не осталось бонусов',
+    REWARD_ASSET_TRANSFER_FAILED: 'Бонус: неудача трансфера ассета',
+    REWARD_ALREADY_CALCULATED: 'Бонус: уже посчитана',
+    REWARD_CALCULATION_FAILED: 'Бонус: неудача подсчета',
+    REWARD_CANNOT_CLOSE_PERIOD: 'Бонус: не могу закрыть период',
+    REWARD_ASSET_ALREADY_REGISTERED: 'Бонус: ассет уже зарегистрирован',
 
     CONTRACT_EXISTS: 'Контракт уже существует',
     CONTRACT_NOT_EXISTS: 'Контракт не существует',
@@ -625,6 +658,7 @@ export default {
     },
   },
   components: {
+    ...components.components,
     dashboard: {
       TransactionsTable: {
         latestTransactions: 'Последние транзакции',
@@ -648,11 +682,14 @@ export default {
         balance: 'Баланс',
         recipientAddress: 'Адрес получателя',
         amount: 'Сумма',
+        feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
         approve: 'Подтвердить',
+        revoke: 'Отозвать',
+        allowance: 'allowance',
         send: 'Отправить',
       },
       RewardsPeriod: {
-        rewardsPeriodIndex: 'Наградной период #%{index}',
+        rewardsPeriodIndex: 'Бонусный период #%{index}',
         ongoing: 'Продолжается',
         closed: 'Закрыт',
         startDate: 'Дата начала',
@@ -661,23 +698,10 @@ export default {
         totalTimeTokensDeposited: 'Всего внесено TIME токенов',
         percentOfTotalCount: '%{percent}% то общего числа',
         uniqueShareholders: 'Уникальные акционеры',
-        yourTimeTokensEligible: 'Ваши TIME токены претендующие на вознаграждение за период',
+        yourTimeTokensEligible: 'Ваши TIME токены претендующие на бонусы за период',
         percentOfTotalDepositedAmount: '%{percent}% от общей суммы депозита',
         dividendsAccumulatedForPeriod: 'Дивиденды собранные за период',
         yourApproximateRevenueForPeriod: 'Ваша приблизительная прибыль за период',
-      },
-      ExchangeWidget: {
-        exchange: 'Обмен',
-        search: 'Поиск',
-        currency: 'Валюта',
-        buy: 'Купить',
-        sell: 'Продать',
-      },
-      OrdersTable: {
-        orderBook: 'Книга Ордеров',
-        trader: 'Трейдер',
-        paymentDescription: 'Описание платежа',
-        limits: 'Лимиты',
       },
       Poll: {
         new: 'Новое',

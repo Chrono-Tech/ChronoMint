@@ -1,0 +1,199 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+.content {
+  width: 680px;
+  background-color: $color-white;
+  @include sm-only {
+    width: 100%;
+  }
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  height: 180px;
+  padding: 24px 16px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.dialogHeaderStuff {
+  display: flex;
+  height: 24px;
+}
+
+.dialogHeaderTitle {
+  color: $color-white;
+  min-width: 300px;
+  font-size: 34px;
+}
+
+.dialogBody {
+  padding: 0 16px;
+}
+
+.dialogFooter {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0 0 0 10px;
+}
+
+.tokenWrapperHeader {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 16px;
+}
+
+.tokensList {
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.tokensListFolded {
+  max-height: 110px;
+}
+
+.tokenItem {
+  width: 70px;
+  height: 100px;
+  margin: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 2px;
+}
+
+.tokenTitle {
+  width: 100%;
+  text-align: center;
+  @include ellipsis;
+}
+
+.tokenIcon {
+  flex: 1;
+  width: 80%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.flexRight {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.balanceWrapper {
+  font-size: 24px !important;
+  @include sm-only {
+    margin-left: 100px;
+    .TokenValue__root {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.tokenName {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.balanceSubTitle {
+  opacity: 0.6;
+  font-size: 14px;
+  margin-bottom: -10px;
+  @include sm-only {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}
+
+.pricesWrapper {
+  margin-top: 35px;
+  @include sm-only {
+    margin-top: 20px;
+  }
+}
+
+.pricesHeader {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  @include sm-only {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
+}
+
+.pricesRow {
+  display: flex;
+  justify-content: space-between;
+  @include sm-only {
+    flex-direction: column;
+  }
+}
+
+.sm-show {
+  display: none;
+  @include sm-only {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.sm-hide {
+  @include sm-only {
+    display: none;
+  }
+}
+
+.tokenMobileSelector {
+  flex: 1;
+  margin-left: 100px;
+  width: auto !important;
+}
+
+.tokensListMobile {
+  margin-top: 16px;
+  position: relative;
+  overflow: visible;
+}
+
+.tokenIconMobile {
+  position: absolute;
+  left: 0;
+  top: 25px;
+  height: 65px;
+  width: 80px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.selected {
+  background: $color-primary-light;
+}
+
+.tokenError {
+  font-size: 12px;
+  font-weight: normal;
+  line-height: 12px;
+  color: $color-error;
+}
+
+.hide {
+  display: none;
+}

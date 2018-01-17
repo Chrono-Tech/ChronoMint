@@ -1,8 +1,8 @@
 import Immutable from 'immutable'
-import { LOCAL_ID } from 'Login/network/settings'
-import networkService from 'Login/redux/network/actions'
+import { LOCAL_ID } from '@chronobank/login/network/settings'
+import networkService from '@chronobank/login/network/NetworkService'
 import ProfileModel from 'models/ProfileModel'
-import MainWalletModel from 'models/Wallet/MainWalletModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import { MARKET_INIT } from 'redux/market/action'
 import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
 import { accounts, mockStore } from 'specsInit'
@@ -35,10 +35,14 @@ const cbeSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
+    tokens:[],
+    currencies: [],
+    profile,
   },
   session: {
     isSession: true,
     account: accounts[ 0 ],
+    profile,
   },
   mainWallet,
 })
@@ -47,6 +51,8 @@ const userSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
+    tokens:[],
+    currencies: [],
   },
   session: {
     isSession: true,

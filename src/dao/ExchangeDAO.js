@@ -1,66 +1,89 @@
+import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
-import lhtDAO from 'dao/LHTDAO'
-import type ERC20DAO from './ERC20DAO'
+import TokenModel from 'models/tokens/TokenModel'
+import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import { ExchangeABI, MultiEventsHistoryABI } from './abi'
 
 export const TX_BUY = 'buy'
 export const TX_SELL = 'sell'
+export const TX_WITHDRAW_TOKENS = 'withdrawTokens'
+export const TX_WITHDRAW_ETH = 'withdrawEth'
 
-class ExchangeDAO extends AbstractContractDAO {
+export class ExchangeDAO extends AbstractContractDAO {
   constructor (at = null) {
-    super(ExchangeABI, at, MultiEventsHistoryABI)
+    super(
+      ExchangeABI,
+      at,
+      MultiEventsHistoryABI,
+    )
   }
 
-  // TODO @bshevchenko
-  async getAssetDAO (): Promise<ERC20DAO> {
-    return lhtDAO
+  withdrawTokens (wallet, amount: Amount): Promise {
+    return this._tx(
+      TX_WITHDRAW_TOKENS,
+      [
+        wallet.address(),
+        new BigNumber(amount),
+      ],
+      {
+        recipient: wallet.address(),
+        amount,
+      })
   }
 
-  async getBuyPrice (): Promise<BigNumber> {
-    const price = await this._call('buyPrice')
-    return this._c.fromWei(price)
+  withdrawEth (wallet, amount: Amount): Promise {
+    return this._tx(
+      TX_WITHDRAW_ETH,
+      [
+        wallet.address(),
+        new BigNumber(amount),
+      ],
+      {
+        recipient: wallet.address(),
+        amount,
+      })
   }
 
-  async getSellPrice (): Promise<BigNumber> {
-    const price = await this._call('sellPrice')
-    return this._c.fromWei(price)
+  async approveSell (token: TokenModel, amount: Amount) {
+    const assetDAO = tokenService.getDAO(token)
+    return assetDAO.approve(this.getInitAddress(), amount)
   }
 
-  async getETHBalance (): Promise<BigNumber> {
-    const balance = await this._web3Provider.getBalance(await this.getAddress())
-    return this._c.fromWei(balance)
+  sell (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.buyPrice()
+    let price = this._c.fromWei(priceInWei)
+
+    return this._tx(
+      TX_SELL,
+      [
+        token.addDecimals(amount),
+        priceInWei,
+      ],
+      {
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
+      })
   }
 
-  async getAssetBalance (): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    return assetDAO.getAccountBalance(await this.getAddress())
-  }
+  buy (amount: BigNumber, exchange: ExchangeOrderModel, token: TokenModel) {
+    const amountWithDecimals = token.addDecimals(amount)
+    const priceInWei = exchange.sellPrice()
+    let price = this._c.fromWei(priceInWei)
 
-  async getAccountAssetBalance (): Promise<BigNumber> {
-    const assetDAO = await this.getAssetDAO()
-    return assetDAO.getAccountBalance()
-  }
-
-  async approveSell (amount: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-    return assetDAO.approve(this.getInitAddress(), assetDAO.addDecimals(amount))
-  }
-
-  async sell (amount: BigNumber, price: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-
-    // TODO @bshevchenko: divide this on two steps
-    await this.approveSell(amount)
-
-    return this._tx(TX_SELL, [assetDAO.addDecimals(amount), this._c.toWei(price)], { amount, price: amount.mul(price) })
-  }
-
-  async buy (amount: BigNumber, price: BigNumber) {
-    const assetDAO = await this.getAssetDAO()
-    const amountWithDecimals = assetDAO.addDecimals(amount)
-    const priceInWei = this._c.toWei(price)
-    return this._tx(TX_BUY, [amountWithDecimals, priceInWei], { amount, price: amount.mul(price) }, amountWithDecimals.mul(priceInWei))
+    return this._tx(
+      TX_BUY,
+      [
+        token.addDecimals(amount),
+        priceInWei,
+      ],
+      {
+        amount: new Amount(amountWithDecimals, exchange.symbol()),
+        price: new Amount(this._c.toWei(amount.mul(price)), 'ETH'),
+      }, this._c.toWei(amount.mul(price)),
+    )
   }
 
   subscribeOnReset () {
@@ -71,6 +94,69 @@ class ExchangeDAO extends AbstractContractDAO {
     if (this.contract) {
       this.contract = this._initContract()
     }
+  }
+
+  watchError (callback) {
+    return this._watch('Error', callback)
+  }
+
+  watchFeeUpdated (exchange, callback) {
+    return this._watch('ExchangeFeeUpdated', callback, { exchange })
+  }
+
+  watchPricesUpdated (exchange, callback) {
+    return this._watch('ExchangePricesUpdated', callback, { exchange })
+  }
+
+  watchActiveChanged (exchange, callback) {
+    return this._watch('ExchangeActiveChanged', callback, { exchange })
+  }
+
+  watchBuy (exchange, callback) {
+    return this._watch('ExchangeBuy', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.token,
+        ethAmount: tx.args.eth,
+      })
+    }, { exchange })
+  }
+
+  watchSell (exchange, callback) {
+    return this._watch('ExchangeSell', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.token,
+        ethAmount: tx.args.eth,
+      })
+    }, { exchange })
+  }
+
+  watchWithdrawEther (exchange, callback) {
+    return this._watch('ExchangeWithdrawEther', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        ethAmount: tx.args.amount,
+      })
+    }, { exchange })
+  }
+
+  watchWithdrawTokens (exchange, callback) {
+    return this._watch('ExchangeWithdrawTokens', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        tokenAmount: tx.args.amount,
+      })
+    }, { exchange })
+  }
+
+  watchReceivedEther (exchange, callback) {
+    return this._watch('ExchangeReceivedEther', (tx) => {
+      callback({
+        exchange: tx.args.exchange,
+        ethAmount: tx.args.amount,
+      })
+    }, { exchange })
   }
 }
 

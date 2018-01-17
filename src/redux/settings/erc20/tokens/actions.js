@@ -1,12 +1,13 @@
-import { I18n } from 'react-redux-i18n'
-import { change } from 'redux-form'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import type TokenModel from 'models/TokenModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-import { DUCK_SESSION } from 'redux/session/actions'
+import type TokenModel from 'models/tokens/TokenModel'
+import { I18n } from 'platform/i18n'
+import { TIME } from 'redux/mainWallet/actions'
 import { notify } from 'redux/notifier/actions'
-import { watchInitWallet, TIME } from 'redux/mainWallet/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
+import { checkFetched, TOKENS_FETCHED } from 'redux/tokens/actions'
+import tokenService from 'services/TokenService'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -20,6 +21,13 @@ const setToken = (token: TokenModel) => ({ type: TOKENS_SET, token })
 const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
+
+  if (notice.token()) {
+    const token = notice.token().isFetching(false).isFetched(true)
+    dispatch({ type: TOKENS_FETCHED, token: token.isERC20(true) })
+    tokenService.createDAO(token.isERC20(true))
+    dispatch(checkFetched())
+  }
   if (notice.isModified()) {
     for (const token: TokenModel of getState().get(DUCK_SETTINGS_ERC20_TOKENS).list.valueSeq().toArray()) {
       if (token.address() === notice.oldAddress()) {
@@ -31,7 +39,7 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
   if (notice.isModified() || notice.isRemoved()) {
     if (getState().get(DUCK_SESSION).profile.tokens().toArray().includes(notice.token().address())
       || notice.token().symbol() === TIME) {
-      dispatch(watchInitWallet())
+      // dispatch(watchInitWallet())
     }
   }
   dispatch(notice.isRemoved()
@@ -54,40 +62,10 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
   ])
 }
 
-export const listTokens = () => async (dispatch) => {
-  const dao = await contractsManagerDAO.getERC20ManagerDAO()
-  const list = await dao.getTokens()
-  dispatch({ type: TOKENS_LIST, list })
-}
-
-export const formTokenLoadMetaData = async (token: TokenModel, dispatch, formName) => {
+export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   dispatch({ type: TOKENS_FORM_FETCH })
-
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-
-  let dao
-  try {
-    dao = await contractsManagerDAO.getERC20DAO(token.address(), true)
-  } catch (e) {
-    dispatch({ type: TOKENS_FORM_FETCH, end: true })
-    throw { address: I18n.t('settings.erc20.tokens.errors.invalidAddress') }
-  }
-
-  try {
-    if (!token.decimals()) {
-      dispatch(change(formName, 'decimals', dao.getDecimals()))
-    }
-    if (!token.symbol()) {
-      dispatch(change(formName, 'symbol', dao.getSymbol()))
-      token = token.setSymbol(dao.getSymbol())
-    }
-  } catch (e) {
-    // eslint-disable-next-line
-    console.warn('Load meta data error', e)
-  }
-
   const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())
-
   dispatch({ type: TOKENS_FORM_FETCH, end: true })
 
   if ((symbolAddress !== null && token.address() !== symbolAddress) || token.symbol().toUpperCase() === 'ETH') {

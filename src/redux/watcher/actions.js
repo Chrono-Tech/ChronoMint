@@ -1,20 +1,19 @@
-import AbstractContractDAO, { TxError, TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
+import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
+import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
+import TxError from 'models/TxError'
 import type TxExecModel from 'models/TxExecModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { notify } from 'redux/notifier/actions'
-import { showConfirmTxModal } from 'redux/ui/modal'
-import { watchInitCBE } from 'redux/settings/user/cbe/actions'
-import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
+import { watchInitTokens, watchPlatformManager } from 'redux/assetsManager/actions'
 import { watchInitLOC } from 'redux/locs/actions'
+import { balanceMinus, balancePlus, ETH, initMainWallet } from 'redux/mainWallet/actions'
 import { watchInitMarket } from 'redux/market/action'
-import { watchInitMonitor } from 'redux/monitor/actions'
+import { notify } from 'redux/notifier/actions'
 import { watchInitOperations } from 'redux/operations/actions'
+import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
+import { watchInitCBE } from 'redux/settings/user/cbe/actions'
+import { DUCK_TOKENS, initTokens } from 'redux/tokens/actions'
+import { showConfirmTxModal, watchInitUserMonitor } from 'redux/ui/actions'
 import { watchInitPolls } from 'redux/voting/actions'
-import { watchInitUserMonitor } from 'redux/userMonitor/actions'
-import { watchInitWallet, balanceMinus, balancePlus, ETH, DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import { watchPlatformManager, watchInitTokens } from 'redux/assetsManager/actions'
-import { watchWalletManager } from 'redux/multisigWallet/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -48,14 +47,14 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    const token = getState().get(DUCK_MAIN_WALLET).tokens().get(ETH)
+    const token = getState().get(DUCK_TOKENS).item(ETH)
     dispatch(balanceMinus(tx.gas(), token))
     dispatch({ type: WATCHER_TX_SET, tx })
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({ type: WATCHER_TX_END, tx })
-    const token = getState().get(DUCK_MAIN_WALLET).tokens().get(ETH)
+    const token = getState().get(DUCK_TOKENS).item(ETH)
 
     if (!tx.isGasUsed()) {
       dispatch(balancePlus(tx.gas(), token))
@@ -75,14 +74,14 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch, getState) => {
-  dispatch(watchPlatformManager(getState().get(DUCK_SESSION).account))
+export const watcher = () => async (dispatch) => {
+  dispatch(initTokens())
+  dispatch(initMainWallet())
+  dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  dispatch(watchInitWallet())
-  dispatch(watchWalletManager())
   dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())

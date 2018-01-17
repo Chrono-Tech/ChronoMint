@@ -1,4 +1,4 @@
-import { FULL_DATE } from 'components/common/Moment'
+import { FULL_DATE } from 'models/constants'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { abstractModel } from './AbstractModel'
@@ -15,13 +15,20 @@ class TxModel extends abstractModel({
   time: null,
   gasPrice: null,
   gas: null,
+  fee: new BigNumber(0), // TODO @ipavlenko: remove gasFee, use fee
   gasFee: new BigNumber(0),
   input: null,
   credited: null,
   symbol: '',
+  tokenAddress: null,
   type: '',
+  token: null, // address
   args: null,
 }) {
+  tokenAddress (value) {
+    return this._getSet('tokenAddress', value)
+  }
+
   to () {
     return this.get('to')
   }
@@ -71,8 +78,19 @@ class TxModel extends abstractModel({
     return this.get('symbol')
   }
 
+  fee () {
+    return this.get('fee')
+  }
+
   isFromEmpty () {
     return this.from() === '0x0000000000000000000000000000000000000000'
+  }
+
+  /**
+   * @deprecated
+   */
+  token (value) {
+    return this._getSet('token', value)
   }
 }
 

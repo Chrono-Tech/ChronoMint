@@ -1,12 +1,12 @@
-import { push, replace } from 'react-router-redux'
+import networkService from '@chronobank/login/network/NetworkService'
+import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import networkService from 'Login/redux/network/actions'
 import ProfileModel from 'models/ProfileModel'
-import { bootstrap } from 'redux/bootstrap/actions'
-import { cbeWatcher, watcher } from 'redux/watcher/actions'
-import { initWallet } from 'redux/wallet/actions'
-import { removeWatchersUserMonitor } from 'redux/userMonitor/actions'
+import { push, replace } from 'react-router-redux'
 import { watchStopMarket } from 'redux/market/action'
+import { removeWatchersUserMonitor } from 'redux/ui/actions'
+import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
 
 export const DUCK_SESSION = 'session'
@@ -31,13 +31,18 @@ export const destroySession = ({ lastURL, dispatch }) => {
   dispatch({ type: SESSION_DESTROY })
 }
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async (dispatch, getState) => {
   try {
+    const { selectedNetworkId } = getState().get(DUCK_NETWORK)
     dispatch(removeWatchersUserMonitor())
     await dispatch(watchStopMarket())
     await networkService.destroyNetworkSession(`${window.location.pathname}${window.location.search}`)
     await dispatch(push('/'))
-    await dispatch(bootstrap(false))
+    if (selectedNetworkId === NETWORK_MAIN_ID) {
+      location.reload()
+    } else {
+      await dispatch(bootstrap(false))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.warn('logout error:', e)
@@ -64,10 +69,35 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-  dispatch(initWallet())
+
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
   dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
+}
+
+export const bootstrap = (relogin = true) => async (dispatch) => {
+  networkService.checkMetaMask()
+  if (networkService) {
+    networkService
+      .on('createSession', createSession)
+      .on('destroySession', destroySession)
+      .on('login', ({ account, dispatch }) => dispatch(login(account)))
+  }
+
+  if (!relogin) {
+    return
+  }
+
+  const localAccount = ls.getLocalAccount()
+  const isPassed = await networkService.checkLocalSession(localAccount)
+  if (isPassed) {
+    await networkService.restoreLocalSession(localAccount)
+    networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
+    dispatch(login(localAccount))
+  } else {
+    // eslint-disable-next-line
+    console.warn('Can\'t restore local session')
+  }
 }
 
 export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, getState) => {

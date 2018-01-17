@@ -1,24 +1,18 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import validator from 'components/forms/validator'
-import web3Provider from 'Login/network/Web3Provider'
+import validator from 'models/validator'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import AbstractModel from 'models/AbstractModel'
+import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
+import EventEmitter from 'events'
 
-const DEFAULT_GAS = 4700000
+export const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
-
-export class TxError extends Error {
-  constructor (message, code, codeValue = null) {
-    super(message)
-    this.code = code
-    this.codeValue = codeValue
-  }
-}
 
 export const TX_FRONTEND_ERROR_CODES = {
   FRONTEND_UNKNOWN: 'f0',
@@ -35,15 +29,12 @@ const DEFAULT_ERROR_CODES = {
   ...TX_FRONTEND_ERROR_CODES,
 }
 
-export default class AbstractContractDAO {
+export default class AbstractContractDAO extends EventEmitter {
   /**
    * @type Web3Converter
    * @protected
    */
   _c = web3Converter
-
-  /** @protected */
-  _web3Provider = web3Provider
 
   /** @protected */
   static _account: string
@@ -68,6 +59,7 @@ export default class AbstractContractDAO {
   static _filterCache = {}
 
   constructor (json = null, at = null, eventsJSON = null) {
+    super()
     if (new.target === AbstractContractDAO) {
       throw new TypeError('Cannot construct AbstractContractDAO instance directly')
     }
@@ -78,11 +70,17 @@ export default class AbstractContractDAO {
     this._okCodes = DEFAULT_OK_CODES
     this._errorCodes = DEFAULT_ERROR_CODES
 
+    Object.defineProperty(this, '_web3Provider', {
+      value: web3Provider,
+      enumerable: false,
+    })
+
     if (json) {
       this.contract = this._initContract()
       this.contract.catch(() => false)
     }
 
+    this._web3Provider.onResetPermanent(() => this._handleWeb3Reset())
     this.subscribeOnReset()
 
     this._uniqId = `${this.constructor.name}-${Math.random()}`
@@ -106,10 +104,18 @@ export default class AbstractContractDAO {
     AbstractContractDAO._account = account
   }
 
+  _handleWeb3Reset () {
+    this._at = null
+  }
+
   // Call anly for singleton contracts
   handleWeb3Reset () {
     // Should update contract if the contract is singleton.
     // Should dispose contract resources and subscriptions in other case.
+  }
+
+  isAddress (address) {
+    return /^0x[0-9a-f]{40}$/i.test(address)
   }
 
   /** @private  TODO @bshevchenko: get rid of "noinspection JSUnresolvedFunction" */
@@ -160,7 +166,8 @@ export default class AbstractContractDAO {
 
       return deployed
     } catch (e) {
-      throw new Error(`${this.getContractName()}#_initContract error: ${e.message}`)
+      console.log(`${this.getContractName()}#_initContract error: ${e.message}`) // eslint-disable-line no-console
+      return false
     }
   }
 
@@ -175,7 +182,7 @@ export default class AbstractContractDAO {
   // TODO @bshevchenko: MINT-313 isDeployed (checkCodeConsistency = true): bool {
   async isDeployed (web3Provider = this._web3Provider): bool {
     try {
-      await this._initContract(web3Provider.getWeb3instance(), true)
+      await this._initContract(web3Provider.getWeb3instance())
       const code = await this.getCode(this.getInitAddress(), 'latest', web3Provider)
       if (!code) {
         throw new Error(`${this.getContractName()} isDeployed code is empty, address: ${this.getInitAddress()}`)
@@ -192,7 +199,7 @@ export default class AbstractContractDAO {
     }
   }
 
-  async getAddress () {
+  async getAddress (): Promise {
     return this._at || this.contract.then((i) => i.address)
   }
 
@@ -243,6 +250,11 @@ export default class AbstractContractDAO {
   async _callNum (func, args: Array = []): number {
     const r = await this._call(func, args)
     return r.toNumber()
+  }
+
+  async _callArray (): Array {
+    const result = await this._call(...arguments)
+    return result instanceof Array ? result : [ result ]
   }
 
   isEmptyAddress (v): boolean {
@@ -363,8 +375,7 @@ export default class AbstractContractDAO {
    * filled with arguments names from contract ABI as a keys, args values as a values.
    * You can also pass here model, then this param will be filled with result of...
    * @see AbstractModel.summary
-   * Keys is using for I18N, for details see...
-   * @see TxExecModel.description
+   * Keys is using for I18N
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
@@ -386,7 +397,7 @@ export default class AbstractContractDAO {
       contract: this.getContractName(),
       func,
       args: infoArgs,
-      value: this._c.fromWei(value),
+      value,
     })
 
     /** ESTIMATE GAS */
@@ -452,7 +463,7 @@ export default class AbstractContractDAO {
       /** OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
       if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
         const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
-        tx = tx.setGas(this._c.fromWei(gasPrice.mul(result.receipt.gasUsed)), true)
+        tx = tx.setGas(gasPrice.mul(result.receipt.gasUsed), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
           // uncomment line below if you want to log estimate gas laxity
@@ -527,8 +538,8 @@ export default class AbstractContractDAO {
     ])
 
     const gasPriceBN = new BigNumber(gasPrice)
-    const gasLimit = process.env.NODE_ENV === 'development' ? estimatedGas * 2 : estimatedGas + 1
-    const gasFee = this._c.fromWei(gasPriceBN.mul(gasLimit))
+    const gasLimit = process.env.NODE_ENV === 'development' ? Math.min(DEFAULT_GAS, estimatedGas*2) : estimatedGas + 1
+    const gasFee = gasPriceBN.mul(gasLimit)
 
     return { gasLimit, gasFee }
   }

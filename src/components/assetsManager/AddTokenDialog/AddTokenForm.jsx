@@ -1,28 +1,30 @@
-import BigNumber from 'bignumber.js'
-import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
-import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import avaToken from 'assets/img/avaToken.svg'
-import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import classnames from 'classnames'
-import colors from 'styles/themes/variables'
-import { connect } from 'react-redux'
-import icnPlus from 'assets/img/icn-plus.svg'
-import platformIcon from 'assets/img/folder-multiple.svg'
 import platformIconInCircle from 'assets/img/assets1.svg'
-import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
-import FileModel from 'models/FileSelect/FileModel'
-import TokenModel from 'models/TokenModel'
-import { createAsset } from 'redux/assetsManager/actions'
-import { modalsOpen } from 'redux/modals/actions'
+import avaToken from 'assets/img/avaToken.svg'
+import platformIcon from 'assets/img/folder-multiple.svg'
+import icnPlus from 'assets/img/icn-plus.svg'
+import BigNumber from 'bignumber.js'
+import classnames from 'classnames'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
+import FileModel from 'models/FileSelect/FileModel'
+import FeeModel from 'models/tokens/FeeModel'
+import ReissuableModel from 'models/tokens/ReissuableModel'
+import TokenModel from 'models/tokens/TokenModel'
+import PropTypes from 'prop-types'
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
+import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
+import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { createAsset } from 'redux/assetsManager/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import colors from 'styles/themes/variables'
 import ipfs from 'utils/IPFS'
-import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
+import validate, { normalizeSmallestUnit } from './validate'
 
 function prefix (token) {
   return `Assets.AddTokenForm.${token}`
@@ -52,15 +54,18 @@ const onSubmit = (values, dispatch) => {
   dispatch(createAsset(new TokenModel({
     decimals: values.get('smallestUnit'),
     name: values.get('description'),
-    symbol: values.get('tokenSymbol'),
+    symbol: values.get('tokenSymbol').toUpperCase(),
     balance: values.get('amount'),
     icon: values.get('tokenImg'),
-    fee: values.get('feePercent'),
-    feeAddress: values.get('feeAddress'),
-    withFee: !!values.get('withFee'),
+    fee: new FeeModel({
+      fee: values.get('feePercent'),
+      feeAddress: values.get('feeAddress'),
+      withFee: !!values.get('withFee'),
+    }),
     platform: values.get('platform'),
     totalSupply: values.get('amount'),
-    isReissuable: !!values.get('reissuable'),
+    isReissuable: new ReissuableModel({ value: !!values.get('reissuable') }),
+    blockchain: 'Ethereum',
   })))
 }
 
@@ -152,7 +157,7 @@ export default class AddTokenForm extends PureComponent {
   }
 
   async handleUploadFile (e) {
-    const file = e.target.files[0]
+    const file = e.target.files[ 0 ]
     if (!file) {
       return
     }

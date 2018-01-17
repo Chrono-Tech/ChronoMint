@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CBEModel { "id": null, "timestamp": null, "isFetching": false, "isFetched": false, "transactionHash": null, "isPending": false, "isFailed": false, "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7", "name": "testUser", "user": ProfileModel { "id": null, "timestamp": null, "name": "testUser", "email": null, "company": null, "url": null, "icon": null, "tokens": Set {}, "assetsManager": Map {} } } 1`] = `
+{
+  "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7",
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "name": "testUser",
+  "timestamp": null,
+  "transactionHash": null,
+  "user": {
+    "assetsManager": {},
+    "company": null,
+    "email": null,
+    "icon": null,
+    "id": null,
+    "name": "testUser",
+    "timestamp": null,
+    "tokens": [],
+    "url": null
+  }
+}
+`;
+
+exports[`CBEModel { "id": null, "timestamp": null, "isFetching": false, "isFetched": false, "transactionHash": null, "isPending": false, "isFailed": false, "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7", "name": "testUser", "user": ProfileModel { "id": null, "timestamp": null, "name": "testUser", "email": null, "company": null, "url": null, "icon": null, "tokens": Set {}, "assetsManager": Map {} } } 2`] = `
+{
+  "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7",
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "name": "testUser",
+  "timestamp": null,
+  "transactionHash": null,
+  "user": {
+    "assetsManager": {},
+    "company": null,
+    "email": null,
+    "icon": null,
+    "id": null,
+    "name": "testUser",
+    "timestamp": null,
+    "tokens": [],
+    "url": null
+  }
+}
+`;
+
+exports[`settings cbe actions should add CBE 1`] = `
+{
+  "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7",
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "name": "testUser",
+  "timestamp": null,
+  "transactionHash": null,
+  "user": {
+    "assetsManager": {},
+    "company": null,
+    "email": null,
+    "icon": null,
+    "id": null,
+    "name": "testUser",
+    "timestamp": null,
+    "tokens": [],
+    "url": null
+  }
+}
+`;
+
+exports[`settings cbe actions should revoke CBE 1`] = `
+{
+  "address": "0x64371881e22e7cf48041c4da7efe0c9b7789aac7",
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isPending": false,
+  "name": "testUser",
+  "timestamp": null,
+  "transactionHash": null,
+  "user": {
+    "assetsManager": {},
+    "company": null,
+    "email": null,
+    "icon": null,
+    "id": null,
+    "name": "testUser",
+    "timestamp": null,
+    "tokens": [],
+    "url": null
+  }
+}
+`;

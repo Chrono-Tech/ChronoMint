@@ -1,8 +1,9 @@
-import ErrorList from 'components/forms/ErrorList'
-import validator from 'components/forms/validator'
+import ErrorList from 'platform/ErrorList'
+import * as validator from 'models/validator'
+import tokenService from 'services/TokenService'
 
 export default (values, props) => {
-  const { token, wallet } = props
+  const { token, wallet, balance } = props
   if (!token) {
     return
   }
@@ -17,13 +18,19 @@ export default (values, props) => {
 
   if (!amountFormatError) {
     // validate only numbers
-    amountErrors.add(token.balance().minus(amount).lt(0) ? 'error.notEnoughTokens' : null)
+    const amountWithDecimals = token.addDecimals(amount)
+    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'error.notEnoughTokens' : null)
   }
+
+  const tokenDAO = tokenService.getDAO(token.id())
+  const addressValidator = tokenDAO
+    ? tokenDAO.getAddressValidator()
+    : () => ''
 
   return {
     recipient: new ErrorList()
       .add(validator.required(recipient))
-      .add(token.dao().getAddressValidator()(recipient))
+      .add(addressValidator(recipient, true, token.blockchain()))
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),

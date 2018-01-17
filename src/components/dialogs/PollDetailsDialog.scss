@@ -20,7 +20,7 @@
   flex-wrap: wrap;
   height: 290px;
 
-  @include md-only {
+  @include sm-only {
     height: auto;
 
     .inner {
@@ -29,7 +29,7 @@
     }
 
     .column {
-      width: 100%   !important;
+      width: 100% !important;
     }
 
     .layer {
@@ -54,16 +54,18 @@
     }
 
     .layerEntries {
-      height: 200px;
       width: 100%;
-      margin: 0px auto;
+      margin: 0 auto;
       text-align: left;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
     }
 
     .layerLegend {
       width: 150px;
       height: auto;
-      margin: 0px auto;
+      margin: 0 auto;
     }
 
     .legend {
@@ -166,8 +168,7 @@
   flex: 0 0 auto;
   color: $color-white;
   text-shadow: $text-shadow-title;
-  width: 50%;
-  margin: 10px 0px;
+  margin: 10px;
 }
 
 .entryStatus {

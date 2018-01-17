@@ -1,12 +1,13 @@
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
+import customSerializer from 'utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
-import { BTC_TESTNET_NODE } from 'Login/network/BitcoinNode'
-import { LOCAL_ID } from 'Login/network/settings'
-import web3provider from 'Login/network/Web3Provider'
-import networkService from 'Login/redux/network/actions'
+import { BTC_TESTNET_NODE } from '@chronobank/login/network/BitcoinNode'
+import { LOCAL_ID } from '@chronobank/login/network/settings'
+import web3provider from '@chronobank/login/network/Web3Provider'
+import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
@@ -20,8 +21,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000
 
 const web3 = new Web3()
 
-web3provider.setWeb3(web3)
-web3provider.setProvider(new web3.providers.HttpProvider('http://localhost:8545'))
+web3provider.reinit(web3, new web3.providers.HttpProvider('http://localhost:8545'))
 web3provider.resolve()
 export const accounts = web3.eth.accounts
 
@@ -59,3 +59,4 @@ afterEach(async (done) => {
   done()
 })
 
+expect.addSnapshotSerializer(customSerializer)

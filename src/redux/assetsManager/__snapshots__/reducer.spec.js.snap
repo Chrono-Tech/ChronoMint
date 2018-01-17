@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assetsManager reducer should handle GET_ASSETS_MANAGER_COUNTS 1`] = `
+{
+  "assets": {
+    "a": "1"
+  },
+  "assetsManagerCountsLoading": false,
+  "managersCount": 3,
+  "platformsList": [
+    "test",
+    "test1",
+    "test2"
+  ]
+}
+`;
+
+exports[`assetsManager reducer should handle GET_PLATFORMS 1`] = `
+{
+  "platformsList": [
+    "test",
+    "test1",
+    "test2"
+  ]
+}
+`;
+
+exports[`assetsManager reducer should handle GET_TRANSACTIONS_DONE 1`] = `
+{
+  "transactionsFetched": true,
+  "transactionsFetching": false,
+  "transactionsList": [
+    {
+      "txHash": "test"
+    },
+    {
+      "txHash": "test1"
+    }
+  ]
+}
+`;
+
+exports[`assetsManager reducer should handle GET_USER_PLATFORMS 1`] = `
+{
+  "usersPlatforms": [
+    "test",
+    "test1",
+    "test2"
+  ],
+  "usersPlatformsCount": 3
+}
+`;
+
+exports[`assetsManager reducer should handle SET_NEW_MANAGERS_LIST 1`] = `
+{
+  "managersCount": 3
+}
+`;

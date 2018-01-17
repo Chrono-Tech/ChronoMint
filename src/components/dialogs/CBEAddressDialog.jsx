@@ -9,7 +9,7 @@ import { validate } from 'models/CBEModel'
 import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import validator from 'components/forms/validator'
+import validator from 'models/validator'
 
 import './FormDialog.scss'
 
@@ -21,7 +21,7 @@ function prefix (token) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    formCBELoadName: (e, newValue) => dispatch(formCBELoadName(newValue)),
+    formCBELoadName: (e, newValue) => dispatch(formCBELoadName(newValue, FORM_CBE_ADDRESS)),
     modalsClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())

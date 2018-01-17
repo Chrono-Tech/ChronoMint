@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import UserMonitorService from 'user/monitorService'
+import userMonitorService from 'user/monitorService'
 import { connect } from 'react-redux'
 import { logout } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
@@ -15,7 +15,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     modalsClose: () => {
-      UserMonitorService.start()
+      userMonitorService.start()
       dispatch(modalsClose())
     },
   }
@@ -29,7 +29,7 @@ export default class UserActiveDialog extends PureComponent {
   }
 
   componentDidMount () {
-    UserMonitorService.stop()
+    userMonitorService.stop()
   }
 
   handleTimeEnd = () => {

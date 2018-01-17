@@ -2,12 +2,10 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
-
-export const FULL_DATE = 'HH:mm, MMMM Do, YYYY'
-export const SHORT_DATE = 'MMM Do, YYYY'
+import { FULL_DATE }  from 'models/constants'
 
 const mapStateToProps = (state) => ({
-  locale: state.get('i18n').locale
+  locale: state.get('i18n').locale,
 })
 
 @connect(mapStateToProps)

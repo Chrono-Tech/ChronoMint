@@ -1,18 +1,22 @@
-import { I18n } from 'react-redux-i18n'
-import React from 'react'
+import { I18n } from 'platform/i18n'
+import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
+import BigNumber from 'bignumber.js'
 
 export default class TransferNoticeModel extends abstractNoticeModel({
-  tx: null,
-  account: null,
+  value: new BigNumber(0), // with decimals
+  symbol: null,
+  from: null, // address
+  to: null, // address
+  credited: false,
 }) {
   tx (): TxModel {
     return this.get('tx')
   }
 
   icon () {
-    return (<i className='material-icons'>account_balance_wallet</i>)
+    return Icons.get('notices.transfer.icon')
   }
 
   title () {
@@ -20,16 +24,18 @@ export default class TransferNoticeModel extends abstractNoticeModel({
   }
 
   message () {
-    return this.tx().credited
-      ? I18n.t('notices.transfer.receivedFrom', {
-        value: this.tx().value().toString(10),
-        symbol: this.tx().symbol(),
-        address: this.tx().from(),
-      })
-      : I18n.t('notices.transfer.sentTo', {
-        value: this.tx().value().toString(10),
-        symbol: this.tx().symbol(),
-        address: this.tx().to(),
-      })
+    const isDeposited = this.get('credited')
+    const message = isDeposited
+      ? 'notices.transfer.receivedFrom'
+      : 'notices.transfer.sentTo'
+    const address = isDeposited
+      ? this.get('from')
+      : this.get('to')
+
+    return I18n.t(message, {
+      value: this.get('value'),
+      symbol: this.get('symbol'),
+      address,
+    })
   }
 }
