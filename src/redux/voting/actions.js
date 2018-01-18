@@ -1,6 +1,6 @@
 import votingService from 'services/VotingService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollBackendDAO'
+import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollEmitterDAO'
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'

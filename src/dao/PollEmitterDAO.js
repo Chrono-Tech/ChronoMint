@@ -1,15 +1,15 @@
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollNoticeModel, { IS_VOTED, IS_ACTIVATED, IS_ENDED } from 'models/notices/PollNoticeModel'
-import { MultiEventsHistoryABI, PollBackendABI } from './abi'
+import { MultiEventsHistoryABI, PollEmitterABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const EVENT_POLL_VOTED = 'PollVoted'
 export const EVENT_POLL_ACTIVATED = 'PollActivated'
 export const EVENT_POLL_ENDED = 'PollEnded'
 
-export default class PollBackendDAO extends AbstractMultisigContractDAO {
+export default class PollEmitterDAO extends AbstractMultisigContractDAO {
   constructor (at) {
-    super(PollBackendABI, at, MultiEventsHistoryABI)
+    super(PollEmitterABI, at, MultiEventsHistoryABI)
   }
 
   /** @private */
