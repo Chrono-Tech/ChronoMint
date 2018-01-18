@@ -132,9 +132,7 @@
 
 .ellipsisInner {
   display: table-cell;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include ellipsis;
 }
 
 @include sm-only {

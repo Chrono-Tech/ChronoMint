@@ -31,8 +31,8 @@ const multisigWalletModel = new MultisigWalletModel({
   requiredSignatures: 2,
   pendingTxList: new MultisigWalletPendingTxCollection({
     list: new Immutable.Map({
-      tx1: new MultisigWalletPendingTxModel({ id: 'tx1' }),
-      tx2: new MultisigWalletPendingTxModel({ id: 'tx2' }),
+      tx1: new MultisigWalletPendingTxModel({ id: 'tx1', decodedTx: {} }),
+      tx2: new MultisigWalletPendingTxModel({ id: 'tx2', decodedTx: {} }),
     }),
   }),
 })

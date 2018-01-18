@@ -1,5 +1,5 @@
-@import '../../../~styles/partials/mixins';
-@import '../../../~styles/partials/variables';
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
 
 
 .root {
@@ -68,9 +68,7 @@
           font-size: 14px;
           color: $color-primary-1;
           line-height: 1.43;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          @include ellipsis;
 
           @include xs-only {
             max-width: 300px;
