@@ -5,9 +5,9 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { TextField } from 'redux-form-material-ui'
-import { Field } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { prefix } from './lang'
+import OwnerItem from './OwnerItem'
 import './OwnersList.scss'
 
 function mapStateToProps (state) {
@@ -24,31 +24,32 @@ export default class OwnersList extends PureComponent {
     fields: PropTypes.object,
   }
 
-  renderOwners (fields) {
+  handleRemoveItem = (fields, index) => () => fields.remove(index)
+
+  handleAddItem = (fields) => () => fields.push()
+
+  render () {
+    const { account, fields } = this.props
+
     return (
       <div>
-        {fields.map((item, index) => (
-          <div styleName='ownerBox' key={index}>
-            <div styleName='ownerIcon' className='material-icons'>account_circle</div>
-            <div styleName='ownerInput'>
-              <Field
-                component={TextField}
-                name={`${item}.address`}
-                id={`${item}.address`}
-                placeholder='0x123...'
-              />
-            </div>
-            <div styleName='ownerRemove'>
-              <FlatButton
-                icon={<i className='material-icons'>delete</i>}
-                onTouchTap={() => {fields.remove(index)}}
-                fullWidth
-              />
-            </div>
-          </div>
-        ))}
+        <div>
+          <OwnerItem
+            title={<Translate value={`${prefix}.you`} />}
+            address={account}
+            isNoActions
+          />
+
+          {fields.map((item, index) => (
+            <OwnerItem
+              address={item.address}
+              onRemove={this.handleRemoveItem(fields, index)}
+            />
+          ))}
+        </div>
 
         <div styleName='addOwnerButton'>
+          {/* TODO: update to field */}
           <FlatButton
             label={(
               <span styleName='buttonLabel'>
@@ -56,33 +57,10 @@ export default class OwnersList extends PureComponent {
                 <Translate value='WalletAddEditDialog.addOwner' />
               </span>
             )}
-            onTouchTap={() => fields.push()}
+            onTouchTap={this.handleAddItem(fields)}
             {...globalStyles.buttonWithIconStyles}
           />
         </div>
-      </div>
-    )
-  }
-
-  render () {
-    const { account, fields } = this.props
-
-    return (
-      <div>
-        <div styleName='counterBox'>
-          <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-          styleName='counter'
-        >{fields.length + 1}
-          </span>
-        </div>
-        <div styleName='counterError'>{this.props.meta.error}</div>
-
-        <div styleName='accountBox'>
-          <div styleName='accountIcon' className='material-icons'>account_circle</div>
-          <div styleName='accountValue'>{account} ({<Translate value='WalletAddEditForm.you' />})</div>
-        </div>
-
-        {this.renderOwners(fields)}
       </div>
     )
   }

@@ -1,49 +1,96 @@
 @import '~styles/partials/variables';
 
-.content {
-  max-width: 390px;
+$gutter: 24px;
+
+.root {
+  min-width: 300px;
+  max-width: 600px;
   background-color: $color-white;
 }
 
-.dialogHeader {
+.header {
   display: flex;
-  position: relative;
   align-items: center;
-  box-sizing: border-box;
   background: $color-panel-bg-5;
-  height: 52px;
+  padding: 16px 54px 16px 16px;
 }
 
-.dialogHeaderStuff {
-  margin-left: 16px;
-  display: flex;
-  flex-direction: row;
+.headerIcon {
+  width: 24px;
   height: 24px;
 }
 
-.dialogHeaderTitle {
+.headerTitle {
   margin-left: 16px;
   color: $color-white;
-  font-size: 16px;
   text-transform: uppercase;
-  min-width: 300px;
 }
 
-.dialogHeaderIcon {
-  width: 24px;
+// common
 
-  color: $color-white;
+.body {
+  //  for wrap blocks
 }
 
-.dialogBody {
-  padding: 0 16px;
-}
-
-.dialogFooter {
+.block {
+  border-bottom: 1px solid $color-grey300;
   padding: 24px 16px;
-  text-align: right;
+  color: $color-black;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.title {
+  display: block;
+  font-size: 24px;
+  font-weight: $font-weight-bold;
+}
+
+.description {
+  display: block;
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.row {
+  display: flex;
+  margin: 0 -$gutter/2;
+}
+
+.col {
+  margin: 0 $gutter/2;
+  flex-grow: 1;
+}
+
+// fields
+
+.ownersList {
+  margin-top: 24px;
+}
+
+.timeLock {
+  margin-top: 8px;
+}
+
+.signaturesList {
+  margin-top: 24px;
+}
+
+// actions
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 24px 16px;
 }
 
 .action {
-  margin: 0 0 0 10px;
+  margin-left: 10px;
+}
+
+.hide {
+  display: none;
 }

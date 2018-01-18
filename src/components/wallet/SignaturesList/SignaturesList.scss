@@ -1,0 +1,33 @@
+@import "~styles/partials/variables";
+
+$size: 32px;
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: $size;
+  height: $size;
+  font-size: 18px;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  background-color: $color-grey300;
+  border-radius: $size / 2;
+  margin-left: 24px;
+  padding: 5px 9px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &.selected {
+    background-color: $color-secondary;
+  }
+}

@@ -57,6 +57,7 @@ export default {
     name: 'Name',
     address: 'Address',
     ethAddress: 'Ethereum Address',
+    sOfs: '%{index} of %{count}',
   },
   wallet: {
     sendTokens: 'Send tokens',

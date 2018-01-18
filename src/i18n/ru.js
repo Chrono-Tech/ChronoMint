@@ -57,6 +57,7 @@ export default {
     name: 'Имя',
     address: 'Адрес',
     ethAddress: 'Ethereum Адрес',
+    sOfs: '%{index} из %{count}',
   },
   wallet: {
     sendTokens: 'Отправить токены',
