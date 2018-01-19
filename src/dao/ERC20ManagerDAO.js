@@ -9,7 +9,8 @@ export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
-const MANDATORY_TOKENS = [ 'TIME' ]
+export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
+export const DEFAULT_TOKENS = [ 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
 const NON_OPTIONAL_TOKENS = [ 'ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC' ]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'

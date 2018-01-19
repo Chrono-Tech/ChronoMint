@@ -11,11 +11,19 @@ import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokenModel from 'models/tokens/TokenModel'
+import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
 import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
 import TokenRow from './TokenRow'
 import TokenRowPlaceholder from './TokenRowPlaceholder'
+
+export const checkToken = (token: TokenModel, item: Object) => {
+  const checkBlockchain = token.blockchain() === item.blockchain
+  const checkItem = item.address ? item.address === token.address() : item.symbol === token.symbol()
+  return checkBlockchain && checkItem
+}
 
 function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
@@ -57,7 +65,7 @@ export default class AddCurrencyDialog extends PureComponent {
 
     this.handleSave = this.handleSave.bind(this)
     this.state = {
-      selectedTokens: [],
+      selectedTokens: this.props.profile.tokens().toArray(),
     }
   }
 
@@ -65,27 +73,43 @@ export default class AddCurrencyDialog extends PureComponent {
     this.props.modalsClose()
   }
 
-  handleCurrencyChecked = (symbol, isSelect) => {
-    const { selectedTokens } = this.state
-
-    this.setState({
-      selectedTokens: isSelect
-        ? selectedTokens.concat(symbol)
-        : selectedTokens.filter((item) => item !== symbol),
+  handleCurrencyChecked = (token: TokenModel, isSelect: boolean) => {
+    let { selectedTokens } = this.state
+    let exist = false
+    selectedTokens = selectedTokens.map((item) => {
+      if (checkToken(token, item)) {
+        item.show = isSelect
+        exist = true
+      }
+      return item
     })
+
+    if (!exist) {
+      selectedTokens.push({
+        address: token.address(),
+        symbol: token.symbol(),
+        blockchain: token.blockchain(),
+        show: !(DEFAULT_TOKENS.indexOf(token.symbol()) + 1),
+      })
+    }
+
+    this.setState({ selectedTokens })
   }
 
   handleSave () {
-    const tokens = this.props.tokens.items().filter((item) => item.address() && !item.isOptional() || this.state.selectedTokens.includes(item.symbol()))
-    const tokensAddresses = tokens.map((item) => item.address())
-    const profile = this.props.profile.tokens(new Immutable.Set(tokensAddresses))
+    const profile = this.props.profile.tokens(new Immutable.Set(this.state.selectedTokens))
 
-    this.props.modalsClose()
     this.props.updateUserProfile(profile)
+    this.props.modalsClose()
   }
 
-  renderRow = (selectedTokens, balances, profile) => (token) => {
-    const isSelected = selectedTokens.includes(token.symbol())
+  renderRow = (selectedTokens, balances, profile) => (token: TokenModel) => {
+    let isSelected = !!(DEFAULT_TOKENS.indexOf(token.symbol()) + 1)
+    selectedTokens.map((item) => {
+      if (checkToken(token, item)) {
+        isSelected = item.show
+      }
+    })
 
     return (
       <TokenRow
