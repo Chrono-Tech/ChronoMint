@@ -11,12 +11,6 @@ exports[`watcher actions should dispatch cbeWatcher 1`] = `
 exports[`watcher actions should dispatch watcher 1`] = `
 [
   {
-    "type": "exchange/GET_DATA_START"
-  },
-  {
-    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
-  },
-  {
     "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
   },
   {

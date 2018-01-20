@@ -114,9 +114,7 @@
 
 .nameTitle {
   flex: 1 1 auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include ellipsis;
 }
 
 .tableCellActions {
@@ -138,9 +136,7 @@
 
 .ellipsisInner {
   display: table-cell;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include ellipsis;
 }
 
 @include sm-only {

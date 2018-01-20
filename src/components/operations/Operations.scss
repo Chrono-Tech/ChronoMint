@@ -211,10 +211,8 @@
 .infoAddress {
   margin-top: 4px;
   margin-bottom: 4px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  @include ellipsis;
   width: 100%;
-  white-space: nowrap;
   font-size: 14px;
   color: $color-primary-1;
 }
