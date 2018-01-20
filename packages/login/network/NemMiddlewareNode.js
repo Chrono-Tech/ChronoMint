@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import nem from 'nem-sdk'
 import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
@@ -64,11 +65,6 @@ export default class NemMiddlewareNode extends NemAbstractNode {
     }
   }
 
-  async getFeeRate () {
-    // async by design
-    return this._feeRate
-  }
-
   getMosaics () {
     return this._mosaics
   }
@@ -94,6 +90,11 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       const model = createTxModel(data.transaction, account)
       setImmediate(() => {
         this.emit('tx', model)
+        // this.emit('balance', new NemBalance({
+        //   address: account,
+        //   balance: readXemBalance(balance),
+        //   mosaics: readMosaicsBalances(mosaics),
+        // }))
       })
       return data
     } catch (e) {
@@ -104,16 +105,21 @@ export default class NemMiddlewareNode extends NemAbstractNode {
 }
 
 function createTxModel (tx, account): NemTx {
-  console.log(tx)
   return new NemTx({
     txHash: tx.transactionHash,
-    time: tx.timeStamp, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
+    time: new Date(nem.utils.format.nemDate(tx.timeStamp)).getTime() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
     from: tx.sender,
     signer: tx.signer,
     to: tx.recipient,
     value: new BigNumber(tx.amount),
     fee: new BigNumber(tx.fee),
     credited: tx.recipient === account,
+    mosaics: !(tx.mosaics && tx.mosaics.length)
+      ? null
+      : tx.mosaics.reduce((t, m) => ({
+        ...t,
+        [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
+      }), {}),
   })
 }
 

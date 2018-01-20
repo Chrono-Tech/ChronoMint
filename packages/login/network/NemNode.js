@@ -3,13 +3,27 @@ import nem from 'nem-sdk'
 import NemMiddlewareNode from './NemMiddlewareNode'
 
 export const NEM_MAINNET_NODE = new NemMiddlewareNode({
-  feeRate: 200,
   mosaics: [{
-    // namespace: 'chronobank:minute',
-    // name: 'XMIN',
-    // title: 'Minutes',
-    // symbol: 'XMIN',
-    // decimals: 2,
+    definition: {
+      creator: 'cb60520c740f867ea01a60e662e833a5f7f9d3070fdf23cdcf903d6abc1cdd52',
+      description: 'chronobank bonus minutes',
+      id: {
+        namespaceId: 'chronobank',
+        name: 'minute',
+      },
+      properties: [
+        { name: 'divisibility', value: '2' },
+        { name: 'initialSupply', value: '100000' },
+        { name: 'supplyMutable', value: 'true' },
+        { name: 'transferable', value: 'true' },
+      ],
+      levy: {},
+    },
+    namespace: 'cb:minutes',
+    decimals: 2,
+    name: 'XMIN',
+    title: 'Minutes',
+    symbol: 'XMIN',
   }],
   api: axios.create({
     baseURL: 'https://test-4.chronobank.io',
@@ -28,7 +42,6 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
 })
 
 export const NEM_TESTNET_NODE = new NemMiddlewareNode({
-  feeRate: 200,
   mosaics: [{
     definition: {
       creator: 'f445e92ecf24c34a4a62e7855c300e1cd6cd8749d0672eb097ebdd22c9708912',

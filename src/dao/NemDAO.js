@@ -7,6 +7,8 @@ import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 
 const BLOCKCHAIN_NEM = 'NEM'
+export const NEM_XEM_SYMBOL = 'XEM'
+export const NEM_XEM_NAME = 'XEM'
 export const NEM_DECIMALS = 6
 
 const EVENT_TX = 'tx'
@@ -66,10 +68,6 @@ export default class NemDAO extends EventEmitter {
     return this._decimals
   }
 
-  async getFeeRate () {
-    return this._nemProvider.getFeeRate()
-  }
-
   async getAccountBalances () {
     const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
     return {
@@ -87,7 +85,7 @@ export default class NemDAO extends EventEmitter {
   // eslint-disable-next-line no-unused-vars
   async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
-      return await this._nemProvider.transfer(from, to, amount, this._mosaic, this._decimals, feeMultiplier)
+      return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)
@@ -110,18 +108,45 @@ export default class NemDAO extends EventEmitter {
 
   async watchTransfer () {
     this._nemProvider.addListener(EVENT_TX, async ({ tx }) => {
-      this.emit(EVENT_NEW_TRANSFER, new TxModel({
-        txHash: tx.txHash,
-        // blockHash: tx.blockhash,
-        // blockNumber: tx.blockheight,
-        blockNumber: null,
-        time: tx.time,
-        from: tx.from || tx.signer,
-        to: tx.to,
-        value: new Amount(tx.value, this._symbol),
-        fee: new Amount(tx.fee, this._symbol),
-        credited: tx.credited,
-      }))
+      if (!this._mosaic) {
+        if (!tx.mosaics) {
+          this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
+        }
+      } else {
+        if (tx.mosaics && (this._namespace in tx.mosaics)) {
+          this.emit(EVENT_NEW_TRANSFER, this._createMosaicTxModel(tx))
+        }
+      }
+    })
+  }
+
+  _createXemTxModel (tx) {
+    return new TxModel({
+      txHash: tx.txHash,
+      // blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      time: tx.time,
+      from: tx.from || tx.signer,
+      to: tx.to,
+      value: new Amount(tx.value, this._symbol),
+      fee: new Amount(tx.fee, this._symbol),
+      credited: tx.credited,
+    })
+  }
+
+  _createMosaicTxModel (tx) {
+    return new TxModel({
+      txHash: tx.txHash,
+      // blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      time: tx.time,
+      from: tx.from || tx.signer,
+      to: tx.to,
+      value: new Amount(tx.mosaics[this._namespace], this._symbol),
+      fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
+      credited: tx.credited,
     })
   }
 

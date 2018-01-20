@@ -1,6 +1,6 @@
 import type BigNumber from 'bignumber.js'
-// TODO @ipavlenko: Fork and fix "Critical dependency: the request of a dependency is an expression": https://github.com/QuantumMechanics/NEM-sdk/issues/21
 import nem from 'nem-sdk'
+
 export const DECIMALS = 1000000
 
 export class NemEngine {
@@ -17,13 +17,13 @@ export class NemEngine {
     return this._wallet.getAddress()
   }
 
-  createTransaction (to, amount: BigNumber, mosaicDefinition = null, feeRate) {
+  createTransaction (to, amount: BigNumber, mosaicDefinition = null, feeMultiplier) {
     return mosaicDefinition
-      ? this._createMosaicTransaction(to, amount, mosaicDefinition, feeRate)
-      : this._createXemTransaction(to, amount, feeRate)
+      ? this._createMosaicTransaction(to, amount, mosaicDefinition, feeMultiplier)
+      : this._createXemTransaction(to, amount, feeMultiplier)
   }
 
-  _createXemTransaction (to, amount: BigNumber, feeRate) {
+  _createXemTransaction (to, amount: BigNumber, feeMultiplier) {
     const value = amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -34,8 +34,8 @@ export class NemEngine {
     )
 
     const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
-    // eslint-disable-next-line
-    console.log('fee', transactionEntity.fee, 'feeRate', feeRate)
+
+    transactionEntity.fee = transactionEntity.fee * feeMultiplier
 
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
@@ -49,7 +49,7 @@ export class NemEngine {
     }
   }
 
-  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition, feeRate) {
+  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition, feeMultiplier) {
     const value = amount.toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -68,8 +68,7 @@ export class NemEngine {
       },
     }, this._network.id)
 
-    // eslint-disable-next-line
-    console.log('fee', transactionEntity.fee, 'feeRate', feeRate)
+    transactionEntity.fee = transactionEntity.fee * feeMultiplier
 
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
