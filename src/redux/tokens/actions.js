@@ -3,7 +3,7 @@ import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import NemDAO, { EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
+import NemDAO, { NEM_DECIMALS, EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 
@@ -73,9 +73,9 @@ export const initTokens = () => async (dispatch, getState) => {
   })
 
   // nem tokens
-  const mosaicsDAOs = nemProvider.getMosaics().map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.namespace, 2))
+  const mosaicsDAOs = nemProvider.getMosaics().map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.decimals, m.definition))
   const nemDAOs =  [
-    new NemDAO('XEM', 'XEM', nemProvider, null, 6),
+    new NemDAO('XEM', 'XEM', nemProvider, NEM_DECIMALS),
     ...mosaicsDAOs,
   ]
 

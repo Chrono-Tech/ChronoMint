@@ -94,7 +94,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     })
     .on(EVENT_UPDATE_BALANCE, ({ /* account, time, */ balance }) => {
       // TODO @ipavlenko: Always check user account
-      console.log('EVENT_UPDATE_BALANCE', balance)
       dispatch({
         type: WALLET_TOKEN_BALANCE,
         balance: new BalanceModel({

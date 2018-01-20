@@ -29,7 +29,9 @@ export default class NemMiddlewareNode extends NemAbstractNode {
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
           this.trace('NEM Tx', data)
-          this.emit('tx', createTxModel(data, address))
+          if (data.recipient === address) {
+            this.emit('tx', createTxModel(data, address))
+          }
         })
       })
     } catch (e) {
@@ -89,12 +91,10 @@ export default class NemMiddlewareNode extends NemAbstractNode {
   async send (account, rawtx) {
     try {
       const { data } = await this._api.post('tx/send', rawtx)
-      // TODO @ipavlenko: Uncomment after the immediate response will be implemented
-      // const tx = await this.getTransactionInfo(data.transactionHash.data)
-      // const model = this._createTxModel(tx.transaction, account)
-      // setImmediate(() => {
-      //   this.emit('tx', model)
-      // })
+      const model = createTxModel(data.transaction, account)
+      setImmediate(() => {
+        this.emit('tx', model)
+      })
       return data
     } catch (e) {
       this.trace(`send transaction failed`, e)
@@ -104,6 +104,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
 }
 
 function createTxModel (tx, account): NemTx {
+  console.log(tx)
   return new NemTx({
     txHash: tx.transactionHash,
     time: tx.timeStamp, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
@@ -126,13 +127,11 @@ function readXemBalance (balance) {
 }
 
 function readMosaicsBalances (mosaics) {
-  return !(mosaics && mosaics.confirmed)
-    ? null
-    : Object.entries(mosaics.confirmed).reduce((t, [ k, v ]) => ({
-      ...t,
-      [ k ]: {
-        confirmed: new BigNumber(v.value),
-        // TODO @ipavlenko: Add unconfirmed balance for Mosaics
-      },
-    }), {})
+  return Object.entries(mosaics || {}).reduce((t, [ k, v ]) => ({
+    ...t,
+    [ k ]: {
+      confirmed: v.confirmed == null ? null : new BigNumber(v.confirmed.value),
+      unconfirmed: v.unconfirmed == null ? null : new BigNumber(v.unconfirmed.value),
+    },
+  }), {})
 }
