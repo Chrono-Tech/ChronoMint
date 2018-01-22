@@ -1,0 +1,92 @@
+@import "~styles/partials/variables";
+
+.root {
+  display: flex;
+  margin: 48px 24px 0;
+}
+
+.iconBox {
+  flex-grow: 0;
+  margin-right: 16px;
+}
+
+.icon {
+  margin-top: -5px; // for align
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.info {
+  display: flex;
+  border-bottom: 1px solid $color-grey300;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.name {
+  font-weight: $font-weight-bold;
+}
+
+.address {
+  font-size: 14px;
+}
+
+.actions {
+  display: flex;
+  flex-grow: 0;
+  margin-left: 24px;
+}
+
+.action {
+  cursor: pointer;
+  margin-left: 24px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.details {
+  display: flex;
+  margin-top: 16px;
+}
+
+// details
+
+.detailCol {
+  margin-left: 32px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.detailItem {
+  line-height: 1;
+  margin-top: 4px;
+  font-size: 14px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+// helpers
+
+.red {
+  color: $color-red;
+}
+
+.secondary {
+  color: $color-secondary;
+}
+
+.grey {
+  color: $color-grey300;
+}

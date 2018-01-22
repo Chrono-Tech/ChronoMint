@@ -57,7 +57,7 @@ export default {
     name: 'Имя',
     address: 'Адрес',
     ethAddress: 'Ethereum Адрес',
-    sOfs: '%{index} из %{count}',
+    ofS: 'из %{count}',
   },
   wallet: {
     sendTokens: 'Отправить токены',
@@ -78,18 +78,6 @@ export default {
     value: 'Сумма',
     revoke: 'ОТОЗВАТЬ',
     sign: 'ПОДПИСАТЬ',
-    walletSelectDialog: {
-      multisignatureWallets: 'Мульти кошельки',
-      addWallet: 'Добавить кошелёк',
-      yourWallets: 'Ваши кошельки',
-      youHaveNoWallets: 'У вас нет кошельков',
-      howToAddMultisignatureWallet: 'Как добавить мульти кошелёк? Это легко!',
-      toCreateAMultisigWallet: 'Для создания мультиподписного кошелька',
-      clickPlusButtonAtTheTop: 'Кликните кнопку плюс вверху',
-      selectOwnersAtLeastTwo: 'Выбирите владельцев, минимум двух',
-      selectRequiredNumberOfSignaturesFromOwners: 'Выбирите необходимое число подписей от владельцев',
-      owners: '%{num} владельцев',
-    },
   },
   exchange: {
     tokens: 'Обмен токенов',

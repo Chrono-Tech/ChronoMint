@@ -1,10 +1,11 @@
 import * as Assets from 'components/assetsManager/lang'
-import * as Dashboard from 'components/dashboard/lang'
 import * as Timer from 'components/common/Timer/lang'
+import * as Dashboard from 'components/dashboard/lang'
+import TwoFA from 'components/dialogs/TwoFA/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddEditDialog/lang'
+import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
 import * as exchange from 'components/exchange/lang'
-import TwoFA from 'components/dialogs/TwoFA/lang'
 
 export default {
   en: {
@@ -13,6 +14,7 @@ export default {
     Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
+    WalletSelectDialog: WalletSelectDialog.en,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.en,
@@ -25,6 +27,7 @@ export default {
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru,
+    WalletSelectDialog: WalletSelectDialog.ru,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.ru,

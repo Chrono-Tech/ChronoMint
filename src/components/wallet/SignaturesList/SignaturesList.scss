@@ -5,6 +5,8 @@ $size: 32px;
 .root {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  font-size: 18px;
 }
 
 .chip {
@@ -13,7 +15,6 @@ $size: 32px;
   justify-content: center;
   min-width: $size;
   height: $size;
-  font-size: 18px;
   font-weight: $font-weight-bold;
   color: $color-white;
   background-color: $color-grey300;
@@ -30,4 +31,8 @@ $size: 32px;
   &.selected {
     background-color: $color-secondary;
   }
+}
+
+.of {
+  margin-left: 24px;
 }

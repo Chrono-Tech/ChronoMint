@@ -1,0 +1,69 @@
+@import '~styles/partials/_mixins';
+@import '~styles/partials/_variables';
+
+$line: 1px solid $color-grey300;
+$indent: 24px;
+
+.root {
+  max-width: 928px;
+  background-color: $color-white;
+}
+
+// header
+
+.header {
+  position: relative; // for FAB
+  background-color: $color-primary-1;
+  padding: 32px $indent 64px;
+  color: $color-white;
+}
+
+.headerTitle {
+  font-size: 28px;
+  font-weight: $font-weight-bold;
+}
+
+.headerSubtitle {
+  font-size: 16px;
+  color: $color-white;
+}
+
+.headerFAB {
+  position: absolute;
+  right: $indent;
+  bottom: 0;
+  transform: translateY(50%);
+  z-index: 1;
+}
+
+.body {
+  padding-bottom: 32px;
+  color: $color-black;
+}
+
+// block
+
+.block {
+  border-bottom: $line;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.blockTitle {
+  padding: 8px $indent;
+  border-bottom: $line;
+  line-height: 1;
+  font-weight: $font-weight-bold;
+}
+
+.blockList {
+  padding-bottom: 24px;
+  //border-bottom: $line;
+}
+
+.noWallets {
+  margin: 24px 24px 0;
+  font-style: italic;
+}

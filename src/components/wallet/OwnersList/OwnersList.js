@@ -1,6 +1,7 @@
 import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
 import globalStyles from 'layouts/partials/styles'
 import { FlatButton } from 'material-ui'
+import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -24,12 +25,33 @@ export default class OwnersList extends PureComponent {
     fields: PropTypes.object,
   }
 
-  handleRemoveItem = (fields, index) => () => fields.remove(index)
+  constructor () {
+    super(...arguments)
+    this.state = {
+      owners: [],
+    }
+  }
 
-  handleAddItem = (fields) => () => fields.push()
+  handleRemoveItem = (index) => () => {
+    const newOwners = [...this.state.owners]
+    newOwners.splice(index, 1)
+    this.setState({
+      owners: newOwners,
+    })
+  }
+
+  handleAddItem = () => {
+    const owners = [
+      ...this.state.owners,
+      this.input.value,
+    ]
+    this.setState({ owners })
+    this.props.input.onChange(owners)
+  }
 
   render () {
-    const { account, fields } = this.props
+    const { account } = this.props
+    const { owners } = this.state
 
     return (
       <div>
@@ -40,27 +62,37 @@ export default class OwnersList extends PureComponent {
             isNoActions
           />
 
-          {fields.map((item, index) => (
+          {owners.map((address, index) => (
             <OwnerItem
-              address={item.address}
-              onRemove={this.handleRemoveItem(fields, index)}
+              address={address}
+              onRemove={this.handleRemoveItem(index)}
             />
           ))}
         </div>
 
-        <div styleName='addOwnerButton'>
-          {/* TODO: update to field */}
-          <FlatButton
-            label={(
-              <span styleName='buttonLabel'>
+        <div styleName='addOwner'>
+          <div styleName='addOwnerField'>
+            <TextField
+              ref={(input) => this.input = input}
+              name='owners.address'
+              floatingLabelText={<Translate value={`${prefix}.floatText`} />}
+            />
+          </div>
+          <div styleName='addOwnerButton'>
+            {/* TODO: update to field */}
+            <FlatButton
+              label={(
+                <span styleName='buttonLabel'>
                 <img styleName='buttonIcon' src={CirclePlusSVG} />
                 <Translate value='WalletAddEditDialog.addOwner' />
               </span>
-            )}
-            onTouchTap={this.handleAddItem(fields)}
-            {...globalStyles.buttonWithIconStyles}
-          />
+              )}
+              onTouchTap={this.handleAddItem}
+              {...globalStyles.buttonWithIconStyles}
+            />
+          </div>
         </div>
+
       </div>
     )
   }

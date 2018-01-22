@@ -9,7 +9,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DatePicker, TextField, TimePicker, Toggle } from 'redux-form-material-ui'
+import { DatePicker, TimePicker, Toggle } from 'redux-form-material-ui'
 import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -21,10 +21,14 @@ export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_WALLET_ADD_EDIT_DIALOG)
+  const owners = selector(state, 'owners')
+
+  console.log('--WalletAddEditForm#mapStateToProps', owners)
 
   return {
-    account: state.get(DUCK_SESSION).account,
     isTimeLocked: selector(state, 'isTimeLocked'),
+    ownersCount: owners ? owners.size + 1 : 1,
+    account: state.get(DUCK_SESSION).account,
     is2FA: selector(state, 'is2FA'),
   }
 }
@@ -60,6 +64,7 @@ export default class WalletAddEditForm extends PureComponent {
     onClose: PropTypes.func,
     isTimeLocked: PropTypes.bool,
     is2FA: PropTypes.bool,
+    ownersCount: PropTypes.number,
     ...formPropTypes,
   }
 
@@ -67,10 +72,8 @@ export default class WalletAddEditForm extends PureComponent {
 
   handle2FA = () => {}
 
-  handleSelectSignatures = () => {}
-
   render () {
-    const { handleSubmit, pristine, valid, isTimeLocked, is2FA } = this.props
+    const { handleSubmit, pristine, valid, isTimeLocked, is2FA, ownersCount } = this.props
 
     return (
       <form styleName='root' onSubmit={handleSubmit}>
@@ -80,12 +83,12 @@ export default class WalletAddEditForm extends PureComponent {
         </div>
         <div styleName='body'>
           {/*<div styleName='block'>*/}
-            {/*<Field*/}
-              {/*component={TextField}*/}
-              {/*name='name'*/}
-              {/*fullWidth*/}
-              {/*floatingLabelText={<Translate value={`${prefix}.name`} />}*/}
-            {/*/>*/}
+          {/*<Field*/}
+          {/*component={TextField}*/}
+          {/*name='name'*/}
+          {/*fullWidth*/}
+          {/*floatingLabelText={<Translate value={`${prefix}.name`} />}*/}
+          {/*/>*/}
           {/*</div>*/}
           <div styleName='block'>
             <Field
@@ -129,17 +132,21 @@ export default class WalletAddEditForm extends PureComponent {
             <Translate styleName='description' value={`${prefix}.twoFADescription`} />
           </div>
           <div styleName='block'>
-            <Translate styleName='title' count={1} value={`${prefix}.walletOwners`} />
+            <Translate styleName='title' count={ownersCount} value={`${prefix}.walletOwners`} />
             {is2FA
               ? <Translate value={`${prefix}.walletOwners2FADescription`} />
               : <Translate styleName='description' value={`${prefix}.walletOwnersDescription`} />
             }
             {!is2FA && (
               <div styleName='ownersList'>
-                <FieldArray
+                <Field
                   component={OwnersList}
                   name='owners'
                 />
+                {/*<FieldArray*/}
+                  {/*component={OwnersList}*/}
+                  {/*name='owners'*/}
+                {/*/>*/}
               </div>
             )}
           </div>
@@ -148,10 +155,10 @@ export default class WalletAddEditForm extends PureComponent {
               <Translate styleName='title' value={`${prefix}.requiredSignatures`} />
               <Translate styleName='description' value={`${prefix}.requiredSignaturesDescription`} />
               <div styleName='signaturesList'>
-                <SignaturesList
-                  count={5}
-                  value={2}
-                  onSelect={this.handleSelectSignatures}
+                <Field
+                  component={SignaturesList}
+                  name='requiredSignatures'
+                  count={ownersCount}
                 />
               </div>
             </div>
