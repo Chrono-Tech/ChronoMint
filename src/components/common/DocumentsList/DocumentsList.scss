@@ -1,4 +1,5 @@
 @import '~styles/partials/variables';
+@import '~styles/partials/mixins';
 
 .root {
   position: relative;
@@ -27,9 +28,7 @@
         vertical-align: top;
         color: $color-primary-0;
         max-width: 80%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        @include ellipsis;
       }
 
       &:hover {

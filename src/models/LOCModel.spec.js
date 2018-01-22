@@ -17,6 +17,8 @@ describe('LOC model', () => {
         symbol: 'LHT',
       }),
     })
+    model = model.set('expDate', '11111111111')
+    model = model.set('createDate', '222222222222')
 
     expect(model).toMatchSnapshot()
   })
