@@ -1,4 +1,3 @@
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -28,27 +27,41 @@ export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 export const TESTRPC_URL = '/web3/'
 
-const scannerMap = {
-  // only for mainnet API url is different from web-interface url
-  main: [
-    'https://etherscan.io',
-    'https://api.etherscan.io',
-  ],
-  kovan: [
-    'https://kovan.etherscan.io',
-  ],
-  rinkeby: [
-    'https://rinkeby.etherscan.io',
-  ],
-}
-
 // ---------- network's base parameters
+
+const blockExplorersMap = {
+  Ethereum: {
+    mainnet: [
+      'https://etherscan.io/tx',
+      'https://api.etherscan.io',
+    ],
+    testnet: [
+      'https://rinkeby.etherscan.io/tx',
+    ],
+  },
+  [ BLOCKCHAIN_BITCOIN ]: {
+    mainnet: 'https://blockexplorer.com/tx',
+    testnet: 'https://tbtc.blockdozer.com/insight/tx',
+  },
+  [ BLOCKCHAIN_BITCOIN_CASH ]: {
+    mainnet: 'https://bcc.blockdozer.com/insight/tx',
+    testnet: 'https://tbcc.blockdozer.com/insight/tx',
+  },
+  [ BLOCKCHAIN_BITCOIN_GOLD ]: {
+    mainnet: 'https://btgexplorer.com/tx',
+    testnet: null,
+  },
+  [ BLOCKCHAIN_LITECOIN ]: {
+    mainnet: 'https://live.blockcypher.com/ltc/tx',
+    testnet: 'https://chain.so/tx/LTCTEST',
+  },
+}
 
 const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
   protocol: 'https',
   name: 'Mainnet (production)',
-  scanner: scannerMap.main,
+  scanner: blockExplorersMap.Ethereum.mainnet,
   bitcoin: 'bitcoin',
   bitcoinCash: 'bitcoin',
   bitcoinGold: 'bitcoingold',
@@ -60,7 +73,7 @@ const RINKEBY_BASE = {
   id: 4,
   protocol: 'https',
   name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby,
+  scanner: blockExplorersMap.Ethereum.testnet,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   // bitcoinGold: 'bitcoingold_testnet',
@@ -81,27 +94,6 @@ const BASE_NETWORK_MAP = [
   RINKEBY_BASE,
 ]
 
-const blockExplorersMap = {
-  [ BLOCKCHAIN_ETHEREUM ]: {
-    ...scannerMap,
-  },
-  [ BLOCKCHAIN_BITCOIN ]: {
-    [ MAINNET_BASE.id ]: 'https://blockexplorer.com/tx',
-    [ RINKEBY_BASE.id ]: 'https://tbtc.blockdozer.com/insight/tx',
-  },
-  [ BLOCKCHAIN_BITCOIN_CASH ]: {
-    [ MAINNET_BASE.id ]: 'https://bcc.blockdozer.com/insight/tx',
-    [ RINKEBY_BASE.id ]: 'https://tbcc.blockdozer.com/insight/tx',
-  },
-  [ BLOCKCHAIN_BITCOIN_GOLD ]: {
-    [ MAINNET_BASE.id ]: 'https://btgexplorer.com/tx',
-    [ RINKEBY_BASE.id ]: null,
-  },
-  [ BLOCKCHAIN_LITECOIN ]: {
-    [ MAINNET_BASE.id ]: 'https://live.blockcypher.com/ltc/tx',
-    [ RINKEBY_BASE.id ]: 'https://chain.so/tx/LTCTEST',
-  },
-}
 // --------- middleware
 
 export const MIDDLEWARE_MAP = {
@@ -232,22 +224,18 @@ export const getScannerById = (networkId, providerId, api = false) => {
   return scanner
 }
 
-export const getEtherscanUrl = (networkId, providerId, txHash) => {
-  const baseScannerUrl = getScannerById(networkId, providerId)
-  return baseScannerUrl ? (`${baseScannerUrl}/tx/${txHash}`) : null
-}
-
 export const getBlockExplorerUrl = (networkId, providerId, txHash, blockchain) => {
-  if (!blockchain || blockchain === BLOCKCHAIN_ETHEREUM) {
-    return getEtherscanUrl(networkId, providerId, txHash)
-  } else {
-    try {
-      const baseUrl = blockExplorersMap[ blockchain ][ networkId ]
-      return baseUrl ? (`${baseUrl}/${txHash}`) : null
-    } catch (e) {
-      // eslint-disable-next-line
-      console.error('getBlockExplorerUrl', e.message)
+  try {
+    const isTestnet = isTestingNetwork(networkId, providerId)
+    let baseUrl = blockExplorersMap[ blockchain ][ isTestnet ? 'testnet' : 'mainnet' ]
+    if (Array.isArray(baseUrl)) {
+      baseUrl = baseUrl[ 0 ]
     }
+
+    return baseUrl ? (`${baseUrl}/${txHash}`) : null
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('getBlockExplorerUrl', e.message)
   }
 }
 
