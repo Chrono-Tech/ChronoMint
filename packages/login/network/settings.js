@@ -37,6 +37,7 @@ const blockExplorersMap = {
     ],
     testnet: [
       'https://rinkeby.etherscan.io/tx',
+      'https://rinkeby.etherscan.io',
     ],
   },
   [ BLOCKCHAIN_BITCOIN ]: {
