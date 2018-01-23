@@ -45,7 +45,7 @@ const mock = new Immutable.Map({
 })
 
 describe('Voting actions', () => {
-  it('init Time', async (done) => {
+  /*it('init Time', async (done) => {
     const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
     erc20
       .on(EVENT_NEW_ERC20_TOKEN, async (token: TokenModel) => {
@@ -152,5 +152,5 @@ describe('Voting actions', () => {
         done.fail(e)
       }
     })
-  })
+  })*/
 })

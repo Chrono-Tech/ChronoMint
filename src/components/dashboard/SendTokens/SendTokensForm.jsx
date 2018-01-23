@@ -265,9 +265,9 @@ export default class SendTokensForm extends PureComponent {
                 {...FEE_RATE_MULTIPLIER}
               />
               <div styleName='tagsWrap'>
-                <div><Translate value={prefix('fast')} /></div>
-                <div styleName='tagDefault' />
                 <div><Translate value={prefix('slow')} /></div>
+                <div styleName='tagDefault' />
+                <div><Translate value={prefix('fast')} /></div>
               </div>
             </div>
           </div>

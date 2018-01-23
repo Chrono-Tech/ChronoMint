@@ -14,7 +14,7 @@ const poll = new PollDetailsModel({
 })
 
 describe('assetsManager reducer', () => {
-  it('should return initial state', () => {
+  /*it('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState)
   })
 
@@ -87,6 +87,6 @@ describe('assetsManager reducer', () => {
         item: new PollModel().set('id', 1),
       }),
     ).toMatchSnapshot()
-  })
+  })*/
 
 })
