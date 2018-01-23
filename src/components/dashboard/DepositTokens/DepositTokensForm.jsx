@@ -244,8 +244,8 @@ export default class DepositTokensForm extends PureComponent {
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
 
-    const isRevokeDisabled = isInvalid || allowance.isFetching()
-    const isApproveDisabled = isInvalid || balance.lte(amountWithDecimals) || allowance.isFetching()
+    const isRevokeDisabled = allowance.isFetching()
+    const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching()
     const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching()
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
     return (

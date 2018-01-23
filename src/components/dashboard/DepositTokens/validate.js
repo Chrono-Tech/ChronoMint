@@ -10,7 +10,7 @@ export default (values) => {
       .getErrors(),
     amount: new ErrorList()
       .add(validator.required(amount))
-      .add(validator.positiveNumberOrZero(amount))
+      .add(validator.positiveNumber(amount))
       .getErrors(),
   }
 }
