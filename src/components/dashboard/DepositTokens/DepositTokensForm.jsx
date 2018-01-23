@@ -76,6 +76,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    mainRevoke: (token, spender) => dispatch(mainApprove(token, spender)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
@@ -97,6 +98,7 @@ export default class DepositTokensForm extends PureComponent {
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
     mainApprove: PropTypes.func,
+    mainRevoke: PropTypes.func,
     ...formPropTypes,
   }
 
@@ -116,8 +118,8 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   handleRevokeAsset = () => {
-    const { token, spender } = this.props
-    this.props.mainApprove(this.props.token, new Amount(0, token.id()), spender)
+    const { spender } = this.props
+    this.props.mainRevoke(this.props.token, spender)
   }
 
   handleDepositAsset = (values) => {
