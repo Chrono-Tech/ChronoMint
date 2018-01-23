@@ -79,6 +79,8 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
       amount: new Amount(assetHolderWalletAllowance, token.id()),
       spender: holderWallet,
       token: token.id(),
+      isFetching: false,
+      isFetched: true,
     }),
   })
 }
