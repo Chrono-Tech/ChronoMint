@@ -39,19 +39,6 @@ export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 
-export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
-  type: WALLET_BALANCE,
-  token,
-  isCredited,
-  amount,
-})
-
-export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
-
-export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
-
-export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
-
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
@@ -185,7 +172,8 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string) 
         amount,
         spender: spender, //address
         token: token.id(), // id
-      }).isFetching(true),
+        isFetching: true,
+      }),
     })
     const tokenDAO = tokenService.getDAO(token)
     await tokenDAO.approve(spender, amount)
