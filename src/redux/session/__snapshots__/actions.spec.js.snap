@@ -22,7 +22,6 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
   {
     "isCBE": true,
     "profile": {
-      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
@@ -35,46 +34,98 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
     "type": "session/PROFILE"
   },
   {
-    "type": "WALLET/switch_wallet",
-    "wallet": {
+    "isInited": true,
+    "type": "mainWallet/INIT"
+  },
+  {
+    "address": {
       "address": null,
-      "bccAddress": null,
-      "btcAddress": null,
-      "btgAddress": null,
-      "id": null,
+      "id": "Bitcoin Cash",
       "isFailed": false,
       "isFetched": false,
       "isFetching": false,
-      "isMainWallet": true,
-      "isMultisig": false,
+      "isInited": false,
       "isPending": false,
-      "isTIMERequired": true,
-      "ltcAddress": null,
-      "nemAddress": null,
-      "timeAddress": null,
-      "timeDeposit": "0",
+      "isSelected": false,
       "timestamp": null,
-      "tokens": {},
-      "transactionHash": null,
-      "transactions": {
-        "endOfList": false,
-        "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isPending": false,
-        "list": {},
-        "selected": null,
-        "timestamp": null,
-        "transactionHash": null
-      }
-    }
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/GET_DATA_START"
+    "address": {
+      "address": null,
+      "id": "Bitcoin Gold",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
+    "address": {
+      "address": null,
+      "id": "Litecoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Bitcoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "NEM",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Ethereum",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
     "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
@@ -85,99 +136,6 @@ exports[`session actions should login CBE and go to default page (/cbe) 1`] = `
   {
     "isInited": true,
     "type": "market/INIT"
-  },
-  {
-    "type": "mainWallet/TOKENS_FETCH"
-  },
-  {
-    "type": "watcher/USER"
-  },
-  {
-    "type": "watcher/CBE"
-  },
-  {
-    "payload": {
-      "args": [
-        "/dashboard"
-      ],
-      "method": "replace"
-    },
-    "type": "@@router/CALL_HISTORY_METHOD"
-  }
-]
-`;
-
-exports[`session actions should login CBE and go to default page (/cbe) 2`] = `
-[
-  {
-    "isCBE": true,
-    "profile": {
-      "assetsManager": {},
-      "company": null,
-      "email": null,
-      "icon": null,
-      "id": null,
-      "name": null,
-      "timestamp": null,
-      "tokens": [],
-      "url": null
-    },
-    "type": "session/PROFILE"
-  },
-  {
-    "type": "WALLET/switch_wallet",
-    "wallet": {
-      "address": null,
-      "bccAddress": null,
-      "btcAddress": null,
-      "btgAddress": null,
-      "id": null,
-      "isFailed": false,
-      "isFetched": false,
-      "isFetching": false,
-      "isMainWallet": true,
-      "isMultisig": false,
-      "isPending": false,
-      "isTIMERequired": true,
-      "ltcAddress": null,
-      "nemAddress": null,
-      "timeAddress": null,
-      "timeDeposit": "0",
-      "timestamp": null,
-      "tokens": {},
-      "transactionHash": null,
-      "transactions": {
-        "endOfList": false,
-        "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isPending": false,
-        "list": {},
-        "selected": null,
-        "timestamp": null,
-        "transactionHash": null
-      }
-    }
-  },
-  {
-    "type": "exchange/GET_DATA_START"
-  },
-  {
-    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
-  },
-  {
-    "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
-  },
-  {
-    "type": "AssetsManager/GET_TRANSACTIONS_START"
-  },
-  {
-    "isInited": true,
-    "type": "market/INIT"
-  },
-  {
-    "type": "mainWallet/TOKENS_FETCH"
   },
   {
     "type": "watcher/USER"
@@ -202,7 +160,6 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
   {
     "isCBE": true,
     "profile": {
-      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
@@ -215,46 +172,98 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
     "type": "session/PROFILE"
   },
   {
-    "type": "WALLET/switch_wallet",
-    "wallet": {
+    "isInited": true,
+    "type": "mainWallet/INIT"
+  },
+  {
+    "address": {
       "address": null,
-      "bccAddress": null,
-      "btcAddress": null,
-      "btgAddress": null,
-      "id": null,
+      "id": "Bitcoin Cash",
       "isFailed": false,
       "isFetched": false,
       "isFetching": false,
-      "isMainWallet": true,
-      "isMultisig": false,
+      "isInited": false,
       "isPending": false,
-      "isTIMERequired": true,
-      "ltcAddress": null,
-      "nemAddress": null,
-      "timeAddress": null,
-      "timeDeposit": "0",
+      "isSelected": false,
       "timestamp": null,
-      "tokens": {},
-      "transactionHash": null,
-      "transactions": {
-        "endOfList": false,
-        "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isPending": false,
-        "list": {},
-        "selected": null,
-        "timestamp": null,
-        "transactionHash": null
-      }
-    }
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/GET_DATA_START"
+    "address": {
+      "address": null,
+      "id": "Bitcoin Gold",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
+    "address": {
+      "address": null,
+      "id": "Litecoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Bitcoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "NEM",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Ethereum",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
     "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
@@ -265,9 +274,6 @@ exports[`session actions should login CBE and start watcher with cbeWatcher and 
   {
     "isInited": true,
     "type": "market/INIT"
-  },
-  {
-    "type": "mainWallet/TOKENS_FETCH"
   },
   {
     "type": "watcher/USER"
@@ -292,7 +298,6 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
   {
     "isCBE": false,
     "profile": {
-      "assetsManager": {},
       "company": null,
       "email": null,
       "icon": null,
@@ -305,46 +310,98 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
     "type": "session/PROFILE"
   },
   {
-    "type": "WALLET/switch_wallet",
-    "wallet": {
+    "isInited": true,
+    "type": "mainWallet/INIT"
+  },
+  {
+    "address": {
       "address": null,
-      "bccAddress": null,
-      "btcAddress": null,
-      "btgAddress": null,
-      "id": null,
+      "id": "Bitcoin Cash",
       "isFailed": false,
       "isFetched": false,
       "isFetching": false,
-      "isMainWallet": true,
-      "isMultisig": false,
+      "isInited": false,
       "isPending": false,
-      "isTIMERequired": true,
-      "ltcAddress": null,
-      "nemAddress": null,
-      "timeAddress": null,
-      "timeDeposit": "0",
+      "isSelected": false,
       "timestamp": null,
-      "tokens": {},
-      "transactionHash": null,
-      "transactions": {
-        "endOfList": false,
-        "id": null,
-        "isFailed": false,
-        "isFetched": false,
-        "isFetching": false,
-        "isPending": false,
-        "list": {},
-        "selected": null,
-        "timestamp": null,
-        "transactionHash": null
-      }
-    }
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/GET_DATA_START"
+    "address": {
+      "address": null,
+      "id": "Bitcoin Gold",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
-    "type": "exchange/EXCHANGE_GET_TOKENS_LIST_START"
+    "address": {
+      "address": null,
+      "id": "Litecoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Bitcoin",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "NEM",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
+  },
+  {
+    "address": {
+      "address": null,
+      "id": "Ethereum",
+      "isFailed": false,
+      "isFetched": false,
+      "isFetching": false,
+      "isInited": false,
+      "isPending": false,
+      "isSelected": false,
+      "timestamp": null,
+      "transactionHash": null
+    },
+    "type": "mainWallet/WALLET_ADDRESS"
   },
   {
     "type": "AssetsManager/GET_ASSETS_MANAGER_COUNTS_START"
@@ -355,9 +412,6 @@ exports[`session actions should login USER and go to default url (/wallet) 1`] =
   {
     "isInited": true,
     "type": "market/INIT"
-  },
-  {
-    "type": "mainWallet/TOKENS_FETCH"
   },
   {
     "type": "watcher/USER"

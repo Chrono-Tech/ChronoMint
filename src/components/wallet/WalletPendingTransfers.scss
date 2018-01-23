@@ -1,4 +1,5 @@
 @import '~styles/partials/variables';
+@import '~styles/partials/mixins';
 
 .header {
   background-color: $color-panel-bg-3;
@@ -37,9 +38,7 @@
 }
 
 .left {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+  @include ellipsis;
   flex-grow: 1;
 }
 

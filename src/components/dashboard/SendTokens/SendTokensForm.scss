@@ -134,3 +134,22 @@
   display: inline-block;
   margin-bottom: -2px;
 }
+
+.tagsWrap {
+  justify-content: space-between;
+  display: flex;
+  opacity: 0.6;
+  font-size: 12px;
+  text-transform: capitalize;
+  color: $color-primary-0;
+  position: relative;
+}
+
+.tagDefault {
+  border: 6px solid transparent;
+  border-bottom: 6px solid $color-primary-0;
+  opacity: 0.6;
+  position: absolute;
+  left: calc(50% - 6px);
+  top: -5px;
+}

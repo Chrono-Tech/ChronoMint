@@ -1,10 +1,13 @@
 import Immutable from 'immutable'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
 import networkService from '@chronobank/login/network/NetworkService'
+import VotingCollection from 'models/voting/VotingCollection'
+import { DUCK_VOTING } from 'redux/voting/actions'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import ProfileModel from 'models/ProfileModel'
 import MainWalletModel from 'models/wallet/MainWalletModel'
-import { MARKET_INIT } from 'redux/market/action'
-import { WATCHER, WATCHER_CBE } from 'redux/watcher/actions'
 import { accounts, mockStore } from 'specsInit'
 import ls from 'utils/LocalStorage'
 import * as a from './actions'
@@ -15,13 +18,10 @@ const profile = new ProfileModel({ name: 'profile1' })
 const mainWallet = new MainWalletModel()
 // TODO let userProfile: ProfileModel
 
-const REPLACE_METHOD = 'replace'
 const MOCK_LAST_URL = '/test-last-url'
 
-const routerAction = (route, method = 'push') => ({
-  type: '@@router/CALL_HISTORY_METHOD',
-  payload: { args: [ route ], method },
-})
+const duckTokens = new TokensCollection()
+const duckVoting = new VotingCollection()
 
 const emptySessionMock = new Immutable.Map({
   market: {
@@ -29,13 +29,15 @@ const emptySessionMock = new Immutable.Map({
     lastMarket: {},
   },
   mainWallet,
+  [ DUCK_TOKENS ]: duckTokens.isInited(true),
+  [ DUCK_VOTING ]: duckVoting.isInited(true),
 })
 
 const cbeSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
-    tokens:[],
+    tokens: [],
     currencies: [],
     profile,
   },
@@ -45,13 +47,15 @@ const cbeSessionMock = new Immutable.Map({
     profile,
   },
   mainWallet,
+  [ DUCK_TOKENS ]: duckTokens.isInited(true),
+  [ DUCK_VOTING ]: duckVoting.isInited(true),
 })
 
 const userSessionMock = new Immutable.Map({
   market: {
     rates: {},
     lastMarket: {},
-    tokens:[],
+    tokens: [],
     currencies: [],
   },
   session: {
@@ -59,6 +63,11 @@ const userSessionMock = new Immutable.Map({
     account: accounts[ 5 ],
   },
   mainWallet,
+  [ DUCK_TOKENS ]: duckTokens.isInited(true),
+  [ DUCK_VOTING ]: duckVoting.isInited(true),
+  [ DUCK_NETWORK ]: {
+    selectedNetworkId: LOCAL_ID,
+  },
 })
 
 describe('session actions', () => {
