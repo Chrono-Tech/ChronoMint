@@ -63,14 +63,12 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     }
 
     const voteLimitInTIME = poll.voteLimitInTIME()
-    const options = poll.options() && poll.options().toArray().map((element, index) => `Option${index}`)
 
     const summary = poll.txSummary()
     summary.voteLimit = timeToken.removeDecimals(voteLimitInTIME)
 
     const tx = await this._tx(TX_CREATE_POLL, [
-      options,
-      [],
+      poll.options().size,
       this._c.ipfsHashToBytes32(hash),
       voteLimitInTIME,
       poll.deadline().getTime(),
