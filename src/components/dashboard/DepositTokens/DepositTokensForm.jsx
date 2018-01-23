@@ -139,13 +139,14 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   getIsLockValid (amount) {
-    const { balance, isTesting, allowance, deposit } = this.props
+    const { token, balance, isTesting, allowance, deposit } = this.props
+    const depositLimitWithDecimals = token.addDecimals(DEPOSIT_LIMIT)
     const limit = isTesting
       ? BigNumber.min(balance, allowance.amount())
       : BigNumber.min(
-        DEPOSIT_LIMIT,
+        depositLimitWithDecimals,
         balance,
-        BigNumber.max(new BigNumber(DEPOSIT_LIMIT).minus(deposit), 0),
+        BigNumber.max(depositLimitWithDecimals.minus(deposit), 0),
         allowance.amount(),
       )
     return limit.gte(amount)
