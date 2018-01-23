@@ -19,7 +19,7 @@ import { Translate } from 'react-redux-i18n'
 import { SelectField, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, mainApprove, requireTIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -76,7 +76,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    mainRevoke: (token, spender) => dispatch(mainApprove(token, spender)),
+    mainRevoke: (token, spender) => dispatch(mainRevoke(token, spender)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
