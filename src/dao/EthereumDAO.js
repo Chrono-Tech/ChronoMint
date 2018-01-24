@@ -30,8 +30,8 @@ export class EthereumDAO extends AbstractTokenDAO {
     ])
   }
 
-  async getGasPrice () {
-    return await this._web3Provider.getGasPrice()
+  getGasPrice (): Promise {
+    return this._web3Provider.getGasPrice()
   }
 
   getAccountBalance (account): Promise {
