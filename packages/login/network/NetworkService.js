@@ -2,7 +2,19 @@ import AbstractContractDAO from 'dao/AbstractContractDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
-import { addError, clearErrors, DUCK_NETWORK, loading, NETWORK_ADD_ERROR, NETWORK_SELECT_ACCOUNT, NETWORK_SET_ACCOUNTS, NETWORK_SET_NETWORK, NETWORK_SET_PROVIDER, NETWORK_SET_TEST_METAMASK, NETWORK_SET_TEST_RPC } from '../redux/network/actions'
+import {
+  addError,
+  clearErrors,
+  DUCK_NETWORK,
+  loading,
+  NETWORK_ADD_ERROR,
+  NETWORK_SELECT_ACCOUNT,
+  NETWORK_SET_ACCOUNTS,
+  NETWORK_SET_NETWORK,
+  NETWORK_SET_PROVIDER,
+  NETWORK_SET_TEST_METAMASK,
+  NETWORK_SET_TEST_RPC,
+} from '../redux/network/actions'
 import { utils } from '../settings'
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from './BitcoinProvider'
 import { ethereumProvider } from './EthereumProvider'
@@ -11,7 +23,16 @@ import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
 import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
-import { getNetworkById, getNetworksByProvider, getScannerById, LOCAL_ID, LOCAL_PRIVATE_KEYS, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID, TESTRPC_URL } from './settings'
+import {
+  getNetworkById,
+  getNetworksByProvider,
+  getScannerById,
+  LOCAL_ID,
+  LOCAL_PRIVATE_KEYS,
+  LOCAL_PROVIDER_ID,
+  NETWORK_MAIN_ID,
+  TESTRPC_URL,
+} from './settings'
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
 import web3Utils from './Web3Utils'
@@ -152,7 +173,7 @@ class NetworkService extends EventEmitter {
     this.selectAccount(account)
 
     const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings())
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[ index ], this.getProviderSettings())
     await this.setup(provider)
   }
 
@@ -176,7 +197,7 @@ class NetworkService extends EventEmitter {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 
-  getScanner = (params) => getScannerById(...params)
+  getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
 
   getProviderSettings = () => {
     const state = this._store.getState()
