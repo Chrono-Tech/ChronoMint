@@ -1,4 +1,5 @@
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
@@ -36,7 +37,7 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   removePoll () {
-    return this._tx(TX_REMOVE_POLL)
+    return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), null, [], true) // allow no return (since there would be a selfdestruct call)
   }
 
   endPoll () {
