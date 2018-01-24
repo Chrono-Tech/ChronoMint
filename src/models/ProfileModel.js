@@ -44,6 +44,29 @@ class ProfileModel extends abstractModel({
   isEmpty () {
     return this.get('name') === null
   }
+
+  txSummary () {
+    const tokens = {
+      show: [],
+      hide: [],
+    }
+    this.tokens().map((item) => {
+      if (item.show) {
+        tokens.show.push(item.symbol || item.address)
+      } else {
+        tokens.hide.push(item.symbol || item.address)
+      }
+    }).join(', ')
+    return {
+      name: this.name(),
+      email: this.email(),
+      company: this.company(),
+      url: this.url(),
+      icon: this.icon(),
+      shownTokens: tokens.show.join(', '),
+      hideTokens: tokens.hide.join(', '),
+    }
+  }
 }
 
 export default ProfileModel
