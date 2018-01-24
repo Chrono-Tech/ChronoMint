@@ -1,13 +1,17 @@
 import BigNumber from 'bignumber.js'
-import { EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
-import type TxModel from 'models/TxModel'
+import TxModel from 'models/TxModel'
+import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 
 const BLOCKCHAIN_NEM = 'NEM'
+export const NEM_XEM_SYMBOL = 'XEM'
+export const NEM_XEM_NAME = 'XEM'
+export const NEM_DECIMALS = 6
 
-// const EVENT_TX = 'tx'
+const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 
 export const EVENT_NEM_LIKE_TOKEN_CREATED = 'nemLikeTokenCreated'
@@ -15,16 +19,14 @@ export const EVENT_NEM_LIKE_TOKEN_FAILED = 'nemLikeTokenFailed'
 
 export default class NemDAO extends EventEmitter {
 
-  constructor (name, symbol, nemProvider, mosaic, decimals) {
+  constructor (name, symbol, nemProvider, decimals, mosaic) {
     super()
     this._name = name
     this._symbol = symbol.toUpperCase()
-    this._mosaic = mosaic
+    this._namespace = mosaic ? `${mosaic.id.namespaceId}:${mosaic.id.name}` : null
     this._decimals = decimals
+    this._mosaic = mosaic
     this._nemProvider = nemProvider
-
-    // TODO @ipavlenko: Sorry, will remove this soon
-    this.isTransferLocked = true
   }
 
   getAddressValidator () {
@@ -37,7 +39,7 @@ export default class NemDAO extends EventEmitter {
 
   getInitAddress () {
     // NemDAO is not a cntract DAO, NEM have no initial address, but it have a token name.
-    return `Nem/${this._mosaic === null ? '' : this._mosaic}/${this._symbol}`
+    return `Nem/${this._namespace === null ? '' : this._namespace}/${this._symbol}`
   }
 
   getName () {
@@ -66,26 +68,29 @@ export default class NemDAO extends EventEmitter {
     return this._decimals
   }
 
-  async getFeeRate () {
-    return this._nemProvider.getFeeRate()
-  }
-
   async getAccountBalances () {
-    // TODO @ipavlenko: Implement vestedBalance & unvestedBalance
-    const { balance /*, vestedBalance, unvestedBalance */ } = await this._nemProvider.getAccountBalances(this._mosaic)
+    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
     return {
-      balance,
+      confirmed,
+      unconfirmed: unconfirmed ? confirmed.plus(unconfirmed) : confirmed, // Unconfirmed balance is a "delta"-value
+      vested,
     }
   }
 
   async getAccountBalance () {
-    const balances = await this.getAccountBalances()
-    return balances.balance
+    const { unconfirmed } = await this.getAccountBalances()
+    return unconfirmed
   }
 
   // eslint-disable-next-line no-unused-vars
   async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Nem transactions
+    try {
+      return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -101,16 +106,48 @@ export default class NemDAO extends EventEmitter {
     ])
   }
 
-  // eslint-disable-next-line no-unused-vars
   async watchTransfer () {
-    // TODO @ipavlenko: Implement for XEM
-    // this._nemProvider.addListener(EVENT_TX, async ({ account, time, tx }) => {
-    //   callback(new TransferNoticeModel({
-    //     account,
-    //     time,
-    //     tx: tx.set('symbol', this.getSymbol()),
-    //   }))
-    // })
+    this._nemProvider.addListener(EVENT_TX, async ({ tx }) => {
+      if (!this._mosaic) {
+        if (!tx.mosaics) {
+          this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
+        }
+      } else {
+        if (tx.mosaics && (this._namespace in tx.mosaics)) {
+          this.emit(EVENT_NEW_TRANSFER, this._createMosaicTxModel(tx))
+        }
+      }
+    })
+  }
+
+  _createXemTxModel (tx) {
+    return new TxModel({
+      txHash: tx.txHash,
+      // blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      time: tx.time,
+      from: tx.from || tx.signer,
+      to: tx.to,
+      value: new Amount(tx.value, this._symbol),
+      fee: new Amount(tx.fee, this._symbol),
+      credited: tx.credited,
+    })
+  }
+
+  _createMosaicTxModel (tx) {
+    return new TxModel({
+      txHash: tx.txHash,
+      // blockHash: tx.blockhash,
+      // blockNumber: tx.blockheight,
+      blockNumber: null,
+      time: tx.time,
+      from: tx.from || tx.signer,
+      to: tx.to,
+      value: new Amount(tx.mosaics[this._namespace], this._symbol),
+      fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
+      credited: tx.credited,
+    })
   }
 
   async watchBalance () {
@@ -118,9 +155,7 @@ export default class NemDAO extends EventEmitter {
       this.emit(EVENT_UPDATE_BALANCE, {
         account,
         time,
-        balance: this._mosaic
-          ? balance.mosaics[ this._mosaic ]
-          : balance.balance,
+        balance: readBalanceValue(this._symbol, balance, this._namespace),
       })
     })
   }
@@ -153,7 +188,18 @@ export default class NemDAO extends EventEmitter {
       isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
-      isLocked: this.isTransferLocked,
     }), this)
   }
+}
+
+function readBalanceValue (symbol, balance, mosaic = null) {
+  if (mosaic) {
+    return (mosaic in balance.mosaics)
+      ? balance.mosaics[mosaic].confirmed
+      : new Amount(0, symbol)
+  }
+  const b = balance.balance
+  return b.unconfirmed != null // nil check
+    ? b.confirmed.plus(b.unconfirmed)
+    : b.confirmed
 }

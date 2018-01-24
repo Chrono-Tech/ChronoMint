@@ -10,6 +10,8 @@ export const TOKEN_ICONS = {
   LHUS: require('./img/icn-lhus.svg'),
   LHEU: require('./img/icn-lheu.svg'),
   LHAU: require('./img/icn-lhau.svg'),
+  XEM: require('./img/icn-xem.svg'),
+  XMIN: require('./img/icn-xmin.svg'),
 }
 
 /* eslint-disable global-require */
