@@ -143,7 +143,7 @@ export default class InfoPartial extends PureComponent {
       }
     })
 
-    if (MANDATORY_TOKENS.indexOf(token.symbol()) + 1) {
+    if (MANDATORY_TOKENS.includes(token.symbol())) {
       return true
     }
 

@@ -89,7 +89,7 @@ export default class AddCurrencyDialog extends PureComponent {
         address: token.address(),
         symbol: token.symbol(),
         blockchain: token.blockchain(),
-        show: !(DEFAULT_TOKENS.indexOf(token.symbol()) + 1),
+        show: !DEFAULT_TOKENS.includes(token.symbol()),
       })
     }
 
@@ -104,7 +104,7 @@ export default class AddCurrencyDialog extends PureComponent {
   }
 
   renderRow = (selectedTokens, balances, profile) => (token: TokenModel) => {
-    let isSelected = !!(DEFAULT_TOKENS.indexOf(token.symbol()) + 1)
+    let isSelected = DEFAULT_TOKENS.includes(token.symbol())
     selectedTokens.map((item) => {
       if (checkToken(token, item)) {
         isSelected = item.show

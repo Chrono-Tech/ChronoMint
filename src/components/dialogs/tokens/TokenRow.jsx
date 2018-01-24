@@ -23,7 +23,7 @@ export default class TokenRow extends PureComponent {
   handleClick = () => this.props.onClick(this.props.token, !this.props.isSelected)
 
   renderCheckbox = ({ isSelected }) => {
-    const isMandatory = !!(MANDATORY_TOKENS.indexOf(this.props.token.symbol()) + 1)
+    const isMandatory = MANDATORY_TOKENS.includes(this.props.token.symbol())
     return <Checkbox checked={isSelected || isMandatory } disabled={isMandatory} />
   }
 
