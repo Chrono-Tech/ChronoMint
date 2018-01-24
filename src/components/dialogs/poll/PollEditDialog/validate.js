@@ -21,7 +21,7 @@ export default function validate (values, props) {
     files: ErrorList.toTranslate(validator.validIpfsFileList(values.get('files'))),
     options: new ErrorList()
       .add(validator.required(options))
-      .add(validator.moreThan(options && options.size, 1, true))
+      .add(validator.moreThan(options && options.size, 1, false))
       .getErrors(),
   }
 }
