@@ -65,6 +65,17 @@ export default class ERC20DAO extends AbstractTokenDAO {
     })
   }
 
+  revoke (account: string, symbol: string): Promise {
+    return this._tx('approve', [
+      account,
+      new BigNumber(0),
+    ], {
+      account,
+      revoke: true,
+      currency: symbol,
+    })
+  }
+
   transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
     return this._tx(TX_TRANSFER, [
       to,

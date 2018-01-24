@@ -39,19 +39,6 @@ export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 
-export const updateBalance = (token: TokenModel, isCredited, amount: BigNumber) => ({
-  type: WALLET_BALANCE,
-  token,
-  isCredited,
-  amount,
-})
-
-export const balancePlus = (amount: BigNumber, token: TokenModel) => updateBalance(token, true, amount)
-
-export const balanceMinus = (amount: BigNumber, token: TokenModel) => updateBalance(token, false, amount)
-
-export const allowance = (allowance: AllowanceModel) => ({ type: WALLET_ALLOWANCE, allowance })
-
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
@@ -114,6 +101,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           amount: new Amount(value, token.id()),
           spender,
           token: token.id(),
+          isFetching: false,
+          isFetched: true,
         }),
       })
     })
@@ -178,22 +167,24 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
 }
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string) => async (dispatch, getState) => {
-  const currentAllowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
   try {
-    dispatch({
-      type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
-        amount,
-        spender: spender, //address
-        token: token.id(), // id
-      }).isFetching(true),
-    })
+    const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
+    dispatch({ type: WALLET_ALLOWANCE, allowance })
     const tokenDAO = tokenService.getDAO(token)
     await tokenDAO.approve(spender, amount)
   } catch (e) {
-    dispatch({ type: WALLET_ALLOWANCE, allowance: currentAllowance })
-    // no rollback
-    // eslint-disable-next-line
-    console.error('approve error', e.message)
+    dispatch(notifyError(e, 'mainApprove'))
+  }
+}
+
+export const mainRevoke = (token: TokenModel, spender: string) => async (dispatch, getState) => {
+  try {
+    const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
+    dispatch({ type: WALLET_ALLOWANCE, allowance })
+    const tokenDAO = tokenService.getDAO(token)
+    await tokenDAO.revoke(spender, token.symbol())
+  } catch (e) {
+    dispatch(notifyError(e, 'mainRevoke'))
   }
 }
 
@@ -280,11 +271,14 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(tokenId)
   const allowance = await dao.getAccountAllowance(account, spender)
+  console.log('--actions#', 1)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, tokenId),
       spender, //address
       token: tokenId, // id
+      isFetching: false,
+      isFetched: true,
     }),
   })
 }
