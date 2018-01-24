@@ -2,9 +2,15 @@ import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-u
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { getEtherscanUrl } from '@chronobank/login/network/settings'
+import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { connect } from 'react-redux'
-import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
+import {
+  listOperations,
+  confirmOperation,
+  revokeOperation,
+  setupOperationsSettings,
+  loadMoreCompletedOperations,
+} from 'redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import './Operations.scss'
@@ -47,69 +53,6 @@ export default class PendingOperations extends PureComponent {
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }
-  }
-
-  render () {
-    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
-
-    return (
-      <div styleName='panel'>
-        <div styleName='panelHead'>
-          <h3 styleName='headTitle'>{this.props.title}</h3>
-          {this.props.showSignatures
-            ? (
-              <div styleName='headActions'>
-                <FlatButton
-                  icon={<FontIcon className='material-icons'>settings</FontIcon>}
-                  label={<Translate value={prefix('settings')} />}
-                  primary
-                  onTouchTap={() => this.props.openSettings()}
-                />
-              </div>
-            )
-            : null
-          }
-        </div>
-        {!this.props.isFetched
-          ? (
-            <div styleName='panelProgress'>
-              <CircularProgress size={24} thickness={1.5} />
-            </div>
-          )
-          : (
-            <div styleName='panelTable'>
-              <div styleName='tableHead'>
-                <div styleName='tableRow'>
-                  <div styleName='headTableCell'><Translate value={prefix('description')} /></div>
-                  {this.props.showSignatures
-                    ? (<div styleName='headTableCell'><Translate value={prefix('signatures')} /></div>)
-                    : null
-                  }
-                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
-                </div>
-              </div>
-              <div styleName='tableBody'>
-                {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
-              </div>
-            </div>
-          )
-        }
-        {!this.props.completedFetching && !this.props.completedEndOfList
-          ? (
-            <div styleName='panelMore'>
-              <RaisedButton
-                label={<Translate value='nav.loadMore' />}
-                onTouchTap={() => this.props.handleLoadMore()}
-                fullWidth
-                primary
-              />
-            </div>
-          )
-          : null
-        }
-      </div>
-    )
   }
 
   renderRow (op, index, href) {
@@ -175,6 +118,69 @@ export default class PendingOperations extends PureComponent {
             )}
           </div>
         </div>
+      </div>
+    )
+  }
+
+  render () {
+    const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
+    const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+
+    return (
+      <div styleName='panel'>
+        <div styleName='panelHead'>
+          <h3 styleName='headTitle'>{this.props.title}</h3>
+          {this.props.showSignatures
+            ? (
+              <div styleName='headActions'>
+                <FlatButton
+                  icon={<FontIcon className='material-icons'>settings</FontIcon>}
+                  label={<Translate value={prefix('settings')} />}
+                  primary
+                  onTouchTap={() => this.props.openSettings()}
+                />
+              </div>
+            )
+            : null
+          }
+        </div>
+        {!this.props.isFetched
+          ? (
+            <div styleName='panelProgress'>
+              <CircularProgress size={24} thickness={1.5} />
+            </div>
+          )
+          : (
+            <div styleName='panelTable'>
+              <div styleName='tableHead'>
+                <div styleName='tableRow'>
+                  <div styleName='headTableCell'><Translate value={prefix('description')} /></div>
+                  {this.props.showSignatures
+                    ? (<div styleName='headTableCell'><Translate value={prefix('signatures')} /></div>)
+                    : null
+                  }
+                  <div styleName='headTableCell'><Translate value={prefix('actions')} /></div>
+                </div>
+              </div>
+              <div styleName='tableBody'>
+                {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, blockExplorerUrl(item.id())))}
+              </div>
+            </div>
+          )
+        }
+        {!this.props.completedFetching && !this.props.completedEndOfList
+          ? (
+            <div styleName='panelMore'>
+              <RaisedButton
+                label={<Translate value='nav.loadMore' />}
+                onTouchTap={() => this.props.handleLoadMore()}
+                fullWidth
+                primary
+              />
+            </div>
+          )
+          : null
+        }
       </div>
     )
   }

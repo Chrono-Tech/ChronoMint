@@ -1,3 +1,10 @@
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from './BitcoinProvider'
+
 export const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
 export const LOCAL_PROVIDER_ID = 6
@@ -20,44 +27,59 @@ export const UPORT_ID = '0xfbbf28aaba3b2fc6dfe1a02b9833ccc90b8c4d26'
 
 export const TESTRPC_URL = '/web3/'
 
-const scannerMap = {
-  // only for mainnet API url is different from web-interface url
-  main: [
-    'https://etherscan.io',
-    'https://api.etherscan.io',
-  ],
-  kovan: [
-    'https://kovan.etherscan.io',
-  ],
-  rinkeby: [
-    'https://rinkeby.etherscan.io',
-  ],
-}
-
 // ---------- network's base parameters
+
+const blockExplorersMap = {
+  Ethereum: {
+    mainnet: [
+      'https://etherscan.io/tx',
+      'https://api.etherscan.io',
+    ],
+    testnet: [
+      'https://rinkeby.etherscan.io/tx',
+      'https://rinkeby.etherscan.io',
+    ],
+  },
+  [ BLOCKCHAIN_BITCOIN ]: {
+    mainnet: 'https://blockexplorer.com/tx',
+    testnet: 'https://tbtc.blockdozer.com/insight/tx',
+  },
+  [ BLOCKCHAIN_BITCOIN_CASH ]: {
+    mainnet: 'https://bcc.blockdozer.com/insight/tx',
+    testnet: 'https://tbcc.blockdozer.com/insight/tx',
+  },
+  [ BLOCKCHAIN_BITCOIN_GOLD ]: {
+    mainnet: 'https://btgexplorer.com/tx',
+    testnet: null,
+  },
+  [ BLOCKCHAIN_LITECOIN ]: {
+    mainnet: 'https://live.blockcypher.com/ltc/tx',
+    testnet: 'https://chain.so/tx/LTCTEST',
+  },
+}
 
 const MAINNET_BASE = {
   id: NETWORK_MAIN_ID,
   protocol: 'https',
   name: 'Mainnet (production)',
-  scanner: scannerMap.main,
+  scanner: blockExplorersMap.Ethereum.mainnet,
   bitcoin: 'bitcoin',
   bitcoinCash: 'bitcoin',
   bitcoinGold: 'bitcoingold',
   litecoin: 'litecoin',
-  nem: 'Mainnet',
+  nem: 'mainnet',
 }
 
 const RINKEBY_BASE = {
   id: 4,
   protocol: 'https',
   name: 'Rinkeby (test network)',
-  scanner: scannerMap.rinkeby,
+  scanner: blockExplorersMap.Ethereum.testnet,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
   // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
-  nem: 'Testnet',
+  nem: 'testnet',
 }
 
 const LOCALHOST_BASE = {
@@ -118,7 +140,7 @@ if (process.env.NODE_ENV === 'development') {
     bitcoinCash: 'testnet',
     // bitcoinGold: 'bitcoingold_testnet',
     litecoin: 'litecoin_testnet',
-    nem: 'Testnet',
+    nem: 'testnet',
   })
 }
 
@@ -130,7 +152,7 @@ export const infuraLocalNetwork = {
   bitcoinCash: 'testnet',
   // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
-  nem: 'Testnet',
+  nem: 'testnet',
 }
 
 export const providerMap = {
@@ -203,9 +225,19 @@ export const getScannerById = (networkId, providerId, api = false) => {
   return scanner
 }
 
-export const getEtherscanUrl = (networkId, providerId, txHash) => {
-  const baseScannerUrl = getScannerById(networkId, providerId)
-  return baseScannerUrl ? (`${baseScannerUrl}/tx/${txHash}`) : null
+export const getBlockExplorerUrl = (networkId, providerId, txHash, blockchain) => {
+  try {
+    const isTestnet = isTestingNetwork(networkId, providerId)
+    let baseUrl = blockExplorersMap[ blockchain ][ isTestnet ? 'testnet' : 'mainnet' ]
+    if (Array.isArray(baseUrl)) {
+      baseUrl = baseUrl[ 0 ]
+    }
+
+    return baseUrl ? (`${baseUrl}/${txHash}`) : null
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('getBlockExplorerUrl', e.message)
+  }
 }
 
 export const isTestingNetwork = (networkId, providerId) => {

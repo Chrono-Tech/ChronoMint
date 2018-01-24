@@ -1,4 +1,4 @@
-import { getEtherscanUrl } from '@chronobank/login/network/settings'
+import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -15,6 +15,9 @@ import { getAccountTransactions } from 'redux/mainWallet/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import { integerWithDelimiter } from 'utils/formatter'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from 'models/tokens/TokenModel'
 import './TransactionsTable.scss'
 
 function mapStateToProps (state) {
@@ -25,6 +28,7 @@ function mapStateToProps (state) {
     transactions: getCurrentWallet(state).transactions(),
     selectedNetworkId,
     selectedProviderId,
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
@@ -42,6 +46,7 @@ export default class TransactionsTable extends PureComponent {
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
     getAccountTransactions: PropTypes.func,
+    tokens: PropTypes.instanceOf(TokensCollection),
   }
 
   handleLoadMore = () => {
@@ -49,7 +54,8 @@ export default class TransactionsTable extends PureComponent {
   }
 
   renderRow ({ timeTitle, trx }, index) {
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const token: TokenModel = this.props.tokens.item(trx.symbol())
+    const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
     return (
       <div styleName='row' key={index}>
         <div styleName='col-time'>
@@ -77,8 +83,8 @@ export default class TransactionsTable extends PureComponent {
           <div styleName='label'>Hash:</div>
           <div styleName='property'>
             <div styleName='text-normal'>
-              {etherscanHref(trx.txHash)
-                ? <a href={etherscanHref(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
+              {blockExplorerUrl(trx.txHash)
+                ? <a href={blockExplorerUrl(trx.txHash)} target='_blank' rel='noopener noreferrer'>{trx.txHash}</a>
                 : trx.txHash
               }
             </div>
@@ -154,7 +160,7 @@ export default class TransactionsTable extends PureComponent {
             }
             {!size && !endOfList
               ? (
-                <div styleName='section'>
+                <div styleName='no-transactions-section'>
                   <div styleName='section-header'>
                     <div styleName='txs-loading'><Preloader size={24} thickness={1.5} /></div>
                   </div>
@@ -162,8 +168,8 @@ export default class TransactionsTable extends PureComponent {
               )
               : ''
             }
-            {data.map((group, index) => (
-              <div styleName='section' key={index}>
+            {data.map((group) => (
+              <div styleName='section' key={group.dateBy}>
                 <div styleName='section-header'>
                   <h5>{group.dateTitle}</h5>
                 </div>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1 Basic//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11-basic.dtd">
+<svg version="1.1" baseProfile="basic" id="Layer_1"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="115px" height="114px"
+	 viewBox="0 0 115 114" xml:space="preserve">
+<title>Group 3</title>
+<desc>Created with Sketch.</desc>
+<g id="Page-2">
+	<g id="Desktop-front-end-dashboard-1-Copy" transform="translate(-151.000000, -645.000000)">
+		<g id="balances-widget" transform="translate(80.000000, 618.000000)">
+			<g id="bal-widget-1">
+				<g id="icn-TIME">
+					<g id="Group-3" transform="translate(71.000000, 27.000000)">
+						<path id="Fill-50" fill="#007AFF" d="M57.535,0.503c-31.654,0-57.208,25.209-57.208,56.436
+							c0,31.229,25.554,56.438,57.208,56.438c31.656,0,57.21-25.209,57.21-56.438C114.745,25.712,89.191,0.503,57.535,0.503z"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g id="Page-2_1_">
+	<g id="Desktop-front-end-dashboard-1-Copy_1_" transform="translate(-151.000000, -645.000000)">
+		<g id="balances-widget_1_" transform="translate(80.000000, 618.000000)">
+			<g id="bal-widget-1_1_">
+				<g id="icn-TIME_1_">
+					<g id="Group-3_1_" transform="translate(71.000000, 27.000000)">
+						<path id="Fill-50_1_" fill="#0B0B4F" d="M57.535,6.766c-28.141,0-50.859,22.411-50.859,50.173
+							c0,27.763,22.718,50.174,50.859,50.174c28.144,0,50.86-22.411,50.86-50.174C108.396,29.177,85.679,6.766,57.535,6.766z"/>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</g>
+<g>
+	<path fill="#1E1EDB" d="M28.025,58.568l0.003,17.135l-14.843-8.568l0.001-17.136L28.025,58.568z"/>
+	<path fill="#1414B0" d="M27.98,58.568l-0.004,17.135l14.843-8.568l-0.001-17.136L27.98,58.568z"/>
+	<path fill="#2D2DED" d="M28.027,41.535l14.902,8.6l-14.902,8.604l-14.902-8.604L28.027,41.535z"/>
+	<path fill="#0066FF" d="M57.535,58.568l0.004,17.135l-14.843-8.568l0.001-17.136L57.535,58.568z"/>
+	<path fill="#0052DF" d="M57.492,58.568l-0.004,17.135l14.843-8.568l-0.001-17.136L57.492,58.568z"/>
+	<path fill="#007AFF" d="M57.539,41.535l14.901,8.6l-14.901,8.604l-14.902-8.604L57.539,41.535z"/>
+	<path fill="#00BAFF" d="M87.046,58.568l0.005,17.135l-14.844-8.568l0.001-17.136L87.046,58.568z"/>
+	<path fill="#0095DF" d="M87.002,58.568l-0.003,17.135l14.844-8.568l-0.002-17.136L87.002,58.568z"/>
+	<path fill="#00CFFF" d="M87.051,41.535l14.901,8.6l-14.901,8.604l-14.903-8.604L87.051,41.535z"/>
+	<path fill="#004FFF" d="M42.792,33.019l14.902,8.6l-14.902,8.605L27.89,41.618L42.792,33.019z"/>
+	<path fill="#00A1FF" d="M72.303,33.019l14.902,8.6l-14.902,8.605l-14.901-8.605L72.303,33.019z"/>
+</g>
+</svg>

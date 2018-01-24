@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
-import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
@@ -99,6 +100,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
+      symbol: this._symbol,
       value: new Amount(tx.args.value, this._symbol),
       gas: tx.gas,
       gasPrice,

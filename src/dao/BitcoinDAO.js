@@ -1,14 +1,13 @@
 import {
   bccProvider,
-  btcProvider,
-  btgProvider,
-  ltcProvider,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { DECIMALS } from '@chronobank/login/network/BitcoinEngine'
 import { BitcoinTx } from '@chronobank/login/network/BitcoinAbstractNode'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
@@ -93,7 +92,8 @@ export class BitcoinDAO extends EventEmitter {
           time: tx.time,
           from: tx.from,
           to: tx.to,
-          value: new Amount(tx.value.mul(DECIMALS), this._symbol),
+          symbol: this._symbol,
+          value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
         })
@@ -125,6 +125,7 @@ export class BitcoinDAO extends EventEmitter {
           time: tx.time,
           from: tx.from,
           to: tx.to,
+          symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
