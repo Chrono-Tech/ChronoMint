@@ -15,19 +15,43 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { getEtherscanUrl } from '@chronobank/login/network/settings'
+import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
+import TokenModel from 'models/tokens/TokenModel'
 import globalStyles from '../../../styles'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
   selectedNetworkId: state.get('network').selectedNetworkId,
   selectedProviderId: state.get('network').selectedProviderId,
+  tokens: state.get(DUCK_TOKENS),
 })
 
 @connect(mapStateToProps, null)
 class Transactions extends PureComponent {
+  renderTrx (tx) {
+    const token: TokenModel = this.props.tokens.item(tx.symbol())
+    const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
+
+    return (
+      <TableRow key={tx.id()}>
+        <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
+        <TableRowColumn style={styles.columns.hash}>
+          {blockExplorerUrl(tx.txHash)
+            ? <a href={blockExplorerUrl(tx.txHash)} target='_blank' rel='noopener noreferrer'>{tx.txHash}</a>
+            : tx.txHash
+          }
+        </TableRowColumn>
+        <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
+        <TableRowColumn style={styles.columns.value}>
+          {`${tx.sign() + tx.value()} ${tx.symbol()}`}
+        </TableRowColumn>
+      </TableRow>
+    )
+  }
+
   render () {
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
     const { transactions, isFetching, endOfList } = this.props
 
     return (
@@ -47,21 +71,7 @@ class Transactions extends PureComponent {
             {transactions.sortBy((x) => x.get('time'))
               .reverse()
               .valueSeq()
-              .map((tx) => (
-                <TableRow key={tx.id()}>
-                  <TableRowColumn style={styles.columns.id}>{tx.blockNumber}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.hash}>
-                    { etherscanHref(tx.txHash)
-                      ? <a href={etherscanHref(tx.txHash)} target='_blank' rel='noopener noreferrer'>{tx.txHash}</a>
-                      : tx.txHash
-                    }
-                  </TableRowColumn>
-                  <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
-                  <TableRowColumn style={styles.columns.value}>
-                    {`${tx.sign() + tx.value()} ${tx.symbol()}`}
-                  </TableRowColumn>
-                </TableRow>
-              ))}
+              .map((tx) => this.renderTrx(tx))}
             {!transactions.size && !isFetching ? (<TableRow>
               <TableRowColumn>
                 <Translate value='tx.noTransactions' />
@@ -101,6 +111,7 @@ Transactions.propTypes = {
   toBlock: PropTypes.number,
   onLoadMore: PropTypes.func,
   endOfList: PropTypes.bool,
+  tokens: PropTypes.instanceOf(TokensCollection),
 }
 
 export default Transactions
