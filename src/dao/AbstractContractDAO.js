@@ -379,11 +379,20 @@ export default class AbstractContractDAO extends EventEmitter {
    * @param value
    * @param addDryRunFrom
    * @param addDryRunOkCodes
+   * @param allowNoReturn
    * @returns {Promise<Object>} receipt
    * @protected
    */
-  async _tx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, value: BigNumber = new BigNumber(0),
-    addDryRunFrom = null, addDryRunOkCodes = []): Object {
+  // eslint-disable-next-line complexity
+  async _tx (
+    func: string,
+    args: Array = [],
+    infoArgs: Object | AbstractModel = null,
+    value: BigNumber = new BigNumber(0),
+    addDryRunFrom = null,
+    addDryRunOkCodes = [],
+    allowNoReturn = false
+  ): Object {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_tx func not found', func)
@@ -420,7 +429,7 @@ export default class AbstractContractDAO extends EventEmitter {
       const txParams = {
         from: this.getAccount(),
         value,
-        gas: gasLimit,
+        gas: allowNoReturn ? DEFAULT_GAS : gasLimit,
       }
 
       /** DRY RUN */
@@ -444,10 +453,12 @@ export default class AbstractContractDAO extends EventEmitter {
         }
       }
 
-      const dryResult = convertDryResult(await deployed[func].call(...args, txParams))
-
-      if (!this._okCodes.includes(dryResult)) {
-        throw new TxError('Dry run failed', dryResult)
+      if (!allowNoReturn) {
+        const dryResult = await deployed[func].call(...args, txParams)
+        const convertedDryResult = convertDryResult(dryResult)
+        if (!this._okCodes.includes(convertedDryResult)) {
+          throw new TxError('Dry run failed', convertedDryResult)
+        }
       }
 
       if (process.env.NODE_ENV === 'development') {
