@@ -1,11 +1,7 @@
 @import '~styles/partials/_mixins';
 @import '~styles/partials/_variables';
 
-.root {
-  :global(.ModalDialog__close) {
-    color: $color-white;
-  }
-}
+.root {}
 
 .content {
   max-width: 928px;

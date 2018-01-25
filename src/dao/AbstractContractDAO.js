@@ -257,6 +257,11 @@ export default class AbstractContractDAO extends EventEmitter {
     return result instanceof Array ? result : [ result ]
   }
 
+  async _callDate (): Date {
+    const date = await this._callNum(...arguments) * 1000
+    return new Date(date)
+  }
+
   isEmptyAddress (v): boolean {
     return v === '0x0000000000000000000000000000000000000000'
   }

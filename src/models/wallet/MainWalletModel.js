@@ -7,7 +7,7 @@ import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'
 import AddressesCollection from './AddressesCollection'
 
-export default class MainWallet extends abstractFetchingModel({
+export default class MainWalletModel extends abstractFetchingModel({
   address: null,
   tokens: new Immutable.Map(),
   timeAddress: null,

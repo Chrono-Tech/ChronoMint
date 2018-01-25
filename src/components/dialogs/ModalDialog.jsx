@@ -43,23 +43,19 @@ export default class ModalDialog extends PureComponent {
         transitionEnterTimeout={TRANSITION_TIMEOUT}
         transitionLeaveTimeout={TRANSITION_TIMEOUT}
       >
-        <div
-          styleName='root'
-          className={classnames('ModalDialog__backdrop', this.props.className)}
-        >
+        <div styleName='root'>
           <div
             styleName='dialog'
-            className='ModalDialog__dialog'
             onTouchTap={this.handleStopPropagation}
           >
-            <div styleName='content' className='ModalDialog__content'>
+            <div styleName='content'>
               {this.props.children}
             </div>
             <div
               styleName='close'
-              className='ModalDialog__close'
               onTouchTap={this.handleClose}
-            ><i className='material-icons'>close</i>
+            >
+              <i className='material-icons'>close</i>
             </div>
           </div>
         </div>
