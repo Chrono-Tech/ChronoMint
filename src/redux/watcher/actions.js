@@ -24,7 +24,7 @@ export const WATCHER_CBE = 'watcher/CBE'
 export const WATCHER_TX_SET = 'watcher/TX_SET'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
-export const txHandlingFlow = () => (dispatch, getState) => {
+export const txHandlingFlow = () => (dispatch) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel) => {
     dispatch({ type: WATCHER_TX_SET, tx })
 
@@ -47,20 +47,11 @@ export const txHandlingFlow = () => (dispatch, getState) => {
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {
-    const token = getState().get(DUCK_TOKENS).item(ETH)
-    dispatch(balanceMinus(tx.gas(), token))
     dispatch({ type: WATCHER_TX_SET, tx })
   }
 
   AbstractContractDAO.txEnd = (tx: TxExecModel, e: ?TxError = null) => {
     dispatch({ type: WATCHER_TX_END, tx })
-    const token = getState().get(DUCK_TOKENS).item(ETH)
-
-    if (!tx.isGasUsed()) {
-      dispatch(balancePlus(tx.gas(), token))
-    } else {
-      dispatch(balancePlus(tx.estimateGasLaxity(), token))
-    }
 
     if (e && e.codeValue !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
       dispatch(notify(new TransactionErrorNoticeModel(tx, e)))
