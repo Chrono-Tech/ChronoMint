@@ -11,6 +11,22 @@ $indent: 24px;
   @include sm-plus {
     min-width: 640px;
   }
+
+
+  :global(.TokenValue__root) {
+    color: $color-black;
+  }
+
+  :global(.TokenValue__integral) {
+    font-weight: $font-weight-bold;
+    line-height: 1;
+  }
+
+  :global(.TokenValue__fraction) {
+    font-size: 1em;
+    font-weight: $font-weight-bold;
+    opacity: 1;
+  }
 }
 
 // header

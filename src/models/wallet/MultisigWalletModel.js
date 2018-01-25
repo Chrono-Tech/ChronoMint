@@ -15,7 +15,6 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   owners: new OwnerCollection(),
   requiredSignatures: 0,
   pendingTxList: new MultisigWalletPendingTxCollection(),
-  isTimeLocked: false,
   is2FA: false,
   addresses: new AddressesCollection(),
   releaseTime: new Date(0),
@@ -80,7 +79,7 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   }
 
   isTimeLocked () {
-    return this.get('isTimeLocked')
+    return this.releaseTime().getTime() >= Date.now()
   }
 
   releaseTime () {

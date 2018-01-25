@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
@@ -86,7 +85,6 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       isFetched: true,
       pendingTxList,
       addresses,
-      isTimeLocked: releaseTime.getTime() !== 0,
       releaseTime,
     })
     this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)

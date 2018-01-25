@@ -1,8 +1,6 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 
-const OWNER_LIMIT = 1
-
 export default (values, props) => {
   const requiredSignatures = values.get('requiredSignatures')
 

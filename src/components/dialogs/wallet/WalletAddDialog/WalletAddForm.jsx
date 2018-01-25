@@ -55,12 +55,12 @@ const onSubmit = (values, dispatch, props) => {
   if (isTimeLocked) {
     const date = values.get('timeLockDate')
     const time = values.get('timeLockTime')
-    releaseTime = date.setHours(
+    releaseTime = new Date(date.setHours(
       time.getHours(),
       time.getMinutes(),
       time.getSeconds(),
       time.getMilliseconds(),
-    )
+    ))
   }
 
   return new MultisigWalletModel({
