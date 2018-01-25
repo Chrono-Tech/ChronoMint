@@ -10,7 +10,7 @@ import TxExecModel from 'models/TxExecModel'
 import type TxModel from 'models/TxModel'
 import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
-import { notify } from 'redux/notifier/actions'
+import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import multisigWalletService, { EVENT_CONFIRMATION, EVENT_CONFIRMATION_NEEDED, EVENT_DEPOSIT, EVENT_MULTI_TRANSACTION, EVENT_OWNER_ADDED, EVENT_OWNER_REMOVED, EVENT_REVOKE, } from 'services/MultisigWalletService'
@@ -252,6 +252,16 @@ export const confirmMultisigTx = (wallet, tx: MultisigWalletPendingTxModel) => a
   } catch (e) {
     // eslint-disable-next-line
     console.error('confirm ms tx error', e.message)
+  }
+}
+
+export const changeRequirement = (wallet, newRequired: Number) => async (dispatch) => {
+  try {
+    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
+    await dao.changeRequirement(newRequired)
+  } catch (e) {
+    // eslint-disable-next-line
+    dispatch(notifyError(e, 'changeRequirement'))
   }
 }
 

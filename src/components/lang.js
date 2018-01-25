@@ -8,7 +8,7 @@ import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
 import * as exchange from 'components/exchange/lang'
-
+import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 export default {
   en: {
     UserActiveDialog: UserActiveDialog.en,
@@ -24,6 +24,7 @@ export default {
       exchange: exchange.en,
     },
     TwoFA: TwoFA.en,
+    EditSignaturesDialog: EditSignaturesDialog.en,
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,
@@ -39,5 +40,6 @@ export default {
       exchange: exchange.ru,
     },
     TwoFA: TwoFA.ru,
+    EditSignaturesDialog: EditSignaturesDialog.ru,
   },
 }

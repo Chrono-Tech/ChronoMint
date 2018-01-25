@@ -87,6 +87,12 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('releaseTime')
   }
 
+  addresses (value) {
+    return this._getSet('addresses', value)
+  }
+
+  // forms
+
   toAddFormJS () {
     const time = this.releaseTime().getTime() === 0 ? new Date() : this.releaseTime()
 
@@ -112,7 +118,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return data
   }
 
-  addresses (value) {
-    return this._getSet('addresses', value)
+  toRequiredSignaturesFormJS () {
+    return {
+      ownersCount: this.owners().size(),
+      requiredSignatures: this.requiredSignatures(),
+    }
   }
 }

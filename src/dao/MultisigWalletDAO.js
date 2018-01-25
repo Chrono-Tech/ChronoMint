@@ -197,6 +197,15 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
+  async changeRequirement (newRequired: Number) {
+    const result = await this._tx('changeRequirement', [
+      newRequired,
+    ], {
+      signatureRequirements: newRequired,
+    })
+    return result.tx
+  }
+
   // helpers
 
   isValidId (id) {

@@ -1,7 +1,5 @@
-import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
-import classNames from 'classnames'
-import WithLoader, { isPending } from 'components/common/Preloader/WithLoader'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import WalletsItem from 'components/dialogs/wallet/WalletSelectDialog/WalletsItem'
 import { FloatingActionButton, FontIcon } from 'material-ui'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
@@ -39,6 +37,10 @@ function mapDispatchToProps (dispatch) {
       component: EditManagersDialog,
       props: { wallet },
     })),
+    openEditSignaturesDialog: (wallet) => dispatch(modalsOpen({
+      component: EditSignaturesDialog,
+      props: { wallet },
+    })),
     modalsClose: () => dispatch(modalsClose()),
     selectWallet: (wallet) => dispatch(switchWallet(wallet)),
     removeWallet: (wallet) => dispatch(removeWallet(wallet)),
@@ -55,56 +57,11 @@ export default class WalletSelectDialog extends Component {
     modalsClose: PropTypes.func,
     openEditManagersDialog: PropTypes.func,
     openAddWalletDialog: PropTypes.func,
+    openEditSignaturesDialog: PropTypes.func,
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
     addOwner: PropTypes.func,
     selectWallet: PropTypes.func,
-  }
-
-  renderRow = (wallet: MultisigWalletModel) => {
-    const isSelected = wallet.isSelected()
-    const owners = wallet.owners()
-
-    return (
-      <div key={wallet.id()} styleName={classNames('row', { selected: isSelected })}>
-        <div onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div>
-            <img src={WalletMultiBigSVG} />
-          </div>
-        </div>
-        <div onTouchTap={() => !isSelected && this.selectMultisigWallet(wallet)}>
-          <div>{wallet.isPending() ? 'Pending...' : wallet.address()}</div>
-          <div>
-            <div>
-              <div>
-                <Translate value={`${prefix}.numOwners`} num={owners.size()} />
-              </div>
-              <div>
-                {owners.items().map((owner, idx) => (
-                  <i
-                    className='material-icons'
-                    key={owner}
-                    title={owner}
-                  >account_circle
-                  </i>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div>
-                <Translate value={`${prefix}.pendings`} />
-              </div>
-              <div>{wallet.pendingCount()}</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <WithLoader showLoader={isPending} payload={wallet}>
-            {this.renderWalletActions}
-          </WithLoader>
-        </div>
-      </div>
-    )
   }
 
   handleAddWallet = () => this.props.openAddWalletDialog()
@@ -112,6 +69,8 @@ export default class WalletSelectDialog extends Component {
   handleRemove = (wallet) => this.props.removeWallet(wallet)
 
   handleEditOwners = (wallet) => this.props.openEditManagersDialog(wallet)
+
+  handleEditSignatures = (wallet) => this.props.openEditSignaturesDialog(wallet)
 
   handleSelect = (wallet) => {
     this.props.modalsClose()
@@ -131,6 +90,7 @@ export default class WalletSelectDialog extends Component {
                 wallet={wallet}
                 onRemove={this.handleRemove}
                 onEditOwners={this.handleEditOwners}
+                onEditSignatures={this.handleEditSignatures}
                 onSelect={this.handleSelect}
               />
             ))

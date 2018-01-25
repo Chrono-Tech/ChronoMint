@@ -1,3 +1,4 @@
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi-big.svg'
 import classnames from 'classnames'
 import Moment from 'components/common/Moment'
@@ -14,14 +15,18 @@ export default class WalletsItem extends PureComponent {
     wallet: PropTypes.instanceOf(MultisigWalletModel),
     onRemove: PropTypes.func,
     onEditOwners: PropTypes.func,
+    onEditSignatures: PropTypes.func,
     onSelect: PropTypes.func,
   }
 
   handleEditOwners = () => this.props.onEditOwners(this.props.wallet)
 
+  handleEditSignatures = () => this.props.onEditSignatures(this.props.wallet)
+
   handleRemove = () => this.props.onRemove(this.props.wallet)
 
   handleSelect = () => this.props.onSelect(this.props.wallet)
+
 
   render () {
     const { wallet } = this.props
@@ -79,7 +84,10 @@ export default class WalletsItem extends PureComponent {
               >
                 <strong>{ownersCount}</strong> <Translate value={`${prefix}.owners`} count={ownersCount} />
               </div>
-              <div styleName='detailItem link'>
+              <div
+                styleName='detailItem link'
+                onTouchTap={this.handleEditSignatures}
+              >
                 <strong>{wallet.requiredSignatures()}</strong> <Translate value={`${prefix}.requiredSignatures`} />
               </div>
             </div>
@@ -90,7 +98,14 @@ export default class WalletsItem extends PureComponent {
               <div styleName='detailItem'><Translate value={`${prefix}.pendings`} /></div>
             </div>
             <div styleName='detailCol'>
-              <div styleName='detailItem'><strong>TODO ETH</strong></div>
+              <div styleName='detailItem'>
+                <strong>
+                  <TokenValue
+                    value={wallet.balances().item('ETH').amount()}
+                    noRenderPrice
+                  />
+                </strong>
+              </div>
               <div styleName='detailItem'><Translate value={`${prefix}.availableFunds`} /></div>
             </div>
             {wallet.isTimeLocked() && (
