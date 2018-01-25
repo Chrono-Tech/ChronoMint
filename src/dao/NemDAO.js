@@ -72,7 +72,9 @@ export default class NemDAO extends EventEmitter {
     const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
     return {
       confirmed,
-      unconfirmed: unconfirmed ? confirmed.plus(unconfirmed) : confirmed, // Unconfirmed balance is a "delta"-value
+      unconfirmed: unconfirmed != null
+        ? unconfirmed
+        : confirmed,
       vested,
     }
   }
@@ -108,13 +110,15 @@ export default class NemDAO extends EventEmitter {
 
   async watchTransfer () {
     this._nemProvider.addListener(EVENT_TX, async ({ tx }) => {
-      if (!this._mosaic) {
-        if (!tx.mosaics) {
-          this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
-        }
-      } else {
-        if (tx.mosaics && (this._namespace in tx.mosaics)) {
-          this.emit(EVENT_NEW_TRANSFER, this._createMosaicTxModel(tx))
+      if (tx.unconfirmed) {
+        if (!this._mosaic) {
+          if (!tx.mosaics) {
+            this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
+          }
+        } else {
+          if (tx.mosaics && (this._namespace in tx.mosaics)) {
+            this.emit(EVENT_NEW_TRANSFER, this._createMosaicTxModel(tx))
+          }
         }
       }
     })
@@ -195,11 +199,15 @@ export default class NemDAO extends EventEmitter {
 function readBalanceValue (symbol, balance, mosaic = null) {
   if (mosaic) {
     return (mosaic in balance.mosaics)
-      ? balance.mosaics[mosaic].confirmed
+      ? (
+        balance.mosaics[mosaic].unconfirmed != null // nil check
+          ? balance.mosaics[mosaic].unconfirmed
+          : balance.mosaics[mosaic].confirmed
+      )
       : new Amount(0, symbol)
   }
   const b = balance.balance
   return b.unconfirmed != null // nil check
-    ? b.confirmed.plus(b.unconfirmed)
+    ? b.unconfirmed
     : b.confirmed
 }
