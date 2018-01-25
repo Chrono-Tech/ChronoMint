@@ -10,6 +10,7 @@ export default class AbstractNode extends EventEmitter {
     this._api = api
     this._trace = trace
     this._socket = socket
+    this._subscriptions = {}
     this._ws = null
     this._client = null
     this._timeout = TIMEOUT_BASE
@@ -43,6 +44,28 @@ export default class AbstractNode extends EventEmitter {
     setTimeout(this._handleConnectionTimeout, this._timeout)
   }
 
+  _closeSubscription (channel) {
+    const subscription = this._subscriptions[channel]
+    if (subscription) {
+      delete this._subscriptions[channel]
+      subscription.unsubscribe()
+    }
+  }
+
+  _openSubscription (channel, handler) {
+    this._subscriptions[channel] = this._client.subscribe(
+      channel,
+      (message) => {
+        try {
+          const data = JSON.parse(message.body)
+          handler(data)
+        } catch (e) {
+          this.trace('Failed to decode message', e)
+        }
+      },
+    )
+  }
+
   connect () {
     if (!this._socket) {
       return
@@ -58,6 +81,12 @@ export default class AbstractNode extends EventEmitter {
       this._handleConnectionSuccess,
       this._handleConnectionError
     )
+  }
+
+  disconnect () {
+    if (this._socket) {
+      this._ws.close()
+    }
   }
 
   executeOrSchedule (action) {

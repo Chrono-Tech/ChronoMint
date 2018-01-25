@@ -84,7 +84,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  async getTransactionsList (address) {
+  async getTransactionsList (/*address*/) {
     return []
   }
 

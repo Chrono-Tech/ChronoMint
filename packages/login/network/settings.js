@@ -67,7 +67,7 @@ const MAINNET_BASE = {
   bitcoinCash: 'bitcoin',
   bitcoinGold: 'bitcoingold',
   litecoin: 'litecoin',
-  nem: 'Mainnet',
+  nem: 'mainnet',
 }
 
 const RINKEBY_BASE = {
@@ -79,7 +79,7 @@ const RINKEBY_BASE = {
   bitcoinCash: 'testnet',
   // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
-  nem: 'Testnet',
+  nem: 'testnet',
 }
 
 const LOCALHOST_BASE = {
@@ -140,7 +140,7 @@ if (process.env.NODE_ENV === 'development') {
     bitcoinCash: 'testnet',
     // bitcoinGold: 'bitcoingold_testnet',
     litecoin: 'litecoin_testnet',
-    nem: 'Testnet',
+    nem: 'testnet',
   })
 }
 
@@ -152,7 +152,7 @@ export const infuraLocalNetwork = {
   bitcoinCash: 'testnet',
   // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
-  nem: 'Testnet',
+  nem: 'testnet',
 }
 
 export const providerMap = {
