@@ -45,10 +45,8 @@ const onSubmit = (values, dispatch, props) => {
   ownersCollection = ownersCollection.add(new OwnerModel({
     address: props.account,
   }))
-  owners.forEach((owner) => {
-    ownersCollection = ownersCollection.add(new OwnerModel({
-      address: owner.get('address'),
-    }))
+  owners.forEach(({ address }) => {
+    ownersCollection = ownersCollection.add(new OwnerModel({ address }))
   })
 
   // date
@@ -61,7 +59,7 @@ const onSubmit = (values, dispatch, props) => {
       time.getHours(),
       time.getMinutes(),
       time.getSeconds(),
-      time.getMilliseconds()
+      time.getMilliseconds(),
     )
   }
 

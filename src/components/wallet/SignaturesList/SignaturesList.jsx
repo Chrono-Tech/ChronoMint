@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import './SignaturesList.scss'
+import { prefix } from './lang'
 
 export default class SignaturesList extends Component {
   static propTypes = {
@@ -35,7 +36,7 @@ export default class SignaturesList extends Component {
         {chips}
         <Translate
           styleName='of'
-          value='common.of'
+          value={`${prefix}.ofOwners`}
           count={count}
         />
       </div>

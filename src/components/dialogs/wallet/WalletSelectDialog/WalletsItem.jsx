@@ -1,10 +1,11 @@
 import WalletMultiSVG from 'assets/img/icn-wallet-multi-big.svg'
+import classnames from 'classnames'
 import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
 import './WalletsItem.scss'
 
@@ -25,18 +26,29 @@ export default class WalletsItem extends PureComponent {
   render () {
     const { wallet } = this.props
     const ownersCount = wallet.owners().size()
+    const isSelected = wallet.isSelected()
+    const title = !isSelected
+      ? I18n.t(`${prefix}.selectWallet`)
+      : null
 
     return (
       <div styleName='root'>
-        <div styleName='iconBox'><img styleName='icon' src={WalletMultiSVG} /></div>
+        <div
+          styleName={classnames('iconBox', { selected: isSelected })}
+          onTouchTap={!isSelected && this.handleSelect}
+          title={title}
+        >
+          <img styleName='icon' src={WalletMultiSVG} />
+        </div>
         <div styleName='content'>
           <div styleName='info'>
             <div
-              styleName='title link'
-              onTouchTap={this.handleSelect}
+              styleName='title'
+              onTouchTap={!isSelected && this.handleSelect}
+              title={title}
             >
               {/*<div styleName='name'>Name</div>*/}
-              <div styleName='address'>
+              <div styleName={classnames('address', { link: !isSelected && !!wallet.address() })}>
                 {
                   wallet.address()
                     ? wallet.address()
@@ -72,7 +84,9 @@ export default class WalletsItem extends PureComponent {
               </div>
             </div>
             <div styleName='detailCol'>
-              <div styleName='detailItem red'><strong>{wallet.pendingCount()}</strong></div>
+              <div styleName={classnames('detailItem', { red: wallet.pendingCount() > 0 })}>
+                <strong>{wallet.pendingCount()}</strong>
+              </div>
               <div styleName='detailItem'><Translate value={`${prefix}.pendings`} /></div>
             </div>
             <div styleName='detailCol'>

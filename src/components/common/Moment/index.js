@@ -15,6 +15,7 @@ class Moment extends PureComponent {
     date: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.object,
+      PropTypes.instanceOf(Date),
     ]),
     format: PropTypes.string,
     action: PropTypes.string,

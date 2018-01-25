@@ -3,6 +3,7 @@
 .addOwner {
   display: flex;
   align-items: center;
+  margin-top: 24px;
 }
 
 .addOwnerField {
@@ -16,10 +17,12 @@
 }
 
 .action {
+  cursor: pointer;
   background-color: transparent;
   color: $color-secondary;
 
   &:disabled {
+    cursor: default;
     color: $color-grey300;
   }
 }

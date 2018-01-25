@@ -6,6 +6,7 @@ import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
+import SignaturesList from 'components/wallet/SignaturesList/lang'
 import * as exchange from 'components/exchange/lang'
 
 export default {
@@ -17,6 +18,7 @@ export default {
     WalletAddEditForm: WalletAddEditForm.en,
     WalletSelectDialog: WalletSelectDialog.en,
     OwnersList: OwnersList.en,
+    SignaturesList: SignaturesList.en,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.en,
@@ -31,6 +33,7 @@ export default {
     WalletAddEditForm: WalletAddEditForm.ru,
     WalletSelectDialog: WalletSelectDialog.ru,
     OwnersList: OwnersList.ru,
+    SignaturesList: SignaturesList.ru,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.ru,

@@ -8,6 +8,11 @@
 .iconBox {
   flex-grow: 0;
   margin-right: 16px;
+  cursor: pointer;
+
+  &.selected {
+    cursor: default;
+  }
 }
 
 .icon {
@@ -35,6 +40,7 @@
 
 .address {
   font-size: 14px;
+  font-weight: $font-weight-bold; // temp until implement 'name'
 }
 
 .actions {

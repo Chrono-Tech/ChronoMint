@@ -17,6 +17,7 @@ export default {
     unlockDate: 'Unlock Date',
     owners_1: 'Owner',
     owners_2: 'Owners',
+    selectWallet: 'Select Wallet',
   },
   ru: {
     headerTitle: 'Выберите мультподписываемый кошелек',
@@ -35,5 +36,6 @@ export default {
     owners_1: 'Владелец',
     owners_2: 'Владельца',
     owners_5: 'Владельцев',
+    selectWallet: 'Select Wallet',
   },
 }
