@@ -13,6 +13,20 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
     super(PollInterfaceABI, at, MultiEventsHistoryABI)
   }
 
+  hasMember (address: string): boolean {
+    if (!address) {
+      return false
+    }
+    return this._call('hasMember', [ address ])
+  }
+
+  memberOption (address: string) {
+    if (!address) {
+      return false
+    }
+    return this._call('memberOptions', [ address ])
+  }
+
   getDetails () {
     return this._call('getDetails')
   }

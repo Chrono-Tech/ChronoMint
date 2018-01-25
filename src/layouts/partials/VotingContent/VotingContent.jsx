@@ -13,10 +13,10 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
-import { getStatistics } from 'redux/voting/getters'
+import VotingCollection from 'models/voting/VotingCollection'
+import getStatistics from 'redux/voting/getters'
 
 import './VotingContent.scss'
-import VotingCollection from '../../../models/voting/VotingCollection'
 
 function prefix (token) {
   return `layouts.partials.VotingContent.${token}`

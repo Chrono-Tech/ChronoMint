@@ -9,7 +9,6 @@ export default class PollDetailsModel extends abstractFetchingModel({
   poll: new PollModel(),
   votes: Immutable.List(),
   statistics: Immutable.List(),
-  memberVote: null,
   totalSupply: new BigNumber(0),
   shareholdersCount: new BigNumber(0),
   files: Immutable.List(),
@@ -38,10 +37,6 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return this.get('totalSupply')
   }
 
-  memberVote () {
-    return this.get('memberVote')
-  }
-
   shareholdersCount () {
     return this.get('shareholdersCount')
   }
@@ -64,25 +59,30 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
     const percents = (maxOptionTime || new BigNumber(0)).mul(100).div(voteLimitInTIME).round(0)
+    const memberOption = poll.memberOption()
 
     return {
       endDate,
       published,
       voteLimit: voteLimitInTIME,
       voteLimitInTIME,
-      memberVote: this.memberVote(),
       options: poll.options(),
       files: this.files(),
       active: poll.active(),
       status: poll.status(),
-      daysLeft: Math.max(moment(endDate).diff(moment(), 'days'), 0),
-      daysTotal: Math.max(moment(endDate).diff(moment(published), 'days'), 0),
+      daysLeft: Math.max(moment(endDate).diff(moment(0, 'HH'), 'days'), 0),
+      daysTotal: Math.max(moment(endDate).diff(moment({
+        y: published.getFullYear(),
+        M: published.getMonth(),
+        d: published.getDate(),
+      }), 'days'), 0),
       received,
       totalSupply: this.totalSupply(),
       votedCount,
       shareholdersCount,
       percents: percents.gt(100) ? new BigNumber(100) : percents,
       maxOptionTime: maxOptionTime || new BigNumber(0),
+      memberOption: memberOption && memberOption.toNumber(),
     }
   }
 }

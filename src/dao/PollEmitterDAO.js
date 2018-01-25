@@ -13,10 +13,10 @@ export default class PollEmitterDAO extends AbstractMultisigContractDAO {
   }
 
   /** @private */
-  _watchCallback = (callback, status) => async (result) => {
+  _watchCallback = (callback, status, account: string) => async (result) => {
 
     const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const poll = await dao.getPoll(result.args.self)
+    const poll = await dao.getPoll(result.args.self, account)
 
     callback(new PollNoticeModel({
       pollId: result.args.self, // just a long
@@ -26,8 +26,8 @@ export default class PollEmitterDAO extends AbstractMultisigContractDAO {
     }))
   }
 
-  async watchVoted (callback, filter) {
-    return this._watch(EVENT_POLL_VOTED, this._watchCallback(callback, IS_VOTED), filter)
+  async watchVoted (callback, filter, account) {
+    return this._watch(EVENT_POLL_VOTED, this._watchCallback(callback, IS_VOTED, account), filter)
   }
 
   async watchActivated (callback, filter) {

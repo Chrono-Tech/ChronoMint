@@ -200,7 +200,7 @@ export default class VoteDialog extends PureComponent {
                       {details.options.valueSeq().map((option, index) => (
                         <div key={index} styleName='tableItem'>
                           <div styleName='itemLeft'>
-                            {(details.memberVote === index + 1)
+                            {(details.memberOption === index + 1)
                               ? (
                                 <div styleName='symbol symbolFill'>
                                   <i className='material-icons'>check</i>

@@ -15,6 +15,8 @@ class PollModel extends abstractFetchingModel({
   active: false,
   status: false,
   isTransaction: false,
+  hasMember: false,
+  memberOption: null,
 }) {
   constructor (data = {}) {
     super({
@@ -66,6 +68,14 @@ class PollModel extends abstractFetchingModel({
 
   deadline () {
     return this.get('deadline')
+  }
+
+  hasMember () {
+    return this.get('hasMember')
+  }
+
+  memberOption () {
+    return this.get('memberOption')
   }
 
   txSummary () {

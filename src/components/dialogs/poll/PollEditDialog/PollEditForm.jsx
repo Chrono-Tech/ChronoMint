@@ -1,3 +1,4 @@
+import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
@@ -15,7 +16,7 @@ import { DUCK_I18N } from 'redux/configureStore'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
+import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -35,7 +36,7 @@ function mapStateToProps (state) {
     timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
-      deadline: new Date(),
+      deadline: moment().add(1, 'day').toDate(),
     },
   }
 }
@@ -49,11 +50,7 @@ function mapDispatchToProps () {
         options: new Immutable.List(values.get('options')),
       })
       dispatch(modalsClose())
-      if (props.isModify) {
-        dispatch(updatePoll(poll))
-      } else {
-        dispatch(createPoll(poll))
-      }
+      dispatch(createPoll(poll))
     },
   }
 }

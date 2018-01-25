@@ -1,3 +1,4 @@
+import { DUCK_SESSION } from 'redux/session/actions'
 import votingService from 'services/VotingService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/PollEmitterDAO'
@@ -17,7 +18,6 @@ export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
 export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
-export const VOTING_POLLS_COUNT = 'voting/VOTING_POLLS_COUNT'
 
 export const DUCK_VOTING = 'voting'
 const PAGE_SIZE = 20
@@ -26,7 +26,6 @@ const PAGE_SIZE = 20
 let counter = 1
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState) => {
-  const state = getState().get(DUCK_VOTING)
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemoved(notice.transactionHash()))
@@ -36,10 +35,10 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState)
       dispatch(handlePollRemoved(notice.pollId()))
       break
     case IS_ACTIVATED:
-      dispatch(handlePollUpdated(notice.poll()), state.activePollsCount().plus(1))
+      dispatch(handlePollUpdated(notice.poll()))
       break
     case IS_ENDED:
-      dispatch(handlePollUpdated(notice.poll()), state.activePollsCount().minus(1))
+      dispatch(handlePollUpdated(notice.poll()))
       break
     case IS_VOTED:
     case IS_UPDATED:
@@ -55,10 +54,11 @@ const updateVoteLimit = () => async (dispatch) => {
   dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
 }
 
-export const watchInitPolls = () => async (dispatch) => {
+export const watchInitPolls = () => async (dispatch, getState) => {
   const callback = (notice) => dispatch(watchPoll(notice))
+  const { account } = getState().get(DUCK_SESSION)
   votingService
-    .subscribeToVoting()
+    .subscribeToVoting(account)
 
   votingService
     .on(EVENT_POLL_CREATED, callback)
@@ -148,24 +148,19 @@ export const handlePollRemoved = (id: Number) => async (dispatch) => {
   dispatch({ type: POLLS_REMOVE, id })
 }
 
-export const handlePollUpdated = (poll: PollDetailsModel, activeCount) => async (dispatch) => {
-  dispatch({ type: POLLS_UPDATE, poll, activeCount })
+export const handlePollUpdated = (poll: PollDetailsModel) => async (dispatch) => {
+  dispatch({ type: POLLS_UPDATE, poll })
 }
 
 export const listPolls = () => async (dispatch) => {
   dispatch({ type: POLLS_LOAD })
-  const dao = await contractsManagerDAO.getVotingManagerDAO()
-  const [ count, activeCount, list ] = await Promise.all([
-    dao.getPollsCount(),
-    dao.getActivePollsCount(),
-    dispatch(getNextPage()),
-  ])
-  dispatch({ type: VOTING_POLLS_COUNT, count, activeCount })
+  const list = await dispatch(getNextPage())
   dispatch({ type: POLLS_LIST, list })
 }
 
 export const getNextPage = () => async (dispatch, getState) => {
   const dao = await contractsManagerDAO.getVotingManagerDAO()
   const votingState = getState().get(DUCK_VOTING)
-  return await dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE)
+  const { account } = getState().get(DUCK_SESSION)
+  return await dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
 }

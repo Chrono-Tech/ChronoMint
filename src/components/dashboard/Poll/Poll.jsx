@@ -243,7 +243,7 @@ export default class Poll extends PureComponent {
                 )
                 : null
               }
-              {details.status && details.active && !details.memberVote && details.daysLeft > 0
+              {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
                 ? (
                   <RaisedButton
                     label={<Translate value={prefix('vote')} />}

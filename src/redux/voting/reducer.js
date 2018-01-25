@@ -1,7 +1,6 @@
 import VotingMainModel from 'models/voting/VotingMainModel'
 import {
   POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT,
-  VOTING_POLLS_COUNT,
 } from './actions'
 
 const initialState = new VotingMainModel()
@@ -20,18 +19,12 @@ export default (state = initialState, action) => {
     case POLLS_CREATE:
       return state
         .list(state.list().update(action.poll))
-        .pollsCount(state.pollsCount().plus(1))
     case POLLS_UPDATE:
       return state
         .list(state.list().update(action.poll))
-        .activePollsCount(action.activeCount || state.activePollsCount())
     case POLLS_REMOVE:
       return state
         .list(state.list().remove(action.id))
-    case VOTING_POLLS_COUNT:
-      return state
-        .pollsCount(action.count || state.pollsCount())
-        .activePollsCount(action.activeCount || state.activePollsCount())
     default:
       return state
   }

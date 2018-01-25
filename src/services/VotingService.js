@@ -23,7 +23,7 @@ class VotingService extends EventEmitter {
     return this._cache[ 'VotingManager' ]
   }
 
-  subscribeToPoll (address) {
+  subscribeToPoll (address, account) {
     if (this._cache[ address ]) return null
     const dao = this.getPollEmitterDAO(address)
 
@@ -32,7 +32,7 @@ class VotingService extends EventEmitter {
         this.emit(EVENT_POLL_VOTED, result)
       }, {
         self: address,
-      }),
+      }, account),
       dao.watchActivated((result) => {
         this.emit(EVENT_POLL_ACTIVATED, result)
       }, {
@@ -46,13 +46,13 @@ class VotingService extends EventEmitter {
     ])
   }
 
-  subscribeToVoting () {
+  subscribeToVoting (account) {
     const dao = this.getVotingManager()
 
     return Promise.all([
       dao.watchCreated((result) => {
         this.emit(EVENT_POLL_CREATED, result)
-      }),
+      }, account),
       dao.watchRemoved((result) => {
         this.emit(EVENT_POLL_REMOVED, result)
       }),

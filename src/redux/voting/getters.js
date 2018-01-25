@@ -1,14 +1,45 @@
-export const getStatistics = (state) => {
+const getStatistics = (state) => {
   const polls = state.list().items()
   const time = new Date().getTime()
 
+  let completed = 0
+  let ongoing = 0
+  let inactive = 0
+  let outdated = 0
+
+  if (state.isFetched()) {
+    polls.map((p) => {
+      if (!p.isFetched()) {
+        return
+      }
+
+      if (!p.poll().status()) {
+        completed++
+      }
+
+      if (p.poll().status() && p.poll().active()) {
+        ongoing++
+      }
+
+      if (!p.poll().active()) {
+        inactive++
+      }
+
+      if (p.poll().deadline().getTime() < time) {
+        outdated++
+      }
+    })
+  }
+
   return state.isFetched()
     ? {
-      all: state.pollsCount().toString(),
-      completed: polls.filter((p) => p.isFetched() && !p.poll().status()).length,
-      ongoing: state.activePollsCount().toString(),
-      inactive: state.pollsCount().minus(state.activePollsCount()).toString(),
-      outdated: polls.filter((p) => p.isFetched() && p.poll().deadline().getTime() < time).length,
+      all: polls.length,
+      completed,
+      ongoing,
+      inactive,
+      outdated,
     }
     : {}
 }
+
+export default getStatistics
