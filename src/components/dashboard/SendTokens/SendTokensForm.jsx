@@ -1,3 +1,4 @@
+import MultisigWalletModel from '@/models/wallet/MultisigWalletModel'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -72,7 +73,10 @@ function mapStateToProps (state) {
 export default class SendTokensForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWallet),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWallet),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),

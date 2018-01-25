@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
@@ -43,7 +42,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async fetchWallets () {
     const [ addresses, is2FA ] = await this._call('getWallets')
-    const validAddresses  = addresses.filter((address) => !this.isEmptyAddress(address))
+    const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
     this.emit(EVENT_MS_WALLETS_COUNT, validAddresses.length)
 
     validAddresses.forEach((address, i) => {
@@ -64,10 +63,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
-    const [ owners, requiredSignatures, pendingTxList ] = await Promise.all([
+    const [ owners, requiredSignatures, pendingTxList, releaseTime ] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
       walletDAO.getPendings(),
+      walletDAO.getReleaseTime(),
     ])
 
     let addresses = new AddressesCollection()
@@ -85,16 +85,18 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       isFetched: true,
       pendingTxList,
       addresses,
+      releaseTime,
     })
     this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)
   }
 
   async createWallet (wallet: MultisigWalletModel) {
     const owners = wallet.owners().items().map((item) => item.address())
+
     const result = await this._tx('createWallet', [
       owners,
       wallet.requiredSignatures(),
-      new BigNumber(0),
+      Math.floor(wallet.releaseTime() / 1000),
     ], wallet.toCreateWalletTx())
     return result.tx
   }

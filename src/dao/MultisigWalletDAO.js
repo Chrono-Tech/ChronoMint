@@ -17,6 +17,8 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     this._okCodes.push(resultCodes.WALLET_CONFIRMATION_NEEDED)
   }
 
+  // watchers
+
   watchConfirmationNeeded (wallet, callback) {
     return this._watch('MultisigWalletConfirmationNeeded', async (result) => {
       const { operation, initiator, value, to, data } = result.args
@@ -93,9 +95,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     }, { self: wallet.address() })
   }
 
-  isValidId (id) {
-    return id !== '0x0000000000000000000000000000000000000000000000000000000000000000'
-  }
+  // getters
 
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
@@ -125,6 +125,17 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   getRequired () {
     return this._callNum('m_required')
   }
+
+  async getPendingData (id: string): Promise<TxExecModel> {
+    const data = await this._call('getData', [ id ])
+    return this.decodeData(data)
+  }
+
+  getReleaseTime (): Promise {
+    return this._callDate('releaseTime')
+  }
+
+  // actions
 
   async removeWallet (wallet, account: string) {
     const result = await this._tx('kill', [
@@ -186,9 +197,19 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async getPendingData (id: string): Promise<TxExecModel> {
-    const data = await this._call('getData', [ id ])
-    return this.decodeData(data)
+  async changeRequirement (newRequired: Number) {
+    const result = await this._tx('changeRequirement', [
+      newRequired,
+    ], {
+      signatureRequirements: newRequired,
+    })
+    return result.tx
+  }
+
+  // helpers
+
+  isValidId (id) {
+    return id !== '0x0000000000000000000000000000000000000000000000000000000000000000'
   }
 
   async _decodeArgs (func: string, args: Object) {

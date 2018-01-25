@@ -1,0 +1,223 @@
+@import "~styles/partials/variables";
+
+$bulletRadius: 16px;
+$stepMargin: 24px;
+
+%lineBase {
+  content: '';
+  width: 1px;
+  background-color: $color-hr;
+  position: absolute;
+  left: $bulletRadius;
+  z-index: 1;
+}
+
+.root {
+  min-width: 300px;
+  max-width: 930px;
+  background-color: $color-white;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background: $color-panel-bg-5;
+  padding: 16px 54px 16px 16px;
+}
+
+.title {
+  color: $color-white;
+  font-size: 36px;
+}
+
+.body {
+  padding: 16px 16px 24px;
+}
+
+// intro
+
+.intro {
+  display: flex;
+}
+
+.introImg {
+  margin-right: 80px;
+  margin-left: 44px;
+  flex-grow: 0;
+}
+
+.introCol {
+  flex-grow: 1;
+  color: $color-primary-0;
+}
+
+.introTitle {
+  font-size: 18px;
+  font-weight: $font-weight-bold;
+  margin-top: 8px;
+}
+
+.introContent p {
+  margin-top: 10px;
+}
+
+// step1
+
+.step {
+  display: flex;
+  margin-bottom: $stepMargin;
+  position: relative; // for after and before
+
+  &:after {
+    @extend %lineBase;
+    top: $bulletRadius;
+    bottom: 0;
+  }
+
+  &:before {
+    @extend %lineBase;
+    top: -$stepMargin;
+    bottom: 100%;
+  }
+
+  &:first-child {
+    &:before {
+      display: none;
+    }
+  }
+
+  &:last-child {
+    &:after {
+      display: none;
+    }
+  }
+}
+
+.stepBullet {
+  z-index: 2; // for line
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+  color: $color-white;
+  background-color: $color-primary-1;
+  width: $bulletRadius * 2;
+  height: $bulletRadius * 2;
+  border-radius: $bulletRadius;
+  font-size: 18px;
+}
+
+.stepCol1 {
+  margin: 0 32px 0 16px;
+  width: 50%;
+  font-size: $font-size-base;
+  color: $color-primary-0;
+}
+
+.stepCol2 {
+  width: 50%;
+}
+
+.highlight {
+  padding: 4px 8px;
+  background-color: $color-primary-light;
+  border-radius: 2px;
+}
+
+.storeIcon {
+  width: 12px;
+  height: 12px;
+  background-color: red;
+}
+
+// step1
+
+.step1 {
+  display: flex;
+}
+
+.step1arrow {
+  width: 56px;
+  height: 56px;
+  margin-right: 16px;
+}
+
+.step1content {
+  font-size: 18px;
+  color: $color-primary-0;
+}
+
+.green {
+  color: $color-green;
+}
+
+// step 2
+
+.step2 {
+  display: flex;
+  align-items: center;
+  color: $color-primary-0;
+}
+
+.step2title {
+  margin-right: 10px;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+}
+
+.step2code {
+  flex-grow: 1;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  font-weight: $font-weight-bold;
+  letter-spacing: 2px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: $color-white;
+}
+
+.checkbox {
+  margin-top: 10px;
+}
+
+// step 3
+
+.step3 {
+  display: flex;
+}
+
+.step3qrCode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 128px;
+  height: 128px;
+  margin-right: 16px;
+  background-color: #ccc;
+}
+
+.step3content {
+  flex-grow: 1;
+}
+
+.step3details {
+  color: $color-primary-0;
+  font-size: 14px;
+}
+
+.step3code {
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.action {
+  flex-grow: 0;
+}

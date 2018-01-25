@@ -1,0 +1,36 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+.root {
+  min-width: 300px;
+  max-width: 460px;
+  background-color: $color-white;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  background: $color-panel-bg-5;
+  padding: 16px 54px 16px 16px;
+  color: $color-white;
+  text-transform: uppercase;
+}
+
+.body {
+  padding: 24px;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.field {
+  margin-top: 24px;
+}
+
+.action {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 24px;
+}
