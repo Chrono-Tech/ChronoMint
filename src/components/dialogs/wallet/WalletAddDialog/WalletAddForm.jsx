@@ -15,7 +15,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import validate from './validate'
-import './WalletAddEditForm.scss'
+import './WalletAddForm.scss'
 
 export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditForm'
 
@@ -130,15 +130,17 @@ export default class WalletAddEditForm extends PureComponent {
               </div>
             )}
           </div>
-          <div styleName='block'>
-            <Field
-              component={Toggle}
-              name='is2FA'
-              label={<Translate value={`${prefix}.twoFA`} />}
-              toggled={false}
-            />
-            <Translate styleName='description' value={`${prefix}.twoFADescription`} />
-          </div>
+          {false && (
+            <div styleName='block'>
+              <Field
+                component={Toggle}
+                name='is2FA'
+                label={<Translate value={`${prefix}.twoFA`} />}
+                toggled={false}
+              />
+              <Translate styleName='description' value={`${prefix}.twoFADescription`} />
+            </div>
+          )}
           <div styleName='block'>
             <Translate styleName='title' count={ownersCount} value={`${prefix}.walletOwners`} />
             {is2FA

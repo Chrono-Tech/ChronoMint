@@ -5,7 +5,7 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import { createWallet } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import WalletAddEditForm from './WalletAddEditForm'
+import WalletAddEditForm from './WalletAddForm'
 
 function mapDispatchToProps (dispatch) {
   return {

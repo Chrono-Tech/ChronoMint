@@ -129,4 +129,9 @@ export default {
       display: 'block',
     },
   },
+  textField: {
+    hintStyle: {
+      color: variables.colorPrimary1,
+    },
+  },
 }

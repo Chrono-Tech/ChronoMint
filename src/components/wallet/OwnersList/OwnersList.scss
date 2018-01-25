@@ -1,72 +1,31 @@
 @import '~styles/partials/variables';
 
-.accountBox,
-.ownerBox {
-  display: flex;
-  align-items: center;
-  color: $color-grey;
-  font-size: 10px;
-}
-
-.details {
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
-  color: $color-black;
-}
-
-.detailsTitle {
-  font-size: 16px;
-}
-
-.detailsValue {
-  margin-top: 10px;
-}
-
-.accountIcon {
-  flex-grow: 0;
-  color: $color-grey;
-  font-size: 38px;
-  margin-right: 10px;
-}
-
 .addOwner {
   display: flex;
+  align-items: center;
 }
 
 .addOwnerField {
   flex-grow: 1;
 }
 
-.addOwnerButton {
+.actions {
+  display: flex;
   flex-grow: 0;
   margin-left: 16px;
+}
+
+.action {
+  background-color: transparent;
+  color: $color-secondary;
+
+  &:disabled {
+    color: $color-grey300;
+  }
 }
 
 .buttonLabel {
   // hack for long multiline labels with icons
   display: flex;
   align-items: center;
-}
-
-.buttonIcon {
-  margin-right: 16px;
-}
-
-.ownerIcon {
-  color: $color-primary-1;
-  opacity: 0.6;
-  flex-grow: 0;
-  font-size: 38px;
-  margin-right: 10px;
-}
-
-.ownerInput {
-  flex-grow: 1;
-}
-
-.ownerRemove {
-  flex-grow: 0;
-  min-width: 40px;
-  margin-left: 10px;
 }

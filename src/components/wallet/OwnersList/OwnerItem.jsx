@@ -4,7 +4,7 @@ import './OwnerItem.scss'
 
 export default class OwnerItem extends PureComponent {
   static propTypes = {
-    title: PropTypes.node,
+    title: PropTypes.node, // translate node
     address: PropTypes.string,
     onRemove: PropTypes.func,
     isNoActions: PropTypes.bool,

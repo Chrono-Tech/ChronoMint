@@ -90,3 +90,9 @@
 .grey {
   color: $color-grey300;
 }
+
+.link {
+  color: $color-secondary;
+  cursor: pointer;
+  font-weight: $font-weight-bold;
+}

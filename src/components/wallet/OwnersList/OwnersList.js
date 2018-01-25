@@ -1,10 +1,13 @@
-import { FlatButton } from 'material-ui'
+import OwnerItem from 'components/wallet/OwnersList/OwnerItem'
+import globalStyles from 'layouts/partials/styles'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { change, Field, formValueSelector, getFormSyncErrors } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { prefix } from './lang'
 import './OwnersList.scss'
 import validate from './validate'
 
@@ -48,36 +51,50 @@ export default class OwnersList extends PureComponent {
   }
 
   renderOwners = (fields) => (item, index) => {
-    const address = fields.get(index).address
     return (
-      <div key={address}>
-        addr: {address}
-        <FlatButton
-          icon={<i className='material-icons'>delete</i>}
-          onTouchTap={this.handleRemoveItem(fields, index)}
-          fullWidth
-        />
-      </div>
+      <OwnerItem
+        key={item.address}
+        title={<Translate value={`${prefix}.owner`} index={index + 1} />}
+        address={item.address}
+        onRemove={this.handleRemoveItem(fields, index)}
+      />
     )
   }
 
   render () {
-    const { fields, isDisabled } = this.props
+    const { fields, isDisabled, account } = this.props
 
     return (
       <div>
+        <OwnerItem
+          title={<Translate value={`${prefix}.you`} />}
+          address={account}
+          isNoActions
+        />
         {fields.getAll().toArray().map(this.renderOwners(fields))}
 
-        <Field
-          component={TextField}
-          name={FIELD_NEW_ADDRESS}
-          validate={validate}
-        />
-        <FlatButton
-          label='add'
-          onTouchTap={!isDisabled && this.handleAddItem(fields)}
-          disabled={isDisabled}
-        />
+        <div styleName='addOwner'>
+          <div styleName='addOwnerField'>
+            <Field
+              component={TextField}
+              hintText={<Translate value={`${prefix}.floatText`} />}
+              hintStyle={globalStyles.textField.hintStyle}
+              name={FIELD_NEW_ADDRESS}
+              validate={validate}
+              fullWidth
+            />
+          </div>
+          <div styleName='actions'>
+            <button
+              styleName='action'
+              className='material-icons'
+              onTouchTap={!isDisabled && this.handleAddItem(fields)}
+              disabled={isDisabled}
+            >
+              add_circle
+            </button>
+          </div>
+        </div>
       </div>
     )
   }

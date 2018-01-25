@@ -7,7 +7,7 @@ import { FloatingActionButton, FontIcon } from 'material-ui'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
@@ -15,7 +15,7 @@ import { addOwner, DUCK_MULTISIG_WALLET, multisigTransfer, removeWallet } from '
 import { DUCK_SESSION } from 'redux/session/actions'
 import { switchWallet } from 'redux/wallet/actions'
 import ModalDialog from '../../ModalDialog'
-import WalletAddEditDialog from '../WalletAddEditDialog/WalletAddEditDialog'
+import WalletAddEditDialog from '../WalletAddDialog/WalletAddDialog'
 import { prefix } from './lang'
 import './WalletSelectDialog.scss'
 
@@ -48,7 +48,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class WalletSelectDialog extends PureComponent {
+export default class WalletSelectDialog extends Component {
   static propTypes = {
     multisigWallets: PropTypes.arrayOf(MultisigWalletModel),
     timeLockedWallets: PropTypes.arrayOf(MultisigWalletModel),
@@ -137,11 +137,9 @@ export default class WalletSelectDialog extends PureComponent {
 
   handleRemove = (wallet) => this.props.removeWallet(wallet)
 
-  handleEdit = (wallet) => this.props.handleEditManagersDialog(wallet)
+  handleEditOwners = (wallet) => this.props.handleEditManagersDialog(wallet)
 
   renderBlock (title, wallets: Array) {
-
-    console.log('--WalletSelectDialog#renderBlock', wallets)
 
     return (
       <div styleName='block'>
@@ -153,7 +151,7 @@ export default class WalletSelectDialog extends PureComponent {
                 key={wallet.id()}
                 wallet={wallet}
                 onRemove={this.handleRemove}
-                onEdit={this.handleEdit}
+                onEditOwners={this.handleEditOwners}
               />
             ))
             : <div styleName='noWallets'><Translate value={`${prefix}.noWallets`} /></div>
