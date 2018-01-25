@@ -7,6 +7,10 @@ $indent: 24px;
 .root {
   max-width: 928px;
   background-color: $color-white;
+
+  @include sm-plus {
+    min-width: 640px;
+  }
 }
 
 // header
@@ -59,8 +63,7 @@ $indent: 24px;
 }
 
 .blockList {
-  padding-bottom: 24px;
-  //border-bottom: $line;
+  padding-bottom: 48px;
 }
 
 .noWallets {

@@ -11,7 +11,7 @@
 }
 
 .icon {
-  margin-top: -5px; // for align
+  margin-top: -13px; // for align
 }
 
 .content {
@@ -46,9 +46,10 @@
 .action {
   cursor: pointer;
   margin-left: 24px;
+  color: $color-grey300;
 
-  &:first-child {
-    margin-left: 0;
+  &:hover {
+    color: $color-black;
   }
 }
 
@@ -85,10 +86,6 @@
 
 .secondary {
   color: $color-secondary;
-}
-
-.grey {
-  color: $color-grey300;
 }
 
 .link {

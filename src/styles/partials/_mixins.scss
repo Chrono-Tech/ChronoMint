@@ -110,6 +110,13 @@ $media-sizes: (
   }
 }
 
+
+@mixin sm-plus {
+  @media only screen and (min-width: $media-size-sm) {
+    @content;
+  }
+}
+
 @mixin md-only {
   @media only screen and (max-width: $media-size-md) {
     @content;

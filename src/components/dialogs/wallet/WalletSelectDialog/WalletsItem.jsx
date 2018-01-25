@@ -1,8 +1,11 @@
 import WalletMultiSVG from 'assets/img/icn-wallet-multi-big.svg'
 import Moment from 'components/common/Moment'
+import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { Translate } from 'react-redux-i18n'
+import { prefix } from './lang'
 import './WalletsItem.scss'
 
 export default class WalletsItem extends PureComponent {
@@ -10,25 +13,50 @@ export default class WalletsItem extends PureComponent {
     wallet: PropTypes.instanceOf(MultisigWalletModel),
     onRemove: PropTypes.func,
     onEditOwners: PropTypes.func,
+    onSelect: PropTypes.func,
   }
 
   handleEditOwners = () => this.props.onEditOwners(this.props.wallet)
 
+  handleRemove = () => this.props.onRemove(this.props.wallet)
+
+  handleSelect = () => this.props.onSelect(this.props.wallet)
+
   render () {
     const { wallet } = this.props
+    const ownersCount = wallet.owners().size()
 
     return (
       <div styleName='root'>
         <div styleName='iconBox'><img styleName='icon' src={WalletMultiSVG} /></div>
         <div styleName='content'>
           <div styleName='info'>
-            <div styleName='title'>
+            <div
+              styleName='title link'
+              onTouchTap={this.handleSelect}
+            >
               {/*<div styleName='name'>Name</div>*/}
-              <div styleName='address'>{wallet.address()}</div>
+              <div styleName='address'>
+                {
+                  wallet.address()
+                    ? wallet.address()
+                    : <Translate value={`${prefix}.pending`} />
+                }
+              </div>
             </div>
             <div styleName='actions'>
-              <div styleName='action grey' className='material-icons'>delete</div>
-              <div styleName='action secondary' className='material-icons'>settings</div>
+              {wallet.isPending()
+                ? <Preloader small />
+                : (
+                  <div
+                    styleName='action'
+                    className='material-icons'
+                    onTouchTap={this.handleRemove}
+                  >
+                    delete
+                  </div>
+                )
+              }
             </div>
           </div>
           <div styleName='details'>
@@ -37,24 +65,24 @@ export default class WalletsItem extends PureComponent {
                 styleName='detailItem link'
                 onTouchTap={this.handleEditOwners}
               >
-                <strong>{wallet.owners().size()}</strong> owners
+                <strong>{ownersCount}</strong> <Translate value={`${prefix}.owners`} count={ownersCount} />
               </div>
               <div styleName='detailItem link'>
-                <strong>{wallet.requiredSignatures()}</strong> Signatures req.
+                <strong>{wallet.requiredSignatures()}</strong> <Translate value={`${prefix}.requiredSignatures`} />
               </div>
             </div>
             <div styleName='detailCol'>
               <div styleName='detailItem red'><strong>{wallet.pendingCount()}</strong></div>
-              <div styleName='detailItem'>pendings</div>
+              <div styleName='detailItem'><Translate value={`${prefix}.pendings`} /></div>
             </div>
             <div styleName='detailCol'>
-              <div styleName='detailItem'>Available funds:</div>
               <div styleName='detailItem'><strong>TODO ETH</strong></div>
+              <div styleName='detailItem'><Translate value={`${prefix}.availableFunds`} /></div>
             </div>
             {wallet.isTimeLocked() && (
               <div styleName='detailCol'>
                 <div styleName='detailItem'><strong><Moment date={wallet.releaseTime()} /></strong></div>
-                <div styleName='detailItem'>UnlockDate</div>
+                <div styleName='detailItem'><Translate value={`${prefix}.unlockDate`} /></div>
               </div>
             )}
           </div>

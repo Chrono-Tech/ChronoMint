@@ -31,16 +31,16 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    walletAddEditDialog: () => dispatch(modalsOpen({
+    openAddWalletDialog: () => dispatch(modalsOpen({
       component: WalletAddEditDialog,
       props: { wallet: new MultisigWalletModel() },
     })),
-    handleEditManagersDialog: (wallet) => dispatch(modalsOpen({
+    openEditManagersDialog: (wallet) => dispatch(modalsOpen({
       component: EditManagersDialog,
       props: { wallet },
     })),
     modalsClose: () => dispatch(modalsClose()),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
+    selectWallet: (wallet) => dispatch(switchWallet(wallet)),
     removeWallet: (wallet) => dispatch(removeWallet(wallet)),
     addOwner: (wallet) => dispatch(addOwner(wallet)),
     transfer: (wallet) => dispatch(multisigTransfer(wallet)),
@@ -53,24 +53,13 @@ export default class WalletSelectDialog extends Component {
     multisigWallets: PropTypes.arrayOf(MultisigWalletModel),
     timeLockedWallets: PropTypes.arrayOf(MultisigWalletModel),
     modalsClose: PropTypes.func,
-    handleEditManagersDialog: PropTypes.func,
-    walletAddEditDialog: PropTypes.func,
+    openEditManagersDialog: PropTypes.func,
+    openAddWalletDialog: PropTypes.func,
     removeWallet: PropTypes.func,
     transfer: PropTypes.func,
     addOwner: PropTypes.func,
-    switchWallet: PropTypes.func,
+    selectWallet: PropTypes.func,
   }
-
-  handleEditManagers (wallet: MultisigWalletModel) {
-    this.props.handleEditManagersDialog(wallet)
-  }
-
-  selectMultisigWallet (wallet) {
-    this.props.modalsClose()
-    this.props.switchWallet(wallet)
-  }
-
-  handleAddWallet = () => this.props.walletAddEditDialog()
 
   renderRow = (wallet: MultisigWalletModel) => {
     const isSelected = wallet.isSelected()
@@ -88,7 +77,7 @@ export default class WalletSelectDialog extends Component {
           <div>
             <div>
               <div>
-                <Translate value={`${prefix}.owners`} num={owners.size()} />
+                <Translate value={`${prefix}.numOwners`} num={owners.size()} />
               </div>
               <div>
                 {owners.items().map((owner, idx) => (
@@ -118,26 +107,16 @@ export default class WalletSelectDialog extends Component {
     )
   }
 
-  renderWalletActions = ({ payload: wallet }) => (
-    <div>
-      <i
-        className='material-icons'
-        onTouchTap={() => this.handleEditManagers(wallet)}
-      >
-        edit
-      </i>
-      <i
-        className='material-icons'
-        onTouchTap={() => this.props.removeWallet(wallet)}
-      >
-        delete
-      </i>
-    </div>
-  )
+  handleAddWallet = () => this.props.openAddWalletDialog()
 
   handleRemove = (wallet) => this.props.removeWallet(wallet)
 
-  handleEditOwners = (wallet) => this.props.handleEditManagersDialog(wallet)
+  handleEditOwners = (wallet) => this.props.openEditManagersDialog(wallet)
+
+  handleSelect = (wallet) => {
+    this.props.modalsClose()
+    this.props.selectWallet(wallet)
+  }
 
   renderBlock (title, wallets: Array) {
 
@@ -152,6 +131,7 @@ export default class WalletSelectDialog extends Component {
                 wallet={wallet}
                 onRemove={this.handleRemove}
                 onEditOwners={this.handleEditOwners}
+                onSelect={this.handleSelect}
               />
             ))
             : <div styleName='noWallets'><Translate value={`${prefix}.noWallets`} /></div>

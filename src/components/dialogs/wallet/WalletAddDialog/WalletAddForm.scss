@@ -4,7 +4,7 @@ $gutter: 24px;
 
 .root {
   min-width: 300px;
-  max-width: 600px;
+  max-width: 460px;
   background-color: $color-white;
 }
 
@@ -51,6 +51,7 @@ $gutter: 24px;
 .description {
   display: block;
   margin-top: 8px;
+  margin-right: 56px;
   font-size: 16px;
   line-height: 1.2;
 }

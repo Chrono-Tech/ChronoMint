@@ -1,6 +1,7 @@
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
+import globalStyles from 'layouts/partials/styles'
 import { RaisedButton } from 'material-ui'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
@@ -107,6 +108,7 @@ export default class WalletAddEditForm extends PureComponent {
               name='isTimeLocked'
               label={<Translate value={`${prefix}.timeLocked`} />}
               toggled={false}
+              labelStyle={globalStyles.toggle.labelStyle}
             />
             <Translate styleName='description' value={`${prefix}.timeLockedDescription`} />
             {isTimeLocked && (

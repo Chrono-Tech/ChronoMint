@@ -134,4 +134,11 @@ export default {
       color: variables.colorPrimary1,
     },
   },
+  toggle: {
+    labelStyle: {
+      fontSize: 24,
+      fontWeight: variables.fontWeightBold,
+      color: variables.colorBlack,
+    },
+  },
 }
