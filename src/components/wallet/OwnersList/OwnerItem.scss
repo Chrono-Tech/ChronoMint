@@ -1,0 +1,50 @@
+@import "~styles/partials/variables";
+
+.root {
+  display: flex;
+  align-items: center;
+  margin-top: 16px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.icon {
+  flex-grow: 0;
+  color: $color-grey;
+  font-size: 38px;
+}
+
+.details {
+  flex-grow: 1;
+  margin-left: 10px;
+  color: $color-black;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: $font-weight-bold;
+  line-height: 1;
+}
+
+.address {
+  margin-top: 3px;
+  line-height: 1;
+  font-size: 12px;
+}
+
+.actions {
+  display: flex;
+  margin-left: 10px;
+  flex-grow: 0;
+}
+
+.action {
+  cursor: pointer;
+  color: $color-grey300;
+
+  &:hover {
+    color: $color-black;
+  }
+}

@@ -5,10 +5,6 @@
 .root {
   background: $color-white;
   width: 500px;
-
-  :global(.ModalDialog__close) {
-    color: $color-white;
-  }
 }
 
 .header {

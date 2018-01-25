@@ -58,6 +58,7 @@ export default {
     name: 'Name',
     address: 'Address',
     ethAddress: 'Ethereum Address',
+    of: 'of %{count}',
   },
   wallet: {
     sendTokens: 'Send tokens',
@@ -79,18 +80,6 @@ export default {
     value: 'Value',
     revoke: 'REVOKE',
     sign: 'SIGN',
-    walletSelectDialog: {
-      multisignatureWallets: 'Multisignature wallets',
-      addWallet: 'Add wallet',
-      yourWallets: 'Your wallets',
-      youHaveNoWallets: 'You have no wallets',
-      howToAddMultisignatureWallet: 'How to add mulisignature wallet? It\'s easy!',
-      toCreateAMultisigWallet: 'To create a multisig wallet',
-      clickPlusButtonAtTheTop: 'Click plus button at the top',
-      selectOwnersAtLeastTwo: 'Select owners, at least two',
-      selectRequiredNumberOfSignaturesFromOwners: 'Select required number of signatures from owners',
-      owners: '%{num} owners',
-    },
   },
   exchange: {
     tokens: 'Exchange tokens',

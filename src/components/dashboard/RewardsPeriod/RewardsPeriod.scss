@@ -144,19 +144,6 @@
     flex-direction: row;
     flex-wrap: wrap;
   }
-
-  :global(.TokenValue__integral) {
-    font-size: 16px;
-    font-weight: 600;
-    vertical-align: baseline;
-  }
-
-  :global(.TokenValue__fraction) {
-    font-size: 16px;
-    font-weight: 600;
-    vertical-align: baseline;
-    opacity: 1;
-  }
 }
 
 

@@ -16,6 +16,7 @@ $color-grey300: #{material-color('grey', '300')};
 $color-grey400: #{material-color('grey', '400')};
 $color-grey500: #{material-color('grey', '500')};
 $color-red: #FF1744;
+$color-black: #222;
 
 $color-error: $color-red;
 $color-warning: #{material-color('orange', 'a400')};
@@ -67,5 +68,6 @@ $highlight-red: #{material-color('red', 'a400')};
 // fonts
 $font-family-main: 'Roboto', sans-serif;
 $font-size-base: 16px;
+$font-weight-bold: 600;
 
 $border-radius: 2px;
