@@ -1,98 +1,83 @@
-import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
-import globalStyles from 'layouts/partials/styles'
 import { FlatButton } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
+import { TextField } from 'redux-form-material-ui'
+import { change, Field, formValueSelector, getFormSyncErrors } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { prefix } from './lang'
-import OwnerItem from './OwnerItem'
 import './OwnersList.scss'
+import validate from './validate'
 
-function mapStateToProps (state) {
+const FIELD_NEW_ADDRESS = 'newOwnerAddress'
+
+function mapStateToProps (state, props) {
+  const selector = formValueSelector(props.meta.form)
+  const errors = getFormSyncErrors(props.meta.form)(state)
+  const newOwner = selector(state, FIELD_NEW_ADDRESS)
+
   return {
+    isDisabled: !!errors[ FIELD_NEW_ADDRESS ] || !newOwner,
+    newOwner,
     account: state.get(DUCK_SESSION).account,
   }
 }
 
-@connect(mapStateToProps, null)
+function mapDispatchToProps (dispatch, props) {
+  return {
+    resetForm: () => dispatch(change(props.meta.form, FIELD_NEW_ADDRESS, '')),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class OwnersList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    meta: PropTypes.object,
+    resetForm: PropTypes.func,
+    newOwner: PropTypes.string,
     fields: PropTypes.object,
+    isDisabled: PropTypes.bool,
   }
 
-  constructor () {
-    super(...arguments)
-    this.state = {
-      owners: [],
-    }
-  }
+  handleRemoveItem = (fields, index) => () => fields.remove(index)
 
-  handleRemoveItem = (index) => () => {
-    const newOwners = [...this.state.owners]
-    newOwners.splice(index, 1)
-    this.setState({
-      owners: newOwners,
+  handleAddItem = (fields) => () => {
+    fields.push({
+      address: this.props.newOwner,
     })
+    this.props.resetForm()
   }
 
-  handleAddItem = () => {
-    const owners = [
-      ...this.state.owners,
-      this.input.value,
-    ]
-    this.setState({ owners })
-    this.props.input.onChange(owners)
+  renderOwners = (fields) => (item, index) => {
+    const address = fields.get(index).address
+    return (
+      <div key={address}>
+        addr: {address}
+        <FlatButton
+          icon={<i className='material-icons'>delete</i>}
+          onTouchTap={this.handleRemoveItem(fields, index)}
+          fullWidth
+        />
+      </div>
+    )
   }
 
   render () {
-    const { account } = this.props
-    const { owners } = this.state
+    const { fields, isDisabled } = this.props
 
     return (
       <div>
-        <div>
-          <OwnerItem
-            title={<Translate value={`${prefix}.you`} />}
-            address={account}
-            isNoActions
-          />
+        {fields.getAll().toArray().map(this.renderOwners(fields))}
 
-          {owners.map((address, index) => (
-            <OwnerItem
-              address={address}
-              onRemove={this.handleRemoveItem(index)}
-            />
-          ))}
-        </div>
-
-        <div styleName='addOwner'>
-          <div styleName='addOwnerField'>
-            <TextField
-              ref={(input) => this.input = input}
-              name='owners.address'
-              floatingLabelText={<Translate value={`${prefix}.floatText`} />}
-            />
-          </div>
-          <div styleName='addOwnerButton'>
-            {/* TODO: update to field */}
-            <FlatButton
-              label={(
-                <span styleName='buttonLabel'>
-                <img styleName='buttonIcon' src={CirclePlusSVG} />
-                <Translate value='WalletAddEditDialog.addOwner' />
-              </span>
-              )}
-              onTouchTap={this.handleAddItem}
-              {...globalStyles.buttonWithIconStyles}
-            />
-          </div>
-        </div>
-
+        <Field
+          component={TextField}
+          name={FIELD_NEW_ADDRESS}
+          validate={validate}
+        />
+        <FlatButton
+          label='add'
+          onTouchTap={!isDisabled && this.handleAddItem(fields)}
+          disabled={isDisabled}
+        />
       </div>
     )
   }

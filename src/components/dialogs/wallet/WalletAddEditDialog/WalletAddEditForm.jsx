@@ -23,13 +23,11 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_WALLET_ADD_EDIT_DIALOG)
   const owners = selector(state, 'owners')
 
-  console.log('--WalletAddEditForm#mapStateToProps', owners)
-
   return {
     isTimeLocked: selector(state, 'isTimeLocked'),
+    is2FA: selector(state, 'is2FA'),
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
-    is2FA: selector(state, 'is2FA'),
   }
 }
 
@@ -40,6 +38,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 const onSubmit = (values, dispatch, props) => {
+  // owners
   const owners = values.get('owners')
   let ownersCollection = new OwnerCollection()
   ownersCollection = ownersCollection.add(new OwnerModel({
@@ -50,9 +49,25 @@ const onSubmit = (values, dispatch, props) => {
       address: owner.get('address'),
     }))
   })
+
+  // date
+  let releaseTime = new Date(0)
+  const isTimeLocked = values.get('isTimeLocked')
+  if (isTimeLocked) {
+    const date = values.get('timeLockDate')
+    const time = values.get('timeLockTime')
+    releaseTime = date.setHours(
+      time.getHours(),
+      time.getMinutes(),
+      time.getSeconds(),
+      time.getMilliseconds()
+    )
+  }
+
   return new MultisigWalletModel({
     ...props.initialValues.toJS(),
     ...values.toJS(),
+    releaseTime,
     owners: ownersCollection,
   })
 }
@@ -67,10 +82,6 @@ export default class WalletAddEditForm extends PureComponent {
     ownersCount: PropTypes.number,
     ...formPropTypes,
   }
-
-  handleTimeLocked = () => {}
-
-  handle2FA = () => {}
 
   render () {
     const { handleSubmit, pristine, valid, isTimeLocked, is2FA, ownersCount } = this.props
@@ -95,7 +106,6 @@ export default class WalletAddEditForm extends PureComponent {
               component={Toggle}
               name='isTimeLocked'
               label={<Translate value={`${prefix}.timeLocked`} />}
-              onToggle={this.handleTimeLocked}
               toggled={false}
             />
             <Translate styleName='description' value={`${prefix}.timeLockedDescription`} />
@@ -125,9 +135,7 @@ export default class WalletAddEditForm extends PureComponent {
               component={Toggle}
               name='is2FA'
               label={<Translate value={`${prefix}.twoFA`} />}
-              onToggle={this.handle2FA}
               toggled={false}
-              fullWidth
             />
             <Translate styleName='description' value={`${prefix}.twoFADescription`} />
           </div>
@@ -139,14 +147,10 @@ export default class WalletAddEditForm extends PureComponent {
             }
             {!is2FA && (
               <div styleName='ownersList'>
-                <Field
+                <FieldArray
                   component={OwnersList}
                   name='owners'
                 />
-                {/*<FieldArray*/}
-                  {/*component={OwnersList}*/}
-                  {/*name='owners'*/}
-                {/*/>*/}
               </div>
             )}
           </div>

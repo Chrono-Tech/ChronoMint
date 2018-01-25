@@ -46,9 +46,6 @@ function mapDispatchToProps (dispatch) {
     openCreate2FADialog: () => dispatch(modalsOpen({
       component: TwoFADialog,
     })),
-    openWalletList: () => dispatch(modalsOpen({
-      component: WalletSelectDialog,
-    })),
   }
 }
 
@@ -63,7 +60,6 @@ export default class WalletChanger extends PureComponent {
     switchWallet: PropTypes.func,
     account: PropTypes.string,
     openCreate2FADialog: PropTypes.func,
-    openWalletList: PropTypes.func,
   }
 
   handleShowSelectDialog = () => this.props.walletSelectDialog()
@@ -71,8 +67,6 @@ export default class WalletChanger extends PureComponent {
   handleSwitchWallet = () => this.props.switchWallet(this.props.mainWallet)
 
   handleCreate2FAWallet = () => this.props.openCreate2FADialog()
-
-  handleWalletList = () => this.props.openWalletList()
 
   renderMainWallet () {
     const { isMultisig, mainWallet, multisigWallet } = this.props
@@ -121,10 +115,6 @@ export default class WalletChanger extends PureComponent {
                     ? () => this.props.switchWallet(multisigWallet.selected())
                     : () => this.props.walletAddEditDialog()}
                   {...globalStyles.buttonWithIconStyles}
-                />
-                <FlatButton
-                  label='list'
-                  onTouchTap={this.handleWalletList}
                 />
                 <FlatButton
                   label='2fa'

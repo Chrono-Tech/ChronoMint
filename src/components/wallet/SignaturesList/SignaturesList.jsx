@@ -1,8 +1,8 @@
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import './SignaturesList.scss'
 import { Translate } from 'react-redux-i18n'
+import './SignaturesList.scss'
 
 export default class SignaturesList extends Component {
   static propTypes = {
@@ -11,16 +11,11 @@ export default class SignaturesList extends Component {
     input: PropTypes.object,
   }
 
-  handleSelect = (index) => () => {
-    this.props.input.onChange(index)
-    // this.props.onSelect(index)
-  }
+  handleSelect = (index) => () => this.props.input.onChange(index)
 
   render () {
     const { count, input } = this.props
     const chips = []
-
-    console.log('--SignaturesList#render', count, input.value)
 
     for (let i = 1; i <= count; i++) {
       chips.push((

@@ -15,8 +15,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   owners: new OwnerCollection(),
   requiredSignatures: 0,
   pendingTxList: new MultisigWalletPendingTxCollection(),
+  isTimeLocked: false,
   is2FA: false,
   addresses: new AddressesCollection(),
+  releaseTime: new Date(0),
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
@@ -77,19 +79,37 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.owners().items().map((items) => items.address())
   }
 
-  toAddEditFormJS () {
+  isTimeLocked () {
+    return this.get('isTimeLocked')
+  }
+
+  releaseTime () {
+    return this.get('releaseTime')
+  }
+
+  toAddFormJS () {
+    const time = this.releaseTime().getTime() === 0 ? new Date() : this.releaseTime()
+
     return {
-      isNew: this.isNew(),
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),
+      timeLockDate: time,
+      timeLockTime: time,
     }
   }
 
   toCreateWalletTx () {
-    return {
+    const data = {
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),
     }
+
+    if (this.isTimeLocked()) {
+      data.releaseTime = this.releaseTime()
+      data.isTimeLocked = true
+    }
+
+    return data
   }
 
   addresses (value) {

@@ -31,7 +31,7 @@ export default class WalletAddEditDialog extends PureComponent {
     return (
       <ModalDialog>
         <WalletAddEditForm
-          initialValues={this.props.wallet.toAddEditFormJS()}
+          initialValues={this.props.wallet.toAddFormJS()}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
       </ModalDialog>

@@ -1,9 +1,8 @@
-import WalletsItem from '@/components/dialogs/wallet/WalletSelectDialog/WalletsItem'
-import WalletDialogSVG from 'assets/img/icn-wallet-dialog.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'
 import classNames from 'classnames'
 import WithLoader, { isPending } from 'components/common/Preloader/WithLoader'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import WalletsItem from 'components/dialogs/wallet/WalletSelectDialog/WalletsItem'
 import { FloatingActionButton, FontIcon } from 'material-ui'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -20,13 +19,12 @@ import WalletAddEditDialog from '../WalletAddEditDialog/WalletAddEditDialog'
 import { prefix } from './lang'
 import './WalletSelectDialog.scss'
 
-// TODO @dkchv: implement filter
-const stubTimeLockedWallets = new MultisigWalletCollection()
-
 function mapStateToProps (state) {
+  const msWallets: MultisigWalletCollection = state.get(DUCK_MULTISIG_WALLET)
+
   return {
-    multisigWallet: state.get(DUCK_MULTISIG_WALLET),
-    timeLockedWallets: stubTimeLockedWallets,
+    multisigWallets: msWallets.activeWallets(),
+    timeLockedWallets: msWallets.timeLockedWallets(),
     account: state.get(DUCK_SESSION).account,
   }
 }
@@ -52,8 +50,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletSelectDialog extends PureComponent {
   static propTypes = {
-    multisigWallet: PropTypes.instanceOf(MultisigWalletCollection),
-    timeLockedWallets: PropTypes.instanceOf(MultisigWalletCollection),
+    multisigWallets: PropTypes.arrayOf(MultisigWalletModel),
+    timeLockedWallets: PropTypes.arrayOf(MultisigWalletModel),
     modalsClose: PropTypes.func,
     handleEditManagersDialog: PropTypes.func,
     walletAddEditDialog: PropTypes.func,
@@ -141,14 +139,18 @@ export default class WalletSelectDialog extends PureComponent {
 
   handleEdit = (wallet) => this.props.handleEditManagersDialog(wallet)
 
-  renderBlock (title, wallets: MultisigWalletCollection) {
+  renderBlock (title, wallets: Array) {
+
+    console.log('--WalletSelectDialog#renderBlock', wallets)
+
     return (
       <div styleName='block'>
         <div styleName='blockTitle'><Translate value={`${prefix}.${title}`} /></div>
         <div styleName='blockList'>
-          {wallets.size() > 0
-            ? wallets.items().map((wallet) => (
+          {wallets.length > 0
+            ? wallets.map((wallet) => (
               <WalletsItem
+                key={wallet.id()}
                 wallet={wallet}
                 onRemove={this.handleRemove}
                 onEdit={this.handleEdit}
@@ -162,7 +164,7 @@ export default class WalletSelectDialog extends PureComponent {
   }
 
   render () {
-    const { multisigWallet, timeLockedWallets } = this.props
+    const { multisigWallets, timeLockedWallets } = this.props
 
     return (
       <ModalDialog>
@@ -177,7 +179,7 @@ export default class WalletSelectDialog extends PureComponent {
             </div>
           </div>
           <div styleName='body'>
-            {this.renderBlock('activeWallets', multisigWallet)}
+            {this.renderBlock('activeWallets', multisigWallets)}
             {this.renderBlock('timeLockedWallets', timeLockedWallets)}
 
             {/*<Translate value={`${prefix}.${wallets.length > 0 ? 'yourWallets' : 'youHaveNoWallets'}`} />*/}
