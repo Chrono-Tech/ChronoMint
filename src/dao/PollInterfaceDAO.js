@@ -1,5 +1,7 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
+import { TIME } from 'redux/mainWallet/actions'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
@@ -36,7 +38,7 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
     let votes = new Immutable.Map()
     options.map((option, i) => {
       if (!values[ i ].isZero()) {
-        votes = votes.set(option.toString(), values[ i ])
+        votes = votes.set(option.toString(), new Amount(values[ i ] || 0, TIME))
       }
     })
     return votes

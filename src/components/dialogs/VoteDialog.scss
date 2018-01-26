@@ -1,7 +1,8 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
-.root {}
+.root {
+}
 
 .content {
   max-width: 928px;
@@ -186,22 +187,30 @@
     width: 120px;
   }
 
-  >.entryTitle {
+  > .entryTitle {
     font-size: 45px;
     line-height: 45px;
   }
 
-  >.entryLabel {
+  > .entryLabel {
     font-size: 14px;
     opacity: 0.6;
     line-height: 1.2em;
   }
 
-  >.entryValue {
+  > .entryValue {
     font-size: 17px;
+    :global {
+      .TokenValue__root, .TokenValue__fraction {
+        font-size: 17px;
+        color: $color-white;
+        text-shadow: $text-shadow-title;
+        opacity: 1;
+      }
+    }
   }
 
-  >.entryBadge {
+  > .entryBadge {
     @include badge($color-white, $badge-orange);
   }
 }

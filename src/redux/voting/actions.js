@@ -8,9 +8,6 @@ import PollDetailsModel from 'models/PollDetailsModel'
 import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { TIME } from 'redux/mainWallet/actions'
-import TokenModel from 'models/tokens/TokenModel'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -25,7 +22,7 @@ const PAGE_SIZE = 20
 // used to create unique ID for fetching models
 let counter = 1
 
-export const watchPoll = (notice: PollNoticeModel) => async (dispatch, getState) => {
+export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
     case IS_CREATED:
       dispatch(handlePollRemoved(notice.transactionHash()))
@@ -67,13 +64,12 @@ export const watchInitPolls = () => async (dispatch, getState) => {
     .on(EVENT_POLL_ENDED, callback)
     .on(EVENT_POLL_VOTED, callback)
 
-  return await Promise.all([
+  return Promise.all([
     dispatch(updateVoteLimit()),
   ])
 }
 
-export const createPoll = (poll: PollModel) => async (dispatch, getState) => {
-  const time: TokenModel = getState().get(DUCK_TOKENS).item(TIME)
+export const createPoll = (poll: PollModel) => async (dispatch) => {
   const stub = new PollDetailsModel({
     id: `stub_${--counter}`,
     poll: poll.id(`stub_${counter}`),
@@ -82,7 +78,7 @@ export const createPoll = (poll: PollModel) => async (dispatch, getState) => {
   try {
     dispatch(handlePollCreated(stub))
     const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll, time)
+    const transactionHash = await dao.createPoll(poll)
     dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
@@ -162,5 +158,5 @@ export const getNextPage = () => async (dispatch, getState) => {
   const dao = await contractsManagerDAO.getVotingManagerDAO()
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
-  return await dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
+  return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
 }

@@ -803,7 +803,6 @@ export default {
         new: 'New',
         timeHoldersAlreadyVoted: 'percent of TIME received',
         optionNumber: 'Option #%{number}',
-        numberVotes: '%{number} TIME',
         pollOptions: 'Poll options',
         idxNumber: '#%{number}',
       },
