@@ -26,7 +26,7 @@ export const NEM_MAINNET_NODE = new NemMiddlewareNode({
     symbol: 'XMIN',
   }],
   api: axios.create({
-    baseURL: 'https://test-4.chronobank.io',
+    baseURL: 'https://middleware-nem-mainnet-rest.chronobank.io',
     timeout: 30000,
   }),
   socket: {
@@ -65,7 +65,7 @@ export const NEM_TESTNET_NODE = new NemMiddlewareNode({
     symbol: 'XMIN',
   }],
   api: axios.create({
-    baseURL: 'https://test-5.chronobank.io',
+    baseURL: 'https://middleware-nem-testnet-rest.chronobank.io',
     timeout: 30000,
   }),
   socket: {

@@ -30,9 +30,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
           this.trace('NEM Tx', data)
-          if (data.recipient === address) {
-            this.emit('tx', createTxModel(data, address))
-          }
+          this.emit('tx', createTxModel(data, address))
         })
       })
     } catch (e) {
@@ -87,15 +85,10 @@ export default class NemMiddlewareNode extends NemAbstractNode {
   async send (account, rawtx) {
     try {
       const { data } = await this._api.post('tx/send', rawtx)
-      const model = createTxModel(data.transaction, account)
-      setImmediate(() => {
-        this.emit('tx', model)
-        // this.emit('balance', new NemBalance({
-        //   address: account,
-        //   balance: readXemBalance(balance),
-        //   mosaics: readMosaicsBalances(mosaics),
-        // }))
-      })
+      // const model = createTxModel(data.transaction, account)
+      // setImmediate(() => {
+      //   this.emit('tx', model)
+      // })
       return data
     } catch (e) {
       this.trace(`send transaction failed`, e)
@@ -106,7 +99,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
 
 function createTxModel (tx, account): NemTx {
   return new NemTx({
-    txHash: tx.transactionHash,
+    txHash: tx.hash,
     time: new Date(nem.utils.format.nemDate(tx.timeStamp)).getTime() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
     from: tx.sender,
     signer: tx.signer,
@@ -120,6 +113,7 @@ function createTxModel (tx, account): NemTx {
         ...t,
         [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
       }), {}),
+    unconfirmed: tx.unconfirmed || false,
   })
 }
 
