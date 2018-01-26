@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
+import { TIME } from 'redux/mainWallet/actions'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import PollModel from './PollModel'
+import Amount from './Amount'
 
 export default class PollDetailsModel extends abstractFetchingModel({
   id: null,
@@ -44,8 +46,9 @@ export default class PollDetailsModel extends abstractFetchingModel({
   voteEntries () {
     const options = this.get('poll').options()
     const votes = this.get('votes')
-    return options.zipWith((option) => {
-      return { option, count: votes.get(option, new BigNumber(0)) }
+
+    return options.map((option, key) => {
+      return { option, count: votes.get(`${key + 1}`, new Amount(0, TIME)) }
     })
   }
 
@@ -54,8 +57,8 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const endDate = poll.deadline()
     const published = poll.published()
     const voteLimitInTIME = poll.voteLimitInTIME()
-    const maxOptionTime = this.votes().max((a, b) => a > b)
-    const received = this.votes().reduce((total, v) => total.add(v), new BigNumber(0))
+    const maxOptionTime = this.votes().max((a, b) => a.gt(b))
+    const received = new Amount(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)), TIME)
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = this.shareholdersCount()
     const percents = (maxOptionTime || new BigNumber(0)).mul(100).div(voteLimitInTIME).round(0)
@@ -64,7 +67,6 @@ export default class PollDetailsModel extends abstractFetchingModel({
     return {
       endDate,
       published,
-      voteLimit: voteLimitInTIME,
       voteLimitInTIME,
       options: poll.options(),
       files: this.files(),

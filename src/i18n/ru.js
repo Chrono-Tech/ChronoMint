@@ -795,7 +795,6 @@ export default {
         new: 'Новое',
         timeHoldersAlreadyVoted: 'процентов TIME получено',
         optionNumber: 'Вариант №%{number}',
-        numberVotes: '%{number} TIME',
         pollOptions: 'Варианты голосования',
         idxNumber: '№%{number}',
       },

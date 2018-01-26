@@ -16,6 +16,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import PollDetailsModel from 'models/PollDetailsModel'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import './Poll.scss'
 
 function prefix (token) {
@@ -87,7 +88,7 @@ export default class Poll extends PureComponent {
   }
 
   render () {
-    const { model, isCBE, timeToken } = this.props
+    const { model, isCBE } = this.props
     const poll = model.poll()
 
     const details = model.details()
@@ -134,7 +135,7 @@ export default class Poll extends PureComponent {
                         fillFrom: '#311b92',
                         fillTo: '#d500f9',
                       },
-                      { value: details.voteLimit.minus(details.maxOptionTime).toNumber(), fill: 'transparent' },
+                      { value: details.voteLimitInTIME.minus(details.maxOptionTime).toNumber(), fill: 'transparent' },
                     ]}
                   />
                 </div>
@@ -143,17 +144,15 @@ export default class Poll extends PureComponent {
                 <div styleName='entry entryPublished'>
                   <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
                   <div styleName='entryValue'>
-                    {details.published && <Moment date={details.published} format={SHORT_DATE} /> || (
-                      <i><Translate value={prefix('no')} /></i>
-                    )}
+                    {details.published && <Moment date={details.published} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
                   </div>
                 </div>
                 <div styleName='entry entryFinished'>
                   <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
                   <div styleName='entryValue'>
-                    {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (
-                      <i><Translate value={prefix('no')} /></i>
-                    )}
+                    {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
                   </div>
                 </div>
                 <div styleName='entry entryRequired'>
@@ -163,7 +162,7 @@ export default class Poll extends PureComponent {
                       ? (<i>Unlimited</i>)
                       : (
                         <span>{this.props.timeToken.isFetched()
-                          ? `${timeToken.removeDecimals(details.voteLimit)} TIME`
+                          ? <TokenValue noRenderPrice value={details.voteLimitInTIME} />
                           : <Preloader />
                         }
                         </span>)
@@ -176,7 +175,7 @@ export default class Poll extends PureComponent {
                     <span>
                       {
                         this.props.timeToken.isFetched()
-                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          ? <TokenValue noRenderPrice value={details.received} />
                           : <Preloader />
                       }
                     </span>
@@ -185,12 +184,14 @@ export default class Poll extends PureComponent {
                 <div styleName='entry entryVariants'>
                   <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
                   <div styleName='entryValue'>{details.options.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}</div>
+                    <i><Translate value={prefix('no')} /></i>)}
+                  </div>
                 </div>
                 <div styleName='entry entryDocuments'>
                   <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
                   <div styleName='entryValue'>{details.files.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}</div>
+                    <i><Translate value={prefix('no')} /></i>)}
+                  </div>
                 </div>
               </div>
             </div>

@@ -17,6 +17,8 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
+import Amount from 'models/Amount'
+import { TIME } from 'redux/mainWallet/actions'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -46,7 +48,7 @@ function mapDispatchToProps () {
     onSubmit: (values, dispatch, props) => {
       const poll = new PollModel({
         ...values.toJS(),
-        voteLimitInTIME: props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))),
+        voteLimitInTIME: new Amount(props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))), TIME),
         options: new Immutable.List(values.get('options')),
       })
       dispatch(modalsClose())

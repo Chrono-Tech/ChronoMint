@@ -2,17 +2,14 @@ import votingService from 'services/VotingService'
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import PollNoticeModel, {
-  IS_CREATED,
-  IS_REMOVED,
-  IS_UPDATED,
-} from 'models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED, } from 'models/notices/PollNoticeModel'
 import PollModel from 'models/PollModel'
 import ipfs from 'utils/IPFS'
 import PollDetailsModel from 'models/PollDetailsModel'
 import FileModel from 'models/FileSelect/FileModel'
 import VotingCollection from 'models/voting/VotingCollection'
-import TokenModel from 'models/tokens/TokenModel'
+import Amount from 'models/Amount'
+import { TIME } from 'redux/mainWallet/actions'
 import { MultiEventsHistoryABI, VotingManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
@@ -29,16 +26,16 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     super(VotingManagerABI, at, MultiEventsHistoryABI)
   }
 
-  async getVoteLimit () {
-    return await this._call('getVoteLimit')
+  getVoteLimit (): Promise {
+    return this._call('getVoteLimit')
   }
 
-  async getPollsPaginated (startIndex, pageSize, account: string) {
+  async getPollsPaginated (startIndex, pageSize, account: string): Promise {
     const addresses = await this._call('getPollsPaginated', [ startIndex, pageSize ])
-    return await this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
+    return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
-  async createPoll (poll: PollModel, timeToken: TokenModel) {
+  async createPoll (poll: PollModel) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     let hash
@@ -57,12 +54,12 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     const voteLimitInTIME = poll.voteLimitInTIME()
 
     const summary = poll.txSummary()
-    summary.voteLimit = timeToken.removeDecimals(voteLimitInTIME)
+    summary.voteLimitInTIME = new Amount(voteLimitInTIME, TIME)
 
     const tx = await this._tx(TX_CREATE_POLL, [
       poll.options().size,
       this._c.ipfsHashToBytes32(hash),
-      voteLimitInTIME,
+      new BigNumber(voteLimitInTIME),
       poll.deadline().getTime(),
     ], summary)
     return tx.tx
@@ -114,7 +111,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             votes,
             title,
             description,
-            voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : voteLimits[ i ],
+            voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], TIME),
             deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
             published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
             status: statuses[ i ],
@@ -170,15 +167,15 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     callback(notice)
   }
 
-  async watchCreated (callback, account) {
+  watchCreated (callback, account) {
     return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
   }
 
-  async watchUpdated (callback) {
+  watchUpdated (callback) {
     return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
-  async watchRemoved (callback) {
+  watchRemoved (callback) {
     return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
   }
 }

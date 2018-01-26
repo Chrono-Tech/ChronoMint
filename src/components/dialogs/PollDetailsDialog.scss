@@ -131,6 +131,14 @@
   margin-left: 8px;
   display: inline-block;
   vertical-align: top;
+  :global {
+    .TokenValue__root, .TokenValue__fraction {
+      font-size: 12px;
+      line-height: 15px;
+      color: $color-white;
+      opacity: 1;
+    }
+  }
 }
 
 .layer {
@@ -197,6 +205,14 @@
 
 .entryValue {
   font-size: 17px;
+  :global {
+    .TokenValue__root, .TokenValue__fraction {
+      font-size: 17px;
+      color: $color-white;
+      text-shadow: $text-shadow-title;
+      opacity: 1;
+    }
+  }
 }
 
 .entryBadge {
