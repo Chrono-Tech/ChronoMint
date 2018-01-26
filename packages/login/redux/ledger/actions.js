@@ -46,9 +46,3 @@ export const fetchAccount = () => async (dispatch) => {
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())
 }
-
-export const loginLedger = () => {
-  const providerURL = networkService.getProviderURL()
-  ledgerProvider.setupAndStart(providerURL)
-  web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
-}

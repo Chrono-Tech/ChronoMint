@@ -6,19 +6,10 @@ import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import EthereumEngine from './EthereumEngine'
 import { byEthereumNetwork } from './NetworkProvider'
+import HardwareWallet from './HardwareWallet'
 
 const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
 const LEDGER_TTL = 1500
-
-class LedgerWallet {
-  constructor (address) {
-    this._address = address
-  }
-
-  getAddressString () {
-    return this._address
-  }
-}
 
 class LedgerProvider extends EventEmitter {
   constructor () {
@@ -119,10 +110,10 @@ class LedgerProvider extends EventEmitter {
         }
         clearInterval(timer)
         this._ledger.getAccounts((error, accounts) => {
-          this._wallet = new LedgerWallet(accounts[0])
           if (error) {
             resolve(null)
           }
+          this._wallet = new HardwareWallet(accounts[0])
           resolve(accounts)
         })
       }, 200)

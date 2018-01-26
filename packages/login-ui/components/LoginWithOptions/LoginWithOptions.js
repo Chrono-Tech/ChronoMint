@@ -196,7 +196,8 @@ class LoginWithOptions extends PureComponent {
     try {
       trezorProvider.setupAndStart(networkService.getProviderURL())
       web3Provider.reinit(trezorProvider.getWeb3(), trezorProvider.getProvider())
-      this.props.onLogin()
+      const provider = trezorProvider.getNetworkProvider(networkService.getProviderSettings())
+      this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
     }
