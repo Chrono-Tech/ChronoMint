@@ -15,6 +15,7 @@ export class NemTx {
     fee,
     credited,
     mosaics,
+    unconfirmed,
   }) {
     this.txHash = txHash
     this.time = time
@@ -25,6 +26,7 @@ export class NemTx {
     this.fee = fee
     this.credited = credited
     this.mosaics = mosaics
+    this.unconfirmed = unconfirmed
     Object.freeze(this)
   }
 }
