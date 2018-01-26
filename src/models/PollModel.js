@@ -2,6 +2,7 @@ import Immutable from 'immutable'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({
+  id: null,
   hash: null,
   owner: null,
   title: '',
@@ -9,11 +10,13 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new Immutable.List(['Support', 'Decline']),
+  options: new Immutable.List([ 'Support', 'Decline' ]),
   files: null, // hash
   active: false,
   status: false,
   isTransaction: false,
+  hasMember: false,
+  memberOption: null,
 }) {
   constructor (data = {}) {
     super({
@@ -21,6 +24,10 @@ class PollModel extends abstractFetchingModel({
       published: data.published || new Date(new Date().getTime()),
       deadline: data.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
     })
+  }
+
+  id (value) {
+    return this._getSet('id', value)
   }
 
   hash () {
@@ -43,8 +50,8 @@ class PollModel extends abstractFetchingModel({
     return this.get('files')
   }
 
-  active () {
-    return this.get('active')
+  active (value) {
+    return this._getSet('active', value)
   }
 
   status () {
@@ -61,6 +68,14 @@ class PollModel extends abstractFetchingModel({
 
   deadline () {
     return this.get('deadline')
+  }
+
+  hasMember () {
+    return this.get('hasMember')
+  }
+
+  memberOption () {
+    return this.get('memberOption')
   }
 
   txSummary () {

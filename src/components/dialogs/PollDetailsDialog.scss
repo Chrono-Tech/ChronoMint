@@ -47,6 +47,9 @@
     .layerChart {
       margin-bottom: 10px;
       height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .layerEntries {
@@ -135,6 +138,9 @@
 }
 
 .layerChart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .chart {
@@ -174,10 +180,7 @@
 }
 
 .entryTotal {
-  left: 50%;
-  top: 50%;
   text-align: center;
-  transform: translate(-50%, -50%);
   width: 120px;
 }
 

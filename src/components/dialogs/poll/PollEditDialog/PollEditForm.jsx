@@ -1,3 +1,4 @@
+import moment from 'moment'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
@@ -12,9 +13,10 @@ import { Translate } from 'react-redux-i18n'
 import { DatePicker, TextField } from 'redux-form-material-ui'
 import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_I18N } from 'redux/configureStore'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { createPoll, DUCK_VOTING, updatePoll } from 'redux/voting/actions'
+import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -31,27 +33,24 @@ function mapStateToProps (state) {
     options: selector(state, 'options'),
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
+    timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
-      deadline: new Date(),
+      deadline: moment().add(1, 'day').toDate(),
     },
   }
 }
 
-function mapDispatchToProps (dispatch, props) {
+function mapDispatchToProps () {
   return {
-    onSubmit: (values) => {
+    onSubmit: (values, dispatch, props) => {
       const poll = new PollModel({
         ...values.toJS(),
-        voteLimitInTIME: new BigNumber(values.get('voteLimitInTIME')),
+        voteLimitInTIME: props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))),
         options: new Immutable.List(values.get('options')),
       })
       dispatch(modalsClose())
-      if (props.isModify) {
-        dispatch(updatePoll(poll))
-      } else {
-        dispatch(createPoll(poll))
-      }
+      dispatch(createPoll(poll))
     },
   }
 }

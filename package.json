@@ -78,7 +78,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.44",
+    "chronobank-smart-contracts": "https://github.com/ChronoBank/SmartContracts#release/release-1.1.45",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
@@ -152,7 +152,7 @@
     "bridge": "cd node_modules/ethereum-bridge && mkdir -p database && node bridge.js",
     "contracts:compile": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js compile --all",
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
-    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console",
+    "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console --verbose-rpc",
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },

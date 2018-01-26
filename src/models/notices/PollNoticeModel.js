@@ -39,8 +39,8 @@ export default class PollNoticeModel extends abstractNoticeModel({
     return this.get('pollId')
   }
 
-  poll (): PollDetailsModel {
-    return this.get('poll')
+  poll (value): PollDetailsModel {
+    return this._getSet('poll', value)
   }
 
   message () {
