@@ -489,6 +489,7 @@ export default {
     moreThanOrEqual: 'Должно быть больше или равно %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
     invalidLatinString: 'Строка должна иметь только латинские символы (A-z)',
+    mustBeUnique: 'Значение должно быть уникальным',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Невозможно отправить токены самому себе',
