@@ -21,11 +21,11 @@ export default function validate (values, props) {
   const ethBalance = ethToken.removeDecimals(props.exchange.ethBalance())
 
   if (props.isBuy) {
-    buyErrors.add(validator.lowerThan(values.get('buy'), assetBalance.toNumber()))
-    sellErrors.add(validator.lowerThan(values.get('sell'), userEthBalance.toNumber()))
+    buyErrors.add(validator.lowerThan(values.get('buy'), assetBalance.toNumber(), true))
+    sellErrors.add(validator.lowerThan(values.get('sell'), userEthBalance.toNumber(), true))
   } else {
-    buyErrors.add(validator.lowerThan(values.get('buy'), userExchangeTokenBalance.toNumber()))
-    sellErrors.add(validator.lowerThan(values.get('sell'), ethBalance.toNumber()))
+    buyErrors.add(validator.lowerThan(values.get('buy'), userExchangeTokenBalance.toNumber(), true))
+    sellErrors.add(validator.lowerThan(values.get('sell'), ethBalance.toNumber(), true))
   }
 
   return {
