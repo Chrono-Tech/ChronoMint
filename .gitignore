@@ -12,7 +12,6 @@ build/
 report/
 .truffle-solidity-loader
 package-lock.json
-yarn.lock
 build.zip
 cert.pem
 key.pem

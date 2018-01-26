@@ -15,7 +15,6 @@ export const initTrezor = () => async (dispatch) => {
 
 export const startTrezorSync = () => async (dispatch) => {
   await dispatch(initTrezor())
-  return trezorProvider.sync()
 }
 
 export const stopTrezorSync = (isReset = false) => (dispatch) => {
@@ -41,10 +40,4 @@ export const fetchAccount = () => async (dispatch) => {
   dispatch({ type: TREZOR_FETCHED, isFetched: true })
   // we do not need to watching eth app on login
   dispatch(stopTrezorSync())
-}
-
-export const loginTrezor = () => {
-  const providerURL = networkService.getProviderURL()
-  trezorProvider.setupAndStart(providerURL)
-  web3Provider.reinit(trezorProvider.getWeb3(), trezorProvider.getProvider())
 }
