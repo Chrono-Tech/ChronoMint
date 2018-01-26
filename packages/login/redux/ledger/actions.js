@@ -17,8 +17,9 @@ export const initLedger = () => async (dispatch) => {
 
 export const startLedgerSync = () => async (dispatch) => {
   await dispatch(initLedger())
-  ledgerProvider.on('connection', (isETHAppOpened) => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
-  return ledgerProvider.sync()
+  return ledgerProvider
+    .on('connection', (isETHAppOpened) => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
+    .sync()
 }
 
 export const stopLedgerSync = (isReset = false) => (dispatch) => {

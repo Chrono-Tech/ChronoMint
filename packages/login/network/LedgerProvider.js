@@ -4,9 +4,21 @@ import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
+import EthereumEngine from './EthereumEngine'
+import { byEthereumNetwork } from './NetworkProvider'
 
 const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
 const LEDGER_TTL = 1500
+
+class LedgerWallet {
+  constructor (address) {
+    this._address = address
+  }
+
+  getAddressString () {
+    return this._address
+  }
+}
 
 class LedgerProvider extends EventEmitter {
   constructor () {
@@ -15,6 +27,7 @@ class LedgerProvider extends EventEmitter {
     this._ledgerSubprovider = null
     this._ledger = null
     this._engine = null
+    this._wallet = null
 
     this._isInited = false
     this._timer = null
@@ -58,7 +71,7 @@ class LedgerProvider extends EventEmitter {
     return this._isETHOpened
   }
 
-  _getAppConfig () {
+  _getAppConfig (): Promise {
     // we check for version for define is ETH opened.
     // If its true we get version number in callback
     return new Promise((resolve) => {
@@ -105,11 +118,12 @@ class LedgerProvider extends EventEmitter {
           return
         }
         clearInterval(timer)
-        this._ledger.getAccounts((error, data) => {
+        this._ledger.getAccounts((error, accounts) => {
+          this._wallet = new LedgerWallet(accounts[0])
           if (error) {
             resolve(null)
           }
-          resolve(data)
+          resolve(accounts)
         })
       }, 200)
     })
@@ -127,6 +141,13 @@ class LedgerProvider extends EventEmitter {
 
   getProvider () {
     return this._engine
+  }
+
+  getNetworkProvider ({ url, network } = {}) {
+    return {
+      networkCode: byEthereumNetwork(network),
+      ethereum: new EthereumEngine(this._wallet, network, url, this._engine),
+    }
   }
 }
 

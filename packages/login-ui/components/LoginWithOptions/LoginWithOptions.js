@@ -183,7 +183,8 @@ class LoginWithOptions extends PureComponent {
     try {
       ledgerProvider.setupAndStart(networkService.getProviderURL())
       web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
-      this.props.onLogin()
+      const provider = ledgerProvider.getNetworkProvider(networkService.getProviderSettings())
+      this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
     }
