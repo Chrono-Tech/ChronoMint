@@ -58,7 +58,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
 export const fetchAssetDeposit = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const deposit = await assetHolderDAO.getDeposit(account)
+  const deposit = await assetHolderDAO.getDeposit(token.address(), account)
   const asset = getState().get(DUCK_ASSETS_HOLDER).assets().item(token.address()).deposit(new Amount(
     deposit,
     token.symbol(),
@@ -116,18 +116,18 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount) => async () => {
+export const depositAsset = (amount: Amount, token: TokenModel) => async () => {
   try {
-    await assetHolderDAO.deposit(amount)
+    await assetHolderDAO.deposit(token.address(), amount)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)
   }
 }
 
-export const withdrawAsset = (amount: Amount) => async () => {
+export const withdrawAsset = (amount: Amount, token: TokenModel) => async () => {
   try {
-    await assetHolderDAO.withdraw(amount)
+    await assetHolderDAO.withdraw(token.address(), amount)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)
