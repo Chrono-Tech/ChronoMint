@@ -32,7 +32,7 @@ class NetworkService extends EventEmitter {
     }
 
     if (!account || !provider || !network) {
-      throw new Error('Wrong session arguments')
+      throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
     const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
     if (!accounts.includes(account)) {

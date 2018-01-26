@@ -1,7 +1,6 @@
 import AbstractProvider from './AbstractProvider'
 import type EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
-import type NemEngine from './NemEngine'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -10,7 +9,7 @@ export class EthereumProvider extends AbstractProvider {
     this._id = 'Ethereum'
   }
 
-  setEngine (ethEngine: EthereumEngine, nemEngine: NemEngine) {
+  setEngine (ethEngine: EthereumEngine, nemEngine) {
     if (this._isInited) {
       this.unsubscribe(this._engine, this._nemEngine)
     }
@@ -20,21 +19,21 @@ export class EthereumProvider extends AbstractProvider {
     this._isInited = true
   }
 
-  subscribe (ethEngine: EthereumEngine, nemEngine: NemEngine) {
+  subscribe (ethEngine: EthereumEngine, nemEngine) {
     const node = this._selectNode(ethEngine)
 
     node.emit('subscribe', {
       ethAddress: ethEngine.getAddress(),
-      nemAddress: nemEngine.getAddress(),
+      nemAddress: nemEngine && nemEngine.getAddress(),
     })
     return node
   }
 
-  unsubscribe (ethEngine: EthereumEngine, nemEngine: NemEngine) {
+  unsubscribe (ethEngine: EthereumEngine, nemEngine) {
     const node = this._selectNode(ethEngine)
     node.emit('unsubscribe', {
       ethAddress: ethEngine.getAddress(),
-      nemAddress: nemEngine.getAddress(),
+      nemAddress: nemEngine && nemEngine.getAddress(),
     })
     return node
   }
