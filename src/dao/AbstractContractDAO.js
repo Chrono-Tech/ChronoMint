@@ -567,7 +567,7 @@ export default class AbstractContractDAO extends EventEmitter {
     ])
 
     const gasPriceBN = new BigNumber(gasPrice)
-    const gasLimit = process.env.NODE_ENV === 'development' ? Math.min(DEFAULT_GAS, estimatedGas * 2) : estimatedGas + 1
+    const gasLimit = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : estimatedGas + 1
     const gasFee = gasPriceBN.mul(gasLimit).mul(feeMultiplier)
 
     return { gasLimit, gasFee }
