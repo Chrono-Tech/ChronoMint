@@ -235,10 +235,10 @@ export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
   }
 }
 
-export const multisigTransfer = (wallet, token, amount, recipient) => async () => {
+export const multisigTransfer = (wallet, token, amount, recipient, feeMultiplier) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
-    await dao.transfer(wallet, token, amount, recipient)
+    await dao.transfer(wallet, token, amount, recipient, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('ms transfer error', e.message)
