@@ -78,7 +78,9 @@ export default class InfoPartial extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
     isMultisig: PropTypes.bool,
     balances: PropTypes.instanceOf(BalancesCollection),
-    visibleBalances: PropTypes.arrayOf(BalanceModel),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     isPending: PropTypes.bool,
   }
 

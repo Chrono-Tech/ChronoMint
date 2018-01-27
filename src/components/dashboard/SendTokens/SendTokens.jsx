@@ -37,7 +37,9 @@ function mapStateToProps (state) {
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
-    visibleBalances: PropTypes.arrayOf(BalanceModel),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,

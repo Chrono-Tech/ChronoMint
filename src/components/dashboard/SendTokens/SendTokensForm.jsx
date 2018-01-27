@@ -83,7 +83,9 @@ export default class SendTokensForm extends PureComponent {
       PropTypes.instanceOf(MainWallet),
       PropTypes.instanceOf(MultisigWalletModel),
     ]),
-    visibleBalances: PropTypes.arrayOf(BalanceModel),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
