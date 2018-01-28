@@ -50,6 +50,10 @@ export default class OwnersList extends PureComponent {
     this.props.resetForm()
   }
 
+  validateOwner = (address) => {
+    return validate(address, this.props.fields)
+  }
+
   renderOwners = (fields) => (item, index) => {
     return (
       <OwnerItem
@@ -80,7 +84,7 @@ export default class OwnersList extends PureComponent {
               hintText={<Translate value={`${prefix}.floatText`} />}
               hintStyle={globalStyles.textField.hintStyle}
               name={FIELD_NEW_ADDRESS}
-              validate={validate}
+              validate={this.validateOwner}
               fullWidth
             />
           </div>
