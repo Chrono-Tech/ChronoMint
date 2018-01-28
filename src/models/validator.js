@@ -33,6 +33,14 @@ export const nemAddress = (value, required = true, blockchain = 'NEM') => {
   return null
 }
 
+export const uniqueAddress = (address, addressList) => {
+  if (!Array.isArray(addressList) || !addressList.length) {
+    return null
+  }
+
+  return addressList.includes(address) ? { value: 'errors.duplicateAddress', address } : null
+}
+
 export const name = (value, required = true) => {
   if (value && !/^[A-z]/.test(value)) {
     return 'errors.invalidLatinString'
@@ -122,6 +130,7 @@ export default {
   address,
   name,
   email,
+  uniqueAddress,
   url,
   positiveInt,
   between,

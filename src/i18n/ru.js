@@ -481,6 +481,7 @@ export default {
     invalidLength: 'Не меньше 3-х символов',
     invalidMaxLength: 'Не более 32-х символов',
     invalidAddress: 'Некорректный %{blockchain} адрес',
+    duplicateAddress: 'Адрес %{address} уже существует',
     validIpfsFileList: 'Некорректный список файлов',
     between: 'Должно быть между %{min} и %{max}',
     lowerThan: 'Должно быть меньше чем %{limit}',
