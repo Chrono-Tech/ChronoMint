@@ -8,6 +8,7 @@ class ProfileModel extends abstractModel({
   url: null,
   icon: null,
   tokens: new Immutable.Set(),
+  version: null,
 }) {
   constructor (data = {}) {
     data = data || {}
@@ -15,6 +16,10 @@ class ProfileModel extends abstractModel({
       ...data,
       tokens: new Immutable.Set(data.tokens || undefined),
     })
+  }
+
+  version (value) {
+    return this._getSet('version', value)
   }
 
   name () {

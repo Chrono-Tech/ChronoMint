@@ -20,22 +20,30 @@ export default class TokenRow extends PureComponent {
     profile: PropTypes.instanceOf(ProfileModel),
   }
 
-  handleClick = () => this.props.onClick(this.props.token, !this.props.isSelected)
+  constructor (props) {
+    super(props)
+    const isMandatory = MANDATORY_TOKENS.includes(props.token.symbol())
+    this.state = {
+      isMandatory,
+    }
+  }
 
-  renderCheckbox = ({ isSelected }) => {
-    const isMandatory = MANDATORY_TOKENS.includes(this.props.token.symbol())
-    return <Checkbox checked={isSelected || isMandatory } disabled={isMandatory} />
+  handleClick = () => !this.state.isMandatory && this.props.onClick(this.props.token, !this.props.isSelected)
+
+  renderCheckbox = ({ isSelected, isMandatory }) => {
+    return <Checkbox checked={isSelected || isMandatory} disabled={isMandatory} />
   }
 
   render () {
     const { isSelected, token, balances } = this.props
     const symbol = token.symbol()
     const balance = balances.item(token.id())
+    const { isMandatory } = this.state
 
     return (
       <div
         key={token.id()}
-        styleName={classnames('row', { selected: isSelected })}
+        styleName={classnames('row', { selected: isSelected || isMandatory })}
         onTouchTap={this.handleClick}
       >
         <div styleName='cell'>
@@ -49,7 +57,11 @@ export default class TokenRow extends PureComponent {
           <div><TokenValue value={balance.amount()} /></div>
         </div>
         <div styleName='cell'>
-          <WithLoader showLoader={isFetching} payload={token} isSelected={this.props.isSelected}>
+          <WithLoader
+            showLoader={isFetching}
+            payload={token}
+            isSelected={this.props.isSelected}
+            isMandatory={isMandatory}>
             {this.renderCheckbox}
           </WithLoader>
         </div>

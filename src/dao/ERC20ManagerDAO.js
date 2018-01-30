@@ -10,7 +10,7 @@ export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
 export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
-export const DEFAULT_TOKENS = [ 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
+export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'

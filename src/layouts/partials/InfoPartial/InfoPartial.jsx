@@ -13,7 +13,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION, rebuildProfileTokens } from 'redux/session/actions'
 import ProfileModel from 'models/ProfileModel'
 import { checkToken } from 'components/dialogs/tokens/AddCurrencyDialog'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
@@ -94,6 +94,12 @@ export default class InfoPartial extends PureComponent {
     window.addEventListener('resize', this.handleResize)
   }
 
+  componentWillReceiveProps (newProps) {
+    if (!newProps.profile.tokens().equals(this.props.profile.tokens())) {
+      this.handleResize()
+    }
+  }
+
   componentWillUnmount () {
     window.removeEventListener('resize', this.handleResize)
   }
@@ -108,11 +114,11 @@ export default class InfoPartial extends PureComponent {
     this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
-  handleSlide = (diff) => {
+  handleSlide = (profileTokens) => (diff) => {
     const { balances, tokens } = this.props
     const { visibleCount } = this.state
 
-    const filteredBalances = balances.filter(this.filterCallback)
+    const filteredBalances = balances.filter(this.filterCallback(profileTokens))
     const count = filteredBalances.toArray().length + tokens.leftToFetch()
     const total = count + 1 <= visibleCount ? count + 1 : count
     const cells = (total % visibleCount === 0)
@@ -133,19 +139,20 @@ export default class InfoPartial extends PureComponent {
     })
   }
 
-  filterCallback = (balance) => {
-    const { tokens, profile } = this.props
+  filterCallback = (profileTokens) => (balance) => {
+    const { tokens } = this.props
     const token = tokens.item(balance.symbol())
-    let profileToken
-    profile.tokens().map((item) => {
-      if (token && checkToken(token, item)) {
-        profileToken = item
-      }
-    })
 
     if (MANDATORY_TOKENS.includes(token.symbol())) {
       return true
     }
+
+    let profileToken
+    profileTokens.map((item) => {
+      if (token && checkToken(token, item)) {
+        profileToken = item
+      }
+    })
 
     return profileToken ? profileToken.show : !token.isOptional()
   }
@@ -191,11 +198,12 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens, isPending } = this.props
+    const { balances, isMultisig, tokens, isPending, profile } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
-
-    const filteredBalances = balances.filter(this.filterCallback)
+    let profileTokens = rebuildProfileTokens(profile, tokens)
+    const handleSlide = this.handleSlide(profileTokens)
+    const filteredBalances = balances.filter(this.filterCallback(profileTokens))
     let slidesCount = filteredBalances.toArray().length
     let withBigButton = false
     if (!isMultisig) {
@@ -233,13 +241,13 @@ export default class InfoPartial extends PureComponent {
           direction='left'
           show={showArrows}
           count={-visibleCount}
-          onClick={this.handleSlide}
+          onClick={handleSlide}
         />
         <SlideArrow
           direction='right'
           show={showArrows}
           count={visibleCount}
-          onClick={this.handleSlide}
+          onClick={handleSlide}
         />
       </div>
     )
