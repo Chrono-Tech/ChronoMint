@@ -50,15 +50,19 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
     for (const i in hashes) {
       if (hashes.hasOwnProperty(i)) {
-        const model = new OperationModel({
-          id: `P-${hashes[i]}`,
-          tx: txs[i].set('timestamp', timestampArr[i].toNumber() * 1000),
-          remained: yetNeededArr[i].toNumber(),
-          // number of 1 bits in binary representation
-          completed: ownersDoneArr[i].toNumber().toString(2).split('1').length - 1,
-          isConfirmed: this._isConfirmed(ownersDoneArr[i]),
-        })
-        map = map.set(model.originId(), model)
+        const tx = txs[i]
+        // TODO @ipavlenko: For the reason unknown we may get null here
+        if (tx !== null) {
+          const model = new OperationModel({
+            id: `P-${hashes[i]}`,
+            tx: txs[i].set('timestamp', timestampArr[i].toNumber() * 1000),
+            remained: yetNeededArr[i].toNumber(),
+            // number of 1 bits in binary representation
+            completed: ownersDoneArr[i].toNumber().toString(2).split('1').length - 1,
+            isConfirmed: this._isConfirmed(ownersDoneArr[i]),
+          })
+          map = map.set(model.originId(), model)
+        }
       }
     }
 
@@ -77,12 +81,16 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
     for (const i in r) {
       if (r.hasOwnProperty(i)) {
-        const operation = new OperationModel({
-          id: r[i].args.hash,
-          tx: txs[i].set('timestamp', r[i].args.timestamp * 1000),
-          isDone: true,
-        })
-        map = map.set(operation.id(), operation)
+        const tx = txs[i]
+        // TODO @ipavlenko: For the reason unknown we may get null here
+        if (tx !== null) {
+          const operation = new OperationModel({
+            id: r[i].args.hash,
+            tx: txs[i].set('timestamp', r[i].args.timestamp * 1000),
+            isDone: true,
+          })
+          map = map.set(operation.id(), operation)
+        }
       }
     }
 
@@ -188,4 +196,3 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     return null
   }
 }
-

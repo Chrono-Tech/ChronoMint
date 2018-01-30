@@ -12,18 +12,13 @@ import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
+import { isTokenChecked } from 'models/ProfileModel'
 import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
 import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
 import TokenRow from './TokenRow'
 import TokenRowPlaceholder from './TokenRowPlaceholder'
-
-export const checkToken = (token: TokenModel, item: Object) => {
-  const checkBlockchain = token.blockchain() === item.blockchain
-  const checkItem = item.address ? item.address === token.address() : item.symbol === token.symbol()
-  return checkBlockchain && checkItem
-}
 
 function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
@@ -77,7 +72,7 @@ export default class AddCurrencyDialog extends PureComponent {
     let { selectedTokens } = this.state
     let exist = false
     selectedTokens = selectedTokens.map((item) => {
-      if (checkToken(token, item)) {
+      if (isTokenChecked(token, item)) {
         item.show = isSelect
         exist = true
       }
@@ -106,7 +101,7 @@ export default class AddCurrencyDialog extends PureComponent {
   renderRow = (selectedTokens, balances, profile) => (token: TokenModel) => {
     let isSelected = DEFAULT_TOKENS.includes(token.symbol())
     selectedTokens.map((item) => {
-      if (checkToken(token, item)) {
+      if (isTokenChecked(token, item)) {
         isSelected = item.show
       }
     })

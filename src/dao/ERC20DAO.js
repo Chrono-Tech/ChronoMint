@@ -54,7 +54,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('allowance', [ account, spender ])
   }
 
-  approve (account: string, amount: Amount): Promise {
+  approve (account: string, amount: Amount, feeMultiplier: Number = 1): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(amount),
@@ -62,10 +62,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       account,
       amount,
       currency: amount.symbol(),
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
-  revoke (account: string, symbol: string): Promise {
+  revoke (account: string, symbol: string, feeMultiplier: Number = 1): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(0),
@@ -73,10 +75,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       account,
       revoke: true,
       currency: symbol,
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
-  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1): Promise {
     return this._tx(TX_TRANSFER, [
       to,
       new BigNumber(amount),
@@ -85,6 +89,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
       to,
       amount,
       currency: amount.symbol(),
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 

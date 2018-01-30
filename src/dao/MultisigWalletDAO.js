@@ -167,7 +167,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to) {
+  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to/*, feeMultiplier: Number = 1*/) {
     // const tokenDAO = tokenService.getDAO(token.id())
     // const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
