@@ -1,4 +1,3 @@
-import { MANDATORY_TOKENS } from 'dao/ERC20ManagerDAO'
 import { AddCurrencyDialog } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenPlaceHolder from 'layouts/partials/InfoPartial/TokenPlaceHolder'
@@ -13,7 +12,7 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_MARKET, SET_SELECTED_COIN } from 'redux/market/action'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { DUCK_SESSION, rebuildProfileTokens } from 'redux/session/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import ProfileModel from 'models/ProfileModel'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { getCurrentWallet } from 'redux/wallet/actions'
@@ -140,24 +139,6 @@ export default class InfoPartial extends PureComponent {
       slideIndex: 0,
       visibleCount,
     })
-  }
-
-  filterCallback = (profileTokens) => (balance) => {
-    const { tokens } = this.props
-    const token = tokens.item(balance.symbol())
-
-    if (MANDATORY_TOKENS.includes(token.symbol())) {
-      return true
-    }
-
-    let profileToken
-    profileTokens.map((item) => {
-      if (token && checkToken(token, item)) {
-        profileToken = item
-      }
-    })
-
-    return profileToken ? profileToken.show : !token.isOptional()
   }
 
   renderItem = (balance: BalanceModel) => {

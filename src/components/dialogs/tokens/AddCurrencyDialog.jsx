@@ -9,17 +9,22 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
-import { DUCK_SESSION, rebuildProfileTokens, updateUserProfile } from 'redux/session/actions'
-import ProfileModel from 'models/ProfileModel'
+import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
+import ProfileModel, { isTokenChecked } from 'models/ProfileModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
-import { isTokenChecked } from 'models/ProfileModel'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
+import { getProfileTokens } from 'redux/session/selectors'
 import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
 import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
 import TokenRow from './TokenRow'
 import TokenRowPlaceholder from './TokenRowPlaceholder'
+
+function stateFromProps (props) {
+  return {
+    selectedTokens: props.profileTokens,
+  }
+}
 
 export const checkToken = (token: TokenModel, item: Object) => {
   const checkBlockchain = token.blockchain() === item.blockchain
@@ -35,6 +40,7 @@ function mapStateToProps (state) {
   const wallet = state.get(DUCK_MAIN_WALLET)
   const session = state.get(DUCK_SESSION)
   return {
+    profileTokens: getProfileTokens()(state),
     profile: session.profile,
     tokens: state.get(DUCK_TOKENS),
     balances: wallet.balances(),
@@ -54,6 +60,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
+    profileTokens: PropTypes.arrayOf(PropTypes.object),
     profile: PropTypes.instanceOf(ProfileModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
@@ -66,17 +73,7 @@ export default class AddCurrencyDialog extends PureComponent {
     super(...arguments)
 
     this.handleSave = this.handleSave.bind(this)
-    this.state = {
-      selectedTokens: rebuildProfileTokens(this.props.profile, this.props.tokens),
-    }
-  }
-
-  componentWillReceiveProps (newProps) {
-    if (!newProps.profile.tokens().equals(this.props.profile.tokens()) || !newProps.tokens.equals(this.props.tokens)) {
-      this.setState({
-        selectedTokens: rebuildProfileTokens(this.props.profile, this.props.tokens),
-      })
-    }
+    this.state = stateFromProps(this.props)
   }
 
   handleClose = () => {
