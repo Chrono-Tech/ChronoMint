@@ -15,9 +15,9 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { DUCK_SESSION, rebuildProfileTokens } from 'redux/session/actions'
 import ProfileModel from 'models/ProfileModel'
-import { checkToken } from 'components/dialogs/tokens/AddCurrencyDialog'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { getCurrentWallet } from 'redux/wallet/actions'
+import { getVisibleBalances } from 'redux/session/selectors'
 import './InfoPartial.scss'
 import SlideArrow from './SlideArrow'
 import TokenItem from './TokenItem'
@@ -64,6 +64,7 @@ function mapStateToProps (state) {
     open: ui.open,
     balances: wallet.balances(),
     tokens: state.get(DUCK_TOKENS),
+    visibleBalances: getVisibleBalances()(state),
   }
 }
 
@@ -78,6 +79,9 @@ export default class InfoPartial extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
     isMultisig: PropTypes.bool,
     balances: PropTypes.instanceOf(BalancesCollection),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     isPending: PropTypes.bool,
   }
 
@@ -114,12 +118,11 @@ export default class InfoPartial extends PureComponent {
     this.props.onChangeSelectedCoin(newCoin, openFlag)
   }
 
-  handleSlide = (profileTokens) => (diff) => {
-    const { balances, tokens } = this.props
+  handleSlide = (diff) => {
+    const { tokens, visibleBalances } = this.props
     const { visibleCount } = this.state
 
-    const filteredBalances = balances.filter(this.filterCallback(profileTokens))
-    const count = filteredBalances.toArray().length + tokens.leftToFetch()
+    const count = visibleBalances.length + tokens.leftToFetch()
     const total = count + 1 <= visibleCount ? count + 1 : count
     const cells = (total % visibleCount === 0)
       ? total
@@ -198,13 +201,11 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens, isPending, profile } = this.props
+    const { visibleBalances, isMultisig, tokens, isPending } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
-    let profileTokens = rebuildProfileTokens(profile, tokens)
-    const handleSlide = this.handleSlide(profileTokens)
-    const filteredBalances = balances.filter(this.filterCallback(profileTokens))
-    let slidesCount = filteredBalances.toArray().length
+
+    let slidesCount = visibleBalances.length
     let withBigButton = false
     if (!isMultisig) {
       // increase 'add' button for main wallet
@@ -223,8 +224,7 @@ export default class InfoPartial extends PureComponent {
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isPending
               ? <Preloader />
-              : filteredBalances
-                .sortBy((balance) => balance.symbol())
+              : visibleBalances
                 .map(this.renderItem)}
             {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
             {!isMultisig && withBigButton && this.renderAction()}
@@ -241,13 +241,13 @@ export default class InfoPartial extends PureComponent {
           direction='left'
           show={showArrows}
           count={-visibleCount}
-          onClick={handleSlide}
+          onClick={this.handleSlide}
         />
         <SlideArrow
           direction='right'
           show={showArrows}
           count={visibleCount}
-          onClick={handleSlide}
+          onClick={this.handleSlide}
         />
       </div>
     )

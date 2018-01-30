@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
+import TokenModel from './tokens/TokenModel'
 
 class ProfileModel extends abstractModel({
   name: null,
@@ -72,6 +73,13 @@ class ProfileModel extends abstractModel({
       hideTokens: tokens.hide.join(', '),
     }
   }
+}
+
+// TODO @ipavlenko: Make this method a member of ProfileModel, refactor usages
+export const isTokenChecked = (token: TokenModel, { blockchain, address, symbol }) => {
+  const checkBlockchain = token.blockchain() === blockchain
+  const checkItem = address ? address === token.address() : symbol === token.symbol()
+  return checkBlockchain && checkItem
 }
 
 export default ProfileModel

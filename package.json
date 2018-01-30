@@ -124,6 +124,7 @@
     "redux-form-material-ui": "^4.3.0",
     "redux-immutable": "^3.0.10",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "socket.io-client": "^2.0.3",
     "sockjs-client": "1.0.3",
     "truffle": "^4.0.1",

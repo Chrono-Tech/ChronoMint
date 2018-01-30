@@ -1,9 +1,8 @@
-import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
@@ -23,6 +22,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   async fetchTokens (tokenAddresses = []) {
     const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ tokenAddresses ])
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
+    const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
@@ -38,6 +38,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
+        feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
       }))
     })
   }

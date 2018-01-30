@@ -7,13 +7,15 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
+import BalanceModel from 'models/tokens/BalanceModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { getVisibleBalances, BALANCES_COMPARATOR_SYMBOL } from 'redux/session/selectors'
 import { getCurrentWallet } from 'redux/wallet/actions'
 
 function mapDispatchToProps (dispatch) {
   return {
-    multisigTransfer: (wallet, token, amount, recipient) => dispatch(multisigTransfer(wallet, token, amount, recipient)),
-    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
+    mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(token, amount, recipient, feeMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
@@ -25,6 +27,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
+    visibleBalances: getVisibleBalances(BALANCES_COMPARATOR_SYMBOL)(state),
     wallet: getCurrentWallet(state),
     tokens: state.get(DUCK_TOKENS),
   }
@@ -34,10 +37,13 @@ function mapStateToProps (state) {
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
-    multisigTransfer: PropTypes.func,
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,
+    multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
   }
 
@@ -50,7 +56,7 @@ export default class SendTokens extends PureComponent {
 
     switch (action) {
       case ACTION_APPROVE:
-        !wallet.isMultisig() && this.props.mainApprove(token, value, recipient)
+        !wallet.isMultisig() && this.props.mainApprove(token, value, recipient, feeMultiplier)
         break
       case ACTION_TRANSFER:
         wallet.isMultisig()
@@ -64,22 +70,20 @@ export default class SendTokens extends PureComponent {
   }
 
   render () {
-    const { wallet } = this.props
+    const { visibleBalances } = this.props
     const initialValues = {
       feeMultiplier: 1,
     }
-    if (wallet.balances().size() > 0) {
-      initialValues.symbol = wallet.balances().first().id()
+    if (visibleBalances.length > 0) {
+      initialValues.symbol = visibleBalances[0].id()
     }
 
     return (
       <SendTokensForm
         initialValues={initialValues}
-        wallet={wallet}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
       />
     )
   }
 }
-

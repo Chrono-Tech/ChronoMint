@@ -13,6 +13,8 @@ import { DUCK_SESSION, rebuildProfileTokens, updateUserProfile } from 'redux/ses
 import ProfileModel from 'models/ProfileModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
+import { isTokenChecked } from 'models/ProfileModel'
+import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
 import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
@@ -85,7 +87,7 @@ export default class AddCurrencyDialog extends PureComponent {
     let { selectedTokens } = this.state
     let exist = false
     selectedTokens = selectedTokens.map((item) => {
-      if (checkToken(token, item)) {
+      if (isTokenChecked(token, item)) {
         item.show = isSelect
         exist = true
       }
@@ -114,7 +116,7 @@ export default class AddCurrencyDialog extends PureComponent {
   renderRow = (selectedTokens, balances, profile) => (token: TokenModel) => {
     let isSelected = false
     selectedTokens.map((item) => {
-      if (checkToken(token, item)) {
+      if (isTokenChecked(token, item)) {
         isSelected = item.show
       }
     })
