@@ -1,5 +1,5 @@
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import CBETokenDialog from 'components/dialogs/CBETokenDialog'
+import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import { CircularProgress, FlatButton, FontIcon, RaisedButton } from 'material-ui'
 import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
