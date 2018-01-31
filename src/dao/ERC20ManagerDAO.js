@@ -64,25 +64,39 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ]
   }
 
+  /** @private */
+  _setTokenSummary (token: TokenModel) {
+    return {
+      address: token.address(),
+      name: token.name(),
+      symbol: token.symbol(),
+      url: token.url(),
+      decimals: token.decimals(),
+    }
+  }
+
   /**
    * For all users
    */
   addToken (token: TokenModel) {
-    return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
+    const summary = this._setTokenSummary(token)
+    return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), summary)
   }
 
   /**
    * Only for CBE
    */
   modifyToken (oldToken: TokenModel, newToken: TokenModel) {
-    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], newToken)
+    const summary = this._setTokenSummary(newToken)
+    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], summary)
   }
 
   /**
    * Only for CBE
    */
   removeToken (token: TokenModel) {
-    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], token)
+    const summary = this._setTokenSummary(token)
+    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], summary)
   }
 
   /** @private */

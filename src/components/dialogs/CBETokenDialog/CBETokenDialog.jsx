@@ -1,18 +1,18 @@
-import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
+import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
-import { I18n } from 'platform/i18n'
+import { I18n } from 'platform/i18n/index'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import { validate } from 'models/tokens/TokenModel'
-import { formTokenLoadMetaData, addToken, modifyToken } from 'redux/settings/erc20/tokens/actions'
+import { addToken, formTokenLoadMetaData, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
+import validate from './validate'
 
-import './FormDialog.scss'
+import '../FormDialog.scss'
 
 export const FORM_CBE_TOKEN = 'CBETokenDialog'
 
@@ -41,7 +41,7 @@ function mapDispatchToProps (dispatch, ownProps) {
   form: FORM_CBE_TOKEN,
   validate,
   asyncValidate: (token, dispatch) => formTokenLoadMetaData(token, dispatch, FORM_CBE_TOKEN),
-  asyncBlurFields: ['address', 'symbol'],
+  asyncBlurFields: [ 'address', 'symbol' ],
 })
 export default class CBETokenDialog extends PureComponent {
   static propTypes = {
@@ -59,7 +59,11 @@ export default class CBETokenDialog extends PureComponent {
       >
         <form styleName='root' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
-            <h3 styleName='title'>{I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}</h3>
+            <h3
+              styleName='title'
+            >
+              {I18n.t(this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add')}
+            </h3>
           </div>
           <div styleName='content'>
             <Field

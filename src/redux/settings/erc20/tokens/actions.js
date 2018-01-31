@@ -8,6 +8,7 @@ import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { checkFetched, TOKENS_FETCHED } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
+import Amount from 'models/Amount'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -65,15 +66,15 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
 export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
   dispatch({ type: TOKENS_FORM_FETCH })
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-  const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())
+  const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())
   dispatch({ type: TOKENS_FORM_FETCH, end: true })
 
-  if ((symbolAddress !== null && token.address() !== symbolAddress) || token.symbol().toUpperCase() === 'ETH') {
+  if ((symbolAddress !== null && token.address() !== symbolAddress) || (token.symbol() && token.symbol().toUpperCase() === 'ETH')) {
     throw { symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse') }
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -83,18 +84,18 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async dis
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async dispatch => {
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
   dispatch(setToken(oldToken.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
-    await dao.modifyToken(oldToken, newToken)
+    await dao.modifyToken(oldToken, newToken.totalSupply(new Amount(0, newToken.symbol())))
     dispatch(removeToken(oldToken))
   } catch (e) {
     dispatch(setToken(oldToken.isFetching(false)))
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
