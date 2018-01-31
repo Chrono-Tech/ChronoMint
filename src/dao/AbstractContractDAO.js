@@ -400,7 +400,8 @@ export default class AbstractContractDAO extends EventEmitter {
     args: Array = [],
     infoArgs: Object | AbstractModel = null,
     value: BigNumber = new BigNumber(0),
-    options = DEFAULT_TX_OPTIONS
+    options = DEFAULT_TX_OPTIONS,
+    additionalAction = ()=>{}
   ): Object {
 
     const {
@@ -425,6 +426,7 @@ export default class AbstractContractDAO extends EventEmitter {
       func,
       args: displayArgs,
       value,
+      additionalAction: { isFetching: () => true },
     })
 
     /** ESTIMATE GAS */
@@ -435,12 +437,23 @@ export default class AbstractContractDAO extends EventEmitter {
       return gasLimit
     }
 
+    const runAdditionalAction = async () => {
+      // eslint-disable-next-line
+      console.log('runAdditionalAction', additionalAction)
+      const result = await additionalAction()
+      Object.values(result).map((item) => {
+        args.push(item)
+      })
+      tx = tx.set('additional', result)
+    }
+
     let gasLimit = null
 
     /** START */
     try {
       [gasLimit] = await Promise.all([
         estimateGas(),
+        runAdditionalAction(),
         AbstractContractDAO.txStart(tx),
       ])
 

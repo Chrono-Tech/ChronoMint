@@ -13,6 +13,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER } from 'redux/watcher/actions'
 
 import './ConfirmTxDialog.scss'
+import Preloader from '../../common/Preloader/Preloader'
 
 const mapStateToProps = (state) => {
   return ({
@@ -79,6 +80,8 @@ export default class ConfirmTxDialog extends PureComponent {
         case 'Object':
           if (React.isValidElement(arg)) {
             value = arg
+          } else if (arg.isFetching && arg.isFetching()) {
+            value = <Preloader />
           } else {
             return this.getKeyValueRows(arg, tokenBase)
           }
