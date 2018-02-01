@@ -261,10 +261,11 @@ argparse@^1.0.7:
     sprintf-js "~1.0.2"
 
 aria-query@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/aria-query/-/aria-query-0.7.0.tgz#4af10a1e61573ddea0cf3b99b51c52c05b424d24"
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/aria-query/-/aria-query-0.7.1.tgz#26cbb5aff64144b0a825be1846e0b16cfa00b11e"
   dependencies:
     ast-types-flow "0.0.7"
+    commander "^2.11.0"
 
 arr-diff@^2.0.0:
   version "2.0.0"
@@ -3032,8 +3033,8 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
 electron-to-chromium@^1.2.7, electron-to-chromium@^1.3.30:
-  version "1.3.31"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.31.tgz#00d832cba9fe2358652b0c48a8816c8e3a037e9f"
+  version "1.3.32"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.32.tgz#11d0684c0840e003c4be8928f8ac5f35dbc2b4e6"
 
 elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.3.2:
   version "6.4.0"
@@ -3332,9 +3333,9 @@ eslint-plugin-async-await@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-async-await/-/eslint-plugin-async-await-0.0.0.tgz#0f2ae17a3814780635d48f2409df9e37898ca09f"
 
-"eslint-plugin-chronobank-react@github:Laiff/eslint-plugin-chronobank-react#MINT-588":
+"eslint-plugin-chronobank-react@github:chronobank/eslint-plugin-chronobank-react":
   version "1.2.1"
-  resolved "https://codeload.github.com/Laiff/eslint-plugin-chronobank-react/tar.gz/99e9818de155fb7d8b5f5fa1da3cf9f589041f39"
+  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank-react/tar.gz/d6501607b78c37dcd054a7094bc0a3376f882a4b"
   dependencies:
     eslint-config-airbnb "^16.1.0"
     eslint-plugin-chronobank chronobank/eslint-plugin-chronobank
@@ -3342,15 +3343,10 @@ eslint-plugin-async-await@0.0.0:
     eslint-plugin-jsx-a11y "^6.0.2"
     eslint-plugin-react "^7.4.0"
 
-eslint-plugin-chronobank@chronobank/eslint-plugin-chronobank:
+eslint-plugin-chronobank@chronobank/eslint-plugin-chronobank, "eslint-plugin-chronobank@github:chronobank/eslint-plugin-chronobank":
   version "1.1.0"
-  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank/tar.gz/612bbec50808f7ecf52f5a7c3a4d57378b96f969"
-  dependencies:
-    eslint-plugin-async-await "0.0.0"
-
-"eslint-plugin-chronobank@github:Laiff/eslint-plugin-chronobank#MINT-588":
-  version "1.1.0"
-  resolved "https://codeload.github.com/Laiff/eslint-plugin-chronobank/tar.gz/8453f97c2d058fc835610474eefffb59e0c69b3e"
+  uid "38dc59c71223ba76825b4476b5e5ecab344fd67e"
+  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank/tar.gz/38dc59c71223ba76825b4476b5e5ecab344fd67e"
   dependencies:
     eslint-plugin-async-await "0.0.0"
 
@@ -6323,7 +6319,7 @@ mocha@^3.4.2:
     mkdirp "0.5.1"
     supports-color "3.1.2"
 
-moment@^2.17.1, moment@^2.20.1:
+moment@^2.17.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
@@ -8144,11 +8140,10 @@ react-hot-loader@next:
     react-stand-in "^4.0.0-beta.18"
 
 react-i18nify@^1.8.7, react-i18nify@^1.8.8:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/react-i18nify/-/react-i18nify-1.9.1.tgz#4bbff558ebd50450e1eb55b9332c464b1c576e11"
+  version "1.11.7"
+  resolved "https://registry.yarnpkg.com/react-i18nify/-/react-i18nify-1.11.7.tgz#aca40c9c93e136a605e14a07cc6941a33f793c7f"
   dependencies:
     intl "^1.2"
-    moment "^2.20.1"
     prop-types "^15.6.0"
 
 react-paginate@^4.4.2:
@@ -9190,7 +9185,7 @@ solc@0.4.18:
     semver "^5.3.0"
     yargs "^4.7.1"
 
-solc@^0.4.2:
+solc@0.4.19, solc@^0.4.2:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.19.tgz#1af1c4c292a0365a6977d4cbe3fbee7139b4b561"
   dependencies:
@@ -9736,13 +9731,18 @@ truffle-contract@^2.0.3:
     web3 "^0.20.1"
 
 truffle-contract@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/truffle-contract/-/truffle-contract-3.0.2.tgz#6c703e4872898d8329ab7e3c6e38cd65e6c45894"
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/truffle-contract/-/truffle-contract-3.0.3.tgz#b14fb318f9a743db8b061046e24978d91f31dbfb"
   dependencies:
     ethjs-abi "0.1.8"
     truffle-blockchain-utils "^0.0.3"
     truffle-contract-schema "^1.0.0"
+    truffle-error "0.0.2"
     web3 "^0.20.1"
+
+truffle-error@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/truffle-error/-/truffle-error-0.0.2.tgz#01b189b78505566ae1689c239c7ca2dd121cfe4c"
 
 truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
   version "0.0.5"
@@ -9762,12 +9762,12 @@ truffle@4.0.4:
     solc "0.4.18"
 
 truffle@^4.0.1:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-4.0.5.tgz#1462635cd6dbb9746a1b49a2d3e6b9a7f9226b58"
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-4.0.6.tgz#04a23b4c75336f325804d262317f901dbab4f729"
   dependencies:
     mocha "^3.4.2"
     original-require "^1.0.1"
-    solc "0.4.18"
+    solc "0.4.19"
 
 tty-browserify@0.0.0:
   version "0.0.0"
