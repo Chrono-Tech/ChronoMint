@@ -3333,9 +3333,9 @@ eslint-plugin-async-await@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-async-await/-/eslint-plugin-async-await-0.0.0.tgz#0f2ae17a3814780635d48f2409df9e37898ca09f"
 
-"eslint-plugin-chronobank-react@github:Laiff/eslint-plugin-chronobank-react#MINT-588":
+"eslint-plugin-chronobank-react@github:chronobank/eslint-plugin-chronobank-react":
   version "1.2.1"
-  resolved "https://codeload.github.com/Laiff/eslint-plugin-chronobank-react/tar.gz/99e9818de155fb7d8b5f5fa1da3cf9f589041f39"
+  resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank-react/tar.gz/d6501607b78c37dcd054a7094bc0a3376f882a4b"
   dependencies:
     eslint-config-airbnb "^16.1.0"
     eslint-plugin-chronobank chronobank/eslint-plugin-chronobank
@@ -3343,15 +3343,10 @@ eslint-plugin-async-await@0.0.0:
     eslint-plugin-jsx-a11y "^6.0.2"
     eslint-plugin-react "^7.4.0"
 
-eslint-plugin-chronobank@chronobank/eslint-plugin-chronobank:
+eslint-plugin-chronobank@chronobank/eslint-plugin-chronobank, "eslint-plugin-chronobank@github:chronobank/eslint-plugin-chronobank":
   version "1.1.0"
+  uid "38dc59c71223ba76825b4476b5e5ecab344fd67e"
   resolved "https://codeload.github.com/chronobank/eslint-plugin-chronobank/tar.gz/38dc59c71223ba76825b4476b5e5ecab344fd67e"
-  dependencies:
-    eslint-plugin-async-await "0.0.0"
-
-"eslint-plugin-chronobank@github:Laiff/eslint-plugin-chronobank#MINT-588":
-  version "1.1.0"
-  resolved "https://codeload.github.com/Laiff/eslint-plugin-chronobank/tar.gz/8453f97c2d058fc835610474eefffb59e0c69b3e"
   dependencies:
     eslint-plugin-async-await "0.0.0"
 
@@ -8704,6 +8699,10 @@ require-uncached@^1.0.3:
 requires-port@1.0.x, requires-port@1.x.x, requires-port@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+reselect@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

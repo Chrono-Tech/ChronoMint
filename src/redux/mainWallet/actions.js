@@ -166,12 +166,12 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string) => async (dispatch, getState) => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
     const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
     dispatch({ type: WALLET_ALLOWANCE, allowance })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.approve(spender, amount)
+    await tokenDAO.approve(spender, amount, feeMultiplier)
   } catch (e) {
     dispatch(notifyError(e, 'mainApprove'))
   }

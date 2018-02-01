@@ -12,6 +12,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import Immutable from 'immutable'
 import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
 import MainWallet from 'models/wallet/MainWalletModel'
@@ -24,6 +25,7 @@ import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
@@ -49,14 +51,18 @@ function mapStateToProps (state) {
   const tokenId = selector(state, 'symbol')
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
+  const symbol = selector(state, 'symbol')
 
   return {
+    wallet,
+    visibleBalances: getVisibleBalances(BALANCES_COMPARATOR_SYMBOL)(state),
     tokens: state.get(DUCK_TOKENS),
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
     token: state.get(DUCK_TOKENS).item(tokenId),
     recipient,
+    symbol,
     feeMultiplier,
   }
 }
@@ -70,6 +76,9 @@ export default class SendTokensForm extends PureComponent {
       PropTypes.instanceOf(MainWallet),
       PropTypes.instanceOf(MultisigWalletModel),
     ]),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -101,8 +110,9 @@ export default class SendTokensForm extends PureComponent {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
 
-    const firstBalance = newProps.wallet.balances().first()
-    if (!newProps.token.isFetched() && firstBalance) {
+    const firstBalance = newProps.visibleBalances.length && newProps.visibleBalances[0]
+    const isRelevant = newProps.visibleBalances.find((balance) => balance.id() === newProps.token.id())
+    if (!(isRelevant && newProps.token.isFetched()) && firstBalance) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'symbol', firstBalance.id()))
     }
   }
@@ -148,9 +158,8 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderHead () {
-    const { token, wallet } = this.props
-    const balances = wallet.balances()
-    const currentBalance = balances.item(token.id())
+    const { token, visibleBalances } = this.props
+    const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[0]
 
     return (
       <div>
@@ -165,7 +174,7 @@ export default class SendTokensForm extends PureComponent {
           )}
         >
           <MuiThemeProvider theme={inversedTheme}>
-            {balances.size() === 0
+            {visibleBalances.length === 0
               ? <Preloader />
               : (
                 <Field
@@ -174,8 +183,7 @@ export default class SendTokensForm extends PureComponent {
                   fullWidth
                   {...styles}
                 >
-                  {balances
-                    .sortBy((balance) => balance.symbol())
+                  {visibleBalances
                     .map((balance) => {
                       const token: TokenModel = this.props.tokens.item(balance.id())
                       if (token.isLocked()) {
@@ -314,7 +322,8 @@ export default class SendTokensForm extends PureComponent {
   }
 
   render () {
-    return (
+    const { visibleBalances } = this.props
+    return !visibleBalances.length ? null : (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
@@ -326,4 +335,3 @@ export default class SendTokensForm extends PureComponent {
     )
   }
 }
-

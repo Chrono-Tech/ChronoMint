@@ -53,7 +53,10 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   removePoll () {
-    return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), null, [], true) // allow no return (since there would be a selfdestruct call)
+    return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), {
+      allowNoReturn: true,
+      useDefaultGasLimit: true
+    }) // allow no return (since there would be a selfdestruct call)
   }
 
   endPoll () {
