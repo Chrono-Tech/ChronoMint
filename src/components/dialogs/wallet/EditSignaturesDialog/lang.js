@@ -9,8 +9,8 @@ export default {
     description: WalletAddEditForm.en.requiredSignaturesDescription,
   },
   ru: {
-    dialogTitle: 'Required signatures',
-    submit: 'update',
+    dialogTitle: 'Необходимо подписей',
+    submit: 'Обновить',
     description: WalletAddEditForm.ru.requiredSignaturesDescription,
   },
 }

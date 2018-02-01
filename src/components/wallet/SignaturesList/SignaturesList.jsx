@@ -2,20 +2,21 @@ import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
-import './SignaturesList.scss'
+import { fieldPropTypes } from 'redux-form/immutable'
 import { prefix } from './lang'
+import './SignaturesList.scss'
 
 export default class SignaturesList extends Component {
   static propTypes = {
     count: PropTypes.number,
     value: PropTypes.number,
-    input: PropTypes.object,
+    ...fieldPropTypes,
   }
 
   handleSelect = (index) => () => this.props.input.onChange(index)
 
   render () {
-    const { count, input } = this.props
+    const { count, input, meta } = this.props
     const chips = []
 
     for (let i = 1; i <= count; i++) {
@@ -26,19 +27,23 @@ export default class SignaturesList extends Component {
           onTouchTap={this.handleSelect(i)}
         >
           {i}
-          {/*<Translate value='common.sOfs' index={i} count={count} />*/}
         </span>
       ))
     }
 
     return (
-      <div styleName='root'>
-        {chips}
-        <Translate
-          styleName='of'
-          value={`${prefix}.ofOwners`}
-          count={count}
-        />
+      <div>
+        <div styleName='chips'>
+          {chips}
+          <Translate
+            styleName='of'
+            value={`${prefix}.ofOwners`}
+            count={count}
+          />
+        </div>
+        {!meta.pristine && (
+          <div styleName='error'>{meta.error}</div>
+        )}
       </div>
     )
   }

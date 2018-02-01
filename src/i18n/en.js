@@ -78,8 +78,8 @@ export default {
     transaction: 'Transaction',
     actions: 'Actions',
     value: 'Value',
-    revoke: 'REVOKE',
-    sign: 'SIGN',
+    revoke: 'Revoke',
+    sign: 'Sign',
   },
   exchange: {
     tokens: 'Exchange tokens',
@@ -451,6 +451,10 @@ export default {
         title: 'Kill wallet',
         to: 'Transfer tokens to',
       },
+      changeRequirement: {
+        title: 'Change required signatures',
+        requiredSignatures: 'New value',
+      },
     },
     PollInterface: {
       [ pollInterface.TX_ACTIVATE_POLL ]: {
@@ -686,19 +690,6 @@ export default {
         symbolHolderAllowance: '%{symbol} holder allowance',
         requireTime: 'Require TIME',
         withdraw: 'Withdraw',
-      },
-      SendTokens: {
-        fast: 'Fast',
-        slow: 'Slow',
-        balance: 'Balance',
-        recipientAddress: 'Recipient address',
-        amount: 'Amount',
-        feeRate: 'Fee: %{multiplier} of average (%{total} sat/byte)',
-        gasPrice: 'Gas Price: %{multiplier} of average (%{total} Gwei)',
-        approve: 'Approve',
-        revoke: 'Revoke',
-        allowance: 'Allowance',
-        send: 'Send',
       },
       RewardsPeriod: {
         rewardsPeriodIndex: 'Bonus period #%{index}',

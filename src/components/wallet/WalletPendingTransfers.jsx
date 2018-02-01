@@ -127,7 +127,9 @@ export default class WalletPendingTransfers extends PureComponent {
             <div styleName='tableHeadElem'><Translate value='wallet.actions' /></div>
           </div>
         </div>
-        {wallet.pendingTxList().items().map((item) => this.renderRow(wallet, item))}
+        <div styleName='tableBody'>
+          {wallet.pendingTxList().items().map((item) => this.renderRow(wallet, item))}
+        </div>
       </div>
     )
   }

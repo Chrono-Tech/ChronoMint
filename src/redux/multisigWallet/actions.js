@@ -1,7 +1,7 @@
 import { EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import { EVENT_MS_WALLETS_COUNT, EVENT_NEW_MS_WALLET } from 'dao/MultisigWalletsManagerDAO'
+import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from 'dao/MultisigWalletsManagerDAO'
 import Amount from 'models/Amount'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import BalanceModel from 'models/tokens/BalanceModel'
@@ -10,10 +10,13 @@ import TxExecModel from 'models/TxExecModel'
 import type TxModel from 'models/TxModel'
 import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import OwnerModel from 'models/wallet/OwnerModel'
+import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
-import multisigWalletService, { EVENT_CONFIRMATION, EVENT_CONFIRMATION_NEEDED, EVENT_DEPOSIT, EVENT_MULTI_TRANSACTION, EVENT_OWNER_ADDED, EVENT_OWNER_REMOVED, EVENT_REVOKE, } from 'services/MultisigWalletService'
+import { switchWallet } from 'redux/wallet/actions'
+import multisigWalletService, { EE_CONFIRMATION, EE_CONFIRMATION_NEEDED, EE_DEPOSIT, EE_MULTI_TRANSACTION, EE_OWNER_ADDED, EE_OWNER_REMOVED, EE_REMOVE_MS_WALLET, EE_REQUIREMENT_CHANGED, EE_REVOKE, EE_SINGLE_TRANSACTION } from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
 
 export const DUCK_MULTISIG_WALLET = 'multisigWallet'
@@ -74,7 +77,7 @@ const handleToken = (token, wallet) => (dispatch) => {
 
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
-    .on(EVENT_NEW_MS_WALLET, async (wallet: MultisigWalletModel) => {
+    .on(EE_MS_WALLET_ADDED, async (wallet: MultisigWalletModel) => {
       const updatedWallet = wallet.transactionHash(null).isPending(false)
       dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
 
@@ -101,69 +104,83 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       dispatch(subscribeOnTokens((token) => handleToken(token, wallet)))
       dispatch(selectWalletIfOne())
     })
-    .on(EVENT_MS_WALLETS_COUNT, (count) => {
+    .on(EE_MS_WALLETS_COUNT, (count) => {
       dispatch({ type: MULTISIG_FETCHING, count })
     })
+    .on(EE_MS_WALLET_REMOVED, (walletId) => {
+      if (getState().get(DUCK_MULTISIG_WALLET).size() === 1) {
+        // the last ms-wallet
+        dispatch(switchWallet(getState().get(DUCK_MAIN_WALLET)))
+      }
+      dispatch({ type: MULTISIG_REMOVE, id: walletId })
+    })
+}
+
+const handleTransfer = (walletId, multisigTransactionModel) => (dispatch, getState) => {
+  const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+  const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
+  dispatch(updateWallet(wallet.pendingTxList(pendingTxList)))
+
+  if (!multisigTransactionModel.symbol()) {
+    return
+  }
+
+  const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
+  dispatch(fetchBalanceForToken(token, wallet))
 }
 
 const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
   multisigWalletService
-    .on(EVENT_OWNER_ADDED, (walletId, ownerAddress) => {
+    .on(EE_OWNER_ADDED, (walletId, owner: OwnerModel) => {
       const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const owners = wallet.owners().update(ownerAddress)
-      dispatch(updateWallet(wallet.owners(owners)))
-    })
-    .on(EVENT_OWNER_REMOVED, (walletId, ownerAddress) => {
-      const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const owners = wallet.owners().remove(ownerAddress)
-      dispatch(updateWallet(wallet.owners(owners)))
-    })
-    .on(EVENT_MULTI_TRANSACTION, (walletId, multisigTransactionModel) => {
-      const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
-      const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
-      dispatch(updateWallet(wallet.pendingTxList(pendingTxList)))
-
-      const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
-      if (!token.isFetched()) {
-        // eslint-disable-next-line
-        console.error('token not found', multisigTransactionModel.symbol())
+      if (!wallet) {
         return
       }
-      dispatch(fetchBalanceForToken(token, wallet))
+      dispatch(updateWallet(wallet.owners(wallet.owners().add(owner))))
     })
-    .on('SingleTransact', (walletId, result) => {
-      // eslint-disable-next-line
-      console.log('--actions#', result)
+    .on(EE_OWNER_REMOVED, (walletId, owner: OwnerModel) => {
+      const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+      const owners = wallet.owners().remove(owner)
+      dispatch(updateWallet(wallet.owners(owners)))
     })
-    .on(EVENT_REVOKE, (walletId, id) => {
+    .on(EE_MULTI_TRANSACTION, (walletId, multisigTransactionModel) => dispatch(handleTransfer(walletId, multisigTransactionModel)))
+    .on(EE_SINGLE_TRANSACTION, (walletId, multisigTransactionModel) => dispatch(handleTransfer(walletId, multisigTransactionModel)))
+    .on(EE_REVOKE, (walletId, id) => {
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
       const pendingTxList = wallet.pendingTxList()
       const pendingTx = pendingTxList.item(id).isConfirmed(false)
       dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
     })
-    .on(EVENT_CONFIRMATION, (walletId, id, owner) => {
+    .on(EE_CONFIRMATION, (walletId, id, owner) => {
       if (owner !== getState().get(DUCK_SESSION).account) {
         return
       }
-
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+      if (!wallet) {
+        return
+      }
+
       const pendingTxList = wallet.pendingTxList()
       let pendingTx = pendingTxList.item(id)
       if (!pendingTx) {
         return
       }
       pendingTx = pendingTx.isConfirmed(true)
-      dispatch(updateWallet(wallet.pendingTxList(pendingTxList.list(pendingTxList.list().set(id, pendingTx)))))
+      dispatch(updateWallet(wallet.pendingTxList(pendingTxList.update(pendingTx))))
     })
-    .on(EVENT_CONFIRMATION_NEEDED, (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
+    .on(EE_CONFIRMATION_NEEDED, (walletId, pendingTxModel: MultisigWalletPendingTxModel) => {
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
       const pendingTxList = wallet.pendingTxList()
       dispatch(updateWallet(wallet.pendingTxList(pendingTxList.update(pendingTxModel))))
     })
-    .on(EVENT_DEPOSIT, (walletId, symbol) => {
+    .on(EE_DEPOSIT, (walletId, symbol) => {
       const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
       const token = getState().get(DUCK_TOKENS).getBySymbol(symbol)
       dispatch(fetchBalanceForToken(token, wallet))
+    })
+    .on(EE_REQUIREMENT_CHANGED, (walletId, required) => {
+      const wallet: MultisigWalletModel = getState().get(DUCK_MULTISIG_WALLET).item(walletId)
+      dispatch(updateWallet(wallet.requiredSignatures(required)))
     })
 }
 
@@ -265,7 +282,7 @@ export const changeRequirement = (wallet, newRequired: Number) => async (dispatc
   }
 }
 
-export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async (dispatch) => {
+export const revokeMultisigTx = (wallet: MultisigWalletModel, tx: MultisigWalletPendingTxModel) => async () => {
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
     await dao.revokePendingTx(tx)

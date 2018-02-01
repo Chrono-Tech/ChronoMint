@@ -39,9 +39,13 @@ export default class OwnersList extends PureComponent {
     newOwner: PropTypes.string,
     fields: PropTypes.object,
     isDisabled: PropTypes.bool,
+    onRemove: PropTypes.func,
   }
 
-  handleRemoveItem = (fields, index) => () => fields.remove(index)
+  handleRemoveItem = (fields, index) => () => {
+    fields.remove(index)
+    this.props.onRemove(fields)
+  }
 
   handleAddItem = (fields) => () => {
     fields.push({
