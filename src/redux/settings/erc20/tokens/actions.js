@@ -1,3 +1,5 @@
+import { change, Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import validator from 'models/validator'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
@@ -9,6 +11,8 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { checkFetched, TOKENS_FETCHED } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
 import Amount from 'models/Amount'
+import ERC20DAO from 'dao/ERC20DAO'
+import { FORM_CBE_TOKEN } from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -103,4 +107,17 @@ export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async 
   } catch (e) {
     dispatch(setToken(token.isFetching(false)))
   }
+}
+export const getDataFromContract = (token) => async (dispatch) => {
+  dispatch({ type: TOKENS_FORM_FETCH })
+  if (!validator.address(token.address())) {
+    const dao = new ERC20DAO(token)
+    const symbol = await dao.getSymbolFromContract()
+    const decimals = await dao.getDecimalsFromContract()
+
+    dispatch(change(FORM_CBE_TOKEN, 'symbol', symbol))
+    dispatch(change(FORM_CBE_TOKEN, 'decimals', decimals))
+
+  }
+  dispatch({ type: TOKENS_FORM_FETCH, end: true })
 }
