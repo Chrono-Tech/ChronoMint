@@ -27,12 +27,12 @@ export default class WalletsItem extends PureComponent {
 
   handleSelect = () => this.props.onSelect(this.props.wallet)
 
-
   render () {
     const { wallet } = this.props
     const ownersCount = wallet.owners().size()
     const isSelected = wallet.isSelected()
-    const title = !isSelected
+    const isPending = wallet.isPending()
+    const title = !isPending && !isSelected
       ? I18n.t(`${prefix}.selectWallet`)
       : null
 
@@ -49,11 +49,11 @@ export default class WalletsItem extends PureComponent {
           <div styleName='info'>
             <div
               styleName='title'
-              onTouchTap={!isSelected && this.handleSelect}
+              onTouchTap={!isPending && !isSelected && this.handleSelect}
               title={title}
             >
               {/*<div styleName='name'>Name</div>*/}
-              <div styleName={classnames('address', { link: !isSelected && !!wallet.address() })}>
+              <div styleName={classnames('address', { link: !isPending && !isSelected && !!wallet.address() })}>
                 {
                   wallet.address()
                     ? wallet.address()
@@ -61,32 +61,34 @@ export default class WalletsItem extends PureComponent {
                 }
               </div>
             </div>
-            <div styleName='actions'>
-              {wallet.isPending()
-                ? <Preloader small />
-                : (
-                  <div
-                    styleName='action'
-                    className='material-icons'
-                    onTouchTap={this.handleRemove}
-                  >
-                    delete
-                  </div>
-                )
-              }
-            </div>
+            {!wallet.isTimeLocked() && (
+              <div styleName='actions'>
+                {wallet.isPending()
+                  ? <Preloader small />
+                  : (
+                    <div
+                      styleName='action'
+                      className='material-icons'
+                      onTouchTap={this.handleRemove}
+                    >
+                      delete
+                    </div>
+                  )
+                }
+              </div>
+            )}
           </div>
           <div styleName='details'>
             <div styleName='detailCol'>
               <div
-                styleName='detailItem link'
-                onTouchTap={this.handleEditOwners}
+                styleName={classnames('detailItem', { link: !isPending })}
+                onTouchTap={!isPending && this.handleEditOwners}
               >
                 <strong>{ownersCount}</strong> <Translate value={`${prefix}.owners`} count={ownersCount} />
               </div>
               <div
-                styleName='detailItem link'
-                onTouchTap={this.handleEditSignatures}
+                styleName={classnames('detailItem', { link: !isPending })}
+                onTouchTap={!isPending && this.handleEditSignatures}
               >
                 <strong>{wallet.requiredSignatures()}</strong> <Translate value={`${prefix}.requiredSignatures`} />
               </div>

@@ -116,10 +116,10 @@ export default class WalletChanger extends PureComponent {
                     : () => this.props.walletAddEditDialog()}
                   {...globalStyles.buttonWithIconStyles}
                 />
-                <FlatButton
-                  label='2fa'
-                  onTouchTap={this.handleCreate2FAWallet}
-                />
+                {/*<FlatButton*/}
+                  {/*label='2fa'*/}
+                  {/*onTouchTap={this.handleCreate2FAWallet}*/}
+                {/*/>*/}
               </div>
             </div>
           </div>

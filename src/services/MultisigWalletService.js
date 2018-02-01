@@ -1,3 +1,4 @@
+import OwnerModel from 'models/wallet/OwnerModel'
 import MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import EventEmitter from 'events'
 import type MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
@@ -5,15 +6,15 @@ import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 
-export const EVENT_CONFIRMATION = 'Confirmation'
-export const EVENT_REVOKE = 'Revoke'
-export const EVENT_DEPOSIT = 'Deposit'
-export const EVENT_CONFIRMATION_NEEDED = 'ConfirmationNeeded'
-export const EVENT_SINGLE_TRANSACTION = 'SingleTransact'
-export const EVENT_MULTI_TRANSACTION = 'MultiTransact'
-export const EVENT_OWNER_REMOVED = 'OwnerRemoved'
-export const EVENT_OWNER_ADDED = 'OwnerAdded'
-export const EVENT_REMOVE = 'WalletRemove'
+export const EE_CONFIRMATION = 'Confirmation'
+export const EE_REVOKE = 'Revoke'
+export const EE_DEPOSIT = 'Deposit'
+export const EE_CONFIRMATION_NEEDED = 'ConfirmationNeeded'
+export const EE_SINGLE_TRANSACTION = 'SingleTransact'
+export const EE_MULTI_TRANSACTION = 'MultiTransact'
+export const EE_OWNER_REMOVED = 'OwnerRemoved'
+export const EE_OWNER_ADDED = 'OwnerAdded'
+export const EE_REQUIREMENT_CHANGED = 'RequirementChanged'
 
 class MultisigWalletService extends EventEmitter {
 
@@ -46,39 +47,39 @@ class MultisigWalletService extends EventEmitter {
     }
 
     return Promise.all([
-      dao.watchOwnerAdded(wallet, (ownerAddress) => {
-        this.emit(EVENT_OWNER_ADDED, address, ownerAddress)
+      dao.watchOwnerAdded(wallet, (owner: OwnerModel) => {
+        this.emit(EE_OWNER_ADDED, address, owner)
       }),
-      dao.watchOwnerRemoved(wallet, (ownerAddress) => {
-        this.emit(EVENT_OWNER_REMOVED, address, ownerAddress)
+      dao.watchOwnerRemoved(wallet, (owner: OwnerModel) => {
+        this.emit(EE_OWNER_REMOVED, address, owner)
       }),
       dao.watchMultiTransact(wallet, (multisigTransactionModel: MultisigTransactionModel) => {
-        this.emit(EVENT_MULTI_TRANSACTION, address, multisigTransactionModel)
+        this.emit(EE_MULTI_TRANSACTION, address, multisigTransactionModel)
       }),
       dao.watchSingleTransact(wallet, (result) => {
-        this.emit(EVENT_SINGLE_TRANSACTION, result)
+        this.emit(EE_SINGLE_TRANSACTION, result)
       }),
       dao.watchConfirmationNeeded(wallet, (pendingTxModel) => {
-        this.emit(EVENT_CONFIRMATION_NEEDED, address, pendingTxModel)
+        this.emit(EE_CONFIRMATION_NEEDED, address, pendingTxModel)
       }),
       dao.watchDeposit(wallet, () => {
-        this.emit(EVENT_DEPOSIT, address, 'ETH')
+        this.emit(EE_DEPOSIT, address, 'ETH')
       }),
       dao.watchRevoke(wallet, (id) => {
-        this.emit(EVENT_REVOKE, address, id)
+        this.emit(EE_REVOKE, address, id)
       }),
       dao.watchConfirmation(wallet, (id, owner) => {
-        this.emit(EVENT_CONFIRMATION, address, id, owner)
+        this.emit(EE_CONFIRMATION, address, id, owner)
       }),
-      // dao.watchRemove(wallet, (result) => {
-      //   this.emit(EVENT_REMOVE, address, result)
-      // }),
       dao.watchError(wallet, (errorCode) => {
         if (errorCode === resultCodes.WALLET_CONFIRMATION_NEEDED) {
-          this.emit(EVENT_CONFIRMATION_NEEDED, address, new MultisigWalletPendingTxModel({
+          this.emit(EE_CONFIRMATION_NEEDED, address, new MultisigWalletPendingTxModel({
             // TODO @dkchv: no id (operation here) :(
           }))
         }
+      }),
+      dao.watchRequirementChanged(wallet, (required) => {
+        this.emit(EE_REQUIREMENT_CHANGED, address, required)
       }),
     ])
   }

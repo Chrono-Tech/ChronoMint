@@ -59,4 +59,8 @@ export default class MainWalletModel extends abstractFetchingModel({
   allowances (value) {
     return this._getSet('allowances', value)
   }
+
+  isTimeLocked () {
+    return false
+  }
 }
