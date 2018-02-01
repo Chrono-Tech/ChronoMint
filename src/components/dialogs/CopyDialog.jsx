@@ -33,33 +33,34 @@ export default class CopyDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog styleName='root'>
-        <div styleName='content'>
-          <div styleName='header'>
-            <h3>{this.props.title}</h3>
-          </div>
-          <div styleName='body'>
-            <div>
-              {this.props.description}
+      <ModalDialog>
+        <div styleName='root'>
+          <div styleName='content'>
+            <div styleName='header'>
+              <h3>{this.props.title}</h3>
             </div>
-            <TextField
-              ref={(el) => { this.inputElement = el }}
-              name='value'
-              value={this.props.copyValue}
-              fullWidth
-              floatingLabelText={this.props.controlTitle}
-            />
-          </div>
-          <div styleName='footer'>
-            <RaisedButton
-              primary
-              label='Close'
-              onTouchTap={this.handleClose}
-            />
+            <div styleName='body'>
+              <div>
+                {this.props.description}
+              </div>
+              <TextField
+                ref={(el) => { this.inputElement = el }}
+                name='value'
+                value={this.props.copyValue}
+                fullWidth
+                floatingLabelText={this.props.controlTitle}
+              />
+            </div>
+            <div styleName='footer'>
+              <RaisedButton
+                primary
+                label='Close'
+                onTouchTap={this.handleClose}
+              />
+            </div>
           </div>
         </div>
       </ModalDialog>
     )
   }
 }
-
