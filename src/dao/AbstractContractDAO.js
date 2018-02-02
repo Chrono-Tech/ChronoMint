@@ -34,7 +34,7 @@ export const DEFAULT_TX_OPTIONS = {
   addDryRunOkCodes: [],
   allowNoReturn: false,
   feeMultiplier: 1,
-  noGasLimit: false,
+  useDefaultGasLimit: false,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
