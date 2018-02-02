@@ -546,7 +546,7 @@ export default class AbstractContractDAO extends EventEmitter {
         console.warn(e)
       }
 
-      throw devError
+      throw userError
     }
   }
 
