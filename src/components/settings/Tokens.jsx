@@ -9,6 +9,7 @@ import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
 import { revokeToken } from 'redux/settings/erc20/tokens/actions'
 import { getChronobankTokens } from 'redux/settings/erc20/tokens/selectors'
+import Preloader from 'components/common/Preloader/Preloader'
 import './Tokens.scss'
 
 function prefix (token) {
@@ -24,13 +25,22 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     remove: (token) => dispatch(revokeToken(token)),
-    form: (token, isModify) => dispatch(modalsOpen({
-      component: CBETokenDialog,
-      props: {
-        initialValues: token,
-        isModify,
-      },
-    })),
+    form: (token, isModify) => {
+      let initialValues = token
+      if (!token.name()) {
+        initialValues = token.name('')
+      }
+      if (!token.url()) {
+        initialValues = token.url('')
+      }
+      dispatch(modalsOpen({
+        component: CBETokenDialog,
+        props: {
+          initialValues,
+          isModify,
+        },
+      }))
+    },
   }
 }
 
@@ -45,6 +55,17 @@ export default class Tokens extends PureComponent {
     remove: PropTypes.func,
   }
 
+  handleEdit = (token, isModify = false) => () => {
+    const newToken = token || new TokenModel({
+      isERC20: true,
+    })
+    this.props.form(newToken, isModify)
+  }
+
+  handleRemove = (token) => () => {
+    this.props.remove(token)
+  }
+
   render () {
     const { tokens } = this.props
 
@@ -57,7 +78,7 @@ export default class Tokens extends PureComponent {
               icon={<FontIcon className='material-icons'>add</FontIcon>}
               label={<Translate value={prefix('addToken')} />}
               primary
-              onTouchTap={() => this.props.form(new TokenModel(), false)}
+              onTouchTap={this.handleEdit()}
             />
           </div>
         </div>
@@ -95,21 +116,26 @@ export default class Tokens extends PureComponent {
                   </div>
                 </div>
                 <div styleName='bodyTableCell'>
-                  <div styleName='tableCellActions'>
-                    <div styleName='actionsItem'>
-                      <RaisedButton
-                        label={<Translate value='terms.modify' />}
-                        primary
-                        onTouchTap={() => this.props.form(token, true)}
-                      />
-                    </div>
-                    <div styleName='actionsItem'>
-                      <RaisedButton
-                        label={<Translate value='terms.remove' />}
-                        onTouchTap={() => this.props.remove(token)}
-                      />
-                    </div>
-                  </div>
+                  {
+                    token.isFetching()
+                      ? <div styleName='tableCellActions'><Preloader /></div>
+                      : (
+                        <div styleName='tableCellActions'>
+                          <div styleName='actionsItem'>
+                            <RaisedButton
+                              label={<Translate value='terms.modify' />}
+                              primary
+                              onTouchTap={this.handleEdit(token, true)}
+                            />
+                          </div>
+                          <div styleName='actionsItem'>
+                            <RaisedButton
+                              label={<Translate value='terms.remove' />}
+                              onTouchTap={this.handleRemove(token)}
+                            />
+                          </div>
+                        </div>
+                      )}
                 </div>
               </div>
             ))}

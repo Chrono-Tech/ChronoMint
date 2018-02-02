@@ -7,11 +7,19 @@ import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import { addToken, formTokenLoadMetaData, getDataFromContract, modifyToken } from 'redux/settings/erc20/tokens/actions'
+import {
+  addToken,
+  DUCK_SETTINGS_ERC20_TOKENS,
+  formTokenLoadMetaData,
+  getDataFromContract,
+  modifyToken,
+} from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokensCollection from 'models/tokens/TokensCollection'
 import validate from './validate'
 
 import '../FormDialog.scss'
@@ -21,17 +29,16 @@ export const FORM_CBE_TOKEN = 'CBETokenDialog'
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_CBE_TOKEN)
   return {
-    isFetching: state.get('settingsERC20Tokens').formFetching,
+    isFetching: state.get(DUCK_SETTINGS_ERC20_TOKENS).formFetching,
     address: selector(state, 'address'),
-    symbolFromContract: selector(state, 'symbolFromContract'),
-    decimalsFromContract: selector(state, 'decimalsFromContract'),
+    tokens: state.get(DUCK_TOKENS),
   }
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onClose: () => dispatch(modalsClose()),
-    getDataFromContract: (e, address) => dispatch(getDataFromContract(new TokenModel({ address }))),
+    handleDataFromContract: (e, address) => dispatch(getDataFromContract(new TokenModel({ address }))),
     onSubmit: (values) => {
       dispatch(modalsClose())
       if (ownProps.isModify) {
@@ -47,7 +54,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 @reduxForm({
   form: FORM_CBE_TOKEN,
   validate,
-  asyncValidate: (token, dispatch) => formTokenLoadMetaData(token, dispatch, FORM_CBE_TOKEN),
+  asyncValidate: (token, dispatch, props) => formTokenLoadMetaData(token, dispatch, props.tokens),
   asyncBlurFields: [ 'address', 'symbol', 'decimals' ],
 })
 export default class CBETokenDialog extends PureComponent {
@@ -57,15 +64,14 @@ export default class CBETokenDialog extends PureComponent {
     handleAddressChange: PropTypes.func,
     onClose: PropTypes.func,
     address: PropTypes.string,
+    tokens: PropTypes.instanceOf(TokensCollection),
     getDataFromContract: PropTypes.func,
     ...formPropTypes,
   }
 
   render () {
     return (
-      <ModalDialog
-        onClose={() => this.props.onClose()}
-      >
+      <ModalDialog onClose={this.props.onClose}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <h3
@@ -80,8 +86,8 @@ export default class CBETokenDialog extends PureComponent {
               name='address'
               fullWidth
               disabled={this.props.isFetching}
-              floatingLabelText={<Translate value={'common.ethAddress'} />}
-              onBlur={this.props.getDataFromContract}
+              floatingLabelText={<Translate value='common.ethAddress' />}
+              onBlur={this.props.handleDataFromContract}
             />
             {
               this.props.address &&
@@ -91,27 +97,27 @@ export default class CBETokenDialog extends PureComponent {
                   name='name'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value={'common.name'} />}
+                  floatingLabelText={<Translate value='common.name' />}
                 />
                 <Field
                   component={TextField}
                   name='symbol'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value={'settings.erc20.tokens.symbol'} />}
+                  floatingLabelText={<Translate value='settings.erc20.tokens.symbol' />}
                 />
                 <Field
                   component={TextField}
                   name='decimals'
                   fullWidth
                   disabled={this.props.isFetching}
-                  floatingLabelText={<Translate value={'settings.erc20.tokens.decimals'} />}
+                  floatingLabelText={<Translate value='settings.erc20.tokens.decimals' />}
                 />
                 <Field
                   component={TextField}
                   name='url'
                   fullWidth
-                  floatingLabelText={<Translate value={'settings.erc20.tokens.url'} />}
+                  floatingLabelText={<Translate value='settings.erc20.tokens.url' />}
                 />
                 <Field
                   component={FileSelect}
@@ -125,11 +131,13 @@ export default class CBETokenDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <FlatButton styleName='action' label='Cancel' onTouchTap={() => this.props.onClose()} />
+            <FlatButton styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
             <RaisedButton
+              disabled={this.props.isFetching || this.props.pristine || this.props.invalid}
               styleName='action'
               label={<Translate
-                value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'} />}
+                value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'}
+              />}
               primary
               type='submit'
             />
