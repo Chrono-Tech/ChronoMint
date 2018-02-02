@@ -110,6 +110,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
+        isERC20: true,
       }),
       time, isRemoved, isAdded, result.args.oldToken || null,
     ))
