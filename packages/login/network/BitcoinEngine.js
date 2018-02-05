@@ -18,6 +18,10 @@ export class BitcoinEngine {
     return this._wallet.getAddress()
   }
 
+  getPrivateKey () {
+    return this._wallet.keyPair.getPublicKeyBuffer().toString('hex')
+  }
+
   isAddressValid (address) {
     try {
       bitcoin.address.toOutputScript(address, this._network)

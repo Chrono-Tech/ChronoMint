@@ -43,6 +43,7 @@ export default {
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.',
+    pkIcon: 'Your private key has been copied to the clipboard.',
   },
   operations: {
     title: 'Pending Operations',

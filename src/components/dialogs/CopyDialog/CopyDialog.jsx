@@ -3,7 +3,7 @@ import { RaisedButton, TextField } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import ModalDialog from './ModalDialog'
+import ModalDialog from '../ModalDialog'
 
 import './CopyDialog.scss'
 
@@ -17,9 +17,18 @@ function mapDispatchToProps (dispatch) {
 export default class CopyDialog extends PureComponent {
   static propTypes = {
     copyValue: PropTypes.string,
-    title: PropTypes.string,
-    controlTitle: PropTypes.string,
-    description: PropTypes.string,
+    title: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]),
+    controlTitle: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]),
+    description: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.node,
+    ]),
     modalsClose: PropTypes.func,
   }
 
@@ -43,7 +52,9 @@ export default class CopyDialog extends PureComponent {
               {this.props.description}
             </div>
             <TextField
-              ref={(el) => { this.inputElement = el }}
+              ref={(el) => {
+                this.inputElement = el
+              }}
               name='value'
               value={this.props.copyValue}
               fullWidth
