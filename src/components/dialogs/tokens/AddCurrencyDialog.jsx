@@ -10,15 +10,27 @@ import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION, updateUserProfile } from 'redux/session/actions'
+import ProfileModel, { isTokenChecked } from 'models/ProfileModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
-import { isTokenChecked } from 'models/ProfileModel'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
+import { getProfileTokens } from 'redux/session/selectors'
 import AddTokenDialog from '../AddTokenDialog/AddTokenDialog'
 import ModalDialog from '../ModalDialog'
 import './AddCurrencyDialog.scss'
 import TokenRow from './TokenRow'
 import TokenRowPlaceholder from './TokenRowPlaceholder'
+
+function stateFromProps (props) {
+  return {
+    selectedTokens: props.profileTokens,
+  }
+}
+
+export const checkToken = (token: TokenModel, item: Object) => {
+  const checkBlockchain = token.blockchain() === item.blockchain
+  const checkItem = item.address ? item.address === token.address() : item.symbol === token.symbol()
+  return checkBlockchain && checkItem
+}
 
 function prefix (token) {
   return `components.dialogs.AddCurrencyDialog.${token}`
@@ -28,6 +40,7 @@ function mapStateToProps (state) {
   const wallet = state.get(DUCK_MAIN_WALLET)
   const session = state.get(DUCK_SESSION)
   return {
+    profileTokens: getProfileTokens()(state),
     profile: session.profile,
     tokens: state.get(DUCK_TOKENS),
     balances: wallet.balances(),
@@ -47,7 +60,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddCurrencyDialog extends PureComponent {
   static propTypes = {
-    profile: PropTypes.object,
+    profileTokens: PropTypes.arrayOf(PropTypes.object),
+    profile: PropTypes.instanceOf(ProfileModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     balances: PropTypes.instanceOf(BalancesCollection),
     handleAddToken: PropTypes.func,
@@ -59,9 +73,7 @@ export default class AddCurrencyDialog extends PureComponent {
     super(...arguments)
 
     this.handleSave = this.handleSave.bind(this)
-    this.state = {
-      selectedTokens: this.props.profile.tokens().toArray(),
-    }
+    this.state = stateFromProps(this.props)
   }
 
   handleClose = () => {
@@ -84,7 +96,7 @@ export default class AddCurrencyDialog extends PureComponent {
         address: token.address(),
         symbol: token.symbol(),
         blockchain: token.blockchain(),
-        show: !DEFAULT_TOKENS.includes(token.symbol()),
+        show: isSelect,
       })
     }
 
@@ -94,12 +106,12 @@ export default class AddCurrencyDialog extends PureComponent {
   handleSave () {
     const profile = this.props.profile.tokens(new Immutable.Set(this.state.selectedTokens))
 
-    this.props.updateUserProfile(profile)
     this.props.modalsClose()
+    this.props.updateUserProfile(profile)
   }
 
   renderRow = (selectedTokens, balances, profile) => (token: TokenModel) => {
-    let isSelected = DEFAULT_TOKENS.includes(token.symbol())
+    let isSelected = false
     selectedTokens.map((item) => {
       if (isTokenChecked(token, item)) {
         isSelected = item.show

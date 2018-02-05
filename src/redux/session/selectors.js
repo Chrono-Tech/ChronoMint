@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
 import { isTokenChecked } from 'models/ProfileModel'
 import { MANDATORY_TOKENS } from 'dao/ERC20ManagerDAO'
-import { DUCK_SESSION } from './actions'
+import { DUCK_SESSION, rebuildProfileTokens } from './actions'
 import { getCurrentWallet } from '../wallet/actions'
 import { getTokens } from '../tokens/selectors'
 
@@ -29,8 +29,9 @@ export const BALANCES_COMPARATOR_URGENCY = (item1, item2) => {
 }
 
 export const getVisibleBalances = (comparator = BALANCES_COMPARATOR_URGENCY) => createSelector(
-  [getCurrentWallet, getProfile, getTokens],
+  [ getCurrentWallet, getProfile, getTokens ],
   (wallet, profile, tokens) => {
+    const profileTokens = rebuildProfileTokens(profile, tokens)
     return wallet.balances().items()
       .map((balance) => ({
         balance,
@@ -41,7 +42,7 @@ export const getVisibleBalances = (comparator = BALANCES_COMPARATOR_URGENCY) => 
           return false
         }
         let profileToken
-        profile.tokens().map((item) => {
+        profileTokens.map((item) => {
           if (isTokenChecked(token, item)) {
             profileToken = item
           }
@@ -53,5 +54,11 @@ export const getVisibleBalances = (comparator = BALANCES_COMPARATOR_URGENCY) => 
       })
       .sort(comparator)
       .map(({ balance }) => balance)
-  }
+  },
+)
+
+export const getProfileTokens = () => createSelector([ getProfile, getTokens ],
+  (profile, tokens) => {
+    return rebuildProfileTokens(profile, tokens)
+  },
 )

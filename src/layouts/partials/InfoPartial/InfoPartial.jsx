@@ -97,6 +97,12 @@ export default class InfoPartial extends PureComponent {
     window.addEventListener('resize', this.handleResize)
   }
 
+  componentWillReceiveProps (newProps) {
+    if (!newProps.profile.tokens().equals(this.props.profile.tokens())) {
+      this.handleResize()
+    }
+  }
+
   componentWillUnmount () {
     window.removeEventListener('resize', this.handleResize)
   }
