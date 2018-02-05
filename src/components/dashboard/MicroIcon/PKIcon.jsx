@@ -61,13 +61,15 @@ export default class PKIcon extends PureComponent {
   }
 
   render () {
-    return (
-      <div styleName='root'>
-        <span styleName='micro' onTouchTap={this.handleCopy}>
-          <i className='material-icons'>vpn_key</i>
-        </span>
-      </div>
-    )
+    return this.props.show ?
+      (
+        <div styleName='root'>
+          <span styleName='micro' onTouchTap={this.handleCopy}>
+            <i className='material-icons'>vpn_key</i>
+          </span>
+        </div>
+      )
+      : null
   }
 
 }
