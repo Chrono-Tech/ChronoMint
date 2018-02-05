@@ -46,7 +46,7 @@ export default class AssetHolderDAO extends AbstractContractDAO {
   }
 
   shareholdersCount (): Promise {
-    return this._call('shareholdersCount')
+    return this._call('defaultShareholdersCount')
   }
 
   async withdraw (tokenAddress: String, amount: Amount) {
