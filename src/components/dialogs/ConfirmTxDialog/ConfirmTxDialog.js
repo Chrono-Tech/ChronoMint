@@ -103,7 +103,7 @@ export default class ConfirmTxDialog extends PureComponent {
   render () {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
-    const balanceAfter = balance.minus(tx.value()).minus(gasFee)
+    const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     return (
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
