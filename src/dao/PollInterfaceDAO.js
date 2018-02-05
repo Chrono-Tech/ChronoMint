@@ -49,13 +49,13 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   vote (choice) {
-    return this._tx(TX_VOTE, [ choice ])
+    return this._tx(TX_VOTE, [ choice ], { choice })
   }
 
   removePoll () {
     return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), {
       allowNoReturn: true,
-      useDefaultGasLimit: true
+      useDefaultGasLimit: true,
     }) // allow no return (since there would be a selfdestruct call)
   }
 
