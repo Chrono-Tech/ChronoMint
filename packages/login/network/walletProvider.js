@@ -1,4 +1,5 @@
 import bitcoin from 'bitcoinjs-lib'
+import nemSdk from 'nem-sdk'
 import Wallet from 'ethereumjs-wallet'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
