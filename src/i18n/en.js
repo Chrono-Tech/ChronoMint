@@ -462,6 +462,9 @@ export default {
       [ pollInterface.TX_END_POLL ]: {
         title: 'End Poll',
       },
+      [ pollInterface.TX_VOTE ]: {
+        title: 'Vote',
+      },
     },
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
