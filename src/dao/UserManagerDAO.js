@@ -7,6 +7,7 @@ import ProfileModel from 'models/ProfileModel'
 import { MultiEventsHistoryABI, UserManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
+import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'
@@ -84,14 +85,13 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
   }
 
   _saveProfile (profile: ProfileModel | AbstractModel) {
-    return async () => {
-      // eslint-disable-next-line
-      console.log('_saveProfile', profile.toJS())
+    const action = async () => {
       const hash = await this._ipfsPut(profile.toJS())
       return {
         hash,
       }
     }
+    return new AdditionalActionModel({ action })
   }
 
   async setMemberProfile (account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
