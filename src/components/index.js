@@ -36,7 +36,7 @@ export { default as VoteDialog } from './dialogs/VoteDialog'
 export { default as PollDetailsDialog } from './dialogs/PollDetailsDialog'
 export { default as AlertDialog } from './dialogs/AlertDialog'
 export { default as UpdateProfileDialog } from './dialogs/UpdateProvideDialog/UpdateProfileDialog'
-export { default as CopyDialog } from './dialogs/CopyDialog'
+export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'

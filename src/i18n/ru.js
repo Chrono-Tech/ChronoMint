@@ -531,6 +531,11 @@ export default {
       controlTitle: 'Адрес',
       description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес',
     },
+    copyPrivateKey: {
+      title: 'Копирование приватного ключа',
+      controlTitle: 'Приватный ключ',
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать приватный ключ',
+    },
   },
   poll: {
     new: 'Новое Голосование',
