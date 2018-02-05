@@ -9,6 +9,7 @@ import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 import EventEmitter from 'events'
+import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
@@ -401,7 +402,7 @@ export default class AbstractContractDAO extends EventEmitter {
     infoArgs: Object | AbstractModel = null,
     value: BigNumber = new BigNumber(0),
     options = DEFAULT_TX_OPTIONS,
-    additionalAction = ()=>{}
+    additionalAction = new AdditionalActionModel()
   ): Object {
 
     const {
@@ -438,13 +439,13 @@ export default class AbstractContractDAO extends EventEmitter {
     }
 
     const runAdditionalAction = async () => {
+      const result = await additionalAction.action()
       // eslint-disable-next-line
-      console.log('runAdditionalAction', additionalAction)
-      const result = await additionalAction()
-      Object.values(result).map((item) => {
-        args.push(item)
-      })
-      tx = tx.set('additional', result)
+      console.log('runAdditionalAction result', result)
+      // Object.values(result).map((item) => {
+      //   args.push(item)
+      // })
+      // tx = tx.set('additional', result)
     }
 
     let gasLimit = null
