@@ -391,7 +391,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -1904,9 +1904,9 @@ chownr@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.0.1.tgz#e2a75042a9551908bebd25b8523d5f9769d79181"
 
-"chronobank-smart-contracts@https://github.com/ChronoBank/SmartContracts#release/release-1.1.45":
+chronobank-smart-contracts@1.1.45:
   version "1.1.45"
-  resolved "https://github.com/ChronoBank/SmartContracts#e159a63e5ba4d060a7ab616c614c50e667fdb945"
+  resolved "https://registry.yarnpkg.com/chronobank-smart-contracts/-/chronobank-smart-contracts-1.1.45.tgz#6b1b1be619dfad457c7a2a1c5f2ee1e990c3aa56"
   dependencies:
     abi-decoder "^1.0.9"
     browser-stdout "1.3.0"
@@ -8139,7 +8139,7 @@ react-hot-loader@next:
     hoist-non-react-statics "^2.3.1"
     react-stand-in "^4.0.0-beta.18"
 
-react-i18nify@^1.8.7, react-i18nify@^1.8.8:
+react-i18nify@1.11.7, react-i18nify@^1.8.8:
   version "1.11.7"
   resolved "https://registry.yarnpkg.com/react-i18nify/-/react-i18nify-1.11.7.tgz#aca40c9c93e136a605e14a07cc6941a33f793c7f"
   dependencies:
@@ -9744,7 +9744,7 @@ truffle-error@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/truffle-error/-/truffle-error-0.0.2.tgz#01b189b78505566ae1689c239c7ca2dd121cfe4c"
 
-truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
+"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

@@ -17,6 +17,7 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
 import PollDetailsModel from 'models/PollDetailsModel'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import BigNumber from 'bignumber.js'
 import './Poll.scss'
 
 function prefix (token) {
@@ -135,7 +136,7 @@ export default class Poll extends PureComponent {
                         fillFrom: '#311b92',
                         fillTo: '#d500f9',
                       },
-                      { value: details.voteLimitInTIME.minus(details.maxOptionTime).toNumber(), fill: 'transparent' },
+                      { value: (details.voteLimitInTIME ? details.voteLimitInTIME.minus(details.maxOptionTime) : new BigNumber(0)).toNumber(), fill: 'transparent' },
                     ]}
                   />
                 </div>
