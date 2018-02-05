@@ -71,6 +71,10 @@ export class BitcoinProvider extends AbstractProvider {
       balance,
     })
   }
+
+  getPrivateKey () {
+    return this._engine ? this._engine.getPrivateKey() : null
+  }
 }
 
 export const btcProvider = new BitcoinProvider(selectBTCNode, BLOCKCHAIN_BITCOIN)

@@ -37,6 +37,10 @@ export class EthereumProvider extends AbstractProvider {
     })
     return node
   }
+
+  getPrivateKey () {
+    return this._engine ? this._engine.getPrivateKey() : null
+  }
 }
 
 export const ethereumProvider = new EthereumProvider(selectEthereumNode)

@@ -36,6 +36,7 @@ export default {
   },
   profile: {
     copyIcon: 'Ваш адрес был скопирован.',
+    pkIcon: 'Ваш приватный ключ был скопирован.',
   },
   operations: {
     title: 'Ожидающие Операции',
