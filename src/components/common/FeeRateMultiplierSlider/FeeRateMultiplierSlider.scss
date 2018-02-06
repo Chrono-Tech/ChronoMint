@@ -1,0 +1,28 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  padding: 0 20px;
+}
+
+.tagsWrap {
+  justify-content: space-between;
+  display: flex;
+  opacity: 1;
+  font-size: 12px;
+  text-transform: capitalize;
+  color: $color-panel-bg-1;
+  position: relative;
+}
+
+.title {
+  font-weight: 700;
+  color: $color-primary-3;
+  padding: 0 0 5px;
+}
+
+.description {
+  color: $color-primary-3;
+  font-weight: 400;
+  padding-bottom: 50px;
+}
