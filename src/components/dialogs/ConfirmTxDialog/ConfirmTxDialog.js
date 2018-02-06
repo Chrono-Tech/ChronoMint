@@ -103,6 +103,7 @@ export default class ConfirmTxDialog extends PureComponent {
   render () {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
+    const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     return (
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
@@ -136,7 +137,7 @@ export default class ConfirmTxDialog extends PureComponent {
                       {gasFee.gt(0)
                         ? <TokenValue
                           prefix='&asymp;&nbsp;'
-                          value={new Amount(balance, ETH)}
+                          value={new Amount(balanceAfter, ETH)}
                         />
                         : <CircularProgress size={16} thickness={1.5} />}
                     </TableRowColumn>

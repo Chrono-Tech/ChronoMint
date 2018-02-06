@@ -9,8 +9,9 @@ import OwnerModel from 'models/wallet/OwnerModel'
 import multisigWalletService from 'services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
-export const EVENT_NEW_MS_WALLET = 'newMSWallet'
-export const EVENT_MS_WALLETS_COUNT = 'msWalletCount'
+export const EE_MS_WALLET_ADDED = 'MSWalletAdded'
+export const EE_MS_WALLET_REMOVED = 'MSWalletRemoved'
+export const EE_MS_WALLETS_COUNT = 'msWalletCount'
 
 export default class WalletsManagerDAO extends AbstractContractDAO {
 
@@ -24,7 +25,10 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   }
 
   async init () {
-    await this.watchWalletCreate()
+    await Promise.all([
+      this.watchWalletCreate(),
+      this.watchWalletRemoved(),
+    ])
     this._isInit = true
   }
 
@@ -38,12 +42,19 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     )
   }
 
+  watchWalletRemoved () {
+    return this._watch(
+      'WalletDeleted',
+      (result) => this.emit(EE_MS_WALLET_REMOVED, result.args.wallet),
+    )
+  }
+
   // --------- actions ----------
 
   async fetchWallets () {
     const [ addresses, is2FA ] = await this._call('getWallets')
     const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
-    this.emit(EVENT_MS_WALLETS_COUNT, validAddresses.length)
+    this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
     validAddresses.forEach((address, i) => {
       this._createWalletModel(address, is2FA[ i ])
@@ -87,7 +98,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       addresses,
       releaseTime,
     })
-    this.emit(EVENT_NEW_MS_WALLET, multisigWalletModel)
+    this.emit(EE_MS_WALLET_ADDED, multisigWalletModel)
   }
 
   async createWallet (wallet: MultisigWalletModel) {

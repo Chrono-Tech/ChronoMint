@@ -2,7 +2,8 @@
 
 $size: 32px;
 
-.root {
+
+.chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -36,4 +37,11 @@ $size: 32px;
 .of {
   margin-left: 24px;
   font-size: 16px
+}
+
+.error {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-red;
+  margin-top: 8px;
 }

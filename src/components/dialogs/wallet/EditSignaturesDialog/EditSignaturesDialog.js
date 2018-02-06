@@ -10,7 +10,7 @@ import { changeRequirement } from 'redux/multisigWallet/actions'
 function mapDispatchToProps (dispatch) {
   return {
     modalsClose: () => dispatch(modalsClose()),
-    handleAddOwner: (newRequired) => dispatch(changeRequirement(newRequired)),
+    handleAddOwner: (wallet, newRequired) => dispatch(changeRequirement(wallet, newRequired)),
   }
 }
 
@@ -24,6 +24,7 @@ export default class EditSignaturesDialog extends PureComponent {
   }
 
   handleSubmitSuccess = (newRequired) => {
+    console.log('--EditSignaturesDialog#handleSubmitSuccess', newRequired)
     this.props.modalsClose()
     this.props.handleAddOwner(this.props.wallet, newRequired)
   }

@@ -153,3 +153,10 @@
   left: calc(50% - 6px);
   top: -5px;
 }
+
+.timeLockWarn {
+  color: $color-warning;
+  font-size: 14px;
+  margin-top: 8px;
+  text-align: right;
+}

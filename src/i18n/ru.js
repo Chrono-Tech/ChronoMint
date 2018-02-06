@@ -69,7 +69,8 @@ export default {
     owners: 'владельцев',
     youHave: 'Вы имеете',
     multisignatureWallets: 'Мульти кошельков',
-    switchMultisignatureWallet: 'Сменить мульти кошелёк',
+    createMultisignatureWallet: 'Создать мульти кошелек',
+    changeMultisignatureWallet: 'Сменить мульти кошелёк',
     switchToMultisignatureWallet: 'Переключить на мульти кошелёк',
     switchToMainWallet: 'Переключить на основной кошелёк',
     pendingTransfers: 'Проводимые переводы',
@@ -77,8 +78,8 @@ export default {
     transaction: 'Транзакция',
     actions: 'Действия',
     value: 'Сумма',
-    revoke: 'ОТОЗВАТЬ',
-    sign: 'ПОДПИСАТЬ',
+    revoke: 'Отзвать',
+    sign: 'Подписать',
   },
   exchange: {
     tokens: 'Обмен токенов',
@@ -446,12 +447,16 @@ export default {
         owner: 'Новый менеджер',
       },
       removeOwner: {
-        title: 'Удалить мееджера',
+        title: 'Удалить менеджера',
         owner: 'Адрес',
       },
       kill: {
         title: 'Удалить кошелек',
         to: 'Перевести средства на адрес',
+      },
+      changeRequirement: {
+        title: 'Изменить количество подписей',
+        requiredSignatures: 'Новое значение',
       },
     },
     PollInterface: {
@@ -463,6 +468,9 @@ export default {
       },
       [ pollInterface.TX_END_POLL ]: {
         title: 'Завершить голосование',
+      },
+      [ pollInterface.TX_VOTE ]: {
+        title: 'Проголосовать',
       },
     },
     VotingManager: {
@@ -489,6 +497,7 @@ export default {
     moreThanOrEqual: 'Должно быть больше или равно %{limit}',
     limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
     invalidLatinString: 'Строка должна иметь только латинские символы (A-z)',
+    mustBeUnique: 'Значение должно быть уникальным',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Невозможно отправить токены самому себе',
@@ -674,19 +683,6 @@ export default {
         symbolHolderAllowance: '%{symbol} allowance держателя',
         requireTime: 'Запросить TIME',
         withdraw: 'Вывести',
-      },
-      SendTokens: {
-        fast: 'Быстро',
-        slow: 'Медленно',
-        balance: 'Баланс',
-        recipientAddress: 'Адрес получателя',
-        amount: 'Сумма',
-        feeRate: 'Комиссия: %{multiplier} от средней (%{total} sat/byte)',
-        gasPrice: 'Цена газа: %{multiplier} of среднего (%{total} Gwei)',
-        approve: 'Подтвердить',
-        revoke: 'Отозвать',
-        allowance: 'allowance',
-        send: 'Отправить',
       },
       RewardsPeriod: {
         rewardsPeriodIndex: 'Бонусный период #%{index}',

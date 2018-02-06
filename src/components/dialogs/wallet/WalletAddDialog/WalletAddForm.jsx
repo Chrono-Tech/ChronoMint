@@ -11,21 +11,22 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DatePicker, TimePicker, Toggle } from 'redux-form-material-ui'
-import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import validate from './validate'
 import './WalletAddForm.scss'
 
-export const FORM_WALLET_ADD_EDIT_DIALOG = 'WalletAddEditForm'
+export const FORM_WALLET_ADD = 'WalletAddEditForm'
 
 function mapStateToProps (state) {
-  const selector = formValueSelector(FORM_WALLET_ADD_EDIT_DIALOG)
-  const owners = selector(state, 'owners')
+  const selector = formValueSelector(FORM_WALLET_ADD)
+  let owners = selector(state, 'owners')
 
   return {
     isTimeLocked: selector(state, 'isTimeLocked'),
+    requiredSignatures: +selector(state, 'requiredSignatures'),
     is2FA: selector(state, 'is2FA'),
     ownersCount: owners ? owners.size + 1 : 1,
     account: state.get(DUCK_SESSION).account,
@@ -35,6 +36,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
+    changeSignatures: (count) => dispatch(change(FORM_WALLET_ADD, 'requiredSignatures', count)),
   }
 }
 
@@ -72,14 +74,23 @@ const onSubmit = (values, dispatch, props) => {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_WALLET_ADD_EDIT_DIALOG, validate, onSubmit })
+@reduxForm({ form: FORM_WALLET_ADD, validate, onSubmit })
 export default class WalletAddEditForm extends PureComponent {
   static propTypes = {
     onClose: PropTypes.func,
     isTimeLocked: PropTypes.bool,
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
+    changeSignatures: PropTypes.func,
+    requiredSignatures: PropTypes.number,
     ...formPropTypes,
+  }
+
+  handleChangeOwner = (owners) => {
+    console.log('--WalletAddForm#handleChangeOwner', owners.length, this.props.requiredSignatures)
+    if (owners.length < this.props.requiredSignatures) {
+      this.props.changeSignatures(owners.length)
+    }
   }
 
   render () {
@@ -130,17 +141,17 @@ export default class WalletAddEditForm extends PureComponent {
               </div>
             )}
           </div>
-          {false && (
-            <div styleName='block'>
-              <Field
-                component={Toggle}
-                name='is2FA'
-                label={<Translate value={`${prefix}.twoFA`} />}
-                toggled={false}
-              />
-              <Translate styleName='description' value={`${prefix}.twoFADescription`} />
-            </div>
-          )}
+          <div styleName='block'>
+            <Field
+              component={Toggle}
+              name='is2FA'
+              label={<Translate value={`${prefix}.twoFA`} />}
+              toggled={false}
+              labelStyle={globalStyles.toggle.labelStyle}
+              disabled
+            />
+            <i><Translate styleName='description' value={`${prefix}.twoFADescription`} /></i>
+          </div>
           <div styleName='block'>
             <Translate styleName='title' count={ownersCount} value={`${prefix}.walletOwners`} />
             {is2FA
@@ -151,6 +162,7 @@ export default class WalletAddEditForm extends PureComponent {
               <div styleName='ownersList'>
                 <FieldArray
                   component={OwnersList}
+                  onRemove={this.handleChangeOwner}
                   name='owners'
                 />
               </div>

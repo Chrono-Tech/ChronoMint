@@ -228,7 +228,13 @@ export const getScannerById = (networkId, providerId, api = false) => {
 export const getBlockExplorerUrl = (networkId, providerId, txHash, blockchain) => {
   try {
     const isTestnet = isTestingNetwork(networkId, providerId)
-    let baseUrl = blockExplorersMap[ blockchain ][ isTestnet ? 'testnet' : 'mainnet' ]
+    const explorers = blockExplorersMap[ blockchain ]
+    if (!explorers) {
+      // TODO @ipavlenko: We have no TX history & TX explorers for some blockchains, for NEM for example
+      // Public installations have no https support.
+      return null
+    }
+    let baseUrl = explorers[ isTestnet ? 'testnet' : 'mainnet' ]
     if (Array.isArray(baseUrl)) {
       baseUrl = baseUrl[ 0 ]
     }

@@ -23,8 +23,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('transactionHash') || this.get('address')
   }
 
-  owners () {
-    return this.get('owners')
+  owners (value) {
+    return this._getSet('owners', value)
   }
 
   // shortcut for eth-address
@@ -40,8 +40,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return !this.address()
   }
 
-  requiredSignatures () {
-    return this.get('requiredSignatures')
+  requiredSignatures (value) {
+    return this._getSet('requiredSignatures', value)
   }
 
   pendingTxList (value) {
