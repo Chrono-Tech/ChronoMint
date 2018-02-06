@@ -1,4 +1,4 @@
-export const prefix = 'components.FeeRateMultiplierSlider'
+export const prefix = 'components.GasSlider'
 export const en = {
   slow: 'Slow transaction',
   fast: 'Fast transaction',

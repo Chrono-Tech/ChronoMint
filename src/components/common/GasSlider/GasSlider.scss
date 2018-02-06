@@ -9,10 +9,10 @@
   justify-content: space-between;
   display: flex;
   opacity: 1;
-  font-size: 12px;
   text-transform: capitalize;
   color: $color-panel-bg-1;
   position: relative;
+  margin-bottom: 15px;
 }
 
 .title {
@@ -24,5 +24,13 @@
 .description {
   color: $color-primary-3;
   font-weight: 400;
-  padding-bottom: 50px;
+  padding-bottom: 40px;
+}
+
+.gasPriceDescription {
+  margin-top: 15px;
+}
+
+.gasInUsd {
+
 }
