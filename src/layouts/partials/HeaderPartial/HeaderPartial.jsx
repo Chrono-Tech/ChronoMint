@@ -21,6 +21,7 @@ import { readNotices } from 'redux/notifier/actions'
 import { logout } from 'redux/session/actions'
 import Value from 'components/common/Value/Value'
 import ls from 'utils/LocalStorage'
+import FeeRateMultiplierSlider from 'components/common/FeeRateMultiplierSlider/FeeRateMultiplierSlider'
 import styles from '../styles'
 import './HeaderPartial.scss'
 
@@ -409,6 +410,9 @@ export default class HeaderPartial extends PureComponent {
                 .map((item) => this.renderBalance(item))}
             </div>
           </div>
+        </div>
+        <div styleName='profile-fee-slider'>
+          <FeeRateMultiplierSlider />
         </div>
         <div styleName='profile-footer'>
           <FlatButton
