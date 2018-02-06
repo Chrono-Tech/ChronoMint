@@ -3,7 +3,7 @@ import { Translate } from 'react-redux-i18n'
 import { Slider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import './FeeRateMultiplierSlider.scss'
+import './GasSlider.scss'
 import { prefix } from './lang'
 
 const FEE_RATE_MULTIPLIER = {
@@ -21,7 +21,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class FeeRateMultiplierSlider extends PureComponent {
+export default class GasSlider extends PureComponent {
   static propTypes = {
     value: PropTypes.number,
     disabled: PropTypes.bool,
@@ -50,10 +50,8 @@ export default class FeeRateMultiplierSlider extends PureComponent {
             console.log('onDragStop',)
           }}
         />
-        <div>
-          <small>
-            <Translate value={`${prefix}.gasPrice`} />
-          </small>
+        <div styleName='gasPriceDescription'>
+          <Translate value={`${prefix}.gasPrice`} />
         </div>
       </div>
     )
