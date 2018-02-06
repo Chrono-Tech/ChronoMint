@@ -29,7 +29,6 @@ import IconSection from '../IconSection/IconSection'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
-const DEPOSIT_LIMIT = 1
 const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 
 export const ACTION_APPROVE = 'deposit/approve'
@@ -69,7 +68,6 @@ function mapStateToProps (state) {
     assets,
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
-    isTesting,
   }
 }
 
@@ -89,7 +87,6 @@ export default class DepositTokensForm extends PureComponent {
     allowance: PropTypes.instanceOf(AllowanceModel),
     balance: PropTypes.instanceOf(Amount),
     isShowTIMERequired: PropTypes.bool,
-    isTesting: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
     wallet: PropTypes.instanceOf(MainWallet),
@@ -141,16 +138,8 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   getIsLockValid (amount) {
-    const { token, balance, isTesting, allowance, deposit } = this.props
-    const depositLimitWithDecimals = token.addDecimals(DEPOSIT_LIMIT)
-    const limit = isTesting
-      ? BigNumber.min(balance, allowance.amount())
-      : BigNumber.min(
-        depositLimitWithDecimals,
-        balance,
-        BigNumber.max(depositLimitWithDecimals.minus(deposit), 0),
-        allowance.amount(),
-      )
+    const { balance, allowance } = this.props
+    const limit = BigNumber.min(balance, allowance.amount())
     return limit.gte(amount)
   }
 
@@ -233,7 +222,6 @@ export default class DepositTokensForm extends PureComponent {
           name='amount'
           style={{ width: '150px' }}
         />
-        {!this.props.isTesting && <div styleName='warning'><Translate value='errors.limitDepositOnMainnet' /></div>}
       </div>
     )
   }
@@ -246,7 +234,7 @@ export default class DepositTokensForm extends PureComponent {
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
 
-    const isRevokeDisabled =  allowance.isFetching() || !allowance.isFetched()
+    const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched()
     const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
     const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
