@@ -19,7 +19,7 @@ export class BitcoinEngine {
   }
 
   getPrivateKey () {
-    return this._wallet.keyPair.getPublicKeyBuffer().toString('hex')
+    return this._wallet.keyPair.d.toBuffer().toString('hex')
   }
 
   isAddressValid (address) {
