@@ -1,10 +1,6 @@
 import AbstractNode from './AbstractNode'
 
 export default class NemAbstractNode extends AbstractNode {
-
-  async getFeeRate () {
-    throw new Error('Not implemented')
-  }
 }
 
 // Intermediate model to communicate under the Provider layer
@@ -13,18 +9,24 @@ export class NemTx {
     txHash,
     time,
     from,
+    signer, // PublicKey
     to,
     value,
     fee,
     credited,
+    mosaics,
+    unconfirmed,
   }) {
     this.txHash = txHash
     this.time = time
     this.from = from
+    this.signer = signer
     this.to = to
     this.value = value
     this.fee = fee
     this.credited = credited
+    this.mosaics = mosaics
+    this.unconfirmed = unconfirmed
     Object.freeze(this)
   }
 }

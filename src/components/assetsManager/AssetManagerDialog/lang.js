@@ -1,14 +1,12 @@
 export default {
   en: {
-    dialogTitle: 'Add/edit token manager',
+    dialogTitle: 'Add/remove manager',
     managerAddress: 'Manager address',
-    addManagers: 'Add/edit manager',
     addManagersButton: 'Add manager',
   },
   ru: {
-    dialogTitle: 'Добавить/редактировать менеджеров токена',
-    addManagers: 'Добавить/редактировать менеджеров',
-    managerAddress: 'Аддрес менеджера',
+    dialogTitle: 'Добавить/удалить менеджеров',
+    managerAddress: 'Адрес менеджера',
     addManagersButton: 'Добавить менеджера',
   },
 }

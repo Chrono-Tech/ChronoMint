@@ -15,6 +15,9 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { activatePoll, endPoll, removePoll } from 'redux/voting/actions'
+import PollDetailsModel from 'models/PollDetailsModel'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import BigNumber from 'bignumber.js'
 import './Poll.scss'
 
 function prefix (token) {
@@ -52,7 +55,7 @@ function mapDispatchToProps (dispatch, props) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends PureComponent {
   static propTypes = {
-    model: PropTypes.object,
+    model: PropTypes.instanceOf(PollDetailsModel),
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
@@ -61,6 +64,28 @@ export default class Poll extends PureComponent {
     handlePollRemove: PropTypes.func,
     handlePollActivate: PropTypes.func,
     handlePollEnd: PropTypes.func,
+  }
+
+  renderStatus () {
+    const { model } = this.props
+    const details = model.details()
+
+    if (model.isFetching()) {
+      return <div styleName='entry entryStatus'><Preloader /></div>
+    } else {
+      return (
+        <div styleName='entry entryStatus'>
+          {details.status && details.active &&
+          (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)}
+
+          {details.status && !details.active &&
+          (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)}
+
+          {!details.status &&
+          (<div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>)}
+        </div>
+      )
+    }
   }
 
   render () {
@@ -84,21 +109,7 @@ export default class Poll extends PureComponent {
                     />
                   </div>
                 </div>
-                {details.status
-                  ? (
-                    <div styleName='entry entryStatus'>
-                      {details.active
-                        ? (<div styleName='entryBadge badgeOrange'><Translate value={prefix('ongoing')} /></div>)
-                        : (<div styleName='entryBadge badgeGreen'><Translate value={prefix('new')} /></div>)
-                      }
-                    </div>
-                  )
-                  : (
-                    <div styleName='entry entryStatus'>
-                      <div styleName='entryBadge badgeBlue'><Translate value={prefix('finished')} /></div>
-                    </div>
-                  )
-                }
+                {this.renderStatus()}
               </div>
               <div styleName='layer layerChart'>
                 <div styleName='entry entryTotal'>
@@ -120,8 +131,12 @@ export default class Poll extends PureComponent {
                     key={details}
                     weight={0.20}
                     items={[
-                      { value: details.votedCount.toNumber(), fillFrom: '#311b92', fillTo: '#d500f9' },
-                      { value: (details.shareholdersCount.minus(details.votedCount)).toNumber(), fill: 'transparent' },
+                      {
+                        value: details.maxOptionTime.toNumber(),
+                        fillFrom: '#311b92',
+                        fillTo: '#d500f9',
+                      },
+                      { value: (details.voteLimitInTIME ? details.voteLimitInTIME.minus(details.maxOptionTime) : new BigNumber(0)).toNumber(), fill: 'transparent' },
                     ]}
                   />
                 </div>
@@ -130,17 +145,15 @@ export default class Poll extends PureComponent {
                 <div styleName='entry entryPublished'>
                   <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
                   <div styleName='entryValue'>
-                    {details.published && <Moment date={details.published} format={SHORT_DATE} /> || (
-                      <i><Translate value={prefix('no')} /></i>
-                    )}
+                    {details.published && <Moment date={details.published} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
                   </div>
                 </div>
                 <div styleName='entry entryFinished'>
                   <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
                   <div styleName='entryValue'>
-                    {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (
-                      <i><Translate value={prefix('no')} /></i>
-                    )}
+                    {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
                   </div>
                 </div>
                 <div styleName='entry entryRequired'>
@@ -150,7 +163,7 @@ export default class Poll extends PureComponent {
                       ? (<i>Unlimited</i>)
                       : (
                         <span>{this.props.timeToken.isFetched()
-                          ? `${this.props.timeToken.removeDecimals(details.voteLimit)} TIME`
+                          ? <TokenValue noRenderPrice value={details.voteLimitInTIME} />
                           : <Preloader />
                         }
                         </span>)
@@ -163,7 +176,7 @@ export default class Poll extends PureComponent {
                     <span>
                       {
                         this.props.timeToken.isFetched()
-                          ? `${this.props.timeToken.removeDecimals(details.received)} TIME`
+                          ? <TokenValue noRenderPrice value={details.received} />
                           : <Preloader />
                       }
                     </span>
@@ -172,12 +185,14 @@ export default class Poll extends PureComponent {
                 <div styleName='entry entryVariants'>
                   <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
                   <div styleName='entryValue'>{details.options.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}</div>
+                    <i><Translate value={prefix('no')} /></i>)}
+                  </div>
                 </div>
                 <div styleName='entry entryDocuments'>
                   <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
                   <div styleName='entryValue'>{details.files.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}</div>
+                    <i><Translate value={prefix('no')} /></i>)}
+                  </div>
                 </div>
               </div>
             </div>
@@ -188,13 +203,13 @@ export default class Poll extends PureComponent {
           </div>
           <div styleName='foot'>
             <div styleName='left'>
-              {isCBE && details.status && !details.active
+              {isCBE && (!details.status || !details.active)
                 ? (
                   <RaisedButton
                     label={<Translate value={prefix('remove')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={() => this.props.handlePollRemove()}
+                    onTouchTap={!model.isFetching() && this.props.handlePollRemove}
                   />
                 )
                 : null
@@ -206,7 +221,7 @@ export default class Poll extends PureComponent {
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={this.props.handlePollDetails}
+                onTouchTap={!model.isFetching() && this.props.handlePollDetails}
               />
               {isCBE && details.status && details.active
                 ? (
@@ -214,7 +229,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollEnd}
+                    onTouchTap={!model.isFetching() && this.props.handlePollEnd}
                   />
                 )
                 : null
@@ -225,19 +240,19 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollActivate}
+                    onTouchTap={!model.isFetching() && this.props.handlePollActivate}
                   />
                 )
                 : null
               }
-              {details.status && details.active && !details.memberVote && details.daysLeft > 0
+              {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
                 ? (
                   <RaisedButton
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onClick={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
+                    onTouchTap={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
                   />
                 )
                 : null

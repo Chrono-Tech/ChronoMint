@@ -1,38 +1,30 @@
-import VotingModel from 'models/voting/VotingCollection'
-import * as a from './actions'
+import VotingMainModel from 'models/voting/VotingMainModel'
+import {
+  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT,
+} from './actions'
 
-const initialState = new VotingModel()
+const initialState = new VotingMainModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case a.POLLS_INIT:
-      return state.isInited(action.isInited)
-    case a.POLLS_VOTE_LIMIT:
+    case POLLS_VOTE_LIMIT:
       return state.voteLimitInTIME(action.voteLimitInTIME)
-    case a.POLLS_LOAD:
+    case POLLS_LOAD:
       return state.isFetching(true)
-    case a.POLLS_LIST:
+    case POLLS_LIST:
       return state
-        .isFetched(true)
         .isFetching(false)
+        .isFetched(true)
         .list(action.list)
-    case a.POLLS_CREATE:
-      return state.list(state.list().set(
-        action.poll.poll().id(),
-        action.poll
-      ))
-    case a.POLLS_REMOVE_STUB:
-      return state.list(state.list().filter((poll) => {
-        const hash = poll.transactionHash()
-        return hash === null || hash !== action.transactionHash
-      }))
-    case a.POLLS_UPDATE:
-      return state.list(state.list().set(
-        action.poll.poll().id(),
-        action.poll
-      ))
-    case a.POLLS_REMOVE:
-      return state.remove(action.item)
+    case POLLS_CREATE:
+      return state
+        .list(state.list().update(action.poll))
+    case POLLS_UPDATE:
+      return state
+        .list(state.list().update(action.poll))
+    case POLLS_REMOVE:
+      return state
+        .list(state.list().remove(action.id))
     default:
       return state
   }

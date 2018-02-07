@@ -1,4 +1,4 @@
-import validator from 'models/validator'
+import * as validator from 'models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import AssetsManagerDAO from './AssetsManagerDAO'
@@ -15,9 +15,8 @@ import RewardsDAO from './RewardsDAO'
 import AssetHolderDAO from './AssetHolderDAO'
 import TokenManagementExtensionDAO from './TokenManagementExtensionDAO'
 import UserManagerDAO from './UserManagerDAO'
-import VotingActorDAO from './VotingActorDAO'
-import VotingDAO from './VotingDAO'
-import VotingDetailsDAO from './VotingDetailsDAO'
+import VotingManagerDAO from './VotingManagerDAO'
+import PollInterfaceDAO from './PollInterfaceDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 import { ExchangeDAO } from './ExchangeDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
@@ -29,9 +28,8 @@ const DAO_WALLETS_MANAGER = 'WalletsManager'
 const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
 const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
-const DAO_VOTING = 'PollManager'
-const DAO_VOTING_DETAILS = 'PollDetails'
-const DAO_VOTING_ACTOR = 'VoteActor'
+const DAO_VOTING_MANAGER = 'VotingManager'
+const DAO_POLL_INTERFACE = 'PollInterfaceDAO'
 const DAO_REWARDS = 'Rewards'
 const DAO_ASSETS_MANAGER = 'AssetsManager'
 const DAO_PLATFORMS_MANAGER = 'PlatformsManager'
@@ -53,9 +51,8 @@ const daoMap = {
   [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
   [DAO_EXCHANGE]: ExchangeDAO,
   [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_VOTING]: VotingDAO,
-  [DAO_VOTING_DETAILS]: VotingDetailsDAO,
-  [DAO_VOTING_ACTOR]: VotingActorDAO,
+  [DAO_VOTING_MANAGER]: VotingManagerDAO,
+  [DAO_POLL_INTERFACE]: PollInterfaceDAO,
   [DAO_REWARDS]: RewardsDAO,
   [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
   [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
@@ -187,16 +184,12 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_LOC_MANAGER)
   }
 
-  getVotingDAO (): Promise<VotingDAO> {
-    return this._getDAO(DAO_VOTING)
+  getVotingManagerDAO (): Promise<VotingManagerDAO> {
+    return this._getDAO(DAO_VOTING_MANAGER)
   }
 
-  getVotingDetailsDAO (): Promise<VotingDetailsDAO> {
-    return this._getDAO(DAO_VOTING_DETAILS)
-  }
-
-  getVotingActorDAO (): Promise<VotingActorDAO> {
-    return this._getDAO(DAO_VOTING_ACTOR)
+  getPollInterfaceDAO (address): Promise<PollInterfaceDAO> {
+    return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 
   async isContract (account): Promise<boolean> {

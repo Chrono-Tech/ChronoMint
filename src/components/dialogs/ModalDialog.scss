@@ -10,12 +10,15 @@
   justify-content: center;
   padding: 20px 0;
   -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: $color-modal-backdrop-bg;
 }
 
 .dialog {
-  display: block;
   position: relative;
   margin: auto 20px;
+  box-shadow: $box-shadow-1;
 }
 
 .content {
@@ -32,17 +35,5 @@
 
   &:hover {
     opacity: 1;
-  }
-}
-
-:global(.ModalDialog) {
-  &__backdrop {
-    overflow-y: auto;
-    overflow-x: hidden;
-    background: $color-modal-backdrop-bg;
-  }
-
-  &__dialog {
-    box-shadow: $box-shadow-1;
   }
 }

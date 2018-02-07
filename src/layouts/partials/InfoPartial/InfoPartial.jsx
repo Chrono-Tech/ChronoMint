@@ -16,6 +16,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import ProfileModel from 'models/ProfileModel'
 import { OPEN_BRAND_PARTIAL } from 'redux/ui/reducer'
 import { getCurrentWallet } from 'redux/wallet/actions'
+import { getVisibleBalances } from 'redux/session/selectors'
 import './InfoPartial.scss'
 import SlideArrow from './SlideArrow'
 import TokenItem from './TokenItem'
@@ -62,6 +63,7 @@ function mapStateToProps (state) {
     open: ui.open,
     balances: wallet.balances(),
     tokens: state.get(DUCK_TOKENS),
+    visibleBalances: getVisibleBalances()(state),
   }
 }
 
@@ -76,6 +78,9 @@ export default class InfoPartial extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
     isMultisig: PropTypes.bool,
     balances: PropTypes.instanceOf(BalancesCollection),
+    visibleBalances: PropTypes.arrayOf(
+      PropTypes.instanceOf(BalanceModel)
+    ),
     isPending: PropTypes.bool,
   }
 
@@ -90,6 +95,12 @@ export default class InfoPartial extends PureComponent {
   componentDidMount () {
     this.handleResize()
     window.addEventListener('resize', this.handleResize)
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.profile.tokens().equals(this.props.profile.tokens())) {
+      this.handleResize()
+    }
   }
 
   componentWillUnmount () {
@@ -107,11 +118,10 @@ export default class InfoPartial extends PureComponent {
   }
 
   handleSlide = (diff) => {
-    const { balances, tokens } = this.props
+    const { tokens, visibleBalances } = this.props
     const { visibleCount } = this.state
 
-    const filteredBalances = balances.filter(this.filterCallback)
-    const count = filteredBalances.toArray().length + tokens.leftToFetch()
+    const count = visibleBalances.length + tokens.leftToFetch()
     const total = count + 1 <= visibleCount ? count + 1 : count
     const cells = (total % visibleCount === 0)
       ? total
@@ -129,12 +139,6 @@ export default class InfoPartial extends PureComponent {
       slideIndex: 0,
       visibleCount,
     })
-  }
-
-  filterCallback = (balance) => {
-    const { tokens, profile } = this.props
-    const token = tokens.item(balance.symbol())
-    return !token.isOptional() || profile.tokens().get(token.address())
   }
 
   renderItem = (balance: BalanceModel) => {
@@ -178,12 +182,11 @@ export default class InfoPartial extends PureComponent {
   }
 
   render () {
-    const { balances, isMultisig, tokens, isPending } = this.props
+    const { visibleBalances, isMultisig, tokens, isPending } = this.props
     const { visibleCount } = this.state
     const leftToFetch = tokens.leftToFetch()
 
-    const filteredBalances = balances.filter(this.filterCallback)
-    let slidesCount = filteredBalances.toArray().length
+    let slidesCount = visibleBalances.length
     let withBigButton = false
     if (!isMultisig) {
       // increase 'add' button for main wallet
@@ -202,8 +205,7 @@ export default class InfoPartial extends PureComponent {
           <div styleName='gallery' style={{ transform: `translateX(${-280 * this.state.slideIndex}px)` }}>
             {isPending
               ? <Preloader />
-              : filteredBalances
-                .sortBy((balance) => balance.symbol())
+              : visibleBalances
                 .map(this.renderItem)}
             {leftToFetch > 0 && this.renderPlaceHolders(leftToFetch)}
             {!isMultisig && withBigButton && this.renderAction()}

@@ -17,13 +17,14 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   pendingTxList: new MultisigWalletPendingTxCollection(),
   is2FA: false,
   addresses: new AddressesCollection(),
+  releaseTime: new Date(0),
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
   }
 
-  owners () {
-    return this.get('owners')
+  owners (value) {
+    return this._getSet('owners', value)
   }
 
   // shortcut for eth-address
@@ -39,8 +40,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return !this.address()
   }
 
-  requiredSignatures () {
-    return this.get('requiredSignatures')
+  requiredSignatures (value) {
+    return this._getSet('requiredSignatures', value)
   }
 
   pendingTxList (value) {
@@ -77,22 +78,49 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.owners().items().map((items) => items.address())
   }
 
-  toAddEditFormJS () {
-    return {
-      isNew: this.isNew(),
-      requiredSignatures: this.requiredSignatures(),
-      owners: this.ownersArray(),
-    }
+  isTimeLocked () {
+    return this.releaseTime().getTime() >= Date.now()
   }
 
-  toCreateWalletTx () {
-    return {
-      requiredSignatures: this.requiredSignatures(),
-      owners: this.ownersArray(),
-    }
+  releaseTime () {
+    return this.get('releaseTime')
   }
 
   addresses (value) {
     return this._getSet('addresses', value)
+  }
+
+  // forms
+
+  toAddFormJS () {
+    const time = this.releaseTime().getTime() === 0 ? new Date() : this.releaseTime()
+
+    return {
+      requiredSignatures: this.requiredSignatures(),
+      owners: this.ownersArray(),
+      timeLockDate: time,
+      timeLockTime: time,
+    }
+  }
+
+  toCreateWalletTx () {
+    const data = {
+      requiredSignatures: this.requiredSignatures(),
+      owners: this.ownersArray(),
+    }
+
+    if (this.isTimeLocked()) {
+      data.releaseTime = this.releaseTime()
+      data.isTimeLocked = true
+    }
+
+    return data
+  }
+
+  toRequiredSignaturesFormJS () {
+    return {
+      ownersCount: this.owners().size(),
+      requiredSignatures: this.requiredSignatures(),
+    }
   }
 }

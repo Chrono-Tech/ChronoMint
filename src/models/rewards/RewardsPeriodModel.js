@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import moment from 'moment'
-import { abstractModel } from '../AbstractModel'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-class RewardsPeriodModel extends abstractModel({
+class RewardsPeriodModel extends abstractFetchingModel({
   totalDeposit: new Amount(0, null, false),
   userDeposit: new Amount(0, null, false),
   isClosed: false,

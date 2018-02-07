@@ -12,7 +12,7 @@ function mapDispatchToProps (dispatch) {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
     depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
-    withdrawAsset: (amount) => dispatch(withdrawAsset(amount)),
+    withdrawAsset: (amount, token) => dispatch(withdrawAsset(amount, token)),
   }
 }
 
@@ -38,10 +38,10 @@ export default class DepositTokens extends PureComponent {
         this.props.mainApprove(token, amount, values.get('spender'))
         break
       case ACTION_DEPOSIT:
-        this.props.depositAsset(amount)
+        this.props.depositAsset(amount, token)
         break
       case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount)
+        this.props.withdrawAsset(amount, token)
         break
     }
   }

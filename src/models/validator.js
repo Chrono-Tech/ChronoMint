@@ -1,13 +1,4 @@
-import bitcoin from 'bitcoinjs-lib'
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN
-} from '@chronobank/login/network/BitcoinProvider'
-
-// TODO @dkchv: circular dependency
-// import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import Immutable from 'immutable'
 
 export const required = (value) => !value ? 'errors.required' : null
 
@@ -117,6 +108,24 @@ export function moreThan (value, limit, isEqual = false) {
   } : null
 }
 
+export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
+  if (!origin || !value) {
+    return
+  }
+  const errorToken = 'errors.mustBeUnique'
+
+  if (Array.isArray(origin) || origin instanceof Immutable.Map || origin instanceof Immutable.List) {
+    return origin.includes(value)
+      ? errorToken
+      : null
+  }
+
+  // common case
+  return origin === value
+    ? errorToken
+    : null
+}
+
 export default {
   required,
   address,
@@ -131,4 +140,5 @@ export default {
   lowerThan,
   moreThan,
   validIpfsFileList,
+  unique,
 }

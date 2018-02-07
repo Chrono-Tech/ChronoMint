@@ -13,7 +13,8 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
-import { getStatistics } from 'redux/voting/getters'
+import VotingCollection from 'models/voting/VotingCollection'
+import getStatistics from 'redux/voting/getters'
 
 import './VotingContent.scss'
 
@@ -59,6 +60,7 @@ export default class VotingContent extends Component {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     list: PropTypes.object,
+    timeDeposit: PropTypes.object,
     statistics: PropTypes.object,
     initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
@@ -162,8 +164,8 @@ export default class VotingContent extends Component {
         <div styleName='bodyInner'>
           <div className='VotingContent__body'>
             <div className='row'>
-              {polls.map((poll) => (
-                <div className='col-sm-6 col-md-3' key={poll.poll().id()}>
+              {polls.items().map((poll) => (
+                <div className='col-sm-6 col-md-3' key={poll.id()}>
                   <Poll
                     model={poll}
                     deposit={this.props.deposit}
@@ -179,8 +181,8 @@ export default class VotingContent extends Component {
 
   render () {
     const polls = this.props.isFetched
-      ? this.props.list.reverse().toArray()
-      : []
+      ? this.props.list.reverse()
+      : new VotingCollection()
 
     return (
       <div styleName='root'>

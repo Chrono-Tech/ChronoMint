@@ -1,7 +1,6 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import BigNumber from 'bignumber.js'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import ethereumDAO from 'dao/EthereumDAO'
@@ -25,6 +24,7 @@ import tokenService from 'services/TokenService'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
+// TODO @ipavlenko: Odd code, remove WALLET_BALANCE
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
@@ -166,12 +166,12 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string) => async (dispatch, getState) => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
     const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
     dispatch({ type: WALLET_ALLOWANCE, allowance })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.approve(spender, amount)
+    await tokenDAO.approve(spender, amount, feeMultiplier)
   } catch (e) {
     dispatch(notifyError(e, 'mainApprove'))
   }
