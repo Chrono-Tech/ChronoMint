@@ -33,7 +33,6 @@ export const DEFAULT_TX_OPTIONS = {
   addDryRunFrom: null,
   addDryRunOkCodes: [],
   allowNoReturn: false,
-  feeMultiplier: 1,
   useDefaultGasLimit: false,
 }
 
@@ -491,7 +490,7 @@ export default class AbstractContractDAO extends EventEmitter {
       /** OUT OF GAS ERROR HANDLING WHEN TX WAS ALREADY MINED */
       if (typeof result === 'object' && result.hasOwnProperty('receipt')) {
         const gasPrice = new BigNumber(await this._web3Provider.getGasPrice())
-        tx = tx.setGas(gasPrice.mul(feeMultiplier).mul(result.receipt.gasUsed), true)
+        tx = tx.setGas(gasPrice.mul(result.receipt.gasUsed), true)
 
         if (tx.estimateGasLaxity().gt(0)) {
           // uncomment line below if you want to log estimate gas laxity
@@ -550,7 +549,7 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   /** @private */
-  async _estimateGas (func: string, args = [], value = null, feeMultiplier = 1): number | Object {
+  async _estimateGas (func: string, args = [], value = null): number | Object {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('_estimateGas func not found', func)
@@ -567,7 +566,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const gasPriceBN = new BigNumber(gasPrice)
     const gasLimit = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : estimatedGas + 1
-    const gasFee = gasPriceBN.mul(gasLimit).mul(feeMultiplier)
+    const gasFee = gasPriceBN.mul(gasLimit)
 
     return { gasLimit, gasFee }
   }
