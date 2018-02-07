@@ -3,6 +3,9 @@ import { Translate } from 'react-redux-i18n'
 import { Slider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import { DUCK_SESSION, GAS_SLIDER_MULTIPLIER_CHANGE } from 'redux/session/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
+import TokenModel from 'models/tokens/TokenModel'
 import './GasSlider.scss'
 import { prefix } from './lang'
 
@@ -13,19 +16,27 @@ const FEE_RATE_MULTIPLIER = {
 }
 
 function mapStateToProps (state) {
-  return {}
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    value: state.get(DUCK_SESSION).gasPriceMultiplier || 1,
+    token: tokens.item('ETH'),
+  }
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    handleChange: (e, value) => {
+      dispatch({ type: GAS_SLIDER_MULTIPLIER_CHANGE, value })
+    },
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class GasSlider extends PureComponent {
   static propTypes = {
+    handleChange: PropTypes.func,
     value: PropTypes.number,
-    disabled: PropTypes.bool,
-    cyan: PropTypes.bool,
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   render () {
@@ -38,20 +49,17 @@ export default class GasSlider extends PureComponent {
           <div><Translate value={`${prefix}.fast`} /></div>
         </div>
         <Slider
-          value={0.5}
           sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+          value={this.props.value}
           {...FEE_RATE_MULTIPLIER}
-          onChange={() => {
-            // eslint-disable-next-line
-            console.log('onChange',)
-          }}
-          onDragStop={() => {
-            // eslint-disable-next-line
-            console.log('onDragStop',)
-          }}
+          onChange={this.props.handleChange}
         />
         <div styleName='gasPriceDescription'>
-          <Translate value={`${prefix}.gasPrice`} />
+          <Translate
+            value={`${prefix}.gasPrice`}
+            multiplier={this.props.value.toFixed(1)}
+            total={Number((this.props.value * this.props.token.feeRate()).toFixed(1))}
+          />
         </div>
       </div>
     )

@@ -6,6 +6,7 @@ const initialState = {
   isSession: false,
   profile: new ProfileModel(),
   isCBE: false,
+  gasPriceMultiplier: null,
 }
 
 export default (state = initialState, action) => {
@@ -31,6 +32,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         profile: action.profile,
+      }
+    case types.GAS_SLIDER_MULTIPLIER_CHANGE:
+      return {
+        ...state,
+        gasPriceMultiplier: action.value,
       }
     default:
       return state
