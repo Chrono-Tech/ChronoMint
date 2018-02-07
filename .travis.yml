@@ -39,20 +39,17 @@ jobs:
           elif [ "$TRAVIS_TAG" != "" ]; then
             IMAGE_TAG_NAME="$TRAVIS_TAG"
           fi;
-        - echo "Test result is: $TEST_RESULT"
+        - IMAGE_TAG_NAME="latest"
         - |
-          if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" == "0" ]; then
-            IMAGE_TAG_NAME="latest"
+          if [ "$TRAVIS_BRANCH" == "master" ]; then
             docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" != "0" ]; then
             echo "Test result is: $TEST_RESULT for master branch. Skipping image build and push!"
           elif [ "$TRAVIS_BRANCH" == "develop" ]; then
-            IMAGE_TAG_NAME="latest"
             docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "release" ]; then
-            IMAGE_TAG_NAME="latest"
             docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
