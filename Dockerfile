@@ -1,4 +1,5 @@
 FROM node:7.9-slim
+# Set NODE_ENV to production
 ARG NODE=production
 ENV NODE_ENV ${NODE}
 RUN apt-get update -qq && \
