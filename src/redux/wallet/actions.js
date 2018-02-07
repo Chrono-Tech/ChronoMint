@@ -13,6 +13,7 @@ export const switchWallet = (wallet) => (dispatch) => {
   }
 }
 
+// TODO @ipavlenko: Move to ./selectors.js
 export const getCurrentWallet = (state) => {
   const { isMultisig } = state.get(DUCK_WALLET)
 

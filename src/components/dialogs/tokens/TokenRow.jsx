@@ -7,6 +7,7 @@ import ProfileModel from 'models/ProfileModel'
 import BalancesCollection from 'models/tokens/BalancesCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
+import { MANDATORY_TOKENS } from 'dao/ERC20ManagerDAO'
 import React, { PureComponent } from 'react'
 import './TokenRow.scss'
 
@@ -19,24 +20,30 @@ export default class TokenRow extends PureComponent {
     profile: PropTypes.instanceOf(ProfileModel),
   }
 
-  handleClick = () => this.props.onClick(this.props.token.symbol(), !this.props.isSelected)
-
-  renderCheckbox = ({ isSelected }) => {
-    if (this.props.token.isOptional() && !this.props.profile.tokens().get(this.props.token.address())) {
-      return <Checkbox checked={isSelected} />
+  constructor (props) {
+    super(props)
+    const isMandatory = MANDATORY_TOKENS.includes(props.token.symbol())
+    this.state = {
+      isMandatory,
     }
-    return null
+  }
+
+  handleClick = () => !this.state.isMandatory && this.props.onClick(this.props.token, !this.props.isSelected)
+
+  renderCheckbox = ({ isSelected, isMandatory }) => {
+    return <Checkbox checked={isSelected || isMandatory} disabled={isMandatory} />
   }
 
   render () {
     const { isSelected, token, balances } = this.props
     const symbol = token.symbol()
     const balance = balances.item(token.id())
+    const { isMandatory } = this.state
 
     return (
       <div
         key={token.id()}
-        styleName={classnames('row', { selected: isSelected })}
+        styleName={classnames('row', { selected: isSelected || isMandatory })}
         onTouchTap={this.handleClick}
       >
         <div styleName='cell'>
@@ -50,7 +57,11 @@ export default class TokenRow extends PureComponent {
           <div><TokenValue value={balance.amount()} /></div>
         </div>
         <div styleName='cell'>
-          <WithLoader showLoader={isFetching} payload={token} isSelected={this.props.isSelected}>
+          <WithLoader
+            showLoader={isFetching}
+            payload={token}
+            isSelected={this.props.isSelected}
+            isMandatory={isMandatory}>
             {this.renderCheckbox}
           </WithLoader>
         </div>

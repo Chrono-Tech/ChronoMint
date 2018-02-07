@@ -1,88 +1,104 @@
-import CirclePlusSVG from 'assets/img/icn-circle-plus.svg'
+import OwnerItem from 'components/wallet/OwnersList/OwnerItem'
 import globalStyles from 'layouts/partials/styles'
-import { FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import { Field } from 'redux-form/immutable'
+import { change, Field, formValueSelector, getFormSyncErrors } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { prefix } from './lang'
 import './OwnersList.scss'
+import validate from './validate'
 
-function mapStateToProps (state) {
+const FIELD_NEW_ADDRESS = 'newOwnerAddress'
+
+function mapStateToProps (state, props) {
+  const selector = formValueSelector(props.meta.form)
+  const errors = getFormSyncErrors(props.meta.form)(state)
+  const newOwner = selector(state, FIELD_NEW_ADDRESS)
+
   return {
+    isDisabled: !!errors[ FIELD_NEW_ADDRESS ] || !newOwner,
+    newOwner,
     account: state.get(DUCK_SESSION).account,
   }
 }
 
-@connect(mapStateToProps, null)
+function mapDispatchToProps (dispatch, props) {
+  return {
+    resetForm: () => dispatch(change(props.meta.form, FIELD_NEW_ADDRESS, '')),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class OwnersList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
-    meta: PropTypes.object,
+    resetForm: PropTypes.func,
+    newOwner: PropTypes.string,
     fields: PropTypes.object,
+    isDisabled: PropTypes.bool,
+    onRemove: PropTypes.func,
   }
 
-  renderOwners (fields) {
-    return (
-      <div>
-        {fields.map((item, index) => (
-          <div styleName='ownerBox' key={index}>
-            <div styleName='ownerIcon' className='material-icons'>account_circle</div>
-            <div styleName='ownerInput'>
-              <Field
-                component={TextField}
-                name={`${item}.address`}
-                id={`${item}.address`}
-                placeholder='0x123...'
-              />
-            </div>
-            <div styleName='ownerRemove'>
-              <FlatButton
-                icon={<i className='material-icons'>delete</i>}
-                onTouchTap={() => {fields.remove(index)}}
-                fullWidth
-              />
-            </div>
-          </div>
-        ))}
+  handleRemoveItem = (fields, index) => () => {
+    fields.remove(index)
+    this.props.onRemove(fields)
+  }
 
-        <div styleName='addOwnerButton'>
-          <FlatButton
-            label={(
-              <span styleName='buttonLabel'>
-                <img styleName='buttonIcon' src={CirclePlusSVG} />
-                <Translate value='WalletAddEditDialog.addOwner' />
-              </span>
-            )}
-            onTouchTap={() => fields.push()}
-            {...globalStyles.buttonWithIconStyles}
-          />
-        </div>
-      </div>
+  handleAddItem = (fields) => () => {
+    fields.push({
+      address: this.props.newOwner,
+    })
+    this.props.resetForm()
+  }
+
+  renderOwners = (fields) => (item, index) => {
+    return (
+      <OwnerItem
+        key={item.address}
+        title={<Translate value={`${prefix}.owner`} index={index + 1} />}
+        address={item.address}
+        onRemove={this.handleRemoveItem(fields, index)}
+      />
     )
   }
 
   render () {
-    const { account, fields } = this.props
+    const { fields, isDisabled, account } = this.props
 
     return (
       <div>
-        <div styleName='counterBox'>
-          <Translate value='wallet.walletAddEditDialog.walletOwners' /> &mdash; <span
-          styleName='counter'
-        >{fields.length + 1}
-          </span>
-        </div>
-        <div styleName='counterError'>{this.props.meta.error}</div>
+        <OwnerItem
+          title={<Translate value={`${prefix}.you`} />}
+          address={account}
+          isNoActions
+        />
+        {fields.getAll().toArray().map(this.renderOwners(fields))}
 
-        <div styleName='accountBox'>
-          <div styleName='accountIcon' className='material-icons'>account_circle</div>
-          <div styleName='accountValue'>{account} ({<Translate value='WalletAddEditForm.you' />})</div>
+        <div styleName='addOwner'>
+          <div styleName='addOwnerField'>
+            <Field
+              component={TextField}
+              hintText={<Translate value={`${prefix}.floatText`} />}
+              hintStyle={globalStyles.textField.hintStyle}
+              name={FIELD_NEW_ADDRESS}
+              validate={validate}
+              fullWidth
+            />
+          </div>
+          <div styleName='actions'>
+            <button
+              styleName='action'
+              className='material-icons'
+              onTouchTap={!isDisabled && this.handleAddItem(fields)}
+              disabled={isDisabled}
+            >
+              add_circle
+            </button>
+          </div>
         </div>
-
-        {this.renderOwners(fields)}
       </div>
     )
   }

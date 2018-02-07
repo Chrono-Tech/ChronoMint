@@ -1,16 +1,15 @@
-import Immutable from 'immutable'
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeToken'
 
-const MANDATORY_TOKENS = [ 'TIME' ]
-const NON_OPTIONAL_TOKENS = [ 'ETH', 'TIME', 'BTC', 'BCC', 'BTG', 'LTC' ]
+export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
+export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
@@ -20,23 +19,10 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     super(ERC20ManagerABI, at)
   }
 
-  async _getTokens (addresses = []) {
-    const [ tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ addresses ])
-
-    for (const [ i, name ] of Object.entries(names)) {
-      names[ i ] = this._c.bytesToString(name)
-      symbols[ i ] = this._c.bytesToString(symbols[ i ])
-      urls[ i ] = this._c.bytesToString(urls[ i ])
-      decimalsArr[ i ] = decimalsArr[ i ].toNumber()
-      ipfsHashes[ i ] = this._c.bytes32ToIPFSHash(ipfsHashes[ i ])
-    }
-
-    return [ tokensAddresses, names, symbols, urls, decimalsArr, ipfsHashes ]
-  }
-
   async fetchTokens (tokenAddresses = []) {
     const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ tokenAddresses ])
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
+    const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
@@ -52,32 +38,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
+        feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
       }))
     })
-  }
-
-  async getTokens (tokenAddresses: Array<String> = []): Immutable.Map<TokenModel> {
-    let map = new Immutable.Map()
-
-    const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._getTokens(tokenAddresses)
-
-    for (const [ i, address ] of Object.entries(addresses)) {
-      const token = new TokenModel({
-        address,
-        name: names[ i ],
-        symbol: symbols[ i ] ? symbols[ i ].toUpperCase() : address,
-        url: urls[ i ],
-        decimals: decimalsArr[ i ],
-        icon: ipfsHashes[ i ],
-        isOptional: !NON_OPTIONAL_TOKENS.includes(symbols[ i ]),
-        isFetched: true,
-        blockchain: BLOCKCHAIN_ETHEREUM,
-        isERC20: true,
-      })
-      map = map.set(token.id(), token)
-    }
-
-    return map
   }
 
   async getTokenAddressBySymbol (symbol: string): string | null {

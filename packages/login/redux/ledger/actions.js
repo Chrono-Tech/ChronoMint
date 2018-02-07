@@ -17,8 +17,9 @@ export const initLedger = () => async (dispatch) => {
 
 export const startLedgerSync = () => async (dispatch) => {
   await dispatch(initLedger())
-  ledgerProvider.on('connection', (isETHAppOpened) => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
-  return ledgerProvider.sync()
+  return ledgerProvider
+    .on('connection', (isETHAppOpened) => dispatch({ type: LEDGER_SET_ETH_APP_OPENED, isETHAppOpened }))
+    .sync()
 }
 
 export const stopLedgerSync = (isReset = false) => (dispatch) => {
@@ -44,10 +45,4 @@ export const fetchAccount = () => async (dispatch) => {
   dispatch({ type: LEDGER_FETCHED, isFetched: true })
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())
-}
-
-export const loginLedger = () => {
-  const providerURL = networkService.getProviderURL()
-  ledgerProvider.setupAndStart(providerURL)
-  web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
 }

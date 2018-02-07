@@ -35,7 +35,10 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
 
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
-      await this._tx(func, args, infoArgs, null, dao.getInitAddress(), [resultCodes.OK]),
+      await this._tx(func, args, infoArgs, null, {
+        addDryRunFrom: dao.getInitAddress(),
+        addDryRunOkCodes: [resultCodes.OK],
+      }),
     ])
 
     if (!isDone) {

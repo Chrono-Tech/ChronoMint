@@ -12,6 +12,7 @@
   width: 100%;
   padding: 16px;
   background: $color-primary-1;
+  border-radius: 2px 2px 0 0;
 
   @include xs-only {
     .inner {
@@ -128,6 +129,14 @@
 
 .entryValue {
   font-size: 17px;
+  :global {
+    .TokenValue__root, .TokenValue__fraction {
+      font-size: 17px;
+      color: $color-white;
+      text-shadow: $text-shadow-title;
+      opacity: 1;
+    }
+  }
 }
 
 .entryBadge {

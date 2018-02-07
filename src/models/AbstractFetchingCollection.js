@@ -27,8 +27,14 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
   }
 
   remove (itemOrId) {
+    let result = this
     const id = typeof itemOrId === 'string' ? itemOrId : itemOrId.id()
-    return this.list(this.list().remove(id))
+    if (this.hasSelected() && this.selected().id() === id) {
+      // reselect
+      const firstNotSelected = result.filter((item) => item.id() !== id).first()
+      result = result.selected(firstNotSelected ? firstNotSelected.id() : null)
+    }
+    return result.list(result.list().remove(id))
   }
 
   items () {
@@ -62,16 +68,16 @@ export const abstractFetchingCollection = (defaultValues) => class AbstractFetch
     return this.add(item.isFetching(false).isFetched(true)).leftToFetch(leftToFetch)
   }
 
-  selected (value) {
+  selected (id) {
     const currentSelectedItem = this.item(this.get('selected'))
     // getter
-    if (value === undefined) {
+    if (id === undefined) {
       return currentSelectedItem
     }
 
     // setter
-    let result = this.set('selected', value)
-    const newSelectedItem = this.item(value)
+    let result = this.set('selected', id)
+    const newSelectedItem = this.item(id)
 
     if (currentSelectedItem === newSelectedItem) {
       return result

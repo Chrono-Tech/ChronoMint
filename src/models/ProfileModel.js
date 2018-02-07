@@ -1,5 +1,6 @@
 import Immutable from 'immutable'
 import { abstractModel } from './AbstractModel'
+import TokenModel from './tokens/TokenModel'
 
 class ProfileModel extends abstractModel({
   name: null,
@@ -8,6 +9,7 @@ class ProfileModel extends abstractModel({
   url: null,
   icon: null,
   tokens: new Immutable.Set(),
+  version: null,
 }) {
   constructor (data = {}) {
     data = data || {}
@@ -15,6 +17,10 @@ class ProfileModel extends abstractModel({
       ...data,
       tokens: new Immutable.Set(data.tokens || undefined),
     })
+  }
+
+  version (value) {
+    return this._getSet('version', value)
   }
 
   name () {
@@ -44,6 +50,36 @@ class ProfileModel extends abstractModel({
   isEmpty () {
     return this.get('name') === null
   }
+
+  txSummary () {
+    const tokens = {
+      show: [],
+      hide: [],
+    }
+    this.tokens().map((item) => {
+      if (item.show) {
+        tokens.show.push(item.symbol || item.address)
+      } else {
+        tokens.hide.push(item.symbol || item.address)
+      }
+    }).join(', ')
+    return {
+      name: this.name(),
+      email: this.email(),
+      company: this.company(),
+      url: this.url(),
+      icon: this.icon(),
+      shownTokens: tokens.show.join(', '),
+      hideTokens: tokens.hide.join(', '),
+    }
+  }
+}
+
+// TODO @ipavlenko: Make this method a member of ProfileModel, refactor usages
+export const isTokenChecked = (token: TokenModel, { blockchain, address, symbol }) => {
+  const checkBlockchain = token.blockchain() === blockchain
+  const checkItem = address ? address === token.address() : symbol === token.symbol()
+  return checkBlockchain && checkItem
 }
 
 export default ProfileModel

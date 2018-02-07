@@ -1,10 +1,10 @@
 import bitcoin from 'bitcoinjs-lib'
+import nemSdk from 'nem-sdk'
 import bigi from 'bigi'
 import wallet from 'ethereumjs-wallet'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
-import * as NEM from './nem'
 import { createNEMEngine } from './NemUtils'
 import NemWallet from './NemWallet'
 
@@ -16,7 +16,7 @@ class PrivateKeyProvider {
     const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinGold])
     const ltc = network && network.litecoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.litecoin])
-    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, NEM.Network.data[network.nem])
+    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
 
     return {
       networkCode,
@@ -25,7 +25,7 @@ class PrivateKeyProvider {
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
       ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
-      nem: network && network.nem && createNEMEngine(nem, NEM.Network.data[network.nem]),
+      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
     }
   }
 

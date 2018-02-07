@@ -1,12 +1,21 @@
+import Immutable from 'immutable'
 import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { getEtherscanUrl } from '@chronobank/login/network/settings'
+import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { connect } from 'react-redux'
-import { listOperations, confirmOperation, revokeOperation, setupOperationsSettings, loadMoreCompletedOperations } from 'redux/operations/actions'
+import {
+  listOperations,
+  confirmOperation,
+  revokeOperation,
+  setupOperationsSettings,
+  loadMoreCompletedOperations,
+} from 'redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import Value from 'components/common/Value/Value'
 import './Operations.scss'
 
 function prefix (token) {
@@ -16,11 +25,9 @@ function prefix (token) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PendingOperations extends PureComponent {
   static propTypes = {
-    // title: PropTypes.string,
-    title: PropTypes.object, // Translate object
+    title: PropTypes.node,
     filterOperations: PropTypes.func,
     showSignatures: PropTypes.bool,
-
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     getList: PropTypes.func,
@@ -28,7 +35,7 @@ export default class PendingOperations extends PureComponent {
     handleRevoke: PropTypes.func,
     handleConfirm: PropTypes.func,
     handleLoadMore: PropTypes.func,
-    list: PropTypes.object,
+    list: PropTypes.instanceOf(Immutable.Map),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
 
@@ -49,9 +56,75 @@ export default class PendingOperations extends PureComponent {
     }
   }
 
+  renderRow (op, index, href) {
+    const tx = op.tx()
+    const hash = tx.hash()
+    const details = tx.details()
+
+    return (
+      <div styleName='tableRow' key={index}>
+        <div styleName='bodyTableCell tableCellDescription'>
+          <div styleName='entry'>
+            <div styleName='entryIcon'>
+              <i className='material-icons'>flash_on</i>
+            </div>
+            <div styleName='entryInfo'>
+              <div styleName='infoTitle'>{tx.title()}</div>
+              {hash
+                ? (<div styleName='infoAddress'>{hash}</div>)
+                : null
+              }
+              {details && details.map((item, index) => (
+                <div key={index} styleName='infoProp'>
+                  <span styleName='propName'>{item.label}:</span>&nbsp;
+                  <span styleName='propValue'><Value value={item.value} /></span>
+                </div>
+              ))}
+              {this.props.showSignatures
+                ? (
+                  <div styleName='infoProp infoPropSignatures'>
+                    <span styleName='propName'>Signatures:</span>
+                    <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
+                  </div>
+                )
+                : null
+              }
+              <div styleName='infoDate'>{tx.date()}</div>
+            </div>
+          </div>
+        </div>
+        {this.props.showSignatures
+          ? (
+            <div styleName='bodyTableCell tableCellSignatures'>
+              {op.remained()} of {op.remained() + op.completed()}
+            </div>
+          )
+          : null
+        }
+        <div styleName='bodyTableCell'>
+          <div styleName='tableCellActions'>
+            {href && (
+              <div styleName='tableCellActionsItem'>
+                <RaisedButton label='View' href={href} target='_blank' />
+              </div>
+            )}
+            {!op.isDone() && (
+              <div styleName='tableCellActionsItem'>
+                {op.isConfirmed()
+                  ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
+                  : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
+                }
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     const list = this.props.list.valueSeq().sortBy((o) => o.tx().time()).reverse().toArray()
-    const etherscanHref = (txHash) => getEtherscanUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash)
+    const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, BLOCKCHAIN_ETHEREUM)
 
     return (
       <div styleName='panel'>
@@ -90,7 +163,7 @@ export default class PendingOperations extends PureComponent {
                 </div>
               </div>
               <div styleName='tableBody'>
-                {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, etherscanHref(item.id())))}
+                {list.filter(this.props.filterOperations).map((item, index) => this.renderRow(item, index, blockExplorerUrl(item.id())))}
               </div>
             </div>
           )
@@ -108,73 +181,6 @@ export default class PendingOperations extends PureComponent {
           )
           : null
         }
-      </div>
-    )
-  }
-
-  renderRow (op, index, href) {
-    const tx = op.tx()
-    const hash = tx.hash()
-    const details = tx.details()
-
-    return (
-      <div styleName='tableRow' key={index}>
-        <div styleName='bodyTableCell tableCellDescription'>
-          <div styleName='entry'>
-            <div styleName='entryIcon'>
-              <i className='material-icons'>flash_on</i>
-            </div>
-            <div styleName='entryInfo'>
-              <div styleName='infoTitle'>{tx.title()}</div>
-              {/* <div styleName='info-description'>Winterfell Gas Station</div> */}
-              {hash
-                ? (<div styleName='infoAddress'>{hash}</div>)
-                : null
-              }
-              {details && details.map((item, index) => (
-                <div key={index} styleName='infoProp'>
-                  <span styleName='propName'>{item.label}:</span>&nbsp;
-                  <span styleName='propValue'>{item.value}</span>
-                </div>
-              ))}
-              {this.props.showSignatures
-                ? (
-                  <div styleName='infoProp infoPropSignatures'>
-                    <span styleName='propName'>Signatures:</span>
-                    <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
-                  </div>
-                )
-                : null
-              }
-              <div styleName='infoDate'>{tx.date()}</div>
-            </div>
-          </div>
-        </div>
-        {this.props.showSignatures
-          ? (
-            <div styleName='bodyTableCell tableCellSignatures'>
-              {op.remained()} of {op.remained() + op.completed()}
-            </div>
-          )
-          : null
-        }
-        <div styleName='bodyTableCell'>
-          <div styleName='tableCellActions'>
-            {href && (
-              <div styleName='tableCellActionsItem'>
-                <RaisedButton label='View' href={href} />
-              </div>
-            )}
-            {!op.isDone() && (
-              <div styleName='tableCellActionsItem'>
-                {op.isConfirmed()
-                  ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
-                  : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
-                }
-              </div>
-            )}
-          </div>
-        </div>
       </div>
     )
   }

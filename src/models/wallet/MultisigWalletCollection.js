@@ -21,4 +21,12 @@ export default class MultisigWalletCollection extends abstractFetchingCollection
     const updatedPending = wallet.pendingTxList().itemFetched(pending)
     return this.update(wallet.pendingTxList(updatedPending))
   }
+
+  activeWallets () {
+    return this.filter((item) => !item.isTimeLocked()).toArray()
+  }
+
+  timeLockedWallets () {
+    return this.filter((item) => item.isTimeLocked()).toArray()
+  }
 }

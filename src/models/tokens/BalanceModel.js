@@ -1,10 +1,10 @@
-import Amount from 'models/Amount'
 import BigNumber from 'bignumber.js'
-import { abstractModel } from '../AbstractModel'
+import Amount from 'models/Amount'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 
-export default class BalanceModel extends abstractModel({
+export default class BalanceModel extends abstractFetchingModel({
   id: null,
-  amount: new Amount(0, null , false),
+  amount: new Amount(0, null, false),
   // TODO @dkchv: add pendings here
 }) {
   id () {

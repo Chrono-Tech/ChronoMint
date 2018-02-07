@@ -2,8 +2,9 @@ import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
-import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, TXS_PER_PAGE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
@@ -53,7 +54,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('allowance', [ account, spender ])
   }
 
-  approve (account: string, amount: Amount): Promise {
+  approve (account: string, amount: Amount, feeMultiplier: Number = 1): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(amount),
@@ -61,10 +62,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       account,
       amount,
       currency: amount.symbol(),
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
-  revoke (account: string, symbol: string): Promise {
+  revoke (account: string, symbol: string, feeMultiplier: Number = 1): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(0),
@@ -72,10 +75,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       account,
       revoke: true,
       currency: symbol,
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
-  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1): Promise {
     return this._tx(TX_TRANSFER, [
       to,
       new BigNumber(amount),
@@ -84,6 +89,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
       to,
       amount,
       currency: amount.symbol(),
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
@@ -99,6 +106,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.args.from,
       to: tx.args.to,
+      symbol: this._symbol,
       value: new Amount(tx.args.value, this._symbol),
       gas: tx.gas,
       gasPrice,

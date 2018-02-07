@@ -44,7 +44,7 @@ export class BitcoinEngine {
       txId: output.txid,
       vout: output.vout,
       value: output.satoshis,
-    })), targets, feeRate)
+    })), targets, Math.ceil(feeRate))
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 

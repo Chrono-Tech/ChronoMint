@@ -8,6 +8,8 @@ import DocumentsList from 'components/common/DocumentsList/DocumentsList'
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import { SHORT_DATE } from 'models/constants'
+import PollDetailsModel from 'models/PollDetailsModel'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from './ModalDialog'
 import './PollDetailsDialog.scss'
 
@@ -24,8 +26,8 @@ function mapDispatchToProps (dispatch) {
 @connect(null, mapDispatchToProps)
 export default class VoteDialog extends PureComponent {
   static propTypes = {
-    model: PropTypes.object,
-    palette: PropTypes.array,
+    model: PropTypes.instanceOf(PollDetailsModel),
+    palette: PropTypes.arrayOf(PropTypes.string),
     handleSubmit: PropTypes.func,
     modalsClose: PropTypes.func,
   }
@@ -65,32 +67,42 @@ export default class VoteDialog extends PureComponent {
                 <div styleName='layer layerEntries'>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('published')} />:</div>
-                    <div styleName='entryValue'>{details.published && <Moment date={details.published} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                    <div styleName='entryValue'>{details.published &&
+                    <Moment date={details.published} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
+                    </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('endDate')} />:</div>
-                    <div styleName='entryValue'>{details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> || (<i>No</i>)}</div>
+                    <div styleName='entryValue'>{details.endDate &&
+                    <Moment date={details.endDate} format={SHORT_DATE} /> ||
+                    <i><Translate value={prefix('no')} /></i>}
+                    </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
                     <div styleName='entryValue'>
                       {details.voteLimitInTIME === null
                         ? (<i>Unlimited</i>)
-                        : (<span>{details.voteLimitInTIME.toString()} TIME</span>)
+                        : <TokenValue value={details.voteLimitInTIME} noRenderPrice />
                       }
                     </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                    <div styleName='entryValue'>{details.received.toString()} TIME</div>
+                    <div styleName='entryValue'><TokenValue value={details.received} noRenderPrice /></div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
-                    <div styleName='entryValue'>{details.options.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.options.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}
+                    </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
-                    <div styleName='entryValue'>{details.files.count() || (<i><Translate value={prefix('no')} /></i>)}</div>
+                    <div styleName='entryValue'>{details.files.count() || (
+                      <i><Translate value={prefix('no')} /></i>)}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -123,10 +135,12 @@ export default class VoteDialog extends PureComponent {
                     <DoughnutChart
                       weight={0.24}
                       rounded={false}
-                      items={entries.toArray().map((item, index) => ({
-                        value: item.count.toNumber(),
-                        fill: palette[index % palette.length],
-                      }))}
+                      items={entries.toArray().map((item, index) => {
+                        return {
+                          value: item.count.toNumber(),
+                          fill: palette[ index % palette.length ],
+                        }
+                      })}
                     />
                   </div>
                 </div>
@@ -140,9 +154,13 @@ export default class VoteDialog extends PureComponent {
                       <div styleName='legend'>
                         {entries.map((item, index) => (
                           <div styleName='legendItem' key={index}>
-                            <div styleName='itemPoint' style={{ backgroundColor: palette[index % palette.length] }} />
+                            <div
+                              styleName='itemPoint'
+                              style={{ backgroundColor: palette[ index % palette.length ] }}
+                            />
                             <div styleName='itemTitle'>
-                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash; <b><Translate value={prefix('numberVotes')} number={item.count.toNumber()} count={((item.count.toNumber() % 100 < 20) && (item.count.toNumber() % 100) > 10) ? 0 : item.count.toNumber() % 10} /></b>
+                              <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash;
+                              <b><TokenValue noRenderPrice value={item.count} /></b>
                             </div>
                           </div>
                         ))}
@@ -177,19 +195,22 @@ export default class VoteDialog extends PureComponent {
                       {details.options.valueSeq().map((option, index) => (
                         <div key={index} styleName='tableItem'>
                           <div styleName='itemLeft'>
-                            {(details.memberVote === index + 1)
+                            {(details.memberOption === index + 1)
                               ? (
                                 <div styleName='symbol symbolFill'>
                                   <i className='material-icons'>check</i>
                                 </div>
                               )
                               : (
-                                <div styleName='symbol symbolStroke'><Translate value={prefix('idxNumber')} number={index + 1} /></div>
+                                <div styleName='symbol symbolStroke'>
+                                  <Translate value={prefix('idxNumber')} number={index + 1} />
+                                </div>
                               )
                             }
                           </div>
                           <div styleName='itemMain'>
-                            <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} /></div>
+                            <div styleName='mainTitle'><Translate value={prefix('optionNumber')} number={index + 1} />
+                            </div>
                             <div styleName='mainOption'>{option}</div>
                           </div>
                         </div>
