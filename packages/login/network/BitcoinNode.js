@@ -1,9 +1,8 @@
 import axios from 'axios'
-import { networks } from 'bitcoinjs-lib'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
-const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
+export const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://blockexplorer.com/api',
     timeout: 4000,
@@ -28,7 +27,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   trace: true,
 })
 
-const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
+export const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://bitcoincash.blockexplorer.com/api',
     timeout: 4000,
@@ -36,7 +35,7 @@ const BCC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
+export const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://tbcc.blockdozer.com/insight-api',
     timeout: 4000,
@@ -44,7 +43,7 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   trace: true,
 })
 
-const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
+export const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://btgexplorer.com/api',
     timeout: 4000,
@@ -52,7 +51,7 @@ const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
+export const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
     baseURL: 'https://testnet.btgexplorer.com/api',
     timeout: 4000,
@@ -94,27 +93,3 @@ export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
   }),
   trace: false,
 })
-
-export function selectBTCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
-    ? BTC_TESTNET_NODE
-    : BTC_MAINNET_NODE
-}
-
-export function selectBCCNode (engine) {
-  return engine.getNetwork() !== networks.bitcoin
-    ? BCC_TESTNET_NODE
-    : BCC_MAINNET_NODE
-}
-
-export function selectBTGNode (engine) {
-  return engine.getNetwork() !== networks.bitcoingold
-    ? BTG_TESTNET_NODE
-    : BTG_MAINNET_NODE
-}
-
-export function selectLTCNode (engine) {
-  return engine.getNetwork() !== networks.litecoin
-    ? LTC_TESTNET_NODE
-    : LTC_MAINNET_NODE
-}
