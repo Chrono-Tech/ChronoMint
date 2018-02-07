@@ -67,8 +67,8 @@ export default class TokenModel extends abstractFetchingModel({
     return this._getSet('managersList', value)
   }
 
-  name () {
-    return this.get('name')
+  name (value) {
+    return this._getSet('name', value)
   }
 
   platform () {
@@ -127,8 +127,8 @@ export default class TokenModel extends abstractFetchingModel({
     return this.set('balance', newBalance)
   }
 
-  url () {
-    return this.get('url')
+  url (value) {
+    return this._getSet('url', value)
   }
 
   icon () {
