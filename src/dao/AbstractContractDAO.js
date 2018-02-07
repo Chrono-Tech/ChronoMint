@@ -408,7 +408,6 @@ export default class AbstractContractDAO extends EventEmitter {
       addDryRunOkCodes,
       allowNoReturn,
       useDefaultGasLimit,
-      feeMultiplier,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     const deployed = await this.contract
@@ -429,7 +428,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     /** ESTIMATE GAS */
     const estimateGas = async () => {
-      const { gasFee, gasLimit } = await this._estimateGas(func, args, value, feeMultiplier)
+      const { gasFee, gasLimit } = await this._estimateGas(func, args, value)
       tx = tx.setGas(gasFee)
       AbstractContractDAO.txGas(tx)
       return gasLimit

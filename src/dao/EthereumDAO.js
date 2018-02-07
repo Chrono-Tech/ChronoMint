@@ -93,7 +93,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -115,7 +115,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       contract: this.getContractName(),
       func: TX_TRANSFER,
       value,
-      gas: new BigNumber(estimateGas).mul(gasPrice * feeMultiplier),
+      gas: feeMultiplier ? new BigNumber(estimateGas).mul(gasPrice * feeMultiplier) : new BigNumber(0), // if gasMultiplier set in sendForm
       args: {
         from,
         to,
@@ -127,7 +127,12 @@ export class EthereumDAO extends AbstractTokenDAO {
 
     return new Promise(async (resolve, reject) => {
       try {
-        await AbstractContractDAO.txStart(tx)
+        const promises = [ AbstractContractDAO.txStart(tx) ]
+
+        if (!feeMultiplier) {
+          promises.push(AbstractContractDAO.txGas(tx.setGas(new BigNumber(estimateGas).mul(gasPrice))))
+        }
+        await Promise.all(promises)
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()

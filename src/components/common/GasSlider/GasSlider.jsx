@@ -16,17 +16,19 @@ const FEE_RATE_MULTIPLIER = {
 }
 
 function mapStateToProps (state) {
-  const tokens = state.get(DUCK_TOKENS)
+  const token = state.get(DUCK_TOKENS).item('ETH')
+  const gasSliderCollection = state.get(DUCK_SESSION).gasPriceMultiplier
+
   return {
-    value: state.get(DUCK_SESSION).gasPriceMultiplier || 1,
-    token: tokens.item('ETH'),
+    value: gasSliderCollection.get(token.id()) || 1,
+    token,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleChange: (e, value) => {
-      dispatch({ type: GAS_SLIDER_MULTIPLIER_CHANGE, value })
+    handleChange: (token) => (e, value) => {
+      dispatch({ type: GAS_SLIDER_MULTIPLIER_CHANGE, value, id: token.id() })
     },
   }
 }
@@ -52,7 +54,7 @@ export default class GasSlider extends PureComponent {
           sliderStyle={{ marginBottom: 0, marginTop: 5 }}
           value={this.props.value}
           {...FEE_RATE_MULTIPLIER}
-          onChange={this.props.handleChange}
+          onChange={this.props.handleChange(this.props.token)}
         />
         <div styleName='gasPriceDescription'>
           <Translate

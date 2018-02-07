@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import * as types from './actions'
 import ProfileModel from '../../models/ProfileModel'
 
@@ -6,7 +7,7 @@ const initialState = {
   isSession: false,
   profile: new ProfileModel(),
   isCBE: false,
-  gasPriceMultiplier: null,
+  gasPriceMultiplier: new Immutable.Map(),
 }
 
 export default (state = initialState, action) => {
@@ -36,7 +37,7 @@ export default (state = initialState, action) => {
     case types.GAS_SLIDER_MULTIPLIER_CHANGE:
       return {
         ...state,
-        gasPriceMultiplier: action.value,
+        gasPriceMultiplier: state.gasPriceMultiplier.set(action.id, action.value),
       }
     default:
       return state
