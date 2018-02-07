@@ -48,6 +48,7 @@ export default class GasSlider extends PureComponent {
         <div styleName='description'><Translate value={`${prefix}.description`} /></div>
         <div styleName='tagsWrap'>
           <div><Translate value={`${prefix}.slow`} /></div>
+          <div styleName='separator' />
           <div><Translate value={`${prefix}.fast`} /></div>
         </div>
         <Slider
