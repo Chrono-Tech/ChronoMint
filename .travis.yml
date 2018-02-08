@@ -24,7 +24,7 @@ jobs:
         - yarn contracts
       script:
         - yarn test --coverage; export TEST_RESULT=$?
-        - yarn build
+        - yarn build --production
       after_script:
         - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
         - FULL_GCR_KEY="-----BEGIN PRIVATE KEY-----\n"$GCR_KEY"\n-----END PRIVATE KEY-----\n"
