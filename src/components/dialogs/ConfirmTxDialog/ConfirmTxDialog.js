@@ -10,7 +10,8 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_WATCHER } from 'redux/watcher/actions'
+import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 
 import './ConfirmTxDialog.scss'
 
@@ -18,12 +19,14 @@ const mapStateToProps = (state) => {
   return ({
     balance: state.get(DUCK_MAIN_WALLET).balances().item(ETH).amount(),
     tx: state.get(DUCK_WATCHER).confirmTx,
+    gasPriceMultiplier: state.get(DUCK_SESSION).gasPriceMultiplier.get(ETH) || 1,
   })
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     modalsClose: () => dispatch(modalsClose()),
+    handleUpdateTx: (tx) => dispatch({ type: WATCHER_TX_SET, tx }),
   }
 }
 
@@ -35,6 +38,14 @@ export default class ConfirmTxDialog extends PureComponent {
     open: PropTypes.bool,
     tx: PropTypes.instanceOf(TxExecModel),
     balance: PropTypes.instanceOf(Amount),
+    gasPriceMultiplier: PropTypes.number,
+    handleUpdateTx: PropTypes.func,
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.tx.gas().gt(0) && this.props.tx.gas().eq(0)) {
+      this.props.handleUpdateTx(newProps.tx.setGas(newProps.tx.gas().mul(newProps.gasPriceMultiplier)))
+    }
   }
 
   handleConfirm = () => {

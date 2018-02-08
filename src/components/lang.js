@@ -10,6 +10,7 @@ import SignaturesList from 'components/wallet/SignaturesList/lang'
 import * as exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
+import * as GasSlider from 'components/common/GasSlider/lang'
 
 export default {
   en: {
@@ -24,6 +25,7 @@ export default {
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.en,
+      GasSlider: GasSlider.en,
     },
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
@@ -41,6 +43,7 @@ export default {
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.ru,
+      GasSlider: GasSlider.ru,
     },
     TwoFA: TwoFA.ru,
     EditSignaturesDialog: EditSignaturesDialog.ru,

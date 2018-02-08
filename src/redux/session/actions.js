@@ -21,6 +21,8 @@ export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 export const DEFAULT_USER_URL = '/dashboard'
 export const DEFAULT_CBE_URL = '/dashboard'
 
+export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
+
 export const CURRENT_PROFILE_VERSION = 1
 
 export const createSession = ({ account, provider, network, dispatch }) => {
