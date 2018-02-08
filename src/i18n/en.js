@@ -526,6 +526,11 @@ export default {
       controlTitle: 'Address',
       description: 'Press CTRL + C or ⌘ + C to copy address to clipboard',
     },
+    copyPrivateKey: {
+      title: 'Copy private key',
+      controlTitle: 'Private key',
+      description: 'Press CTRL + C or ⌘ + C to copy private key to clipboard',
+    },
   },
   poll: {
     new: 'New Poll',

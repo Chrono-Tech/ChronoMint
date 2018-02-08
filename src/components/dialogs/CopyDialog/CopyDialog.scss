@@ -1,0 +1,29 @@
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  z-index: 2500; //should be greater than material-ui popover z-index (it equals to 2000 by default)
+}
+
+.content {
+  background-color: $color-white;
+  color: $color-primary-0;
+}
+
+.header {
+  padding: 16px 24px;
+  h3 {
+    font-weight: 400;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.body {
+  padding: 16px 24px;
+}
+
+.footer {
+  padding: 16px 24px;
+  text-align: right;
+}
