@@ -6,7 +6,7 @@ RUN apt-get update -qq && \
     mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN export NODE_ENV=production && \
-    npm rebuild node-sass --force
+RUN npm rebuild node-sass --force && \
+    env NODE_ENV=production webpack
 EXPOSE 3000
 CMD yarn start
