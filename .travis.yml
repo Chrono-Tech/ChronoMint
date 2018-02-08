@@ -42,17 +42,15 @@ jobs:
         - IMAGE_TAG_NAME="latest"
         - |
           if [ "$TRAVIS_BRANCH" == "master" ]; then
-            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" != "0" ]; then
             echo "Test result is: $TEST_RESULT for master branch. Skipping image build and push!"
           elif [ "$TRAVIS_BRANCH" == "develop" ]; then
-            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "release" ]; then
-            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME .
+            docker build --quiet -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
         - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
-cache:
-  yarn: true
