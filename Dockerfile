@@ -1,4 +1,6 @@
 FROM node:7.9-slim
+ARG NODE=production
+ENV NODE_ENV ${NODE}
 RUN apt-get update -qq && \
     apt-get install -y build-essential python
 RUN mkdir -p /usr/src/app
