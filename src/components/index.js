@@ -28,7 +28,7 @@ export { default as Operations } from './operations/Operations'
 
 export { default as ModalDialog } from './dialogs/ModalDialog'
 export { default as CBEAddressDialog } from './dialogs/CBEAddressDialog'
-export { default as CBETokenDialog } from './dialogs/CBETokenDialog'
+export { default as CBETokenDialog } from './dialogs/CBETokenDialog/CBETokenDialog'
 export { default as OperationsSettingsDialog } from './dialogs/OperationsSettingsDialog'
 export { default as AddCurrencyDialog } from './dialogs/tokens/AddCurrencyDialog'
 export { default as PollEditDialog } from './dialogs/poll/PollEditDialog/PollEditDialog'
