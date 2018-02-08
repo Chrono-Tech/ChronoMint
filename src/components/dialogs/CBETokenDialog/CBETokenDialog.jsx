@@ -54,7 +54,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 @reduxForm({
   form: FORM_CBE_TOKEN,
   validate,
-  asyncValidate: (token, dispatch, props) => formTokenLoadMetaData(token, dispatch, props.tokens),
+  asyncValidate: (token, dispatch, props) => formTokenLoadMetaData(token, dispatch, props),
   asyncBlurFields: [ 'address', 'symbol', 'decimals' ],
 })
 export default class CBETokenDialog extends PureComponent {

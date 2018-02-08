@@ -55,9 +55,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   _setTokenParams (token: TokenModel) {
     return [
       token.address(),
-      token.name(),
+      token.name() || '',
       token.symbol(),
-      token.url(),
+      token.url() || '',
       token.decimals(),
       token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
       '', // swarm hash
@@ -68,9 +68,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   _setTokenSummary (token: TokenModel) {
     return {
       address: token.address(),
-      name: token.name(),
+      name: token.name() || '',
       symbol: token.symbol(),
-      url: token.url(),
+      url: token.url() || '',
       decimals: token.decimals(),
     }
   }

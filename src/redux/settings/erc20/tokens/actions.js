@@ -53,13 +53,13 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
   ])
 }
 
-export const formTokenLoadMetaData = async (token: TokenModel, dispatch, tokens: TokensCollection) => {
+export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProps) => {
   let errors = {}
   dispatch({ type: TOKENS_FORM_FETCH })
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())
 
-  if (tokens.getByAddress(token.address()).isFetched()) {
+  if (ownProps.tokens.getByAddress(token.address()).isFetched() && !ownProps.isModify) {
     errors.address = I18n.t('settings.erc20.tokens.errors.addressInUse')
   }
 
