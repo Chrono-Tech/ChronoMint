@@ -3,13 +3,13 @@ import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import contractManagerDAO from 'dao/ContractsManagerDAO'
 import lhtDAO from 'dao/LHTDAO'
 import { modalsOpen } from 'redux/modals/actions'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog/SendToExchangeDialog'
+import LOCModel from 'models/LOCModel'
+import Amount from 'models/Amount'
 import globalStyles from '../../styles'
-import LOCModel from '../../models/LOCModel'
 
 const styles = {
   btn: {
@@ -21,12 +21,14 @@ const styles = {
 const mapDispatchToProps = (dispatch) => ({
   showCreateLOCModal: (loc) => dispatch(modalsOpen({
     component: LOCDialog,
-    props: { loc },
+    props: {
+      loc,
+    },
   })),
   showSendToExchangeModal: async () => {
     dispatch(modalsOpen({
       component: SendToExchangeDialog,
-      props: { allowed: await lhtDAO.getAssetsManagerBalance() },
+      props: { allowed: new Amount(await lhtDAO.getAssetsManagerBalance(), 'LHT') },
     }))
   },
 })

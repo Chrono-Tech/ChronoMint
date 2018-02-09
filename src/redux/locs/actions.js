@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type LOCManagerDAO from 'dao/LOCManagerDAO'
 import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
@@ -6,6 +5,7 @@ import LOCModel from 'models/LOCModel'
 import LOCNoticeModel from 'models/notices/LOCNoticeModel'
 import type TokenModel from 'models/tokens/TokenModel'
 import { notify } from 'redux/notifier/actions'
+import Amount from 'models/Amount'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'
@@ -60,6 +60,8 @@ export const addLOC = (loc: LOCModel) => async (dispatch) => {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.addLOC(loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch({ type: LOC_REMOVE, name: loc.name() })
   }
 }
@@ -72,6 +74,8 @@ export const updateLOC = (loc: LOCModel) => async (dispatch) => {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.updateLOC(loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch(handleError(e, loc))
   }
 }
@@ -82,26 +86,31 @@ export const removeLOC = (loc: LOCModel) => async (dispatch) => {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.removeLOC(loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch(handleError(e, loc))
   }
 }
 
-export const issueAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
+export const issueAsset = (amount: Amount, loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.issueAsset(amount, loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch(handleError(e, loc))
   }
 }
 
-export const sendAsset = (token: TokenModel, to: string, value: string) => async () => {
-  value = new BigNumber(value)
+export const sendAsset = (token: TokenModel, to: string, amount: Amount) => async () => {
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
-    await locManagerDAO.sendAsset(token, to, value)
+    await locManagerDAO.sendAsset(token, to, amount)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     // no rollback
   }
 }
@@ -112,16 +121,20 @@ export const updateStatus = (status: number, loc: LOCModel) => async (dispatch) 
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.updateStatus(status, loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch(handleError(e, loc))
   }
 }
 
-export const revokeAsset = (amount: number, loc: LOCModel) => async (dispatch) => {
+export const revokeAsset = (amount: Amount, loc: LOCModel) => async (dispatch) => {
   dispatch({ type: LOC_UPDATE, loc: loc.isPending(true) })
   try {
     const locManagerDAO = await contractsManagerDAO.getLOCManagerDAO()
     await locManagerDAO.revokeAsset(amount, loc)
   } catch (e) {
+    // eslint-disable-next-line
+    console.warn(e.message)
     dispatch(handleError(e, loc))
   }
 }

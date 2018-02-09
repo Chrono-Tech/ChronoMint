@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import type LOCModel from 'models/LOCModel'
+import LOCModel from 'models/LOCModel'
 import { modalsOpen } from 'redux/modals/actions'
 import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
 import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
 import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
-import IPFS from '../../../utils/IPFS'
+import IPFS from 'utils/IPFS'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
 @connect(null, mapDispatchToProps)
 class Buttons extends PureComponent {
   static propTypes = {
-    loc: PropTypes.object,
+    loc: PropTypes.instanceOf(LOCModel),
     showUploadedFileModal: PropTypes.func,
     showLOCDialog: PropTypes.func,
     showLOCIssueDialog: PropTypes.func,
@@ -60,6 +60,14 @@ class Buttons extends PureComponent {
     })
   }
 
+  handleShowLOCIssueDialog = () => this.props.showLOCIssueDialog(this.props.loc)
+
+  handleShowLOCRedeemDialog = () => this.props.showLOCRedeemDialog(this.props.loc)
+
+  handleShowLOCStatusDialog = () => this.props.showLOCStatusDialog(this.props.loc)
+
+  handleShowLOCDialog = () => this.props.showLOCDialog(this.props.loc)
+
   render () {
     const { loc } = this.props
     const isActive = loc.isActive()
@@ -73,33 +81,33 @@ class Buttons extends PureComponent {
         <FlatButton
           label={<Translate value='loc.viewContract' />}
           disabled
-          onTouchTap={this.handleViewContract}
+          onTouchTap={false && this.handleViewContract} // @TODO fix this
         />
         {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.issueS' asset={currency} />}
             disabled={!isActive || isPending}
-            onTouchTap={() => this.props.showLOCIssueDialog(loc)}
+            onTouchTap={isActive && !isPending && this.handleShowLOCIssueDialog}
           />
         )}
         {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.redeemS' asset={currency} />}
             disabled={!isActive || isPending || loc.issued() === 0}
-            onTouchTap={() => this.props.showLOCRedeemDialog(loc)}
+            onTouchTap={isActive && !isPending && loc.issued() !== 0 && this.handleShowLOCRedeemDialog}
           />
         )}
         {isNotExpired && (
           <FlatButton
             label={<Translate value='terms.status' />}
             disabled={isPending}
-            onTouchTap={() => this.props.showLOCStatusDialog(loc)}
+            onTouchTap={!isPending && this.handleShowLOCStatusDialog}
           />
         )}
         <FlatButton
           label={<Translate value='locs.editInfo' />}
           disabled={isPending || isActive}
-          onTouchTap={() => this.props.showLOCDialog(loc)}
+          onTouchTap={!isPending && !isActive && this.handleShowLOCDialog}
         />
       </div>
     )

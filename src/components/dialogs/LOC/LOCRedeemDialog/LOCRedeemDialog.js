@@ -7,26 +7,37 @@ import { modalsClose } from 'redux/modals/actions'
 import { revokeAsset } from 'redux/locs/actions'
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import { getToken } from 'redux/locs/selectors'
+import { LHT } from 'dao/LHTDAO'
+import TokenModel from 'models/tokens/TokenModel'
+import Amount from 'models/Amount'
 import LOCRedeemForm from './LOCRedeemForm'
 
 import './LOCRedeemDialog.scss'
 
+function mapStateToProps (state) {
+  return {
+    token: getToken(LHT)(state),
+  }
+}
+
 const mapDispatchToProps = (dispatch) => ({
-  revokeAsset: (amount: number, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
+  revokeAsset: (amount: Amount, loc: LOCModel) => dispatch(revokeAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class LOCRedeemModal extends PureComponent {
   static propTypes = {
     closeModal: PropTypes.func,
-    loc: PropTypes.object,
+    loc: PropTypes.instanceOf(LOCModel),
     revokeAsset: PropTypes.func,
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   handleSubmitSuccess = (amount: number) => {
     this.props.closeModal()
-    this.props.revokeAsset(amount, this.props.loc)
+    this.props.revokeAsset(new Amount(this.props.token.addDecimals(amount), LHT), this.props.loc)
   }
 
   render () {
