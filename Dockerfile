@@ -5,7 +5,6 @@ RUN apt-get update -qq && \
     apt-get install -y build-essential python git libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 && \
     mkdir -p /usr/src/app && \
     git clone -b ${BUILD_BRANCH} https://github.com/ChronoBank/ChronoMint.git /usr/src/app
-
 WORKDIR /usr/src/app
 RUN yarn
 ENV PATH /root/.yarn/bin:$PATH
