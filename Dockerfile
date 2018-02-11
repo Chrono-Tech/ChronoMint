@@ -1,4 +1,5 @@
 FROM node:8.9.1-slim 
+ARG BUILD_BRANCH=develop
 ARG NODE=production
 RUN apt-get update -qq && \
     apt-get install -y build-essential python git libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 && \
