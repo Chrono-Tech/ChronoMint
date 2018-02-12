@@ -9,7 +9,7 @@ import { getNetworkById } from '@chronobank/login/network/settings'
 import { TOKEN_ICONS } from 'assets'
 import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
 import Moment from 'components/common/Moment'
-import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
+import { CircularProgress, FlatButton, FontIcon, IconButton, Popover, Drawer } from 'material-ui'
 import menu from 'menu'
 import { FULL_DATE } from 'models/constants'
 import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
@@ -186,17 +186,6 @@ export default class HeaderPartial extends PureComponent {
             {this.renderNotifications()}
           </Popover>
         </div>
-        <div styleName='account'>
-          <div styleName='info'>
-            <span styleName='badge-green'>{this.props.network}</span>
-            <span styleName='highlight0'>{this.props.profile.name() || 'Your Name'}</span>
-          </div>
-          <div styleName='extra'>
-            <span styleName='highlight1'>{this.props.account}</span>
-            <QRIcon value={this.props.account} />
-            <CopyIcon value={this.props.account} />
-          </div>
-        </div>
         <div styleName='right'>
           <div styleName='rightIcon' onTouchTap={this.handleProfileOpen}>
             <IPFSImage
@@ -206,19 +195,13 @@ export default class HeaderPartial extends PureComponent {
                 <FontIcon style={{ fontSize: 54 }} color='white' className='material-icons'>account_circle</FontIcon>)}
             />
           </div>
-          <Popover
-            ref={this.refPopover}
-            styleName='popover'
-            className='popover'
-            zDepth={3}
+          <Drawer
+            openSecondary={true}
             open={this.state.isProfileOpen}
-            anchorEl={this.state.profileAnchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={this.handleProfileClose}
+            zDepth={3}
           >
             {this.renderProfile()}
-          </Popover>
+          </Drawer>
         </div>
       </div>
     )
@@ -353,6 +336,8 @@ export default class HeaderPartial extends PureComponent {
     )
   }
 
+
+
   renderProfile () {
     const items = !this.props.isTokensLoaded
       ? []
@@ -368,22 +353,6 @@ export default class HeaderPartial extends PureComponent {
     return (
       <div styleName='profile'>
         <div styleName='profile-body'>
-          <div styleName='body-avatar'>
-            <div styleName='avatarIcon'>
-              <IPFSImage
-                styleName='avatarIconContent'
-                multihash={this.props.profile.icon()}
-                icon={
-                  <FontIcon
-                    style={{ fontSize: 96, cursor: 'default' }}
-                    color='white'
-                    className='material-icons'
-                  >account_circle
-                  </FontIcon>
-                }
-              />
-            </div>
-          </div>
           <div styleName='body-info'>
             <div styleName='badge-green'>{this.props.network}</div>
             <div styleName='info-account'>{this.props.profile.name()}</div>
