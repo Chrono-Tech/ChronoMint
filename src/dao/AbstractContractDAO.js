@@ -391,6 +391,7 @@ export default class AbstractContractDAO extends EventEmitter {
    * Keys is using for I18N
    * @param value
    * @param options
+   * @param additionalAction
    * @returns {Promise<Object>} receipt
    * @protected
    */
@@ -401,7 +402,7 @@ export default class AbstractContractDAO extends EventEmitter {
     infoArgs: Object | AbstractModel = null,
     value: BigNumber = new BigNumber(0),
     options = DEFAULT_TX_OPTIONS,
-    additionalAction = new AdditionalActionModel()
+    additionalAction = null
   ): Object {
 
     const {
@@ -425,36 +426,22 @@ export default class AbstractContractDAO extends EventEmitter {
       func,
       args: displayArgs,
       value,
-      additionalAction: { isFetching: () => true },
+      additionalAction,
+      params: args,
     })
 
     /** ESTIMATE GAS */
-    const estimateGas = async () => {
-      const { gasFee, gasLimit } = await this._estimateGas(func, args, value)
-      tx = tx.setGas(gasFee)
-      AbstractContractDAO.txGas(tx)
-      return gasLimit
-    }
-
-    const runAdditionalAction = async () => {
-      const result = await additionalAction.action()
-      // eslint-disable-next-line
-      console.log('runAdditionalAction result', result)
-      // Object.values(result).map((item) => {
-      //   args.push(item)
-      // })
-      // tx = tx.set('additional', result)
+    const estimateGas = (func, args, value) => {
+      return this._estimateGas(func, args, value)
     }
 
     let gasLimit = null
 
     /** START */
     try {
-      [gasLimit] = await Promise.all([
-        estimateGas(),
-        runAdditionalAction(),
-        AbstractContractDAO.txStart(tx),
-      ])
+      tx = await AbstractContractDAO.txStart(tx, estimateGas)
+      gasLimit = tx.gasLimit()
+      args = tx.params()
 
       const txParams = {
         from: this.getAccount(),

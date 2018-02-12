@@ -279,6 +279,10 @@ export default {
         email: 'E-mail',
         company: 'Компания',
       },
+      errors: {
+        saveInIPFSError: 'Сохранение данныx в IPFS, завершилось с ошибкой, повторите попытку. Это бесплатно.',
+        repeatButtonName: 'Повторить сохранение в IPFS',
+      },
     },
     Ethereum: {
       [ eth.TX_TRANSFER ]: {

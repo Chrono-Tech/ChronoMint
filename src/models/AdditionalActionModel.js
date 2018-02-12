@@ -3,6 +3,9 @@ import { abstractFetchingModel } from './AbstractFetchingModel'
 class AdditionalActionModel extends abstractFetchingModel({
   action: null,
   value: null,
+  callback: null,
+  errorMessage: null,
+  repeatButtonName: null,
 }) {
   async action () {
     const action = this.get('action')
@@ -13,15 +16,21 @@ class AdditionalActionModel extends abstractFetchingModel({
         const result = await action()
         return this.value(result).isFetched(true)
       } catch (e) {
-        // eslint-disable-next-line
-        console.warn(e.message)
         return this.isFailed(true)
       }
     }
   }
 
   value (value) {
-    this._getSet('value', value)
+    return this._getSet('value', value)
+  }
+
+  callback (value) {
+    return this._getSet('value', value)
+  }
+
+  message (value) {
+    return this._getSet('value', value)
   }
 }
 

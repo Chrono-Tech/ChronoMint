@@ -12,9 +12,9 @@ import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import Preloader from 'components/common/Preloader/Preloader'
 
 import './ConfirmTxDialog.scss'
-import Preloader from '../../common/Preloader/Preloader'
 
 const mapStateToProps = (state) => {
   return ({
@@ -41,6 +41,11 @@ export default class ConfirmTxDialog extends PureComponent {
     balance: PropTypes.instanceOf(Amount),
     gasPriceMultiplier: PropTypes.number,
     handleUpdateTx: PropTypes.func,
+    handleEstimateGas: PropTypes.func,
+  }
+
+  componentDidMount () {
+    this.handleRepeatAction()
   }
 
   componentWillReceiveProps (newProps) {
@@ -49,14 +54,33 @@ export default class ConfirmTxDialog extends PureComponent {
     }
   }
 
+  handleRepeatAction () {
+    const additionalAction = this.props.tx.additionalAction()
+    if (additionalAction) {
+      additionalAction
+        .action()
+        .then((result) => {
+          const { tx } = this.props
+          const newParams = tx.params().concat(Object.values(result.value()))
+          const newTx = this.props.tx.params(newParams).additionalAction(result)
+
+          this.props.handleUpdateTx(newTx)
+          this.props.handleEstimateGas(tx.funcName(), newTx.params(), tx.value())
+        })
+    } else {
+      const { tx, handleEstimateGas } = this.props
+      handleEstimateGas(tx.funcName(), tx.params(), tx.value())
+    }
+  }
+
   handleConfirm = () => {
     this.props.modalsClose()
-    this.props.callback(true)
+    this.props.callback(true, this.props.tx)
   }
 
   handleClose = () => {
     this.props.modalsClose()
-    this.props.callback(false)
+    this.props.callback(false, this.props.tx)
   }
 
   getActions () {
@@ -118,6 +142,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const { tx, balance } = this.props
     const gasFee = tx.gas()
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
+    const additionalAction = tx.additionalAction()
     return (
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
@@ -128,6 +153,7 @@ export default class ConfirmTxDialog extends PureComponent {
                 <TableBody displayRowCheckbox={false}>
                   {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
+                  {additionalAction && additionalAction.isFetched() && this.getKeyValueRows(additionalAction.value(), tx.i18nFunc())}
                   <TableRow key='txFee'>
                     <TableRowColumn style={{ width: '35%' }}>
                       <Translate value='tx.fee' />
@@ -161,8 +187,18 @@ export default class ConfirmTxDialog extends PureComponent {
               {balance.lt(0) && <div styleName='error'>Not enough ETH</div>}
             </div>
 
+            {additionalAction && additionalAction.isFailed() && <Translate value={additionalAction.message()} />}
+
           </div>
           <div styleName='footer'>
+            {additionalAction && additionalAction.isFailed() &&
+            <FlatButton
+              styleName='action'
+              label={<Translate value={additionalAction.repeatButtonName} />}
+              onTouchTap={this.handleClose}
+            />
+            }
+
             <FlatButton
               styleName='action'
               label={<Translate value='terms.cancel' />}

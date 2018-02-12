@@ -91,7 +91,11 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
         hash,
       }
     }
-    return new AdditionalActionModel({ action })
+    return new AdditionalActionModel({
+      action,
+      errorMessage: 'tx.UserManager.errors.saveInIPFSError',
+      repeatButtonName: 'tx.UserManager.errors.repeatButtonName',
+    })
   }
 
   async setMemberProfile (account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
