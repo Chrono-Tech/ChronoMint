@@ -1,5 +1,6 @@
 let path = require('path')
 let webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 let config = require('./webpack.config.base.js')
 
@@ -7,7 +8,7 @@ let HtmlWebpackPlugin = require('html-webpack-plugin')
 let ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = config.buildConfig(
-  ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
+  ({ srcPath, modulesPath, buildPath, indexHtmlPath, faviconPath }) => ({
     entry: path.join(srcPath, 'index'),
     output: {
       path: buildPath,
@@ -53,6 +54,13 @@ module.exports = config.buildConfig(
         },
       }),
       new ExtractTextPlugin('[name].[contenthash].css'),
+      new CopyWebpackPlugin([
+        {
+          context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
+          from: '**',
+          to: path.join(buildPath, 'chronomint-presentation'),
+        },
+      ]),
     ],
   })
 )
