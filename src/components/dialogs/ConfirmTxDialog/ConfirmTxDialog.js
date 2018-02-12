@@ -54,22 +54,26 @@ export default class ConfirmTxDialog extends PureComponent {
     }
   }
 
-  handleRepeatAction () {
+  handleRepeatAction = () => {
     const additionalAction = this.props.tx.additionalAction()
+    let tx = this.props.tx.additionalAction(additionalAction.isFailed(false))
+
+    this.props.handleUpdateTx(tx)
+
     if (additionalAction) {
       additionalAction
         .action()
         .then((result) => {
-          const { tx } = this.props
-          const newParams = tx.params().concat(Object.values(result.value()))
+          const newParams = tx.params().concat(Object.values(result.value() || []))
           const newTx = this.props.tx.params(newParams).additionalAction(result)
 
           this.props.handleUpdateTx(newTx)
-          this.props.handleEstimateGas(tx.funcName(), newTx.params(), tx.value())
+          if (result.isFetched()) {
+            this.props.handleEstimateGas(tx.funcName(), newTx.params(), tx.value())
+          }
         })
     } else {
-      const { tx, handleEstimateGas } = this.props
-      handleEstimateGas(tx.funcName(), tx.params(), tx.value())
+      this.props.handleEstimateGas(tx.funcName(), tx.params(), tx.value())
     }
   }
 
@@ -187,18 +191,19 @@ export default class ConfirmTxDialog extends PureComponent {
               {balance.lt(0) && <div styleName='error'>Not enough ETH</div>}
             </div>
 
-            {additionalAction && additionalAction.isFailed() && <Translate value={additionalAction.message()} />}
+            <div styleName='errorMessage'>
+              {additionalAction && additionalAction.isFailed() && <Translate value={additionalAction.errorMessage()} />}
+            </div>
 
           </div>
           <div styleName='footer'>
             {additionalAction && additionalAction.isFailed() &&
             <FlatButton
               styleName='action'
-              label={<Translate value={additionalAction.repeatButtonName} />}
-              onTouchTap={this.handleClose}
+              label={<Translate value={additionalAction.repeatButtonName()} />}
+              onTouchTap={this.handleRepeatAction}
             />
             }
-
             <FlatButton
               styleName='action'
               label={<Translate value='terms.cancel' />}

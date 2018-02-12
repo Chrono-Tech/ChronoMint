@@ -51,3 +51,8 @@
 :global(.TokenValue__root) {
   font-size: 18px;
 }
+
+.errorMessage {
+  padding: 10px 24px;
+  color: $color-error;
+}

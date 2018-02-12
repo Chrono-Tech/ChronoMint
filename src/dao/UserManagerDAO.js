@@ -98,14 +98,8 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async setMemberProfile (account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
-    let isNew = true
-    const current = await this.getMemberProfile(account)
-    if (JSON.stringify(current.summary()) === JSON.stringify(profile.summary())) {
-      isNew = false
-    }
-    // const [ hash, isNew ] = await this._saveMemberProfile(account, profile)
-    if (!isNew) {
+  async setMemberProfile (account: string, oldProfile: ProfileModel, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
+    if (JSON.stringify(oldProfile.summary()) === JSON.stringify(profile.summary())) {
       return true
     }
 
