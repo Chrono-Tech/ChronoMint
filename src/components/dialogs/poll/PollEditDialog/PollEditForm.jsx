@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DatePicker, TextField } from 'redux-form-material-ui'
+import { DatePicker, Slider, TextField } from 'redux-form-material-ui'
 import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_I18N } from 'redux/configureStore'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -18,6 +18,7 @@ import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
 import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
 import { TIME } from 'redux/mainWallet/actions'
 import './PollEditForm.scss'
 import validate from './validate'
@@ -34,11 +35,13 @@ function mapStateToProps (state) {
   return {
     options: selector(state, 'options'),
     account: state.get(DUCK_SESSION).account,
-    maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
+    maxVoteLimitInTIME: new BigNumber(state.get(DUCK_VOTING).voteLimitInTIME()),
+    voteLimitInTIME: selector(state, 'voteLimitInTIME'),
     timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
       deadline: moment().add(1, 'day').toDate(),
+      voteLimitInTIME: 0,
     },
   }
 }
@@ -64,7 +67,10 @@ export default class PollEditForm extends Component {
     isModify: PropTypes.bool,
     account: PropTypes.string,
     voteLimit: PropTypes.objectOf(BigNumber),
+    timeToken: PropTypes.instanceOf(TokenModel),
+    maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
     locale: PropTypes.string,
+    voteLimitInTIME: PropTypes.number,
     ...formPropTypes,
   }
 
@@ -122,8 +128,10 @@ export default class PollEditForm extends Component {
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>
                   <IconButton>
-                    <FontIcon className='material-icons'
-                              onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
+                    <FontIcon
+                      className='material-icons'
+                      onTouchTap={() => this.handleOptionRemove(options, index)}
+                    >delete</FontIcon>
                   </IconButton>
                 </div>
               </div>
@@ -135,7 +143,8 @@ export default class PollEditForm extends Component {
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid } = this.props
+    const { isModify, handleSubmit, pristine, invalid, timeToken, voteLimitInTIME } = this.props
+    const maxVoteLimitInTIME = timeToken.removeDecimals(this.props.maxVoteLimitInTIME).toNumber()
     return (
       <form styleName='content' onSubmit={handleSubmit}>
         <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
@@ -154,12 +163,22 @@ export default class PollEditForm extends Component {
               multiLine
               floatingLabelText={<Translate value={prefix('pollDescription')} />}
             />
-            <Field
-              component={TextField}
-              name='voteLimitInTIME'
-              fullWidth
-              floatingLabelText={<Translate value={prefix('voteLimit')} />}
-            />
+            <div>
+              <div styleName='limitTitle'><Translate value={prefix('voteLimit')} /></div>
+              <div styleName='labelWrap'>
+                <div>0</div>
+                <div>{voteLimitInTIME}</div>
+                <div>{maxVoteLimitInTIME}</div>
+              </div>
+              <Field
+                component={Slider}
+                name='voteLimitInTIME'
+                sliderStyle={{ marginBottom: 22, marginTop: 10 }}
+                min={0}
+                max={maxVoteLimitInTIME}
+                step={1}
+              />
+            </div>
             <Field
               component={DatePicker}
               locale={this.props.locale}

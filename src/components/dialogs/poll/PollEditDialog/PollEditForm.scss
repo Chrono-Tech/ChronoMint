@@ -148,3 +148,14 @@
   text-align: right;
   vertical-align: middle;
 }
+
+.labelWrap {
+  display: flex;
+  justify-content: space-between;
+  color: rgba($color-primary-0, 0.6);
+}
+
+.limitTitle {
+  margin-top: 38px;
+  color: rgba($color-primary-0, 0.6);
+}
