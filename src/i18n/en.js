@@ -209,6 +209,7 @@ export default {
         icon: 'Icon (TODO)',
         errors: {
           invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          addressInUse: 'This address is already in use',
           symbolInUse: 'This symbol is already in use',
           invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters',
         },
@@ -525,6 +526,11 @@ export default {
       title: 'Copy address',
       controlTitle: 'Address',
       description: 'Press CTRL + C or ⌘ + C to copy address to clipboard',
+    },
+    copyPrivateKey: {
+      title: 'Copy private key',
+      controlTitle: 'Private key',
+      description: 'Press CTRL + C or ⌘ + C to copy private key to clipboard',
     },
   },
   poll: {

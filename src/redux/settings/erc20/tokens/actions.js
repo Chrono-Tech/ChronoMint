@@ -1,23 +1,26 @@
+import { change } from 'redux-form/immutable'
+import BigNumber from 'bignumber.js'
+import { address } from 'models/validator'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import type TokenModel from 'models/tokens/TokenModel'
 import { I18n } from 'platform/i18n'
-import { TIME } from 'redux/mainWallet/actions'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { checkFetched, TOKENS_FETCHED } from 'redux/tokens/actions'
+import { checkFetched, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
+import Amount from 'models/Amount'
+import ERC20DAO from 'dao/ERC20DAO'
+import { FORM_CBE_TOKEN } from 'components/dialogs/CBETokenDialog/CBETokenDialog'
+import TokensCollection from 'models/tokens/TokensCollection'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
-export const TOKENS_LIST = 'settings/TOKENS_LIST'
-export const TOKENS_SET = 'settings/TOKENS_SET'
-export const TOKENS_REMOVE = 'settings/TOKENS_REMOVE'
 export const TOKENS_FORM = 'settings/TOKENS_FORM'
 export const TOKENS_FORM_FETCH = 'settings/TOKENS_FORM_FETCH'
 
-const setToken = (token: TokenModel) => ({ type: TOKENS_SET, token })
+const setToken = (token: TokenModel) => ({ type: TOKENS_UPDATE, token })
 const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
@@ -28,23 +31,11 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
     tokenService.createDAO(token.isERC20(true))
     dispatch(checkFetched())
   }
-  if (notice.isModified()) {
-    for (const token: TokenModel of getState().get(DUCK_SETTINGS_ERC20_TOKENS).list.valueSeq().toArray()) {
-      if (token.address() === notice.oldAddress()) {
-        dispatch(removeToken(token))
-        break
-      }
-    }
-  }
-  if (notice.isModified() || notice.isRemoved()) {
-    if (getState().get(DUCK_SESSION).profile.tokens().toArray().includes(notice.token().address())
-      || notice.token().symbol() === TIME) {
-      // dispatch(watchInitWallet())
-    }
-  }
+
   dispatch(notice.isRemoved()
     ? removeToken(notice.token())
     : setToken(notice.token()))
+
   if (getState().get(DUCK_SESSION).isCBE) {
     dispatch(notify(notice))
   }
@@ -62,18 +53,27 @@ export const watchInitERC20Tokens = () => async (dispatch) => {
   ])
 }
 
-export const formTokenLoadMetaData = async (token: TokenModel, dispatch) => {
+export const formTokenLoadMetaData = async (token: TokenModel, dispatch, ownProps) => {
+  let errors = {}
   dispatch({ type: TOKENS_FORM_FETCH })
   const managerDAO = await contractsManagerDAO.getERC20ManagerDAO()
-  const symbolAddress = await managerDAO.getTokenAddressBySymbol(token.symbol())
-  dispatch({ type: TOKENS_FORM_FETCH, end: true })
+  const symbolAddress = token.symbol() && await managerDAO.getTokenAddressBySymbol(token.symbol())
 
-  if ((symbolAddress !== null && token.address() !== symbolAddress) || token.symbol().toUpperCase() === 'ETH') {
-    throw { symbol: I18n.t('settings.erc20.tokens.errors.symbolInUse') }
+  if (ownProps.tokens.getByAddress(token.address()).isFetched() && !ownProps.isModify) {
+    errors.address = I18n.t('settings.erc20.tokens.errors.addressInUse')
+  }
+
+  if ((symbolAddress !== null && token.address() !== symbolAddress) || (token.symbol() && token.symbol().toUpperCase() === 'ETH')) {
+    errors.symbol = I18n.t('settings.erc20.tokens.errors.symbolInUse')
+  }
+
+  dispatch({ type: TOKENS_FORM_FETCH, end: true })
+  if (Object.values(errors).length) {
+    throw errors
   }
 }
 
-export const addToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const addToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -83,18 +83,19 @@ export const addToken = (token: TokenModel | AbstractFetchingModel) => async dis
   }
 }
 
-export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async dispatch => {
-  dispatch(setToken(oldToken.isFetching(true)))
+export const modifyToken = (oldToken: TokenModel | AbstractFetchingModel, newToken: TokenModel) => async (dispatch) => {
+  dispatch(removeToken(oldToken))
+  dispatch(setToken(newToken.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
-    await dao.modifyToken(oldToken, newToken)
-    dispatch(removeToken(oldToken))
+    await dao.modifyToken(oldToken, newToken.totalSupply(new Amount(0, newToken.symbol())))
   } catch (e) {
-    dispatch(setToken(oldToken.isFetching(false)))
+    dispatch(removeToken(newToken))
+    dispatch(setToken(oldToken))
   }
 }
 
-export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async dispatch => {
+export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async (dispatch) => {
   dispatch(setToken(token.isFetching(true)))
   const dao = await contractsManagerDAO.getERC20ManagerDAO()
   try {
@@ -102,4 +103,19 @@ export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async 
   } catch (e) {
     dispatch(setToken(token.isFetching(false)))
   }
+}
+export const getDataFromContract = (token) => async (dispatch) => {
+  dispatch({ type: TOKENS_FORM_FETCH })
+  if (!address(token.address())) {
+    const dao = new ERC20DAO(token)
+    const symbol = await dao.getSymbolFromContract()
+    const decimals = new BigNumber(await dao.getDecimalsFromContract())
+
+    if (symbol) { // check only the symbol, because token can have decimal values of 0
+      dispatch(change(FORM_CBE_TOKEN, 'symbol', symbol))
+      dispatch(change(FORM_CBE_TOKEN, 'decimals', decimals))
+    }
+
+  }
+  dispatch({ type: TOKENS_FORM_FETCH, end: true })
 }

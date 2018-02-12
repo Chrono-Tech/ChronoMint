@@ -212,6 +212,7 @@ export default {
         icon: 'Иконка (TODO)',
         errors: {
           invalidAddress: 'Не могу найти валидный ERC20 контракт по этому адресу',
+          addressInUse: 'Этот адрес уже используется',
           symbolInUse: 'Этот символ уже используется',
           invalidSymbol: 'Символ может содержать только от 2 до 4 букв A-Z',
         },
@@ -530,6 +531,11 @@ export default {
       title: 'Копирование адреса',
       controlTitle: 'Адрес',
       description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес',
+    },
+    copyPrivateKey: {
+      title: 'Копирование приватного ключа',
+      controlTitle: 'Приватный ключ',
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать приватный ключ',
     },
   },
   poll: {

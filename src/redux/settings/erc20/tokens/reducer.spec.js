@@ -18,13 +18,6 @@ describe('settings erc20 reducer', () => {
     })
   })
 
-  it('should handle TOKENS_LIST', () => {
-    expect(reducer([], { type: a.TOKENS_LIST, list })).toEqual({
-      list,
-      isFetched: true,
-    })
-  })
-
   it('should handle TOKENS_FORM', () => {
     expect(reducer([], { type: a.TOKENS_FORM, token })).toEqual({
       selected: token,
@@ -45,15 +38,4 @@ describe('settings erc20 reducer', () => {
     })
   })
 
-  it('should handle TOKENS_SET', () => {
-    expect(reducer({ list: new Immutable.Map() }, { type: a.TOKENS_SET, token })).toEqual({
-      list,
-    })
-  })
-
-  it('should handle TOKENS_REMOVE', () => {
-    expect(reducer({ list }, { type: a.TOKENS_REMOVE, token })).toEqual({
-      list: new Immutable.Map(),
-    })
-  })
 })

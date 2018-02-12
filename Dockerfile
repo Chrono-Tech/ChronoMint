@@ -1,13 +1,16 @@
-FROM node:7.9-slim
-# Set NODE_ENV to production
+FROM node:8.9.1-slim 
 ARG NODE=production
-ENV NODE_ENV ${NODE}
 RUN apt-get update -qq && \
-    apt-get install -y build-essential python
-RUN mkdir -p /usr/src/app
+    apt-get install -y build-essential python git libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 && \
+    mkdir -p /usr/src/app && \
+    git clone -b master https://github.com/ChronoBank/ChronoMint.git /usr/src/app
+
 WORKDIR /usr/src/app
-COPY . /usr/src/app
-RUN npm rebuild node-sass --force && \
-    echo "test"
-EXPOSE 3000
-CMD yarn start
+RUN yarn
+ENV PATH /root/.yarn/bin:$PATH
+ENV NODE_ENV ${NODE}
+RUN yarn build
+
+FROM nginx:latest
+WORKDIR /usr/src/app
+COPY --from=0 /usr/src/app .

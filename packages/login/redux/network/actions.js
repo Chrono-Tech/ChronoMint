@@ -1,3 +1,7 @@
+import { ethereumProvider } from '../../network/EthereumProvider'
+import { btcProvider, ltcProvider } from '../../network/BitcoinProvider'
+import { nemProvider } from '../../network/NemProvider'
+
 export const DUCK_NETWORK = 'network'
 
 export const NETWORK_LOADING = 'network/LOADING'
@@ -20,4 +24,19 @@ export const addError = (error) => (dispatch) => {
 
 export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
+}
+
+export const getPrivateKeyFromSymbol = (symbol: string) => {
+  switch (symbol) {
+    case 'ETH':
+      return ethereumProvider.getPrivateKey()
+    case 'BTC':
+      return btcProvider.getPrivateKey()
+    case 'LTC':
+      return ltcProvider.getPrivateKey()
+    case 'NEM':
+      return nemProvider.getPrivateKey()
+    default:
+      return null
+  }
 }
