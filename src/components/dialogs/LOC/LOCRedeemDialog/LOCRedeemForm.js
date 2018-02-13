@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
+import LOCModel from 'models/LOCModel'
 import validate from './validate'
 
 import './LOCRedeemForm.scss'
@@ -15,7 +16,7 @@ const onSubmit = (values) => +values.get('amount')
 @reduxForm({ form: LOC_REDEEM_FORM_NAME, validate, onSubmit })
 class LOCRedeemForm extends PureComponent {
   static propTypes = {
-    loc: PropTypes.object,
+    loc: PropTypes.instanceOf(LOCModel),
     pristine: PropTypes.bool,
     handleSubmit: PropTypes.func,
   }

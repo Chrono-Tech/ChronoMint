@@ -1,10 +1,11 @@
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import Amount from 'models/Amount'
 import validate from './validate'
 
 import './SendToExchangeForm.scss'
@@ -15,18 +16,19 @@ const onSubmit = (values) => +values.get('sendAmount')
 class SendToExchangeForm extends PureComponent {
   static propTypes = {
     handleSubmit: PropTypes.func,
-    allowed: PropTypes.object,
+    allowed: PropTypes.instanceOf(Amount),
+    ...formPropTypes,
   }
 
   render () {
-    const { handleSubmit, allowed } = this.props
+    const { handleSubmit, allowed, pristine, invalid } = this.props
     return (
       <form onSubmit={handleSubmit} name='SendToExchangeFormName' styleName='root'>
 
         <div styleName='subHeader'>
           <p><Translate value='forms.mustBeCoSigned' /></p><br />
           <p><Translate value='forms.correspondingFee' /></p><br />
-          <p>Allowed to send: <TokenValue value={allowed} symbol='LHT' /></p>
+          <p>Allowed to send: <TokenValue value={allowed} /></p>
         </div>
 
         <Field
@@ -38,7 +40,8 @@ class SendToExchangeForm extends PureComponent {
         <div styleName='footer'>
           <RaisedButton
             label={<Translate value='terms.send' />}
-            onTouchTap={handleSubmit}
+            disabled={pristine || invalid}
+            onTouchTap={!pristine && !invalid && handleSubmit}
             primary
           />
         </div>

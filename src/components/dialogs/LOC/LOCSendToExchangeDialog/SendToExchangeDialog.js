@@ -2,35 +2,44 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import exchangeDAO from 'dao/ExchangeDAO'
-import lhtDAO from 'dao/LHTDAO'
+import lhtDAO, { LHT } from 'dao/LHTDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
 import { sendAsset } from 'redux/locs/actions'
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
+import Amount from 'models/Amount'
+import { getToken } from 'redux/locs/selectors'
 import SendToExchangeForm from './SendToExchangeForm'
 
+function mapStateToProps (state) {
+  return {
+    token: getToken(LHT)(state),
+  }
+}
+
 const mapDispatchToProps = (dispatch) => ({
-  send: async (value) => {
+  send: async (amount: Amount) => {
     dispatch(sendAsset(
       new TokenModel({ dao: lhtDAO, blockchain: 'Ethereum' }),
       await exchangeDAO.getAddress(),
-      value,
+      amount,
     ))
   },
   closeModal: () => dispatch(modalsClose()),
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class SendToExchangeModal extends PureComponent {
   static propTypes = {
     send: PropTypes.func,
     closeModal: PropTypes.func,
-    allowed: PropTypes.object,
+    allowed: PropTypes.instanceOf(Amount),
+    token: PropTypes.instanceOf(TokenModel),
   }
 
-  handleSubmitSuccess = (value) => {
+  handleSubmitSuccess = (amount: number) => {
     this.props.closeModal()
-    this.props.send(value)
+    this.props.send(new Amount(this.props.token.addDecimals(amount), LHT))
   }
 
   render () {
