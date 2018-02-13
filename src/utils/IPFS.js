@@ -47,7 +47,7 @@ class IPFS {
   /**
    * @deprecated
    */
-  async get (hash, timeout = 3000) {
+  async get (hash, timeout = 5000) {
     if (!hash) {
       return null
     }
