@@ -39,14 +39,27 @@ export default class GasSlider extends PureComponent {
     handleChange: PropTypes.func,
     value: PropTypes.number,
     token: PropTypes.instanceOf(TokenModel),
+    onDragStop: PropTypes.func,
+    hideTitle: PropTypes.bool,
+  }
+
+  handleDragStop () {
+    const { onDragStop } = this.props
+    if (onDragStop) {
+      onDragStop()
+    }
   }
 
   render () {
     return (
-      <div styleName='root'>
-        <div styleName='title'><Translate value={`${prefix}.title`} /></div>
-        <div styleName='description'><Translate value={`${prefix}.description`} /></div>
-        <div styleName='tagsWrap'>
+      <div styleName='root' className='GasSlider__root'>
+        {!this.props.hideTitle &&
+        <div>
+          <div styleName='title'><Translate value={`${prefix}.title`} /></div>
+          <div styleName='description'><Translate value={`${prefix}.description`} /></div>
+        </div>
+        }
+        <div styleName='tagsWrap' className='GasSlider__tagsWrap'>
           <div><Translate value={`${prefix}.slow`} /></div>
           <div styleName='separator' />
           <div><Translate value={`${prefix}.fast`} /></div>
@@ -56,6 +69,7 @@ export default class GasSlider extends PureComponent {
           value={this.props.value}
           {...FEE_RATE_MULTIPLIER}
           onChange={this.props.handleChange(this.props.token)}
+          onDragStop={this.handleDragStop}
         />
         <div styleName='gasPriceDescription'>
           <Translate

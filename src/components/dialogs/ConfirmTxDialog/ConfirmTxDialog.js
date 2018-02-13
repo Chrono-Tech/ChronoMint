@@ -12,7 +12,7 @@ import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-
+import GasSlider from 'components/common/GasSlider/GasSlider'
 import './ConfirmTxDialog.scss'
 
 const mapStateToProps = (state) => {
@@ -156,6 +156,10 @@ export default class ConfirmTxDialog extends PureComponent {
                 </TableBody>
               </Table>
               {balance.lt(0) && <div styleName='error'>Not enough ETH</div>}
+            </div>
+
+            <div styleName='gasSliderWrap'>
+              <GasSlider hideTitle />
             </div>
 
           </div>
