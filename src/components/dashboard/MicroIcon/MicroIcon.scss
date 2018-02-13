@@ -24,4 +24,25 @@
       color: $color-primary-1;
     }
   }
+  .average {
+    position: relative;
+    display: inline-block;
+    line-height: 16px;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0.5;
+    color: black;
+    :global(.material-icons) {
+      width: 24px;
+      height: 24px;
+      font-size: 24px;
+      vertical-align: top;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }

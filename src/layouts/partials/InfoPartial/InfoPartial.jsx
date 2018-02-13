@@ -143,6 +143,7 @@ export default class InfoPartial extends PureComponent {
 
   renderItem = (balance: BalanceModel) => {
     const { selectedCoin, open, tokens } = this.props
+
     return (
       <TokenItem
         key={balance.id()}
