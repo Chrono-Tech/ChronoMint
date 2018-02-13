@@ -276,6 +276,10 @@ export default {
         email: 'Email',
         company: 'Company',
       },
+      errors: {
+        saveInIPFSError: 'Save data in the IPFS ended with an error, please try again. It`s free.',
+        repeatButtonName: 'repeat save in IPFS',
+      },
     },
     Ethereum: {
       [eth.TX_TRANSFER]: {
