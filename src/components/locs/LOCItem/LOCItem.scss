@@ -136,3 +136,9 @@
 :global(.TokenValue__root) {
   font-size: 14px;
 }
+
+.buttonsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

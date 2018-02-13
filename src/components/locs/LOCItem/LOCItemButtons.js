@@ -10,6 +10,7 @@ import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog
 import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
 import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
 import IPFS from 'utils/IPFS'
+import './LOCItem.scss'
 
 const mapDispatchToProps = (dispatch) => ({
   showLOCDialog: (loc: LOCModel) => dispatch(modalsOpen({
@@ -77,12 +78,7 @@ class Buttons extends PureComponent {
 
     return (
       // TODO @dkchv: view contract disable until MINT-277 (fileSelect & ipfs)
-      <div>
-        <FlatButton
-          label={<Translate value='loc.viewContract' />}
-          disabled
-          onTouchTap={false && this.handleViewContract} // @TODO fix this
-        />
+      <div styleName='buttonsWrap'>
         {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.issueS' asset={currency} />}
