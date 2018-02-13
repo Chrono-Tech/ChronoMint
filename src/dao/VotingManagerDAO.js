@@ -151,6 +151,10 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     return polls.item(pollId)
   }
 
+  getVoteLimitInPercent () {
+    return this._call('getVotesPercent')
+  }
+
   /** @private */
   _watchCallback = (callback, status, account: string) => async (result) => {
     let notice = new PollNoticeModel({

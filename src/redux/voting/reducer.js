@@ -8,7 +8,9 @@ const initialState = new VotingMainModel()
 export default (state = initialState, action) => {
   switch (action.type) {
     case POLLS_VOTE_LIMIT:
-      return state.voteLimitInTIME(action.voteLimitInTIME)
+      return state
+        .voteLimitInTIME(action.voteLimitInTIME)
+        .voteLimitInPercent(action.voteLimitInPercent)
     case POLLS_LOAD:
       return state.isFetching(true)
     case POLLS_LIST:
