@@ -24,16 +24,6 @@ export default class CopyIcon extends PureComponent {
     iconStyle: 'micro',
   }
 
-  render () {
-    return (
-      <div styleName='root'>
-        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
-          <i className='material-icons'>content_copy</i>
-        </a>
-      </div>
-    )
-  }
-
   handleCopy () {
     if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
       if (this.props.onModalOpen) {
@@ -49,6 +39,16 @@ export default class CopyIcon extends PureComponent {
       clipboard.copy(this.props.value)
       this.props.notify()
     }
+  }
+
+  render () {
+    return (
+      <div styleName='root'>
+        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
+          <i className='material-icons'>content_copy</i>
+        </a>
+      </div>
+    )
   }
 }
 

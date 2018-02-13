@@ -6,8 +6,8 @@ import {
   SYNC_STATUS_SYNCING,
 } from '@chronobank/login/network/MonitorService'
 import { getNetworkById } from '@chronobank/login/network/settings'
-import { TOKEN_ICONS } from 'assets'
-import { IPFSImage, TokenValue, ProfileSidePanel } from 'components'
+import { IPFSImage } from 'components'
+import { ProfileSidePanel } from 'layouts/partials'
 import Moment from 'components/common/Moment'
 import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
 import menu from 'menu'
@@ -23,7 +23,7 @@ import { sidesOpen } from 'redux/sides/actions'
 import { readNotices } from 'redux/notifier/actions'
 import { logout } from 'redux/session/actions'
 import Value from 'components/common/Value/Value'
-import { PROFILE_SIDE_PANEL_KEY } from 'components/dashboard/ProfileSidePanel/ProfileSidePanel'
+import { PROFILE_SIDE_PANEL_KEY } from 'layouts/partials/ProfileSidePanel/ProfileSidePanel'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
@@ -357,4 +357,3 @@ export default class HeaderPartial extends PureComponent {
     this.props.handleProfileEdit()
   }
 }
-

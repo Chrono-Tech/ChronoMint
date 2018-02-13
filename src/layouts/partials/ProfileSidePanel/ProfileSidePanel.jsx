@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import {  FontIcon, Drawer } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, QRIcon, CopyIcon, TokenValue, UpdateProfileDialog } from 'components'
+import { IPFSImage, QRIcon, PKIcon, CopyIcon, TokenValue, UpdateProfileDialog } from 'components'
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { TOKEN_ICONS } from 'assets'
@@ -147,30 +147,38 @@ class ProfileSidePanel extends PureComponent {
           <div styleName='address-copy-icon'>
             <CopyIcon iconStyle='average' value={this.props.account} />
           </div>
+          <div styleName='address-copy-icon'>
+            <PKIcon iconStyle='average' symbol='ETH' />
+          </div>
         </div>
 
         {this.props.tokens
           .filter((token) => addresses.map((a) => a.title.toUpperCase()).includes(token.symbol().toUpperCase()))
           .map((token) => {
             const tokenAddress = addresses.find((e) => e.title === token.symbol().toUpperCase()).address
-            return (<div styleName='address'>
-              <div styleName='address-token'>
-                <IPFSImage
-                  styleName='address-token-icon'
-                  fallback={TOKEN_ICONS[ token.symbol() ]}
-                />
+            return (
+              <div styleName='address' key={token.id()}>
+                <div styleName='address-token'>
+                  <IPFSImage
+                    styleName='address-token-icon'
+                    fallback={TOKEN_ICONS[ token.symbol() ]}
+                  />
+                </div>
+                <div styleName='address-token-info'>
+                  <p styleName='address-info-text'>{token.symbol()} Address</p>
+                  <span styleName='main-address-account-name'>{ tokenAddress }</span>
+                </div>
+                <div styleName='address-qr-code'>
+                  <QRIcon iconStyle='average' value={tokenAddress} />
+                </div>
+                <div styleName='address-copy-icon'>
+                  <CopyIcon iconStyle='average' value={tokenAddress} />
+                </div>
+                <div styleName='address-copy-icon'>
+                  <PKIcon iconStyle='average' symbol={token.symbol()} />
+                </div>
               </div>
-              <div styleName='address-token-info'>
-                <p styleName='address-info-text'>{token.symbol()} Address</p>
-                <span styleName='main-address-account-name'>{ tokenAddress }</span>
-              </div>
-              <div styleName='address-qr-code'>
-                <QRIcon iconStyle='average' value={tokenAddress} />
-              </div>
-              <div styleName='address-copy-icon'>
-                <CopyIcon iconStyle='average' value={tokenAddress} />
-              </div>
-            </div>)
+            )
           })
         }
 
@@ -186,8 +194,8 @@ class ProfileSidePanel extends PureComponent {
   render () {
     return (
       <Drawer
-        openSecondary={true}
-        open={true}
+        openSecondary
+        open
         width={380}
       >
         {this.renderProfile()}
