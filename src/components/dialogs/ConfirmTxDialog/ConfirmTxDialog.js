@@ -56,7 +56,7 @@ export default class ConfirmTxDialog extends PureComponent {
 
   handleRepeatAction = () => {
     const additionalAction = this.props.tx.additionalAction()
-    let tx = this.props.tx.additionalAction(additionalAction.isFailed(false))
+    let tx = this.props.tx.additionalAction(additionalAction ? additionalAction.isFailed(false) : additionalAction)
 
     this.props.handleUpdateTx(tx)
 
@@ -147,6 +147,7 @@ export default class ConfirmTxDialog extends PureComponent {
     const gasFee = tx.gas()
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     const additionalAction = tx.additionalAction()
+    const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     return (
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
@@ -192,12 +193,12 @@ export default class ConfirmTxDialog extends PureComponent {
             </div>
 
             <div styleName='errorMessage'>
-              {additionalAction && additionalAction.isFailed() && <Translate value={additionalAction.errorMessage()} />}
+              {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
           </div>
           <div styleName='footer'>
-            {additionalAction && additionalAction.isFailed() &&
+            {additionalActionIsFailed &&
             <FlatButton
               styleName='action'
               label={<Translate value={additionalAction.repeatButtonName()} />}
@@ -213,8 +214,8 @@ export default class ConfirmTxDialog extends PureComponent {
               styleName='action'
               primary
               label={<Translate value='terms.confirm' />}
-              disabled={gasFee.lte(0) || balance.lt(0)}
-              onTouchTap={this.handleConfirm}
+              disabled={gasFee.lte(0) || balance.lt(0) || additionalActionIsFailed}
+              onTouchTap={gasFee.gte(0) && balance.gt(0) && !additionalActionIsFailed && this.handleConfirm}
             />
           </div>
         </div>

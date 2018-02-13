@@ -98,14 +98,35 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  async setMemberProfile (account: string, oldProfile: ProfileModel, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
-    if (JSON.stringify(oldProfile.summary()) === JSON.stringify(profile.summary())) {
+  async setMemberProfile (account: string, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
+    const current = await this.getMemberProfile(account)
+    if (JSON.stringify(current.summary()) === JSON.stringify(profile.summary())) {
       return true
     }
-
     return isOwn
-      ? this._tx(TX_SET_OWN_HASH, [], profile, new BigNumber(0), DEFAULT_TX_OPTIONS, this._saveProfile(profile))
-      : this._tx(TX_SET_MEMBER_HASH, [ account ], { address: account, ...profile.txSummary() }, new BigNumber(0), DEFAULT_TX_OPTIONS, this._saveProfile(profile))
+      ? this._tx(
+        TX_SET_OWN_HASH,
+        [],
+        profile,
+        new BigNumber(0),
+        {
+          ...DEFAULT_TX_OPTIONS,
+          additionalAction: this._saveProfile(profile),
+        })
+      : this._tx(
+        TX_SET_MEMBER_HASH,
+        [
+          account,
+        ],
+        {
+          address: account,
+          ...profile.txSummary(),
+        },
+        new BigNumber(0),
+        {
+          ...DEFAULT_TX_OPTIONS,
+          additionalAction: this._saveProfile(profile),
+        })
   }
 
   async addCBE (cbe: CBEModel) {

@@ -114,7 +114,7 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
   dispatch({ type: SESSION_PROFILE_UPDATE, profile: newProfile })
   try {
     const dao = await contractsManagerDAO.getUserManagerDAO()
-    await dao.setMemberProfile(account, profile, newProfile.version(CURRENT_PROFILE_VERSION))
+    await dao.setMemberProfile(account, newProfile.version(CURRENT_PROFILE_VERSION))
   } catch (e) {
     // eslint-disable-next-line
     console.error('update profile error', e.message)

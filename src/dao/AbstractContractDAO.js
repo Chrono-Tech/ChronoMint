@@ -35,6 +35,7 @@ export const DEFAULT_TX_OPTIONS = {
   addDryRunOkCodes: [],
   allowNoReturn: false,
   useDefaultGasLimit: false,
+  additionalAction: null,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
@@ -391,7 +392,6 @@ export default class AbstractContractDAO extends EventEmitter {
    * Keys is using for I18N
    * @param value
    * @param options
-   * @param additionalAction
    * @returns {Promise<Object>} receipt
    * @protected
    */
@@ -402,7 +402,6 @@ export default class AbstractContractDAO extends EventEmitter {
     infoArgs: Object | AbstractModel = null,
     value: BigNumber = new BigNumber(0),
     options = DEFAULT_TX_OPTIONS,
-    additionalAction = null
   ): Object {
 
     const {
@@ -410,6 +409,7 @@ export default class AbstractContractDAO extends EventEmitter {
       addDryRunOkCodes,
       allowNoReturn,
       useDefaultGasLimit,
+      additionalAction,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     const deployed = await this.contract
