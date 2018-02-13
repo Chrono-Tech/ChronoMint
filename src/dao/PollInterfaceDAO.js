@@ -48,8 +48,8 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
     return this._multisigTx(TX_ACTIVATE_POLL)
   }
 
-  vote (choice) {
-    return this._tx(TX_VOTE, [ choice ], { choice })
+  vote (choice, choiceText) {
+    return this._tx(TX_VOTE, [ choice ], { choice: choiceText.option })
   }
 
   removePoll () {

@@ -5,6 +5,7 @@ import VotingCollection from './VotingCollection'
 
 export default class VotingMainModel extends abstractFetchingModel({
   voteLimitInTIME: null,
+  voteLimitInPercent: null,
   list: new VotingCollection(),
   lastPoll: new BigNumber(0),
 }) {
@@ -14,6 +15,10 @@ export default class VotingMainModel extends abstractFetchingModel({
 
   voteLimitInTIME (value) {
     return this._getSet('voteLimitInTIME', value)
+  }
+
+  voteLimitInPercent (value) {
+    return this._getSet('voteLimitInPercent', value)
   }
 
   lastPoll (value) {

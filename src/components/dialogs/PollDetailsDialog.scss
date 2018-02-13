@@ -111,7 +111,7 @@
 
 .legendItem {
   flex: 0 0 auto;
-  width: 150px;
+  max-width: 100%;
   position: relative;
   font-size: 12px;
   line-height: 15px;
