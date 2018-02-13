@@ -17,12 +17,17 @@ export default class CopyIcon extends PureComponent {
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
+    iconStyle: PropTypes.string,
+  }
+
+  static defaultProps = {
+    iconStyle: 'micro',
   }
 
   render () {
     return (
       <div styleName='root'>
-        <a styleName='micro' onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
+        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
           <i className='material-icons'>content_copy</i>
         </a>
       </div>

@@ -1,4 +1,4 @@
-import { ModalStack, Snackbar } from 'components'
+import { ModalStack, Snackbar, SideStack } from 'components'
 import { MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -60,6 +60,7 @@ export default class Markup extends PureComponent {
             </div>
           </div>
           <div styleName='middleBottom' />
+          <SideStack />
           <ModalStack />
         </div>
       </MuiThemeProvider>

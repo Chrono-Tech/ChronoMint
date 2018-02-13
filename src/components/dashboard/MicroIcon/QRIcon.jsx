@@ -9,6 +9,11 @@ import './MicroIcon.scss'
 export default class QRIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
+    iconStyle: PropTypes.string,
+  }
+
+  static defaultProps = {
+    iconStyle: 'micro',
   }
 
   constructor (props) {
@@ -24,7 +29,7 @@ export default class QRIcon extends PureComponent {
     return (
       <div styleName='root'>
         <a
-          styleName='micro'
+          styleName={this.props.iconStyle}
           onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
           <i className='material-icons'>center_focus_weak</i>
