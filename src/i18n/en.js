@@ -687,6 +687,7 @@ export default {
         value: 'Value',
       },
       DepositTokens: {
+        depositTime: 'Deposit Time',
         amount: 'Amount',
         yourSymbolBalance: 'Your %{symbol} balance',
         yourSymbolDeposit: 'Your %{symbol} deposit',
@@ -775,7 +776,7 @@ export default {
         editPoll: 'Edit Poll',
         newPoll: 'New Poll',
         pollTitle: 'Poll title',
-        pollDescriptions: 'Poll description',
+        pollDescription: 'Poll description',
         voteLimit: 'Vote Limit in TIME per option',
         finishedDate: 'Finished date',
         addAttachments: 'Add Attachments',
