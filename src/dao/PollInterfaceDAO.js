@@ -62,7 +62,9 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   endPoll () {
-    return this._multisigTx(TX_END_POLL)
+    return this._multisigTx(TX_END_POLL, [], null, {
+      useDefaultGasLimit: true,
+    })
   }
 
 }
