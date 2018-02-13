@@ -29,7 +29,7 @@
 }
 
 .close-icon-wrap {
-  color: #FFFFFF;
+  color: $color-white;
   font-size: 25px;
   font-family: sans-serif;
 }
@@ -43,7 +43,7 @@
   padding-top: 20px;
   padding-bottom: 20px;
   min-height: 50px;
-  background-color: #5C6BC0;
+  background-color: $color-blue405;
 }
 
 .account-info-avatar {
@@ -66,7 +66,6 @@
   line-height: 22px;
   font-size: 18px;
   text-align: left;
-  font-family: proxima-nova, sans-serif;
   font-weight: 700;
 }
 
@@ -104,7 +103,6 @@
 
 
 .address-info-text {
-  font-family: proxima-nova, sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -160,7 +158,7 @@
   display: table-cell;
   width: 70%;
   align-self: left;
-  vertical-align: middle;
+  vertical-align: text-top;
   word-break: break-all;
   word-wrap: break-word;
   padding-right: 20px;
@@ -171,14 +169,12 @@
   text-align: left;
   line-height: 14px;
   color: #7F7F7F;
-  font-family: proxima-nova, sans-serif;
   font-weight: 400;
 }
 
 .main-address-header-text {
   font-size: 16px;
   line-height: 22px;
-  font-family: proxima-nova, sans-serif;
   font-weight: 700;
   color: black;
 }
@@ -190,7 +186,6 @@
 
 .network-name-text {
   color: #FFFFFF;
-  font-family: proxima-nova, sans-serif;
   font-size: 14px;
   font-weight: 700;
   text-align: left;

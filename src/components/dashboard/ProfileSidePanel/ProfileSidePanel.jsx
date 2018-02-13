@@ -89,8 +89,9 @@ class ProfileSidePanel extends PureComponent {
     const addressesInWallet = this.props.wallet.addresses()
     const addresses = [
       { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
+      { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
       { title: 'ETH', address: addressesInWallet.item('Ethereum').address() },
-      { title: 'XEM', address: addressesInWallet.item('Xem').address() },
+      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
     ]
 
     return (
