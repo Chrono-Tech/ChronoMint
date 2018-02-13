@@ -45,7 +45,9 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   activatePoll () {
-    return this._multisigTx(TX_ACTIVATE_POLL)
+    return this._multisigTx(TX_ACTIVATE_POLL, [], null, {
+      useDefaultGasLimit: true,
+    })
   }
 
   vote (choice) {
@@ -60,7 +62,9 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   endPoll () {
-    return this._multisigTx(TX_END_POLL)
+    return this._multisigTx(TX_END_POLL, [], null, {
+      useDefaultGasLimit: true,
+    })
   }
 
 }
