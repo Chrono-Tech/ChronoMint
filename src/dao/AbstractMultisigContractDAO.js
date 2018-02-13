@@ -5,7 +5,7 @@ import ethABI from 'ethereumjs-abi'
 import type AbstractModel from 'models/AbstractModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
-import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
+import AbstractContractDAO, { DEFAULT_TX_OPTIONS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 
 export default class AbstractMultisigContractDAO extends AbstractContractDAO {
@@ -24,9 +24,10 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
    * @param func
    * @param args
    * @param infoArgs
+   * @param options
    * @protected
    */
-  async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null): Promise<Object> {
+  async _multisigTx (func: string, args: Array = [], infoArgs: Object | AbstractModel = null, options = DEFAULT_TX_OPTIONS): Promise<Object> {
     const dao: PendingManagerDAO = await contractsManagerDAO.getPendingManagerDAO()
 
     const web3 = await this._web3Provider.getWeb3()
@@ -36,6 +37,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
     const [isDone, receipt] = await Promise.all([
       dao.watchTxEnd(hash),
       await this._tx(func, args, infoArgs, null, {
+        ...options,
         addDryRunFrom: dao.getInitAddress(),
         addDryRunOkCodes: [resultCodes.OK],
       }),

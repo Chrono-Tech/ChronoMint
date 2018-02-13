@@ -687,6 +687,7 @@ export default {
         value: 'Сумма',
       },
       DepositTokens: {
+        depositTime: 'Пополнить депозит',
         amount: 'Сумма',
         yourSymbolBalance: 'Ваш баланс %{symbol}',
         yourSymbolDeposit: 'Ваш депозит %{symbol}',
@@ -778,7 +779,7 @@ export default {
         editPoll: 'Редактировать Голосование',
         newPoll: 'Новое Голосование',
         pollTitle: 'Название голосования',
-        pollDescriptions: 'Описание голосования',
+        pollDescription: 'Описание голосования',
         voteLimit: 'Лимит в TIME за один вариант',
         finishedDate: 'Дата окончания',
         addAttachments: 'Добавить Вложения',
