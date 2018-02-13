@@ -6,8 +6,7 @@ import {  FontIcon, Drawer } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, CopyIcon, TokenValue, UpdateProfileDialog } from 'components'
 import GasSlider from 'components/common/GasSlider/GasSlider'
-import { getNetworkById } from '@chronobank/login/network/settings'
-import ls from 'utils/LocalStorage'
+import networkService from '@chronobank/login/network/NetworkService'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { sidesClose } from 'redux/sides/actions'
@@ -24,7 +23,7 @@ function mapStateToProps (state) {
     wallet,
     account: session.account,
     profile: session.profile,
-    network: getNetworkById(ls.getNetwork(), ls.getProvider(), true).name,
+    networkName: networkService.getName(),
     isTokensLoaded: !wallet.isFetching(),
     tokens: state.get(DUCK_TOKENS),
     networkStatus: monitor.network,
@@ -49,7 +48,7 @@ function mapDispatchToProps (dispatch) {
 class ProfileSidePanel extends PureComponent {
 
   static propTypes = {
-    network: PropTypes.string,
+    networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.object,
     tokens: PropTypes.object,
@@ -103,7 +102,7 @@ class ProfileSidePanel extends PureComponent {
 
         <div styleName='network-name'>
           <div styleName='network-name-text'>
-            {this.props.network}
+            {this.props.networkName}
           </div>
         </div>
 
