@@ -20,6 +20,7 @@ import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import { TIME } from 'redux/mainWallet/actions'
+import TokenValue from 'components/common/TokenValue/TokenValue'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -36,12 +37,13 @@ function mapStateToProps (state) {
     options: selector(state, 'options'),
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: new BigNumber(state.get(DUCK_VOTING).voteLimitInTIME()),
+    maxVoteLimitInPercent: new BigNumber(state.get(DUCK_VOTING).voteLimitInPercent()),
     voteLimitInTIME: selector(state, 'voteLimitInTIME'),
     timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
       deadline: moment().add(1, 'day').toDate(),
-      voteLimitInTIME: 0,
+      voteLimitInTIME: 1,
     },
   }
 }
@@ -49,9 +51,10 @@ function mapStateToProps (state) {
 function mapDispatchToProps () {
   return {
     onSubmit: (values, dispatch, props) => {
+      const limitInTIME = props.maxVoteLimitInTIME.div(100).mul(values.get('voteLimitInTIME'))
       const poll = new PollModel({
         ...values.toJS(),
-        voteLimitInTIME: new Amount(props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))), TIME),
+        voteLimitInTIME: new Amount(limitInTIME, TIME),
         options: new Immutable.List(values.get('options')),
       })
       dispatch(modalsClose())
@@ -69,6 +72,7 @@ export default class PollEditForm extends Component {
     voteLimit: PropTypes.objectOf(BigNumber),
     timeToken: PropTypes.instanceOf(TokenModel),
     maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
+    maxVoteLimitInPercent: PropTypes.instanceOf(BigNumber),
     locale: PropTypes.string,
     voteLimitInTIME: PropTypes.number,
     ...formPropTypes,
@@ -143,8 +147,8 @@ export default class PollEditForm extends Component {
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid, timeToken, voteLimitInTIME } = this.props
-    const maxVoteLimitInTIME = timeToken.removeDecimals(this.props.maxVoteLimitInTIME).toNumber()
+    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent } = this.props
+    const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <form styleName='content' onSubmit={handleSubmit}>
         <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
@@ -161,23 +165,27 @@ export default class PollEditForm extends Component {
               name='description'
               fullWidth
               multiLine
-              floatingLabelText={<Translate value={prefix('pollDescription')} />}
+              floatingLabelText={<Translate value={prefix('pollDescriptions')} />}
             />
             <div>
-              <div styleName='limitTitle'><Translate value={prefix('voteLimit')} /></div>
-              <div styleName='labelWrap'>
-                <div>0</div>
-                <div>{voteLimitInTIME}</div>
-                <div>{maxVoteLimitInTIME}</div>
+              <div styleName='limitTitle'>
+                <Translate value={prefix('voteLimit')} />
+                <span styleName='voteLimitValue'>
+                  {voteLimitInTIME}%&nbsp;(<TokenValue value={new Amount(limitInTIME, TIME)} noRenderPrice />)
+                </span>
               </div>
               <Field
                 component={Slider}
                 name='voteLimitInTIME'
-                sliderStyle={{ marginBottom: 22, marginTop: 10 }}
-                min={0}
-                max={maxVoteLimitInTIME}
+                sliderStyle={{ marginBottom: 0, marginTop: 10 }}
+                min={1}
+                max={maxVoteLimitInPercent.toNumber()}
                 step={1}
               />
+              <div styleName='labelWrap'>
+                <div>1%</div>
+                <div>{maxVoteLimitInPercent.toNumber()}%</div>
+              </div>
             </div>
             <Field
               component={DatePicker}

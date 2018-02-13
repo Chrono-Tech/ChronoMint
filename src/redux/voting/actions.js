@@ -47,8 +47,11 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 
 const updateVoteLimit = () => async (dispatch) => {
   const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
-  const voteLimitInTIME = await votingDAO.getVoteLimit()
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
+  const [ voteLimitInTIME, voteLimitInPercent ] = await Promise.all([
+    votingDAO.getVoteLimit(),
+    votingDAO.getVoteLimitInPercent(),
+  ])
+  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: voteLimitInPercent.div(100) })
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {

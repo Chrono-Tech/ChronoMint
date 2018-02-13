@@ -153,9 +153,23 @@
   display: flex;
   justify-content: space-between;
   color: rgba($color-primary-0, 0.6);
+  margin-bottom: 25px;
 }
 
 .limitTitle {
   margin-top: 38px;
   color: rgba($color-primary-0, 0.6);
+  display: flex;
+  justify-content: space-between;
+}
+
+.voteLimitValue {
+  font-weight: 400;
+  color: $color-primary-0;
+  :global {
+    .TokenValue__integral, .TokenValue__fraction {
+      font-weight: 400;
+      color: $color-primary-0;
+    }
+  }
 }
