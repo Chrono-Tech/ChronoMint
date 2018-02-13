@@ -1,12 +1,13 @@
-import type BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
 import type TokenModel from 'models/tokens/TokenModel'
+import tokenService from 'services/TokenService'
+import BigNumber from 'bignumber.js'
+import Amount from 'models/Amount'
 import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
-import contractManager from './ContractsManagerDAO'
-import tokenService from 'services/TokenService'
+import { LHT } from './LHTDAO'
 
 export const standardFuncs = {
   GET_LOC_COUNT: 'getLOCCount',
@@ -42,21 +43,18 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getTokenDAO (symbol) {
-    const erc20 = await contractManager.getERC20ManagerDAO()
-    const tokenAddress = await erc20.getTokenAddressBySymbol(symbol)
-    return tokenService.getDAO(tokenAddress)
+    return tokenService.getDAO(symbol)
   }
 
   /** @private */
-  async _createLOCModel ([name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate]) {
+  async _createLOCModel ([ name, website, issued, issueLimit, publishedHash, expDate, status, securityPercentage, currency, createDate ]) {
     const symbol = this._c.bytesToString(currency)
-    const tokenDAO = await this.getTokenDAO(symbol)
 
     return new LOCModel({
       name: this._c.bytesToString(name),
       website: this._c.bytesToString(website),
-      issued: tokenDAO.removeDecimals(issued),
-      issueLimit: tokenDAO.removeDecimals(issueLimit),
+      issued: new Amount(issued, LHT),
+      issueLimit: new Amount(issueLimit, LHT),
       publishedHash: this._c.bytes32ToIPFSHash(publishedHash),
       expDate: expDate.toNumber(),
       createDate: createDate.toNumber() * 1000,
@@ -104,7 +102,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._watch(events.REISSUE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
+      const amount = result.args.value
       callback(loc, new LOCNoticeModel({ name, action: statuses.ISSUED, amount }))
     })
   }
@@ -113,7 +111,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._watch(events.REVOKE, async (result) => {
       const name = this._c.bytesToString(result.args.locName)
       const loc: LOCModel = await this.fetchLOC(name)
-      const amount = this.getTokenDAO(loc.currency()).removeDecimals(result.args.value)
+      const amount = result.args.value
       callback(loc, new LOCNoticeModel({ name, action: statuses.REVOKED, amount }))
     })
   }
@@ -131,7 +129,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     const locArray = new Array(locCount.toNumber()).fill(null)
 
     return Promise.all(locArray.map(async (item, index) => {
-      const rawData = await this._call(standardFuncs.GET_LOC_BY_ID, [index])
+      const rawData = await this._call(standardFuncs.GET_LOC_BY_ID, [ index ])
       return this._createLOCModel(rawData)
     })).then((values) => {
       values.forEach((item) => {
@@ -145,7 +143,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     return this._tx(standardFuncs.ADD_LOC, [
       this._c.stringToBytes(loc.name()),
       this._c.stringToBytes(loc.website()),
-      this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
+      new BigNumber(loc.issueLimit()),
       this._c.ipfsHashToBytes32(loc.publishedHash()),
       loc.expDate(),
       loc.currency(),
@@ -164,7 +162,7 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
       this._c.stringToBytes(loc.oldName()),
       this._c.stringToBytes(loc.name()),
       this._c.stringToBytes(loc.website()),
-      this.getTokenDAO(loc.currency()).addDecimals(loc.issueLimit()),
+      new BigNumber(loc.issueLimit()),
       this._c.ipfsHashToBytes32(loc.publishedHash()),
       loc.expDate(),
     ], {
@@ -184,9 +182,9 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  issueAsset (amount: BigNumber, loc: LOCModel) {
+  issueAsset (amount: Amount, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REISSUE_ASSET, [
-      this.getTokenDAO(loc.currency()).addDecimals(amount),
+      new BigNumber(amount),
       this._c.stringToBytes(loc.name()),
     ], {
       amount,
@@ -195,14 +193,14 @@ export default class LOCManagerDAO extends AbstractMultisigContractDAO {
     })
   }
 
-  sendAsset (token: TokenModel, to: string, value: BigNumber) {
+  sendAsset (token: TokenModel, to: string, amount: Amount) {
     const symbol = token.symbol()
-    return this._multisigTx(multisigFuncs.SEND_ASSET, [symbol, to, token.dao().addDecimals(value)], { symbol, to, value })
+    return this._multisigTx(multisigFuncs.SEND_ASSET, [ symbol, to, new BigNumber(amount) ], { symbol, to, amount })
   }
 
-  revokeAsset (amount: number, loc: LOCModel) {
+  revokeAsset (amount: Amount, loc: LOCModel) {
     return this._multisigTx(multisigFuncs.REVOKE_ASSET, [
-      this.getTokenDAO(loc.currency()).addDecimals(amount),
+      new BigNumber(amount),
       this._c.stringToBytes(loc.name()),
     ], {
       amount,

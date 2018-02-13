@@ -6,26 +6,38 @@ import { issueAsset } from 'redux/locs/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import LOCModel from 'models/LOCModel'
+import { getToken } from 'redux/locs/selectors'
+import { LHT } from 'dao/LHTDAO'
+import TokenModel from 'models/tokens/TokenModel'
+import Amount from 'models/Amount'
 import IssueForm from './LOCIssueForm'
 
 import './LOCIssueDialog.scss'
 
+function mapStateToProps (state) {
+  return {
+    token: getToken(LHT)(state),
+  }
+}
+
 const mapDispatchToProps = (dispatch) => ({
-  issueAsset: (amount, loc) => dispatch(issueAsset(amount, loc)),
+  issueAsset: (amount: Amount, loc: LOCModel) => dispatch(issueAsset(amount, loc)),
   closeModal: () => dispatch(modalsClose()),
 })
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 class IssueLHModal extends PureComponent {
   static propTypes = {
     closeModal: PropTypes.func,
     issueAsset: PropTypes.func,
-    loc: PropTypes.object,
+    loc: PropTypes.instanceOf(LOCModel),
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   handleSubmitSuccess = (amount: number) => {
     this.props.closeModal()
-    this.props.issueAsset(amount, this.props.loc)
+    this.props.issueAsset(new Amount(this.props.token.addDecimals(amount), LHT), this.props.loc)
   }
 
   render () {
