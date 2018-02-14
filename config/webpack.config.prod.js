@@ -22,6 +22,7 @@ module.exports = config.buildConfig(
         inject: true,
         template: indexPresentationHtmlPath,
         favicon: faviconPath,
+        hash: true,
         minify: {
           removeComments: true,
           collapseWhitespace: false,

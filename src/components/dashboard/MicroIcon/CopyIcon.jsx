@@ -17,16 +17,11 @@ export default class CopyIcon extends PureComponent {
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
+    iconStyle: PropTypes.string,
   }
 
-  render () {
-    return (
-      <div styleName='root'>
-        <a styleName='micro' onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
-          <i className='material-icons'>content_copy</i>
-        </a>
-      </div>
-    )
+  static defaultProps = {
+    iconStyle: 'micro',
   }
 
   handleCopy () {
@@ -44,6 +39,16 @@ export default class CopyIcon extends PureComponent {
       clipboard.copy(this.props.value)
       this.props.notify()
     }
+  }
+
+  render () {
+    return (
+      <div styleName='root'>
+        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
+          <i className='material-icons'>content_copy</i>
+        </a>
+      </div>
+    )
   }
 }
 

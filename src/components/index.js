@@ -1,3 +1,4 @@
+export { default as SideStack } from './common/SideStack/SideStack'
 export { default as ModalStack } from './common/ModalStack/ModalStack'
 export { default as Points } from './common/Points/Points'
 export { default as IPFSImage } from './common/IPFSImage/IPFSImage'
@@ -20,6 +21,7 @@ export { default as TransactionsTable } from './dashboard/TransactionsTable/Tran
 export { default as TokenValue } from './common/TokenValue/TokenValue'
 export { default as CopyIcon } from './dashboard/MicroIcon/CopyIcon'
 export { default as QRIcon } from './dashboard/MicroIcon/QRIcon'
+export { default as PKIcon } from './dashboard/MicroIcon/PKIcon'
 export { default as DoughnutChart } from './common/DoughnutChart/DoughnutChart'
 export { default as Poll } from './dashboard/Poll/Poll'
 export { default as Tokens } from './settings/Tokens'

@@ -40,6 +40,11 @@ export default class PKIcon extends PureComponent {
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
+    iconStyle: PropTypes.string,
+  }
+
+  static defaultProps = {
+    iconStyle: 'micro',
   }
 
   handleCopy = (e) => {
@@ -64,7 +69,7 @@ export default class PKIcon extends PureComponent {
     return this.props.show ?
       (
         <div styleName='root'>
-          <span styleName='micro' onTouchTap={this.handleCopy}>
+          <span styleName={this.props.iconStyle} onTouchTap={this.handleCopy}>
             <i className='material-icons'>vpn_key</i>
           </span>
         </div>
@@ -73,4 +78,3 @@ export default class PKIcon extends PureComponent {
   }
 
 }
-

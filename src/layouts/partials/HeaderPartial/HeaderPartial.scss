@@ -290,12 +290,13 @@ $default-padding: 8px 0px;
 
 .profile {
   padding: 16px;
-  max-width: 450px;
+  width: 400px;
   box-sizing: border-box;
 }
 
 .profile-body {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
 
   @include xs-only {

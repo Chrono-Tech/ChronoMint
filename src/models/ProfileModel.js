@@ -10,6 +10,7 @@ class ProfileModel extends abstractModel({
   icon: null,
   tokens: new Immutable.Set(),
   version: null,
+  hash: null,
 }) {
   constructor (data = {}) {
     data = data || {}
@@ -49,6 +50,10 @@ class ProfileModel extends abstractModel({
 
   isEmpty () {
     return this.get('name') === null
+  }
+
+  hash () {
+    return this.get('hash') || { isFetching: () => true }
   }
 
   txSummary () {

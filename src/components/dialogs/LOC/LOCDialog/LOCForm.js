@@ -1,10 +1,13 @@
-import BigNumber from 'bignumber.js'
 import { DatePicker, TextField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { FlatButton, RaisedButton } from 'material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import Amount from 'models/Amount'
+import { getToken } from 'redux/locs/selectors'
+import { LHT } from 'dao/LHTDAO'
+import TokenModel from 'models/tokens/TokenModel'
 import { connect } from 'react-redux'
 import LOCModel from 'models/LOCModel'
 import { addLOC, removeLOC, updateLOC } from 'redux/locs/actions'
@@ -14,6 +17,7 @@ import validate from './validate'
 import './LOCForm.scss'
 
 const mapStateToProps = (state) => ({
+  token: getToken(LHT)(state),
   locs: state.get('locs').locs,
 })
 
@@ -27,9 +31,9 @@ const onSubmit = (values, dispatch, props) => new LOCModel({
   ...props.initialValues.toJS(),
   ...values.toJS(),
   oldName: props.initialValues.get('name'),
-  issueLimit: new BigNumber(values.get('issueLimit')),
+  issueLimit: new Amount(props.token.addDecimals(values.get('issueLimit')), 'LHT'),
   expDate: values.get('expDate').getTime(),
-  token: props.loc.token(),
+  symbol: props.loc.symbol() || 'LHT',
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -39,12 +43,13 @@ class LOCForm extends PureComponent {
     removeLOC: PropTypes.func,
     pristine: PropTypes.bool,
     onDelete: PropTypes.func,
-    initialValues: PropTypes.object,
     handleSubmit: PropTypes.func,
-    loc: PropTypes.object,
+    loc: PropTypes.instanceOf(LOCModel),
+    token: PropTypes.instanceOf(TokenModel),
+    ...formPropTypes,
   }
 
-  handleDeleteClick () {
+  handleDeleteClick = () => {
     this.props.onDelete()
     this.props.removeLOC(this.props.loc)
   }
@@ -116,7 +121,7 @@ class LOCForm extends PureComponent {
                 <div styleName='action'>
                   <FlatButton
                     label={<Translate value='locs.delete' />}
-                    onTouchTap={() => this.handleDeleteClick()}
+                    onTouchTap={this.handleDeleteClick}
                   />
                 </div>
               )}

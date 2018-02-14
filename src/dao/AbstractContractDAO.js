@@ -9,6 +9,7 @@ import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 import EventEmitter from 'events'
+import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const DEFAULT_GAS = 4700000
 const DEFAULT_OK_CODES = [resultCodes.OK, true]
@@ -34,6 +35,7 @@ export const DEFAULT_TX_OPTIONS = {
   addDryRunOkCodes: [],
   allowNoReturn: false,
   useDefaultGasLimit: false,
+  additionalAction: null,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
@@ -399,7 +401,7 @@ export default class AbstractContractDAO extends EventEmitter {
     args: Array = [],
     infoArgs: Object | AbstractModel = null,
     value: BigNumber = new BigNumber(0),
-    options = DEFAULT_TX_OPTIONS
+    options = DEFAULT_TX_OPTIONS,
   ): Object {
 
     const {
@@ -407,6 +409,7 @@ export default class AbstractContractDAO extends EventEmitter {
       addDryRunOkCodes,
       allowNoReturn,
       useDefaultGasLimit,
+      additionalAction,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     const deployed = await this.contract
@@ -423,24 +426,22 @@ export default class AbstractContractDAO extends EventEmitter {
       func,
       args: displayArgs,
       value,
+      additionalAction,
+      params: args,
     })
 
     /** ESTIMATE GAS */
-    const estimateGas = async () => {
-      const { gasFee, gasLimit } = await this._estimateGas(func, args, value)
-      tx = tx.setGas(gasFee)
-      AbstractContractDAO.txGas(tx)
-      return gasLimit
+    const estimateGas = (func, args, value) => {
+      return this._estimateGas(func, args, value)
     }
 
     let gasLimit = null
 
     /** START */
     try {
-      [gasLimit] = await Promise.all([
-        estimateGas(),
-        AbstractContractDAO.txStart(tx),
-      ])
+      tx = await AbstractContractDAO.txStart(tx, estimateGas)
+      gasLimit = tx.gasLimit()
+      args = tx.params()
 
       const txParams = {
         from: this.getAccount(),

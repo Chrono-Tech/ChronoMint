@@ -6,6 +6,7 @@ import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
+import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
@@ -19,17 +20,26 @@ export const watchInitUserMonitor = () => (dispatch) => {
     .start()
 }
 
-export const showConfirmTxModal = () => (dispatch) => new Promise((resolve) => {
+export const showConfirmTxModal = (estimateGas) => (dispatch, getState) => new Promise((resolve) => {
   dispatch(modalsOpen({
     component: ConfirmTxDialog,
     props: {
-      callback: (isConfirmed) => resolve(isConfirmed),
+      callback: (isConfirmed, tx) => resolve({ isConfirmed, updatedTx: tx }),
+      handleEstimateGas: async (func, args, value) => {
+        if (!estimateGas) {
+          return
+        }
+        const { gasFee, gasLimit } = await estimateGas(func, args, value)
+        let tx = getState().get(DUCK_WATCHER).confirmTx
+        tx = tx.setGas(gasFee).gasLimit(gasLimit)
+        dispatch({ type: WATCHER_TX_SET, tx })
+      },
     },
   }))
 }).catch((e) => {
   // eslint-disable-next-line
-    console.error('Confirm modal error:', e)
-  return false
+  console.error('Confirm modal error:', e)
+  return { isConfirmed: false }
 })
 
 export const changeMomentLocale = (locale, dispatch) => {

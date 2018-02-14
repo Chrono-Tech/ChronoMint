@@ -3,6 +3,9 @@ import type BigNumber from 'bignumber.js'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20DAO from './ERC20DAO'
 import { ChronoBankAssetWithFeeProxyABI } from './abi'
+
+export const LHT = 'LHT'
+
 /**
  * Labour Hour Test token
  * Only for intermediate development

@@ -52,6 +52,11 @@
   font-size: 18px;
 }
 
+.errorMessage {
+  padding: 10px 24px;
+  color: $color-error;
+}
+
 .gasSliderWrap {
   margin-top: 20px;
   padding: 0 5px;

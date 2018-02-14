@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { I18n } from 'platform/i18n'
+import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { dateFormatOptions } from './constants'
 
@@ -13,23 +15,23 @@ export const STATUS_BANKRUPT = 3
 export const STATUS_INACTIVE = 4
 
 const statusesMeta = {
-  [STATUS_MAINTENANCE]: {
+  [ STATUS_MAINTENANCE ]: {
     token: 'locs.status.maintenance',
     styleName: 'maintenance',
   },
-  [STATUS_ACTIVE]: {
+  [ STATUS_ACTIVE ]: {
     token: 'locs.status.active',
     styleName: 'active',
   },
-  [STATUS_SUSPENDED]: {
+  [ STATUS_SUSPENDED ]: {
     token: 'locs.status.suspended',
     styleName: 'suspended',
   },
-  [STATUS_BANKRUPT]: {
+  [ STATUS_BANKRUPT ]: {
     token: 'locs.status.bankrupt',
     styleName: 'bankrupt',
   },
-  [STATUS_INACTIVE]: {
+  [ STATUS_INACTIVE ]: {
     token: 'locs.status.inactive',
     styleName: 'inactive',
   },
@@ -39,8 +41,8 @@ class LOCModel extends abstractFetchingModel({
   name: '',
   oldName: '', // for update logic
   website: '',
-  issued: new BigNumber(0),
-  issueLimit: new BigNumber(0),
+  issued: new Amount(0),
+  issueLimit: new Amount(0),
   publishedHash: '',
   expDate: Date.now() + THE_90_DAYS,
   createDate: Date.now(),
@@ -95,11 +97,11 @@ class LOCModel extends abstractFetchingModel({
 
   statusString (status) {
     const statusId = status === undefined ? this.status() : status
-    return I18n.t(statusesMeta[statusId].token)
+    return I18n.t(statusesMeta[ statusId ].token)
   }
 
   statusStyle () {
-    return statusesMeta[this.status()].styleName
+    return statusesMeta[ this.status() ].styleName
   }
 
   symbol (value) {
@@ -126,12 +128,12 @@ class LOCModel extends abstractFetchingModel({
     return this.isNotExpired() && this.get('status') === STATUS_ACTIVE
   }
 
-  toFormJS () {
+  toFormJS (token: TokenModel) {
     return {
       name: this.name(),
       website: this.website(),
       expDate: new Date(this.get('expDate')),
-      issueLimit: this.issueLimit(),
+      issueLimit: token.removeDecimals(this.issueLimit()),
       publishedHash: this.publishedHash(),
     }
   }

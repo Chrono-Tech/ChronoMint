@@ -14,12 +14,23 @@ class TxExecModel extends abstractModel({
   isGasUsed: false,
   estimateGasLaxity: new BigNumber(0),
   hash: null,
+  additionalAction: null,
+  params: null,
+  gasLimit: null,
 }) {
   constructor (data) {
     super({
       id: (data && data.id) || uniqid(),
       ...data,
     })
+  }
+
+  additionalAction (value) {
+    return this._getSet('additionalAction', value)
+  }
+
+  params (value) {
+    return this._getSet('params', value)
   }
 
   time () {
@@ -51,6 +62,10 @@ class TxExecModel extends abstractModel({
     return this.set('gas', v)
       .set('isGasUsed', isGasUsed)
       .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : new BigNumber(0))
+  }
+
+  gasLimit (value) {
+    return this._getSet('gasLimit', value)
   }
 
   isGasUsed () {
@@ -93,7 +108,7 @@ class TxExecModel extends abstractModel({
     const args = this.args()
     const list = new Immutable.Map(Object.entries(args))
 
-    return list.entrySeq().map(([key, value]) => ({
+    return list.entrySeq().map(([ key, value ]) => ({
       label: I18n.t(this.i18nFunc() + key),
       value,
     }))
