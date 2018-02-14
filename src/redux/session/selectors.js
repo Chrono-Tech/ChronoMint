@@ -10,6 +10,17 @@ export const getProfile = (state) => {
   return profile
 }
 
+export const getGasSliderCollection = (state) => {
+  const { gasPriceMultiplier } = state.get(DUCK_SESSION)
+  return gasPriceMultiplier
+}
+
+export const getGasPriceMultiplier = (blockchain) => createSelector([ getGasSliderCollection ],
+  (gasSliderCollection) => {
+    return gasSliderCollection.get(blockchain) || 1
+  },
+)
+
 // Permanent reference to a functor to improve selector performance
 export const BALANCES_COMPARATOR_SYMBOL = (item1, item2) => {
   const s1 = item1.balance.symbol()

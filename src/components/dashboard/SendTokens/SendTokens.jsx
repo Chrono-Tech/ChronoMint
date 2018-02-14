@@ -9,7 +9,7 @@ import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
 import BalanceModel from 'models/tokens/BalanceModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { getVisibleBalances, BALANCES_COMPARATOR_SYMBOL } from 'redux/session/selectors'
+import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
 import { getCurrentWallet } from 'redux/wallet/actions'
 
 function mapDispatchToProps (dispatch) {
@@ -38,7 +38,7 @@ export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
     visibleBalances: PropTypes.arrayOf(
-      PropTypes.instanceOf(BalanceModel)
+      PropTypes.instanceOf(BalanceModel),
     ),
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
@@ -75,7 +75,7 @@ export default class SendTokens extends PureComponent {
       feeMultiplier: 1,
     }
     if (visibleBalances.length > 0) {
-      initialValues.symbol = visibleBalances[0].id()
+      initialValues.symbol = visibleBalances[ 0 ].id()
     }
 
     return (
