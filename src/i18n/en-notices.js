@@ -32,9 +32,12 @@ export default {
   },
   polls: {
     title: 'Polls',
-    created: 'Poll created',
-    updated: 'Poll updated',
-    removed: 'Poll removed',
+    isCreated: 'Poll created',
+    isActivated: 'Poll activated',
+    isEnded: 'Poll ended',
+    isUpdated: 'Poll updated',
+    isRemoved: 'Poll removed',
+    isVoted: 'Poll voted',
   },
   transfer: {
     title: 'Transfer',
