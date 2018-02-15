@@ -33,6 +33,7 @@ class FileSelect extends PureComponent {
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number,
+    floatingLabelText: PropTypes.string,
   }
 
   constructor (props, context, updater) {
@@ -107,7 +108,7 @@ class FileSelect extends PureComponent {
       : new FileCollection()
     fileCollection = fileCollection.uploading(true)
     let fileModel
-    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
+    const uploadedFiles = [ ...e.target.files ].slice(0, this.getFilesLeft())
     for (const file of uploadedFiles) {
       fileModel = new FileModel({
         file,
@@ -187,7 +188,7 @@ class FileSelect extends PureComponent {
           <div styleName='attachAction'>
             <FlatButton
               onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value='fileSelect.addAttachments' />}
+              label={<Translate value={this.props.label || 'fileSelect.addAttachments'} />}
               secondary
               style={{ color: globalStyles.colors.blue }}
               icon={<img src={IconAttach} styleName='attachIcon' />}
@@ -212,7 +213,7 @@ class FileSelect extends PureComponent {
             onTouchTap={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
-            floatingLabelText={<Translate value='fileSelect.selectFile' />}
+            floatingLabelText={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
             defaultValue={selectedFile && selectedFile.name() || ''}
             readOnly
           />
