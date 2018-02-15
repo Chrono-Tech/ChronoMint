@@ -43,7 +43,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       hash = await ipfs.put({
         title: poll.title(),
         description: poll.description(),
-        files: poll.files() && poll.files(),
+        files: poll.files(),
         options: poll.options() && poll.options().toArray(),
       })
     } catch (e) {

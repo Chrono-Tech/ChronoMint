@@ -23,16 +23,19 @@ const DEFAULT_MAX_FILES = 10
 class FileSelect extends PureComponent {
   static propTypes = {
     value: PropTypes.string,
-    textFieldProps: PropTypes.object,
     mode: PropTypes.string,
+    // eslint-disable-next-line
     meta: PropTypes.object,
     label: PropTypes.string,
+    // eslint-disable-next-line
     accept: PropTypes.array,
     multiple: PropTypes.bool,
     maxFileSize: PropTypes.number,
+    // eslint-disable-next-line
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
     maxFiles: PropTypes.number,
+    returnCollection: PropTypes.bool,
   }
 
   constructor (props, context, updater) {
@@ -62,38 +65,14 @@ class FileSelect extends PureComponent {
     }
   }
 
-  async loadCollection (hash) {
-    const data = await ipfs.get(hash)
-    let fileCollection = new FileCollection({
-      hash,
-      uploaded: data && data.links.length,
-    })
-    if (data && data.links) {
-      for (const item of data.links) {
-        fileCollection = fileCollection.add(FileModel.createFromLink(item))
-      }
-    }
-    this.setState({
-      fileCollection,
-    })
-  }
-
   handleFileUpdate = (file: FileModel) => {
     this.setState((prevState) => ({
       fileCollection: prevState.fileCollection.update(file),
     }))
   }
 
-  async uploadCollection (files: FileCollection, config: fileConfig) {
-    const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
-    this.setState({ fileCollection })
-    this.props.input.onChange(fileCollection.hasErrors()
-      ? `!${fileCollection.hash()}`
-      : fileCollection.hash())
-  }
-
-  getFilesLeft () {
-    return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
+  handleOpenFileDialog = () => {
+    this.input.click()
   }
 
   async handleChange (e) {
@@ -107,7 +86,7 @@ class FileSelect extends PureComponent {
       : new FileCollection()
     fileCollection = fileCollection.uploading(true)
     let fileModel
-    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
+    const uploadedFiles = [ ...e.target.files ].slice(0, this.getFilesLeft())
     for (const file of uploadedFiles) {
       fileModel = new FileModel({
         file,
@@ -117,10 +96,6 @@ class FileSelect extends PureComponent {
     }
     this.setState({ fileCollection })
     await this.uploadCollection(fileCollection, config)
-  }
-
-  handleOpenFileDialog = () => {
-    this.input.click()
   }
 
   async handleFileRemove (id) {
@@ -139,6 +114,38 @@ class FileSelect extends PureComponent {
       files: new Immutable.Map(),
     })
     await this.uploadCollection(fileCollection, this.state.config)
+  }
+
+  getFilesLeft () {
+    return Math.max(this.state.config.maxFiles - this.state.fileCollection.size(), 0)
+  }
+
+  async loadCollection (hash) {
+    const data = await ipfs.get(hash)
+    let fileCollection = new FileCollection({
+      hash,
+      uploaded: data && data.links.length,
+    })
+    if (data && data.links) {
+      for (const item of data.links) {
+        fileCollection = fileCollection.add(FileModel.createFromLink(item))
+      }
+    }
+    this.setState({
+      fileCollection,
+    })
+  }
+
+  async uploadCollection (files: FileCollection, config: fileConfig) {
+    const fileCollection = await ipfs.uploadCollection(files, config, this.handleFileUpdate)
+    this.setState({ fileCollection })
+    if (this.props.returnCollection) {
+      this.props.input.onChange(fileCollection)
+    } else {
+      this.props.input.onChange(fileCollection.hasErrors()
+        ? `!${fileCollection.hash()}`
+        : fileCollection.hash())
+    }
   }
 
   renderFiles () {
@@ -190,7 +197,7 @@ class FileSelect extends PureComponent {
               label={<Translate value='fileSelect.addAttachments' />}
               secondary
               style={{ color: globalStyles.colors.blue }}
-              icon={<img src={IconAttach} styleName='attachIcon' />}
+              icon={<img src={IconAttach} alt='icon' styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
             />
           </div>
@@ -257,8 +264,10 @@ class FileSelect extends PureComponent {
         }
 
         <input
+          // eslint-disable-next-line
           ref={(input) => this.input = input}
           type='file'
+          // eslint-disable-next-line
           onChange={(e) => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}
