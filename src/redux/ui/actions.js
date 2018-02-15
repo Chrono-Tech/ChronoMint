@@ -20,18 +20,19 @@ export const watchInitUserMonitor = () => (dispatch) => {
     .start()
 }
 
-export const showConfirmTxModal = (estimateGas) => (dispatch, getState) => new Promise((resolve) => {
+export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch, getState) => new Promise((resolve) => {
   dispatch(modalsOpen({
     component: ConfirmTxDialog,
     props: {
       callback: (isConfirmed, tx) => resolve({ isConfirmed, updatedTx: tx }),
-      handleEstimateGas: async (func, args, value) => {
+      localFeeMultiplier,
+      handleEstimateGas: async (func, args, value, gasPriceMultiplier = 1) => {
         if (!estimateGas) {
           return
         }
         const { gasFee, gasLimit } = await estimateGas(func, args, value)
         let tx = getState().get(DUCK_WATCHER).confirmTx
-        tx = tx.setGas(gasFee).gasLimit(gasLimit)
+        tx = tx.setGas(gasFee.mul(gasPriceMultiplier)).gasLimit(gasLimit)
         dispatch({ type: WATCHER_TX_SET, tx })
       },
     },
