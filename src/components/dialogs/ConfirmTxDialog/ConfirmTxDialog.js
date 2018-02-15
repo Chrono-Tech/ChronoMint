@@ -1,4 +1,5 @@
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
@@ -12,15 +13,17 @@ import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
+import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 
 import './ConfirmTxDialog.scss'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   return ({
     balance: state.get(DUCK_MAIN_WALLET).balances().item(ETH).amount(),
     tx: state.get(DUCK_WATCHER).confirmTx,
-    gasPriceMultiplier: state.get(DUCK_SESSION).gasPriceMultiplier.get(ETH) || 1,
+    gasPriceMultiplier: ownProps.localFeeMultiplier || state.get(DUCK_SESSION).gasPriceMultiplier.get(BLOCKCHAIN_ETHEREUM) || 1,
   })
 }
 
@@ -34,6 +37,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
+    localFeeMultiplier: PropTypes.number,
     callback: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
@@ -46,12 +50,6 @@ export default class ConfirmTxDialog extends PureComponent {
 
   componentDidMount () {
     this.handleRepeatAction()
-  }
-
-  componentWillReceiveProps (newProps) {
-    if (newProps.tx.gas().gt(0) && this.props.tx.gas().eq(0)) {
-      this.props.handleUpdateTx(newProps.tx.setGas(newProps.tx.gas().mul(newProps.gasPriceMultiplier)))
-    }
   }
 
   handleRepeatAction = () => {
@@ -69,11 +67,11 @@ export default class ConfirmTxDialog extends PureComponent {
 
           this.props.handleUpdateTx(newTx)
           if (result.isFetched()) {
-            this.props.handleEstimateGas(tx.funcName(), newTx.params(), tx.value())
+            this.props.handleEstimateGas(tx.funcName(), newTx.params(), tx.value(), this.props.gasPriceMultiplier)
           }
         })
     } else {
-      this.props.handleEstimateGas(tx.funcName(), tx.params(), tx.value())
+      this.props.handleEstimateGas(tx.funcName(), tx.params(), tx.value(), this.props.gasPriceMultiplier)
     }
   }
 
@@ -85,6 +83,12 @@ export default class ConfirmTxDialog extends PureComponent {
   handleClose = () => {
     this.props.modalsClose()
     this.props.callback(false, this.props.tx)
+  }
+
+  handleChangeGasPrice = (gasPriceMultiplier) => {
+    const { tx } = this.props
+    this.props.handleUpdateTx(tx.setGas(new BigNumber(0)))
+    this.props.handleEstimateGas(tx.funcName(), tx.params(), tx.value(), gasPriceMultiplier)
   }
 
   getActions () {
@@ -143,11 +147,12 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   render () {
-    const { tx, balance } = this.props
+    const { tx, balance, gasPriceMultiplier } = this.props
     const gasFee = tx.gas()
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
+    const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
     return (
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
@@ -194,6 +199,16 @@ export default class ConfirmTxDialog extends PureComponent {
 
             <div styleName='errorMessage'>
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
+            </div>
+
+            <div styleName='gasSliderWrap'>
+              <GasSlider
+                isLocal
+                disabled={additionalActionIsFailed || !additionalActionIsFetched}
+                hideTitle
+                initialValue={gasPriceMultiplier}
+                onDragStop={this.handleChangeGasPrice}
+              />
             </div>
 
           </div>

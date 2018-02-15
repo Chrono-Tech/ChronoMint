@@ -36,6 +36,7 @@ export const DEFAULT_TX_OPTIONS = {
   allowNoReturn: false,
   useDefaultGasLimit: false,
   additionalAction: null,
+  feeMultiplier: null,
 }
 
 export default class AbstractContractDAO extends EventEmitter {
@@ -410,6 +411,7 @@ export default class AbstractContractDAO extends EventEmitter {
       allowNoReturn,
       useDefaultGasLimit,
       additionalAction,
+      feeMultiplier,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     const deployed = await this.contract
@@ -439,7 +441,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     /** START */
     try {
-      tx = await AbstractContractDAO.txStart(tx, estimateGas)
+      tx = await AbstractContractDAO.txStart(tx, estimateGas, feeMultiplier)
       gasLimit = tx.gasLimit()
       args = tx.params()
 

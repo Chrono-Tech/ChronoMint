@@ -34,6 +34,7 @@ import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/se
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
@@ -57,7 +58,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
-  const gasPriceCollection = state.get(DUCK_SESSION).gasPriceMultiplier
+  const token = state.get(DUCK_TOKENS).item(tokenId)
 
   return {
     wallet,
@@ -66,11 +67,11 @@ function mapStateToProps (state) {
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
-    token: state.get(DUCK_TOKENS).item(tokenId),
+    token,
     recipient,
     symbol,
     feeMultiplier,
-    gasPriceMultiplier: gasPriceCollection.get(tokenId),
+    gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
 }
 
