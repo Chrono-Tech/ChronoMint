@@ -4,6 +4,7 @@ import * as Dashboard from 'components/dashboard/lang'
 import TwoFA from 'components/dialogs/TwoFA/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
+import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
@@ -19,6 +20,7 @@ export default {
     Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
+    UpdateProvideDialog: UpdateProvideDialog.en,
     WalletSelectDialog: WalletSelectDialog.en,
     OwnersList: OwnersList.en,
     SignaturesList: SignaturesList.en,
@@ -37,6 +39,7 @@ export default {
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru,
+    UpdateProvideDialog: UpdateProvideDialog.ru,
     WalletSelectDialog: WalletSelectDialog.ru,
     OwnersList: OwnersList.ru,
     SignaturesList: SignaturesList.ru,

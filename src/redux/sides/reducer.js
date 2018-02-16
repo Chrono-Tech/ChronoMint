@@ -7,9 +7,10 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.SIDES_PUSH:
+      const filteredStack = state.stack.filter((panel) => panel.key !== action.key)
       return {
         ...state,
-        stack: [...state.stack, {
+        stack: [...filteredStack, {
           key: action.key,
           component: action.component,
           props: action.props,
