@@ -72,16 +72,14 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   ])
 }
 
-export const createPoll = (poll: PollModel) => async (dispatch) => {
-  const stub = new PollDetailsModel({
-    id: `stub_${--counter}`,
-    poll: poll.id(`stub_${counter}`),
-  }).isFetching(true)
+export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
+  const id = `stub_${--counter}`
+  const stub = poll.id(id).isFetching(true)
 
   try {
     dispatch(handlePollCreated(stub))
     const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll)
+    const transactionHash = await dao.createPoll(poll.poll())
     dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
