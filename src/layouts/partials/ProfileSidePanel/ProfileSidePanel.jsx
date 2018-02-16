@@ -20,7 +20,7 @@ function mapStateToProps (state) {
   const wallet = state.get('mainWallet')
   const monitor = state.get('monitor')
   return {
-    wallet,
+    wallet: wallet,
     account: session.account,
     profile: session.profile,
     networkName: networkService.getName(),
@@ -55,32 +55,13 @@ class ProfileSidePanel extends PureComponent {
     isTokensLoaded: PropTypes.bool,
     networkStatus: PropTypes.object,
     syncStatus: PropTypes.object,
+    wallet: PropTypes.object,
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     handleDrawerToggle: PropTypes.func,
     readNotices: PropTypes.func,
     handleProfileClose: PropTypes.func,
-  }
-
-  renderBalance ({ token }) {
-    const symbol = token.symbol().toUpperCase()
-
-    return (
-      <div styleName='balance' key={token.id()}>
-        <div styleName='balance-icon'>
-          <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
-          </div>
-        </div>
-        <div styleName='balance-info'>
-          <TokenValue
-            value={token.balance()}
-            symbol={token.symbol()}
-          />
-        </div>
-      </div>
-    )
   }
 
   renderProfile () {
