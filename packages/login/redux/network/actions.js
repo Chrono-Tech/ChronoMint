@@ -34,7 +34,7 @@ export const getPrivateKeyFromSymbol = (symbol: string) => {
       return btcProvider.getPrivateKey()
     case 'LTC':
       return ltcProvider.getPrivateKey()
-    case 'NEM':
+    case 'XEM':
       return nemProvider.getPrivateKey()
     default:
       return null

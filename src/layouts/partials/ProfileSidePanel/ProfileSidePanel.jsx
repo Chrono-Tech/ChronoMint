@@ -74,7 +74,7 @@ class ProfileSidePanel extends PureComponent {
       { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
       { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
       { title: 'ETH', address: addressesInWallet.item('Ethereum').address() },
-      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
+      { title: 'XEM', address: addressesInWallet.item('NEM').address() },
     ]
 
     return (
@@ -131,13 +131,14 @@ class ProfileSidePanel extends PureComponent {
           <div styleName='address-copy-icon'>
             <CopyIcon iconStyle='average' value={this.props.account} />
           </div>
-          <div styleName='address-copy-icon'>
+          <div styleName='address-pk-icon'>
             <PKIcon iconStyle='average' symbol='ETH' />
           </div>
         </div>
 
         {this.props.tokens
           .filter((token) => addresses.map((a) => a.title.toUpperCase()).includes(token.symbol().toUpperCase()))
+          .sort((a, b) => a.symbol() > b.symbol())
           .map((token) => {
             const tokenAddress = addresses.find((e) => e.title === token.symbol().toUpperCase()).address
             return (
@@ -158,7 +159,7 @@ class ProfileSidePanel extends PureComponent {
                 <div styleName='address-copy-icon'>
                   <CopyIcon iconStyle='average' value={tokenAddress} />
                 </div>
-                <div styleName='address-copy-icon'>
+                <div styleName='address-pk-icon'>
                   <PKIcon iconStyle='average' symbol={token.symbol()} />
                 </div>
               </div>
