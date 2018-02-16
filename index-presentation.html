@@ -10,12 +10,19 @@
   <script src="chronomint-presentation/js/vendor.js"></script>
   <script src="chronomint-presentation/js/index.js"></script>
   <link rel="stylesheet" href="chronomint-presentation/css/index.css">
+  <style>
+    html {
+      background-image: linear-gradient(224deg, #644ebf, #262448);
+    }
+  </style>
 </head>
 <body>
   <div id="presentation-root"></div>
   <div id="react-root"></div>
   <script>
-    ReactDOM.render(React.createElement(Components.PresentationApp, {}), document.getElementById("presentation-root"));
+    ReactDOM.render(React.createElement(Components.PresentationApp, {
+      applicationContainer: document.getElementById("react-root")
+    }), document.getElementById("presentation-root"));
   </script>
   <!--
     This HTML file is a template.
