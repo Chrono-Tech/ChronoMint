@@ -4,7 +4,11 @@ import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import {  FontIcon, Drawer } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, QRIcon, PKIcon, CopyIcon, TokenValue, UpdateProfileDialog } from 'components'
+import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import ProfileModel from 'models/ProfileModel'
+import TokensCollection from 'models/tokens/TokensCollection'
+
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { TOKEN_ICONS } from 'assets'
@@ -18,7 +22,6 @@ export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 function mapStateToProps (state) {
   const session = state.get('session')
   const wallet = state.get('mainWallet')
-  const monitor = state.get('monitor')
   return {
     wallet: wallet,
     account: session.account,
@@ -26,8 +29,6 @@ function mapStateToProps (state) {
     networkName: networkService.getName(),
     isTokensLoaded: !wallet.isFetching(),
     tokens: state.get(DUCK_TOKENS),
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
   }
 }
 
@@ -50,18 +51,20 @@ class ProfileSidePanel extends PureComponent {
   static propTypes = {
     networkName: PropTypes.string,
     account: PropTypes.string,
-    profile: PropTypes.object,
-    tokens: PropTypes.object,
+    profile: PropTypes.instanceOf(ProfileModel),
+    tokens: PropTypes.instanceOf(TokensCollection),
     isTokensLoaded: PropTypes.bool,
-    networkStatus: PropTypes.object,
-    syncStatus: PropTypes.object,
-    wallet: PropTypes.object,
+    wallet: PropTypes.instanceOf(MainWalletModel),
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     handleDrawerToggle: PropTypes.func,
     readNotices: PropTypes.func,
     handleProfileClose: PropTypes.func,
+  }
+
+  handleProfileClose = () => {
+    this.props.handleProfileClose(PROFILE_SIDE_PANEL_KEY)
   }
 
   renderProfile () {
@@ -77,7 +80,7 @@ class ProfileSidePanel extends PureComponent {
     return (
       <div styleName='profile'>
 
-        <div styleName='close-icon' onTouchTap={() => this.props.handleProfileClose(PROFILE_SIDE_PANEL_KEY)}>
+        <div styleName='close-icon' onTouchTap={this.handleProfileClose}>
           <FontIcon color='white' className='material-icons'>clear</FontIcon>
         </div>
 
