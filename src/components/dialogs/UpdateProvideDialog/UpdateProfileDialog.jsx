@@ -1,3 +1,4 @@
+import { Translate } from 'react-redux-i18n'
 import { Field, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
 import { FontIcon, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -15,6 +16,7 @@ import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
 import ModalDialog from '../ModalDialog'
 import validate from './validate'
 import './UpdateProfileDialog.scss'
+import { prefix } from './lang'
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
 
@@ -56,7 +58,7 @@ export default class UpdateProfileDialog extends PureComponent {
         <div styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
             <div styleName='header'>
-              <h3>Account edit</h3>
+              <h3><Translate value={`${prefix}.title`} /></h3>
             </div>
             <div styleName='person'>
               <div styleName='left'>
@@ -69,15 +71,16 @@ export default class UpdateProfileDialog extends PureComponent {
                         style={{ fontSize: 96 }}
                         color='white'
                         className='material-icons'
-                      >account_circle</FontIcon>
+                      >account_circle
+                      </FontIcon>
                     )}
                   />
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{this.props.name || 'Your Name'}</div>
-                <div styleName='company'>{this.props.company || 'Your Company'}</div>
-                <div styleName='account'>{this.props.account || 'Account Address'}</div>
+                <div styleName='name'>{this.props.name || <Translate value={`${prefix}.yourName`} />}</div>
+                <div styleName='company'>{this.props.company || <Translate value={`${prefix}.yourCompany`} />}</div>
+                <div styleName='account'>{this.props.account || <Translate value={`${prefix}.accountAddress`} />}</div>
                 <div styleName='micros'>
                   <QRIcon value={this.props.account} />
                   <CopyIcon value={this.props.account} />
@@ -89,18 +92,18 @@ export default class UpdateProfileDialog extends PureComponent {
                 component={FileSelect}
                 name='icon'
                 fullWidth
-                floatingLabelText='Add/change a profile photo'
+                floatingLabelText={`${prefix}.fileTitle`}
                 accept={ACCEPT_IMAGES}
               />
-              <Field component={TextField} name='name' fullWidth floatingLabelText='Name' />
-              <Field component={TextField} name='company' fullWidth floatingLabelText='Company' />
-              <Field component={TextField} name='url' fullWidth floatingLabelText='Website' />
-              <Field component={TextField} name='email' fullWidth floatingLabelText='Email' />
+              <Field component={TextField} name='name' fullWidth floatingLabelText={<Translate value={`${prefix}.name`} />} />
+              <Field component={TextField} name='company' fullWidth floatingLabelText={<Translate value={`${prefix}.company`} />} />
+              <Field component={TextField} name='url' fullWidth floatingLabelText={<Translate value={`${prefix}.website`} />} />
+              <Field component={TextField} name='email' fullWidth floatingLabelText={<Translate value={`${prefix}.email`} />} />
             </div>
             <div styleName='footer'>
               <RaisedButton
                 styleName='action'
-                label='Confirm Edits'
+                label={<Translate value={`${prefix}.button`} />}
                 type='submit'
                 disabled={this.props.submitting}
                 primary

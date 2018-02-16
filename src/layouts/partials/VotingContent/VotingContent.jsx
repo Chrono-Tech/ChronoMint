@@ -59,9 +59,8 @@ export default class VotingContent extends Component {
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    list: PropTypes.object,
-    timeDeposit: PropTypes.object,
-    statistics: PropTypes.object,
+    list: PropTypes.instanceOf(VotingCollection),
+    statistics: PropTypes.objectOf(PropTypes.number),
     initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func,
@@ -191,8 +190,10 @@ export default class VotingContent extends Component {
           {this.props.isFetched && this.props.deposit.isZero() &&
           (
             <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>Deposit TIME on <Link
-              to='/wallet'>Wallet page</Link> if you want get access this page.
+              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>
+              <Translate value={prefix('warning1')} />
+              <Link to='/wallet'><Translate value={prefix('warning2')} /></Link>
+              <Translate value={prefix('warning3')} />
             </div>
           )}
           {this.props.isFetched && this.renderBody(polls)}
