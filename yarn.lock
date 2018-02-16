@@ -414,7 +414,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -2002,7 +2002,7 @@ classnames@^2.1.2, classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
-clean-css@4.1.x:
+clean-css@4.1.x, clean-css@^4.1.9:
   version "4.1.9"
   resolved "https://registry.yarnpkg.com/clean-css/-/clean-css-4.1.9.tgz#35cee8ae7687a49b98034f70de00c4edd3826301"
   dependencies:
@@ -4656,6 +4656,14 @@ html-minifier@^3.2.3:
     param-case "2.1.x"
     relateurl "0.2.x"
     uglify-js "3.3.x"
+
+html-webpack-include-assets-plugin@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/html-webpack-include-assets-plugin/-/html-webpack-include-assets-plugin-1.0.2.tgz#8d36eadb81e9e6bf40b56dc2ae77c3d155295106"
+  dependencies:
+    glob "^7.1.2"
+    minimatch "^3.0.4"
+    slash "^1.0.0"
 
 html-webpack-plugin@2.28.0:
   version "2.28.0"
@@ -9763,6 +9771,13 @@ strip-json-comments@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
 
+style-ext-html-webpack-plugin@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/style-ext-html-webpack-plugin/-/style-ext-html-webpack-plugin-3.4.7.tgz#fbd023f827bdadd211bc82305c52fd56ac9f9a39"
+  dependencies:
+    clean-css "^4.1.9"
+    debug "^3.1.0"
+
 style-loader@^0.17.0:
   version "0.17.0"
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.17.0.tgz#e8254bccdb7af74bd58274e36107b4d5ab4df310"
@@ -10066,7 +10081,7 @@ truffle-error@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/truffle-error/-/truffle-error-0.0.2.tgz#01b189b78505566ae1689c239c7ca2dd121cfe4c"
 
-"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider":
+truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider:
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:
