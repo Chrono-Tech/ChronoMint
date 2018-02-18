@@ -76,6 +76,7 @@
   align-self: center;
   opacity: 0.5;
 }
+
 .account-info-setting:hover {
   cursor: pointer;
   opacity: 1;
@@ -94,13 +95,12 @@
 
 .address-token-info {
   display: table-cell;
-  width: 60%;
+  width: 54%;
   padding-left: 5px;
   padding-right: 20px;
   word-break: break-all;
   word-wrap: break-word;
 }
-
 
 .address-info-text {
   font-size: 14px;
@@ -108,7 +108,6 @@
   line-height: 20px;
   text-align: left;
 }
-
 
 .address-token-icon {
   width: 30px;
@@ -127,7 +126,8 @@
 
 .address-qr-code {
   display: table-cell;
-  width: 15%;
+  width: 12%;
+  min-width: 12%;
   vertical-align: middle;
   align-self: center;
   opacity: 0.5;
@@ -135,7 +135,17 @@
 
 .address-copy-icon {
   display: table-cell;
-  width: 15%;
+  width: 12%;
+  min-width: 12%;
+  vertical-align: middle;
+  align-self: center;
+  opacity: 0.5;
+}
+
+.address-pk-icon {
+  display: table-cell;
+  width: 12%;
+  min-width: 12%;
   vertical-align: middle;
   align-self: center;
   opacity: 0.5;
@@ -156,7 +166,7 @@
 
 .main-address-account {
   display: table-cell;
-  width: 70%;
+  width: 64%;
   align-self: left;
   word-break: break-all;
   word-wrap: break-word;

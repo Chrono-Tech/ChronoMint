@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect'
 import { isTokenChecked } from 'models/ProfileModel'
-import { MANDATORY_TOKENS } from 'dao/ERC20ManagerDAO'
+import { MANDATORY_TOKENS, PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
 import { DUCK_SESSION, rebuildProfileTokens } from './actions'
 import { getCurrentWallet } from '../wallet/actions'
+import { getMainWallet } from '../wallet/selectors'
 import { getTokens } from '../tokens/selectors'
 
 export const getProfile = (state) => {
@@ -38,6 +39,27 @@ export const BALANCES_COMPARATOR_URGENCY = (item1, item2) => {
   const s2 = item2.balance.symbol()
   return s1 < s2 ? -1 : (s1 > s2 ? 1 : 0)
 }
+
+export const getProfileTokensList = () => createSelector(
+  [ getProfile, getTokens, getMainWallet ],
+  (profile, tokens, mainWallet) => {
+
+    const symbolToTitle = (symbol) => {
+      const titleList = [
+        { symbol: 'XEM', title: 'NEM' },
+      ]
+      const newTitle = titleList.find((s) => s.symbol === symbol)
+      return newTitle?newTitle.title:symbol
+    }
+
+    const addressesInWallet = mainWallet.addresses()
+    return rebuildProfileTokens(profile, tokens)
+      .filter((token) => PROFILE_PANEL_TOKENS.includes(token.symbol))
+      .map((token) => {
+        return { ...token, title: symbolToTitle(token.symbol), address: addressesInWallet.item(token.blockchain).address() }
+      })
+  }
+)
 
 export const getVisibleBalances = (comparator = BALANCES_COMPARATOR_URGENCY) => createSelector(
   [ getCurrentWallet, getProfile, getTokens ],

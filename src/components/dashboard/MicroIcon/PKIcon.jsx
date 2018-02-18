@@ -7,7 +7,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { notify } from 'redux/notifier/actions'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
 import clipboard from 'utils/clipboard'
-import { getPrivateKeyFromSymbol } from '@chronobank/login/redux/network/actions'
+import { getPrivateKeyFromBlockchain } from '@chronobank/login/redux/network/actions'
 
 import './MicroIcon.scss'
 
@@ -28,7 +28,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state, props) {
   return {
-    show: !!getPrivateKeyFromSymbol(props.symbol),
+    show: !!getPrivateKeyFromBlockchain(props.blockchain),
   }
 }
 
@@ -36,7 +36,7 @@ function mapStateToProps (state, props) {
 export default class PKIcon extends PureComponent {
   static propTypes = {
     show: PropTypes.bool,
-    symbol: PropTypes.string,
+    blockchain: PropTypes.string,
     notify: PropTypes.func,
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
@@ -54,27 +54,29 @@ export default class PKIcon extends PureComponent {
         this.props.onModalOpen()
       }
       this.props.showCopyDialog({
-        copyValue: getPrivateKeyFromSymbol(this.props.symbol),
+        copyValue: getPrivateKeyFromBlockchain(this.props.blockchain),
         title: <Translate value='dialogs.copyPrivateKey.title' />,
         controlTitle: <Translate value='dialogs.copyPrivateKey.controlTitle' />,
         description: <Translate value='dialogs.copyPrivateKey.description' />,
       })
     } else {
-      clipboard.copy(getPrivateKeyFromSymbol(this.props.symbol))
+      clipboard.copy(getPrivateKeyFromBlockchain(this.props.blockchain))
       this.props.notify()
     }
   }
 
   render () {
-    return this.props.show ?
-      (
-        <div styleName='root'>
-          <span styleName={this.props.iconStyle} onTouchTap={this.handleCopy}>
-            <i className='material-icons'>vpn_key</i>
-          </span>
-        </div>
-      )
-      : null
+    if (!this.props.show) {
+      return null
+    }
+
+    return (
+      <div styleName='root'>
+        <span styleName={this.props.iconStyle} onTouchTap={this.handleCopy}>
+          <i className='material-icons'>vpn_key</i>
+        </span>
+      </div>
+    )
   }
 
 }

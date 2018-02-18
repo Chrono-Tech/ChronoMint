@@ -2,17 +2,15 @@ import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
+import { getProfileTokensList } from 'redux/session/selectors'
 import {  FontIcon, Drawer } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import ProfileModel from 'models/ProfileModel'
-import TokensCollection from 'models/tokens/TokensCollection'
 
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { sidesClose } from 'redux/sides/actions'
 
 import './ProfileSidePanel.scss'
@@ -21,14 +19,11 @@ export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')
-  const wallet = state.get('mainWallet')
   return {
-    wallet: wallet,
     account: session.account,
     profile: session.profile,
     networkName: networkService.getName(),
-    isTokensLoaded: !wallet.isFetching(),
-    tokens: state.get(DUCK_TOKENS),
+    tokens: getProfileTokensList()(state),
   }
 }
 
@@ -52,9 +47,7 @@ class ProfileSidePanel extends PureComponent {
     networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.instanceOf(ProfileModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
-    isTokensLoaded: PropTypes.bool,
-    wallet: PropTypes.instanceOf(MainWalletModel),
+    tokens: PropTypes.arrayOf(PropTypes.object),
 
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
@@ -68,14 +61,6 @@ class ProfileSidePanel extends PureComponent {
   }
 
   renderProfile () {
-
-    const addressesInWallet = this.props.wallet.addresses()
-    const addresses = [
-      { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
-      { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
-      { title: 'ETH', address: addressesInWallet.item('Ethereum').address() },
-      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
-    ]
 
     return (
       <div styleName='profile'>
@@ -131,35 +116,33 @@ class ProfileSidePanel extends PureComponent {
           <div styleName='address-copy-icon'>
             <CopyIcon iconStyle='average' value={this.props.account} />
           </div>
-          <div styleName='address-copy-icon'>
-            <PKIcon iconStyle='average' symbol='ETH' />
+          <div styleName='address-pk-icon'>
+            <PKIcon iconStyle='average' blockchain='Ethereum' />
           </div>
         </div>
 
         {this.props.tokens
-          .filter((token) => addresses.map((a) => a.title.toUpperCase()).includes(token.symbol().toUpperCase()))
           .map((token) => {
-            const tokenAddress = addresses.find((e) => e.title === token.symbol().toUpperCase()).address
             return (
-              <div styleName='address' key={token.id()}>
+              <div styleName='address' key={token.blockchain}>
                 <div styleName='address-token'>
                   <IPFSImage
                     styleName='address-token-icon'
-                    fallback={TOKEN_ICONS[ token.symbol() ]}
+                    fallback={TOKEN_ICONS[ token.symbol ]}
                   />
                 </div>
                 <div styleName='address-token-info'>
-                  <p styleName='address-info-text'>{token.symbol()} Address</p>
-                  <span styleName='main-address-account-name'>{ tokenAddress }</span>
+                  <p styleName='address-info-text'>{token.title} Address</p>
+                  <span styleName='main-address-account-name'>{ token.address }</span>
                 </div>
                 <div styleName='address-qr-code'>
-                  <QRIcon iconStyle='average' value={tokenAddress} />
+                  <QRIcon iconStyle='average' value={token.address} />
                 </div>
                 <div styleName='address-copy-icon'>
-                  <CopyIcon iconStyle='average' value={tokenAddress} />
+                  <CopyIcon iconStyle='average' value={token.address} />
                 </div>
-                <div styleName='address-copy-icon'>
-                  <PKIcon iconStyle='average' symbol={token.symbol()} />
+                <div styleName='address-pk-icon'>
+                  <PKIcon iconStyle='average' blockchain={token.blockchain} />
                 </div>
               </div>
             )

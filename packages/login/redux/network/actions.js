@@ -26,13 +26,13 @@ export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
 }
 
-export const getPrivateKeyFromSymbol = (symbol: string) => {
-  switch (symbol) {
-    case 'ETH':
+export const getPrivateKeyFromBlockchain = (blockchain: string) => {
+  switch (blockchain) {
+    case 'Ethereum':
       return ethereumProvider.getPrivateKey()
-    case 'BTC':
+    case 'Bitcoin':
       return btcProvider.getPrivateKey()
-    case 'LTC':
+    case 'Litecoin':
       return ltcProvider.getPrivateKey()
     case 'NEM':
       return nemProvider.getPrivateKey()
