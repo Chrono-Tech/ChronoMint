@@ -110,7 +110,11 @@ class ProfileSidePanel extends PureComponent {
         <div styleName='main-address'>
           <div styleName='main-address-account'>
             <div styleName='main-address-header-text'>Main address</div>
-            <div styleName='main-address-account-name'>{this.props.account}</div>
+            <div styleName='main-address-account-name'>
+              <span styleName='main-address-account-name-text'>
+                {this.props.account}
+              </span>
+            </div>
           </div>
           <div styleName='main-address-icons'>
             <div styleName='address-qr-code'>
@@ -138,7 +142,11 @@ class ProfileSidePanel extends PureComponent {
                   </div>
                   <div styleName='address-token-info'>
                     <div styleName='address-info-text'>{token.title} Address</div>
-                    <div styleName='main-address-account-name'>{ token.address }</div>
+                    <div styleName='address-token-name'>
+                      <span styleName='address-token-name-text'>
+                        { token.address }
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div styleName='address-icons'>

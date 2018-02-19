@@ -90,9 +90,6 @@
   opacity: 1;
 }
 
-.balances-info {
-
-}
 
 .address-token {
   display: flex;
@@ -114,8 +111,8 @@
   flex-direction: column;
   flex: 2.5;
   padding-left: 5px;
-  word-break: break-all;
-  word-wrap: break-word;
+  word-break: normal;
+  word-wrap: normal;
 }
 
 .address-info {
@@ -138,6 +135,22 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.address-token-name {
+  display: flex;
+}
+
+.address-token-name-text {
+  display: inline;
+  font-size: 12px;
+  text-align: left;
+  line-height: 11px;
+  color: #7F7F7F;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 165px;
 }
 
 .address {
@@ -187,8 +200,9 @@
   flex-direction: column;
   flex: 3;
   justify-content: flex-start;
-  word-break: break-all;
-  word-wrap: break-word;
+  word-break: normal;
+  word-wrap: normal;
+  white-space: nowrap;
   padding-right: 20px;
 }
 
@@ -201,11 +215,18 @@
 
 .main-address-account-name {
   display: flex;
+}
+
+.main-address-account-name-text {
+  display: inline;
   font-size: 12px;
   text-align: left;
   line-height: 11px;
   color: #7F7F7F;
   font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .main-address-header-text {
@@ -223,7 +244,7 @@
 }
 
 .network-name-text {
-  color: #FFFFFF;
+  color: $color-white;
   font-size: 14px;
   font-weight: 700;
   text-align: left;
