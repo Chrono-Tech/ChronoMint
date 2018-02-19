@@ -12,7 +12,8 @@
 }
 
 .profile {
-  display: block;
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
 }
 
@@ -38,69 +39,88 @@
 }
 
 .account-info {
-  display: table;
-  width: 100%;
+  display: flex;
+  flex-direction: row;
   padding-top: 20px;
+  padding-left: 20px;
   padding-bottom: 20px;
   min-height: 50px;
   background-color: $color-blue405;
 }
 
 .account-info-avatar {
-  display: table-cell;
-  width: 20%;
-  padding-left: 20px;
-  vertical-align: middle;
-  align-self: left;
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: center;
 }
 
 .account-info-name {
-  display: table-cell;
-  width: 50%;
-  align-self: left;
-  vertical-align: middle;
+  display: flex;
+  flex: 5;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .account-name-text {
-  color: #FFFFFF;
+  color: $color-white;
   line-height: 22px;
   font-size: 18px;
   text-align: left;
   font-weight: 700;
 }
 
+.account-info-icons {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  justify-content: flex-start;
+}
+
 .account-info-setting {
-  display: table-cell;
-  width: 15%;
-  vertical-align: middle;
-  align-self: center;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
   opacity: 0.5;
 }
+
 .account-info-setting:hover {
   cursor: pointer;
   opacity: 1;
 }
 
-.balances-info {
-
-}
 
 .address-token {
-  display: table-cell;
-  width: 10%;
-  vertical-align: top;
-  align-self: left;
+  display: flex;
+  flex: 0.5;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.address-icons {
+  display: flex;
+  flex: 2;
+  padding-right: 10px;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .address-token-info {
-  display: table-cell;
-  width: 60%;
+  display: flex;
+  flex-direction: column;
+  flex: 2.5;
   padding-left: 5px;
-  padding-right: 20px;
-  word-break: break-all;
-  word-wrap: break-word;
+  word-break: normal;
+  word-wrap: normal;
 }
 
+.address-info {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  padding-right: 20px;
+}
 
 .address-info-text {
   font-size: 14px;
@@ -108,7 +128,6 @@
   line-height: 20px;
   text-align: left;
 }
-
 
 .address-token-icon {
   width: 30px;
@@ -118,24 +137,45 @@
   background-position: center;
 }
 
+.address-token-name {
+  display: flex;
+}
+
+.address-token-name-text {
+  display: inline;
+  font-size: 12px;
+  text-align: left;
+  line-height: 11px;
+  color: #7F7F7F;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 165px;
+}
+
 .address {
-  display: table;
-  width: 100%;
+  display: flex;
+  flex-direction: row;
   padding-left: 20px;
   padding-top: 20px;
 }
 
 .address-qr-code {
-  display: table-cell;
-  width: 15%;
+  display: flex;
   vertical-align: middle;
   align-self: center;
   opacity: 0.5;
 }
 
 .address-copy-icon {
-  display: table-cell;
-  width: 15%;
+  display: flex;
+  vertical-align: middle;
+  align-self: center;
+  opacity: 0.5;
+}
+
+.address-pk-icon {
+  display: flex;
   vertical-align: middle;
   align-self: center;
   opacity: 0.5;
@@ -143,9 +183,10 @@
 
 .main-address {
   padding-top: 40px;
-  display: table;
-  width: 100%;
+  display: flex;
+  flex-direction: row;
   padding-left: 20px;
+  padding-right: 10px;
 }
 
 .address-split-hr {
@@ -155,23 +196,41 @@
 }
 
 .main-address-account {
-  display: table-cell;
-  width: 70%;
-  align-self: left;
-  word-break: break-all;
-  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  justify-content: flex-start;
+  word-break: normal;
+  word-wrap: normal;
+  white-space: nowrap;
   padding-right: 20px;
 }
 
+.main-address-icons {
+  display: flex;
+  flex: 2;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .main-address-account-name {
+  display: flex;
+}
+
+.main-address-account-name-text {
+  display: inline;
   font-size: 12px;
   text-align: left;
-  line-height: normal !important;
+  line-height: 11px;
   color: #7F7F7F;
   font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
 }
 
 .main-address-header-text {
+  display: flex;
   font-size: 16px;
   line-height: 22px;
   font-weight: 700;
@@ -179,12 +238,13 @@
 }
 
 .network-name {
+  display: flex;
   line-height: 17px;
   background-color: #68CC8E;
 }
 
 .network-name-text {
-  color: #FFFFFF;
+  color: $color-white;
   font-size: 14px;
   font-weight: 700;
   text-align: left;
@@ -193,33 +253,9 @@
 }
 
 
-
-.profile-body {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-
-  @include xs-only {
-    .body-avatar {
-      width: 100%;
-      margin-right: 0;
-      margin-bottom: 20px;
-    }
-    .body-info {
-      width: 100%;
-    }
-  }
-}
-
-.body-avatar {
-  flex: 0 0 auto;
-  position: relative;
-  margin-right: 32px;
-}
-
 .avatar-icon {
   position: relative;
-  display: table;
+  display: flex;
   background-color: $color-panel-bg-0;
   border-radius: 50%;
   overflow: hidden;
@@ -231,10 +267,6 @@
   height: 60px;
   background: transparent none no-repeat center center;
   background-size: cover;
-}
-
-.body-info {
-  flex: 1 1 auto;
 }
 
 .info-account {
@@ -267,66 +299,6 @@
   width: 85px;
   font-size: 14px;
   vertical-align: baseline;
-}
-
-.info-micros {
-  margin-left: -4px;
-}
-
-.info-balances {
-  margin: 10px 0 0 0;
-}
-
-.balance {
-  position: relative;
-  display: table;
-  width: 100%;
-  margin: 0 0 5px 0;
-}
-
-.balance-icon {
-  display: table-cell;
-  vertical-align: middle;
-  width: 30px;
-}
-
-.balanceIcon {
-  position: relative;
-  display: table;
-  background-color: $color-primary-1;
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 0px 8px 0px 0px;
-}
-
-.balanceIconContent {
-  width: 21px;
-  height: 12px;
-  margin: 2px;
-  background: transparent none no-repeat center center;
-  background-size: contain;
-}
-
-.balance-info {
-  display: table-cell;
-  vertical-align: middle;
-  :global(.TokenValue__root) {
-    font-size: 18px;
-    line-height: 18px;
-  }
-}
-
-.profile-footer {
-  margin-top: 16px;
-  text-align: right;
-}
-
-
-.badge-green {
-  @include badge($color-white, $badge-green);
-  border-radius: 2px;
-  line-height: 20px;
-  vertical-align: middle;
 }
 
 .status {
