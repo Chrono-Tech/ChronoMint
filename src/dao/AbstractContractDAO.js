@@ -446,7 +446,7 @@ export default class AbstractContractDAO extends EventEmitter {
         from: this.getAccount(),
         value,
         gas: useDefaultGasLimit ? DEFAULT_GAS : gasLimit,
-        gasPrice: tx.gasPrice().plus(value),
+        gasPrice: tx.gasPrice(),
       }
 
       /** DRY RUN */
