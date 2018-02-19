@@ -41,22 +41,12 @@ export const BALANCES_COMPARATOR_URGENCY = (item1, item2) => {
 }
 
 export const getProfileTokensList = () => createSelector(
-  [ getProfile, getTokens, getMainWallet ],
-  (profile, tokens, mainWallet) => {
-
-    const symbolToTitle = (symbol) => {
-      const titleList = [
-        { symbol: 'XEM', title: 'NEM' },
-      ]
-      const newTitle = titleList.find((s) => s.symbol === symbol)
-      return newTitle?newTitle.title:symbol
-    }
-
+  [ getMainWallet ],
+  (mainWallet) => {
     const addressesInWallet = mainWallet.addresses()
-    return rebuildProfileTokens(profile, tokens)
-      .filter((token) => PROFILE_PANEL_TOKENS.includes(token.symbol))
+    return PROFILE_PANEL_TOKENS
       .map((token) => {
-        return { ...token, title: symbolToTitle(token.symbol), address: addressesInWallet.item(token.blockchain).address() }
+        return { ...token, address: addressesInWallet.item(token.blockchain).address() }
       })
   }
 )

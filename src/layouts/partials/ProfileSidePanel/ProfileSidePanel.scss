@@ -63,7 +63,7 @@
 }
 
 .account-name-text {
-  color: #FFFFFF;
+  color: $color-white;
   line-height: 22px;
   font-size: 18px;
   text-align: left;
@@ -82,8 +82,6 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  //vertical-align: middle;
-  //align-self: center;
   opacity: 0.5;
 }
 
