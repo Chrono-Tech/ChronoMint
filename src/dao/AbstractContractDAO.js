@@ -9,10 +9,9 @@ import truffleContract from 'truffle-contract'
 import ipfs from 'utils/IPFS'
 import web3Converter from 'utils/Web3Converter'
 import EventEmitter from 'events'
-import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const DEFAULT_GAS = 4700000
-const DEFAULT_OK_CODES = [resultCodes.OK, true]
+const DEFAULT_OK_CODES = [ resultCodes.OK, true ]
 const FILTER_BLOCK_STEP = 100000 // 5 (5 sec./block) - 18 days (15 sec./block respectively) per request
 
 export const TX_FRONTEND_ERROR_CODES = {
@@ -94,8 +93,8 @@ export default class AbstractContractDAO extends EventEmitter {
     this.subscribeOnReset()
 
     this._uniqId = `${this.constructor.name}-${Math.random()}`
-    AbstractContractDAO._events[this._uniqId] = []
-    AbstractContractDAO._filterCache[this._uniqId] = {}
+    AbstractContractDAO._events[ this._uniqId ] = []
+    AbstractContractDAO._filterCache[ this._uniqId ] = {}
   }
 
   subscribeOnReset () {
@@ -150,7 +149,7 @@ export default class AbstractContractDAO extends EventEmitter {
         let eventsAddress
         const key = web3.sha3(this._eventsJSON)
         if (AbstractContractDAO._eventsContracts.hasOwnProperty(key)) {
-          eventsAddress = AbstractContractDAO._eventsContracts[key]
+          eventsAddress = AbstractContractDAO._eventsContracts[ key ]
         } else {
           const events = truffleContract(this._eventsJSON)
           // noinspection JSUnresolvedFunction
@@ -158,7 +157,7 @@ export default class AbstractContractDAO extends EventEmitter {
           // noinspection JSUnresolvedFunction
           const deployedEvents = await events.deployed()
           eventsAddress = deployedEvents.address
-          AbstractContractDAO._eventsContracts[key] = eventsAddress
+          AbstractContractDAO._eventsContracts[ key ] = eventsAddress
         }
 
         const eventsContract = truffleContract(this._json)
@@ -226,7 +225,7 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!deployed.contract.hasOwnProperty(func)) {
       throw new Error(`unknown function '${func}' in contract '${this.getContractName()}'`)
     }
-    return deployed.contract[func].getData.apply(null, args)
+    return deployed.contract[ func ].getData.apply(null, args)
   }
 
   /** @protected */
@@ -247,7 +246,7 @@ export default class AbstractContractDAO extends EventEmitter {
     }
     try {
       const from = this.getAccount()
-      return deployed[func].call(...args, {
+      return deployed[ func ].call(...args, {
         from,
         gas: DEFAULT_GAS,
       })
@@ -307,8 +306,8 @@ export default class AbstractContractDAO extends EventEmitter {
   _argsWithNames (func: string, args: Array = []): Object {
     let r = null
     for (const i in this._json.abi) {
-      if (this._json.abi.hasOwnProperty(i) && this._json.abi[i].name === func) {
-        const inputs = this._json.abi[i].inputs
+      if (this._json.abi.hasOwnProperty(i) && this._json.abi[ i ].name === func) {
+        const inputs = this._json.abi[ i ].inputs
         if (!r) {
           r = {}
         }
@@ -317,7 +316,7 @@ export default class AbstractContractDAO extends EventEmitter {
             if (!args.hasOwnProperty(j)) {
               throw new Error(`invalid argument ${j}`)
             }
-            r[inputs[j].name] = args[j]
+            r[ inputs[ j ].name ] = args[ j ]
           }
         }
         break
@@ -335,7 +334,7 @@ export default class AbstractContractDAO extends EventEmitter {
       const newArgs = []
       for (const i in args) {
         if (args.hasOwnProperty(i)) {
-          newArgs.push(`${i}=${args[i]}`)
+          newArgs.push(`${i}=${args[ i ]}`)
         }
       }
       args = newArgs
@@ -374,7 +373,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const codeValue = error.code
 
-    for (const [k, v] of Object.entries(this._errorCodes)) {
+    for (const [ k, v ] of Object.entries(this._errorCodes)) {
       if (error.code === v) {
         error.code = k
       }
@@ -397,13 +396,11 @@ export default class AbstractContractDAO extends EventEmitter {
    * @protected
    */
   // eslint-disable-next-line complexity
-  async _tx (
-    func: string,
-    args: Array = [],
-    infoArgs: Object | AbstractModel = null,
-    value: BigNumber = new BigNumber(0),
-    options = DEFAULT_TX_OPTIONS,
-  ): Object {
+  async _tx (func: string,
+             args: Array = [],
+             infoArgs: Object | AbstractModel = null,
+             value: BigNumber = new BigNumber(0),
+             options = DEFAULT_TX_OPTIONS): Object {
 
     const {
       addDryRunFrom,
@@ -449,6 +446,7 @@ export default class AbstractContractDAO extends EventEmitter {
         from: this.getAccount(),
         value,
         gas: useDefaultGasLimit ? DEFAULT_GAS : gasLimit,
+        gasPrice: tx.gasPrice().plus(value),
       }
 
       /** DRY RUN */
@@ -463,7 +461,7 @@ export default class AbstractContractDAO extends EventEmitter {
       }
 
       if (addDryRunFrom) {
-        const addDryResult = convertDryResult(await deployed[func].call(...args, {
+        const addDryResult = convertDryResult(await deployed[ func ].call(...args, {
           ...txParams,
           from: addDryRunFrom,
         }))
@@ -473,7 +471,7 @@ export default class AbstractContractDAO extends EventEmitter {
       }
 
       if (!allowNoReturn) {
-        const dryResult = await deployed[func].call(...args, txParams)
+        const dryResult = await deployed[ func ].call(...args, txParams)
         const convertedDryResult = convertDryResult(dryResult)
         if (!this._okCodes.includes(convertedDryResult)) {
           throw new TxError('Dry run failed', convertedDryResult)
@@ -486,7 +484,7 @@ export default class AbstractContractDAO extends EventEmitter {
         console.log(`%c --> ${this.getContractName()}.${func}`, 'color: #fff; background: #906', args)
       }
 
-      const result = await deployed[func](...args, txParams)
+      const result = await deployed[ func ](...args, txParams)
 
       tx = tx.set('hash', result.tx || 'unknown hash')
 
@@ -522,7 +520,7 @@ export default class AbstractContractDAO extends EventEmitter {
           console.warn(
             this._error(
               'Tx Error', func, args, value, gasLimit,
-              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode))
+              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
             ))
         }
       }
@@ -560,7 +558,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const [ gasPrice, estimatedGas ] = await Promise.all([
       this._web3Provider.getGasPrice(),
-      deployed[func].estimateGas(...args, {
+      deployed[ func ].estimateGas(...args, {
         from: this.getAccount(),
         value,
         gas: DEFAULT_GAS,
@@ -571,7 +569,7 @@ export default class AbstractContractDAO extends EventEmitter {
     const gasLimit = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : estimatedGas + 1
     const gasFee = gasPriceBN.mul(gasLimit)
 
-    return { gasLimit, gasFee }
+    return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
   /**
@@ -590,7 +588,7 @@ export default class AbstractContractDAO extends EventEmitter {
     }
 
     const startTime = AbstractContractDAO._eventsWatchStartTime
-    const instance = deployed[event](filters, {
+    const instance = deployed[ event ](filters, {
       fromBlock: 'latest',
       toBlock: 'latest',
     })
@@ -614,7 +612,7 @@ export default class AbstractContractDAO extends EventEmitter {
       callback(
         result,
         result.blockNumber,
-        timestamp
+        timestamp,
       )
     })
   }
@@ -657,7 +655,7 @@ export default class AbstractContractDAO extends EventEmitter {
       toBlock = Math.max(i, 0)
       const iFromBlock = Math.max(i - step, 0)
       const result = await new Promise((resolve) => {
-        const filter = deployed[event](filters, { fromBlock: iFromBlock, toBlock })
+        const filter = deployed[ event ](filters, { fromBlock: iFromBlock, toBlock })
         filter.get((e, r) => {
           filter.stopWatching(() => {
           })
@@ -669,7 +667,7 @@ export default class AbstractContractDAO extends EventEmitter {
           resolve(r)
         })
       })
-      logs = [...logs, ...result.reverse()]
+      logs = [ ...logs, ...result.reverse() ]
       toBlock = iFromBlock - 1
       const code = iFromBlock > 0 ? await this.getCode(deployed.address, toBlock) : null
       if (!code) {
@@ -688,31 +686,31 @@ export default class AbstractContractDAO extends EventEmitter {
 
   /** @protected */
   _setFilterCache (id, data) {
-    AbstractContractDAO._filterCache[this._uniqId][id] = data
+    AbstractContractDAO._filterCache[ this._uniqId ][ id ] = data
   }
 
   /** @protected */
   _getFilterCache (id) {
-    return AbstractContractDAO._filterCache[this._uniqId][id]
+    return AbstractContractDAO._filterCache[ this._uniqId ][ id ]
   }
 
   resetFilterCache (id = null) {
     if (id) {
-      AbstractContractDAO._filterCache[this._uniqId][id] = null
+      AbstractContractDAO._filterCache[ this._uniqId ][ id ] = null
       return
     }
-    AbstractContractDAO._filterCache[this._uniqId] = {}
+    AbstractContractDAO._filterCache[ this._uniqId ] = {}
   }
 
   static resetWholeFilterCache () {
     for (const k of Object.keys(AbstractContractDAO._filterCache)) {
-      AbstractContractDAO._filterCache[k] = {}
+      AbstractContractDAO._filterCache[ k ] = {}
     }
   }
 
   /** @protected */
   _addFilterEvent (event) {
-    AbstractContractDAO._events[this._uniqId].push(event)
+    AbstractContractDAO._events[ this._uniqId ].push(event)
   }
 
   /** @private */
@@ -736,24 +734,24 @@ export default class AbstractContractDAO extends EventEmitter {
 
   async stopWatching () {
     await AbstractContractDAO._stopWatching(this.getWatchedEvents())
-    AbstractContractDAO._events[this._uniqId] = []
+    AbstractContractDAO._events[ this._uniqId ] = []
   }
 
   static async stopWholeWatching () {
     await AbstractContractDAO._stopWatching(AbstractContractDAO.getWholeWatchedEvents())
     for (const key of Object.keys(AbstractContractDAO._events)) {
-      AbstractContractDAO._events[key] = []
+      AbstractContractDAO._events[ key ] = []
     }
   }
 
   getWatchedEvents () {
-    return AbstractContractDAO._events[this._uniqId]
+    return AbstractContractDAO._events[ this._uniqId ]
   }
 
   static getWholeWatchedEvents () {
     let r = []
     for (const events of Object.values(AbstractContractDAO._events)) {
-      r = [...r, ...events]
+      r = [ ...r, ...events ]
     }
     return r
   }

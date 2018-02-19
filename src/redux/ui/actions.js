@@ -30,9 +30,12 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
         if (!estimateGas) {
           return
         }
-        const { gasFee, gasLimit } = await estimateGas(func, args, value)
+        const { gasFee, gasLimit, gasPrice } = await estimateGas(func, args, value)
         let tx = getState().get(DUCK_WATCHER).confirmTx
-        tx = tx.setGas(gasFee.mul(gasPriceMultiplier)).gasLimit(gasLimit)
+        tx = tx
+          .gasPrice(gasPrice)
+          .setGas(gasFee.mul(gasPriceMultiplier))
+          .gasLimit(gasLimit)
         dispatch({ type: WATCHER_TX_SET, tx })
       },
     },
