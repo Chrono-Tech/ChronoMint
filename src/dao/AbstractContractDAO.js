@@ -486,6 +486,8 @@ export default class AbstractContractDAO extends EventEmitter {
         console.log(`%c --> ${this.getContractName()}.${func}`, 'color: #fff; background: #906', args)
       }
 
+      // eslint-disable-next-line
+      console.log('gas', func, txParams, gasLimit)
       const result = await deployed[func](...args, txParams)
 
       tx = tx.set('hash', result.tx || 'unknown hash')

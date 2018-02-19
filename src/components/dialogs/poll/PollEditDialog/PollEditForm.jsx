@@ -182,7 +182,7 @@ export default class PollEditForm extends Component {
               name='description'
               fullWidth
               multiLine
-              floatingLabelText={<Translate value={prefix('pollDescriptions')} />}
+              floatingLabelText={<Translate value={prefix('pollDescription')} />}
             />
             <div>
               <div styleName='limitTitle'>
