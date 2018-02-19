@@ -4,7 +4,7 @@
   "description": "Control panel for ChronoBank",
   "private": true,
   "devDependencies": {
-    "@chronobank/chronomint-presentation": "github:ipavlenko/ChronoPresentation",
+    "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/login": "*",
     "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",
@@ -83,7 +83,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "1.1.45",
+    "chronobank-smart-contracts": "github:chronobank/SmartContracts#release/release-1.1.46",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
