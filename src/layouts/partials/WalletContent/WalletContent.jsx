@@ -65,8 +65,6 @@ export default class WalletContent extends Component {
       <div styleName='instructions'>
         <h3><Translate value={prefix('howToMakeTime')} /></h3>
         <div styleName='instructionsDescription'>
-          {!this.props.isTesting ?
-            <p><b><Translate value={prefix('depositTimeIsTemporarilyLimited')} /></b><br /><br /></p> : ''}
           <p><Translate value={prefix('toUseStakeholders')} /></p>
         </div>
         <Points>

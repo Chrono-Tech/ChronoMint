@@ -497,7 +497,6 @@ export default {
     lowerThanOrEqual: 'Should be lower or equal than %{limit}',
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
-    limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
 

@@ -2,7 +2,6 @@ export default {
   en: {
     youCanUseTheMultisignatureWallets: 'You can use the multisignature wallets',
     walletsAreSmartContractsWhichManageAssets: 'Wallets are smart contracts which manage assets and can be owned by multiple accounts. Unlike accounts, contract wallets are controlled by code, which means that it is possible to customize their behavior. The most common use-case are multi-signature wallets, that allow for transaction logging, withdrawal limits, and rule-sets for signatures required.',
-    depositTimeIsTemporarilyLimited: 'Deposit TIME is temporarily limited to 1 TIME on the main network.',
     toUseStakeholders: 'To use stakeholders features such as Bonuses and Voting, you should deposit TIME tokens.',
     enterTheAmount: 'Enter the amount you wold like to deposit. You can require TIME once for testing purposes.',
     checkValueAndPress: 'Check value and press APPROVE to allow TIME holder contract to deposit your tokens. This is for your safety.',
@@ -20,7 +19,6 @@ export default {
   ru: {
     youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
     walletsAreSmartContractsWhichManageAssets: 'Кошельки это смартконтракты которые управляют ассетами и могут принадлежать нескольким аккаунтам. В отличие от аккаунтов, контракты кошельков управляются кодом, что означает возможность кастомизации их поведения. Наиболее распространенное использование это мультиподписные кошельки, которые позволяют выполнять логгирование транзакций, устанавливать лимиты выдачи, и наборы правил о необходимом количестве подписей.',
-    depositTimeIsTemporarilyLimited: 'Депозит TIME временно ограничен до 1 TIME на сети main.',
     toUseStakeholders: 'Для использование возможностей акционеров таких как Бонусы и Голосования, вы должны вложить TIME токены.',
     enterTheAmount: 'Введите сумму которую вы хотите вложить. Вы можете запросить TIME единожды в целях тестирования.',
     checkValueAndPress: 'Проверьте значение и нажмите ПОДТВЕРДИТЬ чтобы разрешить TIME holder контракту внести ваши токены. Это для вашей безопастности.',
