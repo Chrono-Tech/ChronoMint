@@ -181,7 +181,7 @@ class ProfileSidePanel extends PureComponent {
         open
         overlayStyle={{ opacity: 0 }}
         onRequestChange={this.handleProfileClose}
-        swipeAreaWidth={380}
+        disableSwipeToOpen
         width={380}
         docked={false}
       >
