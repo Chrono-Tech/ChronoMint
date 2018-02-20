@@ -1,7 +1,7 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import Immutable from 'immutable'
@@ -78,6 +78,9 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       if (tx.from() === assetDonatorDAO.getInitAddress()) {
         dispatch(updateIsTIMERequired())
       }
+    })
+    .on(FETCH_NEW_BALANCE, () => {
+      dispatch(fetchTokenBalance(token))
     })
     .on(EVENT_UPDATE_BALANCE, ({ /* account, time, */ balance }) => {
       // TODO @ipavlenko: Always check user account
