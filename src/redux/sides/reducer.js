@@ -1,7 +1,13 @@
+import { ProfileSidePanel } from 'layouts/partials'
+import { PROFILE_SIDE_PANEL_KEY } from 'layouts/partials/ProfileSidePanel/ProfileSidePanel'
 import * as actions from './actions'
 
 const initialState = {
-  stack: [],
+  isProfilePanelOpen: false,
+  stack: [{
+    component: ProfileSidePanel,
+    key: PROFILE_SIDE_PANEL_KEY,
+  }],
 }
 
 export default (state = initialState, action) => {
@@ -25,6 +31,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         stack: [],
+      }
+    case actions.SIDES_OPEN_PROFILE_PANEL:
+      return {
+        ...state,
+        isProfilePanelOpen: true,
+      }
+    case actions.SIDES_CLOSE_PROFILE_PANEL:
+      return {
+        ...state,
+        isProfilePanelOpen: false,
       }
     default:
       return state
