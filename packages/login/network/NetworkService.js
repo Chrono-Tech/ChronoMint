@@ -218,6 +218,13 @@ class NetworkService extends EventEmitter {
     return protocol ? `${protocol}://${host}` : `//${host}`
   }
 
+  getName = () => {
+    const state = this._store.getState()
+    const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
+    const { name } = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+    return name
+  }
+
   checkMetaMask = () => {
     metaMaskResolver
       .on('resolve', (isMetaMask) => {

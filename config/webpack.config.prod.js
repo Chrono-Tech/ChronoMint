@@ -1,13 +1,16 @@
-let path = require('path')
-let webpack = require('webpack')
+const path = require('path')
+const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 
-let config = require('./webpack.config.base.js')
+const config = require('./webpack.config.base.js')
 
-let HtmlWebpackPlugin = require('html-webpack-plugin')
-let ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = config.buildConfig(
-  ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
+  ({ srcPath, modulesPath, buildPath, indexPresentationHtmlPath, faviconPath }) => ({
     entry: path.join(srcPath, 'index'),
     output: {
       path: buildPath,
@@ -17,13 +20,13 @@ module.exports = config.buildConfig(
     babel: require('./babel.prod'),
     plugins: [
       new HtmlWebpackPlugin({
-        inject: true,
-        template: indexHtmlPath,
+        inject: 'head',
+        template: indexPresentationHtmlPath,
         favicon: faviconPath,
         hash: true,
         minify: {
           removeComments: true,
-          collapseWhitespace: true,
+          collapseWhitespace: false,
           removeRedundantAttributes: true,
           useShortDoctype: true,
           removeEmptyAttributes: true,
@@ -33,6 +36,10 @@ module.exports = config.buildConfig(
           minifyCSS: true,
           minifyURLs: true,
         },
+      }),
+      new ScriptExtHtmlWebpackPlugin({
+        defaultAttribute: 'async',
+        sync: ['chronomint-presentation/js/vendor.js', 'chronomint-presentation/js/index.js'],
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
@@ -54,6 +61,22 @@ module.exports = config.buildConfig(
         },
       }),
       new ExtractTextPlugin('[name].[contenthash].css'),
+      new CopyWebpackPlugin([
+        {
+          context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
+          from: '**',
+          to: path.join(buildPath, 'chronomint-presentation'),
+        },
+      ]),
+      new HtmlWebpackIncludeAssetsPlugin({
+        assets: [
+          'chronomint-presentation/css/index.css',
+          'chronomint-presentation/js/vendor.js',
+          'chronomint-presentation/js/index.js',
+        ],
+        hash: true,
+        append: false,
+      }),
     ],
   })
 )

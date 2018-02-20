@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
@@ -5,6 +6,8 @@ import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
 import { MultiEventsHistoryABI, UserManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
+import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'
@@ -81,14 +84,49 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
     return [ await this._ipfsPut(profile.toJS()), true ]
   }
 
-  async setMemberProfile (account, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
-    const [ hash, isNew ] = await this._saveMemberProfile(account, profile)
-    if (!isNew) {
+  _saveProfile (profile: ProfileModel | AbstractModel) {
+    const action = async () => {
+      const hash = await this._ipfsPut(profile.toJS())
+      return {
+        hash,
+      }
+    }
+    return new AdditionalActionModel({
+      action,
+      errorMessage: 'tx.UserManager.errors.saveInIPFSError',
+      repeatButtonName: 'tx.UserManager.errors.repeatButtonName',
+    })
+  }
+
+  async setMemberProfile (account: string, profile: ProfileModel | AbstractModel, isOwn: boolean = true) {
+    const current = await this.getMemberProfile(account)
+    if (JSON.stringify(current.summary()) === JSON.stringify(profile.summary())) {
       return true
     }
     return isOwn
-      ? this._tx(TX_SET_OWN_HASH, [ hash ], profile)
-      : this._tx(TX_SET_MEMBER_HASH, [ account, hash ], { address: account, ...profile.summary() })
+      ? this._tx(
+        TX_SET_OWN_HASH,
+        [],
+        profile,
+        new BigNumber(0),
+        {
+          ...DEFAULT_TX_OPTIONS,
+          additionalAction: this._saveProfile(profile),
+        })
+      : this._tx(
+        TX_SET_MEMBER_HASH,
+        [
+          account,
+        ],
+        {
+          address: account,
+          ...profile.txSummary(),
+        },
+        new BigNumber(0),
+        {
+          ...DEFAULT_TX_OPTIONS,
+          additionalAction: this._saveProfile(profile),
+        })
   }
 
   async addCBE (cbe: CBEModel) {

@@ -56,7 +56,7 @@
   font-size: 16px;
   font-weight: 600;
   color: $color-white;
-  line-height: 2.8125em; // 45/16
+  line-height: 2.5em;
 
   @include md-only {
     line-height: 1.5em;

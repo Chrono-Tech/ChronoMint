@@ -10,6 +10,12 @@ export const TX_REMOVE_TOKEN = 'removeToken'
 
 export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
 export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
+export const PROFILE_PANEL_TOKENS = [
+  { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
+  { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
+  { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
+  { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
+]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
@@ -55,34 +61,48 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   _setTokenParams (token: TokenModel) {
     return [
       token.address(),
-      token.name(),
+      token.name() || '',
       token.symbol(),
-      token.url(),
+      token.url() || '',
       token.decimals(),
       token.icon() ? this._c.ipfsHashToBytes32(token.icon()) : null,
       '', // swarm hash
     ]
   }
 
+  /** @private */
+  _setTokenSummary (token: TokenModel) {
+    return {
+      address: token.address(),
+      name: token.name() || '',
+      symbol: token.symbol(),
+      url: token.url() || '',
+      decimals: token.decimals(),
+    }
+  }
+
   /**
    * For all users
    */
   addToken (token: TokenModel) {
-    return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), token)
+    const summary = this._setTokenSummary(token)
+    return this._tx(TX_ADD_TOKEN, this._setTokenParams(token), summary)
   }
 
   /**
    * Only for CBE
    */
   modifyToken (oldToken: TokenModel, newToken: TokenModel) {
-    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], newToken)
+    const summary = this._setTokenSummary(newToken)
+    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], summary)
   }
 
   /**
    * Only for CBE
    */
   removeToken (token: TokenModel) {
-    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], token)
+    const summary = this._setTokenSummary(token)
+    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], summary)
   }
 
   /** @private */
@@ -96,6 +116,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
+        isERC20: true,
       }),
       time, isRemoved, isAdded, result.args.oldToken || null,
     ))

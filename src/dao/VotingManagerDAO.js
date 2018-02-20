@@ -43,7 +43,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       hash = await ipfs.put({
         title: poll.title(),
         description: poll.description(),
-        files: poll.files() && poll.files(),
+        files: poll.files(),
         options: poll.options() && poll.options().toArray(),
       })
     } catch (e) {
@@ -74,7 +74,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
   }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
-    let result = new VotingCollection()
+    let result = []
     try {
       const [ pollsDetails, assetHolderDAO ] = await Promise.all([
         await this._call('getPollsDetails', [ pollsAddresses ]),
@@ -84,71 +84,89 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
       const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
       const shareholdersCount = await assetHolderDAO.shareholdersCount()
 
+      let promises = []
       for (let i = 0; i < pollsAddresses.length; i++) {
-        try {
-          const pollId = pollsAddresses[ i ]
-
+        promises.push(new Promise(async (resolve) => {
           try {
-            votingService.subscribeToPoll(pollId, account)
+            const pollId = pollsAddresses[ i ]
+
+            try {
+              votingService.subscribeToPoll(pollId, account)
+            } catch (e) {
+              // eslint-disable-next-line
+              console.error('watch error', e.message)
+            }
+
+            const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
+            const [ votes, hasMember, memberOption ] = await Promise.all([
+              await pollInterface.getVotesBalances(),
+              await pollInterface.hasMember(account),
+              await pollInterface.memberOption(account),
+            ])
+
+            const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
+            const { title, description, options, files } = await ipfs.get(hash, 10000) // wait 10s
+            const poll = new PollModel({
+              id: pollId,
+              owner: owners[ i ],
+              hash,
+              votes,
+              title,
+              description,
+              voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], TIME),
+              deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
+              published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
+              status: statuses[ i ],
+              active: activeStatuses[ i ],
+              options: new Immutable.List(options || []),
+              files,
+              hasMember,
+              memberOption,
+            })
+            const pollFiles = poll && await ipfs.get(poll.files())
+
+            resolve(new PollDetailsModel({
+              id: pollId,
+              poll,
+              votes,
+              shareholdersCount,
+              files: new Immutable.List((pollFiles && pollFiles.links || [])
+                .map((item) => FileModel.createFromLink(item))),
+            })
+              .isFetched(true))
+
           } catch (e) {
             // eslint-disable-next-line
-            console.error('watch error', e.message)
+            console.error(e.message)
+            resolve(null) // return null
           }
-
-          const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
-          const [ votes, hasMember, memberOption ] = await Promise.all([
-            await pollInterface.getVotesBalances(),
-            await pollInterface.hasMember(account),
-            await pollInterface.memberOption(account),
-          ])
-
-          const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
-          const { title, description, options, files } = await ipfs.get(hash, 10000) // wait 10s
-          const poll = new PollModel({
-            id: pollId,
-            owner: owners[ i ],
-            hash,
-            votes,
-            title,
-            description,
-            voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], TIME),
-            deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
-            published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
-            status: statuses[ i ],
-            active: activeStatuses[ i ],
-            options: new Immutable.List(options || []),
-            files,
-            hasMember,
-            memberOption,
-          })
-          const pollFiles = poll && await ipfs.get(poll.files())
-
-          result = result.add(new PollDetailsModel({
-            id: pollId,
-            poll,
-            votes,
-            shareholdersCount,
-            files: new Immutable.List((pollFiles && pollFiles.links || [])
-              .map((item) => FileModel.createFromLink(item))),
-          }).isFetched(true))
-        } catch (e) {
-          // eslint-disable-next-line
-          console.error(e.message)
-        }
+        }))
       }
 
+      result = await Promise.all(promises)
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
     }
 
-    return result
+    let collection = new VotingCollection()
+    result.map((item) => {
+      if (item) {
+        collection = collection.add(item)
+      }
+    })
+
+    return collection
   }
 
   async getPoll (pollId: string, account: string): PollDetailsModel {
     const votingManagerDAO = await contractsManagerDAO.getVotingManagerDAO()
     const polls = await votingManagerDAO.getPollsDetails([ pollId ], account)
     return polls.item(pollId)
+  }
+
+  getVoteLimitInPercent () {
+    return this._call('getVotesPercent')
   }
 
   /** @private */

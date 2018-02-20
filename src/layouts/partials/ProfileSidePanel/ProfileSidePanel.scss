@@ -1,0 +1,327 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+  .head {
+    padding: 24px 16px;
+  }
+
+  .body { padding: 0px 16px 24px 16px; }
+  .foot { padding: 24px 16px; }
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.close-icon {
+  position: absolute;
+  right: 7px;
+  top: 7px;
+  opacity: 0.5;
+}
+
+.close-icon:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.close-icon-wrap {
+  color: $color-white;
+  font-size: 25px;
+  font-family: sans-serif;
+}
+.close-icon-wrap:hover {
+  cursor: pointer;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: row;
+  padding-top: 20px;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  min-height: 50px;
+  background-color: $color-blue405;
+}
+
+.account-info-avatar {
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-info-name {
+  display: flex;
+  flex: 5;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.account-name-text {
+  color: $color-white;
+  line-height: 22px;
+  font-size: 18px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.account-info-icons {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  justify-content: flex-start;
+}
+
+.account-info-setting {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+}
+
+.account-info-setting:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+
+.address-token {
+  display: flex;
+  flex: 0.5;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.address-icons {
+  display: flex;
+  flex: 2;
+  padding-right: 10px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.address-token-info {
+  display: flex;
+  flex-direction: column;
+  flex: 2.5;
+  padding-left: 5px;
+  word-break: normal;
+  word-wrap: normal;
+}
+
+.address-info {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  padding-right: 20px;
+}
+
+.address-info-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+}
+
+.address-token-icon {
+  width: 30px;
+  height: 30px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.address-token-name {
+  display: flex;
+}
+
+.address-token-name-text {
+  display: inline;
+  font-size: 12px;
+  text-align: left;
+  line-height: 11px;
+  color: #7F7F7F;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 165px;
+}
+
+.address {
+  display: flex;
+  flex-direction: row;
+  padding-left: 20px;
+  padding-top: 20px;
+}
+
+.address-qr-code {
+  display: flex;
+  vertical-align: middle;
+  align-self: center;
+  opacity: 0.5;
+}
+
+.address-copy-icon {
+  display: flex;
+  vertical-align: middle;
+  align-self: center;
+  opacity: 0.5;
+}
+
+.address-pk-icon {
+  display: flex;
+  vertical-align: middle;
+  align-self: center;
+  opacity: 0.5;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+.main-address {
+  padding-top: 40px;
+  display: flex;
+  flex-direction: row;
+  padding-left: 20px;
+  padding-right: 10px;
+}
+
+.address-split-hr {
+  display: block;
+  margin-top: 40px;
+  border-top: 1px solid #E5E5E5;
+}
+
+.main-address-account {
+  display: flex;
+  flex-direction: column;
+  flex: 3;
+  justify-content: flex-start;
+  word-break: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  padding-right: 20px;
+}
+
+.main-address-icons {
+  display: flex;
+  flex: 2;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.main-address-account-name {
+  display: flex;
+}
+
+.main-address-account-name-text {
+  display: inline;
+  font-size: 12px;
+  text-align: left;
+  line-height: 11px;
+  color: #7F7F7F;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.main-address-header-text {
+  display: flex;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+  color: black;
+}
+
+.network-name {
+  display: flex;
+  line-height: 17px;
+  background-color: #68CC8E;
+}
+
+.network-name-text {
+  color: $color-white;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: left;
+  text-transform: uppercase;
+  padding: 10px 20px;
+}
+
+
+.avatar-icon {
+  position: relative;
+  display: flex;
+  background-color: $color-panel-bg-0;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 16px 0 0;
+}
+
+.avatar-icon-content {
+  width: 60px;
+  height: 60px;
+  background: transparent none no-repeat center center;
+  background-size: cover;
+}
+
+.info-account {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 18px;
+}
+
+.info-company {
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.info-address {
+  font-size: 14px;
+  margin-top: 7px;
+  color: $color-primary-1;
+  width: 246px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.infoAddress {
+  @include ellipsis;
+  position: relative;
+  display: block;
+  float: left;
+  color: $color-primary-1;
+  line-height: 25px;
+  width: 85px;
+  font-size: 14px;
+  vertical-align: baseline;
+}
+
+.status {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: $badge-grey;
+  margin: 0px 12px;
+
+  &.status-offline {
+    background-color: $badge-red;
+  }
+  &.status-syncing {
+    background-color: $badge-orange;
+  }
+  &.status-synced {
+    background-color: $badge-green;
+  }
+}
+
+.profile-fee-slider {
+  padding-top: 40px;
+}

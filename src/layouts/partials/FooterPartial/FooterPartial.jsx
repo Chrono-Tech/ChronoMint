@@ -18,7 +18,8 @@ export default class FooterPartial extends PureComponent {
               <ul styleName='papersList'>
                 <li styleName='papersListItem'><a href='https://chronobank.io/files/business_outline.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download' /></a> Business outline</li>
                 <li styleName='papersListItem'><a href='https://chronobank.io/files/dev_plan.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download' /></a> Development plan</li>
-                <li styleName='papersListItem'><a href='https://chronobank.io/files/whitepaper.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download' /></a> White paper</li>
+                <li styleName='papersListItem'><a href='https://files.chronobank.io/files/Chronobank_WP.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download' /></a> White paper</li>
+                <li styleName='papersListItem'><a href='https://files.chronobank.io/files/Opinion_TIME_1.5.18.pdf' target='_blank' rel='noopener noreferrer'><Translate value='layouts.partials.FooterPartial.download' /></a> Legal Opinion</li>
               </ul>
             </div>
           </div>
@@ -94,7 +95,7 @@ export default class FooterPartial extends PureComponent {
         <div styleName='row'>
           <div styleName='columnLeft'>
             <div styleName='copyright'>
-              <p>Copyright © 2016-2017 Edway Group Pty. Ltd. All Rights Reserved.</p>
+              <p>Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.</p>
             </div>
           </div>
         </div>
@@ -102,4 +103,3 @@ export default class FooterPartial extends PureComponent {
     )
   }
 }
-

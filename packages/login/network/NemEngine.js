@@ -17,6 +17,10 @@ export class NemEngine {
     return this._wallet.getAddress()
   }
 
+  getPrivateKey () {
+    return this._wallet.getPrivateKey()
+  }
+
   createTransaction (to, amount: BigNumber, mosaicDefinition = null, feeMultiplier) {
     return mosaicDefinition
       ? this._createMosaicTransaction(to, amount, mosaicDefinition, feeMultiplier)
@@ -30,7 +34,7 @@ export class NemEngine {
     const transferTransaction = nem.model.objects.create("transferTransaction")(
       to,
       value,
-      'Tx from ChronoMint'
+      'Tx from ChronoMint',
     )
 
     const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
@@ -56,14 +60,14 @@ export class NemEngine {
     const transferTransaction = nem.model.objects.create("transferTransaction")(
       to,
       1, // works as a multiplier
-      'Tx from ChronoMint'
+      'Tx from ChronoMint',
     )
 
     const mosaicAttachment = nem.model.objects.create("mosaicAttachment")(mosaicDefinition.id.namespaceId, mosaicDefinition.id.name, value)
     transferTransaction.mosaics.push(mosaicAttachment)
 
     const transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, {
-      [`${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}`]: {
+      [ `${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}` ]: {
         mosaicDefinition,
       },
     }, this._network.id)

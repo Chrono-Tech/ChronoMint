@@ -9,6 +9,7 @@ export default function validate (values, props) {
   }
   const deadline = values.get('deadline')
   const options = values.get('options')
+  const filesCollection = values.get('files')
   return {
     title: ErrorList.toTranslate(validator.required(values.get('title'))),
     voteLimitInTIME: new ErrorList()
@@ -18,7 +19,7 @@ export default function validate (values, props) {
     deadline: new ErrorList()
       .add(validator.required(deadline))
       .getErrors(),
-    files: ErrorList.toTranslate(validator.validIpfsFileList(values.get('files'))),
+    files: ErrorList.toTranslate(validator.validIpfsFileList(filesCollection && filesCollection.hash())),
     options: new ErrorList()
       .add(validator.required(options))
       .add(validator.moreThan(options && options.size, 1, false))

@@ -4,12 +4,14 @@ import * as Dashboard from 'components/dashboard/lang'
 import TwoFA from 'components/dialogs/TwoFA/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
+import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
 import * as exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
+import * as GasSlider from 'components/common/GasSlider/lang'
 
 export default {
   en: {
@@ -18,12 +20,14 @@ export default {
     Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
+    UpdateProvideDialog: UpdateProvideDialog.en,
     WalletSelectDialog: WalletSelectDialog.en,
     OwnersList: OwnersList.en,
     SignaturesList: SignaturesList.en,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.en,
+      GasSlider: GasSlider.en,
     },
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
@@ -35,12 +39,14 @@ export default {
     Dashboard: Dashboard.ru,
     Assets: Assets.ru,
     WalletAddEditForm: WalletAddEditForm.ru,
+    UpdateProvideDialog: UpdateProvideDialog.ru,
     WalletSelectDialog: WalletSelectDialog.ru,
     OwnersList: OwnersList.ru,
     SignaturesList: SignaturesList.ru,
     // TODO @Abdulov refactor this
     components: {
       exchange: exchange.ru,
+      GasSlider: GasSlider.ru,
     },
     TwoFA: TwoFA.ru,
     EditSignaturesDialog: EditSignaturesDialog.ru,

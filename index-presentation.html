@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <title>ChronoMint</title>
+  <link rel="shortcut icon" href="favicon.ico">
+  <style>
+    html {
+      background-image: linear-gradient(224deg, #644ebf, #262448);
+    }
+  </style>
+</head>
+<body>
+  <div id="presentation-root"></div>
+  <div id="react-root"></div>
+  <script>
+    ReactDOM.render(React.createElement(Components.PresentationApp, {
+      applicationContainer: document.getElementById("react-root")
+    }), document.getElementById("presentation-root"));
+  </script>
+  <!--
+    This HTML file is a template.
+    If you open it directly in the browser, you will see an empty page.
+
+    You can add web fonts, meta tags, or analytics to this file.
+    The build step will place the bundled scripts into the <body> tag.
+
+    To begin the development, run `npm start` in this folder.
+    To create a production bundle, use `npm run build`.
+  -->
+</body>
+</html>

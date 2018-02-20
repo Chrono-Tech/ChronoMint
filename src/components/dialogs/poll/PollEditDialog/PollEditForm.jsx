@@ -10,7 +10,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DatePicker, TextField } from 'redux-form-material-ui'
+import { DatePicker, Slider, TextField } from 'redux-form-material-ui'
 import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_I18N } from 'redux/configureStore'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -18,7 +18,11 @@ import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
 import Amount from 'models/Amount'
+import TokenModel from 'models/tokens/TokenModel'
 import { TIME } from 'redux/mainWallet/actions'
+import TokenValue from 'components/common/TokenValue/TokenValue'
+import PollDetailsModel from 'models/PollDetailsModel'
+import FileModel from 'models/FileSelect/FileModel'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -33,12 +37,16 @@ function mapStateToProps (state) {
 
   return {
     options: selector(state, 'options'),
+    files: selector(state, 'files'),
     account: state.get(DUCK_SESSION).account,
-    maxVoteLimitInTIME: state.get(DUCK_VOTING).voteLimitInTIME(),
+    maxVoteLimitInTIME: new BigNumber(state.get(DUCK_VOTING).voteLimitInTIME()),
+    maxVoteLimitInPercent: new BigNumber(state.get(DUCK_VOTING).voteLimitInPercent()),
+    voteLimitInTIME: selector(state, 'voteLimitInTIME'),
     timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
       deadline: moment().add(1, 'day').toDate(),
+      voteLimitInTIME: 1,
     },
   }
 }
@@ -46,13 +54,23 @@ function mapStateToProps (state) {
 function mapDispatchToProps () {
   return {
     onSubmit: (values, dispatch, props) => {
+      const limitInTIME = props.maxVoteLimitInTIME.div(100).mul(values.get('voteLimitInTIME'))
+      const filesCollection = values.get('files')
       const poll = new PollModel({
         ...values.toJS(),
-        voteLimitInTIME: new Amount(props.timeToken.addDecimals(new BigNumber(values.get('voteLimitInTIME'))), TIME),
+        files: filesCollection && filesCollection.hash(),
+        voteLimitInTIME: new Amount(limitInTIME, TIME),
         options: new Immutable.List(values.get('options')),
       })
+
       dispatch(modalsClose())
-      dispatch(createPoll(poll))
+      dispatch(createPoll(
+        new PollDetailsModel({
+          poll,
+          files: new Immutable.List((filesCollection && filesCollection.links() || [])
+            .map((item) => FileModel.createFromLink(item))),
+        })),
+      )
     },
   }
 }
@@ -64,7 +82,11 @@ export default class PollEditForm extends Component {
     isModify: PropTypes.bool,
     account: PropTypes.string,
     voteLimit: PropTypes.objectOf(BigNumber),
+    timeToken: PropTypes.instanceOf(TokenModel),
+    maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
+    maxVoteLimitInPercent: PropTypes.instanceOf(BigNumber),
     locale: PropTypes.string,
+    voteLimitInTIME: PropTypes.number,
     ...formPropTypes,
   }
 
@@ -99,6 +121,7 @@ export default class PollEditForm extends Component {
           <FlatButton
             label={<Translate value={prefix('addOption')} />}
             styleName='optionsAction'
+            // eslint-disable-next-line
             onTouchTap={() => this.handleOptionCreate(options)}
           />
         </div>
@@ -106,8 +129,10 @@ export default class PollEditForm extends Component {
           <div styleName='listTable'>
             {optionsList && optionsList.toArray().map((option, index) => (
               <div
+                // eslint-disable-next-line
                 key={index}
                 styleName={classnames('tableItem', { active: this.state.selectedOptionIndex === index })}
+                // eslint-disable-next-line
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
                 <div styleName='itemLeft'>
@@ -122,8 +147,12 @@ export default class PollEditForm extends Component {
                     <FontIcon className='material-icons'>mode_edit</FontIcon>
                   </IconButton>
                   <IconButton>
-                    <FontIcon className='material-icons'
-                              onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
+                    <FontIcon
+                      className='material-icons'
+                      // eslint-disable-next-line
+                      onTouchTap={() => this.handleOptionRemove(options, index)}
+                    >delete
+                    </FontIcon>
                   </IconButton>
                 </div>
               </div>
@@ -135,7 +164,8 @@ export default class PollEditForm extends Component {
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid } = this.props
+    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, files } = this.props
+    const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <form styleName='content' onSubmit={handleSubmit}>
         <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
@@ -154,12 +184,26 @@ export default class PollEditForm extends Component {
               multiLine
               floatingLabelText={<Translate value={prefix('pollDescription')} />}
             />
-            <Field
-              component={TextField}
-              name='voteLimitInTIME'
-              fullWidth
-              floatingLabelText={<Translate value={prefix('voteLimit')} />}
-            />
+            <div>
+              <div styleName='limitTitle'>
+                <Translate value={prefix('voteLimit')} />
+                <span styleName='voteLimitValue'>
+                  {voteLimitInTIME}%&nbsp;(<TokenValue value={new Amount(limitInTIME, TIME)} noRenderPrice />)
+                </span>
+              </div>
+              <Field
+                component={Slider}
+                name='voteLimitInTIME'
+                sliderStyle={{ marginBottom: 0, marginTop: 10 }}
+                min={1}
+                max={maxVoteLimitInPercent.toNumber()}
+                step={1}
+              />
+              <div styleName='labelWrap'>
+                <div>1%</div>
+                <div>{maxVoteLimitInPercent.toNumber()}%</div>
+              </div>
+            </div>
             <Field
               component={DatePicker}
               locale={this.props.locale}
@@ -173,6 +217,7 @@ export default class PollEditForm extends Component {
             />
             <Field
               component={FileSelect}
+              returnCollection
               name='files'
               fullWidth
               accept={ACCEPT_DOCS}
@@ -188,6 +233,7 @@ export default class PollEditForm extends Component {
             />
             <FieldArray
               name='options'
+              // eslint-disable-next-line
               component={({ fields }) => this.renderOptions(fields)}
             />
           </div>

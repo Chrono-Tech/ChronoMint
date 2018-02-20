@@ -1,4 +1,9 @@
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
@@ -29,6 +34,7 @@ import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/se
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
@@ -52,6 +58,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
+  const token = state.get(DUCK_TOKENS).item(tokenId)
 
   return {
     wallet,
@@ -60,10 +67,11 @@ function mapStateToProps (state) {
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
-    token: state.get(DUCK_TOKENS).item(tokenId),
+    token,
     recipient,
     symbol,
     feeMultiplier,
+    gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
 }
 
@@ -77,7 +85,7 @@ export default class SendTokensForm extends PureComponent {
       PropTypes.instanceOf(MultisigWalletModel),
     ]),
     visibleBalances: PropTypes.arrayOf(
-      PropTypes.instanceOf(BalanceModel)
+      PropTypes.instanceOf(BalanceModel),
     ),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
@@ -86,6 +94,7 @@ export default class SendTokensForm extends PureComponent {
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
+    gasPriceMultiplier: PropTypes.number,
     ...formPropTypes,
   }
 
@@ -110,15 +119,15 @@ export default class SendTokensForm extends PureComponent {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
 
-    const firstBalance = newProps.visibleBalances.length && newProps.visibleBalances[0]
+    const firstBalance = newProps.visibleBalances.length && newProps.visibleBalances[ 0 ]
     const isRelevant = newProps.visibleBalances.find((balance) => balance.id() === newProps.token.id())
     if (!(isRelevant && newProps.token.isFetched()) && firstBalance) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'symbol', firstBalance.id()))
     }
-  }
 
-  checkIsContract (address): Promise {
-    return contractsManagerDAO.isContract(address)
+    if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
+      this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', newProps.gasPriceMultiplier))
+    }
   }
 
   handleTransfer = (values) => {
@@ -157,9 +166,13 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
+  checkIsContract (address): Promise {
+    return contractsManagerDAO.isContract(address)
+  }
+
   renderHead () {
     const { token, visibleBalances } = this.props
-    const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[0]
+    const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
     return (
       <div>
@@ -261,7 +274,6 @@ export default class SendTokensForm extends PureComponent {
             <div styleName='feeRate'>
               <div>
                 <small>
-
                   <Translate
                     value={`${prefix}.${this.getFeeTitle()}`}
                     multiplier={feeMultiplier.toFixed(1)}
