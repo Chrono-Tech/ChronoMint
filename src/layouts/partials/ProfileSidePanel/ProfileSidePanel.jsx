@@ -11,7 +11,7 @@ import ProfileModel from 'models/ProfileModel'
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import networkService from '@chronobank/login/network/NetworkService'
 import { TOKEN_ICONS } from 'assets'
-import { sidesClose } from 'redux/sides/actions'
+import { closeProfilePanel } from 'redux/sides/actions'
 
 import './ProfileSidePanel.scss'
 
@@ -19,7 +19,9 @@ export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')
+  const sides = state.get('sides')
   return {
+    isProfilePanelOpen: sides.isProfilePanelOpen,
     account: session.account,
     profile: session.profile,
     networkName: networkService.getName(),
@@ -34,8 +36,8 @@ function mapDispatchToProps (dispatch) {
       data,
     })),
     handleLogout: () => dispatch(logout()),
-    handleProfileClose: (panelKey) => {
-      dispatch(sidesClose(panelKey))
+    handleProfileClose: () => {
+      dispatch(closeProfilePanel())
     },
   }
 }
@@ -44,6 +46,7 @@ function mapDispatchToProps (dispatch) {
 class ProfileSidePanel extends PureComponent {
 
   static propTypes = {
+    isProfilePanelOpen: PropTypes.boolean,
     networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.instanceOf(ProfileModel),
@@ -56,8 +59,30 @@ class ProfileSidePanel extends PureComponent {
     handleProfileClose: PropTypes.func,
   }
 
+  constructor (props) {
+    super(props)
+
+    this.state = { isReadyToClose: true }
+  }
+
+  // Due to material-ui bug. Immediate close on mobile devices.
+  // @see https://github.com/mui-org/material-ui/issues/6634
+  // Going to be fixed in 1.00 version.
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.isProfilePanelOpen && !this.props.isProfilePanelOpen) {
+      this.setState({ isReadyToClose: false }, () => {
+        setTimeout(() => {
+          this.setState({ isReadyToClose: true })
+        }, 300)
+      })
+    }
+  }
+
   handleProfileClose = () => {
-    this.props.handleProfileClose(PROFILE_SIDE_PANEL_KEY)
+    if (!this.state.isReadyToClose) {
+      return
+    }
+    this.props.handleProfileClose()
   }
 
   renderProfile () {
@@ -178,7 +203,7 @@ class ProfileSidePanel extends PureComponent {
     return (
       <Drawer
         openSecondary
-        open
+        open={this.props.isProfilePanelOpen}
         overlayStyle={{ opacity: 0 }}
         onRequestChange={this.handleProfileClose}
         disableSwipeToOpen
