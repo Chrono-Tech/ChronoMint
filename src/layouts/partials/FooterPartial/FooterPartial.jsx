@@ -94,7 +94,7 @@ export default class FooterPartial extends PureComponent {
         <div styleName='row'>
           <div styleName='columnLeft'>
             <div styleName='copyright'>
-              <p>Copyright © 2016-2017 Edway Group Pty. Ltd. All Rights Reserved.</p>
+              <p>Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.</p>
             </div>
           </div>
         </div>
@@ -102,4 +102,3 @@ export default class FooterPartial extends PureComponent {
     )
   }
 }
-

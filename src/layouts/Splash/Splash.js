@@ -18,7 +18,7 @@ class Splash extends Component {
         </div>
         { !window.isMobile && (
           <div styleName='footer'>
-            <div styleName='copyright'>Copyright ©2017 Edway Group Pty. Ltd. All Rights Reserved.</div>
+            <div styleName='copyright'>Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.</div>
             <div styleName='links'>
               <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
               <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
