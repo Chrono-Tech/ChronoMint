@@ -666,6 +666,14 @@ export default {
     ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
   },
+  fileSelect: {
+    errors: {
+      // TODO @dkchv: add errors
+    },
+    addAttachments: 'Добавить вложения',
+    selectFile: 'Выбрать файл',
+    filesLimit: '%{files} из %{limit}',
+  },
   materialUi: {
     DatePicker: {
       cancelLabel: 'Отмена',
