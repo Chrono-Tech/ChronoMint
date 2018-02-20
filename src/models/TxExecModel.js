@@ -17,6 +17,7 @@ class TxExecModel extends abstractModel({
   additionalAction: null,
   params: null,
   gasLimit: null,
+  gasPrice: null,
 }) {
   constructor (data) {
     super({
@@ -62,6 +63,10 @@ class TxExecModel extends abstractModel({
     return this.set('gas', v)
       .set('isGasUsed', isGasUsed)
       .set('estimateGasLaxity', isGasUsed ? this.gas().minus(v) : new BigNumber(0))
+  }
+
+  gasPrice (value: BigNumber) {
+    return this._getSet('gasPrice', value)
   }
 
   gasLimit (value) {

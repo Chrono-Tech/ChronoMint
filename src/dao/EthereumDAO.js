@@ -9,7 +9,7 @@ import TxModel from 'models/TxModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ls from 'utils/LocalStorage'
 import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -101,7 +101,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     const gasPriceBN = new BigNumber(gasPrice)
     const gasFee = gasPriceBN.mul(gasLimit)
 
-    return { gasLimit, gasFee }
+    return { gasLimit, gasFee, gasPrice: gasPriceBN }
 
   }
 
@@ -111,11 +111,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       from,
       to,
       value,
-    }
-
-    // TODO @dkchv: !!! reserach again
-    if (process.env.NODE_ENV === 'development') {
-      txData.gas = DEFAULT_GAS
     }
 
     /** ESTIMATE GAS */
@@ -143,6 +138,8 @@ export class EthereumDAO extends AbstractTokenDAO {
     return new Promise(async (resolve, reject) => {
       try {
         tx = await AbstractContractDAO.txStart(tx, estimateGas, feeMultiplier)
+        txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
+        txData.gasPrice = tx.gasPrice()
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()
@@ -206,8 +203,11 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       const txs = block.transactions || []
       txs.forEach((tx) => {
-        if (tx.value.toNumber() > 0 && (tx.from === account || tx.to === account)) {
-          this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account))
+        if (tx.from === account || tx.to === account) {
+          this.emit(FETCH_NEW_BALANCE)
+          if (tx.value.toNumber() > 0) {
+            this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account))
+          }
         }
       })
     })
