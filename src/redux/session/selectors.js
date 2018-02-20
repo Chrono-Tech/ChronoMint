@@ -48,6 +48,7 @@ export const getProfileTokensList = () => createSelector(
       .map((token) => {
         return { ...token, address: addressesInWallet.item(token.blockchain).address() }
       })
+      .filter((token) => token.address)
   }
 )
 
