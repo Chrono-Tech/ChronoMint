@@ -80,6 +80,7 @@ export default class DrawerPartial extends PureComponent {
             styleName='item'
             activeClassName='drawer-item-active'
             to={{ pathname: item.path }}
+            stopPropagation
           />
           : <div />
         }
