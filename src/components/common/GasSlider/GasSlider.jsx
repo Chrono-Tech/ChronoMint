@@ -19,8 +19,8 @@ const FEE_RATE_MULTIPLIER = {
 
 let timoutId = null
 
-function mapStateToProps (state) {
-  const token = state.get(DUCK_TOKENS).item(ETH)
+function mapStateToProps (state, ownProps) {
+  const token = ownProps.token || state.get(DUCK_TOKENS).item(ETH)
   return {
     value: getGasPriceMultiplier(token.blockchain())(state),
     token,
@@ -99,4 +99,3 @@ export default class GasSlider extends PureComponent {
     )
   }
 }
-
