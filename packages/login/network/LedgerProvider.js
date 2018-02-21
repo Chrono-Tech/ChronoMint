@@ -48,8 +48,8 @@ class LedgerProvider extends EventEmitter {
   }
 
   setupAndStart (providerURL) {
-    this._engine.addProvider(this._ledgerSubprovider)
     this._engine.addProvider(new FilterSubprovider())
+    this._engine.addProvider(this._ledgerSubprovider)
     this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
     this._engine.start()
   }
@@ -113,7 +113,7 @@ class LedgerProvider extends EventEmitter {
           if (error) {
             resolve(null)
           }
-          this._wallet = new HardwareWallet(accounts[0])
+          this._wallet = new HardwareWallet(accounts[ 0 ])
           resolve(accounts)
         })
       }, 200)

@@ -182,7 +182,6 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       ledgerProvider.setupAndStart(networkService.getProviderURL())
-      web3Provider.reinit(ledgerProvider.getWeb3(), ledgerProvider.getProvider())
       const provider = ledgerProvider.getNetworkProvider(networkService.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
@@ -195,7 +194,6 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       trezorProvider.setupAndStart(networkService.getProviderURL())
-      web3Provider.reinit(trezorProvider.getWeb3(), trezorProvider.getProvider())
       const provider = trezorProvider.getNetworkProvider(networkService.getProviderSettings())
       this.setupAndLogin(provider)
     } catch (e) {
