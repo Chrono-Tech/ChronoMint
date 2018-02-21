@@ -70,8 +70,8 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
-    const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = gasPrice.mul(tx.gas)
+    const gasPrice = tx.gasPrice && new BigNumber(tx.gasPrice)
+    const gasFee = gasPrice && gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.hash,
@@ -231,8 +231,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     if (apiURL) {
       try {
         const test = await axios.get(`${apiURL}/tx/${account}`)
-        // eslint-disable-next-line
-        console.log('getTransfer', test)
         if (test.status === 200) {
           return this._getTransferFromMiddleware(apiURL, account, id)
         }
@@ -305,10 +303,13 @@ export class EthereumDAO extends AbstractTokenDAO {
           throw new Error(`result not OK: ${result.data.message}`)
         }
         for (const tx of result.data) {
-          if (tx.value === '0') {
+          if (!tx.value || tx.value === '0') {
             continue
           }
-          txs.push(this._getTxModel(tx, account, tx.timeStamp || Date.now()))
+          txs.push(this._getTxModel(tx, account, tx.timeStamp))
+        }
+        if (txs.length === 0) {
+          end = true
         }
       } catch (e) {
         end = true
