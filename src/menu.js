@@ -1,9 +1,9 @@
 export default {
   global: [
-    { key: 'about', title: 'global.about', path: 'https://chronobank.io/#about' },
-    { key: 'labourHours', title: 'global.labourHours', path: 'https://chronobank.io/#labor-hours' },
-    { key: 'laborx', title: 'global.laborx', path: 'https://chronobank.io/#laborx' },
-    { key: 'team', title: 'global.team', path: 'https://chronobank.io/#team' },
+    { key: 'about', title: 'global.about', path: 'https://chronobank.io/' },
+    // { key: 'labourHours', title: 'global.labourHours', path: 'https://chronobank.io/#labor-hours' },
+    { key: 'laborx', title: 'global.laborx', path: 'https://chronobank.io/products/laborx' },
+    { key: 'team', title: 'global.team', path: 'https://chronobank.io/team' },
     { key: 'faq', title: 'global.faq', path: 'https://chronobank.io/faq' },
     { key: 'blog', title: 'global.blog', path: 'https://blog.chronobank.io/' },
   ],

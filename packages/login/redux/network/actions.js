@@ -1,5 +1,5 @@
 import { ethereumProvider } from '../../network/EthereumProvider'
-import { btcProvider, ltcProvider } from '../../network/BitcoinProvider'
+import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
 
 export const DUCK_NETWORK = 'network'
@@ -26,13 +26,15 @@ export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
 }
 
-export const getPrivateKeyFromSymbol = (symbol: string) => {
-  switch (symbol) {
-    case 'ETH':
+export const getPrivateKeyFromBlockchain = (blockchain: string) => {
+  switch (blockchain) {
+    case 'Ethereum':
       return ethereumProvider.getPrivateKey()
-    case 'BTC':
+    case 'Bitcoin':
       return btcProvider.getPrivateKey()
-    case 'LTC':
+    case 'Bitcoin Gold':
+      return btgProvider.getPrivateKey()
+    case 'Litecoin':
       return ltcProvider.getPrivateKey()
     case 'NEM':
       return nemProvider.getPrivateKey()

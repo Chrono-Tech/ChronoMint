@@ -21,6 +21,8 @@ import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import { TIME } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import PollDetailsModel from 'models/PollDetailsModel'
+import FileModel from 'models/FileSelect/FileModel'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -35,6 +37,7 @@ function mapStateToProps (state) {
 
   return {
     options: selector(state, 'options'),
+    files: selector(state, 'files'),
     account: state.get(DUCK_SESSION).account,
     maxVoteLimitInTIME: new BigNumber(state.get(DUCK_VOTING).voteLimitInTIME()),
     maxVoteLimitInPercent: new BigNumber(state.get(DUCK_VOTING).voteLimitInPercent()),
@@ -52,13 +55,22 @@ function mapDispatchToProps () {
   return {
     onSubmit: (values, dispatch, props) => {
       const limitInTIME = props.maxVoteLimitInTIME.div(100).mul(values.get('voteLimitInTIME'))
+      const filesCollection = values.get('files')
       const poll = new PollModel({
         ...values.toJS(),
+        files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
         options: new Immutable.List(values.get('options')),
       })
+
       dispatch(modalsClose())
-      dispatch(createPoll(poll))
+      dispatch(createPoll(
+        new PollDetailsModel({
+          poll,
+          files: new Immutable.List((filesCollection && filesCollection.links() || [])
+            .map((item) => FileModel.createFromLink(item))),
+        })),
+      )
     },
   }
 }
@@ -109,6 +121,7 @@ export default class PollEditForm extends Component {
           <FlatButton
             label={<Translate value={prefix('addOption')} />}
             styleName='optionsAction'
+            // eslint-disable-next-line
             onTouchTap={() => this.handleOptionCreate(options)}
           />
         </div>
@@ -116,8 +129,10 @@ export default class PollEditForm extends Component {
           <div styleName='listTable'>
             {optionsList && optionsList.toArray().map((option, index) => (
               <div
+                // eslint-disable-next-line
                 key={index}
                 styleName={classnames('tableItem', { active: this.state.selectedOptionIndex === index })}
+                // eslint-disable-next-line
                 onTouchTap={() => this.handleOptionSelect(index)}
               >
                 <div styleName='itemLeft'>
@@ -134,8 +149,10 @@ export default class PollEditForm extends Component {
                   <IconButton>
                     <FontIcon
                       className='material-icons'
+                      // eslint-disable-next-line
                       onTouchTap={() => this.handleOptionRemove(options, index)}
-                    >delete</FontIcon>
+                    >delete
+                    </FontIcon>
                   </IconButton>
                 </div>
               </div>
@@ -147,7 +164,7 @@ export default class PollEditForm extends Component {
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent } = this.props
+    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, files } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <form styleName='content' onSubmit={handleSubmit}>
@@ -165,7 +182,7 @@ export default class PollEditForm extends Component {
               name='description'
               fullWidth
               multiLine
-              floatingLabelText={<Translate value={prefix('pollDescriptions')} />}
+              floatingLabelText={<Translate value={prefix('pollDescription')} />}
             />
             <div>
               <div styleName='limitTitle'>
@@ -200,6 +217,7 @@ export default class PollEditForm extends Component {
             />
             <Field
               component={FileSelect}
+              returnCollection
               name='files'
               fullWidth
               accept={ACCEPT_DOCS}
@@ -215,6 +233,7 @@ export default class PollEditForm extends Component {
             />
             <FieldArray
               name='options'
+              // eslint-disable-next-line
               component={({ fields }) => this.renderOptions(fields)}
             />
           </div>

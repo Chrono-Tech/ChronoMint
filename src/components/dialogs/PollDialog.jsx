@@ -6,10 +6,10 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { DatePicker, TextField } from 'redux-form-material-ui'
-import { Field, FieldArray, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { Field, FieldArray, formValueSelector, reduxForm, formPropTypes } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { createPoll, updatePoll } from 'redux/voting/actions'
+import { createPoll } from 'redux/voting/actions'
 import ModalDialog from './ModalDialog'
 import './PollDialog.scss'
 import validate from './PollDialogValidate'
@@ -20,16 +20,13 @@ export const FORM_POLL_DIALOG = 'PollDialog'
 export class PollDialog extends React.Component {
 
   static propTypes = {
-
     isModify: PropTypes.bool,
     account: PropTypes.string,
-
     onClose: PropTypes.func,
     onSubmit: PropTypes.func,
     handleSubmit: PropTypes.func,
-
     submitting: PropTypes.bool,
-    initialValues: PropTypes.object,
+    ...formPropTypes,
   }
 
   constructor (props) {
@@ -38,99 +35,6 @@ export class PollDialog extends React.Component {
     this.state = {
       selectedOptionIndex: 0,
     }
-  }
-
-  render () {
-
-    return (
-      <CSSTransitionGroup
-        transitionName='transition-opacity'
-        transitionAppear
-        transitionAppearTimeout={250}
-        transitionEnterTimeout={250}
-        transitionLeaveTimeout={250}>
-        <ModalDialog onClose={() => this.props.onClose()} styleName='root'>
-          <form styleName='content' onSubmit={this.props.handleSubmit}>
-            <div styleName='header'>
-              <h3>{this.props.isModify ? 'Edit Poll' : 'New Poll'}</h3>
-            </div>
-            <div styleName='body'>
-              <div styleName='column'>
-                <Field component={TextField} name='title' fullWidth floatingLabelText='Poll title' />
-                <Field component={TextField} name='description' fullWidth multiLine
-                       floatingLabelText='Poll description' />
-                <Field component={TextField} name='voteLimit' fullWidth floatingLabelText='Vote Limit' />
-                <Field component={DatePicker} name='deadline' fullWidth floatingLabelText='Finished date'
-                       style={{ width: '180px' }} />
-                <div styleName='actions'>
-                  <FlatButton
-                    label='Add Attachments'
-                    styleName='action'
-                    icon={<FontIcon className='material-icons'>link</FontIcon>}
-                  />
-                </div>
-              </div>
-              <div styleName='column'>
-                <Field component={TextField} name={`options[${this.state.selectedOptionIndex}]`} fullWidth
-                       floatingLabelText='Option' />
-                <FieldArray name='options' component={({ fields }) => this.renderOptions(this, fields)} />
-              </div>
-            </div>
-            <div styleName='footer'>
-              <RaisedButton
-                styleName='action'
-                label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
-                type='submit'
-                primary
-              />
-            </div>
-          </form>
-        </ModalDialog>
-      </CSSTransitionGroup>
-    )
-  }
-
-  renderOptions (dialog, options) {
-
-    return (
-      <div styleName='options'>
-        <div styleName='options-actions'>
-          <FlatButton
-            label='Add Option'
-            styleName='action'
-            onTouchTap={() => this.handleOptionCreate(options)}
-          />
-        </div>
-        <div styleName='options-list'>
-          <div styleName='list-table'>
-            {options.getAll().toArray().map((option, index) => (
-              <div
-                key={index}
-                styleName={classnames('table-item', { active: this.state.selectedOptionIndex === index })}
-                onTouchTap={() => this.handleOptionSelect(index)}
-              >
-                <div styleName='item-left'>
-                  <div styleName='symbol symbol-fill'>#{index + 1}</div>
-                </div>
-                <div styleName='item-main'>
-                  <div styleName='main-title'>Option #{index + 1}</div>
-                  <div styleName='main-option'>{option}</div>
-                </div>
-                <div styleName='item-right'>
-                  <IconButton>
-                    <FontIcon className='material-icons'>mode_edit</FontIcon>
-                  </IconButton>
-                  <IconButton>
-                    <FontIcon className='material-icons'
-                              onTouchTap={() => this.handleOptionRemove(options, index)}>delete</FontIcon>
-                  </IconButton>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
   }
 
   handleOptionSelect (index) {
@@ -154,6 +58,135 @@ export class PollDialog extends React.Component {
       })
     }
   }
+
+  renderOptions (dialog, options) {
+
+    return (
+      <div styleName='options'>
+        <div styleName='options-actions'>
+          <FlatButton
+            label='Add Option'
+            styleName='action'
+            // eslint-disable-next-line
+            onTouchTap={() => this.handleOptionCreate(options)}
+          />
+        </div>
+        <div styleName='options-list'>
+          <div styleName='list-table'>
+            {options.getAll().toArray().map((option, index) => (
+              <div
+                // eslint-disable-next-line
+                key={index}
+                styleName={classnames('table-item', { active: this.state.selectedOptionIndex === index })}
+                // eslint-disable-next-line
+                onTouchTap={() => this.handleOptionSelect(index)}
+              >
+                <div styleName='item-left'>
+                  <div styleName='symbol symbol-fill'>#{index + 1}</div>
+                </div>
+                <div styleName='item-main'>
+                  <div styleName='main-title'>Option #{index + 1}</div>
+                  <div styleName='main-option'>{option}</div>
+                </div>
+                <div styleName='item-right'>
+                  <IconButton>
+                    <FontIcon className='material-icons'>mode_edit</FontIcon>
+                  </IconButton>
+                  <IconButton>
+                    <FontIcon
+                      className='material-icons'
+                      // eslint-disable-next-line
+                      onTouchTap={() => this.handleOptionRemove(options, index)}
+                    >delete
+                    </FontIcon>
+                  </IconButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    return (
+      <CSSTransitionGroup
+        transitionName='transition-opacity'
+        transitionAppear
+        transitionAppearTimeout={250}
+        transitionEnterTimeout={250}
+        transitionLeaveTimeout={250}
+      >
+        <ModalDialog onClose={this.props.onClose} styleName='root'>
+          <form styleName='content' onSubmit={this.props.handleSubmit}>
+            <div styleName='header'>
+              <h3>{this.props.isModify ? 'Edit Poll' : 'New Poll'}</h3>
+            </div>
+            <div styleName='body'>
+              <div styleName='column'>
+                <Field
+                  component={TextField}
+                  name='title'
+                  fullWidth
+                  floatingLabelText='Poll title'
+                />
+                <Field
+                  component={TextField}
+                  name='description'
+                  fullWidth
+                  multiLine
+                  floatingLabelText='Poll description'
+                />
+                <Field
+                  component={TextField}
+                  name='voteLimit'
+                  fullWidth
+                  floatingLabelText='Vote Limit'
+                />
+                <Field
+                  component={DatePicker}
+                  name='deadline'
+                  fullWidth
+                  floatingLabelText='Finished date'
+                  style={{ width: '180px' }}
+                />
+                <div styleName='actions'>
+                  <FlatButton
+                    label='Add Attachments'
+                    styleName='action'
+                    icon={<FontIcon className='material-icons'>link</FontIcon>}
+                  />
+                </div>
+              </div>
+              <div styleName='column'>
+                <Field
+                  component={TextField}
+                  name={`options[${this.state.selectedOptionIndex}]`}
+                  fullWidth
+                  floatingLabelText='Option'
+                />
+                <FieldArray
+                  name='options'
+                  // eslint-disable-next-line
+                  component={({ fields }) => this.renderOptions(this, fields)}
+                />
+              </div>
+            </div>
+            <div styleName='footer'>
+              <RaisedButton
+                styleName='action'
+                label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
+                type='submit'
+                primary
+              />
+            </div>
+          </form>
+        </ModalDialog>
+      </CSSTransitionGroup>
+    )
+  }
+
 }
 
 function mapStateToProps (state) {
@@ -164,16 +197,12 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch, op) {
+function mapDispatchToProps (dispatch) {
   return {
     onClose: () => dispatch(modalsClose()),
     onSubmit: (values) => {
       dispatch(modalsClose())
-      if (op.isModify) {
-        dispatch(updatePoll(new PollModel(values)))
-      } else {
-        dispatch(createPoll(new PollModel(values)))
-      }
+      dispatch(createPoll(new PollModel(values)))
     },
   }
 }

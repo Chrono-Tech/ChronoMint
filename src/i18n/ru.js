@@ -500,7 +500,6 @@ export default {
     lowerThanOrEqual: 'Должно быть меньше или равно %{limit}',
     moreThan: 'Должно быть больше чем %{limit}',
     moreThanOrEqual: 'Должно быть больше или равно %{limit}',
-    limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
     invalidLatinString: 'Строка должна иметь только латинские символы (A-z)',
     mustBeUnique: 'Значение должно быть уникальным',
 
@@ -666,6 +665,14 @@ export default {
     ASSETS_NOT_A_PROXY: 'Ассеты: не является прокси',
     ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
+  },
+  fileSelect: {
+    errors: {
+      // TODO @dkchv: add errors
+    },
+    addAttachments: 'Добавить вложения',
+    selectFile: 'Выбрать файл',
+    filesLimit: '%{files} из %{limit}',
   },
   materialUi: {
     DatePicker: {
