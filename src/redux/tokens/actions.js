@@ -1,11 +1,16 @@
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
+import BitcoinDAO, { bccDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
 import NemDAO, { NEM_XEM_NAME, NEM_XEM_SYMBOL, NEM_DECIMALS, EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
+import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
+import type TransferExecModel from 'models/TransferExecModel'
+import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/TransferError'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import { notify } from 'redux/notifier/actions'
+import { showConfirmTransferModal } from 'redux/ui/actions'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -18,12 +23,42 @@ export const TOKENS_FAILED = 'tokens/failed'
 // add new tokens here
 const MANDATORY_TOKENS_COUNT = ['TIME', 'BTC', 'BCC', 'ETH', 'LTC', 'BTG', 'XEM', 'XMIN']
 
-// TODO @dkchv: remove after subscriptions changes in exchange
-export const checkFetched = () => (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS)
-  if (tokens.isFetched()) {
-    tokenService.tokensFetched()
+// It is not a redux action
+const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  try {
+    await dispatch(showConfirmTransferModal(dao, tx))
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('Transfer error', e)
+    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
   }
+}
+
+// It is not a redux action
+const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  try {
+    // TODO @ipavlenko: Pass arguments
+    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier())
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('Transfer error', e)
+    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+  }
+}
+
+// It is not a redux action
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  const e = new TransferError('Rejected', TRANSFER_CANCELLED)
+  dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+}
+
+export const alternateTxHandlingFlow = (dao) => (dispatch) => {
+  dao
+    .on('submit', submitTxHandler(dao, dispatch))
+    .on('accept', acceptTxHandler(dao, dispatch))
+    .on('reject', rejectTxHandler(dao, dispatch))
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -52,7 +87,6 @@ export const initTokens = () => async (dispatch, getState) => {
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
       tokenService.createDAO(token)
-      dispatch(checkFetched())
     })
     .fetchTokens()
 
@@ -63,11 +97,10 @@ export const initTokens = () => async (dispatch, getState) => {
       .on(EVENT_BTC_LIKE_TOKEN_CREATED, (token, dao) => {
         dispatch({ type: TOKENS_FETCHED, token })
         tokenService.registerDAO(token, dao)
-        dispatch(checkFetched())
+        dispatch(alternateTxHandlingFlow(dao))
       })
       .on(EVENT_BTC_LIKE_TOKEN_FAILED, () => {
         dispatch({ type: TOKENS_FAILED })
-        dispatch(checkFetched())
       })
       .fetchToken()
   })
@@ -83,12 +116,11 @@ export const initTokens = () => async (dispatch, getState) => {
     nemDAO
       .on(EVENT_NEM_LIKE_TOKEN_FAILED, () => {
         dispatch({ type: TOKENS_FAILED })
-        dispatch(checkFetched())
       })
       .on(EVENT_NEM_LIKE_TOKEN_CREATED, (token: TokenModel, dao) => {
         dispatch({ type: TOKENS_FETCHED, token })
         tokenService.registerDAO(token, dao)
-        dispatch(checkFetched())
+        dispatch(alternateTxHandlingFlow(dao))
       })
       .fetchToken()
   })
