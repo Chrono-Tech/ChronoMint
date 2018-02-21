@@ -15,14 +15,16 @@ import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 export const EVENT_BTC_LIKE_TOKEN_CREATED = 'BtcLikeTokenCreate'
 export const EVENT_BTC_LIKE_TOKEN_FAILED = 'BtcLikeTokenFailed'
 
-export class BitcoinDAO extends EventEmitter {
+export class BitcoinDAO extends AbstractContractDAO {
   constructor (name, symbol, bitcoinProvider) {
     super()
     this._name = name
@@ -82,10 +84,16 @@ export class BitcoinDAO extends EventEmitter {
 
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Array<TxModel> {
+    const offset = 10000 // limit of Etherscan
+    const cache = this._getFilterCache(id) || {}
+    const txs = cache.txs || []
+    let page = cache.page || 1
+    let end = cache.end || false
+
     try {
-      const txs = await this._bitcoinProvider.getTransactionsList(account)
-      return (txs || []).map((tx: BitcoinTx) => {
-        return new TxModel({
+      const txsResult = await this._bitcoinProvider.getTransactionsList(account, offset)
+      for (const tx of txsResult) {
+        txs.push(new TxModel({
           txHash: tx.txHash,
           blockHash: tx.blockHash,
           blockNumber: tx.blockNumber,
@@ -96,14 +104,21 @@ export class BitcoinDAO extends EventEmitter {
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
-        })
-      })
+        }))
+      }
     } catch (e) {
+      end = true
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
+      console.warn('BitcoinDAO getTransfer', e)
     }
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
+    page++
+
+    this._setFilterCache(id, {
+      page, txs: txs.slice(TXS_PER_PAGE), end,
+    })
+
+    return txs.slice(0, TXS_PER_PAGE)
+
   }
 
   watch (/*account*/): Promise {
