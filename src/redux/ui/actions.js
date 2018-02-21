@@ -4,9 +4,10 @@ import ls from 'utils/LocalStorage'
 import ipfs from 'utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
-import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
-import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
+import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
+import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
+import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
@@ -20,6 +21,19 @@ export const watchInitUserMonitor = () => (dispatch) => {
     .start()
 }
 
+export const showConfirmTransferModal = (dao, tx) => (dispatch) => {
+  dispatch(modalsOpen({
+    component: ConfirmTransferDialog,
+    props: {
+      tx,
+      dao,
+      confirm: (tx) => dao.accept(tx),
+      reject: (tx) => dao.reject(tx),
+    },
+  }))
+}
+
+// TODO @ipavlenko: Do not use promise, use emitter, see showConfirmTransferModal
 export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch, getState) => new Promise((resolve) => {
   dispatch(modalsOpen({
     component: ConfirmTxDialog,
