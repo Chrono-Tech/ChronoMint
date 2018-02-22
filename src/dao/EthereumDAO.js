@@ -285,15 +285,16 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async _getTransferFromMiddleware (apiURL, account, id): Array<TxModel> {
-    const offset = 10000 // limit of Middleware
+    const offset = 100 // limit of Middleware
     const cache = this._getFilterCache(id) || {}
     const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
     const txs = cache.txs || []
+    const skip = txs.length
     let page = cache.page || 1
     let end = cache.end || false
 
     while (txs.length < TXS_PER_PAGE && !end) {
-      const url = `${apiURL}/tx/${account}/history?skip=0&limit=${offset}`
+      const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
       try {
         const result = await axios.get(url)
         if (typeof result !== 'object' || !result.data) {
@@ -320,10 +321,10 @@ export class EthereumDAO extends AbstractTokenDAO {
     }
 
     this._setFilterCache(id, {
-      toBlock, page, txs: txs.slice(TXS_PER_PAGE), end,
+      toBlock, page, txs, end,
     })
 
-    return txs.slice(0, TXS_PER_PAGE)
+    return txs.slice(skip)
   }
 
   /**

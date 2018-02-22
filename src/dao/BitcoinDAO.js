@@ -84,14 +84,18 @@ export class BitcoinDAO extends AbstractContractDAO {
 
   // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Array<TxModel> {
-    const offset = 10000 // limit of Etherscan
+    const offset = 100 // limit
     const cache = this._getFilterCache(id) || {}
     const txs = cache.txs || []
     let page = cache.page || 1
     let end = cache.end || false
+    const skip = txs.length
 
     try {
-      const txsResult = await this._bitcoinProvider.getTransactionsList(account, offset)
+      const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
+      if (txsResult.length < TXS_PER_PAGE) {
+        end = true
+      }
       for (const tx of txsResult) {
         txs.push(new TxModel({
           txHash: tx.txHash,
@@ -114,10 +118,10 @@ export class BitcoinDAO extends AbstractContractDAO {
     page++
 
     this._setFilterCache(id, {
-      page, txs: txs.slice(TXS_PER_PAGE), end,
+      page, txs, end,
     })
 
-    return txs.slice(0, TXS_PER_PAGE)
+    return txs.slice(skip)
 
   }
 
