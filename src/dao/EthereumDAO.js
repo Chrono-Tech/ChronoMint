@@ -7,7 +7,7 @@ import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
-import ls from 'utils/LocalStorage'
+import { LOCAL_ID, MIDDLEWARE_MAP, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 
@@ -70,8 +70,8 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
-    const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = gasPrice.mul(tx.gas)
+    const gasPrice = tx.gasPrice && new BigNumber(tx.gasPrice)
+    const gasFee = gasPrice && gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.hash,
@@ -214,20 +214,33 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   async getTransfer (id, account): Promise<TxModel> {
-    const apiURL = networkService.getScanner(ls.getNetwork(), ls.getProvider(), true)
+    const { network } = networkService.getProviderSettings()
+
+    let apiURL = ''
+    switch (network.id) {
+      case NETWORK_MAIN_ID:
+        apiURL = MIDDLEWARE_MAP.txHistory.ethereum.mainnet
+        break
+      case LOCAL_ID:
+        apiURL = MIDDLEWARE_MAP.txHistory.ethereum.local
+        break
+      default:
+        apiURL = MIDDLEWARE_MAP.txHistory.ethereum.testnet
+    }
+
     if (apiURL) {
       try {
-        const test = await axios.get(`${apiURL}/api`)
+        const test = await axios.get(`${apiURL}/tx/${account}`)
         if (test.status === 200) {
-          return this._getTransferFromEtherscan(apiURL, account, id)
+          return this._getTransferFromMiddleware(apiURL, account, id)
         }
       } catch (e) {
         // eslint-disable-next-line
-        console.warn('Etherscan API is not available, fallback to block-by-block scanning', e)
+        console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
       }
     } else {
       // eslint-disable-next-line
-      console.warn('Etherscan API is not available for selected provider, enabled block-by-block scanning for ETH txs')
+      console.warn('Middleware API is not available for selected provider, enabled block-by-block scanning for ETH txs')
     }
     return this._getTransferFromBlocks(account, id)
   }
@@ -269,6 +282,49 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
 
     return txs.slice(0, TXS_PER_PAGE)
+  }
+
+  async _getTransferFromMiddleware (apiURL, account, id): Array<TxModel> {
+    const offset = 100 // limit of Middleware
+    const cache = this._getFilterCache(id) || {}
+    const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
+    const txs = cache.txs || []
+    const skip = txs.length
+    let page = cache.page || 1
+    let end = cache.end || false
+
+    while (txs.length < TXS_PER_PAGE && !end) {
+      const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
+      try {
+        const result = await axios.get(url)
+        if (typeof result !== 'object' || !result.data) {
+          throw new Error('invalid result')
+        }
+        if (result.status !== 200) {
+          throw new Error(`result not OK: ${result.data.message}`)
+        }
+        for (const tx of result.data) {
+          if (!tx.value || tx.value === '0') {
+            continue
+          }
+          txs.push(this._getTxModel(tx, account, tx.timeStamp))
+        }
+        if (txs.length === 0) {
+          end = true
+        }
+      } catch (e) {
+        end = true
+        // eslint-disable-next-line
+        console.warn('EthereumDAO getTransfer Middleware', e)
+      }
+      page++
+    }
+
+    this._setFilterCache(id, {
+      toBlock, page, txs, end,
+    })
+
+    return txs.slice(skip)
   }
 
   /**

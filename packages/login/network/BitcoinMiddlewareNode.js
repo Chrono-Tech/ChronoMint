@@ -1,6 +1,10 @@
+import axios from 'axios'
+import networkService from '@chronobank/login/network/NetworkService'
 import BigNumber from 'bignumber.js'
-import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
+import TxModel from 'models/TxModel'
+import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
+import { LOCAL_ID, MIDDLEWARE_MAP, NETWORK_MAIN_ID } from './settings'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
@@ -84,8 +88,57 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  async getTransactionsList (/*address*/) {
+  async getTransactionsList (address, id, skip, offset) {
+    const { network } = networkService.getProviderSettings()
+    const links = MIDDLEWARE_MAP.txHistory[ `${id}`.toLowerCase() ]
+
+    let apiURL = ''
+    switch (network.id) {
+      case NETWORK_MAIN_ID:
+        apiURL = links.mainnet
+        break
+      case LOCAL_ID:
+        apiURL = links.local
+        break
+      default:
+        apiURL = links.testnet
+    }
+    if (apiURL) {
+      try {
+        const test = await axios.get(`${apiURL}/tx/${address}/history?skip=0&limit=1`)
+        if (test.status === 200) {
+          return this._getTransferFromMiddleware(apiURL, address, skip, offset)
+        }
+      } catch (e) {
+        // eslint-disable-next-line
+        console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
+      }
+    }
+
     return []
+  }
+
+  // TODO @abdulov check this
+  async _getTransferFromMiddleware (apiURL: string, account: string, skip: number, offset: number): Array<TxModel> {
+    let txs = []
+    const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
+    try {
+      const result = await axios.get(url)
+      if (typeof result !== 'object' || !result.data) {
+        throw new Error('invalid result')
+      }
+      if (result.status !== 200) {
+        throw new Error(`result not OK: ${result.data.message}`)
+      }
+      for (const tx of result.data) {
+        txs.push(this._createTxModel(tx, account))
+      }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('EthereumDAO getTransfer Middleware', e)
+    }
+
+    return txs
   }
 
   getFeeRate (): Promise {
@@ -139,24 +192,27 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   _createTxModel (tx, account): BitcoinTx {
-    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
-
+    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
+      return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
+    }).join(',')
+    const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+      if (output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
 
     return new BitcoinTx({
-      txHash: tx.txid,
-      time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
+      blockHash: tx.blockHash,
+      blockNumber: tx.blockNumber,
+      txHash: tx.hash,
+      time: tx.timestamp,
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee).mul(DECIMALS),
-      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
+      fee: new BigNumber(tx.fee || 0).mul(DECIMALS),
+      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length,
     })
   }
 }
