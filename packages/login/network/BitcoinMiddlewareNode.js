@@ -1,11 +1,10 @@
 import axios from 'axios'
 import networkService from '@chronobank/login/network/NetworkService'
 import BigNumber from 'bignumber.js'
-import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
+import TxModel from 'models/TxModel'
+import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
-import { NETWORK_MAIN_ID, MIDDLEWARE_MAP, LOCAL_ID } from './settings'
-import TxModel from '../../../src/models/TxModel'
-import { TXS_PER_PAGE } from '../../../src/models/wallet/TransactionsCollection'
+import { LOCAL_ID, MIDDLEWARE_MAP, NETWORK_MAIN_ID } from './settings'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
@@ -119,6 +118,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     return []
   }
 
+  // TODO @abdulov check this
   async _getTransferFromMiddleware (apiURL: string, account: string, skip: number, offset: number): Array<TxModel> {
     let txs = []
     const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`

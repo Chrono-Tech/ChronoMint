@@ -8,9 +8,7 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { BitcoinTx } from '@chronobank/login/network/BitcoinAbstractNode'
 import BigNumber from 'bignumber.js'
-import EventEmitter from 'events'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
