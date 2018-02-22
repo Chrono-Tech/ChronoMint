@@ -176,7 +176,7 @@ export default class Poll extends PureComponent {
                     <span>
                       {
                         this.props.timeToken.isFetched()
-                          ? <TokenValue noRenderPrice value={details.received} />
+                          ? <TokenValue noRenderPrice value={details.received} precision={2} />
                           : <Preloader />
                       }
                     </span>

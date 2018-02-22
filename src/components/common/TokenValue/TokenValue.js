@@ -28,6 +28,7 @@ class TokenValue extends PureComponent {
     value: PropTypes.instanceOf(Amount),
     tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
+    precision: PropTypes.number,
     className: PropTypes.string,
     prefix: PropTypes.string,
     isInvert: PropTypes.bool,
@@ -39,6 +40,10 @@ class TokenValue extends PureComponent {
     style: PropTypes.object,
   }
 
+  static defaultProps = {
+    precision: 99,
+  }
+
   getFraction (value: BigNumber) {
     const valueBN = new BigNumber(value)
     const fraction = valueBN.modulo(1)
@@ -47,7 +52,7 @@ class TokenValue extends PureComponent {
       return '.00'
     }
 
-    const fractionString = fraction.toString().slice(2)
+    const fractionString = fraction.toString().slice(2).slice(0, this.props.precision)
     return `.${fractionString}`
   }
 
