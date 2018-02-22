@@ -1,10 +1,11 @@
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
-import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
+import AbstractContractDAO from './AbstractContractDAO'
 
 const BLOCKCHAIN_NEM = 'NEM'
 export const NEM_XEM_SYMBOL = 'XEM'
@@ -17,7 +18,7 @@ const EVENT_BALANCE = 'balance'
 export const EVENT_NEM_LIKE_TOKEN_CREATED = 'nemLikeTokenCreated'
 export const EVENT_NEM_LIKE_TOKEN_FAILED = 'nemLikeTokenFailed'
 
-export default class NemDAO extends EventEmitter {
+export default class NemDAO extends AbstractContractDAO {
 
   constructor (name, symbol, nemProvider, decimals, mosaic) {
     super()
@@ -96,9 +97,46 @@ export default class NemDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  async getTransfer (txid, account): Promise<Array<TxModel>> {
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Nem transactions
-    return []
+  async getTransfer (id, account): Promise<Array<TxModel>> {
+    const offset = 100 // limit
+    const cache = this._getFilterCache(id) || {}
+    const txs = cache.txs || []
+    let page = cache.page || 1
+    let end = cache.end || false
+    const skip = txs.length
+
+    try {
+      const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
+      if (txsResult.length < TXS_PER_PAGE) {
+        end = true
+      }
+      for (const tx of txsResult) {
+        // TODO @abdulov check this and fix
+        txs.push(new TxModel({
+          txHash: tx.txHash,
+          blockHash: tx.blockHash,
+          blockNumber: tx.blockNumber,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          symbol: this._symbol,
+          value: new Amount(tx.value, this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
+        }))
+      }
+    } catch (e) {
+      end = true
+      // eslint-disable-next-line
+      console.warn('BitcoinDAO getTransfer', e)
+    }
+    page++
+
+    this._setFilterCache(id, {
+      page, txs, end,
+    })
+
+    return txs.slice(skip)
   }
 
   watch (/*account*/): Promise {
@@ -148,7 +186,7 @@ export default class NemDAO extends EventEmitter {
       time: tx.time,
       from: tx.from || tx.signer,
       to: tx.to,
-      value: new Amount(tx.mosaics[this._namespace], this._symbol),
+      value: new Amount(tx.mosaics[ this._namespace ], this._symbol),
       fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
       credited: tx.credited,
     })
@@ -200,9 +238,9 @@ function readBalanceValue (symbol, balance, mosaic = null) {
   if (mosaic) {
     return (mosaic in balance.mosaics)
       ? (
-        balance.mosaics[mosaic].unconfirmed != null // nil check
-          ? balance.mosaics[mosaic].unconfirmed
-          : balance.mosaics[mosaic].confirmed
+        balance.mosaics[ mosaic ].unconfirmed != null // nil check
+          ? balance.mosaics[ mosaic ].unconfirmed
+          : balance.mosaics[ mosaic ].confirmed
       )
       : new Amount(0, symbol)
   }
