@@ -89,7 +89,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  async getTransactionsList (address, id, offset) {
+  async getTransactionsList (address, id, skip, offset) {
     const { network } = networkService.getProviderSettings()
     const links = MIDDLEWARE_MAP.txHistory[ `${id}`.toLowerCase() ]
 
@@ -108,7 +108,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       try {
         const test = await axios.get(`${apiURL}/tx/${address}/history?skip=0&limit=1`)
         if (test.status === 200) {
-          return this._getTransferFromMiddleware(apiURL, address, id, offset)
+          return this._getTransferFromMiddleware(apiURL, address, skip, offset)
         }
       } catch (e) {
         // eslint-disable-next-line
@@ -119,49 +119,26 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     return []
   }
 
-  async _getTransferFromMiddleware (apiURL, account, id, offset): Array<TxModel> {
-    const cache = this._getFilterCache(id) || {}
-    const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
-    const txs = cache.txs || []
-    let page = cache.page || 1
-    let end = cache.end || false
-
-    while (txs.length < TXS_PER_PAGE && !end) {
-      const url = `${apiURL}/tx/${account}/history?skip=0&limit=${offset}`
-      // eslint-disable-next-line
-      console.log('_getTransferFromMiddleware url', url)
-      try {
-        const result = await axios.get(url)
-        // eslint-disable-next-line
-        console.log('_getTransferFromMiddleware result', result)
-        if (typeof result !== 'object' || !result.data) {
-          throw new Error('invalid result')
-        }
-        if (result.status !== 200) {
-          throw new Error(`result not OK: ${result.data.message}`)
-        }
-        for (const tx of result.data) {
-          if (!tx.value || tx.value === '0') {
-            continue
-          }
-          txs.push(this._getTxModel(tx, account, tx.timeStamp))
-        }
-        if (txs.length === 0) {
-          end = true
-        }
-      } catch (e) {
-        end = true
-        // eslint-disable-next-line
-        console.warn('EthereumDAO getTransfer Middleware', e)
+  async _getTransferFromMiddleware (apiURL: string, account: string, skip: number, offset: number): Array<TxModel> {
+    let txs = []
+    const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
+    try {
+      const result = await axios.get(url)
+      if (typeof result !== 'object' || !result.data) {
+        throw new Error('invalid result')
       }
-      page++
+      if (result.status !== 200) {
+        throw new Error(`result not OK: ${result.data.message}`)
+      }
+      for (const tx of result.data) {
+        txs.push(this._createTxModel(tx, account))
+      }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('EthereumDAO getTransfer Middleware', e)
     }
 
-    this._setFilterCache(id, {
-      toBlock, page, txs: txs.slice(TXS_PER_PAGE), end,
-    })
-
-    return txs.slice(0, TXS_PER_PAGE)
+    return txs
   }
 
   getFeeRate (): Promise {
@@ -215,24 +192,27 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   _createTxModel (tx, account): BitcoinTx {
-    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
-
+    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
+      return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
+    }).join(',')
+    const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+      if (output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
 
     return new BitcoinTx({
-      txHash: tx.txid,
-      time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
+      blockHash: tx.blockHash,
+      blockNumber: tx.blockNumber,
+      txHash: tx.hash,
+      time: tx.timestamp,
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee).mul(DECIMALS),
-      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
+      fee: new BigNumber(tx.fee || 0).mul(DECIMALS),
+      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length,
     })
   }
 }
