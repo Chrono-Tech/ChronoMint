@@ -105,7 +105,7 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
             ])
 
             const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
-            const { title, description, options, files } = await ipfs.get(hash, 10000) // wait 10s
+            const { title, description, options, files } = await ipfs.get(hash)
             const poll = new PollModel({
               id: pollId,
               owner: owners[ i ],

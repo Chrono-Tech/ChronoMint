@@ -5,8 +5,8 @@ import FileModel, { fileConfig } from 'models/FileSelect/FileModel'
 import { imageValidator, FileReader } from 'platform/imageValidator'
 
 const DEFAULT_CONFIG = {
-  host: 'ipfs.infura.io',
-  port: 5001,
+  host: 'ipfs.chronobank.io',
+  port: 443,
   protocol: 'https',
 }
 
