@@ -32,9 +32,12 @@ export default {
   },
   polls: {
     title: 'Polls',
-    created: 'Poll created',
-    updated: 'Poll updated',
-    removed: 'Poll removed',
+    isCreated: 'Poll created',
+    isActivated: 'Poll activated',
+    isEnded: 'Poll ended',
+    isUpdated: 'Poll updated',
+    isRemoved: 'Poll removed',
+    isVoted: 'Poll voted',
   },
   transfer: {
     title: 'Transfer',
@@ -43,6 +46,7 @@ export default {
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.',
+    pkIcon: 'Your private key has been copied to the clipboard.',
   },
   operations: {
     title: 'Pending Operations',

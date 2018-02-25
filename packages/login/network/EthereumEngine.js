@@ -18,4 +18,8 @@ export default class EthereumEngine {
   getProvider () {
     return this._engine
   }
+
+  getPrivateKey () {
+    return this._wallet && this._wallet.getPrivateKey && Buffer.from(this._wallet.getPrivateKey()).toString('hex')
+  }
 }

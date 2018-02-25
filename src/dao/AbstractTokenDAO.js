@@ -6,6 +6,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
+export const FETCH_NEW_BALANCE = 'TokenFetchNewBalance'
 export const EVENT_MODIFY_BALANCE = 'TokenModifyBalance'
 export const EVENT_APPROVAL_TRANSFER = 'TokenApprovalTransfer'
 

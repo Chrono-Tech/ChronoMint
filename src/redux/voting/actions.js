@@ -47,8 +47,11 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 
 const updateVoteLimit = () => async (dispatch) => {
   const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
-  const voteLimitInTIME = await votingDAO.getVoteLimit()
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME })
+  const [ voteLimitInTIME, voteLimitInPercent ] = await Promise.all([
+    votingDAO.getVoteLimit(),
+    votingDAO.getVoteLimitInPercent(),
+  ])
+  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: voteLimitInPercent.div(100) })
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
@@ -69,16 +72,14 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   ])
 }
 
-export const createPoll = (poll: PollModel) => async (dispatch) => {
-  const stub = new PollDetailsModel({
-    id: `stub_${--counter}`,
-    poll: poll.id(`stub_${counter}`),
-  }).isFetching(true)
+export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
+  const id = `stub_${--counter}`
+  const stub = poll.id(id).isFetching(true)
 
   try {
     dispatch(handlePollCreated(stub))
     const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll)
+    const transactionHash = await dao.createPoll(poll.poll())
     dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
@@ -102,8 +103,9 @@ export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
 export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
+    const options = poll.voteEntries()
     const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.vote(choice)
+    await dao.vote(choice, options.get(choice - 1))
   } catch (e) {
     dispatch(handlePollUpdated(poll))
     throw e

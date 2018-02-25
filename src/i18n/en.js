@@ -209,6 +209,7 @@ export default {
         icon: 'Icon (TODO)',
         errors: {
           invalidAddress: 'Can\'t find valid ERC20 contract by this address',
+          addressInUse: 'This address is already in use',
           symbolInUse: 'This symbol is already in use',
           invalidSymbol: 'Symbol can only contain from 2 to 4 A-Z letters',
         },
@@ -274,6 +275,10 @@ export default {
         name: 'Name',
         email: 'Email',
         company: 'Company',
+      },
+      errors: {
+        saveInIPFSError: 'Save data in the IPFS ended with an error, please try again. It`s free.',
+        repeatButtonName: 'repeat save in IPFS',
       },
     },
     Ethereum: {
@@ -492,7 +497,6 @@ export default {
     lowerThanOrEqual: 'Should be lower or equal than %{limit}',
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
-    limitDepositOnMainnet: 'Deposit TIME is temporarily limited to 1 TIME on the main network',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
 
@@ -525,6 +529,11 @@ export default {
       title: 'Copy address',
       controlTitle: 'Address',
       description: 'Press CTRL + C or ⌘ + C to copy address to clipboard',
+    },
+    copyPrivateKey: {
+      title: 'Copy private key',
+      controlTitle: 'Private key',
+      description: 'Press CTRL + C or ⌘ + C to copy private key to clipboard',
     },
   },
   poll: {

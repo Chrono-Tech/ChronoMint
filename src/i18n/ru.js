@@ -212,6 +212,7 @@ export default {
         icon: 'Иконка (TODO)',
         errors: {
           invalidAddress: 'Не могу найти валидный ERC20 контракт по этому адресу',
+          addressInUse: 'Этот адрес уже используется',
           symbolInUse: 'Этот символ уже используется',
           invalidSymbol: 'Символ может содержать только от 2 до 4 букв A-Z',
         },
@@ -277,6 +278,10 @@ export default {
         name: 'Имя',
         email: 'E-mail',
         company: 'Компания',
+      },
+      errors: {
+        saveInIPFSError: 'Сохранение данныx в IPFS, завершилось с ошибкой, повторите попытку. Это бесплатно.',
+        repeatButtonName: 'Повторить сохранение в IPFS',
       },
     },
     Ethereum: {
@@ -495,7 +500,6 @@ export default {
     lowerThanOrEqual: 'Должно быть меньше или равно %{limit}',
     moreThan: 'Должно быть больше чем %{limit}',
     moreThanOrEqual: 'Должно быть больше или равно %{limit}',
-    limitDepositOnMainnet: 'В сети mainnet депозит TIME временно ограничен в размере 1 TIME',
     invalidLatinString: 'Строка должна иметь только латинские символы (A-z)',
     mustBeUnique: 'Значение должно быть уникальным',
 
@@ -530,6 +534,11 @@ export default {
       title: 'Копирование адреса',
       controlTitle: 'Адрес',
       description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать адрес',
+    },
+    copyPrivateKey: {
+      title: 'Копирование приватного ключа',
+      controlTitle: 'Приватный ключ',
+      description: 'Нажмите CTRL + C или ⌘ + C чтобы скопировать приватный ключ',
     },
   },
   poll: {
@@ -656,6 +665,14 @@ export default {
     ASSETS_NOT_A_PROXY: 'Ассеты: не является прокси',
     ASSETS_OWNER_ONLY: 'Ассеты: только владелец',
     ASSETS_CANNOT_ADD_TO_REGISTRY: 'Ассеты: не могу добавить в реестр',
+  },
+  fileSelect: {
+    errors: {
+      // TODO @dkchv: add errors
+    },
+    addAttachments: 'Добавить вложения',
+    selectFile: 'Выбрать файл',
+    filesLimit: '%{files} из %{limit}',
   },
   materialUi: {
     DatePicker: {

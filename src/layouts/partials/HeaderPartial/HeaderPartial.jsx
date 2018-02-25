@@ -1,10 +1,13 @@
 import {
-  NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED,
+  NETWORK_STATUS_OFFLINE,
+  NETWORK_STATUS_ONLINE,
+  NETWORK_STATUS_UNKNOWN,
+  SYNC_STATUS_SYNCED,
   SYNC_STATUS_SYNCING,
 } from '@chronobank/login/network/MonitorService'
 import { getNetworkById } from '@chronobank/login/network/settings'
-import { TOKEN_ICONS } from 'assets'
-import { CopyIcon, IPFSImage, QRIcon, TokenValue, UpdateProfileDialog } from 'components'
+import { IPFSImage } from 'components'
+import { ProfileSidePanel } from 'layouts/partials'
 import Moment from 'components/common/Moment'
 import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
 import menu from 'menu'
@@ -16,10 +19,11 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { drawerToggle } from 'redux/drawer/actions'
-import { modalsOpen } from 'redux/modals/actions'
+import { sidesOpen } from 'redux/sides/actions'
 import { readNotices } from 'redux/notifier/actions'
 import { logout } from 'redux/session/actions'
 import Value from 'components/common/Value/Value'
+import { PROFILE_SIDE_PANEL_KEY } from 'layouts/partials/ProfileSidePanel/ProfileSidePanel'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
@@ -51,9 +55,9 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileEdit: (data) => dispatch(modalsOpen({
-      component: UpdateProfileDialog,
-      data,
+    handleProfileOpen: () => dispatch(sidesOpen({
+      component: ProfileSidePanel,
+      key: PROFILE_SIDE_PANEL_KEY,
     })),
     readNotices: () => dispatch(readNotices()),
   }
@@ -77,6 +81,7 @@ export default class HeaderPartial extends PureComponent {
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     handleDrawerToggle: PropTypes.func,
+    handleProfileOpen: PropTypes.func,
     readNotices: PropTypes.func,
   }
 
@@ -181,19 +186,8 @@ export default class HeaderPartial extends PureComponent {
             {this.renderNotifications()}
           </Popover>
         </div>
-        <div styleName='account'>
-          <div styleName='info'>
-            <span styleName='badge-green'>{this.props.network}</span>
-            <span styleName='highlight0'>{this.props.profile.name() || 'Your Name'}</span>
-          </div>
-          <div styleName='extra'>
-            <span styleName='highlight1'>{this.props.account}</span>
-            <QRIcon value={this.props.account} />
-            <CopyIcon value={this.props.account} />
-          </div>
-        </div>
         <div styleName='right'>
-          <div styleName='rightIcon' onTouchTap={this.handleProfileOpen}>
+          <div styleName='rightIcon' onTouchTap={this.props.handleProfileOpen}>
             <IPFSImage
               styleName='rightIconContent'
               multihash={this.props.profile.icon()}
@@ -201,19 +195,6 @@ export default class HeaderPartial extends PureComponent {
                 <FontIcon style={{ fontSize: 54 }} color='white' className='material-icons'>account_circle</FontIcon>)}
             />
           </div>
-          <Popover
-            ref={this.refPopover}
-            styleName='popover'
-            className='popover'
-            zDepth={3}
-            open={this.state.isProfileOpen}
-            anchorEl={this.state.profileAnchorEl}
-            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-            onRequestClose={this.handleProfileClose}
-          >
-            {this.renderProfile()}
-          </Popover>
         </div>
       </div>
     )
@@ -348,106 +329,6 @@ export default class HeaderPartial extends PureComponent {
     )
   }
 
-  renderProfile () {
-    const items = !this.props.isTokensLoaded
-      ? []
-      : this.props.tokens.entrySeq().toArray().map(([ name, token ]) => ({ token, name }))
-
-    const addressesInWallet = this.props.wallet.addresses()
-    const addresses = [
-      { title: 'BTC', address: addressesInWallet.item('Bitcoin').address() },
-      { title: 'BTG', address: addressesInWallet.item('Bitcoin Gold').address() },
-      { title: 'LTC', address: addressesInWallet.item('Litecoin').address() },
-      { title: 'NEM', address: addressesInWallet.item('NEM').address() },
-    ]
-    return (
-      <div styleName='profile'>
-        <div styleName='profile-body'>
-          <div styleName='body-avatar'>
-            <div styleName='avatarIcon'>
-              <IPFSImage
-                styleName='avatarIconContent'
-                multihash={this.props.profile.icon()}
-                icon={
-                  <FontIcon
-                    style={{ fontSize: 96, cursor: 'default' }}
-                    color='white'
-                    className='material-icons'
-                  >account_circle
-                  </FontIcon>
-                }
-              />
-            </div>
-          </div>
-          <div styleName='body-info'>
-            <div styleName='badge-green'>{this.props.network}</div>
-            <div styleName='info-account'>{this.props.profile.name()}</div>
-            <div styleName='info-company'>{this.props.profile.company()}</div>
-            <div styleName='infoAddress'>{this.props.account}</div>
-            <div styleName='info-micros'>
-              <QRIcon value={this.props.account} />
-              <CopyIcon
-                value={this.props.account}
-                onModalOpen={this.handleClickOutside}
-              />
-            </div>
-            {addresses.filter((a) => a.address).map((a) => (
-              <div key={a.title}>
-                <div styleName='infoAddress'><b>{a.title}: </b>{a.address}</div>
-                <div styleName='info-micros'>
-                  <QRIcon value={a.address} />
-                  <CopyIcon
-                    value={a.address}
-                    onModalOpen={this.handleClickOutside}
-                  />
-                </div>
-              </div>
-            ))}
-            <div styleName='info-balances'>
-              {items
-                .filter((item) => ([ 'TIME', 'ETH', 'BTC', 'BTG', 'BCC', 'LTC', 'XEM', 'XMIN' ].indexOf(item.token.symbol().toUpperCase()) >= 0))
-                .map((item) => this.renderBalance(item))}
-            </div>
-          </div>
-        </div>
-        <div styleName='profile-footer'>
-          <FlatButton
-            label='Edit Account'
-            primary
-            icon={<FontIcon className='material-icons'>edit</FontIcon>}
-            onTouchTap={this.handleProfileEdit}
-          />
-          <FlatButton
-            label='LOGOUT'
-            primary
-            icon={<FontIcon className='material-icons'>power_settings_new</FontIcon>}
-            onTouchTap={this.props.handleLogout}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  renderBalance ({ token }) {
-    const symbol = token.symbol().toUpperCase()
-
-    return (
-      <div styleName='balance' key={token.id()}>
-        <div styleName='balance-icon'>
-          <div styleName='balanceIcon'>
-            <IPFSImage styleName='balanceIconContent' multihash={token.icon()} fallback={TOKEN_ICONS[ symbol ]} />
-          </div>
-        </div>
-        <div styleName='balance-info'>
-          <TokenValue
-            value={token.balance()}
-            symbol={token.symbol()}
-          />
-        </div>
-      </div>
-    )
-  }
-
   handleNotificationsOpen = (e) => {
     e.preventDefault()
     this.setState({
@@ -464,14 +345,6 @@ export default class HeaderPartial extends PureComponent {
     })
   }
 
-  handleProfileOpen = (e) => {
-    e.preventDefault()
-    this.setState({
-      isProfileOpen: true,
-      profileAnchorEl: e.currentTarget,
-    })
-  }
-
   handleProfileClose = () => {
     this.setState({
       isProfileOpen: false,
@@ -484,4 +357,3 @@ export default class HeaderPartial extends PureComponent {
     this.props.handleProfileEdit()
   }
 }
-

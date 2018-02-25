@@ -11,6 +11,11 @@ export default (state = initialState, action) => {
         ...action.payload,
         isOpen: !state.isOpen,
       }
+    case actions.DRAWER_HIDE:
+      return {
+        ...action.payload,
+        isOpen: false,
+      }
     default:
       return state
   }

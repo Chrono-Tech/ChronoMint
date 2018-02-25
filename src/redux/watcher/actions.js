@@ -25,10 +25,10 @@ export const WATCHER_TX_SET = 'watcher/TX_SET'
 export const WATCHER_TX_END = 'watcher/TX_END'
 
 export const txHandlingFlow = () => (dispatch) => {
-  AbstractContractDAO.txStart = async (tx: TxExecModel) => {
+  AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {
     dispatch({ type: WATCHER_TX_SET, tx })
 
-    const isConfirmed = await dispatch(showConfirmTxModal())
+    const { isConfirmed, updatedTx } = await dispatch(showConfirmTxModal(estimateGas, localFeeMultiplier))
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)
     }
@@ -44,6 +44,7 @@ export const txHandlingFlow = () => (dispatch) => {
     // const seconds = 10
     // console.warn('Simulated ' + seconds + ' seconds prolongation of tx mining')
     // await sleep(seconds)
+    return updatedTx
   }
 
   AbstractContractDAO.txGas = (tx: TxExecModel) => {

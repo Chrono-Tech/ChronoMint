@@ -1,4 +1,4 @@
-import { EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from 'dao/MultisigWalletsManagerDAO'
@@ -16,7 +16,17 @@ import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import { switchWallet } from 'redux/wallet/actions'
-import multisigWalletService, { EE_CONFIRMATION, EE_CONFIRMATION_NEEDED, EE_DEPOSIT, EE_MULTI_TRANSACTION, EE_OWNER_ADDED, EE_OWNER_REMOVED, EE_REMOVE_MS_WALLET, EE_REQUIREMENT_CHANGED, EE_REVOKE, EE_SINGLE_TRANSACTION } from 'services/MultisigWalletService'
+import multisigWalletService, {
+  EE_CONFIRMATION,
+  EE_CONFIRMATION_NEEDED,
+  EE_DEPOSIT,
+  EE_MULTI_TRANSACTION,
+  EE_OWNER_ADDED,
+  EE_OWNER_REMOVED,
+  EE_REQUIREMENT_CHANGED,
+  EE_REVOKE,
+  EE_SINGLE_TRANSACTION,
+} from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
 
 export const DUCK_MULTISIG_WALLET = 'multisigWallet'
@@ -67,6 +77,9 @@ const handleToken = (token, wallet) => (dispatch) => {
   const tokenDAO = tokenService.getDAO(token.id())
 
   tokenDAO
+    .on(FETCH_NEW_BALANCE, () => {
+      dispatch(fetchBalanceForToken(token, wallet))
+    })
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
       if (!(tx.from() === wallet.address() || tx.to() === wallet.address())) {
         return

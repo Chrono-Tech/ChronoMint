@@ -1,6 +1,6 @@
-import { Field, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { RaisedButton, FlatButton } from 'material-ui'
+import { FlatButton, RaisedButton } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -8,11 +8,11 @@ import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
 import TokenModel from 'models/tokens/TokenModel'
 import { addToken, formTokenLoadMetaData } from 'redux/settings/erc20/tokens/actions'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenIcon from 'components/common/HashedIcon/TokenIcon'
 import ProfileModel from 'models/ProfileModel'
 import ModalDialog from '../ModalDialog'
@@ -22,12 +22,12 @@ import './AddTokenDialog.scss'
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
-const asyncValidate = (values, dispatch) => {
+const asyncValidate = (values, dispatch, props) => {
   try {
     return formTokenLoadMetaData(
       new TokenModel(values),
       dispatch,
-      FORM_ADD_TOKEN_DIALOG,
+      props,
     )
   } catch (e) {
     throw e
@@ -41,7 +41,7 @@ function prefix (token) {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_TOKEN_DIALOG)
   const { account, profile } = state.get(DUCK_SESSION)
-  const wallet = state.get(DUCK_MAIN_WALLET)
+  const tokens = state.get(DUCK_TOKENS)
 
   return {
     address: selector(state, 'address'),
@@ -50,8 +50,8 @@ function mapStateToProps (state) {
     symbol: selector(state, 'symbol'),
     account: account,
     profile: profile,
-    isTokensLoaded: !wallet.isFetching(),
-    tokens: wallet.tokens(),
+    isTokensLoaded: !tokens.isFetching(),
+    tokens,
   }
 }
 

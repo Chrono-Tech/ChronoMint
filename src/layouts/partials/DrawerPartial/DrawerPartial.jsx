@@ -6,7 +6,7 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-import { drawerToggle } from 'redux/drawer/actions'
+import { drawerToggle, drawerHide } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import styles from '../styles'
 
@@ -18,14 +18,7 @@ export default class DrawerPartial extends PureComponent {
     isDrawerOpen: PropTypes.bool,
     isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func,
-  }
-
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      isOpened: false,
-    }
+    handleDrawerHide: PropTypes.func,
   }
 
   render () {
@@ -67,7 +60,7 @@ export default class DrawerPartial extends PureComponent {
         innerDivStyle={styles.drawer.item.innerDivStyle}
         disabled={item.disabled}
         primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerToggle}
+        onTouchTap={this.props.handleDrawerHide}
         leftIcon={
           <FontIcon
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
@@ -98,6 +91,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     handleDrawerToggle: () => dispatch(drawerToggle()),
+    handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
   }
 }

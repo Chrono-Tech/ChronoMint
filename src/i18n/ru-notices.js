@@ -29,6 +29,15 @@ export default {
       amount: 'Количество',
     },
   },
+  polls: {
+    title: 'Голосования',
+    isCreated: 'Голосование создано',
+    isActivated: 'Голосование активировано',
+    isEnded: 'Голосование завершено',
+    isUpdated: 'Голосование обновлено',
+    isRemoved: 'Голосование удалено',
+    isVoted: 'Голос принят',
+  },
   transfer: {
     title: 'Перевод',
     receivedFrom: '%{value} %{symbol} получено с адреса %{address}',
@@ -36,6 +45,7 @@ export default {
   },
   profile: {
     copyIcon: 'Ваш адрес был скопирован.',
+    pkIcon: 'Ваш приватный ключ был скопирован.',
   },
   operations: {
     title: 'Ожидающие Операции',
