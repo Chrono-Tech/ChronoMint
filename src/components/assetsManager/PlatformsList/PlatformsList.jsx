@@ -57,6 +57,9 @@ class PlatformsList extends PureComponent {
         {
           filteredTokens.map((asset) => {
             const token = tokens.getByAddress(asset.address)
+            if (!token.symbol()) {
+              return null
+            }
 
             return (
               <div
@@ -68,7 +71,7 @@ class PlatformsList extends PureComponent {
                   <IPFSImage styleName='content' multihash={token.icon()} />
                 </div>
                 <div styleName='tokenTitle'>
-                  <div styleName='tokenSubTitle'>{token.isFetched() ? token.id() : asset.address}</div>
+                  <div styleName='tokenSubTitle'>{token.symbol()}</div>
                 </div>
                 {showTitle(token, asset)}
                 <div styleName='tokenBalance'>
