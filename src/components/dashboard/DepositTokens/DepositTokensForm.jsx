@@ -229,7 +229,7 @@ export default class DepositTokensForm extends PureComponent {
   renderFoot () {
     const { isShowTIMERequired, amount, balance, deposit, token, allowance, pristine, invalid, handleSubmit } = this.props
     const isInvalid = pristine || invalid
-    const isRevoke = !allowance.amount().isZero()
+    const showRevoke = !allowance.amount().isZero()
     const amountWithDecimals = isInvalid
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
@@ -240,7 +240,19 @@ export default class DepositTokensForm extends PureComponent {
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
     return (
       <div styleName='actions'>
-        <span styleName='action'>
+        {
+          showRevoke && (
+            <div styleName='action'>
+              <RaisedButton
+                styleName='actionButton'
+                label='Revoke'
+                onTouchTap={!isRevokeDisabled && this.handleRevokeAsset}
+                disabled={isRevokeDisabled}
+              />
+            </div>
+          )
+        }
+        <div styleName='action'>
           {isShowTIMERequired
             ? (
               <FlatButton
@@ -251,19 +263,16 @@ export default class DepositTokensForm extends PureComponent {
             ) : (
               <RaisedButton
                 styleName='actionButton'
-                label={isRevoke ? 'Revoke' : 'Approve'}
-                onTouchTap={isRevoke
-                  ? !isRevokeDisabled && this.handleRevokeAsset :
-                  !isApproveDisabled && handleSubmit(this.handleApproveAsset)
-                }
-                disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
+                label='Approve'
+                onTouchTap={!isApproveDisabled && handleSubmit(this.handleApproveAsset)}
+                disabled={isApproveDisabled}
               />
             )
           }
-        </span>
+        </div>
 
         {!isShowTIMERequired && (
-          <span styleName='action'>
+          <div styleName='action'>
             <RaisedButton
               styleName='actionButton'
               label='Lock'
@@ -271,9 +280,9 @@ export default class DepositTokensForm extends PureComponent {
               onTouchTap={!isLockDisabled && handleSubmit(this.handleDepositAsset)}
               disabled={isLockDisabled}
             />
-          </span>
+          </div>
         )}
-        <span styleName='action'>
+        <div styleName='action'>
           <RaisedButton
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
@@ -281,14 +290,14 @@ export default class DepositTokensForm extends PureComponent {
             onTouchTap={!isWithdrawDisabled && handleSubmit(this.handleWithdrawAsset)}
             disabled={isWithdrawDisabled}
           />
-        </span>
+        </div>
       </div>
     )
   }
 
   render () {
     return (
-      <Paper>
+      <Paper styleName='root'>
         <form onSubmit={this.props.handleSubmit}>
           <ColoredSection
             head={this.renderHead()}

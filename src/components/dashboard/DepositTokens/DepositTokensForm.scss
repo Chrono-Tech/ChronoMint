@@ -1,6 +1,14 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
+.root {
+  :global {
+    .ColoredSection__foot {
+      padding-top: 0;
+    }
+  }
+}
+
 // TODO @dkchv: !!! review again
 .content {
   @include position(absolute, 10px, 10px, 10px, 10px);
@@ -25,20 +33,17 @@
 
 .actions {
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
   @include xs-only {
-    display: flex;
     flex-direction: column;
   }
 }
 
 .action {
+  margin-top: 20px;
   margin-left: 40px;
-
-  @include md-only {
-    margin-left: 20px;
-    margin-bottom: 20px;
-    display: inline-block;
-  }
 
   @include xs-only {
     margin-left: 0;
