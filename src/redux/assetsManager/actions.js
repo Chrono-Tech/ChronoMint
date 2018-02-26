@@ -1,12 +1,11 @@
 import { notify } from 'redux/notifier/actions'
 import contractManager from 'dao/ContractsManagerDAO'
-import ERC20ManagerDAO from 'dao/ERC20ManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
 import TokenModel from 'models/tokens/TokenModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
 import Web3Converter from 'utils/Web3Converter'
 import AssetsManagerNoticeModel, { MANAGER_ADDED, MANAGER_REMOVED } from 'models/notices/AssetsManagerNoticeModel'
 
@@ -271,10 +270,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   }
   const assetCallback = async (tx) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-    const erc20: ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
-    await erc20.fetchTokens([ tx.args.token ])
-    let removedToken = new TokenModel()
-    dispatch({ type: TOKENS_REMOVE, token: removedToken.transactionHash(tx.transactionHash) })
     dispatch({ type: SET_ASSETS, payload: { assets } })
     dispatch(setTx(tx))
   }
