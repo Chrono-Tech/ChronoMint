@@ -1,7 +1,6 @@
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
 import { IPFSImage } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
 import { FlatButton, MenuItem, TextField } from 'material-ui'
 import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
@@ -57,6 +56,7 @@ export default class TokenListSelector extends PureComponent {
           <div styleName='tokenError'>{meta.touched && meta.error && meta.error}</div>
         </div>
         <TextField
+          styleName='sm-hide'
           type='text'
           name='symbolFilter'
           onChange={this.handleChangeFilter}
