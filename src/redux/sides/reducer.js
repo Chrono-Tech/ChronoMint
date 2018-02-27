@@ -1,7 +1,14 @@
+import { SidePanel } from 'layouts/partials'
+import { SIDE_PANEL_KEY } from 'layouts/partials/SidePanel/SidePanel'
 import * as actions from './actions'
 
 const initialState = {
-  stack: [],
+  isProfilePanelOpen: false,
+  stack: [{
+    component: SidePanel,
+    key: SIDE_PANEL_KEY,
+    props: { isOpened: false },
+  }],
 }
 
 export default (state = initialState, action) => {

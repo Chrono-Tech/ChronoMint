@@ -14,7 +14,7 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 class SideStack extends PureComponent {
   static propTypes = {
-    stack: PropTypes.array,
+    stack: PropTypes.arrayOf(Object),
   }
 
   render () {

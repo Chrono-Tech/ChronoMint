@@ -26,6 +26,7 @@ const mapStateToProps = (state) => {
 class TokenValue extends PureComponent {
   static propTypes = {
     value: PropTypes.instanceOf(Amount),
+    precision: PropTypes.number,
     tokens: PropTypes.instanceOf(TokensCollection),
     symbol: PropTypes.string,
     className: PropTypes.string,
@@ -47,7 +48,11 @@ class TokenValue extends PureComponent {
       return '.00'
     }
 
-    const fractionString = fraction.toString().slice(2)
+    let fractionString = fraction.toString().slice(2)
+    if (this.props.precision && fractionString.length > this.props.precision) {
+      fractionString = Math.round(fractionString.slice(0, this.props.precision + 1) / 10)
+    }
+
     return `.${fractionString}`
   }
 
