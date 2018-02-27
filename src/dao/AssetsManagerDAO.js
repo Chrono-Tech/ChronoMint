@@ -96,7 +96,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gas: tx.gas,
       gasPrice,
       time,
-      symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol),
+      symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
       tokenAddress: tx.args.token,
       args: tx.args,
     })
