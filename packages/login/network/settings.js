@@ -118,6 +118,36 @@ export const infuraNetworkMap = [
   },
 ]
 
+export const mewNetworkMap = [
+  {
+    id: NETWORK_MAIN_ID,
+    protocol: 'https',
+    name: 'Mainnet (production MyEtherWallet)',
+    scanner: blockExplorersMap.Ethereum.mainnet,
+    bitcoin: 'bitcoin',
+    bitcoinCash: 'bitcoin',
+    bitcoinGold: 'bitcoingold',
+    litecoin: 'litecoin',
+    nem: 'mainnet',
+    host: `api.myetherapi.com/eth`,
+  },
+]
+
+export const givethNetworkMap = [
+  {
+    id: NETWORK_MAIN_ID,
+    protocol: 'https',
+    name: 'Mainnet (production Giveth)',
+    scanner: blockExplorersMap.Ethereum.mainnet,
+    bitcoin: 'bitcoin',
+    bitcoinCash: 'bitcoin',
+    bitcoinGold: 'bitcoingold',
+    litecoin: 'litecoin',
+    nem: 'mainnet',
+    host: `mew.giveth.io`,
+  },
+]
+
 const chronoBankMap = [
   {
     ...MAINNET_BASE,
@@ -171,6 +201,16 @@ export const providerMap = {
     name: 'ChronoBank',
     disabled: false,
   },
+  mew: {
+    id: 6,
+    name: 'MyEtherWallet',
+    disabled: false,
+  },
+  giveth: {
+    id: 7,
+    name: 'Giveth',
+    disabled: false,
+  },
   uport: {
     id: 5,
     name: 'UPort',
@@ -191,6 +231,20 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
     }
     case providerMap.infura.id: {
       const networks = [ ...infuraNetworkMap ]
+      if (withLocal) {
+        networks.push(infuraLocalNetwork)
+      }
+      return networks
+    }
+    case providerMap.giveth.id: {
+      const networks = [ ...givethNetworkMap ]
+      if (withLocal) {
+        networks.push(infuraLocalNetwork)
+      }
+      return networks
+    }
+    case providerMap.mew.id: {
+      const networks = [ ...mewNetworkMap ]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
