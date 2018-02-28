@@ -31,7 +31,7 @@ export default class PendingOperations extends PureComponent {
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
     getList: PropTypes.func,
-    openSettings: PropTypes.func,
+    handleSettings: PropTypes.func,
     handleRevoke: PropTypes.func,
     handleConfirm: PropTypes.func,
     handleLoadMore: PropTypes.func,
@@ -83,7 +83,7 @@ export default class PendingOperations extends PureComponent {
               {this.props.showSignatures
                 ? (
                   <div styleName='infoProp infoPropSignatures'>
-                    <span styleName='propName'>Signatures:</span>
+                    <span styleName='propName'><Translate value={prefix('signatures')} />:</span>
                     <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
                   </div>
                 )
@@ -137,7 +137,7 @@ export default class PendingOperations extends PureComponent {
                   icon={<FontIcon className='material-icons'>settings</FontIcon>}
                   label={<Translate value={prefix('settings')} />}
                   primary
-                  onTouchTap={() => this.props.openSettings()}
+                  onTouchTap={this.props.handleSettings}
                 />
               </div>
             )
@@ -173,7 +173,7 @@ export default class PendingOperations extends PureComponent {
             <div styleName='panelMore'>
               <RaisedButton
                 label={<Translate value='nav.loadMore' />}
-                onTouchTap={() => this.props.handleLoadMore()}
+                onTouchTap={this.props.handleLoadMore}
                 fullWidth
                 primary
               />
@@ -208,7 +208,7 @@ function mapDispatchToProps (dispatch) {
     handleConfirm: (operation) => dispatch(confirmOperation(operation)),
     handleRevoke: (operation) => dispatch(revokeOperation(operation)),
     handleLoadMore: () => dispatch(loadMoreCompletedOperations()),
-    openSettings: async () => {
+    handleSettings: async () => {
       await dispatch(setupOperationsSettings())
       dispatch(modalsOpen({
         component: OperationsSettingsDialog,

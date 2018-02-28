@@ -42,6 +42,10 @@ export default {
     title: 'Перевод',
     receivedFrom: '%{value} %{symbol} получено с адреса %{address}',
     sentTo: '%{value} %{symbol} отправлено на адрес %{address}',
+    errors: {
+      TRANSFER_CANCELLED: 'Отменено пользователем из диалога подтверждения транзакции',
+      TRANSFER_UNKNOWN: 'Неизвестная ошибка транзакции',
+    },
   },
   profile: {
     copyIcon: 'Ваш адрес был скопирован.',
@@ -71,5 +75,10 @@ export default {
   wallet: {
     title: 'Мульти-кошелек',
     create: '%{address}: создан',
+  },
+  assetsManager: {
+    title: 'Ассет менеджер',
+    managerAdded: 'Менеджер добавлен',
+    managerRemoved: 'Менеджер удален',
   },
 }

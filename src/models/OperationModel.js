@@ -59,6 +59,14 @@ class OperationModel extends abstractFetchingModel({
   mockTxId (id) {
     return this.set('tx', this.tx().set('id', id))
   }
+
+  txSummary () {
+    return {
+      signatures: `${this.remained()} of ${this.remained() + this.completed()}`,
+      action: this.tx().title(),
+      ...this.tx().args(),
+    }
+  }
 }
 
 export default OperationModel
