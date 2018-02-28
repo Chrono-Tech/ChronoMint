@@ -24,9 +24,9 @@ class PlatformsList extends PureComponent {
     selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
-    platformsList: PropTypes.array,
+    platformsList: PropTypes.arrayOf(PropTypes.object),
     tokens: PropTypes.instanceOf(TokensCollection),
-    assets: PropTypes.object,
+    assets: PropTypes.objectOf(PropTypes.object),
     assetsManagerCountsLoading: PropTypes.bool,
   }
 
@@ -106,9 +106,7 @@ class PlatformsList extends PureComponent {
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   {name
-                    ? <div styleName='platformTitle'>{name}&nbsp;(
-                      <small>{address}</small>
-                      )</div>
+                    ? <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
