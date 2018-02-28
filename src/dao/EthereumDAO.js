@@ -307,7 +307,7 @@ export class EthereumDAO extends AbstractTokenDAO {
           if (!tx.value || tx.value === '0') {
             continue
           }
-          txs.push(this._getTxModel(tx, account, tx.timeStamp))
+          txs.push(this._getTxModel(tx, account, tx.timestamp))
         }
         if (txs.length === 0) {
           end = true
