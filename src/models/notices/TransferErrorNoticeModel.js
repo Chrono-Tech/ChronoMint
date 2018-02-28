@@ -33,7 +33,7 @@ export default class TransferErrorNoticeModel extends abstractNoticeModel({
     return [
       { label: 'Operation', value: I18n.t(`notices.transfer.title`) },
       { label: 'Amount', value: `${transfer.amountToken().removeDecimals(transfer.amount()).toString()} ${transfer.amountToken().symbol()}` },
-      { label: 'Fee', value: `${transfer.feeToken().removeDecimals(transfer.fee()).toString()} ${transfer.feeToken().symbol()}` },
+      { label: 'Fee', value: `${transfer.feeToken().removeDecimals(transfer.fee().mul(transfer.feeMultiplier())).toString()} ${transfer.feeToken().symbol()}` },
       { label: 'Hash', value: transfer.hash() },
       { label: 'Message', value: this.error().message },
     ].filter(({ value }) => value != null) // nil check
