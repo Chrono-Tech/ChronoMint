@@ -1,7 +1,14 @@
+import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
+import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
 import * as actions from './actions'
 
 const initialState = {
-  stack: [],
+  isProfilePanelOpen: false,
+  stack: [{
+    component: ProfileContent,
+    panelKey: PROFILE_SIDE_PANEL_KEY,
+    isOpened: false,
+  }],
 }
 
 export default (state = initialState, action) => {
@@ -14,6 +21,7 @@ export default (state = initialState, action) => {
           key: action.key,
           component: action.component,
           props: action.props,
+          isOpened: action.isOpened,
         }],
       }
     case actions.SIDES_POP:
