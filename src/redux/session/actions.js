@@ -9,6 +9,7 @@ import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
 import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
+import { notify } from 'redux/notifier/actions'
 
 export const DUCK_SESSION = 'session'
 
@@ -179,4 +180,9 @@ export const rebuildProfileTokens = (profile, tokens) => {
   })
 
   return profileTokens
+}
+
+export const watchInitProfile = () => async (dispatch) => {
+  const userManagerDAO = await contractsManagerDAO.getUserManagerDAO()
+  return userManagerDAO.watchProfile((notice) => dispatch(notify(notice)))
 }
