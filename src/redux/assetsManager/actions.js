@@ -1,12 +1,13 @@
+import { notify } from 'redux/notifier/actions'
 import contractManager from 'dao/ContractsManagerDAO'
-import ERC20ManagerDAO from 'dao/ERC20ManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
 import TokenModel from 'models/tokens/TokenModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
 import Web3Converter from 'utils/Web3Converter'
+import AssetsManagerNoticeModel, { MANAGER_ADDED, MANAGER_REMOVED } from 'models/notices/AssetsManagerNoticeModel'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -208,16 +209,19 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       }
       dispatch(getAssetsManagerData())
     } else {
+      let notice
       const { from, to } = tx.args
       const assetsManagerDao = await contractManager.getAssetsManagerDAO()
       if (token && token.managersList().isFetched()) {
         let managersList = token.managersList()
         if (assetsManagerDao.isEmptyAddress(from)) {
           managersList = managersList.add(new OwnerModel({ address: to }))
+          notice = new AssetsManagerNoticeModel({ status: MANAGER_ADDED, transactionHash: tx.transactionHash })
         } else {
           managersList = managersList.remove(new OwnerModel({ address: from }))
+          notice = new AssetsManagerNoticeModel({ status: MANAGER_REMOVED, transactionHash: tx.transactionHash })
         }
-
+        dispatch(notify(notice))
         dispatch({
           type: TOKENS_FETCHED,
           token: token.managersList(managersList),
@@ -266,10 +270,6 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   }
   const assetCallback = async (tx) => {
     const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-    const erc20: ERC20ManagerDAO = await contractManager.getERC20ManagerDAO()
-    await erc20.fetchTokens([ tx.args.token ])
-    let removedToken = new TokenModel()
-    dispatch({ type: TOKENS_REMOVE, token: removedToken.transactionHash(tx.transactionHash) })
     dispatch({ type: SET_ASSETS, payload: { assets } })
     dispatch(setTx(tx))
   }

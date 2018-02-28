@@ -78,4 +78,9 @@ export default {
     title: 'Wallet',
     create: '%{name}: Created',
   },
+  assetsManager: {
+    title: 'Assets manager',
+    managerAdded: 'Manager added',
+    managerRemoved: 'Manager removed',
+  },
 }

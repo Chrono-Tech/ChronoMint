@@ -281,7 +281,9 @@ export default class AbstractContractDAO extends EventEmitter {
    * @see EthereumDAO.transfer
    * @throws TxError
    */ // eslint-disable-next-line
-  static txStart = async (tx: TxExecModel) => {
+  static txStart = async (tx: TxExecModel, estimateGas, feeMultiplier = 1) => {
+    const { gasFee, gasLimit } = await estimateGas(tx.funcName(), tx.params(), tx.value())
+    return tx.setGas(gasFee.mul(feeMultiplier)).gasLimit(gasLimit)
   }
 
   /**
