@@ -21,13 +21,18 @@ export class NemEngine {
     return this._wallet.getPrivateKey()
   }
 
-  createTransaction (to, amount: BigNumber, mosaicDefinition = null, feeMultiplier) {
-    return mosaicDefinition
-      ? this._createMosaicTransaction(to, amount, mosaicDefinition, feeMultiplier)
-      : this._createXemTransaction(to, amount, feeMultiplier)
+  // eslint-disable-next-line
+  describeTransaction (to, amount: BigNumber, mosaicDefinition = null) {
+    return { fee: 0.1 * DECIMALS }
   }
 
-  _createXemTransaction (to, amount: BigNumber, feeMultiplier) {
+  createTransaction (to, amount: BigNumber, mosaicDefinition = null) {
+    return mosaicDefinition
+      ? this._createMosaicTransaction(to, amount, mosaicDefinition)
+      : this._createXemTransaction(to, amount)
+  }
+
+  _createXemTransaction (to, amount: BigNumber) {
     const value = amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -39,7 +44,7 @@ export class NemEngine {
 
     const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
 
-    transactionEntity.fee = transactionEntity.fee * feeMultiplier
+    transactionEntity.fee = transactionEntity.fee
 
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
@@ -53,7 +58,7 @@ export class NemEngine {
     }
   }
 
-  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition, feeMultiplier) {
+  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition) {
     const value = amount.toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -72,7 +77,7 @@ export class NemEngine {
       },
     }, this._network.id)
 
-    transactionEntity.fee = transactionEntity.fee * feeMultiplier
+    transactionEntity.fee = transactionEntity.fee
 
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)

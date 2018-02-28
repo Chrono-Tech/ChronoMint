@@ -1,21 +1,18 @@
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
+import { TOKEN_ICONS } from 'assets'
+import ProfileModel from 'models/ProfileModel'
+import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
-import {  FontIcon, Drawer } from 'material-ui'
+import {  FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
-import ProfileModel from 'models/ProfileModel'
 
 import GasSlider from 'components/common/GasSlider/GasSlider'
-import networkService from '@chronobank/login/network/NetworkService'
-import { TOKEN_ICONS } from 'assets'
-import { sidesClose } from 'redux/sides/actions'
 
-import './ProfileSidePanel.scss'
-
-export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
+import './ProfileContent.scss'
 
 function mapStateToProps (state) {
   const session = state.get('session')
@@ -34,16 +31,14 @@ function mapDispatchToProps (dispatch) {
       data,
     })),
     handleLogout: () => dispatch(logout()),
-    handleProfileClose: (panelKey) => {
-      dispatch(sidesClose(panelKey))
-    },
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ProfileSidePanel extends PureComponent {
+class ProfileContent extends PureComponent {
 
   static propTypes = {
+    isOpened: PropTypes.bool,
     networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.instanceOf(ProfileModel),
@@ -52,16 +47,18 @@ class ProfileSidePanel extends PureComponent {
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     handleDrawerToggle: PropTypes.func,
-    readNotices: PropTypes.func,
-    handleProfileClose: PropTypes.func,
+    onProfileClose: PropTypes.func,
+  }
+
+  static defaultProps = {
+    onProfileClose: () => {},
   }
 
   handleProfileClose = () => {
-    this.props.handleProfileClose(PROFILE_SIDE_PANEL_KEY)
+    this.props.onProfileClose()
   }
 
-  renderProfile () {
-
+  render () {
     return (
       <div styleName='profile'>
 
@@ -173,22 +170,6 @@ class ProfileSidePanel extends PureComponent {
       </div>
     )
   }
-
-  render () {
-    return (
-      <Drawer
-        openSecondary
-        open
-        overlayStyle={{ opacity: 0 }}
-        onRequestChange={this.handleProfileClose}
-        disableSwipeToOpen
-        width={380}
-        docked={false}
-      >
-        {this.renderProfile()}
-      </Drawer>
-    )
-  }
 }
 
-export default ProfileSidePanel
+export default ProfileContent

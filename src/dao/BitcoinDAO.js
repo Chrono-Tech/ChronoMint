@@ -20,8 +20,6 @@ import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
-export const EVENT_BTC_LIKE_TOKEN_CREATED = 'BtcLikeTokenCreate'
-export const EVENT_BTC_LIKE_TOKEN_FAILED = 'BtcLikeTokenFailed'
 
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
@@ -184,14 +182,14 @@ export default class BitcoinDAO extends EventEmitter {
 
   async fetchToken () {
     if (!this.isInitialized()) {
-      this.emit(EVENT_BTC_LIKE_TOKEN_FAILED)
+      const message = `${this._symbol} support is not available`
       // eslint-disable-next-line
-      console.warn(`${this._symbol} not initialized`)
-      return
+      console.warn(message)
+      throw new Error(message)
     }
     const feeRate = await this.getFeeRate()
 
-    this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
+    return new TokenModel({
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
@@ -199,7 +197,7 @@ export default class BitcoinDAO extends EventEmitter {
       isFetched: true,
       blockchain: this._name,
       feeRate,
-    }), this)
+    })
   }
 }
 
