@@ -101,7 +101,7 @@ export default class ConfirmTransferDialog extends PureComponent {
       { key: 'fee', type: 'TokenValue', label: 'Fee', value: new Amount(tx.fee().mul(feeMultiplier), tx.feeToken().symbol()) },
       ...feeDetails,
       { key: 'hash', type: 'String', label: 'Hash', value: tx.hash() },
-    ]
+    ].filter(({ value }) => value != null) // nil check
 
     // const operationDetails = Object.entries(tx.txSummary()).map((key, value) => ({
     //   key,
@@ -162,6 +162,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
 
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
+    const hasFeeSlider = feeMultiplier && feeToken.feeRate()
 
     return (
       <ModalDialog onModalClose={this.handleClose}>
@@ -191,15 +192,17 @@ export default class ConfirmTransferDialog extends PureComponent {
               {!isValid && <div styleName='error'>Not enough coins</div>}
             </div>
 
-            <div styleName='feeSliderWrap'>
-              <GasSlider
-                isLocal
-                hideTitle
-                token={feeToken}
-                initialValue={feeMultiplier}
-                onDragStop={this.handleChangeFee}
-              />
-            </div>
+            {!hasFeeSlider ? null : (
+              <div styleName='feeSliderWrap'>
+                <GasSlider
+                  isLocal
+                  hideTitle
+                  token={feeToken}
+                  initialValue={feeMultiplier}
+                  onDragStop={this.handleChangeFee}
+                />
+              </div>
+            )}
 
           </div>
           <div styleName='footer'>
