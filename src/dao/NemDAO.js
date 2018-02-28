@@ -96,7 +96,6 @@ export default class NemDAO extends AbstractContractDAO {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Promise<Array<TxModel>> {
     const offset = 100 // limit
     const cache = this._getFilterCache(id) || {}

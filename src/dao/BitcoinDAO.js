@@ -80,7 +80,6 @@ export class BitcoinDAO extends AbstractContractDAO {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
   async getTransfer (id, account): Array<TxModel> {
     const offset = 100 // limit
     const cache = this._getFilterCache(id) || {}
@@ -120,7 +119,6 @@ export class BitcoinDAO extends AbstractContractDAO {
     })
 
     return txs.slice(skip)
-
   }
 
   watch (/*account*/): Promise {
@@ -172,17 +170,23 @@ export class BitcoinDAO extends AbstractContractDAO {
       console.warn(`${this._symbol} not initialized`)
       return
     }
-    const feeRate = await this.getFeeRate()
+    try {
+      const feeRate = await this.getFeeRate()
 
-    this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
-      name: this._name,
-      decimals: this._decimals,
-      symbol: this._symbol,
-      isOptional: false,
-      isFetched: true,
-      blockchain: this._name,
-      feeRate,
-    }), this)
+      this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
+        name: this._name,
+        decimals: this._decimals,
+        symbol: this._symbol,
+        isOptional: false,
+        isFetched: true,
+        blockchain: this._name,
+        feeRate,
+      }), this)
+    } catch (e) {
+      this.emit(EVENT_BTC_LIKE_TOKEN_FAILED)
+      // eslint-disable-next-line
+      console.warn(`${this._symbol} error`, e.message)
+    }
   }
 }
 
