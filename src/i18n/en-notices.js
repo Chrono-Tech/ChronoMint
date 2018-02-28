@@ -43,6 +43,10 @@ export default {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',
     sentTo: '%{value} %{symbol} sent to %{address}',
+    errors: {
+      TRANSFER_CANCELLED: 'Cancelled by user from tx confirmation modal',
+      TRANSFER_UNKNOWN: 'Unknown transaction error',
+    },
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.',
