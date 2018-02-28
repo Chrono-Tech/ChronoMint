@@ -2,36 +2,31 @@ import BigNumber from 'bignumber.js'
 import VotingCollection from 'models/voting/VotingCollection'
 import PollModel from 'models/PollModel'
 import PollDetailsModel from 'models/PollDetailsModel'
+import VotingMainModel from 'models/voting/VotingMainModel'
 import * as a from './actions'
 import reducer from './reducer'
 
-const initialState = new VotingCollection()
+const initialState = new VotingMainModel()
 const poll = new PollDetailsModel({
   poll: new PollModel()
     .set('id', 1)
     .set('published', null)
     .set('deadline', null),
 })
+let votingsList = new VotingCollection()
+votingsList = votingsList.add(poll)
 
 describe('assetsManager reducer', () => {
-  /*it('should return initial state', () => {
+  it('should return initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState)
   })
 
-  it('sould POLLS_INIT', () => {
-    expect(
-      reducer(undefined, {
-        type: a.POLLS_INIT,
-        isInited: true,
-      }),
-    ).toMatchSnapshot()
-  })
-
-  it('sould handle POLLS_VOTE_LIMIT', () => {
+  it('sould POLLS_VOTE_LIMIT', () => {
     expect(
       reducer(undefined, {
         type: a.POLLS_VOTE_LIMIT,
         voteLimitInTIME: new BigNumber(1),
+        voteLimitInPercent: new BigNumber(1),
       }),
     ).toMatchSnapshot()
   })
@@ -48,7 +43,7 @@ describe('assetsManager reducer', () => {
     expect(
       reducer(undefined, {
         type: a.POLLS_LIST,
-        list: new VotingCollection(),
+        list: votingsList,
       }),
     ).toMatchSnapshot()
   })
@@ -58,15 +53,6 @@ describe('assetsManager reducer', () => {
       reducer(undefined, {
         type: a.POLLS_CREATE,
         poll,
-      }),
-    ).toMatchSnapshot()
-  })
-
-  it('sould handle POLLS_REMOVE_STUB', () => {
-    expect(
-      reducer(undefined, {
-        type: a.POLLS_REMOVE_STUB,
-        transactionHash: 'test',
       }),
     ).toMatchSnapshot()
   })
@@ -81,12 +67,13 @@ describe('assetsManager reducer', () => {
   })
 
   it('sould handle POLLS_REMOVE', () => {
+    const state = initialState.list(votingsList)
     expect(
-      reducer(undefined, {
+      reducer(state, {
         type: a.POLLS_REMOVE,
-        item: new PollModel().set('id', 1),
+        id: '1',
       }),
     ).toMatchSnapshot()
-  })*/
+  })
 
 })
