@@ -1,21 +1,20 @@
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
+import { TOKEN_ICONS } from 'assets'
+import { sidesPush } from 'redux/sides/actions'
+import ProfileModel from 'models/ProfileModel'
+import { default as SidePanel, SIDE_PANEL_KEY } from 'layouts/partials/SidePanel/SidePanel'
+import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
-import {  FontIcon, Drawer } from 'material-ui'
+import {  FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
-import ProfileModel from 'models/ProfileModel'
 
 import GasSlider from 'components/common/GasSlider/GasSlider'
-import networkService from '@chronobank/login/network/NetworkService'
-import { TOKEN_ICONS } from 'assets'
-import { sidesClose } from 'redux/sides/actions'
 
-import './ProfileSidePanel.scss'
-
-export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
+import './ProfileContent.scss'
 
 function mapStateToProps (state) {
   const session = state.get('session')
@@ -34,16 +33,21 @@ function mapDispatchToProps (dispatch) {
       data,
     })),
     handleLogout: () => dispatch(logout()),
-    handleProfileClose: (panelKey) => {
-      dispatch(sidesClose(panelKey))
+    handleProfileClose: () => {
+      dispatch(sidesPush({
+        component: SidePanel,
+        key: SIDE_PANEL_KEY,
+        props: { isOpened: false },
+      }))
     },
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-class ProfileSidePanel extends PureComponent {
+class ProfileContent extends PureComponent {
 
   static propTypes = {
+    isOpened: PropTypes.bool,
     networkName: PropTypes.string,
     account: PropTypes.string,
     profile: PropTypes.instanceOf(ProfileModel),
@@ -52,16 +56,36 @@ class ProfileSidePanel extends PureComponent {
     handleLogout: PropTypes.func,
     handleProfileEdit: PropTypes.func,
     handleDrawerToggle: PropTypes.func,
-    readNotices: PropTypes.func,
     handleProfileClose: PropTypes.func,
   }
 
-  handleProfileClose = () => {
-    this.props.handleProfileClose(PROFILE_SIDE_PANEL_KEY)
+  constructor (props) {
+    super(props)
+
+    this.state = { isReadyToClose: true }
   }
 
-  renderProfile () {
+  // Due to material-ui bug. Immediate close on mobile devices.
+  // @see https://github.com/mui-org/material-ui/issues/6634
+  // Going to be fixed in 1.00 version.
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.isOpened && !this.props.isOpened) {
+      this.setState({ isReadyToClose: false }, () => {
+        setTimeout(() => {
+          this.setState({ isReadyToClose: true })
+        }, 300)
+      })
+    }
+  }
 
+  handleProfileClose = () => {
+    if (!this.state.isReadyToClose) {
+      return
+    }
+    this.props.handleProfileClose()
+  }
+
+  render () {
     return (
       <div styleName='profile'>
 
@@ -173,22 +197,6 @@ class ProfileSidePanel extends PureComponent {
       </div>
     )
   }
-
-  render () {
-    return (
-      <Drawer
-        openSecondary
-        open
-        overlayStyle={{ opacity: 0 }}
-        onRequestChange={this.handleProfileClose}
-        disableSwipeToOpen
-        width={380}
-        docked={false}
-      >
-        {this.renderProfile()}
-      </Drawer>
-    )
-  }
 }
 
-export default ProfileSidePanel
+export default ProfileContent

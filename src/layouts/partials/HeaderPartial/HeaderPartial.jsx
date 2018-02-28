@@ -7,7 +7,7 @@ import {
 } from '@chronobank/login/network/MonitorService'
 import { getNetworkById } from '@chronobank/login/network/settings'
 import { IPFSImage } from 'components'
-import { ProfileSidePanel } from 'layouts/partials'
+import { SidePanel } from 'layouts/partials'
 import Moment from 'components/common/Moment'
 import { CircularProgress, FlatButton, FontIcon, IconButton, Popover } from 'material-ui'
 import menu from 'menu'
@@ -19,11 +19,11 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { drawerToggle } from 'redux/drawer/actions'
-import { sidesOpen } from 'redux/sides/actions'
+import { sidesPush } from 'redux/sides/actions'
 import { readNotices } from 'redux/notifier/actions'
 import { logout } from 'redux/session/actions'
 import Value from 'components/common/Value/Value'
-import { PROFILE_SIDE_PANEL_KEY } from 'layouts/partials/ProfileSidePanel/ProfileSidePanel'
+import { SIDE_PANEL_KEY } from 'layouts/partials/SidePanel/SidePanel'
 import ls from 'utils/LocalStorage'
 import styles from '../styles'
 import './HeaderPartial.scss'
@@ -55,9 +55,10 @@ function mapDispatchToProps (dispatch) {
   return {
     handleLogout: () => dispatch(logout()),
     handleDrawerToggle: () => dispatch(drawerToggle()),
-    handleProfileOpen: () => dispatch(sidesOpen({
-      component: ProfileSidePanel,
-      key: PROFILE_SIDE_PANEL_KEY,
+    handleProfileOpen: () => dispatch(sidesPush({
+      component: SidePanel,
+      key: SIDE_PANEL_KEY,
+      props: { isOpened: true },
     })),
     readNotices: () => dispatch(readNotices()),
   }

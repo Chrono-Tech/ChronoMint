@@ -12,7 +12,7 @@ import RewardsContent from './RewardsContent/RewardsContent'
 import SettingsContent from './SettingsContent/SettingsContent'
 import VotingContent from './VotingContent/VotingContent'
 import WalletContent from './WalletContent/WalletContent'
-import ProfileSidePanel from './ProfileSidePanel/ProfileSidePanel'
+import SidePanel from './SidePanel/SidePanel'
 
 export {
   HeaderPartial,
@@ -29,7 +29,7 @@ export {
   SettingsContent,
   LOCContent,
   AssetsContent,
-  ProfileSidePanel,
+  SidePanel,
 }
 
 export default {
@@ -47,5 +47,5 @@ export default {
   SettingsContent,
   LOCContent,
   AssetsContent,
-  ProfileSidePanel,
+  SidePanel,
 }
