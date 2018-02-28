@@ -1,13 +1,14 @@
+// eslint-disable-next-line
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow
 
-var child = require('child_process').execFile;
-var executablePath = "./geth";
-var parameters = ["-light","--rpc"];
-
+// eslint-disable-next-line
+var child = require('child_process').execFile
+var executablePath = "./geth"
+var parameters = [ "-light", "--rpc" ]
 
 const path = require('path')
 const url = require('url')
@@ -18,24 +19,24 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({ width: 800, height: 600 })
 
- // and load the index.html of the app.
+  // and load the index.html of the app.
   let loadUrl = url.format({
     pathname: path.join(__dirname, 'build/index.html'),
     protocol: 'file:',
-    slashes: true
+    slashes: true,
   })
   if (process.env.LOAD_URL) {
-    loadUrl = process.env.LOAD_URL;
+    loadUrl = process.env.LOAD_URL
   }
-  mainWindow.loadURL(loadUrl);
-            console.log('hui');
-  child(executablePath, parameters, function(err, data) {
-               console.log(err)
-                            console.log(data.toString());
+  mainWindow.loadURL(loadUrl)
+  child(executablePath, parameters, function (err, data) {
+    // eslint-disable-next-line
+    console.log(err)
+    // eslint-disable-next-line
+    console.log(data.toString());
   });
- 
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()

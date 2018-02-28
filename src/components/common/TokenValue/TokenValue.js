@@ -40,7 +40,7 @@ class TokenValue extends PureComponent {
   }
 
   getFraction (value: BigNumber) {
-    const valueBN = new BigNumber(value)
+    const valueBN = new BigNumber(value).absoluteValue()
     const fraction = valueBN.modulo(1)
 
     if (valueBN.isZero() || fraction.isZero()) {

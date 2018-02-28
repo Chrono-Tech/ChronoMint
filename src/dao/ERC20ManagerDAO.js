@@ -107,18 +107,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
+    const symbol = this._c.bytesToString(result.args.symbol).toUpperCase()
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
         name: this._c.bytesToString(result.args.name),
-        symbol: this._c.bytesToString(result.args.symbol).toUpperCase(),
+        symbol,
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
+        isOptional: !MANDATORY_TOKENS.includes(symbol),
+        isFetched: true,
       }),
-      time, isRemoved, isAdded, result.args.oldToken || null,
+      time, isRemoved, isAdded, result.transactionHash || null,
     ))
   }
 

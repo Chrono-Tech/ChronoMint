@@ -76,4 +76,9 @@ export default {
     title: 'Мульти-кошелек',
     create: '%{address}: создан',
   },
+  assetsManager: {
+    title: 'Ассет менеджер',
+    managerAdded: 'Менеджер добавлен',
+    managerRemoved: 'Менеджер удален',
+  },
 }

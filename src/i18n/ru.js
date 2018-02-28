@@ -16,6 +16,10 @@ import { ru as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
 
 export default {
+  copyright: 'Copyright © 2018 LaborX Pty Ltd. Все права защищены.',
+  chronobankSite: 'Chronobank.io',
+  qa: 'Q&A',
+  contactUs: 'Свяжитесь с нами',
   title: 'Рус',
   true: 'да',
   false: 'нет',

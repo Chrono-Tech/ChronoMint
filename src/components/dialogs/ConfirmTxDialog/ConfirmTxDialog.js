@@ -194,7 +194,7 @@ export default class ConfirmTxDialog extends PureComponent {
                   </TableRow>
                 </TableBody>
               </Table>
-              {balance.lt(0) && <div styleName='error'>Not enough ETH</div>}
+              {balanceAfter.lt(0) && <div styleName='error'>Not enough ETH</div>}
             </div>
 
             <div styleName='errorMessage'>
@@ -229,8 +229,8 @@ export default class ConfirmTxDialog extends PureComponent {
               styleName='action'
               primary
               label={<Translate value='terms.confirm' />}
-              disabled={gasFee.lte(0) || balance.lt(0) || additionalActionIsFailed}
-              onTouchTap={gasFee.gte(0) && balance.gt(0) && !additionalActionIsFailed && this.handleConfirm}
+              disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
+              onTouchTap={gasFee.gte(0) && balanceAfter.gte(0) && balance.gt(0) && !additionalActionIsFailed && this.handleConfirm}
             />
           </div>
         </div>
