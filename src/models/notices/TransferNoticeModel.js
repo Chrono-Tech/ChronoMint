@@ -1,8 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { I18n } from 'platform/i18n'
 import { Icons } from 'platform/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
-import BigNumber from 'bignumber.js'
 
 export default class TransferNoticeModel extends abstractNoticeModel({
   value: new BigNumber(0), // with decimals

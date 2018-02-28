@@ -31,12 +31,7 @@ export class BitcoinEngine {
     }
   }
 
-  /**
-   * Creates raw transaction encoded in HEX string
-   * @param to Destination address
-   * @param amount BTC amount in BTC with decimals
-   */
-  createTransaction (to, amount: BigNumber, feeRate, utxos) {
+  describeTransaction (to, amount: BigNumber, feeRate, utxos) {
     const targets = [
       {
         address: to,
@@ -49,6 +44,16 @@ export class BitcoinEngine {
       vout: output.vout,
       value: output.satoshis,
     })), targets, Math.ceil(feeRate))
+    return { inputs, outputs, fee }
+  }
+
+  /**
+   * Creates raw transaction encoded in HEX string
+   * @param to Destination address
+   * @param amount BTC amount in BTC with decimals
+   */
+  createTransaction (to, amount: BigNumber, feeRate, utxos) {
+    const { inputs, outputs, fee } = this.describeTransaction(to, amount, feeRate, utxos)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 
