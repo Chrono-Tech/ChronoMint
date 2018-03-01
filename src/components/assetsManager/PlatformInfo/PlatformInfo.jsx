@@ -14,6 +14,7 @@ import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol, isReissuable } 
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
+import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
 
 import './PlatformInfo.scss'
@@ -22,13 +23,49 @@ function prefix (token) {
   return `Assets.PlatformInfo.${token}`
 }
 
-class PlatformInfo extends PureComponent {
+function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    selectedToken: assetsManager.selectedToken,
+    assets: assetsManager.assets,
+    selectedPlatform: assetsManager.selectedPlatform,
+    managersForTokenLoading: assetsManager.managersForTokenLoading,
+    tokens,
+    platformsList: assetsManager.platformsList,
+    usersPlatforms: assetsManager.usersPlatforms,
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleCrowdsaleDialog: () => dispatch(modalsOpen({
+      component: CrowdsaleDialog,
+    })),
+    handleAddManagerDialog: () => dispatch(modalsOpen({
+      component: AssetManagerDialog,
+    })),
+    handleBlockAssetDialog: () => dispatch(modalsOpen({
+      component: BlockAssetDialog,
+    })),
+    getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
+    isReissuable: (symbol) => dispatch(isReissuable(symbol)),
+    getFee: (symbol) => dispatch(getFee(symbol)),
+    handleRevokeDialog: () => dispatch(modalsOpen({
+      component: RevokeDialog,
+    })),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class PlatformInfo extends PureComponent {
   static propTypes = {
     tokens: PropTypes.instanceOf(TokensCollection),
     selectedToken: PropTypes.string,
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
     handleAddManagerDialog: PropTypes.func,
+    handleBlockAssetDialog: PropTypes.func,
     getManagersForAssetSymbol: PropTypes.func,
     managersForTokenLoading: PropTypes.bool,
     reissueAsset: PropTypes.func,
@@ -186,10 +223,11 @@ class PlatformInfo extends PureComponent {
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
-            {/*<FlatButton
+            <FlatButton
               styleName='action'
-              label={<Translate value={prefix('send')} />}
-            />*/}
+              onTouchTap={this.props.handleBlockAssetDialog}
+              label={<Translate value={prefix('blockAsset')} />}
+            />
 
             {/*<FlatButton
               styleName='action'
@@ -208,36 +246,3 @@ class PlatformInfo extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const tokens = state.get(DUCK_TOKENS)
-  return {
-    selectedToken: assetsManager.selectedToken,
-    assets: assetsManager.assets,
-    selectedPlatform: assetsManager.selectedPlatform,
-    managersForTokenLoading: assetsManager.managersForTokenLoading,
-    tokens,
-    platformsList: assetsManager.platformsList,
-    usersPlatforms: assetsManager.usersPlatforms,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleCrowdsaleDialog: () => dispatch(modalsOpen({
-      component: CrowdsaleDialog,
-    })),
-    handleAddManagerDialog: () => dispatch(modalsOpen({
-      component: AssetManagerDialog,
-    })),
-    getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
-    isReissuable: (symbol) => dispatch(isReissuable(symbol)),
-    getFee: (symbol) => dispatch(getFee(symbol)),
-    handleRevokeDialog: () => dispatch(modalsOpen({
-      component: RevokeDialog,
-    })),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlatformInfo)

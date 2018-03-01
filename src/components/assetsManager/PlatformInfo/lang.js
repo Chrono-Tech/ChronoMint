@@ -15,6 +15,7 @@ export default {
     createPlatform: 'Create Platform',
     createToken: 'Create Token',
     addManagers: 'Add/edit managers',
+    blockAsset: 'Block asset',
   },
   ru: {
     reissue: 'Переиздать',
@@ -32,5 +33,6 @@ export default {
     createPlatform: 'Создайте платформу',
     createToken: 'Создайте токен',
     addManagers: 'Добавить/редактировать менеджеров',
+    blockAsset: 'Заблокировать ассет',
   },
 }
