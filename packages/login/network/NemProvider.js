@@ -1,11 +1,7 @@
-import axios from 'axios'
-import networkService from '@chronobank/login/network/NetworkService'
 import BigNumber from 'bignumber.js'
-import TxModel from 'models/TxModel'
 import AbstractProvider from './AbstractProvider'
 import { NemBalance, NemTx } from './NemAbstractNode'
 import { selectNemNode } from './NemNode'
-import { LOCAL_ID, MIDDLEWARE_MAP, NETWORK_MAIN_ID } from './settings'
 
 export class NemProvider extends AbstractProvider {
   constructor () {
@@ -58,56 +54,8 @@ export class NemProvider extends AbstractProvider {
   }
 
   async getTransactionsList (address, skip, offset) {
-
-    const { network } = networkService.getProviderSettings()
-    const links = MIDDLEWARE_MAP.txHistory[ `${this._id}`.toLowerCase() ]
-
-    let apiURL = ''
-    switch (network.id) {
-      case NETWORK_MAIN_ID:
-        apiURL = links.mainnet
-        break
-      case LOCAL_ID:
-        apiURL = links.local
-        break
-      default:
-        apiURL = links.testnet
-    }
-    if (apiURL) {
-      try {
-        const test = await axios.get(`${apiURL}/tx/${address}/history?skip=0&limit=1`)
-        if (test.status === 200) {
-          return this._getTransferFromMiddleware(apiURL, address, skip, offset)
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
-      }
-    }
-
-    return []
-  }
-
-  async _getTransferFromMiddleware (apiURL: string, account: string, skip: number, offset: number): Array<TxModel> {
-    let txs = []
-    const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
-    try {
-      const result = await axios.get(url)
-      if (typeof result !== 'object' || !result.data) {
-        throw new Error('invalid result')
-      }
-      if (result.status !== 200) {
-        throw new Error(`result not OK: ${result.data.message}`)
-      }
-      for (const tx of result.data) {
-        txs.push(this._createTxModel(tx, account))
-      }
-    } catch (e) {
-      // eslint-disable-next-line
-      console.warn('EthereumDAO getTransfer Middleware', e)
-    }
-
-    return txs
+    const node = this._selectNode(this._engine)
+    return node.getTransactionsList(address, this._id, skip, offset)
   }
 
   // eslint-disable-next-line

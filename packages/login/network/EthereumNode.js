@@ -5,7 +5,7 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 // TODO @dkchv: update to actual config
 const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-testnet-internal-ethereum-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {

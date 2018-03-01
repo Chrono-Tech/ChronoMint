@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import nem from 'nem-sdk'
+import TxModel from 'models/TxModel'
 import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
@@ -95,6 +96,43 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       throw e
     }
   }
+
+  async getTransactionsList (address, id, skip, offset) {
+
+    try {
+      const test = await this._api.get(`tx/${address}/history?skip=0&limit=1`)
+      if (test.status === 200) {
+        return this._getTransferFromMiddleware(address, skip, offset)
+      }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
+    }
+
+    return []
+  }
+
+  async _getTransferFromMiddleware (account: string, skip: number, offset: number): Array<TxModel> {
+    let txs = []
+    const url = `tx/${account}/history?skip=${skip}&limit=${offset}`
+    try {
+      const result = await this._api.get(url)
+      if (typeof result !== 'object' || !result.data) {
+        throw new Error('invalid result')
+      }
+      if (result.status !== 200) {
+        throw new Error(`result not OK: ${result.data.message}`)
+      }
+      for (const tx of result.data) {
+        txs.push(this.createTxModel(tx, account))
+      }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('NemMiddlewareNode getTransfer Middleware', e)
+    }
+
+    return txs
+  }
 }
 
 function createTxModel (tx, account): NemTx {
@@ -111,7 +149,7 @@ function createTxModel (tx, account): NemTx {
       ? null
       : tx.mosaics.reduce((t, m) => ({
         ...t,
-        [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
+        [ `${m.mosaicId.namespaceId}:${m.mosaicId.name}` ]: m.quantity,
       }), {}),
     unconfirmed: tx.unconfirmed || false,
   })

@@ -103,24 +103,6 @@ export const MIDDLEWARE_MAP = {
     mainnet: 'https://middleware-ethereum-mainnet-rest.chronobank.io/',
     testnet: 'https://middleware-ethereum-testnet-rest.chronobank.io/',
   },
-  txHistory: {
-    ethereum: {
-      testnet: 'https://middleware-testnet-internal-ethereum-rest.chronobank.io',
-      mainnet: 'https://middleware-mainnet-internal-ethereum-rest.chronobank.io/',
-    },
-    nem: {
-      testnet: 'https://middleware-testnet-internal-nem-rest.chronobank.io',
-      mainnet: 'https://middleware-mainnet-internal-nem-rest.chronobank.io/',
-    },
-    bitcoin: {
-      testnet: 'https://middleware-testnet-internal-bitcoin-rest.chronobank.io',
-      mainnet: 'https://middleware-mainnet-internal-bitcoin-rest.chronobank.io/',
-    },
-    litecoin: {
-      testnet: 'https://middleware-testnet-internal-litecoin-rest.chronobank.io',
-      mainnet: 'https://middleware-mainnet-internal-litecoin-rest.chronobank.io/',
-    },
-  },
 }
 
 // --------- providers

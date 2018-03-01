@@ -110,7 +110,7 @@ export default class NemDAO extends AbstractContractDAO {
         end = true
       }
       for (const tx of txsResult) {
-        // TODO @abdulov check this and fix
+        // TODO @abdulov now, it not worked, blocked by Middleware
         txs.push(new TxModel({
           txHash: tx.txHash,
           blockHash: tx.blockHash,

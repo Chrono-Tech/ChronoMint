@@ -1,10 +1,7 @@
-import axios from 'axios'
-import networkService from '@chronobank/login/network/NetworkService'
 import BigNumber from 'bignumber.js'
 import TxModel from 'models/TxModel'
 import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
-import { LOCAL_ID, MIDDLEWARE_MAP, NETWORK_MAIN_ID } from './settings'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
@@ -89,41 +86,25 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   async getTransactionsList (address, id, skip, offset) {
-    const { network } = networkService.getProviderSettings()
-    const links = MIDDLEWARE_MAP.txHistory[ `${id}`.toLowerCase() ]
 
-    let apiURL = ''
-    switch (network.id) {
-      case NETWORK_MAIN_ID:
-        apiURL = links.mainnet
-        break
-      case LOCAL_ID:
-        apiURL = links.local
-        break
-      default:
-        apiURL = links.testnet
-    }
-    if (apiURL) {
-      try {
-        const test = await axios.get(`${apiURL}/tx/${address}/history?skip=0&limit=1`)
-        if (test.status === 200) {
-          return this._getTransferFromMiddleware(apiURL, address, skip, offset)
-        }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
+    try {
+      const test = await this._api.get(`tx/${address}/history?skip=0&limit=1`)
+      if (test.status === 200) {
+        return this._getTransferFromMiddleware(address, skip, offset)
       }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
     }
 
     return []
   }
 
-  // TODO @abdulov check this
-  async _getTransferFromMiddleware (apiURL: string, account: string, skip: number, offset: number): Array<TxModel> {
+  async _getTransferFromMiddleware (account: string, skip: number, offset: number): Array<TxModel> {
     let txs = []
-    const url = `${apiURL}/tx/${account}/history?skip=${skip}&limit=${offset}`
+    const url = `tx/${account}/history?skip=${skip}&limit=${offset}`
     try {
-      const result = await axios.get(url)
+      const result = await this._api.get(url)
       if (typeof result !== 'object' || !result.data) {
         throw new Error('invalid result')
       }
@@ -135,7 +116,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       }
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('EthereumDAO getTransfer Middleware', e)
+      console.warn('BitcoinMiddlewareNode getTransfer Middleware', e)
     }
 
     return txs
