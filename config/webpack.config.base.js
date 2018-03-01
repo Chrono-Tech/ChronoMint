@@ -20,7 +20,7 @@ let modulesPath = path.resolve(__dirname, relativePath, 'node_modules')
 let packagesPath = path.resolve(__dirname, relativePath, 'packages')
 let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
-let faviconPath = path.resolve(__dirname, relativePath, 'favicon.ico')
+let faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
 
 const buildConfig = (factory) => {
