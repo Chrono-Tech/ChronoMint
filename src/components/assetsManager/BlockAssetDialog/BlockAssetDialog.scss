@@ -1,0 +1,48 @@
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+.content {
+  width: 544px;
+  background-color: $color-white;
+  @include xs-only {
+    width: 100%;
+  }
+}
+
+.dialogHeader {
+  display: flex;
+  position: relative;
+  align-items: baseline;
+  box-sizing: border-box;
+  background: $color-primary-1;
+  min-height: 151px;
+  padding: 24px 16px;
+  text-align: left;
+  color: #ffffff;
+}
+
+.dialogHeaderTitle {
+  color: $color-white;
+  min-width: 300px;
+  font-size: 34px;
+  padding-bottom: 20px;
+}
+
+.dialogHeaderSubTitle {
+  color: $color-white;
+  min-width: 300px;
+  padding-bottom: 20px;
+}
+
+.dialogFooter {
+  padding: 24px 16px;
+  text-align: right;
+}
+
+.action {
+  margin: 0 0 0 10px;
+}
+
+.checkboxField {
+  margin-top: 30px;
+}
