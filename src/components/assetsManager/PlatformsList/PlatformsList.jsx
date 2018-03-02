@@ -106,7 +106,7 @@ class PlatformsList extends PureComponent {
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   {name
-                    ? <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
+                    ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
@@ -120,9 +120,6 @@ class PlatformsList extends PureComponent {
   }
 
   render () {
-
-    console.log('Render platformList: ', {...this.props})
-
     return (
       <div styleName='root'>
         <div styleName='content'>

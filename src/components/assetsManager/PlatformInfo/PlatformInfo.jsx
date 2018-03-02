@@ -4,20 +4,20 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import TokensCollection from 'models/tokens/TokensCollection'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
+import { getSelectedToken } from 'redux/assetsManager/selectors'
+import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
+import TokenModel from 'models/tokens/TokenModel'
 
 import './PlatformInfo.scss'
-import BlacklistDialog from '../BlacklistDialog/BlacklistDialog'
 
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`
@@ -25,13 +25,11 @@ function prefix (token) {
 
 function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const tokens = state.get(DUCK_TOKENS)
   return {
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: getSelectedToken()(state),
     assets: assetsManager.assets,
     selectedPlatform: assetsManager.selectedPlatform,
     managersForTokenLoading: assetsManager.managersForTokenLoading,
-    tokens,
     platformsList: assetsManager.platformsList,
     usersPlatforms: assetsManager.usersPlatforms,
   }
@@ -45,8 +43,11 @@ function mapDispatchToProps (dispatch) {
     handleAddManagerDialog: () => dispatch(modalsOpen({
       component: AssetManagerDialog,
     })),
-    handleBlockAssetDialog: () => dispatch(modalsOpen({
+    openBlockAssetDialog: (token) => dispatch(modalsOpen({
       component: BlockAssetDialog,
+      props: {
+        token,
+      },
     })),
     handleBlacklistDialog: () => dispatch(modalsOpen({
       component: BlacklistDialog,
@@ -62,12 +63,11 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PlatformInfo extends PureComponent {
   static propTypes = {
-    tokens: PropTypes.instanceOf(TokensCollection),
-    selectedToken: PropTypes.string,
+    selectedToken: PropTypes.instanceOf(TokenModel),
     selectedPlatform: PropTypes.string,
     handleCrowdsaleDialog: PropTypes.func,
     handleAddManagerDialog: PropTypes.func,
-    handleBlockAssetDialog: PropTypes.func,
+    openBlockAssetDialog: PropTypes.func,
     getManagersForAssetSymbol: PropTypes.func,
     managersForTokenLoading: PropTypes.bool,
     reissueAsset: PropTypes.func,
@@ -79,8 +79,13 @@ export default class PlatformInfo extends PureComponent {
     handleBlacklistDialog: PropTypes.func,
   }
 
+  handleBlockAssetDialog = () => {
+    return this.props.openBlockAssetDialog(this.props.selectedToken)
+  }
+
   renderInstructions () {
-    if (!this.props.usersPlatforms.length && !this.props.platformsList.length) {
+    const { selectedToken, selectedPlatform, usersPlatforms, platformsList } = this.props
+    if (!usersPlatforms.length && !platformsList.length) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -92,7 +97,7 @@ export default class PlatformInfo extends PureComponent {
       )
     }
 
-    if (this.props.usersPlatforms.length && !this.props.platformsList.length) {
+    if (usersPlatforms.length && !platformsList.length) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -104,7 +109,7 @@ export default class PlatformInfo extends PureComponent {
       )
     }
 
-    if (!this.props.selectedPlatform) {
+    if (!selectedPlatform) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -116,7 +121,7 @@ export default class PlatformInfo extends PureComponent {
       )
     }
 
-    if (!this.props.selectedToken) {
+    if (!selectedToken.isFetched()) {
       return (
         <div styleName='root'>
           <div styleName='content'>
@@ -177,7 +182,7 @@ export default class PlatformInfo extends PureComponent {
   }
 
   renderFee () {
-    const selectedToken = this.props.tokens.item(this.props.selectedToken)
+    const { selectedToken } = this.props
     let value
     switch (selectedToken.withFee()) {
       case true:
@@ -200,13 +205,18 @@ export default class PlatformInfo extends PureComponent {
   }
 
   render () {
-    if (!this.props.selectedToken) {
+    const { selectedToken, selectedPlatform } = this.props
+
+    if (!selectedToken.isFetched()) {
       return null
     }
-    const selectedToken = this.props.tokens.item(this.props.selectedToken)
 
-    if (!this.props.selectedPlatform || !this.props.selectedToken || !selectedToken) return this.renderInstructions()
+    if (!selectedPlatform || !selectedToken.isFetched()) {
+      return this.renderInstructions()
+    }
+
     const totalSupply = this.props.assets[ selectedToken.address() ].totalSupply
+    const isPaused = selectedToken.isPaused()
 
     return (
       <div styleName='root'>
@@ -240,10 +250,16 @@ export default class PlatformInfo extends PureComponent {
           </div>
 
           <div styleName='actions'>
-            <FlatButton
+            <RaisedButton
+              disabled={isPaused.isFetching() || !isPaused.isFetched()}
               styleName='action'
-              onTouchTap={this.props.handleBlockAssetDialog}
-              label={<Translate value={prefix('blockAsset')} />}
+              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() && this.handleBlockAssetDialog}
+              labelStyle={{ display: 'flex' }}
+              label={isPaused.isFetching() || !isPaused.isFetched()
+                ? <Preloader />
+                : <Translate value={prefix(selectedToken.isPaused().value() ? 'unblockAsset' : 'blockAsset')} />
+              }
+              primary={selectedToken.isPaused().value()}
             />
 
             <RaisedButton

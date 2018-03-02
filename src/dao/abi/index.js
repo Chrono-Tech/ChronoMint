@@ -24,3 +24,4 @@ export const WalletsManagerABI = require('chronobank-smart-contracts/build/contr
 export const AssetDonatorABI = require('chronobank-smart-contracts/build/contracts/AssetDonator.json')
 export const ChronoBankAssetProxyABI = require('chronobank-smart-contracts/build/contracts/ChronoBankAssetProxy.json')
 export const AssetsManagerABI = require('chronobank-smart-contracts/build/contracts/AssetsManager.json')
+export const ChronoBankAssetABI = require('chronobank-smart-contracts/build/contracts/ChronoBankAsset.json')

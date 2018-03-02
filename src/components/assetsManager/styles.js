@@ -27,5 +27,14 @@ export default {
         fontWeight: variables.fontWeightBold,
       },
     },
+    unblockRaisedButton: {
+      buttonStyle: {
+        backgroundColor: variables.blockColor,
+      },
+      labelStyle: {
+        color: variables.colorWhite,
+        fontWeight: variables.fontWeightBold,
+      },
+    },
   },
 }

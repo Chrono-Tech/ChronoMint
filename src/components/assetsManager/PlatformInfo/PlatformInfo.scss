@@ -199,14 +199,21 @@
 }
 
 .actions {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 16px;
   @include xs-only {
     text-align: center;
     left: 5px;
   }
+
   .action {
     margin: 0 16px;
+    :global {
+      .Preloader__root {
+        height: 36px;
+      }
+    }
     @include xs-only {
       margin: 10px 0 0;
       width: calc(100% - 32px);
