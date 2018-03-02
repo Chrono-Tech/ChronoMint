@@ -51,7 +51,7 @@ export default class BlockAssetDialog extends PureComponent {
             <RaisedButton
               styleName='action'
               label={<Translate value={`${prefix}.blockAssetButton`} />}
-              {...styles.buttons.RaisedButton}
+              {...styles.buttons.blockRaisedButton}
             />
           </div>
         </div>

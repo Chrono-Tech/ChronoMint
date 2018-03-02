@@ -15,6 +15,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
+import styles from 'components/assetsManager/styles'
 import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
 
 import './PlatformInfo.scss'
@@ -135,26 +136,16 @@ export default class PlatformInfo extends PureComponent {
         {
           managersList.isFetched() && !managersList.isFetching() &&
           (
-            <div styleName='title'>
-              {managersList.size}&nbsp;<Translate value={prefix('managers')} />
-              <div styleName='avatarsRow'>
-                {
-                  managersList.items()
-                    .map((manager) => <div key={manager}><i className='material-icons'>account_circle</i></div>)
-                }
+            <div>
+              <div styleName='title'>
+                <Translate value={prefix('managers')} />
               </div>
-
               <div styleName='addManager'>
-                <FlatButton
-                  onTouchTap={this.props.handleAddManagerDialog}
-                  styleName='addManagerButton'
-                  label={(
-                    <span>
-                      <i className='material-icons'>add_circle</i>
-                      <Translate value={prefix('addManagers')} />
-                    </span>
-                  )}
-                />
+                <button onTouchTap={this.props.handleAddManagerDialog} styleName='addManagerButton'>
+                  <span>
+                    <Translate value={prefix('manageButton')} size={managersList.size()} />
+                  </span>
+                </button>
               </div>
             </div>
           )
@@ -162,6 +153,25 @@ export default class PlatformInfo extends PureComponent {
         }
       </div>
 
+    )
+  }
+
+  renderBlacklist () {
+    return (
+      <div styleName='blacklistRow'>
+        <div>
+          <div styleName='title'>
+            <Translate value={prefix('blacklist')} />
+          </div>
+          <div styleName='blacklistButtonWrap'>
+            <button onTouchTap={this.props.handleAddManagerDialog} styleName='blacklistButton'>
+              <span>
+                <Translate value={prefix('manageButton')} size={3} />
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -219,8 +229,14 @@ export default class PlatformInfo extends PureComponent {
               </div>
             </div>
           </div>
+
           {selectedToken.isReissuable().isFetched() && selectedToken.isReissuable().value() && <ReissueAssetForm />}
-          {this.renderManagers(selectedToken.managersList())}
+
+          <div styleName='flexRow'>
+            {this.renderManagers(selectedToken.managersList())}
+
+            {this.renderBlacklist()}
+          </div>
 
           <div styleName='actions'>
             <FlatButton
