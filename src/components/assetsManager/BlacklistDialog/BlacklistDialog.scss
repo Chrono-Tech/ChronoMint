@@ -10,7 +10,6 @@
 }
 
 .dialogHeader {
-  display: flex;
   position: relative;
   align-items: baseline;
   box-sizing: border-box;
@@ -36,17 +35,4 @@
 
 .dialogBody {
   padding: 0 16px;
-}
-
-.dialogFooter {
-  padding: 24px 16px;
-  text-align: right;
-}
-
-.action {
-  margin: 0 0 0 10px;
-}
-
-.checkboxField {
-  margin-top: 30px;
 }

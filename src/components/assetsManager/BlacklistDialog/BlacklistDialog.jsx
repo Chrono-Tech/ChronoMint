@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
-import { RaisedButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import styles from 'components/assetsManager/styles'
-import './BlackListDialog.scss'
+import BlacklistForm from 'components/assetsManager/BlacklistForm/BlacklistForm'
+import './BlacklistDialog.scss'
 import { prefix } from './lang'
 
 function mapDispatchToProps (dispatch) {
@@ -16,7 +15,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(null, mapDispatchToProps)
-export default class BlackListDialog extends PureComponent {
+export default class BlacklistDialog extends PureComponent {
   static propTypes = {
     modalsClose: PropTypes.func,
   }
@@ -43,18 +42,7 @@ export default class BlackListDialog extends PureComponent {
             </div>
           </div>
           <div styleName='dialogBody'>
-          </div>
-          <div styleName='dialogFooter'>
-            <RaisedButton
-              styleName='action'
-              label={<Translate value={`${prefix}.cancel`} />}
-              onTouchTap={this.handleClose}
-            />
-            <RaisedButton
-              styleName='action'
-              label={<Translate value={`${prefix}.blockAssetButton`} />}
-              {...styles.buttons.RaisedButton}
-            />
+            <BlacklistForm onSubmitSuccess={this.handleSubmitSuccess} />
           </div>
         </div>
       </ModalDialog>
