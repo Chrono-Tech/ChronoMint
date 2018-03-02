@@ -1,5 +1,4 @@
 import Amount from 'models/Amount'
-import tokenService from 'services/TokenService'
 import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
@@ -10,15 +9,15 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol, isReissuable } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, getFee, getManagersForAssetSymbol } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
-import styles from 'components/assetsManager/styles'
-import ReissueAssetForm from '../ReissueAssetForm/ReissueAssetForm'
+import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
 
 import './PlatformInfo.scss'
+import BlacklistDialog from '../BlacklistDialog/BlacklistDialog'
 
 function prefix (token) {
   return `Assets.PlatformInfo.${token}`
@@ -49,8 +48,10 @@ function mapDispatchToProps (dispatch) {
     handleBlockAssetDialog: () => dispatch(modalsOpen({
       component: BlockAssetDialog,
     })),
+    handleBlacklistDialog: () => dispatch(modalsOpen({
+      component: BlacklistDialog,
+    })),
     getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
-    isReissuable: (symbol) => dispatch(isReissuable(symbol)),
     getFee: (symbol) => dispatch(getFee(symbol)),
     handleRevokeDialog: () => dispatch(modalsOpen({
       component: RevokeDialog,
@@ -71,11 +72,11 @@ export default class PlatformInfo extends PureComponent {
     managersForTokenLoading: PropTypes.bool,
     reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
-    isReissuable: PropTypes.func,
     getFee: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
     assets: PropTypes.objectOf(PropTypes.object),
+    handleBlacklistDialog: PropTypes.func,
   }
 
   renderInstructions () {
@@ -164,7 +165,7 @@ export default class PlatformInfo extends PureComponent {
             <Translate value={prefix('blacklist')} />
           </div>
           <div styleName='blacklistButtonWrap'>
-            <button onTouchTap={this.props.handleAddManagerDialog} styleName='blacklistButton'>
+            <button onTouchTap={this.props.handleBlacklistDialog} styleName='blacklistButton'>
               <span>
                 <Translate value={prefix('manageButton')} size={3} />
               </span>
@@ -244,12 +245,6 @@ export default class PlatformInfo extends PureComponent {
               onTouchTap={this.props.handleBlockAssetDialog}
               label={<Translate value={prefix('blockAsset')} />}
             />
-
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('crowdsaleInfo')} />}
-              onTouchTap={() => this.props.handleCrowdsaleDialog()}
-            />*/}
 
             <RaisedButton
               onTouchTap={this.props.handleRevokeDialog}
