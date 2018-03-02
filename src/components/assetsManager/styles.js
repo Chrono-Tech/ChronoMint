@@ -18,7 +18,7 @@ export default {
     },
   },
   buttons: {
-    RaisedButton: {
+    blockRaisedButton: {
       buttonStyle: {
         backgroundColor: variables.blockColor,
       },
