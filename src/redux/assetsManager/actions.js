@@ -1,3 +1,4 @@
+import AssetManagerProvider from '@chronobank/login/network/AssetManagerProvider'
 import { notify } from 'redux/notifier/actions'
 import contractManager from 'dao/ContractsManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
@@ -24,15 +25,14 @@ export const GET_USER_PLATFORMS = 'AssetsManager/GET_USER_PLATFORMS'
 
 export const getUsersPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const platformManagerDao = await contractManager.getPlatformManagerDAO()
-  const usersPlatforms = await platformManagerDao.getPlatformsMetadataForUser(account, dispatch, getState().get(DUCK_ASSETS_MANAGER))
+  const usersPlatforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
   dispatch({ type: GET_USER_PLATFORMS, payload: { usersPlatforms } })
 }
 
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account)
+  const platforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers } })
@@ -40,8 +40,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
 
 export const getPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms = await assetsManagerDao.getParticipatingPlatformsForUser(account)
+  const platforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
   dispatch({ type: GET_PLATFORMS, payload: { platforms } })
 }
 
@@ -72,9 +71,10 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   const callback = (tx) => {
+    console.log('Tx: ', tx)
     dispatch(setTx(tx))
-    dispatch(getUsersPlatforms())
-    dispatch(getPlatforms())
+    // dispatch(getUsersPlatforms())
+    // dispatch(getPlatforms())
   }
   platformManagerDAO.watchCreatePlatform(callback, account)
 }

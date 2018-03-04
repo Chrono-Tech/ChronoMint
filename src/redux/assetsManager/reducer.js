@@ -75,6 +75,7 @@ export default (state = initialState, action) => {
         transactionsFetching: false,
       }
     case GET_USER_PLATFORMS:
+      console.log('GET_USER_PLATFORMS: ', action)
       return {
         ...state,
         usersPlatforms: action.payload.usersPlatforms,

@@ -532,6 +532,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
       return result
     } catch (e) {
+      console.log('Create platform error: ', e)
       /** FAIL */
       const code = e.code
       const userError = this._txErrorDefiner(e)

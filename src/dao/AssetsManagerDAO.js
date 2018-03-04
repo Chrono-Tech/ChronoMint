@@ -1,4 +1,5 @@
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import AssetManagerProvider from '@chronobank/login/network/AssetManagerProvider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
 import TxModel from 'models/TxModel'
@@ -22,21 +23,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return this._call('getTokenExtension', [ platform ])
   }
 
-  async getParticipatingPlatformsForUser (account) {
-    const platformsList = await this._call('getParticipatingPlatformsForUser', [ account ])
-    let formatPlatformsList = {}
-    if (platformsList.length) {
-      for (let platform of platformsList) {
-        formatPlatformsList[ platform ] = {
-          address: platform,
-          name: null,
-        }
-      }
-    }
-    return Object.values(formatPlatformsList)
-  }
-
   async getSystemAssetsForOwner (owner) {
+    return {}
+
     const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}
@@ -57,6 +46,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getManagers (owner) {
+    return {}
+
     const managersList = await this._call('getManagers', [ owner ])
     let formatManagersList = {}
     managersList.map((manager) => {
