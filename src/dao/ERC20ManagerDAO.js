@@ -13,6 +13,7 @@ export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM'
 export const PROFILE_PANEL_TOKENS = [
   { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
   { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
+  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
 ]
