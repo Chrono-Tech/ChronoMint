@@ -1,11 +1,11 @@
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
+import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
-import AbstractContractDAO from './AbstractContractDAO'
 
 const BLOCKCHAIN_NEM = 'NEM'
 export const NEM_XEM_SYMBOL = 'XEM'
@@ -18,7 +18,7 @@ const EVENT_BALANCE = 'balance'
 export const EVENT_NEM_LIKE_TOKEN_CREATED = 'nemLikeTokenCreated'
 export const EVENT_NEM_LIKE_TOKEN_FAILED = 'nemLikeTokenFailed'
 
-export default class NemDAO extends AbstractContractDAO {
+export default class NemDAO extends EventEmitter {
 
   constructor (name, symbol, nemProvider, decimals, mosaic) {
     super()
@@ -29,6 +29,9 @@ export default class NemDAO extends AbstractContractDAO {
     this._mosaic = mosaic
     this._nemProvider = nemProvider
   }
+
+  /** @private */
+  static _filterCache = {}
 
   getAddressValidator () {
     return nemAddress
@@ -94,6 +97,16 @@ export default class NemDAO extends AbstractContractDAO {
       console.log('Transfer failed', e)
       throw e
     }
+  }
+
+  /** @protected */
+  _setFilterCache (id, data) {
+    NemDAO._filterCache[ id ] = data
+  }
+
+  /** @protected */
+  _getFilterCache (id) {
+    return NemDAO._filterCache[ id ]
   }
 
   async getTransfer (id, account): Promise<Array<TxModel>> {

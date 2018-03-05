@@ -8,6 +8,7 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
@@ -15,14 +16,13 @@ import TxModel from 'models/TxModel'
 import { bitcoinAddress } from 'models/validator'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
-import AbstractContractDAO from './AbstractContractDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 export const EVENT_BTC_LIKE_TOKEN_CREATED = 'BtcLikeTokenCreate'
 export const EVENT_BTC_LIKE_TOKEN_FAILED = 'BtcLikeTokenFailed'
 
-export class BitcoinDAO extends AbstractContractDAO {
+export class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
     super()
     this._name = name
@@ -30,6 +30,9 @@ export class BitcoinDAO extends AbstractContractDAO {
     this._bitcoinProvider = bitcoinProvider
     this._decimals = 8
   }
+
+  /** @private */
+  static _filterCache = {}
 
   getAddressValidator () {
     return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
@@ -78,6 +81,16 @@ export class BitcoinDAO extends AbstractContractDAO {
       console.log('Transfer failed', e)
       throw e
     }
+  }
+
+  /** @protected */
+  _setFilterCache (id, data) {
+    BitcoinDAO._filterCache[ id ] = data
+  }
+
+  /** @protected */
+  _getFilterCache (id) {
+    return BitcoinDAO._filterCache[ id ]
   }
 
   async getTransfer (id, account): Array<TxModel> {
