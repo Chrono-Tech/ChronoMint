@@ -1,33 +1,37 @@
-import React, { PureComponent } from 'react'
+import { PureComponent } from 'react'
 
 import * as actions from 'redux/sides/actions'
 import reducer from 'redux/sides/reducer'
 
 const initialState = {
-  stack: [],
+  stack: [{
+    component: PureComponent,
+    panelKey: 'ProfileSidePanelKey',
+    isOpened: false,
+  }],
 }
 
-let state = null
+let state = {}
 
 const sides = {
   hello: {
     component: PureComponent,
-    key: 'hello',
-    props: {
+    panelKey: 'hello',
+    componentProps: {
       title: 'Hello',
     },
   },
   goodbye: {
     component: PureComponent,
-    key: 'goodbye',
-    props: {
+    panelKey: 'goodbye',
+    componentProps: {
       title: 'goodbye',
     },
   },
   chao: {
     component: PureComponent,
-    key: 'chao',
-    props: {
+    panelKey: 'chao',
+    componentProps: {
       title: 'Chao',
     },
   },
@@ -46,7 +50,7 @@ describe('sides reducer', () => {
     })
 
     expect(state.stack[state.stack.length - 1])
-      .toEqual({ ...sides.hello, key: 'hello' })
+      .toEqual({ ...sides.hello, panelKey: 'hello' })
   })
 
   it('should handle SIDES_PUSH then POP with a wrong key and finally POP with correct key', () => {
@@ -56,22 +60,22 @@ describe('sides reducer', () => {
     })
 
     expect(state.stack[state.stack.length - 1])
-      .toEqual({ ...sides.goodbye, key: 'goodbye' })
+      .toEqual({ ...sides.goodbye, panelKey: 'goodbye' })
 
     state = reducer(state, {
-      key: 'wrong_goodbye',
+      panelKey: 'wrong_goodbye',
       type: actions.SIDES_POP,
     })
 
-    expect(state.stack.find((e) => e.key === 'goodbye').key)
+    expect(state.stack.find((e) => e.panelKey === 'goodbye').panelKey)
       .toEqual('goodbye')
 
     state = reducer(state, {
-      key: 'goodbye',
+      panelKey: 'goodbye',
       type: actions.SIDES_POP,
     })
 
-    expect(state.stack.find((e) => e.key === 'goodbye'))
+    expect(state.stack.find((e) => e.panelKey === 'goodbye'))
       .toEqual(undefined)
 
   })

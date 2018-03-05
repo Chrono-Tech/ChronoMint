@@ -25,7 +25,7 @@ class SideStack extends PureComponent {
     return (
       <div styleName='root'>
         { this.props.stack.map((panel) => (
-          <SidePanel {...panel} />
+          <SidePanel key={panel.panelKey} {...panel} />
         ))}
       </div>
     )

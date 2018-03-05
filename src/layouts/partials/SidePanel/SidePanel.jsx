@@ -28,7 +28,7 @@ class SidePanel extends PureComponent {
     isOpened: PropTypes.bool,
     handlePanelClose: PropTypes.func,
     panelKey: PropTypes.string,
-    component: PropTypes.objectOf(PureComponent),
+    component: PropTypes.func,
     componentProps: PropTypes.object,
   }
 

@@ -14,20 +14,20 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.SIDES_PUSH:
-      const filteredStack = state.stack.filter((panel) => panel.key !== action.key)
+      const filteredStack = state.stack.filter((panel) => panel.panelKey !== action.panelKey)
       return {
         ...state,
         stack: [...filteredStack, {
-          key: action.key,
+          panelKey: action.panelKey,
           component: action.component,
-          props: action.props,
+          componentProps: action.componentProps,
           isOpened: action.isOpened,
         }],
       }
     case actions.SIDES_POP:
       return {
         ...state,
-        stack: state.stack.filter((panel) => panel.key !== action.key),
+        stack: state.stack.filter((panel) => panel.panelKey !== action.panelKey),
       }
     case actions.SIDES_CLEAR:
       return {
