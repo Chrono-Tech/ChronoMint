@@ -1,9 +1,10 @@
+import { Translate } from 'react-redux-i18n'
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
-import {  FontIcon, Drawer } from 'material-ui'
+import { FontIcon, Drawer } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
 import ProfileModel from 'models/ProfileModel'
@@ -14,6 +15,7 @@ import { TOKEN_ICONS } from 'assets'
 import { sidesClose } from 'redux/sides/actions'
 
 import './ProfileSidePanel.scss'
+import { prefix } from './lang'
 
 export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
@@ -109,7 +111,7 @@ class ProfileSidePanel extends PureComponent {
 
         <div styleName='main-address'>
           <div styleName='main-address-account'>
-            <div styleName='main-address-header-text'>Main address</div>
+            <div styleName='main-address-header-text'><Translate value={`${prefix}.mainAddress`} /></div>
             <div styleName='main-address-account-name'>
               <span styleName='main-address-account-name-text'>
                 {this.props.account}
@@ -144,7 +146,7 @@ class ProfileSidePanel extends PureComponent {
                     <div styleName='address-info-text'>{token.title} Address</div>
                     <div styleName='address-token-name'>
                       <span styleName='address-token-name-text'>
-                        { token.address }
+                        {token.address}
                       </span>
                     </div>
                   </div>
