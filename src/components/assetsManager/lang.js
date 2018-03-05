@@ -7,6 +7,9 @@ import * as HistoryTable from './HistoryTable/lang'
 import * as PlatformInfo from './PlatformInfo/lang'
 import * as PlatformsList from './PlatformsList/lang'
 import * as RevokeForm from './RevokeDialog/lang'
+import BlockAssetDialog from './BlockAssetDialog/lang'
+import BlacklistDialog from './BlacklistDialog/lang'
+import BlacklistForm from './BlacklistForm/lang'
 
 export default {
   en: {
@@ -19,6 +22,9 @@ export default {
     CrowdsaleForm: CrowdsaleForm.en,
     AssetManagerForm: AssetManagerForm.en,
     RevokeForm: RevokeForm.en,
+    BlockAssetDialog: BlockAssetDialog.en,
+    BlacklistDialog: BlacklistDialog.en,
+    BlacklistForm: BlacklistForm.en,
   },
   ru: {
     AssetManager: AssetManager.ru,
@@ -30,5 +36,8 @@ export default {
     CrowdsaleForm: CrowdsaleForm.ru,
     AssetManagerForm: AssetManagerForm.ru,
     RevokeForm: RevokeForm.ru,
+    BlockAssetDialog: BlockAssetDialog.ru,
+    BlacklistDialog: BlacklistDialog.ru,
+    BlacklistForm: BlacklistForm.ru,
   },
 }

@@ -8,6 +8,7 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
 import Web3Converter from 'utils/Web3Converter'
 import AssetsManagerNoticeModel, { MANAGER_ADDED, MANAGER_REMOVED } from 'models/notices/AssetsManagerNoticeModel'
+import PausedModel from 'models/tokens/PausedModel'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -316,10 +317,12 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
       .isReissuable(token.isReissuable().isFetching(true)),
   })
 
-  const [ managersList, isReissuable, fee ] = await Promise.all([
+  const [ managersList, isReissuable, fee, isPaused ] = await Promise.all([
     getManagersForAssetSymbol(token.symbol()),
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
+    getPauseStatus(token.address()),
+    getBlacklist(token.address()),
   ])
 
   dispatch({
@@ -327,7 +330,73 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
     token: token
       .managersList(managersList)
       .isReissuable(isReissuable)
-      .fee(fee),
+      .fee(fee)
+      .isPaused(isPaused),
   })
+}
 
+const getPauseStatus = async (address: string) => {
+  let isPaused = false
+  try {
+    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
+    isPaused = await chronoBankAssetDAO.getPauseStatus()
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+  return new PausedModel({ value: isPaused }).isFetched(true)
+}
+
+export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => async (dispatch) => {
+  const pause = new PausedModel({ value: statusIsBlock })
+  dispatch({
+    type: TOKENS_FETCHED,
+    token: token.isPaused(pause.isFetched(false).isFetching(true)),
+  })
+  try {
+    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+    const tx = statusIsBlock
+      ? await chronoBankAssetDAO.pause() // status === true -> block
+      : await chronoBankAssetDAO.unpause() // status === false -> unblock
+    if (tx.tx) {
+      dispatch({
+        type: TOKENS_FETCHED,
+        token: token.isPaused(pause.isFetched(true)),
+      })
+    }
+  } catch (e) { // if error
+    // eslint-disable-next-line
+    console.error('e', e.message)
+    dispatch({
+      type: TOKENS_FETCHED,
+      token: token.isPaused(pause.value(!statusIsBlock).isFetched(true).isFetching(false)),
+    })
+  }
+}
+
+const getBlacklist = async (address: string) => {
+  let blacklist = []
+  try {
+    // make the method
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+  return blacklist
+}
+
+export const restrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
+  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+  const res = await chronoBankAssetDAO.restrict([ address ])
+  // eslint-disable-next-line
+  console.log('restrictUser res', res)
+}
+
+export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
+  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+  const res = await chronoBankAssetDAO.unrestrict([ address ])
+  // eslint-disable-next-line
+  console.log('unrestrictUser res', res)
 }
