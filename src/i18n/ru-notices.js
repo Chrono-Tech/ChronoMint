@@ -1,3 +1,12 @@
+import {
+  ASSET_PAUSED,
+  ASSET_UNPAUSED,
+  MANAGER_ADDED,
+  MANAGER_REMOVED,
+  USER_ADDED_TO_BLACKLIST,
+  USER_DELETED_FROM_BLACKLIST,
+} from 'models/notices/AssetsManagerNoticeModel'
+
 export default {
   approval: {
     title: 'Подтверждение',
@@ -78,7 +87,11 @@ export default {
   },
   assetsManager: {
     title: 'Ассет менеджер',
-    managerAdded: 'Менеджер добавлен',
-    managerRemoved: 'Менеджер удален',
+    [ MANAGER_ADDED ]: 'Менеджер добавлен',
+    [ MANAGER_REMOVED ]: 'Менеджер удален',
+    [ ASSET_PAUSED ]: 'Ассет заблокирован',
+    [ ASSET_UNPAUSED ]: 'Ассет разблокирован',
+    [ USER_ADDED_TO_BLACKLIST ]: 'Пользователь добавлен в черный список',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'Пользователь удален из черного списка',
   },
 }

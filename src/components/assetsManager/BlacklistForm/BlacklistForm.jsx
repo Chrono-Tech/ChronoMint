@@ -39,6 +39,7 @@ export default class BlacklistForm extends PureComponent {
   }
 
   renderUser () {
+    // TODO @abdulov check and fix method
     const { account } = this.props
     const address = '0x236060666dbed392bb1f0b00b25e7c4b9cdcc4d5'
     return (
