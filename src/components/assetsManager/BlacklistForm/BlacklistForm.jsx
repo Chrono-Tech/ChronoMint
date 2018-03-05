@@ -15,15 +15,7 @@ import { prefix } from './lang'
 export const FORM_ASSET_MANAGER = 'AssetManagerDialog'
 
 const onSubmit = (values) => {
-  return values.get('managerAddress')
-}
-
-function mapDispatchToProps () {
-  return {
-    handleRemoveUserFromBlacklist: () => {
-    },
-  }
-
+  return values.get('userAddress')
 }
 
 function mapStateToProps (state) {
@@ -32,19 +24,23 @@ function mapStateToProps (state) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps, null)
 @reduxForm({ form: FORM_ASSET_MANAGER, validate, onSubmit })
 export default class BlacklistForm extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     managers: PropTypes.instanceOf(OwnerCollection),
-    handleRemoveUserFromBlacklist: PropTypes.func,
+    onRemoveFromBlacklist: PropTypes.func,
     ...formPropTypes,
+  }
+
+  handleRemoveFromBlacklist (address: string) {
+    return () => this.props.onRemoveFromBlacklist(address)
   }
 
   renderUser () {
     const { account } = this.props
-    const address = '0xb7237dd7dacd9da8e489b57d4631fc33342ff75a'
+    const address = '0x236060666dbed392bb1f0b00b25e7c4b9cdcc4d5'
     return (
       <div styleName='row'>
         <div styleName='iconBox'>
@@ -52,7 +48,7 @@ export default class BlacklistForm extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <div onTouchTap={this.handleRemoveUserFromBlacklist} styleName='action' role='button'>
+          <div onTouchTap={this.handleRemoveFromBlacklist(address)} styleName='action' role='button'>
             <i className='material-icons'>delete</i>
           </div>
         )}
@@ -71,7 +67,7 @@ export default class BlacklistForm extends PureComponent {
             <div styleName='address'>
               <Field
                 component={TextField}
-                name='managerAddress'
+                name='userAddress'
                 fullWidth
                 hintText={<Translate value={`${prefix}.userAddress`} />}
               />

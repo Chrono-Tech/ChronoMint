@@ -49,8 +49,11 @@ function mapDispatchToProps (dispatch) {
         token,
       },
     })),
-    handleBlacklistDialog: () => dispatch(modalsOpen({
+    openBlacklistDialog: (token) => dispatch(modalsOpen({
       component: BlacklistDialog,
+      props: {
+        token,
+      },
     })),
     getManagersForAssetSymbol: (symbol) => dispatch(getManagersForAssetSymbol(symbol)),
     getFee: (symbol) => dispatch(getFee(symbol)),
@@ -76,11 +79,15 @@ export default class PlatformInfo extends PureComponent {
     platformsList: PropTypes.arrayOf(PropTypes.object),
     usersPlatforms: PropTypes.arrayOf(PropTypes.object),
     assets: PropTypes.objectOf(PropTypes.object),
-    handleBlacklistDialog: PropTypes.func,
+    openBlacklistDialog: PropTypes.func,
   }
 
   handleBlockAssetDialog = () => {
     return this.props.openBlockAssetDialog(this.props.selectedToken)
+  }
+
+  handleBlacklistDialog = () => {
+    return this.props.openBlacklistDialog(this.props.selectedToken)
   }
 
   renderInstructions () {
@@ -170,7 +177,7 @@ export default class PlatformInfo extends PureComponent {
             <Translate value={prefix('blacklist')} />
           </div>
           <div styleName='blacklistButtonWrap'>
-            <button onTouchTap={this.props.handleBlacklistDialog} styleName='blacklistButton'>
+            <button onTouchTap={this.handleBlacklistDialog} styleName='blacklistButton'>
               <span>
                 <Translate value={prefix('manageButton')} size={3} />
               </span>
@@ -206,10 +213,6 @@ export default class PlatformInfo extends PureComponent {
 
   render () {
     const { selectedToken, selectedPlatform } = this.props
-
-    if (!selectedToken.isFetched()) {
-      return null
-    }
 
     if (!selectedPlatform || !selectedToken.isFetched()) {
       return this.renderInstructions()
