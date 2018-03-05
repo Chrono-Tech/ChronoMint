@@ -315,6 +315,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
     getPauseStatus(token.address()),
+    getBlacklist(token.address()),
   ])
 
   dispatch({
@@ -327,7 +328,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 }
 
-const getPauseStatus = async (address) => {
+const getPauseStatus = async (address: string) => {
   let isPaused = false
   try {
     const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
@@ -367,3 +368,28 @@ export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => 
   }
 }
 
+const getBlacklist = async (address: string) => {
+  let blacklist = []
+  try {
+    // make the method
+  }
+  catch (e) {
+    // eslint-disable-next-line
+    console.error(e.message)
+  }
+  return blacklist
+}
+
+export const restrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
+  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+  const res = await chronoBankAssetDAO.restrict([ address ])
+  // eslint-disable-next-line
+  console.log('restrictUser res', res)
+}
+
+export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
+  const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
+  const res = await chronoBankAssetDAO.unrestrict([ address ])
+  // eslint-disable-next-line
+  console.log('unrestrictUser res', res)
+}
