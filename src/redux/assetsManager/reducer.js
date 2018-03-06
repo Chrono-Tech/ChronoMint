@@ -33,11 +33,15 @@ export default (state = initialState, action) => {
         managersCount: action.payload.managers.length,
         assets: action.payload.assets,
         platformsList: action.payload.platforms,
+        usersPlatforms: action.payload.usersPlatforms,
+        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     case GET_PLATFORMS:
       return {
         ...state,
         platformsList: action.payload.platforms,
+        usersPlatforms: action.payload.usersPLatforms,
+        usersPlatformsCount: action.payload.usersPLatforms.length,
       }
     case SELECT_TOKEN:
       return {
@@ -73,13 +77,6 @@ export default (state = initialState, action) => {
         ],
         transactionsFetched: true,
         transactionsFetching: false,
-      }
-    case GET_USER_PLATFORMS:
-      console.log('GET_USER_PLATFORMS: ', action)
-      return {
-        ...state,
-        usersPlatforms: action.payload.usersPlatforms,
-        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     default:
       return state

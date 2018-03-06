@@ -1,4 +1,4 @@
-import { getUsersPlatforms, getPlatforms } from 'redux/assetsManager/actions'
+import { getPlatforms } from 'redux/assetsManager/actions'
 import { store } from 'redux/configureStore'
 import AbstractNode from './AbstractNode'
 
@@ -19,6 +19,10 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       return
     }
     try {
+      await this._api.post('addr', {
+        address: ethAddress,
+        nem: nemAddress,
+      })
       this.executeOrSchedule(() => {
         console.log('EthereumMiddlewareNode: executeOrSchedule: here')
         this._subscriptions[ `all_events:testing` ] = this._client.subscribe(
@@ -27,9 +31,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
             console.log('EthereumMiddlewareNode: Subscribe message requested: ', message)
             try {
               const data = JSON.parse(message.body)
-              console.log('EthereumMiddlewareNode: Subscribe message parsed: ', data)
 
-              store.dispatch(getUsersPlatforms())
               store.dispatch(getPlatforms())
 
             } catch (e) {
@@ -53,4 +55,16 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       this.trace('Address unsubscription error', e)
     }
   }
+
+  async getPlatformList (userAddress: string) {
+    const response = await this._api.get(`events/PlatformRequested/?by='${userAddress}'`)
+    if (response && response.data.length) {
+      return response.data.map((p) => {
+        return { address: p.platform, by: p.by, name: null }
+      })
+    }
+
+    return []
+  }
+
 }

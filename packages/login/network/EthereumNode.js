@@ -22,7 +22,7 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 // TODO @dkchv: update to actual config
 const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://localhost:8003',
+    baseURL: 'http://localhost:8083',
     timeout: 4000,
   }),
   socket: {
@@ -54,7 +54,6 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
 })
 
 export default function selectEthereumNode (engine) {
-  console.log('selectEthereumNode: ', engine, engine.getNetwork().id === NETWORK_MAIN_ID)
   return engine.getNetwork().id === NETWORK_MAIN_ID
     ? ETHEREUM_MAINNET_NODE
     : ETHEREUM_TESTNET_NODE

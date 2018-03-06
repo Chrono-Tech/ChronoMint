@@ -61,6 +61,9 @@ export default class AssetManager extends PureComponent {
   }
 
   renderHead () {
+
+    console.log('renderHead: ', {...this.props} )
+
     const { usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading } = this.props
     return (
       <div styleName='head'>

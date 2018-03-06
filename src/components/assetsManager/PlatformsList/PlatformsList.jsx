@@ -120,6 +120,9 @@ class PlatformsList extends PureComponent {
   }
 
   render () {
+
+    console.log('Render platformList: ', {...this.props})
+
     return (
       <div styleName='root'>
         <div styleName='content'>

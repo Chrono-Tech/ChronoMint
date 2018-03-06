@@ -1,4 +1,3 @@
-import AssetManagerProvider from '@chronobank/login/network/AssetManagerProvider'
 import { notify } from 'redux/notifier/actions'
 import contractManager from 'dao/ContractsManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
@@ -21,27 +20,25 @@ export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
 export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
-export const GET_USER_PLATFORMS = 'AssetsManager/GET_USER_PLATFORMS'
-
-export const getUsersPlatforms = () => async (dispatch, getState) => {
-  const { account } = getState().get(DUCK_SESSION)
-  const usersPlatforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
-  dispatch({ type: GET_USER_PLATFORMS, payload: { usersPlatforms } })
-}
 
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
+
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
+  const platforms =  await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
-  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers } })
+  const usersPlatforms = platforms.filter((platform) => platform.by === account)
+
+  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers, usersPlatforms } })
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
-  const platforms =  await AssetManagerProvider.getParticipatingPlatformsForUser(account)
-  dispatch({ type: GET_PLATFORMS, payload: { platforms } })
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const platforms =  await assetsManagerDao.getPlatformList(account)
+  const usersPlatforms = platforms.filter((platform) => platform.by === account)
+  dispatch({ type: GET_PLATFORMS, payload: { platforms, usersPlatforms } })
 }
 
 export const createPlatform = (values) => async () => {
@@ -71,10 +68,7 @@ export const watchPlatformManager = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const platformManagerDAO = await contractManager.getPlatformManagerDAO()
   const callback = (tx) => {
-    console.log('Tx: ', tx)
     dispatch(setTx(tx))
-    // dispatch(getUsersPlatforms())
-    // dispatch(getPlatforms())
   }
   platformManagerDAO.watchCreatePlatform(callback, account)
 }
@@ -236,7 +230,6 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
-  dispatch(getUsersPlatforms())
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
   const [ assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([

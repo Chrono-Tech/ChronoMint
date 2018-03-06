@@ -1,5 +1,5 @@
 import web3Provider from '@chronobank/login/network/Web3Provider'
-import AssetManagerProvider from '@chronobank/login/network/AssetManagerProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
 import TxModel from 'models/TxModel'
@@ -43,6 +43,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
     })
     return assetsList
+  }
+
+  async getPlatformList (userAddress: string) {
+    return ethereumProvider.getPlatformList(userAddress)
   }
 
   async getManagers (owner) {
