@@ -213,20 +213,10 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async getTransfer (id, account): Promise<TxModel> {
-    const offset = 100 // limit
-    const cache = this._getFilterCache(id) || {}
-    const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
-    const txs = cache.txs || []
-    let page = cache.page || 1
-    let end = cache.end || false
-    const skip = txs.length
-
+  async getTransfer (id, account, skip, offset): Promise<TxModel> {
+    let txs = []
     try {
       const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
-      if (txsResult.length < TXS_PER_PAGE) {
-        end = true
-      }
       for (const tx of txsResult) {
         if (!tx.value || tx.value === '0') {
           continue
@@ -234,18 +224,11 @@ export class EthereumDAO extends AbstractTokenDAO {
         txs.push(this._getTxModel(tx, account, tx.timestamp))
       }
     } catch (e) {
-      end = true
       // eslint-disable-next-line
       console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
       return this._getTransferFromBlocks(account, id)
     }
-    page++
-
-    this._setFilterCache(id, {
-      toBlock, page, txs, end,
-    })
-
-    return txs.slice(skip)
+    return txs
   }
 
   /**

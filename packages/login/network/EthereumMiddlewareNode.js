@@ -33,7 +33,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async getTransactionsList (address, skip, offset) {
+  async getTransactionsList (address, id, skip, offset) {
 
     try {
       const test = await this._api.get(`tx/${address}/history?skip=0&limit=1`)

@@ -30,9 +30,6 @@ export default class NemDAO extends EventEmitter {
     this._nemProvider = nemProvider
   }
 
-  /** @private */
-  static _filterCache = {}
-
   getAddressValidator () {
     return nemAddress
   }
@@ -99,29 +96,10 @@ export default class NemDAO extends EventEmitter {
     }
   }
 
-  /** @protected */
-  _setFilterCache (id, data) {
-    NemDAO._filterCache[ id ] = data
-  }
-
-  /** @protected */
-  _getFilterCache (id) {
-    return NemDAO._filterCache[ id ]
-  }
-
-  async getTransfer (id, account): Promise<Array<TxModel>> {
-    const offset = 100 // limit
-    const cache = this._getFilterCache(id) || {}
-    const txs = cache.txs || []
-    let page = cache.page || 1
-    let end = cache.end || false
-    const skip = txs.length
-
+  async getTransfer (id, account, skip, offset): Promise<Array<TxModel>> {
+    const txs = []
     try {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
-      if (txsResult.length < TXS_PER_PAGE) {
-        end = true
-      }
       for (const tx of txsResult) {
         // TODO @abdulov now, it not worked, blocked by Middleware
         txs.push(new TxModel({
@@ -138,17 +116,10 @@ export default class NemDAO extends EventEmitter {
         }))
       }
     } catch (e) {
-      end = true
       // eslint-disable-next-line
       console.warn('BitcoinDAO getTransfer', e)
     }
-    page++
-
-    this._setFilterCache(id, {
-      page, txs, end,
-    })
-
-    return txs.slice(skip)
+    return txs
   }
 
   watch (/*account*/): Promise {

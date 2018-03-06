@@ -31,9 +31,6 @@ export class BitcoinDAO extends EventEmitter {
     this._decimals = 8
   }
 
-  /** @private */
-  static _filterCache = {}
-
   getAddressValidator () {
     return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
   }
@@ -83,29 +80,10 @@ export class BitcoinDAO extends EventEmitter {
     }
   }
 
-  /** @protected */
-  _setFilterCache (id, data) {
-    BitcoinDAO._filterCache[ id ] = data
-  }
-
-  /** @protected */
-  _getFilterCache (id) {
-    return BitcoinDAO._filterCache[ id ]
-  }
-
-  async getTransfer (id, account): Array<TxModel> {
-    const offset = 100 // limit
-    const cache = this._getFilterCache(id) || {}
-    const txs = cache.txs || []
-    let page = cache.page || 1
-    let end = cache.end || false
-    const skip = txs.length
-
+  async getTransfer (id, account, skip, offset): Array<TxModel> {
+    let txs = []
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
-      if (txsResult.length < TXS_PER_PAGE) {
-        end = true
-      }
       for (const tx of txsResult) {
         txs.push(new TxModel({
           txHash: tx.txHash,
@@ -121,17 +99,11 @@ export class BitcoinDAO extends EventEmitter {
         }))
       }
     } catch (e) {
-      end = true
       // eslint-disable-next-line
       console.warn('BitcoinDAO getTransfer', e)
     }
-    page++
 
-    this._setFilterCache(id, {
-      page, txs, end,
-    })
-
-    return txs.slice(skip)
+    return txs
   }
 
   watch (/*account*/): Promise {

@@ -4,7 +4,6 @@ import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { Paper, RaisedButton } from 'material-ui'
 import { SHORT_DATE } from 'models/constants'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -12,12 +11,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_I18N } from 'redux/configureStore'
 import { getAccountTransactions } from 'redux/mainWallet/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import { integerWithDelimiter } from 'utils/formatter'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
+import { getTxs } from 'redux/mainWallet/selectors'
+import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import './TransactionsTable.scss'
 
 function mapStateToProps (state) {
@@ -25,7 +25,7 @@ function mapStateToProps (state) {
 
   return {
     locale: state.get(DUCK_I18N).locale,
-    transactions: getCurrentWallet(state).transactions(),
+    transactions: getTxs()(state),
     selectedNetworkId,
     selectedProviderId,
     tokens: state.get(DUCK_TOKENS),
@@ -119,7 +119,7 @@ export default class TransactionsTable extends PureComponent {
     const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
-    const data = buildTableData(transactions.list(), locale)
+    const data = buildTableData(transactions, locale)
 
     return (
       <Paper>
@@ -205,7 +205,7 @@ export default class TransactionsTable extends PureComponent {
 
 function buildTableData (transactions, locale) {
   moment.locale(locale)
-  const groups = transactions.valueSeq().toArray()
+  const groups = transactions.items()
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
       data[ groupBy ] = data[ groupBy ] || {
