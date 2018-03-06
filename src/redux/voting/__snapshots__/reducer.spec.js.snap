@@ -1,0 +1,373 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`assetsManager reducer sould POLLS_VOTE_LIMIT 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {},
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": "1",
+  "voteLimitInTIME": "1"
+}
+`;
+
+exports[`assetsManager reducer sould handle POLLS_CREATE 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "null": {
+        "files": [],
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "poll": {
+          "active": false,
+          "deadline": null,
+          "description": "",
+          "files": null,
+          "hasMember": false,
+          "hash": null,
+          "id": 1,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "isTransaction": false,
+          "memberOption": null,
+          "options": [
+            "Support",
+            "Decline"
+          ],
+          "owner": null,
+          "published": null,
+          "status": false,
+          "timestamp": null,
+          "title": "",
+          "transactionHash": null,
+          "voteLimitInTIME": null
+        },
+        "shareholdersCount": "0",
+        "statistics": [],
+        "timestamp": null,
+        "totalSupply": "0",
+        "transactionHash": null,
+        "votes": []
+      }
+    },
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": null,
+  "voteLimitInTIME": null
+}
+`;
+
+exports[`assetsManager reducer sould handle POLLS_LIST 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": true,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "null": {
+        "files": [],
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "poll": {
+          "active": false,
+          "deadline": null,
+          "description": "",
+          "files": null,
+          "hasMember": false,
+          "hash": null,
+          "id": 1,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "isTransaction": false,
+          "memberOption": null,
+          "options": [
+            "Support",
+            "Decline"
+          ],
+          "owner": null,
+          "published": null,
+          "status": false,
+          "timestamp": null,
+          "title": "",
+          "transactionHash": null,
+          "voteLimitInTIME": null
+        },
+        "shareholdersCount": "0",
+        "statistics": [],
+        "timestamp": null,
+        "totalSupply": "0",
+        "transactionHash": null,
+        "votes": []
+      }
+    },
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": null,
+  "voteLimitInTIME": null
+}
+`;
+
+exports[`assetsManager reducer sould handle POLLS_LOAD 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": true,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {},
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": null,
+  "voteLimitInTIME": null
+}
+`;
+
+exports[`assetsManager reducer sould handle POLLS_REMOVE 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "null": {
+        "files": [],
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "poll": {
+          "active": false,
+          "deadline": null,
+          "description": "",
+          "files": null,
+          "hasMember": false,
+          "hash": null,
+          "id": 1,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "isTransaction": false,
+          "memberOption": null,
+          "options": [
+            "Support",
+            "Decline"
+          ],
+          "owner": null,
+          "published": null,
+          "status": false,
+          "timestamp": null,
+          "title": "",
+          "transactionHash": null,
+          "voteLimitInTIME": null
+        },
+        "shareholdersCount": "0",
+        "statistics": [],
+        "timestamp": null,
+        "totalSupply": "0",
+        "transactionHash": null,
+        "votes": []
+      }
+    },
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": null,
+  "voteLimitInTIME": null
+}
+`;
+
+exports[`assetsManager reducer sould handle POLLS_UPDATE 1`] = `
+{
+  "id": null,
+  "isFailed": false,
+  "isFetched": false,
+  "isFetching": false,
+  "isInited": false,
+  "isPending": false,
+  "isSelected": false,
+  "lastPoll": "0",
+  "list": {
+    "emptyModel": null,
+    "id": null,
+    "isFailed": false,
+    "isFetched": false,
+    "isFetching": false,
+    "isInited": false,
+    "isPending": false,
+    "isSelected": false,
+    "leftToFetch": 0,
+    "list": {
+      "null": {
+        "files": [],
+        "id": null,
+        "isFailed": false,
+        "isFetched": false,
+        "isFetching": false,
+        "isInited": false,
+        "isPending": false,
+        "isSelected": false,
+        "poll": {
+          "active": false,
+          "deadline": null,
+          "description": "",
+          "files": null,
+          "hasMember": false,
+          "hash": null,
+          "id": 1,
+          "isFailed": false,
+          "isFetched": false,
+          "isFetching": false,
+          "isInited": false,
+          "isPending": false,
+          "isSelected": false,
+          "isTransaction": false,
+          "memberOption": null,
+          "options": [
+            "Support",
+            "Decline"
+          ],
+          "owner": null,
+          "published": null,
+          "status": false,
+          "timestamp": null,
+          "title": "",
+          "transactionHash": null,
+          "voteLimitInTIME": null
+        },
+        "shareholdersCount": "0",
+        "statistics": [],
+        "timestamp": null,
+        "totalSupply": "0",
+        "transactionHash": null,
+        "votes": []
+      }
+    },
+    "selected": null,
+    "timestamp": null,
+    "transactionHash": null
+  },
+  "timestamp": null,
+  "transactionHash": null,
+  "voteLimitInPercent": null,
+  "voteLimitInTIME": null
+}
+`;

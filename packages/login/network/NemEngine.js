@@ -21,13 +21,21 @@ export class NemEngine {
     return this._wallet.getPrivateKey()
   }
 
-  createTransaction (to, amount: BigNumber, mosaicDefinition = null, feeMultiplier) {
+  // eslint-disable-next-line
+  describeTransaction (to, amount: BigNumber, mosaicDefinition = null) {
     return mosaicDefinition
-      ? this._createMosaicTransaction(to, amount, mosaicDefinition, feeMultiplier)
-      : this._createXemTransaction(to, amount, feeMultiplier)
+      ? this._describeMosaicTransaction(to, amount, mosaicDefinition)
+      : this._describeXemTransaction(to, amount)
+    // return { fee: 0.1 * DECIMALS }
   }
 
-  _createXemTransaction (to, amount: BigNumber, feeMultiplier) {
+  createTransaction (to, amount: BigNumber, mosaicDefinition = null) {
+    return mosaicDefinition
+      ? this._createMosaicTransaction(to, amount, mosaicDefinition)
+      : this._createXemTransaction(to, amount)
+  }
+
+  _describeXemTransaction (to, amount: BigNumber) {
     const value = amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -38,9 +46,11 @@ export class NemEngine {
     )
 
     const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
+    return transactionEntity
+  }
 
-    transactionEntity.fee = transactionEntity.fee * feeMultiplier
-
+  _createXemTransaction (to, amount: BigNumber) {
+    const transactionEntity = this._describeXemTransaction(to, amount)
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
     return {
@@ -53,7 +63,7 @@ export class NemEngine {
     }
   }
 
-  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition, feeMultiplier) {
+  _describeMosaicTransaction (to, amount: BigNumber, mosaicDefinition) {
     const value = amount.toNumber() // NEM-SDK works with Number data type
     const common = nem.model.objects.get("common")
     common.privateKey = this._wallet.getPrivateKey()
@@ -71,9 +81,11 @@ export class NemEngine {
         mosaicDefinition,
       },
     }, this._network.id)
+    return transactionEntity
+  }
 
-    transactionEntity.fee = transactionEntity.fee * feeMultiplier
-
+  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition) {
+    const transactionEntity = this._describeMosaicTransaction(to, amount, mosaicDefinition)
     const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
     const signature = this._wallet.sign(serialized)
     return {

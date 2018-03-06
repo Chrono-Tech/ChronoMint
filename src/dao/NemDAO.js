@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
+import TransferExecModel from 'models/TransferExecModel'
 import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
@@ -14,13 +15,12 @@ export const NEM_DECIMALS = 6
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
 
-export const EVENT_NEM_LIKE_TOKEN_CREATED = 'nemLikeTokenCreated'
-export const EVENT_NEM_LIKE_TOKEN_FAILED = 'nemLikeTokenFailed'
-
 export default class NemDAO extends EventEmitter {
 
-  constructor (name, symbol, nemProvider, decimals, mosaic) {
+  constructor (name, symbol, nemProvider, decimals, mosaic, nemToken) {
     super()
+    // nemToken only available for mosaics, it should be used as a fee token
+    this._nemToken = nemToken
     this._name = name
     this._symbol = symbol.toUpperCase()
     this._namespace = mosaic ? `${mosaic.id.namespaceId}:${mosaic.id.name}` : null
@@ -84,8 +84,44 @@ export default class NemDAO extends EventEmitter {
     return unconfirmed
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  accept (transfer: TransferExecModel) {
+    setImmediate(() => {
+      this.emit('accept', transfer)
+    })
+  }
+
+  reject (transfer: TransferExecModel) {
+    setImmediate(() => {
+      this.emit('reject', transfer)
+    })
+  }
+
+  // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+    this.submit(from, to, amount, token, feeMultiplier)
+  }
+
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+    setImmediate(async () => {
+      const fee = await this._nemProvider.estimateFee(from, to, amount, this._mosaic) // use feeMultiplier = 1 to estimate default fee
+      const feeToken = this._mosaic
+        ? this._nemToken
+        : token
+      this.emit('submit', new TransferExecModel({
+        title: `tx.Nem.${this._mosaic ? 'Mosaic' : 'Xem'}.transfer.title`,
+        from,
+        to,
+        amount: new Amount(amount, token.symbol()),
+        amountToken: token,
+        fee: new Amount(fee, feeToken.symbol()),
+        feeToken,
+        feeMultiplier,
+      }))
+    })
+  }
+
+  // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
+  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
       return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {
@@ -177,22 +213,24 @@ export default class NemDAO extends EventEmitter {
     // do nothing
   }
 
-  fetchToken () {
+  async fetchToken () {
     if (!this.isInitialized()) {
+      const message = `${this._symbol} support is not available`
       // eslint-disable-next-line
-      console.warn(`${this._name} support is not available`)
-      this.emit(EVENT_NEM_LIKE_TOKEN_FAILED)
-      return
+      console.warn(message)
+      throw new Error(message)
     }
 
-    this.emit(EVENT_NEM_LIKE_TOKEN_CREATED, new TokenModel({
+    const token = new TokenModel({
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
       isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
-    }), this)
+    })
+
+    return token
   }
 }
 
