@@ -24,8 +24,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getSystemAssetsForOwner (owner) {
-    return {}
-
     const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}
@@ -128,5 +126,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
     const transactions = await Promise.all(promises)
     return transactions
+  }
+
+  subscribeOnMiddleware (event: string, callback) {
+    ethereumProvider.subscribeOnMiddleware(event, callback)
   }
 }

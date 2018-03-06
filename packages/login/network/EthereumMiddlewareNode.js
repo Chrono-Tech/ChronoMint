@@ -1,7 +1,4 @@
-import { getPlatforms } from 'redux/assetsManager/actions'
-import { store } from 'redux/configureStore'
 import AbstractNode from './AbstractNode'
-
 
 export default class EthereumMiddlewareNode extends AbstractNode {
   constructor () {
@@ -22,23 +19,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       await this._api.post('addr', {
         address: ethAddress,
         nem: nemAddress,
-      })
-      this.executeOrSchedule(() => {
-        console.log('EthereumMiddlewareNode: executeOrSchedule: here')
-        this._subscriptions[ `all_events:testing` ] = this._client.subscribe(
-          `/exchange/events/app_eth_chrono_sc.platformrequested`,
-          (message) => {
-            console.log('EthereumMiddlewareNode: Subscribe message requested: ', message)
-            try {
-              const data = JSON.parse(message.body)
-
-              store.dispatch(getPlatforms())
-
-            } catch (e) {
-              this.trace('Failed to decode message', e)
-            }
-          },
-        )
       })
     } catch (e) {
       this.trace('Address subscription error', e)
@@ -67,4 +47,21 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     return []
   }
 
+  subscribeToEvent (event) {
+    this.executeOrSchedule(() => {
+      this._subscriptions[ event ] = this._client.subscribe(
+        `/exchange/events/app_eth_chrono_sc.${event}`,
+        (message) => {
+          try {
+            const data = JSON.parse(message.body)
+
+            this.emit(event, data)
+
+          } catch (e) {
+            this.trace('Failed to decode message', e)
+          }
+        },
+      )
+    })
+  }
 }

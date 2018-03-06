@@ -47,6 +47,11 @@ export class EthereumProvider extends AbstractProvider {
     return node.getPlatformList(userAddress)
   }
 
+  subscribeOnMiddleware (event, callback) {
+    const node = this._selectNode(this._engine)
+    node.subscribeToEvent(event)
+    node.on(event, callback)
+  }
 }
 
 export const ethereumProvider = new EthereumProvider(selectEthereumNode)

@@ -33,7 +33,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
 
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms =  await assetsManagerDao.getPlatformList(account)
+  const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
   const managers = await assetsManagerDao.getManagers(account)
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
@@ -44,7 +44,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
 export const getPlatforms = () => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
-  const platforms =  await assetsManagerDao.getPlatformList(account)
+  const platforms = await assetsManagerDao.getPlatformList(account)
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
   dispatch({ type: GET_PLATFORMS, payload: { platforms, usersPlatforms } })
 }
@@ -244,7 +244,16 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
+    subscribeToRestrictedEvents(),
+    subscribeToBlacklistEvents(),
   ])
+
+  // TODO @abdulov remove this
+  assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+
   const issueCallback = async (symbol, value, isIssue, tx) => {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
     const newAssets = await assetsManagerDao.getSystemAssetsForOwner(account)
@@ -423,3 +432,34 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   })
 }
 
+const subscribeToRestrictedEvents = async () => {
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+
+  assetsManagerDao.subscribeOnMiddleware('restricted', (data) => {
+    // TODO @abdulov make a method
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+
+  assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => {
+    // TODO @abdulov make a method
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+}
+
+const subscribeToBlacklistEvents = async () => {
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+
+  assetsManagerDao.subscribeOnMiddleware('paused', (data) => {
+    // TODO @abdulov make a method
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+
+  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => {
+    // TODO @abdulov make a method
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+}
