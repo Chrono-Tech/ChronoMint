@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const babel = require('./babel.prod')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin')
 
@@ -17,7 +18,7 @@ module.exports = config.buildConfig(
       filename: '[name].js',
       chunkFilename: '[name].chunk.js',
     },
-    babel: require('./babel.prod'),
+    babel,
     plugins: [
       new HtmlWebpackPlugin({
         inject: 'head',

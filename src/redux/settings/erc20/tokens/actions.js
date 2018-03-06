@@ -8,7 +8,7 @@ import type TokenModel from 'models/tokens/TokenModel'
 import { I18n } from 'platform/i18n'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { checkFetched, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
+import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
 import Amount from 'models/Amount'
 import ERC20DAO from 'dao/ERC20DAO'
@@ -29,7 +29,6 @@ export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getStat
     dispatch({ type: TOKENS_REMOVE, token: notice.oldAddress() })
     dispatch({ type: TOKENS_FETCHED, token })
     tokenService.createDAO(token)
-    dispatch(checkFetched())
   }
 
   dispatch(notice.isRemoved()
