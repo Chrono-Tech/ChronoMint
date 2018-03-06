@@ -4,10 +4,11 @@ import type AbstractModel from 'models/AbstractModel'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'
 import ProfileModel from 'models/ProfileModel'
+import AdditionalActionModel from 'models/AdditionalActionModel'
+import ProfileNoticeModel from 'models/notices/ProfileNoticeModel'
 import { MultiEventsHistoryABI, UserManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
-import AdditionalActionModel from '../models/AdditionalActionModel'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'
@@ -16,6 +17,7 @@ export const TX_SET_OWN_HASH = 'setOwnHash'
 export const TX_SET_MEMBER_HASH = 'setMemberHash'
 
 const EVENT_CBE_UPDATE = 'CBEUpdate'
+const EVENT_PROFILE_UPDATE = 'SetHash'
 
 export default class UserManagerDAO extends AbstractMultisigContractDAO {
   constructor (at) {
@@ -152,6 +154,17 @@ export default class UserManagerDAO extends AbstractMultisigContractDAO {
 
   setRequired (n: number) {
     return this._multisigTx(TX_SET_REQUIRED_SIGNS, [ n ])
+  }
+
+  async watchProfile (callback) {
+    return this._watch(EVENT_PROFILE_UPDATE, async (result, block, time) => {
+      const address = result.args.key
+      const profile = await this.getMemberProfile(address)
+      callback(new ProfileNoticeModel({
+        time,
+        profile,
+      }))
+    })
   }
 
   async watchCBE (callback) {

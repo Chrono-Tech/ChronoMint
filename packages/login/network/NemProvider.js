@@ -54,7 +54,6 @@ export class NemProvider extends AbstractProvider {
   }
 
   async estimateFee (from: string, to, amount: BigNumber, mosaicDefinition) {
-    const node = this._selectNode(this._engine)
     const { fee } = this._engine.describeTransaction(to, amount, mosaicDefinition)
     return fee
   }

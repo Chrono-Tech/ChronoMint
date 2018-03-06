@@ -10,6 +10,9 @@ import Moment from 'components/common/Moment/index'
 import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import TxModel from 'models/TxModel'
+import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from 'dao/ChronoBankPlatformDAO'
+import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from 'dao/PlatformsManagerDAO'
+import { TX_ASSET_CREATED } from 'dao/AssetsManagerDAO'
 
 import './HistoryTable.scss'
 
@@ -96,8 +99,8 @@ export default class HistoryTable extends PureComponent {
   renderValue (trx) {
     let value
     switch (trx.type()) {
-      case 'Issue':
-      case 'Revoke':
+      case TX_ISSUE:
+      case TX_REVOKE:
         if (trx.symbol()) {
           value = (
             <TokenValue value={new Amount(trx.value(), trx.symbol())} />
@@ -106,11 +109,12 @@ export default class HistoryTable extends PureComponent {
           value = ''
         }
         break
-      case 'PlatformAttached':
-      case 'PlatformRequested':
+      case TX_PLATFORM_ATTACHED:
+      case TX_PLATFORM_DETACHED:
+      case TX_PLATFORM_REQUESTED:
         value = trx.args().platform
         break
-      case'OwnershipChange':
+      case TX_OWNERSHIP_CHANGE:
         value = (
           <div>
             <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
@@ -122,7 +126,7 @@ export default class HistoryTable extends PureComponent {
           </div>
         )
         break
-      case'AssetCreated':
+      case TX_ASSET_CREATED:
         value = (
           <div>
             <div><Translate value={prefix('token')} />: {trx.symbol()}</div>

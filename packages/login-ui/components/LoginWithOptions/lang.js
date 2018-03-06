@@ -1,7 +1,7 @@
 export const en = {
-  mnemonicKey: 'Mnemonic key',
-  walletFile: 'Wallet file',
-  privateKey: 'Private key',
+  mnemonicKey: 'Mnemonic Key',
+  walletFile: 'Wallet File',
+  privateKey: 'Private Key',
   ledgerNano: 'Ledger Nano Wallet',
   local: 'Login to TestRPC',
   metamask: 'Login to Metamask',
@@ -13,10 +13,10 @@ export const ru = {
   mnemonicKey: 'Мнемонический ключ',
   walletFile: 'Файл кошелька',
   privateKey: 'Приватный ключ',
-  ledgerNano: 'Ledger Nano Wallet',
+  ledgerNano: 'Кошелёк Ledger Nano',
   local: 'Локальный TestRPC',
   metamask: 'Metamask',
   selectLoginOption: 'Выберите вариант входа в систему:',
-  trezor: 'Trezor Wallet',
+  trezor: 'Кошелёк Trezor',
   uport: 'Авторизоваться через uPort',
 }
