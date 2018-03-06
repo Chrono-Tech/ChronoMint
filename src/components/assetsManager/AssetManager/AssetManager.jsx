@@ -133,7 +133,7 @@ export default class AssetManager extends PureComponent {
                     />
                     <RaisedButton
                       onTouchTap={this.props.handleAddPlatformDialog}
-                      label={<Translate value={prefix('addNewPlatforms')} />}
+                      label={<Translate value={prefix('addNewPlatform')} />}
                       styleName='action'
                     />
                   </div>
