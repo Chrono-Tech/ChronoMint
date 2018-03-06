@@ -40,8 +40,8 @@ export default (state = initialState, action) => {
       return {
         ...state,
         platformsList: action.payload.platforms,
-        usersPlatforms: action.payload.usersPLatforms,
-        usersPlatformsCount: action.payload.usersPLatforms.length,
+        usersPlatforms: action.payload.usersPlatforms,
+        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     case SELECT_TOKEN:
       return {
