@@ -108,6 +108,7 @@ export default class NemDAO extends EventEmitter {
         ? this._nemToken
         : token
       this.emit('submit', new TransferExecModel({
+        title: `tx.Nem.${this._mosaic ? 'Mosaic' : 'Xem'}.transfer.title`,
         from,
         to,
         amount: new Amount(amount, token.symbol()),

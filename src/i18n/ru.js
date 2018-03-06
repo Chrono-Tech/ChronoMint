@@ -293,6 +293,11 @@ export default {
         title: 'Перевод ETH',
       },
     },
+    /* eslint-disable global-require */
+    General: require('./ru-tx-general'),
+    Bitcoin: require('./ru-tx-bitcoin'),
+    Nem: require('./ru-tx-nem'),
+    /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
       [ erc20.TX_APPROVE ]: {
