@@ -1,6 +1,8 @@
 import { getPlatforms } from 'redux/assetsManager/actions'
 import { store } from 'redux/configureStore'
 import AbstractNode from './AbstractNode'
+import BigNumber from "bignumber.js/bignumber";
+import {BitcoinBalance} from "./BitcoinAbstractNode";
 
 
 export default class EthereumMiddlewareNode extends AbstractNode {
@@ -24,7 +26,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
         nem: nemAddress,
       })
       this.executeOrSchedule(() => {
-        console.log('EthereumMiddlewareNode: executeOrSchedule: here')
         this._subscriptions[ `all_events:testing` ] = this._client.subscribe(
           `/exchange/events/app_eth_chrono_sc.platformrequested`,
           (message) => {
