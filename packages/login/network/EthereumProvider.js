@@ -38,7 +38,7 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
-  async getTransactionsList (address, skip, offset) {
+  getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
     return node.getTransactionsList(address, this._id, skip, offset)
   }
