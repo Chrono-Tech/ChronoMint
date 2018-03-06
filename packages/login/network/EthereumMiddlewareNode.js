@@ -48,15 +48,13 @@ export default class EthereumMiddlewareNode extends AbstractNode {
   subscribeToEvent (event) {
     this.executeOrSchedule(() => {
       this._subscriptions[ event ] = this._client.subscribe(
-        `/exchange/events/app_eth_chrono_sc.${event}`,
+        `${this._socket.channels.common}.${event}`,
         (message) => {
           try {
             const data = JSON.parse(message.body)
-
             this.emit(event, data)
-
           } catch (e) {
-            this.trace('Failed to decode message', e)
+            this.trace(`Failed to decode message [${event}]: `, e)
           }
         },
       )

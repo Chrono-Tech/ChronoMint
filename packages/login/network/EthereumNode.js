@@ -30,8 +30,7 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
     user: 'guest',
     password: 'guest',
     channels: {
-      balance: '/exchange/events/app_eth_chrono_sc.*',
-      platform_requested: '/exchange/events/app_eth_chrono_sc.*',
+      common: '/exchange/events/app_eth_chrono_sc',
     },
   },
   trace: true,
