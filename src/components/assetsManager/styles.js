@@ -17,4 +17,24 @@ export default {
       },
     },
   },
+  buttons: {
+    blockRaisedButton: {
+      buttonStyle: {
+        backgroundColor: variables.blockColor,
+      },
+      labelStyle: {
+        color: variables.colorWhite,
+        fontWeight: variables.fontWeightBold,
+      },
+    },
+    unblockRaisedButton: {
+      buttonStyle: {
+        backgroundColor: variables.blockColor,
+      },
+      labelStyle: {
+        color: variables.colorWhite,
+        fontWeight: variables.fontWeightBold,
+      },
+    },
+  },
 }

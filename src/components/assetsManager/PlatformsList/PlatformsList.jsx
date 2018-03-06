@@ -4,13 +4,14 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_ASSETS_MANAGER, SELECT_PLATFORM, selectToken } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
 import WithLoader from 'components/common/Preloader/WithLoader'
+import blockedSVG from 'assets/img/blocked-white.svg'
 
 import './PlatformsList.scss'
 
@@ -69,6 +70,7 @@ class PlatformsList extends PureComponent {
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} />
+                  {token.isPaused().value() && <span styleName='blockedIcon'><img src={blockedSVG} /></span>}
                 </div>
                 <div styleName='tokenTitle'>
                   <div styleName='tokenSubTitle'>{token.symbol()}</div>
@@ -106,7 +108,7 @@ class PlatformsList extends PureComponent {
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   {name
-                    ? <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
+                    ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
@@ -120,9 +122,6 @@ class PlatformsList extends PureComponent {
   }
 
   render () {
-
-    console.log('Render platformList: ', {...this.props})
-
     return (
       <div styleName='root'>
         <div styleName='content'>
@@ -158,9 +157,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleSelectPlatform: (platformAddress) => {
-      dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
-    },
+    handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
     handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
   }
 }
