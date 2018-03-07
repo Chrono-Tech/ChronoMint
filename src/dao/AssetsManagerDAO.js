@@ -24,6 +24,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getSystemAssetsForOwner (owner) {
+    return {}
     const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}
@@ -44,7 +45,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getPlatformList (userAddress: string) {
-    return ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+    return  ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
       return { address: e.platform, by: e.by, name: null }
     })
   }
