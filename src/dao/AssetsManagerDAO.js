@@ -44,7 +44,9 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getPlatformList (userAddress: string) {
-    return ethereumProvider.getPlatformList(userAddress)
+    return ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+      return { address: e.platform, by: e.by, name: null }
+    })
   }
 
   async getManagers (owner) {
