@@ -43,12 +43,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     return []
   }
 
-  async getPlatformList (userAddress: string) {
-    return this.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
-      return { address: e.platform, by: e.by, name: null }
-    })
-  }
-
   subscribeToEvent (event) {
     this.executeOrSchedule(() => {
       this._subscriptions[ event ] = this._client.subscribe(
