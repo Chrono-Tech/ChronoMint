@@ -131,4 +131,8 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   subscribeOnMiddleware (event: string, callback) {
     ethereumProvider.subscribeOnMiddleware(event, callback)
   }
+
+  getEventsData (eventName: string, queryFilter: string, mapCallback) {
+    ethereumProvider.getEventsData(eventName, queryFilter, mapCallback)
+  }
 }
