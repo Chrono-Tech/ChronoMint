@@ -431,9 +431,12 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    // eslint-disable-next-line
-    console.log('data', data)
+    if (data && data.by === account) {
+      return
+    }
+    dispatch(getPlatforms())
   })
+
 }
 
 const subscribeToRestrictedEvents = async () => {
