@@ -246,13 +246,8 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
     subscribeToRestrictedEvents(),
     subscribeToBlacklistEvents(),
+    subscribeToAssetEvents(dispatch, getState, account),
   ])
-
-  // TODO @abdulov remove this
-  assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
 
   const issueCallback = async (symbol, value, isIssue, tx) => {
     const { assets } = getState().get(DUCK_ASSETS_MANAGER)
@@ -430,6 +425,20 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
       token: token.isPaused(pauseResult[ i ]),
     })
   })
+}
+
+const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+
+  assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
+
+
+
+
+    // eslint-disable-next-line
+    console.log('data', data)
+  })
+
 }
 
 const subscribeToRestrictedEvents = async () => {

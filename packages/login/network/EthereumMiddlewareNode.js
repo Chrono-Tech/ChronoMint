@@ -34,15 +34,19 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async getPlatformList (userAddress: string) {
-    const response = await this._api.get(`events/PlatformRequested/?by='${userAddress}'`)
+  async getEventsData (eventName: string, queryFilter: string, mapCallback) {
+    const response = await this._api.get(`events/${eventName}/?${queryFilter}`)
     if (response && response.data.length) {
-      return response.data.map((p) => {
-        return { address: p.platform, by: p.by, name: null }
-      })
+      return response.data.map(mapCallback)
     }
 
     return []
+  }
+
+  async getPlatformList (userAddress: string) {
+    return this.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+      return { address: e.platform, by: e.by, name: null }
+    })
   }
 
   subscribeToEvent (event) {
