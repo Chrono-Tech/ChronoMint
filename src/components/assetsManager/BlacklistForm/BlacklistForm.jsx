@@ -8,6 +8,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
+import BlacklistModel from 'models/tokens/BlacklistModel'
 import './BlacklistForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
@@ -31,6 +32,7 @@ export default class BlacklistForm extends PureComponent {
     account: PropTypes.string,
     managers: PropTypes.instanceOf(OwnerCollection),
     onRemoveFromBlacklist: PropTypes.func,
+    blacklist: PropTypes.instanceOf(BlacklistModel),
     ...formPropTypes,
   }
 
@@ -38,12 +40,10 @@ export default class BlacklistForm extends PureComponent {
     return () => this.props.onRemoveFromBlacklist(address)
   }
 
-  renderUser () {
-    // TODO @abdulov check and fix method
+  renderUser = (address) => {
     const { account } = this.props
-    const address = '0x236060666dbed392bb1f0b00b25e7c4b9cdcc4d5'
     return (
-      <div styleName='row'>
+      <div styleName='row' key={address}>
         <div styleName='iconBox'>
           <UserIcon styleName='icon' account={address} />
         </div>
@@ -58,6 +58,7 @@ export default class BlacklistForm extends PureComponent {
   }
 
   render () {
+    const blacklist = this.props.blacklist.list().toArray()
     return (
       <form onSubmit={this.props.handleSubmit}>
         <div styleName='content'>
@@ -80,8 +81,9 @@ export default class BlacklistForm extends PureComponent {
               />
             </div>
           </div>
-          {/*{this.props.managers.items().map(this.renderManager)}*/}
-          {this.renderUser()}
+
+          {blacklist.map(this.renderUser)}
+
         </div>
       </form>
     )

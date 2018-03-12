@@ -92,7 +92,7 @@ export default {
     [ MANAGER_REMOVED ]: 'Менеджер удален',
     [ ASSET_PAUSED ]: 'Ассет %{symbol} заблокирован',
     [ ASSET_UNPAUSED ]: 'Ассет %{symbol} разблокирован',
-    [ USER_ADDED_TO_BLACKLIST ]: 'Пользователь добавлен в черный список',
-    [ USER_DELETED_FROM_BLACKLIST ]: 'Пользователь удален из черного списка',
+    [ USER_ADDED_TO_BLACKLIST ]: 'Пользователь (%{address}) добавлен в черный список',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'Пользователь (%{address}) удален из черного списка',
   },
 }

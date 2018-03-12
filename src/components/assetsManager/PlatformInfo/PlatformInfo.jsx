@@ -14,7 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
 import { getSelectedToken } from 'redux/assetsManager/selectors'
-import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
+import BlacklistDialog from 'components/assetsManager/BlackListDialog/BlacklistDialog'
 import TokenModel from 'models/tokens/TokenModel'
 
 import './PlatformInfo.scss'
@@ -144,11 +144,8 @@ export default class PlatformInfo extends PureComponent {
   renderManagers (managersList) {
     return (
       <div styleName='managersRow'>
-        {
-          managersList.isFetching() && <div styleName='avatarsPreLoader'><Preloader /></div>}
-        {
-          managersList.isFetched() && !managersList.isFetching() &&
-          (
+        {!managersList.isFetching() && managersList.isFetched()
+          ? (
             <div>
               <div styleName='title'>
                 <Translate value={prefix('managers')} />
@@ -162,28 +159,33 @@ export default class PlatformInfo extends PureComponent {
               </div>
             </div>
           )
-
+          : <div styleName='avatarsPreLoader'><Preloader /></div>
         }
       </div>
 
     )
   }
 
-  renderBlacklist () {
+  renderBlacklist (blacklist) {
     return (
       <div styleName='blacklistRow'>
-        <div>
-          <div styleName='title'>
-            <Translate value={prefix('blacklist')} />
-          </div>
-          <div styleName='blacklistButtonWrap'>
-            <button onTouchTap={this.handleBlacklistDialog} styleName='blacklistButton'>
-              <span>
-                <Translate value={prefix('manageButton')} size={3} />
-              </span>
-            </button>
-          </div>
-        </div>
+        {!blacklist.isFetching() && blacklist.isFetched()
+          ? (
+            <div>
+              <div styleName='title'>
+                <Translate value={prefix('blacklist')} />
+              </div>
+              <div styleName='blacklistButtonWrap'>
+                <button onTouchTap={this.handleBlacklistDialog} styleName='blacklistButton'>
+                  <span>
+                    <Translate value={prefix('manageButton')} size={blacklist.list().size} />
+                  </span>
+                </button>
+              </div>
+            </div>
+          )
+          : <div styleName='avatarsPreLoader'><Preloader /></div>
+        }
       </div>
     )
   }
@@ -249,7 +251,7 @@ export default class PlatformInfo extends PureComponent {
           <div styleName='flexRow'>
             {this.renderManagers(selectedToken.managersList())}
 
-            {this.renderBlacklist()}
+            {this.renderBlacklist(selectedToken.blacklist())}
           </div>
 
           <div styleName='actions'>

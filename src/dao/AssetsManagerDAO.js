@@ -1,3 +1,5 @@
+import Immutable from 'immutable'
+import web3Converter from 'utils/Web3Converter'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
@@ -6,7 +8,7 @@ import TxModel from 'models/TxModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
-import Web3Converter from 'utils/Web3Converter'
+import BlacklistModel from 'models/tokens/BlacklistModel'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
@@ -45,7 +47,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getPlatformList (userAddress: string) {
-    return  ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+    return ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
       return { address: e.platform, by: e.by, name: null }
     })
   }
@@ -92,7 +94,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gas: tx.gas,
       gasPrice,
       time,
-      symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
+      symbol: tx.args.symbol && web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
       tokenAddress: tx.args.token,
       args: tx.args,
     })
@@ -137,5 +139,54 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   getEventsData (eventName: string, queryFilter: string, mapCallback) {
     ethereumProvider.getEventsData(eventName, queryFilter, mapCallback)
+  }
+
+  async getBlacklist (symbol: string) {
+    const [ restrictedList, unrestrictedList ] = await Promise.all([
+      ethereumProvider.getEventsData('restricted', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`, (data) => {
+        return {
+          type: true,
+          date: new Date(data.created),
+          address: data.restricted,
+        }
+      }),
+      ethereumProvider.getEventsData('unrestricted', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`, (data) => {
+        return {
+          type: false,
+          date: new Date(data.created),
+          address: data.unrestricted,
+        }
+      }),
+    ])
+
+    let blacklist = {}
+    restrictedList
+      .concat(unrestrictedList)
+      .sort((a, b) => {
+        if (a.date > b.date) {
+          return -1
+        }
+        if (a.date < b.date) {
+          return 1
+        }
+        return 0
+      })
+      .map((item) => {
+        if (!blacklist[ item.address ]) {
+          blacklist[ item.address ] = {
+            type: item.type,
+            address: item.address,
+          }
+        }
+      })
+
+    let list = new Immutable.List()
+    Object.values(blacklist).map((item) => {
+      if (item.type) {
+        list = list.push(item.address)
+      }
+    })
+
+    return new BlacklistModel({ list })
   }
 }

@@ -98,7 +98,7 @@ export default {
     [ MANAGER_REMOVED ]: 'Manager removed',
     [ ASSET_PAUSED ]: 'Asset %{symbol} was blocked',
     [ ASSET_UNPAUSED ]: 'Asset %{symbol} was unblocked',
-    [ USER_ADDED_TO_BLACKLIST ]: 'User was added to blacklist',
-    [ USER_DELETED_FROM_BLACKLIST ]: 'User was deleted from blacklist',
+    [ USER_ADDED_TO_BLACKLIST ]: 'User (%{address}) was added to blacklist',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'User (%{address}) was deleted from blacklist',
   },
 }
