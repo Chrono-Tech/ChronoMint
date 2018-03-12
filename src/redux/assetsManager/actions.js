@@ -1,4 +1,5 @@
 import { notify } from 'redux/notifier/actions'
+import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
 import TokenModel from 'models/tokens/TokenModel'
@@ -6,7 +7,6 @@ import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
-import Web3Converter from 'utils/Web3Converter'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -16,6 +16,7 @@ import AssetsManagerNoticeModel, {
   USER_DELETED_FROM_BLACKLIST,
 } from 'models/notices/AssetsManagerNoticeModel'
 import PausedModel from 'models/tokens/PausedModel'
+import BlacklistModel from 'models/tokens/BlacklistModel'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 
@@ -198,7 +199,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
 
 export const setManagers = (tx) => async (dispatch, getState) => {
   try {
-    const symbol = Web3Converter.bytesToString(tx.args.symbol)
+    const symbol = web3Converter.bytesToString(tx.args.symbol)
     const { account } = getState().get(DUCK_SESSION)
 
     let { selectedToken } = getState().get(DUCK_ASSETS_MANAGER)
@@ -239,13 +240,13 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getTransactions())
+  dispatch(subscribeToRestrictedEvents())
   const { account } = getState().get(DUCK_SESSION)
   const [ assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
-    subscribeToRestrictedEvents(),
-    subscribeToBlacklistEvents(),
+    dispatch(subscribeToBlacklistEvents()),
     subscribeToAssetEvents(dispatch, getState, account),
   ])
 
@@ -321,12 +322,12 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
       .isReissuable(token.isReissuable().isFetching(true)),
   })
 
-  const [ managersList, isReissuable, fee, isPaused ] = await Promise.all([
+  const [ managersList, isReissuable, fee, isPaused, blacklist ] = await Promise.all([
     getManagersForAssetSymbol(token.symbol()),
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
     getPauseStatus(token.address()),
-    getBlacklist(token.address()),
+    getBlacklist(token.symbol()),
   ])
 
   dispatch({
@@ -335,7 +336,8 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
       .managersList(managersList)
       .isReissuable(isReissuable)
       .fee(fee)
-      .isPaused(isPaused),
+      .isPaused(isPaused)
+      .blacklist(blacklist),
   })
 }
 
@@ -366,9 +368,8 @@ export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => 
     if (tx.tx) {
       dispatch({
         type: TOKENS_FETCHED,
-        token: token.isPaused(pause.isFetched(true)),
+        token: token.isPaused(pause.isFetched(false).isFetching(true)),
       })
-      dispatch(notify(new AssetsManagerNoticeModel({ status: statusIsBlock ? ASSET_PAUSED : ASSET_UNPAUSED, transactionHash: tx.tx })))
     }
   } catch (e) { // if error
     // eslint-disable-next-line
@@ -380,28 +381,40 @@ export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => 
   }
 }
 
-const getBlacklist = async (address: string) => {
-  let blacklist = []
+const getBlacklist = async (symbol: string) => {
+  let blacklist = new BlacklistModel()
   try {
-    // TODO @abdulov make the method
+    const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+    blacklist = await assetsManagerDao.getBlacklist(symbol)
   }
   catch (e) {
     // eslint-disable-next-line
     console.error(e.message)
   }
-  return blacklist
+
+  return blacklist.isFetched(true)
 }
 
 export const restrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
   const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
   const tx = await chronoBankAssetDAO.restrict([ address ])
-  dispatch(notify(new AssetsManagerNoticeModel({ status: USER_ADDED_TO_BLACKLIST, transactionHash: tx.tx })))
+  if (tx.tx) {
+    dispatch({
+      type: TOKENS_FETCHED,
+      token: token.blacklist(token.blacklist().add(address)),
+    })
+  }
 }
 
 export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
   const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
   const tx = await chronoBankAssetDAO.unrestrict([ address ])
-  dispatch(notify(new AssetsManagerNoticeModel({ status: USER_DELETED_FROM_BLACKLIST, transactionHash: tx.tx })))
+  if (tx.tx) {
+    dispatch({
+      type: TOKENS_FETCHED,
+      token: token.blacklist(token.blacklist().delete(address)),
+    })
+  }
 }
 
 export const selectPlatform = (platformAddress) => async (dispatch, getState) => {
@@ -454,34 +467,42 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   })
 }
 
-const subscribeToRestrictedEvents = async () => {
+const subscribeToRestrictedEvents = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const callback = async (data, status) => {
+    const address = status ? data.payload.restricted : data.payload.unrestricted
+    const symbol = web3Converter.bytesToString(data.payload.symbol)
+    const token = getState().get(DUCK_TOKENS).item(symbol)
+    if (token.isFetched()) {
+      dispatch(notify(new AssetsManagerNoticeModel({ status: status ? USER_ADDED_TO_BLACKLIST : USER_DELETED_FROM_BLACKLIST, replacements: { address } })))
+      const blacklist = await getBlacklist(token.symbol())
+      dispatch({
+        type: TOKENS_FETCHED,
+        token: token.blacklist(blacklist),
+      })
+    }
+  }
 
-  assetsManagerDao.subscribeOnMiddleware('restricted', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
-
-  assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  assetsManagerDao.subscribeOnMiddleware('restricted', (data) => callback(data, true))
+  assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => callback(data, false))
 }
 
-const subscribeToBlacklistEvents = async () => {
+const subscribeToBlacklistEvents = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const callback = (data, status) => {
+    const isPaused = new PausedModel({ value: status })
+    const symbol = web3Converter.bytesToString(data.payload.symbol)
+    const token = getState().get(DUCK_TOKENS).item(symbol)
+    if (token.isFetched()) {
+      dispatch({
+        type: TOKENS_FETCHED,
+        token: token.isPaused(isPaused.isFetched(true)),
+      })
+      dispatch(notify(new AssetsManagerNoticeModel({ status: status ? ASSET_PAUSED : ASSET_UNPAUSED, replacements: { symbol } })))
+    }
 
-  assetsManagerDao.subscribeOnMiddleware('paused', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  }
 
-  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  assetsManagerDao.subscribeOnMiddleware('paused', (data) => callback(data, true))
+  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => callback(data, false))
 }

@@ -96,9 +96,9 @@ export default {
     title: 'Assets manager',
     [ MANAGER_ADDED ]: 'Manager added',
     [ MANAGER_REMOVED ]: 'Manager removed',
-    [ ASSET_PAUSED ]: 'Asset was blocked',
-    [ ASSET_UNPAUSED ]: 'Asset was unblocked',
-    [ USER_ADDED_TO_BLACKLIST ]: 'User was added to blacklist',
-    [ USER_DELETED_FROM_BLACKLIST ]: 'User was deleted from blacklist',
+    [ ASSET_PAUSED ]: 'Asset %{symbol} was blocked',
+    [ ASSET_UNPAUSED ]: 'Asset %{symbol} was unblocked',
+    [ USER_ADDED_TO_BLACKLIST ]: 'User (%{address}) was added to blacklist',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'User (%{address}) was deleted from blacklist',
   },
 }

@@ -38,6 +38,7 @@ export default class BlacklistDialog extends PureComponent {
   }
 
   handleRemoveUserFromBlacklist = (address: string) => {
+    this.props.modalsClose()
     this.props.unrestrictUser(this.props.token, address)
   }
 
@@ -54,7 +55,11 @@ export default class BlacklistDialog extends PureComponent {
             </div>
           </div>
           <div styleName='dialogBody'>
-            <BlacklistForm onSubmitSuccess={this.handleSubmitSuccess} onRemoveFromBlacklist={this.handleRemoveUserFromBlacklist} />
+            <BlacklistForm
+              onSubmitSuccess={this.handleSubmitSuccess}
+              onRemoveFromBlacklist={this.handleRemoveUserFromBlacklist}
+              blacklist={this.props.token.blacklist()}
+            />
           </div>
         </div>
       </ModalDialog>

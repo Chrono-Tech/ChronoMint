@@ -54,7 +54,6 @@ export class EthereumProvider extends AbstractProvider {
 
   subscribeOnMiddleware (event, callback) {
     const node = this._selectNode(this._engine)
-    node.subscribeToEvent(event)
     node.on(event, callback)
   }
 }

@@ -14,6 +14,7 @@ export const USER_DELETED_FROM_BLACKLIST = 'userDeletedFromBlacklist'
 export default class AssetsManagerNoticeModel extends abstractNoticeModel({
   status: null,
   transactionHash: null,
+  replacements: {},
 }) {
   icon () {
     return Icons.get('notices.transfer.icon')
@@ -36,6 +37,6 @@ export default class AssetsManagerNoticeModel extends abstractNoticeModel({
 
   message () {
     const message = `notices.assetsManager.${this.get('status')}`
-    return I18n.t(message)
+    return I18n.t(message, this.get('replacements'))
   }
 }

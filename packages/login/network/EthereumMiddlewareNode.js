@@ -1,5 +1,13 @@
 import AbstractNode from './AbstractNode'
 
+const eventsList = [
+  'platformrequested',
+  'restricted',
+  'unrestricted',
+  'paused',
+  'unpaused',
+]
+
 export default class EthereumMiddlewareNode extends AbstractNode {
   constructor () {
     super(...arguments)
@@ -18,6 +26,16 @@ export default class EthereumMiddlewareNode extends AbstractNode {
         address: ethAddress,
         nem: nemAddress,
       })
+
+      this.executeOrSchedule(() => {
+        eventsList.map((event) => {
+          this._openSubscription(`${this._socket.channels.common}.${event}`, (data) => {
+            this.trace(event, data)
+            this.emit(event, data)
+          })
+        })
+      })
+
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -43,19 +61,4 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     return []
   }
 
-  subscribeToEvent (event) {
-    this.executeOrSchedule(() => {
-      this._subscriptions[ event ] = this._client.subscribe(
-        `${this._socket.channels.common}.${event}`,
-        (message) => {
-          try {
-            const data = JSON.parse(message.body)
-            this.emit(event, data)
-          } catch (e) {
-            this.trace(`Failed to decode message [${event}]: `, e)
-          }
-        },
-      )
-    })
-  }
 }
