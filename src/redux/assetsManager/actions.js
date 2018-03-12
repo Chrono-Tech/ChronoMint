@@ -405,6 +405,7 @@ export const unrestrictUser = (token: TokenModel, address: string) => async (dis
 }
 
 export const selectPlatform = (platformAddress) => async (dispatch, getState) => {
+  console.log('selectPlatform action: ', platformAddress)
   const { assets } = getState().get(DUCK_ASSETS_MANAGER)
   const tokens = getState().get(DUCK_TOKENS)
   dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
@@ -417,13 +418,19 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
       calledAssets.push(asset)
     }
   })
+
+  console.log('calledAssets: ', calledAssets, tokens.toJS())
   const pauseResult = await Promise.all(promises)
   calledAssets.map((asset, i) => {
+    console.log('Token is fetched: ', asset)
     const token = tokens.getByAddress(asset.address)
-    dispatch({
-      type: TOKENS_FETCHED,
-      token: token.isPaused(pauseResult[ i ]),
-    })
+    console.log('Token is fetched: ', token.toJS(), tokens.toJS())
+    if (token.address()) {
+      dispatch({
+        type: TOKENS_FETCHED,
+        token: token.isPaused(pauseResult[ i ]),
+      })
+    }
   })
 }
 
@@ -431,10 +438,19 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    if (data && data.by === account) {
+    console.log('platformrequested: ', data)
+    if (data && data.payload && data.payload.by !== account) {
       return
     }
     dispatch(getPlatforms())
+  })
+
+  assetsManagerDao.subscribeOnMiddleware('assetcreated', (data) => {
+    console.log('assetcreated: ', data)
+    if (data && data.payload && data.payload.by !== account) {
+      return
+    }
+    dispatch(getAssetsManagerData())
   })
 }
 

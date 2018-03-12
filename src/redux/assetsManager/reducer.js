@@ -44,6 +44,7 @@ export default (state = initialState, action) => {
         usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     case SELECT_TOKEN:
+      console.log('Selected TOKEN: ', action)
       return {
         ...state,
         selectedToken: action.payload.symbol,

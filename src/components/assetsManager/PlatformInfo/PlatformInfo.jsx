@@ -213,7 +213,6 @@ export default class PlatformInfo extends PureComponent {
 
   render () {
     const { selectedToken, selectedPlatform } = this.props
-
     if (!selectedPlatform || !selectedToken.isFetched()) {
       return this.renderInstructions()
     }

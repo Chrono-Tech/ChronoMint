@@ -33,8 +33,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
-
-      this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
+      const model = new TokenModel({
         address,
         name: this._c.bytesToString(names[ i ]),
         symbol,
@@ -46,7 +45,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
-      }))
+      })
+
+      this.emit(EVENT_NEW_ERC20_TOKEN, model)
     })
   }
 

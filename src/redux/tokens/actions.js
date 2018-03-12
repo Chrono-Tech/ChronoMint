@@ -82,6 +82,7 @@ export const initTokens = () => async (dispatch, getState) => {
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count })
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
+      console.log('Emit ERC20_TOKEN: ', token.toJS())
       dispatch({ type: TOKENS_FETCHED, token })
       tokenService.createDAO(token)
     })

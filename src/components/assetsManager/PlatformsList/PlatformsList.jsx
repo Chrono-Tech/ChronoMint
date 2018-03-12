@@ -103,7 +103,9 @@ class PlatformsList extends PureComponent {
               <div styleName={classnames('platformHeader', { 'selected': selectedPlatform === address })}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => this.handleSelectPlatform(address)}
+                  onTouchTap={() => {
+                    this.handleSelectPlatform(address)
+                  }}
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>

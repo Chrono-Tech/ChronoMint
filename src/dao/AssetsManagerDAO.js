@@ -23,8 +23,27 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return this._call('getTokenExtension', [ platform ])
   }
 
-  async getSystemAssetsForOwner (owner) {
-    return {}
+  async getSystemAssetsForOwner (account: string) {
+
+    const issueList = await ethereumProvider.getEventsData('Issue', `by='${account}'`)
+    const assetList = await ethereumProvider.getEventsData('AssetCreated', `by='${account}'`, (asset) => {
+      const issueForSymbol = issueList.find((a) => a.symbol === asset.symbol)
+
+      return {
+        address: asset.token,
+        platform: asset.platform,
+        totalSupply: issueForSymbol ? issueForSymbol.value : issueForSymbol,
+      }
+    })
+
+    const assetListObject = {}
+    if (assetList && assetList.length) {
+      for (const asset of assetList) {
+        assetListObject[asset.address] = asset
+      }
+    }
+
+    return assetListObject
     const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
 
     let assetsList = {}

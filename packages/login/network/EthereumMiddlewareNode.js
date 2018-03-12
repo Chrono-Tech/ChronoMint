@@ -37,7 +37,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
   async getEventsData (eventName: string, queryFilter: string, mapCallback) {
     const response = await this._api.get(`events/${eventName}/?${queryFilter}`)
     if (response && response.data.length) {
-      return response.data.map(mapCallback)
+      return typeof mapCallback === 'function' ? response.data.map(mapCallback) : response.data
     }
 
     return []
