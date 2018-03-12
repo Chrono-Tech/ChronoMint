@@ -1,12 +1,17 @@
 import { notify } from 'redux/notifier/actions'
+import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
 import ReissuableModel from 'models/tokens/ReissuableModel'
 import TokenModel from 'models/tokens/TokenModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
-import Web3Converter from 'utils/Web3Converter'
+import {
+  subscribeOnTokens,
+  DUCK_TOKENS,
+  TOKENS_FETCHED,
+  TOKENS_UPDATE,
+} from 'redux/tokens/actions'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -198,7 +203,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
 
 export const setManagers = (tx) => async (dispatch, getState) => {
   try {
-    const symbol = Web3Converter.bytesToString(tx.args.symbol)
+    const symbol = web3Converter.bytesToString(tx.args.symbol)
     const { account } = getState().get(DUCK_SESSION)
 
     let { selectedToken } = getState().get(DUCK_ASSETS_MANAGER)
@@ -239,13 +244,13 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getTransactions())
+  dispatch(subscribeToRestrictedEvents())
   const { account } = getState().get(DUCK_SESSION)
   const [ assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
-    subscribeToRestrictedEvents(),
-    subscribeToBlacklistEvents(),
+    dispatch(subscribeToBlacklistEvents()),
     subscribeToAssetEvents(dispatch, getState, account),
   ])
 
@@ -366,9 +371,8 @@ export const changePauseStatus = (token: TokenModel, statusIsBlock: boolean) => 
     if (tx.tx) {
       dispatch({
         type: TOKENS_FETCHED,
-        token: token.isPaused(pause.isFetched(true)),
+        token: token.isPaused(pause.isFetched(false).isFetching(true)),
       })
-      dispatch(notify(new AssetsManagerNoticeModel({ status: statusIsBlock ? ASSET_PAUSED : ASSET_UNPAUSED, transactionHash: tx.tx })))
     }
   } catch (e) { // if error
     // eslint-disable-next-line
@@ -439,34 +443,37 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
 
 }
 
-const subscribeToRestrictedEvents = async () => {
-  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+const subscribeToRestrictedEvents = () => async (dispatch) => {
 
-  assetsManagerDao.subscribeOnMiddleware('restricted', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
-
-  assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  // assetsManagerDao.subscribeOnMiddleware('restricted', (data) => {
+  //   // TODO @abdulov make a method
+  //   // eslint-disable-next-line
+  //   console.log('data', data)
+  // })
+  //
+  // assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => {
+  //   // TODO @abdulov make a method
+  //   // eslint-disable-next-line
+  //   console.log('data', data)
+  // })
 }
 
-const subscribeToBlacklistEvents = async () => {
+const subscribeToBlacklistEvents = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const callback = (data, status) => {
+    const isPaused = new PausedModel({ value: status })
+    const symbol = web3Converter.bytesToString(data.payload.symbol)
+    const token = getState().get(DUCK_TOKENS).item(symbol)
+    if (token.isFetched()) {
+      dispatch({
+        type: TOKENS_FETCHED,
+        token: token.isPaused(isPaused.isFetched(true)),
+      })
+      dispatch(notify(new AssetsManagerNoticeModel({ status: status ? ASSET_PAUSED : ASSET_UNPAUSED, replacements: { symbol } })))
+    }
 
-  assetsManagerDao.subscribeOnMiddleware('paused', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  }
 
-  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => {
-    // TODO @abdulov make a method
-    // eslint-disable-next-line
-    console.log('data', data)
-  })
+  assetsManagerDao.subscribeOnMiddleware('paused', (data) => callback(data, true))
+  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => callback(data, false))
 }
