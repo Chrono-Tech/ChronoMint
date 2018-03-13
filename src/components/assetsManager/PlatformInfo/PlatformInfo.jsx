@@ -14,7 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import BlockAssetDialog from 'components/assetsManager/BlockAssetDialog/BlockAssetDialog'
 import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueAssetForm'
 import { getSelectedToken } from 'redux/assetsManager/selectors'
-import BlacklistDialog from 'components/assetsManager/BlackListDialog/BlacklistDialog'
+import BlacklistDialog from 'components/assetsManager/BlacklistDialog/BlacklistDialog'
 import TokenModel from 'models/tokens/TokenModel'
 
 import './PlatformInfo.scss'
