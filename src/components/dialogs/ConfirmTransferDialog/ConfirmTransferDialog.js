@@ -89,18 +89,18 @@ export default class ConfirmTransferDialog extends PureComponent {
   }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
-      { key: 'feeBalance', type: 'TokenValue', label: 'Fee Balance', value: feeBalance },
-      { key: 'feeBalanceAfter', type: 'TokenValue', label: 'Fee Balance After', value: feeBalanceAfter },
+      { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },
+      { key: 'feeBalanceAfter', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalanceAfter', value: feeBalanceAfter },
     ]
 
     const basicDetails = [
-      { key: 'operation', type: 'String', label: 'Operation', value: tx.operation() },
-      { key: 'amount', type: 'TokenValue', label: 'Amount', value: new Amount(tx.amount(), tx.amountToken().symbol()) },
-      { key: 'amountBalance', type: 'TokenValue', label: 'Balance', value: amountBalance },
-      { key: 'amountBalanceAfter', type: 'TokenValue', label: 'Balance After', value: amountBalanceAfter },
-      { key: 'fee', type: 'TokenValue', label: 'Fee', value: new Amount(tx.fee().mul(feeMultiplier), tx.feeToken().symbol()) },
+      { key: 'operation', type: 'String', label: 'tx.General.transfer.params.operation', value: tx.operation() },
+      { key: 'amount', type: 'TokenValue', label: 'tx.General.transfer.params.amount', value: new Amount(tx.amount(), tx.amountToken().symbol()) },
+      { key: 'amountBalance', type: 'TokenValue', label: 'tx.General.transfer.params.balance', value: amountBalance },
+      { key: 'amountBalanceAfter', type: 'TokenValue', label: 'tx.General.transfer.params.balanceAfter', value: amountBalanceAfter },
+      { key: 'fee', type: 'TokenValue', label: 'tx.General.transfer.params.fee', value: new Amount(tx.fee().mul(feeMultiplier), tx.feeToken().symbol()) },
       ...feeDetails,
-      { key: 'hash', type: 'String', label: 'Hash', value: tx.hash() },
+      { key: 'hash', type: 'String', label: 'tx.General.transfer.params.hash', value: tx.hash() },
     ].filter(({ value }) => value != null) // nil check
 
     // const operationDetails = Object.entries(tx.txSummary()).map((key, value) => ({
@@ -168,7 +168,7 @@ export default class ConfirmTransferDialog extends PureComponent {
       <ModalDialog onModalClose={this.handleClose}>
         <div styleName='root'>
           <div styleName='header'>
-            <h3 styleName='headerHead'><Translate value={tx.operation()} /></h3>
+            <h3 styleName='headerHead'><Translate value={tx.title()} /></h3>
           </div>
           <div styleName='content'>
             <div>

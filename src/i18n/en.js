@@ -4,6 +4,7 @@ import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
+import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
 import * as exchange from 'dao/ExchangeDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
@@ -291,6 +292,11 @@ export default {
         title: 'Transfer ETH',
       },
     },
+    /* eslint-disable global-require */
+    General: require('./en-tx-general'),
+    Bitcoin: require('./en-tx-bitcoin'),
+    Nem: require('./en-tx-nem'),
+    /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
       [ erc20.TX_APPROVE ]: {

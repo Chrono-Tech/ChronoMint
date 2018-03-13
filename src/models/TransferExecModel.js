@@ -1,10 +1,12 @@
 import moment from 'moment'
 import uniqid from 'uniqid'
 import BigNumber from 'bignumber.js'
+import { I18n } from 'platform/i18n'
 import { abstractModel } from './AbstractModel'
 import TokenModel from './tokens/TokenModel'
 
 export default class TransferExecModel extends abstractModel({
+  title: 'tx.General.transfer.title',
   operation: 'transfer',
   from: null,
   to: null,
@@ -68,24 +70,16 @@ export default class TransferExecModel extends abstractModel({
     return time && moment.unix(time).format(format || 'HH:mm, MMMM Do, YYYY') || null
   }
 
+  title (): String {
+    return I18n.t(this.get('title'))
+  }
+
   operation (value: String): String {
     return this._getSet('operation', value)
   }
 
   hash (value: String): String {
     return this._getSet('hash', value)
-  }
-
-  _i18n () {
-    return `tx.${this.get('contract')}.`
-  }
-
-  i18nFunc () {
-    return `${this._i18n() + this.funcName()}.`
-  }
-
-  func () {
-    return `${this.i18nFunc()}title`
   }
 
   txSummary () {
