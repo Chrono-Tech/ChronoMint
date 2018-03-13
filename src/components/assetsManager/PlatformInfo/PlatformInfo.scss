@@ -252,6 +252,7 @@
   flex-grow: 0;
   min-width: 100px;
   padding: 10px;
+  position: relative;
 }
 
 .dataWrap {
@@ -299,4 +300,23 @@
 .flexRow {
   display: flex;
   flex-wrap: wrap;
+}
+
+.blockedIcon {
+  background: $color-red;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  padding: 1px;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }

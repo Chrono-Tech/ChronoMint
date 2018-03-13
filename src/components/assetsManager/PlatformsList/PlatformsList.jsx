@@ -12,6 +12,7 @@ import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
 import WithLoader from 'components/common/Preloader/WithLoader'
 import blockedSVG from 'assets/img/blocked-white.svg'
+import tokenIconStubSVG from 'assets/img/asset_stub.svg'
 
 import './PlatformsList.scss'
 
@@ -69,8 +70,8 @@ class PlatformsList extends PureComponent {
                 onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
-                  <IPFSImage styleName='content' multihash={token.icon()} />
-                  {token.isPaused().value() && <span styleName='blockedIcon'><img src={blockedSVG} /></span>}
+                  <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
+                  {token.isPaused().value() && <span styleName='blockedIcon'><img src={blockedSVG} alt='' /></span>}
                 </div>
                 <div styleName='tokenTitle'>
                   <div styleName='tokenSubTitle'>{token.symbol()}</div>

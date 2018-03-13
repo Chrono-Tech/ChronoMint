@@ -16,6 +16,8 @@ import ReissueAssetForm from 'components/assetsManager/ReissueAssetForm/ReissueA
 import { getSelectedToken } from 'redux/assetsManager/selectors'
 import BlacklistDialog from 'components/assetsManager/BlackListDialog/BlacklistDialog'
 import TokenModel from 'models/tokens/TokenModel'
+import tokenIconStubSVG from 'assets/img/asset_stub.svg'
+import blockedSVG from 'assets/img/blocked-white.svg'
 
 import './PlatformInfo.scss'
 
@@ -227,7 +229,8 @@ export default class PlatformInfo extends PureComponent {
         <div styleName='content'>
           <div styleName='balanceRow'>
             <div styleName='iconWrap'>
-              <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} />
+              <IPFSImage styleName='tokenIcon' multihash={selectedToken.icon()} fallback={tokenIconStubSVG} />
+              {selectedToken.isPaused().value() && <span styleName='blockedIcon'><img src={blockedSVG} alt='' /></span>}
             </div>
             <div styleName='dataWrap'>
               <div styleName='title'>{selectedToken.symbol()}</div>
