@@ -11,7 +11,10 @@ import HistoryTable from 'components/assetsManager/HistoryTable/HistoryTable'
 import PlatformInfo from 'components/assetsManager/PlatformInfo/PlatformInfo'
 import PlatformsList from 'components/assetsManager/PlatformsList/PlatformsList'
 import Preloader from 'components/common/Preloader/Preloader'
-
+import PlatformsSVG from 'assets/img/assets1.svg'
+import TokensSVG from 'assets/img/assets2.svg'
+import ManagersSVG from 'assets/img/assets3.svg'
+import CrowdsaleSVG from 'assets/img/assets4.svg'
 import './AssetManager.scss'
 
 function prefix (token) {
@@ -21,7 +24,7 @@ function prefix (token) {
 function mapStateToProps (state) {
   const assetsManager = state.get('assetsManager')
   return {
-    usersPlatformsCount: assetsManager.usersPlatformsCount,
+    platformsCount: assetsManager.usersPlatforms.length,
     tokensCount: Object.keys(assetsManager.assets).length,
     managersCount: assetsManager.managersCount,
     tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
@@ -48,7 +51,7 @@ export default class AssetManager extends PureComponent {
   static propTypes = {
     handleAddPlatformDialog: PropTypes.func,
     handleAddTokenDialog: PropTypes.func,
-    usersPlatformsCount: PropTypes.number,
+    platformsCount: PropTypes.number,
     tokensCount: PropTypes.number,
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
@@ -62,9 +65,7 @@ export default class AssetManager extends PureComponent {
 
   renderHead () {
 
-    console.log('renderHead: ', {...this.props} )
-
-    const { usersPlatformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading } = this.props
+    const { platformsCount, tokensCount, managersCount, tokensOnCrowdsaleCount, assetsManagerCountsLoading } = this.props
     return (
       <div styleName='head'>
         <h3><Translate value={prefix('title')} /></h3>
@@ -75,18 +76,18 @@ export default class AssetManager extends PureComponent {
                 <div styleName='contentStats'>
                   <div styleName='contentStatsItem statsAll'>
                     <div styleName='icon'>
-                      <img src={require('assets/img/assets1.svg')} alt='' />
+                      <img src={PlatformsSVG} alt='' />
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myPlatforms')} />:</span><br />
                       <span styleName='entry2'>
-                        {assetsManagerCountsLoading ? <Preloader medium /> : usersPlatformsCount}
+                        {assetsManagerCountsLoading ? <Preloader medium /> : platformsCount}
                       </span>
                     </div>
                   </div>
                   <div styleName='contentStatsItem statsCompleted'>
                     <div styleName='icon'>
-                      <img src={require('assets/img/assets2.svg')} alt='' />
+                      <img src={TokensSVG} alt='' />
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('myTokens')} />:</span><br />
@@ -97,7 +98,7 @@ export default class AssetManager extends PureComponent {
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
                     <div styleName='icon'>
-                      <img src={require('assets/img/assets3.svg')} alt='' />
+                      <img src={ManagersSVG} alt='' />
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('managers')} />:</span><br />
@@ -108,7 +109,7 @@ export default class AssetManager extends PureComponent {
                   </div>
                   <div styleName='contentStatsItem statsOutdated'>
                     <div styleName='icon'>
-                      <img src={require('assets/img/assets4.svg')} alt='' />
+                      <img src={CrowdsaleSVG} alt='' />
                     </div>
                     <div styleName='entry'>
                       <span styleName='entry1'><Translate value={prefix('tokensOnCrowdsale')} />:</span><br />
@@ -125,7 +126,7 @@ export default class AssetManager extends PureComponent {
                   <div styleName='entries' />
                   <div styleName='actions'>
                     <RaisedButton
-                      disabled={!usersPlatformsCount}
+                      disabled={!platformsCount}
                       onTouchTap={this.props.handleAddTokenDialog}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
