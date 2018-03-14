@@ -36,10 +36,15 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-  const managers = await assetsManagerDao.getManagers(account)
+  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map(item => item[1].symbol))
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
-  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: { platforms, assets, managers, usersPlatforms } })
+  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: {
+    platforms,
+    assets,
+    managers: managers.filter(m => m !== account),
+    usersPlatforms,
+  } })
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
@@ -418,7 +423,6 @@ export const unrestrictUser = (token: TokenModel, address: string) => async (dis
 }
 
 export const selectPlatform = (platformAddress) => async (dispatch, getState) => {
-  console.log('selectPlatform action: ', platformAddress)
   const { assets } = getState().get(DUCK_ASSETS_MANAGER)
   const tokens = getState().get(DUCK_TOKENS)
   dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
@@ -432,12 +436,9 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
     }
   })
 
-  console.log('calledAssets: ', calledAssets, tokens.toJS())
   const pauseResult = await Promise.all(promises)
   calledAssets.map((asset, i) => {
-    console.log('Token is fetched: ', asset)
     const token = tokens.getByAddress(asset.address)
-    console.log('Token is fetched: ', token.toJS(), tokens.toJS())
     if (token.address()) {
       dispatch({
         type: TOKENS_FETCHED,

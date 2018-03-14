@@ -50,8 +50,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return unionBy(minePlatforms, mineAssets, 'address')
   }
 
-  async getManagers (owner) {
-    return {}
+  async getManagers (symbols) {
+    return ethereumProvider.getEventsData('mint/managerListByToken', symbols.map((item) => {
+      return `symbol[]='${item}'`
+    }).join('&'))
   }
 
   async getManagersForAssetSymbol (symbol) {
