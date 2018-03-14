@@ -83,7 +83,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "github:ahiatsevich/SmartContracts#develop",
+    "chronobank-smart-contracts": "github:chronoBank/SmartContracts#develop",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
