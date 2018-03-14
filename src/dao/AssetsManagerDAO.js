@@ -5,6 +5,7 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import contractManager from 'dao/ContractsManagerDAO'
 import TxModel from 'models/TxModel'
+import { unionBy } from 'lodash'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
@@ -27,62 +28,30 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
 
   async getSystemAssetsForOwner (account: string) {
 
-    const issueList = await ethereumProvider.getEventsData('Issue', `by='${account}'`)
-    const assetList = await ethereumProvider.getEventsData('AssetCreated', `by='${account}'`, (asset) => {
-      const issueForSymbol = issueList.find((a) => a.symbol === asset.symbol)
-
-      return {
-        address: asset.token,
-        platform: asset.platform,
-        totalSupply: issueForSymbol ? issueForSymbol.value : issueForSymbol,
-      }
-    })
-
+    const assetList = await ethereumProvider.getEventsData('mint/assets', `account='${account}'`)
     const assetListObject = {}
     if (assetList && assetList.length) {
       for (const asset of assetList) {
-        assetListObject[asset.address] = asset
+        assetListObject[asset.token] = { ...asset, address: asset.token }
       }
     }
 
     return assetListObject
-    const [ addresses, platforms, totalSupply ] = await this._call('getSystemAssetsForOwner', [ owner ])
-
-    let assetsList = {}
-    let currentPlatform
-    addresses.map((address, i) => {
-      if (!this.isEmptyAddress(platforms[ i ])) {
-        currentPlatform = platforms[ i ]
-      }
-
-      assetsList[ address ] = {
-        address,
-        platform: currentPlatform,
-        totalSupply: totalSupply[ i ],
-      }
-
-    })
-    return assetsList
   }
 
   async getPlatformList (userAddress: string) {
-    return ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+    const minePlatforms = await ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
       return { address: e.platform, by: e.by, name: null }
     })
+    const mineAssets = await ethereumProvider.getEventsData('mint/assets', `account='${userAddress}'`, (e) => {
+      return { address: e.platform, by: e.by, name: null }
+    })
+
+    return unionBy(minePlatforms, mineAssets, 'address')
   }
 
   async getManagers (owner) {
     return {}
-
-    const managersList = await this._call('getManagers', [ owner ])
-    let formatManagersList = {}
-    managersList.map((manager) => {
-      if (!this.isEmptyAddress(manager) && !formatManagersList[ manager ]) {
-        formatManagersList[ manager ] = manager
-      }
-    })
-
-    return Object.keys(formatManagersList)
   }
 
   async getManagersForAssetSymbol (symbol) {
