@@ -22,7 +22,7 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
   return {
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }

@@ -3,8 +3,7 @@ import { DUCK_ASSETS_MANAGER } from './actions'
 import { getTokens } from '../tokens/selectors'
 
 export const getSelectedTokenId = (state) => {
-  const { selectedToken } = state.get(DUCK_ASSETS_MANAGER)
-  return selectedToken
+  return state.get(DUCK_ASSETS_MANAGER).selectedToken()
 }
 
 export const getSelectedToken = () => createSelector(

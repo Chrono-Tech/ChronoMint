@@ -9,10 +9,10 @@ import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 import Moment from 'components/common/Moment/index'
 import { SHORT_DATE } from 'models/constants'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import TxModel from 'models/TxModel'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from 'dao/ChronoBankPlatformDAO'
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from 'dao/PlatformsManagerDAO'
 import { TX_ASSET_CREATED } from 'dao/AssetsManagerDAO'
+import TransactionsCollection from 'models/wallet/TransactionsCollection'
 
 import './HistoryTable.scss'
 
@@ -24,17 +24,14 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
     locale: state.get('i18n').locale,
-    transactionsList: assetsManager.transactionsList,
-    transactionsFetching: assetsManager.transactionsFetching,
+    transactionsList: assetsManager.transactionsList(),
   }
 }
 
 @connect(mapStateToProps)
 export default class HistoryTable extends PureComponent {
   static propTypes = {
-    transactionsList: PropTypes.arrayOf(PropTypes.instanceOf(TxModel)),
-    transactionsFetched: PropTypes.bool,
-    transactionsFetching: PropTypes.bool,
+    transactionsList: PropTypes.instanceOf(TransactionsCollection),
     locale: PropTypes.string,
   }
 
@@ -141,7 +138,7 @@ export default class HistoryTable extends PureComponent {
   }
 
   render () {
-    const data = this.buildTableData(this.props.transactionsList, this.props.locale)
+    const data = this.buildTableData(this.props.transactionsList.items(), this.props.locale)
 
     return (
       <div styleName='root'>
@@ -177,7 +174,7 @@ export default class HistoryTable extends PureComponent {
           ))}
         </div>
         {
-          this.props.transactionsFetching &&
+          this.props.transactionsList.isFetching() &&
           <div styleName='footer'>
             <CircularProgress
               style={{ verticalAlign: 'middle', marginTop: -2 }}

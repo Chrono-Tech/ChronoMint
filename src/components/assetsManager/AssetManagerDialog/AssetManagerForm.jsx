@@ -3,18 +3,14 @@ import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { addManager, DUCK_ASSETS_MANAGER, removeManager } from 'redux/assetsManager/actions'
+import { addManager, removeManager } from 'redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { getSelectedToken } from 'redux/assetsManager/selectors'
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {
-  const { selectedToken } = state.get(DUCK_ASSETS_MANAGER)
-  const tokens = state.get(DUCK_TOKENS)
-  const token = tokens.item(selectedToken)
-
   return {
-    token,
+    token: getSelectedToken()(state),
   }
 }
 

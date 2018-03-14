@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import { notify } from 'redux/notifier/actions'
 import web3Converter from 'utils/Web3Converter'
 import contractManager from 'dao/ContractsManagerDAO'
@@ -37,15 +38,17 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map(item => item[1].symbol))
+  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol))
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
-  dispatch({ type: GET_ASSETS_MANAGER_COUNTS, payload: {
-    platforms,
-    assets,
-    managers: managers.filter(m => m !== account),
-    usersPlatforms,
-  } })
+  dispatch({
+    type: GET_ASSETS_MANAGER_COUNTS, payload: {
+      platforms,
+      assets,
+      managers: managers.filter((m) => m !== account),
+      usersPlatforms,
+    },
+  })
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
@@ -97,7 +100,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
     } else {
       txHash = await tokenManagementExtension.createAssetWithoutFee(token)
     }
-    let { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     assets[ txHash ] = {
       address: txHash,
       platform: token.platform().address,
@@ -123,7 +126,7 @@ export const getManagersForAssetSymbol = async (symbol: string) => {
 
 export const removeManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
-    const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
@@ -136,7 +139,7 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
 
 export const addManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
-    const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
@@ -149,7 +152,7 @@ export const addManager = (token: TokenModel, owner: string) => async (dispatch,
 
 export const reissueAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
-    const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.reissueAsset(token, amount)
@@ -162,7 +165,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
 
 export const revokeAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
-    const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.revokeAsset(token, amount)
@@ -200,7 +203,7 @@ export const setTx = (tx) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
   const txModel = await assetsManagerDAO.getTxModel(tx, account)
-  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: [ txModel ] } })
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList: new Immutable.Map().set(txModel.id(), txModel) } })
 }
 
 export const setManagers = (tx) => async (dispatch, getState) => {
@@ -208,7 +211,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
     const symbol = web3Converter.bytesToString(tx.args.symbol)
     const { account } = getState().get(DUCK_SESSION)
 
-    let { selectedToken } = getState().get(DUCK_ASSETS_MANAGER)
+    let selectedToken = getState().get(DUCK_ASSETS_MANAGER).selectedToken()
     const tokens = getState().get(DUCK_TOKENS)
     let token = tokens.getBySymbol(symbol)
 
@@ -256,7 +259,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   ])
 
   const issueCallback = async (symbol, value, isIssue, tx) => {
-    const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const newAssets = await assetsManagerDao.getSystemAssetsForOwner(account)
     Object.keys(assets).map((address) => {
       if (!newAssets[ address ]) {
@@ -314,7 +317,7 @@ export const getFee = async (token: TokenModel) => {
 }
 
 export const selectToken = (token: TokenModel) => async (dispatch, getState) => {
-  const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+  const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
   dispatch({
     type: SELECT_TOKEN,
     payload: { symbol: token.id() },
@@ -423,7 +426,7 @@ export const unrestrictUser = (token: TokenModel, address: string) => async (dis
 }
 
 export const selectPlatform = (platformAddress) => async (dispatch, getState) => {
-  const { assets } = getState().get(DUCK_ASSETS_MANAGER)
+  const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
   const tokens = getState().get(DUCK_TOKENS)
   dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
 
@@ -452,7 +455,6 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    console.log('platformrequested: ', data)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
@@ -460,7 +462,6 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   })
 
   assetsManagerDao.subscribeOnMiddleware('assetcreated', (data) => {
-    console.log('assetcreated: ', data)
     if (data && data.payload && data.payload.by !== account) {
       return
     }

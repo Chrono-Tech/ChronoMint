@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, getAssetsManagerData } from 'redux/assetsManager/actions'
+import { createPlatform, DUCK_ASSETS_MANAGER, getAssetsManagerData } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
@@ -22,14 +22,14 @@ function prefix (token) {
 }
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
-    platformsCount: assetsManager.usersPlatforms.length,
-    tokensCount: Object.keys(assetsManager.assets).length,
-    managersCount: assetsManager.managersCount,
-    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount,
-    selectedPlatform: assetsManager.selectedPlatform,
-    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
+    platformsCount: assetsManager.usersPlatforms().length,
+    tokensCount: Object.keys(assetsManager.assets()).length,
+    managersCount: assetsManager.managersCount(),
+    tokensOnCrowdsaleCount: assetsManager.tokensOnCrowdsaleCount(),
+    selectedPlatform: assetsManager.selectedPlatform(),
+    assetsManagerCountsLoading: assetsManager.isFetching() && !assetsManager.isFetched(),
   }
 }
 

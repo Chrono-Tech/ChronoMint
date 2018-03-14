@@ -50,14 +50,14 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return unionBy(minePlatforms, mineAssets, 'address')
   }
 
-  async getManagers (symbols) {
+  getManagers (symbols: Array<string>) {
     return ethereumProvider.getEventsData('mint/managerListByToken', symbols.map((item) => {
       return `symbol[]='${item}'`
     }).join('&'))
   }
 
   async getManagersForAssetSymbol (symbol) {
-    const managersListForSymbol = await this._call('getManagersForAssetSymbol', [ symbol ])
+    const managersListForSymbol = await this.getManagers([ symbol ])
 
     let formatManagersList = new OwnerCollection()
     managersListForSymbol.map((address) => {
@@ -120,7 +120,10 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
     const transactions = await Promise.all(promises)
-    return transactions
+
+    let map = new Immutable.Map()
+    transactions.map((tx) => map = map.set(tx.id(), tx))
+    return map
   }
 
   subscribeOnMiddleware (event: string, callback) {

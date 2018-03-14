@@ -20,7 +20,28 @@ function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
-class PlatformsList extends PureComponent {
+function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    platformsList: assetsManager.platformsList(),
+    tokens,
+    assets: assetsManager.assets(),
+    selectedToken: assetsManager.selectedToken(),
+    selectedPlatform: assetsManager.selectedPlatform(),
+    assetsManagerCountsLoading: assetsManager.isFetching() && !assetsManager.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
+    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class PlatformsList extends PureComponent {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
@@ -144,25 +165,3 @@ class PlatformsList extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const tokens = state.get(DUCK_TOKENS)
-  return {
-    platformsList: assetsManager.platformsList,
-    tokens,
-    assets: assetsManager.assets,
-    selectedToken: assetsManager.selectedToken,
-    selectedPlatform: assetsManager.selectedPlatform,
-    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
-    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlatformsList)

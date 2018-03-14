@@ -29,11 +29,10 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   return {
     selectedToken: getSelectedToken()(state),
-    assets: assetsManager.assets,
-    selectedPlatform: assetsManager.selectedPlatform,
-    managersForTokenLoading: assetsManager.managersForTokenLoading,
-    platformsList: assetsManager.platformsList,
-    usersPlatforms: assetsManager.usersPlatforms,
+    assets: assetsManager.assets(),
+    selectedPlatform: assetsManager.selectedPlatform(),
+    platformsList: assetsManager.platformsList(),
+    usersPlatforms: assetsManager.usersPlatforms(),
   }
 }
 
@@ -74,7 +73,6 @@ export default class PlatformInfo extends PureComponent {
     handleAddManagerDialog: PropTypes.func,
     openBlockAssetDialog: PropTypes.func,
     getManagersForAssetSymbol: PropTypes.func,
-    managersForTokenLoading: PropTypes.bool,
     reissueAsset: PropTypes.func,
     handleRevokeDialog: PropTypes.func,
     getFee: PropTypes.func,
