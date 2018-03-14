@@ -1,11 +1,10 @@
 import {
   GET_ASSETS_MANAGER_COUNTS, GET_ASSETS_MANAGER_COUNTS_START, GET_PLATFORMS, GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START, GET_USER_PLATFORMS, SELECT_PLATFORM, SELECT_TOKEN, SET_ASSETS, SET_NEW_MANAGERS_LIST,
+  GET_TRANSACTIONS_START, SELECT_PLATFORM, SELECT_TOKEN, SET_ASSETS, SET_NEW_MANAGERS_LIST,
 } from './actions'
 
 export const initialState = {
   usersPlatforms: [],
-  usersPlatformsCount: 0,
   assetsManagerCountsLoading: false,
   selectedToken: null,
   selectedPlatform: null,
@@ -34,17 +33,14 @@ export default (state = initialState, action) => {
         assets: action.payload.assets,
         platformsList: action.payload.platforms,
         usersPlatforms: action.payload.usersPlatforms,
-        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     case GET_PLATFORMS:
       return {
         ...state,
         platformsList: action.payload.platforms,
         usersPlatforms: action.payload.usersPlatforms,
-        usersPlatformsCount: action.payload.usersPlatforms.length,
       }
     case SELECT_TOKEN:
-      console.log('Selected TOKEN: ', action)
       return {
         ...state,
         selectedToken: action.payload.symbol,

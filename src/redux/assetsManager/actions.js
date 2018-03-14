@@ -31,6 +31,7 @@ export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
 export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
 
 export const getAssetsManagerData = () => async (dispatch, getState) => {
+  dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   const { account } = getState().get(DUCK_SESSION)
 
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
@@ -243,7 +244,6 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
-  dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getTransactions())
   dispatch(subscribeToRestrictedEvents())
   const { account } = getState().get(DUCK_SESSION)

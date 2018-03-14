@@ -32,7 +32,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const assetListObject = {}
     if (assetList && assetList.length) {
       for (const asset of assetList) {
-        assetListObject[asset.token] = { ...asset, address: asset.token }
+        assetListObject[ asset.token ] = { ...asset, address: asset.token }
       }
     }
 
@@ -132,51 +132,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getBlacklist (symbol: string) {
-    const [ restrictedList, unrestrictedList ] = await Promise.all([
-      ethereumProvider.getEventsData('restricted', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`, (data) => {
-        return {
-          type: true,
-          date: new Date(data.created),
-          address: data.restricted,
-        }
-      }),
-      ethereumProvider.getEventsData('unrestricted', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`, (data) => {
-        return {
-          type: false,
-          date: new Date(data.created),
-          address: data.unrestricted,
-        }
-      }),
-    ])
-
-    let blacklist = {}
-    restrictedList
-      .concat(unrestrictedList)
-      .sort((a, b) => {
-        if (a.date > b.date) {
-          return -1
-        }
-        if (a.date < b.date) {
-          return 1
-        }
-        return 0
-      })
-      .map((item) => {
-        if (!blacklist[ item.address ]) {
-          blacklist[ item.address ] = {
-            type: item.type,
-            address: item.address,
-          }
-        }
-      })
-
-    let list = new Immutable.List()
-    Object.values(blacklist).map((item) => {
-      if (item.type) {
-        list = list.push(item.address)
-      }
-    })
-
-    return new BlacklistModel({ list })
+    const blacklist = await ethereumProvider.getEventsData(`mint/blacklist`, `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
+    return new BlacklistModel({ list: new Immutable.List(blacklist) })
   }
 }
