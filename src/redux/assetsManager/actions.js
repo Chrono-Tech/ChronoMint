@@ -38,14 +38,14 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol))
+  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
   dispatch({
     type: GET_ASSETS_MANAGER_COUNTS, payload: {
       platforms,
       assets,
-      managers: managers.filter((m) => m !== account),
+      managers,
       usersPlatforms,
     },
   })
@@ -118,9 +118,9 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
   }
 }
 
-export const getManagersForAssetSymbol = async (symbol: string) => {
+export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts: Array<string> = []) => {
   const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
-  const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol)
+  const managersList = await assetsManagerDAO.getManagersForAssetSymbol(symbol, excludeAccounts)
   return managersList.isFetched(true)
 }
 
@@ -318,6 +318,7 @@ export const getFee = async (token: TokenModel) => {
 
 export const selectToken = (token: TokenModel) => async (dispatch, getState) => {
   const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
+  const { account } = getState().get(DUCK_SESSION)
   dispatch({
     type: SELECT_TOKEN,
     payload: { symbol: token.id() },
@@ -331,7 +332,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 
   const [ managersList, isReissuable, fee, isPaused, blacklist ] = await Promise.all([
-    getManagersForAssetSymbol(token.symbol()),
+    getManagersForAssetSymbol(Web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
     getPauseStatus(token.address()),
@@ -455,6 +456,7 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
+    console.log('platformrequested: ', data, account)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
@@ -462,6 +464,7 @@ const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
   })
 
   assetsManagerDao.subscribeOnMiddleware('assetcreated', (data) => {
+    console.log('assetcreated: ', data, account)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
