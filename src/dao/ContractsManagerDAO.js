@@ -182,7 +182,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   async getChronoBankAssetDAO (address): Promise<ChronoBankAssetDAO> {
     const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
     const assetAddress = await chronoBankAssetProxyDAO.getLatestVersion()
-    return this._getDAO(DAO_CHRONOBANK_ASSET, assetAddress)
+    return this._getDAO(DAO_CHRONOBANK_ASSET, address ? assetAddress : null)
   }
 
   getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {

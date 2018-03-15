@@ -15,6 +15,7 @@ import { TX_ASSET_CREATED } from 'dao/AssetsManagerDAO'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 
 import './HistoryTable.scss'
+import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from '../../../dao/ChronoBankAssetDAO'
 
 function prefix (token) {
   return `Assets.HistoryTable.${token}`
@@ -96,6 +97,26 @@ export default class HistoryTable extends PureComponent {
   renderValue (trx) {
     let value
     switch (trx.type()) {
+      case TX_PAUSED:
+      case TX_UNPAUSED:
+        value = (<div><Translate value={prefix('token')} />: {trx.symbol()}</div>)
+        break
+      case TX_RESTRICTED:
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            <div><Translate value={prefix('user')} />: {trx.args().restricted} </div>
+          </div>
+        )
+        break
+      case TX_UNRESTRICTED:
+        value = (
+          <div>
+            <div><Translate value={prefix('token')} />: {trx.symbol()}</div>
+            <div><Translate value={prefix('user')} />: {trx.args().unrestricted} </div>
+          </div>
+        )
+        break
       case TX_ISSUE:
       case TX_REVOKE:
         if (trx.symbol()) {

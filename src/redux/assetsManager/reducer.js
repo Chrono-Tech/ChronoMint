@@ -38,14 +38,6 @@ export default (state = initialState, action) => {
             .isFetching(true),
         )
     case GET_TRANSACTIONS_DONE:
-      // eslint-disable-next-line
-      console.log('state.transactionsList()', state.transactionsList().toJS())
-      // eslint-disable-next-line
-      console.log('action.payload.transactionsList', action.payload.transactionsList.toJS())
-      // eslint-disable-next-line
-      console.log('res', state.transactionsList()
-        .merge(action.payload.transactionsList).toJS(),
-      )
       return state
         .transactionsList(
           state.transactionsList()

@@ -14,6 +14,7 @@ import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
+import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
 
 export const TX_ASSET_CREATED = 'AssetCreated'
 
@@ -70,7 +71,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   createTxModel (tx, account, block, time): TxModel {
-    const gasPrice = new BigNumber(tx.gasPrice)
+    const gasPrice = new BigNumber(tx.gasPrice || 0)
     return new TxModel({
       txHash: tx.transactionHash,
       type: tx.event,
@@ -138,4 +139,41 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const blacklist = await ethereumProvider.getEventsData(`mint/blacklist`, `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
     return new BlacklistModel({ list: new Immutable.List(blacklist) })
   }
+
+  // TODO @Abdulov remove this how txHash will be arrive from Middleware
+  async getTransactionsForBlacklists (address, symbol, account) {
+    const transactionsPromises = []
+    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
+
+    transactionsPromises.push(chronoBankAssetDAO._get(TX_RESTRICTED, 0, 'latest', { symbol }))
+    transactionsPromises.push(chronoBankAssetDAO._get(TX_UNRESTRICTED, 0, 'latest', { symbol }))
+
+    const transactionsLists = await Promise.all(transactionsPromises)
+    const promises = []
+    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
+    const transactions = await Promise.all(promises)
+
+    let map = new Immutable.Map()
+    transactions.map((tx) => map = map.set(tx.id(), tx))
+    return map
+  }
+
+  // TODO @Abdulov remove this how txHash will be arrive from Middleware
+  async getTransactionsForBlockAsset (address, symbol, account) {
+    const transactionsPromises = []
+    const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(address)
+
+    transactionsPromises.push(chronoBankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
+    transactionsPromises.push(chronoBankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
+
+    const transactionsLists = await Promise.all(transactionsPromises)
+    const promises = []
+    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
+    const transactions = await Promise.all(promises)
+
+    let map = new Immutable.Map()
+    transactions.map((tx) => map = map.set(tx.id(), tx))
+    return map
+  }
 }
+

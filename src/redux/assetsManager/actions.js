@@ -31,6 +31,22 @@ export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
 export const GET_TRANSACTIONS_DONE = 'AssetsManager/GET_TRANSACTIONS_DONE'
 export const SET_NEW_MANAGERS_LIST = 'AssetsManager/SET_NEW_MANAGERS_LIST'
 
+export const setTxFromMiddlewareForBlackList = (address, symbol) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const transactionsList = await assetsManagerDAO.getTransactionsForBlacklists(address, symbol, account)
+
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
+}
+
+export const setTxFromMiddlewareForBlockAsset = (address, symbol) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+  const transactionsList = await assetsManagerDAO.getTransactionsForBlockAsset(address, symbol, account)
+
+  dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
+}
+
 export const getAssetsManagerData = () => async (dispatch, getState) => {
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   const { account } = getState().get(DUCK_SESSION)
@@ -41,6 +57,11 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol))
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
+  Object.values(assets).map((asset) => {
+    const symbol = web3Converter.bytesToString(asset.symbol)
+    dispatch(setTxFromMiddlewareForBlockAsset(asset.address, symbol))
+    dispatch(setTxFromMiddlewareForBlackList(asset.address, symbol))
+  })
   dispatch({
     type: GET_ASSETS_MANAGER_COUNTS, payload: {
       platforms,
@@ -248,14 +269,14 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
-  dispatch(subscribeToRestrictedEvents())
   const { account } = getState().get(DUCK_SESSION)
   const [ assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
-    dispatch(subscribeToBlacklistEvents()),
-    subscribeToAssetEvents(dispatch, getState, account),
+    dispatch(subscribeToBlockAssetEvents()),
+    dispatch(subscribeToRestrictedEvents()),
+    dispatch(subscribeToAssetEvents(account)),
   ])
 
   const issueCallback = async (symbol, value, isIssue, tx) => {
@@ -451,7 +472,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
   })
 }
 
-const subscribeToAssetEvents = async (dispatch, getState, account: string) => {
+const subscribeToAssetEvents = (account: string) => async (dispatch) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
@@ -475,13 +496,14 @@ const subscribeToRestrictedEvents = () => async (dispatch, getState) => {
     const address = status ? data.payload.restricted : data.payload.unrestricted
     const symbol = web3Converter.bytesToString(data.payload.symbol)
     const token = getState().get(DUCK_TOKENS).item(symbol)
+    dispatch(setTxFromMiddlewareForBlackList(token.address(), token.symbol()))
     if (token.isFetched()) {
-      dispatch(notify(new AssetsManagerNoticeModel({ status: status ? USER_ADDED_TO_BLACKLIST : USER_DELETED_FROM_BLACKLIST, replacements: { address } })))
       const blacklist = await getBlacklist(token.symbol())
       dispatch({
         type: TOKENS_FETCHED,
         token: token.blacklist(blacklist),
       })
+      dispatch(notify(new AssetsManagerNoticeModel({ status: status ? USER_ADDED_TO_BLACKLIST : USER_DELETED_FROM_BLACKLIST, replacements: { address } })))
     }
   }
 
@@ -489,12 +511,13 @@ const subscribeToRestrictedEvents = () => async (dispatch, getState) => {
   assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => callback(data, false))
 }
 
-const subscribeToBlacklistEvents = () => async (dispatch, getState) => {
+const subscribeToBlockAssetEvents = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const callback = (data, status) => {
     const isPaused = new PausedModel({ value: status })
     const symbol = web3Converter.bytesToString(data.payload.symbol)
     const token = getState().get(DUCK_TOKENS).item(symbol)
+    dispatch(setTxFromMiddlewareForBlockAsset(token.address(), token.symbol()))
     if (token.isFetched()) {
       dispatch({
         type: TOKENS_FETCHED,
