@@ -332,7 +332,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 
   const [ managersList, isReissuable, fee, isPaused, blacklist ] = await Promise.all([
-    getManagersForAssetSymbol(Web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
+    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
     getPauseStatus(token.address()),
