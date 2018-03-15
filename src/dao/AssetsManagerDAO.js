@@ -51,20 +51,17 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return unionBy(minePlatforms, mineAssets, 'address')
   }
 
-  getManagers (symbols: Array<string>) {
-    return ethereumProvider.getEventsData('mint/managerListByToken', symbols.map((item) => {
+  async getManagers (symbols: Array<string>, excludeAccounts: Array<string> = []) {
+    const managerList = await ethereumProvider.getEventsData('mint/managerListByToken', symbols.map((item) => {
       return `symbol[]='${item}'`
     }).join('&'))
+    return managerList.filter((m) => !excludeAccounts.includes(m))
   }
 
-  async getManagersForAssetSymbol (symbol) {
-    const managersListForSymbol = await this.getManagers([ symbol ])
-
+  async getManagersForAssetSymbol (symbol: string, excludeAccounts: Array<string> = []) {
+    const managersListForSymbol = await this.getManagers([ symbol ], excludeAccounts)
     let formatManagersList = new OwnerCollection()
     managersListForSymbol.map((address) => {
-      if (this.isEmptyAddress(address)) {
-        return
-      }
       formatManagersList = formatManagersList.add(new OwnerModel({ address }))
     })
     return formatManagersList
