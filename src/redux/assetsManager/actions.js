@@ -480,7 +480,6 @@ const subscribeToAssetEvents = (account: string) => async (dispatch) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    console.log('platformrequested: ', data, account)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
@@ -488,7 +487,6 @@ const subscribeToAssetEvents = (account: string) => async (dispatch) => {
   })
 
   assetsManagerDao.subscribeOnMiddleware('assetcreated', (data) => {
-    console.log('assetcreated: ', data, account)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
