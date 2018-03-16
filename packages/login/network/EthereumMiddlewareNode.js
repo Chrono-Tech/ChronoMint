@@ -6,6 +6,8 @@ const eventsList = [
   'unrestricted',
   'paused',
   'unpaused',
+  'issue',
+  'revoke',
 ]
 
 export default class EthereumMiddlewareNode extends AbstractNode {

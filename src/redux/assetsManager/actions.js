@@ -54,7 +54,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol), [account])
+  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol), [ account ])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
   Object.values(assets).map((asset) => {
@@ -279,7 +279,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(subscribeToAssetEvents(account)),
   ])
 
-  const issueCallback = async (symbol, value, isIssue, tx) => {
+  const issueCallback = async () => {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
     const newAssets = await assetsManagerDao.getSystemAssetsForOwner(account)
     Object.keys(assets).map((address) => {
@@ -294,7 +294,10 @@ export const watchInitTokens = () => async (dispatch, getState) => {
       },
     })
 
-    dispatch(setTx(tx))
+    const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
+    const transactionsList = await assetsManagerDAO.getTransactionsForIssue(account)
+
+    dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
   }
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))
@@ -353,7 +356,7 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
   })
 
   const [ managersList, isReissuable, fee, isPaused, blacklist ] = await Promise.all([
-    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
+    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [ account ]),
     checkIsReissuable(token, assets[ token.address() ]),
     getFee(token),
     getPauseStatus(token.address()),

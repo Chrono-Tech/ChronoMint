@@ -8,7 +8,6 @@ import TxModel from 'models/TxModel'
 import { unionBy } from 'lodash'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import BlacklistModel from 'models/tokens/BlacklistModel'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -36,7 +35,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
         assetListObject[ asset.token ] = { ...asset, address: asset.token }
       }
     }
-
     return assetListObject
   }
 
@@ -106,12 +104,12 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
     const platformTokenExtensionGatewayManagerDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
 
-    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }, TXS_PER_PAGE))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }, TXS_PER_PAGE, 'test'))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }, TXS_PER_PAGE))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }, TXS_PER_PAGE))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }, 'test'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { from: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
@@ -163,6 +161,23 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsPromises.push(chronoBankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
     transactionsPromises.push(chronoBankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
 
+    const transactionsLists = await Promise.all(transactionsPromises)
+    const promises = []
+    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
+    const transactions = await Promise.all(promises)
+
+    let map = new Immutable.Map()
+    transactions.map((tx) => map = map.set(tx.id(), tx))
+    return map
+  }
+
+  // TODO @Abdulov remove this how txHash will be arrive from Middleware
+  async getTransactionsForIssue (account) {
+    const transactionsPromises = []
+    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
+
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
+    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))

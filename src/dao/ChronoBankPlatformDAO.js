@@ -1,3 +1,4 @@
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
@@ -66,19 +67,11 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    return this._watch(TX_ISSUE, (tx) => {
-      const symbol = this._c.bytesToString(tx.args.symbol)
-      const value = tx.args.value
-      callback(symbol, value, true, tx)
-    })
+    return ethereumProvider.subscribeOnMiddleware('issue', () => callback())
   }
 
   watchRevoke (callback) {
-    return this._watch(TX_REVOKE, (tx) => {
-      const symbol = this._c.bytesToString(tx.args.symbol)
-      const value = tx.args.value
-      callback(symbol, value, false, tx)
-    })
+    return ethereumProvider.subscribeOnMiddleware('revoke', () => callback())
   }
 
   watchManagers (callback) {
