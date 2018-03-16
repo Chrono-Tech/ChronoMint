@@ -13,9 +13,9 @@ import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from 'dao/ChronoBankPlatform
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from 'dao/PlatformsManagerDAO'
 import { TX_ASSET_CREATED } from 'dao/AssetsManagerDAO'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from 'dao/ChronoBankAssetDAO'
 
 import './HistoryTable.scss'
-import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from '../../../dao/ChronoBankAssetDAO'
 
 function prefix (token) {
   return `Assets.HistoryTable.${token}`

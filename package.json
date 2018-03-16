@@ -147,6 +147,7 @@
     "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
     "start": "node ./scripts/start.js",
+    "start:eval": "SOURCE_MAP=eval node ./scripts/start.js",
     "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
