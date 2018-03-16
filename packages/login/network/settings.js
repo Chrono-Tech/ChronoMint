@@ -99,7 +99,7 @@ const BASE_NETWORK_MAP = [
 
 export const MIDDLEWARE_MAP = {
   eth: {
-    local: '/_exchange/',
+    local: 'http://localhost:8083/',
     mainnet: 'https://middleware-ethereum-mainnet-rest.chronobank.io/',
     testnet: 'https://middleware-ethereum-testnet-rest.chronobank.io/',
   },

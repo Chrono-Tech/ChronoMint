@@ -6,6 +6,8 @@ import Amount from 'models/Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import FeeModel from './FeeModel'
 import ReissuableModel from './ReissuableModel'
+import PausedModel from './PausedModel'
+import BlacklistModel from './BlacklistModel'
 
 export default class TokenModel extends abstractFetchingModel({
   dao: null,
@@ -26,6 +28,8 @@ export default class TokenModel extends abstractFetchingModel({
   blockchain: null,
   isERC20: false,
   isLocked: false, // flag for do not operate this token
+  isPaused: new PausedModel(),
+  blacklist: new BlacklistModel(),
 }) {
   id () {
     return this.get('transactionHash') || this.symbol() || this.address()
@@ -157,5 +161,13 @@ export default class TokenModel extends abstractFetchingModel({
 
   isLocked () {
     return this.get('isLocked')
+  }
+
+  isPaused (value) {
+    return this._getSet('isPaused', value)
+  }
+
+  blacklist (value) {
+    return this._getSet('blacklist', value)
   }
 }
