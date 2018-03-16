@@ -9,9 +9,9 @@ import Web3Converter from 'utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
-import { TX_PLATFORM_ATTACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
+import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 
-const TX_ASSET_CREATED = 'AssetCreated'
+export const TX_ASSET_CREATED = 'AssetCreated'
 
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
@@ -96,7 +96,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       gas: tx.gas,
       gasPrice,
       time,
-      symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol),
+      symbol: tx.args.symbol && Web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
       tokenAddress: tx.args.token,
       args: tx.args,
     })
@@ -123,6 +123,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }, TXS_PER_PAGE))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }, TXS_PER_PAGE, 'test'))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }, TXS_PER_PAGE))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }, TXS_PER_PAGE))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_OWNERSHIP_CHANGE, 0, 'latest', { to: account }))

@@ -1,3 +1,4 @@
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import ChronoBankLogo from 'components/common/ChronoBankLogo/ChronoBankLogo'
@@ -16,13 +17,13 @@ class Splash extends Component {
           <ChronoBankLogo version={require('../../../package.json').version} />
           {this.props.children}
         </div>
-        { !window.isMobile && (
+        {!window.isMobile && (
           <div styleName='footer'>
-            <div styleName='copyright'>Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.</div>
+            <div styleName='copyright'><Translate value='copyright' /></div>
             <div styleName='links'>
-              <a styleName='link' href='https://chronobank.io'>Chronobank.io</a>
-              <a styleName='link' href='https://chronobank.io/faq'>Q&A</a>
-              <a styleName='link' href='https://chronobank.io/#contactus'>Contact Us</a>
+              <a styleName='link' href='https://chronobank.io'><Translate value='chronobankSite' /></a>
+              <a styleName='link' href='https://chronobank.io/faq'><Translate value='qa' /></a>
+              <a styleName='link' href='https://chronobank.io/#contactus'><Translate value='contactUs' /></a>
             </div>
           </div>
         )}

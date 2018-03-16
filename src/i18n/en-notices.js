@@ -43,10 +43,15 @@ export default {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',
     sentTo: '%{value} %{symbol} sent to %{address}',
+    errors: {
+      TRANSFER_CANCELLED: 'Cancelled by user from tx confirmation modal',
+      TRANSFER_UNKNOWN: 'Unknown transaction error',
+    },
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.',
     pkIcon: 'Your private key has been copied to the clipboard.',
+    changed: 'Profile has been successfully changed.',
   },
   operations: {
     title: 'Pending Operations',
@@ -77,5 +82,10 @@ export default {
   wallet: {
     title: 'Wallet',
     create: '%{name}: Created',
+  },
+  assetsManager: {
+    title: 'Assets manager',
+    managerAdded: 'Manager added',
+    managerRemoved: 'Manager removed',
   },
 }

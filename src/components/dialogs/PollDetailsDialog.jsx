@@ -84,13 +84,13 @@ export default class VoteDialog extends PureComponent {
                     <div styleName='entryValue'>
                       {details.voteLimitInTIME === null
                         ? (<i>Unlimited</i>)
-                        : <TokenValue value={details.voteLimitInTIME} noRenderPrice />
+                        : <TokenValue precision={2} value={details.voteLimitInTIME} noRenderPrice />
                       }
                     </div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                    <div styleName='entryValue'><TokenValue value={details.received} noRenderPrice /></div>
+                    <div styleName='entryValue'><TokenValue precision={2} value={details.received} noRenderPrice /></div>
                   </div>
                   <div styleName='entry'>
                     <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
@@ -160,7 +160,7 @@ export default class VoteDialog extends PureComponent {
                             />
                             <div styleName='itemTitle'>
                               <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash;
-                              <b><TokenValue noRenderPrice value={item.count} /></b>
+                              <b><TokenValue noRenderPrice precision={2} value={item.count} /></b>
                             </div>
                           </div>
                         ))}

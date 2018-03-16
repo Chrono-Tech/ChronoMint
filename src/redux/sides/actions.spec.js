@@ -6,11 +6,12 @@ describe('sides actions', () => {
     it(`should open side by ${name} action`, async () => {
       await store.dispatch(actions[name]({
         component: null,
-        key: 'test_key',
-        props: null,
+        panelKey: 'test_key',
+        isOpened: false,
       }))
       expect(store.getActions()[0].type).toEqual(actions.SIDES_PUSH)
-      expect(store.getActions()[0].key).toEqual('test_key')
+      expect(store.getActions()[0].panelKey).toEqual('test_key')
+      expect(store.getActions()[0].isOpened).toEqual(false)
     })
   });
 

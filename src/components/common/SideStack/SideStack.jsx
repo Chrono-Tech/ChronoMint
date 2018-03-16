@@ -1,9 +1,13 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { SidePanel } from 'layouts/partials'
 import { DUCK_SIDES } from 'redux/sides/actions'
 
 import './SideStack.scss'
+
+export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
+export const NOTIFICATION_SIDE_PANEL_KEY = 'NotificationSidePanelKey'
 
 function mapStateToProps (state) {
   return {
@@ -14,17 +18,15 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 class SideStack extends PureComponent {
   static propTypes = {
-    stack: PropTypes.array,
+    stack: PropTypes.arrayOf(PropTypes.object),
   }
 
   render () {
     return (
       <div styleName='root'>
         { this.props.stack.map((panel) => (
-          <div key={panel.key}>
-            <panel.component {...panel.props} />
-          </div>
-        )) }
+          <SidePanel key={panel.panelKey} {...panel} />
+        ))}
       </div>
     )
   }

@@ -1,19 +1,18 @@
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { change } from 'redux-form/immutable'
 import BigNumber from 'bignumber.js'
 import { address } from 'models/validator'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
 import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import type TokenModel from 'models/tokens/TokenModel'
 import { I18n } from 'platform/i18n'
 import { notify } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { checkFetched, TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
+import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
 import Amount from 'models/Amount'
 import ERC20DAO from 'dao/ERC20DAO'
 import { FORM_CBE_TOKEN } from 'components/dialogs/CBETokenDialog/CBETokenDialog'
-import TokensCollection from 'models/tokens/TokensCollection'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
@@ -25,16 +24,16 @@ const removeToken = (token: TokenModel) => ({ type: TOKENS_REMOVE, token })
 
 export const watchToken = (notice: TokenNoticeModel) => async (dispatch, getState) => {
 
+  const token = notice.token().isFetching(false).isFetched(true).isERC20(true)
   if (notice.token()) {
-    const token = notice.token().isFetching(false).isFetched(true)
-    dispatch({ type: TOKENS_FETCHED, token: token.isERC20(true) })
-    tokenService.createDAO(token.isERC20(true))
-    dispatch(checkFetched())
+    dispatch({ type: TOKENS_REMOVE, token: notice.oldAddress() })
+    dispatch({ type: TOKENS_FETCHED, token })
+    tokenService.createDAO(token)
   }
 
   dispatch(notice.isRemoved()
-    ? removeToken(notice.token())
-    : setToken(notice.token()))
+    ? removeToken(token)
+    : setToken(token))
 
   if (getState().get(DUCK_SESSION).isCBE) {
     dispatch(notify(notice))
@@ -104,6 +103,7 @@ export const revokeToken = (token: TokenModel | AbstractFetchingModel) => async 
     dispatch(setToken(token.isFetching(false)))
   }
 }
+
 export const getDataFromContract = (token) => async (dispatch) => {
   dispatch({ type: TOKENS_FORM_FETCH })
   if (!address(token.address())) {
