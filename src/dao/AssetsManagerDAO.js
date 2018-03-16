@@ -38,6 +38,12 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     return assetListObject
   }
 
+  async getAssetDataBySymbol (symbol: string) {
+    const [ asset ] = await ethereumProvider.getEventsData('mint/asset', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
+    asset.address = asset.token
+    return asset
+  }
+
   async getPlatformList (userAddress: string) {
     const minePlatforms = await ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
       return { address: e.platform, by: e.by, name: null }
@@ -161,23 +167,6 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     transactionsPromises.push(chronoBankAssetDAO._get(TX_PAUSED, 0, 'latest', { symbol }))
     transactionsPromises.push(chronoBankAssetDAO._get(TX_UNPAUSED, 0, 'latest', { symbol }))
 
-    const transactionsLists = await Promise.all(transactionsPromises)
-    const promises = []
-    transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))
-    const transactions = await Promise.all(promises)
-
-    let map = new Immutable.Map()
-    transactions.map((tx) => map = map.set(tx.id(), tx))
-    return map
-  }
-
-  // TODO @Abdulov remove this how txHash will be arrive from Middleware
-  async getTransactionsForIssue (account) {
-    const transactionsPromises = []
-    const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO()
-
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))
-    transactionsPromises.push(chronoBankPlatformDAO._get(TX_REVOKE, 0, 'latest', { by: account }))
     const transactionsLists = await Promise.all(transactionsPromises)
     const promises = []
     transactionsLists.map((transactionsList) => transactionsList.map((tx) => promises.push(this.getTxModel(tx, account))))

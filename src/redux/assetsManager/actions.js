@@ -25,6 +25,7 @@ export const GET_PLATFORMS = 'AssetsManager/GET_PLATFORMS'
 export const SET_ASSETS = 'AssetsManager/SET_ASSETS'
 export const GET_ASSETS_MANAGER_COUNTS = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS'
 export const GET_ASSETS_MANAGER_COUNTS_START = 'AssetsManager/GET_ASSETS_MANAGER_COUNTS_START'
+export const GET_ASSET_DATA = 'AssetsManager/GET_ASSET_DATA'
 export const SELECT_TOKEN = 'AssetsManager/SELECT_TOKEN'
 export const SELECT_PLATFORM = 'AssetsManager/SELECT_PLATFORM'
 export const GET_TRANSACTIONS_START = 'AssetsManager/GET_TRANSACTIONS_START'
@@ -70,6 +71,17 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
       usersPlatforms,
     },
   })
+}
+
+export const getAssetDataBySymbol = (symbol) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
+  const assetsManagerDao = await contractManager.getAssetsManagerDAO()
+  const asset = await assetsManagerDao.getAssetDataBySymbol(symbol)
+  if (asset.by === account) {
+    dispatch(setTxFromMiddlewareForBlockAsset(asset.token, symbol))
+    dispatch(setTxFromMiddlewareForBlackList(asset.token, symbol))
+    dispatch({ type: GET_ASSET_DATA, asset })
+  }
 }
 
 export const getPlatforms = () => async (dispatch, getState) => {
@@ -240,7 +252,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
       if (selectedToken === symbol) {
         dispatch({ type: SELECT_TOKEN, payload: { selectedToken: null } })
       }
-      dispatch(getAssetsManagerData())
+      dispatch(getAssetDataBySymbol(symbol))
     } else {
       let notice
       const { from, to } = tx.args
@@ -270,7 +282,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
-  const [ assetsManagerDao, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
+  const [ , chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
@@ -279,26 +291,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(subscribeToAssetEvents(account)),
   ])
 
-  const issueCallback = async () => {
-    const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    const newAssets = await assetsManagerDao.getSystemAssetsForOwner(account)
-    Object.keys(assets).map((address) => {
-      if (!newAssets[ address ]) {
-        newAssets[ address ] = assets[ address ]
-      }
-    })
-    dispatch({
-      type: SET_ASSETS,
-      payload: {
-        assets: newAssets,
-      },
-    })
-
-    const assetsManagerDAO = await contractManager.getAssetsManagerDAO()
-    const transactionsList = await assetsManagerDAO.getTransactionsForIssue(account)
-
-    dispatch({ type: GET_TRANSACTIONS_DONE, payload: { transactionsList } })
-  }
+  const issueCallback = async (tx) => dispatch(setTx(tx))
   const managersCallback = (tx) => {
     dispatch(setManagers(tx))
     if (tx.args.from !== account && tx.args.to !== account) {
@@ -307,7 +300,9 @@ export const watchInitTokens = () => async (dispatch, getState) => {
     dispatch(setTx(tx))
   }
   const assetCallback = async (tx) => {
-    const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
+    const state = getState().get(DUCK_ASSETS_MANAGER)
+    const assets = state.assets()
+    delete assets[ tx.transactionHash ]
     dispatch({ type: SET_ASSETS, payload: { assets } })
     dispatch(setTx(tx))
   }
@@ -480,19 +475,22 @@ const subscribeToAssetEvents = (account: string) => async (dispatch) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
   assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
-    console.log('platformrequested: ', data, account)
     if (data && data.payload && data.payload.by !== account) {
       return
     }
     dispatch(getPlatforms())
   })
 
-  assetsManagerDao.subscribeOnMiddleware('assetcreated', (data) => {
-    console.log('assetcreated: ', data, account)
-    if (data && data.payload && data.payload.by !== account) {
-      return
+  assetsManagerDao.subscribeOnMiddleware('issue', (data) => {
+    if (data.payload.symbol) {
+      dispatch(getAssetDataBySymbol(web3Converter.bytesToString(data.payload.symbol)))
     }
-    dispatch(getAssetsManagerData())
+  })
+
+  assetsManagerDao.subscribeOnMiddleware('revoke', (data) => {
+    if (data.payload.symbol) {
+      dispatch(getAssetDataBySymbol(web3Converter.bytesToString(data.payload.symbol)))
+    }
   })
 }
 

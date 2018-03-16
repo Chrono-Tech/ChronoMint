@@ -2,6 +2,7 @@ import AbstractNode from './AbstractNode'
 
 const eventsList = [
   'platformrequested',
+  'assetcreated',
   'restricted',
   'unrestricted',
   'paused',

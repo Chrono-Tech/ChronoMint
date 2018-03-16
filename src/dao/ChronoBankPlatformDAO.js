@@ -67,11 +67,11 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    return ethereumProvider.subscribeOnMiddleware('issue', () => callback())
+    return this._watch(TX_ISSUE, (tx) => callback(tx))
   }
 
   watchRevoke (callback) {
-    return ethereumProvider.subscribeOnMiddleware('revoke', () => callback())
+    return this._watch(TX_REVOKE, (tx) => callback(tx))
   }
 
   watchManagers (callback) {

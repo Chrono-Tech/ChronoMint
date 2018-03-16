@@ -1,7 +1,15 @@
 import MainAssetsManagerModel from 'models/assetsManager/MainAssetsManagerModel'
 import {
-  GET_ASSETS_MANAGER_COUNTS, GET_ASSETS_MANAGER_COUNTS_START, GET_PLATFORMS, GET_TRANSACTIONS_DONE,
-  GET_TRANSACTIONS_START, SELECT_PLATFORM, SELECT_TOKEN, SET_ASSETS, SET_NEW_MANAGERS_LIST,
+  GET_ASSETS_MANAGER_COUNTS,
+  GET_ASSETS_MANAGER_COUNTS_START,
+  GET_PLATFORMS,
+  GET_TRANSACTIONS_DONE,
+  GET_TRANSACTIONS_START,
+  SELECT_PLATFORM,
+  SELECT_TOKEN,
+  SET_ASSETS,
+  SET_NEW_MANAGERS_LIST,
+  GET_ASSET_DATA,
 } from './actions'
 
 export const initialState = new MainAssetsManagerModel()
@@ -18,6 +26,12 @@ export default (state = initialState, action) => {
         .assets(action.payload.assets)
         .platformsList(action.payload.platforms)
         .usersPlatforms(action.payload.usersPlatforms)
+    case GET_ASSET_DATA:
+      return state
+        .assets({
+          ...state.assets(),
+          [ action.asset.token ]: action.asset,
+        })
     case GET_PLATFORMS:
       return state
         .platformsList(action.payload.platforms)
