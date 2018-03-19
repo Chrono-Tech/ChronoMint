@@ -475,6 +475,7 @@ export default class AbstractContractDAO extends EventEmitter {
       if (!allowNoReturn) {
         const dryResult = await deployed[ func ].call(...args, txParams)
         const convertedDryResult = convertDryResult(dryResult)
+        console.log('Fry run error: ', dryResult, convertedDryResult)
         if (!this._okCodes.includes(convertedDryResult)) {
           throw new TxError('Dry run failed', convertedDryResult)
         }

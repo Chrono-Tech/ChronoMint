@@ -25,21 +25,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async getPlatformsMetadataForUser (account) {
-    const platformsList = await this._call('getPlatformsMetadataForUser', [ account ])
-    let formatPlatformsList = []
-    if (platformsList.length) {
-      for (let platform of platformsList) {
-        formatPlatformsList.push({
-          address: platform,
-          name: null,
-        })
-      }
-    }
-    return formatPlatformsList
-  }
-
-  async attachPlatform (address) {
+  async attachPlatform (address, name) {
     let tx
     try {
       tx = await this._tx(TX_ATTACH_PLATFORM, [ address ])

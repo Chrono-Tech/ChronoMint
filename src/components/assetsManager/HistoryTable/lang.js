@@ -9,6 +9,7 @@ export default {
     added: 'Added',
     deleted: 'Deleted',
     platform: 'Platform',
+    user: 'User',
   },
   ru: {
     title: 'История',
@@ -20,5 +21,6 @@ export default {
     added: 'Добавлен',
     deleted: 'Удален',
     platform: 'Платформа',
+    user: 'Пользователь',
   },
 }
