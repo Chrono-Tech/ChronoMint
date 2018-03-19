@@ -30,8 +30,7 @@
 }
 
 .middleSnackbar {
-  position: relative;
-  //flex: 0 0 auto;
+  position: relative; //flex: 0 0 auto;
   z-index: 90;
   height: 0px;
   overflow: visible;
@@ -75,3 +74,5 @@
     }
   }
 }
+
+.mainMenu {}

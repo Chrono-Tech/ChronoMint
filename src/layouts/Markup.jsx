@@ -7,7 +7,7 @@ import { closeNotifier } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import theme from 'styles/themes/default'
 import './Markup.scss'
-import { DrawerPartial, HeaderPartial } from './partials'
+import { DrawerPartial, HeaderPartial, DrawerMainMenu } from './partials'
 
 function mapStateToProps (state) {
   return {
@@ -35,8 +35,11 @@ export default class Markup extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
-          <div styleName='drawer' className={this.props.isCBE ? 'drawer-cbe' : null}>
-            <DrawerPartial />
+          {/* <div styleName='drawer' className={this.props.isCBE ? 'drawer-cbe' : null}> */}
+          {/* <DrawerPartial /> */}
+          {/* </div> */}
+          <div styleName='mainMenu'>
+            <DrawerMainMenu />
           </div>
           <div styleName='middle'>
             <div styleName='middleTop'>

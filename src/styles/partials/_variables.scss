@@ -50,7 +50,7 @@ $box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
 $box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24), 0 0 8px 0 rgba(0, 0, 0, .12);
 $box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
 
-$color-modal-backdrop-bg: rgba(0,0,0,0.2);
+$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2); 
 
 $media-size-xs: 480px;
 $media-size-sm: 768px;
@@ -68,8 +68,14 @@ $highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
-$font-family-main: 'Roboto', sans-serif;
+$font-family-main: 'Roboto',
+sans-serif;
 $font-size-base: 16px;
 $font-weight-bold: 600;
 
 $border-radius: 2px;
+
+// Chrono-wallet vars
+$sideMenu-background: #614DBA;
+$border-color: #786AB7;
+$additionalData-color: #BCC6FF;

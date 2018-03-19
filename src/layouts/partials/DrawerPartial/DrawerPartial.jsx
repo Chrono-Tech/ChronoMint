@@ -21,6 +21,34 @@ export default class DrawerPartial extends PureComponent {
     handleDrawerHide: PropTypes.func,
   }
 
+  renderItem (item) {
+    return (
+      <ListItem
+        key={item.key}
+        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
+        innerDivStyle={styles.drawer.item.innerDivStyle}
+        disabled={item.disabled}
+        primaryText={<Translate value={item.title} />}
+        onTouchTap={this.props.handleDrawerHide}
+        leftIcon={
+          <FontIcon
+            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
+            className='material-icons'
+          >{item.icon}
+          </FontIcon>
+        }
+        containerElement={!item.disabled
+          ? <Link
+            styleName='item'
+            activeClassName='drawer-item-active'
+            to={{ pathname: item.path }}
+          />
+          : <div />
+        }
+      />
+    )
+  }
+
   render () {
     return (
       <div
@@ -49,34 +77,6 @@ export default class DrawerPartial extends PureComponent {
           )}
         </div>
       </div>
-    )
-  }
-
-  renderItem (item) {
-    return (
-      <ListItem
-        key={item.key}
-        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
-        innerDivStyle={styles.drawer.item.innerDivStyle}
-        disabled={item.disabled}
-        primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerHide}
-        leftIcon={
-          <FontIcon
-            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
-            className='material-icons'
-          >{item.icon}
-          </FontIcon>
-        }
-        containerElement={!item.disabled
-          ? <Link
-            styleName='item'
-            activeClassName='drawer-item-active'
-            to={{ pathname: item.path }}
-          />
-          : <div />
-        }
-      />
     )
   }
 }

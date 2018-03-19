@@ -14,6 +14,7 @@ import VotingContent from './VotingContent/VotingContent'
 import WalletContent from './WalletContent/WalletContent'
 import SidePanel from './SidePanel/SidePanel'
 import ProfileContent from './ProfileContent/ProfileContent'
+import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 
 export {
   HeaderPartial,
@@ -32,6 +33,7 @@ export {
   AssetsContent,
   SidePanel,
   ProfileContent,
+  DrawerMainMenu,
 }
 
 export default {
@@ -51,4 +53,5 @@ export default {
   AssetsContent,
   SidePanel,
   ProfileContent,
+  DrawerMainMenu,
 }
