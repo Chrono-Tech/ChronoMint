@@ -31,10 +31,7 @@
 .menu-cbe {}
 
 .menu-user {
-  display: none;
-  @include md-only {
-    display: block;
-  }
+  display: block;
 }
 
 .backdrop {
