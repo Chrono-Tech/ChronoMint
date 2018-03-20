@@ -18,7 +18,6 @@ export default class RewardsPage extends Component {
         >
           <Partials.RewardsContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

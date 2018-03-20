@@ -7,21 +7,24 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
-import { logout } from 'redux/session/actions'
+import { logout, DUCK_SESSION } from 'redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from 'models/ProfileModel'
 import profileImgJPG from 'assets/img/profile-photo-1.jpg'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
+import { getWalletsCount } from 'redux/wallet/selectors'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 
 import './DrawerMainMenu.scss'
 
 function mapStateToProps (state) {
-  const session = state.get('session')
+  const { isCBE, profile } = state.get(DUCK_SESSION)
+
   return {
-    isCBE: state.get('session').isCBE,
-    profile: session.profile,
+    walletsCount: getWalletsCount()(state),
+    isCBE,
+    profile,
     isDrawerOpen: state.get('drawer').isOpen,
     networkName: networkService.getName(),
   }
@@ -44,6 +47,7 @@ export default class DrawerMainMenu extends PureComponent {
     profile: PropTypes.instanceOf(ProfileModel),
     networkName: PropTypes.string,
     handleLogout: PropTypes.func,
+    walletsCount: PropTypes.number,
   }
 
   renderItem (item) {
@@ -64,6 +68,7 @@ export default class DrawerMainMenu extends PureComponent {
   }
 
   render () {
+
     return (
       <div
         styleName='root'
@@ -99,13 +104,18 @@ export default class DrawerMainMenu extends PureComponent {
             </div>
           </div>
 
-          <div styleName={classnames('wallets', 'item')}>
+          <Link
+            activeClassName='drawer-item-active'
+            to='/wallet'
+            href
+            styleName={classnames('menuItem', 'item')}
+          >
             <i styleName='icon' className='material-icons'>account_balance_wallet</i>
-            <Link styleName='title' activeClassName='drawer-item-active' to='/wallet' href >
+            <div styleName='title'>
               <Translate value='Wallets' />
-            </Link>
-            <div styleName='count'>3</div>
-          </div>
+            </div>
+            <div styleName='count'>{this.props.walletsCount}</div>
+          </Link>
 
           <MenuTokensList />
 
@@ -137,35 +147,12 @@ export default class DrawerMainMenu extends PureComponent {
             </a>
           </div>
 
+          <div styleName='contacts'>
+            <a href='mailto:info@chronobank.io'>info@chronobank.io</a>
+            <a href='mailto:support@chronobank.io'>support@chronobank.io</a>
+          </div>
         </div>
       </div>
     )
   }
 }
-
-/*
-<ListItem
-        key={item.key}
-        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
-        innerDivStyle={styles.drawer.item.innerDivStyle}
-        disabled={item.disabled}
-        primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerHide}
-        leftIcon={
-          <FontIcon
-            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
-            className='material-icons'
-          >{item.icon}
-          </FontIcon>
-        }
-        containerElement={!item.disabled
-          ? <Link
-            styleName='item'
-            activeClassName='drawer-item-active'
-            to={{ pathname: item.path }}
-            href
-          />
-          : <div />
-        }
-      />
-*/

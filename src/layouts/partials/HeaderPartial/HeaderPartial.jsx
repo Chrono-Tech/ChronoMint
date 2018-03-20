@@ -130,7 +130,7 @@ export default class HeaderPartial extends PureComponent {
                   className='material-icons'
                   style={item.disabled ? styles.header.route.iconStyleDisabled : null}
                 >{item.icon}
-                </FontIcon>}
+                      </FontIcon>}
                 containerElement={!item.disabled
                   ? <Link activeClassName='active' to={{ pathname: item.path }} />
                   : <div />

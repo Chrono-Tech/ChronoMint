@@ -14,6 +14,7 @@
   width: 300px;
   background: $sideMenu-background;
   padding: 30px 0 30px 30px;
+  min-height: 100vh
 }
 
 .chronWalletLogo {
@@ -72,6 +73,7 @@
     flex: 1;
     opacity: 0.25;
     color: $color-white;
+    text-align: center;
   }
 }
 
@@ -170,8 +172,9 @@
 }
 
 .socialItems {
-  width: 200px;
+  width: 150px;
   margin-top: 40px;
+  margin-left: -16px;
   display: flex;
   flex-wrap: wrap;
 }
@@ -217,4 +220,18 @@
 
 .github {
   background: url('assets/img/icons/github.svg')
+}
+
+.contacts {
+  a {
+    color: $color-white;
+    text-decoration: none;
+    display: block;
+    text-decoration: none;
+    margin-top: 15px;
+    opacity: .5;
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: bold;
+  }
 }

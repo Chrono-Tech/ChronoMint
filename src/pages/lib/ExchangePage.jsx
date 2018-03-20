@@ -18,9 +18,7 @@ export default class ExchangePage extends Component {
         >
           <Partials.ExchangeContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
 }
-
