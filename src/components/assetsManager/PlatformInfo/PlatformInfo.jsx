@@ -99,7 +99,7 @@ class PlatformInfo extends PureComponent {
           managersList.isFetched() && !managersList.isFetching() &&
           (
             <div styleName='title'>
-              {managersList.size}&nbsp;<Translate value={prefix('managers')} />
+              {managersList.size()}&nbsp;<Translate value={prefix('managers')} />
               <div styleName='avatarsRow'>
                 {
                   managersList.items()
@@ -121,7 +121,6 @@ class PlatformInfo extends PureComponent {
               </div>
             </div>
           )
-
         }
       </div>
 
@@ -186,17 +185,6 @@ class PlatformInfo extends PureComponent {
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('send')} />}
-            />*/}
-
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('crowdsaleInfo')} />}
-              onTouchTap={() => this.props.handleCrowdsaleDialog()}
-            />*/}
-
             <RaisedButton
               onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}

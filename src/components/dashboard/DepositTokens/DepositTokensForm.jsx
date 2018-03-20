@@ -254,7 +254,7 @@ export default class DepositTokensForm extends PureComponent {
                 label={isRevoke ? 'Revoke' : 'Approve'}
                 onTouchTap={isRevoke
                   ? !isRevokeDisabled && this.handleRevokeAsset :
-                  !isApproveDisabled && handleSubmit(this.handleApproveAsset)
+                  !isApproveDisabled ? handleSubmit(this.handleApproveAsset) : undefined
                 }
                 disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
               />
@@ -268,7 +268,7 @@ export default class DepositTokensForm extends PureComponent {
               styleName='actionButton'
               label='Lock'
               primary
-              onTouchTap={!isLockDisabled && handleSubmit(this.handleDepositAsset)}
+              onTouchTap={!isLockDisabled ? handleSubmit(this.handleDepositAsset) : undefined}
               disabled={isLockDisabled}
             />
           </span>
@@ -278,7 +278,7 @@ export default class DepositTokensForm extends PureComponent {
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
-            onTouchTap={!isWithdrawDisabled && handleSubmit(this.handleWithdrawAsset)}
+            onTouchTap={!isWithdrawDisabled ? handleSubmit(this.handleWithdrawAsset) : undefined}
             disabled={isWithdrawDisabled}
           />
         </span>

@@ -209,7 +209,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('remove')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() && this.props.handlePollRemove}
+                    onTouchTap={!model.isFetching() ? this.props.handlePollRemove : undefined}
                   />
                 )
                 : null
@@ -221,7 +221,7 @@ export default class Poll extends PureComponent {
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={!model.isFetching() && this.props.handlePollDetails}
+                onTouchTap={!model.isFetching() ? this.props.handlePollDetails : undefined}
               />
               {isCBE && details.status && details.active
                 ? (
@@ -229,7 +229,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() && this.props.handlePollEnd}
+                    onTouchTap={!model.isFetching() ? this.props.handlePollEnd : undefined}
                   />
                 )
                 : null
@@ -240,7 +240,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() && this.props.handlePollActivate}
+                    onTouchTap={!model.isFetching() ? this.props.handlePollActivate : undefined}
                   />
                 )
                 : null
@@ -252,7 +252,7 @@ export default class Poll extends PureComponent {
                     styleName='action'
                     primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onTouchTap={!model.isFetching() && !this.props.deposit.isZero() && this.props.handleVote}
+                    onTouchTap={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
                   />
                 )
                 : null

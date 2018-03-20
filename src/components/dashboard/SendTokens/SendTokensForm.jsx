@@ -302,7 +302,7 @@ export default class SendTokensForm extends PureComponent {
               primary
               style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={!pristine && !invalid && !isTimeLocked && handleSubmit(this.handleTransfer)}
+              onTouchTap={!pristine && !invalid && !isTimeLocked ? handleSubmit(this.handleTransfer) : undefined}
             />
             {token.isERC20() && isApprove && (
               <RaisedButton
@@ -310,7 +310,7 @@ export default class SendTokensForm extends PureComponent {
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract || isTimeLocked}
-                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked && handleSubmit(this.handleApprove)}
+                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked ? handleSubmit(this.handleApprove) : undefined}
               />
             )}
             {token.isERC20() && !isApprove && (
@@ -319,7 +319,7 @@ export default class SendTokensForm extends PureComponent {
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={!isContract}
-                onTouchTap={isContract && token && recipient && this.handleRevoke}
+                onTouchTap={isContract && token && recipient ? this.handleRevoke : undefined}
               />
             )}
           </div>
