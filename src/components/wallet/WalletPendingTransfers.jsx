@@ -97,7 +97,7 @@ export default class WalletPendingTransfers extends PureComponent {
               disabled={!isConfirmed}
               onTouchTap={isConfirmed
                 ? this.handleRevoke(wallet, item)
-                : null
+                : undefined
               }
             />
           </div>
@@ -106,7 +106,7 @@ export default class WalletPendingTransfers extends PureComponent {
             disabled={isConfirmed}
             onTouchTap={!isConfirmed
               ? this.handleConfirm(wallet, item)
-              : null
+              : undefined
             }
             primary
           />

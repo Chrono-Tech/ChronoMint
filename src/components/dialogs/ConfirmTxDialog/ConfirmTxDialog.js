@@ -230,7 +230,7 @@ export default class ConfirmTxDialog extends PureComponent {
               primary
               label={<Translate value='terms.confirm' />}
               disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
-              onTouchTap={gasFee.gte(0) && balanceAfter.gte(0) && balance.gt(0) && !additionalActionIsFailed && this.handleConfirm}
+              onTouchTap={gasFee.gte(0) && balanceAfter.gte(0) && balance.gt(0) && !additionalActionIsFailed ? this.handleConfirm : undefined}
             />
           </div>
         </div>
