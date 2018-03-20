@@ -1,16 +1,33 @@
-import { createSelector } from 'reselect'
-import { getCurrentWallet } from './actions'
+import {
+  createSelector,
+} from 'reselect'
+import {
+  getCurrentWallet,
+} from './actions'
 
 export const getMainWallet = (state) => {
   return state.get('mainWallet')
 }
 
 export const getMainWalletBalance = (symbol) => createSelector(
-  [ getMainWallet ],
+  [getMainWallet],
   (mainWallet) => mainWallet.balances().item(symbol)
 )
 
 export const getCurrentWalletBalance = (symbol) => createSelector(
-  [ getCurrentWallet ],
+  [getCurrentWallet],
   (currentWallet) => currentWallet.balances().item(symbol)
+)
+
+export const getWalletsCount = () => createSelector(
+  [getCurrentWallet],
+  (currentWallet) => {
+    let i = 0
+    currentWallet.balances().items().map((balance) => {
+      if (balance.amount().gt(0)) {
+        i++
+      }
+    })
+    return i
+  }
 )

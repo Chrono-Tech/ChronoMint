@@ -35,9 +35,6 @@ export default class Markup extends PureComponent {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div styleName='root'>
-          {/* <div styleName='drawer' className={this.props.isCBE ? 'drawer-cbe' : null}> */}
-          {/* <DrawerPartial /> */}
-          {/* </div> */}
           <div styleName='mainMenu'>
             <DrawerMainMenu />
           </div>
