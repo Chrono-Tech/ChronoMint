@@ -1,5 +1,4 @@
 import Amount from 'models/Amount'
-import tokenService from 'services/TokenService'
 import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'

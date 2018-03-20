@@ -3,7 +3,6 @@ import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
 import { Drawer } from 'material-ui'
 import { sidesPush } from 'redux/sides/actions'
-import ProfileContent from "../ProfileContent/ProfileContent"
 
 function mapStateToProps () {
   return {}
@@ -11,11 +10,12 @@ function mapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handlePanelClose: (panelKey: string) => {
+    handlePanelClose: (component, panelKey: string, direction: string) => {
       dispatch(sidesPush({
-        component: ProfileContent,
+        component: component,
         panelKey: panelKey,
         isOpened: false,
+        direction: direction,
       }))
     },
   }
@@ -26,6 +26,7 @@ class SidePanel extends PureComponent {
 
   static propTypes = {
     isOpened: PropTypes.bool,
+    direction: PropTypes.oneOf(['left', 'right']),
     handlePanelClose: PropTypes.func,
     panelKey: PropTypes.string,
     component: PropTypes.func,
@@ -60,14 +61,14 @@ class SidePanel extends PureComponent {
     if (!this.state.isReadyToClose) {
       return
     }
-    this.props.handlePanelClose(this.props.panelKey)
+    this.props.handlePanelClose(this.props.component, this.props.panelKey, this.props.direction)
   }
 
   render () {
     const Component = this.props.component
     return (
       <Drawer
-        openSecondary
+        openSecondary={this.props.direction === 'right'}
         open={this.props.isOpened}
         overlayStyle={{ opacity: 0 }}
         onRequestChange={this.handleProfileClose}

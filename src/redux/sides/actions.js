@@ -4,7 +4,7 @@ export const SIDES_CLEAR = 'sides/CLEAR'
 
 export const DUCK_SIDES = 'sides'
 
-export const sidesPush = ({ component, panelKey, isOpened, componentProps }) => (dispatch) => dispatch({ type: SIDES_PUSH, component, panelKey, isOpened, componentProps })
+export const sidesPush = ({ component, panelKey, isOpened, componentProps, direction }) => (dispatch) => dispatch({ type: SIDES_PUSH, component, panelKey, isOpened, componentProps, direction })
 
 export const sidesPop = (key) => (dispatch) => dispatch({ type: SIDES_POP, key })
 

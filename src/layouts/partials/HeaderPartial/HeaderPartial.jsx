@@ -60,6 +60,7 @@ function mapDispatchToProps (dispatch) {
       component: ProfileContent,
       panelKey: PROFILE_SIDE_PANEL_KEY,
       isOpened: true,
+      direction: 'right',
     })),
     readNotices: () => dispatch(readNotices()),
   }

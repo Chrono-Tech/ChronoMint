@@ -4,6 +4,8 @@ import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
+import { sidesPush } from 'redux/sides/actions'
+import MenuTokenMoreInfo, { PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 
 import './MenuTokensList.scss'
 
@@ -20,6 +22,14 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    handleTokenMoreInfo: () => {
+      dispatch(sidesPush({
+        component: MenuTokenMoreInfo,
+        panelKey: PANEL_KEY,
+        isOpened: true,
+        direction: 'left',
+      }))
+    },
   }
 }
 
@@ -28,6 +38,7 @@ export default class MenuTokensList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
     tokens: PropTypes.arrayOf(PropTypes.object),
+    handleTokenMoreInfo: PropTypes.func,
   }
 
   render () {
@@ -62,7 +73,7 @@ export default class MenuTokensList extends PureComponent {
                     {token.address}
                   </div>
                 </div>
-                <div styleName='itemMenu' >
+                <div styleName='itemMenu' onTouchTap={this.props.handleTokenMoreInfo}>
                   <i className='material-icons'>more_vert</i>
                 </div>
               </div>

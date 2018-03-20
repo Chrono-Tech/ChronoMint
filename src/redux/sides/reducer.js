@@ -8,6 +8,7 @@ const initialState = {
     component: ProfileContent,
     panelKey: PROFILE_SIDE_PANEL_KEY,
     isOpened: false,
+    direction: 'right',
   }],
 }
 
@@ -22,6 +23,7 @@ export default (state = initialState, action) => {
           component: action.component,
           componentProps: action.componentProps,
           isOpened: action.isOpened,
+          direction: action.direction,
         }],
       }
     case actions.SIDES_POP:

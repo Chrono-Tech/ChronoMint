@@ -1,0 +1,92 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  display: flex;
+  flex-direction: row;
+  border-style: solid;
+  border-color: $border-color;
+  background-color: transparent;
+  border-width: 1px 0px 0px;
+}
+
+.transparent-part {
+  opacity: 1;
+  display: flex;
+  width: 300px;
+}
+
+.content-part {
+  opacity: 0;
+  display: flex;
+  border: 1px solid red;
+  width: 300px;
+}
+
+.item {
+  display: flex;
+  padding-top: 23px;
+  padding-bottom: 18px;
+  &:hover {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 100%)
+  }
+}
+
+.syncIcon {
+  display: flex;
+  justify-content: center;
+  padding: 5px 0 0 5px;
+  flex: 1;
+  .icon {
+    width: 12px;
+    height: 12px;
+    background: $synced-color;
+    border-radius: 50%;
+    &.offline {
+      background: $offline-color;
+    }
+  }
+}
+
+.root-more-info {
+  margin-left: 40px;
+  border: 1px solid red;
+}
+
+.addressTitle {
+  flex: 5;
+}
+
+.addressName {
+  font-weight: 500;
+  color: $color-white;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.address {
+  color: $additionalData-color;
+  font-size: 12px;
+  line-height: 14px;
+  word-break: break-all;
+}
+
+.itemMenu {
+  color: $color-white;
+  opacity: .15;
+  flex: 2;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 10px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+:global {
+  .drawer-item-active {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 100%)
+  }
+}
