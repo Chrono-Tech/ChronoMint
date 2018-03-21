@@ -72,8 +72,9 @@ class SidePanel extends PureComponent {
         open={this.props.isOpened}
         overlayStyle={{ opacity: 0 }}
         onRequestChange={this.handleProfileClose}
+        containerStyle={{ opacity: 1, width: '300px', 'margin-left': '300px' }}
         disableSwipeToOpen
-        width={380}
+        width={300}
         docked={false}
       >
         <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />

@@ -8,9 +8,6 @@ export default class MenuTokenMoreInfo extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        <div styleName='transparent-part'>
-          &nbsp;
-        </div>
         <div styleName='content-part'>
           <b>MenuTokenMorePanel</b>
         </div>
