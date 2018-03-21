@@ -1,0 +1,63 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+
+  .head {
+    padding: 24px 16px;
+  }
+
+  .body { padding: 0px 16px 24px 16px; }
+  .foot { padding: 24px 16px; }
+}
+
+.section-header {
+  color: #333333;
+  font-family: proxima-nova, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 19px;
+  padding-left: 20px;
+  padding-top: 23px;
+  padding-bottom: 21px;
+  text-align: left;
+  text-transform: none;
+
+  background-color: #F7F7F7;
+  border-color: #E5E5E5;
+  border-style: solid;
+  border-width: 0px 0px 1px;
+}
+
+.tr-list {
+  display: table;
+  vertical-align: middle;
+}
+
+.tr-container {
+  display: table-row;
+  padding-left: 20px;
+}
+
+.tr-icon {
+  display: table-cell;
+  width: 20%;
+}
+
+.tr-info {
+  display: table-cell;
+  width: 50%;
+}
+
+.tr-info-title {
+
+}
+
+.tr-info-message {
+
+}
+
+.tr-amount {
+  display: table-cell;
+  width: 30%;
+}

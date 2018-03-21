@@ -1,5 +1,6 @@
 import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
+import NotificationContent, { PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
 import * as actions from './actions'
 
 const initialState = {
@@ -7,6 +8,12 @@ const initialState = {
   stack: [{
     component: ProfileContent,
     panelKey: PROFILE_SIDE_PANEL_KEY,
+    isOpened: false,
+    direction: 'right',
+  },
+  {
+    component: NotificationContent,
+    panelKey: PANEL_KEY,
     isOpened: false,
     direction: 'right',
   }],

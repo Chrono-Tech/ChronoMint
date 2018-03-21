@@ -7,7 +7,7 @@ $default-padding: 8px 0px;
   display: flex;
   width: 100%;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .menu {
@@ -16,6 +16,21 @@ $default-padding: 8px 0px;
 
   @include md-only {
     display: inline-block;
+  }
+}
+
+.action-list {
+
+}
+
+.notification {
+  border-radius: 32px;
+  background-color: #614DBA;
+  min-width: 32px;
+  min-height: 32px;
+
+  &:hover {
+    background-color: #E2A864;
   }
 }
 
