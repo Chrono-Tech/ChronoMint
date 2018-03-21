@@ -42,20 +42,10 @@
   z-index: 200;
 }
 
-:global(.root-cbe) {
-  .content {
-    width: 60px;
-  }
-
-  @include md-only {
-    .content {
-      width: 0px;
-    }
-  }
-}
-
 :global(.root-open) {
-  // @include position(fixed, 0, 0, 0, 0);
+  min-height: 100%;
+  display: flex;
+  align-items: stretch;
   .backdrop {
     display: block;
   }

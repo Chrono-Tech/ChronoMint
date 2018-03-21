@@ -2,15 +2,7 @@
 @import "~styles/partials/mixins";
 
 .root {
-
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  flex: 1 1 auto;
-  overflow-y: auto;
   overflow-x: hidden;
-
   :global {
     .BrandPartial__root {
       padding-bottom: 100px;

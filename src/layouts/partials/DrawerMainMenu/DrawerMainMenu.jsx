@@ -70,10 +70,7 @@ export default class DrawerMainMenu extends PureComponent {
   render () {
 
     return (
-      <div
-        styleName='root'
-        className={classnames(this.props.isCBE ? 'root-cbe' : null, 'root-open')}
-      >
+      <div styleName='root' className='root-open' >
 
         <div styleName='content'>
 
