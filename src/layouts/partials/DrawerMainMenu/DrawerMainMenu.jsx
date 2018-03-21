@@ -50,6 +50,36 @@ export default class DrawerMainMenu extends PureComponent {
     walletsCount: PropTypes.number,
   }
 
+  componentDidMount () {
+    const mainMenu = document.getElementById('mainMenu')
+    let timeoutId = null
+    const margin = 30
+
+    const callback = function () {
+      clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        const styleTop = Number.parseFloat(mainMenu.style.top || 0)
+
+        const downBackspace = window.innerHeight - (mainMenu.offsetHeight - window.pageYOffset + styleTop)
+        const isStart = (mainMenu.getBoundingClientRect().top + document.body.scrollTop) > 0
+        const isEnd = downBackspace > 0
+        if (isStart && !isEnd) {
+          mainMenu.style.top = window.pageYOffset + margin + 'px'
+        }
+
+        if (isEnd && !isStart) {
+          mainMenu.style.top = styleTop + downBackspace - margin + 'px'
+        }
+
+      }, 100)
+    }
+    window.addEventListener('scroll', callback)
+
+    this.componentWillUnmount = () => {
+      window.removeEventListener('scroll', callback)
+    }
+  }
+
   renderItem (item) {
     return (
       <Link
@@ -71,85 +101,84 @@ export default class DrawerMainMenu extends PureComponent {
 
     return (
       <div styleName='root' className='root-open' >
-
         <div styleName='content'>
+          <div id='mainMenu' styleName='menu'>
+            <div styleName='chronWalletLogo'>
+              <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
+            </div>
 
-          <div styleName='chronWalletLogo'>
-            <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
-          </div>
-
-          <div styleName={classnames('account-info', 'item')}>
-            <div styleName='account-info-avatar'>
-              <div styleName='avatar-icon'>
-                <IPFSImage
-                  styleName='avatar-icon-content'
-                  multihash={this.props.profile.icon()}
-                  icon={<div styleName='emptyAvatar'><img src={profileImgJPG} alt='avatar' /></div>}
-                />
+            <div styleName={classnames('account-info', 'item')}>
+              <div styleName='account-info-avatar'>
+                <div styleName='avatar-icon'>
+                  <IPFSImage
+                    styleName='avatar-icon-content'
+                    multihash={this.props.profile.icon()}
+                    icon={<div styleName='emptyAvatar'><img src={profileImgJPG} alt='avatar' /></div>}
+                  />
+                </div>
+              </div>
+              <div styleName='account-info-name'>
+                <div styleName='account-name-text'>
+                  {this.props.profile.name() || 'Account name'}
+                </div>
+                <div styleName='network-name-text'>
+                  {this.props.networkName}
+                </div>
+              </div>
+              <div styleName='exit' onTouchTap={this.props.handleLogout}>
+                <img src={exitSvg} alt='logout' />
               </div>
             </div>
-            <div styleName='account-info-name'>
-              <div styleName='account-name-text'>
-                {this.props.profile.name() || 'Account name'}
+
+            <Link
+              activeClassName='drawer-item-active'
+              to='/wallet'
+              href
+              styleName={classnames('menuItem', 'item')}
+            >
+              <i styleName='icon' className='material-icons'>account_balance_wallet</i>
+              <div styleName='title'>
+                <Translate value='Wallets' />
               </div>
-              <div styleName='network-name-text'>
-                {this.props.networkName}
+              <div styleName='count'>{this.props.walletsCount}</div>
+            </Link>
+
+            <MenuTokensList />
+
+            {!menu.user ? null : (
+              <div styleName='menu-user'>
+                {menu.user.map((item) => this.renderItem(item))}
+                {this.props.isCBE && menu.cbe.map((item) => this.renderItem(item))}
               </div>
+            )}
+
+            <div styleName='socialItems'>
+              <a href='https://www.facebook.com/ChronoBank.io' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='facebook' />
+              </a>
+              <a href='https://twitter.com/ChronobankNews' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='twitter' />
+              </a>
+              <a href='https://www.instagram.com/chronobank.io/' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='instagram' />
+              </a>
+              <a href='https://www.reddit.com/r/ChronoBank/' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='reddit-alien' />
+              </a>
+              <a href='https://telegram.me/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='telegram' />
+              </a>
+              <a href='https://github.com/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
+                <i styleName='github' />
+              </a>
             </div>
-            <div styleName='exit' onTouchTap={this.props.handleLogout}>
-              <img src={exitSvg} alt='logout' />
+
+            <div styleName='contacts'>
+              <a href='mailto:info@chronobank.io'>info@chronobank.io</a>
+              <a href='mailto:support@chronobank.io'>support@chronobank.io</a>
             </div>
-          </div>
-
-          <Link
-            activeClassName='drawer-item-active'
-            to='/wallet'
-            href
-            styleName={classnames('menuItem', 'item')}
-          >
-            <i styleName='icon' className='material-icons'>account_balance_wallet</i>
-            <div styleName='title'>
-              <Translate value='Wallets' />
-            </div>
-            <div styleName='count'>{this.props.walletsCount}</div>
-          </Link>
-
-          <MenuTokensList />
-
-          {!menu.user ? null : (
-            <div styleName='menu-user'>
-              {menu.user.map((item) => this.renderItem(item))}
-              {this.props.isCBE && menu.cbe.map((item) => this.renderItem(item))}
-            </div>
-          )}
-
-          <div styleName='socialItems'>
-            <a href='https://www.facebook.com/ChronoBank.io' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='facebook' />
-            </a>
-            <a href='https://twitter.com/ChronobankNews' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='twitter' />
-            </a>
-            <a href='https://www.instagram.com/chronobank.io/' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='instagram' />
-            </a>
-            <a href='https://www.reddit.com/r/ChronoBank/' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='reddit-alien' />
-            </a>
-            <a href='https://telegram.me/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='telegram' />
-            </a>
-            <a href='https://github.com/ChronoBank' target='_blank' rel='noopener noreferrer' styleName='socialItem'>
-              <i styleName='github' />
-            </a>
-          </div>
-
-          <div styleName='contacts'>
-            <a href='mailto:info@chronobank.io'>info@chronobank.io</a>
-            <a href='mailto:support@chronobank.io'>support@chronobank.io</a>
           </div>
         </div>
-      </div>
-    )
+      </div>)
   }
 }

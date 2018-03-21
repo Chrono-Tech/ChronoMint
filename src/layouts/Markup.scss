@@ -49,7 +49,7 @@
 .root {
   display: flex;
   flex-direction: row;
-
+  position: relative;
   :global {
     .drawer-cbe {
       display: block;
@@ -58,4 +58,9 @@
   }
 }
 
-.mainMenu {}
+.mainMenu {
+  position: absolute;
+  z-index: 1600;
+  top: 0;
+  bottom: 0;
+}

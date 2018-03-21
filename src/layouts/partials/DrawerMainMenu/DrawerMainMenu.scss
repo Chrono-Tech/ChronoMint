@@ -3,6 +3,7 @@
 
 .root {
   z-index: 200;
+  position: relative;
 }
 
 .content {
@@ -14,7 +15,8 @@
   width: 300px;
   background: $sideMenu-background;
   padding: 30px 0 30px 30px;
-  min-height: 100vh
+  min-height: 100vh;
+  position: relative;
 }
 
 .chronWalletLogo {
@@ -22,10 +24,8 @@
 }
 
 .menu {
-  display: block;
-  text-align: center;
-  width: 60px;
-  margin: 9px 0px 4px 0px;
+  position: absolute;
+  transition: top .4s ease 0s;
 }
 
 .menu-cbe {}
