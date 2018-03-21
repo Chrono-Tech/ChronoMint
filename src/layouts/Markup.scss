@@ -7,22 +7,17 @@
   flex-direction: column;
   background-color: $color-white;
   height: auto;
-  overflow: visible;
   box-shadow: $box-shadow-0;
   position: relative;
   width: 0px;
 }
 
 .middle {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  flex: 1 1 100%;
   overflow: hidden;
+  flex: 1;
 }
 
 .middleTop {
-  position: relative;
   flex: 0 0 auto;
   background-color: $color-white;
   box-shadow: $box-shadow-0;
@@ -33,7 +28,6 @@
   position: relative; //flex: 0 0 auto;
   z-index: 90;
   height: 0px;
-  overflow: visible;
 }
 
 .middleSnackbarPanel {
@@ -45,13 +39,7 @@
   }
 }
 
-.middleContent {
-  position: relative;
-  flex: 1 1 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-}
+.middleContent {}
 
 .middleBottom {
   position: relative;
@@ -59,7 +47,6 @@
 }
 
 .root {
-  @include position(absolute);
   display: flex;
   flex-direction: row;
 
@@ -67,10 +54,6 @@
     .drawer-cbe {
       display: block;
       width: 60px;
-
-      @include md-only {
-        width: 0;
-      }
     }
   }
 }
