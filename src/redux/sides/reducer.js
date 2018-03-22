@@ -14,8 +14,8 @@ const initialState = {
       containerStyle: {
         width: '300px',
       },
+      width: 300,
     },
-    width: 300,
   },
   {
     component: NotificationContent,
@@ -26,8 +26,8 @@ const initialState = {
       containerStyle: {
         width: '360px',
       },
+      width: 360,
     },
-    width: 360,
   }],
 }
 
