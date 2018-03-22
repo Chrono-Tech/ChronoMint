@@ -6,6 +6,15 @@ import ReissuableModel from 'models/tokens/ReissuableModel'
 import TokenModel from 'models/tokens/TokenModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
+import {
+  MIDDLEWARE_EVENT_ISSUE,
+  MIDDLEWARE_EVENT_PLATFORM_REQUESTED,
+  MIDDLEWARE_EVENT_REVOKE,
+  MIDDLEWARE_EVENT_RESTRICTED,
+  MIDDLEWARE_EVENT_UNRESTRICTED,
+  MIDDLEWARE_EVENT_PAUSED,
+  MIDDLEWARE_EVENT_UNPAUSED,
+} from 'dao/AssetsManagerDAO'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
 import AssetsManagerNoticeModel, {
@@ -474,20 +483,20 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
 const subscribeToAssetEvents = (account: string) => async (dispatch) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
 
-  assetsManagerDao.subscribeOnMiddleware('platformrequested', (data) => {
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_PLATFORM_REQUESTED, (data) => {
     if (data && data.payload && data.payload.by !== account) {
       return
     }
     dispatch(getPlatforms())
   })
 
-  assetsManagerDao.subscribeOnMiddleware('issue', (data) => {
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_ISSUE, (data) => {
     if (data.payload.symbol) {
       dispatch(getAssetDataBySymbol(web3Converter.bytesToString(data.payload.symbol)))
     }
   })
 
-  assetsManagerDao.subscribeOnMiddleware('revoke', (data) => {
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_REVOKE, (data) => {
     if (data.payload.symbol) {
       dispatch(getAssetDataBySymbol(web3Converter.bytesToString(data.payload.symbol)))
     }
@@ -511,8 +520,8 @@ const subscribeToRestrictedEvents = () => async (dispatch, getState) => {
     }
   }
 
-  assetsManagerDao.subscribeOnMiddleware('restricted', (data) => callback(data, true))
-  assetsManagerDao.subscribeOnMiddleware('unrestricted', (data) => callback(data, false))
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_RESTRICTED, (data) => callback(data, true))
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_UNRESTRICTED, (data) => callback(data, false))
 }
 
 const subscribeToBlockAssetEvents = () => async (dispatch, getState) => {
@@ -532,6 +541,6 @@ const subscribeToBlockAssetEvents = () => async (dispatch, getState) => {
 
   }
 
-  assetsManagerDao.subscribeOnMiddleware('paused', (data) => callback(data, true))
-  assetsManagerDao.subscribeOnMiddleware('unpaused', (data) => callback(data, false))
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_PAUSED, (data) => callback(data, true))
+  assetsManagerDao.subscribeOnMiddleware(MIDDLEWARE_EVENT_UNPAUSED, (data) => callback(data, false))
 }

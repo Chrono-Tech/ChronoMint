@@ -17,6 +17,14 @@ import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './Chrono
 
 export const TX_ASSET_CREATED = 'AssetCreated'
 
+export const MIDDLEWARE_EVENT_ISSUE = 'issue'
+export const MIDDLEWARE_EVENT_PLATFORM_REQUESTED = 'platformrequested'
+export const MIDDLEWARE_EVENT_REVOKE = 'revoke'
+export const MIDDLEWARE_EVENT_RESTRICTED = 'restricted'
+export const MIDDLEWARE_EVENT_UNRESTRICTED = 'unrestricted'
+export const MIDDLEWARE_EVENT_PAUSED = 'paused'
+export const MIDDLEWARE_EVENT_UNPAUSED = 'unpaused'
+
 export default class AssetsManagerDAO extends AbstractContractDAO {
   constructor (at = null) {
     super(AssetsManagerABI, at, MultiEventsHistoryABI)
