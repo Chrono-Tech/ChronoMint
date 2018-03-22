@@ -39,7 +39,7 @@ class NotificationContent extends PureComponent {
         <div styleName='tr-list'>
           <div styleName='tr-container'>
             <div styleName='tr-icon'>
-              <img src={ReceivedTransactionSVG} />
+              <img width={40} height={40} src={ReceivedTransactionSVG} />
             </div>
             <div styleName='tr-info'>
               <div styleName='tr-info-title'>Receiving from</div>

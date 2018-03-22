@@ -10,12 +10,24 @@ const initialState = {
     panelKey: PROFILE_SIDE_PANEL_KEY,
     isOpened: false,
     direction: 'right',
+    drawerProps: {
+      containerStyle: {
+        width: '300px',
+      },
+    },
+    width: 300,
   },
   {
     component: NotificationContent,
     panelKey: PANEL_KEY,
     isOpened: false,
     direction: 'right',
+    drawerProps: {
+      containerStyle: {
+        width: '360px',
+      },
+    },
+    width: 360,
   }],
 }
 
