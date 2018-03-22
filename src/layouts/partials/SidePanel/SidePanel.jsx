@@ -31,6 +31,7 @@ class SidePanel extends PureComponent {
     panelKey: PropTypes.string,
     component: PropTypes.func,
     componentProps: PropTypes.object,
+    drawerProps: PropTypes.object,
   }
 
   static defaultProps = {
@@ -64,19 +65,26 @@ class SidePanel extends PureComponent {
     this.props.handlePanelClose(this.props.component, this.props.panelKey, this.props.direction)
   }
 
+  getDrawerProps = (componentDrawerProps) => {
+
+    const defaultDrawerProps = {
+      openSecondary: this.props.direction === 'right',
+      open: this.props.isOpened,
+      overlayStyle: { opacity: 0 },
+      onRequestChange: this.handleProfileClose,
+      containerStyle: { width: '360px' },
+      disableSwipeToOpen: true,
+      width: 360,
+      docked: false,
+    }
+
+    return { ...defaultDrawerProps, ...componentDrawerProps }
+  }
+
   render () {
     const Component = this.props.component
     return (
-      <Drawer
-        openSecondary={this.props.direction === 'right'}
-        open={this.props.isOpened}
-        overlayStyle={{ opacity: 0 }}
-        onRequestChange={this.handleProfileClose}
-        containerStyle={{ opacity: 1, width: '300px', marginLeft: '300px' }}
-        disableSwipeToOpen
-        width={300}
-        docked={false}
-      >
+      <Drawer {...this.getDrawerProps()}>
         <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
       </Drawer>
     )

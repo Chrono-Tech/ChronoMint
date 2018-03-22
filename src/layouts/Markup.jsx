@@ -7,7 +7,7 @@ import { closeNotifier } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import theme from 'styles/themes/default'
 import './Markup.scss'
-import { DrawerPartial, HeaderPartial, DrawerMainMenu } from './partials'
+import { HeaderPartial, DrawerMainMenu } from './partials'
 
 function mapStateToProps (state) {
   return {
@@ -60,6 +60,7 @@ export default class Markup extends PureComponent {
             </div>
           </div>
           <div styleName='middleBottom' />
+
           <SideStack />
           <ModalStack />
         </div>
