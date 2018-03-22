@@ -14,6 +14,8 @@ import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { logout, DUCK_SESSION } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
 import { sidesPush } from 'redux/sides/actions'
+import { ETH } from 'redux/mainWallet/actions'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import MenuTokenMoreInfo, { PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 
 import './MenuTokensList.scss'
@@ -35,10 +37,13 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    handleTokenMoreInfo: () => {
+    handleTokenMoreInfo: (selectedToken) => {
       dispatch(sidesPush({
         component: MenuTokenMoreInfo,
-        panelKey: PANEL_KEY,
+        panelKey: PANEL_KEY + selectedToken.symbol,
+        componentProps: {
+          selectedToken,
+        },
         isOpened: true,
         direction: 'left',
       }))
@@ -83,6 +88,19 @@ export default class MenuTokensList extends PureComponent {
   }
 
   render () {
+    const setToken = (token) => {
+      return () => {
+        if (token.address) {
+          this.props.handleTokenMoreInfo(token)
+        }
+      }
+    }
+    const mainWallet = {
+      symbol: ETH,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      address: this.props.account,
+    }
+
     return (
       <div styleName='root'>
         <div styleName='item'>
@@ -95,31 +113,28 @@ export default class MenuTokensList extends PureComponent {
               {this.props.account}
             </div>
           </div>
-          <div styleName='itemMenu' >
+          <div styleName='itemMenu' onTouchTap={setToken(mainWallet)}>
             <i className='material-icons'>more_vert</i>
           </div>
         </div>
 
         {this.props.tokens
-          .map((token) => {
-
-            return (
-              <div styleName='item' key={token.blockchain}>
-                <div styleName='syncIcon'>
-                  <span styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })} />
-                </div>
-                <div styleName='addressTitle'>
-                  <div styleName='addressName'>{token.title}</div>
-                  <div styleName='address'>
-                    {token.address}
-                  </div>
-                </div>
-                <div styleName='itemMenu' onTouchTap={this.props.handleTokenMoreInfo}>
-                  <i className='material-icons'>more_vert</i>
+          .map((token) => (
+            <div styleName='item' key={token.blockchain}>
+              <div styleName='syncIcon'>
+                <span styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })} />
+              </div>
+              <div styleName='addressTitle'>
+                <div styleName='addressName'>{token.title}</div>
+                <div styleName='address'>
+                  {token.address}
                 </div>
               </div>
-            )
-          })
+              <div styleName='itemMenu' onTouchTap={setToken(token)}>
+                <i className='material-icons'>more_vert</i>
+              </div>
+            </div>),
+          )
         }
       </div>
     )

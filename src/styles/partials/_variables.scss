@@ -46,11 +46,15 @@ $color-chart-bg: rgba(118, 143, 255, 0.5);
 $color-hr: #CCCCDF;
 $color-hr-1: #DDDDDF;
 
-$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
-$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24), 0 0 8px 0 rgba(0, 0, 0, .12);
-$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24),
+0 0 4px 0 rgba(0, 0, 0, .12);
+$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24),
+0 0 8px 0 rgba(0, 0, 0, .12);
+$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24),
+0 0 1px 0 rgba(0, 0, 0, 0.12);
 
-$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2); 
+$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2);
+$color-modal-backdrop-bg-1: rgba(0, 0, 0, 0.03);
 
 $media-size-xs: 480px;
 $media-size-sm: 768px;
@@ -81,3 +85,7 @@ $border-color: #786AB7;
 $additionalData-color: #BCC6FF;
 $synced-color: #6EE289;
 $offline-color: #FD6041;
+$color-purpule: #424066;
+$color-white-1: #F7F7F7;
+$color-grey-1: #E5E5E5;
+$color-grey-2: #7F7F7F;

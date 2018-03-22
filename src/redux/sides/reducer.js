@@ -1,5 +1,10 @@
-import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
+import {
+  PROFILE_SIDE_PANEL_KEY,
+} from 'components/common/SideStack/SideStack'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
+import MenuTokenMoreInfo, {
+  PANEL_KEY,
+} from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo/MenuTokenMoreInfo'
 import * as actions from './actions'
 
 const initialState = {
@@ -9,7 +14,14 @@ const initialState = {
     panelKey: PROFILE_SIDE_PANEL_KEY,
     isOpened: false,
     direction: 'right',
-  }],
+  },
+  {
+    component: MenuTokenMoreInfo,
+    panelKey: PANEL_KEY,
+    isOpened: false,
+    direction: 'left',
+  },
+  ],
 }
 
 export default (state = initialState, action) => {

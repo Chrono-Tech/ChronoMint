@@ -51,7 +51,7 @@ export default class DrawerMainMenu extends PureComponent {
   }
 
   componentDidMount () {
-    const mainMenu = document.getElementById('mainMenu')
+    const mainMenu = this.mainMenu
     let timeoutId = null
     const margin = 30
 
@@ -80,6 +80,10 @@ export default class DrawerMainMenu extends PureComponent {
     }
   }
 
+  setRef = (el) => {
+    this.mainMenu = el
+  }
+
   renderItem (item) {
     return (
       <Link
@@ -102,7 +106,11 @@ export default class DrawerMainMenu extends PureComponent {
     return (
       <div styleName='root' className='root-open' >
         <div styleName='content'>
-          <div id='mainMenu' styleName='menu'>
+          <div
+            id='mainMenu'
+            styleName='menu'
+            ref={this.setRef}
+          >
             <div styleName='chronWalletLogo'>
               <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
             </div>

@@ -39,6 +39,9 @@ export default class Markup extends PureComponent {
             <DrawerMainMenu />
           </div>
           <div styleName='middle'>
+            <div styleName='middleTop'>
+              <HeaderPartial />
+            </div>
             <div styleName='middleSnackbar'>
               <div styleName='middleSnackbarPanel'>
                 {this.props.notice
