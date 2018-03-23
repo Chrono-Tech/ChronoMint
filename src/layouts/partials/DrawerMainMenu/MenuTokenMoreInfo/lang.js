@@ -3,7 +3,7 @@ export const prefix = `layouts.partials.MenuTokenMoreInfo`
 export default {
   en: {
     title: 'Token symbol',
-    mainWalletTtitle: 'My Main Wallet',
+    mainWalletTitle: 'My Main Wallet',
     copyAddress: 'Copy Address',
     showQR: 'Show QR Code',
     multisignatureWallet: 'Multisignature Wallet',
@@ -14,7 +14,7 @@ export default {
   },
   ru: {
     title: 'Символ токена',
-    mainWalletTtitle: 'Мой основной кошелек',
+    mainWalletTitle: 'Мой основной кошелек',
     copyAddress: 'Копировать Адрес',
     showQR: 'Показать QR Код',
     multisignatureWallet: 'Мульти-подписной кошелек',

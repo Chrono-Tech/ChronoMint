@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { IconButton, FontIcon } from 'material-ui'
+import { FontIcon, IconButton } from 'material-ui'
 import { sidesPush } from 'redux/sides/actions'
-import NotificationContent, { PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
+import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
 
 import './HeaderPartial.scss'
 
 function mapStateToProps (state) {
-  return {
-  }
+  return {}
 }
 
 function mapDispatchToProps (dispatch) {
@@ -17,7 +16,7 @@ function mapDispatchToProps (dispatch) {
     handleNotificationTap: () => {
       dispatch(sidesPush({
         component: NotificationContent,
-        panelKey: PANEL_KEY,
+        panelKey: NOTIFICATION_PANEL_KEY,
         isOpened: true,
         direction: 'right',
       }))

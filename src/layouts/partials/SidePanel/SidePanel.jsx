@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
 import { Drawer } from 'material-ui'
-import { sidesPush } from 'redux/sides/actions'
+import { SIDES_CLOSE } from 'redux/sides/actions'
 
 function mapStateToProps () {
   return {}
@@ -10,14 +10,7 @@ function mapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handlePanelClose: (component, panelKey: string, direction: string) => {
-      dispatch(sidesPush({
-        component: component,
-        panelKey: panelKey,
-        isOpened: false,
-        direction: direction,
-      }))
-    },
+    handlePanelClose: (panelKey: string) => dispatch({ type: SIDES_CLOSE, panelKey: panelKey, isOpened: false }),
   }
 }
 
@@ -26,17 +19,19 @@ class SidePanel extends PureComponent {
 
   static propTypes = {
     isOpened: PropTypes.bool,
-    direction: PropTypes.oneOf(['left', 'right']),
+    direction: PropTypes.oneOf([ 'left', 'right' ]),
     handlePanelClose: PropTypes.func,
     panelKey: PropTypes.string,
     component: PropTypes.func,
     componentProps: PropTypes.object,
     drawerProps: PropTypes.object,
+    preCloseAction: PropTypes.func,
   }
 
   static defaultProps = {
     isOpened: false,
-    handlePanelClose: () => {},
+    handlePanelClose: () => {
+    },
   }
 
   constructor (props) {
@@ -62,7 +57,10 @@ class SidePanel extends PureComponent {
     if (!this.state.isReadyToClose) {
       return
     }
-    this.props.handlePanelClose(this.props.component, this.props.panelKey, this.props.direction)
+    if (typeof this.props.preCloseAction === 'function') {
+      this.props.preCloseAction(this.props)
+    }
+    this.props.handlePanelClose(this.props.panelKey)
   }
 
   getDrawerProps = (componentDrawerProps) => {
@@ -84,7 +82,7 @@ class SidePanel extends PureComponent {
   render () {
     const Component = this.props.component
     return (
-      <Drawer {...this.getDrawerProps()}>
+      <Drawer {...this.getDrawerProps(this.props.drawerProps)}>
         <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
       </Drawer>
     )

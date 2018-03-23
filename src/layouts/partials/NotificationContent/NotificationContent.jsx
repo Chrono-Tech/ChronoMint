@@ -5,7 +5,7 @@ import ReceivedTransactionSVG from 'assets/img/r-0.svg'
 
 import './NotificationContent.scss'
 
-export const PANEL_KEY = 'NotificationContent_panelKey'
+export const NOTIFICATION_PANEL_KEY = 'NotificationContent_panelKey'
 
 function mapStateToProps (state) {
   return {

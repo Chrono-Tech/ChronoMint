@@ -1,3 +1,4 @@
+import { Translate } from 'react-redux-i18n'
 import {
   NETWORK_STATUS_OFFLINE,
   NETWORK_STATUS_ONLINE,
@@ -16,7 +17,7 @@ import { getProfileTokensList } from 'redux/session/selectors'
 import { sidesPush } from 'redux/sides/actions'
 import { ETH } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import MenuTokenMoreInfo, { PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
+import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 
 import './MenuTokensList.scss'
 
@@ -37,15 +38,27 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    handleTokenMoreInfo: (selectedToken) => {
+    handleTokenMoreInfo: (selectedToken, handleClose) => {
       dispatch(sidesPush({
         component: MenuTokenMoreInfo,
-        panelKey: PANEL_KEY + selectedToken.symbol,
+        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
+        isOpened: true,
+        direction: 'left',
+        preCloseAction: handleClose,
         componentProps: {
           selectedToken,
         },
-        isOpened: true,
-        direction: 'left',
+        drawerProps: {
+          containerStyle: {
+            width: '300px',
+            left: '300px',
+          },
+          overlayStyle: {
+            opacity: 0.7,
+            background: '#000',
+          },
+          width: 300,
+        },
       }))
     },
   }
@@ -64,6 +77,19 @@ export default class MenuTokensList extends PureComponent {
       status: PropTypes.string,
       progress: PropTypes.number,
     }),
+  }
+
+  constructor () {
+    super(arguments)
+    this.state = {}
+  }
+
+  handleSelectToken = (selectedToken) => {
+    const handleClose = () => {
+      this.setState({ selectedToken: null })
+    }
+    this.setState({ selectedToken })
+    this.props.handleTokenMoreInfo(selectedToken, handleClose)
   }
 
   renderStatus () {
@@ -91,16 +117,18 @@ export default class MenuTokensList extends PureComponent {
     const setToken = (token) => {
       return () => {
         if (token.address) {
-          this.props.handleTokenMoreInfo(token)
+          this.handleSelectToken(token)
         }
       }
     }
     const mainWallet = {
+      title: 'mainAddress',
       symbol: ETH,
       blockchain: BLOCKCHAIN_ETHEREUM,
       address: this.props.account,
     }
 
+    const { selectedToken } = this.state
     return (
       <div styleName='root'>
         <div styleName='item'>
@@ -108,12 +136,15 @@ export default class MenuTokensList extends PureComponent {
             {this.renderStatus()}
           </div>
           <div styleName='addressTitle'>
-            <div styleName='addressName'>Main address</div>
+            <div styleName='addressName'><Translate value={mainWallet.title} /></div>
             <div styleName='address'>
               {this.props.account}
             </div>
           </div>
-          <div styleName='itemMenu' onTouchTap={setToken(mainWallet)}>
+          <div
+            styleName={classnames('itemMenu', { 'selected': selectedToken && selectedToken.title === mainWallet.title })}
+            onTouchTap={setToken(mainWallet)}
+          >
             <i className='material-icons'>more_vert</i>
           </div>
         </div>
@@ -130,7 +161,10 @@ export default class MenuTokensList extends PureComponent {
                   {token.address}
                 </div>
               </div>
-              <div styleName='itemMenu' onTouchTap={setToken(token)}>
+              <div
+                styleName={classnames('itemMenu', { 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title })}
+                onTouchTap={setToken(token)}
+              >
                 <i className='material-icons'>more_vert</i>
               </div>
             </div>),

@@ -20,7 +20,7 @@ import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, 
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 
-export const PANEL_KEY = 'MenuTokenMoreInfo_panelKey'
+export const MENU_TOKEN_MORE_INFO_PANEL_KEY = 'MenuTokenMoreInfo_panelKey'
 
 function mapStateToProps (state, ownProps) {
   const multiSigWallet = state.get(DUCK_MULTISIG_WALLET)
@@ -122,8 +122,8 @@ export default class MenuTokenMoreInfo extends PureComponent {
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallets' href styleName='walletTitle'>
-              <div styleName='walletName'><Translate value={`${prefix}.mainWalletTtitle`} /></div>
+            <Link to='/wallet' href styleName='walletTitle'>
+              <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress.address()}</div>
               <div styleName='walletLink'>
                 <img alt='' src={walletLinkSvg} />
@@ -151,14 +151,16 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
           {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && multiSigWallet.items().map(this.renderWallet)}
 
-          <div styleName='network'>
-            <div styleName='networkTitle'>
-              <Translate value={`${prefix}.networkTitle`} />
+          {selectedToken && selectedToken.blockchain === BLOCKCHAIN_ETHEREUM && (
+            <div styleName='network'>
+              <div styleName='networkTitle'>
+                <Translate value={`${prefix}.networkTitle`} />
+              </div>
+              <div styleName='networkStatus'>
+                {this.renderStatus()}
+              </div>
             </div>
-            <div styleName='networkStatus'>
-              {this.renderStatus()}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     )
