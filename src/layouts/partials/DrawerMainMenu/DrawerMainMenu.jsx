@@ -7,15 +7,17 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
-import { logout, DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION, logout } from 'redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from 'models/ProfileModel'
 import profileImgJPG from 'assets/img/profile-photo-1.jpg'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
 import { getWalletsCount } from 'redux/wallet/selectors'
+import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
+import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
-
 import './DrawerMainMenu.scss'
 
 function mapStateToProps (state) {
@@ -35,6 +37,26 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    handleAssetsManagerMoreInfo: (handleClose) => {
+      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesPush({
+        component: MenuAssetsManagerMoreInfo,
+        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
+        isOpened: true,
+        direction: 'left',
+        preCloseAction: handleClose,
+        drawerProps: {
+          containerStyle: {
+            width: '300px',
+            left: '300px',
+          },
+          overlayStyle: {
+            background: 'rgba(0, 0, 0, 0.7)',
+          },
+          width: 300,
+        },
+      }))
+    },
   }
 }
 
@@ -48,6 +70,7 @@ export default class DrawerMainMenu extends PureComponent {
     networkName: PropTypes.string,
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
+    handleAssetsManagerMoreInfo: PropTypes.func,
   }
 
   componentDidMount () {
@@ -80,31 +103,45 @@ export default class DrawerMainMenu extends PureComponent {
     }
   }
 
+  handleShowAssetsManagerMore = (e) => {
+    e.stopPropagation()
+    this.props.handleAssetsManagerMoreInfo()
+  }
+
   setRef = (el) => {
     this.mainMenu = el
   }
 
   renderItem (item) {
     return (
-      <Link
-        activeClassName='drawer-item-active'
-        to={{ pathname: item.path }}
-        href
-        key={item.key}
-        styleName={classnames('menuItem', 'item')}
-      >
-        <i styleName='icon' className='material-icons'>{item.icon}</i>
-        <div styleName='title'>
-          <Translate value={item.title} />
-        </div>
-      </Link>
+      <div styleName={classnames('item')} key={item.key}>
+        <Link
+          styleName='menuItem'
+          activeClassName='drawer-item-active'
+          to={{ pathname: item.path }}
+          href
+        >
+          <i styleName='icon' className='material-icons'>{item.icon}</i>
+          <div styleName='title'>
+            <Translate value={item.title} />
+          </div>
+        </Link>
+        {item.showMoreButton && (
+          <div
+            styleName={classnames('itemMenuMore', /*{ 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title }*/)}
+            onTouchTap={this.handleShowAssetsManagerMore}
+          >
+            <i className='material-icons'>more_vert</i>
+          </div>
+        )}
+      </div>
     )
   }
 
   render () {
 
     return (
-      <div styleName='root' className='root-open' >
+      <div styleName='root' className='root-open'>
         <div styleName='content'>
           <div
             id='mainMenu'

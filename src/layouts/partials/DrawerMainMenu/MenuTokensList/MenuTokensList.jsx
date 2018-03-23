@@ -1,20 +1,14 @@
 import { Translate } from 'react-redux-i18n'
-import {
-  NETWORK_STATUS_OFFLINE,
-  NETWORK_STATUS_ONLINE,
-  NETWORK_STATUS_UNKNOWN,
-  SYNC_STATUS_SYNCED,
-  SYNC_STATUS_SYNCING,
-} from '@chronobank/login/network/MonitorService'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import classnames from 'classnames'
 import PropTypes from 'prop-types'
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/actions'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
-import { logout, DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION, logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
-import { sidesPush } from 'redux/sides/actions'
+import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
 import { ETH } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
@@ -38,10 +32,16 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    initTokenSide: (token) => dispatch(sidesPush({
+      component: MenuTokenMoreInfo,
+      panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + token.blockchain,
+      isOpened: false,
+    })),
     handleTokenMoreInfo: (selectedToken, handleClose) => {
+      dispatch({ type: SIDES_CLOSE_ALL })
       dispatch(sidesPush({
         component: MenuTokenMoreInfo,
-        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
+        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + selectedToken.blockchain,
         isOpened: true,
         direction: 'left',
         preCloseAction: handleClose,
@@ -54,8 +54,7 @@ function mapDispatchToProps (dispatch) {
             left: '300px',
           },
           overlayStyle: {
-            opacity: 0.7,
-            background: '#000',
+            background: 'rgba(0, 0, 0, 0.7)',
           },
           width: 300,
         },
@@ -77,11 +76,18 @@ export default class MenuTokensList extends PureComponent {
       status: PropTypes.string,
       progress: PropTypes.number,
     }),
+    initTokenSide: PropTypes.func,
   }
 
-  constructor () {
-    super(arguments)
+  constructor (props) {
+    super(props)
     this.state = {}
+  }
+
+  componentDidMount () {
+    this.props.tokens.map((token) => {
+      this.props.initTokenSide(token)
+    })
   }
 
   handleSelectToken = (selectedToken) => {

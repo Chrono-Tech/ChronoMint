@@ -6,6 +6,7 @@ import * as RewardsContent from 'layouts/partials/RewardsContent/lang'
 import * as VotingContent from 'layouts/partials/VotingContent/lang'
 import * as WalletContent from 'layouts/partials/WalletContent/lang'
 import MenuTokenMoreInfo from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo/lang'
+import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/lang'
 
 export default {
   en: {
@@ -17,6 +18,7 @@ export default {
     RewardsContent: RewardsContent.en,
     VotingContent: VotingContent.en,
     MenuTokenMoreInfo: MenuTokenMoreInfo.en,
+    MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,
@@ -27,5 +29,6 @@ export default {
     RewardsContent: RewardsContent.ru,
     VotingContent: VotingContent.ru,
     MenuTokenMoreInfo: MenuTokenMoreInfo.ru,
+    MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.ru,
   },
 }

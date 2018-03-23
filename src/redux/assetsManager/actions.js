@@ -235,6 +235,7 @@ export const setManagers = (tx) => async (dispatch, getState) => {
 }
 
 export const watchInitTokens = () => async (dispatch, getState) => {
+  dispatch(getAssetsManagerData())
   dispatch({ type: GET_ASSETS_MANAGER_COUNTS_START })
   dispatch(getUsersPlatforms())
   dispatch(getTransactions())

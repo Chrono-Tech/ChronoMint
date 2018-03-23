@@ -21,7 +21,7 @@ export default {
       key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards',
     },
     {
-      key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets',
+      key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets', showMoreButton: true,
     },
   ],
   cbe: [

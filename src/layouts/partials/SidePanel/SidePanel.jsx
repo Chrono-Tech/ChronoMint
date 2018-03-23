@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
 import { Drawer } from 'material-ui'
-import { SIDES_CLOSE } from 'redux/sides/actions'
+import { SIDES_TOGGLE } from 'redux/sides/actions'
 
 function mapStateToProps () {
   return {}
@@ -10,7 +10,7 @@ function mapStateToProps () {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handlePanelClose: (panelKey: string) => dispatch({ type: SIDES_CLOSE, panelKey: panelKey, isOpened: false }),
+    handlePanelClose: (panelKey: string) => dispatch({ type: SIDES_TOGGLE, panelKey: panelKey, isOpened: false }),
   }
 }
 

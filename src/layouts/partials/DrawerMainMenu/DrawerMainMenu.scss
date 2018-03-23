@@ -28,7 +28,8 @@
   transition: top .4s ease 0s;
 }
 
-.menu-cbe {}
+.menu-cbe {
+}
 
 .menu-user {
   display: block;
@@ -45,10 +46,9 @@
   border-style: solid;
   border-color: $border-color;
   background-color: transparent;
-  border-width: 1px 0px 0px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  border-width: 1px 0 0;
   display: flex;
+  position: relative;
   &:last-child {
     border-bottom-width: 1px;
   }
@@ -155,7 +155,6 @@
   background-size: cover;
 }
 
-
 .network-name-text {
   color: $additionalData-color;
 }
@@ -165,7 +164,11 @@
 }
 
 .menuItem {
+  padding-top: 20px;
+  padding-bottom: 20px;
   text-decoration: none;
+  display: flex;
+  flex: 1
 }
 
 .socialItems {
@@ -230,5 +233,21 @@
     font-size: 14px;
     line-height: 17px;
     font-weight: bold;
+  }
+}
+
+.itemMenuMore {
+  height: 100%;
+  position: absolute;
+  color: $color-white;
+  right: 0;
+  opacity: .15;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 7px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
   }
 }

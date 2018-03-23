@@ -52,7 +52,7 @@ export default (state = initialState, action) => {
           },
         },
       }
-    case actions.SIDES_CLOSE:
+    case actions.SIDES_TOGGLE:
       return {
         ...state,
         stack: {
@@ -61,6 +61,17 @@ export default (state = initialState, action) => {
             ...state.stack[ action.panelKey ],
             isOpened: action.isOpened,
           },
+        },
+      }
+    case actions.SIDES_CLOSE_ALL:
+      let newStackToClose = { ...state.stack }
+      Object.keys(state.stack).map((key) => {
+        newStackToClose[ key ].isOpened = false
+      })
+      return {
+        ...state,
+        stack: {
+          ...newStackToClose,
         },
       }
     case actions.SIDES_POP:
