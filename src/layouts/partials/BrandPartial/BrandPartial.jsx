@@ -30,7 +30,15 @@ export default class BrandPartial extends PureComponent {
           : null
         }
         <div styleName='toggle'>
-          <IconButton iconStyle={styles.brand.toggle.iconStyle} onTouchTap={() => this.handleToggle()}>
+          <IconButton
+            style={{
+              padding: 0,
+              width: 30,
+              height: 30,
+            }}
+            iconStyle={styles.brand.toggle.iconStyle}
+            onTouchTap={() => this.handleToggle()}
+          >
             <FontIcon className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
           </IconButton>
         </div>

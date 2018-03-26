@@ -1,3 +1,5 @@
+import networkService from '@chronobank/login/network/NetworkService'
+import { I18n } from 'platform/i18n'
 import { Translate } from 'react-redux-i18n'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import classnames from 'classnames'
@@ -25,6 +27,7 @@ function mapStateToProps (state) {
     tokens: getProfileTokensList()(state),
     networkStatus: monitor.network,
     syncStatus: monitor.sync,
+    networkName: networkService.getName(),
   }
 }
 
@@ -78,6 +81,7 @@ export default class MenuTokensList extends PureComponent {
       progress: PropTypes.number,
     }),
     initTokenSide: PropTypes.func,
+    networkName: PropTypes.string,
   }
 
   constructor (props) {
@@ -100,20 +104,20 @@ export default class MenuTokensList extends PureComponent {
   }
 
   renderStatus () {
-    const { networkStatus, syncStatus } = this.props
+    const { networkStatus, syncStatus, networkName } = this.props
 
     switch (networkStatus.status) {
       case NETWORK_STATUS_ONLINE: {
         switch (syncStatus.status) {
           case SYNC_STATUS_SYNCED:
-            return (<div styleName='icon status-synced' />)
+            return (<div styleName='icon status-synced' title={I18n.t(`${prefix}.synced`, { network: networkName })} />)
           case SYNC_STATUS_SYNCING:
           default:
-            return (<div styleName='icon status-syncing' />)
+            return (<div styleName='icon status-syncing' title={I18n.t(`${prefix}.syncing`, { network: networkName })} />)
         }
       }
       case NETWORK_STATUS_OFFLINE:
-        return (<div styleName='icon status-offline' />)
+        return (<div styleName='icon status-offline' title={I18n.t(`${prefix}.offline`)} />)
       case NETWORK_STATUS_UNKNOWN:
       default:
         return null
@@ -160,7 +164,10 @@ export default class MenuTokensList extends PureComponent {
           .map((token) => (
             <div styleName='item' key={token.blockchain}>
               <div styleName='syncIcon'>
-                <span styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })} />
+                <span
+                  styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
+                  title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
+                />
               </div>
               <div styleName='addressTitle'>
                 <div styleName='addressName'>{token.title}</div>

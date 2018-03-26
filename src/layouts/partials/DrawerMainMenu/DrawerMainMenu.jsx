@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import networkService from '@chronobank/login/network/NetworkService'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { I18n } from 'platform/i18n'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
@@ -18,6 +19,7 @@ import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
+import { prefix } from './lang'
 import './DrawerMainMenu.scss'
 
 function mapStateToProps (state) {
@@ -128,7 +130,7 @@ export default class DrawerMainMenu extends PureComponent {
         </Link>
         {item.showMoreButton && (
           <div
-            styleName={classnames('itemMenuMore', /*{ 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title }*/)}
+            styleName={classnames('itemMenuMore' /*{ 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title }*/)}
             onTouchTap={this.handleShowAssetsManagerMore}
           >
             <i className='material-icons'>more_vert</i>
@@ -172,7 +174,7 @@ export default class DrawerMainMenu extends PureComponent {
                 </div>
               </div>
               <div styleName='exit' onTouchTap={this.props.handleLogout}>
-                <img src={exitSvg} alt='logout' />
+                <img src={exitSvg} alt='logout' title={I18n.t(`${prefix}.logout`)} />
               </div>
             </div>
 
