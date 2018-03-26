@@ -2,6 +2,7 @@
 @import "~styles/partials/mixins";
 
 .root {
+  padding-top: 120px;
   display: table;
   width: 100%;
   position: relative;
@@ -10,7 +11,7 @@
 }
 
 .row {
-  margin: 30px 56px;
+  margin: 0 56px 56px;
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -112,7 +113,6 @@
 }
 
 .when-open {
-  height: 200px;
 }
 
 .toggle {

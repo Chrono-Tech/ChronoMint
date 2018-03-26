@@ -60,7 +60,7 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
   return { isConfirmed: false }
 })
 
-export const changeMomentLocale = (locale, dispatch) => {
+export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
   ls.setLocale(locale)
   dispatch(setLocale(locale))

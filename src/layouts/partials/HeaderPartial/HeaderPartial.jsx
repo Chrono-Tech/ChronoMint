@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { FontIcon, IconButton } from 'material-ui'
+import { IconButton } from 'material-ui'
 import { sidesPush } from 'redux/sides/actions'
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
 import './HeaderPartial.scss'
 
@@ -33,12 +34,16 @@ export default class HeaderPartial extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        <div styleName='action-list'>
-          <div styleName='notification' onTouchTap={this.props.handleNotificationTap}>
+        <div styleName='actions'>
+
+          <LocaleDropDown />
+
+          <div styleName='action' onTouchTap={this.props.handleNotificationTap}>
             <IconButton>
-              <FontIcon className='material-icons'>notifications_active</FontIcon>
+              <i className='material-icons' styleName='icon'>notifications_active</i>
             </IconButton>
           </div>
+
         </div>
       </div>
     )

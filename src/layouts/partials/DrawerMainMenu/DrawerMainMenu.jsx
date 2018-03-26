@@ -150,6 +150,7 @@ export default class DrawerMainMenu extends PureComponent {
           >
             <div styleName='chronWalletLogo'>
               <img src={chronWalletLogoSVG} alt='ChronoWallet logo' />
+              <div styleName='subtitle'>{require('../../../../package.json').version}</div>
             </div>
 
             <div styleName={classnames('account-info', 'item')}>
@@ -222,6 +223,20 @@ export default class DrawerMainMenu extends PureComponent {
               <a href='mailto:info@chronobank.io'>info@chronobank.io</a>
               <a href='mailto:support@chronobank.io'>support@chronobank.io</a>
             </div>
+
+            <div styleName='externalMenuItems'>
+              {menu.global.map((item) => (
+                <a
+                  key={item.key}
+                  href={item.path}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                >
+                  <Translate value={item.title} />
+                </a>
+              ))}
+            </div>
+
           </div>
         </div>
       </div>)

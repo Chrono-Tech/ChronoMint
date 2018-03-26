@@ -2,33 +2,34 @@
 @import "~styles/partials/mixins";
 
 .drawer {
-  // display: none;
   flex: 0 0 auto;
   flex-direction: column;
   background-color: $color-white;
   height: auto;
   box-shadow: $box-shadow-0;
   position: relative;
-  width: 0px;
+  width: 0;
 }
 
 .middle {
   overflow: hidden;
   flex: 1;
-  margin-left: 300px
+  margin-left: 300px;
 }
 
 .middleTop {
   flex: 0 0 auto;
-  background-color: $color-white;
-  box-shadow: $box-shadow-0;
+  background-color: transparent;
   z-index: 100;
+  position: absolute;
+  right: 25px;
+  top: 25px;
 }
 
 .middleSnackbar {
   position: relative; //flex: 0 0 auto;
   z-index: 90;
-  height: 0px;
+  height: 0;
 }
 
 .middleSnackbarPanel {
@@ -40,7 +41,8 @@
   }
 }
 
-.middleContent {}
+.middleContent {
+}
 
 .middleBottom {
   position: relative;

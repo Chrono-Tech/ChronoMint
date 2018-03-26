@@ -12,6 +12,7 @@ import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
 import { ETH } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
+import { prefix } from './lang'
 
 import './MenuTokensList.scss'
 
@@ -142,7 +143,7 @@ export default class MenuTokensList extends PureComponent {
             {this.renderStatus()}
           </div>
           <div styleName='addressTitle'>
-            <div styleName='addressName'><Translate value={mainWallet.title} /></div>
+            <div styleName='addressName'><Translate value={`${prefix}.${mainWallet.title}`} /></div>
             <div styleName='address'>
               {this.props.account}
             </div>
@@ -164,7 +165,7 @@ export default class MenuTokensList extends PureComponent {
               <div styleName='addressTitle'>
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
-                  {token.address}
+                  {token.address || <Translate value={`${prefix}.notAvailable`} />}
                 </div>
               </div>
               <div
