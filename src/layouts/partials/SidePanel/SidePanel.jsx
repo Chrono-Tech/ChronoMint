@@ -68,7 +68,6 @@ class SidePanel extends PureComponent {
     const defaultDrawerProps = {
       openSecondary: this.props.direction === 'right',
       open: this.props.isOpened,
-      overlayStyle: { opacity: 0 },
       onRequestChange: this.handleProfileClose,
       containerStyle: { width: '360px' },
       disableSwipeToOpen: true,

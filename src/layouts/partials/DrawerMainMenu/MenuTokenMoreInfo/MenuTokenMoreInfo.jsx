@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { getToken } from 'redux/locs/selectors'
 import TokenModel from 'models/tokens/TokenModel'
 import { Translate } from 'react-redux-i18n'
+import { IconButton } from 'material-ui'
 import { TOKEN_ICONS } from 'assets'
 import { getWalletAddress } from 'redux/mainWallet/selectors'
 import AddressModel from 'models/wallet/AddressModel'
@@ -16,7 +17,8 @@ import qrSvg from 'assets/img/icons/qr.svg'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING, } from '@chronobank/login/network/MonitorService'
+import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
+import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 
@@ -36,7 +38,9 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    onMainMenuClose: () => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen: false }),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -53,13 +57,23 @@ export default class MenuTokenMoreInfo extends PureComponent {
       status: PropTypes.string,
       progress: PropTypes.number,
     }),
+    onProfileClose: PropTypes.func,
+    onMainMenuClose: PropTypes.func,
+  }
 
+  handleClose = () => {
+    this.props.onProfileClose()
+  }
+
+  handleSelectLink = () => {
+    this.props.onMainMenuClose()
+    this.handleClose()
   }
 
   renderWallet = (wallet) => {
     return (
       <div styleName='walletIrem' key={wallet.address()}>
-        <Link to='/wallet' href styleName='walletTitle'>
+        <Link to='/wallet' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
           <div styleName='walletName'><Translate value={`${prefix}.multisignatureWallet`} /></div>
           <div styleName='walletAddress'>{wallet.address()}</div>
           <div styleName='walletLink'>
@@ -119,10 +133,15 @@ export default class MenuTokenMoreInfo extends PureComponent {
           <div styleName='title'>
             <IPFSImage styleName='tokenIcon' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
             <div styleName='titleText'>{token.name() || token.symbol() || <Translate value={`${prefix}.title`} />}</div>
+            <div styleName='close' onTouchTap={this.handleClose}>
+              <IconButton>
+                <i className='material-icons'>close</i>
+              </IconButton>
+            </div>
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallet' href styleName='walletTitle'>
+            <Link to='/wallet' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress.address()}</div>
               <div styleName='walletLink'>

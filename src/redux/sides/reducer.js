@@ -1,11 +1,12 @@
 import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
-import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo/MenuTokenMoreInfo'
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
+import MenuAssetsManagerMoreInfo, { MENU_ASSETS_MANAGER_PANEL_KEY } from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import * as actions from './actions'
 
 const initialState = {
   isProfilePanelOpen: false,
+  mainMenuIsOpen: false,
   stack: {
     [ PROFILE_SIDE_PANEL_KEY ]: {
       component: ProfileContent,
@@ -25,9 +26,9 @@ const initialState = {
       isOpened: false,
       direction: 'right',
     },
-    [ MENU_TOKEN_MORE_INFO_PANEL_KEY ]: {
-      component: MenuTokenMoreInfo,
-      panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
+    [ MENU_ASSETS_MANAGER_PANEL_KEY ]: {
+      component: MenuAssetsManagerMoreInfo,
+      panelKey: MENU_ASSETS_MANAGER_PANEL_KEY,
       isOpened: false,
       direction: 'left',
     },
@@ -87,6 +88,12 @@ export default (state = initialState, action) => {
         ...state,
         stack: [],
       }
+    case actions.SIDES_TOGGLE_MAIN_MENU:
+      return {
+        ...state,
+        mainMenuIsOpen: action.mainMenuIsOpen,
+      }
+
     default:
       return state
   }

@@ -39,6 +39,25 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    handle: (handleClose) => {
+      dispatch({ type: SIDES_CLOSE_ALL })
+      dispatch(sidesPush({
+        component: MenuAssetsManagerMoreInfo,
+        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
+        isOpened: true,
+        direction: 'left',
+        preCloseAction: handleClose,
+        drawerProps: {
+          containerClassName: 'containerTokenSideMenu',
+          overlayClassName: 'overlayTokenSideMenu',
+          containerStyle: {
+            width: '300px',
+          },
+          width: 300,
+        },
+      }))
+    },
+
     handleAssetsManagerMoreInfo: (handleClose) => {
       dispatch({ type: SIDES_CLOSE_ALL })
       dispatch(sidesPush({
@@ -48,12 +67,10 @@ function mapDispatchToProps (dispatch) {
         direction: 'left',
         preCloseAction: handleClose,
         drawerProps: {
+          containerClassName: 'containerTokenSideMenu',
+          overlayClassName: 'overlayTokenSideMenu',
           containerStyle: {
             width: '300px',
-            left: '300px',
-          },
-          overlayStyle: {
-            background: 'rgba(0, 0, 0, 0.7)',
           },
           width: 300,
         },
@@ -73,6 +90,7 @@ export default class DrawerMainMenu extends PureComponent {
     handleLogout: PropTypes.func,
     walletsCount: PropTypes.number,
     handleAssetsManagerMoreInfo: PropTypes.func,
+    onSelectLink: PropTypes.func,
   }
 
   componentDidMount () {
@@ -110,6 +128,10 @@ export default class DrawerMainMenu extends PureComponent {
     this.props.handleAssetsManagerMoreInfo()
   }
 
+  handleSelectLink = () => {
+    this.props.onSelectLink()
+  }
+
   setRef = (el) => {
     this.mainMenu = el
   }
@@ -121,6 +143,7 @@ export default class DrawerMainMenu extends PureComponent {
           styleName='menuItem'
           activeClassName='drawer-item-active'
           to={{ pathname: item.path }}
+          onTouchTap={this.handleSelectLink}
           href
         >
           <i styleName='icon' className='material-icons'>{item.icon}</i>
@@ -181,6 +204,7 @@ export default class DrawerMainMenu extends PureComponent {
             <Link
               activeClassName='drawer-item-active'
               to='/wallet'
+              onTouchTap={this.handleSelectLink}
               href
               styleName={classnames('menuItem', 'item')}
             >
@@ -191,7 +215,7 @@ export default class DrawerMainMenu extends PureComponent {
               <div styleName='count'>{this.props.walletsCount}</div>
             </Link>
 
-            <MenuTokensList />
+            <MenuTokensList onSelectLink={this.handleSelectLink} />
 
             {!menu.user ? null : (
               <div styleName='menu-user'>

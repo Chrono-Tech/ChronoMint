@@ -53,12 +53,10 @@ function mapDispatchToProps (dispatch) {
           selectedToken,
         },
         drawerProps: {
+          containerClassName: 'containerTokenSideMenu',
+          overlayClassName: 'overlayTokenSideMenu',
           containerStyle: {
             width: '300px',
-            left: '300px',
-          },
-          overlayStyle: {
-            background: 'rgba(0, 0, 0, 0.7)',
           },
           width: 300,
         },
@@ -82,6 +80,7 @@ export default class MenuTokensList extends PureComponent {
     }),
     initTokenSide: PropTypes.func,
     networkName: PropTypes.string,
+    onSelectLink: PropTypes.func,
   }
 
   constructor (props) {

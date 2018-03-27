@@ -5,4 +5,7 @@
   width: 0;
   height: 0;
   z-index: 1500;
+  @include sm-only {
+    z-index: 1600;
+  }
 }
