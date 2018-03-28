@@ -18,6 +18,7 @@ export default class CopyIcon extends PureComponent {
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
     iconStyle: PropTypes.string,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
@@ -43,9 +44,12 @@ export default class CopyIcon extends PureComponent {
 
   render () {
     return (
-      <div styleName='root'>
-        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
-          <i className='material-icons'>content_copy</i>
+      <div styleName='root' className='MicroIcon__root'>
+        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }} >
+          {this.props.children
+            ? this.props.children
+            : <i className='material-icons'>content_copy</i>
+          }
         </a>
       </div>
     )
@@ -54,9 +58,7 @@ export default class CopyIcon extends PureComponent {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showCopyDialog: ({
-      copyValue, title, controlTitle, description,
-    }) => dispatch(modalsOpen({
+    showCopyDialog: ({ copyValue, title, controlTitle, description }) => dispatch(modalsOpen({
       component: CopyDialog,
       props: {
         copyValue,

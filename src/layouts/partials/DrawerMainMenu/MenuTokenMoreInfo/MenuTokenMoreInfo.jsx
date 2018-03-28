@@ -1,6 +1,6 @@
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/actions'
 import { Link } from 'react-router'
-import { IPFSImage } from 'components'
+import { CopyIcon, IPFSImage, QRIcon } from 'components'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -82,12 +82,16 @@ export default class MenuTokenMoreInfo extends PureComponent {
         </Link>
 
         <div styleName='action'>
-          <div styleName='actionIcon'>
-            <img src={copySvg} alt='' />
-          </div>
-          <div styleName='actionTitle'>
-            <Translate value={`${prefix}.copyAddress`} />
-          </div>
+          <CopyIcon value={wallet.address()}>
+            <div styleName='copyWrap'>
+              <div styleName='actionIcon'>
+                <img src={copySvg} alt='' />
+              </div>
+              <div styleName='actionTitle'>
+                <Translate value={`${prefix}.copyAddress`} />
+              </div>
+            </div>
+          </CopyIcon>
         </div>
 
         <div styleName='action'>
@@ -150,21 +154,29 @@ export default class MenuTokenMoreInfo extends PureComponent {
             </Link>
 
             <div styleName='action'>
-              <div styleName='actionIcon'>
-                <img src={copySvg} alt='' />
-              </div>
-              <div styleName='actionTitle'>
-                <Translate value={`${prefix}.copyAddress`} />
-              </div>
+              <CopyIcon value={walletAddress.address()}>
+                <div styleName='copyWrap'>
+                  <div styleName='actionIcon'>
+                    <img src={copySvg} alt='' />
+                  </div>
+                  <div styleName='actionTitle'>
+                    <Translate value={`${prefix}.copyAddress`} />
+                  </div>
+                </div>
+              </CopyIcon>
             </div>
 
             <div styleName='action'>
-              <div styleName='actionIcon'>
-                <img src={qrSvg} alt='' />
-              </div>
-              <div styleName='actionTitle'>
-                <Translate value={`${prefix}.showQR`} />
-              </div>
+              <QRIcon value={walletAddress.address()}>
+                <div styleName='copyWrap'>
+                  <div styleName='actionIcon'>
+                    <img src={qrSvg} alt='' />
+                  </div>
+                  <div styleName='actionTitle'>
+                    <Translate value={`${prefix}.showQR`} />
+                  </div>
+                </div>
+              </QRIcon>
             </div>
           </div>
 

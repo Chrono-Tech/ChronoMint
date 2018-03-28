@@ -52,6 +52,10 @@
 .close {
   cursor: pointer;
   color: $color-white;
+  display: none;
+  @include sm-only {
+    display: block;
+  }
 }
 
 .walletIrem {
@@ -97,7 +101,6 @@
 
 .action {
   display: flex;
-  height: 40px;
   line-height: 17px;
   border: 0 solid $color-grey-1;
   border-bottom-width: 1px;
@@ -105,8 +108,25 @@
   &:hover {
     background: $color-modal-backdrop-bg-1
   }
+  :global {
+    .MicroIcon__root, .QRIcon__root {
+      display: flex;
+      flex-grow: 1;
+      > a {
+        display: flex;
+        flex-grow: 1;
+        height: 40px;
+        padding-left: 20px;
+        align-items: center;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.copyWrap {
+  display: flex;
   align-items: center;
-  padding-left: 20px;
 }
 
 .actionIcon {
