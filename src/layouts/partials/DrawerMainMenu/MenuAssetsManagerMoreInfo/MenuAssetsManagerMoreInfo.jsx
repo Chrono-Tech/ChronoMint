@@ -60,6 +60,9 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
         </Link>
 
         {Object.values(assetsList).map((token: TokenModel) => {
+          if (!token.address()) {
+            return null
+          }
           return (
             <Link to='/assets' href styleName='action' key={token.address()} onTouchTap={this.handleSelectLink}>
               <div styleName='actionIcon'>

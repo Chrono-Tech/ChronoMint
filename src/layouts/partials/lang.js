@@ -9,6 +9,7 @@ import DrawerMainMenu from 'layouts/partials/DrawerMainMenu/lang'
 import MenuTokenMoreInfo from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo/lang'
 import MenuTokensList from 'layouts/partials/DrawerMainMenu/MenuTokensList/lang'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/lang'
+import NotificationContent from 'layouts/partials/NotificationContent/lang'
 
 export default {
   en: {
@@ -23,6 +24,7 @@ export default {
     MenuTokensList: MenuTokensList.en,
     MenuTokenMoreInfo: MenuTokenMoreInfo.en,
     MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.en,
+    NotificationContent: NotificationContent.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,
@@ -36,5 +38,6 @@ export default {
     MenuTokensList: MenuTokensList.ru,
     MenuTokenMoreInfo: MenuTokenMoreInfo.ru,
     MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.ru,
+    NotificationContent: NotificationContent.ru,
   },
 }

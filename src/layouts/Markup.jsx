@@ -6,7 +6,7 @@ import { IconButton, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { closeNotifier } from 'redux/notifier/actions'
+import { closeNotifier, DUCK_NOTIFIER } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import theme from 'styles/themes/default'
 import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
@@ -16,7 +16,7 @@ import { DrawerMainMenu, HeaderPartial } from './partials'
 function mapStateToProps (state) {
   return {
     isCBE: state.get(DUCK_SESSION).isCBE,
-    notice: state.get('notifier').notice,
+    notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
   }
 }
