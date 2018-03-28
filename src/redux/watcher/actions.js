@@ -12,6 +12,7 @@ import { watchInitOperations } from 'redux/operations/actions'
 import { watchInitERC20Tokens } from 'redux/settings/erc20/tokens/actions'
 import { watchInitCBE } from 'redux/settings/user/cbe/actions'
 import { initTokens } from 'redux/tokens/actions'
+import { loadI18n } from 'redux/i18n/actions'
 import { showConfirmTxModal, watchInitUserMonitor } from 'redux/ui/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitProfile } from 'redux/session/actions'
@@ -69,6 +70,7 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitProfile())
+  dispatch(loadI18n())
   dispatch(initTokens())
   dispatch(initMainWallet())
   dispatch(watchPlatformManager())
