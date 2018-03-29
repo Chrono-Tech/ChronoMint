@@ -23,6 +23,7 @@ import { TIME } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from 'models/PollDetailsModel'
 import FileModel from 'models/FileSelect/FileModel'
+import { Button } from 'components'
 import './PollEditForm.scss'
 import validate from './validate'
 
@@ -118,9 +119,10 @@ export default class PollEditForm extends Component {
     return (
       <div>
         <div styleName='optionsActions'>
-          <FlatButton
+          <Button
             label={<Translate value={prefix('addOption')} />}
             styleName='optionsAction'
+            type='flat'
             // eslint-disable-next-line
             onTouchTap={() => this.handleOptionCreate(options)}
           />
@@ -239,9 +241,10 @@ export default class PollEditForm extends Component {
           </div>
         </div>
         <div styleName='footer'>
-          <RaisedButton
+          <Button
             styleName='footerAction'
             label={<Translate value={prefix(isModify ? 'updatePoll' : 'createPoll')} />}
+            buttonType='flat'
             type='submit'
             disabled={pristine || invalid}
             primary
