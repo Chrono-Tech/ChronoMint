@@ -1,0 +1,65 @@
+@import "~styles/partials/variables";
+
+.root {
+
+}
+
+.button {
+  line-height: 19px;
+  text-align: center;
+  font-weight: bolder;
+  text-transform: uppercase;
+  min-height: 40px;
+  border-radius: 3px;
+  padding: 15px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  &:disabled {
+    cursor: not-allowed;
+  }
+  position: relative; //This is kinda important
+  overflow: hidden; //This too
+  border: none;
+}
+
+.raised {
+  color: $color-white;
+  background-color: $button-color-1;
+  &:hover, &:active {
+    background-color: $button-color-2
+  }
+  &:disabled {
+    background-color: $button-color-3;
+  }
+}
+
+.flat {
+  color: $button-color-1;
+  &:hover, &:active {
+    color: $button-color-2;
+  }
+}
+
+:global {
+  .ripple {
+    position: absolute;
+    background: $color-white;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    animation: rippleEffect 0.88s;
+    opacity: 0;
+  }
+}
+
+@keyframes:global(rippleEffect) {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(100);
+    opacity: 0;
+  }
+}

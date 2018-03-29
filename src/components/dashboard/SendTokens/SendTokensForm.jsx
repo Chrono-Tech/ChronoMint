@@ -1,13 +1,8 @@
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import { IPFSImage } from 'components'
+import { Button, IPFSImage } from 'components'
 import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -30,11 +25,10 @@ import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
+import { BALANCES_COMPARATOR_SYMBOL, getGasPriceMultiplier, getVisibleBalances } from 'redux/session/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
-import { getGasPriceMultiplier } from 'redux/session/selectors'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
@@ -297,10 +291,8 @@ export default class SendTokensForm extends PureComponent {
         )}
         <div styleName='row'>
           <div styleName='send'>
-            <RaisedButton
+            <Button
               label={<Translate value={`${prefix}.send`} />}
-              primary
-              style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid || isTimeLocked}
               onTouchTap={!pristine && !invalid && !isTimeLocked && handleSubmit(this.handleTransfer)}
             />
@@ -314,10 +306,8 @@ export default class SendTokensForm extends PureComponent {
               />
             )}
             {token.isERC20() && !isApprove && (
-              <RaisedButton
+              <Button
                 label={<Translate value={`${prefix}.revoke`} />}
-                primary
-                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={!isContract}
                 onTouchTap={isContract && token && recipient && this.handleRevoke}
               />

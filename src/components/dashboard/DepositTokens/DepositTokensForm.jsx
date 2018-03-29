@@ -1,8 +1,8 @@
+import { Button, IPFSImage } from 'components'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { TOKEN_ICONS } from 'assets'
 import BigNumber from 'bignumber.js'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import styles from 'components/dashboard/styles'
@@ -249,7 +249,7 @@ export default class DepositTokensForm extends PureComponent {
                 onTouchTap={this.handleRequireTime}
               />
             ) : (
-              <RaisedButton
+              <Button
                 styleName='actionButton'
                 label={isRevoke ? 'Revoke' : 'Approve'}
                 onTouchTap={isRevoke
