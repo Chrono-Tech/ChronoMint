@@ -12,3 +12,5 @@ export const styles = {
   inverted,
   theme,
 }
+
+export { default as Button } from 'components/common/ui/Button/Button'

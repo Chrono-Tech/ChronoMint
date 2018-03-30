@@ -1,13 +1,13 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import { addError } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, RaisedButton } from 'material-ui'
+import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
-
 import './LoginUPort.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -55,7 +55,7 @@ class LoginUPort extends PureComponent {
         />
         <div styleName='actions'>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading
                 ? (
                   <CircularProgress
@@ -66,8 +66,6 @@ class LoginUPort extends PureComponent {
                 )
                 : <Translate value='LoginUPort.login' />
               }
-              primary
-              fullWidth
               disabled={isLoading}
               onTouchTap={this.handleLoginClick}
             />

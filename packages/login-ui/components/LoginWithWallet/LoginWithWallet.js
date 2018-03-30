@@ -1,13 +1,13 @@
 import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, FlatButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-
 import './LoginWithWallet.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -170,17 +170,14 @@ class LoginWithWallet extends PureComponent {
             />
           </div>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading ? <CircularProgress
                 style={{ verticalAlign: 'middle', marginTop: -2 }}
                 size={24}
                 thickness={1.5}
               /> : <Translate value='LoginWithWallet.login' />}
-              primary
-              fullWidth
               disabled={isLoading || !isUploaded || !password || password === ''}
               onTouchTap={this.handleEnterPassword}
-              style={styles.primaryButton}
             />
           </div>
         </div>
