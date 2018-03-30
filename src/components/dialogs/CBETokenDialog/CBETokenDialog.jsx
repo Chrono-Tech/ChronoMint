@@ -1,6 +1,5 @@
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { I18n } from 'platform/i18n/index'
-import { FlatButton } from 'material-ui'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
@@ -126,7 +125,7 @@ export default class CBETokenDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <FlatButton styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
+            <Button flat styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
             <Button
               disabled={this.props.isFetching || this.props.pristine || this.props.invalid}
               styleName='action'

@@ -3,7 +3,7 @@ import { Button, IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import { get } from 'lodash'
-import { DatePicker, FlatButton } from 'material-ui'
+import { DatePicker } from 'material-ui'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -183,9 +183,7 @@ export default class CrowdsaleForm extends PureComponent {
             {CROWDSALE_COINS.map(this.renderCrowdsaleCurrency)}
           </div>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value={prefix('allAvailableCurrencies')} />}
-            />
+            <Button flat label={<Translate value={prefix('allAvailableCurrencies')} />} />
           </div>
         </div>
 
@@ -341,9 +339,7 @@ export default class CrowdsaleForm extends PureComponent {
             </div>
           </div>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value={prefix('allAvailableCurrencies')} />}
-            />
+            <Button flat label={<Translate value={prefix('allAvailableCurrencies')} />} />
           </div>
         </div>
 

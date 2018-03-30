@@ -67,7 +67,18 @@
 
 .action {
   vertical-align: bottom;
-  margin: 0px 0px 0px 30px;
+  margin: 0 0 0 30px;
+}
+
+.actionFlat {
+  margin-bottom: 5px;
+  button {
+    padding: 15px 0;
+  }
+  a {
+    color: $color-white;
+    text-decoration: none;
+  }
 }
 
 .headInner {

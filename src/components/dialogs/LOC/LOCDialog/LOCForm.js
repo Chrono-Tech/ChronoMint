@@ -120,7 +120,8 @@ class LOCForm extends PureComponent {
             <div styleName='col actions'>
               {!isNew && (
                 <div styleName='action'>
-                  <FlatButton
+                  <Button
+                    flat
                     label={<Translate value='locs.delete' />}
                     onTouchTap={this.handleDeleteClick}
                   />

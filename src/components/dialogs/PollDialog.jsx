@@ -65,7 +65,8 @@ export class PollDialog extends React.Component {
     return (
       <div styleName='options'>
         <div styleName='options-actions'>
-          <FlatButton
+          <Button
+            flat
             label='Add Option'
             styleName='action'
             // eslint-disable-next-line
@@ -153,10 +154,10 @@ export class PollDialog extends React.Component {
                   style={{ width: '180px' }}
                 />
                 <div styleName='actions'>
-                  <FlatButton
+                  <Button
+                    flat
                     label='Add Attachments'
                     styleName='action'
-                    icon={<FontIcon className='material-icons'>link</FontIcon>}
                   />
                 </div>
               </div>

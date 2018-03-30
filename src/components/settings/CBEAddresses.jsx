@@ -41,10 +41,9 @@ export default class CBEAddresses extends PureComponent {
         <div styleName='panelHead'>
           <h3 styleName='headTitle'><Translate value={prefix('cbeAddresses')} /></h3>
           <div styleName='headActions'>
-            <FlatButton
-              icon={<FontIcon className='material-icons'>add</FontIcon>}
+            <Button
+              flat
               label={<Translate value={prefix('addCbe')} />}
-              primary
               onTouchTap={() => this.props.form(new CBEModel())}
             />
           </div>

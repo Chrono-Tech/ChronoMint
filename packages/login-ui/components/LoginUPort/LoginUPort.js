@@ -53,24 +53,20 @@ class LoginUPort extends PureComponent {
           onClick={this.props.onBack}
           to='options'
         />
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? (
-                  <CircularProgress
-                    style={{ verticalAlign: 'middle', marginTop: -2 }}
-                    size={24}
-                    thickness={1.5}
-                  />
-                )
-                : <Translate value='LoginUPort.login' />
-              }
-              disabled={isLoading}
-              onTouchTap={this.handleLoginClick}
-            />
-          </div>
-        </div>
+        <Button
+          label={isLoading
+            ? (
+              <CircularProgress
+                style={{ verticalAlign: 'middle', marginTop: -2 }}
+                size={24}
+                thickness={1.5}
+              />
+            )
+            : <Translate value='LoginUPort.login' />
+          }
+          disabled={isLoading}
+          onTouchTap={this.handleLoginClick}
+        />
       </div>
     )
   }

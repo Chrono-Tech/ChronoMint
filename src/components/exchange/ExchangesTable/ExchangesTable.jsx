@@ -123,10 +123,7 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='colActions'>
             <div styleName='buttonWrapper'>
               <Button
-                label={(
-                  <span styleName='buttonLabel'>
-                    <Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />
-                  </span>)}
+                label={<Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />}
                 onTouchTap={() => {
                   this.props.handleOpenTransfer(exchange, exchange.symbol())
                 }}
@@ -134,7 +131,7 @@ export default class ExchangesTable extends React.PureComponent {
             </div>
             <div styleName='buttonWrapper'>
               <Button
-                label={<span styleName='buttonLabel'><Translate value={prefix('depositEth')} /></span>}
+                label={<Translate value={prefix('depositEth')} />}
                 onTouchTap={() => {
                   this.props.handleOpenTransfer(exchange, 'ETH')
                 }}
@@ -202,7 +199,7 @@ export default class ExchangesTable extends React.PureComponent {
           {showBuy && exchange.assetBalance().gt(0) &&
           <div styleName='buttonWrapper'>
             <Button
-              label={<span><Translate value={prefix('buy')} /> {exchange.symbol()}</span>}
+              label={<Translate value={prefix('buy')} symbol={exchange.symbol()} />}
               onTouchTap={() => {
                 this.props.handleOpenDetails(exchange, true)
               }}
@@ -212,7 +209,7 @@ export default class ExchangesTable extends React.PureComponent {
           {showSell && exchange.ethBalance().gt(0) &&
           <div styleName='buttonWrapper'>
             <Button
-              label={<span><Translate value={prefix('sell')} /> {exchange.symbol()}</span>}
+              label={<Translate value={prefix('sell')} symbol={exchange.symbol()} />}
               onTouchTap={() => {
                 this.props.handleOpenDetails(exchange, false)
               }}

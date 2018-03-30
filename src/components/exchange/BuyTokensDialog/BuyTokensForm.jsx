@@ -226,7 +226,7 @@ export default class BuyTokensForm extends React.PureComponent {
                     <Button
                       disabled={!this.props.valid || (!this.props.isBuy && exchangeToken.removeDecimals(allowance).toString() !== this.props.buy) || showWarningMessage}
                       type='submit'
-                      label={<span styleName='buttonLabel'><Translate value={prefix('sendRequest')} /></span>}
+                      label={<Translate value={prefix('sendRequest')} />}
                     />
                   </div>
                 </div>

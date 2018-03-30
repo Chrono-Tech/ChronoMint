@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
     isFetched: exchange.isFetched(),
     assetSymbols: exchange.assetSymbols(),
     filterMode: selector(state, 'filterMode'),
-    initialValues: new Immutable.Map({ filterMode: MODES[0] }),
+    initialValues: new Immutable.Map({ filterMode: MODES[ 0 ] }),
     showFilter: exchange.showFilter(),
   }
 }
@@ -70,7 +70,7 @@ export default class ExchangeWidget extends React.Component {
   }
 
   handleChangeMode (value) {
-    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[value]))
+    this.props.dispatch(change(FORM_EXCHANGE, 'filterMode', MODES[ value ]))
   }
 
   render () {
@@ -146,7 +146,7 @@ export default class ExchangeWidget extends React.Component {
                           type='submit'
                           disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
                           label={
-                            <span styleName='buttonLabel'>
+                            <span>
                               {this.props.isFetching ? <Preloader /> : <Translate value={prefix('search')} />}
                             </span>
                           }

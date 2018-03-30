@@ -1,4 +1,4 @@
-import { FlatButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -64,7 +64,8 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
             <div styleName='action'>
-              <FlatButton
+              <Button
+                flat
                 type='submit'
                 label={<Translate value={prefix('addManagersButton')} />}
               />

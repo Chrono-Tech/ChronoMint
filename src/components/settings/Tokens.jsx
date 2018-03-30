@@ -68,10 +68,9 @@ export default class Tokens extends PureComponent {
         <div styleName='panelHead'>
           <h3 styleName='headTitle'><Translate value={prefix('tokens')} /></h3>
           <div styleName='headActions'>
-            <FlatButton
-              icon={<FontIcon className='material-icons'>add</FontIcon>}
+            <Button
+              flat
               label={<Translate value={prefix('addToken')} />}
-              primary
               onTouchTap={this.handleEdit()}
             />
           </div>
