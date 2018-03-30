@@ -100,14 +100,11 @@ export default class RewardsContent extends Component {
                     }
                   </div>
                   <div styleName='actions'>
-                    <FlatButton
-                      style={styles.content.header.link}
-                      label={<Translate value={prefix('depositOfWithdrawTime')} />}
-                      styleName='action'
-                      containerElement={
-                        <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
-                      }
-                    />
+                    <Button styleName='actionFlat' flat>
+                      <Link activeClassName='active' href to={{ pathname: '/wallet', hash: '#deposit-tokens' }}>
+                        <Translate value={prefix('depositOfWithdrawTime')} />
+                      </Link>
+                    </Button>
                     {currentPeriod.rewards().gt(0) && (
                       <Button
                         label={<Translate value={prefix('withdrawRevenue')} />}

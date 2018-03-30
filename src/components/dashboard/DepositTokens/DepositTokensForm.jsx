@@ -243,7 +243,8 @@ export default class DepositTokensForm extends PureComponent {
         <span styleName='action'>
           {isShowTIMERequired
             ? (
-              <FlatButton
+              <Button
+                flat
                 styleName='actionButton'
                 label={<Translate value={prefix('requireTime')} />}
                 onTouchTap={this.handleRequireTime}

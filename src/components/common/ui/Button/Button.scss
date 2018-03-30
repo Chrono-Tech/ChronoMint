@@ -36,7 +36,9 @@
 
 .flat {
   color: $button-color-1;
+  background-color: transparent;
   &:hover, &:active {
+    background-color: transparent;
     color: $button-color-2;
   }
 }
@@ -44,7 +46,7 @@
 :global {
   .ripple {
     position: absolute;
-    background: $color-white;
+    background: $button-color-3;
     border-radius: 50%;
     width: 5px;
     height: 5px;

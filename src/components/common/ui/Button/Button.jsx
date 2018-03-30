@@ -8,6 +8,7 @@ export default class Button extends PureComponent {
     children: PropTypes.node,
     onTouchTap: PropTypes.func,
     buttonType: PropTypes.string,
+    flat: PropTypes.bool,
     disabled: PropTypes.bool,
     label: PropTypes.oneOfType([
       PropTypes.node,
@@ -15,7 +16,7 @@ export default class Button extends PureComponent {
       PropTypes.number,
     ]),
     onClick: PropTypes.func,
-    styleName: PropTypes.string,
+    className: PropTypes.string,
     type: PropTypes.string,
   }
 
@@ -58,12 +59,16 @@ export default class Button extends PureComponent {
   }
 
   render () {
+    let { buttonType, flat } = this.props
+    if (flat) {
+      buttonType = 'flat'
+    }
     return (
-      <div styleName={classnames('root', this.props.styleName)} className='Button_root'>
+      <div styleName='root' className={classnames('Button_root', this.props.className)}>
         <button
           ref={this.setRef}
           disabled={this.props.disabled}
-          styleName={classnames('button', this.props.buttonType)}
+          styleName={classnames('button', buttonType)}
           type={this.props.type}
           onTouchTap={this.handleTouchTap}
         >

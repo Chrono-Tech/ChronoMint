@@ -128,8 +128,8 @@ export default class PendingOperations extends PureComponent {
           {this.props.showSignatures
             ? (
               <div styleName='headActions'>
-                <FlatButton
-                  icon={<FontIcon className='material-icons'>settings</FontIcon>}
+                <Button
+                  flat
                   label={<Translate value={prefix('settings')} />}
                   primary
                   onTouchTap={this.props.handleSettings}

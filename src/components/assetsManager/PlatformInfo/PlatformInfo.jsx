@@ -4,7 +4,6 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -107,7 +106,8 @@ class PlatformInfo extends PureComponent {
               </div>
 
               <div styleName='addManager'>
-                <FlatButton
+                <Button
+                  flat
                   onTouchTap={this.props.handleAddManagerDialog}
                   styleName='addManagerButton'
                   label={(
@@ -185,17 +185,6 @@ class PlatformInfo extends PureComponent {
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('send')} />}
-            />*/}
-
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('crowdsaleInfo')} />}
-              onTouchTap={() => this.props.handleCrowdsaleDialog()}
-            />*/}
-
             <Button
               onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}

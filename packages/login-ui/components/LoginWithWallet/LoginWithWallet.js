@@ -160,13 +160,12 @@ class LoginWithWallet extends PureComponent {
 
         <div styleName='actions'>
           <div styleName='action'>
-            <FlatButton
+            <Button
+              flat
               label={<Translate value='LoginWithWallet.generateNewWallet' />}
               fullWidth
               disabled={isLoading}
               onTouchTap={this.props.onGenerate}
-              icon={<i className='material-icons' styleName='buttonIcon'>account_balance_wallet</i>}
-              {...styles.flatButton}
             />
           </div>
           <div styleName='action'>

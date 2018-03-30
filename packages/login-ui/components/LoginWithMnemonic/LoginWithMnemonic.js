@@ -1,12 +1,12 @@
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { CircularProgress, FlatButton, TextField } from 'material-ui'
+import { CircularProgress, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-import { assets, Button } from '../../settings'
+import { Button } from '../../settings'
 
 import './LoginWithMnemonic.scss'
 
@@ -83,14 +83,14 @@ class LoginWithMnemonic extends PureComponent {
         </div>
         <div styleName='actions'>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value='LoginWithMnemonic.generateMnemonic' />}
+            <Button
+              flat
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
-              icon={<img styleName='generateIcon' src={assets.MnemonicGenerateIcon} />}
-              {...styles.flatButton}
-            />
+            >
+              <Translate value='LoginWithMnemonic.generateMnemonic' />
+            </Button>
           </div>
           <div styleName='action'>
             <Button

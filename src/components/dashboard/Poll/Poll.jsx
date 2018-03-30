@@ -3,7 +3,7 @@ import { Button } from 'components'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
-import { FlatButton, Paper } from 'material-ui'
+import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import { SHORT_DATE } from 'models/constants'
 import TokenModel from 'models/tokens/TokenModel'
@@ -217,8 +217,8 @@ export default class Poll extends PureComponent {
               }
             </div>
             <div styleName='right'>
-              <FlatButton
-                style={{ margin: '16px' }}
+              <Button
+                flat
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}

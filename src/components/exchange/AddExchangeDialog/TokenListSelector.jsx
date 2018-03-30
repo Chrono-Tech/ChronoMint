@@ -1,8 +1,7 @@
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
-import { IPFSImage } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton, MenuItem, TextField } from 'material-ui'
+import { Button, IPFSImage } from 'components'
+import { MenuItem, TextField } from 'material-ui'
 import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
@@ -116,9 +115,9 @@ export default class TokenListSelector extends PureComponent {
           </SelectField>
         </div>
         <div styleName={classnames('flexRight', 'sm-hide')}>
-          <FlatButton
-            label={<Translate
-              value={prefix(this.state.foldTokensList ? 'showAllAvailableTokens' : 'HideAllAvailableTokens')} />}
+          <Button
+            flat
+            label={<Translate value={prefix(this.state.foldTokensList ? 'showAllAvailableTokens' : 'HideAllAvailableTokens')} />}
             onClick={this.handleUnfoldTokenList}
           />
         </div>

@@ -1,15 +1,5 @@
 .root {
-}
-
-.actions {
   display: flex;
-  justify-content: flex-end;
-}
-
-.action {
-  width: 50%;
-  flex-grow: 0;
-  margin-top: 16px;
-  display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: stretch;
 }

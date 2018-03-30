@@ -145,7 +145,8 @@ export default class AddTokenDialog extends PureComponent {
             />
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}

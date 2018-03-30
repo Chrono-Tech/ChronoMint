@@ -1,5 +1,4 @@
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from 'material-ui'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -91,7 +90,8 @@ export default class CBEAddressDialog extends PureComponent {
             />
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}

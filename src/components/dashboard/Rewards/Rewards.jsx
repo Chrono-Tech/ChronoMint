@@ -32,10 +32,10 @@ class Rewards extends PureComponent {
             )}
             foot={(
               <div styleName='buttons'>
-                <Button
-                  label={<Translate value={prefix('allPeriods')} />}
-                >
-                  <Link activeClassName='active' to={{ pathname: '/rewards' }} />
+                <Button>
+                  <Link href activeClassName='active' to={{ pathname: '/rewards' }}>
+                    <Translate value={prefix('allPeriods')} />
+                  </Link>
                 </Button>
               </div>
             )}
