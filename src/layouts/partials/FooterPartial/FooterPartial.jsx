@@ -1,4 +1,5 @@
-import { RaisedButton, TextField } from 'material-ui'
+import { Button } from 'components'
+import { TextField } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import menu from 'menu'
@@ -87,7 +88,7 @@ export default class FooterPartial extends PureComponent {
                 />
               </div>
               <div styleName='actions'>
-                <RaisedButton label={<Translate value='layouts.partials.FooterPartial.subscribe' />} disabled />
+                <Button label={<Translate value='layouts.partials.FooterPartial.subscribe' />} disabled />
               </div>
             </div>
           </div>

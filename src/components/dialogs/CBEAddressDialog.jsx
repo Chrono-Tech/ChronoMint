@@ -1,12 +1,13 @@
-import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { validate } from 'models/CBEModel'
-import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
+import { addCBE, formCBELoadName } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'models/validator'
@@ -95,10 +96,9 @@ export default class CBEAddressDialog extends PureComponent {
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}
             />
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('addAddress')} />}
-              primary
               disabled={isLoading || pristine || invalid}
               type='submit'
             />

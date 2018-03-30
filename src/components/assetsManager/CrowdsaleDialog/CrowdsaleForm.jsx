@@ -1,9 +1,9 @@
 import { TOKEN_ICONS } from 'assets'
+import { Button, IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { IPFSImage, TokenValue } from 'components'
 import { get } from 'lodash'
-import { DatePicker, FlatButton, RaisedButton } from 'material-ui'
+import { DatePicker, FlatButton } from 'material-ui'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -65,7 +65,7 @@ class CrowdsaleCurrency extends PureComponent {
         onClick={this.handleClick}
         styleName={classnames('currencyItem', { selected: currentCurrency === currency })}
       >
-        <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS[currency.toUpperCase()]} />
+        <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS[ currency.toUpperCase() ]} />
         <div styleName='name'>Ethereum</div>
       </button>
     )
@@ -348,11 +348,10 @@ export default class CrowdsaleForm extends PureComponent {
         </div>
 
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             styleName='action'
             label={<Translate value={prefix('confirmAndStart')} />}
             type='submit'
-            primary
           />
         </div>
       </div>

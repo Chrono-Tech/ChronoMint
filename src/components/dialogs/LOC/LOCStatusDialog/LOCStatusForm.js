@@ -1,5 +1,6 @@
 import { Field, reduxForm } from 'redux-form/immutable'
-import { MenuItem, RaisedButton } from 'material-ui'
+import { MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { SelectField } from 'redux-form-material-ui'
@@ -35,9 +36,8 @@ class LOCStatusForm extends PureComponent {
         </Field>
 
         <div styleName='footer'>
-          <RaisedButton
+          <Button
             label={<Translate value='locs.updateStatus' />}
-            primary
             onTouchTap={handleSubmit}
             disabled={pristine}
           />

@@ -1,5 +1,6 @@
-import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { FlatButton } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
@@ -62,7 +63,7 @@ export default class OperationsSettingsDialog extends PureComponent {
           </div>
           <div styleName='footer'>
             <FlatButton styleName='action' label={<Translate value={prefix('cancel')} />} onTouchTap={() => this.props.onClose()} />
-            <RaisedButton styleName='action' label={<Translate value={prefix('save')} />} primary type='submit' />
+            <Button styleName='action' label={<Translate value={prefix('save')} />} type='submit' />
           </div>
         </form>
       </ModalDialog>

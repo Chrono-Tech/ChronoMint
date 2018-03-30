@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { CircularProgress, MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -428,12 +429,11 @@ export default class AddTokenForm extends PureComponent {
         <div
           styleName='dialogFooter'
         >
-          <RaisedButton
+          <Button
             onTouchTap={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

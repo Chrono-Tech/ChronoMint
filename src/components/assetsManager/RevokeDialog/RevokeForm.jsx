@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_MANAGER, revokeAsset } from 'redux/assetsManager/actions'
@@ -64,12 +64,11 @@ export default class AddPlatformForm extends PureComponent {
 
         </div>
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             disabled={!!this.props.formErrors}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

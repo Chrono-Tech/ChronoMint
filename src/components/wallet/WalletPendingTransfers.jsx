@@ -1,5 +1,6 @@
+import { Button } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -92,7 +93,7 @@ export default class WalletPendingTransfers extends PureComponent {
         }
         <div styleName='right'>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={<Translate value='wallet.revoke' />}
               disabled={!isConfirmed}
               onTouchTap={isConfirmed
@@ -101,14 +102,13 @@ export default class WalletPendingTransfers extends PureComponent {
               }
             />
           </div>
-          <RaisedButton
+          <Button
             label={<Translate value='wallet.sign' />}
             disabled={isConfirmed}
             onTouchTap={!isConfirmed
               ? this.handleConfirm(wallet, item)
               : undefined
             }
-            primary
           />
         </div>
       </div>

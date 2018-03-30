@@ -1,5 +1,5 @@
+import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'
-import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
@@ -267,7 +267,7 @@ export default class PlatformInfo extends PureComponent {
               primary={selectedToken.isPaused().value()}
             />
 
-            <RaisedButton
+            <Button
               onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'

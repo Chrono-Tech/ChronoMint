@@ -1,8 +1,9 @@
+import { Button } from 'components'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
 import { SHORT_DATE } from 'models/constants'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import moment from 'moment'
@@ -185,13 +186,12 @@ export default class TransactionsTable extends PureComponent {
             ? null
             : (
               <div styleName='footer'>
-                <RaisedButton
+                <Button
                   label={isFetching ? <Preloader
                     style={{ verticalAlign: 'middle', marginTop: -2 }}
                     size={24}
                     thickness={1.5}
                   /> : 'Load More'}
-                  primary
                   disabled={isFetching}
                   onTouchTap={this.handleLoadMore}
                 />

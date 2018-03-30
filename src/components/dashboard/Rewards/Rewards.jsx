@@ -1,6 +1,7 @@
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
+import { Button } from 'components'
 import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -31,11 +32,11 @@ class Rewards extends PureComponent {
             )}
             foot={(
               <div styleName='buttons'>
-                <RaisedButton
+                <Button
                   label={<Translate value={prefix('allPeriods')} />}
-                  primary
-                  containerElement={<Link activeClassName='active' to={{ pathname: '/rewards' }} />}
-                />
+                >
+                  <Link activeClassName='active' to={{ pathname: '/rewards' }} />
+                </Button>
               </div>
             )}
           >

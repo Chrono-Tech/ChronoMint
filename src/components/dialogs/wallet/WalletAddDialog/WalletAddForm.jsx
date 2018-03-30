@@ -2,7 +2,7 @@ import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import globalStyles from 'layouts/partials/styles'
-import { RaisedButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
@@ -183,11 +183,10 @@ export default class WalletAddEditForm extends PureComponent {
           )}
         </div>
         <div styleName='actions'>
-          <RaisedButton
+          <Button
             styleName='action'
             label={<Translate value={`${prefix}.addWallet`} />}
             type='submit'
-            primary
             disabled={pristine || !valid}
           />
         </div>

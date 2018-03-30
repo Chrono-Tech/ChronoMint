@@ -1,6 +1,7 @@
 import { Translate } from 'react-redux-i18n'
-import { Field, reduxForm, formValueSelector, formPropTypes } from 'redux-form/immutable'
-import { FontIcon, RaisedButton } from 'material-ui'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { FontIcon } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
@@ -101,12 +102,11 @@ export default class UpdateProfileDialog extends PureComponent {
               <Field component={TextField} name='email' fullWidth floatingLabelText={<Translate value={`${prefix}.email`} />} />
             </div>
             <div styleName='footer'>
-              <RaisedButton
+              <Button
                 styleName='action'
                 label={<Translate value={`${prefix}.button`} />}
                 type='submit'
                 disabled={this.props.submitting}
-                primary
               />
             </div>
           </form>
