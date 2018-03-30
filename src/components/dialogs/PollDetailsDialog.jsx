@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -223,11 +223,10 @@ export default class VoteDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <RaisedButton
+            <Button
               styleName='action'
               label='Close'
               onTouchTap={this.handleClose}
-              primary
             />
           </div>
         </form>

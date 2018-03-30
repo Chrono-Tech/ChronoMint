@@ -1,6 +1,7 @@
 import Points from 'components/common/Points/Points'
 import Immutable from 'immutable'
-import { FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'
+import { FloatingActionButton, FontIcon } from 'material-ui'
+import { Button } from 'components'
 import BalancesCollection from 'models/tokens/BalancesCollection'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -193,13 +194,12 @@ export default class AddCurrencyDialog extends PureComponent {
             </div>
           </div>
           <div styleName='footer'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('save')} />}
-              primary
               onTouchTap={this.handleSave}
             />
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('close')} />}
               onTouchTap={this.handleClose}

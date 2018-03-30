@@ -1,6 +1,7 @@
+import { Button } from 'components'
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
-import { MenuItem, RaisedButton } from 'material-ui'
+import { MenuItem } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Immutable from 'immutable'
@@ -11,7 +12,6 @@ import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_EXCHANGE, search } from 'redux/exchange/actions'
 import AddExchangeDialog from 'components/exchange/AddExchangeDialog/AddExchangeDialog'
-import globalStyles from 'layouts/partials/styles'
 import validate from './validate'
 
 import './ExchangeWidget.scss'
@@ -78,10 +78,9 @@ export default class ExchangeWidget extends React.Component {
       <div>
         <div styleName='header'>
           <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
-          <div styleName='createExchangeWrapper'><RaisedButton
+          <div styleName='createExchangeWrapper'><Button
             label={<Translate value={prefix('createExchange')} />}
             onTouchTap={this.props.handleOpenAddExchangeDialog}
-            primary
           />
           </div>
           {this.props.showFilter &&
@@ -143,16 +142,14 @@ export default class ExchangeWidget extends React.Component {
                     </div>
                     <div styleName='item'>
                       <div styleName='actions'>
-                        <RaisedButton
+                        <Button
                           type='submit'
                           disabled={!this.props.isFetched || this.props.isFetching || !this.props.showFilter}
-                          {...globalStyles.buttonRaisedMultyLine}
                           label={
                             <span styleName='buttonLabel'>
                               {this.props.isFetching ? <Preloader /> : <Translate value={prefix('search')} />}
                             </span>
                           }
-                          primary
                         />
                       </div>
                     </div>

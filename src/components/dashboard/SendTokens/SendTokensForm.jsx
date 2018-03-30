@@ -1,8 +1,8 @@
+import { Button, IPFSImage } from 'components'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import { Button, IPFSImage } from 'components'
 import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -11,7 +11,7 @@ import IconSection from 'components/dashboard/IconSection/IconSection'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import Immutable from 'immutable'
-import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import { MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -294,22 +294,20 @@ export default class SendTokensForm extends PureComponent {
             <Button
               label={<Translate value={`${prefix}.send`} />}
               disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={!pristine && !invalid && !isTimeLocked && handleSubmit(this.handleTransfer)}
+              onTouchTap={handleSubmit(this.handleTransfer)}
             />
             {token.isERC20() && isApprove && (
-              <RaisedButton
+              <Button
                 label={<Translate value={`${prefix}.approve`} />}
-                primary
-                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract || isTimeLocked}
-                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked && handleSubmit(this.handleApprove)}
+                onTouchTap={handleSubmit(this.handleApprove)}
               />
             )}
             {token.isERC20() && !isApprove && (
               <Button
                 label={<Translate value={`${prefix}.revoke`} />}
                 disabled={!isContract}
-                onTouchTap={isContract && token && recipient && this.handleRevoke}
+                onTouchTap={this.handleRevoke}
               />
             )}
           </div>

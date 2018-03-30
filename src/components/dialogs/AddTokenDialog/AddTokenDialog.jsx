@@ -1,6 +1,7 @@
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -149,11 +150,10 @@ export default class AddTokenDialog extends PureComponent {
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}
             />
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('save')} />}
               type='submit'
-              primary
               disabled={this.props.submitting}
             />
           </div>

@@ -1,4 +1,5 @@
-import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -94,7 +95,7 @@ export default class CBEAddresses extends PureComponent {
                           ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                           : (
                             <div styleName='actionsItem'>
-                              <RaisedButton
+                              <Button
                                 label={<Translate value={prefix('remove')} />}
                                 disabled={this.props.account === address}
                                 onTouchTap={() => this.props.revoke(item)}

@@ -1,12 +1,13 @@
 import classnames from 'classnames'
-import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
+import { FlatButton, FontIcon, IconButton } from 'material-ui'
+import { Button } from 'components'
 import PollModel from 'models/PollModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { DatePicker, TextField } from 'redux-form-material-ui'
-import { Field, FieldArray, formValueSelector, reduxForm, formPropTypes } from 'redux-form/immutable'
+import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll } from 'redux/voting/actions'
@@ -174,11 +175,10 @@ export class PollDialog extends React.Component {
               </div>
             </div>
             <div styleName='footer'>
-              <RaisedButton
+              <Button
                 styleName='action'
                 label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
                 type='submit'
-                primary
               />
             </div>
           </form>

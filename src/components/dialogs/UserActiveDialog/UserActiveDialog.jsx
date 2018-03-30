@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import userMonitorService from 'user/monitorService'
@@ -60,11 +60,10 @@ export default class UserActiveDialog extends PureComponent {
             />
           </div>
           <div styleName='dialogFooter'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value='UserActiveDialog.here' />}
               type='submit'
-              primary
               onTouchTap={this.handleClose}
             />
           </div>

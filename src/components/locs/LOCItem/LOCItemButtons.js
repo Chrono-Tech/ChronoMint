@@ -83,27 +83,27 @@ class Buttons extends PureComponent {
           <FlatButton
             label={<Translate value='locs.issueS' asset={currency} />}
             disabled={!isActive || isPending}
-            onTouchTap={isActive && !isPending && this.handleShowLOCIssueDialog}
+            onTouchTap={this.handleShowLOCIssueDialog}
           />
         )}
         {isNotExpired && (
           <FlatButton
             label={<Translate value='locs.redeemS' asset={currency} />}
             disabled={!isActive || isPending || loc.issued() === 0}
-            onTouchTap={isActive && !isPending && loc.issued() !== 0 && this.handleShowLOCRedeemDialog}
+            onTouchTap={this.handleShowLOCRedeemDialog}
           />
         )}
         {isNotExpired && (
           <FlatButton
             label={<Translate value='terms.status' />}
             disabled={isPending}
-            onTouchTap={!isPending && this.handleShowLOCStatusDialog}
+            onTouchTap={this.handleShowLOCStatusDialog}
           />
         )}
         <FlatButton
           label={<Translate value='locs.editInfo' />}
           disabled={isPending || isActive}
-          onTouchTap={!isPending && !isActive && this.handleShowLOCDialog}
+          onTouchTap={this.handleShowLOCDialog}
         />
       </div>
     )

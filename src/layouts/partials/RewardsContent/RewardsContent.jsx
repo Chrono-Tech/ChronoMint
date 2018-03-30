@@ -1,6 +1,7 @@
+import { Button } from 'components'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
 import styles from 'layouts/partials/styles'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton } from 'material-ui'
 import RewardsCollection from 'models/rewards/RewardsCollection'
 import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
@@ -108,14 +109,14 @@ export default class RewardsContent extends Component {
                       }
                     />
                     {currentPeriod.rewards().gt(0) && (
-                      <RaisedButton
+                      <Button
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         onTouchTap={this.props.handleWithdrawRevenue}
                       />
                     )}
                     {this.props.isCBE && (
-                      <RaisedButton
+                      <Button
                         label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
                         onTouchTap={this.props.handleClosePeriod}

@@ -1,4 +1,4 @@
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -75,7 +75,7 @@ export default class AddPlatformForm extends PureComponent {
         <div
           styleName='dialogFooter'
         >
-          <RaisedButton
+          <Button
             disabled={!!this.props.formErrors}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

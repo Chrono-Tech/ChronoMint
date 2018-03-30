@@ -1,7 +1,6 @@
+import { Button, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { TokenValue } from 'components'
-import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -104,11 +103,10 @@ export default class AddExchangeForm extends PureComponent {
           </div>
         </div>
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             styleName='action'
             label={<Translate value={prefix('create')} />}
             type='submit'
-            primary
           />
         </div>
       </form>
