@@ -1,12 +1,13 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import { addError } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, MenuItem, RaisedButton, SelectField } from 'material-ui'
+import { CircularProgress, MenuItem, SelectField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import styles from '../../components/stylesLoginPage'
 import './AccountSelector.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   accounts: state.get('network').accounts,
@@ -69,18 +70,14 @@ class AccountSelector extends PureComponent {
         </SelectField>
         <div styleName='actions'>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading ? <CircularProgress
                 style={{ verticalAlign: 'middle', marginTop: -2 }}
                 size={24}
                 thickness={1.5}
               /> : <Translate value='AccountSelector.selectAddress' />}
-              primary
-              fullWidth
               onTouchTap={this.handleSelect}
               disabled={!selectedAccount || isLoading}
-              style={styles.primaryButton}
-              labelStyle={styles.primaryButtonLabel}
             />
           </div>
         </div>
