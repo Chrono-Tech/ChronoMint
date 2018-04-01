@@ -23,7 +23,7 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   return {
     formErrors: form.get(FORM_NAME) && form.get(FORM_NAME).get('syncErrors'),
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }
