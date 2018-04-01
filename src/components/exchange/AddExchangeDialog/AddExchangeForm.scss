@@ -156,7 +156,7 @@
 
 .sm-hide {
   @include sm-only {
-    display: none;
+    display: none !important;
   }
 }
 
