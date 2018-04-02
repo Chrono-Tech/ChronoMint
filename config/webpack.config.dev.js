@@ -1,5 +1,6 @@
 let path = require('path')
 let webpack = require('webpack')
+let babel = require('./babel.dev')
 
 let config = require('./webpack.config.base.js')
 
@@ -9,7 +10,7 @@ process.traceDeprecation = true
 
 module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
-    devtool: 'eval',
+    devtool: process.env.SOURCE_MAP || 'source-map',
     entry: [
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
@@ -21,7 +22,7 @@ module.exports = config.buildConfig(
       pathinfo: true,
       filename: 'bundle.js',
     },
-    babel: require('./babel.dev'),
+    babel,
     plugins: [
       new HtmlWebpackPlugin({
         inject: true,
@@ -33,9 +34,9 @@ module.exports = config.buildConfig(
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
-        'process.env.BASE_SCHEMA': `"${process.env.BASE_SCHEMA || 'https'}"`
+        'process.env.BASE_SCHEMA': `"${process.env.BASE_SCHEMA || 'https'}"`,
       }),
       new webpack.HotModuleReplacementPlugin(),
     ],
-  })
+  }),
 )

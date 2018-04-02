@@ -14,8 +14,13 @@ import * as user from 'dao/UserManagerDAO'
 import { ru as components } from 'components/lang'
 import { ru as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
+  copyright: 'Copyright © 2018 LaborX Pty Ltd. Все права защищены.',
+  chronobankSite: 'Chronobank.io',
+  qa: 'Q&A',
+  contactUs: 'Свяжитесь с нами',
   title: 'Рус',
   true: 'да',
   false: 'нет',
@@ -289,6 +294,11 @@ export default {
         title: 'Перевод ETH',
       },
     },
+    /* eslint-disable global-require */
+    General: require('./ru-tx-general'),
+    Bitcoin: require('./ru-tx-bitcoin'),
+    Nem: require('./ru-tx-nem'),
+    /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
       [ erc20.TX_APPROVE ]: {
@@ -481,6 +491,14 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Создать голосование',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Заблокировать ассет',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Разблокировать ассет',
       },
     },
   },

@@ -1,3 +1,12 @@
+import {
+  ASSET_PAUSED,
+  ASSET_UNPAUSED,
+  MANAGER_ADDED,
+  MANAGER_REMOVED,
+  USER_ADDED_TO_BLACKLIST,
+  USER_DELETED_FROM_BLACKLIST,
+} from 'models/notices/AssetsManagerNoticeModel'
+
 export default {
   approval: {
     title: 'Подтверждение',
@@ -42,10 +51,15 @@ export default {
     title: 'Перевод',
     receivedFrom: '%{value} %{symbol} получено с адреса %{address}',
     sentTo: '%{value} %{symbol} отправлено на адрес %{address}',
+    errors: {
+      TRANSFER_CANCELLED: 'Отменено пользователем из диалога подтверждения транзакции',
+      TRANSFER_UNKNOWN: 'Неизвестная ошибка транзакции',
+    },
   },
   profile: {
     copyIcon: 'Ваш адрес был скопирован.',
     pkIcon: 'Ваш приватный ключ был скопирован.',
+    changed: 'Профиль был успешно изменен',
   },
   operations: {
     title: 'Ожидающие Операции',
@@ -71,5 +85,14 @@ export default {
   wallet: {
     title: 'Мульти-кошелек',
     create: '%{address}: создан',
+  },
+  assetsManager: {
+    title: 'Ассет менеджер',
+    [ MANAGER_ADDED ]: 'Менеджер добавлен',
+    [ MANAGER_REMOVED ]: 'Менеджер удален',
+    [ ASSET_PAUSED ]: 'Ассет %{symbol} заблокирован',
+    [ ASSET_UNPAUSED ]: 'Ассет %{symbol} разблокирован',
+    [ USER_ADDED_TO_BLACKLIST ]: 'Пользователь (%{address}) добавлен в черный список',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'Пользователь (%{address}) удален из черного списка',
   },
 }

@@ -4,6 +4,7 @@ import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
+import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
 import * as exchange from 'dao/ExchangeDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
@@ -14,8 +15,13 @@ import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { en as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
+  copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
+  chronobankSite: 'Chronobank.io',
+  qa: 'Q&A',
+  contactUs: 'Contact Us',
   title: 'Eng',
   true: 'yes',
   false: 'no',
@@ -248,28 +254,28 @@ export default {
       },
     },
     UserManager: {
-      [user.TX_ADD_CBE]: {
+      [ user.TX_ADD_CBE ]: {
         title: 'Add CBE',
         name: 'Name',
         address: 'Address',
       },
-      [user.TX_REVOKE_CBE]: {
+      [ user.TX_REVOKE_CBE ]: {
         title: 'Revoke CBE',
         name: 'Name',
         address: 'Address',
       },
-      [user.TX_SET_REQUIRED_SIGNS]: {
+      [ user.TX_SET_REQUIRED_SIGNS ]: {
         title: 'Set Required Signatures',
         _required: 'Quantity',
       },
-      [user.TX_SET_OWN_HASH]: {
+      [ user.TX_SET_OWN_HASH ]: {
         title: 'Update profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company',
         tokens: 'Tokens',
       },
-      [user.TX_SET_MEMBER_HASH]: {
+      [ user.TX_SET_MEMBER_HASH ]: {
         title: 'Update profile',
         address: 'Address',
         name: 'Name',
@@ -282,49 +288,54 @@ export default {
       },
     },
     Ethereum: {
-      [eth.TX_TRANSFER]: {
+      [ eth.TX_TRANSFER ]: {
         title: 'Transfer ETH',
       },
     },
+    /* eslint-disable global-require */
+    General: require('./en-tx-general'),
+    Bitcoin: require('./en-tx-bitcoin'),
+    Nem: require('./en-tx-nem'),
+    /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Approve TIME',
         account: 'Account',
         amount: 'Amount',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     ChronoBankAssetWithFeeProxy: {
-      [erc20.TX_APPROVE]: {
+      [ erc20.TX_APPROVE ]: {
         title: 'Approve LHT',
         account: 'Account',
         amount: 'Amount',
       },
-      [erc20.TX_TRANSFER]: {
+      [ erc20.TX_TRANSFER ]: {
         title: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     PendingManager: {
-      [operations.TX_CONFIRM]: {
+      [ operations.TX_CONFIRM ]: {
         title: 'Confirm Operation',
       },
-      [operations.TX_REVOKE]: {
+      [ operations.TX_REVOKE ]: {
         title: 'Revoke Operation',
       },
     },
     TimeHolder: {
-      [time.TX_DEPOSIT]: {
+      [ time.TX_DEPOSIT ]: {
         title: 'Deposit TIME',
         amount: 'Amount',
       },
-      [time.TX_WITHDRAW_SHARES]: {
+      [ time.TX_WITHDRAW_SHARES ]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
       },
@@ -478,6 +489,14 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Create Poll',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Block asset',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Unblock asset',
       },
     },
   },

@@ -7,6 +7,7 @@ export const TX_DETACH_PLATFORM = 'detachPlatform'
 export const TX_REISSUE_ASSET = 'reissueAsset'
 export const TX_PLATFORM_REQUESTED = 'PlatformRequested'
 export const TX_PLATFORM_ATTACHED = 'PlatformAttached'
+export const TX_PLATFORM_DETACHED = 'PlatformDetached'
 
 export default class PlatformsManagerDAO extends AbstractContractDAO {
 
@@ -15,7 +16,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   }
 
   async reissueAsset (symbol, amount) {
-    const tx = await this._tx(TX_REISSUE_ASSET, [symbol, amount])
+    const tx = await this._tx(TX_REISSUE_ASSET, [ symbol, amount ])
     return tx.tx
   }
 
@@ -24,24 +25,10 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
     return tx.tx
   }
 
-  async getPlatformsMetadataForUser (account) {
-    const platformsList = await this._call('getPlatformsMetadataForUser', [account])
-    let formatPlatformsList = []
-    if (platformsList.length) {
-      for (let platform of platformsList) {
-        formatPlatformsList.push({
-          address: platform,
-          name: null,
-        })
-      }
-    }
-    return formatPlatformsList
-  }
-
   async attachPlatform (address, name) {
     let tx
     try {
-      tx = await this._tx(TX_ATTACH_PLATFORM, [address, name])
+      tx = await this._tx(TX_ATTACH_PLATFORM, [ address ])
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
@@ -52,7 +39,7 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   async detachPlatform (address) {
     let tx
     try {
-      tx = await this._tx(TX_DETACH_PLATFORM, [address])
+      tx = await this._tx(TX_DETACH_PLATFORM, [ address ])
     } catch (e) {
       // eslint-disable-next-line
       console.error(e.message)
@@ -63,5 +50,6 @@ export default class PlatformsManagerDAO extends AbstractContractDAO {
   watchCreatePlatform (callback, account) {
     this._watch(TX_PLATFORM_REQUESTED, (tx) => callback(tx), { by: account })
     this._watch(TX_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
+    this._watch(TX_PLATFORM_DETACHED, (tx) => callback(tx), { by: account })
   }
 }

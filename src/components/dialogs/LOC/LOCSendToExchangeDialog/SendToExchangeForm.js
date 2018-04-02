@@ -41,7 +41,7 @@ class SendToExchangeForm extends PureComponent {
           <RaisedButton
             label={<Translate value='terms.send' />}
             disabled={pristine || invalid}
-            onTouchTap={!pristine && !invalid && handleSubmit}
+            onTouchTap={!pristine && !invalid ? handleSubmit : undefined}
             primary
           />
         </div>

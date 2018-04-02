@@ -40,7 +40,7 @@ export default class WalletsItem extends PureComponent {
       <div styleName='root'>
         <div
           styleName={classnames('iconBox', { selected: isSelected })}
-          onTouchTap={!isSelected && this.handleSelect}
+          onTouchTap={!isSelected ? this.handleSelect : undefined}
           title={title}
         >
           <img styleName='icon' src={WalletMultiSVG} />
@@ -49,7 +49,7 @@ export default class WalletsItem extends PureComponent {
           <div styleName='info'>
             <div
               styleName='title'
-              onTouchTap={!isPending && !isSelected && this.handleSelect}
+              onTouchTap={!isPending && !isSelected ? this.handleSelect : undefined}
               title={title}
             >
               {/*<div styleName='name'>Name</div>*/}
@@ -82,13 +82,13 @@ export default class WalletsItem extends PureComponent {
             <div styleName='detailCol'>
               <div
                 styleName={classnames('detailItem', { link: !isPending })}
-                onTouchTap={!isPending && this.handleEditOwners}
+                onTouchTap={!isPending ? this.handleEditOwners : undefined}
               >
                 <strong>{ownersCount}</strong> <Translate value={`${prefix}.owners`} count={ownersCount} />
               </div>
               <div
                 styleName={classnames('detailItem', { link: !isPending })}
-                onTouchTap={!isPending && this.handleEditSignatures}
+                onTouchTap={!isPending ? this.handleEditSignatures : undefined}
               >
                 <strong>{wallet.requiredSignatures()}</strong> <Translate value={`${prefix}.requiredSignatures`} />
               </div>

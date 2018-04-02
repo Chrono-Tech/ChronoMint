@@ -83,7 +83,7 @@ export default class RewardsContent extends Component {
                     {this.props.isDeposited
                       ? (
                         <div styleName='entry'>
-                          <span styleName='entry1'><Translate value={prefix('rewardsForYourAccountIs')} />:</span><br />
+                          <span styleName='entry1'><Translate value={prefix('accountBonusStatus')} />:</span><br />
                           <span styleName='entry2'><a styleName='highlightGreen'><Translate value={prefix('enabled')} /></a></span>
                         </div>
                       )

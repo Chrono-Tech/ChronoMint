@@ -25,6 +25,7 @@ class TokenService extends EventEmitter {
     this.emit(EVENT_NEW_TOKEN, token, dao)
   }
 
+  // TODO @ipavlenko: TokenService should not handle state, redux should. Move DAOs collection to redux
   registerDAO (token, dao) {
     this._cache [ token.id() ] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
@@ -49,10 +50,6 @@ class TokenService extends EventEmitter {
 
   getBitcoinDAO () {
 
-  }
-
-  tokensFetched () {
-    this.emit(EVENT_TOKENS_FETCHED)
   }
 }
 

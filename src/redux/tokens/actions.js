@@ -1,11 +1,16 @@
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { bccDAO, BitcoinDAO, btcDAO, btgDAO, EVENT_BTC_LIKE_TOKEN_CREATED, EVENT_BTC_LIKE_TOKEN_FAILED, ltcDAO } from 'dao/BitcoinDAO'
+import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import NemDAO, { NEM_XEM_NAME, NEM_XEM_SYMBOL, NEM_DECIMALS, EVENT_NEM_LIKE_TOKEN_CREATED, EVENT_NEM_LIKE_TOKEN_FAILED } from 'dao/NemDAO'
+import NemDAO, { NEM_XEM_NAME, NEM_XEM_SYMBOL, NEM_DECIMALS } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
+import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
+import type TransferExecModel from 'models/TransferExecModel'
+import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/TransferError'
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
+import { notify } from 'redux/notifier/actions'
+import { showConfirmTransferModal } from 'redux/ui/actions'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -15,15 +20,42 @@ export const TOKENS_FETCHED = 'tokens/fetched'
 export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
-// add new tokens here
-const MANDATORY_TOKENS_COUNT = ['TIME', 'BTC', 'BCC', 'ETH', 'LTC', 'BTG', 'XEM', 'XMIN']
-
-// TODO @dkchv: remove after subscriptions changes in exchange
-export const checkFetched = () => (dispatch, getState) => {
-  const tokens = getState().get(DUCK_TOKENS)
-  if (tokens.isFetched()) {
-    tokenService.tokensFetched()
+// It is not a redux action
+const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  try {
+    await dispatch(showConfirmTransferModal(dao, tx))
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('Transfer error', e)
+    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
   }
+}
+
+// It is not a redux action
+const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  try {
+    // TODO @ipavlenko: Pass arguments
+    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier())
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('Transfer error', e)
+    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+  }
+}
+
+// It is not a redux action
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+  const e = new TransferError('Rejected', TRANSFER_CANCELLED)
+  dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+}
+
+export const alternateTxHandlingFlow = (dao) => (dispatch) => {
+  dao
+    .on('submit', submitTxHandler(dao, dispatch))
+    .on('accept', acceptTxHandler(dao, dispatch))
+    .on('reject', rejectTxHandler(dao, dispatch))
 }
 
 export const initTokens = () => async (dispatch, getState) => {
@@ -32,7 +64,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   dispatch({ type: TOKENS_INIT, isInited: true })
 
-  dispatch({ type: TOKENS_FETCHING, count: MANDATORY_TOKENS_COUNT.length })
+  dispatch({ type: TOKENS_FETCHING, count: 0 })
 
   // eth
   const eth: TokenModel = await ethereumDAO.getToken()
@@ -44,54 +76,74 @@ export const initTokens = () => async (dispatch, getState) => {
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, (count) => {
-      // TIME is already counted in mandatory list, so decrement
-      // also this hack is needed to prevent isFetched=true before erc20 tokens are fetched
-      const currentCount = getState().get(DUCK_TOKENS).leftToFetch() - 1
+      const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count })
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
       tokenService.createDAO(token)
-      dispatch(checkFetched())
     })
     .fetchTokens()
 
-  // btc-likes
+  dispatch(initBtcLikeTokens())
+  dispatch(initNemTokens())
+}
+
+export const initBtcLikeTokens = () => async (dispatch, getState) => {
   const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
-  btcLikeTokens.forEach((btcLikeDAO: BitcoinDAO) => {
-    btcLikeDAO
-      .on(EVENT_BTC_LIKE_TOKEN_CREATED, (token, dao) => {
-        dispatch({ type: TOKENS_FETCHED, token })
-        tokenService.registerDAO(token, dao)
-        dispatch(checkFetched())
-      })
-      .on(EVENT_BTC_LIKE_TOKEN_FAILED, () => {
-        dispatch({ type: TOKENS_FAILED })
-        dispatch(checkFetched())
-      })
-      .fetchToken()
-  })
+  const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+  dispatch({ type: TOKENS_FETCHING, count: currentCount + btcLikeTokens.length })
 
-  // nem tokens
-  const mosaicsDAOs = nemProvider.getMosaics().map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.decimals, m.definition))
-  const nemDAOs =  [
-    new NemDAO(NEM_XEM_NAME, NEM_XEM_SYMBOL, nemProvider, NEM_DECIMALS),
-    ...mosaicsDAOs,
-  ]
+  return Promise.all(
+    btcLikeTokens
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch({ type: TOKENS_FETCHED, token })
+          dispatch(alternateTxHandlingFlow(dao))
+        } catch (e) {
+          dispatch({ type: TOKENS_FAILED })
+        }
+      })
+  )
+}
 
-  nemDAOs.forEach((nemDAO: NemDAO) => {
-    nemDAO
-      .on(EVENT_NEM_LIKE_TOKEN_FAILED, () => {
-        dispatch({ type: TOKENS_FAILED })
-        dispatch(checkFetched())
+export const initNemTokens = () => async (dispatch, getState) => {
+  try {
+    const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+    dispatch({ type: TOKENS_FETCHING, count: currentCount + 1 })
+    const dao = new NemDAO(NEM_XEM_NAME, NEM_XEM_SYMBOL, nemProvider, NEM_DECIMALS)
+    const nem = await dao.fetchToken()
+    tokenService.registerDAO(nem, dao)
+    dispatch({ type: TOKENS_FETCHED, token: nem })
+    dispatch(alternateTxHandlingFlow(dao))
+    dispatch(initNemMosaicTokens(nem))
+  } catch (e) {
+    dispatch({ type: TOKENS_FAILED })
+  }
+}
+
+export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getState) => {
+
+  const mosaics = nemProvider.getMosaics()
+  const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+  dispatch({ type: TOKENS_FETCHING, count: currentCount + mosaics.length })
+  // do not wait until initialized, it is ok to lazy load all the tokens
+  return Promise.all(
+    mosaics
+      .map((m) => new NemDAO(m.name, m.symbol, nemProvider, m.decimals, m.definition, nem))
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch({ type: TOKENS_FETCHED, token })
+          dispatch(alternateTxHandlingFlow(dao))
+        } catch (e) {
+          dispatch({ type: TOKENS_FAILED })
+        }
       })
-      .on(EVENT_NEM_LIKE_TOKEN_CREATED, (token: TokenModel, dao) => {
-        dispatch({ type: TOKENS_FETCHED, token })
-        tokenService.registerDAO(token, dao)
-        dispatch(checkFetched())
-      })
-      .fetchToken()
-  })
+  )
 }
 
 export const subscribeOnTokens = (callback) => (dispatch, getState) => {

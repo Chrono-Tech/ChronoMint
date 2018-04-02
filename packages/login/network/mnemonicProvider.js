@@ -1,12 +1,17 @@
 import bip39 from 'bip39'
 import bitcoin from 'bitcoinjs-lib'
-import nemSdk from 'nem-sdk'
 import hdKey from 'ethereumjs-wallet/hdkey'
-import { byEthereumNetwork } from './NetworkProvider'
-import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
-import EthereumEngine from './EthereumEngine'
+import nemSdk from 'nem-sdk'
 
+import {
+  createBCCEngine,
+  createBTCEngine,
+  createBTGEngine,
+  createLTCEngine,
+} from './BitcoinUtils'
+import { byEthereumNetwork } from './NetworkProvider'
 import { createNEMEngine } from './NemUtils'
+import EthereumEngine from './EthereumEngine'
 import NemWallet from './NemWallet'
 
 // coin_types 8, 9, 16, 17 used, but they are not standardized
@@ -22,20 +27,42 @@ class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(mnemonic)
-    const btc = network && network.bitcoin && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoin])
-    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(mnemonic, bitcoin.networks[network.bitcoinCash])
-    const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(mnemonic, bitcoin.networks[network.bitcoinGold])
-    const ltc = network && network.litecoin && this.createLitecoinWallet(mnemonic, bitcoin.networks[network.litecoin])
-    const nem = network && network.nem && NemWallet.fromMnemonic(mnemonic, nemSdk.model.network.data[network.nem])
+
+    const bitcoinLikeEngines = Object.create(null) // Object.create(null) creating really empty object with no __proto__
+    bitcoinLikeEngines.bcc = false // Bitcoin Cache
+    bitcoinLikeEngines.btc = false // Bitcoin
+    bitcoinLikeEngines.btg = false // Bitcoin Gold
+    bitcoinLikeEngines.ltc = false // Litecoin
+    bitcoinLikeEngines.nem = false // Nem
+
+    if (network) {
+
+      // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope
+      const prepareEngine = (net, creteWallet, createEngine) => {
+        if (network) {
+          const wallet = creteWallet(mnemonic, net)
+          return createEngine(wallet, net)
+        }
+      }
+
+      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
+      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
+      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
+      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
+      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
+
+      bitcoinLikeEngines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
+      bitcoinLikeEngines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
+      bitcoinLikeEngines.btg = prepareEngine(btgNetwork, this.createBitcoinGoldWallet, createBTGEngine)
+      bitcoinLikeEngines.ltc = prepareEngine(ltcNetwork, this.createLitecoinWallet, createLTCEngine)
+      bitcoinLikeEngines.nem = prepareEngine(nemNetwork, NemWallet.fromMnemonic, createNEMEngine)
+
+    }
 
     return {
       networkCode,
       ethereum: new EthereumEngine(ethereumWallet, network, url),
-      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
-      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
-      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
-      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
-      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
+      ...bitcoinLikeEngines,
     }
   }
 

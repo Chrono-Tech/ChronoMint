@@ -8,6 +8,7 @@ export default {
   disabledColor1: '#ccc',
   disabledColor2: '#66668f',
   warningColor: '#ff1744',
+  blockColor: '#ff1645',
   selected: '#ff4080',
   colorPrimary0Alter1: 'rgba(0, 0, 96, 0.6)',
   colorPrimary0Alter2: 'rgba(0, 0, 96, 0.4)',

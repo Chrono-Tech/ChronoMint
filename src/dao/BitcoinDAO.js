@@ -13,16 +13,15 @@ import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
+import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
-export const EVENT_BTC_LIKE_TOKEN_CREATED = 'BtcLikeTokenCreate'
-export const EVENT_BTC_LIKE_TOKEN_FAILED = 'BtcLikeTokenFailed'
 
-export class BitcoinDAO extends EventEmitter {
+export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
     super()
     this._name = name
@@ -70,7 +69,41 @@ export class BitcoinDAO extends EventEmitter {
     return balances.balance
   }
 
-  async transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  accept (transfer: TransferExecModel) {
+    setImmediate(() => {
+      this.emit('accept', transfer)
+    })
+  }
+
+  reject (transfer: TransferExecModel) {
+    setImmediate(() => {
+      this.emit('reject', transfer)
+    })
+  }
+
+  // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+    this.submit(from, to, amount, token, feeMultiplier)
+  }
+
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+    setImmediate(async () => {
+      const fee = await this._bitcoinProvider.estimateFee(from, to, amount, token.feeRate()) // use feeMultiplier = 1 to estimate default fee
+      this.emit('submit', new TransferExecModel({
+        title: `tx.Bitcoin.${this._name}.transfer.title`,
+        from,
+        to,
+        amount: new Amount(amount, token.symbol()),
+        amountToken: token,
+        fee: new Amount(fee, token.symbol()),
+        feeToken: token,
+        feeMultiplier,
+      }))
+    })
+  }
+
+  // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
+  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     try {
       return await this._bitcoinProvider.transfer(from, to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
@@ -150,28 +183,22 @@ export class BitcoinDAO extends EventEmitter {
 
   async fetchToken () {
     if (!this.isInitialized()) {
-      this.emit(EVENT_BTC_LIKE_TOKEN_FAILED)
+      const message = `${this._symbol} support is not available`
       // eslint-disable-next-line
-      console.warn(`${this._symbol} not initialized`)
-      return
+      console.warn(message)
+      throw new Error(message)
     }
-    try {
-      const feeRate = await this.getFeeRate()
+    const feeRate = await this.getFeeRate()
 
-      this.emit(EVENT_BTC_LIKE_TOKEN_CREATED, new TokenModel({
-        name: this._name,
-        decimals: this._decimals,
-        symbol: this._symbol,
-        isOptional: false,
-        isFetched: true,
-        blockchain: this._name,
-        feeRate,
-      }), this)
-    } catch (e) {
-      this.emit(EVENT_BTC_LIKE_TOKEN_FAILED)
-      // eslint-disable-next-line
-      console.warn(`${this._symbol} error`, e.message)
-    }
+    return new TokenModel({
+      name: this._name,
+      decimals: this._decimals,
+      symbol: this._symbol,
+      isOptional: false,
+      isFetched: true,
+      blockchain: this._name,
+      feeRate,
+    })
   }
 }
 

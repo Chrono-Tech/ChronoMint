@@ -18,8 +18,6 @@ class ExchangeProvider {
   }
 
   async getAssetSymbols () {
-    // eslint-disable-next-line
-    console.log('getAssetSymbols', `${this.url()}events/exchangecreated/`)
     const response = await axios.get(`${this.url()}events/exchangecreated/`) //?distinct=symbol
     return response ? response.data : []
   }

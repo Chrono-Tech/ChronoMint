@@ -13,6 +13,7 @@ export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM'
 export const PROFILE_PANEL_TOKENS = [
   { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
   { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
+  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
 ]
@@ -32,8 +33,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
-
-      this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
+      const model = new TokenModel({
         address,
         name: this._c.bytesToString(names[ i ]),
         symbol,
@@ -45,7 +45,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
-      }))
+      })
+
+      this.emit(EVENT_NEW_ERC20_TOKEN, model)
     })
   }
 
@@ -107,18 +109,21 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
   /** @private */
   _watchCallback = (callback, isRemoved = false, isAdded = true) => async (result, block, time) => {
+    const symbol = this._c.bytesToString(result.args.symbol).toUpperCase()
     callback(new TokenNoticeModel(
       new TokenModel({
         address: result.args.token,
         name: this._c.bytesToString(result.args.name),
-        symbol: this._c.bytesToString(result.args.symbol).toUpperCase(),
+        symbol,
         url: this._c.bytesToString(result.args.url),
         decimals: result.args.decimals.toNumber(),
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
+        isOptional: !MANDATORY_TOKENS.includes(symbol),
+        isFetched: true,
       }),
-      time, isRemoved, isAdded, result.args.oldToken || null,
+      time, isRemoved, isAdded, result.transactionHash || null,
     ))
   }
 

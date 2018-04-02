@@ -6,7 +6,7 @@ export default {
     myTokens: 'my tokens',
     addToken: 'add token',
     tokensOnCrowdsale: 'Tokens on crowdsale',
-    addNewPlatforms: 'add new platforms',
+    addNewPlatform: 'add new platform',
   },
   ru: {
     title: 'Менеджер активов',
@@ -15,6 +15,6 @@ export default {
     myTokens: 'мои токены',
     addToken: 'добавить токен',
     tokensOnCrowdsale: 'Токены на crowdsale',
-    addNewPlatforms: 'добавить платформу',
+    addNewPlatform: 'добавить платформу',
   },
 }

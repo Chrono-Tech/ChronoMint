@@ -1,3 +1,12 @@
+import {
+  ASSET_PAUSED,
+  ASSET_UNPAUSED,
+  MANAGER_ADDED,
+  MANAGER_REMOVED,
+  USER_ADDED_TO_BLACKLIST,
+  USER_DELETED_FROM_BLACKLIST,
+} from 'models/notices/AssetsManagerNoticeModel'
+
 export default {
   approval: {
     title: 'Approval',
@@ -43,10 +52,15 @@ export default {
     title: 'Transfer',
     receivedFrom: '%{value} %{symbol} received from %{address}',
     sentTo: '%{value} %{symbol} sent to %{address}',
+    errors: {
+      TRANSFER_CANCELLED: 'Cancelled by user from tx confirmation modal',
+      TRANSFER_UNKNOWN: 'Unknown transaction error',
+    },
   },
   profile: {
     copyIcon: 'Your address has been copied to the clipboard.',
     pkIcon: 'Your private key has been copied to the clipboard.',
+    changed: 'Profile has been successfully changed.',
   },
   operations: {
     title: 'Pending Operations',
@@ -77,5 +91,14 @@ export default {
   wallet: {
     title: 'Wallet',
     create: '%{name}: Created',
+  },
+  assetsManager: {
+    title: 'Assets manager',
+    [ MANAGER_ADDED ]: 'Manager added',
+    [ MANAGER_REMOVED ]: 'Manager removed',
+    [ ASSET_PAUSED ]: 'Asset %{symbol} was blocked',
+    [ ASSET_UNPAUSED ]: 'Asset %{symbol} was unblocked',
+    [ USER_ADDED_TO_BLACKLIST ]: 'User (%{address}) was added to blacklist',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'User (%{address}) was deleted from blacklist',
   },
 }
