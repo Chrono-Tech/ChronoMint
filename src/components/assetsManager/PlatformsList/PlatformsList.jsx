@@ -4,13 +4,15 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_ASSETS_MANAGER, SELECT_PLATFORM, selectToken } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
 import WithLoader from 'components/common/Preloader/WithLoader'
+import blockedSVG from 'assets/img/blocked-white.svg'
+import tokenIconStubSVG from 'assets/img/asset_stub.svg'
 
 import './PlatformsList.scss'
 
@@ -18,7 +20,28 @@ function prefix (token) {
   return `Assets.PlatformsList.${token}`
 }
 
-class PlatformsList extends PureComponent {
+function mapStateToProps (state) {
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
+  const tokens = state.get(DUCK_TOKENS)
+  return {
+    platformsList: assetsManager.platformsList(),
+    tokens,
+    assets: assetsManager.assets(),
+    selectedToken: assetsManager.selectedToken(),
+    selectedPlatform: assetsManager.selectedPlatform(),
+    assetsManagerCountsLoading: assetsManager.isFetching() && !assetsManager.isFetched(),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
+    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class PlatformsList extends PureComponent {
   static propTypes = {
     handleSelectToken: PropTypes.func.isRequired,
     selectedToken: PropTypes.string,
@@ -68,7 +91,8 @@ class PlatformsList extends PureComponent {
                 onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
               >
                 <div styleName='tokenIcon'>
-                  <IPFSImage styleName='content' multihash={token.icon()} />
+                  <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
+                  {token.isPaused().value() && <span styleName='blockedIcon'><img src={blockedSVG} alt='' /></span>}
                 </div>
                 <div styleName='tokenTitle'>
                   <div styleName='tokenSubTitle'>{token.symbol()}</div>
@@ -101,12 +125,14 @@ class PlatformsList extends PureComponent {
               <div styleName={classnames('platformHeader', { 'selected': selectedPlatform === address })}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => this.handleSelectPlatform(address)}
+                  onTouchTap={() => {
+                    this.handleSelectPlatform(address)
+                  }}
                 >
                   <div styleName='platformIcon' />
                   <div styleName='subTitle'><Translate value={prefix('platform')} /></div>
                   {name
-                    ? <div styleName='platformTitle'>{name}&nbsp;(<small>{address}</small>)</div>
+                    ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
                 </div>
@@ -139,27 +165,3 @@ class PlatformsList extends PureComponent {
     )
   }
 }
-
-function mapStateToProps (state) {
-  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
-  const tokens = state.get(DUCK_TOKENS)
-  return {
-    platformsList: assetsManager.platformsList,
-    tokens,
-    assets: assetsManager.assets,
-    selectedToken: assetsManager.selectedToken,
-    selectedPlatform: assetsManager.selectedPlatform,
-    assetsManagerCountsLoading: assetsManager.assetsManagerCountsLoading,
-  }
-}
-
-function mapDispatchToProps (dispatch) {
-  return {
-    handleSelectPlatform: (platformAddress) => {
-      dispatch({ type: SELECT_PLATFORM, payload: { platformAddress } })
-    },
-    handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PlatformsList)

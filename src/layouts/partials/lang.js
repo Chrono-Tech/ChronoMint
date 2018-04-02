@@ -10,6 +10,7 @@ import MenuTokenMoreInfo from 'layouts/partials/DrawerMainMenu/MenuTokenMoreInfo
 import MenuTokensList from 'layouts/partials/DrawerMainMenu/MenuTokensList/lang'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/lang'
 import NotificationContent from 'layouts/partials/NotificationContent/lang'
+import * as ProfileContent from 'layouts/partials/ProfileContent/lang'
 
 export default {
   en: {
@@ -25,6 +26,7 @@ export default {
     MenuTokenMoreInfo: MenuTokenMoreInfo.en,
     MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.en,
     NotificationContent: NotificationContent.en,
+    ProfileContent: ProfileContent.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,
@@ -39,5 +41,6 @@ export default {
     MenuTokenMoreInfo: MenuTokenMoreInfo.ru,
     MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.ru,
     NotificationContent: NotificationContent.ru,
+    ProfileContent: ProfileContent.ru,
   },
 }

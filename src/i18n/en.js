@@ -15,6 +15,7 @@ import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { en as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -488,6 +489,14 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Create Poll',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Block asset',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Unblock asset',
       },
     },
   },

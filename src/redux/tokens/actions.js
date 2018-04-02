@@ -76,8 +76,6 @@ export const initTokens = () => async (dispatch, getState) => {
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, (count) => {
-      // eslint-disable-next-line
-      console.log('EVENT_ERC20_TOKENS_COUNT', count)
       const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count })
     })
