@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center;
   min-height: 600px;
-  > * {
+  >* {
     flex: 0 0 auto;
   }
 }
@@ -22,23 +22,10 @@
 .content {
   position: relative;
   display: block;
-  width: 100%;
-  @include md-only {
-    width: 100vw;
-  }
-
-  :global {
-    .AssetsContent__grid {
-      @include grid(6, 65px, 65px);
-      @include xs-only {
-        @include grid(6, 40px, 40px);
-      }
-    }
-  }
 }
 
 .inner {
-  margin: 30px 50px;
+  margin: 24px 16px;
   @include xs-only {
     margin: 30px 20px;
   }

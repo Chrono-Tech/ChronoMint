@@ -11,6 +11,8 @@ $color-secondary: #2962ff;
 
 $color-white: #FFFFFF;
 $color-blue: #2962FF;
+$color-blue-2: #758EFF;
+$color-blue-2-hover: #6980E5;
 $color-blue405: #4058b8;
 $color-green: #{material-color('green', 'a400')};
 $color-grey: #{material-color('grey', '600')};
@@ -18,6 +20,8 @@ $color-grey300: #{material-color('grey', '300')};
 $color-grey400: #{material-color('grey', '400')};
 $color-grey500: #{material-color('grey', '500')};
 $color-red: #FF1744;
+$color-red-1: #FF1645;
+$color-red-1-hover: #E51441;
 $color-black: #222;
 
 $color-error: $color-red;
@@ -46,11 +50,15 @@ $color-chart-bg: rgba(118, 143, 255, 0.5);
 $color-hr: #CCCCDF;
 $color-hr-1: #DDDDDF;
 
-$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
-$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24), 0 0 8px 0 rgba(0, 0, 0, .12);
-$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24),
+0 0 4px 0 rgba(0, 0, 0, .12);
+$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24),
+0 0 8px 0 rgba(0, 0, 0, .12);
+$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24),
+0 0 1px 0 rgba(0, 0, 0, 0.12);
 
-$color-modal-backdrop-bg: rgba(0,0,0,0.2);
+$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2);
+$color-modal-backdrop-bg-1: rgba(0, 0, 0, 0.03);
 
 $media-size-xs: 480px;
 $media-size-sm: 768px;
@@ -68,8 +76,22 @@ $highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
-$font-family-main: 'Roboto', sans-serif;
+$font-family-main: 'Roboto',
+sans-serif;
 $font-size-base: 16px;
 $font-weight-bold: 600;
 
 $border-radius: 2px;
+
+// Chrono-wallet vars
+$sideMenu-background: #614DBA;
+$border-color: #786AB7;
+$additionalData-color: #BCC6FF;
+$synced-color: #6EE289;
+$offline-color: #FD6041;
+$color-purpule: #424066;
+$color-white-1: #F7F7F7;
+$color-grey-1: #E5E5E5;
+$color-grey-2: #7F7F7F;
+$color-hover: #FFB54E;
+$cubic-animation: cubic-bezier(0.23, 1, 0.32, 1)

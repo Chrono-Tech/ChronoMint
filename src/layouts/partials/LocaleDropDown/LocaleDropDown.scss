@@ -1,9 +1,41 @@
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
-.LocaleDropDown{
+.LocaleDropDown {
   @include xs-only {
     width: 100%;
     top: 10px;
   }
+}
+
+.root {
+  border-radius: 50%;
+  background: transparent;
+  min-width: 50px;
+  min-height: 50px;
+  border: 1px solid $color-white;
+  margin: 5px;
+
+  &:hover {
+    background-color: $color-hover;
+    border-color: $color-hover;
+  }
+  .icon {
+    color: $color-white;
+  }
+  :global {
+    .localeDropDawnIcon {
+      color: $color-white !important;
+    }
+  }
+}
+
+.langButton {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  display: block;
+  line-height: 33px;
+  font-size: 30px;
+  color: $color-white;
 }

@@ -18,13 +18,13 @@ function mapStateToProps (state) {
 @connect(mapStateToProps)
 class SideStack extends PureComponent {
   static propTypes = {
-    stack: PropTypes.arrayOf(PropTypes.object),
+    stack: PropTypes.objectOf(PropTypes.object),
   }
 
   render () {
     return (
       <div styleName='root'>
-        { this.props.stack.map((panel) => (
+        {Object.values(this.props.stack).map((panel) => (
           <SidePanel key={panel.panelKey} {...panel} />
         ))}
       </div>

@@ -1,0 +1,280 @@
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  z-index: 200;
+  position: relative;
+}
+
+.content {
+  background-color: $color-white;
+  box-shadow: $box-shadow-0;
+  transition: width 0.2s ease-in-out;
+  z-index: 300;
+  overflow: hidden;
+  width: 300px;
+  background: $sideMenu-background;
+  padding: 30px 0 30px 30px;
+  min-height: 1710px;
+  position: relative;
+}
+
+.chronWalletLogo {
+  display: flex;
+  img {
+    width: 170px;
+  }
+}
+
+.subtitle {
+  color: $color-white;
+}
+
+.menu {
+  position: absolute;
+  transition: top .4s ease 0s;
+}
+
+.menu-cbe {
+}
+
+.menu-user {
+  display: block;
+}
+
+.backdrop {
+  @include position(fixed);
+  display: none;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 200;
+}
+
+.item {
+  border-style: solid;
+  border-color: $border-color;
+  background-color: transparent;
+  border-width: 1px 0 0;
+  display: flex;
+  position: relative;
+  &:last-child {
+    border-bottom-width: 1px;
+  }
+  &:hover {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 100%)
+  }
+  .icon {
+    flex: 1;
+    color: $color-white;
+  }
+  .title {
+    flex: 5;
+    color: $color-white;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .count {
+    flex: 1;
+    opacity: 0.25;
+    color: $color-white;
+    text-align: center;
+  }
+}
+
+.account-info {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  min-height: 50px;
+  padding: 20px 0;
+}
+
+.account-info-avatar {
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.account-info-name {
+  flex: 5;
+}
+
+.exit {
+  opacity: 0.15;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover {
+    opacity: 1;
+  }
+  img {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+.account-name-text {
+  color: $color-white;
+  line-height: 22px;
+  font-size: 18px;
+  text-align: left;
+  font-weight: 700;
+}
+
+.account-info-icons {
+  display: flex;
+  flex-direction: row;
+  flex: 3;
+  justify-content: flex-start;
+}
+
+.account-info-setting {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.account-info-setting:hover {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.avatar-icon {
+  position: relative;
+  display: flex;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 16px 0 0;
+}
+
+.emptyAvatar {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.avatar-icon-content {
+  width: 50px;
+  height: 50px;
+  background: transparent none no-repeat center center;
+  background-size: cover;
+}
+
+.network-name-text {
+  color: $additionalData-color;
+}
+
+.wallets {
+  justify-content: space-between;
+}
+
+.menuItem {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-decoration: none;
+  display: flex;
+  flex: 1
+}
+
+.socialItems {
+  width: 150px;
+  margin-top: 40px;
+  margin-left: -16px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.socialItem {
+  opacity: 0.6;
+  margin: 0 0 16px 16px;
+  flex: 0 0 auto;
+  position: relative;
+  width: 32px;
+  height: 32px;
+
+  i {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.facebook {
+  background: url('assets/img/icons/facebook.svg')
+}
+
+.twitter {
+  background: url('assets/img/icons/twitter.svg')
+}
+
+.instagram {
+  background: url('assets/img/icons/instagramm.svg')
+}
+
+.reddit-alien {
+  background: url('assets/img/icons/reddit.svg')
+}
+
+.telegram {
+  background: url('assets/img/icons/telegramm.svg')
+}
+
+.github {
+  background: url('assets/img/icons/github.svg')
+}
+
+.contacts {
+  a {
+    color: $color-white;
+    text-decoration: none;
+    display: block;
+    text-decoration: none;
+    margin-top: 15px;
+    opacity: .5;
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: bold;
+  }
+}
+
+.externalMenuItems {
+  display: flex;
+  flex-wrap: wrap;
+  a {
+    color: $color-white;
+    text-decoration: none;
+    display: block;
+    text-decoration: none;
+    margin-top: 15px;
+    opacity: .5;
+    font-size: 14px;
+    line-height: 17px;
+    font-weight: bold;
+    min-width: 50px;
+    white-space: nowrap;
+    margin-right: 20px;
+  }
+}
+
+.itemMenuMore {
+  height: 100%;
+  position: absolute;
+  color: $color-white;
+  right: 0;
+  opacity: .15;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 7px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    opacity: 1;
+  }
+}

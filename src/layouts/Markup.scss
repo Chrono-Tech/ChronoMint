@@ -2,56 +2,69 @@
 @import "~styles/partials/mixins";
 
 .drawer {
-  // display: none;
   flex: 0 0 auto;
   flex-direction: column;
   background-color: $color-white;
   height: auto;
-  overflow: visible;
   box-shadow: $box-shadow-0;
   position: relative;
-  width: 0px;
+  width: 0;
 }
 
 .middle {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  flex: 1 1 100%;
   overflow: hidden;
+  flex: 1;
+  margin-left: 300px;
+  transition: margin-left 400ms $cubic-animation;
+  @include sm-only {
+    margin-left: 0;
+  }
 }
 
 .middleTop {
-  position: relative;
   flex: 0 0 auto;
-  background-color: $color-white;
-  box-shadow: $box-shadow-0;
-  z-index: 100;
+  background-color: transparent;
+  z-index: 210;
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  display: flex;
+  align-items: center;
+  @include sm-only {
+    background: $sideMenu-background;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    padding: 5px;
+    right: 0;
+  }
 }
 
 .middleSnackbar {
-  position: relative;
-  //flex: 0 0 auto;
-  z-index: 90;
-  height: 0px;
-  overflow: visible;
+  position: relative; //flex: 0 0 auto;
+  z-index: 1900;
+  height: 0;
 }
 
 .middleSnackbarPanel {
   @include position(absolute, 0, 0, auto, 0);
   height: 20px;
-  transition: transform 0.3s ease-in-out;
+  transition: transform 400ms $cubic-animation;
   &:empty {
     transform: translateY(-100%);
   }
 }
 
 .middleContent {
-  position: relative;
-  flex: 1 1 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
+  @include sm-only {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
 }
 
 .middleBottom {
@@ -60,18 +73,84 @@
 }
 
 .root {
-  @include position(absolute);
   display: flex;
   flex-direction: row;
-
+  position: relative;
   :global {
     .drawer-cbe {
       display: block;
       width: 60px;
+    }
+  }
+}
 
-      @include md-only {
-        width: 0;
+.mainMenuToggle {
+  height: 50px;
+  width: 50px;
+  align-items: center;
+  justify-content: center;
+  display: none;
+  @include sm-only {
+    display: flex;
+  }
+  i {
+    color: $color-white;
+  }
+}
+
+.pageTitle {
+  display: none;
+  flex-grow: 1;
+  @include sm-only {
+    display: block;
+  }
+  color: $color-white;
+  font-weight: bold;
+
+}
+
+.mainMenu {
+  position: absolute;
+  z-index: 1600;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  transition: left 400ms $cubic-animation;
+  .overlay {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    left: -100%;
+    opacity: 0;
+    transition: left 0ms $cubic-animation 400ms, opacity 400ms $cubic-animation 0ms;
+    background: rgba(0, 0, 0, 0.7);
+  }
+  @include sm-only {
+    left: -300px;
+    &.open {
+      left: 0;
+      .overlay {
+        left: 0;
+        opacity: 1;
+        transition: left 0ms $cubic-animation 0ms, opacity 400ms $cubic-animation 0ms;
       }
+    }
+  }
+}
+
+:global {
+  .containerTokenSideMenu {
+    margin-left: 300px;
+    transition: margin-left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    @include sm-only {
+      margin-left: 0;
+    }
+  }
+  .overlayTokenSideMenu {
+    background-color: rgba(0, 0, 0, 0.7) !important;
+    @include sm-only {
+      background-color: transparent !important;
     }
   }
 }

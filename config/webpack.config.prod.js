@@ -11,7 +11,7 @@ const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plug
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = config.buildConfig(
-  ({ srcPath, modulesPath, buildPath, indexPresentationHtmlPath, faviconPath }) => ({
+  ({ srcPath, modulesPath, buildPath, indexHtmlPath, indexPresentationHtmlPath, faviconPath }) => ({
     entry: path.join(srcPath, 'index'),
     output: {
       path: buildPath,
@@ -22,7 +22,9 @@ module.exports = config.buildConfig(
     plugins: [
       new HtmlWebpackPlugin({
         inject: 'head',
-        template: indexPresentationHtmlPath,
+        template: process.env.NODE_ENV === 'standalone'
+          ? indexHtmlPath
+          : indexPresentationHtmlPath,
         favicon: faviconPath,
         hash: true,
         minify: {
@@ -62,22 +64,26 @@ module.exports = config.buildConfig(
         },
       }),
       new ExtractTextPlugin('[name].[contenthash].css'),
-      new CopyWebpackPlugin([
-        {
-          context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
-          from: '**',
-          to: path.join(buildPath, 'chronomint-presentation'),
-        },
-      ]),
-      new HtmlWebpackIncludeAssetsPlugin({
-        assets: [
-          'chronomint-presentation/css/index.css',
-          'chronomint-presentation/js/vendor.js',
-          'chronomint-presentation/js/index.js',
-        ],
-        hash: true,
-        append: false,
-      }),
-    ],
+      process.env.NODE_ENV === 'standalone'
+        ? null
+        : new CopyWebpackPlugin([
+          {
+            context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
+            from: '**',
+            to: path.join(buildPath, 'chronomint-presentation'),
+          },
+        ]),
+      process.env.NODE_ENV === 'standalone'
+        ? null
+        : new HtmlWebpackIncludeAssetsPlugin({
+          assets: [
+            'chronomint-presentation/css/index.css',
+            'chronomint-presentation/js/vendor.js',
+            'chronomint-presentation/js/index.js',
+          ],
+          hash: true,
+          append: false,
+        }),
+    ].filter((p) => p !== null),
   })
 )

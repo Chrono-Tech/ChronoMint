@@ -5,9 +5,11 @@ $copyRightPadding: 200px;
 
 .root {
   background-image: linear-gradient(224deg, #644ebf, #262448);
-  min-height: 100%;
   position: relative;
   padding-bottom: 130px; // for footer
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 
   @include md-only {
     padding-bottom: 230px;
@@ -21,13 +23,16 @@ $copyRightPadding: 200px;
 }
 
 .content {
-  min-width: 320px;
-  max-width: 470px;
+  flex: 1;
+  width: 470px;
   margin: 0 auto;
   padding-top: 40px;
 
   @include md-only {
     padding-top: 80px;
+  }
+  @include xs-only {
+    width: 100vw;
   }
 }
 

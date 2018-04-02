@@ -5,9 +5,16 @@ import { abstractNoticeModel } from './AbstractNoticeModel'
 export const MANAGER_ADDED = 'managerAdded'
 export const MANAGER_REMOVED = 'managerRemoved'
 
+export const ASSET_PAUSED = 'assetPaused'
+export const ASSET_UNPAUSED = 'assetUnpaused'
+
+export const USER_ADDED_TO_BLACKLIST = 'userAddedToBlacklist'
+export const USER_DELETED_FROM_BLACKLIST = 'userDeletedFromBlacklist'
+
 export default class AssetsManagerNoticeModel extends abstractNoticeModel({
   status: null,
   transactionHash: null,
+  replacements: {},
 }) {
   icon () {
     return Icons.get('notices.transfer.icon')
@@ -30,6 +37,6 @@ export default class AssetsManagerNoticeModel extends abstractNoticeModel({
 
   message () {
     const message = `notices.assetsManager.${this.get('status')}`
-    return I18n.t(message)
+    return I18n.t(message, this.get('replacements'))
   }
 }

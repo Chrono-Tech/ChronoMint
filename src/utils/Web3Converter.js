@@ -71,6 +71,11 @@ class Web3Converter {
     // noinspection JSUnresolvedFunction
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
   }
+
+  stringToBytesWithZeros (string) {
+    const zeros = '000000000000000000000000000000000000000000000000000000000000000000'
+    return `${this.stringToBytes(string)}${zeros}`.substr(0, 66)
+  }
 }
 
 export default new Web3Converter()

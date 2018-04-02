@@ -162,6 +162,7 @@
 }
 
 .managersRow {
+  flex-grow: 1;
   height: 150px;
   padding: 16px;
   @include xs-only {
@@ -169,7 +170,8 @@
   }
   .title {
     font-size: 16px;
-    color: #00005f;
+    color: $color-primary-0;
+    padding-bottom: 20px;
   }
   .avatarsRow {
     padding-left: 12px;
@@ -197,14 +199,21 @@
 }
 
 .actions {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   margin-bottom: 16px;
   @include xs-only {
     text-align: center;
     left: 5px;
   }
+
   .action {
     margin: 0 16px;
+    :global {
+      .Preloader__root {
+        height: 36px;
+      }
+    }
     @include xs-only {
       margin: 10px 0 0;
       width: calc(100% - 32px);
@@ -213,12 +222,21 @@
 }
 
 .addManagerButton {
+  background: $color-blue-2;
+  border-radius: 13px;
+  min-height: 21px;
+  min-width: 120px;
+  padding: 3px 20px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: $color-blue-2-hover;
+  }
   span {
-    display: flex;
-    align-items: center;
+    white-space: nowrap;
     font-size: 14px;
-    font-weight: 600;
-    color: $color-secondary;
+    font-weight: 500;
+    color: $color-white;
   }
 }
 
@@ -234,9 +252,71 @@
   flex-grow: 0;
   min-width: 100px;
   padding: 10px;
+  position: relative;
 }
 
 .dataWrap {
   overflow: hidden;
   padding-right: 10px;
+}
+
+.blacklistRow {
+  flex-grow: 1;
+  height: 150px;
+  padding: 16px;
+  @include xs-only {
+    margin-top: 10px;
+  }
+  .title {
+    font-size: 16px;
+    color: $color-primary-0;
+    padding-bottom: 20px;
+  }
+}
+
+.blacklistButtonWrap {
+
+}
+
+.blacklistButton {
+  background: $color-red-1;
+  border-radius: 13px;
+  min-height: 21px;
+  min-width: 120px;
+  padding: 3px 20px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: $color-red-1-hover;
+  }
+  span {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-white;
+  }
+}
+
+.flexRow {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.blockedIcon {
+  background: $color-red;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  padding: 1px;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -10,6 +10,7 @@ export default class QRIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
     iconStyle: PropTypes.string,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
@@ -27,12 +28,16 @@ export default class QRIcon extends PureComponent {
 
   render () {
     return (
-      <div styleName='root'>
+      <div styleName='root' className='QRIcon__root'>
         <a
           styleName={this.props.iconStyle}
           onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
         >
-          <i className='material-icons'>center_focus_weak</i>
+          {this.props.children
+            ? this.props.children
+            : <i className='material-icons'>center_focus_weak</i>
+          }
+
         </a>
         <Popover
           zDepth={3}

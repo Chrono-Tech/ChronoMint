@@ -3,7 +3,7 @@ import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import NemDAO, { NEM_XEM_NAME, NEM_XEM_SYMBOL, NEM_DECIMALS } from 'dao/NemDAO'
+import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
 import type TransferExecModel from 'models/TransferExecModel'
@@ -76,8 +76,6 @@ export const initTokens = () => async (dispatch, getState) => {
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, (count) => {
-      // eslint-disable-next-line
-      console.log('EVENT_ERC20_TOKENS_COUNT', count)
       const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count })
     })
@@ -107,7 +105,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
         } catch (e) {
           dispatch({ type: TOKENS_FAILED })
         }
-      })
+      }),
   )
 }
 
@@ -144,7 +142,7 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
         } catch (e) {
           dispatch({ type: TOKENS_FAILED })
         }
-      })
+      }),
   )
 }
 
