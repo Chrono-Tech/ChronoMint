@@ -11,7 +11,7 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import validate from './validate'
 import './RevokeForm.scss'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.RevokeForm.${token}`
 }
 
@@ -46,13 +46,6 @@ export default class AddPlatformForm extends PureComponent {
   render () {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           <Field
