@@ -24,13 +24,15 @@ $copyRightPadding: 200px;
 
 .content {
   flex: 1;
-  min-width: 320px;
-  max-width: 470px;
+  width: 470px;
   margin: 0 auto;
   padding-top: 40px;
 
   @include md-only {
     padding-top: 80px;
+  }
+  @include xs-only {
+    width: 100vw;
   }
 }
 

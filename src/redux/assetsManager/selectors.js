@@ -15,11 +15,11 @@ export const getSelectedToken = () => createSelector(
 )
 
 export const getAssets = (state) => {
-  return state.get(DUCK_ASSETS_MANAGER).assets
+  return state.get(DUCK_ASSETS_MANAGER).assets()
 }
 
 export const getPlatforms = (state) => {
-  return state.get(DUCK_ASSETS_MANAGER).platformsList
+  return state.get(DUCK_ASSETS_MANAGER).platformsList()
 }
 
 export const getUserTokens = () => createSelector(
