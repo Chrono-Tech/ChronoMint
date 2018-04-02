@@ -15,7 +15,6 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
