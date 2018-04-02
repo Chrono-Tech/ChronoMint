@@ -49,7 +49,6 @@ export default class EditManagersBase extends PureComponent {
   render () {
     return (
       <form styleName='root' onSubmit={this.props.handleSubmit}>
-        <div styleName='header'><Translate value={prefix('dialogTitle')} /></div>
         <div styleName='content'>
           <div styleName='row'>
             <div styleName='iconBox'>

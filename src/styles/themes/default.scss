@@ -30,6 +30,33 @@
 
   #react-root { }
 
+  .transition-swipe-enter {
+    top: 100vh;
+  }
+
+  .transition-swipe-enter.transition-swipe-enter-active {
+    top: 0;
+    transition: top 250ms $cubic-animation;
+  }
+
+  .transition-swipe-leave {
+    top: 0;
+  }
+
+  .transition-swipe-leave.transition-swipe-leave-active {
+    top: 100vh;
+    transition: top 250ms $cubic-animation;
+  }
+
+  .transition-swipe-appear {
+    top: 100vh;
+  }
+
+  .transition-swipe-appear.transition-swipe-appear-active {
+    top: 0;
+    transition: top 250ms $cubic-animation;
+  }
+
   .transition-opacity-enter {
     transition-opacity: 0;
   }
