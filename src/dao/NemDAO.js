@@ -153,7 +153,7 @@ export default class NemDAO extends EventEmitter {
       }
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('BitcoinDAO getTransfer', e)
+      console.warn('NemDAO getTransfer', e)
     }
     return txs
   }
