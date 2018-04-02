@@ -1,14 +1,21 @@
-
-import axios from 'axios'
-
+import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
+import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 
 export const DUCK_I18N = 'i18n'
-export const I18N_LOADED = 'tokens/fetching'
 
+export const loadI18n = (locale) => async (dispatch, getState) => {
+  const publicBackendProvider = new PublicBackendProvider()
+  let translations = await publicBackendProvider.get('/api/v1/mintTranslations/')
 
-export const loadI18n = () => async (dispatch, getState) => {
+  if (translations) {
+    // filter all empty objects '{}'
+    const tanslationsFiltered = {};
+    Object.entries(translations).filter((t) => {
+      return typeof t[1] === 'object' && Object.keys(t[1]).length
+    }).map((t) => tanslationsFiltered[t[0]] = t[1])
 
-  let ru = await axios.get('http://localhost:3001/api/v1/minti18n?language=en')
+    dispatch(loadTranslations(tanslationsFiltered))
+  }
 
-  dispatch({ type: I18N_LOADED, payload: {list: ru, isInited: true} })
+  dispatch(setLocale(locale))
 }

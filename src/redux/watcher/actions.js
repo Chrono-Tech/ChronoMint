@@ -70,7 +70,6 @@ export const globalWatcher = () => async (dispatch) => {
 // for all logged in users
 export const watcher = () => async (dispatch) => {
   dispatch(watchInitProfile())
-  dispatch(loadI18n())
   dispatch(initTokens())
   dispatch(initMainWallet())
   dispatch(watchPlatformManager())
