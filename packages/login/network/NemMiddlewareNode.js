@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import nem from 'nem-sdk'
+import TxModel from 'models/TxModel'
 import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
@@ -95,6 +96,19 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       throw e
     }
   }
+
+  async getTransactionsList (address, id, skip, offset) {
+    let txs = []
+    const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
+    const { data } = await this._api.get(url)
+    if (!data) {
+      throw new Error('invalid result')
+    }
+    for (const tx of data) {
+      txs.push(this.createTxModel(tx, address))
+    }
+    return txs
+  }
 }
 
 function createTxModel (tx, account): NemTx {
@@ -111,7 +125,7 @@ function createTxModel (tx, account): NemTx {
       ? null
       : tx.mosaics.reduce((t, m) => ({
         ...t,
-        [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
+        [ `${m.mosaicId.namespaceId}:${m.mosaicId.name}` ]: m.quantity,
       }), {}),
     unconfirmed: tx.unconfirmed || false,
   })

@@ -38,6 +38,11 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
+  getTransactionsList (address, skip, offset) {
+    const node = this._selectNode(this._engine)
+    return node.getTransactionsList(address, this._id, skip, offset)
+  }
+
   getPrivateKey () {
     return this._engine ? this._engine.getPrivateKey() : null
   }

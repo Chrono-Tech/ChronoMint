@@ -1,3 +1,4 @@
+import TxModel from 'models/TxModel'
 import AbstractNode from './AbstractNode'
 
 const eventsList = [
@@ -55,6 +56,12 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
+  async getTransactionsList (address, id, skip, offset) {
+    const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
+    const { data } = await this._api.get(url)
+    return data
+  }
+
   async getEventsData (eventName: string, queryFilter: string, mapCallback) {
     const response = await this._api.get(`events/${eventName}/?${queryFilter}`)
     if (response && response.data.length) {
@@ -63,5 +70,4 @@ export default class EthereumMiddlewareNode extends AbstractNode {
 
     return []
   }
-
 }

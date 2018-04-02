@@ -8,14 +8,14 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { BitcoinTx } from '@chronobank/login/network/BitcoinAbstractNode'
-import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
+import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
@@ -113,12 +113,12 @@ export default class BitcoinDAO extends EventEmitter {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getTransfer (id, account): Array<TxModel> {
+  async getTransfer (id, account, skip, offset): Array<TxModel> {
+    let txs = []
     try {
-      const txs = await this._bitcoinProvider.getTransactionsList(account)
-      return (txs || []).map((tx: BitcoinTx) => {
-        return new TxModel({
+      const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
+      for (const tx of txsResult) {
+        txs.push(new TxModel({
           txHash: tx.txHash,
           blockHash: tx.blockHash,
           blockNumber: tx.blockNumber,
@@ -129,14 +129,14 @@ export default class BitcoinDAO extends EventEmitter {
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
           credited: tx.credited,
-        })
-      })
+        }))
+      }
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
-      throw e
+      console.warn('BitcoinDAO getTransfer', e)
     }
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Bitcoin transactions
+
+    return txs
   }
 
   watch (/*account*/): Promise {

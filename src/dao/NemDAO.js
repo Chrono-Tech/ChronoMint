@@ -1,3 +1,4 @@
+import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from 'models/tokens/TokenModel'
@@ -131,10 +132,30 @@ export default class NemDAO extends EventEmitter {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
-  async getTransfer (txid, account): Promise<Array<TxModel>> {
-    // TODO @ipavlenko: Change the purpose of TxModel, add support of Nem transactions
-    return []
+  async getTransfer (id, account, skip, offset): Promise<Array<TxModel>> {
+    const txs = []
+    try {
+      const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
+      for (const tx of txsResult) {
+        // TODO @abdulov now, it not worked, blocked by Middleware
+        txs.push(new TxModel({
+          txHash: tx.txHash,
+          blockHash: tx.blockHash,
+          blockNumber: tx.blockNumber,
+          time: tx.time,
+          from: tx.from,
+          to: tx.to,
+          symbol: this._symbol,
+          value: new Amount(tx.value, this._symbol),
+          fee: new Amount(tx.fee, this._symbol),
+          credited: tx.credited,
+        }))
+      }
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn('BitcoinDAO getTransfer', e)
+    }
+    return txs
   }
 
   watch (/*account*/): Promise {
@@ -184,7 +205,7 @@ export default class NemDAO extends EventEmitter {
       time: tx.time,
       from: tx.from || tx.signer,
       to: tx.to,
-      value: new Amount(tx.mosaics[this._namespace], this._symbol),
+      value: new Amount(tx.mosaics[ this._namespace ], this._symbol),
       fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
       credited: tx.credited,
     })
@@ -238,9 +259,9 @@ function readBalanceValue (symbol, balance, mosaic = null) {
   if (mosaic) {
     return (mosaic in balance.mosaics)
       ? (
-        balance.mosaics[mosaic].unconfirmed != null // nil check
-          ? balance.mosaics[mosaic].unconfirmed
-          : balance.mosaics[mosaic].confirmed
+        balance.mosaics[ mosaic ].unconfirmed != null // nil check
+          ? balance.mosaics[ mosaic ].unconfirmed
+          : balance.mosaics[ mosaic ].confirmed
       )
       : new Amount(0, symbol)
   }
