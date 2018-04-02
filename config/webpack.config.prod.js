@@ -23,8 +23,8 @@ module.exports = config.buildConfig(
       new HtmlWebpackPlugin({
         inject: 'head',
         template: process.env.NODE_ENV === 'standalone'
-          ? indexPresentationHtmlPath
-          : indexHtmlPath,
+          ? indexHtmlPath
+          : indexPresentationHtmlPath,
         favicon: faviconPath,
         hash: true,
         minify: {

@@ -50,7 +50,7 @@ class TxModel extends abstractModel({
   }
 
   id () {
-    return `${this.txHash} - ${this.from()} - ${this.to()}`
+    return `${this.type()} - ${this.txHash} - ${this.from()} - ${this.to()}`
   }
 
   time () {
