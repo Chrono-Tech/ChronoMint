@@ -1,3 +1,5 @@
+import { Translate } from 'react-redux-i18n'
+import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -6,6 +8,8 @@ import { modalsClose } from 'redux/modals/actions'
 import { createWallet } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import WalletAddEditForm from './WalletAddForm'
+import { prefix } from './lang'
+import './WalletAddForm.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -29,7 +33,14 @@ export default class WalletAddEditDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog>
+      <ModalDialog
+        title={(
+          <div styleName='header'>
+            <img styleName='headerIcon' src={icnWalletDialogWhite} alt='' />
+            <Translate styleName='headerTitle' value={`${prefix}.createNewWallet`} />
+          </div>
+        )}
+      >
         <WalletAddEditForm
           initialValues={this.props.wallet.toAddFormJS()}
           onSubmitSuccess={this.handleSubmitSuccess}

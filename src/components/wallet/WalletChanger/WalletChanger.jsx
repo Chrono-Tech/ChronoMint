@@ -8,7 +8,8 @@ import TwoFADialog from 'components/dialogs/TwoFA/TwoFADialog'
 import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddDialog/WalletAddDialog'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/WalletSelectDialog'
 import globalStyles from 'layouts/partials/styles'
-import { FlatButton, Paper } from 'material-ui'
+import { Paper } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -86,7 +87,8 @@ export default class WalletChanger extends PureComponent {
             <div styleName='actions'>
               <div styleName='action' />
               <div styleName='action'>
-                <FlatButton
+                <Button
+                  flat
                   label={!multisigWallet.isFetching() && !multisigWallet.isFetched()
                     ? <Preloader />
                     : (
@@ -116,10 +118,6 @@ export default class WalletChanger extends PureComponent {
                     : () => this.props.walletAddEditDialog()}
                   {...globalStyles.buttonWithIconStyles}
                 />
-                {/*<FlatButton*/}
-                  {/*label='2fa'*/}
-                  {/*onTouchTap={this.handleCreate2FAWallet}*/}
-                {/*/>*/}
               </div>
             </div>
           </div>
@@ -169,7 +167,8 @@ export default class WalletChanger extends PureComponent {
 
             <div styleName='actions'>
               <div styleName='action'>
-                <FlatButton
+                <Button
+                  flat
                   label={(
                     <span styleName='buttonLabel'>
                       <img styleName='buttonIcon' src={WalletMainSVG} />
@@ -177,11 +176,11 @@ export default class WalletChanger extends PureComponent {
                     </span>
                   )}
                   onTouchTap={this.handleSwitchWallet}
-                  {...globalStyles.buttonWithIconStyles}
                 />
               </div>
               <div styleName='action'>
-                <FlatButton
+                <Button
+                  flat
                   label={(
                     <span styleName='buttonLabel'>
                       <img styleName='buttonIcon' src={WalletMultiSVG} />
@@ -189,7 +188,6 @@ export default class WalletChanger extends PureComponent {
                     </span>
                   )}
                   onTouchTap={this.handleShowSelectDialog}
-                  {...globalStyles.buttonWithIconStyles}
                 />
               </div>
             </div>

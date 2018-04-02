@@ -18,6 +18,10 @@
 .buttons {
   text-align: center;
   margin: 24px;
+  a {
+    color: $color-white;
+    text-decoration: none;
+  }
 }
 
 .root {

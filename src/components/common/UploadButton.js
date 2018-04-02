@@ -1,5 +1,5 @@
+import { Button } from 'components'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -32,7 +32,7 @@ class UploadButton extends PureComponent {
   render () {
     return (
       <div>
-        <RaisedButton
+        <Button
           label={this.props.label}
           onClick={this.openFileDialog.bind(this)}
         />

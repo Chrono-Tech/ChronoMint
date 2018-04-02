@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
-import { RaisedButton, TextField } from 'material-ui'
+import { TextField } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
@@ -63,8 +64,7 @@ export default class CopyDialog extends PureComponent {
               />
             </div>
             <div styleName='footer'>
-              <RaisedButton
-                primary
+              <Button
                 label='Close'
                 onTouchTap={this.handleClose}
               />

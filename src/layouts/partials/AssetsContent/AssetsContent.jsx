@@ -1,24 +1,9 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 import AssetManager from 'components/assetsManager/AssetManager/AssetManager'
 
 import './AssetsContent.scss'
 
-// function prefix (token) {
-//   return 'layouts.partials.AssetsContent.' + token
-// }
-
-export class AssetsContent extends Component {
-  static propTypes = {
-    /*    ready: PropTypes.bool,
-        rewardsData: PropTypes.object,
-        isRewardsFetched: PropTypes.bool,
-        isVotingFetched: PropTypes.bool,
-        watchInitRewards: PropTypes.func,
-        getRewardsData: PropTypes.func */
-  }
-
+export default class AssetsContent extends Component {
   render () {
     return (
       <div styleName='root'>
@@ -37,16 +22,3 @@ export class AssetsContent extends Component {
     )
   }
 }
-
-function mapStateToProps (/* state */) {
-  return {}
-}
-
-function mapDispatchToProps (/* dispatch */) {
-  return {
-    // getRewardsData: () => dispatch(getRewardsData()),
-    // watchInitRewards: () => dispatch(watchInitRewards())
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AssetsContent)

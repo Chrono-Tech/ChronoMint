@@ -1,5 +1,5 @@
+import { Button } from 'components'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -64,21 +64,14 @@ class PageTitle extends PureComponent {
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}><Translate value={prefix('labourOfferingCompanies')} /></h3>
-        <RaisedButton
+        <Button
           label={<Translate value='locs.new' />}
           primary
-          style={styles.btn}
           onTouchTap={this.handleShowLOCModal}
-          buttonStyle={{ ...globalStyles.raisedButton }}
-          labelStyle={globalStyles.raisedButtonLabel}
         />
-        <RaisedButton
+        <Button
           label={<Translate value='locs.sendToExchange' />}
-          primary
-          style={styles.btn}
           onTouchTap={this.handleSendToExchange}
-          buttonStyle={{ ...globalStyles.raisedButton }}
-          labelStyle={globalStyles.raisedButtonLabel}
         />
       </div>
     )

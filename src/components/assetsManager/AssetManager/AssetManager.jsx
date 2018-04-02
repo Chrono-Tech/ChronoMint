@@ -1,4 +1,5 @@
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -121,14 +122,13 @@ export default class AssetManager extends PureComponent {
                 <div styleName='contentAlignRight'>
                   <div styleName='entries' />
                   <div styleName='actions'>
-                    <RaisedButton
+                    <Button
                       disabled={!usersPlatformsCount}
                       onTouchTap={this.props.handleAddTokenDialog}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
-                      primary
                     />
-                    <RaisedButton
+                    <Button
                       onTouchTap={this.props.handleAddPlatformDialog}
                       label={<Translate value={prefix('addNewPlatform')} />}
                       styleName='action'

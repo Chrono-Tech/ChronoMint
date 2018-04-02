@@ -1,15 +1,15 @@
 @import '~styles/partials/_mixins';
 @import '~styles/partials/_variables';
 
-.root {}
+.root {
+}
 
 .content {
   max-width: 928px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
 }
 
 .header {
-  background-color: $color-primary-1;
   padding: 24px 16px;
   display: flex;
 
@@ -54,6 +54,8 @@
   color: $color-primary-0;
   display: flex;
   padding: 36px 0;
+  border-radius: 2px 2px 0 0;
+  background: $color-white;
 
   @include md-only {
     display: block;
@@ -94,8 +96,11 @@
 }
 
 .footer {
-  padding: 24px 16px;
-  text-align: right;
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+  background: $color-white;
+  border-radius: 0 0 2px 2px;
 }
 
 .action {

@@ -2,8 +2,9 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import { CircularProgress, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import Amount from 'models/Amount'
+import Button from 'components/common/ui/Button/Button'
 import TxExecModel from 'models/TxExecModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -93,16 +94,16 @@ export default class ConfirmTxDialog extends PureComponent {
 
   getActions () {
     return [
-      <FlatButton
+      <Button
+        flat
         key='close'
         label={<Translate value='terms.cancel' />}
-        primary
         onTouchTap={this.handleClose}
       />,
-      <FlatButton
+      <Button
+        flat
         key='confirm'
         label={<Translate value='terms.confirm' />}
-        primary
         disabled={this.props.balance.lt(0)}
         onTouchTap={this.handleConfirm}
       />,
@@ -214,23 +215,25 @@ export default class ConfirmTxDialog extends PureComponent {
           </div>
           <div styleName='footer'>
             {additionalActionIsFailed &&
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={additionalAction.repeatButtonName()} />}
               onTouchTap={this.handleRepeatAction}
             />
             }
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
               onTouchTap={this.handleClose}
             />
-            <FlatButton
+            <Button
+              flat
               styleName='action'
-              primary
               label={<Translate value='terms.confirm' />}
               disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
-              onTouchTap={gasFee.gte(0) && balanceAfter.gte(0) && balance.gt(0) && !additionalActionIsFailed && this.handleConfirm}
+              onTouchTap={this.handleConfirm}
             />
           </div>
         </div>

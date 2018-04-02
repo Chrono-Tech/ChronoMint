@@ -1,6 +1,7 @@
 import { DatePicker, TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton } from 'material-ui'
+import { Button } from 'components'
 import { I18n, Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -119,16 +120,16 @@ class LOCForm extends PureComponent {
             <div styleName='col actions'>
               {!isNew && (
                 <div styleName='action'>
-                  <FlatButton
+                  <Button
+                    flat
                     label={<Translate value='locs.delete' />}
                     onTouchTap={this.handleDeleteClick}
                   />
                 </div>
               )}
               <div styleName='action'>
-                <RaisedButton
+                <Button
                   label={<Translate value={isNew ? 'locs.create' : 'terms.save'} />}
-                  primary
                   onTouchTap={handleSubmit}
                   disabled={pristine}
                 />

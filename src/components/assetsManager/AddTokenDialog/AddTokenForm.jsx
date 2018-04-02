@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { CircularProgress, MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -26,7 +27,7 @@ import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.AddTokenForm.${token}`
 }
 
@@ -316,13 +317,6 @@ export default class AddTokenForm extends PureComponent {
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           {this.renderTokenInfo()}
@@ -416,24 +410,13 @@ export default class AddTokenForm extends PureComponent {
               </div>
             </div>
           </div>
-
-          {/*<Field
-            styleName='checkboxField'
-            component={Checkbox}
-            name='startWithCrowdsale'
-            label={<Translate value={prefix('startWithCrowdsale')} />}
-          />*/}
-
         </div>
-        <div
-          styleName='dialogFooter'
-        >
-          <RaisedButton
+        <div styleName='dialogFooter'>
+          <Button
             onTouchTap={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

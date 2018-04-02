@@ -1,5 +1,5 @@
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { CircularProgress, RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -8,6 +8,7 @@ import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 
 import './LoginWithPrivateKey.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -62,18 +63,15 @@ class LoginWithPrivateKey extends PureComponent {
 
         <div styleName='actions'>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading
                 ? <CircularProgress
                   style={{ verticalAlign: 'middle', marginTop: -2 }}
                   size={24}
                   thickness={1.5}
                 /> : <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
-              fullWidth
-              primary
               disabled={!isValidated || isLoading}
               onTouchTap={() => this.props.onLogin(privateKey)}
-              {...styles.primaryButton}
             />
           </div>
         </div>

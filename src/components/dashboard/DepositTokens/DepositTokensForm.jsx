@@ -1,12 +1,12 @@
+import { Button, IPFSImage } from 'components'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { TOKEN_ICONS } from 'assets'
 import BigNumber from 'bignumber.js'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import styles from 'components/dashboard/styles'
-import { FlatButton, MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import { FlatButton, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import TokenModel from 'models/tokens/TokenModel'
@@ -243,19 +243,17 @@ export default class DepositTokensForm extends PureComponent {
         <span styleName='action'>
           {isShowTIMERequired
             ? (
-              <FlatButton
+              <Button
+                flat
                 styleName='actionButton'
                 label={<Translate value={prefix('requireTime')} />}
                 onTouchTap={this.handleRequireTime}
               />
             ) : (
-              <RaisedButton
+              <Button
                 styleName='actionButton'
                 label={isRevoke ? 'Revoke' : 'Approve'}
-                onTouchTap={isRevoke
-                  ? !isRevokeDisabled && this.handleRevokeAsset :
-                  !isApproveDisabled && handleSubmit(this.handleApproveAsset)
-                }
+                onTouchTap={isRevoke ? this.handleRevokeAsset : handleSubmit(this.handleApproveAsset)}
                 disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
               />
             )
@@ -264,21 +262,19 @@ export default class DepositTokensForm extends PureComponent {
 
         {!isShowTIMERequired && (
           <span styleName='action'>
-            <RaisedButton
+            <Button
               styleName='actionButton'
               label='Lock'
-              primary
-              onTouchTap={!isLockDisabled && handleSubmit(this.handleDepositAsset)}
+              onTouchTap={handleSubmit(this.handleDepositAsset)}
               disabled={isLockDisabled}
             />
           </span>
         )}
         <span styleName='action'>
-          <RaisedButton
+          <Button
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
-            primary
-            onTouchTap={!isWithdrawDisabled && handleSubmit(this.handleWithdrawAsset)}
+            onTouchTap={handleSubmit(this.handleWithdrawAsset)}
             disabled={isWithdrawDisabled}
           />
         </span>

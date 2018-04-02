@@ -42,3 +42,4 @@ export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'
+export { default as Button } from './common/ui/Button/Button'

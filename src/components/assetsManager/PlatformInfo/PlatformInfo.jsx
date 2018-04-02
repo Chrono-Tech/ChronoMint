@@ -1,11 +1,9 @@
+import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'
-import tokenService from 'services/TokenService'
-import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import { FlatButton, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -108,7 +106,8 @@ class PlatformInfo extends PureComponent {
               </div>
 
               <div styleName='addManager'>
-                <FlatButton
+                <Button
+                  flat
                   onTouchTap={this.props.handleAddManagerDialog}
                   styleName='addManagerButton'
                   label={(
@@ -186,18 +185,7 @@ class PlatformInfo extends PureComponent {
           {this.renderManagers(selectedToken.managersList())}
 
           <div styleName='actions'>
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('send')} />}
-            />*/}
-
-            {/*<FlatButton
-              styleName='action'
-              label={<Translate value={prefix('crowdsaleInfo')} />}
-              onTouchTap={() => this.props.handleCrowdsaleDialog()}
-            />*/}
-
-            <RaisedButton
+            <Button
               onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'
