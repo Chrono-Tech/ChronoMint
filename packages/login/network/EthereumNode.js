@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { NETWORK_MAIN_ID } from './settings'
+import { LOCAL_ID, NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
 // TODO @dkchv: update to actual config
@@ -35,8 +35,29 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
   trace: true,
 })
 
+const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
+  api: axios.create({
+    baseURL: 'http://localhost:8083',
+    timeout: 4000,
+  }),
+  socket: {
+    baseURL: 'http://localhost:15674/stomp',
+    user: 'guest',
+    password: 'guest',
+    channels: {
+      balance: '/exchange/events/app_testnet-ethereum-middleware-chronobank-io_balance',
+    },
+  },
+  trace: true,
+})
+
 export default function selectEthereumNode (engine) {
-  return engine.getNetwork().id === NETWORK_MAIN_ID
-    ? ETHEREUM_MAINNET_NODE
-    : ETHEREUM_TESTNET_NODE
+  switch (engine.getNetwork().id) {
+    case NETWORK_MAIN_ID :
+      return ETHEREUM_MAINNET_NODE
+    case LOCAL_ID:
+      return ETHEREUM_TESTRPC_NODE
+    default:
+      return ETHEREUM_TESTNET_NODE
+  }
 }
