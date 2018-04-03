@@ -366,6 +366,9 @@ export default {
       },
     },
     LOCManager: {
+      [ loc.standardFuncs.SET_STATUS ]: {
+        title: 'Set Status',
+      },
       [ loc.standardFuncs.ADD_LOC ]: {
         title: 'Add LOC',
         name: 'Name',
@@ -497,6 +500,11 @@ export default {
       },
       [ chronoBankAsset.TX_UNPAUSE ]: {
         title: 'Unblock asset',
+      },
+    },
+    WalletsManager: {
+      'createWallet': {
+        title: 'Create multisignature wallet',
       },
     },
   },

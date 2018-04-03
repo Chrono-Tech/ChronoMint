@@ -79,15 +79,15 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   getDetails ({
-    tx,
-    amountToken,
-    amountBalance,
-    amountBalanceAfter,
-    feeToken,
-    feeBalance,
-    feeBalanceAfter,
-    feeMultiplier,
-  }) {
+                tx,
+                amountToken,
+                amountBalance,
+                amountBalanceAfter,
+                feeToken,
+                feeBalance,
+                feeBalanceAfter,
+                feeMultiplier,
+              }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
       { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },
@@ -166,11 +166,8 @@ export default class ConfirmTransferDialog extends PureComponent {
     const hasFeeSlider = feeMultiplier && feeToken.feeRate()
 
     return (
-      <ModalDialog onModalClose={this.handleClose}>
+      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>
         <div styleName='root'>
-          <div styleName='header'>
-            <h3 styleName='headerHead'><Translate value={tx.title()} /></h3>
-          </div>
           <div styleName='content'>
             <div>
               <Table selectable={false} className='adaptiveTable'>

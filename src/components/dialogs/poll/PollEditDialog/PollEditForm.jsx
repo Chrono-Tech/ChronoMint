@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import Immutable from 'immutable'
-import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
+import { FontIcon, IconButton } from 'material-ui'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import PollModel from 'models/PollModel'
 import PropTypes from 'prop-types'
@@ -29,7 +29,7 @@ import validate from './validate'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `components.dialogs.PollEditDialog.${token}`
 }
 
@@ -170,7 +170,6 @@ export default class PollEditForm extends Component {
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <form styleName='content' onSubmit={handleSubmit}>
-        <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
         <div styleName='body'>
           <div styleName='column'>
             <Field

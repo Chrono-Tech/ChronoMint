@@ -155,9 +155,8 @@ export default class ConfirmTxDialog extends PureComponent {
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
     return (
-      <ModalDialog onModalClose={this.handleClose}>
+      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
         <div styleName='root'>
-          <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
           <div styleName='content'>
             <div>
               <Table selectable={false} className='adaptiveTable'>

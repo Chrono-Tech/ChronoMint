@@ -1,3 +1,4 @@
+@import "~styles/partials/variables";
 
 .root {
   display: flex;
@@ -8,4 +9,10 @@
 .arrow {
   margin-right: 8px;
   font-size: 19px;
+}
+
+.button {
+  button {
+    color: $color-white;
+  }
 }

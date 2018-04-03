@@ -23,6 +23,7 @@ class BackButton extends PureComponent {
     return (
       <Button
         flat
+        styleName='button'
         label={(
           <div styleName='root'>
             <i className='material-icons' styleName='arrow'>arrow_back</i>

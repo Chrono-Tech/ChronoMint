@@ -1,7 +1,5 @@
 import { Button } from 'components'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
-import styles from 'layouts/partials/styles'
-import { FlatButton } from 'material-ui'
 import RewardsCollection from 'models/rewards/RewardsCollection'
 import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'

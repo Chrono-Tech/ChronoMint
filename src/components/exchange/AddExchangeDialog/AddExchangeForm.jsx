@@ -17,7 +17,7 @@ import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
 
-function prefix (text) {
+export const prefix = (text) => {
   return `components.exchange.AddExchangeForm.${text}`
 }
 
@@ -61,13 +61,6 @@ export default class AddExchangeForm extends PureComponent {
     const tokenBalance = token && this.props.balances.item(token.id())
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
           <Field
             name='token'

@@ -26,3 +26,9 @@ $gutter: 16px;
   display: flex;
   justify-content: flex-end;
 }
+
+.whiteButton {
+  button {
+    color: $color-white;
+  }
+}

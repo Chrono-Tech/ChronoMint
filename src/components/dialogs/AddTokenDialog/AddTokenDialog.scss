@@ -71,6 +71,8 @@
   text-align: right;
   background: $color-white;
   border-radius: 0 0 2px 2px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action {

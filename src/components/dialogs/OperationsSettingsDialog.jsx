@@ -43,13 +43,8 @@ export default class OperationsSettingsDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog
-        onClose={() => this.props.onClose()}
-      >
+      <ModalDialog onClose={() => this.props.onClose()} title={<Translate value={prefix('operationsSettings')} />}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3 styleName='title'><Translate value={prefix('operationsSettings')} /></h3>
-          </div>
           <div styleName='content'>
             <div>
               <p>{<Translate value='operations.adminCount' />}: <b>{this.props.adminCount}</b></p>

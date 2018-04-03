@@ -66,11 +66,8 @@ export default class CBEAddressDialog extends PureComponent {
     } = this.props
 
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value={prefix('addCbeAddress')} />}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
-          </div>
           <div styleName='content'>
             <Field
               component={TextField}

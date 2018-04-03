@@ -55,12 +55,9 @@ export default class UpdateProfileDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value={`${prefix}.title`} />}>
         <div styleName='root'>
           <form styleName='content' onSubmit={this.props.handleSubmit}>
-            <div styleName='header'>
-              <h3><Translate value={`${prefix}.title`} /></h3>
-            </div>
             <div styleName='person'>
               <div styleName='left'>
                 <div styleName='icon'>
@@ -103,7 +100,6 @@ export default class UpdateProfileDialog extends PureComponent {
             </div>
             <div styleName='footer'>
               <Button
-                styleName='action'
                 label={<Translate value={`${prefix}.button`} />}
                 type='submit'
                 disabled={this.props.submitting}

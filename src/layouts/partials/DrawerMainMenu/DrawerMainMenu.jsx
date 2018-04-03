@@ -16,6 +16,8 @@ import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
 import { getWalletsCount } from 'redux/wallet/selectors'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
@@ -39,6 +41,7 @@ function mapDispatchToProps (dispatch) {
     handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
     handle: (handleClose) => {
       dispatch({ type: SIDES_CLOSE_ALL })
       dispatch(sidesPush({
@@ -84,6 +87,7 @@ export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func,
+    handleProfileEdit: PropTypes.func,
     handleDrawerHide: PropTypes.func,
     profile: PropTypes.instanceOf(ProfileModel),
     networkName: PropTypes.string,
@@ -180,7 +184,7 @@ export default class DrawerMainMenu extends PureComponent {
 
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
-                <div styleName='avatar-icon'>
+                <div styleName='avatar-icon' onTouchTap={this.props.handleProfileEdit}>
                   <IPFSImage
                     styleName='avatar-icon-content'
                     multihash={this.props.profile.icon()}

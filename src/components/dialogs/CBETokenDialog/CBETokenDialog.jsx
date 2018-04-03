@@ -65,15 +65,8 @@ export default class CBETokenDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog onClose={this.props.onClose}>
+      <ModalDialog onClose={this.props.onClose} title={<Translate value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'} />}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3
-              styleName='title'
-            >
-              {<Translate value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'} />}
-            </h3>
-          </div>
           <div styleName='content'>
             <Field
               component={TextField}

@@ -5,14 +5,13 @@ import { connect } from 'react-redux'
 import LOCModel from 'models/LOCModel'
 import { modalsClose } from 'redux/modals/actions'
 import { revokeAsset } from 'redux/locs/actions'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { getToken } from 'redux/locs/selectors'
 import { LHT } from 'dao/LHTDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import Amount from 'models/Amount'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import LOCRedeemForm from './LOCRedeemForm'
-
 import './LOCRedeemDialog.scss'
 
 function mapStateToProps (state) {
@@ -43,30 +42,33 @@ class LOCRedeemModal extends PureComponent {
   render () {
     const { loc } = this.props
     return (
-      <ModalDialogBase
-        title={{ value: 'locs.redeemS', asset: loc.currency() }}
-        subTitle={(
-          <div styleName='balances'>
-            <div styleName='label'><Translate value='locs.issueLimit' />:</div>
-            <TokenValue
-              value={loc.issueLimit()}
-              symbol={loc.currency()}
-              isInvert
-            />
-            <div styleName='label'><Translate value='locs.issued' />:</div>
-            <TokenValue
-              value={loc.issued()}
-              symbol={loc.currency()}
-              isInvert
+      <ModalDialog>
+        <div styleName='root'>
+          <div styleName='header'>
+            <h3 styleName='title'>{<Translate value='locs.redeemS' asset={loc.currency()} />}</h3>
+            <div styleName='balances'>
+              <div styleName='label'><Translate value='locs.issueLimit' />:</div>
+              <TokenValue
+                value={loc.issueLimit()}
+                symbol={loc.currency()}
+                isInvert
+              />
+              <div styleName='label'><Translate value='locs.issued' />:</div>
+              <TokenValue
+                value={loc.issued()}
+                symbol={loc.currency()}
+                isInvert
+              />
+            </div>
+          </div>
+          <div styleName='content'>
+            <LOCRedeemForm
+              loc={loc}
+              onSubmitSuccess={this.handleSubmitSuccess}
             />
           </div>
-        )}
-      >
-        <LOCRedeemForm
-          loc={loc}
-          onSubmitSuccess={this.handleSubmitSuccess}
-        />
-      </ModalDialogBase>
+        </div>
+      </ModalDialog>
     )
   }
 }

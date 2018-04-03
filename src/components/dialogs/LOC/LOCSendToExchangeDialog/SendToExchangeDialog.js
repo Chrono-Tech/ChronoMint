@@ -1,3 +1,4 @@
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -6,9 +7,9 @@ import lhtDAO, { LHT } from 'dao/LHTDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import { modalsClose } from 'redux/modals/actions'
 import { sendAsset } from 'redux/locs/actions'
-import ModalDialogBase from 'components/dialogs/ModalDialogBase/ModalDialogBase'
 import Amount from 'models/Amount'
 import { getToken } from 'redux/locs/selectors'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import SendToExchangeForm from './SendToExchangeForm'
 
 function mapStateToProps (state) {
@@ -44,12 +45,12 @@ class SendToExchangeModal extends PureComponent {
 
   render () {
     return (
-      <ModalDialogBase title='locs.sendLHToExchange'>
+      <ModalDialog title={<Translate value='locs.sendLHToExchange' />}>
         <SendToExchangeForm
           onSubmitSuccess={this.handleSubmitSuccess}
           allowed={this.props.allowed}
         />
-      </ModalDialogBase>
+      </ModalDialog>
     )
   }
 }

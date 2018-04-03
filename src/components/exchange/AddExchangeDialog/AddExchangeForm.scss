@@ -12,18 +12,6 @@
   }
 }
 
-.dialogHeader {
-  display: flex;
-  position: relative;
-  align-items: baseline;
-  box-sizing: border-box;
-  background: $color-primary-1;
-  height: 180px;
-  padding: 24px 16px;
-  text-align: left;
-  color: #ffffff;
-}
-
 .dialogHeaderStuff {
   display: flex;
   height: 24px;
@@ -40,7 +28,7 @@
 }
 
 .dialogFooter {
-  padding: 24px 16px;
+  padding: 24px 16px 16px;
   text-align: right;
 }
 

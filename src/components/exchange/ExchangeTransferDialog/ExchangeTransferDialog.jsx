@@ -87,17 +87,8 @@ export default class ExchangeTransferDialog extends React.PureComponent {
       : new Amount(this.props.exchange.assetBalance(), this.props.exchange.symbol())
 
     return (
-      <ModalDialog>
+      <ModalDialog title={<span><Translate value={prefix(`title`)} />{` ${this.props.tokenSymbol} `}</span>}>
         <div styleName='root'>
-          <div styleName='header'>
-            <div styleName='headerWrapper'>
-              <div styleName='title'>
-                <Translate
-                  value={prefix(`title`)}
-                />{` ${this.props.tokenSymbol} `}
-              </div>
-            </div>
-          </div>
           <div styleName='content'>
             {
               showMessage &&

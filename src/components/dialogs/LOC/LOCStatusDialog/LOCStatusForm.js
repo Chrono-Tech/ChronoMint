@@ -20,7 +20,7 @@ class LOCStatusForm extends PureComponent {
   render () {
     const { pristine, handleSubmit } = this.props
     return (
-      <form name='LOCStatusFormName' onSubmit={handleSubmit}>
+      <form name='LOCStatusFormName' onSubmit={handleSubmit} styleName='root'>
         <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>
 
         <Field

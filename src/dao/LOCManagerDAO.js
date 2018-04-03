@@ -15,6 +15,7 @@ export const standardFuncs = {
   GET_LOC_BY_ID: 'getLOCById',
   ADD_LOC: 'addLOC',
   SET_LOC: 'setLOC',
+  SET_STATUS: 'setStatus',
 }
 
 export const multisigFuncs = {

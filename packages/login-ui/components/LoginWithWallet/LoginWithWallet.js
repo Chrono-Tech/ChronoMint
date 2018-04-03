@@ -162,6 +162,7 @@ class LoginWithWallet extends PureComponent {
           <div styleName='action'>
             <Button
               flat
+              styleName='whiteButton'
               label={<Translate value='LoginWithWallet.generateNewWallet' />}
               fullWidth
               disabled={isLoading}

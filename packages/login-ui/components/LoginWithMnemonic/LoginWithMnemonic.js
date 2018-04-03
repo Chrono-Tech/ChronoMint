@@ -84,6 +84,7 @@ class LoginWithMnemonic extends PureComponent {
         <div styleName='actions'>
           <div styleName='action'>
             <Button
+              styleName='whiteButton'
               flat
               fullWidth
               disabled={isLoading}
