@@ -7,7 +7,7 @@ export const getWallet = (state) => {
 }
 
 export const getWalletAddress = (blockchain: string) => createSelector(
-  [getWallet],
+  [ getWallet ],
   (addresses) => {
     return blockchain ? addresses.item(blockchain) : new AddressModel()
   },

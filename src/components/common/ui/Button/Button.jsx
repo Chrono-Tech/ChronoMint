@@ -29,8 +29,8 @@ export default class Button extends PureComponent {
   componentDidMount () {
     const callback = function (e) {
       const rec = this.getBoundingClientRect()
-      let X = e.pageX - rec.x
-      let Y = e.pageY - rec.y
+      let X = e.pageX - rec.x - window.pageXOffset
+      let Y = e.pageY - rec.y - window.pageYOffset
       let rippleDiv = document.createElement("div")
       rippleDiv.classList.add('ripple')
       rippleDiv.setAttribute("style", "top:" + Y + "px; left:" + X + "px;")

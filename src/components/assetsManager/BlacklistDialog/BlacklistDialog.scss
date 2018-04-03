@@ -3,7 +3,7 @@
 
 .content {
   width: 544px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
   @include xs-only {
     width: 100%;
   }
@@ -13,7 +13,6 @@
   position: relative;
   align-items: baseline;
   box-sizing: border-box;
-  background: $color-primary-1;
   min-height: 151px;
   padding: 24px 16px;
   text-align: left;
@@ -35,4 +34,6 @@
 
 .dialogBody {
   padding: 0 16px;
+  background-color: $color-white;
+  border-radius: 2px 2px 0 0;
 }

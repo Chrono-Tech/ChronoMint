@@ -3,11 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
-import { RaisedButton } from 'material-ui'
 import { Translate } from 'react-redux-i18n'
-import styles from 'components/assetsManager/styles'
 import { changePauseStatus } from 'redux/assetsManager/actions'
 import TokenModel from 'models/tokens/TokenModel'
+import { Button } from 'components'
 import './BlockAssetDialog.scss'
 import { prefix } from './lang'
 
@@ -61,25 +60,22 @@ export default class BlockAssetDialog extends PureComponent {
             </div>
           </div>
           <div styleName='dialogFooter'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={`${prefix}.cancel`} />}
               onTouchTap={this.handleClose}
             />
             {isPaused
-              ? <RaisedButton
+              ? <Button
                 styleName='action'
                 label={<Translate value={`${prefix}.unblockAssetButton`} />}
-                primary
                 onTouchTap={this.handleUnblockAsset}
               />
-              : <RaisedButton
-                styleName='action'
+              : <Button
+                styleName='action block'
                 label={<Translate value={`${prefix}.blockAssetButton`} />}
-                {...styles.buttons.blockRaisedButton}
                 onTouchTap={this.handleBlockAsset}
               />
-
             }
           </div>
         </div>

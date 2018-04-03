@@ -1,3 +1,4 @@
+import classnames from 'classnames'
 import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
@@ -255,16 +256,14 @@ export default class PlatformInfo extends PureComponent {
           </div>
 
           <div styleName='actions'>
-            <RaisedButton
+            <Button
               disabled={isPaused.isFetching() || !isPaused.isFetched()}
-              styleName='action'
-              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() && this.handleBlockAssetDialog}
-              labelStyle={{ display: 'flex' }}
+              styleName={classnames('action', { 'block': !selectedToken.isPaused().value() })}
+              onTouchTap={this.handleBlockAssetDialog}
               label={isPaused.isFetching() || !isPaused.isFetched()
                 ? <Preloader />
                 : <Translate value={prefix(selectedToken.isPaused().value() ? 'unblockAsset' : 'blockAsset')} />
               }
-              primary={selectedToken.isPaused().value()}
             />
 
             <Button
