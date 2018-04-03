@@ -2,7 +2,6 @@ import { DropDownMenu, MenuItem } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import i18n from 'i18n'
 import { changeMomentLocale } from 'redux/ui/actions'
 import styles from './styles'
 
@@ -12,6 +11,7 @@ import './LocaleDropDown.scss'
 export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
+    translations: PropTypes.object,
     handleChangeLocale: PropTypes.func,
   }
 
@@ -24,7 +24,10 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
-    const locales = Object.entries(i18n).map(([name, dictionary]) => ({
+
+    console.log('translations: ', this.props.translations)
+
+    const locales = Object.entries(this.props.translations).map(([name, dictionary]) => ({
       name,
       title: dictionary.title,
     }))
@@ -48,6 +51,7 @@ export default class LocaleDropDown extends PureComponent {
 function mapStateToProps (state) {
   return {
     locale: state.get('i18n').locale,
+    translations: state.get('i18n').translations,
   }
 }
 
