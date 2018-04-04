@@ -36,6 +36,8 @@ class TokenValue extends PureComponent {
     selectedCurrency: PropTypes.string,
     isInited: PropTypes.bool,
     noRenderPrice: PropTypes.bool,
+    renderOnlyPrice: PropTypes.bool,
+    noRenderSymbol: PropTypes.bool,
     bold: PropTypes.bool,
     style: PropTypes.object,
   }
@@ -65,13 +67,11 @@ class TokenValue extends PureComponent {
       return null
     }
     const valueInCurrency = integerWithDelimiter(valueWithoutDecimals.mul(price), true)
-    return (
-      <span styleName='price'>{`(US$${valueInCurrency})`}</span>
-    )
+    return <span styleName='price'>{`≈USD ${valueInCurrency}`}</span>
   }
 
   render () {
-    const { value, isInvert, prefix, noRenderPrice, style } = this.props
+    const { value, isInvert, prefix, noRenderPrice, style, renderOnlyPrice, noRenderSymbol } = this.props
     const defaultMod = isInvert ? 'defaultInvert' : 'default'
 
     // TODO @dkchv: remove symbol from props!!!!
@@ -79,13 +79,16 @@ class TokenValue extends PureComponent {
     const token: TokenModel = this.props.tokens.item(symbol)
     const valueWithoutDecimals = token.removeDecimals(value)
 
+    if (renderOnlyPrice) {
+      return this.renderPrice(valueWithoutDecimals, symbol)
+    }
     return !value.isLoaded() || !token.isFetched()
       ? <Preloader small />
       : (
         <span styleName={defaultMod} className='TokenValue__root' style={style}>
           {prefix}
           <span styleName='integral' className='TokenValue__integral'>{integerWithDelimiter(valueWithoutDecimals)}</span>
-          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(valueWithoutDecimals)} {symbol}</span>
+          <span styleName='fraction' className='TokenValue__fraction'>{this.getFraction(valueWithoutDecimals)} {!noRenderSymbol && symbol}</span>
           {!noRenderPrice && this.renderPrice(valueWithoutDecimals, symbol)}
         </span>
       )
