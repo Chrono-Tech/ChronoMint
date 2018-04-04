@@ -68,6 +68,7 @@ export default {
   },
   wallet: {
     sendTokens: 'Send tokens',
+    walletName: 'Wallet name',
     recipientAddress: 'Recipient address',
     selectTokenIcon: 'Please select icon file',
     multisignature: 'Multisignature',

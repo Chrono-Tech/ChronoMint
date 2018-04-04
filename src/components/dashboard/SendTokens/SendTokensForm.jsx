@@ -165,54 +165,44 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderHead () {
-    const { token, visibleBalances } = this.props
+    const { token, visibleBalances, wallet } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
     return (
-      <div>
-        <IconSection
-          title={<Translate value='wallet.sendTokens' />}
-          iconComponent={(
-            <IPFSImage
-              styleName='content'
-              multihash={token.icon()}
-              fallback={TOKEN_ICONS[ token.symbol() ]}
-            />
-          )}
-        >
-          <MuiThemeProvider theme={inversedTheme}>
-            {visibleBalances.length === 0
-              ? <Preloader />
-              : (
-                <Field
-                  component={SelectField}
-                  name='symbol'
-                  fullWidth
-                  {...styles}
-                >
-                  {visibleBalances
-                    .map((balance) => {
-                      const token: TokenModel = this.props.tokens.item(balance.id())
-                      if (token.isLocked()) {
-                        return
-                      }
-                      return (
-                        <MenuItem
-                          key={balance.id()}
-                          value={balance.id()}
-                          primaryText={balance.symbol()}
-                        />
-                      )
-                    })}
-                </Field>
-              )
-            }
-          </MuiThemeProvider>
-        </IconSection>
+      <div styleName='head'>
+        <div styleName='head-token-icon'>
+          <IPFSImage
+            styleName='content'
+            multihash={token.icon()}
+            fallback={TOKEN_ICONS[ token.symbol() ]}
+          />
+        </div>
+        <div styleName='head-section'>
+          <span styleName='head-section-text'>
+            <Translate value='wallet.sendTokens' />
+          </span>
+        </div>
+        <div styleName='wallet-name-section'>
+          <div styleName='wallet-name-title-section'>
+            <span styleName='wallet-name-title'>
+              <Translate value='wallet.walletName' />
+            </span>
+          </div>
+          <div styleName='wallet-value'>
+            <span styleName='wallet-value'>
+              {token.symbol()}
+            </span>
+          </div>
+        </div>
+
         <div styleName='balance'>
-          <div styleName='label'><Translate value={`${prefix}.balance`} />:</div>
           <div styleName='value'>
-            <TokenValue isInvert value={currentBalance.amount()} />
+            <TokenValue precision={6} noRenderPrice isInvert value={currentBalance.amount()} />
+          </div>
+          <div styleName='value'>
+            <span styleName='price-value'>
+              ≈USD 234342,234234.0
+            </span>
           </div>
         </div>
         {token.isERC20() && this.props.allowance &&
@@ -237,14 +227,7 @@ export default class SendTokensForm extends PureComponent {
     const isTimeLocked = wallet.isTimeLocked()
 
     return (
-      <div>
-        <div styleName='from'>
-          From:
-          <img
-            styleName='fromIcon'
-            src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
-          /> {wallet.addresses().item(token.blockchain()).address()}
-        </div>
+      <div styleName='form-container'>
         <div>
           <Field
             component={TextField}
@@ -254,14 +237,12 @@ export default class SendTokensForm extends PureComponent {
           />
         </div>
         <div styleName='row'>
-          <div styleName='amount'>
             <Field
               component={TextField}
               name='amount'
               floatingLabelText={<Translate value={`${prefix}.amount`} />}
               fullWidth
             />
-          </div>
         </div>
         {!(feeMultiplier && token.feeRate()) ? null : (
           <div>
@@ -326,10 +307,8 @@ export default class SendTokensForm extends PureComponent {
     return !visibleBalances.length ? null : (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
-          <ColoredSection
-            head={this.renderHead()}
-            body={this.renderBody()}
-          />
+          {this.renderHead()}
+          {this.renderBody()}
         </form>
       </Paper>
     )
