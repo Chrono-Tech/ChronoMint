@@ -46,7 +46,7 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 
 const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://btgexplorer.com/api',
+    baseURL: 'https://explorer.bitcoingold.org/insight-api',
     timeout: 4000,
   }),
   trace: false,
@@ -54,7 +54,7 @@ const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://testnet.btgexplorer.com/api',
+    baseURL: 'https://test-explorer.bitcoingold.org/insight-api',
     timeout: 4000,
   }),
   trace: false,
