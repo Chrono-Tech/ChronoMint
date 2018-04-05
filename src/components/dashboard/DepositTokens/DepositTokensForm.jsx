@@ -44,6 +44,7 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_DEPOSIT_TOKENS)
   const tokenId = selector(state, 'symbol')
   const amount = selector(state, 'amount')
+
   // state
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
@@ -143,85 +144,86 @@ export default class DepositTokensForm extends PureComponent {
     return limit.gte(amount)
   }
 
+  handleChangeAmount = (e, value) => {
+    // eslint-disable-next-line
+    console.log('handleChangeAmount', e, value)
+
+  }
+
   renderHead () {
     const { deposit, allowance, token, balance, assets } = this.props
     const symbol = token.symbol()
     return (
-      <div>
-        <IconSection
-          title={<Translate value={prefix('depositTime')} />}
-          iconComponent={token.isFetched() && (
+      <div styleName='head'>
+        <div styleName='mainTitle'><Translate value={prefix('depositTime')} /></div>
+        <div styleName='icon'>
+          <div styleName='imgWrapper'>
             <IPFSImage
-              styleName='content'
+              styleName='iconImg'
               multihash={token.icon()}
               fallback={TOKEN_ICONS[ symbol ]}
             />
-          )}
-        >
-          <MuiThemeProvider theme={inversedTheme}>
-            <div>
-              {assets.size() === 0
-                ? <Preloader />
-                : (
-                  <Field
-                    component={SelectField}
-                    name='symbol'
-                    fullWidth
-                    {...styles}
-                  >
-                    {assets
-                      .sortBy((balance) => balance.symbol())
-                      .map((item) => (
-                        <MenuItem
-                          key={item.id()}
-                          value={item.symbol()}
-                          primaryText={item.symbol()}
-                        />
-                      ))}
-                  </Field>
-                )
-              }
-              {token.isFetched()
-                ? (
-                  <div>
-                    <div styleName='balance'>
-                      <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
-                      <div styleName='ellipsis'><TokenValue isInvert value={balance} /></div>
-                    </div>
-                    <div styleName='balance'>
-                      <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
-                      <div styleName='ellipsis'><TokenValue isInvert value={deposit} /></div>
-                    </div>
-                    {
-                      allowance.amount().gt(0) &&
-                      <div styleName='balance'>
-                        <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:
-                        </div>
-                        <div styleName='ellipsis'><TokenValue isInvert value={allowance.amount()} /></div>
-                      </div>
-                    }
+          </div>
+        </div>
+        <div styleName='headContent'>
+          {token.isFetched()
+            ? (
+              <div>
+                <div styleName='headItem'>
+                  <div styleName='title'>
+                    <Translate value={prefix('depositAccount')} />
+                    <div styleName='address'>{token.address()}</div>
                   </div>
-                )
-                : (
-                  <div styleName='hint'>Select token</div>
-                )}
-            </div>
-          </MuiThemeProvider>
-        </IconSection>
+                </div>
+
+                <div styleName='headItem'>
+                  <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={balance} /></div>
+                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={balance} /></div>
+                </div>
+
+                <div styleName='headItem'>
+                  <div styleName='title'><Translate value={prefix('yourDeposit')} /></div>
+                  <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={deposit} /></div>
+                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
+                </div>
+
+                {
+                  allowance.amount().gt(0) &&
+                  <div styleName='headItem'>
+                    <div styleName='title'><Translate value={prefix('holderAllowance')} /></div>
+                    <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={allowance.amount()} /></div>
+                    <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={allowance.amount()} /></div>
+                  </div>
+                }
+              </div>
+            )
+            : (
+              <div styleName='preloader'><Preloader /></div>
+            )}
+        </div>
       </div>
     )
   }
 
   renderBody () {
+    const { amount, token } = this.props
     return (
       <div>
-        <Field
-          component={TextField}
-          hintText='0.00'
-          floatingLabelText={<Translate value={prefix('amount')} />}
-          name='amount'
-          style={{ width: '150px' }}
-        />
+        <div styleName='fieldWrapper'>
+          <Field
+            component={TextField}
+            fullWidth
+            hintText='0.00'
+            floatingLabelText={<Translate value={prefix('amount')} />}
+            onChange={this.handleChangeAmount}
+            name='amount'
+          />
+          <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount || 0), token.symbol())} /></div>
+        </div>
+        <div styleName='transactionsInfo'>
+          <div><b><Translate value={prefix('transactionFee')} />:</b> ETH 0.001 (≈USD 10.00)</div>
+          <div><b><Translate value={prefix('transactionWillBeDoneIn')} />:</b> <Translate value={prefix('sec')} /></div>
+        </div>
       </div>
     )
   }
@@ -282,7 +284,7 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
-  render () {
+  /*render () {
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
@@ -293,6 +295,19 @@ export default class DepositTokensForm extends PureComponent {
           />
         </form>
       </Paper>
+    )
+  }*/
+  render () {
+    return (
+      <div styleName='root'>
+        <form onSubmit={this.props.handleSubmit}>
+          {this.renderHead()}
+          <div styleName='body'>
+            {this.renderBody()}
+            {this.renderFoot()}
+          </div>
+        </form>
+      </div>
     )
   }
 }

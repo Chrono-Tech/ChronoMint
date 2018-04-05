@@ -1,6 +1,116 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
+.root {
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.head {
+  background: $sideMenu-background;
+}
+
+.mainTitle {
+  font-size: 30px;
+  color: $color-white;
+  line-height: 36px;
+  font-weight: 400;
+  padding: 20px 30px;
+}
+
+.icon {
+  position: relative;
+  border-bottom: 1px solid #6D79BF;
+  overflow: visible;
+  height: 0;
+  width: 100%;
+  .imgWrapper {
+    background: $color-blue;
+    position: absolute;
+    right: 30px;
+    top: -32px;
+    border-radius: 32px;
+    padding: 7px 8px 8px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.iconImg {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.headContent {
+  .headItem {
+    &:first-child {
+      padding-top: 40px;
+    }
+    padding: 10px 30px;
+    &:last-child {
+      padding-bottom: 30px;
+    }
+  }
+  .title {
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
+    color: $color-white;
+    .address {
+      color: $additionalData-color;
+    }
+  }
+
+  .balance {
+    line-height: 25px;
+    color: $color-white;
+    font-size: 30px;
+    :global {
+      .TokenValue__root {
+        span {
+          line-height: 36px;
+          color: $color-white;
+          font-size: 30px;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .balanceFiat {
+    span {
+      color: $color-white;
+      font-size: 16px;
+      line-height: 19px;
+      margin: 0;
+    }
+  }
+  .preloader {
+
+  }
+}
+
+.body {
+  background: $color-white;
+  padding: 10px 30px;
+  .fieldWrapper {
+    position: relative;
+    .amountInFiat {
+      position: absolute;
+      right: 0;
+      top: 38px;
+    }
+  }
+  .transactionsInfo {
+    padding-top: 10px;
+    > div {
+      padding-top: 10px;
+    }
+  }
+}
+
 // TODO @dkchv: !!! review again
 .content {
   @include position(absolute, 10px, 10px, 10px, 10px);
@@ -11,32 +121,20 @@
   background-size: contain;
 }
 
-.balance {
-
-  margin-top: 15px;
-  text-shadow: $text-shadow-title;
-
-  .label {
-    height: 17px;
-    font-size: 14px;
-    color: $color-white;
-  }
-}
-
 .actions {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 40px;
   @include xs-only {
-    display: flex;
     flex-direction: column;
   }
 }
 
 .action {
-  margin-left: 40px;
-
   @include md-only {
-    margin-left: 20px;
-    margin-bottom: 20px;
+    margin-left: 16px;
+    margin-bottom: 16px;
     display: inline-block;
   }
 
