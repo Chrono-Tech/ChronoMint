@@ -88,7 +88,7 @@ export default class PlatformsList extends PureComponent {
               <div
                 key={asset.address}
                 styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
-                onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
+                onTouchTap={() => !token.isPending() && token.isFetched() ? this.props.handleSelectToken(token) : undefined}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
