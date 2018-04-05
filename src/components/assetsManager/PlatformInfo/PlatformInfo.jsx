@@ -258,7 +258,7 @@ export default class PlatformInfo extends PureComponent {
             <RaisedButton
               disabled={isPaused.isFetching() || !isPaused.isFetched()}
               styleName='action'
-              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() && this.handleBlockAssetDialog}
+              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() ? this.handleBlockAssetDialog: undefined}
               labelStyle={{ display: 'flex' }}
               label={isPaused.isFetching() || !isPaused.isFetched()
                 ? <Preloader />

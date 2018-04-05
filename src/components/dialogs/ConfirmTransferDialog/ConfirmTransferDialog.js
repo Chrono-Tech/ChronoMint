@@ -216,7 +216,7 @@ export default class ConfirmTransferDialog extends PureComponent {
               primary
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}
-              onTouchTap={isValid && this.handleConfirm}
+              onTouchTap={isValid ? this.handleConfirm : undefined}
             />
           </div>
         </div>

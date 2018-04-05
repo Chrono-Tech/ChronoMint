@@ -498,6 +498,12 @@ export default {
       [ chronoBankAsset.TX_UNPAUSE ]: {
         title: 'Unblock asset',
       },
+      [ chronoBankAsset.TX_RESTRICT ]: {
+        title: 'Add user to blacklist',
+      },
+      [ chronoBankAsset.TX_UNRESTRICT ]: {
+        title: 'Remove user from blacklist',
+      },
     },
   },
   errors: {
