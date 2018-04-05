@@ -21,7 +21,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, Slider, TextField } from 'redux-form-material-ui'
+import { SelectField, Slider, TextField, Checkbox } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -35,6 +35,9 @@ import './SendTokensForm.scss'
 import validate from './validate'
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
+
+export const MODE_SIMPLE = 'simple'
+export const MODE_ADVANCED = 'advanced'
 
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
@@ -96,6 +99,7 @@ export default class SendTokensForm extends PureComponent {
     super(...arguments)
     this.state = {
       isContract: false,
+      mode: MODE_SIMPLE
     }
   }
 
@@ -160,12 +164,18 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
+  changeMode = () => {
+    this.setState({
+      mode: this.state.mode === MODE_SIMPLE ? MODE_ADVANCED : MODE_SIMPLE
+    })
+  }
+
   checkIsContract (address): Promise {
     return contractsManagerDAO.isContract(address)
   }
 
   renderHead () {
-    const { token, visibleBalances, wallet } = this.props
+    const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
     return (
@@ -182,6 +192,36 @@ export default class SendTokensForm extends PureComponent {
             <Translate value='wallet.sendTokens' />
           </span>
         </div>
+        <div styleName='wallet-tokens-selector-container'>
+          <MuiThemeProvider theme={inversedTheme}>
+            {visibleBalances.length === 0
+              ? <Preloader />
+              : (
+                <Field
+                  component={SelectField}
+                  name='symbol'
+                  fullWidth
+                  {...styles}
+                >
+                  {visibleBalances
+                    .map((balance) => {
+                      const token: TokenModel = this.props.tokens.item(balance.id())
+                      if (token.isLocked()) {
+                        return
+                      }
+                      return (
+                        <MenuItem
+                          key={balance.id()}
+                          value={balance.id()}
+                          primaryText={balance.symbol()}
+                        />
+                      )
+                    })}
+                </Field>
+              )
+            }
+          </MuiThemeProvider>
+        </div>
         <div styleName='wallet-name-section'>
           <div styleName='wallet-name-title-section'>
             <span styleName='wallet-name-title'>
@@ -190,7 +230,7 @@ export default class SendTokensForm extends PureComponent {
           </div>
           <div styleName='wallet-value'>
             <span styleName='wallet-value'>
-              {token.symbol()}
+              {wallet.addresses().item(token.blockchain()).address()}
             </span>
           </div>
         </div>
@@ -201,7 +241,7 @@ export default class SendTokensForm extends PureComponent {
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              ≈USD 234342,234234.0
+              <TokenValue isInvert renderOnlyPrice value={allowance.amount()} />
             </span>
           </div>
         </div>
@@ -245,7 +285,7 @@ export default class SendTokensForm extends PureComponent {
             />
         </div>
         {!(feeMultiplier && token.feeRate()) ? null : (
-          <div>
+          <div styleName='row'>
             <div styleName='feeRate'>
               <div>
                 <small>
@@ -270,34 +310,36 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
-        <div styleName='row'>
+        <div styleName='template-container'>
+          <div styleName='template-checkbox'>
+            <Field
+              component={Checkbox}
+              name='isTemplateEnabled'
+            />
+          </div>
+          <div styleName='template-name'>
+            <Field
+              component={TextField}
+              name='TemplateName'
+              floatingLabelText={<Translate value={`wallet.templateName`} />}
+              fullWidth
+            />
+          </div>
+        </div>
+        <div styleName='actions-row'>
+          <div styleName='advanced-simple' onTouchTap={this.changeMode}>
+            <span styleName='advanced-text'>
+               <Translate value={ this.state.mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple' } />
+            </span>
+          </div>
           <div styleName='send'>
             <Button
               label={<Translate value={`${prefix}.send`} />}
               disabled={pristine || invalid || isTimeLocked}
               onTouchTap={handleSubmit(this.handleTransfer)}
             />
-            {token.isERC20() && isApprove && (
-              <Button
-                label={<Translate value={`${prefix}.approve`} />}
-                disabled={pristine || invalid || !isContract || isTimeLocked}
-                onTouchTap={handleSubmit(this.handleApprove)}
-              />
-            )}
-            {token.isERC20() && !isApprove && (
-              <Button
-                label={<Translate value={`${prefix}.revoke`} />}
-                disabled={!isContract}
-                onTouchTap={this.handleRevoke}
-              />
-            )}
           </div>
         </div>
-        {wallet.isTimeLocked() && (
-          <div styleName='timeLockWarn'>
-            <Translate value={`${prefix}.timeLockedWarn`} />:<br /><strong><Moment date={wallet.releaseTime()} /></strong>
-          </div>
-        )}
       </div>
     )
   }

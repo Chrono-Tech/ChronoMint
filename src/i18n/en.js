@@ -67,6 +67,9 @@ export default {
     of: 'of %{count}',
   },
   wallet: {
+    modeAdvanced: 'Advanced',
+    modeSimple: 'Simple',
+    templateName: 'Template name',
     sendTokens: 'Send tokens',
     walletName: 'Wallet name',
     recipientAddress: 'Recipient address',

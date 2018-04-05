@@ -24,7 +24,7 @@
   .head-token-icon {
     position: absolute;
     right: 30px;
-    top: 40px;
+    top: 35px;
     width: 64px;
     height: 64px;
   }
@@ -93,6 +93,32 @@
   padding-right: 30px;
 }
 
+.wallet-tokens-selector-container {
+  display: flex;
+  flex-direction: row;
+  padding: 40px 30px 0 30px;
+}
+
+.advanced-simple {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.advanced-text {
+  color: #786AB7;
+  font-weight: 700;
+  text-align: left;
+  font-size: 16px;
+  font-family: proxima-nova, sans-serif;
+  line-height: 19px;
+
+  &:hover {
+
+  }
+}
+
 .table {
   display: table;
   width: 100%;
@@ -151,6 +177,8 @@
 }
 
 .content {
+  width: 64px;
+  height: 64px;
   @include position(absolute, 10px, 10px, 10px, 10px);
   @include xs-only {
     @include position(absolute, 5px, 5px, 5px, 5px);
@@ -161,20 +189,54 @@
 
 .row {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  flex: 1;
+}
+
+.actions-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  padding-bottom: 30px;
 }
 
 .amount {
   width: 220px;
 }
 
+
+.template-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.template-checkbox {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-bottom: 10px;
+}
+
+.template-name {
+  display: flex;
+  flex: 7;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .feeRate {
   margin-top: 20px;
-  width: 220px;
+  margin-bottom: 30px;
+  width: 100%;
 }
 
 .send {
-  flex-grow: 1;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
   @include xs-only {
     display: flex;
     flex-direction: column;
