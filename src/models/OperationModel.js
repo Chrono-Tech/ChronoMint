@@ -62,7 +62,7 @@ class OperationModel extends abstractFetchingModel({
 
   txSummary () {
     return {
-      signatures: `${this.remained()} of ${this.remained() + this.completed()}`,
+      signatures: `${this.completed()} of ${this.remained() + this.completed()}`,
       action: this.tx().title(),
       ...this.tx().args(),
     }

@@ -53,12 +53,25 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getPlatformList (userAddress: string) {
-    const minePlatforms = await ethereumProvider.getEventsData('mint/platforms', `by='${userAddress}'`, (e) => {
-      return { address: e.platform, by: e.by, name: null }
-    })
-    const mineAssets = await ethereumProvider.getEventsData('mint/assets', `account='${userAddress}'`, (e) => {
-      return { address: e.platform, by: e.by, name: null }
-    })
+    let minePlatforms = []
+    let mineAssets = []
+    try {
+      minePlatforms = await ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+        return { address: e.platform, by: e.by, name: null }
+      })
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn(e)
+    }
+
+    try {
+      mineAssets = await ethereumProvider.getEventsData('mint/assets', `account='${userAddress}'`, (e) => {
+        return { address: e.platform, by: e.by, name: null }
+      })
+    } catch (e) {
+      // eslint-disable-next-line
+      console.warn(e)
+    }
 
     return unionBy(minePlatforms, mineAssets, 'address')
   }
@@ -119,7 +132,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const platformTokenExtensionGatewayManagerDAO = await contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO()
 
     transactionsPromises.push(platformTokenExtensionGatewayManagerDAO._get(TX_ASSET_CREATED, 0, 'latest', { by: account }))
-    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }, 'test'))
+    transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_REQUESTED, 0, 'latest', { by: account }))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_ATTACHED, 0, 'latest', { by: account }))
     transactionsPromises.push(platformManagerDao._get(TX_PLATFORM_DETACHED, 0, 'latest', { by: account }))
     transactionsPromises.push(chronoBankPlatformDAO._get(TX_ISSUE, 0, 'latest', { by: account }))

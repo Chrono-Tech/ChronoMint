@@ -2,6 +2,7 @@ import Immutable from 'immutable'
 import OperationNoticeModel from 'models/notices/OperationNoticeModel'
 import OperationModel from 'models/OperationModel'
 import type TxExecModel from 'models/TxExecModel'
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
@@ -22,6 +23,8 @@ export const OPERATIONS_PER_PAGE = 10
 export default class PendingManagerDAO extends AbstractContractDAO {
   constructor (at) {
     super(PendingManagerABI, at, MultiEventsHistoryABI)
+
+    this._okCodes = [ resultCodes.OK, resultCodes.MULTISIG_ADDED ]
   }
 
   multisigDAO () {
@@ -34,11 +37,11 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   async getList () {
-    const [hashes, yetNeededArr, ownersDoneArr, timestampArr] = await this._call('getTxs')
+    const [ hashes, yetNeededArr, ownersDoneArr, timestampArr ] = await this._call('getTxs')
 
     let promises = []
     for (const hash of hashes) {
-      promises.push(this._call('getTxData', [hash]))
+      promises.push(this._call('getTxData', [ hash ]))
     }
     const dataArr = await Promise.all(promises)
 
@@ -51,16 +54,16 @@ export default class PendingManagerDAO extends AbstractContractDAO {
     let map = new Immutable.Map()
     for (const i in hashes) {
       if (hashes.hasOwnProperty(i)) {
-        const tx = txs[i]
+        const tx = txs[ i ]
         // TODO @ipavlenko: For the reason unknown we may get null here
         if (tx !== null) {
           const model = new OperationModel({
-            id: `P-${hashes[i]}`,
-            tx: txs[i].set('timestamp', timestampArr[i].toNumber() * 1000),
-            remained: yetNeededArr[i].toNumber(),
+            id: `P-${hashes[ i ]}`,
+            tx: txs[ i ].set('timestamp', timestampArr[ i ].toNumber() * 1000),
+            remained: yetNeededArr[ i ].toNumber(),
             // number of 1 bits in binary representation
-            completed: ownersDoneArr[i].toNumber().toString(2).split('1').length - 1,
-            isConfirmed: this._isConfirmed(ownersDoneArr[i]),
+            completed: ownersDoneArr[ i ].toNumber().toString(2).split('1').length - 1,
+            isConfirmed: this._isConfirmed(ownersDoneArr[ i ]),
           })
           map = map.set(model.originId(), model)
         }
@@ -82,12 +85,12 @@ export default class PendingManagerDAO extends AbstractContractDAO {
 
     for (const i in r) {
       if (r.hasOwnProperty(i)) {
-        const tx = txs[i]
+        const tx = txs[ i ]
         // TODO @ipavlenko: For the reason unknown we may get null here
         if (tx !== null) {
           const operation = new OperationModel({
-            id: r[i].args.hash,
-            tx: txs[i].set('timestamp', r[i].args.timestamp * 1000),
+            id: r[ i ].args.hash,
+            tx: txs[ i ].set('timestamp', r[ i ].args.timestamp * 1000),
             isDone: true,
           })
           map = map.set(operation.id(), operation)
@@ -99,11 +102,11 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   }
 
   confirm (operation: OperationModel) {
-    return this._tx(TX_CONFIRM, [operation.id()], operation)
+    return this._tx(TX_CONFIRM, [ operation.id() ], operation)
   }
 
   revoke (operation: OperationModel) {
-    return this._tx(TX_REVOKE, [operation.id()], operation)
+    return this._tx(TX_REVOKE, [ operation.id() ], operation)
   }
 
   /**
@@ -115,7 +118,7 @@ export default class PendingManagerDAO extends AbstractContractDAO {
   _watchPendingCallback = (callback, isRevoked: boolean = false) => async (result, block, time) => {
     // noinspection JSUnusedLocalSymbols
     const hash = result.args.hash
-    const [data, remained, done, timestamp] = await this._call('getTx', [hash])
+    const [ data, remained, done, timestamp ] = await this._call('getTx', [ hash ])
     const tx = await this._parseData(data)
     const operation = new OperationModel({
       id: PENDING_ID_PREFIX + hash,
