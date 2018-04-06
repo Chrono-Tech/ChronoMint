@@ -70,6 +70,7 @@ export default {
     modeAdvanced: 'Advanced',
     modeSimple: 'Simple',
     templateName: 'Template name',
+    satPerByte: 'SAT / byte',
     sendTokens: 'Send tokens',
     walletName: 'Wallet name',
     recipientAddress: 'Recipient address',

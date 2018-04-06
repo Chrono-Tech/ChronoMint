@@ -10,6 +10,8 @@ import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
+import Amount from 'models/Amount'
 import Immutable from 'immutable'
 import { MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import BalanceModel from 'models/tokens/BalanceModel'
@@ -55,6 +57,8 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
+  const amount = selector(state, 'amount')
+  const satPerByte = selector(state, 'satPerByte')
   const token = state.get(DUCK_TOKENS).item(tokenId)
 
   return {
@@ -64,10 +68,12 @@ function mapStateToProps (state) {
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
+    amount,
     token,
     recipient,
     symbol,
     feeMultiplier,
+    satPerByte,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
 }
@@ -99,7 +105,8 @@ export default class SendTokensForm extends PureComponent {
     super(...arguments)
     this.state = {
       isContract: false,
-      mode: MODE_SIMPLE
+      mode: MODE_SIMPLE,
+      advancedFee: 0
     }
   }
 
@@ -164,6 +171,10 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
+  async getFee(to, from, amount, feeRate) {
+    return btcProvider.estimateFee(to, from, amount, feeRate)
+  }
+
   changeMode = () => {
     this.setState({
       mode: this.state.mode === MODE_SIMPLE ? MODE_ADVANCED : MODE_SIMPLE
@@ -172,6 +183,23 @@ export default class SendTokensForm extends PureComponent {
 
   checkIsContract (address): Promise {
     return contractsManagerDAO.isContract(address)
+  }
+
+  getFormFee = () => {
+    return this.state.mode === MODE_SIMPLE ? this.props.feeMultiplier : this.props.satPerByte
+  }
+
+  calculatingFee = async (event, value) => {
+    const fee = await this.getFee(
+      this.props.wallet.addresses().item(this.props.token.blockchain()).address(),
+      this.props.recipient,
+      new Amount(this.props.amount, this.props.token.symbol()),
+      this.getFormFee()
+    )
+
+    this.setState({
+      advancedFee: fee
+    })
   }
 
   renderHead () {
@@ -284,7 +312,7 @@ export default class SendTokensForm extends PureComponent {
               fullWidth
             />
         </div>
-        {!(feeMultiplier && token.feeRate()) ? null : (
+        {!(this.state.mode === MODE_SIMPLE && feeMultiplier && token.feeRate()) ? null : (
           <div styleName='row'>
             <div styleName='feeRate'>
               <div>
@@ -301,6 +329,7 @@ export default class SendTokensForm extends PureComponent {
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
+                onChange={this.calculatingFee}
               />
               <div styleName='tagsWrap'>
                 <div><Translate value={`${prefix}.slow`} /></div>
@@ -310,6 +339,24 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
+        { this.state.mode === MODE_ADVANCED && (
+          <div styleName='advanced-mode-container'>
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='satPerByte'
+                floatingLabelText={<Translate value={'wallet.satPerByte'} />}
+                fullWidth
+                onChange={this.calculatingFee}
+              />
+            </div>
+          </div>
+        ) }
+        <div styleName="transaction-fee">
+          <span styleName='title'>Transaction fee: </span><span styleName='description'>
+          { 'BTC ' + this.state.advancedFee + ' (≈USD 10.00) 1.0x of average fee.' }
+          </span>
+        </div>
         <div styleName='template-container'>
           <div styleName='template-checkbox'>
             <Field
@@ -321,16 +368,19 @@ export default class SendTokensForm extends PureComponent {
             <Field
               component={TextField}
               name='TemplateName'
-              floatingLabelText={<Translate value={`wallet.templateName`} />}
+              floatingLabelText={<Translate value={'wallet.templateName'} />}
               fullWidth
             />
           </div>
         </div>
+
         <div styleName='actions-row'>
-          <div styleName='advanced-simple' onTouchTap={this.changeMode}>
-            <span styleName='advanced-text'>
-               <Translate value={ this.state.mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple' } />
-            </span>
+          <div styleName='advanced-simple'>
+            { this.props.token.symbol() === 'BTC' && (<div onTouchTap={this.changeMode}>
+              <span styleName='advanced-text'>
+                 <Translate value={ this.state.mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple' } />
+              </span>
+            </div>)}
           </div>
           <div styleName='send'>
             <Button
@@ -346,6 +396,9 @@ export default class SendTokensForm extends PureComponent {
 
   render () {
     const { visibleBalances } = this.props
+
+    console.log(this.props)
+
     return !visibleBalances.length ? null : (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
@@ -356,3 +409,4 @@ export default class SendTokensForm extends PureComponent {
     )
   }
 }
+

@@ -99,11 +99,41 @@
   padding: 40px 30px 0 30px;
 }
 
+.advanced-mode-container {
+  display: flex;
+  flex-direction: column;
+
+  .field {
+    display: flex;
+    flex: 1;
+  }
+
+}
+
+
+.transaction-fee {
+  display: flex;
+  margin-top: 20px;
+
+  .title {
+    font-family: proxima-nova, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: #333333;
+  }
+
+  .description {
+    line-height: 17px;
+  }
+}
+
 .advanced-simple {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  cursor: pointer;
 }
 
 .advanced-text {
