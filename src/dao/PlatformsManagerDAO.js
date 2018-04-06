@@ -52,4 +52,15 @@ export default class PlatformsManagerDAO extends AbstractMultisigContractDAO {
     this._watch(TX_PLATFORM_ATTACHED, (tx) => callback(tx), { by: account })
     this._watch(TX_PLATFORM_DETACHED, (tx) => callback(tx), { by: account })
   }
+
+  async _decodeArgs (func, args: Object) {
+    switch (func) {
+      case TX_ATTACH_PLATFORM:
+        return {
+          platform: args[ '_platform' ],
+        }
+      default:
+        return args
+    }
+  }
 }
