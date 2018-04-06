@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
+import { detachPlatform, DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -37,6 +37,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
     handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
+    handleDetachPlatform: (platformAddress) => dispatch(detachPlatform(platformAddress)),
   }
 }
 
@@ -47,6 +48,7 @@ export default class PlatformsList extends PureComponent {
     selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
+    handleDetachPlatform: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.objectOf(PropTypes.object),
@@ -116,7 +118,7 @@ export default class PlatformsList extends PureComponent {
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, handleDetachPlatform, assets }) => {
     return (
       <div>
         {
@@ -135,6 +137,7 @@ export default class PlatformsList extends PureComponent {
                     ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
+                  {/*<button onTouchTap={() => handleDetachPlatform(address)}>detach platform</button>*/}
                 </div>
               </div>
               {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}
@@ -156,6 +159,7 @@ export default class PlatformsList extends PureComponent {
             platformsList={this.props.platformsList}
             tokens={this.props.tokens}
             selectedToken={this.props.selectedToken}
+            handleDetachPlatform={this.props.handleDetachPlatform}
             assets={this.props.assets}
           >
             {this.renderPlatformsList}

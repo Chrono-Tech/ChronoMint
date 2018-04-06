@@ -53,7 +53,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getPlatformList (userAddress: string) {
-    const minePlatforms = await ethereumProvider.getEventsData('PlatformRequested', `by='${userAddress}'`, (e) => {
+    const minePlatforms = await ethereumProvider.getEventsData('mint/platforms', `by='${userAddress}'`, (e) => {
       return { address: e.platform, by: e.by, name: null }
     })
     const mineAssets = await ethereumProvider.getEventsData('mint/assets', `account='${userAddress}'`, (e) => {

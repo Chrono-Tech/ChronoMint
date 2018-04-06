@@ -516,14 +516,14 @@ export default class AbstractContractDAO extends EventEmitter {
             errorCode = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
           }
           if (!this._okCodes.includes(errorCode)) {
+            // eslint-disable-next-line
+            console.warn(
+              this._error(
+                'Tx Error', func, args, value, gasLimit,
+                this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
+              ))
             throw new TxError('Error event was emitted', errorCode)
           }
-          // eslint-disable-next-line
-          console.warn(
-            this._error(
-              'Tx Error', func, args, value, gasLimit,
-              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
-            ))
         }
       }
 
