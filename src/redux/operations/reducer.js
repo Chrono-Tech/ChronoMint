@@ -27,9 +27,11 @@ export default (state = initialState, action) => {
         completedEndOfList: action.list.size < OPERATIONS_PER_PAGE,
       }
     case a.OPERATIONS_SET:
+      // TODO @abdulov research this
+      // list: !action.operation.isDone() && (action.operation.isCancelled() || action.operation.isCompleted())
       return {
         ...state,
-        list: !action.operation.isDone() && (action.operation.isCancelled() || action.operation.isCompleted())
+        list: !action.operation.isDone() && action.operation.isCompleted()
           ? state.list.delete(action.operation.originId())
           : state.list.set(action.operation.originId(), action.operation),
       }

@@ -39,7 +39,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       await this._tx(func, args, infoArgs, null, {
         ...options,
         addDryRunFrom: dao.getInitAddress(),
-        addDryRunOkCodes: [resultCodes.OK],
+        addDryRunOkCodes: this._okCodes,
       }),
     ])
 
