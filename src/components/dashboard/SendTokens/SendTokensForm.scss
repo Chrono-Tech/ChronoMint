@@ -263,9 +263,15 @@
   width: 100%;
 }
 
+.button {
+  display: inline-block;
+
+}
+
 .send {
+  display: flex;
   flex: 1;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   @include xs-only {
     display: flex;

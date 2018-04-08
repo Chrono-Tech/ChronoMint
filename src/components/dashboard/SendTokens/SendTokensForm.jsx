@@ -189,13 +189,34 @@ export default class SendTokensForm extends PureComponent {
     return this.state.mode === MODE_SIMPLE ? this.props.feeMultiplier : this.props.satPerByte
   }
 
-  calculatingFee = async (event, value) => {
+
+  calculatingFeeBitcoin = async (event, value) => {
     const fee = await this.getFee(
       this.props.wallet.addresses().item(this.props.token.blockchain()).address(),
       this.props.recipient,
       new Amount(this.props.amount, this.props.token.symbol()),
       this.getFormFee()
     )
+
+    return fee
+  }
+
+  calculatingFeeERC20 = async (event, value) => {
+
+
+    return 0
+  }
+
+  calculatingFee = async (event, value) => {
+    console.log('calculatingFee: ', event, value)
+    const fee = 0
+    if (this.props.token.symbol() === 'BTC') {
+      const fee = this.calculatingFeeBitcoin(event, value)
+    } else if (this.props.token.isERC20()) {
+      const fee = this.calculatingFeeERC20(event, value)
+    }
+
+    console.log('calculatingFee: ', this.props.token.symbol(), fee)
 
     this.setState({
       advancedFee: fee
@@ -205,6 +226,8 @@ export default class SendTokensForm extends PureComponent {
   renderHead () {
     const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
+
+    console.log('head: ', this.props)
 
     return (
       <div styleName='head'>
@@ -315,15 +338,6 @@ export default class SendTokensForm extends PureComponent {
         {!(this.state.mode === MODE_SIMPLE && feeMultiplier && token.feeRate()) ? null : (
           <div styleName='row'>
             <div styleName='feeRate'>
-              <div>
-                <small>
-                  <Translate
-                    value={`${prefix}.${this.getFeeTitle()}`}
-                    multiplier={feeMultiplier.toFixed(1)}
-                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
-                  />
-                </small>
-              </div>
               <Field
                 component={Slider}
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
@@ -353,9 +367,20 @@ export default class SendTokensForm extends PureComponent {
           </div>
         ) }
         <div styleName="transaction-fee">
-          <span styleName='title'>Transaction fee: </span><span styleName='description'>
-          { 'BTC ' + this.state.advancedFee + ' (≈USD 10.00) 1.0x of average fee.' }
-          </span>
+                <span styleName='title'>
+                  <Translate value={`${prefix}.transactionFee`} />
+                </span>
+                <span styleName='description'>
+                  <Translate value={`${prefix}.transactionFeeDescription`}
+                     symbol={this.props.token.symbol()}
+                     feeValue={this.state.advancedFee}
+                     feeAsUSD={<TokenValue
+                       renderOnlyPrice onlyPriceValue  value={new Amount(
+                       this.state.advancedFee,
+                       this.props.token.symbol())}
+                     />}
+                     averageFee={'4.5'} />
+                </span>
         </div>
         <div styleName='template-container'>
           <div styleName='template-checkbox'>

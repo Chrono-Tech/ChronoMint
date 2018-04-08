@@ -37,6 +37,7 @@ class TokenValue extends PureComponent {
     isInited: PropTypes.bool,
     noRenderPrice: PropTypes.bool,
     renderOnlyPrice: PropTypes.bool,
+    onlyPriceValue: PropTypes.bool,
     noRenderSymbol: PropTypes.bool,
     bold: PropTypes.bool,
     style: PropTypes.object,
@@ -67,6 +68,10 @@ class TokenValue extends PureComponent {
       return null
     }
     const valueInCurrency = integerWithDelimiter(valueWithoutDecimals.mul(price), true)
+    if (this.props.onlyPriceValue) {
+      return valueInCurrency
+    }
+
     return <span styleName='price'>{`≈USD ${valueInCurrency}`}</span>
   }
 
