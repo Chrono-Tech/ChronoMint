@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { DUCK_MONITOR } from '@chronobank/login/redux/monitor/actions'
 import { Link } from 'react-router'
 import { CopyIcon, IPFSImage, QRIcon } from 'components'

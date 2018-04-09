@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Link } from 'react-router'
 import iconTokenDefaultSVG from 'assets/img/icons/coin-blue.svg'
 import React, { PureComponent } from 'react'
