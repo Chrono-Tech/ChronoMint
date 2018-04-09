@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import * as Assets from 'components/assetsManager/lang'
 import * as Timer from 'components/common/Timer/lang'
 import * as Dashboard from 'components/dashboard/lang'

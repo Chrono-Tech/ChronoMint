@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { IPFSImage } from 'components'

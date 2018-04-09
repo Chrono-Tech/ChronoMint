@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import classnames from 'classnames'
 import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
 import PollModel from 'models/PollModel'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'

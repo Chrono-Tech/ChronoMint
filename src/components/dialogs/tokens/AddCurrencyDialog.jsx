@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Points from 'components/common/Points/Points'
 import Immutable from 'immutable'
 import { FloatingActionButton, FontIcon, RaisedButton } from 'material-ui'

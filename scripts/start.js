@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 
 // eslint-disable-next-line

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'

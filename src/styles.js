@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { grey600, greenA400, redA400 } from 'material-ui/styles/colors'
 import { typography } from 'material-ui/styles'
 

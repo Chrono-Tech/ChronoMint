@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi-big.svg'
 import classnames from 'classnames'

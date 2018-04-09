@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import AbstractProvider from './AbstractProvider'
 import type EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'

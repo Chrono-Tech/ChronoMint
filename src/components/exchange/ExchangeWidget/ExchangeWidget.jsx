@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
 import { MenuItem, RaisedButton } from 'material-ui'

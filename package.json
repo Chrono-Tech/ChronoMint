@@ -3,6 +3,8 @@
   "version": "0.8.0",
   "description": "Control panel for ChronoBank",
   "private": true,
+  "author": "chronobank",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/login": "*",

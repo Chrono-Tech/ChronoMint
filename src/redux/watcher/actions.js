@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
