@@ -725,7 +725,9 @@ export default {
       DepositTokens: {
         depositTime: 'Deposit Time',
         depositAccount: 'Deposit account',
-        amount: 'Amount',
+        amount: 'Amount, %{symbol}',
+        slow: 'Slow transaction',
+        fast: 'Fast',
         yourSymbolBalance: 'Your %{symbol} balance',
         yourDeposit: 'Your deposit',
         holderAllowance: 'holder allowance',

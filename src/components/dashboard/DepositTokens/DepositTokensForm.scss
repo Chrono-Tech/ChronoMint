@@ -167,3 +167,20 @@
   @include ellipsis;
   color: $color-white
 }
+
+.feeRate {
+  padding-top: 40px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  color: $border-color;
+}
+
+.tagDefault {
+}
