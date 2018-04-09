@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import classnames from 'classnames'
 import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { abstractModel } from '../AbstractModel'
 import { IMAGE_MIME_TYPE, DOC_MIME_TYPE, XLS_MIME_TYPE, PPT_MIME_TYPE, PDF_MIME_TYPE } from './FileExtension'
 

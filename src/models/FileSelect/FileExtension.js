@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 // for decode types
 // @see https://technet.microsoft.com/en-us/library/ee309278(office.12).aspx
 // @see https://developer.mozilla.org/ru/docs/Web/HTTP/Basics_of_HTTP/MIME_types/%D0%9F%D0%BE%D0%BB%D0%BD%D1%8B%D0%B9_%D1%81%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_MIME

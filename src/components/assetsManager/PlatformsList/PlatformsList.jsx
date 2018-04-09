@@ -1,10 +1,15 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { IPFSImage, TokenValue } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
-import { DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
+import { detachPlatform, DUCK_ASSETS_MANAGER, selectPlatform, selectToken } from 'redux/assetsManager/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenModel from 'models/tokens/TokenModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -37,6 +42,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleSelectPlatform: (platformAddress) => dispatch(selectPlatform(platformAddress)),
     handleSelectToken: (token: TokenModel) => dispatch(selectToken(token)),
+    handleDetachPlatform: (platformAddress) => dispatch(detachPlatform(platformAddress)),
   }
 }
 
@@ -47,6 +53,7 @@ export default class PlatformsList extends PureComponent {
     selectedToken: PropTypes.string,
     handleSelectPlatform: PropTypes.func.isRequired,
     selectedPlatform: PropTypes.string,
+    handleDetachPlatform: PropTypes.func,
     platformsList: PropTypes.arrayOf(PropTypes.object),
     tokens: PropTypes.instanceOf(TokensCollection),
     assets: PropTypes.objectOf(PropTypes.object),
@@ -88,7 +95,7 @@ export default class PlatformsList extends PureComponent {
               <div
                 key={asset.address}
                 styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
-                onTouchTap={() => !token.isPending() && token.isFetched() && this.props.handleSelectToken(token)}
+                onTouchTap={() => !token.isPending() && token.isFetched() ? this.props.handleSelectToken(token) : undefined}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
@@ -116,7 +123,7 @@ export default class PlatformsList extends PureComponent {
     )
   }
 
-  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, assets }) => {
+  renderPlatformsList = ({ selectedPlatform, platformsList, tokens, selectedToken, handleDetachPlatform, assets }) => {
     return (
       <div>
         {
@@ -135,6 +142,7 @@ export default class PlatformsList extends PureComponent {
                     ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
+                  {/*<button onTouchTap={() => handleDetachPlatform(address)}>detach platform</button>*/}
                 </div>
               </div>
               {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}
@@ -156,6 +164,7 @@ export default class PlatformsList extends PureComponent {
             platformsList={this.props.platformsList}
             tokens={this.props.tokens}
             selectedToken={this.props.selectedToken}
+            handleDetachPlatform={this.props.handleDetachPlatform}
             assets={this.props.assets}
           >
             {this.renderPlatformsList}

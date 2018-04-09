@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { store } from 'specsInit'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import LOCModel from 'models/LOCModel'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import * as a from './actions'
 
@@ -20,11 +25,7 @@ export default (state = initialState, action) => {
     case a.WALLET_TRANSACTION:
       return state.transactions(state.transactions().update(action.tx))
     case a.WALLET_TRANSACTIONS:
-      return state.transactions(state.transactions()
-        .merge(action.map)
-        .isFetching(false)
-        .endOfList(action.map.size),
-      )
+      return state.transactions(action.map.isFetching(false).isFetched(true))
     case a.WALLET_IS_TIME_REQUIRED:
       return state.isTIMERequired(action.value)
     case a.WALLET_TOKEN_BALANCE:

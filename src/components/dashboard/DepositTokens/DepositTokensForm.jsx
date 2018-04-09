@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Button, IPFSImage } from 'components'
 import { Slider, TextField } from 'redux-form-material-ui'
 import { isTestingNetwork } from '@chronobank/login/network/settings'

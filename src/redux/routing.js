@@ -1,4 +1,9 @@
 /**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+/**
  * A custom router reducer to support an Immutable store.
  * @see https://github.com/gajus/redux-immutable#using-with-react-router-redux
  */

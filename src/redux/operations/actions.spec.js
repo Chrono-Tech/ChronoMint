@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { store, accounts } from 'specsInit'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_SET_REQUIRED_SIGNS } from 'dao/UserManagerDAO'

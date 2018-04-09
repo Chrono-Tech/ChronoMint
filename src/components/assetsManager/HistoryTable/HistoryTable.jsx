@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Amount from 'models/Amount'
 import { CircularProgress } from 'material-ui'
 import PropTypes from 'prop-types'

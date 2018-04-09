@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import Button from 'components/common/ui/Button/Button'
 import React, { Component } from 'react'

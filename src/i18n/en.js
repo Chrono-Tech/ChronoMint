@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { en as Login } from '@chronobank/login-ui/lang'
 import { en as components } from 'components/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
@@ -505,6 +510,12 @@ export default {
       },
       [ chronoBankAsset.TX_UNPAUSE ]: {
         title: 'Unblock asset',
+      },
+      [ chronoBankAsset.TX_RESTRICT ]: {
+        title: 'Add user to blacklist',
+      },
+      [ chronoBankAsset.TX_UNRESTRICT ]: {
+        title: 'Remove user from blacklist',
       },
     },
     WalletsManager: {

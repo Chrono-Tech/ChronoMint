@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'

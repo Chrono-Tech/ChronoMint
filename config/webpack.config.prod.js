@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const path = require('path')
 const webpack = require('webpack')
 const babel = require('./babel.prod')

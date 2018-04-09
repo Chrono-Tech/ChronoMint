@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Button } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { Paper } from 'material-ui'

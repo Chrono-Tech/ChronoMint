@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Poll, PollEditDialog } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { RaisedButton } from 'material-ui'

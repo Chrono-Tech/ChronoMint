@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Translate } from 'react-redux-i18n'
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import React, { PureComponent } from 'react'

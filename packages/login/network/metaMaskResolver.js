@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const WAIT_FOR_METAMASK = 2000 // ms
 
 import EventEmitter from 'events'

@@ -1,8 +1,10 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "description": "Control panel for ChronoBank",
   "private": true,
+  "author": "chronobank",
+  "license": "AGPL-3.0",
   "devDependencies": {
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
     "@chronobank/login": "*",
@@ -83,7 +85,7 @@
     "bip39": "^2.3.0",
     "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
     "bs58": "latest",
-    "chronobank-smart-contracts": "github:chronoBank/SmartContracts#develop",
+    "chronobank-smart-contracts": "github:chronobank/SmartContracts#release/release-1.1.47",
     "classnames": "^2.2.5",
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",

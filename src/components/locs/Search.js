@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 // TODO MINT-266 New LOC
 /* eslint-disable */
 import React, { PureComponent } from 'react'
