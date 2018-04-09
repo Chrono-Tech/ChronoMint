@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type LOCManagerDAO from 'dao/LOCManagerDAO'
 import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'

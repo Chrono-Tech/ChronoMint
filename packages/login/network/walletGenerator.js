@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import keythereum from 'keythereum'
 
 // Note: if options is unspecified, the values in keythereum.constants are used.

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { NETWORK_MAIN_ID } from './settings'
 
 // Universal id for networks to decide network type

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Immutable from 'immutable'
 import { OPERATIONS_PER_PAGE } from 'dao/PendingManagerDAO'
 import * as a from './actions'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export const SIDES_PUSH = 'sides/PUSH'
 export const SIDES_POP = 'sides/POP'
 export const SIDES_CLEAR = 'sides/CLEAR'

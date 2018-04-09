@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 import LoginForm from '@chronobank/login-ui/components/LoginForm/LoginForm'
 import { MuiThemeProvider } from 'material-ui'

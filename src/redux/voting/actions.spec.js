@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import PollEmitter from 'dao/PollEmitterDAO'
 import tokenService from 'services/TokenService'
 import BigNumber from 'bignumber.js'

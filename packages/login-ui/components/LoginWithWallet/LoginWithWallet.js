@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
 import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'

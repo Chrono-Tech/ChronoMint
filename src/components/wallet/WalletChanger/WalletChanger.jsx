@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import WalletMainBigSVG from 'assets/img/icn-wallet-main-big.svg'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiBigSVG from 'assets/img/icn-wallet-multi-big.svg'

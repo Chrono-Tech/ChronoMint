@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const getStatistics = (state) => {
   const polls = state.list().items()
   const time = new Date().getTime()

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
 import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
 import IconAttach from 'assets/file-select/icon-attach.svg'

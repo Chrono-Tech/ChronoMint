@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { I18n } from 'platform/i18n/index'
 import { FlatButton, RaisedButton } from 'material-ui'
