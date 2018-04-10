@@ -22,15 +22,5 @@ export default {
     RewardsContent: RewardsContent.en,
     VotingContent: VotingContent.en,
     ProfileContent: ProfileContent.en,
-  },
-  ru: {
-    DashboardContent: DashboardContent.ru,
-    FooterPartial: FooterPartial.ru,
-    WalletContent: WalletContent.ru,
-    InfoPartial: InfoPartial.ru,
-    OperationsContent: OperationsContent.ru,
-    RewardsContent: RewardsContent.ru,
-    VotingContent: VotingContent.ru,
-    ProfileContent: ProfileContent.ru,
-  },
+  }
 }

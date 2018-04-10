@@ -15,13 +15,4 @@ export default {
     unblockAssetButton: 'Unblock asset',
     cancel: 'Cancel',
   },
-  ru: {
-    dialogTitleBlock: 'Заблокировать ваш ассет?',
-    dialogTitleUnblock: 'Разблокировать ваш ассет?',
-    dialogSubTitleBlock: 'Все держатели ассета не смогут совершать какие-либо транзакции. Менеджеры все равно смогут получить доступ. Вы также сможете разблокировать свой ассет.',
-    dialogSubTitleUnblock: 'Все держатели ассета смогут совершать какие-либо транзакции. Вы также сможете заблокировать свой ассет.',
-    blockAssetButton: 'Заблокировать ассет',
-    unblockAssetButton: 'Разблокировать ассет',
-    cancel: 'Отмена',
-  },
 }

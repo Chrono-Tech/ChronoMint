@@ -9,10 +9,3 @@ export const en = {
   wrongMnemonic: 'Wrong mnemonic',
   mnemonicKey: 'Mnemonic key',
 }
-
-export const ru = {
-  loginWithMnemonic: 'Авторизоваться',
-  generateMnemonic: 'Сгенерировать мнемонический ключ',
-  wrongMnemonic: 'Неверный мнемонический ключ',
-  mnemonicKey: 'Мнемонический ключ',
-}

@@ -19,21 +19,5 @@ export default {
     approve: 'Approve tokens',
     revoke: 'Revoke tokens',
     needToCreateWallet: 'You need to create %{symbol} wallet',
-  },
-  ru: {
-    orderBook: 'Книга Ордеров',
-    traderAddress: 'Адрес трейдера',
-    tradeLimits: 'Лимиты трейдера',
-    price: 'Цена',
-    limits: 'Лимиты',
-    buy: 'Купить',
-    sell: 'Продать',
-    tokens: 'токены',
-    sendRequest: 'отправить запрос',
-    amountIn: 'Сумма в',
-    allowance: 'Подтвержденная сумма',
-    approve: 'Подтвердить перевод токенов',
-    revoke: 'Отменить перевод токенов',
-    needToCreateWallet: 'Вам нужно создать кошелек для %{symbol}',
-  },
+  }
 }

@@ -9,10 +9,3 @@ export const en = {
   iUnderstand: 'I\u00a0understand',
   continue: 'Continue',
 }
-
-export const ru = {
-  generateMnemonic: 'Создан новый мнемонический ключ:',
-  warning: 'Вам нужно скопировать этот <b>мнемонический ключ</b>, чтобы получить доступ к этому кошельку в будущем.',
-  iUnderstand: 'Я\u00a0понял',
-  continue: 'Продолжить',
-}
