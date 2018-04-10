@@ -11,7 +11,7 @@
   .depositItem {
     flex-grow: 1;
     max-width: 587px;
-    background: $color-white;
+    background: $background-color-1;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
     border-radius: 5px;
     display: flex;
@@ -19,18 +19,9 @@
     .iconWrapper {
       width: 100px;
       position: relative;
-      .smallIcon {
-        position: absolute;
-        color: $icon-color;
-        font-size: 30px;
-        line-height: 24px;
-        top: 2px;
-        left: 2px;
-      }
       .icon {
         background: $color-blue;
         border-radius: 50%;
-        padding: 10px 11px 11px;
         width: 100px;
         height: 100px;
         .iconImg {
@@ -43,36 +34,17 @@
       }
     }
     .itemContent {
-      padding-left: 30px;
+      padding-left: 55px;
       flex-grow: 1;
       text-decoration: none;
-      &:hover {
-        .title, .address {
-          color: $border-color;
-        }
-        .amount {
-          color: $border-color;
-          :global {
-            .TokenValue__root {
-              color: $border-color;
-            }
-          }
-        }
-        .price {
-          span {
-            color: $border-color;
-          }
-        }
-
-      }
       .title {
-        color: $color-primary-3;
+        color: $color-white;
         font-weight: 700;
         line-height: 22px;
         text-transform: capitalize;
       }
       .address {
-        color: $color-grey-2;
+        color: $additionalData-color-1;
         line-height: 20px;
         margin-bottom: 15px;
         font-size: 14px;
@@ -82,7 +54,7 @@
           .TokenValue__root {
             font-size: 30px;
             font-weight: 500;
-            color: $color-primary-3;
+            color: $color-white;
             line-height: 36px;
           }
         }
@@ -91,7 +63,7 @@
         margin-bottom: 25px;
         span {
           font-weight: 400;
-          color: $color-grey-2;
+          color: $color-white;
           line-height: 19px;
           text-transform: uppercase;
           margin-left: 0;
