@@ -18,6 +18,7 @@ import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
 import DepositsList from 'components/Deposits/DepositsList/lang'
+import Deposit from 'components/Deposits/Deposit/lang'
 
 export default {
   en: {
@@ -39,6 +40,7 @@ export default {
     EditSignaturesDialog: EditSignaturesDialog.en,
     SendTokens: SendTokens.en,
     DepositsList: DepositsList.en,
+    Deposit: Deposit.en,
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,

@@ -7,9 +7,9 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import Partials from 'layouts/partials'
 import React, { PureComponent } from 'react'
 
-import './DepositsPage.scss'
+import './DepositPage.scss'
 
-export default class DepositsPage extends PureComponent {
+export default class DepositPage extends PureComponent {
   render () {
     return (
       <div styleName='root'>
@@ -21,7 +21,7 @@ export default class DepositsPage extends PureComponent {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.DepositsContent />
+          <Partials.DepositContent />
         </CSSTransitionGroup>
       </div>
     )

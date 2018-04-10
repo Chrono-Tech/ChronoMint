@@ -13,6 +13,7 @@ import SettingsPage from './SettingsPage'
 import VotingPage from './VotingPage'
 import WalletPage from './WalletPage'
 import DepositsPage from './DepositsPage'
+import DepositPage from './DepositPage'
 
 export {
   DashboardPage,
@@ -25,6 +26,7 @@ export {
   LOCPage,
   AssetsPage,
   DepositsPage,
+  DepositPage,
 }
 
 export default {
@@ -38,4 +40,5 @@ export default {
   LOCPage,
   AssetsPage,
   DepositsPage,
+  DepositPage,
 }

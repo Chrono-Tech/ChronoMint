@@ -21,6 +21,7 @@ import SidePanel from './SidePanel/SidePanel'
 import ProfileContent from './ProfileContent/ProfileContent'
 import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 import DepositsContent from './DepositsContent/DepositsContent'
+import DepositContent from './DepositContent/DepositContent'
 
 export {
   HeaderPartial,
@@ -41,6 +42,7 @@ export {
   ProfileContent,
   DrawerMainMenu,
   DepositsContent,
+  DepositContent,
 }
 
 export default {
@@ -62,4 +64,5 @@ export default {
   ProfileContent,
   DrawerMainMenu,
   DepositsContent,
+  DepositContent,
 }

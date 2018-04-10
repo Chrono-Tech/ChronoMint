@@ -11,9 +11,9 @@ import { TIME } from 'redux/mainWallet/actions'
 import { initAssetsHolder } from 'redux/assetsHolder/actions'
 import { getDeposit } from 'redux/mainWallet/selectors'
 import Amount from 'models/Amount'
-import DepositsList from 'components/Deposits/DepositsList/DepositsList'
+import Deposit from 'components/Deposits/Deposit/Deposit'
 import { prefix } from './lang'
-import './DepositsContent.scss'
+import './DepositContent.scss'
 
 function mapStateToProps (state) {
   return {
@@ -28,7 +28,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class DepositsContent extends Component {
+export default class DepositContent extends Component {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     initAssetsHolder: PropTypes.func,
@@ -50,7 +50,7 @@ export default class DepositsContent extends Component {
                 </div>
               )
               : (
-                <DepositsList />
+                <Deposit />
               )}
           </div>
         </div>
