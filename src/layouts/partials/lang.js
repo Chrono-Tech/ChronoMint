@@ -16,6 +16,7 @@ import MenuTokensList from 'layouts/partials/DrawerMainMenu/MenuTokensList/lang'
 import MenuAssetsManagerMoreInfo from 'layouts/partials/DrawerMainMenu/MenuAssetsManagerMoreInfo/lang'
 import NotificationContent from 'layouts/partials/NotificationContent/lang'
 import * as ProfileContent from 'layouts/partials/ProfileContent/lang'
+import DepositsContent from 'layouts/partials/DepositsContent/lang'
 
 export default {
   en: {
@@ -32,6 +33,7 @@ export default {
     MenuAssetsManagerMoreInfo: MenuAssetsManagerMoreInfo.en,
     NotificationContent: NotificationContent.en,
     ProfileContent: ProfileContent.en,
+    DepositsContent: DepositsContent.en,
   },
   ru: {
     DashboardContent: DashboardContent.ru,

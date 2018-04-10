@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 @import "~styles/themes/fonts";
@@ -27,13 +26,14 @@
   }
 
   body {
-    background-color: $color-body-bg;
+    background-color: $background-color;
     margin: 0;
     padding: 0;
     border: 0;
   }
 
-  #react-root { }
+  #react-root {
+  }
 
   .transition-swipe-enter {
     top: 100vh;
@@ -106,5 +106,9 @@
         }
       }
     }
+  }
+  .chronobank-icon {
+    font-family: ChronoBankIcons;
+    font-style: normal;
   }
 }
