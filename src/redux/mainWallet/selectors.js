@@ -6,6 +6,8 @@
 import { createSelector } from 'reselect'
 import AddressModel from 'models/wallet/AddressModel'
 import { DUCK_MAIN_WALLET } from './actions'
+import { getAssetsFromAssetHolder } from '../assetsHolder/selectors'
+import { getTokens } from '../tokens/selectors'
 
 export const getWallet = (state) => {
   return state.get(DUCK_MAIN_WALLET).addresses()
@@ -29,3 +31,12 @@ export const getTxs = () => createSelector(
     return txs
   },
 )
+
+export const getDeposit = (tokenId) => createSelector(
+  [ getAssetsFromAssetHolder, getTokens ],
+  (assets, tokens) => {
+    const token = tokens.item(tokenId)
+    return assets.item(token.address()).deposit()
+  },
+)
+

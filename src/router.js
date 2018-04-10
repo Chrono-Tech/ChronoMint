@@ -20,6 +20,7 @@ import {
   SettingsPage,
   VotingPage,
   WalletPage,
+  DepositsPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from './utils/LocalStorage'
@@ -53,6 +54,7 @@ const router = (
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='wallet' component={WalletPage} />
         <Route path='dashboard' component={DashboardPage} />
+        <Route path='deposits' component={DepositsPage} />
         <Route path='exchange' component={ExchangePage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />

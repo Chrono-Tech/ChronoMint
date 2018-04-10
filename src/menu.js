@@ -17,6 +17,9 @@ export default {
       key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/dashboard',
     },
     {
+      key: 'deposits', title: 'nav.deposits', icon: 'dashboard', path: '/deposits',
+    },
+    {
       key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange',
     },
     {
