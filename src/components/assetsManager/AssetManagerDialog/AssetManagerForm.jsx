@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'

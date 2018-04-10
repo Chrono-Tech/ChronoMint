@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import AssetsContent from './AssetsContent/AssetsContent'
 import BrandPartial from './BrandPartial/BrandPartial'
 import DashboardContent from './DashboardContent/DashboardContent'

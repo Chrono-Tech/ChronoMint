@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Translate } from 'react-redux-i18n'
 import { ModalStack, SideStack, Snackbar } from 'components'
 import menu from 'menu'

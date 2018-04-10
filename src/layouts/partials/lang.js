@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import * as DashboardContent from 'layouts/partials/DashboardContent/lang'
 import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
 import * as InfoPartial from 'layouts/partials/InfoPartial/lang'

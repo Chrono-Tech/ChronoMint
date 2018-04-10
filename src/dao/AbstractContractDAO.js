@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import validator from 'models/validator'
@@ -516,14 +521,14 @@ export default class AbstractContractDAO extends EventEmitter {
             errorCode = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
           }
           if (!this._okCodes.includes(errorCode)) {
+            // eslint-disable-next-line
+            console.warn(
+              this._error(
+                'Tx Error', func, args, value, gasLimit,
+                this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
+              ))
             throw new TxError('Error event was emitted', errorCode)
           }
-          // eslint-disable-next-line
-          console.warn(
-            this._error(
-              'Tx Error', func, args, value, gasLimit,
-              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
-            ))
         }
       }
 

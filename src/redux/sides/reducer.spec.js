@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { PureComponent } from 'react'
 
 import * as actions from 'redux/sides/actions'

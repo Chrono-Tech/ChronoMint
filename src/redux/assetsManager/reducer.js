@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import MainAssetsManagerModel from 'models/assetsManager/MainAssetsManagerModel'
 import {
   GET_ASSETS_MANAGER_COUNTS,

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Button } from 'components'
 import Immutable from 'immutable'
 import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
@@ -79,7 +84,7 @@ export default class PendingOperations extends PureComponent {
                 ? (
                   <div styleName='infoProp infoPropSignatures'>
                     <span styleName='propName'><Translate value={prefix('signatures')} />:</span>
-                    <span styleName='propValue'>{op.remained()} of {op.remained() + op.completed()}</span>
+                    <span styleName='propValue'>{op.completed()} of {op.remained() + op.completed()}</span>
                   </div>
                 )
                 : null
@@ -91,7 +96,7 @@ export default class PendingOperations extends PureComponent {
         {this.props.showSignatures
           ? (
             <div styleName='bodyTableCell tableCellSignatures'>
-              {op.remained()} of {op.remained() + op.completed()}
+              {op.completed()} of {op.remained() + op.completed()}
             </div>
           )
           : null

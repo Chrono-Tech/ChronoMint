@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { PROFILE_SIDE_PANEL_KEY } from 'components/common/SideStack/SideStack'
 import ProfileContent from 'layouts/partials/ProfileContent/ProfileContent'
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'

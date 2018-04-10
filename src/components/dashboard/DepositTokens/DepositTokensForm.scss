@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -166,4 +171,21 @@
 .ellipsis {
   @include ellipsis;
   color: $color-white
+}
+
+.feeRate {
+  padding-top: 40px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 15px;
+  color: $border-color;
+}
+
+.tagDefault {
 }

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import ExchangeModel from 'models/exchange/ExchangeModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import * as a from './actions'

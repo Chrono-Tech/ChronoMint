@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import ModalDialog from 'components/dialogs/ModalDialog'
 import EditSignaturesForm from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesForm'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'

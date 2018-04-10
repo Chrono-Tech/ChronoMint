@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 /* eslint-disable */
 export const ChronoBankPlatformABI = require('chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json')
 export const MultiEventsHistoryABI = require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')

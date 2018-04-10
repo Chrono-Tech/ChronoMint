@@ -1,12 +1,16 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Button, IPFSImage } from 'components'
+import { Slider, TextField } from 'redux-form-material-ui'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { TOKEN_ICONS } from 'assets'
 import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import styles from 'components/dashboard/styles'
-import { FlatButton, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import TokenModel from 'models/tokens/TokenModel'
@@ -16,16 +20,12 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
 import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
-import inversedTheme from 'styles/themes/inversed'
-import ColoredSection from '../ColoredSection/ColoredSection'
-import IconSection from '../IconSection/IconSection'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
@@ -34,6 +34,12 @@ const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 export const ACTION_APPROVE = 'deposit/approve'
 export const ACTION_DEPOSIT = 'deposit/deposit'
 export const ACTION_WITHDRAW = 'deposit/withdraw'
+
+const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 1.9,
+  step: 0.1,
+}
 
 function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
@@ -170,18 +176,11 @@ export default class DepositTokensForm extends PureComponent {
             ? (
               <div>
                 <div styleName='headItem'>
-                  <div styleName='title'>
-                    <Translate value={prefix('depositAccount')} />
-                    <div styleName='address'>{token.address()}</div>
-                  </div>
-                </div>
-
-                <div styleName='headItem'>
                   <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={balance} /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={balance} /></div>
                 </div>
 
-                <div styleName='headItem'>
+                {/*<div styleName='headItem'>
                   <div styleName='title'><Translate value={prefix('yourDeposit')} /></div>
                   <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={deposit} /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
@@ -194,7 +193,7 @@ export default class DepositTokensForm extends PureComponent {
                     <div styleName='balance'>{symbol}&nbsp;<TokenValue isInvert noRenderPrice noRenderSymbol value={allowance.amount()} /></div>
                     <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={allowance.amount()} /></div>
                   </div>
-                }
+                }*/}
               </div>
             )
             : (
@@ -214,12 +213,40 @@ export default class DepositTokensForm extends PureComponent {
             component={TextField}
             fullWidth
             hintText='0.00'
-            floatingLabelText={<Translate value={prefix('amount')} />}
+            floatingLabelText={<Translate value={prefix('amount')} symbol='TIME' />}
             onChange={this.handleChangeAmount}
             name='amount'
           />
           <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount || 0), token.symbol())} /></div>
         </div>
+        {(
+          <div>
+            <div styleName='feeRate'>
+              <div styleName='tagsWrap'>
+                <div><Translate value={prefix('slow')} /></div>
+                <div styleName='tagDefault' />
+                <div><Translate value={prefix('fast')} /></div>
+              </div>
+
+              <div>
+                <small>
+                  {/*<Translate*/}
+                  {/*value={`${prefix}.${this.getFeeTitle()}`}*/}
+                  {/*multiplier={feeMultiplier.toFixed(1)}*/}
+                  {/*total={Number((feeMultiplier * token.feeRate()).toFixed(1))}*/}
+                  {/*/>*/}
+                </small>
+              </div>
+              <Field
+                component={Slider}
+                sliderStyle={{ marginBottom: 0, marginTop: 5, background: '#786AB7' }}
+                style={{ background: 'red' }}
+                name='feeMultiplier'
+                {...FEE_RATE_MULTIPLIER}
+              />
+            </div>
+          </div>
+        )}
         <div styleName='transactionsInfo'>
           <div><b><Translate value={prefix('transactionFee')} />:</b> ETH 0.001 (≈USD 10.00)</div>
           <div><b><Translate value={prefix('transactionWillBeDoneIn')} />:</b> <Translate value={prefix('sec')} /></div>

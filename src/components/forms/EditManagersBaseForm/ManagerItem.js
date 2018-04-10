@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import OwnerModel from 'models/wallet/OwnerModel'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import PropTypes from 'prop-types'

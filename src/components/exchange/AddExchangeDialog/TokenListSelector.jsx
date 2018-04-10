@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import classnames from 'classnames'
 import { Button, IPFSImage } from 'components'

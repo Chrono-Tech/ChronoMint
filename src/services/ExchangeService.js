@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import tokenService from 'services/TokenService'
 import TokenModel from 'models/tokens/TokenModel'
 import ExchangeManagerDAO from 'dao/ExchangeManagerDAO'

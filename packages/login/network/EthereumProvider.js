@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import AbstractProvider from './AbstractProvider'
 import type EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
@@ -36,6 +41,11 @@ export class EthereumProvider extends AbstractProvider {
       nemAddress: nemEngine && nemEngine.getAddress(),
     })
     return node
+  }
+
+  getTransactionsList (address, skip, offset) {
+    const node = this._selectNode(this._engine)
+    return node.getTransactionsList(address, this._id, skip, offset)
   }
 
   getPrivateKey () {
