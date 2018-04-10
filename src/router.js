@@ -19,7 +19,7 @@ import {
   RewardsPage,
   SettingsPage,
   VotingPage,
-  WalletPage,
+  WalletsPage,
   DepositsPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
@@ -52,7 +52,7 @@ const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
       <Route component={Markup} onEnter={requireAuth}>
-        <Route path='wallet' component={WalletPage} />
+        <Route path='wallets' component={WalletsPage} />
         <Route path='dashboard' component={DashboardPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='exchange' component={ExchangePage} />

@@ -212,7 +212,7 @@ export default class DrawerMainMenu extends PureComponent {
 
             <Link
               activeClassName='drawer-item-active'
-              to='/wallet'
+              to='/wallets'
               onTouchTap={this.handleSelectLink}
               href
               styleName={classnames('menuItem', 'item')}
