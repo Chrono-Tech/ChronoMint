@@ -111,7 +111,8 @@ export default class SendTokensForm extends PureComponent {
     this.state = {
       isContract: false,
       mode: MODE_SIMPLE,
-      advancedFee: 0
+      advancedFee: 0,
+      xOfAverageFee: 1
     }
   }
 
@@ -194,7 +195,8 @@ export default class SendTokensForm extends PureComponent {
     return this.state.mode === MODE_SIMPLE ? this.props.feeMultiplier : this.props.satPerByte
   }
 
-  calculatingFee = async (event, value) => {
+
+  calculatingFeeBitcoin = async (event, value) => {
     const fee = await this.getFee(
       this.props.wallet.addresses().item(this.props.token.blockchain()).address(),
       this.props.recipient,
@@ -202,14 +204,61 @@ export default class SendTokensForm extends PureComponent {
       this.getFormFee()
     )
 
+    return fee
+  }
+
+  calculatingFeeERC20 = async (event, value) => {
+
+
+    return 0
+  }
+
+  calculatingFee = async (event, value) => {
+    console.log('calculatingFee: ', event, value, this.props.token.symbol())
+    var fee = 2
+    if (this.props.token.symbol() === 'BTC') {
+      fee = await this.calculatingFeeBitcoin(event, value)
+      console.log('this.calculatingFeeBitcoin: ', fee, new Date())
+    } else if (this.props.token.isERC20()) {
+      console.log('this.calculatingFeeBitcoin ERC20 token: ', fee)
+
+      fee = await this.calculatingFeeERC20(event, value)
+    }
+
+    console.log('calculatingFee result: ', fee, Number(fee / 100000000).toFixed(8))
+
     this.setState({
-      advancedFee: fee
+      advancedFee: Number(fee / 100000000).toFixed(8),
+      xOfAverageFee: 1
     })
+  }
+
+  calculatingFeeSlider = async (event, multiplier) => {
+    console.log('calculatingFeeSlider: ', event, multiplier, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
+    this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
+  }
+
+  getTransactionFeeDescription = () => {
+    if (this.props.token.symbol() === 'BTC') {
+      return (<span styleName='description'>
+          {`${this.props.token.symbol()}  ${this.state.advancedFee} (≈USD `}
+          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.advancedFee, this.props.token.symbol())} />
+          {`) ${this.state.xOfAverageFee}x `}
+          <Translate value={`${prefix}.averageFee`} />
+        </span>
+      )
+    } else if (this.props.token.symbol() === 'ETH') {
+      return 'Ethereum transaction fee'
+    }
+
+    return null
   }
 
   renderHead () {
     const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
+
+    console.log('head: ', this.props.token.feeRate())
 
     return (
       <div styleName='head'>
@@ -320,21 +369,12 @@ export default class SendTokensForm extends PureComponent {
         {!(this.state.mode === MODE_SIMPLE && feeMultiplier && token.feeRate()) ? null : (
           <div styleName='row'>
             <div styleName='feeRate'>
-              <div>
-                <small>
-                  <Translate
-                    value={`${prefix}.${this.getFeeTitle()}`}
-                    multiplier={feeMultiplier.toFixed(1)}
-                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
-                  />
-                </small>
-              </div>
               <Field
                 component={Slider}
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
-                onChange={this.calculatingFee}
+                onChange={this.calculatingFeeSlider}
               />
               <div styleName='tagsWrap'>
                 <div><Translate value={`${prefix}.slow`} /></div>
@@ -358,9 +398,10 @@ export default class SendTokensForm extends PureComponent {
           </div>
         ) }
         <div styleName="transaction-fee">
-          <span styleName='title'>Transaction fee: </span><span styleName='description'>
-          { 'BTC ' + this.state.advancedFee + ' (≈USD 10.00) 1.0x of average fee.' }
-          </span>
+                <span styleName='title'>
+                  <Translate value={`${prefix}.transactionFee`} />
+                </span>
+                {this.getTransactionFeeDescription()}
         </div>
         <div styleName='template-container'>
           <div styleName='template-checkbox'>

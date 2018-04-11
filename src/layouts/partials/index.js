@@ -16,7 +16,7 @@ import OperationsContent from './OperationsContent/OperationsContent'
 import RewardsContent from './RewardsContent/RewardsContent'
 import SettingsContent from './SettingsContent/SettingsContent'
 import VotingContent from './VotingContent/VotingContent'
-import WalletContent from './WalletContent/WalletContent'
+import WalletsContent from './WalletsContent/WalletsContent'
 import SidePanel from './SidePanel/SidePanel'
 import ProfileContent from './ProfileContent/ProfileContent'
 import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
@@ -33,7 +33,7 @@ export {
   ExchangeContent,
   RewardsContent,
   VotingContent,
-  WalletContent,
+  WalletsContent,
   OperationsContent,
   SettingsContent,
   LOCContent,
@@ -55,7 +55,7 @@ export default {
   ExchangeContent,
   RewardsContent,
   VotingContent,
-  WalletContent,
+  WalletsContent,
   OperationsContent,
   SettingsContent,
   LOCContent,

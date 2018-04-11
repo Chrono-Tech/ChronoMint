@@ -1,0 +1,134 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+
+.root {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  background-color: #242045;
+  height: 100%;
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  width: 587px;
+  margin-bottom: 28px;
+  margin-top: 28px;
+}
+
+.header-text {
+  color: white;
+}
+
+.wallet-container {
+  display: flex;
+  position: relative;
+  width: 587px;
+  min-height: 260px;
+  background-color: white;
+  border-radius: 2px;
+  box-shadow: 2px 2px 3px rgba(0,0,0,0.15);
+}
+
+.settings-container {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 50px;
+  top: 10px;
+}
+
+.settings-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+}
+
+.token-container {
+  display: flex;
+  flex-direction: row;
+  margin-right: 40px;
+  margin-left: 40px;
+}
+
+.token-icon {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  margin-top: 50px;
+}
+
+.address-title {
+  font-size: 16px;
+  color: #333333;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.address-address {
+  font-size: 14px;
+  color: #7F7F7F;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+}
+
+.token-amount {
+  margin-top: 20px;
+}
+
+.crypto-amount {
+  font-size: 30px;
+  line-height: 36px;
+  color: #333333;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.usd-amount {
+  font-size: 16px;
+  font-weight: 400;
+  color: #7F7F7F;
+  line-height: 19px;
+  font-family: 'proxima nova', sans-serif;
+}
+
+.actions-container {
+  display: flex;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.action {
+  display: flex;
+  margin-right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
