@@ -47,4 +47,8 @@ export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'
+export { default as BitcoinWallet } from './wallet/BitcoinWallet/BitcoinWallet'
+export { default as EthereumWallet } from './wallet/EthereumWallet/EthereumWallet'
+export { default as SharedWallet } from './wallet/SharedWallet/SharedWallet'
+export { default as LockedWallet } from './wallet/LockedWallet/LockedWallet'
 export { default as Button } from './common/ui/Button/Button'
