@@ -18,7 +18,8 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/app_testnet-ethereum-middleware-chronobank-io_balance',
+      balance: '/exchange/events/rinkeby-ethereum-middleware-chronobank-io_balance',
+      events: '/exchange/events/rinkeby-ethereum-middleware-chronobank-io_chrono_sc',
     },
   },
   trace: true,
@@ -34,7 +35,8 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/app_mainnet-ethereum-middleware-chronobank-io_balance',
+      balance: '/exchange/events/mainnet-ethereum-middleware-chronobank-io_balance',
+      events: '/exchange/events/mainnet-ethereum-parity-middleware-chronobank-io_chrono_sc',
     },
   },
   trace: true,
@@ -50,7 +52,8 @@ const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
     user: 'guest',
     password: 'guest',
     channels: {
-      balance: '/exchange/events/app_testnet-ethereum-middleware-chronobank-io_balance',
+      balance: '/exchange/events/localhost_balance',
+      events: '/exchange/events/localhost_chrono_sc',
     },
   },
   trace: true,
