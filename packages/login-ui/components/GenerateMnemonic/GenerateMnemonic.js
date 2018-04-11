@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { Checkbox, MuiThemeProvider, RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'

@@ -1,6 +1,11 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
-import { NemTx, NemBalance } from './NemAbstractNode'
+import { NemBalance, NemTx } from './NemAbstractNode'
 import { selectNemNode } from './NemNode'
 
 export class NemProvider extends AbstractProvider {
@@ -47,12 +52,17 @@ export class NemProvider extends AbstractProvider {
     const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
     if (mosaic) {
       return (mosaics && (mosaic in mosaics))
-        ? mosaics[mosaic]
+        ? mosaics[ mosaic ]
         : { confirmed: new BigNumber(0) } // When no such mosaic specified
     }
     return balance
   }
 
+  async getTransactionsList (address, skip, offset) {
+    const node = this._selectNode(this._engine)
+    return node.getTransactionsList(address, this._id, skip, offset)
+  }
+    
   async estimateFee (from: string, to, amount: BigNumber, mosaicDefinition) {
     const { fee } = this._engine.describeTransaction(to, amount, mosaicDefinition)
     return fee

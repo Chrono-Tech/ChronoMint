@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import TokenNoticeModel from 'models/notices/TokenNoticeModel'
 import TokenModel from 'models/tokens/TokenModel'
 import { ERC20ManagerABI } from './abi'
@@ -6,7 +11,7 @@ import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
-export const TX_REMOVE_TOKEN = 'removeToken'
+export const TX_REMOVE_TOKEN = 'removeTokenByAddress'
 
 export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
 export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
@@ -33,8 +38,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
 
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
-
-      this.emit(EVENT_NEW_ERC20_TOKEN, new TokenModel({
+      const model = new TokenModel({
         address,
         name: this._c.bytesToString(names[ i ]),
         symbol,
@@ -46,7 +50,9 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
         feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
-      }))
+      })
+
+      this.emit(EVENT_NEW_ERC20_TOKEN, model)
     })
   }
 

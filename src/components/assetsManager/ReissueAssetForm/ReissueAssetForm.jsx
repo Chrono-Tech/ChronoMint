@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, reduxForm, reset } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
@@ -22,7 +27,7 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
   return {
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }

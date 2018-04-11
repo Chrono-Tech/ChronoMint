@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   en: {
     reissue: 'Reissue',
@@ -6,7 +11,7 @@ export default {
     issuedAmount: 'Issued amount',
     fee: 'fee',
     withoutFee: 'Without fee',
-    managers: 'managers',
+    managers: 'Manage Owners',
     revoke: 'Revoke',
     crowdsaleInfo: 'crowdsale info',
     send: 'Send to exchange',
@@ -14,7 +19,9 @@ export default {
     selectToken: 'Select a token',
     createPlatform: 'Create Platform',
     createToken: 'Create Token',
-    addManagers: 'Add/edit managers',
+    manageButton: 'Manage (%{size})',
+    blockAsset: 'Block asset',
+    blacklist: 'Manage Blacklist',
   },
   ru: {
     reissue: 'Переиздать',
@@ -23,7 +30,7 @@ export default {
     issuedAmount: 'Выданная сумма',
     fee: 'комиссия',
     withoutFee: 'без коммиссии',
-    managers: 'менеджера(ов)',
+    managers: 'Управление владельцами',
     revoke: 'Отозвать',
     crowdsaleInfo: 'Информация о crowdsale',
     send: 'Обменять',
@@ -31,6 +38,8 @@ export default {
     selectToken: 'Выберите токен',
     createPlatform: 'Создайте платформу',
     createToken: 'Создайте токен',
-    addManagers: 'Добавить/редактировать менеджеров',
+    manageButton: 'Редактировать (%{size})',
+    blockAsset: 'Заблокировать ассет',
+    blacklist: 'Управление черным списком',
   },
 }

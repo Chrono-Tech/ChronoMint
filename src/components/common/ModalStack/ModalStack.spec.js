@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import React from 'react'
 import Immutable from 'immutable'
 import injectTapEventPlugin from 'react-tap-event-plugin'

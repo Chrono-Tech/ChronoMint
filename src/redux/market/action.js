@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import MarketSocket from 'market/MarketSocket'
 import get from 'lodash/get'
 import axios from 'axios'

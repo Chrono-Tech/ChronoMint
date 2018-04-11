@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   global: [
     { key: 'about', title: 'global.about', path: 'https://chronobank.io/' },

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -30,11 +35,10 @@ import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
+import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances, getGasPriceMultiplier } from 'redux/session/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
-import { getGasPriceMultiplier } from 'redux/session/selectors'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
@@ -302,7 +306,7 @@ export default class SendTokensForm extends PureComponent {
               primary
               style={{ float: 'right', marginTop: '20px' }}
               disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={!pristine && !invalid && !isTimeLocked && handleSubmit(this.handleTransfer)}
+              onTouchTap={!pristine && !invalid && !isTimeLocked ? handleSubmit(this.handleTransfer) : undefined}
             />
             {token.isERC20() && isApprove && (
               <RaisedButton
@@ -310,7 +314,7 @@ export default class SendTokensForm extends PureComponent {
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={pristine || invalid || !isContract || isTimeLocked}
-                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked && handleSubmit(this.handleApprove)}
+                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked ? handleSubmit(this.handleApprove) : undefined}
               />
             )}
             {token.isERC20() && !isApprove && (
@@ -319,7 +323,7 @@ export default class SendTokensForm extends PureComponent {
                 primary
                 style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
                 disabled={!isContract}
-                onTouchTap={isContract && token && recipient && this.handleRevoke}
+                onTouchTap={isContract && token && recipient ? this.handleRevoke : undefined}
               />
             )}
           </div>

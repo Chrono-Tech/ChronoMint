@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import bs58 from 'bs58'
 import web3utils from 'web3/lib/utils/utils'
@@ -70,6 +75,11 @@ class Web3Converter {
   ipfsHashToBytes32 (value) {
     // noinspection JSUnresolvedFunction
     return `0x${Buffer.from(bs58.decode(value)).toString('hex').substr(4)}`
+  }
+
+  stringToBytesWithZeros (string) {
+    const zeros = '000000000000000000000000000000000000000000000000000000000000000000'
+    return `${this.stringToBytes(string)}${zeros}`.substr(0, 66)
   }
 }
 

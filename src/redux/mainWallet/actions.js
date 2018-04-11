@@ -1,26 +1,30 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import ethereumDAO from 'dao/EthereumDAO'
-import Immutable from 'immutable'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
-import type TxModel from 'models/TxModel'
 import validator from 'models/validator'
 import AddressModel from 'models/wallet/AddressModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
 import MainWalletModel from 'models/wallet/MainWalletModel'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
+import TransactionsCollection, { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
 import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
+import type TxModel from 'models/TxModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -214,57 +218,42 @@ export const requireTIME = () => async () => {
  * LATEST TRANSACTIONS
  */
 const getTransferId = 'wallet'
-let lastCacheId
-let txsCache = []
 
 export const getAccountTransactions = () => async (dispatch, getState) => {
-  const wallet = getState().get(DUCK_MAIN_WALLET)
   // TODO @ipavlenk: It seems it is wrong tokens source, odd code, there is only ETH token
   const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  // TODO: For the reason unknown we have tokens with undefined symbols)
-  const cacheId = tokens.map((v: TokenModel) => v.symbol()).filter((s) => s != null).join(',')
-
-  const reset = lastCacheId && cacheId !== lastCacheId
-  lastCacheId = cacheId
-  if (reset) {
-    txsCache = []
-  }
-
-  let txs = txsCache.slice(0, TXS_PER_PAGE)
-  txsCache = txsCache.slice(TXS_PER_PAGE)
-
-  if (txs.length < TXS_PER_PAGE) { // so cache is empty
+  const wallet = getState().get(DUCK_MAIN_WALLET)
+  let transactions: TransactionsCollection = wallet.transactions()
+  const offset = transactions.offset() || 0
+  const newOffset = offset + TXS_PER_PAGE
+  let newTxs = []
+  if (transactions.size() <= newOffset) {
     const promises = []
     for (let token: TokenModel of tokens) {
       if (token.symbol()) {
         const tokenDAO = tokenService.getDAO(token.id())
-        if (reset) {
-          tokenDAO.resetFilterCache()
-        }
-        promises.push(tokenDAO.getTransfer(getTransferId, wallet.addresses().item(token.blockchain()).address()))
+        promises.push(tokenDAO.getTransfer(getTransferId, wallet.addresses().item(token.blockchain()).address(), offset, TXS_PER_PAGE))
       }
     }
     const result = await Promise.all(promises)
-    let newTxs = []
     for (let pack of result) {
       newTxs = [ ...newTxs, ...pack ]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
-
-    txs = [ ...txs, ...newTxs ]
-    txsCache = txs.slice(TXS_PER_PAGE)
-    txs = txs.slice(0, TXS_PER_PAGE)
   }
 
-  let map = new Immutable.Map()
-  for (let tx: TxModel of txs) {
-    map = map.set(tx.id(), tx)
+  for (let tx: TxModel of newTxs) {
+    transactions = transactions.add(tx)
   }
 
-  dispatch({ type: WALLET_TRANSACTIONS, map })
+  if (transactions.items().length === wallet.transactions().items().length) {
+    transactions = transactions.endOfList(true)
+  }
+
+  dispatch({ type: WALLET_TRANSACTIONS, map: transactions.offset(newOffset) })
 }
 
 export const getSpendersAllowance = (tokenId: string, spender: string) => async (dispatch, getState) => {

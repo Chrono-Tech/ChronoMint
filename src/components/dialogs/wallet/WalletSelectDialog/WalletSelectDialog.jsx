@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import WalletsItem from 'components/dialogs/wallet/WalletSelectDialog/WalletsItem'

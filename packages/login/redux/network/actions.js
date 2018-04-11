@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'

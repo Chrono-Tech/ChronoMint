@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
 import { RaisedButton } from 'material-ui'
@@ -41,7 +46,7 @@ class SendToExchangeForm extends PureComponent {
           <RaisedButton
             label={<Translate value='terms.send' />}
             disabled={pristine || invalid}
-            onTouchTap={!pristine && !invalid && handleSubmit}
+            onTouchTap={!pristine && !invalid ? handleSubmit : undefined}
             primary
           />
         </div>

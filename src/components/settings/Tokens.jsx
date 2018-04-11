@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
 import { FlatButton, FontIcon, RaisedButton } from 'material-ui'

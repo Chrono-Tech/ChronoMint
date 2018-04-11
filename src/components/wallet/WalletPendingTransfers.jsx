@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Preloader from 'components/common/Preloader/Preloader'
 import { Paper, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
@@ -97,7 +102,7 @@ export default class WalletPendingTransfers extends PureComponent {
               disabled={!isConfirmed}
               onTouchTap={isConfirmed
                 ? this.handleRevoke(wallet, item)
-                : null
+                : undefined
               }
             />
           </div>
@@ -106,7 +111,7 @@ export default class WalletPendingTransfers extends PureComponent {
             disabled={isConfirmed}
             onTouchTap={!isConfirmed
               ? this.handleConfirm(wallet, item)
-              : null
+              : undefined
             }
             primary
           />

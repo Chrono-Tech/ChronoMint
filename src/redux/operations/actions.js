@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Immutable from 'immutable'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import type AbstractFetchingModel from 'models/AbstractFetchingModel'
@@ -39,7 +44,7 @@ export const watchInitOperations = () => async (dispatch) => {
 export const listOperations = () => async (dispatch) => {
   dispatch(operationsFetch())
   const dao = await contractsManagerDAO.getPendingManagerDAO()
-  const [list, completedList] = await Promise.all([
+  const [ list, completedList ] = await Promise.all([
     dao.getList(),
     dao.getCompletedList(),
   ])
@@ -75,7 +80,7 @@ export const revokeOperation = (operation: OperationModel | AbstractFetchingMode
 
 export const setupOperationsSettings = () => async (dispatch) => {
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  const [required, adminCount] = await Promise.all([
+  const [ required, adminCount ] = await Promise.all([
     dao.getSignsRequired(),
     dao.getAdminCount(),
   ])

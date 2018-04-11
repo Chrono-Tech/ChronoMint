@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
 import AssetHolderDAO from 'dao/AssetHolderDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'

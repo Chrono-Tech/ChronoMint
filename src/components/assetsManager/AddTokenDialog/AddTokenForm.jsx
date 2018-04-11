@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
 import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
@@ -15,7 +20,7 @@ import platformIconInCircle from 'assets/img/assets1.svg'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
 import TokenModel from 'models/tokens/TokenModel'
-import { createAsset } from 'redux/assetsManager/actions'
+import { createAsset, DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -33,12 +38,12 @@ function prefix (token) {
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const form = state.get('form')
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.usersPlatforms,
+    platformsList: assetsManager.usersPlatforms(),
   }
 }
 

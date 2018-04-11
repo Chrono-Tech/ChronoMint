@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import EventEmitter from 'events'
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
@@ -45,15 +50,15 @@ export default class AbstractNode extends EventEmitter {
   }
 
   _closeSubscription (channel) {
-    const subscription = this._subscriptions[channel]
+    const subscription = this._subscriptions[ channel ]
     if (subscription) {
-      delete this._subscriptions[channel]
+      delete this._subscriptions[ channel ]
       subscription.unsubscribe()
     }
   }
 
   _openSubscription (channel, handler) {
-    this._subscriptions[channel] = this._client.subscribe(
+    this._subscriptions[ channel ] = this._client.subscribe(
       channel,
       (message) => {
         try {
@@ -79,7 +84,7 @@ export default class AbstractNode extends EventEmitter {
       this._socket.user,
       this._socket.password,
       this._handleConnectionSuccess,
-      this._handleConnectionError
+      this._handleConnectionError,
     )
   }
 

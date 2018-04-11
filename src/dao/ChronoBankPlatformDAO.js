@@ -1,3 +1,9 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
@@ -66,19 +72,11 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
   }
 
   watchIssue (callback) {
-    return this._watch(TX_ISSUE, (tx) => {
-      const symbol = this._c.bytesToString(tx.args.symbol)
-      const value = tx.args.value
-      callback(symbol, value, true, tx)
-    })
+    return this._watch(TX_ISSUE, (tx) => callback(tx))
   }
 
   watchRevoke (callback) {
-    return this._watch(TX_REVOKE, (tx) => {
-      const symbol = this._c.bytesToString(tx.args.symbol)
-      const value = tx.args.value
-      callback(symbol, value, false, tx)
-    })
+    return this._watch(TX_REVOKE, (tx) => callback(tx))
   }
 
   watchManagers (callback) {

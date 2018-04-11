@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import web3Provider from '@chronobank/login/network/Web3Provider'
 
 export const DUCK_MONITOR = 'monitor'

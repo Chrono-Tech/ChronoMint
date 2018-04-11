@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import 'flexboxgrid/css/flexboxgrid.css'
 import networkService from '@chronobank/login/network/NetworkService'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'

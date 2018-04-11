@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import icnWalletDialogWhite from 'assets/img/icn-wallet-dialog-white.svg'
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'

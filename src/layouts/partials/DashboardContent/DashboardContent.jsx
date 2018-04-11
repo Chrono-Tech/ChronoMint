@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { DepositTokens, Rewards, SendTokens, Voting } from 'components'
 import RewardsCollection from 'models/rewards/RewardsCollection'
 import PropTypes from 'prop-types'

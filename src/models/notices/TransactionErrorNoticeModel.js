@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { I18n } from 'platform/i18n'
 import TxError from 'models/TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
