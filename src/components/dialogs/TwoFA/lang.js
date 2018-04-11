@@ -29,8 +29,5 @@ export default {
     //  actions
     enable2FA: 'Enable two-factor authentication',
     proceedToActivation: 'Proceed to activation',
-  },
-  ru: {
-    // TODO @dkchv: translate
-  },
+  }
 }

@@ -16,16 +16,4 @@ export default {
     platform: 'Platform',
     user: 'User',
   },
-  ru: {
-    title: 'История',
-    time: 'Время',
-    type: 'Тип',
-    manager: 'Менеджер',
-    value: 'Значение',
-    token: 'Токен',
-    added: 'Добавлен',
-    deleted: 'Удален',
-    platform: 'Платформа',
-    user: 'Пользователь',
-  },
 }

@@ -11,11 +11,4 @@ export default {
     loading: 'Loading',
     noTokens: 'no tokens',
   },
-  ru: {
-    platform: 'Платформа',
-    detachPlatform: 'отсоединить платформу',
-    pending: ' Статус: ожидает подтверждения',
-    loading: 'Загрузка',
-    noTokens: 'токенов нет',
-  },
 }
