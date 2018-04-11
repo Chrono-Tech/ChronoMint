@@ -35,6 +35,7 @@ export default class TokenModel extends abstractFetchingModel({
   isLocked: false, // flag for do not operate this token
   isPaused: new PausedModel(),
   blacklist: new BlacklistModel(),
+  latestBlock: null,
 }) {
   id () {
     return this.get('transactionHash') || this.symbol() || this.address()

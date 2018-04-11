@@ -52,3 +52,4 @@ export { default as EthereumWallet } from './wallet/EthereumWallet/EthereumWalle
 export { default as SharedWallet } from './wallet/SharedWallet/SharedWallet'
 export { default as LockedWallet } from './wallet/LockedWallet/LockedWallet'
 export { default as Button } from './common/ui/Button/Button'
+export { default as TxConfirmations } from './common/TxConfirmations/TxConfirmations'

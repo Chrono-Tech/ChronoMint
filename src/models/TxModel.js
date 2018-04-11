@@ -34,6 +34,10 @@ class TxModel extends abstractModel({
     return this._getSet('tokenAddress', value)
   }
 
+  blockNumber (value) {
+    return this._getSet('blockNumber', value)
+  }
+
   to () {
     return this.get('to')
   }
