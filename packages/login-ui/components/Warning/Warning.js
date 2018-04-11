@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import WarningIcon from 'material-ui/svg-icons/alert/error'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'

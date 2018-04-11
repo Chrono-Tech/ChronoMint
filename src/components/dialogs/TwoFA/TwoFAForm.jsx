@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Two2FImg from 'assets/img/2fa/2-fa.png'
 import { Checkbox, TextField, RaisedButton } from 'material-ui'
 import React, { Component } from 'react'

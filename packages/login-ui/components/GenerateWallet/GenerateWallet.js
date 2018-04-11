@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import walletGenerator from '@chronobank/login/network/walletGenerator'
 import { addError, clearErrors } from '@chronobank/login/redux/network/actions'
 import download from 'js-file-download'

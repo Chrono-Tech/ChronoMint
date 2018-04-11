@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { RaisedButton, TextField } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'

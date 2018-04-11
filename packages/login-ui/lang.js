@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import * as AccountSelector from './components/AccountSelector/lang'
 import * as BackButton from './components/BackButton/lang'
 import * as GenerateMnemonic from './components/GenerateMnemonic/lang'

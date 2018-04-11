@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import type Amount from 'models/Amount'
 import type TxModel from 'models/TxModel'
 import { address } from 'models/validator'

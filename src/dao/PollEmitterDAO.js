@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import PollNoticeModel, { IS_VOTED, IS_ACTIVATED, IS_ENDED } from 'models/notices/PollNoticeModel'
 import { MultiEventsHistoryABI, PollEmitterABI } from './abi'

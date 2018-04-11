@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { ru as Login } from '@chronobank/login-ui/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
@@ -14,6 +19,7 @@ import * as user from 'dao/UserManagerDAO'
 import { ru as components } from 'components/lang'
 import { ru as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. Все права защищены.',
@@ -490,6 +496,14 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Создать голосование',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Заблокировать ассет',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Разблокировать ассет',
       },
     },
   },

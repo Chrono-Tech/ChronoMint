@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import type BigNumber from 'bignumber.js'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
@@ -33,9 +38,9 @@ export class BitcoinProvider extends AbstractProvider {
     return node.getTransactionInfo(txid)
   }
 
-  async getTransactionsList (address) {
+  async getTransactionsList (address, skip, offset) {
     const node = this._selectNode(this._engine)
-    return node.getTransactionsList(address)
+    return node.getTransactionsList(address, this._id, skip, offset)
   }
 
   async getFeeRate () {

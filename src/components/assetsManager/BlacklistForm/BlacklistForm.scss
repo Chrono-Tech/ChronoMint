@@ -1,0 +1,52 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/mixins";
+@import '~styles/partials/variables';
+
+.content {
+  padding: 24px 16px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  padding: 4px 8px;
+}
+
+.iconBox {
+  display: flex;
+  align-items: center;
+  flex-grow: 0;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+
+  @include xs-only {
+    display: none;
+  }
+}
+
+.address {
+  @include ellipsis;
+  flex-grow: 1;
+  font-size: 12px;
+  margin: 0 10px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  opacity: 0.6;
+  color: $color-primary-0;
+  cursor: pointer;
+
+  @include xs-only {
+    margin-left: 10px;
+  }
+}

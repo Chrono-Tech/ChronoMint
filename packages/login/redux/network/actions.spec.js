@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import AbstractContractDAO from 'dao/AbstractContractDAO'
 import Immutable from 'immutable'
 import { createSession, destroySession, SESSION_CREATE, SESSION_DESTROY } from 'redux/session/actions'

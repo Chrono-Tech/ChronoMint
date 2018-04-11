@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -66,20 +71,19 @@ export const initTokens = () => async (dispatch, getState) => {
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
 
-  // eth
-  const eth: TokenModel = await ethereumDAO.getToken()
-  if (eth) {
-    dispatch({ type: TOKENS_FETCHED, token: eth })
-    tokenService.registerDAO(eth, ethereumDAO)
-  }
-
   const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
   erc20
-    .on(EVENT_ERC20_TOKENS_COUNT, (count) => {
-      // eslint-disable-next-line
-      console.log('EVENT_ERC20_TOKENS_COUNT', count)
+    .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
+
       const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
-      dispatch({ type: TOKENS_FETCHING, count: currentCount + count })
+      dispatch({ type: TOKENS_FETCHING, count: currentCount + count + 1 /*eth*/ })
+
+      // eth
+      const eth: TokenModel = await ethereumDAO.getToken()
+      if (eth) {
+        dispatch({ type: TOKENS_FETCHED, token: eth })
+        tokenService.registerDAO(eth, ethereumDAO)
+      }
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
@@ -107,7 +111,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
         } catch (e) {
           dispatch({ type: TOKENS_FAILED })
         }
-      })
+      }),
   )
 }
 
@@ -144,7 +148,7 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
         } catch (e) {
           dispatch({ type: TOKENS_FAILED })
         }
-      })
+      }),
   )
 }
 

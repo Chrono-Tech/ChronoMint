@@ -1,3 +1,9 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Translate } from 'react-redux-i18n'
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import { TOKEN_ICONS } from 'assets'
@@ -6,13 +12,16 @@ import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
 import { getProfileTokensList } from 'redux/session/selectors'
-import {  FontIcon } from 'material-ui'
+import { FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
 
 import GasSlider from 'components/common/GasSlider/GasSlider'
 
 import './ProfileContent.scss'
+import { prefix } from './lang'
+
+export const PROFILE_SIDE_PANEL_KEY = 'ProfileSidePanelKey'
 
 function mapStateToProps (state) {
   const session = state.get('session')
@@ -106,7 +115,7 @@ class ProfileContent extends PureComponent {
 
         <div styleName='main-address'>
           <div styleName='main-address-account'>
-            <div styleName='main-address-header-text'>Main address</div>
+            <div styleName='main-address-header-text'><Translate value={`${prefix}.mainAddress`} /></div>
             <div styleName='main-address-account-name'>
               <span styleName='main-address-account-name-text'>
                 {this.props.account}
@@ -141,7 +150,7 @@ class ProfileContent extends PureComponent {
                     <div styleName='address-info-text'>{token.title} Address</div>
                     <div styleName='address-token-name'>
                       <span styleName='address-token-name-text'>
-                        { token.address }
+                        {token.address}
                       </span>
                     </div>
                   </div>

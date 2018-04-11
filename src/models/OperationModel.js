@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
 import TxExecModel from './TxExecModel'
@@ -62,7 +67,7 @@ class OperationModel extends abstractFetchingModel({
 
   txSummary () {
     return {
-      signatures: `${this.remained()} of ${this.remained() + this.completed()}`,
+      signatures: `${this.completed()} of ${this.remained() + this.completed()}`,
       action: this.tx().title(),
       ...this.tx().args(),
     }

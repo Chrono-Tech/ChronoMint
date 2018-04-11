@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export { default as SideStack } from './common/SideStack/SideStack'
 export { default as ModalStack } from './common/ModalStack/ModalStack'
 export { default as Points } from './common/Points/Points'

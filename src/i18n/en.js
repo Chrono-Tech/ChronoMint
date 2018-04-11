@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { en as Login } from '@chronobank/login-ui/lang'
 import { en as components } from 'components/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
@@ -15,6 +20,7 @@ import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { en as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -488,6 +494,20 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Create Poll',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Block asset',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Unblock asset',
+      },
+      [ chronoBankAsset.TX_RESTRICT ]: {
+        title: 'Add user to blacklist',
+      },
+      [ chronoBankAsset.TX_UNRESTRICT ]: {
+        title: 'Remove user from blacklist',
       },
     },
   },

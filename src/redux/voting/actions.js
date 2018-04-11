@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { DUCK_SESSION } from 'redux/session/actions'
 import votingService from 'services/VotingService'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'

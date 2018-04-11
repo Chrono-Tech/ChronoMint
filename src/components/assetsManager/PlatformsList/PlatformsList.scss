@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -96,7 +101,6 @@
   position: relative;
   padding-left: 125px;
   height: 80px;
-  margin-right: 16px;
   justify-content: center;
   &:hover, &.selected {
     background: #e9efff;
@@ -147,4 +151,23 @@
 .addressWrap {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.blockedIcon {
+  background: $color-red;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  padding: 1px;
+  top: 15px;
+  left: -5px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 let path = require('path')
 let webpack = require('webpack')
 let babel = require('./babel.dev')
@@ -10,7 +15,7 @@ process.traceDeprecation = true
 
 module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
-    devtool: 'source-map',
+    devtool: process.env.SOURCE_MAP || 'source-map',
     entry: [
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
@@ -38,5 +43,5 @@ module.exports = config.buildConfig(
       }),
       new webpack.HotModuleReplacementPlugin(),
     ],
-  })
+  }),
 )

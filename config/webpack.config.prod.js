@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const path = require('path')
 const webpack = require('webpack')
 const babel = require('./babel.prod')
@@ -23,8 +28,8 @@ module.exports = config.buildConfig(
       new HtmlWebpackPlugin({
         inject: 'head',
         template: process.env.NODE_ENV === 'standalone'
-          ? indexPresentationHtmlPath
-          : indexHtmlPath,
+          ? indexHtmlPath
+          : indexPresentationHtmlPath,
         favicon: faviconPath,
         hash: true,
         minify: {

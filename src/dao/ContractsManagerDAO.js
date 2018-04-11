@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import * as validator from 'models/validator'
 import { ContractsManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
@@ -20,12 +25,14 @@ import PollInterfaceDAO from './PollInterfaceDAO'
 import WalletsManagerDAO from './MultisigWalletsManagerDAO'
 import { ExchangeDAO } from './ExchangeDAO'
 import ExchangeManagerDAO from './ExchangeManagerDAO'
+import ChronoBankAssetDAO from './ChronoBankAssetDAO'
 
 const DAO_LOC_MANAGER = 'LOCManager'
 const DAO_PENDING_MANAGER = 'PendingManager'
 const DAO_USER_MANAGER = 'UserManager'
 const DAO_WALLETS_MANAGER = 'WalletsManager'
 const DAO_EXCHANGE_MANAGER = 'ExchangeManager'
+const DAO_CHRONOBANK_ASSET = 'ChronoBankAsset'
 const DAO_EXCHANGE = 'Exchange'
 const DAO_ERC20_MANAGER = 'ERC20Manager'
 const DAO_VOTING_MANAGER = 'VotingManager'
@@ -44,32 +51,33 @@ const DAO_ASSET_HOLDER = 'TimeHolder'
 const DAO_ERC20 = 'erc20'
 
 const daoMap = {
-  [DAO_LOC_MANAGER]: LOCManagerDAO,
-  [DAO_PENDING_MANAGER]: PendingManagerDAO,
-  [DAO_USER_MANAGER]: UserManagerDAO,
-  [DAO_WALLETS_MANAGER]: WalletsManagerDAO,
-  [DAO_EXCHANGE_MANAGER]: ExchangeManagerDAO,
-  [DAO_EXCHANGE]: ExchangeDAO,
-  [DAO_ERC20_MANAGER]: ERC20ManagerDAO,
-  [DAO_VOTING_MANAGER]: VotingManagerDAO,
-  [DAO_POLL_INTERFACE]: PollInterfaceDAO,
-  [DAO_REWARDS]: RewardsDAO,
-  [DAO_ASSETS_MANAGER]: AssetsManagerDAO,
-  [DAO_PLATFORMS_MANAGER]: PlatformsManagerDAO,
-  [DAO_CHRONOBANK_PLATFORM]: ChronoBankPlatformDAO,
-  [DAO_TOKEN_MANAGEMENT_EXTENSION]: TokenManagementExtensionDAO,
-  [DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER]: PlatformTokenExtensionGatewayManagerEmitterDAO,
-  [DAO_CHRONOBANK_ASSET_PROXY]: ChronoBankAssetProxyDAO,
-  [DAO_FEE_INTERFACE]: FeeInterfaceDAO,
-  [DAO_ASSET_HOLDER]: AssetHolderDAO,
-  [DAO_ERC20]: ERC20DAO,
+  [ DAO_LOC_MANAGER ]: LOCManagerDAO,
+  [ DAO_PENDING_MANAGER ]: PendingManagerDAO,
+  [ DAO_USER_MANAGER ]: UserManagerDAO,
+  [ DAO_WALLETS_MANAGER ]: WalletsManagerDAO,
+  [ DAO_EXCHANGE_MANAGER ]: ExchangeManagerDAO,
+  [ DAO_CHRONOBANK_ASSET ]: ChronoBankAssetDAO,
+  [ DAO_EXCHANGE ]: ExchangeDAO,
+  [ DAO_ERC20_MANAGER ]: ERC20ManagerDAO,
+  [ DAO_VOTING_MANAGER ]: VotingManagerDAO,
+  [ DAO_POLL_INTERFACE ]: PollInterfaceDAO,
+  [ DAO_REWARDS ]: RewardsDAO,
+  [ DAO_ASSETS_MANAGER ]: AssetsManagerDAO,
+  [ DAO_PLATFORMS_MANAGER ]: PlatformsManagerDAO,
+  [ DAO_CHRONOBANK_PLATFORM ]: ChronoBankPlatformDAO,
+  [ DAO_TOKEN_MANAGEMENT_EXTENSION ]: TokenManagementExtensionDAO,
+  [ DAO_PLATFORM_TOKEN_EXTENSION_GATEWAY_MANAGER_EMITTER ]: PlatformTokenExtensionGatewayManagerEmitterDAO,
+  [ DAO_CHRONOBANK_ASSET_PROXY ]: ChronoBankAssetProxyDAO,
+  [ DAO_FEE_INTERFACE ]: FeeInterfaceDAO,
+  [ DAO_ASSET_HOLDER ]: AssetHolderDAO,
+  [ DAO_ERC20 ]: ERC20DAO,
 }
 
 class ContractsManagerDAO extends AbstractContractDAO {
   _contracts = {}
 
   getContractAddressByType (type: string) {
-    return this._call('getContractAddressByType', [type])
+    return this._call('getContractAddressByType', [ type ])
   }
 
   /** @private */
@@ -82,10 +90,10 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
     const key = `${account}-${daoType}`
     if (this._contracts.hasOwnProperty(key)) {
-      return this._contracts[key]
+      return this._contracts[ key ]
     }
 
-    const DAOClass = daoMap[daoType]
+    const DAOClass = daoMap[ daoType ]
     const dao = new DAOClass(account)
 
     if (isNew) {
@@ -95,7 +103,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
       }
     }
 
-    this._contracts[key] = dao
+    this._contracts[ key ] = dao
     return dao
   }
 
@@ -174,6 +182,12 @@ class ContractsManagerDAO extends AbstractContractDAO {
 
   getExchangeManagerDAO (): Promise<ExchangeManagerDAO> {
     return this._getDAO(DAO_EXCHANGE_MANAGER)
+  }
+
+  async getChronoBankAssetDAO (address): Promise<ChronoBankAssetDAO> {
+    const chronoBankAssetProxyDAO = await this.getChronoBankAssetProxyDAO(address)
+    const assetAddress = await chronoBankAssetProxyDAO.getLatestVersion()
+    return this._getDAO(DAO_CHRONOBANK_ASSET, address ? assetAddress : null)
   }
 
   getExchangeDAO (tokenAddress): Promise<ExchangeDAO> {

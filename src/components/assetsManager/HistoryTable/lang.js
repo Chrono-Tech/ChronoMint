@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   en: {
     title: 'History',
@@ -9,6 +14,7 @@ export default {
     added: 'Added',
     deleted: 'Deleted',
     platform: 'Platform',
+    user: 'User',
   },
   ru: {
     title: 'История',
@@ -20,5 +26,6 @@ export default {
     added: 'Добавлен',
     deleted: 'Удален',
     platform: 'Платформа',
+    user: 'Пользователь',
   },
 }

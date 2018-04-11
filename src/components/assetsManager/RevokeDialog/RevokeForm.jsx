@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
@@ -23,7 +28,7 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   return {
     formErrors: form.get(FORM_NAME) && form.get(FORM_NAME).get('syncErrors'),
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }

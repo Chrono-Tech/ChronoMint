@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import OwnerItem from 'components/wallet/OwnersList/OwnerItem'
 import globalStyles from 'layouts/partials/styles'
 import PropTypes from 'prop-types'
@@ -92,7 +97,7 @@ export default class OwnersList extends PureComponent {
             <button
               styleName='action'
               className='material-icons'
-              onTouchTap={!isDisabled && this.handleAddItem(fields)}
+              onTouchTap={!isDisabled ? this.handleAddItem(fields) : undefined}
               disabled={isDisabled}
             >
               add_circle

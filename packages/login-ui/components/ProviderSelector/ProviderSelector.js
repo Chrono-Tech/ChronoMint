@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import networkService from '@chronobank/login/network/NetworkService'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
 import { MenuItem, SelectField } from 'material-ui'

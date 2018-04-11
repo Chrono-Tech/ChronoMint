@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { TOKEN_ICONS } from 'assets'
@@ -253,8 +258,8 @@ export default class DepositTokensForm extends PureComponent {
                 styleName='actionButton'
                 label={isRevoke ? 'Revoke' : 'Approve'}
                 onTouchTap={isRevoke
-                  ? !isRevokeDisabled && this.handleRevokeAsset :
-                  !isApproveDisabled && handleSubmit(this.handleApproveAsset)
+                  ? !isRevokeDisabled && this.handleRevokeAsset
+                  : !isApproveDisabled ? handleSubmit(this.handleApproveAsset) : undefined
                 }
                 disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
               />
@@ -268,7 +273,7 @@ export default class DepositTokensForm extends PureComponent {
               styleName='actionButton'
               label='Lock'
               primary
-              onTouchTap={!isLockDisabled && handleSubmit(this.handleDepositAsset)}
+              onTouchTap={!isLockDisabled ? handleSubmit(this.handleDepositAsset) : undefined}
               disabled={isLockDisabled}
             />
           </span>
@@ -278,7 +283,7 @@ export default class DepositTokensForm extends PureComponent {
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
             primary
-            onTouchTap={!isWithdrawDisabled && handleSubmit(this.handleWithdrawAsset)}
+            onTouchTap={!isWithdrawDisabled ? handleSubmit(this.handleWithdrawAsset) : undefined}
             disabled={isWithdrawDisabled}
           />
         </span>

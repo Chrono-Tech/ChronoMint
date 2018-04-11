@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -216,7 +221,7 @@ export default class ConfirmTransferDialog extends PureComponent {
               primary
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}
-              onTouchTap={isValid && this.handleConfirm}
+              onTouchTap={isValid ? this.handleConfirm : undefined}
             />
           </div>
         </div>

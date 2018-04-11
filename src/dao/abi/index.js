@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 /* eslint-disable */
 export const ChronoBankPlatformABI = require('chronobank-smart-contracts/build/contracts/ChronoBankPlatform.json')
 export const MultiEventsHistoryABI = require('chronobank-smart-contracts/build/contracts/MultiEventsHistory.json')
@@ -24,3 +29,4 @@ export const WalletsManagerABI = require('chronobank-smart-contracts/build/contr
 export const AssetDonatorABI = require('chronobank-smart-contracts/build/contracts/AssetDonator.json')
 export const ChronoBankAssetProxyABI = require('chronobank-smart-contracts/build/contracts/ChronoBankAssetProxy.json')
 export const AssetsManagerABI = require('chronobank-smart-contracts/build/contracts/AssetsManager.json')
+export const ChronoBankAssetABI = require('chronobank-smart-contracts/build/contracts/ChronoBankAsset.json')
