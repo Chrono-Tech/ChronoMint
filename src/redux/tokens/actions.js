@@ -7,7 +7,7 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
-import ethereumDAO from 'dao/EthereumDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from 'dao/NemDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
@@ -16,9 +16,11 @@ import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/Tran
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTransferModal } from 'redux/ui/actions'
+import { EVENT_NEW_BLOCK } from '../../dao/AbstractTokenDAO'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
+export const TOKENS_UPDATE_LATEST_BLOCK = 'tokens/updateLatestBlock'
 export const TOKENS_INIT = 'tokens/init'
 export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
@@ -93,6 +95,7 @@ export const initTokens = () => async (dispatch, getState) => {
 
   dispatch(initBtcLikeTokens())
   dispatch(initNemTokens())
+  dispatch(watchLatestBlock())
 }
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
@@ -158,4 +161,23 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   // fetch for existing tokens
   const tokens = getState().get(DUCK_TOKENS)
   tokens.list().forEach(handleToken)
+}
+
+export const watchLatestBlock = () => async (dispatch) => {
+  ethereumDAO.on(EVENT_NEW_BLOCK, (block) => {
+    dispatch({
+      type: TOKENS_UPDATE_LATEST_BLOCK,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      block,
+    })
+  })
+  const block = await ethereumDAO.getBlockNumber()
+  dispatch({
+    type: TOKENS_UPDATE_LATEST_BLOCK,
+    blockchain: BLOCKCHAIN_ETHEREUM,
+    block: {
+      blockNumber: block,
+    },
+  })
+
 }
