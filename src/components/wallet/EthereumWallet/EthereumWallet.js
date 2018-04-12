@@ -8,7 +8,9 @@ import TokenModel from 'models/tokens/TokenModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from '../../common/ui/Button/Button'
 import IPFSImage from '../../common/IPFSImage/IPFSImage'
 
@@ -17,7 +19,8 @@ import './EthereumWallet.scss'
 function mapStateToProps (state, props) {
 
   return {
-
+    tokens: state.get(DUCK_TOKENS),
+    wallets: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
   }
 }
 
@@ -31,13 +34,13 @@ function mapDispatchToProps (dispatch, props) {
 export default class EthereumWallet extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
+    tokens: PropTypes.object,
   }
 
 
   render () {
-    const { token } = this.props
-    console.log('EthereumWallet: ', this.props)
-
+    const token = this.props.tokens.item('ETH')
+    // console.log('EthereumWallet: ', this.props)
 
     return (
 

@@ -3,8 +3,9 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import classNames from 'classnames'
 import TokenModel from 'models/tokens/TokenModel'
 import TokensCollection from 'models/tokens/TokensCollection'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
 import { TOKEN_ICONS } from 'assets'
+import { makeGetWalletTokensAndBalanceByAddress, makeGetSectionedWallets } from 'redux/wallet/selectors'
 import {
   DepositTokens,
   Points,
@@ -27,30 +28,30 @@ import { DUCK_WALLET } from 'redux/wallet/actions'
 
 import './WalletsContent.scss'
 
-function mapStateToProps (state) {
-
-  return {
-    tokens: state.get(DUCK_TOKENS),
-  }
-}
-
 function mapDispatchToProps (dispatch) {
   return {
 
   }
 }
 
+const mapStateToProps = (state, ownProps) => {
+  return {
+    walletsList: makeGetSectionedWallets()(state),
+  }
+}
+
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletsContent extends Component {
   static propTypes = {
-    tokens: PropTypes.instanceOf(TokensCollection),
+
   }
 
 
   render () {
 
-    const token = this.props.tokens.item('BTC')
-    const ETHToken = this.props.tokens.item('ETH')
+    console.log('WalletsContent: ', this.props)
+    console.log('PROFILE_PANEL_TOKENS: ', PROFILE_PANEL_TOKENS)
+
 
     return (<div styleName='root'>
 
@@ -58,17 +59,17 @@ export default class WalletsContent extends Component {
         <h1 styleName='header-text'>Bitcoin Wallets</h1>
       </div>
 
-      <BitcoinWallet token={token} />
+      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' />
 
       <div styleName='header-container'>
         <h1 styleName='header-text'>Ethereum Wallets</h1>
       </div>
 
-      <EthereumWallet token={ETHToken} />
+      <EthereumWallet blockchainTitle='Ethereum' />
 
-      <SharedWallet token={ETHToken} />
+      {/*<SharedWallet token={ETHToken} />*/}
 
-      <LockedWallet token={ETHToken} />
+      {/*<LockedWallet token={ETHToken} />*/}
 
     </div>)
   }

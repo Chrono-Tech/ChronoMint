@@ -8,16 +8,18 @@ import TokenModel from 'models/tokens/TokenModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { DUCK_TOKENS } from "redux/tokens/actions";
+import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import Button from '../../common/ui/Button/Button'
 import IPFSImage from '../../common/IPFSImage/IPFSImage'
 
 import './BitcoinWallet.scss'
 
-function mapStateToProps (state, props) {
-
+const mapStateToProps = (state, props) => {
   return {
-
+    tokens: state.get(DUCK_TOKENS),
+    wallets: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
   }
 }
 
@@ -30,14 +32,16 @@ function mapDispatchToProps (dispatch, props) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class BitcoinWallet extends PureComponent {
   static propTypes = {
-    token: PropTypes.instanceOf(TokenModel),
+    blockchainTitle: PropTypes.string,
+    wallets: PropTypes.object,
+    tokenTitle: PropTypes.string,
   }
 
 
   render () {
-    const { token } = this.props
-    console.log('BitcoinWallet: ', Button)
 
+    const token = this.props.tokens.item(this.props.tokenTitle)
+    console.log('Wallet selectors: ', this.props)
 
     return (
       <div styleName='wallet-container'>
