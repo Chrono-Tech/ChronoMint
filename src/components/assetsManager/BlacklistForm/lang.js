@@ -10,8 +10,4 @@ export default {
     addUserButton: 'ADD',
     userAddress: 'Address',
   },
-  ru: {
-    addUserButton: 'ДОБАВИТЬ',
-    userAddress: 'Адрес',
-  },
 }
