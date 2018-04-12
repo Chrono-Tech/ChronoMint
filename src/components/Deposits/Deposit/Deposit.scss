@@ -14,70 +14,76 @@
     background: $background-color-1;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
     border-radius: 5px;
-    display: flex;
-    padding: 40px 40px 35px 40px;
-    .iconWrapper {
-      width: 100px;
-      position: relative;
-      .icon {
-        background: $color-blue;
-        border-radius: 50%;
+    .mainInfo {
+      display: flex;
+      padding: 40px 40px 35px 40px;
+      .iconWrapper {
         width: 100px;
-        height: 100px;
-        .iconImg {
-          width: 100%;
-          height: 100%;
-          background-size: contain;
-          background-position: center;
-          background-repeat: no-repeat;
+        position: relative;
+        .icon {
+          background: $color-blue;
+          border-radius: 50%;
+          width: 100px;
+          height: 100px;
+          .iconImg {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+        }
+      }
+      .itemContent {
+        padding-left: 55px;
+        flex-grow: 1;
+        text-decoration: none;
+        .title {
+          color: $color-white;
+          font-weight: 700;
+          line-height: 22px;
+          text-transform: capitalize;
+        }
+        .address {
+          color: $additionalData-color-1;
+          line-height: 20px;
+          margin-bottom: 15px;
+          font-size: 14px;
+        }
+        .amount {
+          :global {
+            .TokenValue__root {
+              font-size: 30px;
+              font-weight: 500;
+              color: $color-white;
+              line-height: 36px;
+            }
+          }
+        }
+        .price {
+          margin-bottom: 25px;
+          span {
+            font-weight: 400;
+            color: $color-white;
+            line-height: 19px;
+            text-transform: uppercase;
+            margin-left: 0;
+            font-size: 16px;
+          }
+        }
+        .actions {
+          display: flex;
+          .action {
+            &:last-child {
+              margin-left: 10px;
+            }
+          }
         }
       }
     }
-    .itemContent {
-      padding-left: 55px;
-      flex-grow: 1;
-      text-decoration: none;
-      .title {
-        color: $color-white;
-        font-weight: 700;
-        line-height: 22px;
-        text-transform: capitalize;
-      }
-      .address {
-        color: $additionalData-color-1;
-        line-height: 20px;
-        margin-bottom: 15px;
-        font-size: 14px;
-      }
-      .amount {
-        :global {
-          .TokenValue__root {
-            font-size: 30px;
-            font-weight: 500;
-            color: $color-white;
-            line-height: 36px;
-          }
-        }
-      }
-      .price {
-        margin-bottom: 25px;
-        span {
-          font-weight: 400;
-          color: $color-white;
-          line-height: 19px;
-          text-transform: uppercase;
-          margin-left: 0;
-          font-size: 16px;
-        }
-      }
-      .actions {
-        display: flex;
-        .action {
-          &:last-child {
-            margin-left: 10px;
-          }
-        }
-      }
+    .transactions {
+      background-color: $color-white;
+      border-radius: 3px;
     }
   }
 }

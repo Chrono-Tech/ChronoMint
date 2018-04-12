@@ -19,8 +19,21 @@ export const TOKEN_ICONS = {
   XMIN: require('./img/icn-xmin.svg'),
 }
 
-/* eslint-disable global-require */
+export const TX_CONFIRMATIONS = {
+  [ 'r_0' ]: require('./img/r-0.svg'),
+  [ 'r_1' ]: require('./img/r-25.svg'),
+  [ 'r_2' ]: require('./img/r-50.svg'),
+  [ 'r_3' ]: require('./img/r-75.svg'),
+  [ 'r_4' ]: require('./img/r-100.svg'),
+  [ 's_0' ]: require('./img/s-0.svg'),
+  [ 's_1' ]: require('./img/s-25.svg'),
+  [ 's_2' ]: require('./img/s-50.svg'),
+  [ 's_3' ]: require('./img/s-75.svg'),
+  [ 's_4' ]: require('./img/s-100.svg'),
+}
 
+/* eslint-disable global-require */
 export default {
   TOKEN_ICONS,
+  TX_CONFIRMATIONS,
 }
