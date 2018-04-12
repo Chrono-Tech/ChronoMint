@@ -8,9 +8,5 @@ export default {
     sendTokens: 'Send tokens',
     depositTime: 'Deposit TIME',
   },
-  ru: {
-    sendTokens: 'Отправить токены',
-    depositTime: 'Внести TIME',
-  },
 }
 

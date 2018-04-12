@@ -11,12 +11,3 @@ export const en = {
   continue: 'Download Wallet',
   walletSuccess: 'Your wallet has been generated',
 }
-
-export const ru = {
-  enterPassword: 'Введите пароль для нового кошелька:',
-  password: 'Пароль',
-  passwordWarning: 'Минимум 8 символов',
-  iUnderstand: 'Я\u00a0понял',
-  continue: 'Скачать кошелек',
-  walletSuccess: 'Ваш кошелек успешно создан',
-}

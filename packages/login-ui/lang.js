@@ -40,23 +40,3 @@ export const en = {
   LoginUPort: LoginUPort.en,
   AccountSelector: AccountSelector.en,
 }
-
-export const ru = {
-  LoginPage: LoginForm.ru,
-  LoginWithLedger: LoginWithLedger.ru,
-  LoginWithTrezor: LoginWithTrezor.ru,
-  LoginMetamask: LoginMetamask.ru,
-  LoginWithMnemonic: LoginWithMnemonic.ru,
-  LoginWithOptions: LoginWithOptions.ru,
-  LoginWithPrivateKey: LoginWithPrivateKey.ru,
-  ProviderSelector: ProviderSelector.ru,
-  NetworkSelector: NetworkSelector.ru,
-  ProviderSelectorSwitcher: ProviderSelectorSwitcher.ru,
-  LoginWithWallet: LoginWithWallet.ru,
-  BackButton: BackButton.ru,
-  GenerateMnemonic: GenerateMnemonic.ru,
-  GenerateWallet: GenerateWallet.ru,
-  Warning: Warning.ru,
-  LoginUPort: LoginUPort.ru,
-  AccountSelector: AccountSelector.ru,
-}

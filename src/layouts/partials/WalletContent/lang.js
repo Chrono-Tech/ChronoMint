@@ -20,23 +20,6 @@ export default {
     enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
     checkValuesAndPressSend: 'Check values and press SEND.',
     ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.',
-  },
-  ru: {
-    youCanUseTheMultisignatureWallets: 'Вы можете использовать кошельки с мультиподписью',
-    walletsAreSmartContractsWhichManageAssets: 'Кошельки это смартконтракты которые управляют ассетами и могут принадлежать нескольким аккаунтам. В отличие от аккаунтов, контракты кошельков управляются кодом, что означает возможность кастомизации их поведения. Наиболее распространенное использование это мультиподписные кошельки, которые позволяют выполнять логгирование транзакций, устанавливать лимиты выдачи, и наборы правил о необходимом количестве подписей.',
-    toUseStakeholders: 'Для использование возможностей акционеров таких как Бонусы и Голосования, вы должны вложить TIME токены.',
-    enterTheAmount: 'Введите сумму которую вы хотите вложить. Вы можете запросить TIME единожды в целях тестирования.',
-    checkValueAndPress: 'Проверьте значение и нажмите ПОДТВЕРДИТЬ чтобы разрешить TIME holder контракту внести ваши токены. Это для вашей безопастности.',
-    waitUntilAllowance: 'Подождите пока allowance не будет обновлено и нажмите LOCK. Для изъятия введите сумму и нажмите ИЗЪЯТЬ.',
-    howToMakeTime: 'Как внести TIME токены?',
-    depositTime: 'Внести TIME',
-    sendTokens: 'Отправить токены',
-    howToMakeATransfer: 'Как сделать перевод?',
-    ifYouPlanToMoveALargeAmountOfEther: 'Если вы планируете переслать большую сумму эфира, вам сначала следует протестировать отправку малого количества на ваш кошелек чтобы убедится что все проходит как запланировано.',
-    enterTheAddressYouWouldLikeToSendTo: 'Введите адрес на который вы хотите осуществить перевод в поле "Адрес получателя".',
-    enterTheAmountYouWouldLikeToSend: 'Введите сумму кооторую вы хотели бы отправить.',
-    checkValuesAndPressSend: 'Проверьте значения и нажмите ОТПРАВИТЬ.',
-    ifYouWantToAllowAContract: 'Если вы хотите разрешить контракту отправлять ваши токены (не ETH) - повторите тоже самое, но нажмите ПОДТВЕРДИТЬ.',
-  },
+  }
 }
 
