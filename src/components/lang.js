@@ -19,6 +19,7 @@ import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
 import DepositsList from 'components/Deposits/DepositsList/lang'
 import Deposit from 'components/Deposits/Deposit/lang'
+import TxConfirmations from 'components/common/TxConfirmations/lang'
 
 export default {
   en: {
@@ -41,6 +42,7 @@ export default {
     SendTokens: SendTokens.en,
     DepositsList: DepositsList.en,
     Deposit: Deposit.en,
+    TxConfirmations: TxConfirmations.en,
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,

@@ -58,8 +58,12 @@ class TxModel extends abstractModel({
     return this.get('from')
   }
 
+  txHash () {
+    return this.get('txHash')
+  }
+
   id () {
-    return `${this.type()} - ${this.txHash} - ${this.from()} - ${this.to()}`
+    return `${this.type()} - ${this.txHash()} - ${this.from()} - ${this.to()}`
   }
 
   time () {
