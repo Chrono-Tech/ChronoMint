@@ -97,7 +97,7 @@ class TokenValue extends PureComponent {
       : (
         <span styleName={defaultMod} className='TokenValue__root' style={style}>
           {prefix}
-          <span styleName='integral' className='TokenValue__integral'>{symbol} {integerWithDelimiter(valueWithoutDecimals)}</span>
+          <span styleName='integral' className='TokenValue__integral'>{!noRenderSymbol && symbol} {integerWithDelimiter(valueWithoutDecimals)}</span>
           <span styleName='integral' className='TokenValue__fraction'>{this.getFraction(valueWithoutDecimals)}</span>
           {!noRenderPrice && this.renderPrice(valueWithoutDecimals, symbol)}
         </span>

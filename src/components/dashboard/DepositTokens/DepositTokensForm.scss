@@ -6,7 +6,6 @@
 @import "~styles/partials/mixins";
 
 .root {
-  border-radius: 5px;
   overflow: hidden;
 }
 
@@ -111,7 +110,11 @@
 
 .body {
   background: $color-white;
-  padding: 10px 30px;
+  padding: 10px 30px 30px;
+
+  .fieldWrapperHide {
+    display: none;
+  }
   .fieldWrapper {
     position: relative;
     .amountInFiat {
@@ -126,16 +129,6 @@
       padding-top: 10px;
     }
   }
-}
-
-// TODO @dkchv: !!! review again
-.content {
-  @include position(absolute, 10px, 10px, 10px, 10px);
-  @include xs-only {
-    @include position(absolute, 5px, 5px, 5px, 5px);
-  }
-  background: transparent none no-repeat center center;
-  background-size: contain;
 }
 
 .actions {
@@ -203,4 +196,22 @@
 }
 
 .tagDefault {
+}
+
+.note {
+  border-top: 1px solid $color-grey-3;
+  border-bottom: 1px solid $color-grey-3;
+  line-height: 20px;
+  padding: 30px;
+  margin: 40px -30px 30px;
+}
+
+.headItemWrapper {
+  .headItem {
+    padding: 40px 30px 30px;
+    &:last-child, &:first-child {
+      padding: 40px 30px 30px;
+    }
+  }
+  display: flex;
 }
