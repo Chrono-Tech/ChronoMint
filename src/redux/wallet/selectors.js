@@ -52,8 +52,9 @@ export const selectMainWalletBalancesListStore = (state) =>
 export const selectMainWalletTokensStore = (state) =>
   state.get(DUCK_TOKENS) // TokensCollection, array of TokenModel
 
-export const selectMainWalletAddressesListStore = (state) =>
-  state.get(DUCK_MAIN_WALLET).addresses().list() // This is an instance of MainWalletModel
+export const selectMainWalletAddressesListStore = (state) => {
+  return state.get(DUCK_MAIN_WALLET).addresses().list() // This is an instance of MainWalletModel
+}
 
 export const selectMarketPricesListStore = (state) => state.get(DUCK_MARKET).prices
 export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK_MARKET).selectedCurrency
@@ -65,11 +66,12 @@ export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK
  *
  *
  * const getSectionedWallets = makeGetSectionedWallets()
- *   const mapStateToProps = (state, props) => {
- *     const makeMapStateToProps = () => {
- *     return {
- *       walletsSections: getSectionedWallets(state, props),
- *     }
+ *
+ * const mapStateToProps = (state, props) => {
+ *  const makeMapStateToProps = () => {
+ *    return {
+ *      walletsSections: getSectionedWallets(state, props),
+ *    }
  *   }
  *  return mapStateToProps
  * }
@@ -157,25 +159,20 @@ export const makeGetSectionedWallets = () => createSelector(
  * @return { { balance: number, tokens: [ {ETH: number } ] } }
  *         Returns list of sections for the ReactNative SectionList.
  */
-export const makeGetWalletTokensAndBalanceByAddress = (blockChainTitle) => {
+export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
   return createSelector(
     [
-      (state, props) =>
+      getMainWalletSections,
       selectMainWalletAddressesListStore,
       selectMainWalletBalancesListStore,
       selectMainWalletTokensStore,
-      selectMarketPricesListStore,
-      selectMarketPricesSelectedCurrencyStore,
     ],
     (
+      addressesAndBlockchains,
       mainWalletAddressesList,
       mainWalletBalances,
       mainWalletTokens,
-      prices,
-      selectedCurrency,
     ) => {
-
-      console.log('mainWalletAddressesList: ', mainWalletAddressesList)
 
       /**
        * Internal utility
@@ -187,11 +184,11 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockChainTitle) => {
           .removeDecimals(amount)
           .toNumber()
 
-      const walletTokensAndBalanceByAddress =  mainWalletBalances // BalancesCollection, array of BalanceModel
+      const walletTokensAndBalanceByAddress = mainWalletBalances // BalancesCollection, array of BalanceModel
         .filter( (balanceItem) => {
           const bSymbol = balanceItem.symbol()
           const bToken = mainWalletTokens.item(bSymbol)
-          return bToken.blockchain() === blockChainTitle
+          return bToken.blockchain() === blockchainTitle
         })
         .map( (balance) => {
           const bAmount = balance.amount()
@@ -209,16 +206,28 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockChainTitle) => {
       const result = arrWalletTokensAndBalanceByAddress
         .reduce( (accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || null
-          if (tokenPrice && amount > 0) {
-            accumulator.balance += ( amount * tokenPrice )
-          }
-          accumulator.tokens.push({ [ symbol ]: amount })
+
+          accumulator.tokens.push({
+              symbol: symbol,
+              amount: amount,
+          })
+          // accumulator.tokens = accumulator.tokens.sort( (a, b) => {
+          //   const oA = Object.keys(a)[0]
+          //   const oB = Object.keys(b)[0]
+          //   return (oA > oB) - (oA < oB)
+          // } ) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
           return accumulator
         }, {
           balance: 0,
           tokens: [],
         })
+
+      // Let's add an address of Main Wallet into final result
+      const currentWallet = addressesAndBlockchains
+        .find((mainWalletAddrAndChain) => {
+          return mainWalletAddrAndChain.title === blockchainTitle
+        })
+      result.address = currentWallet && currentWallet.data && currentWallet.data[0]
 
       return result
     }

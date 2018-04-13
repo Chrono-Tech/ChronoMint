@@ -35,12 +35,14 @@ export default class EthereumWallet extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.object,
+    address: PropTypes.string,
   }
 
 
   render () {
     const token = this.props.tokens.item('ETH')
-    // console.log('EthereumWallet: ', this.props)
+    const { address } = this.props
+    console.log('EthereumWallet: ', this.props)
 
     return (
 
@@ -60,7 +62,7 @@ export default class EthereumWallet extends PureComponent {
           <div styleName='address-title'>
             <h3>My Wallet</h3>
             <span styleName='address-address'>
-              1Q1pE5vPGEEMqRcVRMbtBK842Y6Pzo6nK9
+              { address }
             </span>
           </div>
           <div styleName='token-amount'>

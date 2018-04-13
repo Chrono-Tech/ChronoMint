@@ -36,7 +36,7 @@ function mapDispatchToProps (dispatch) {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    walletsList: makeGetSectionedWallets()(state),
+    walletsList: makeGetSectionedWallets()(state, ownProps),
   }
 }
 
@@ -49,9 +49,9 @@ export default class WalletsContent extends Component {
 
   render () {
 
-    console.log('WalletsContent: ', this.props)
-    console.log('PROFILE_PANEL_TOKENS: ', PROFILE_PANEL_TOKENS)
-
+    console.log('WalletContent: ', this.props)
+    const bitcoin = this.props.walletsList.find(a => a.title === 'Bitcoin')
+    const ethereum = this.props.walletsList.find(a => a.title === 'Ethereum')
 
     return (<div styleName='root'>
 
@@ -59,13 +59,13 @@ export default class WalletsContent extends Component {
         <h1 styleName='header-text'>Bitcoin Wallets</h1>
       </div>
 
-      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' />
+      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' address={bitcoin.data[0]} />
 
       <div styleName='header-container'>
         <h1 styleName='header-text'>Ethereum Wallets</h1>
       </div>
 
-      <EthereumWallet blockchainTitle='Ethereum' />
+      <EthereumWallet blockchainTitle='Ethereum' tokenTitle='ETH' address={ethereum.data[0]} />
 
       {/*<SharedWallet token={ETHToken} />*/}
 

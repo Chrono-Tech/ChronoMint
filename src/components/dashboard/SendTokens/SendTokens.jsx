@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { ModalDialog } from 'components'
 import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
@@ -45,6 +46,7 @@ export default class SendTokens extends PureComponent {
     visibleBalances: PropTypes.arrayOf(
       PropTypes.instanceOf(BalanceModel),
     ),
+    isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,
@@ -75,12 +77,26 @@ export default class SendTokens extends PureComponent {
   }
 
   render () {
-    const { visibleBalances } = this.props
+    const { visibleBalances, isModal } = this.props
     const initialValues = {
       feeMultiplier: 1,
     }
     if (visibleBalances.length > 0) {
       initialValues.symbol = visibleBalances[ 0 ].id()
+    }
+
+    console.log('SendTokens: ', isModal, this.props)
+
+    if (isModal) {
+      return (
+        <ModalDialog>
+          <SendTokensForm
+            initialValues={initialValues}
+            onSubmit={this.handleSubmit}
+            onSubmitSuccess={this.handleSubmitSuccess}
+          />
+        </ModalDialog>
+      )
     }
 
     return (
