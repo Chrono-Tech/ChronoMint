@@ -24,8 +24,8 @@ export const SESSION_DESTROY = 'session/DESTROY'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
-export const DEFAULT_USER_URL = '/dashboard'
-export const DEFAULT_CBE_URL = '/dashboard'
+export const DEFAULT_USER_URL = '/wallets'
+export const DEFAULT_CBE_URL = '/wallets'
 
 export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
 

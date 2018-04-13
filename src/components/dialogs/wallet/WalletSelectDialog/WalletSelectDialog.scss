@@ -11,12 +11,11 @@ $indent: 24px;
 
 .root {
   max-width: 928px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
 
   @include sm-plus {
     min-width: 640px;
   }
-
 
   :global(.TokenValue__root) {
     color: $color-black;
@@ -38,8 +37,7 @@ $indent: 24px;
 
 .header {
   position: relative; // for FAB
-  background-color: $color-primary-1;
-  padding: 32px $indent 64px;
+  padding: 16px $indent 16px;
   color: $color-white;
 }
 
@@ -64,6 +62,9 @@ $indent: 24px;
 .body {
   padding-bottom: 32px;
   color: $color-black;
+  background: $color-white;
+  border-radius: 2px 2px 0 0;
+  overflow: hidden;
 }
 
 // block

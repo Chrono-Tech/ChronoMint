@@ -11,28 +11,34 @@ import OperationsPage from './OperationsPage'
 import RewardsPage from './RewardsPage'
 import SettingsPage from './SettingsPage'
 import VotingPage from './VotingPage'
-import WalletPage from './WalletPage'
+import DepositsPage from './DepositsPage'
+import WalletsPage from './WalletsPage'
+import DepositPage from './DepositPage'
 
 export {
   DashboardPage,
   ExchangePage,
-  WalletPage,
+  WalletsPage,
   RewardsPage,
   VotingPage,
   OperationsPage,
   SettingsPage,
   LOCPage,
   AssetsPage,
+  DepositsPage,
+  DepositPage,
 }
 
 export default {
   DashboardPage,
   ExchangePage,
-  WalletPage,
+  WalletsPage,
   RewardsPage,
   VotingPage,
   OperationsPage,
   SettingsPage,
   LOCPage,
   AssetsPage,
+  DepositsPage,
+  DepositPage,
 }

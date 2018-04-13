@@ -3,15 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Field, reduxForm, formPropTypes } from 'redux-form/immutable'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { validate } from 'models/CBEModel'
-import { formCBELoadName, addCBE } from 'redux/settings/user/cbe/actions'
+import { addCBE, formCBELoadName } from 'redux/settings/user/cbe/actions'
 import { modalsClose } from 'redux/modals/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from 'models/validator'
@@ -71,11 +71,8 @@ export default class CBEAddressDialog extends PureComponent {
     } = this.props
 
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value={prefix('addCbeAddress')} />}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3 styleName='title'><Translate value={prefix('addCbeAddress')} /></h3>
-          </div>
           <div styleName='content'>
             <Field
               component={TextField}
@@ -95,15 +92,15 @@ export default class CBEAddressDialog extends PureComponent {
             />
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}
             />
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('addAddress')} />}
-              primary
               disabled={isLoading || pristine || invalid}
               type='submit'
             />

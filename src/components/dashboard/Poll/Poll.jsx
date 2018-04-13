@@ -4,10 +4,11 @@
  */
 
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
+import { Button } from 'components'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
-import { FlatButton, Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
 import Amount from 'models/Amount'
 import { SHORT_DATE } from 'models/constants'
 import TokenModel from 'models/tokens/TokenModel'
@@ -210,52 +211,51 @@ export default class Poll extends PureComponent {
             <div styleName='left'>
               {isCBE && (!details.status || !details.active)
                 ? (
-                  <RaisedButton
+                  <Button
                     label={<Translate value={prefix('remove')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() ? this.props.handlePollRemove : undefined}
+                    onTouchTap={this.props.handlePollRemove}
                   />
                 )
                 : null
               }
             </div>
             <div styleName='right'>
-              <FlatButton
-                style={{ margin: '16px' }}
+              <Button
+                flat
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={!model.isFetching() ? this.props.handlePollDetails : undefined}
+                onTouchTap={this.props.handlePollDetails}
               />
               {isCBE && details.status && details.active
                 ? (
-                  <RaisedButton
+                  <Button
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() ? this.props.handlePollEnd : undefined}
+                    onTouchTap={this.props.handlePollEnd}
                   />
                 )
                 : null
               }
               {isCBE && details.status && !details.active
                 ? (
-                  <RaisedButton
+                  <Button
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={!model.isFetching() ? this.props.handlePollActivate : undefined}
+                    onTouchTap={this.props.handlePollActivate}
                   />
                 )
                 : null
               }
               {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
                 ? (
-                  <RaisedButton
+                  <Button
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
-                    primary
                     disabled={model.isFetching() || this.props.deposit.isZero()}
                     onTouchTap={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
                   />

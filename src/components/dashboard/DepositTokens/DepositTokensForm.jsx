@@ -3,15 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button, IPFSImage } from 'components'
+import { Slider, TextField } from 'redux-form-material-ui'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { TOKEN_ICONS } from 'assets'
 import BigNumber from 'bignumber.js'
-import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import styles from 'components/dashboard/styles'
-import { FlatButton, MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
 import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import TokenModel from 'models/tokens/TokenModel'
@@ -21,16 +20,15 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME, TIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS, estimateGas } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
-import inversedTheme from 'styles/themes/inversed'
-import ColoredSection from '../ColoredSection/ColoredSection'
-import IconSection from '../IconSection/IconSection'
+import classnames from 'classnames'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
@@ -39,6 +37,12 @@ const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 export const ACTION_APPROVE = 'deposit/approve'
 export const ACTION_DEPOSIT = 'deposit/deposit'
 export const ACTION_WITHDRAW = 'deposit/withdraw'
+
+const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 1.9,
+  step: 0.1,
+}
 
 function prefix (token) {
   return `components.dashboard.DepositTokens.${token}`
@@ -49,6 +53,8 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_DEPOSIT_TOKENS)
   const tokenId = selector(state, 'symbol')
   const amount = selector(state, 'amount')
+  const feeMultiplier = selector(state, 'feeMultiplier')
+
   // state
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
@@ -69,10 +75,14 @@ function mapStateToProps (state) {
     spender,
     amount,
     token,
+    feeMultiplier,
     tokens,
     assets,
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
+    initialValues: {
+      feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
+    },
   }
 }
 
@@ -104,11 +114,50 @@ export default class DepositTokensForm extends PureComponent {
     ...formPropTypes,
   }
 
+  constructor (props) {
+    super(props)
+
+    let step = 1
+    if (this.props.allowance.amount().gt(0)) {
+      step = 2
+    }
+
+    this.state = { step }
+    this.timeout = null
+  }
+
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     if (!newProps.token.isFetched() && firstAsset) {
       this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'symbol', firstAsset.symbol()))
     }
+
+    if (newProps.amount > 0 && newProps.feeMultiplier > 0 && (newProps.amount !== this.props.amount || newProps.feeMultiplier !== this.props.feeMultiplier)) {
+      this.handleGetGasPrice(newProps.amount, newProps.feeMultiplier, this.props.spender)
+    }
+
+    if (newProps.allowance && newProps.allowance.amount().gt(0)) {
+      this.setState({
+        step: 2,
+      })
+      this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.allowance.amount().toNumber()))
+    }
+  }
+
+  handleGetGasPrice = (amount, feeMultiplier, spender) => {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      estimateGas(
+        TIME,
+        [ 'approve', [ spender, new BigNumber(amount) ] ],
+        (error, { gasFee, gasPrice }) => {
+          if (!error) {
+            this.setState({ gasFee, gasPrice })
+          }
+        },
+        feeMultiplier,
+      )
+    }, 1000)
   }
 
   handleApproveAsset = (values) => {
@@ -148,85 +197,110 @@ export default class DepositTokensForm extends PureComponent {
     return limit.gte(amount)
   }
 
+  handleChangeAmount = (e, value) => {
+    // eslint-disable-next-line
+    // console.log('handleChangeAmount', e, value)
+
+  }
+
   renderHead () {
     const { deposit, allowance, token, balance, assets } = this.props
     const symbol = token.symbol()
     return (
-      <div>
-        <IconSection
-          title={<Translate value={prefix('depositTime')} />}
-          iconComponent={token.isFetched() && (
+      <div styleName='head'>
+        <div styleName='mainTitle'><Translate value={prefix('depositTime')} /></div>
+        <div styleName='icon'>
+          <div styleName='imgWrapper'>
             <IPFSImage
-              styleName='content'
+              styleName='iconImg'
               multihash={token.icon()}
               fallback={TOKEN_ICONS[ symbol ]}
             />
-          )}
-        >
-          <MuiThemeProvider theme={inversedTheme}>
-            <div>
-              {assets.size() === 0
-                ? <Preloader />
-                : (
-                  <Field
-                    component={SelectField}
-                    name='symbol'
-                    fullWidth
-                    {...styles}
-                  >
-                    {assets
-                      .sortBy((balance) => balance.symbol())
-                      .map((item) => (
-                        <MenuItem
-                          key={item.id()}
-                          value={item.symbol()}
-                          primaryText={item.symbol()}
-                        />
-                      ))}
-                  </Field>
-                )
-              }
-              {token.isFetched()
-                ? (
-                  <div>
-                    <div styleName='balance'>
-                      <div styleName='label'><Translate value={prefix('yourSymbolBalance')} symbol={symbol} />:</div>
-                      <div styleName='ellipsis'><TokenValue isInvert value={balance} /></div>
-                    </div>
-                    <div styleName='balance'>
-                      <div styleName='label'><Translate value={prefix('yourSymbolDeposit')} symbol={symbol} />:</div>
-                      <div styleName='ellipsis'><TokenValue isInvert value={deposit} /></div>
-                    </div>
-                    {
-                      allowance.amount().gt(0) &&
-                      <div styleName='balance'>
-                        <div styleName='label'><Translate value={prefix('symbolHolderAllowance')} symbol={symbol} />:
-                        </div>
-                        <div styleName='ellipsis'><TokenValue isInvert value={allowance.amount()} /></div>
-                      </div>
-                    }
-                  </div>
-                )
-                : (
-                  <div styleName='hint'>Select token</div>
-                )}
+          </div>
+        </div>
+        {token.isFetched() ? (
+          <div styleName='headContent'>
+            {this.state.step === 1 && (
+              <div>
+                <div styleName='headItem'>
+                  <div styleName='balance'><TokenValue isInvert noRenderPrice value={balance} /></div>
+                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={balance} /></div>
+                </div>
+              </div>
+            )}
+
+            {this.state.step === 2 && (
+              <div styleName='headItemWrapper'>
+                <div styleName='headItem'>
+                  <div styleName='balance'><TokenValue isInvert noRenderPrice value={deposit} /></div>
+                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
+                </div>
+
+                <div styleName='headItem'>
+                  <div styleName='balance'><TokenValue isInvert noRenderPrice noRenderSymbol value={allowance.amount()} prefix='+' /></div>
+                  <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={allowance.amount()} /></div>
+                </div>
+              </div>
+            )}
+
+            <div styleName='stepsWrapper'>
+              <div styleName={classnames('step', { 'active': this.state.step === 1 })}>
+                <Translate value={prefix('firstStep')} />
+              </div>
+              <div styleName={classnames('step', { 'active': this.state.step === 2 })}>
+                <Translate value={prefix('secondStep')} />
+              </div>
             </div>
-          </MuiThemeProvider>
-        </IconSection>
+          </div>
+        ) : <div styleName='preloader'><Preloader /></div>}
       </div>
     )
   }
 
   renderBody () {
+    const { amount, token, feeMultiplier } = this.props
     return (
       <div>
-        <Field
-          component={TextField}
-          hintText='0.00'
-          floatingLabelText={<Translate value={prefix('amount')} />}
-          name='amount'
-          style={{ width: '150px' }}
-        />
+        <div styleName={classnames('fieldWrapper', { 'fieldWrapperHide': this.state.step === 2 })}>
+          <Field
+            component={TextField}
+            fullWidth
+            hintText='0.00'
+            floatingLabelText={<Translate value={prefix('amount')} symbol='TIME' />}
+            onChange={this.handleChangeAmount}
+            name='amount'
+          />
+          <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount || 0), token.symbol())} /></div>
+        </div>
+        {(
+          <div>
+            <div styleName='feeRate'>
+              <div styleName='tagsWrap'>
+                <div><Translate value={prefix('slow')} /></div>
+                <div styleName='tagDefault' />
+                <div><Translate value={prefix('fast')} /></div>
+              </div>
+
+              <Field
+                component={Slider}
+                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+                name='feeMultiplier'
+                {...FEE_RATE_MULTIPLIER}
+              />
+            </div>
+          </div>
+        )}
+        <div styleName='transactionsInfo'>
+          <div>
+            <b><Translate value={prefix('transactionFee')} />: </b>
+            {this.state.gasFee && <span><TokenValue value={this.state.gasFee} /><br /><Translate value={prefix('multiplier')} multiplier={feeMultiplier} /></span>}
+            {!amount || amount <= 0 ? <Translate value={prefix('enterAmount')} /> : null}
+          </div>
+        </div>
+        <div styleName='note'>
+          <b><Translate value={prefix('note')} /></b>
+          <Translate value={prefix('noteText')} />
+        </div>
       </div>
     )
   }
@@ -243,47 +317,63 @@ export default class DepositTokensForm extends PureComponent {
     const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
     const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
+    switch (this.state.step) {
+      case 1:
+        return (
+          <div styleName='actions'>
+            <div styleName='action'>
+              {isShowTIMERequired
+                ? (
+                  <Button
+                    flat
+                    styleName='actionButton'
+                    label={<Translate value={prefix('requireTime')} />}
+                    onTouchTap={this.handleRequireTime}
+                  />
+                ) : (
+                  <Button
+                    styleName='actionButton'
+                    label={<Translate value={prefix('PROCEED')} />}
+                    onTouchTap={handleSubmit(this.handleApproveAsset)}
+                    disabled={isApproveDisabled}
+                  />
+                )
+              }
+            </div>
+          </div>
+        )
+      case 2:
+        return (
+          <div styleName='actions'>
+            <div styleName='action'>
+              <Button
+                styleName='actionButton'
+                label={<Translate value={prefix('revoke')} />}
+                onTouchTap={handleSubmit(this.handleRevokeAsset)}
+                disabled={isRevokeDisabled}
+              />
+            </div>
+
+            {!isShowTIMERequired && (
+              <div styleName='action'>
+                <Button
+                  styleName='actionButton'
+                  label={<Translate value={prefix('finish')} />}
+                  onTouchTap={handleSubmit(this.handleDepositAsset)}
+                  disabled={isLockDisabled}
+                />
+              </div>
+            )}
+          </div>
+        )
+    }
     return (
       <div styleName='actions'>
         <span styleName='action'>
-          {isShowTIMERequired
-            ? (
-              <FlatButton
-                styleName='actionButton'
-                label={<Translate value={prefix('requireTime')} />}
-                onTouchTap={this.handleRequireTime}
-              />
-            ) : (
-              <RaisedButton
-                styleName='actionButton'
-                label={isRevoke ? 'Revoke' : 'Approve'}
-                onTouchTap={isRevoke
-                  ? !isRevokeDisabled && this.handleRevokeAsset
-                  : !isApproveDisabled ? handleSubmit(this.handleApproveAsset) : undefined
-                }
-                disabled={isRevoke ? isRevokeDisabled : isApproveDisabled}
-              />
-            )
-          }
-        </span>
-
-        {!isShowTIMERequired && (
-          <span styleName='action'>
-            <RaisedButton
-              styleName='actionButton'
-              label='Lock'
-              primary
-              onTouchTap={!isLockDisabled ? handleSubmit(this.handleDepositAsset) : undefined}
-              disabled={isLockDisabled}
-            />
-          </span>
-        )}
-        <span styleName='action'>
-          <RaisedButton
+          <Button
             styleName='actionButton'
             label={<Translate value={prefix('withdraw')} />}
-            primary
-            onTouchTap={!isWithdrawDisabled ? handleSubmit(this.handleWithdrawAsset) : undefined}
+            onTouchTap={handleSubmit(this.handleWithdrawAsset)}
             disabled={isWithdrawDisabled}
           />
         </span>
@@ -293,15 +383,15 @@ export default class DepositTokensForm extends PureComponent {
 
   render () {
     return (
-      <Paper>
+      <div styleName='root'>
         <form onSubmit={this.props.handleSubmit}>
-          <ColoredSection
-            head={this.renderHead()}
-            body={this.renderBody()}
-            foot={this.renderFoot()}
-          />
+          {this.renderHead()}
+          <div styleName='body'>
+            {this.renderBody()}
+            {this.renderFoot()}
+          </div>
         </form>
-      </Paper>
+      </div>
     )
   }
 }

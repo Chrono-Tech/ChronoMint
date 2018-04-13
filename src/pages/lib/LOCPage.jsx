@@ -23,9 +23,7 @@ export default class WalletPage extends Component {
         >
           <Partials.LOCContent />
         </CSSTransitionGroup>
-        <Partials.FooterPartial />
       </div>
     )
   }
 }
-

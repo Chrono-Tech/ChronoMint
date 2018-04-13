@@ -23,7 +23,6 @@ export default class OperationsPage extends Component {
         >
           <Partials.OperationsContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

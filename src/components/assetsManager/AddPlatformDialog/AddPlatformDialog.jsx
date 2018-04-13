@@ -3,12 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
-import AddPlatformForm from './AddPlatformForm'
+import AddPlatformForm, { prefix } from './AddPlatformForm'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -28,7 +29,7 @@ export default class AddPlatformDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value={prefix('dialogTitle')} />}>
         <AddPlatformForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )

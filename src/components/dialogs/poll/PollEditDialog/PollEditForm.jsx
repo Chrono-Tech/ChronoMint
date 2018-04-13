@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import Immutable from 'immutable'
-import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
+import { FontIcon, IconButton } from 'material-ui'
 import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
 import PollModel from 'models/PollModel'
 import PropTypes from 'prop-types'
@@ -28,12 +28,13 @@ import { TIME } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from 'models/PollDetailsModel'
 import FileModel from 'models/FileSelect/FileModel'
+import { Button } from 'components'
 import './PollEditForm.scss'
 import validate from './validate'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `components.dialogs.PollEditDialog.${token}`
 }
 
@@ -123,9 +124,10 @@ export default class PollEditForm extends Component {
     return (
       <div>
         <div styleName='optionsActions'>
-          <FlatButton
+          <Button
             label={<Translate value={prefix('addOption')} />}
             styleName='optionsAction'
+            type='flat'
             // eslint-disable-next-line
             onTouchTap={() => this.handleOptionCreate(options)}
           />
@@ -173,7 +175,6 @@ export default class PollEditForm extends Component {
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <form styleName='content' onSubmit={handleSubmit}>
-        <div styleName='title'><Translate value={prefix(isModify ? 'editPoll' : 'newPoll')} /></div>
         <div styleName='body'>
           <div styleName='column'>
             <Field
@@ -244,9 +245,10 @@ export default class PollEditForm extends Component {
           </div>
         </div>
         <div styleName='footer'>
-          <RaisedButton
+          <Button
             styleName='footerAction'
             label={<Translate value={prefix(isModify ? 'updatePoll' : 'createPoll')} />}
+            buttonType='flat'
             type='submit'
             disabled={pristine || invalid}
             primary

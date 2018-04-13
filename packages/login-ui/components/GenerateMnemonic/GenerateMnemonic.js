@@ -4,7 +4,7 @@
  */
 
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { Checkbox, MuiThemeProvider, RaisedButton } from 'material-ui'
+import { Checkbox, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -12,8 +12,8 @@ import theme from 'styles/themes/default'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 import Warning from '../../components/Warning/Warning'
-
 import './GenerateMnemonic.scss'
+import { Button } from '../../settings'
 
 class GenerateMnemonic extends PureComponent {
   static propTypes = {
@@ -66,12 +66,10 @@ class GenerateMnemonic extends PureComponent {
                   {...styles.checkbox}
                 />
               </div>
-              <RaisedButton
+              <Button
                 label={<Translate value='GenerateMnemonic.continue' />}
-                primary
                 disabled={!isConfirmed}
                 onTouchTap={() => this.props.onBack()}
-                style={styles.primaryButton}
               />
             </div>
           </div>

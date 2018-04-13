@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~material-colors-scss/function';
 
 $color-primary-0: #00005f;
@@ -55,11 +54,15 @@ $color-chart-bg: rgba(118, 143, 255, 0.5);
 $color-hr: #CCCCDF;
 $color-hr-1: #DDDDDF;
 
-$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
-$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24), 0 0 8px 0 rgba(0, 0, 0, .12);
-$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24),
+0 0 4px 0 rgba(0, 0, 0, .12);
+$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24),
+0 0 8px 0 rgba(0, 0, 0, .12);
+$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24),
+0 0 1px 0 rgba(0, 0, 0, 0.12);
 
-$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2);
+$color-modal-backdrop-bg: rgba(0, 0, 0, 0.7);
+$color-modal-backdrop-bg-1: rgba(0, 0, 0, 0.03);
 
 $media-size-xs: 480px;
 $media-size-sm: 768px;
@@ -77,8 +80,34 @@ $highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
-$font-family-main: 'Roboto', sans-serif;
+$font-family-main: 'Roboto',
+sans-serif;
 $font-size-base: 16px;
 $font-weight-bold: 600;
 
 $border-radius: 2px;
+$button-color-1: #614DBA;
+$button-color-2: #FFB54E;
+$button-color-3: #E5E5E5;
+
+// Chrono-wallet vars
+$sideMenu-background: #614DBA;
+$border-color: #786AB7;
+$additionalData-color: #BCC6FF;
+$additionalData-color-1: #A3A3CC;
+$synced-color: #6EE289;
+$offline-color: #FD6041;
+$color-purpule: #424066;
+$color-white-1: #F7F7F7;
+$color-grey-1: #E5E5E5;
+$color-grey-2: #7F7F7F;
+$color-hover: #FFB54E;
+$cubic-animation: cubic-bezier(0.23, 1, 0.32, 1);
+$color-blue: #2f2d59;
+$background-color: #242045;
+$icon-color: #dbaa6e;
+$background-color-1: #302D59;
+$color-red-2: #C25451;
+$color-green-1: #68CC8E;
+$color-blue-3: #6D79BF;
+$color-grey-3: #F2F2F2;

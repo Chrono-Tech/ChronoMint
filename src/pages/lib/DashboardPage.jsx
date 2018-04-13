@@ -24,9 +24,7 @@ export default class DashboardPage extends Component {
           <Partials.InfoPartial />
           <Partials.DashboardContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
 }
-

@@ -4,7 +4,8 @@
  */
 
 import Two2FImg from 'assets/img/2fa/2-fa.png'
-import { Checkbox, TextField, RaisedButton } from 'material-ui'
+import { Checkbox, TextField } from 'material-ui'
+import { Button } from 'components'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
@@ -44,7 +45,7 @@ export default class TwoFAForm extends Component {
                   googleIcon={`<img styleName='storeIcon' src='TODO' />`}
                   appStoreIcon={`<img styleName='storeIcon' src='TODO' />`}
                 />
-                <RaisedButton
+                <Button
                   label={<Translate value={`${prefix}.proceedToActivation`} />}
                   styleName='action'
                   onTouchTap={this.handleProceedToActivation}
@@ -99,11 +100,10 @@ export default class TwoFAForm extends Component {
           </div>
 
           <div styleName='actions'>
-            <RaisedButton
+            <Button
               label={<Translate value={`${prefix}.enable2FA`} />}
               styleName='action'
               onTouchTap={this.handleEnable2FA}
-              primary
             />
           </div>
         </div>

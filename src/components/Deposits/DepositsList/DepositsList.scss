@@ -1,0 +1,115 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  display: flex;
+  justify-content: center;
+  .depositItem {
+    flex-grow: 1;
+    max-width: 587px;
+    background: $color-white;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    display: flex;
+    padding: 40px 40px 35px 40px;
+    .iconWrapper {
+      width: 100px;
+      position: relative;
+      .smallIcon {
+        position: absolute;
+        color: $icon-color;
+        font-size: 30px;
+        line-height: 24px;
+        top: 2px;
+        left: 2px;
+      }
+      .icon {
+        background: $color-blue;
+        border-radius: 50%;
+        padding: 10px 11px 11px;
+        width: 100px;
+        height: 100px;
+        .iconImg {
+          width: 100%;
+          height: 100%;
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+      }
+    }
+    .itemContent {
+      padding-left: 30px;
+      flex-grow: 1;
+      text-decoration: none;
+      &:hover {
+        .title, .address {
+          color: $border-color;
+        }
+        .amount {
+          color: $border-color;
+          :global {
+            .TokenValue__root {
+              color: $border-color;
+            }
+          }
+        }
+        .price {
+          span {
+            color: $border-color;
+          }
+        }
+
+      }
+      .title {
+        color: $color-primary-3;
+        font-weight: 700;
+        line-height: 22px;
+        text-transform: capitalize;
+      }
+      .address {
+        color: $color-grey-2;
+        line-height: 20px;
+        margin-bottom: 15px;
+        font-size: 14px;
+      }
+      .amount {
+        :global {
+          .TokenValue__root {
+            font-size: 30px;
+            font-weight: 500;
+            color: $color-primary-3;
+            line-height: 36px;
+          }
+        }
+      }
+      .price {
+        margin-bottom: 25px;
+        span {
+          font-weight: 400;
+          color: $color-grey-2;
+          line-height: 19px;
+          text-transform: uppercase;
+          margin-left: 0;
+          font-size: 16px;
+        }
+      }
+      .actions {
+        display: flex;
+        .action {
+          &:last-child {
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+

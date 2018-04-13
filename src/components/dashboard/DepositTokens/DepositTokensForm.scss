@@ -2,46 +2,149 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-// TODO @dkchv: !!! review again
-.content {
-  @include position(absolute, 10px, 10px, 10px, 10px);
-  @include xs-only {
-    @include position(absolute, 5px, 5px, 5px, 5px);
-  }
-  background: transparent none no-repeat center center;
-  background-size: contain;
+.root {
+  overflow: hidden;
 }
 
-.balance {
+.head {
+  background: $sideMenu-background;
+}
 
-  margin-top: 15px;
-  text-shadow: $text-shadow-title;
+.mainTitle {
+  font-size: 30px;
+  color: $color-white;
+  line-height: 36px;
+  font-weight: 400;
+  padding: 20px 30px;
+}
 
-  .label {
-    height: 17px;
-    font-size: 14px;
+.icon {
+  position: relative;
+  border-bottom: 1px solid $color-blue-3;
+  overflow: visible;
+  height: 0;
+  width: 100%;
+  .imgWrapper {
+    background: $color-blue;
+    position: absolute;
+    right: 30px;
+    top: -32px;
+    border-radius: 32px;
+    padding: 7px 8px 8px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.iconImg {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.headContent {
+  .headItem {
+    &:first-child {
+      padding-top: 40px;
+    }
+    padding: 10px 30px;
+    &:last-child {
+      padding-bottom: 30px;
+    }
+  }
+  .title {
+    font-weight: 400;
+    line-height: 19px;
+    font-size: 16px;
     color: $color-white;
+    .address {
+      color: $additionalData-color;
+    }
+  }
+
+  .balance {
+    line-height: 25px;
+    color: $color-white;
+    font-size: 30px;
+    :global {
+      .TokenValue__root {
+        span {
+          line-height: 36px;
+          color: $color-white;
+          font-size: 30px;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .balanceFiat {
+    span {
+      color: $color-white;
+      font-size: 16px;
+      line-height: 19px;
+      margin: 0;
+    }
+  }
+  .preloader {
+
+  }
+  .stepsWrapper {
+    border-top: 1px solid $color-blue-3;
+    padding: 20px 30px;
+    display: flex;
+    .step {
+      color: $additionalData-color;
+      margin-right: 32px;
+    }
+    .active {
+      color: $color-white;
+      font-weight: 500;
+    }
+  }
+}
+
+.body {
+  background: $color-white;
+  padding: 10px 30px 30px;
+
+  .fieldWrapperHide {
+    display: none;
+  }
+  .fieldWrapper {
+    position: relative;
+    .amountInFiat {
+      position: absolute;
+      right: 0;
+      top: 38px;
+    }
+  }
+  .transactionsInfo {
+    padding-top: 10px;
+    > div {
+      padding-top: 10px;
+    }
   }
 }
 
 .actions {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 40px;
   @include xs-only {
-    display: flex;
     flex-direction: column;
   }
 }
 
 .action {
-  margin-left: 40px;
-
   @include md-only {
-    margin-left: 20px;
-    margin-bottom: 20px;
+    margin-left: 16px;
+    margin-bottom: 16px;
     display: inline-block;
   }
 
@@ -73,4 +176,42 @@
 .ellipsis {
   @include ellipsis;
   color: $color-white
+}
+
+.feeRate {
+  padding-top: 40px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  color: $border-color;
+  font-weight: 400;
+  line-height: 19px;
+  font-size: 16px;
+}
+
+.tagDefault {
+}
+
+.note {
+  border-top: 1px solid $color-grey-3;
+  border-bottom: 1px solid $color-grey-3;
+  line-height: 20px;
+  padding: 30px;
+  margin: 40px -30px 30px;
+}
+
+.headItemWrapper {
+  .headItem {
+    padding: 40px 30px 30px;
+    &:last-child, &:first-child {
+      padding: 40px 30px 30px;
+    }
+  }
+  display: flex;
 }

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button } from 'components'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -51,11 +51,10 @@ export default class ExchangeDepositForm extends React.PureComponent {
             />
           </div>
           <div styleName='actionWrapper'>
-            <RaisedButton
+            <Button
               disabled={this.props.pristine || !this.props.valid}
               type='submit'
               label={<Translate value={prefix('sendRequest')} />}
-              primary
             />
           </div>
         </form>

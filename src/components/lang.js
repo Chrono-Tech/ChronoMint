@@ -17,6 +17,9 @@ import * as exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
+import DepositsList from 'components/Deposits/DepositsList/lang'
+import Deposit from 'components/Deposits/Deposit/lang'
+import TxConfirmations from 'components/common/TxConfirmations/lang'
 
 export default {
   en: {
@@ -37,6 +40,9 @@ export default {
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
     SendTokens: SendTokens.en,
+    DepositsList: DepositsList.en,
+    Deposit: Deposit.en,
+    TxConfirmations: TxConfirmations.en,
   },
   ru: {
     UserActiveDialog: UserActiveDialog.ru,

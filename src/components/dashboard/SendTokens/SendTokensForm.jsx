@@ -3,16 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_LITECOIN,
-} from '@chronobank/login/network/BitcoinProvider'
+import { Button, IPFSImage } from 'components'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
 import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
 import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
-import { IPFSImage } from 'components'
 import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -20,8 +15,10 @@ import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
 import IconSection from 'components/dashboard/IconSection/IconSection'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
+import Amount from 'models/Amount'
 import Immutable from 'immutable'
-import { MenuItem, MuiThemeProvider, Paper, RaisedButton } from 'material-ui'
+import { MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
@@ -31,11 +28,11 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, Slider, TextField } from 'redux-form-material-ui'
+import { SelectField, Slider, TextField, Checkbox } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances, getGasPriceMultiplier } from 'redux/session/selectors'
+import { BALANCES_COMPARATOR_SYMBOL, getGasPriceMultiplier, getVisibleBalances } from 'redux/session/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
@@ -45,6 +42,9 @@ import './SendTokensForm.scss'
 import validate from './validate'
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
+
+export const MODE_SIMPLE = 'simple'
+export const MODE_ADVANCED = 'advanced'
 
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
@@ -62,6 +62,8 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
+  const amount = selector(state, 'amount')
+  const satPerByte = selector(state, 'satPerByte')
   const token = state.get(DUCK_TOKENS).item(tokenId)
 
   return {
@@ -71,10 +73,12 @@ function mapStateToProps (state) {
     balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
+    amount,
     token,
     recipient,
     symbol,
     feeMultiplier,
+    satPerByte,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
 }
@@ -106,6 +110,9 @@ export default class SendTokensForm extends PureComponent {
     super(...arguments)
     this.state = {
       isContract: false,
+      mode: MODE_SIMPLE,
+      advancedFee: 0,
+      xOfAverageFee: 1
     }
   }
 
@@ -170,26 +177,104 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
+  async getFee(to, from, amount, feeRate) {
+    return btcProvider.estimateFee(to, from, amount, feeRate)
+  }
+
+  changeMode = () => {
+    this.setState({
+      mode: this.state.mode === MODE_SIMPLE ? MODE_ADVANCED : MODE_SIMPLE
+    })
+  }
+
   checkIsContract (address): Promise {
     return contractsManagerDAO.isContract(address)
   }
 
+  getFormFee = () => {
+    return this.state.mode === MODE_SIMPLE ? this.props.feeMultiplier : this.props.satPerByte
+  }
+
+
+  calculatingFeeBitcoin = async (event, value) => {
+    const fee = await this.getFee(
+      this.props.wallet.addresses().item(this.props.token.blockchain()).address(),
+      this.props.recipient,
+      new Amount(this.props.amount, this.props.token.symbol()),
+      this.getFormFee()
+    )
+
+    return fee
+  }
+
+  calculatingFeeERC20 = async (event, value) => {
+
+
+    return 0
+  }
+
+  calculatingFee = async (event, value) => {
+    console.log('calculatingFee: ', event, value, this.props.token.symbol())
+    var fee = 2
+    if (this.props.token.symbol() === 'BTC') {
+      fee = await this.calculatingFeeBitcoin(event, value)
+      console.log('this.calculatingFeeBitcoin: ', fee, new Date())
+    } else if (this.props.token.isERC20()) {
+      console.log('this.calculatingFeeBitcoin ERC20 token: ', fee)
+
+      fee = await this.calculatingFeeERC20(event, value)
+    }
+
+    console.log('calculatingFee result: ', fee, Number(fee / 100000000).toFixed(8))
+
+    this.setState({
+      advancedFee: Number(fee / 100000000).toFixed(8),
+      xOfAverageFee: 1
+    })
+  }
+
+  calculatingFeeSlider = async (event, multiplier) => {
+    console.log('calculatingFeeSlider: ', event, multiplier, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
+    this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
+  }
+
+  getTransactionFeeDescription = () => {
+    if (this.props.token.symbol() === 'BTC') {
+      return (<span styleName='description'>
+          {`${this.props.token.symbol()}  ${this.state.advancedFee} (≈USD `}
+          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.advancedFee, this.props.token.symbol())} />
+          {`) ${this.state.xOfAverageFee}x `}
+          <Translate value={`${prefix}.averageFee`} />
+        </span>
+      )
+    } else if (this.props.token.symbol() === 'ETH') {
+      return 'Ethereum transaction fee'
+    }
+
+    return null
+  }
+
   renderHead () {
-    const { token, visibleBalances } = this.props
+    const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
+    console.log('SendTokenForm: ', this.props)
+
     return (
-      <div>
-        <IconSection
-          title={<Translate value='wallet.sendTokens' />}
-          iconComponent={(
-            <IPFSImage
-              styleName='content'
-              multihash={token.icon()}
-              fallback={TOKEN_ICONS[ token.symbol() ]}
-            />
-          )}
-        >
+      <div styleName='head'>
+        <div styleName='head-token-icon'>
+          <IPFSImage
+            styleName='content'
+            multihash={token.icon()}
+            fallback={TOKEN_ICONS[ token.symbol() ]}
+          />
+        </div>
+        <div styleName='head-section'>
+          <span styleName='head-section-text'>
+            <Translate value='wallet.sendTokens' />
+          </span>
+        </div>
+        <div styleName='wallet-tokens-selector-container'>
           <MuiThemeProvider theme={inversedTheme}>
             {visibleBalances.length === 0
               ? <Preloader />
@@ -218,11 +303,28 @@ export default class SendTokensForm extends PureComponent {
               )
             }
           </MuiThemeProvider>
-        </IconSection>
+        </div>
+        <div styleName='wallet-name-section'>
+          <div styleName='wallet-name-title-section'>
+            <span styleName='wallet-name-title'>
+              <Translate value='wallet.walletName' />
+            </span>
+          </div>
+          <div styleName='wallet-value'>
+            <span styleName='wallet-value'>
+              {wallet.addresses().item(token.blockchain()).address()}
+            </span>
+          </div>
+        </div>
+
         <div styleName='balance'>
-          <div styleName='label'><Translate value={`${prefix}.balance`} />:</div>
           <div styleName='value'>
-            <TokenValue isInvert value={currentBalance.amount()} />
+            <TokenValue precision={6} noRenderPrice isInvert value={currentBalance.amount()} />
+          </div>
+          <div styleName='value'>
+            <span styleName='price-value'>
+              <TokenValue isInvert renderOnlyPrice value={allowance.amount()} />
+            </span>
           </div>
         </div>
         {token.isERC20() && this.props.allowance &&
@@ -247,14 +349,7 @@ export default class SendTokensForm extends PureComponent {
     const isTimeLocked = wallet.isTimeLocked()
 
     return (
-      <div>
-        <div styleName='from'>
-          From:
-          <img
-            styleName='fromIcon'
-            src={wallet.isMultisig() ? WalletMultiSVG : WalletMainSVG}
-          /> {wallet.addresses().item(token.blockchain()).address()}
-        </div>
+      <div styleName='form-container'>
         <div>
           <Field
             component={TextField}
@@ -264,32 +359,22 @@ export default class SendTokensForm extends PureComponent {
           />
         </div>
         <div styleName='row'>
-          <div styleName='amount'>
             <Field
               component={TextField}
               name='amount'
               floatingLabelText={<Translate value={`${prefix}.amount`} />}
               fullWidth
             />
-          </div>
         </div>
-        {!(feeMultiplier && token.feeRate()) ? null : (
-          <div>
+        {!(this.state.mode === MODE_SIMPLE && feeMultiplier && token.feeRate()) ? null : (
+          <div styleName='row'>
             <div styleName='feeRate'>
-              <div>
-                <small>
-                  <Translate
-                    value={`${prefix}.${this.getFeeTitle()}`}
-                    multiplier={feeMultiplier.toFixed(1)}
-                    total={Number((feeMultiplier * token.feeRate()).toFixed(1))}
-                  />
-                </small>
-              </div>
               <Field
                 component={Slider}
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
+                onChange={this.calculatingFeeSlider}
               />
               <div styleName='tagsWrap'>
                 <div><Translate value={`${prefix}.slow`} /></div>
@@ -299,55 +384,75 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
-        <div styleName='row'>
-          <div styleName='send'>
-            <RaisedButton
-              label={<Translate value={`${prefix}.send`} />}
-              primary
-              style={{ float: 'right', marginTop: '20px' }}
-              disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={!pristine && !invalid && !isTimeLocked ? handleSubmit(this.handleTransfer) : undefined}
+        { this.state.mode === MODE_ADVANCED && (
+          <div styleName='advanced-mode-container'>
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='satPerByte'
+                floatingLabelText={<Translate value={'wallet.satPerByte'} />}
+                fullWidth
+                onChange={this.calculatingFee}
+              />
+            </div>
+          </div>
+        ) }
+        <div styleName="transaction-fee">
+                <span styleName='title'>
+                  <Translate value={`${prefix}.transactionFee`} />
+                </span>
+                {this.getTransactionFeeDescription()}
+        </div>
+        <div styleName='template-container'>
+          <div styleName='template-checkbox'>
+            <Field
+              component={Checkbox}
+              name='isTemplateEnabled'
             />
-            {token.isERC20() && isApprove && (
-              <RaisedButton
-                label={<Translate value={`${prefix}.approve`} />}
-                primary
-                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
-                disabled={pristine || invalid || !isContract || isTimeLocked}
-                onTouchTap={!pristine && !invalid && isContract && !isTimeLocked ? handleSubmit(this.handleApprove) : undefined}
-              />
-            )}
-            {token.isERC20() && !isApprove && (
-              <RaisedButton
-                label={<Translate value={`${prefix}.revoke`} />}
-                primary
-                style={{ float: 'right', marginTop: '20px', marginRight: '40px' }}
-                disabled={!isContract}
-                onTouchTap={isContract && token && recipient ? this.handleRevoke : undefined}
-              />
-            )}
+          </div>
+          <div styleName='template-name'>
+            <Field
+              component={TextField}
+              name='TemplateName'
+              floatingLabelText={<Translate value={'wallet.templateName'} />}
+              fullWidth
+            />
           </div>
         </div>
-        {wallet.isTimeLocked() && (
-          <div styleName='timeLockWarn'>
-            <Translate value={`${prefix}.timeLockedWarn`} />:<br /><strong><Moment date={wallet.releaseTime()} /></strong>
+
+        <div styleName='actions-row'>
+          <div styleName='advanced-simple'>
+            { this.props.token.symbol() === 'BTC' && (<div onTouchTap={this.changeMode}>
+              <span styleName='advanced-text'>
+                 <Translate value={ this.state.mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple' } />
+              </span>
+            </div>)}
           </div>
-        )}
+          <div styleName='send'>
+            <Button
+              label={<Translate value={`${prefix}.send`} />}
+              disabled={pristine || invalid || isTimeLocked}
+              onTouchTap={handleSubmit(this.handleTransfer)}
+            />
+          </div>
+        </div>
       </div>
     )
   }
 
   render () {
     const { visibleBalances } = this.props
+
+    console.log(this.props)
+
     return !visibleBalances.length ? null : (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>
-          <ColoredSection
-            head={this.renderHead()}
-            body={this.renderBody()}
-          />
+          {this.renderHead()}
+          {this.renderBody()}
         </form>
       </Paper>
     )
   }
 }
+

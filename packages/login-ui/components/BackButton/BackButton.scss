@@ -3,14 +3,21 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+@import "~styles/partials/variables";
 
 .root {
   display: flex;
-  border-radius: 2px;
   align-items: center;
-  padding: 6px 16px 8px 8px;
+  padding: 0;
 }
 
 .arrow {
   margin-right: 8px;
+  font-size: 19px;
+}
+
+.button {
+  button {
+    color: $color-white;
+  }
 }

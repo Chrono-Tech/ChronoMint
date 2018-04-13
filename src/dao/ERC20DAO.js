@@ -186,4 +186,9 @@ export default class ERC20DAO extends AbstractTokenDAO {
 
     return Promise.all(promises)
   }
+
+  /** ESTIMATE GAS */
+  estimateGas (func, args, value) {
+    return this._estimateGas(func, args, value)
+  }
 }

@@ -3,12 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import { modalsClose } from 'redux/modals/actions'
 import AssetManagerForm from './AssetManagerForm'
+
+function prefix (token) {
+  return 'Assets.AssetManagerForm.' + token
+}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -28,7 +33,7 @@ export default class AssetManagerDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value={prefix('dialogTitle')} />}>
         <AssetManagerForm onSubmitSuccess={this.handleSubmitSuccess} />
       </ModalDialog>
     )
