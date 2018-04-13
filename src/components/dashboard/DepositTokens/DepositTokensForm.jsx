@@ -22,10 +22,13 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME, TIME } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS, estimateGas } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
+import classnames from 'classnames'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
@@ -50,6 +53,7 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_DEPOSIT_TOKENS)
   const tokenId = selector(state, 'symbol')
   const amount = selector(state, 'amount')
+  const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
@@ -71,10 +75,14 @@ function mapStateToProps (state) {
     spender,
     amount,
     token,
+    feeMultiplier,
     tokens,
     assets,
     isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
+    initialValues: {
+      feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
+    },
   }
 }
 
@@ -106,11 +114,43 @@ export default class DepositTokensForm extends PureComponent {
     ...formPropTypes,
   }
 
+  constructor (props) {
+    super(props)
+
+    let step = 1
+    if (this.props.allowance.amount().gt(0)) {
+      step = 2
+    }
+
+    this.state = { step }
+    this.timeout = null
+  }
+
   componentWillReceiveProps (newProps) {
     const firstAsset = newProps.assets.first()
     if (!newProps.token.isFetched() && firstAsset) {
       this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'symbol', firstAsset.symbol()))
     }
+
+    if (newProps.amount > 0 && newProps.feeMultiplier > 0 && (newProps.amount !== this.props.amount || newProps.feeMultiplier !== this.props.feeMultiplier)) {
+      this.handleGetGasPrice(newProps.amount, newProps.feeMultiplier, this.props.spender)
+    }
+  }
+
+  handleGetGasPrice = (amount, feeMultiplier, spender) => {
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      estimateGas(
+        TIME,
+        [ 'approve', [ spender, new BigNumber(amount) ] ],
+        (error, { gasFee, gasPrice }) => {
+          if (!error) {
+            this.setState({ gasFee, gasPrice })
+          }
+        },
+        feeMultiplier,
+      )
+    }, 1000)
   }
 
   handleApproveAsset = (values) => {
@@ -152,7 +192,7 @@ export default class DepositTokensForm extends PureComponent {
 
   handleChangeAmount = (e, value) => {
     // eslint-disable-next-line
-    console.log('handleChangeAmount', e, value)
+    // console.log('handleChangeAmount', e, value)
 
   }
 
@@ -199,6 +239,14 @@ export default class DepositTokensForm extends PureComponent {
             : (
               <div styleName='preloader'><Preloader /></div>
             )}
+          <div styleName='stepsWrapper'>
+            <div styleName={classnames('step', { 'active': this.state.step === 1 })}>
+              <Translate value={prefix('firstStep')} />
+            </div>
+            <div styleName={classnames('step', { 'active': this.state.step === 2 })}>
+              <Translate value={prefix('secondStep')} />
+            </div>
+          </div>
         </div>
       </div>
     )
@@ -228,27 +276,33 @@ export default class DepositTokensForm extends PureComponent {
                 <div><Translate value={prefix('fast')} /></div>
               </div>
 
-              <div>
-                <small>
-                  {/*<Translate*/}
-                  {/*value={`${prefix}.${this.getFeeTitle()}`}*/}
-                  {/*multiplier={feeMultiplier.toFixed(1)}*/}
-                  {/*total={Number((feeMultiplier * token.feeRate()).toFixed(1))}*/}
-                  {/*/>*/}
-                </small>
-              </div>
               <Field
                 component={Slider}
-                sliderStyle={{ marginBottom: 0, marginTop: 5, background: '#786AB7' }}
-                style={{ background: 'red' }}
+                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
               />
+
+              <div>
+                {/*<Translate*/}
+                {/*value={`${prefix}.${this.getFeeTitle()}`}*/}
+                {/*multiplier={feeMultiplier.toFixed(1)}*/}
+                {/*total={Number((feeMultiplier * token.feeRate()).toFixed(1))}*/}
+                {/*/>*/}
+              </div>
+
             </div>
           </div>
         )}
         <div styleName='transactionsInfo'>
-          <div><b><Translate value={prefix('transactionFee')} />:</b> ETH 0.001 (≈USD 10.00)</div>
+          <div>
+            <b><Translate value={prefix('transactionFee')} />:</b>
+            {
+              this.state.gasFee
+                ? <TokenValue value={this.state.gasFee} />
+                : <span>Enter Amount</span>
+            }
+          </div>
           <div><b><Translate value={prefix('transactionWillBeDoneIn')} />:</b> <Translate value={prefix('sec')} /></div>
         </div>
       </div>

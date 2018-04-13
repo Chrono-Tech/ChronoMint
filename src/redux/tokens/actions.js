@@ -16,7 +16,9 @@ import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/Tran
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTransferModal } from 'redux/ui/actions'
-import { EVENT_NEW_BLOCK } from '../../dao/AbstractTokenDAO'
+import { EVENT_NEW_BLOCK } from 'dao/AbstractTokenDAO'
+import Amount from 'models/Amount'
+import { ETH } from 'redux/mainWallet/actions'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -181,3 +183,18 @@ export const watchLatestBlock = () => async (dispatch) => {
   })
 
 }
+
+export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier = 1) => {
+  const tokenDao = tokenService.getDAO(tokenId)
+  try {
+    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(...params)
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
+  }
+}
+

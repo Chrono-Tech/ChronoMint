@@ -12,6 +12,7 @@ import { initAssetsHolder } from 'redux/assetsHolder/actions'
 import { getDeposit } from 'redux/mainWallet/selectors'
 import Amount from 'models/Amount'
 import DepositsList from 'components/Deposits/DepositsList/DepositsList'
+import { Button } from 'components'
 import { prefix } from './lang'
 import './DepositsContent.scss'
 
@@ -43,6 +44,9 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
+            <Button styleName='addDepositButton'>
+              Add deposit
+            </Button>
             {this.props.deposit.isZero()
               ? (
                 <div styleName='warning'>

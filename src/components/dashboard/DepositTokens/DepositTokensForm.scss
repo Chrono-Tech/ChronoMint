@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -25,7 +24,7 @@
 
 .icon {
   position: relative;
-  border-bottom: 1px solid #6D79BF;
+  border-bottom: 1px solid $color-blue-3;
   overflow: visible;
   height: 0;
   width: 100%;
@@ -94,6 +93,19 @@
   }
   .preloader {
 
+  }
+  .stepsWrapper {
+    border-top: 1px solid $color-blue-3;
+    padding: 20px 30px;
+    display: flex;
+    .step {
+      color: $additionalData-color;
+      margin-right: 32px;
+    }
+    .active {
+      color: $color-white;
+      font-weight: 500;
+    }
   }
 }
 
@@ -183,8 +195,11 @@
 .tagsWrap {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 15px;
+  padding-bottom: 7px;
   color: $border-color;
+  font-weight: 400;
+  line-height: 19px;
+  font-size: 16px;
 }
 
 .tagDefault {

@@ -751,6 +751,8 @@ export default {
         sec: '≈30 sec',
         requireTime: 'Require TIME',
         withdraw: 'Withdraw',
+        firstStep: '1. Deposit Amount',
+        secondStep: '2. Finish Deposit',
       },
       RewardsPeriod: {
         rewardsPeriodIndex: 'Bonus period #%{index}',
@@ -898,5 +900,8 @@ export default {
         vote: 'Vote',
       },
     },
+  },
+  topButtons: {
+    addDeposit: 'Add deposit',
   },
 }

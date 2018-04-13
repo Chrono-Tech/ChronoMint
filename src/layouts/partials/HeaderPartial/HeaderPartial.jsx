@@ -6,6 +6,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { TopButtons } from 'components'
 import { IconButton } from 'material-ui'
 import { sidesPush } from 'redux/sides/actions'
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
@@ -34,12 +35,22 @@ function mapDispatchToProps (dispatch) {
 export default class HeaderPartial extends PureComponent {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
+    location: PropTypes.shape({
+      action: PropTypes.string,
+      hash: PropTypes.string,
+      key: PropTypes.string,
+      pathname: PropTypes.string,
+      query: PropTypes.object,
+      search: PropTypes.string,
+      state: PropTypes.string,
+    }),
   }
 
   render () {
     return (
       <div styleName='root'>
         <div styleName='actions'>
+          <TopButtons location={this.props.location} />
 
           <LocaleDropDown />
 

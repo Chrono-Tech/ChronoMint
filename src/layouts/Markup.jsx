@@ -108,7 +108,7 @@ export default class Markup extends PureComponent {
               <div styleName='pageTitle'>
                 {this.renderPageTitle()}
               </div>
-              <HeaderPartial />
+              <HeaderPartial location={this.props.location} />
             </div>
             <div styleName='middleSnackbar'>
               <div styleName='middleSnackbarPanel'>

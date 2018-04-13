@@ -1,0 +1,16 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+
+.root {
+  display: flex;
+  align-items: center;
+  .topButton {
+    button {
+      border-radius: 20px;
+    }
+  }
+}
+

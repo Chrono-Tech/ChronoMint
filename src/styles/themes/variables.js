@@ -7,7 +7,7 @@ export default {
   colorWhite: '#FFFFFF',
   colorPrimary0: '#00005f',
   // colorPrimary1: '#768fff',
-  colorPrimary1: '#2962FF',
+  colorPrimary1: '#5F4CBA',
   colorAccent1: '#17579c',
   colorAccent2: '#2962ff',
   disabledColor1: '#ccc',
