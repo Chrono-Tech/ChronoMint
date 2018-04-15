@@ -128,4 +128,9 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       requiredSignatures: this.requiredSignatures(),
     }
   }
+
+  selected () { 
+    return this.get('selected') 
+  } 
+
 }
