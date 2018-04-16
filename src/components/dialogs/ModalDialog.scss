@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
@@ -12,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 0;
   -webkit-overflow-scrolling: touch;
   overflow-y: auto;
   overflow-x: hidden;
@@ -25,6 +24,9 @@
   border-radius: 2px;
   overflow: hidden;
   background: $sideMenu-background;
+  @include xs-only {
+    border-radius: 0;
+  }
 }
 
 .content {

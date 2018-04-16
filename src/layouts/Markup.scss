@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -121,6 +120,10 @@
   left: 0;
   bottom: 0;
   transition: left 400ms $cubic-animation;
+  @include sm-only {
+    height: 100vh;
+    overflow: hidden;
+  }
   .overlay {
     position: fixed;
     top: 0;
@@ -135,6 +138,8 @@
     left: -300px;
     &.open {
       left: 0;
+      height: auto;
+      overflow: inherit;
       .overlay {
         left: 0;
         opacity: 1;

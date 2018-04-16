@@ -32,8 +32,6 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const assetAddress = await this.getSharesContract()
-    // eslint-disable-next-line
-    console.log('--AssetHolderDAO#getAssetDAO', assetAddress)
     return tokenService.getDAO(assetAddress)
   }
 
@@ -41,12 +39,14 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this._call('wallet')
   }
 
-  async deposit (tokenAddress: String, amount: Amount) {
+  async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1) {
     return this._tx(TX_DEPOSIT, [
       tokenAddress,
       new BigNumber(amount),
     ], {
       amount,
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 

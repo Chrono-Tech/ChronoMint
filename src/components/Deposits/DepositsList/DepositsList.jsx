@@ -35,10 +35,11 @@ export default class DepositsList extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
+    handleAddDeposit: PropTypes.func,
   }
 
   render () {
-    const { deposit, token } = this.props
+    const { deposit, token, handleAddDeposit } = this.props
     return (
       <div styleName='root'>
         <div styleName='depositItem'>
@@ -52,16 +53,18 @@ export default class DepositsList extends PureComponent {
               />
             </div>
           </div>
-          <Link to='deposit' href styleName='itemContent'>
-            <div styleName='title'><Translate value={`${prefix}.deposit`} /></div>
-            <div styleName='address'>{token.address()}</div>
-            <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>
-            <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
+          <div styleName='itemContent'>
+            <Link to='deposit' href styleName='link'>
+              <div styleName='title'><Translate value={`${prefix}.deposit`} /></div>
+              <div styleName='address'>{token.address()}</div>
+              <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>
+              <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
+            </Link>
             <div styleName='actions'>
               <Button styleName='action'><Translate value={`${prefix}.withdraw`} /></Button>
-              <Button styleName='action'><Translate value={`${prefix}.deposit`} /></Button>
+              <Button styleName='action' onTouchTap={handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
             </div>
-          </Link>
+          </div>
         </div>
       </div>
     )

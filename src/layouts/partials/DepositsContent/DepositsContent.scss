@@ -41,6 +41,19 @@
   text-align: center;
 }
 
-.addDepositButton {
-
+.addDeposit {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: none;
+  @include xs-only {
+    display: block;
+  }
+  button {
+    text-transform: none;
+    border-radius: 50%;
+    font-size: 35px;
+    width: 60px;
+    height: 60px;
+  }
 }
