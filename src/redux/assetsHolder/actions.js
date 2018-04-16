@@ -121,9 +121,9 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel) => async () => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
   try {
-    await assetHolderDAO.deposit(token.address(), amount)
+    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)

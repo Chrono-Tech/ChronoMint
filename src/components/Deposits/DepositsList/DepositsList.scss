@@ -45,7 +45,9 @@
     .itemContent {
       padding-left: 30px;
       flex-grow: 1;
-      text-decoration: none;
+      .link {
+        text-decoration: none;
+      }
       &:hover {
         .title, .address {
           color: $border-color;

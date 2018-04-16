@@ -7,6 +7,7 @@ import { Button, IPFSImage } from 'components'
 import { Slider, TextField } from 'redux-form-material-ui'
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import web3Converter from 'utils/Web3Converter'
 import { TOKEN_ICONS } from 'assets'
 import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
@@ -32,7 +33,7 @@ import { getGasPriceMultiplier } from 'redux/session/selectors'
 import './DepositTokensForm.scss'
 import validate from './validate'
 
-const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
+export const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 
 export const ACTION_APPROVE = 'deposit/approve'
 export const ACTION_DEPOSIT = 'deposit/deposit'
@@ -73,7 +74,7 @@ function mapStateToProps (state) {
     deposit: assets.item(token.address()).deposit(),
     allowance: wallet.allowances().item(spender, token.id()),
     spender,
-    amount,
+    amount: Number.parseFloat(amount) || 0,
     token,
     feeMultiplier,
     tokens,
@@ -89,7 +90,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    mainRevoke: (token, spender) => dispatch(mainRevoke(token, spender)),
+    mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier)),
     requireTIME: () => dispatch(requireTIME()),
   }
 }
@@ -111,6 +112,8 @@ export default class DepositTokensForm extends PureComponent {
     requireTIME: PropTypes.func,
     mainApprove: PropTypes.func,
     mainRevoke: PropTypes.func,
+    feeMultiplier: PropTypes.number,
+    isWithdraw: PropTypes.bool,
     ...formPropTypes,
   }
 
@@ -120,6 +123,9 @@ export default class DepositTokensForm extends PureComponent {
     let step = 1
     if (this.props.allowance.amount().gt(0)) {
       step = 2
+    }
+    if (this.props.isWithdraw) {
+      step = 3 //withdraw
     }
 
     this.state = { step }
@@ -136,11 +142,17 @@ export default class DepositTokensForm extends PureComponent {
       this.handleGetGasPrice(newProps.amount, newProps.feeMultiplier, this.props.spender)
     }
 
-    if (newProps.allowance && newProps.allowance.amount().gt(0)) {
-      this.setState({
-        step: 2,
-      })
-      this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.allowance.amount().toNumber()))
+    if (!newProps.isWithdraw) {
+      if (newProps.allowance && newProps.allowance.amount().gt(0)) {
+        this.setState({
+          step: 2,
+        })
+        this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.token.removeDecimals(newProps.allowance.amount())))
+      } else {
+        this.setState({
+          step: 1,
+        })
+      }
     }
   }
 
@@ -169,8 +181,8 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   handleRevokeAsset = () => {
-    const { spender } = this.props
-    this.props.mainRevoke(this.props.token, spender)
+    const { spender, feeMultiplier } = this.props
+    this.props.mainRevoke(this.props.token, spender, feeMultiplier)
   }
 
   handleDepositAsset = (values) => {
@@ -197,14 +209,8 @@ export default class DepositTokensForm extends PureComponent {
     return limit.gte(amount)
   }
 
-  handleChangeAmount = (e, value) => {
-    // eslint-disable-next-line
-    // console.log('handleChangeAmount', e, value)
-
-  }
-
   renderHead () {
-    const { deposit, allowance, token, balance, assets } = this.props
+    const { deposit, allowance, token, balance } = this.props
     const symbol = token.symbol()
     return (
       <div styleName='head'>
@@ -261,16 +267,19 @@ export default class DepositTokensForm extends PureComponent {
     const { amount, token, feeMultiplier } = this.props
     return (
       <div>
+        {this.state.step === 2 && (
+          <div styleName='noteTwo'>
+            <Translate value={prefix('noteTwo')} />
+          </div>)}
         <div styleName={classnames('fieldWrapper', { 'fieldWrapperHide': this.state.step === 2 })}>
           <Field
             component={TextField}
             fullWidth
             hintText='0.00'
             floatingLabelText={<Translate value={prefix('amount')} symbol='TIME' />}
-            onChange={this.handleChangeAmount}
             name='amount'
           />
-          <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount || 0), token.symbol())} /></div>
+          <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount), token.symbol())} /></div>
         </div>
         {(
           <div>
@@ -292,15 +301,20 @@ export default class DepositTokensForm extends PureComponent {
         )}
         <div styleName='transactionsInfo'>
           <div>
-            <b><Translate value={prefix('transactionFee')} />: </b>
-            {this.state.gasFee && <span><TokenValue value={this.state.gasFee} /><br /><Translate value={prefix('multiplier')} multiplier={feeMultiplier} /></span>}
-            {!amount || amount <= 0 ? <Translate value={prefix('enterAmount')} /> : null}
+            <div><b><Translate value={prefix('transactionFee')} />: </b> <span styleName='infoText'>{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span></div>
+            <div>
+              <b><Translate value={prefix('gasPrice')} />: </b>
+              {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
+              {this.state.gasPrice && <Translate value={prefix('multiplier')} multiplier={feeMultiplier} />}
+            </div>
+            <div>{!amount || amount <= 0 ? <Translate value={prefix('enterAmount')} /> : null}</div>
           </div>
         </div>
-        <div styleName='note'>
-          <b><Translate value={prefix('note')} /></b>
-          <Translate value={prefix('noteText')} />
-        </div>
+        {this.state.step === 1 && (
+          <div styleName='note'>
+            <b><Translate value={prefix('note')} />&nbsp;</b>
+            <Translate value={prefix('noteText')} />
+          </div>)}
       </div>
     )
   }
@@ -308,7 +322,6 @@ export default class DepositTokensForm extends PureComponent {
   renderFoot () {
     const { isShowTIMERequired, amount, balance, deposit, token, allowance, pristine, invalid, handleSubmit } = this.props
     const isInvalid = pristine || invalid
-    const isRevoke = !allowance.amount().isZero()
     const amountWithDecimals = isInvalid
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
@@ -347,6 +360,7 @@ export default class DepositTokensForm extends PureComponent {
           <div styleName='actions'>
             <div styleName='action'>
               <Button
+                flat
                 styleName='actionButton'
                 label={<Translate value={prefix('revoke')} />}
                 onTouchTap={handleSubmit(this.handleRevokeAsset)}
@@ -382,6 +396,8 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   render () {
+    // eslint-disable-next-line
+    console.log('render', this.state.step)
     return (
       <div styleName='root'>
         <form onSubmit={this.props.handleSubmit}>

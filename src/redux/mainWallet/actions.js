@@ -174,24 +174,26 @@ export const mainTransfer = (token: TokenModel, amount: Amount, recipient: strin
 }
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+  const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
   try {
-    const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
-    dispatch({ type: WALLET_ALLOWANCE, allowance })
+    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
     await tokenDAO.approve(spender, amount, feeMultiplier)
   } catch (e) {
     dispatch(notifyError(e, 'mainApprove'))
+    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }
 }
 
-export const mainRevoke = (token: TokenModel, spender: string) => async (dispatch, getState) => {
+export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+  const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
   try {
-    const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id()).isFetching(true)
-    dispatch({ type: WALLET_ALLOWANCE, allowance })
+    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.revoke(spender, token.symbol())
+    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier)
   } catch (e) {
     dispatch(notifyError(e, 'mainRevoke'))
+    dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }
 }
 

@@ -8,13 +8,14 @@ import PropTypes from 'prop-types'
 import Amount from 'models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MAIN_WALLET, TIME } from 'redux/mainWallet/actions'
+import { TIME } from 'redux/mainWallet/actions'
 import { getDeposit, getTxs } from 'redux/mainWallet/selectors'
 import { Button, IPFSImage, TokenValue } from 'components'
+import { modalsOpen } from 'redux/modals/actions'
+import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
 import { TOKEN_ICONS } from 'assets'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
 import TransactionsTable from 'components/dashboard/TransactionsTable/TransactionsTable'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
@@ -37,7 +38,9 @@ function mapStateToProps (state) {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    addDeposit: () => dispatch(modalsOpen({ component: DepositTokensModal })),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -47,6 +50,11 @@ export default class Deposit extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     transactions: PropTypes.instanceOf(TransactionsCollection),
     spender: PropTypes.string,
+    addDeposit: PropTypes.func,
+  }
+
+  handleAddDeposit = () => {
+    this.props.addDeposit()
   }
 
   render () {
@@ -72,7 +80,7 @@ export default class Deposit extends PureComponent {
               <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
               <div styleName='actions'>
                 <Button styleName='action'><Translate value={`${prefix}.withdraw`} /></Button>
-                <Button styleName='action'><Translate value={`${prefix}.deposit`} /></Button>
+                <Button styleName='action' onTouchTap={this.handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
               </div>
             </div>
           </div>

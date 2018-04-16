@@ -3,10 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
 .root {
   display: flex;
   align-items: center;
+  @include xs-only {
+    display: none;
+  }
   .topButton {
     button {
       border-radius: 20px;

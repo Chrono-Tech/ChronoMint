@@ -7,6 +7,12 @@
 
 .root {
   overflow: hidden;
+  max-width: 450px;
+
+  @include xs-only {
+    min-width: 100vw;
+    min-height: 100vh;
+  }
 }
 
 .head {
@@ -50,7 +56,7 @@
 .headContent {
   .headItem {
     &:first-child {
-      padding-top: 40px;
+      padding-top: 25px;
     }
     padding: 10px 30px;
     &:last-child {
@@ -71,6 +77,7 @@
     line-height: 25px;
     color: $color-white;
     font-size: 30px;
+    white-space: nowrap;
     :global {
       .TokenValue__root {
         span {
@@ -83,6 +90,7 @@
     }
   }
   .balanceFiat {
+    white-space: nowrap;
     span {
       color: $color-white;
       font-size: 16px;
@@ -97,6 +105,7 @@
     border-top: 1px solid $color-blue-3;
     padding: 20px 30px;
     display: flex;
+    line-height: 19px;
     .step {
       color: $additionalData-color;
       margin-right: 32px;
@@ -125,8 +134,19 @@
   }
   .transactionsInfo {
     padding-top: 10px;
+    font-size: 14px;
     > div {
       padding-top: 10px;
+    }
+    .infoText {
+      :global {
+        .TokenValue__root {
+          span {
+            font-size: 14px;
+            color: $color-primary-3;
+          }
+        }
+      }
     }
   }
 }
@@ -135,24 +155,10 @@
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
-  margin-top: 40px;
-  @include xs-only {
-    flex-direction: column;
-  }
+  margin-top: 30px;
 }
 
 .action {
-  @include md-only {
-    margin-left: 16px;
-    margin-bottom: 16px;
-    display: inline-block;
-  }
-
-  @include xs-only {
-    margin-left: 0;
-    width: 100%;
-  }
-
   &:first-child {
     margin-left: 0;
   }
@@ -206,12 +212,30 @@
   margin: 40px -30px 30px;
 }
 
+.noteTwo {
+  border-bottom: 1px solid $color-grey-3;
+  line-height: 20px;
+  padding: 30px 30px 40px;
+  margin: 0 -30px;
+}
+
 .headItemWrapper {
+  display: flex;
   .headItem {
     padding: 40px 30px 30px;
     &:last-child, &:first-child {
       padding: 40px 30px 30px;
     }
+    @include xs-only {
+      &:first-child {
+        padding-bottom: 0;
+      }
+      &:last-child {
+        padding-top: 30px;
+      }
+    }
   }
-  display: flex;
+  @include xs-only {
+    flex-wrap: wrap;
+  }
 }

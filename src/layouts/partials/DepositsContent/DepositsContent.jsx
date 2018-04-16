@@ -13,6 +13,8 @@ import { getDeposit } from 'redux/mainWallet/selectors'
 import Amount from 'models/Amount'
 import DepositsList from 'components/Deposits/DepositsList/DepositsList'
 import { Button } from 'components'
+import { modalsOpen } from 'redux/modals/actions'
+import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { prefix } from './lang'
 import './DepositsContent.scss'
 
@@ -25,6 +27,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
+    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
   }
 }
 
@@ -33,10 +36,19 @@ export default class DepositsContent extends Component {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     initAssetsHolder: PropTypes.func,
+    addDeposit: PropTypes.func,
   }
 
   componentDidMount () {
     this.props.initAssetsHolder()
+  }
+
+  handleAddDeposit = () => {
+    this.props.addDeposit()
+  }
+
+  handleWithdrawDeposit = () => {
+    this.props.addDeposit({ isWithdraw: true })
   }
 
   render () {
@@ -44,9 +56,6 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
-            <Button styleName='addDepositButton'>
-              Add deposit
-            </Button>
             {this.props.deposit.isZero()
               ? (
                 <div styleName='warning'>
@@ -54,9 +63,12 @@ export default class DepositsContent extends Component {
                 </div>
               )
               : (
-                <DepositsList />
+                <DepositsList onAddDeposit={this.handleAddDeposit} onWithdrawDeposit={this.handleWithdrawDeposit} />
               )}
           </div>
+          <Button styleName='addDeposit' onTouchTap={this.handleAddDeposit}>
+            <i className='chronobank-icon'>add</i>
+          </Button>
         </div>
       </div>
     )
