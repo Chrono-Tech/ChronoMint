@@ -35,11 +35,20 @@ export default class DepositsList extends PureComponent {
   static propTypes = {
     deposit: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
-    handleAddDeposit: PropTypes.func,
+    onAddDeposit: PropTypes.func,
+    onWithdrawDeposit: PropTypes.func,
+  }
+
+  handleAddDeposit = () => {
+    this.props.onAddDeposit()
+  }
+
+  handleWithdrawDeposit = () => {
+    this.props.onWithdrawDeposit()
   }
 
   render () {
-    const { deposit, token, handleAddDeposit } = this.props
+    const { deposit, token } = this.props
     return (
       <div styleName='root'>
         <div styleName='depositItem'>
@@ -61,8 +70,8 @@ export default class DepositsList extends PureComponent {
               <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
             </Link>
             <div styleName='actions'>
-              <Button styleName='action'><Translate value={`${prefix}.withdraw`} /></Button>
-              <Button styleName='action' onTouchTap={handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
+              <Button styleName='action' onTouchTap={this.handleWithdrawDeposit}><Translate value={`${prefix}.withdraw`} /></Button>
+              <Button styleName='action' onTouchTap={this.handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
             </div>
           </div>
         </div>

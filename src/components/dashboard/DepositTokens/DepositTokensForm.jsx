@@ -113,6 +113,7 @@ export default class DepositTokensForm extends PureComponent {
     mainApprove: PropTypes.func,
     mainRevoke: PropTypes.func,
     feeMultiplier: PropTypes.number,
+    isWithdraw: PropTypes.bool,
     ...formPropTypes,
   }
 
@@ -122,6 +123,9 @@ export default class DepositTokensForm extends PureComponent {
     let step = 1
     if (this.props.allowance.amount().gt(0)) {
       step = 2
+    }
+    if (this.props.isWithdraw) {
+      step = 3 //withdraw
     }
 
     this.state = { step }
@@ -138,15 +142,17 @@ export default class DepositTokensForm extends PureComponent {
       this.handleGetGasPrice(newProps.amount, newProps.feeMultiplier, this.props.spender)
     }
 
-    if (newProps.allowance && newProps.allowance.amount().gt(0)) {
-      this.setState({
-        step: 2,
-      })
-      this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.token.removeDecimals(newProps.allowance.amount())))
-    } else {
-      this.setState({
-        step: 1,
-      })
+    if (!newProps.isWithdraw) {
+      if (newProps.allowance && newProps.allowance.amount().gt(0)) {
+        this.setState({
+          step: 2,
+        })
+        this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.token.removeDecimals(newProps.allowance.amount())))
+      } else {
+        this.setState({
+          step: 1,
+        })
+      }
     }
   }
 
@@ -203,14 +209,8 @@ export default class DepositTokensForm extends PureComponent {
     return limit.gte(amount)
   }
 
-  handleChangeAmount = (e, value) => {
-    // eslint-disable-next-line
-    // console.log('handleChangeAmount', e, value)
-
-  }
-
   renderHead () {
-    const { deposit, allowance, token, balance, assets } = this.props
+    const { deposit, allowance, token, balance } = this.props
     const symbol = token.symbol()
     return (
       <div styleName='head'>
@@ -277,7 +277,6 @@ export default class DepositTokensForm extends PureComponent {
             fullWidth
             hintText='0.00'
             floatingLabelText={<Translate value={prefix('amount')} symbol='TIME' />}
-            onChange={this.handleChangeAmount}
             name='amount'
           />
           <div styleName='amountInFiat'><TokenValue renderOnlyPrice value={new Amount(token.addDecimals(amount), token.symbol())} /></div>
@@ -397,6 +396,8 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   render () {
+    // eslint-disable-next-line
+    console.log('render', this.state.step)
     return (
       <div styleName='root'>
         <form onSubmit={this.props.handleSubmit}>

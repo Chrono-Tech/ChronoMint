@@ -35,6 +35,7 @@ export default class DepositTokensModal extends PureComponent {
     withdrawAsset: PropTypes.func,
     resetForm: PropTypes.func,
     handleCloseModal: PropTypes.func,
+    isWithdraw: PropTypes.bool,
   }
 
   componentWillMount () {
@@ -67,6 +68,7 @@ export default class DepositTokensModal extends PureComponent {
     return (
       <ModalDialog>
         <DepositTokensForm
+          isWithdraw={this.props.isWithdraw}
           onSubmit={this.handleSubmit}
           onSubmitSuccess={this.handleSubmitSuccess}
         />

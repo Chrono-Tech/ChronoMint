@@ -27,7 +27,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    addDeposit: () => dispatch(modalsOpen({ component: DepositTokensModal })),
+    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
   }
 }
 
@@ -47,6 +47,10 @@ export default class DepositsContent extends Component {
     this.props.addDeposit()
   }
 
+  handleWithdrawDeposit = () => {
+    this.props.addDeposit({ isWithdraw: true })
+  }
+
   render () {
     return (
       <div styleName='root'>
@@ -59,7 +63,7 @@ export default class DepositsContent extends Component {
                 </div>
               )
               : (
-                <DepositsList handleAddDeposit={this.handleAddDeposit} />
+                <DepositsList onAddDeposit={this.handleAddDeposit} onWithdrawDeposit={this.handleWithdrawDeposit} />
               )}
           </div>
           <Button styleName='addDeposit' onTouchTap={this.handleAddDeposit}>
