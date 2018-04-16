@@ -6,6 +6,9 @@
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
 import React, { PureComponent } from 'react'
+import Amount from 'models/Amount'
+import { modalsOpen } from 'redux/modals/actions'
+import TokenValue from '../../common/TokenValue/TokenValue'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_TOKENS } from "redux/tokens/actions";
@@ -13,19 +16,22 @@ import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import Button from '../../common/ui/Button/Button'
 import IPFSImage from '../../common/IPFSImage/IPFSImage'
+import SendTokens from "../../dashboard/SendTokens/SendTokens";
 
 import './BitcoinWallet.scss'
 
 const mapStateToProps = (state, props) => {
   return {
     tokens: state.get(DUCK_TOKENS),
-    wallets: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
+    walletInfo: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
   }
 }
 
 function mapDispatchToProps (dispatch, props) {
   return {
-
+    modalOpen: (componentObject) => {
+      dispatch(modalsOpen(componentObject))
+    }
   }
 }
 
@@ -33,15 +39,24 @@ function mapDispatchToProps (dispatch, props) {
 export default class BitcoinWallet extends PureComponent {
   static propTypes = {
     blockchainTitle: PropTypes.string,
-    wallets: PropTypes.object,
+    walletInfo: PropTypes.object,
     tokenTitle: PropTypes.string,
+    address: PropTypes.string,
   }
 
 
   render () {
 
     const token = this.props.tokens.item(this.props.tokenTitle)
-    console.log('Wallet selectors: ', this.props)
+    const { walletInfo, address, tokenTitle } =  this.props
+    const amountObject = this.props.walletInfo.tokens.find(a => a.symbol === tokenTitle)
+
+    console.log('BitcoinWallet : ', this.props )
+
+    if (!amountObject) {
+      console.warn('Can not find token ' + tokenTitle)
+      return null
+    }
 
     return (
       <div styleName='wallet-container'>
@@ -57,15 +72,15 @@ export default class BitcoinWallet extends PureComponent {
           <div styleName='address-title'>
             <h3>Bitcoin Wallet</h3>
             <span styleName='address-address'>
-              1Q1pE5vPGEEMqRcVRMbtBK842Y6Pzo6nK9
+              {address}
             </span>
           </div>
           <div styleName='token-amount'>
             <div styleName='crypto-amount'>
-              BTC 15.2045
+              {`${tokenTitle} ${amountObject.amount}`}
             </div>
             <div styleName='usd-amount'>
-              USD 121,600.00
+              ≈USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(amountObject.amount, tokenTitle)} />
             </div>
           </div>
           <div styleName='actions-container'>
@@ -74,6 +89,9 @@ export default class BitcoinWallet extends PureComponent {
                 disabled={false}
                 type='submit'
                 label={'SEND'}
+                onClick={(e) => {
+                  this.props.modalOpen({component: SendTokens, props: {isModal: true}})
+                }}
               />
             </div>
             <div styleName='action'>

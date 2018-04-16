@@ -70,7 +70,7 @@ class TokenValue extends PureComponent {
       ? prices[ symbol ][ selectedCurrency ]
       : null
     if (price === null || price === 0) {
-      return null
+      return 0
     }
     const valueInCurrency = integerWithDelimiter(valueWithoutDecimals.mul(price), true)
     if (this.props.onlyPriceValue) {

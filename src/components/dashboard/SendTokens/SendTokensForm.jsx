@@ -258,7 +258,7 @@ export default class SendTokensForm extends PureComponent {
     const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
-    console.log('head: ', this.props.token.feeRate())
+    console.log('SendTokenForm: ', this.props)
 
     return (
       <div styleName='head'>
