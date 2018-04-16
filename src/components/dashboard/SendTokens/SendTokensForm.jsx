@@ -258,7 +258,7 @@ export default class SendTokensForm extends PureComponent {
     const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
-    console.log('SendTokenForm: ', this.props)
+    console.log('SendTokenForm: ', currentBalance, currentBalance.amount())
 
     return (
       <div styleName='head'>
@@ -274,36 +274,7 @@ export default class SendTokensForm extends PureComponent {
             <Translate value='wallet.sendTokens' />
           </span>
         </div>
-        <div styleName='wallet-tokens-selector-container'>
-          <MuiThemeProvider theme={inversedTheme}>
-            {visibleBalances.length === 0
-              ? <Preloader />
-              : (
-                <Field
-                  component={SelectField}
-                  name='symbol'
-                  fullWidth
-                  {...styles}
-                >
-                  {visibleBalances
-                    .map((balance) => {
-                      const token: TokenModel = this.props.tokens.item(balance.id())
-                      if (token.isLocked()) {
-                        return
-                      }
-                      return (
-                        <MenuItem
-                          key={balance.id()}
-                          value={balance.id()}
-                          primaryText={balance.symbol()}
-                        />
-                      )
-                    })}
-                </Field>
-              )
-            }
-          </MuiThemeProvider>
-        </div>
+
         <div styleName='wallet-name-section'>
           <div styleName='wallet-name-title-section'>
             <span styleName='wallet-name-title'>
@@ -323,7 +294,7 @@ export default class SendTokensForm extends PureComponent {
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              <TokenValue isInvert renderOnlyPrice value={allowance.amount()} />
+              ≈USD <TokenValue isInvert renderOnlyPrice onlyPriceValue value={currentBalance.amount()} />
             </span>
           </div>
         </div>
@@ -400,7 +371,7 @@ export default class SendTokensForm extends PureComponent {
         <div styleName="transaction-fee">
                 <span styleName='title'>
                   <Translate value={`${prefix}.transactionFee`} />
-                </span>
+                </span> &nbsp;
                 {this.getTransactionFeeDescription()}
         </div>
         <div styleName='template-container'>

@@ -166,12 +166,16 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
       selectMainWalletAddressesListStore,
       selectMainWalletBalancesListStore,
       selectMainWalletTokensStore,
+      selectMarketPricesListStore,
+      selectMarketPricesSelectedCurrencyStore,
     ],
     (
       addressesAndBlockchains,
       mainWalletAddressesList,
       mainWalletBalances,
       mainWalletTokens,
+      prices,
+      selectedCurrency,
     ) => {
 
       /**
@@ -207,15 +211,21 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
         .reduce( (accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
 
+          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || null
+          if (tokenPrice && amount > 0) {
+            accumulator.balance += ( amount * tokenPrice )
+          }
+
           accumulator.tokens.push({
               symbol: symbol,
               amount: amount,
+              amountPrice: amount * tokenPrice,
           })
-          // accumulator.tokens = accumulator.tokens.sort( (a, b) => {
-          //   const oA = Object.keys(a)[0]
-          //   const oB = Object.keys(b)[0]
-          //   return (oA > oB) - (oA < oB)
-          // } ) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
+          accumulator.tokens = accumulator.tokens.sort( (a, b) => {
+            const oA = Object.keys(a)[0]
+            const oB = Object.keys(b)[0]
+            return (oA > oB) - (oA < oB)
+          } ) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
           return accumulator
         }, {
           balance: 0,

@@ -46,6 +46,19 @@ export default class WalletsContent extends Component {
 
   }
 
+  renderBitcoinWallet = () => {
+    const bitcoin = this.props.walletsList.find(a => a.title === 'Bitcoin')
+
+    if (!bitcoin) {
+      return null
+    }
+
+
+    return (
+      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' address={bitcoin.data[0]} />
+    )
+  }
+
 
   render () {
 
@@ -53,19 +66,20 @@ export default class WalletsContent extends Component {
     const bitcoin = this.props.walletsList.find(a => a.title === 'Bitcoin')
     const ethereum = this.props.walletsList.find(a => a.title === 'Ethereum')
 
+
     return (<div styleName='root'>
 
       <div styleName='header-container'>
         <h1 styleName='header-text'>Bitcoin Wallets</h1>
       </div>
 
-      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' address={bitcoin.data[0]} />
+      { this.renderBitcoinWallet() }
 
       <div styleName='header-container'>
         <h1 styleName='header-text'>Ethereum Wallets</h1>
       </div>
 
-      <EthereumWallet blockchainTitle='Ethereum' tokenTitle='ETH' address={ethereum.data[0]} />
+      { ethereum && ethereum.data && <EthereumWallet blockchainTitle='Ethereum' tokenTitle='ETH' address={ethereum.data[0]} /> }
 
       {/*<SharedWallet token={ETHToken} />*/}
 

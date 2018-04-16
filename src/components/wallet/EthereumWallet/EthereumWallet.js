@@ -8,6 +8,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import TokenValue from '../../common/TokenValue/TokenValue'
+import Amount from 'models/Amount'
 import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -20,7 +22,7 @@ function mapStateToProps (state, props) {
 
   return {
     tokens: state.get(DUCK_TOKENS),
-    wallets: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
+    walletInfo: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
   }
 }
 
@@ -35,14 +37,25 @@ export default class EthereumWallet extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.object,
+    tokenTitle: PropTypes.string,
     address: PropTypes.string,
+    walletInfo: PropTypes.object,
   }
 
+  getWalletObject = () => {
+    return this.props.walletInfo.tokens.find(a => a.symbol === this.props.tokenTitle)
+  }
 
   render () {
     const token = this.props.tokens.item('ETH')
-    const { address } = this.props
-    console.log('EthereumWallet: ', this.props)
+    const { address, tokenTitle, walletInfo } = this.props
+    const amountObject = this.getWalletObject()
+
+    console.log('amountObject: ', walletInfo, this.props)
+
+    if (!amountObject) {
+      return null
+    }
 
     return (
 
@@ -67,7 +80,7 @@ export default class EthereumWallet extends PureComponent {
           </div>
           <div styleName='token-amount'>
             <div styleName='crypto-amount'>
-              USD 121,600.00
+              USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(walletInfo.amountPrice, tokenTitle)} />
             </div>
           </div>
           <div styleName='tokens-list'>

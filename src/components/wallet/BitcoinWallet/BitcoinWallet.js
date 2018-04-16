@@ -44,12 +44,20 @@ export default class BitcoinWallet extends PureComponent {
     address: PropTypes.string,
   }
 
+  getAmount = () => {
+    const amountObject = this.getWalletObject()
+    return amountObject.amount ? amountObject.amount : '0.00'
+  }
+
+  getWalletObject = () => {
+    return this.props.walletInfo.tokens.find(a => a.symbol === this.props.tokenTitle)
+  }
 
   render () {
 
     const token = this.props.tokens.item(this.props.tokenTitle)
     const { walletInfo, address, tokenTitle } =  this.props
-    const amountObject = this.props.walletInfo.tokens.find(a => a.symbol === tokenTitle)
+    const amountObject = this.getWalletObject()
 
     console.log('BitcoinWallet : ', this.props )
 
@@ -77,10 +85,10 @@ export default class BitcoinWallet extends PureComponent {
           </div>
           <div styleName='token-amount'>
             <div styleName='crypto-amount'>
-              {`${tokenTitle} ${amountObject.amount}`}
+              {`${tokenTitle} ${this.getAmount()}`}
             </div>
             <div styleName='usd-amount'>
-              ≈USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(amountObject.amount, tokenTitle)} />
+              ≈USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.getAmount(), tokenTitle)} />
             </div>
           </div>
           <div styleName='actions-container'>
