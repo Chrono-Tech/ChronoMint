@@ -37,24 +37,5 @@ export default {
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
     SendTokens: SendTokens.en,
-  },
-  ru: {
-    UserActiveDialog: UserActiveDialog.ru,
-    Timer: Timer.ru,
-    Dashboard: Dashboard.ru,
-    Assets: Assets.ru,
-    WalletAddEditForm: WalletAddEditForm.ru,
-    UpdateProvideDialog: UpdateProvideDialog.ru,
-    WalletSelectDialog: WalletSelectDialog.ru,
-    OwnersList: OwnersList.ru,
-    SignaturesList: SignaturesList.ru,
-    // TODO @Abdulov refactor this
-    components: {
-      exchange: exchange.ru,
-      GasSlider: GasSlider.ru,
-    },
-    TwoFA: TwoFA.ru,
-    EditSignaturesDialog: EditSignaturesDialog.ru,
-    SendTokens: SendTokens.ru,
-  },
+  }
 }

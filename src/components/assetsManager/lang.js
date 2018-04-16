@@ -30,19 +30,5 @@ export default {
     BlockAssetDialog: BlockAssetDialog.en,
     BlacklistDialog: BlacklistDialog.en,
     BlacklistForm: BlacklistForm.en,
-  },
-  ru: {
-    AssetManager: AssetManager.ru,
-    PlatformsList: PlatformsList.ru,
-    PlatformInfo: PlatformInfo.ru,
-    AddPlatformForm: AddPlatformForm.ru,
-    AddTokenForm: AddTokenForm.ru,
-    HistoryTable: HistoryTable.ru,
-    CrowdsaleForm: CrowdsaleForm.ru,
-    AssetManagerForm: AssetManagerForm.ru,
-    RevokeForm: RevokeForm.ru,
-    BlockAssetDialog: BlockAssetDialog.ru,
-    BlacklistDialog: BlacklistDialog.ru,
-    BlacklistForm: BlacklistForm.ru,
-  },
+  }
 }
