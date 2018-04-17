@@ -13,13 +13,4 @@ export default {
     tokensOnCrowdsale: 'Tokens on crowdsale',
     addNewPlatform: 'add new platform',
   },
-  ru: {
-    title: 'Менеджер активов',
-    myPlatforms: 'мои платформы',
-    managers: 'менеджеры',
-    myTokens: 'мои токены',
-    addToken: 'добавить токен',
-    tokensOnCrowdsale: 'Токены на crowdsale',
-    addNewPlatform: 'добавить платформу',
-  },
 }

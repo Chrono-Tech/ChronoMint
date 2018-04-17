@@ -8,8 +8,3 @@ export const en = {
   address: 'Ethereum address',
   selectAddress: 'Select address',
 }
-export const ru = {
-  login: 'Войти',
-  address: 'Ethereum адрес',
-  selectAddress: 'Выберите адрес',
-}
