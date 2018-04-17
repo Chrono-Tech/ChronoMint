@@ -8,5 +8,5 @@ import { store } from './redux/configureStore'
 networkService.connectStore(store)
 injectTapEventPlugin()
 store.dispatch(bootstrap()).then(() => {
-  document.getElementById('react-root').innerHTML = JSON.stringify(i18n)
+  document.getElementById('react-root').innerText = JSON.stringify(i18n)
 })
