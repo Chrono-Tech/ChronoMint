@@ -25,6 +25,9 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
 import tokenService from 'services/TokenService'
 import type TxModel from 'models/TxModel'
+import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
+import { TX_APPROVE } from 'dao/ERC20DAO'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 
@@ -275,4 +278,30 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
       isFetched: true,
     }),
   })
+}
+
+export const estimateGasForDeposit = async (mode: string, params, callback, gasPriseMultiplier = 1) => {
+  let dao = null
+  switch (mode) {
+    case TX_APPROVE:
+      dao = await tokenService.getDAO(TIME)
+      break
+    case TX_DEPOSIT:
+    case TX_WITHDRAW_SHARES:
+      dao = await contractsManagerDAO.getAssetHolderDAO()
+      break
+  }
+  try {
+    if (!dao) {
+      throw new Error('Dao is undefined')
+    }
+    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
+  }
 }

@@ -63,7 +63,7 @@ export default class DepositsList extends PureComponent {
             </div>
           </div>
           <div styleName='itemContent'>
-            <Link to='deposit' href styleName='link'>
+            <Link to='/deposit' href styleName='link'>
               <div styleName='title'><Translate value={`${prefix}.deposit`} /></div>
               <div styleName='address'>{token.address()}</div>
               <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>

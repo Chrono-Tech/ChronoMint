@@ -44,6 +44,7 @@ export default {
     project: 'ChronoMint',
     dashboard: 'Dashboard',
     deposits: 'Deposits',
+    deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
@@ -740,6 +741,7 @@ export default {
       },
       DepositTokens: {
         depositTime: 'Deposit Time',
+        withdraw: 'Withdraw',
         depositAccount: 'Deposit account',
         amount: 'Amount, %{symbol}',
         slow: 'Slow transaction',
@@ -755,7 +757,6 @@ export default {
         noteText: `In order deposit you'll need to pay two around the same fees.  We're informing you about applicable fees on each step. You also will be able to revoke operation, but not the processed fee.`,
         noteTwo: `Your deposit request has been processed. Please set a fee to place funds in your deposit or revoke the operation.`,
         gasPrice: 'Gas price',
-        withdraw: 'Withdraw',
         firstStep: '1. Deposit Amount',
         secondStep: '2. Finish Deposit',
         proceed: 'PROCEED',

@@ -6,8 +6,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { TopButtons } from 'components'
-import { IconButton } from 'material-ui'
+import { Button, TopButtons } from 'components'
 import { sidesPush } from 'redux/sides/actions'
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
@@ -54,12 +53,9 @@ export default class HeaderPartial extends PureComponent {
 
           <LocaleDropDown />
 
-          <div styleName='action' onTouchTap={this.props.handleNotificationTap}>
-            <IconButton>
-              <i className='material-icons' styleName='icon'>notifications_active</i>
-            </IconButton>
-          </div>
-
+          <Button styleName='action' onTouchTap={this.props.handleNotificationTap}>
+            <i className='material-icons'>notifications_active</i>
+          </Button>
         </div>
       </div>
     )

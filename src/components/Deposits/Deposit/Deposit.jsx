@@ -39,7 +39,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    addDeposit: () => dispatch(modalsOpen({ component: DepositTokensModal })),
+    addDeposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
   }
 }
 
@@ -51,10 +51,15 @@ export default class Deposit extends PureComponent {
     transactions: PropTypes.instanceOf(TransactionsCollection),
     spender: PropTypes.string,
     addDeposit: PropTypes.func,
+    onWithdrawDeposit: PropTypes.func,
   }
 
   handleAddDeposit = () => {
     this.props.addDeposit()
+  }
+
+  handleWithdrawDeposit = () => {
+    this.props.addDeposit({ isWithdraw: true })
   }
 
   render () {
@@ -79,7 +84,7 @@ export default class Deposit extends PureComponent {
               <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>
               <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
               <div styleName='actions'>
-                <Button styleName='action'><Translate value={`${prefix}.withdraw`} /></Button>
+                <Button styleName='action' onTouchTap={this.handleWithdrawDeposit}><Translate value={`${prefix}.withdraw`} /></Button>
                 <Button styleName='action' onTouchTap={this.handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
               </div>
             </div>

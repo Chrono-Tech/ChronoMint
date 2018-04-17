@@ -20,7 +20,7 @@ function mapDispatchToProps (dispatch) {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     depositAsset: (amount, token, feeMultiplier) => dispatch(depositAsset(amount, token, feeMultiplier)),
-    withdrawAsset: (amount, token) => dispatch(withdrawAsset(amount, token)),
+    withdrawAsset: (amount, token, feeMultiplier) => dispatch(withdrawAsset(amount, token, feeMultiplier)),
     resetForm: () => dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', '')),
     handleCloseModal: () => dispatch(modalsClose()),
   }
@@ -55,7 +55,7 @@ export default class DepositTokensModal extends PureComponent {
         this.props.depositAsset(amount, token, feeMultiplier)
         break
       case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount, token)
+        this.props.withdrawAsset(amount, token, feeMultiplier)
         break
     }
   }

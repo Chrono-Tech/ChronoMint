@@ -23,9 +23,11 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, mainApprove, mainRevoke, requireTIME, TIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, estimateGasForDeposit, mainApprove, mainRevoke, requireTIME, TIME } from 'redux/mainWallet/actions'
+import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
+import { TX_APPROVE } from 'dao/ERC20DAO'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS, estimateGas } from 'redux/tokens/actions'
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import AllowanceModel from 'models/wallet/AllowanceModel'
 import classnames from 'classnames'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
@@ -38,6 +40,10 @@ export const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 export const ACTION_APPROVE = 'deposit/approve'
 export const ACTION_DEPOSIT = 'deposit/deposit'
 export const ACTION_WITHDRAW = 'deposit/withdraw'
+
+const DEPOSIT_FIRST = 'depositFirst'
+const DEPOSIT_SECOND = 'depositSecond'
+const WITHDRAW = 'withdraw'
 
 const FEE_RATE_MULTIPLIER = {
   min: 0.1,
@@ -120,12 +126,12 @@ export default class DepositTokensForm extends PureComponent {
   constructor (props) {
     super(props)
 
-    let step = 1
+    let step = DEPOSIT_FIRST
     if (this.props.allowance.amount().gt(0)) {
-      step = 2
+      step = DEPOSIT_SECOND
     }
     if (this.props.isWithdraw) {
-      step = 3 //withdraw
+      step = WITHDRAW
     }
 
     this.state = { step }
@@ -139,32 +145,47 @@ export default class DepositTokensForm extends PureComponent {
     }
 
     if (newProps.amount > 0 && newProps.feeMultiplier > 0 && (newProps.amount !== this.props.amount || newProps.feeMultiplier !== this.props.feeMultiplier)) {
-      this.handleGetGasPrice(newProps.amount, newProps.feeMultiplier, this.props.spender)
+      let action = null
+      switch (this.state.step) {
+        case DEPOSIT_FIRST:
+          action = TX_APPROVE
+          break
+        case DEPOSIT_SECOND:
+          action = TX_DEPOSIT
+          break
+        case WITHDRAW:
+          action = TX_WITHDRAW_SHARES
+          break
+      }
+      this.handleGetGasPrice(action, newProps.amount, newProps.feeMultiplier, this.props.spender)
     }
 
     if (!newProps.isWithdraw) {
       if (newProps.allowance && newProps.allowance.amount().gt(0)) {
         this.setState({
-          step: 2,
+          step: DEPOSIT_SECOND,
         })
         this.props.dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', newProps.token.removeDecimals(newProps.allowance.amount())))
       } else {
         this.setState({
-          step: 1,
+          step: DEPOSIT_FIRST,
         })
       }
     }
   }
 
-  handleGetGasPrice = (amount, feeMultiplier, spender) => {
+  handleGetGasPrice = (action: string, amount: number, feeMultiplier: number, spender: string) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      estimateGas(
-        TIME,
-        [ 'approve', [ spender, new BigNumber(amount) ] ],
+      estimateGasForDeposit(
+        action,
+        [ action, [ spender, new BigNumber(amount) ] ],
         (error, { gasFee, gasPrice }) => {
           if (!error) {
             this.setState({ gasFee, gasPrice })
+          } else {
+            // eslint-disable-next-line
+            console.log(error)
           }
         },
         feeMultiplier,
@@ -214,7 +235,7 @@ export default class DepositTokensForm extends PureComponent {
     const symbol = token.symbol()
     return (
       <div styleName='head'>
-        <div styleName='mainTitle'><Translate value={prefix('depositTime')} /></div>
+        <div styleName='mainTitle'><Translate value={prefix(this.state.step === WITHDRAW ? 'withdraw' : 'depositTime')} /></div>
         <div styleName='icon'>
           <div styleName='imgWrapper'>
             <IPFSImage
@@ -226,37 +247,48 @@ export default class DepositTokensForm extends PureComponent {
         </div>
         {token.isFetched() ? (
           <div styleName='headContent'>
-            {this.state.step === 1 && (
-              <div>
+
+            <div styleName='headItemWrapper'>
+              {this.state.step === DEPOSIT_FIRST || this.state.step === WITHDRAW ? (
                 <div styleName='headItem'>
                   <div styleName='balance'><TokenValue isInvert noRenderPrice value={balance} /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={balance} /></div>
                 </div>
-              </div>
-            )}
+              ) : null}
 
-            {this.state.step === 2 && (
-              <div styleName='headItemWrapper'>
+              {this.state.step === DEPOSIT_SECOND || this.state.step === WITHDRAW ? (
                 <div styleName='headItem'>
-                  <div styleName='balance'><TokenValue isInvert noRenderPrice value={deposit} /></div>
+                  <div styleName='balance'>
+                    <TokenValue
+                      isInvert
+                      noRenderPrice
+                      value={deposit}
+                      noRenderSymbol={this.state.step === WITHDRAW}
+                      prefix={this.state.step === WITHDRAW ? '+' : null}
+                    />
+                  </div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
                 </div>
+              ) : null}
 
+              {this.state.step === DEPOSIT_SECOND && (
                 <div styleName='headItem'>
                   <div styleName='balance'><TokenValue isInvert noRenderPrice noRenderSymbol value={allowance.amount()} prefix='+' /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={allowance.amount()} /></div>
                 </div>
+              )}
+            </div>
+
+            {this.state.step !== WITHDRAW && (
+              <div styleName='stepsWrapper'>
+                <div styleName={classnames('step', { 'active': this.state.step === DEPOSIT_FIRST })}>
+                  <Translate value={prefix('firstStep')} />
+                </div>
+                <div styleName={classnames('step', { 'active': this.state.step === DEPOSIT_SECOND })}>
+                  <Translate value={prefix('secondStep')} />
+                </div>
               </div>
             )}
-
-            <div styleName='stepsWrapper'>
-              <div styleName={classnames('step', { 'active': this.state.step === 1 })}>
-                <Translate value={prefix('firstStep')} />
-              </div>
-              <div styleName={classnames('step', { 'active': this.state.step === 2 })}>
-                <Translate value={prefix('secondStep')} />
-              </div>
-            </div>
           </div>
         ) : <div styleName='preloader'><Preloader /></div>}
       </div>
@@ -267,11 +299,11 @@ export default class DepositTokensForm extends PureComponent {
     const { amount, token, feeMultiplier } = this.props
     return (
       <div>
-        {this.state.step === 2 && (
+        {this.state.step === DEPOSIT_SECOND && (
           <div styleName='noteTwo'>
             <Translate value={prefix('noteTwo')} />
           </div>)}
-        <div styleName={classnames('fieldWrapper', { 'fieldWrapperHide': this.state.step === 2 })}>
+        <div styleName={classnames('fieldWrapper', { 'fieldWrapperHide': this.state.step === DEPOSIT_SECOND })}>
           <Field
             component={TextField}
             fullWidth
@@ -310,7 +342,7 @@ export default class DepositTokensForm extends PureComponent {
             <div>{!amount || amount <= 0 ? <Translate value={prefix('enterAmount')} /> : null}</div>
           </div>
         </div>
-        {this.state.step === 1 && (
+        {this.state.step === DEPOSIT_FIRST && (
           <div styleName='note'>
             <b><Translate value={prefix('note')} />&nbsp;</b>
             <Translate value={prefix('noteText')} />
@@ -331,7 +363,7 @@ export default class DepositTokensForm extends PureComponent {
     const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
     switch (this.state.step) {
-      case 1:
+      case DEPOSIT_FIRST:
         return (
           <div styleName='actions'>
             <div styleName='action'>
@@ -355,7 +387,7 @@ export default class DepositTokensForm extends PureComponent {
             </div>
           </div>
         )
-      case 2:
+      case DEPOSIT_SECOND:
         return (
           <div styleName='actions'>
             <div styleName='action'>
@@ -396,8 +428,6 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   render () {
-    // eslint-disable-next-line
-    console.log('render', this.state.step)
     return (
       <div styleName='root'>
         <form onSubmit={this.props.handleSubmit}>

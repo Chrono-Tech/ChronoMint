@@ -6,7 +6,10 @@
 @import "~styles/partials/mixins";
 
 .root {
+  margin-right: 5px;
   display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
   align-items: center;
   @include xs-only {
     display: none;
@@ -14,6 +17,22 @@
   .topButton {
     button {
       border-radius: 20px;
+    }
+  }
+  .backButtonWrapper {
+    flex-grow: 1;
+    .backButton {
+      button {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+      }
+      .backIcon {
+        font-size: 20px;
+        text-transform: none;
+        color: $color-white;
+      }
     }
   }
 }

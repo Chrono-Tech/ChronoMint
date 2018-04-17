@@ -130,9 +130,9 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: N
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel) => async () => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
   try {
-    await assetHolderDAO.withdraw(token.address(), amount)
+    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)

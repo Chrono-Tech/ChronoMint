@@ -10,4 +10,8 @@ export default {
       },
     ],
   },
+  '/deposit': {
+    title: 'nav.deposit',
+    backButton: true,
+  },
 }

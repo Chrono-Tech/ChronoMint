@@ -30,8 +30,8 @@
   background-color: transparent;
   z-index: 210;
   position: absolute;
-  right: 25px;
-  top: 25px;
+  padding: 25px 25px 0;
+  width: calc(100% - 300px);
   display: flex;
   align-items: center;
   @include sm-only {

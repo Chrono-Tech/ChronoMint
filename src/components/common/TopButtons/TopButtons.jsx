@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
+import { history } from 'redux/configureStore'
 import { connect } from 'react-redux'
 import { DUCK_SIDES } from 'redux/sides/actions'
 import { Button } from 'components'
@@ -50,11 +51,18 @@ class TopButtons extends PureComponent {
     const { location } = this.props
     const page = BUTTONS[ location.pathname ]
     let buttons = []
-    if (page) {
+    if (page && page.buttons) {
       buttons = page.buttons
     }
     return (
       <div styleName='root'>
+        <div styleName='backButtonWrapper'>
+          {page && page.backButton ? (
+            <Button styleName='backButton' onTouchTap={history.goBack}>
+              <i styleName='backIcon' className='chronobank-icon'>back</i>
+            </Button>
+          ) : null}
+        </div>
         {
           buttons.map((button) => (
             <Button key={button.title} styleName='topButton' onTouchTap={this.handleAction(button.action)}>

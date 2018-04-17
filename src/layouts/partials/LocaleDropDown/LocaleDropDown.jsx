@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { IconButton, Menu, MenuItem, Popover } from 'material-ui'
+import { Menu, MenuItem, Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import i18n from 'i18n'
+import { Button } from 'components'
 import { changeMomentLocale } from 'redux/ui/actions'
 
 import './LocaleDropDown.scss'
@@ -70,14 +71,12 @@ export default class LocaleDropDown extends PureComponent {
 
     return (
       <div styleName='root'>
-        <IconButton
-          style={{ padding: 5 }}
-          iconClassName='localeDropDawnIcon'
+        <Button
           styleName='langButton'
           onClick={this.handleClick}
         >
           {this.props.locale}
-        </IconButton>
+        </Button>
 
         <Popover
           open={this.state.open}

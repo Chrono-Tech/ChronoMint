@@ -5,6 +5,7 @@
 
 import { Translate } from 'react-redux-i18n'
 import { ModalStack, SideStack, Snackbar } from 'components'
+import BUTTONS from 'components/common/TopButtons/buttons'
 import menu from 'menu'
 import classnames from 'classnames'
 import { IconButton, MuiThemeProvider } from 'material-ui'
@@ -71,16 +72,20 @@ export default class Markup extends PureComponent {
     const { pathname } = this.props.location
     let currentPage = null
 
-    menu.user.map((item) => {
+    const filter = (item) => {
       if (item.path === pathname) {
         currentPage = item
       }
-    })
+    }
+    menu.user.map(filter)
+    if (!currentPage) {
+      menu.cbe.map(filter)
+    }
 
     if (!currentPage) {
-      menu.cbe.map((item) => {
-        if (item.path === pathname) {
-          currentPage = item
+      Object.keys(BUTTONS).map((path) => {
+        if (path === pathname) {
+          currentPage = BUTTONS[ path ]
         }
       })
     }
