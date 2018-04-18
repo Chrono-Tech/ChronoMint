@@ -71,6 +71,7 @@ export default class DepositTokensModal extends PureComponent {
           isWithdraw={this.props.isWithdraw}
           onSubmit={this.handleSubmit}
           onSubmitSuccess={this.handleSubmitSuccess}
+          onCloseModal={this.props.handleCloseModal}
         />
       </ModalDialog>
     )
