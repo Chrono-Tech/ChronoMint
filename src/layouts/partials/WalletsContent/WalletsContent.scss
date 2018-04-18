@@ -12,6 +12,11 @@
   width: 100%;
 }
 
+.wallet-list-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .header-container {
   display: flex;
   width: 587px;

@@ -5,6 +5,7 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import Amount from 'models/Amount'
 import { modalsOpen } from 'redux/modals/actions'
@@ -40,6 +41,7 @@ export default class BitcoinWallet extends PureComponent {
   static propTypes = {
     blockchainTitle: PropTypes.string,
     walletInfo: PropTypes.object,
+    wallet: PropTypes.instanceOf(MultisigWalletModel),
     tokenTitle: PropTypes.string,
     address: PropTypes.string,
   }
@@ -56,10 +58,8 @@ export default class BitcoinWallet extends PureComponent {
   render () {
 
     const token = this.props.tokens.item(this.props.tokenTitle)
-    const { walletInfo, address, tokenTitle } =  this.props
+    const { walletInfo, address, tokenTitle, wallet } =  this.props
     const amountObject = this.getWalletObject()
-
-    console.log('BitcoinWallet : ', this.props )
 
     if (!amountObject) {
       console.warn('Can not find token ' + tokenTitle)
@@ -88,7 +88,7 @@ export default class BitcoinWallet extends PureComponent {
               {`${tokenTitle} ${this.getAmount()}`}
             </div>
             <div styleName='usd-amount'>
-              ≈USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.getAmount(), tokenTitle)} />
+              USD <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.getAmount(), tokenTitle)} />
             </div>
           </div>
           <div styleName='actions-container'>

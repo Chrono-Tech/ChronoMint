@@ -5,7 +5,7 @@ import TokenModel from 'models/tokens/TokenModel'
 import TokensCollection from 'models/tokens/TokensCollection'
 import { PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
 import { TOKEN_ICONS } from 'assets'
-import { makeGetWalletTokensAndBalanceByAddress, makeGetSectionedWallets } from 'redux/wallet/selectors'
+import { makeGetSectionedWallets, multisigWalletsSelector } from 'redux/wallet/selectors'
 import {
   DepositTokens,
   Points,
@@ -36,14 +36,15 @@ function mapDispatchToProps (dispatch) {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    walletsList: makeGetSectionedWallets()(state, ownProps),
+    // walletsList: makeGetSectionedWallets()(state, ownProps),
+    walletsList: multisigWalletsSelector()(state, ownProps),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletsContent extends Component {
   static propTypes = {
-
+    walletsList: PropTypes.object
   }
 
   renderBitcoinWallet = () => {
@@ -53,19 +54,29 @@ export default class WalletsContent extends Component {
       return null
     }
 
+    return (
+      <BitcoinWallet blockchainTitle='Bitcoin' wallet={bitcoin.data[0].wallet} tokenTitle='BTC' address={bitcoin.data[0].address} />
+    )
+  }
+
+  renderEthereumWallet = () => {
+    const ethereum = this.props.walletsList.find(a => a.title === 'Ethereum')
+
+    if (!ethereum) {
+      return null
+    }
 
     return (
-      <BitcoinWallet blockchainTitle='Bitcoin' tokenTitle='BTC' address={bitcoin.data[0]} />
+      <div styleName='wallet-list-container'>
+        {ethereum.data.map((walletData) => {
+          return <EthereumWallet blockchainTitle='Ethereum' wallet={walletData.wallet} tokenTitle='ETH' address={walletData.address} />
+        })}
+      </div>
     )
   }
 
 
   render () {
-
-    console.log('WalletContent: ', this.props)
-    const bitcoin = this.props.walletsList.find(a => a.title === 'Bitcoin')
-    const ethereum = this.props.walletsList.find(a => a.title === 'Ethereum')
-
 
     return (<div styleName='root'>
 
@@ -79,11 +90,8 @@ export default class WalletsContent extends Component {
         <h1 styleName='header-text'>Ethereum Wallets</h1>
       </div>
 
-      { ethereum && ethereum.data && <EthereumWallet blockchainTitle='Ethereum' tokenTitle='ETH' address={ethereum.data[0]} /> }
+      {this.renderEthereumWallet()}
 
-      {/*<SharedWallet token={ETHToken} />*/}
-
-      {/*<LockedWallet token={ETHToken} />*/}
 
     </div>)
   }

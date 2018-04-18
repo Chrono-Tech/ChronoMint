@@ -9,10 +9,13 @@ import {
   createSelector,
 } from 'reselect'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_MARKET } from 'redux/market/action'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 
 import { getCurrentWallet } from './actions'
+
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 
 /**
  * SIMPLE SELECTORS
@@ -20,8 +23,10 @@ import { getCurrentWallet } from './actions'
  */
 
 export const getMainWallet = (state) => {
-  return state.get('mainWallet')
+  return state.get(DUCK_MAIN_WALLET)
 }
+
+export const getMultisigWallets = (state) => state.get(DUCK_MULTISIG_WALLET)
 
 export const getMainWalletBalance = (symbol) => createSelector(
   [ getMainWallet ],
@@ -79,6 +84,90 @@ export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK
  * @connect(makeMapStateToProps)
  * export default class AnyComponent extends PureComponent {
  */
+
+export const multisigWalletsSelector = () => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (
+    mainWallet,
+    multisigWallets,
+  ) => {
+    // final result will be svaed here
+    const sectionsObject = {}
+
+    // Go through mainWallet's addresses
+    mainWallet.addresses().items().map( (address) => {
+      const addrJS = address.toJS()
+      const addrID = addrJS.id
+      if (addrJS.address != null) {
+        if (!sectionsObject.hasOwnProperty(addrID)) {
+          sectionsObject[addrID] = {
+            data: [{
+              address: addrJS.address,
+              wallet: mainWallet,
+            }],
+          }
+        } else {
+          sectionsObject[addrID].data.push({
+            address: addrJS.address,
+            wallet: mainWallet,
+          })
+        }
+      }
+    })
+
+    // Add active multisig wallets
+    multisigWallets.activeWallets().map( (aWallet) => {
+      const currentWalletAddress: string = aWallet.address()
+      if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
+        sectionsObject[BLOCKCHAIN_ETHEREUM] = {
+          data: [{
+            address: currentWalletAddress,
+            wallet: aWallet,
+          }],
+        }
+      } else {
+        sectionsObject[BLOCKCHAIN_ETHEREUM].data.push({
+          address: currentWalletAddress,
+          wallet: aWallet,
+        })
+      }
+    })
+
+    // Add timeLocked multisig wallets
+    multisigWallets.timeLockedWallets().map( (tlWallet) => {
+      const currentWalletAddress: string = tlWallet.address()
+      if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
+        sectionsObject[BLOCKCHAIN_ETHEREUM] = {
+          data: [{
+            address: currentWalletAddress,
+            wallet: tlWallet,
+          }],
+        }
+      } else {
+        sectionsObject[BLOCKCHAIN_ETHEREUM].data.push({
+          address: currentWalletAddress,
+          wallet: tlWallet,
+        })
+      }
+    })
+
+    // Sort main sections and make an array
+    const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {})
+    const sortedSections = sortSectionsObject(sectionsObject)
+    const resultSections = Object.keys(sortedSections).map( (sectionName) => {
+      return {
+        title: sectionName,
+        data: sortedSections[sectionName].data,
+      }
+    })
+
+    return resultSections
+  }
+)
+
 
 /**
  * This is memoized selector. Produce the list of blockchain sections and wallets

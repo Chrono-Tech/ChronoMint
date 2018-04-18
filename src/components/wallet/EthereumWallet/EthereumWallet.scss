@@ -9,6 +9,7 @@
   display: flex;
   position: relative;
   width: 587px;
+  margin-top: 20px;
   min-height: 260px;
   background-color: white;
   border-radius: 2px;
@@ -32,6 +33,88 @@
   &:hover {
     opacity: 1;
   }
+}
+
+.amount-list-container {
+  display: flex;
+  flex: 4;
+  border-top: 1px solid #E5E5E5;
+
+  .amount-list {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .amount-text {
+      color: #7F7F7F;
+      font-family: proxima-nova, sans-serif;
+      font-weight: 500;
+      text-align: left;
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+}
+
+.show-all {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+
+  .show-all-a {
+    color: #786AB7;
+    font-family: 'proxima nova', sans-serif;
+    font-weight: 500;
+    text-align: right;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.owner-icon {
+  display: flex;
+  width: 24px;
+  margin-right: 10px;
+}
+
+.owner-counter {
+  font-size: 13px;
+  color: black;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: grey;
+  width: 24px;
+  height: 24px;
+}
+
+.counter {
+
+}
+
+.owners-amount {
+  display: flex;
+  flex-direction: row;
+}
+
+.owners-list {
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex: 2;
+  flex-direction: row;
+}
+.owner {
+  font-size: 16px;
+  color: #AAAAAA;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: grey;
+  width: 24px;
+  height: 24px;
 }
 
 .actions-container {
@@ -134,7 +217,7 @@
   text-align: left;
   font-size: 14px;
   line-height: 17px;
-  width: 30%;
+  width: 40%;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   color: #333333;
@@ -146,7 +229,7 @@
   border-top: 1px solid #E5E5E5;
   padding-left: 10px;
 
-  width: 60%;
+  width: 50%;
   vertical-align: middle;
   color: #7F7F7F;
   font-family: 'proxima nova', sans-serif;
