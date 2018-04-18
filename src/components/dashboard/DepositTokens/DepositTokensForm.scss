@@ -150,6 +150,7 @@
 }
 
 .action {
+  margin-left: 10px;
   &:first-child {
     margin-left: 0;
   }
@@ -231,5 +232,24 @@
   }
   @include xs-only {
     flex-wrap: wrap;
+  }
+}
+
+.notesWrapper {
+  .note {
+    padding: 20px 0 30px;
+    margin: 0;
+    border: none;
+    display: flex;
+    border-bottom: 1px solid #F2F2F2;
+    .icon {
+      border: none;
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+      font-size: 60px;
+      color: $color-red-3;
+      padding: 0 25px 0 0;
+    }
   }
 }

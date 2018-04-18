@@ -31,12 +31,37 @@ export default class QRIcon extends PureComponent {
     }
   }
 
+  async handleQROpen (target) {
+    this.setState({
+      isQROpen: true,
+      qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
+      qrAnchorEl: target,
+    })
+  }
+
+  handleQRClose () {
+    this.setState({
+      isQROpen: false,
+      qrAnchorEl: null,
+    })
+  }
+
+  renderQR () {
+    return (
+      <img alt='qr code' src={this.state.qrData} />
+    )
+  }
+
   render () {
     return (
       <div styleName='root' className='QRIcon__root'>
         <a
+          href
           styleName={this.props.iconStyle}
-          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
+          onTouchTap={(e) => {
+            e.preventDefault();
+            this.handleQROpen(e.currentTarget)
+          }}
         >
           {this.props.children
             ? this.props.children
@@ -56,26 +81,5 @@ export default class QRIcon extends PureComponent {
         </Popover>
       </div>
     )
-  }
-
-  renderQR () {
-    return (
-      <img src={this.state.qrData} />
-    )
-  }
-
-  async handleQROpen (target) {
-    this.setState({
-      isQROpen: true,
-      qrData: this.state.qrData || await promisify(QRCode.toDataURL)(this.props.value),
-      qrAnchorEl: target,
-    })
-  }
-
-  handleQRClose () {
-    this.setState({
-      isQROpen: false,
-      qrAnchorEl: null,
-    })
   }
 }
