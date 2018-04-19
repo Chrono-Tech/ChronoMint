@@ -16,5 +16,5 @@ export default {
     BuyTokensDialog: BuyTokensDialog.en,
     AddExchangeForm: AddExchangeForm.en,
     ExchangeTransferDialog: ExchangeTransferDialog.en,
-  }
+  },
 }

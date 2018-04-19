@@ -23,7 +23,6 @@ export default class VotingPage extends Component {
         >
           <Partials.VotingContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

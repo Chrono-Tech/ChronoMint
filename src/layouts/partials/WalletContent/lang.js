@@ -20,6 +20,6 @@ export default {
     enterTheAmountYouWouldLikeToSend: 'Enter the amount you would like to send.',
     checkValuesAndPressSend: 'Check values and press SEND.',
     ifYouWantToAllowAContract: 'If you want to allow a contract to send your tokens (not ETH) – repeat same but press APPROVE.',
-  }
+  },
 }
 

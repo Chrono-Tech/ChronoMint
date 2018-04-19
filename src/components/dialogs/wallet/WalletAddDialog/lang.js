@@ -30,6 +30,6 @@ export default {
     requiredSignaturesDescription: 'Specify number of owners’ signatures to perform transaction.',
     date: 'Date',
     time: 'Time',
-  }
+  },
 }
 

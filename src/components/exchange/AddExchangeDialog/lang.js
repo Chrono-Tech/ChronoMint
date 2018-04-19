@@ -15,5 +15,5 @@ export default {
     sellPrice: 'Sell price (ETH)',
     create: 'Create',
     enterTokenSymbol: 'Enter token symbol',
-  }
+  },
 }

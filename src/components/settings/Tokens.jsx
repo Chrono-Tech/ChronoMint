@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button } from 'components'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import CBETokenDialog from 'components/dialogs/CBETokenDialog/CBETokenDialog'
-import { FlatButton, FontIcon, RaisedButton } from 'material-ui'
+import { FlatButton, FontIcon } from 'material-ui'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -72,10 +73,9 @@ export default class Tokens extends PureComponent {
         <div styleName='panelHead'>
           <h3 styleName='headTitle'><Translate value={prefix('tokens')} /></h3>
           <div styleName='headActions'>
-            <FlatButton
-              icon={<FontIcon className='material-icons'>add</FontIcon>}
+            <Button
+              flat
               label={<Translate value={prefix('addToken')} />}
-              primary
               onTouchTap={this.handleEdit()}
             />
           </div>
@@ -120,14 +120,13 @@ export default class Tokens extends PureComponent {
                       : (
                         <div styleName='tableCellActions'>
                           <div styleName='actionsItem'>
-                            <RaisedButton
+                            <Button
                               label={<Translate value='terms.modify' />}
-                              primary
                               onTouchTap={this.handleEdit(token, true)}
                             />
                           </div>
                           <div styleName='actionsItem'>
-                            <RaisedButton
+                            <Button
                               label={<Translate value='terms.remove' />}
                               onTouchTap={this.handleRemove(token)}
                             />

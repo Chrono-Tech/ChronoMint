@@ -15,5 +15,5 @@ export default {
     createExchange: 'Create an exchange',
     middlewareDisconnected: 'The search is not available because Middleware is disconnected',
     emptyList: 'List is empty',
-  }
+  },
 }

@@ -1,0 +1,11 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  overflow-x: hidden;
+  :global {
+    .BrandPartial__root {
+      padding-bottom: 100px;
+    }
+  }
+}

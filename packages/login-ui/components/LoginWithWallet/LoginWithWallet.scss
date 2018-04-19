@@ -100,4 +100,12 @@ $gutter: 16px;
 .action {
   margin: 0 ($gutter / 2);
   width: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.whiteButton {
+  button {
+    color: $color-white;
+  }
 }

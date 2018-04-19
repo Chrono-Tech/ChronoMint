@@ -3,10 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { TokenValue } from 'components'
-import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -23,7 +22,7 @@ import './AddExchangeForm.scss'
 import TokenListSelector from './TokenListSelector'
 import validate from './validate'
 
-function prefix (text) {
+export const prefix = (text) => {
   return `components.exchange.AddExchangeForm.${text}`
 }
 
@@ -67,13 +66,6 @@ export default class AddExchangeForm extends PureComponent {
     const tokenBalance = token && this.props.balances.item(token.id())
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
           <Field
             name='token'
@@ -109,11 +101,10 @@ export default class AddExchangeForm extends PureComponent {
           </div>
         </div>
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             styleName='action'
             label={<Translate value={prefix('create')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

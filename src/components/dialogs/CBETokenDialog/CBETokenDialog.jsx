@@ -5,20 +5,14 @@
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { I18n } from 'platform/i18n/index'
-import { FlatButton, RaisedButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { ACCEPT_IMAGES } from 'models/FileSelect/FileExtension'
-import {
-  addToken,
-  DUCK_SETTINGS_ERC20_TOKENS,
-  formTokenLoadMetaData,
-  getDataFromContract,
-  modifyToken,
-} from 'redux/settings/erc20/tokens/actions'
+import { addToken, DUCK_SETTINGS_ERC20_TOKENS, formTokenLoadMetaData, getDataFromContract, modifyToken } from 'redux/settings/erc20/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import ModalDialog from 'components/dialogs/ModalDialog'
@@ -76,15 +70,8 @@ export default class CBETokenDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog onClose={this.props.onClose}>
+      <ModalDialog onClose={this.props.onClose} title={<Translate value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'} />}>
         <form styleName='root' onSubmit={this.props.handleSubmit}>
-          <div styleName='header'>
-            <h3
-              styleName='title'
-            >
-              {<Translate value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'} />}
-            </h3>
-          </div>
           <div styleName='content'>
             <Field
               component={TextField}
@@ -136,14 +123,13 @@ export default class CBETokenDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <FlatButton styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
-            <RaisedButton
+            <Button flat styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
+            <Button
               disabled={this.props.isFetching || this.props.pristine || this.props.invalid}
               styleName='action'
               label={<Translate
                 value={this.props.isModify ? 'settings.erc20.tokens.modify' : 'settings.erc20.tokens.add'}
               />}
-              primary
               type='submit'
             />
           </div>

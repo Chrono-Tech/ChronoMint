@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import classnames from 'classnames'
+import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'
-import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
@@ -260,19 +261,17 @@ export default class PlatformInfo extends PureComponent {
           </div>
 
           <div styleName='actions'>
-            <RaisedButton
+            <Button
               disabled={isPaused.isFetching() || !isPaused.isFetched()}
-              styleName='action'
-              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() ? this.handleBlockAssetDialog: undefined}
-              labelStyle={{ display: 'flex' }}
+              styleName={classnames('action', { 'block': !selectedToken.isPaused().value() })}
+              onTouchTap={this.handleBlockAssetDialog}
               label={isPaused.isFetching() || !isPaused.isFetched()
                 ? <Preloader />
                 : <Translate value={prefix(selectedToken.isPaused().value() ? 'unblockAsset' : 'blockAsset')} />
               }
-              primary={selectedToken.isPaused().value()}
             />
 
-            <RaisedButton
+            <Button
               onTouchTap={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'

@@ -15,6 +15,7 @@ export default class QRIcon extends PureComponent {
   static propTypes = {
     value: PropTypes.node,
     iconStyle: PropTypes.string,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
@@ -30,35 +31,6 @@ export default class QRIcon extends PureComponent {
     }
   }
 
-  render () {
-    return (
-      <div styleName='root'>
-        <a
-          styleName={this.props.iconStyle}
-          onTouchTap={(e) => { e.preventDefault(); this.handleQROpen(e.currentTarget) }}
-        >
-          <i className='material-icons'>center_focus_weak</i>
-        </a>
-        <Popover
-          zDepth={3}
-          open={this.state.isQROpen}
-          anchorEl={this.state.qrAnchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={() => this.handleQRClose()}
-        >
-          {this.renderQR()}
-        </Popover>
-      </div>
-    )
-  }
-
-  renderQR () {
-    return (
-      <img src={this.state.qrData} />
-    )
-  }
-
   async handleQROpen (target) {
     this.setState({
       isQROpen: true,
@@ -72,5 +44,42 @@ export default class QRIcon extends PureComponent {
       isQROpen: false,
       qrAnchorEl: null,
     })
+  }
+
+  renderQR () {
+    return (
+      <img alt='qr code' src={this.state.qrData} />
+    )
+  }
+
+  render () {
+    return (
+      <div styleName='root' className='QRIcon__root'>
+        <a
+          href
+          styleName={this.props.iconStyle}
+          onTouchTap={(e) => {
+            e.preventDefault();
+            this.handleQROpen(e.currentTarget)
+          }}
+        >
+          {this.props.children
+            ? this.props.children
+            : <i className='material-icons'>center_focus_weak</i>
+          }
+
+        </a>
+        <Popover
+          zDepth={3}
+          open={this.state.isQROpen}
+          anchorEl={this.state.qrAnchorEl}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
+          onRequestClose={() => this.handleQRClose()}
+        >
+          {this.renderQR()}
+        </Popover>
+      </div>
+    )
   }
 }

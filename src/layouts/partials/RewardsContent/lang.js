@@ -18,6 +18,6 @@ export default {
     depositOfWithdrawTime: 'Deposit Or Withdraw Time',
     withdrawRevenue: 'Withdraw Revenue',
     closePeriod: 'Close period',
-  }
+  },
 }
 

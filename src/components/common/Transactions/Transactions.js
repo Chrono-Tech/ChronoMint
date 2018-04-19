@@ -3,19 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  CircularProgress,
-  Divider,
-  Paper,
-  RaisedButton,
-  Table,
-  TableBody,
-  TableFooter,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui'
+import { Button } from 'components'
+import { CircularProgress, Divider, Paper, Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -92,11 +81,9 @@ class Transactions extends PureComponent {
           {!isFetching && !endOfList ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton
+                <Button
                   label={<Translate value='nav.loadMore' />}
                   onTouchTap={() => this.props.onLoadMore()}
-                  fullWidth
-                  primary
                 />
               </TableRowColumn>
             </TableRow>

@@ -9,6 +9,6 @@ export default {
     depositTime: 'Deposit TIME',
     balance: 'Balance',
     addToken: 'Add Token',
-  }
+  },
 }
 

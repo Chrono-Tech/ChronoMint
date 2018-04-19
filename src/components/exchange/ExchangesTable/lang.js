@@ -13,12 +13,12 @@ export default {
     buyLimits: 'Buy limits',
     sellLimits: 'Sell limits',
     limits: 'Limits',
-    buy: 'Buy',
-    sell: 'Sell',
+    buy: 'Buy %{symbol}',
+    sell: 'Sell %{symbol}',
     statusPending: 'Status: pending',
     getNextPage: 'Load next page',
     showOnlyMyExchanges: 'Configure my exchanges',
     depositTokens: 'deposit/withdrawal %{symbol}',
     depositEth: 'deposit/withdrawal ETH',
-  }
+  },
 }

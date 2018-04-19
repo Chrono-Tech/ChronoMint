@@ -3,9 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button } from 'components'
 import RewardsPeriod from 'components/dashboard/RewardsPeriod/RewardsPeriod'
-import styles from 'layouts/partials/styles'
-import { FlatButton, RaisedButton } from 'material-ui'
 import RewardsCollection from 'models/rewards/RewardsCollection'
 import RewardsCurrentPeriodModel from 'models/rewards/RewardsCurrentPeriodModel'
 import PropTypes from 'prop-types'
@@ -104,23 +103,20 @@ export default class RewardsContent extends Component {
                     }
                   </div>
                   <div styleName='actions'>
-                    <FlatButton
-                      style={styles.content.header.link}
-                      label={<Translate value={prefix('depositOfWithdrawTime')} />}
-                      styleName='action'
-                      containerElement={
-                        <Link activeClassName='active' to={{ pathname: '/wallet', hash: '#deposit-tokens' }} />
-                      }
-                    />
+                    <Button styleName='actionFlat' flat>
+                      <Link activeClassName='active' href to={{ pathname: '/wallet', hash: '#deposit-tokens' }}>
+                        <Translate value={prefix('depositOfWithdrawTime')} />
+                      </Link>
+                    </Button>
                     {currentPeriod.rewards().gt(0) && (
-                      <RaisedButton
+                      <Button
                         label={<Translate value={prefix('withdrawRevenue')} />}
                         styleName='action'
                         onTouchTap={this.props.handleWithdrawRevenue}
                       />
                     )}
                     {this.props.isCBE && (
-                      <RaisedButton
+                      <Button
                         label={<Translate value={prefix('closePeriod')} />}
                         styleName='action'
                         onTouchTap={this.props.handleClosePeriod}

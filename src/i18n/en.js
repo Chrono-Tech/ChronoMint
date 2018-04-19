@@ -9,7 +9,6 @@ import * as assetDonator from 'dao/AssetDonatorDAO'
 import * as erc20 from 'dao/ERC20DAO'
 import * as erc20Manager from 'dao/ERC20ManagerDAO'
 import * as eth from 'dao/EthereumDAO'
-import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
 import * as exchange from 'dao/ExchangeDAO'
 import * as loc from 'dao/LOCManagerDAO'
 import * as operations from 'dao/PendingManagerDAO'
@@ -44,6 +43,8 @@ export default {
   nav: {
     project: 'ChronoMint',
     dashboard: 'Dashboard',
+    deposits: 'Deposits',
+    deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
@@ -72,7 +73,12 @@ export default {
     of: 'of %{count}',
   },
   wallet: {
+    modeAdvanced: 'Advanced',
+    modeSimple: 'Simple',
+    templateName: 'Template name',
+    satPerByte: 'SAT / byte',
     sendTokens: 'Send tokens',
+    walletName: 'Wallet name',
     recipientAddress: 'Recipient address',
     selectTokenIcon: 'Please select icon file',
     multisignature: 'Multisignature',
@@ -371,6 +377,9 @@ export default {
       },
     },
     LOCManager: {
+      [ loc.standardFuncs.SET_STATUS ]: {
+        title: 'Set Status',
+      },
       [ loc.standardFuncs.ADD_LOC ]: {
         title: 'Add LOC',
         name: 'Name',
@@ -508,6 +517,11 @@ export default {
       },
       [ chronoBankAsset.TX_UNRESTRICT ]: {
         title: 'Remove user from blacklist',
+      },
+    },
+    WalletsManager: {
+      'createWallet': {
+        title: 'Create multisignature wallet',
       },
     },
   },
@@ -727,12 +741,40 @@ export default {
       },
       DepositTokens: {
         depositTime: 'Deposit Time',
-        amount: 'Amount',
-        yourSymbolBalance: 'Your %{symbol} balance',
-        yourSymbolDeposit: 'Your %{symbol} deposit',
-        symbolHolderAllowance: '%{symbol} holder allowance',
-        requireTime: 'Require TIME',
         withdraw: 'Withdraw',
+        depositAccount: 'Deposit account',
+        amount: 'Amount, %{symbol}',
+        slow: 'Slow transaction',
+        fast: 'Fast',
+        yourSymbolBalance: 'Your %{symbol} balance',
+        yourDeposit: 'Your deposit',
+        holderAllowance: 'holder allowance',
+        transactionFee: 'Transaction fee',
+        requireTime: 'Require TIME',
+        multiplier: ', it is %{multiplier}x of average fee.',
+        enterAmount: 'Enter amount greater than 0',
+        note: 'Please note.',
+        noteText: `In order deposit you'll need to pay two around the same fees.  We're informing you about applicable fees on each step. You also will be able to revoke operation, but not the processed fee.`,
+        noteTwo: `Your deposit request has been processed. Please set a fee to place funds in your deposit or revoke the operation.`,
+        noteEth: `Your Ethereum account has insufficient funds. Please add Ethereum on your account in order to withdraw.`,
+        noteBalance: `Your TIME account has insufficient funds. Please add TIME on your account in order to withdraw.`,
+        buyTime: 'Buy Time',
+        receiveEth: 'Receive Eth',
+        gasPrice: 'Gas price',
+        firstStep: '1. Deposit Amount',
+        secondStep: '2. Finish Deposit',
+        proceed: 'PROCEED',
+        revoke: 'REVOKE',
+        finish: 'FINISH',
+      },
+      ReceiveTokenModal: {
+        receive: 'Receive',
+        important: 'Important!',
+        warningText1: `Make sure you're receiving `,
+        warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
+        receivingTitle: 'Your receiving %{symbol} address',
+        qrTitle: 'Your QR code for the %{symbol} address',
+        buyTitle: 'Also, you can buy %{symbol} in exchanges',
       },
       RewardsPeriod: {
         rewardsPeriodIndex: 'Bonus period #%{index}',
@@ -880,5 +922,8 @@ export default {
         vote: 'Vote',
       },
     },
+  },
+  topButtons: {
+    addDeposit: 'Add deposit',
   },
 }

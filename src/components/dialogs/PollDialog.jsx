@@ -4,14 +4,15 @@
  */
 
 import classnames from 'classnames'
-import { FlatButton, FontIcon, IconButton, RaisedButton } from 'material-ui'
+import { FlatButton, FontIcon, IconButton } from 'material-ui'
+import { Button } from 'components'
 import PollModel from 'models/PollModel'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { DatePicker, TextField } from 'redux-form-material-ui'
-import { Field, FieldArray, formValueSelector, reduxForm, formPropTypes } from 'redux-form/immutable'
+import { Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { createPoll } from 'redux/voting/actions'
@@ -69,7 +70,8 @@ export class PollDialog extends React.Component {
     return (
       <div styleName='options'>
         <div styleName='options-actions'>
-          <FlatButton
+          <Button
+            flat
             label='Add Option'
             styleName='action'
             // eslint-disable-next-line
@@ -157,10 +159,10 @@ export class PollDialog extends React.Component {
                   style={{ width: '180px' }}
                 />
                 <div styleName='actions'>
-                  <FlatButton
+                  <Button
+                    flat
                     label='Add Attachments'
                     styleName='action'
-                    icon={<FontIcon className='material-icons'>link</FontIcon>}
                   />
                 </div>
               </div>
@@ -179,11 +181,10 @@ export class PollDialog extends React.Component {
               </div>
             </div>
             <div styleName='footer'>
-              <RaisedButton
+              <Button
                 styleName='action'
                 label={this.props.isModify ? 'Update Poll' : 'Create Poll'}
                 type='submit'
-                primary
               />
             </div>
           </form>

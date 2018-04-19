@@ -2,17 +2,16 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-$default-padding: 8px 0px;
+$default-padding: 8px 0;
 
 .root {
   display: flex;
-  width: 100%;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-end;
+  flex-grow: 1;
 }
 
 .menu {
@@ -110,15 +109,18 @@ $default-padding: 8px 0px;
 }
 
 .actions {
-  position: relative;
-  padding: $default-padding;
-  flex: 0 0 auto;
   display: flex;
-  align-items: center;
+  flex-grow: 1;
+}
 
-  // @include md-only {
-  //   display: none;
-  // }
+.action {
+  button {
+    border-radius: 50%;
+    width: 40px;
+    padding: 0;
+    height: 40px;
+    margin: 5px;
+  }
 }
 
 .actionsEntry {
@@ -147,7 +149,7 @@ $default-padding: 8px 0px;
   line-height: 14px;
   font-weight: bold;
   border-radius: 7px;
-  padding: 0px 2px;
+  padding: 0 2px;
   min-width: 14px;
   text-align: center;
   color: #FFFFFF;
@@ -195,7 +197,7 @@ $default-padding: 8px 0px;
   opacity: 0.6;
   font-size: 16px;
   margin: 0;
-  padding: 6px 0px 0px 0px;
+  padding: 6px 0 0 0;
 }
 
 .sectionBody {
@@ -220,7 +222,7 @@ $default-padding: 8px 0px;
   vertical-align: top;
   width: 1%;
   color: $color-primary-1;
-  padding: 5px 16px 5px 0px;
+  padding: 5px 16px 5px 0;
 }
 
 .itemInfo {
@@ -389,7 +391,7 @@ $default-padding: 8px 0px;
   background-color: $color-primary-1;
   border-radius: 2px;
   overflow: hidden;
-  margin: 0px 8px 0px 0px;
+  margin: 0 8px 0 0;
 }
 
 .balanceIconContent {
@@ -427,7 +429,7 @@ $default-padding: 8px 0px;
   height: 10px;
   border-radius: 50%;
   background-color: $badge-grey;
-  margin: 0px 12px;
+  margin: 0 12px;
 
   &.status-offline {
     background-color: $badge-red;

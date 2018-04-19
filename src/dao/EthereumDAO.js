@@ -10,9 +10,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_NEW_BLOCK, EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -35,6 +34,10 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   getGasPrice (): Promise {
     return this._web3Provider.getGasPrice()
+  }
+
+  getBlockNumber (): Promise {
+    return this._web3Provider.getBlockNumber()
   }
 
   getAccountBalance (account): Promise {
@@ -202,6 +205,9 @@ export class EthereumDAO extends AbstractTokenDAO {
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
+
+      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber })
+
       const time = block.timestamp * 1000
       if (time < startTime) {
         return

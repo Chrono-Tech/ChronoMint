@@ -49,7 +49,7 @@ export default class DashboardContent extends Component {
           <div styleName='inner'>
             <div className='DashboardContent__grid'>
               <div className='row'>
-                <div className='col-md-3 col-lg-2' styleName='headLight'>
+                <div className='col-md-3 col-lg-2'>
                   <SendTokens />
                 </div>
                 <div className='col-md-3 col-lg-2' styleName='headDark'>

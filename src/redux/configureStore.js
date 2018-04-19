@@ -8,7 +8,6 @@ import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer as formReducer } from 'redux-form/immutable'
-import { loadI18n, DUCK_I18N } from 'redux/i18n/actions'
 import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
@@ -110,7 +109,9 @@ export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState(),
 })
 
-// syncTranslationWithStore(store) relaced with manual configuration in the next 6 lines
+export const DUCK_I18N = 'i18n'
+
+// syncTranslationWithStore(store) relaced with manual connfiguration in the next 6 lines
 I18n.setTranslationsGetter(() => store.getState().get(DUCK_I18N).translations)
 I18n.setLocaleGetter(() => store.getState().get(DUCK_I18N).locale)
 
@@ -119,8 +120,6 @@ const locale = ls.getLocale()
 moment.locale(locale)
 
 store.dispatch(loadTranslations(require('../i18n/')))
-store.dispatch(setLocale(locale))
 
-// load i18n from the public site
-store.dispatch(loadI18n(locale))
+store.dispatch(setLocale(locale))
 /** <<< i18n END */

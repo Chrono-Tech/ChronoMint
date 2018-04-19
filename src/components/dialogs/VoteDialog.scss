@@ -11,11 +11,10 @@
 
 .content {
   max-width: 928px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
 }
 
 .header {
-  background-color: $color-primary-1;
   padding: 4px 4px;
   display: flex;
   box-sizing: border-box;
@@ -224,6 +223,8 @@
   color: $color-primary-0;
   display: flex;
   padding: 8px 8px;
+  border-radius: 2px 2px 0 0;
+  background: $color-white;
 
   @include md-only {
     display: block;
@@ -356,10 +357,12 @@
 }
 
 .footer {
-  padding: 24px 16px;
+  padding: 16px;
   text-align: right;
+  background: $color-white;
+  border-radius: 0 0 2px 2px;
 }
 
 .action {
-  margin: 0px 0px 0px 10px;
+  margin: 0 0 0 10px;
 }

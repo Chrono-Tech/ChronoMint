@@ -436,16 +436,11 @@ export default class AbstractContractDAO extends EventEmitter {
       params: args,
     })
 
-    /** ESTIMATE GAS */
-    const estimateGas = (func, args, value) => {
-      return this._estimateGas(func, args, value)
-    }
-
     let gasLimit = null
 
     /** START */
     try {
-      tx = await AbstractContractDAO.txStart(tx, estimateGas, feeMultiplier)
+      tx = await AbstractContractDAO.txStart(tx, this.estimateGas, feeMultiplier)
       gasLimit = tx.gasLimit()
       args = tx.params()
 
@@ -556,11 +551,10 @@ export default class AbstractContractDAO extends EventEmitter {
     }
   }
 
-  /** @private */
-  async _estimateGas (func: string, args = [], value = null): number | Object {
+  estimateGas = async (func: string, args = [], value = null): number | Object => {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw this._error('_estimateGas func not found', func)
+      throw this._error('estimateGas func not found', func)
     }
 
     const [ gasPrice, estimatedGas ] = await Promise.all([
