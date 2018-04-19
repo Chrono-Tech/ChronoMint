@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 RUN yarn
 ENV PATH /root/.yarn/bin:$PATH
 ENV NODE_ENV ${NODE}
+ENV PUBLIC_BACKEND_REST_URL https://backend.chronobank.io
 RUN yarn build
 
 FROM nginx:latest
