@@ -42,15 +42,15 @@ jobs:
         - IMAGE_TAG_NAME="latest"
         - |
           if [ "$TRAVIS_BRANCH" == "master" ]; then
-            docker build --build-arg BUILD_BRANCH="master" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
+            docker build --build-arg BUILD_BRANCH="master" -e PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" --build-arg NODE=production -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "master" ] && [ "$TEST_RESULT" != "0" ]; then
             echo "Test result is: $TEST_RESULT for master branch. Skipping image build and push!"
           elif [ "$TRAVIS_BRANCH" == "develop" ]; then
-            docker build --build-arg BUILD_BRANCH="develop" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
+            docker build --build-arg BUILD_BRANCH="develop" -e PUBLIC_BACKEND_REST_URL="https://stage-adm.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           elif [ "$TRAVIS_BRANCH" == "release" ]; then
-            docker build --build-arg BUILD_BRANCH="release" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
+            docker build --build-arg BUILD_BRANCH="release" -e PUBLIC_BACKEND_REST_URL="https://backend.chronobank.io" -t gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME . --no-cache
             docker push gcr.io/deep-wares-144610/$TRAVIS_BRANCH/chronomint:$IMAGE_TAG_NAME
           fi;
         - kill -9 $(ps aux | grep '[t]estrpc' | awk '{print $2}')
