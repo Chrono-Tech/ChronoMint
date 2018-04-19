@@ -13,7 +13,6 @@ export default class DepositPage extends PureComponent {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear

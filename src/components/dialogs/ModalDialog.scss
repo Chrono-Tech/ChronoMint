@@ -12,10 +12,12 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  -webkit-overflow-scrolling: touch;
   overflow-y: auto;
   overflow-x: hidden;
   background: $color-modal-backdrop-bg;
+  > span {
+    display: contents;
+  }
 }
 
 .dialog {

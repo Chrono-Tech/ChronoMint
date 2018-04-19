@@ -83,7 +83,7 @@ export const login = (account) => async (dispatch, getState) => {
 
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
-  dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
+  dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
 export const bootstrap = (relogin = true) => async (dispatch) => {

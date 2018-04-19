@@ -19,7 +19,8 @@ import HITBTC_PNG from 'assets/img/marketsLogos/hitbtc.png'
 import LIVECOIN_PNG from 'assets/img/marketsLogos/livecoin.png'
 import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
-import './DepositTokensForm.scss'
+import TokenModel from 'models/tokens/TokenModel'
+import './ReceiveTokenModal.scss'
 
 const marketsTIME = [
   {
@@ -65,7 +66,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class ReceiveTokenModal extends PureComponent {
   static propTypes = {
-    token: PropTypes.string.isRequired,
+    tokenId: PropTypes.string.isRequired,
+    token: PropTypes.instanceOf(TokenModel),
     address: PropTypes.string,
   }
 

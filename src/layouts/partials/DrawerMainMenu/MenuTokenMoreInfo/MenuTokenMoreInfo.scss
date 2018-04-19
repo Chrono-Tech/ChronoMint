@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
@@ -110,6 +109,9 @@
   border: 0 solid $color-grey-1;
   border-bottom-width: 1px;
   cursor: pointer;
+  min-height: 40px;
+  align-items: center;
+  padding-left: 20px;
   &:hover {
     background: $color-modal-backdrop-bg-1
   }
@@ -121,7 +123,6 @@
         display: flex;
         flex-grow: 1;
         height: 40px;
-        padding-left: 20px;
         align-items: center;
         margin: 0;
       }

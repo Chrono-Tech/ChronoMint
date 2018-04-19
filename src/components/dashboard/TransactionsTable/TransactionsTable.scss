@@ -33,6 +33,7 @@
             flex-grow: 1;
             .title {
               font-size: 14px;
+              line-height: 20px;
             }
             .address {
               font-size: 14px;
@@ -44,6 +45,7 @@
             text-align: right;
             .value {
               text-align: right;
+              line-height: 19px;
             }
             .receiving {
               &::before {
@@ -75,6 +77,8 @@
             }
             .confirmationsText {
               text-align: right;
+              font-size: 14px;
+              color: $color-grey-2;
             }
           }
 

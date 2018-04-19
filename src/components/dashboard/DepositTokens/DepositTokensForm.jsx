@@ -228,6 +228,7 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   handleRequireTime = () => {
+    this.props.onCloseModal()
     this.props.requireTIME()
   }
 
@@ -263,6 +264,7 @@ export default class DepositTokensForm extends PureComponent {
             <div styleName='headItemWrapper'>
               {this.state.step === DEPOSIT_FIRST || this.state.step === WITHDRAW ? (
                 <div styleName='headItem'>
+                  <div styleName='headItemTitle'><Translate value={prefix('balanceAmount')} /></div>
                   <div styleName='balance'><TokenValue isInvert noRenderPrice value={balance} /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={balance} /></div>
                 </div>
@@ -270,13 +272,13 @@ export default class DepositTokensForm extends PureComponent {
 
               {this.state.step === DEPOSIT_SECOND || this.state.step === WITHDRAW ? (
                 <div styleName='headItem'>
+                  <div styleName='headItemTitle'><Translate value={prefix('depositAmount')} /></div>
                   <div styleName='balance'>
                     <TokenValue
                       isInvert
                       noRenderPrice
                       value={deposit}
                       noRenderSymbol={this.state.step === WITHDRAW}
-                      prefix={this.state.step === WITHDRAW ? '+' : null}
                     />
                   </div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={deposit} /></div>
@@ -285,6 +287,7 @@ export default class DepositTokensForm extends PureComponent {
 
               {this.state.step === DEPOSIT_SECOND && (
                 <div styleName='headItem'>
+                  <div styleName='headItemTitle'><Translate value={prefix('changeAmount')} /></div>
                   <div styleName='balance'><TokenValue isInvert noRenderPrice noRenderSymbol value={allowance.amount()} prefix='+' /></div>
                   <div styleName='balanceFiat'><TokenValue isInvert renderOnlyPrice value={allowance.amount()} /></div>
                 </div>
@@ -308,7 +311,7 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { amount, token, feeMultiplier } = this.props
+    const { balance, balanceEth, amount, token, feeMultiplier } = this.props
     return (
       <div>
         {this.state.step === DEPOSIT_SECOND && (
@@ -359,6 +362,24 @@ export default class DepositTokensForm extends PureComponent {
             <b><Translate value={prefix('note')} />&nbsp;</b>
             <Translate value={prefix('noteText')} />
           </div>)}
+        <div styleName='notesWrapper'>
+          {balanceEth.lte(0) && (
+            <div styleName='note'>
+              <div styleName='icon'>
+                <i className='chronobank-icon'>warning</i>
+              </div>
+              <Translate value={prefix('noteEth')} />
+            </div>
+          )}
+          {balance.lte(0) && (
+            <div styleName='note'>
+              <div styleName='icon'>
+                <i className='chronobank-icon'>warning</i>
+              </div>
+              <Translate value={prefix('noteBalance')} />
+            </div>
+          )}
+        </div>
       </div>
     )
   }
@@ -370,10 +391,10 @@ export default class DepositTokensForm extends PureComponent {
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
 
-    const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched()
-    const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
-    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched()
-    const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals)
+    const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
+    const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
+    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
+    const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals) || balanceEth.lte(0)
 
     return (
       <div styleName='actions'>
@@ -399,7 +420,7 @@ export default class DepositTokensForm extends PureComponent {
           <div styleName='action'>
             <Button
               styleName='actionButton'
-              label={<Translate value={prefix('requireTime')} />}
+              label={<Translate value={prefix('requestTime')} />}
               onTouchTap={this.handleRequireTime}
             />
           </div>
@@ -408,13 +429,13 @@ export default class DepositTokensForm extends PureComponent {
           <div styleName='action'>
             <Button
               styleName='actionButton'
-              label={<Translate value={prefix('PROCEED')} />}
+              label={<Translate value={prefix('proceed')} />}
               onTouchTap={handleSubmit(this.handleApproveAsset)}
               disabled={isApproveDisabled}
             />
           </div>
         )}
-        {balanceEth.gte(0) && this.state.step === DEPOSIT_SECOND && (
+        {this.state.step === DEPOSIT_SECOND && (
           <div styleName='action'>
             <Button
               flat
@@ -425,7 +446,7 @@ export default class DepositTokensForm extends PureComponent {
             />
           </div>
         )}
-        {balanceEth.lte(0) && !isShowTIMERequired && (
+        {this.state.step === DEPOSIT_SECOND && (
           <div styleName='action'>
             <Button
               styleName='actionButton'
@@ -435,7 +456,7 @@ export default class DepositTokensForm extends PureComponent {
             />
           </div>
         )}
-        {this.state.step === WITHDRAW && !isShowTIMERequired && (
+        {this.state.step === WITHDRAW && (
           <div styleName='action'>
             <Button
               styleName='actionButton'
@@ -449,41 +470,13 @@ export default class DepositTokensForm extends PureComponent {
     )
   }
 
-  renderNotifications () {
-    const { balance, balanceEth } = this.props
-    return (
-      <div styleName='notesWrapper'>
-        {balanceEth.lte(0) && (
-          <div styleName='note'>
-            <div styleName='icon'>
-              <i className='chronobank-icon'>warning</i>
-            </div>
-            <Translate value={prefix('noteEth')} />
-          </div>
-        )}
-        {balance.lte(0) && (
-          <div styleName='note'>
-            <div styleName='icon'>
-              <i className='chronobank-icon'>warning</i>
-            </div>
-            <Translate value={prefix('noteBalance')} />
-          </div>
-        )}
-      </div>
-    )
-  }
-
   render () {
     return (
       <div styleName='root'>
         <form onSubmit={this.props.handleSubmit}>
           {this.renderHead()}
           <div styleName='body'>
-            {
-              this.state.step === DEPOSIT_FIRST && this.props.balance.lte(0)
-                ? this.renderNotifications()
-                : this.renderBody()
-            }
+            {this.renderBody()}
             {this.renderFoot()}
           </div>
         </form>

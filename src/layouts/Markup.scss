@@ -80,6 +80,10 @@
   display: flex;
   flex-direction: row;
   position: relative;
+  min-height: 100vh;
+  &.noScroll {
+    overflow: hidden;
+  }
   :global {
     .drawer-cbe {
       display: block;

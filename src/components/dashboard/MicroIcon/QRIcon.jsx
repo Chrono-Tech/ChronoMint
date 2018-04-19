@@ -55,11 +55,10 @@ export default class QRIcon extends PureComponent {
   render () {
     return (
       <div styleName='root' className='QRIcon__root'>
-        <a
-          href
+        <span
           styleName={this.props.iconStyle}
           onTouchTap={(e) => {
-            e.preventDefault();
+            e.preventDefault()
             this.handleQROpen(e.currentTarget)
           }}
         >
@@ -68,7 +67,7 @@ export default class QRIcon extends PureComponent {
             : <i className='material-icons'>center_focus_weak</i>
           }
 
-        </a>
+        </span>
         <Popover
           zDepth={3}
           open={this.state.isQROpen}

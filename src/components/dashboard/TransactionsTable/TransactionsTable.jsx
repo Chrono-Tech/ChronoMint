@@ -82,9 +82,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div
-            styleName={classnames('value', { 'receiving': trx.to() === this.props.account, 'sending': trx.from() === this.props.account })}
-          >
+          <div styleName={classnames('value', { 'receiving': trx.to() === this.props.account, 'sending': trx.from() === this.props.account })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>

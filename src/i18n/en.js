@@ -750,7 +750,7 @@ export default {
         yourDeposit: 'Your deposit',
         holderAllowance: 'holder allowance',
         transactionFee: 'Transaction fee',
-        requireTime: 'Require TIME',
+        requestTime: 'Request TIME',
         multiplier: ', it is %{multiplier}x of average fee.',
         enterAmount: 'Enter amount greater than 0',
         note: 'Please note.',
@@ -766,6 +766,9 @@ export default {
         proceed: 'PROCEED',
         revoke: 'REVOKE',
         finish: 'FINISH',
+        depositAmount: 'Amount on deposit',
+        balanceAmount: 'Your balance',
+        changeAmount: 'Change',
       },
       ReceiveTokenModal: {
         receive: 'Receive',

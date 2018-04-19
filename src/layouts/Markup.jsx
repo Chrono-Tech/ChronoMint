@@ -16,6 +16,7 @@ import { closeNotifier, DUCK_NOTIFIER } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import theme from 'styles/themes/default'
 import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
+import { DUCK_MODALS } from 'redux/modals/actions'
 import './Markup.scss'
 import { DrawerMainMenu, HeaderPartial } from './partials'
 
@@ -24,6 +25,7 @@ function mapStateToProps (state) {
     isCBE: state.get(DUCK_SESSION).isCBE,
     notice: state.get(DUCK_NOTIFIER).notice,
     mainMenuIsOpen: state.get(DUCK_SIDES).mainMenuIsOpen,
+    modalStackSize: state.get(DUCK_MODALS).stack.length,
   }
 }
 
@@ -38,6 +40,7 @@ function mapDispatchToProps (dispatch) {
 export default class Markup extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
+    modalStackSize: PropTypes.number,
     notice: PropTypes.instanceOf(Object),
     handleCloseNotifier: PropTypes.func,
     children: PropTypes.node,
@@ -98,7 +101,7 @@ export default class Markup extends PureComponent {
   render () {
     return (
       <MuiThemeProvider muiTheme={theme}>
-        <div styleName='root'>
+        <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />
             <div styleName='overlay' onTouchTap={this.handleToggleMainMenu} />
