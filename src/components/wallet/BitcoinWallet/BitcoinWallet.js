@@ -32,7 +32,7 @@ function mapDispatchToProps (dispatch, props) {
   return {
     modalOpen: (componentObject) => {
       dispatch(modalsOpen(componentObject))
-    }
+    },
   }
 }
 
@@ -58,7 +58,7 @@ export default class BitcoinWallet extends PureComponent {
   render () {
 
     const token = this.props.tokens.item(this.props.tokenTitle)
-    const { walletInfo, address, tokenTitle, wallet } =  this.props
+    const { walletInfo, address, tokenTitle, wallet } = this.props
     const amountObject = this.getWalletObject()
 
     if (!amountObject) {
@@ -73,7 +73,7 @@ export default class BitcoinWallet extends PureComponent {
         </div>
         <div styleName='token-container'>
           <div styleName='token-icon'>
-            <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+            <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
           </div>
         </div>
         <div styleName='content-container'>
@@ -98,7 +98,7 @@ export default class BitcoinWallet extends PureComponent {
                 type='submit'
                 label={'SEND'}
                 onClick={(e) => {
-                  this.props.modalOpen({component: SendTokens, props: {isModal: true}})
+                  this.props.modalOpen({ component: SendTokens, props: { isModal: true } })
                 }}
               />
             </div>

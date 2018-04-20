@@ -8,48 +8,53 @@ import TokenModel from 'models/tokens/TokenModel'
 import MultisigWalletModel from "models/wallet/MultisigWalletModel";
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import TokenValue from '../../common/TokenValue/TokenValue'
-import Amount from 'models/Amount'
 import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import Button from '../../common/ui/Button/Button'
-import IPFSImage from '../../common/IPFSImage/IPFSImage'
+import Button from 'components/common/ui/Button/Button'
+import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { integerWithDelimiter } from 'utils/formatter'
+import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
+import TokensCollection from 'models/tokens/TokensCollection'
 
-import './EthereumWallet.scss'
+import './Wallet.scss'
 
-function mapStateToProps (state, props) {
+function mapStateToProps (state, ownProps) {
 
   return {
     tokens: state.get(DUCK_TOKENS),
-    walletInfo: makeGetWalletTokensAndBalanceByAddress(props.blockchainTitle)(state),
+    walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
   }
 }
 
-function mapDispatchToProps (dispatch, props) {
+function mapDispatchToProps (dispatch) {
   return {
-
+    handleSend: (componentObject) => dispatch(modalsOpen(componentObject)),
+    receiveToken: (tokenId) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId } })),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class EthereumWallet extends PureComponent {
+export default class Wallet extends PureComponent {
   static propTypes = {
     token: PropTypes.instanceOf(TokenModel),
-    tokens: PropTypes.object,
+    tokens: PropTypes.instanceOf(TokensCollection),
     tokenTitle: PropTypes.string,
     wallet: PropTypes.instanceOf(MultisigWalletModel),
     address: PropTypes.string,
     walletInfo: PropTypes.object,
+    handleSend: PropTypes.func,
+    handleReceive: PropTypes.func,
+    blockchain: PropTypes.string,
   }
 
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
-      isShowAll: false
+      isShowAll: false,
     }
   }
 
@@ -67,7 +72,7 @@ export default class EthereumWallet extends PureComponent {
 
   onChangeShowAll = () => {
     this.setState({
-      isShowAll: !this.state.isShowAll
+      isShowAll: !this.state.isShowAll,
     })
   }
 
@@ -76,7 +81,7 @@ export default class EthereumWallet extends PureComponent {
   }
 
   getWalletObject = () => {
-    return this.props.walletInfo.tokens.find(a => a.symbol === this.props.tokenTitle)
+    return this.props.walletInfo.tokens.find((a) => a.symbol === this.props.tokenTitle)
   }
 
   getOwnersList = () => {
@@ -87,10 +92,10 @@ export default class EthereumWallet extends PureComponent {
         <div styleName='owners-amount'>
           <div styleName='owners-list'>
             {ownersList.map((owner) => {
-                return (<div styleName='owner-icon'>
-                    <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
-                  </div>)
-              })
+              return (<div styleName='owner-icon'>
+                <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+              </div>)
+            })
             }
           </div>
         </div>
@@ -101,10 +106,10 @@ export default class EthereumWallet extends PureComponent {
       <div styleName='owners-amount'>
         <div styleName='owners-list'>
           {ownersList.slice(0, 2).map((owner) => {
-              return (<div styleName='owner-icon'>
-                <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
-              </div>)
-            })
+            return (<div styleName='owner-icon'>
+              <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+            </div>)
+          })
           }
           <div styleName='owner-counter'>
             <div styleName='counter'>+{ownersList.length - 2}</div>
@@ -131,7 +136,7 @@ export default class EthereumWallet extends PureComponent {
       return null
     }
 
-    const firstToken = walletInfo.tokens[0]
+    const firstToken = walletInfo.tokens[ 0 ]
 
     return (<div styleName='amount-list-container'>
       <div styleName='amount-list'>
@@ -140,7 +145,7 @@ export default class EthereumWallet extends PureComponent {
               </span>
       </div>
       <div styleName='show-all'>
-        <a styleName='show-all-a' onClick={this.onChangeShowAll} href='javascript:void(0);'>{ !this.state.isShowAll ? 'Show All' : 'Show less' }</a>
+        <a styleName='show-all-a' onClick={this.onChangeShowAll} href='javascript:void(0);'>{!this.state.isShowAll ? 'Show All' : 'Show less'}</a>
       </div>
     </div>)
   }
@@ -149,8 +154,6 @@ export default class EthereumWallet extends PureComponent {
     const token = this.props.tokens.item('ETH')
     const { address, tokenTitle, walletInfo, wallet } = this.props
     const amountObject = this.getWalletObject()
-
-    console.log('EthereumWallet: ', wallet, wallet.transactions())
 
     if (!amountObject) {
       return null
@@ -167,14 +170,14 @@ export default class EthereumWallet extends PureComponent {
             <div styleName='security-icon' className='chronobank-icon'>security</div>
           </div>
           <div styleName='token-icon'>
-            <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+            <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
           </div>
         </div>
         <div styleName='content-container'>
           <div styleName='address-title'>
             <h3>{this.getWalletName()}</h3>
             <span styleName='address-address'>
-              { address }
+              {address}
             </span>
           </div>
           <div styleName='token-amount'>
@@ -183,23 +186,22 @@ export default class EthereumWallet extends PureComponent {
             </div>
           </div>
 
-          { this.isMySharedWallet() && this.getOwnersList() }
+          {this.isMySharedWallet() && this.getOwnersList()}
 
-          { this.getAmountList()}
+          {this.getAmountList()}
 
           <div styleName='tokens-list'>
             <div styleName='tokens-list-table'>
               {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
                 const token = this.props.tokens.item(tokenMap.symbol)
-                console.log('walletInfo.tokens: ', token, tokenMap)
 
                 return (
                   <div styleName='tokens-list-table-tr'>
                     <div styleName='tokens-list-table-cell-icon'>
-                      <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+                      <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
                     </div>
                     <div styleName='tokens-list-table-cell-amount'>
-                      {tokenMap.symbol}  {integerWithDelimiter(tokenMap.amount, true, null)}
+                      {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
                     </div>
                     <div styleName='tokens-list-table-cell-usd'>
                       USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
@@ -215,14 +217,16 @@ export default class EthereumWallet extends PureComponent {
               <Button
                 disabled={false}
                 type='submit'
-                label={'SEND'}
+                label={<Translate value='sendButton' />}
+                onTouchTap={this.props.handleSend}
               />
             </div>
             <div styleName='action'>
               <Button
                 disabled={false}
                 type='submit'
-                label={'RECEIVE'}
+                label={<Translate value='receiveButton' />}
+                onTouchTap={this.props.handleReceive}
               />
             </div>
             <div styleName='action'>

@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = `layouts.partials.WalletsContent`
+export const prefix = 'SignaturesList'
 
 export default {
   en: {
-    walletTitle: '%{title} wallet',
+    sendButton: 'SEND',
+    receiveButton: 'RECEIVE',
   },
 }
-
