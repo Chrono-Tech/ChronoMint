@@ -1,5 +1,5 @@
 import { walletsSelector } from 'redux/wallet/selectors'
-import { Wallet } from 'components'
+import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -34,7 +34,7 @@ export default class WalletsContent extends Component {
     return (
       <div styleName='root'>
         {this.props.walletsList.map((wallet) => (
-          <Wallet key={`${wallet.address}-${wallet.title}`} blockchain={wallet.title} wallet={wallet.wallet} address={wallet.address} />
+          <WalletWidget key={`${wallet.address}-${wallet.title}`} blockchain={wallet.title} wallet={wallet.wallet} address={wallet.address} />
         ))}
       </div>
     )

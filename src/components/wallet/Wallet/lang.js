@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'Wallet'
+export const prefix = 'WalletWidget'
 
 export default {
   en: {

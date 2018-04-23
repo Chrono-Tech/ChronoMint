@@ -24,7 +24,7 @@ import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 
-import './Wallet.scss'
+import './WalletWidget.scss'
 import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
@@ -55,7 +55,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class Wallet extends PureComponent {
+export default class WalletWidget extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
