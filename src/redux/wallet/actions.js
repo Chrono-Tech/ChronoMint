@@ -9,6 +9,7 @@ import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet
 export const DUCK_WALLET = 'wallet'
 
 export const WALLET_SWITCH_WALLET = 'WALLET/switch_wallet'
+export const WALLET_SELECT_WALLET = 'WALLET/select_wallet'
 
 export const switchWallet = (wallet) => (dispatch) => {
   const isMultisig = wallet.isMultisig()
@@ -25,4 +26,8 @@ export const getCurrentWallet = (state) => {
   return isMultisig
     ? state.get(DUCK_MULTISIG_WALLET).selected()
     : state.get(DUCK_MAIN_WALLET)
+}
+
+export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
+  dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
 }

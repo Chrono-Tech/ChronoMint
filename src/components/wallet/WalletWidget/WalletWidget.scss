@@ -76,6 +76,7 @@
   align-items: center;
 
   .show-all-a {
+    cursor: pointer;
     color: #786AB7;
     font-family: 'proxima nova', sans-serif;
     font-weight: 500;
@@ -188,7 +189,6 @@
 
 .address-title {
   font-size: 16px;
-  color: #333333;
   font-family: 'proxima nova', sans-serif;
   font-weight: 700;
   line-height: 22px;
@@ -196,7 +196,6 @@
 
 .address-address {
   font-size: 14px;
-  color: #7F7F7F;
   font-family: 'proxima nova', sans-serif;
   font-weight: 400;
   line-height: 20px;
@@ -271,7 +270,6 @@
 .crypto-amount {
   font-size: 30px;
   line-height: 36px;
-  color: #333333;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   word-wrap: break-word;
@@ -283,4 +281,15 @@
   color: #7F7F7F;
   line-height: 19px;
   font-family: 'proxima nova', sans-serif;
+}
+
+.addressWrapper {
+  text-decoration: none;
+  color: #333333;
+  .address-address {
+    color: #7F7F7F;
+  }
+  &:hover, &:hover .address-address {
+    color: $color-blue-5;
+  }
 }

@@ -5,9 +5,11 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
+import { Link } from 'react-router'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
@@ -28,7 +30,6 @@ import './WalletWidget.scss'
 import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
-
   return {
     walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
     token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
@@ -51,6 +52,7 @@ function mapDispatchToProps (dispatch) {
       },
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
   }
 }
 
@@ -70,6 +72,7 @@ export default class WalletWidget extends PureComponent {
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
+    selectWallet: PropTypes.func,
   }
 
   constructor (props) {
@@ -96,6 +99,11 @@ export default class WalletWidget extends PureComponent {
     this.setState({
       isShowAll: !this.state.isShowAll,
     })
+  }
+
+  handleSelectWallet = () => {
+    const { address, blockchain } = this.props
+    this.props.selectWallet(blockchain, address)
   }
 
   getTokensList = () => {
@@ -214,9 +222,9 @@ export default class WalletWidget extends PureComponent {
         <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            <div styleName='settings-container'>
-              <div styleName='settings-icon' className='chronobank-icon'>settings</div>
-            </div>
+            {/*<div styleName='settings-container'>*/}
+            {/*<div styleName='settings-icon' className='chronobank-icon'>settings</div>*/}
+            {/*</div>*/}
             <div styleName='token-container'>
               {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
               <div styleName='token-icon'>
@@ -224,15 +232,17 @@ export default class WalletWidget extends PureComponent {
               </div>
             </div>
             <div styleName='content-container'>
-              <div styleName='address-title'>
-                <h3>{this.getWalletName()}</h3>
-                <span styleName='address-address'>{address}</span>
-              </div>
-              <div styleName='token-amount'>
-                <div styleName='crypto-amount'>
-                  USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
+              <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
+                <div styleName='address-title'>
+                  <h3>{this.getWalletName()}</h3>
+                  <span styleName='address-address'>{address}</span>
                 </div>
-              </div>
+                <div styleName='token-amount'>
+                  <div styleName='crypto-amount'>
+                    USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
+                  </div>
+                </div>
+              </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 

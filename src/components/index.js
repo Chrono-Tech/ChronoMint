@@ -47,7 +47,7 @@ export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'
-export { default as WalletWidget } from './wallet/Wallet/WalletWidget'
+export { default as WalletWidget } from './wallet/WalletWidget/WalletWidget'
 export { default as Button } from './common/ui/Button/Button'
 export { default as TxConfirmations } from './common/TxConfirmations/TxConfirmations'
 export { default as TopButtons } from './common/TopButtons/TopButtons'

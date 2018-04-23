@@ -13,7 +13,6 @@ export default class WalletPage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear
@@ -21,7 +20,6 @@ export default class WalletPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.InfoPartial />
           <Partials.WalletContent />
         </CSSTransitionGroup>
       </div>

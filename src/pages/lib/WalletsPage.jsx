@@ -8,7 +8,6 @@ export default class WalletPage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear

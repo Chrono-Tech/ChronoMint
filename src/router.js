@@ -20,6 +20,7 @@ import {
   SettingsPage,
   VotingPage,
   WalletsPage,
+  WalletPage,
   DepositsPage,
   DepositPage,
 } from 'pages/lib'
@@ -54,6 +55,7 @@ const router = (
     <Router history={history} onUpdate={hashLinkScroll}>
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='wallets' component={WalletsPage} />
+        <Route path='wallet' component={WalletPage} />
         <Route path='dashboard' component={DashboardPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='deposit' component={DepositPage} />
