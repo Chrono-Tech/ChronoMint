@@ -2,8 +2,20 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/variables';
+
+.header-container {
+  width: 587px;
+  margin-bottom: 28px;
+  margin-top: 28px;
+  .header-text {
+    color: white;
+  }
+  .wallet-list-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
 
 .wallet-container {
   display: flex;
@@ -13,7 +25,7 @@
   min-height: 260px;
   background-color: white;
   border-radius: 2px;
-  box-shadow: 2px 2px 3px rgba(0,0,0,0.15);
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
 .settings-container {
@@ -106,6 +118,7 @@
   flex: 2;
   flex-direction: row;
 }
+
 .owner {
   font-size: 16px;
   color: #AAAAAA;
@@ -169,6 +182,8 @@
 .security-icon {
   color: #FFB54E;
   font-size: 30px;
+  background: $color-white;
+  line-height: 15px;
 }
 
 .address-title {

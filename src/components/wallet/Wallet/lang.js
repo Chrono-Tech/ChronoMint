@@ -3,11 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'SignaturesList'
+export const prefix = 'Wallet'
 
 export default {
   en: {
     sendButton: 'SEND',
     receiveButton: 'RECEIVE',
+    depositButton: 'DEPOSIT',
+    walletTitle: '%{title} wallet',
   },
 }

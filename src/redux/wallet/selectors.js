@@ -157,14 +157,12 @@ export const multisigWalletsSelector = () => createSelector(
     // Sort main sections and make an array
     const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
     const sortedSections = sortSectionsObject(sectionsObject)
-    const resultSections = Object.keys(sortedSections).map((sectionName) => {
+    return Object.keys(sortedSections).map((sectionName) => {
       return {
         title: sectionName,
         data: sortedSections[ sectionName ].data,
       }
     })
-
-    return resultSections
   },
 )
 
@@ -299,11 +297,10 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
 
-          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || null
+          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || 0
           if (tokenPrice && amount > 0) {
             accumulator.balance += (amount * tokenPrice)
           }
-
           accumulator.tokens.push({
             symbol: symbol,
             amount: amount,
@@ -317,6 +314,124 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           return accumulator
         }, {
           balance: 0,
+          tokens: [],
+        })
+
+      // Let's add an address of Main Wallet into final result
+      const currentWallet = addressesAndBlockchains
+        .find((mainWalletAddrAndChain) => {
+          return mainWalletAddrAndChain.title === blockchainTitle
+        })
+      result.address = currentWallet && currentWallet.data && currentWallet.data[ 0 ]
+
+      return result
+    },
+  )
+}
+
+export const walletsSelector = () => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (
+    mainWallet,
+    multisigWallets,
+  ) => {
+    // final result will be svaed here
+    const sectionsObject = {}
+
+    // Go through mainWallet's addresses
+    mainWallet.addresses().items().map((address) => {
+      const addrJS = address.toJS()
+      const addrID = addrJS.id
+      if (addrJS.address != null) {
+        sectionsObject[ addrID ] = {
+          address: addrJS.address,
+          wallet: mainWallet,
+        }
+      }
+    })
+
+    // Add active multisig wallets
+    multisigWallets.activeWallets().map((aWallet) => {
+      const currentWalletAddress: string = aWallet.address()
+      sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
+        address: currentWalletAddress,
+        wallet: aWallet,
+      }
+    })
+
+    // Add timeLocked multisig wallets
+    multisigWallets.timeLockedWallets().map((tlWallet) => {
+      const currentWalletAddress: string = tlWallet.address()
+      sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
+        address: currentWalletAddress,
+        wallet: tlWallet,
+      }
+    })
+
+    // Sort main sections and make an array
+    const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
+    const sortedSections = sortSectionsObject(sectionsObject)
+    return Object.keys(sortedSections).map((sectionName) => {
+      return {
+        title: sectionName,
+        ...sortedSections[ sectionName ],
+      }
+    })
+  },
+)
+
+export const getWalletTokensAndBalance = (blockchainTitle) => {
+  return createSelector(
+    [
+      getMainWalletSections,
+      selectMainWalletAddressesListStore,
+      selectMainWalletBalancesListStore,
+      selectMainWalletTokensStore,
+      selectMarketPricesListStore,
+      selectMarketPricesSelectedCurrencyStore,
+    ],
+    (
+      addressesAndBlockchains,
+      mainWalletAddressesList,
+      mainWalletBalances,
+      mainWalletTokens,
+      prices,
+      selectedCurrency,
+    ) => {
+
+      const walletTokensAndBalanceByAddress = mainWalletBalances // BalancesCollection, array of BalanceModel
+        .filter((balanceItem) => {
+          const bSymbol = balanceItem.symbol()
+          const bToken = mainWalletTokens.item(bSymbol)
+          return bToken.blockchain() === blockchainTitle
+        })
+
+      const arrWalletTokensAndBalanceByAddress = [ ...walletTokensAndBalanceByAddress.values() ]
+      const result = arrWalletTokensAndBalanceByAddress
+        .reduce((accumulator, tokenKeyValuePair) => {
+          const amount = tokenKeyValuePair.amount()
+          const symbol = tokenKeyValuePair.amount().symbol()
+
+          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || 0
+          if (tokenPrice && amount) {
+            accumulator.balance = accumulator.balance ? accumulator.balance.plus(amount.mul(tokenPrice)) : amount.mul(tokenPrice)
+          }
+          accumulator.tokens.push({
+            symbol: symbol,
+            amount: amount,
+            amountPrice: amount.mul(tokenPrice),
+          })
+          accumulator.tokens = accumulator.tokens.sort((a, b) => {
+            const oA = Object.keys(a)[ 0 ]
+            const oB = Object.keys(b)[ 0 ]
+            return (oA > oB) - (oA < oB)
+          }) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
+          return accumulator
+        }, {
+          balance: null,
           tokens: [],
         })
 

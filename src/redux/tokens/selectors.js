@@ -4,18 +4,33 @@
  */
 
 import { createSelector } from 'reselect'
-import TokenModel from 'models/tokens/TokenModel'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
 
 import { DUCK_TOKENS } from './actions'
+import { BCC, BTC, BTG, ETH, LTC, XEM } from '../mainWallet/actions'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
-export const getTokenDAO = (token) => createSelector(
+export const getTokenForWalletByBlockchain = (blockchain) => createSelector(
   [ getTokens ],
   (tokens) => {
-    const id = token instanceof TokenModel ? token.id() : token
-    return
-  }
+    switch (blockchain) {
+      case BLOCKCHAIN_BITCOIN:
+        return tokens.item(BTC)
+      case BLOCKCHAIN_BITCOIN_CASH:
+        return tokens.item(BCC)
+      case BLOCKCHAIN_BITCOIN_GOLD:
+        return tokens.item(BTG)
+      case BLOCKCHAIN_LITECOIN:
+        return tokens.item(LTC)
+      case BLOCKCHAIN_ETHEREUM:
+        return tokens.item(ETH)
+      case BLOCKCHAIN_NEM:
+        return tokens.item(XEM)
+    }
+  },
 )

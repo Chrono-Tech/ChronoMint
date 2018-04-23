@@ -55,7 +55,7 @@ function mapStateToProps (state, ownProps) {
 
   return {
     token,
-    address: wallet.addresses().item(token.blockchain()).address(),
+    address: wallet.addresses().item(token.blockchain() || ownProps.blockchain).address(),
   }
 }
 
@@ -69,6 +69,7 @@ export default class ReceiveTokenModal extends PureComponent {
     tokenId: PropTypes.string.isRequired,
     token: PropTypes.instanceOf(TokenModel),
     address: PropTypes.string,
+    blockchain: PropTypes.string,
   }
 
   constructor (props) {

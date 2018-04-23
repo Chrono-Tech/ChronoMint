@@ -45,6 +45,11 @@ export const WALLET_INIT = 'mainWallet/INIT'
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
+export const BTC = 'BTC'
+export const BCC = 'BCC'
+export const BTG = 'BTG'
+export const LTC = 'LTC'
+export const XEM = 'XEM'
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)

@@ -20,6 +20,7 @@ import * as GasSlider from 'components/common/GasSlider/lang'
 import DepositsList from 'components/Deposits/DepositsList/lang'
 import Deposit from 'components/Deposits/Deposit/lang'
 import TxConfirmations from 'components/common/TxConfirmations/lang'
+import Wallet from 'components/wallet/Wallet/lang'
 
 export default {
   en: {
@@ -43,5 +44,6 @@ export default {
     DepositsList: DepositsList.en,
     Deposit: Deposit.en,
     TxConfirmations: TxConfirmations.en,
+    Wallet: Wallet.en,
   },
 }
