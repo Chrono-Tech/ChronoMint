@@ -14,4 +14,9 @@
   background-color: #242045;
   height: 100%;
   width: 100%;
+  :global {
+    .WalletWidgetDetail__root, .TransactionsTable__root {
+      width: 590px;
+    }
+  }
 }

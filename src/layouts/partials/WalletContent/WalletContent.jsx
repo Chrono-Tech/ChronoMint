@@ -10,15 +10,23 @@ import { push } from 'react-router-redux'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_WALLET } from 'redux/wallet/actions'
+import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
+import { TransactionsTable } from 'components'
+import { walletDetailSelector } from 'redux/wallet/selectors'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 
 import './WalletContent.scss'
-import WalletWidgetDetail from '../../../components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   const network = state.get(DUCK_NETWORK)
+  const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
 
   return {
-    ...state.get(DUCK_WALLET),
+    isMultisig,
+    blockchain,
+    address,
+    wallet: walletDetailSelector(blockchain, address)(state),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -41,6 +49,7 @@ export default class WalletContent extends Component {
     blockchain: PropTypes.string,
     address: PropTypes.string,
     goToWallets: PropTypes.func,
+    wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
   }
 
   constructor (props) {
@@ -52,11 +61,16 @@ export default class WalletContent extends Component {
   }
 
   render () {
-    const { blockchain, address } = this.props
+    const { blockchain, address, wallet } = this.props
+    if (!wallet) {
+      return null
+    }
 
     return (
       <div styleName='root'>
-        <WalletWidgetDetail blockchain={blockchain} address={address} />
+        <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} />
+
+        <TransactionsTable transactions={wallet.transactions()} />
       </div>
     )
   }

@@ -99,58 +99,56 @@ export default class TransactionsTable extends PureComponent {
     const data = buildTableData(transactions, locale)
 
     return (
-      <Paper>
-        <div styleName='root'>
-          <div styleName='content'>
-            {!size && endOfList
-              ? (
-                <div styleName='no-transactions-section'>
-                  <div styleName='section-header'>
-                    <h5 styleName='no-transactions'>No transactions found.</h5>
-                  </div>
-                </div>
-              )
-              : ''
-            }
-            {!size && !endOfList
-              ? (
-                <div styleName='no-transactions-section'>
-                  <div styleName='section-header'>
-                    <div styleName='txs-loading'><Preloader size={24} thickness={1.5} /></div>
-                  </div>
-                </div>
-              )
-              : ''
-            }
-            {data.map((group) => (
-              <div styleName='section' key={group.dateBy}>
-                <div styleName='section-header'>{group.dateTitle}</div>
-                <div styleName='table'>
-                  <div styleName='table-body'>
-                    {group.transactions.map((item, index) => this.renderRow(item, index))}
-                  </div>
+      <div styleName='root' className='TransactionsTable__root'>
+        <div styleName='content'>
+          {!size && endOfList
+            ? (
+              <div styleName='no-transactions-section'>
+                <div styleName='section-header'>
+                  <h5 styleName='no-transactions'>No transactions found.</h5>
                 </div>
               </div>
-            ))}
-          </div>
-          {endOfList || !size
-            ? null
-            : (
-              <div styleName='footer'>
-                <Button
-                  flat
-                  label={isFetching ? <Preloader
-                    style={{ verticalAlign: 'middle', marginTop: -2 }}
-                    size={24}
-                    thickness={1.5}
-                  /> : 'Load More'}
-                  disabled={isFetching}
-                  onTouchTap={this.handleLoadMore}
-                />
+            )
+            : ''
+          }
+          {!size && !endOfList
+            ? (
+              <div styleName='no-transactions-section'>
+                <div styleName='section-header'>
+                  <div styleName='txs-loading'><Preloader size={24} thickness={1.5} /></div>
+                </div>
               </div>
-            )}
+            )
+            : ''
+          }
+          {data.map((group) => (
+            <div styleName='section' key={group.dateBy}>
+              <div styleName='section-header'>{group.dateTitle}</div>
+              <div styleName='table'>
+                <div styleName='table-body'>
+                  {group.transactions.map((item, index) => this.renderRow(item, index))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </Paper>
+        {endOfList || !size
+          ? null
+          : (
+            <div styleName='footer'>
+              <Button
+                flat
+                label={isFetching ? <Preloader
+                  style={{ verticalAlign: 'middle', marginTop: -2 }}
+                  size={24}
+                  thickness={1.5}
+                /> : 'Load More'}
+                disabled={isFetching}
+                onTouchTap={this.handleLoadMore}
+              />
+            </div>
+          )}
+      </div>
     )
   }
 }

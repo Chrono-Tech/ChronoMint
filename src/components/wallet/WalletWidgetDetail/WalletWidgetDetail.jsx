@@ -5,13 +5,12 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
-import { Link } from 'react-router'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { makeGetWalletTokensAndBalanceByAddress, walletDetailSelector } from 'redux/wallet/selectors'
+import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
@@ -30,7 +29,6 @@ import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
   return {
-    wallet: walletDetailSelector(ownProps.blockchain, ownProps.address)(state),
     walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
     token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
@@ -206,13 +204,13 @@ export default class WalletWidgetDetail extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
 
-    if (walletInfo.balance === null || walletInfo.tokens.length <= 0) {
+    if (walletInfo.balance === null || walletInfo.tokens.length <= 0 || !wallet) {
       return null
     }
     const tokensList = this.getTokensList() || []
 
     return (
-      <div styleName='header-container'>
+      <div styleName='header-container' className='WalletWidgetDetail__root'>
         <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
