@@ -16,7 +16,7 @@ export const loadI18n = (locale) => async (dispatch, getState) => {
       return typeof t[1] === 'object' && Object.keys(t[1]).length
     }).map((t) => translationsFiltered[t[0]] = t[1])
 
-    dispatch(loadTranslations(merge({}, currentI18n.translations, translationsFiltered)))
+    dispatch(loadTranslations(merge({}, currentI18n.translations, translationsFiltered, i18nJson)))
   }
 
   dispatch(setLocale(locale))

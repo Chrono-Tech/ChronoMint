@@ -20,6 +20,8 @@ import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
 import { SESSION_DESTROY } from './session/actions'
 
+let i18nJson // declaration of a global var for the i18n object for a standalone version
+
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
