@@ -50,6 +50,7 @@ export default {
     lhOperations: 'LH Operations',
     operations: 'Operations',
     settings: 'Settings',
+    wallets: 'Wallets',
     wallet: 'Wallet',
     exchange: 'Exchange',
     voting: 'Voting',

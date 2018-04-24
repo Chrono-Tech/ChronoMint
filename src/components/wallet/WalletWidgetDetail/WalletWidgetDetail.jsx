@@ -11,7 +11,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
+import { makeGetWalletTokensAndBalanceByAddress, walletDetailSelector } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
@@ -30,6 +30,7 @@ import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
   return {
+    wallet: walletDetailSelector(ownProps.blockchain, ownProps.address)(state),
     walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
     token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
@@ -208,62 +209,42 @@ export default class WalletWidgetDetail extends PureComponent {
     if (walletInfo.balance === null || walletInfo.tokens.length <= 0) {
       return null
     }
-    // TODO @abdulov Implement logic
-    return null
+    const tokensList = this.getTokensList() || []
 
     return (
       <div styleName='header-container'>
         <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            {/*<div styleName='settings-container'>*/}
-            {/*<div styleName='settings-icon' className='chronobank-icon'>settings</div>*/}
-            {/*</div>*/}
             <div styleName='token-container'>
-              {/*{blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}*/}
+              {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
               <div styleName='token-icon'>
                 <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
               </div>
             </div>
             <div styleName='content-container'>
-              <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
-                <div styleName='address-title'>
-                  <h3>{this.getWalletName()}</h3>
-                  <span styleName='address-address'>{address}</span>
-                </div>
-                <div styleName='token-amount'>
-                  <div styleName='crypto-amount'>
-                    USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
-                  </div>
-                </div>
-              </Link>
-
-              {this.isMySharedWallet() && this.getOwnersList()}
-
-              {this.getAmountList()}
-
-              <div styleName='tokens-list'>
-                <div styleName='tokens-list-table'>
-                  {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
-                    const token = this.props.tokens.item(tokenMap.symbol)
-
-                    return (
-                      <div styleName='tokens-list-table-tr'>
-                        <div styleName='tokens-list-table-cell-icon'>
-                          <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
-                        </div>
-                        <div styleName='tokens-list-table-cell-amount'>
-                          {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
-                        </div>
-                        <div styleName='tokens-list-table-cell-usd'>
-                          USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
-                        </div>
+              <div styleName='address-title'>
+                <h3>{this.getWalletName()}</h3>
+                <span styleName='address-address'>{address}</span>
+              </div>
+              <div styleName='token-amount'>
+                <div styleName='crypto-amount'>
+                  {tokensList.length === 1
+                    ? (
+                      <div>
+                        <div>{tokensList[ 0 ].symbol} {integerWithDelimiter(tokensList[ 0 ].amount.toFixed(2), true)}</div>
+                        <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[ 0 ].amountPrice.toFixed(2), true)}</div>
                       </div>
                     )
-                  })}
-
+                    : (
+                      <div>
+                        <div>USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}</div>
+                        <div styleName='tokensSubTitle'><Translate value={`${prefix}.tokensTitle`} count={tokensList.length} /></div>
+                      </div>
+                    )}
                 </div>
               </div>
+
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
@@ -286,6 +267,7 @@ export default class WalletWidgetDetail extends PureComponent {
                     <Button
                       disabled={false}
                       flat
+                      styleName='depositTokensButton'
                       type='submit'
                       label={<Translate value={`${prefix}.depositButton`} />}
                       onTouchTap={this.handleDeposit}

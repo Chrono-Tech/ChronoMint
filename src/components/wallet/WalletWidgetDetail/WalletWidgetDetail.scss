@@ -23,7 +23,7 @@
   width: 587px;
   margin-top: 20px;
   min-height: 260px;
-  background-color: white;
+  background-color: #302D59;
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
@@ -183,12 +183,13 @@
 .security-icon {
   color: #FFB54E;
   font-size: 30px;
-  background: $color-white;
+  background: #302D59;
   line-height: 15px;
 }
 
 .address-title {
   font-size: 16px;
+  color: white;
   font-family: 'proxima nova', sans-serif;
   font-weight: 700;
   line-height: 22px;
@@ -196,6 +197,7 @@
 
 .address-address {
   font-size: 14px;
+  color: #A3A3CC;
   font-family: 'proxima nova', sans-serif;
   font-weight: 400;
   line-height: 20px;
@@ -269,10 +271,20 @@
 
 .crypto-amount {
   font-size: 30px;
+  color: white;
   line-height: 36px;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   word-wrap: break-word;
+  .amountSubTitle {
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .tokensSubTitle {
+    font-size: 16px;
+    line-height: 19px;
+    color: #A3A3CC;
+  }
 }
 
 .usd-amount {
@@ -283,13 +295,8 @@
   font-family: 'proxima nova', sans-serif;
 }
 
-.addressWrapper {
-  text-decoration: none;
-  color: #333333;
-  .address-address {
-    color: #7F7F7F;
-  }
-  &:hover, &:hover .address-address {
-    color: $color-blue-5;
+.depositTokensButton {
+  button {
+    color: white;
   }
 }

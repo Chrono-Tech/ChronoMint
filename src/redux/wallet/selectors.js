@@ -383,3 +383,44 @@ export const walletsSelector = () => createSelector(
   },
 )
 
+export const walletDetailSelector = (walletBlockchain, walletAddress) => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (
+    mainWallet,
+    multisigWallets,
+  ) => {
+    // final result will be svaed here
+    let wallet = null
+    if (!walletBlockchain || !walletAddress) {
+      return wallet
+    }
+
+    // Go through mainWallet's addresses
+    mainWallet.addresses().items().map((address) => {
+      if (address.address() === walletAddress) {
+        wallet = mainWallet
+      }
+    })
+
+    // Add active multisig wallets
+    multisigWallets.activeWallets().map((aWallet) => {
+      const currentWalletAddress: string = aWallet.address()
+      if (currentWalletAddress === walletAddress) {
+        wallet = aWallet
+      }
+    })
+
+    // Add timeLocked multisig wallets
+    multisigWallets.timeLockedWallets().map((tlWallet) => {
+      const currentWalletAddress: string = tlWallet.address()
+      if (currentWalletAddress === walletAddress) {
+        wallet = tlWallet
+      }
+    })
+
+    return wallet
+  },
+)

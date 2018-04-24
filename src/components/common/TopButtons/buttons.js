@@ -14,4 +14,11 @@ export default {
     title: 'nav.deposit',
     backButton: true,
   },
+  '/wallets': {
+    title: 'nav.wallets',
+  },
+  '/wallet': {
+    title: 'nav.wallet',
+    backButton: true,
+  },
 }

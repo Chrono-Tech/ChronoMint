@@ -254,7 +254,7 @@ export default class WalletWidget extends PureComponent {
                     const token = this.props.tokens.item(tokenMap.symbol)
 
                     return (
-                      <div styleName='tokens-list-table-tr'>
+                      <div styleName='tokens-list-table-tr' key={token.id()}>
                         <div styleName='tokens-list-table-cell-icon'>
                           <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
                         </div>

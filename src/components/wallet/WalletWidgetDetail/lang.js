@@ -11,5 +11,6 @@ export default {
     receiveButton: 'RECEIVE',
     depositButton: 'DEPOSIT',
     walletTitle: '%{title} wallet',
+    tokensTitle: '%{count} tokens',
   },
 }
