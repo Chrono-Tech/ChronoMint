@@ -21,14 +21,13 @@
     .tokens-list-table {
       width: 100%;
       display: grid;
-      padding: 0 30px;
+      border-bottom: 1px solid #E5E5E5;
       .tokens-list-table-tr {
-        padding-top: 15px;
-        padding-bottom: 15px;
         display: grid;
         grid-template-columns: 60px 1fr 1fr;
         border-top: 1px solid #E5E5E5;
         font-weight: 500;
+        padding: 15px 30px;
         .tokens-list-table-cell-icon {
           display: flex;
           align-items: center;
@@ -60,7 +59,8 @@
   }
 
   .more {
-
+    display: flex;
+    justify-content: center;
   }
 }
 

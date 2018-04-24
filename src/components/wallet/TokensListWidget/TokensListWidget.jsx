@@ -71,7 +71,7 @@ export default class TokensListWidget extends PureComponent {
               return (
                 <div styleName='tokens-list-table-tr' key={token.id()}>
                   <div styleName='tokens-list-table-cell-icon'>
-                    <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
+                    <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
                   </div>
                   <div styleName='tokens-list-table-cell-amount'>
                     {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
@@ -89,7 +89,7 @@ export default class TokensListWidget extends PureComponent {
           <Button
             flat
             label={<Translate value={`${prefix}.${this.state.isShowAll ? 'less' : 'more'}`} />}
-            onTouchTap={this.handleChangeShowAll()}
+            onTouchTap={this.handleChangeShowAll}
           />
         </div>
       </div>

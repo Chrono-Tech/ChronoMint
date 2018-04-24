@@ -78,9 +78,9 @@ export default class WalletContent extends Component {
       <div styleName='root'>
         <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
 
-        <TransactionsTable transactions={wallet.transactions()} />
-
         <TokensListWidget tokensList={walletInfo.tokens} />
+
+        <TransactionsTable transactions={wallet.transactions()} />
       </div>
     )
   }
