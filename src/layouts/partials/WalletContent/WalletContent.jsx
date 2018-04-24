@@ -12,9 +12,10 @@ import { connect } from 'react-redux'
 import { DUCK_WALLET } from 'redux/wallet/actions'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import { TransactionsTable } from 'components'
-import { walletDetailSelector } from 'redux/wallet/selectors'
+import { makeGetWalletTokensAndBalanceByAddress, walletDetailSelector } from 'redux/wallet/selectors'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 
 import './WalletContent.scss'
 
@@ -27,6 +28,7 @@ function mapStateToProps (state, ownProps) {
     blockchain,
     address,
     wallet: walletDetailSelector(blockchain, address)(state),
+    walletInfo: makeGetWalletTokensAndBalanceByAddress(blockchain)(state),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -50,6 +52,12 @@ export default class WalletContent extends Component {
     address: PropTypes.string,
     goToWallets: PropTypes.func,
     wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+    walletInfo: PropTypes.shape({
+      address: PropTypes.string,
+      balance: PropTypes.number,
+      tokens: PropTypes.array,
+    }),
+
   }
 
   constructor (props) {
@@ -61,16 +69,18 @@ export default class WalletContent extends Component {
   }
 
   render () {
-    const { blockchain, address, wallet } = this.props
+    const { blockchain, address, wallet, walletInfo } = this.props
     if (!wallet) {
       return null
     }
 
     return (
       <div styleName='root'>
-        <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} />
+        <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
 
         <TransactionsTable transactions={wallet.transactions()} />
+
+        <TokensListWidget tokensList={walletInfo.tokens} />
       </div>
     )
   }

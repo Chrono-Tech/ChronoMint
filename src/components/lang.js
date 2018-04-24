@@ -22,6 +22,7 @@ import Deposit from 'components/Deposits/Deposit/lang'
 import TxConfirmations from 'components/common/TxConfirmations/lang'
 import WalletWidget from 'components/wallet/WalletWidget/lang'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/lang'
+import TokensListWidget from 'components/wallet/TokensListWidget/lang'
 
 export default {
   en: {
@@ -47,5 +48,6 @@ export default {
     TxConfirmations: TxConfirmations.en,
     WalletWidget: WalletWidget.en,
     WalletWidgetDetail: WalletWidgetDetail.en,
+    TokensListWidget: TokensListWidget.en,
   },
 }

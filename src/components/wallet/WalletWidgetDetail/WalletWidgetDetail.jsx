@@ -29,7 +29,6 @@ import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
   return {
-    walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
     token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
   }

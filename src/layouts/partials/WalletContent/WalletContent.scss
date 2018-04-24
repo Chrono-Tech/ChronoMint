@@ -15,8 +15,9 @@
   height: 100%;
   width: 100%;
   :global {
-    .WalletWidgetDetail__root, .TransactionsTable__root {
+    .WalletWidgetDetail__root, .TransactionsTable__root, .TokensListWidget__root {
       width: 590px;
+      margin-bottom: 30px;
     }
   }
 }

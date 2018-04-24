@@ -1,0 +1,66 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  width: 100%;
+  background: $color-white;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  .header {
+    font-weight: 500;
+    padding: 30px;
+    font-size: 26px;
+    line-height: 31px;
+  }
+
+  .tokens-list {
+    display: flex;
+    .tokens-list-table {
+      width: 100%;
+      display: grid;
+      padding: 0 30px;
+      .tokens-list-table-tr {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        display: grid;
+        grid-template-columns: 60px 1fr 1fr;
+        border-top: 1px solid #E5E5E5;
+        font-weight: 500;
+        .tokens-list-table-cell-icon {
+          display: flex;
+          align-items: center;
+          vertical-align: middle;
+          .table-image {
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+          }
+        }
+        .tokens-list-table-cell-amount {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          line-height: 17px;
+          color: #333333;
+        }
+        .tokens-list-table-cell-usd {
+          display: flex;
+          align-items: center;
+          color: #7F7F7F;
+          font-size: 14px;
+          line-height: 17px
+        }
+      }
+    }
+  }
+
+  .more {
+
+  }
+}
+
