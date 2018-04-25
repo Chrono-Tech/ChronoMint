@@ -190,7 +190,7 @@ export default class WalletWidgetDetail extends PureComponent {
   renderIconForWallet (wallet) {
     let icon = 'wallet'
     if (wallet.isMultisig()) {
-      if (wallet.is2FA()) {
+      if (wallet.is2FA && wallet.is2FA()) {
         icon = 'security'
       } else {
         icon = 'multisig'
@@ -239,7 +239,10 @@ export default class WalletWidgetDetail extends PureComponent {
                     : (
                       <div>
                         <div>USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}</div>
-                        <div styleName='tokensSubTitle'><Translate value={`${prefix}.tokensTitle`} count={tokensList.length} /></div>
+                        <div styleName='tokensSubTitle'>
+                          <Translate value={`${prefix}.tokensTitle`} count={tokensList.length} />
+                          {wallet.isMultisig() ? <span>, <Translate value={`${prefix}.ownersTitle`} count={wallet.owners().size()} /></span> : null}
+                        </div>
                       </div>
                     )}
                 </div>

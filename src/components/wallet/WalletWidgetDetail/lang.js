@@ -12,5 +12,6 @@ export default {
     depositButton: 'DEPOSIT',
     walletTitle: '%{title} wallet',
     tokensTitle: '%{count} tokens',
+    ownersTitle: '%{count} Owners',
   },
 }

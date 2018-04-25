@@ -404,19 +404,11 @@ export const walletDetailSelector = (walletBlockchain, walletAddress) => createS
       }
     })
 
-    // Add active multisig wallets
-    multisigWallets.activeWallets().map((aWallet) => {
+    // Add multisig wallets
+    multisigWallets.list().map((aWallet) => {
       const currentWalletAddress: string = aWallet.address()
       if (currentWalletAddress === walletAddress) {
         wallet = aWallet
-      }
-    })
-
-    // Add timeLocked multisig wallets
-    multisigWallets.timeLockedWallets().map((tlWallet) => {
-      const currentWalletAddress: string = tlWallet.address()
-      if (currentWalletAddress === walletAddress) {
-        wallet = tlWallet
       }
     })
 

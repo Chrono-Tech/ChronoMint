@@ -1,0 +1,22 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  width: 100%;
+  background: $color-white;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  .header {
+    font-weight: 500;
+    padding: 30px;
+    font-size: 26px;
+    line-height: 31px;
+  }
+  .body {
+
+  }
+}
+
