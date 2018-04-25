@@ -1,20 +1,22 @@
-import { walletsSelector } from 'redux/wallet/selectors'
+import { multisigWalletsSelector } from 'redux/wallet/selectors'
 import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-
+import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './WalletsContent.scss'
-
-function mapDispatchToProps (dispatch) {
-  return {}
-}
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    walletsList: walletsSelector()(state, ownProps),
+    walletsList: multisigWalletsSelector()(state, ownProps),
+    tokens: state.get(DUCK_TOKENS),
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
   }
 }
 
@@ -25,7 +27,10 @@ export default class WalletsContent extends Component {
       PropTypes.shape({
         title: PropTypes.string,
         address: PropTypes.string,
-        wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+        wallet: PropTypes.oneOfType([
+          PropTypes.instanceOf(MainWalletModel),
+          PropTypes.instanceOf(MultisigWalletModel),
+        ]),
       }),
     ),
   }
@@ -33,8 +38,17 @@ export default class WalletsContent extends Component {
   render () {
     return (
       <div styleName='root'>
-        {this.props.walletsList.map((wallet) => (
-          <WalletWidget key={`${wallet.address}-${wallet.title}`} blockchain={wallet.title} wallet={wallet.wallet} address={wallet.address} />
+        {this.props.walletsList.map((walletGroup) => (
+          <div key={walletGroup.title}>
+            {walletGroup.data.map((wallet) => (
+              <WalletWidget
+                key={`${walletGroup.title}-${wallet.address}`}
+                blockchain={walletGroup.title}
+                address={wallet.address}
+                wallet={wallet.wallet}
+              />
+            ))}
+          </div>
         ))}
       </div>
     )

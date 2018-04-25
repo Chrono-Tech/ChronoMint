@@ -86,11 +86,13 @@ export default class TokensListWidget extends PureComponent {
         </div>
 
         <div styleName='more'>
-          <Button
-            flat
-            label={<Translate value={`${prefix}.${this.state.isShowAll ? 'less' : 'more'}`} />}
-            onTouchTap={this.handleChangeShowAll}
-          />
+          {tokensList.length > 2 && (
+            <Button
+              flat
+              label={<Translate value={`${prefix}.${this.state.isShowAll ? 'less' : 'more'}`} />}
+              onTouchTap={this.handleChangeShowAll}
+            />
+          )}
         </div>
       </div>
     )

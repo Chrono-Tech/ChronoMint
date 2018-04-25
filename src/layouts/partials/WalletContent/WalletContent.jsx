@@ -51,7 +51,10 @@ export default class WalletContent extends Component {
     blockchain: PropTypes.string,
     address: PropTypes.string,
     goToWallets: PropTypes.func,
-    wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
     walletInfo: PropTypes.shape({
       address: PropTypes.string,
       balance: PropTypes.number,

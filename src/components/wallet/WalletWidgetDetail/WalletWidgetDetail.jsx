@@ -56,7 +56,10 @@ function mapDispatchToProps (dispatch) {
 export default class WalletWidgetDetail extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),

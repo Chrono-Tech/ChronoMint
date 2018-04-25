@@ -7,7 +7,6 @@ export const prefix = `layouts.partials.WalletsContent`
 
 export default {
   en: {
-    walletTitle: '%{title} wallet',
   },
 }
 
