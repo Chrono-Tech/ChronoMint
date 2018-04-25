@@ -52,6 +52,9 @@ export default class SendTokens extends PureComponent {
     resetForm: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
+    token: PropTypes.string,
+    blockchain: PropTypes.string,
+    address: PropTypes.string,
   }
 
   handleSubmit = (values) => {
@@ -94,6 +97,9 @@ export default class SendTokens extends PureComponent {
             initialValues={initialValues}
             onSubmit={this.handleSubmit}
             onSubmitSuccess={this.handleSubmitSuccess}
+            token={this.props.token}
+            blockchain={this.props.blockchain}
+            address={this.props.address}
           />
         </ModalDialog>
       )
@@ -104,6 +110,9 @@ export default class SendTokens extends PureComponent {
         initialValues={initialValues}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
+        token={this.props.token}
+        blockchain={this.props.blockchain}
+        address={this.props.address}
       />
     )
   }

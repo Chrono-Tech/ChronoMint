@@ -9,7 +9,7 @@ import { Link } from 'react-router'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { selectWallet } from 'redux/wallet/actions'
+import { selectWallet, switchWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
@@ -39,12 +39,17 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: () => dispatch(modalsOpen({
-      component: SendTokens,
-      props: {
-        isModal: true,
-      },
-    })),
+    send: (tokenId, blockchain, address) => {
+      dispatch(modalsOpen({
+        component: SendTokens,
+        props: {
+          isModal: true,
+          tokenId,
+          blockchain,
+          address
+        },
+      }))
+    },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
       props: {
@@ -53,6 +58,7 @@ function mapDispatchToProps (dispatch) {
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
+    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
   }
 }
 
@@ -83,8 +89,9 @@ export default class WalletWidget extends PureComponent {
     }
   }
 
-  handleSend = () => {
-    this.props.send()
+  handleSend = (tokenId, blockchain, address) => {
+    console.log('tokenId, blockchain, address: ', tokenId, blockchain, address)
+    this.props.send(tokenId, blockchain, address)
   }
 
   handleReceive = () => {
@@ -213,6 +220,8 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
 
+    console.log('token: ', token, token.id())
+
     if (walletInfo.balance === null || walletInfo.tokens.length <= 0) {
       return null
     }
@@ -276,7 +285,10 @@ export default class WalletWidget extends PureComponent {
                     disabled={false}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={this.handleSend}
+                    onTouchTap={() => {
+                      this.handleSelectWallet()
+                      this.handleSend(token.id(), blockchain, address)
+                    }}
                   />
                 </div>
                 <div styleName='action'>

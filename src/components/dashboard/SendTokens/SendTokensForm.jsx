@@ -33,6 +33,7 @@ import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redu
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { BALANCES_COMPARATOR_SYMBOL, getGasPriceMultiplier, getVisibleBalances } from 'redux/session/selectors'
+import { walletDetailSelector, makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
@@ -40,6 +41,7 @@ import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
+import WalletAddEditDialog from "../../dialogs/wallet/WalletAddDialog/WalletAddDialog";
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -55,16 +57,25 @@ const FEE_RATE_MULTIPLIER = {
   step: 0.1,
 }
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
+  console.log('ownProps: ', ownProps)
+
   const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
+  // const walletS = ownProps.blockchain ? walletDetailSelector(ownProps.blockchain, ownProps.address)(state) : null
+  // const walletInfo = ownProps.blockchain ? makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state) : null
   const selector = formValueSelector(FORM_SEND_TOKENS)
-  const tokenId = selector(state, 'symbol')
+  let tokenId = ownProps.tokenId //selector(state, 'symbol')
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
   const amount = selector(state, 'amount')
   const satPerByte = selector(state, 'satPerByte')
   const token = state.get(DUCK_TOKENS).item(tokenId)
+  const isMultiTokenWallet = ['Ethereum', 'Xem'].includes(ownProps.blockchain)
+
+  if (!isMultiTokenWallet) {
+    tokenId = ownProps.tokenId
+  }
 
   return {
     wallet,
@@ -75,9 +86,12 @@ function mapStateToProps (state) {
     account: state.get(DUCK_SESSION).account,
     amount,
     token,
+    walletS,
+    walletInfo,
     recipient,
     symbol,
     feeMultiplier,
+    isMultiTokenWallet,
     satPerByte,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
@@ -99,6 +113,7 @@ export default class SendTokensForm extends PureComponent {
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     feeMultiplier: PropTypes.number,
+    isMultiTokenWallet: PropTypes.bool,
     transfer: PropTypes.func,
     onTransfer: PropTypes.func,
     onApprove: PropTypes.func,
@@ -258,7 +273,7 @@ export default class SendTokensForm extends PureComponent {
     const { token, visibleBalances, wallet, allowance } = this.props
     const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
 
-    console.log('SendTokenForm: ', currentBalance, currentBalance.amount())
+    console.log('SendTokenForm: ', this.props)
 
     return (
       <div styleName='head'>
@@ -268,6 +283,36 @@ export default class SendTokensForm extends PureComponent {
             multihash={token.icon()}
             fallback={TOKEN_ICONS[ token.symbol() ]}
           />
+        </div>
+        <div styleName='head-token-choose-form'>
+          <MuiThemeProvider theme={inversedTheme}>
+            {visibleBalances.length === 0
+              ? <Preloader />
+              : (
+                <Field
+                  component={SelectField}
+                  name='symbol'
+                  fullWidth
+                  {...styles}
+                >
+                  {visibleBalances
+                    .map((balance) => {
+                      const token: TokenModel = this.props.tokens.item(balance.id())
+                      if (token.isLocked()) {
+                        return
+                      }
+                      return (
+                        <MenuItem
+                          key={balance.id()}
+                          value={balance.id()}
+                          primaryText={balance.symbol()}
+                        />
+                      )
+                    })}
+                </Field>
+              )
+            }
+          </MuiThemeProvider>
         </div>
         <div styleName='head-section'>
           <span styleName='head-section-text'>
