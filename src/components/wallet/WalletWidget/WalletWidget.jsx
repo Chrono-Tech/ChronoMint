@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 import { selectWallet, switchWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
+import { walletInfoSelector } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
@@ -31,7 +31,7 @@ import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
   return {
-    walletInfo: makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state),
+    walletInfo: walletInfoSelector(ownProps.wallet, ownProps.blockchain, ownProps.address, state),
     token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
   }
@@ -66,7 +66,10 @@ function mapDispatchToProps (dispatch) {
 export default class WalletWidget extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -126,7 +129,7 @@ export default class WalletWidget extends PureComponent {
           <div styleName='owners-list'>
             {ownersList.map((owner) => {
               return (
-                <div styleName='owner-icon'>
+                <div styleName='owner-icon' key={owner.address()}>
                   <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
                 </div>
               )
@@ -204,7 +207,7 @@ export default class WalletWidget extends PureComponent {
   renderIconForWallet (wallet) {
     let icon = 'wallet'
     if (wallet.isMultisig()) {
-      if (wallet.is2FA()) {
+      if (wallet.is2FA && wallet.is2FA()) {
         icon = 'security'
       } else {
         icon = 'multisig'
@@ -220,16 +223,15 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
 
-    console.log('token: ', token, token.id())
-
-    if (walletInfo.balance === null || walletInfo.tokens.length <= 0) {
+    if (walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
     }
 
     return (
       <div styleName='header-container'>
-        <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
+        {!wallet.isMultisig() && <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
         <div styleName='wallet-list-container'>
+
           <div styleName='wallet-container'>
             {/*<div styleName='settings-container'>*/}
             {/*<div styleName='settings-icon' className='chronobank-icon'>settings</div>*/}

@@ -23,6 +23,7 @@ import TxConfirmations from 'components/common/TxConfirmations/lang'
 import WalletWidget from 'components/wallet/WalletWidget/lang'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/lang'
 import TokensListWidget from 'components/wallet/TokensListWidget/lang'
+import PendingTxWidget from 'components/wallet/PendingTxWidget/lang'
 
 export default {
   en: {
@@ -49,5 +50,6 @@ export default {
     WalletWidget: WalletWidget.en,
     WalletWidgetDetail: WalletWidgetDetail.en,
     TokensListWidget: TokensListWidget.en,
+    PendingTxWidget: PendingTxWidget.en,
   },
 }

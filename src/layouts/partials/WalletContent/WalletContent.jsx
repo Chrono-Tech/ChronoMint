@@ -12,23 +12,25 @@ import { connect } from 'react-redux'
 import { DUCK_WALLET } from 'redux/wallet/actions'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
 import { TransactionsTable } from 'components'
-import { makeGetWalletTokensAndBalanceByAddress, walletDetailSelector } from 'redux/wallet/selectors'
+import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 
 import './WalletContent.scss'
+import PendingTxWidget from '../../../components/wallet/PendingTxWidget/PendingTxWidget'
 
 function mapStateToProps (state, ownProps) {
   const network = state.get(DUCK_NETWORK)
   const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
+  const wallet = walletDetailSelector(blockchain, address)(state)
 
   return {
     isMultisig,
     blockchain,
     address,
-    wallet: walletDetailSelector(blockchain, address)(state),
-    walletInfo: makeGetWalletTokensAndBalanceByAddress(blockchain)(state),
+    wallet,
+    walletInfo: walletInfoSelector(wallet, blockchain, address, state),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -51,7 +53,10 @@ export default class WalletContent extends Component {
     blockchain: PropTypes.string,
     address: PropTypes.string,
     goToWallets: PropTypes.func,
-    wallet: PropTypes.instanceOf(MainWalletModel || MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
     walletInfo: PropTypes.shape({
       address: PropTypes.string,
       balance: PropTypes.number,
@@ -70,7 +75,8 @@ export default class WalletContent extends Component {
 
   render () {
     const { blockchain, address, wallet, walletInfo } = this.props
-    if (!wallet) {
+
+    if (!wallet || !walletInfo) {
       return null
     }
 
@@ -79,6 +85,8 @@ export default class WalletContent extends Component {
         <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
 
         <TokensListWidget tokensList={walletInfo.tokens} />
+
+        {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
 
         <TransactionsTable transactions={wallet.transactions()} />
       </div>

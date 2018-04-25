@@ -16,6 +16,8 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from './actions'
 
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
+import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 
 /**
  * SIMPLE SELECTORS
@@ -54,7 +56,7 @@ export const getWalletsCount = () => createSelector(
 export const selectMainWalletBalancesListStore = (state) =>
   state.get(DUCK_MAIN_WALLET).balances().list() // BalancesCollection, array of BalanceModel
 
-export const selectMainWalletTokensStore = (state) =>
+export const selectTokensStore = (state) =>
   state.get(DUCK_TOKENS) // TokensCollection, array of TokenModel
 
 export const selectMainWalletAddressesListStore = (state) => {
@@ -118,8 +120,8 @@ export const multisigWalletsSelector = () => createSelector(
       }
     })
 
-    // Add active multisig wallets
-    multisigWallets.activeWallets().map((aWallet) => {
+    // Add multisig wallets
+    multisigWallets.list().map((aWallet) => {
       const currentWalletAddress: string = aWallet.address()
       if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
         sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
@@ -132,24 +134,6 @@ export const multisigWalletsSelector = () => createSelector(
         sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
           address: currentWalletAddress,
           wallet: aWallet,
-        })
-      }
-    })
-
-    // Add timeLocked multisig wallets
-    multisigWallets.timeLockedWallets().map((tlWallet) => {
-      const currentWalletAddress: string = tlWallet.address()
-      if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-          data: [ {
-            address: currentWalletAddress,
-            wallet: tlWallet,
-          } ],
-        }
-      } else {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
-          address: currentWalletAddress,
-          wallet: tlWallet,
         })
       }
     })
@@ -251,7 +235,7 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
       getMainWalletSections,
       selectMainWalletAddressesListStore,
       selectMainWalletBalancesListStore,
-      selectMainWalletTokensStore,
+      selectTokensStore,
       selectMarketPricesListStore,
       selectMarketPricesSelectedCurrencyStore,
     ],
@@ -329,59 +313,74 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
   )
 }
 
-export const walletsSelector = () => createSelector(
-  [
-    getMainWallet,
-    getMultisigWallets,
-  ],
-  (
-    mainWallet,
-    multisigWallets,
-  ) => {
-    // final result will be svaed here
-    const sectionsObject = {}
+export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) => {
+  return createSelector(
+    [
+      getMultisigWallets,
+      selectTokensStore,
+      selectMarketPricesListStore,
+      selectMarketPricesSelectedCurrencyStore,
+    ],
+    (
+      multisigWallets,
+      mainWalletTokens,
+      prices,
+      selectedCurrency,
+    ) => {
 
-    // Go through mainWallet's addresses
-    mainWallet.addresses().items().map((address) => {
-      const addrJS = address.toJS()
-      const addrID = addrJS.id
-      if (addrJS.address != null) {
-        sectionsObject[ addrID ] = {
-          address: addrJS.address,
-          wallet: mainWallet,
-        }
-      }
-    })
+      /**
+       * Internal utility
+       * @private
+       */
+      const convertAmountToNumber = (symbol, amount) =>
+        mainWalletTokens
+          .item(symbol)
+          .removeDecimals(amount)
+          .toNumber()
 
-    // Add active multisig wallets
-    multisigWallets.activeWallets().map((aWallet) => {
-      const currentWalletAddress: string = aWallet.address()
-      sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-        address: currentWalletAddress,
-        wallet: aWallet,
-      }
-    })
+      const walletTokensAndBalanceByAddress = multisigWallets
+        .item(addressTitle)
+        .balances()
+        .list()
+        .map((balance) => {
+          const bAmount = balance.amount()
+          const bSymbol = balance.symbol()
+          const tAmount = convertAmountToNumber(bSymbol, bAmount)
+          let tokenAmountKeyValuePair = {}
+          tokenAmountKeyValuePair[ bSymbol ] = tAmount
+          return {
+            symbol: bSymbol,
+            amount: tAmount,
+          }
+        })
 
-    // Add timeLocked multisig wallets
-    multisigWallets.timeLockedWallets().map((tlWallet) => {
-      const currentWalletAddress: string = tlWallet.address()
-      sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-        address: currentWalletAddress,
-        wallet: tlWallet,
-      }
-    })
+      const arrWalletTokensAndBalanceByAddress = [ ...walletTokensAndBalanceByAddress.values() ]
+      return arrWalletTokensAndBalanceByAddress
+        .reduce((accumulator, tokenKeyValuePair) => {
+          const { amount, symbol } = tokenKeyValuePair
 
-    // Sort main sections and make an array
-    const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
-    const sortedSections = sortSectionsObject(sectionsObject)
-    return Object.keys(sortedSections).map((sectionName) => {
-      return {
-        title: sectionName,
-        ...sortedSections[ sectionName ],
-      }
-    })
-  },
-)
+          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || 0
+          if (tokenPrice && amount > 0) {
+            accumulator.balance += (amount * tokenPrice)
+          }
+          accumulator.tokens.push({
+            symbol: symbol,
+            amount: amount,
+            amountPrice: amount * tokenPrice,
+          })
+          accumulator.tokens = accumulator.tokens.sort((a, b) => {
+            const oA = Object.keys(a)[ 0 ]
+            const oB = Object.keys(b)[ 0 ]
+            return (oA > oB) - (oA < oB)
+          }) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
+          return accumulator
+        }, {
+          balance: 0,
+          tokens: [],
+        })
+    },
+  )
+}
 
 export const walletDetailSelector = (walletBlockchain, walletAddress) => createSelector(
   [
@@ -405,22 +404,23 @@ export const walletDetailSelector = (walletBlockchain, walletAddress) => createS
       }
     })
 
-    // Add active multisig wallets
-    multisigWallets.activeWallets().map((aWallet) => {
+    // Add multisig wallets
+    multisigWallets.list().map((aWallet) => {
       const currentWalletAddress: string = aWallet.address()
       if (currentWalletAddress === walletAddress) {
         wallet = aWallet
       }
     })
 
-    // Add timeLocked multisig wallets
-    multisigWallets.timeLockedWallets().map((tlWallet) => {
-      const currentWalletAddress: string = tlWallet.address()
-      if (currentWalletAddress === walletAddress) {
-        wallet = tlWallet
-      }
-    })
-
     return wallet
   },
 )
+
+export const walletInfoSelector = (wallet, blockchain, address, state) => {
+  if (wallet instanceof MainWalletModel) {
+    return makeGetWalletTokensAndBalanceByAddress(blockchain, address)(state)
+  }
+  if (wallet instanceof MultisigWalletModel) {
+    return makeGetWalletTokensForMultisig(blockchain, address)(state)
+  }
+}

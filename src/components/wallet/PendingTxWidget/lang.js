@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = `layouts.partials.WalletsContent`
+export const prefix = 'PendingTxWidget'
 
 export default {
   en: {
+    title: 'Pending Transactions',
   },
 }
-

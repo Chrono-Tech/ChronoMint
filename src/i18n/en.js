@@ -929,5 +929,6 @@ export default {
   },
   topButtons: {
     addDeposit: 'Add deposit',
+    addWallet: 'Add wallet',
   },
 }
