@@ -8,5 +8,6 @@ export const prefix = 'PendingTxWidget'
 export default {
   en: {
     title: 'Pending Transactions',
+    noTransfers: 'No transfers',
   },
 }

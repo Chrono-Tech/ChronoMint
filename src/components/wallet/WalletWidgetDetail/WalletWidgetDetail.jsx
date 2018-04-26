@@ -23,6 +23,8 @@ import { getTokenForWalletByBlockchain } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
+import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -49,6 +51,14 @@ function mapDispatchToProps (dispatch) {
       },
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
+    openEditManagersDialog: (wallet) => dispatch(modalsOpen({
+      component: EditManagersDialog,
+      props: { wallet },
+    })),
+    openEditSignaturesDialog: (wallet) => dispatch(modalsOpen({
+      component: EditSignaturesDialog,
+      props: { wallet },
+    })),
   }
 }
 
@@ -71,6 +81,8 @@ export default class WalletWidgetDetail extends PureComponent {
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
+    openEditManagersDialog: PropTypes.func,
+    openEditSignaturesDialog: PropTypes.func,
   }
 
   constructor (props) {
@@ -80,6 +92,10 @@ export default class WalletWidgetDetail extends PureComponent {
       isShowAll: false,
     }
   }
+
+  handleEditOwners = () => this.props.openEditManagersDialog(this.props.wallet)
+
+  handleEditSignatures = () => this.props.openEditSignaturesDialog(this.props.wallet)
 
   handleSend = () => {
     this.props.send()
@@ -216,6 +232,10 @@ export default class WalletWidgetDetail extends PureComponent {
         <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
+            <div styleName='settings-container'>
+              <button onTouchTap={this.handleEditOwners}>Edit Owners</button>
+              <button onTouchTap={this.handleEditSignatures}>Edit Signatures</button>
+            </div>
             <div styleName='token-container'>
               {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
               <div styleName='token-icon'>

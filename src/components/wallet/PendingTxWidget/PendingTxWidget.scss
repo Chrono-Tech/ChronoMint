@@ -17,6 +17,50 @@
   }
   .body {
 
+    .row {
+      padding: 10px 30px;
+      border-top: 1px solid #F2F2F2;
+      &:last-child {
+        border-bottom: 1px solid #F2F2F2;
+      }
+      .rowTable {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 60px 2fr 1fr;
+        .values {
+          white-space: normal;
+          word-break: break-all;
+          color: #7F7F7F;
+          font-size: 14px;
+          line-height: 20px;
+          .title {
+            color: #333333;
+          }
+        }
+        .actions {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          :global {
+            .Button_root {
+              padding-left: 10px;
+            }
+          }
+        }
+      }
+      .iconWrapper {
+        &.redColor {
+          background: $color-red
+        }
+        background: #bfbfbf;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 30px;
+        line-height: 40px;
+        text-align: center;
+        color: #e6e6e6;
+      }
+    }
   }
 }
-
