@@ -1,0 +1,39 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import '~styles/partials/variables';
+
+.addOwner {
+  display: flex;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.addOwnerField {
+  flex-grow: 1;
+}
+
+.actions {
+  display: flex;
+  flex-grow: 0;
+  margin-left: 16px;
+}
+
+.action {
+  cursor: pointer;
+  background-color: transparent;
+  color: $color-secondary;
+
+  &:disabled {
+    cursor: default;
+    color: $color-grey300;
+  }
+}
+
+.buttonLabel {
+  // hack for long multiline labels with icons
+  display: flex;
+  align-items: center;
+}

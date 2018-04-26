@@ -5,6 +5,7 @@
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { push } from 'react-router-redux'
 import React, { Component } from 'react'
@@ -20,6 +21,7 @@ import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 
 import './WalletContent.scss'
+import { prefix } from './lang'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
@@ -91,7 +93,10 @@ export default class WalletContent extends Component {
 
         {wallet.isMultisig() && <OwnersListWidget wallet={wallet} />}
 
-        <TransactionsTable transactions={wallet.transactions()} />
+        <div styleName='transactions'>
+          <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
+          <TransactionsTable transactions={wallet.transactions()} />
+        </div>
       </div>
     )
   }

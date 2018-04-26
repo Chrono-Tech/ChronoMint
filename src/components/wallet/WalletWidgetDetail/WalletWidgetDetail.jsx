@@ -232,42 +232,48 @@ export default class WalletWidgetDetail extends PureComponent {
         <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
-            <div styleName='settings-container'>
-              <button onTouchTap={this.handleEditOwners}>Edit Owners</button>
-              <button onTouchTap={this.handleEditSignatures}>Edit Signatures</button>
-            </div>
-            <div styleName='token-container'>
-              {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
-              <div styleName='token-icon'>
-                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
-              </div>
-            </div>
-            <div styleName='content-container'>
-              <div styleName='address-title'>
-                <h3>{this.getWalletName()}</h3>
-                <span styleName='address-address'>{address}</span>
-              </div>
-              <div styleName='token-amount'>
-                <div styleName='crypto-amount'>
-                  {tokensList.length === 1
-                    ? (
-                      <div>
-                        <div>{tokensList[ 0 ].symbol} {integerWithDelimiter(tokensList[ 0 ].amount.toFixed(2), true)}</div>
-                        <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[ 0 ].amountPrice.toFixed(2), true)}</div>
-                      </div>
-                    )
-                    : (
-                      <div>
-                        <div>USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}</div>
-                        <div styleName='tokensSubTitle'>
-                          <Translate value={`${prefix}.tokensTitle`} count={tokensList.length} />
-                          {wallet.isMultisig() ? <span>, <Translate value={`${prefix}.ownersTitle`} count={wallet.owners().size()} /></span> : null}
-                        </div>
-                      </div>
-                    )}
+            <div styleName='body'>
+              <div styleName='token-container'>
+                {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
+                <div styleName='token-icon'>
+                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
                 </div>
               </div>
-
+              <div styleName='content-container'>
+                <div styleName='address-title'>
+                  <h3>{this.getWalletName()}</h3>
+                  <span styleName='address-address'>{address}</span>
+                </div>
+                <div styleName='token-amount'>
+                  <div styleName='crypto-amount'>
+                    {tokensList.length === 1
+                      ? (
+                        <div>
+                          <div>{tokensList[ 0 ].symbol} {integerWithDelimiter(tokensList[ 0 ].amount.toFixed(2), true)}</div>
+                          <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[ 0 ].amountPrice.toFixed(2), true)}</div>
+                        </div>
+                      )
+                      : (
+                        <div>
+                          <div>USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}</div>
+                          <div styleName='tokensSubTitle'>
+                            <Translate value={`${prefix}.tokensTitle`} count={tokensList.length} />
+                            {wallet.isMultisig() ? <span>, <Translate value={`${prefix}.ownersTitle`} count={wallet.owners().size()} /></span> : null}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div styleName='footer'>
+              <div styleName='pendingOperations'>
+                {wallet.isMultisig() && (
+                  <div styleName='pendingOperationsCount'>
+                    <Translate value={`${prefix}.pending`} count={wallet.pendingTxList().size()} />
+                  </div>
+                )}
+              </div>
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
