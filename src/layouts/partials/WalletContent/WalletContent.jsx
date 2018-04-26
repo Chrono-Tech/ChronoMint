@@ -16,11 +16,12 @@ import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
+import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
+import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 
 import './WalletContent.scss'
-import PendingTxWidget from '../../../components/wallet/PendingTxWidget/PendingTxWidget'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
   const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
   const wallet = walletDetailSelector(blockchain, address)(state)
@@ -87,6 +88,8 @@ export default class WalletContent extends Component {
         <TokensListWidget tokensList={walletInfo.tokens} />
 
         {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
+
+        {wallet.isMultisig() && <OwnersListWidget wallet={wallet} />}
 
         <TransactionsTable transactions={wallet.transactions()} />
       </div>
