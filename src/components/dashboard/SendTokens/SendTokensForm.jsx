@@ -63,12 +63,11 @@ function mapStateToProps (state, ownProps) {
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
   const walletInfo = makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
-  const tokenIdSelect = selector(state, 'symbol')
-  const tokenId = walletInfo.tokens.some((token) => token.symbol === tokenIdSelect) ? tokenIdSelect : walletInfo.tokens[0].symbol
+  const symbol = selector(state, 'symbol')
+  const tokenId = walletInfo.tokens.some((token) => token.symbol === symbol) ? symbol : walletInfo.tokens[0].symbol
   const tokenInfo = walletInfo.tokens.find((token) => token.symbol === tokenId)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
-  const symbol = selector(state, 'symbol')
   const amount = selector(state, 'amount')
   const satPerByte = selector(state, 'satPerByte')
   const token = state.get(DUCK_TOKENS).item(tokenId)
@@ -76,6 +75,7 @@ function mapStateToProps (state, ownProps) {
 
   return {
     wallet,
+    balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     tokens: state.get(DUCK_TOKENS),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
@@ -195,7 +195,6 @@ export default class SendTokensForm extends PureComponent {
   getFormFee = () => {
     return this.state.mode === MODE_SIMPLE ? this.props.feeMultiplier : this.props.satPerByte
   }
-
 
   calculatingFeeBitcoin = async (event, value) => {
     const fee = await this.getFee(

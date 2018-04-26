@@ -6,13 +6,15 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 import tokenService from 'services/TokenService'
+import Amount from 'models/Amount'
 
 export default (values, props) => {
-  const { token, wallet, balance } = props
+  const { token, wallet, tokenInfo } = props
   if (!token) {
     return
   }
 
+  const balance = token.addDecimals(tokenInfo.amount)
   const amount = values.get('amount')
   const recipient = values.get('recipient')
 

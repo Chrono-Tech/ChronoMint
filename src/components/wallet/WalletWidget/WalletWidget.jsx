@@ -44,7 +44,7 @@ function mapDispatchToProps (dispatch) {
         component: SendTokens,
         props: {
           isModal: true,
-          tokenId,
+          token: tokenId,
           blockchain,
           address
         },

@@ -33,7 +33,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    visibleBalances: getVisibleBalances(BALANCES_COMPARATOR_SYMBOL)(state),
     wallet: getCurrentWallet(state),
     tokens: state.get(DUCK_TOKENS),
   }
@@ -43,9 +42,6 @@ function mapStateToProps (state) {
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
-    visibleBalances: PropTypes.arrayOf(
-      PropTypes.instanceOf(BalanceModel),
-    ),
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
@@ -80,12 +76,10 @@ export default class SendTokens extends PureComponent {
   }
 
   render () {
-    const { visibleBalances, isModal } = this.props
+    const { isModal, token } = this.props
     const initialValues = {
       feeMultiplier: 1,
-    }
-    if (visibleBalances.length > 0) {
-      initialValues.symbol = visibleBalances[ 0 ].id()
+      symbol: token
     }
 
     if (isModal) {
