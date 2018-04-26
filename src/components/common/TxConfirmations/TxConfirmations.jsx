@@ -52,7 +52,10 @@ export default class TxConfirmations extends PureComponent {
 
   renderText () {
     const { transaction, tokens, textMode } = this.props
-    const { blockNumber: latestBlock } = tokens.latestBlocksForSymbol(transaction.symbol())
+    const { blockNumber: latestBlock } = (tokens.latestBlocksForSymbol(transaction.symbol()) || {})
+    if (!latestBlock) {
+      return null
+    }
     const confirmations = latestBlock - transaction.blockNumber() + 1
 
     if (textMode) {
@@ -64,13 +67,15 @@ export default class TxConfirmations extends PureComponent {
         return <Translate value={`${prefix}.done`} />
       }
     }
-
   }
 
   render () {
     const { transaction, tokens, textMode } = this.props
-    const { blockNumber: latestBlock } = tokens.latestBlocksForSymbol(transaction.symbol())
+    const { blockNumber: latestBlock } = (tokens.latestBlocksForSymbol(transaction.symbol()) || {})
     const confirmations = latestBlock - transaction.blockNumber() + 1
+    if (!latestBlock) {
+      return null
+    }
 
     return (
       <div styleName='root' className='TxConfirmations__root'>

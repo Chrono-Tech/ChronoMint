@@ -338,6 +338,9 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
           .removeDecimals(amount)
           .toNumber()
 
+      if (!multisigWallets.item(addressTitle)) {
+        return null
+      }
       const walletTokensAndBalanceByAddress = multisigWallets
         .item(addressTitle)
         .balances()
