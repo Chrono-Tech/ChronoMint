@@ -5,6 +5,7 @@
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { push } from 'react-router-redux'
 import React, { Component } from 'react'
@@ -16,11 +17,13 @@ import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
+import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
+import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 
 import './WalletContent.scss'
-import PendingTxWidget from '../../../components/wallet/PendingTxWidget/PendingTxWidget'
+import { prefix } from './lang'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
   const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
   const wallet = walletDetailSelector(blockchain, address)(state)
@@ -88,7 +91,12 @@ export default class WalletContent extends Component {
 
         {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
 
-        <TransactionsTable transactions={wallet.transactions()} />
+        {wallet.isMultisig() && <OwnersListWidget wallet={wallet} />}
+
+        <div styleName='transactions'>
+          <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
+          <TransactionsTable transactions={wallet.transactions()} />
+        </div>
       </div>
     )
   }

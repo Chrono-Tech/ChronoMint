@@ -24,6 +24,7 @@ import WalletWidget from 'components/wallet/WalletWidget/lang'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/lang'
 import TokensListWidget from 'components/wallet/TokensListWidget/lang'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/lang'
+import OwnersListWidget from 'components/wallet/OwnersListWidget/lang'
 
 export default {
   en: {
@@ -50,5 +51,6 @@ export default {
     WalletWidgetDetail: WalletWidgetDetail.en,
     TokensListWidget: TokensListWidget.en,
     PendingTxWidget: PendingTxWidget.en,
+    OwnersListWidget: OwnersListWidget.en,
   },
 }

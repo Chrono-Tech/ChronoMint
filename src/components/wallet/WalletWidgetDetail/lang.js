@@ -13,5 +13,6 @@ export default {
     walletTitle: '%{title} wallet',
     tokensTitle: '%{count} tokens',
     ownersTitle: '%{count} Owners',
+    pending: '%{count} pending',
   },
 }

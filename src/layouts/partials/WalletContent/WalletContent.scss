@@ -15,9 +15,31 @@
   height: 100%;
   width: 100%;
   :global {
-    .WalletWidgetDetail__root, .TransactionsTable__root, .TokensListWidget__root, .PendingTxWidget__root {
+    .WalletWidgetDetail__root, .TokensListWidget__root, .PendingTxWidget__root {
       width: 590px;
       margin-bottom: 30px;
+    }
+  }
+  .transactions {
+    width: 590px;
+    margin-bottom: 30px;
+    background: $color-white;
+    color: $color-primary-3;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    .header {
+      padding: 25px 30px;
+      border-bottom: 1px solid #E5E5E5;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 31px;
+    }
+    :global {
+      .TransactionsTable__root {
+        box-shadow: none;
+        width: 100%;
+        margin-bottom: 0;
+      }
     }
   }
 }
