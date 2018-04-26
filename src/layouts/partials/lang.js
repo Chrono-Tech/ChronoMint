@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as DashboardContent from 'layouts/partials/DashboardContent/lang'
 import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
 import * as InfoPartial from 'layouts/partials/InfoPartial/lang'
 import * as OperationsContent from 'layouts/partials/OperationsContent/lang'
@@ -21,7 +20,6 @@ import WalletsContent from 'layouts/partials/WalletsContent/lang'
 
 export default {
   en: {
-    DashboardContent: DashboardContent.en,
     FooterPartial: FooterPartial.en,
     WalletContent: WalletContent.en,
     InfoPartial: InfoPartial.en,

@@ -5,7 +5,6 @@
 
 import AssetsContent from './AssetsContent/AssetsContent'
 import BrandPartial from './BrandPartial/BrandPartial'
-import DashboardContent from './DashboardContent/DashboardContent'
 import DrawerPartial from './DrawerPartial/DrawerPartial'
 import ExchangeContent from './ExchangeContent/ExchangeContent'
 import FooterPartial from './FooterPartial/FooterPartial'
@@ -30,7 +29,6 @@ export {
   InfoPartial,
   FooterPartial,
   DrawerPartial,
-  DashboardContent,
   ExchangeContent,
   RewardsContent,
   VotingContent,
@@ -53,7 +51,6 @@ export default {
   InfoPartial,
   FooterPartial,
   DrawerPartial,
-  DashboardContent,
   ExchangeContent,
   RewardsContent,
   VotingContent,

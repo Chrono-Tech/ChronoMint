@@ -12,7 +12,6 @@ import LoginPage from 'pages/LoginPage/LoginPage'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
-  DashboardPage,
   ExchangePage,
   LOCPage,
   OperationsPage,
@@ -56,7 +55,6 @@ const router = (
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='wallets' component={WalletsPage} />
         <Route path='wallet' component={WalletPage} />
-        <Route path='dashboard' component={DashboardPage} />
         <Route path='deposits' component={DepositsPage} />
         <Route path='deposit' component={DepositPage} />
         <Route path='exchange' component={ExchangePage} />

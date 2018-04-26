@@ -29,7 +29,6 @@ export default {
   en: {
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
-    Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
     UpdateProvideDialog: UpdateProvideDialog.en,

@@ -14,9 +14,6 @@ export default {
   ],
   user: [
     {
-      key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/dashboard',
-    },
-    {
       key: 'deposits', title: 'nav.deposits', icon: 'dashboard', path: '/deposits',
     },
     {

@@ -4,7 +4,6 @@
  */
 
 import AssetsPage from './AssetsPage'
-import DashboardPage from './DashboardPage'
 import ExchangePage from './ExchangePage'
 import LOCPage from './LOCPage'
 import OperationsPage from './OperationsPage'
@@ -17,7 +16,6 @@ import WalletPage from './WalletPage'
 import DepositPage from './DepositPage'
 
 export {
-  DashboardPage,
   ExchangePage,
   WalletsPage,
   WalletPage,
@@ -32,7 +30,6 @@ export {
 }
 
 export default {
-  DashboardPage,
   ExchangePage,
   WalletsPage,
   WalletPage,

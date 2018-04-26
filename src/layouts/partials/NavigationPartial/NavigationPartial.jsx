@@ -15,7 +15,6 @@ export default class LayoutTest extends PureComponent {
         pinned
         permanentAt='xxxl'
       >
-        <Link to='/markup/dashboard'>Dashboard</Link>
         <Link to='/markup/exchange'>Exchange</Link>
         <Link to='/markup/wallet'>Wallet</Link>
         <List>
