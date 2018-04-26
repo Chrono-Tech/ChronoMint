@@ -8,7 +8,7 @@
 
 .head {
   background-color: #614DBA;
-  width: 100%;
+  width: 430px;
   display: block;
   position: relative;
 
@@ -80,6 +80,16 @@
     color: $color-white;
   }
 
+  .value-amount {
+    color: #FFFFFF;
+    font-weight: 400;
+    min-height: 20px;
+    font-size: 30px;
+    background-color: transparent;
+    font-family: 'proxima nova', sans-serif;
+    line-height: 36px;
+  }
+
   .value {
     color: $color-white;
 
@@ -93,7 +103,7 @@
       color: #FFFFFF;
       font-weight: 400;
       min-height: 20px;
-      font-family: proxima-nova, sans-serif;
+      font-family: 'proxima nova', sans-serif;
     }
   }
 }

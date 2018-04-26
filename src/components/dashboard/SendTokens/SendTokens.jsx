@@ -88,8 +88,6 @@ export default class SendTokens extends PureComponent {
       initialValues.symbol = visibleBalances[ 0 ].id()
     }
 
-    console.log('SendTokens: ', isModal, this.props)
-
     if (isModal) {
       return (
         <ModalDialog>

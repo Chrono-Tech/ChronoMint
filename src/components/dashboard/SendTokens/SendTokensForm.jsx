@@ -25,6 +25,7 @@ import AllowanceModel from 'models/wallet/AllowanceModel'
 import MainWallet from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
+import { integerWithDelimiter } from 'utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -32,7 +33,7 @@ import { SelectField, Slider, TextField, Checkbox } from 'redux-form-material-ui
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { BALANCES_COMPARATOR_SYMBOL, getGasPriceMultiplier, getVisibleBalances } from 'redux/session/selectors'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
@@ -58,40 +59,34 @@ const FEE_RATE_MULTIPLIER = {
 }
 
 function mapStateToProps (state, ownProps) {
-  console.log('ownProps: ', ownProps)
 
-  const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
-  // const walletS = ownProps.blockchain ? walletDetailSelector(ownProps.blockchain, ownProps.address)(state) : null
-  // const walletInfo = ownProps.blockchain ? makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state) : null
+  const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
+  const walletInfo = makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
-  let tokenId = ownProps.tokenId //selector(state, 'symbol')
+  const tokenIdSelect = selector(state, 'symbol')
+  const tokenId = walletInfo.tokens.some((token) => token.symbol === tokenIdSelect) ? tokenIdSelect : walletInfo.tokens[0].symbol
+  const tokenInfo = walletInfo.tokens.find((token) => token.symbol === tokenId)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const recipient = selector(state, 'recipient')
   const symbol = selector(state, 'symbol')
   const amount = selector(state, 'amount')
   const satPerByte = selector(state, 'satPerByte')
   const token = state.get(DUCK_TOKENS).item(tokenId)
-  const isMultiTokenWallet = ['Ethereum', 'Xem'].includes(ownProps.blockchain)
-
-  if (!isMultiTokenWallet) {
-    tokenId = ownProps.tokenId
-  }
+  const isMultiToken = walletInfo.tokens.length > 1
 
   return {
     wallet,
-    visibleBalances: getVisibleBalances(BALANCES_COMPARATOR_SYMBOL)(state),
     tokens: state.get(DUCK_TOKENS),
-    balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
     amount,
     token,
-    walletS,
+    tokenInfo,
+    isMultiToken,
     walletInfo,
     recipient,
     symbol,
     feeMultiplier,
-    isMultiTokenWallet,
     satPerByte,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
@@ -101,17 +96,14 @@ function mapStateToProps (state, ownProps) {
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class SendTokensForm extends PureComponent {
   static propTypes = {
+    blockchain: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
     account: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWallet),
-      PropTypes.instanceOf(MultisigWalletModel),
-    ]),
-    visibleBalances: PropTypes.arrayOf(
-      PropTypes.instanceOf(BalanceModel),
-    ),
+    wallet: PropTypes.object,
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
+    tokenInfo: PropTypes.object,
     feeMultiplier: PropTypes.number,
     isMultiTokenWallet: PropTypes.bool,
     transfer: PropTypes.func,
@@ -143,12 +135,6 @@ export default class SendTokensForm extends PureComponent {
 
     if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
-    }
-
-    const firstBalance = newProps.visibleBalances.length && newProps.visibleBalances[ 0 ]
-    const isRelevant = newProps.visibleBalances.find((balance) => balance.id() === newProps.token.id())
-    if (!(isRelevant && newProps.token.isFetched()) && firstBalance) {
-      this.props.dispatch(change(FORM_SEND_TOKENS, 'symbol', firstBalance.id()))
     }
 
     if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
@@ -270,10 +256,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderHead () {
-    const { token, visibleBalances, wallet, allowance } = this.props
-    const currentBalance = visibleBalances.find((balance) => balance.id() === token.id()) || visibleBalances[ 0 ]
-
-    console.log('SendTokenForm: ', this.props)
+    const { token, isMultiToken, walletInfo, wallet, allowance, tokenInfo } = this.props
 
     return (
       <div styleName='head'>
@@ -284,9 +267,15 @@ export default class SendTokensForm extends PureComponent {
             fallback={TOKEN_ICONS[ token.symbol() ]}
           />
         </div>
-        <div styleName='head-token-choose-form'>
+
+        <div styleName='head-section'>
+          <span styleName='head-section-text'>
+            <Translate value='wallet.sendTokens' />
+          </span>
+        </div>
+        { isMultiToken && <div styleName='head-token-choose-form'>
           <MuiThemeProvider theme={inversedTheme}>
-            {visibleBalances.length === 0
+            {walletInfo.tokens.length === 0
               ? <Preloader />
               : (
                 <Field
@@ -295,17 +284,17 @@ export default class SendTokensForm extends PureComponent {
                   fullWidth
                   {...styles}
                 >
-                  {visibleBalances
-                    .map((balance) => {
-                      const token: TokenModel = this.props.tokens.item(balance.id())
+                  {walletInfo.tokens
+                    .map((tokenData) => {
+                      const token: TokenModel = this.props.tokens.item(tokenData.symbol)
                       if (token.isLocked()) {
                         return
                       }
                       return (
                         <MenuItem
-                          key={balance.id()}
-                          value={balance.id()}
-                          primaryText={balance.symbol()}
+                          key={token.id()}
+                          value={token.id()}
+                          primaryText={token.symbol()}
                         />
                       )
                     })}
@@ -313,13 +302,7 @@ export default class SendTokensForm extends PureComponent {
               )
             }
           </MuiThemeProvider>
-        </div>
-        <div styleName='head-section'>
-          <span styleName='head-section-text'>
-            <Translate value='wallet.sendTokens' />
-          </span>
-        </div>
-
+        </div> }
         <div styleName='wallet-name-section'>
           <div styleName='wallet-name-title-section'>
             <span styleName='wallet-name-title'>
@@ -334,12 +317,12 @@ export default class SendTokensForm extends PureComponent {
         </div>
 
         <div styleName='balance'>
-          <div styleName='value'>
-            <TokenValue precision={6} noRenderPrice isInvert value={currentBalance.amount()} />
+          <div styleName='value-amount'>
+            {tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              ≈USD <TokenValue isInvert renderOnlyPrice onlyPriceValue value={currentBalance.amount()} />
+              ≈USD {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
             </span>
           </div>
         </div>
@@ -457,12 +440,9 @@ export default class SendTokensForm extends PureComponent {
   }
 
   render () {
-    const { visibleBalances } = this.props
+    // const { visibleBalances } = this.props
 
-    console.log(this.props)
-
-    return !visibleBalances.length ? null : (
-      <Paper>
+    return (<Paper>
         <form onSubmit={this.props.handleSubmit}>
           {this.renderHead()}
           {this.renderBody()}
