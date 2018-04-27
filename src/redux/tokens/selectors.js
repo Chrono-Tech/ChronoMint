@@ -15,7 +15,7 @@ export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
-export const getTokenForWalletByBlockchain = (blockchain) => createSelector(
+export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
   [ getTokens ],
   (tokens) => {
     switch (blockchain) {
@@ -32,5 +32,15 @@ export const getTokenForWalletByBlockchain = (blockchain) => createSelector(
       case BLOCKCHAIN_NEM:
         return tokens.item(XEM)
     }
+  },
+)
+
+export const getTokensForBlockchain = (blockchain) => createSelector(
+  [ getTokens ],
+  (tokens) => {
+    return tokens
+      .filter((token) => token.blockchain() === blockchain)
+      .sortBy((token) => token.symbol())
+      .toArray()
   },
 )

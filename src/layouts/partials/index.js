@@ -17,6 +17,7 @@ import SettingsContent from './SettingsContent/SettingsContent'
 import VotingContent from './VotingContent/VotingContent'
 import WalletsContent from './WalletsContent/WalletsContent'
 import WalletContent from './WalletContent/WalletContent'
+import AddWalletContent from './AddWalletContent/AddWalletContent'
 import SidePanel from './SidePanel/SidePanel'
 import ProfileContent from './ProfileContent/ProfileContent'
 import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
@@ -43,6 +44,7 @@ export {
   DrawerMainMenu,
   DepositsContent,
   DepositContent,
+  AddWalletContent,
 }
 
 export default {
@@ -65,4 +67,5 @@ export default {
   DrawerMainMenu,
   DepositsContent,
   DepositContent,
+  AddWalletContent,
 }

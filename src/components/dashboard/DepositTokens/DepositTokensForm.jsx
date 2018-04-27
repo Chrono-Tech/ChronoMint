@@ -54,7 +54,7 @@ const FEE_RATE_MULTIPLIER = {
 }
 
 function prefix (token) {
-  return `components.dashboard.DepositTokens.${token}`
+  return `components.DepositTokens.${token}`
 }
 
 function mapStateToProps (state) {

@@ -5,8 +5,10 @@
 
 import { CopyIcon, IPFSImage } from 'components'
 import QRCode from 'qrcode'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { TOKEN_ICONS } from 'assets'
+import { SelectField } from 'redux-form-material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -20,6 +22,10 @@ import LIVECOIN_PNG from 'assets/img/marketsLogos/livecoin.png'
 import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from 'models/tokens/TokenModel'
+import { getTokensForBlockchain } from 'redux/tokens/selectors'
+import { MenuItem } from 'material-ui'
+import styles from '../styles'
+
 import './ReceiveTokenModal.scss'
 
 const marketsTIME = [
@@ -46,16 +52,19 @@ const marketsTIME = [
 ]
 
 function prefix (token) {
-  return `components.dashboard.ReceiveTokenModal.${token}`
+  return `components.ReceiveTokenModal.${token}`
 }
 
+export const FORM_RECEIVE_TOKENS = 'FormReceiveTokens'
+
 function mapStateToProps (state, ownProps) {
-  const token = state.get(DUCK_TOKENS).item(ownProps.tokenId)
   const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
+  const selector = formValueSelector(FORM_RECEIVE_TOKENS)
 
   return {
-    token,
-    address: wallet.addresses().item(token.blockchain() || ownProps.blockchain).address(),
+    token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
+    tokens: getTokensForBlockchain(ownProps.blockchain)(state),
+    address: wallet.addresses().item(ownProps.blockchain).address(),
   }
 }
 
@@ -64,12 +73,16 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
+@reduxForm({ form: FORM_RECEIVE_TOKENS })
 export default class ReceiveTokenModal extends PureComponent {
   static propTypes = {
-    tokenId: PropTypes.string.isRequired,
+    tokenId: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
+    tokens: PropTypes.arrayOf(PropTypes.instanceOf(TokenModel)),
     address: PropTypes.string,
-    blockchain: PropTypes.string,
+    blockchain: PropTypes.string.isRequired,
+    dispatch: PropTypes.func,
+    ...formPropTypes,
   }
 
   constructor (props) {
@@ -80,11 +93,20 @@ export default class ReceiveTokenModal extends PureComponent {
   }
 
   componentDidMount () {
+    this.handleSelectToken(this.props.tokens[ 0 ].id())
     QRCode.toDataURL(this.props.address, (err, qrData) => {
       this.setState({
         qrData,
       })
     })
+  }
+
+  handleSelectToken (value) {
+    this.props.dispatch(change(FORM_RECEIVE_TOKENS, 'tokenId', value))
+  }
+
+  handleSubmit () {
+    // do nothing
   }
 
   renderHead () {
@@ -98,10 +120,30 @@ export default class ReceiveTokenModal extends PureComponent {
             <IPFSImage
               styleName='iconImg'
               multihash={token.icon()}
-              fallback={TOKEN_ICONS[ symbol ]}
+              fallback={TOKEN_ICONS[ symbol ] || TOKEN_ICONS.DEFAULT}
             />
           </div>
         </div>
+        {this.props.tokens.length > 1 && (
+          <div styleName='tokenSelector'>
+            <Field
+              fullWidth
+              component={SelectField}
+              name='tokenId'
+              {...styles.whiteSelectorStyle}
+            >
+              {
+                this.props.tokens
+                  .map((token: TokenModel) => {
+                    return (<MenuItem
+                      key={token.symbol()}
+                      value={token.id()}
+                      primaryText={<span>{token.symbol()}</span>}
+                    />)
+                  })}
+            </Field>
+          </div>
+        )}
       </div>
     )
   }
@@ -149,12 +191,12 @@ export default class ReceiveTokenModal extends PureComponent {
   render () {
     return (
       <ModalDialog>
-        <div styleName='root'>
+        <form styleName='root' onSubmit={this.handleSubmit}>
           {this.renderHead()}
           <div styleName='body'>
             {this.renderBody()}
           </div>
-        </div>
+        </form>
       </ModalDialog>
     )
   }

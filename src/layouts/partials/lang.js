@@ -17,6 +17,7 @@ import * as ProfileContent from 'layouts/partials/ProfileContent/lang'
 import DepositsContent from 'layouts/partials/DepositsContent/lang'
 import WalletsContent from 'layouts/partials/WalletsContent/lang'
 import WalletContent from 'layouts/partials/WalletContent/lang'
+import AddWalletContent from 'layouts/partials/AddWalletContent/lang'
 
 export default {
   en: {
@@ -34,5 +35,6 @@ export default {
     ProfileContent: ProfileContent.en,
     DepositsContent: DepositsContent.en,
     WalletsContent: WalletsContent.en,
+    AddWalletContent: AddWalletContent.en,
   },
 }

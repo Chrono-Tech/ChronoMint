@@ -27,7 +27,7 @@ import BigNumber from 'bignumber.js'
 import './Poll.scss'
 
 function prefix (token) {
-  return `components.dashboard.Poll.${token}`
+  return `components.Poll.${token}`
 }
 
 function mapStateToProps (state) {
