@@ -16,4 +16,25 @@ export default {
   menuItemStyle: {
     color: variables.colorPrimary0,
   },
+  whiteSelectorStyle: {
+    iconStyle: {
+      paddingRight: 0,
+      right: -10,
+      fill: variables.colorWhite,
+    },
+    labelStyle: {
+      color: variables.colorWhite,
+      fontWeight: 700,
+    },
+    selectedMenuItemStyle: {
+      color: variables.colorBlack,
+      fontWeight: 700,
+    },
+    menuItemStyle: {
+      color: variables.colorBlack,
+    },
+    underlineStyle: {
+      borderColor: variables.colorWhite,
+    },
+  },
 }

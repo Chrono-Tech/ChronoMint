@@ -17,6 +17,11 @@
 
 .head {
   background: $sideMenu-background;
+  .tokenSelector {
+    margin: 20px 30px 0;
+    max-width: 185px;
+    padding-bottom: 20px;
+  }
 }
 
 .mainTitle {
@@ -29,7 +34,7 @@
 
 .icon {
   position: relative;
-  border-bottom: 1px solid $color-blue-3;
+  border-bottom: 1px solid $border-color;
   overflow: visible;
   height: 0;
   width: 100%;

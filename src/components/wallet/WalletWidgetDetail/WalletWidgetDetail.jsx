@@ -19,7 +19,7 @@ import { integerWithDelimiter } from 'utils/formatter'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import TokensCollection from 'models/tokens/TokensCollection'
 import MainWalletModel from 'models/wallet/MainWalletModel'
-import { getTokenForWalletByBlockchain } from 'redux/tokens/selectors'
+import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
@@ -31,7 +31,7 @@ import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
   return {
-    token: getTokenForWalletByBlockchain(ownProps.blockchain)(state),
+    token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
   }
 }
@@ -102,7 +102,7 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   handleReceive = () => {
-    this.props.receive()
+    this.props.receive(this.props.blockchain)
   }
 
   handleDeposit = () => {

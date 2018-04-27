@@ -19,7 +19,7 @@ export default {
   colorPrimary0Alter2: 'rgba(0, 0, 96, 0.4)',
   colorPrimary1Alter1: 'rgba(119, 143, 255, 0.6)',
   colorPrimary1Alter2: 'rgba(119, 143, 255, 0.4)',
-  colorBlack: '#222',
+  colorBlack: '#333',
 
   fontWeightBold: '600',
 }

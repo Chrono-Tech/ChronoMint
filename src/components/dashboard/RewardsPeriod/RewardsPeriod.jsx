@@ -24,7 +24,7 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
 function prefix (token) {
-  return `components.dashboard.RewardsPeriod.${token}`
+  return `components.RewardsPeriod.${token}`
 }
 
 function mapStateToProps (state) {
