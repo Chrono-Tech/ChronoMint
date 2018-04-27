@@ -50,6 +50,7 @@ export default {
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
+    addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Bonuses',

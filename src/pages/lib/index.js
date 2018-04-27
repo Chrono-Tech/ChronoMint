@@ -13,6 +13,7 @@ import VotingPage from './VotingPage'
 import DepositsPage from './DepositsPage'
 import WalletsPage from './WalletsPage'
 import WalletPage from './WalletPage'
+import AddWalletPage from './AddWalletPage'
 import DepositPage from './DepositPage'
 
 export {
@@ -27,6 +28,7 @@ export {
   AssetsPage,
   DepositsPage,
   DepositPage,
+  AddWalletPage,
 }
 
 export default {
@@ -41,4 +43,5 @@ export default {
   AssetsPage,
   DepositsPage,
   DepositPage,
+  AddWalletPage,
 }
