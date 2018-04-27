@@ -110,7 +110,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     const gasFee = gasPriceBN.mul(gasLimit)
 
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
-
   }
 
   async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {

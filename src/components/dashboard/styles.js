@@ -7,10 +7,12 @@ import variables from 'styles/themes/variables'
 
 export default {
   style: {
-    width: '100%',
+    width: '185px',
+    paddingLeft: '30px'
   },
   labelStyle: {
     width: '100%',
+    fontSize: '25px',
     color: variables.colorWhite,
   },
   menuItemStyle: {

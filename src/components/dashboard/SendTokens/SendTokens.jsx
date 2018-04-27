@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
+import { estimateGas } from 'redux/tokens/actions'
 import BalanceModel from 'models/tokens/BalanceModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
@@ -23,6 +24,7 @@ function mapDispatchToProps (dispatch) {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(token, amount, recipient, feeMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
       dispatch(change(FORM_SEND_TOKENS, 'amount', ''))

@@ -15,7 +15,7 @@ export default {
     transactionFee: 'Transaction fee:',
     transactionFeeDescription: '%{symbol} %{feeValue} (≈USD %{feeAsUSD}) %{averageFee}x of average fee.',
     averageFee: 'of average fee',
-    gasPrice: 'Gas Price: %{multiplier} of average (%{total} Gwei)',
+    gasPrice: 'Gas Price:',
     approve: 'Approve',
     revoke: 'Revoke',
     allowance: 'Allowance',

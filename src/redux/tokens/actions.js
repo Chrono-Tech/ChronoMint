@@ -187,7 +187,7 @@ export const watchLatestBlock = () => async (dispatch) => {
 export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier = 1) => {
   const tokenDao = tokenService.getDAO(tokenId)
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(...params)
+    const { gasLimit, gasFee, gasPrice } = await tokenDao._estimateGas(...params)
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
