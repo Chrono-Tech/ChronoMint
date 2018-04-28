@@ -19,9 +19,9 @@
 
     .row {
       padding: 10px 30px;
-      border-top: 1px solid #F2F2F2;
+      border-top: 1px solid $color-grey-3;
       &:last-child {
-        border-bottom: 1px solid #F2F2F2;
+        border-bottom: 1px solid $color-grey-3;
       }
       .rowTable {
         width: 100%;
@@ -30,11 +30,11 @@
         .values {
           white-space: normal;
           word-break: break-all;
-          color: #7F7F7F;
+          color: $color-grey-2;
           font-size: 14px;
           line-height: 20px;
           .title {
-            color: #333333;
+            color: $color-primary-3;
           }
         }
         .actions {
@@ -52,14 +52,14 @@
         &.redColor {
           background: $color-red
         }
-        background: #bfbfbf;
+        background: $color-grey-7;
         width: 40px;
         height: 40px;
         border-radius: 50%;
         font-size: 30px;
         line-height: 40px;
         text-align: center;
-        color: #e6e6e6;
+        color: $color-white-2;
       }
     }
   }

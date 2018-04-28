@@ -11,7 +11,7 @@
 }
 
 .head {
-  background-color: #614DBA;
+  background-color: $button-color-1;
   width: 430px;
   display: block;
   position: relative;
@@ -24,7 +24,7 @@
   .head-section-text {
     letter-spacing: -1px;
     font-size: 30px;
-    color: #FFFFFF;
+    color: $color-white;
     line-height: 36px;
     font-family: proxima-nova, sans-serif;
     font-weight: 400;
@@ -32,7 +32,7 @@
 
   .head-section {
     padding: 20px 0 20px 30px;
-    border-bottom: 1px solid #6D79BF;
+    border-bottom: 1px solid $color-blue-3;
   }
 
   .head-token-icon {
@@ -58,7 +58,7 @@
     min-height: 20px;
     font-family: proxima-nova, sans-serif;
     font-size: 16px;
-    color: #FFFFFF;
+    color: $color-white;
   }
 
   .wallet-value {
@@ -67,7 +67,7 @@
     min-height: 20px;
     font-family: proxima-nova, sans-serif;
     font-size: 16px;
-    color: #A3A3CC;
+    color: $additionalData-color-1;
   }
 }
 
@@ -85,7 +85,7 @@
   }
 
   .value-amount {
-    color: #FFFFFF;
+    color: $color-white;
     font-weight: 400;
     min-height: 20px;
     font-size: 30px;
@@ -104,7 +104,7 @@
     .price-value {
       font-size: 16px;
       line-height: 16px;
-      color: #FFFFFF;
+      color: $color-white;
       font-weight: 400;
       min-height: 20px;
       font-family: 'proxima nova', sans-serif;
@@ -145,7 +145,7 @@
     font-weight: 700;
     font-size: 14px;
     line-height: 17px;
-    color: #333333;
+    color: $color-primary-3;
   }
 
   .description {
@@ -167,7 +167,7 @@
 }
 
 .advanced-text {
-  color: #786AB7;
+  color: $border-color;
   font-weight: 700;
   text-align: left;
   font-size: 16px;

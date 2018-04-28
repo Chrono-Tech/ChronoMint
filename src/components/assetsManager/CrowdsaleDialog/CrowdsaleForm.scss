@@ -9,7 +9,7 @@
 @mixin title() {
   font-size: 24px;
   font-weight: 600;
-  color: #00005f;
+  color: $color-primary-0;
 }
 
 .content {
@@ -32,7 +32,7 @@
   height: 180px;
   padding: 24px 16px;
   text-align: left;
-  color: #ffffff;
+  color: $color-white;
 }
 
 .dialogHeaderStuff {
@@ -73,7 +73,7 @@
   margin: 0 0 0 10px;
   text-align: right;
   div {
-    color: $color-secondary;
+    color: $color-blue;
   }
 }
 
@@ -195,7 +195,7 @@
   .name {
     font-size: 14px;
     font-weight: 600;
-    color: #00005f;
+    color: $color-primary-0;
     text-align: center;
   }
 }
@@ -240,7 +240,7 @@
 .exchangeEquals {
   padding-top: 55px !important;
   text-align: center;
-  color: #00005f;
+  color: $color-primary-0;
 }
 
 .currencyAcceptedList {
@@ -301,4 +301,3 @@
   width: 100%;
   height: 100% !important;
 }
-

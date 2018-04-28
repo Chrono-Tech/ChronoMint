@@ -9,7 +9,7 @@
   margin-bottom: 30px;
   margin-top: 30px;
   .header-text {
-    color: white;
+    color: $color-white;
   }
   .wallet-list-container {
     display: flex;
@@ -21,7 +21,7 @@
   width: 100%;
   margin-top: 20px;
   min-height: 260px;
-  background-color: #302D59;
+  background-color: $background-color-1;
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
@@ -48,7 +48,7 @@
 .amount-list-container {
   display: flex;
   flex: 4;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
 
   .amount-list {
     display: flex;
@@ -57,7 +57,7 @@
     margin-bottom: 10px;
 
     .amount-text {
-      color: #7F7F7F;
+      color: $color-grey-2;
       font-family: proxima-nova, sans-serif;
       font-weight: 500;
       text-align: left;
@@ -75,7 +75,7 @@
 
   .show-all-a {
     cursor: pointer;
-    color: #786AB7;
+    color: $border-color;
     font-family: 'proxima nova', sans-serif;
     font-weight: 500;
     text-align: right;
@@ -120,7 +120,7 @@
 
 .owner {
   font-size: 16px;
-  color: #AAAAAA;
+  color: $color-grey-6;
   line-height: 24px;
   text-align: center;
   border-radius: 12px;
@@ -177,15 +177,15 @@
 }
 
 .security-icon {
-  color: #FFB54E;
+  color: $button-color-2;
   font-size: 30px;
-  background: #302D59;
+  background: $background-color-1;
   line-height: 15px;
 }
 
 .address-title {
   font-size: 16px;
-  color: white;
+  color: $color-white;
   font-family: 'proxima nova', sans-serif;
   font-weight: 700;
   line-height: 22px;
@@ -193,7 +193,7 @@
 
 .address-address {
   font-size: 14px;
-  color: #A3A3CC;
+  color: $additionalData-color-1;
   font-family: 'proxima nova', sans-serif;
   font-weight: 400;
   line-height: 20px;
@@ -215,13 +215,13 @@
 
 .tokens-list-table-cell-icon {
   display: table-cell;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   width: 10%;
   vertical-align: middle;
 }
 
 .tokens-list-table-cell-amount {
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   display: table-cell;
   padding-top: 15px;
   padding-bottom: 15px;
@@ -232,18 +232,18 @@
   width: 40%;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
-  color: #333333;
+  color: $color-primary-3;
   vertical-align: middle;
 }
 
 .tokens-list-table-cell-usd {
   display: table-cell;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   padding-left: 10px;
 
   width: 50%;
   vertical-align: middle;
-  color: #7F7F7F;
+  color: $color-grey-2;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   text-align: left;
@@ -267,7 +267,7 @@
 
 .crypto-amount {
   font-size: 30px;
-  color: white;
+  color: $color-white;
   line-height: 36px;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
@@ -279,21 +279,21 @@
   .tokensSubTitle {
     font-size: 16px;
     line-height: 19px;
-    color: #A3A3CC;
+    color: $additionalData-color-1;
   }
 }
 
 .usd-amount {
   font-size: 16px;
   font-weight: 400;
-  color: #7F7F7F;
+  color: $color-grey-2;
   line-height: 19px;
   font-family: 'proxima nova', sans-serif;
 }
 
 .depositTokensButton {
   button {
-    color: white;
+    color: $color-white;
   }
 }
 
@@ -312,7 +312,7 @@
     align-items: flex-start;
     .pendingOperationsCount {
       padding: 0 30px;
-      background: #C25451;
+      background: $color-red-2;
       min-height: 17px;
       border-radius: 13px;
       line-height: 14px;
@@ -325,5 +325,3 @@
     }
   }
 }
-
-

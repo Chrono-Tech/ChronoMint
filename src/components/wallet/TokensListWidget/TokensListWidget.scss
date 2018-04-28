@@ -21,11 +21,11 @@
     .tokens-list-table {
       width: 100%;
       display: grid;
-      border-bottom: 1px solid #E5E5E5;
+      border-bottom: 1px solid $button-color-3;
       .tokens-list-table-tr {
         display: grid;
         grid-template-columns: 60px 1fr 1fr;
-        border-top: 1px solid #E5E5E5;
+        border-top: 1px solid $button-color-3;
         font-weight: 500;
         padding: 15px 30px;
         .tokens-list-table-cell-icon {
@@ -45,12 +45,12 @@
           align-items: center;
           font-size: 14px;
           line-height: 17px;
-          color: #333333;
+          color: $color-primary-3;
         }
         .tokens-list-table-cell-usd {
           display: flex;
           align-items: center;
-          color: #7F7F7F;
+          color: $color-grey-2;
           font-size: 14px;
           line-height: 17px
         }
@@ -64,4 +64,3 @@
     min-height: 40px;
   }
 }
-
