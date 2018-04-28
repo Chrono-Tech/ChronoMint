@@ -13,13 +13,16 @@ let HtmlWebpackPlugin = require('html-webpack-plugin')
 
 process.traceDeprecation = true
 
+let srcAppArg = process.argv.find(e => e.startsWith('--src-app='))
+const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
+
 module.exports = config.buildConfig(
   ({ srcPath, buildPath, indexHtmlPath, faviconPath }) => ({
     devtool: process.env.SOURCE_MAP || 'source-map',
     entry: [
       require.resolve('webpack-dev-server/client') + '?http://0.0.0.0:3000',
       require.resolve('webpack/hot/dev-server'),
-      path.join(srcPath, 'index'),
+      path.join(srcPath, srcApp),
     ],
     output: {
       // Next line is not used in dev but WebpackDevServer crashes without it:
