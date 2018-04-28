@@ -6,6 +6,10 @@
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
+.root-container {
+  width: 430px;
+}
+
 .head {
   background-color: #614DBA;
   width: 430px;
@@ -134,9 +138,10 @@
 .transaction-fee {
   display: flex;
   margin-top: 20px;
+  margin-bottom: 20px;
 
   .title {
-    font-family: proxima-nova, sans-serif;
+    font-family: 'proxima nova', sans-serif;
     font-weight: 700;
     font-size: 14px;
     line-height: 17px;
@@ -145,6 +150,11 @@
 
   .description {
     line-height: 17px;
+    color: #333333;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: left;
+    font-family: 'proxima nova', sans-serif;
   }
 }
 

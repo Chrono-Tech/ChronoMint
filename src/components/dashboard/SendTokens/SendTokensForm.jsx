@@ -135,6 +135,8 @@ export default class SendTokensForm extends PureComponent {
       gasFee: null,
       gasPrice: null
     }
+
+    this.timeout = null
   }
 
   componentWillReceiveProps (newProps) {
@@ -149,6 +151,11 @@ export default class SendTokensForm extends PureComponent {
 
     if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
+    }
+
+    if (newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier) {
+      const { token, recipient, amount, feeMultiplier } = newProps
+      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol())], feeMultiplier)
     }
 
     if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
@@ -222,8 +229,9 @@ export default class SendTokensForm extends PureComponent {
   }
 
   calculatingFeeERC20 = async (event, value) => {
-    const { token, recipient, amount, feeMultiplier } = this.props
-    this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol())], feeMultiplier)
+    // const { token, recipient, amount, feeMultiplier } = this.props
+    // console.log('calculatingFeeERC20: ', token, recipient, amount, feeMultiplier)
+    // this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol())], feeMultiplier)
   }
 
   calculatingFee = async (event, value) => {
@@ -241,19 +249,21 @@ export default class SendTokensForm extends PureComponent {
   }
 
   calculatingFeeSlider = async (event, multiplier) => {
-    console.log('calculatingFeeSlider: ', event, multiplier, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
     this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
   }
 
   handleEstimateGas = (tokenId, params, feeMultiplier) => {
-    this.props.estimateGas(tokenId, params, (nullParam, params) => {
-      const { gasFee, gasLimit, gasPrice } = params
-      this.setState({
-        gasFee,
-        gasLimit,
-        gasPrice
-      })
-    }, feeMultiplier)
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      this.props.estimateGas(tokenId, params, (nullParam, params) => {
+        const {gasFee, gasLimit, gasPrice} = params
+        this.setState({
+          gasFee,
+          gasLimit,
+          gasPrice
+        })
+      }, feeMultiplier)
+    }, 1000)
   }
 
   getTransactionFeeDescription = () => {
@@ -428,22 +438,22 @@ export default class SendTokensForm extends PureComponent {
                 </span> &nbsp;
                 {this.getTransactionFeeDescription()}
         </div>
-        <div styleName='template-container'>
-          <div styleName='template-checkbox'>
-            <Field
-              component={Checkbox}
-              name='isTemplateEnabled'
-            />
-          </div>
-          <div styleName='template-name'>
-            <Field
-              component={TextField}
-              name='TemplateName'
-              floatingLabelText={<Translate value={'wallet.templateName'} />}
-              fullWidth
-            />
-          </div>
-        </div>
+        {/*<div styleName='template-container'>*/}
+          {/*<div styleName='template-checkbox'>*/}
+            {/*<Field*/}
+              {/*component={Checkbox}*/}
+              {/*name='isTemplateEnabled'*/}
+            {/*/>*/}
+          {/*</div>*/}
+          {/*<div styleName='template-name'>*/}
+            {/*<Field*/}
+              {/*component={TextField}*/}
+              {/*name='TemplateName'*/}
+              {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
+              {/*fullWidth*/}
+            {/*/>*/}
+          {/*</div>*/}
+        {/*</div>*/}
 
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
@@ -470,8 +480,10 @@ export default class SendTokensForm extends PureComponent {
 
     return (<Paper>
         <form onSubmit={this.props.handleSubmit}>
-          {this.renderHead()}
-          {this.renderBody()}
+          <div styleName="root-container">
+            {this.renderHead()}
+            {this.renderBody()}
+          </div>
         </form>
       </Paper>
     )

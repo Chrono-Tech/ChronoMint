@@ -8,7 +8,7 @@ import variables from 'styles/themes/variables'
 export default {
   style: {
     width: '185px',
-    paddingLeft: '30px'
+    marginLeft: '30px'
   },
   labelStyle: {
     width: '100%',
