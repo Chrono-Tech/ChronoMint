@@ -2,14 +2,13 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
 $copyRightPadding: 200px;
 
 .root {
-  background-image: linear-gradient(224deg, #644ebf, #262448);
+  background-image: $bg-gradient-0;
   position: relative;
   padding-bottom: 130px; // for footer
   display: flex;

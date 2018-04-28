@@ -11,7 +11,7 @@
   width: 587px;
   min-height: 260px;
   margin-top: 30px;
-  background-color: white;
+  background-color: $color-white;
   border-radius: 2px;
   box-shadow: 2px 2px 3px rgba(0,0,0,0.15);
 }
@@ -39,13 +39,13 @@
   display: flex;
   padding-top: 20px;
   padding-bottom: 20px;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
 
   .unlocks-data-text {
     text-align: left;
     font-size: 14px;
     line-height: 17px;
-    color: #7F7F7F;
+    color: $color-grey-2;
     font-weight: 500;
     font-family: 'proxima nova', sans-serif;
   }
@@ -58,7 +58,7 @@
   align-items: center;
 
   .show-all-a {
-    color: #786AB7;
+    color: $border-color;
     font-family: 'proxima nova', sans-serif;
     font-weight: 500;
     text-align: right;
@@ -70,7 +70,7 @@
 .amount-list-container {
   display: flex;
   flex: 4;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
 
   .amount-list {
     display: flex;
@@ -79,7 +79,7 @@
     margin-bottom: 20px;
 
     .amount-text {
-      color: #7F7F7F;
+      color: $color-grey-2;
       font-family: proxima-nova, sans-serif;
       font-weight: 500;
       text-align: left;
@@ -133,7 +133,7 @@
 .transaction-text {
   font-weight: 500;
   font-family: 'proxima nova', sans-serif;
-  color: #C25451;
+  color: $color-red-2;
   text-align: left;
   font-size: 14px;
   line-height: 17px;
@@ -214,13 +214,13 @@
 }
 
 .security-icon {
-  color: #FFB54E;
+  color: $button-color-2;
   font-size: 30px;
 }
 
 .address-title {
   font-size: 16px;
-  color: #333333;
+  color: $color-primary-3;
   font-family: 'proxima nova', sans-serif;
   font-weight: 700;
   line-height: 22px;
@@ -228,7 +228,7 @@
 
 .address-address {
   font-size: 14px;
-  color: #7F7F7F;
+  color: $color-grey-2;
   font-family: 'proxima nova', sans-serif;
   font-weight: 400;
   line-height: 20px;
@@ -250,13 +250,13 @@
 
 .tokens-list-table-cell-icon {
   display: table-cell;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   width: 10%;
   vertical-align: middle;
 }
 
 .tokens-list-table-cell-amount {
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   display: table-cell;
   padding-top: 15px;
   padding-bottom: 15px;
@@ -267,18 +267,18 @@
   width: 30%;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
-  color: #333333;
+  color: $color-primary-3;
   vertical-align: middle;
 }
 
 .tokens-list-table-cell-usd {
   display: table-cell;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $button-color-3;
   padding-left: 10px;
 
   width: 60%;
   vertical-align: middle;
-  color: #7F7F7F;
+  color: $color-grey-2;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   text-align: left;
@@ -304,7 +304,7 @@
 .crypto-amount {
   font-size: 30px;
   line-height: 36px;
-  color: #333333;
+  color: $color-primary-3;
   font-family: 'proxima nova', sans-serif;
   font-weight: 500;
   word-wrap: break-word;
@@ -313,7 +313,7 @@
 .usd-amount {
   font-size: 16px;
   font-weight: 400;
-  color: #7F7F7F;
+  color: $color-grey-2;
   line-height: 19px;
   font-family: 'proxima nova', sans-serif;
 }

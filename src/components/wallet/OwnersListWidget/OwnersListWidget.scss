@@ -19,7 +19,7 @@
 
     .row {
       padding: 10px 30px;
-      border-top: 1px solid #F2F2F2;
+      border-top: 1px solid $color-grey-3;
       .rowTable {
         width: 100%;
         display: grid;
@@ -29,22 +29,22 @@
           align-items: center;
           white-space: normal;
           word-break: break-all;
-          color: #7F7F7F;
+          color: $color-grey-2;
         }
       }
       .iconWrapper {
-        background: #bfbfbf;
+        background: $color-grey-7;
         width: 40px;
         height: 40px;
         border-radius: 50%;
         font-size: 30px;
         line-height: 40px;
         text-align: center;
-        color: #e6e6e6;
+        color: $color-white-2;
       }
     }
     .signatures {
-      border-top: 1px solid #F2F2F2;
+      border-top: 1px solid $color-grey-3;
       padding: 12px 30px;
       font-size: 14px;
     }

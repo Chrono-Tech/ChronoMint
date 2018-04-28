@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -42,7 +41,7 @@
   position: relative;
   display: table;
   width: 100%;
-  background-color: #05326a;
+  background-color: $color-panel-bg-2;
 }
 
 .image {
