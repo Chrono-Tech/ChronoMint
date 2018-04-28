@@ -1,0 +1,53 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  .walletType {
+    border-bottom: 1px solid $color-grey-3;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    padding: 30px;
+    cursor: pointer;
+    &:hover {
+      background-color: $color-grey-9;
+    }
+    .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 16px;
+      background: $button-color-2;
+      color: $color-white;
+      font-size: 25px;
+      text-align: center;
+      line-height: 32px;
+      flex-shrink: 0;
+    }
+    .info {
+      flex-grow: 1;
+      padding-left: 20px;
+      .title {
+        color: $color-primary-3;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 28px;
+      }
+    }
+    .description {
+      color: $color-primary-3;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 22px;
+    }
+  }
+  .arrow {
+    width: 15px;
+    color: $color-grey-4;
+    font-size: 28px;
+    line-height: 30px;
+    flex-shrink: 0;
+  }
+}
