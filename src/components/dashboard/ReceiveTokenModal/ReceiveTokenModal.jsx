@@ -130,7 +130,7 @@ export default class ReceiveTokenModal extends PureComponent {
               fullWidth
               component={SelectField}
               name='tokenId'
-              {...styles.whiteSelectorStyle}
+              {...styles.whiteselectorstyle}
             >
               {
                 this.props.tokens

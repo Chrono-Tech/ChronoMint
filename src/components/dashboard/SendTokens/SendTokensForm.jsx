@@ -248,6 +248,10 @@ export default class SendTokensForm extends PureComponent {
     })
   }
 
+  isTransactionFeeAvailable = () => {
+    return ['Blockchain', 'Ethereum'].includes(this.props.token.blockchain())
+  }
+
   calculatingFeeSlider = async (event, multiplier) => {
     this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
   }
@@ -432,12 +436,12 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         ) }
-        <div styleName="transaction-fee">
+        { this.isTransactionFeeAvailable() && <div styleName="transaction-fee">
                 <span styleName='title'>
                   <Translate value={`${prefix}.transactionFee`} />
                 </span> &nbsp;
                 {this.getTransactionFeeDescription()}
-        </div>
+        </div> }
         {/*<div styleName='template-container'>*/}
           {/*<div styleName='template-checkbox'>*/}
             {/*<Field*/}

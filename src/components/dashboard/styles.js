@@ -18,7 +18,7 @@ export default {
   menuItemStyle: {
     color: variables.colorPrimary0,
   },
-  whiteSelectorStyle: {
+  whiteselectorstyle: {
     iconStyle: {
       paddingRight: 0,
       right: -10,
