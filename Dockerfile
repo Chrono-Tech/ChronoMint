@@ -1,6 +1,7 @@
 FROM node:8.9.1-slim 
 ARG BUILD_BRANCH=develop
 ARG NODE=production
+ARG PUBLIC_BACKEND_REST_URL=https://backend.chronobank.io
 RUN apt-get update -qq && \
     apt-get install -y build-essential python git libusb-1.0-0 libusb-1.0-0-dev gcc-4.8 g++-4.8 && \
     mkdir -p /usr/src/app && \
@@ -9,7 +10,6 @@ WORKDIR /usr/src/app
 RUN yarn
 ENV PATH /root/.yarn/bin:$PATH
 ENV NODE_ENV ${NODE}
-ENV PUBLIC_BACKEND_REST_URL https://backend.chronobank.io
 RUN yarn build
 
 FROM nginx:latest
