@@ -168,8 +168,5 @@
 
 @font-face {
   font-family: 'ChronoBankIcons';
-  src: url('assets/fonts/ChronoBankIcons-v2.eot');
-  src: url('assets/fonts/ChronoBankIcons-v2.ttf');
-  src: url('assets/fonts/ChronoBankIcons-v2.woff');
-  src: url('assets/fonts/ChronoBankIcons-v2.svg');
+  src: url('assets/fonts/ChronoBankIcons.eot') format('embedded-opentype'), url('assets/fonts/ChronoBankIcons.ttf') format('truetype'), url('assets/fonts/ChronoBankIcons.woff') format('woff'), url('assets/fonts/ChronoBankIcons.svg') format('svg'),
 }
