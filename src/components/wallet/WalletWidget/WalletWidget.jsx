@@ -267,7 +267,7 @@ export default class WalletWidget extends PureComponent {
                     return (
                       <div styleName='tokens-list-table-tr' key={token.id()}>
                         <div styleName='tokens-list-table-cell-icon'>
-                          <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
+                          <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
                         </div>
                         <div styleName='tokens-list-table-cell-amount'>
                           {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
