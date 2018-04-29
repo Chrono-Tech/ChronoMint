@@ -18,13 +18,13 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_I18N } from 'redux/i18n/actions'
+import { DUCK_I18N } from 'redux/configureStore'
 import { DUCK_REWARDS } from 'redux/rewards/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
 function prefix (token) {
-  return `components.dashboard.RewardsPeriod.${token}`
+  return `components.RewardsPeriod.${token}`
 }
 
 function mapStateToProps (state) {

@@ -8,6 +8,6 @@ export default {
     title: 'Are you here?',
     text: 'Your session will be terminated after ',
     here: 'I\'m here!',
-  }
+  },
 }
 

@@ -5,29 +5,35 @@
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import classNames from 'classnames'
-import { DepositTokens, Points, SendTokens, TransactionsTable, WalletChanger, WalletPendingTransfers } from 'components'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
+import { push } from 'react-router-redux'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { initMultisigWalletManager } from 'redux/multisigWallet/actions'
 import { DUCK_WALLET } from 'redux/wallet/actions'
+import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
+import { TransactionsTable } from 'components'
+import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
+import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
+import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 
 import './WalletContent.scss'
-
-function prefix (token) {
-  return `layouts.partials.WalletContent.${token}`
-}
-
-const CLASS_NAME_FULL_COL = 'col-xs-12 col-md-6'
-const CLASS_NAME_HALF_COL = 'col-xs-6 col-md-3'
+import { prefix } from './lang'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
+  const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
+  const wallet = walletDetailSelector(blockchain, address)(state)
 
   return {
-    isMultisig: state.get(DUCK_WALLET).isMultisig,
+    isMultisig,
+    blockchain,
+    address,
+    wallet,
+    walletInfo: walletInfoSelector(wallet, blockchain, address, state),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -36,7 +42,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    initMultisigWalletManager: () => dispatch(initMultisigWalletManager()),
+    goToWallets: () => dispatch(push('/wallets')),
   }
 }
 
@@ -47,123 +53,49 @@ export default class WalletContent extends Component {
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    initMultisigWalletManager: PropTypes.func,
+    blockchain: PropTypes.string,
+    address: PropTypes.string,
+    goToWallets: PropTypes.func,
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+    ]),
+    walletInfo: PropTypes.shape({
+      address: PropTypes.string,
+      balance: PropTypes.number,
+      tokens: PropTypes.array,
+    }),
+
   }
 
-  componentWillMount () {
-    this.props.initMultisigWalletManager()
-  }
+  constructor (props) {
+    super(props)
 
-  renderWalletsInstructions () {
-    return (
-      <div styleName='instructions'>
-        <h3><Translate value='layouts.partials.WalletContent.youCanUseTheMultisignatureWallets' /></h3>
-        <div styleName='instructionsDescription'>
-          <p><Translate value='layouts.partials.WalletContent.walletsAreSmartContractsWhichManageAssets' /></p>
-        </div>
-      </div>
-    )
-  }
-
-  renderDepositInstructions () {
-    return (
-      <div styleName='instructions'>
-        <h3><Translate value={prefix('howToMakeTime')} /></h3>
-        <div styleName='instructionsDescription'>
-          <p><Translate value={prefix('toUseStakeholders')} /></p>
-        </div>
-        <Points>
-          <Translate value={prefix('enterTheAmount')} />
-          <Translate value={prefix('checkValueAndPress')} />
-          <Translate value={prefix('waitUntilAllowance')} />
-        </Points>
-      </div>
-    )
-  }
-
-  renderTransactionInstructions () {
-    return (
-      <div styleName='instructions'>
-        <h3><Translate value={prefix('howToMakeATransfer')} /></h3>
-        <div styleName='instructionsDescription'>
-          <p><Translate value={prefix('ifYouPlanToMoveALargeAmountOfEther')} /></p>
-        </div>
-        <Points>
-          <Translate value={prefix('enterTheAddressYouWouldLikeToSendTo')} />
-          <Translate value={prefix('enterTheAmountYouWouldLikeToSend')} />
-          <span>
-            <Translate value={prefix('checkValuesAndPressSend')} /><br />
-            <Translate value={prefix('ifYouWantToAllowAContract')} />
-          </span>
-        </Points>
-      </div>
-    )
+    if (!props.blockchain || !props.address) {
+      props.goToWallets()
+    }
   }
 
   render () {
-    const { isMultisig } = this.props
+    const { blockchain, address, wallet, walletInfo } = this.props
+
+    if (!wallet || !walletInfo) {
+      return null
+    }
 
     return (
       <div styleName='root'>
-        <div styleName='content'>
-          <div className='WalletContent__grid'>
-            <div className='row'>
-              <div className={classNames(!isMultisig ? CLASS_NAME_FULL_COL : CLASS_NAME_HALF_COL)}>
+        <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
 
-                <div className='WalletContent__grid'>
-                  <div className='row'>
-                    <div
-                      className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
-                      styleName='headLight'
-                    >
-                      <WalletChanger />
-                    </div>
-                    {!isMultisig && (
-                      <div className={CLASS_NAME_HALF_COL}>
-                        {this.renderWalletsInstructions()}
-                      </div>
-                    )}
-                  </div>
-                  <div className='row'>
-                    <div
-                      className={classNames(!isMultisig ? CLASS_NAME_HALF_COL : CLASS_NAME_FULL_COL)}
-                      styleName='headLight'
-                    >
-                      <SendTokens />
-                    </div>
-                    {!isMultisig && (
-                      <div className={CLASS_NAME_HALF_COL}>
-                        {this.renderTransactionInstructions()}
-                      </div>
-                    )}
-                  </div>
-                </div>
+        <TokensListWidget tokensList={walletInfo.tokens} />
 
-              </div>
-              {isMultisig && (
-                <div className={CLASS_NAME_HALF_COL} styleName='headLight'>
-                  <WalletPendingTransfers />
-                </div>
-              )}
-            </div>
+        {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
 
-            {!isMultisig && (
-              <div className='row'>
-                <div className={CLASS_NAME_HALF_COL} styleName='headDark'>
-                  <DepositTokens />
-                </div>
-                <div className={CLASS_NAME_HALF_COL}>
-                  {this.renderDepositInstructions()}
-                </div>
-              </div>
-            )}
+        {wallet.isMultisig() && <OwnersListWidget wallet={wallet} />}
 
-            <div className='row'>
-              <div className='col-md-6 col-xl-4'>
-                <TransactionsTable />
-              </div>
-            </div>
-          </div>
+        <div styleName='transactions'>
+          <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
+          <TransactionsTable transactions={wallet.transactions()} />
         </div>
       </div>
     )

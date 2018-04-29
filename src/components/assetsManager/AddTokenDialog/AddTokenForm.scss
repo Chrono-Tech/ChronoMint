@@ -81,7 +81,7 @@
 }
 
 .dialogFooter {
-  padding: 24px 16px;
+  padding: 24px 16px 16px;
   text-align: right;
 
   @include xs-only {
@@ -173,7 +173,7 @@
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  color: #2962ff;
+  color: $color-blue;
   cursor: pointer;
   i {
     font-size: 34px;

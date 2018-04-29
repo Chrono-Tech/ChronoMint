@@ -1,0 +1,174 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  display: flex;
+  flex: 1;
+  height: 100%;
+  flex-direction: row;
+  border-style: solid;
+  border-color: $border-color;
+  background-color: transparent;
+  border-width: 1px 0px 0px;
+}
+
+.transparent-part {
+  opacity: 0;
+  display: flex;
+  height: 100%;
+  background: inherit;
+  border: 1px solid green;
+  width: 300px;
+}
+
+.content-part {
+  opacity: 1;
+  width: 300px;
+}
+
+.title {
+  background: $color-purpule;
+  display: flex;
+  height: 60px;
+  align-items: center;
+  padding: 0 0 0 20px;
+}
+
+.titleText {
+  color: $color-white;
+  font-weight: 700;
+  padding-left: 20px;
+  flex: 1;
+}
+
+.tokenIcon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.close {
+  cursor: pointer;
+  color: $color-white;
+}
+
+.walletIrem {
+}
+
+.walletTitle {
+  background-color: $color-white-1;
+  border-color: $color-grey-1;
+  border-style: solid;
+  border-width: 0 0 1px;
+  height: 90px;
+  padding: 30px 0;
+  padding-left: 20px;
+  padding-right: 50px;
+  position: relative;
+  text-decoration: none;
+  display: block;
+}
+
+.walletName {
+  line-height: 19px;
+  color: $color-primary-3;
+  font-weight: bolder;
+}
+
+.walletAddress {
+  line-height: 14px;
+  font-size: 12px;
+  font-weight: 400;
+  color: $color-grey-2;
+  word-break: break-all;
+}
+
+.walletLink {
+  width: 24px;
+  height: 24px;
+  transform: rotate(0.5turn);
+  position: absolute;
+  right: 10px;
+  top: 33px;
+  opacity: 0.2;
+}
+
+.action {
+  display: flex;
+  height: 40px;
+  line-height: 17px;
+  border: 0 solid $color-grey-1;
+  border-bottom-width: 1px;
+  cursor: pointer;
+  text-decoration: none;
+  &:hover {
+    background: $color-modal-backdrop-bg-1
+  }
+  align-items: center;
+  padding-left: 20px;
+}
+
+.actionIcon {
+  width: 24px;
+  height: 24px;
+  div {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+.actionTitle {
+  color: $color-primary-3;
+  font-size: 14px;
+  font-weight: 500;
+  padding-left: 20px;
+}
+
+.network {
+  padding: 28px 20px;
+  display: flex;
+  justify-content: space-between;
+  background-color: $color-white-1;
+  border-color: $color-grey-1;
+  line-height: 19px;
+  border-style: solid;
+  border-width: 0 0 1px;
+}
+
+.networkTitle {
+  color: $color-primary-3;
+  font-weight: 700;
+}
+
+.networkStatus {
+  .icon {
+    color: $color-white;
+    font-weight: bolder;
+    text-transform: uppercase;
+    padding: 5px 20px;
+    height: 22px;
+    border-radius: 14px;
+    font-size: 10px;
+    text-align: center;
+    line-height: 12px;
+    &.status-offline {
+      background-color: $badge-red;
+    }
+    &.status-syncing {
+      background-color: $badge-orange;
+    }
+    &.status-synced {
+      background-color: $badge-green;
+    }
+  }
+}

@@ -8,7 +8,19 @@ import TokenModel from './TokenModel'
 
 export default class TokensCollection extends abstractFetchingCollection({
   emptyModel: new TokenModel(),
+  latestBlocks: {},
 }) {
+  latestBlocks (value) {
+    return this._getSet('latestBlocks', value)
+  }
+
+  latestBlocksForSymbol (symbol) {
+    if (!symbol) {
+      return null
+    }
+    return this.latestBlocks()[ this.item(symbol).blockchain() ]
+  }
+
   getBySymbol (symbol: string) {
     let resultItem = this.get('emptyModel')
     this.items().some((item: TokenModel) => {

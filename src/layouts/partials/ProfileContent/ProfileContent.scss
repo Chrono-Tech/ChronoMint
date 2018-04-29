@@ -151,7 +151,7 @@
   font-size: 12px;
   text-align: left;
   line-height: 11px;
-  color: #7F7F7F;
+  color: $color-grey-2;
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -199,7 +199,7 @@
 .address-split-hr {
   display: block;
   margin-top: 40px;
-  border-top: 1px solid #E5E5E5;
+  border-top: 1px solid $color-grey-1;
 }
 
 .main-address-account {
@@ -229,7 +229,7 @@
   font-size: 12px;
   text-align: left;
   line-height: 11px;
-  color: #7F7F7F;
+  color: $color-grey-2;
   font-weight: 400;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -247,7 +247,7 @@
 .network-name {
   display: flex;
   line-height: 17px;
-  background-color: #68CC8E;
+  background-color: $color-green-1;
 }
 
 .network-name-text {

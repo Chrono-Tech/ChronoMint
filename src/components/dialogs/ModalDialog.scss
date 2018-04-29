@@ -2,37 +2,45 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
 .root {
   @include position(fixed);
-
   z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
-  -webkit-overflow-scrolling: touch;
+  padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
   background: $color-modal-backdrop-bg;
+  > span {
+    display: contents;
+  }
 }
 
 .dialog {
   position: relative;
   margin: auto 20px;
-  box-shadow: $box-shadow-1;
+  border-radius: 2px;
+  overflow: hidden;
+  background: $sideMenu-background;
+  @include xs-only {
+    border-radius: 0;
+  }
 }
 
 .content {
   position: relative;
+  background: $color-white;
+  border-radius: 2px;
+  overflow: hidden;
 }
 
 .close {
   position: absolute;
-  top: 14px;
+  top: 16px;
   right: 16px;
   color: $color-white;
   cursor: pointer;
@@ -41,4 +49,12 @@
   &:hover {
     opacity: 1;
   }
+}
+
+.header {
+  min-height: 68px;
+  color: $color-white;
+  font-weight: bold;
+  padding: 20px 30px;
+  font-size: 26px;
 }

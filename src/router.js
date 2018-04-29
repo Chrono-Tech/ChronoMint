@@ -12,14 +12,17 @@ import LoginPage from 'pages/LoginPage/LoginPage'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
-  DashboardPage,
   ExchangePage,
   LOCPage,
   OperationsPage,
   RewardsPage,
   SettingsPage,
   VotingPage,
+  WalletsPage,
   WalletPage,
+  DepositsPage,
+  DepositPage,
+  AddWalletPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from './utils/LocalStorage'
@@ -51,8 +54,11 @@ const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
       <Route component={Markup} onEnter={requireAuth}>
+        <Route path='wallets' component={WalletsPage} />
         <Route path='wallet' component={WalletPage} />
-        <Route path='dashboard' component={DashboardPage} />
+        <Route path='add-wallet' component={AddWalletPage} />
+        <Route path='deposits' component={DepositsPage} />
+        <Route path='deposit' component={DepositPage} />
         <Route path='exchange' component={ExchangePage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />

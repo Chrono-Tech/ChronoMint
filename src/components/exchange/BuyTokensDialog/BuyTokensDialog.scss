@@ -8,7 +8,7 @@
 
 .root {
   max-width: 928px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
   @include md-plus {
     width: 928px;
   }
@@ -42,7 +42,6 @@
 }
 
 .header {
-  background-color: $color-primary-1;
 }
 
 .balanceHeader {
@@ -91,8 +90,10 @@
 
 .content {
   color: $color-primary-0;
-  padding: 35px 8px;
+  padding: 35px 8px 16px;
   display: block;
+  background: $color-white;
+  border-radius: 2px 2px 0 0;
 }
 
 .actions {

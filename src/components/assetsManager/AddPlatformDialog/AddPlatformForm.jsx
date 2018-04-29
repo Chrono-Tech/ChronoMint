@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -14,7 +14,7 @@ import { createPlatform } from 'redux/assetsManager/actions'
 import './AddPlatformForm.scss'
 import validate from './validate'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.AddPlatformForm.${token}`
 }
 
@@ -49,13 +49,6 @@ export default class AddPlatformForm extends PureComponent {
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           <Field
@@ -80,7 +73,7 @@ export default class AddPlatformForm extends PureComponent {
         <div
           styleName='dialogFooter'
         >
-          <RaisedButton
+          <Button
             disabled={!!this.props.formErrors}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}

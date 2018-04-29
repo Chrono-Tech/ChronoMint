@@ -7,7 +7,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 
 import Amount from 'models/Amount'
 import BalanceModel from 'models/tokens/BalanceModel'
@@ -16,7 +17,7 @@ import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
 
 import { modalsClose } from 'redux/modals/actions'
-import { getMainWalletBalance, getCurrentWalletBalance } from 'redux/wallet/selectors'
+import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -83,15 +84,15 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   getDetails ({
-    tx,
-    amountToken,
-    amountBalance,
-    amountBalanceAfter,
-    feeToken,
-    feeBalance,
-    feeBalanceAfter,
-    feeMultiplier,
-  }) {
+                tx,
+                amountToken,
+                amountBalance,
+                amountBalanceAfter,
+                feeToken,
+                feeBalance,
+                feeBalanceAfter,
+                feeMultiplier,
+              }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
       { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },
@@ -170,11 +171,8 @@ export default class ConfirmTransferDialog extends PureComponent {
     const hasFeeSlider = feeMultiplier && feeToken.feeRate()
 
     return (
-      <ModalDialog onModalClose={this.handleClose}>
+      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>
         <div styleName='root'>
-          <div styleName='header'>
-            <h3 styleName='headerHead'><Translate value={tx.title()} /></h3>
-          </div>
           <div styleName='content'>
             <div>
               <Table selectable={false} className='adaptiveTable'>
@@ -211,14 +209,15 @@ export default class ConfirmTransferDialog extends PureComponent {
 
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
               onTouchTap={this.handleClose}
             />
-            <FlatButton
+            <Button
+              flat
               styleName='action'
-              primary
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}
               onTouchTap={isValid ? this.handleConfirm : undefined}

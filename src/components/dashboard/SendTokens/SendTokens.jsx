@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { ModalDialog } from 'components'
 import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } from 'components/dashboard/SendTokens/SendTokensForm'
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
@@ -12,6 +13,7 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
+import { estimateGas } from 'redux/tokens/actions'
 import BalanceModel from 'models/tokens/BalanceModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
@@ -22,6 +24,7 @@ function mapDispatchToProps (dispatch) {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(token, amount, recipient, feeMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
       dispatch(change(FORM_SEND_TOKENS, 'amount', ''))
@@ -32,7 +35,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    visibleBalances: getVisibleBalances(BALANCES_COMPARATOR_SYMBOL)(state),
     wallet: getCurrentWallet(state),
     tokens: state.get(DUCK_TOKENS),
   }
@@ -42,14 +44,15 @@ function mapStateToProps (state) {
 export default class SendTokens extends PureComponent {
   static propTypes = {
     wallet: PropTypes.object,
-    visibleBalances: PropTypes.arrayOf(
-      PropTypes.instanceOf(BalanceModel),
-    ),
+    isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
     resetForm: PropTypes.func,
     multisigTransfer: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
+    token: PropTypes.string,
+    blockchain: PropTypes.string,
+    address: PropTypes.string,
   }
 
   handleSubmit = (values) => {
@@ -75,12 +78,25 @@ export default class SendTokens extends PureComponent {
   }
 
   render () {
-    const { visibleBalances } = this.props
+    const { isModal, token } = this.props
     const initialValues = {
       feeMultiplier: 1,
+      symbol: token
     }
-    if (visibleBalances.length > 0) {
-      initialValues.symbol = visibleBalances[ 0 ].id()
+
+    if (isModal) {
+      return (
+        <ModalDialog>
+          <SendTokensForm
+            initialValues={initialValues}
+            onSubmit={this.handleSubmit}
+            onSubmitSuccess={this.handleSubmitSuccess}
+            token={this.props.token}
+            blockchain={this.props.blockchain}
+            address={this.props.address}
+          />
+        </ModalDialog>
+      )
     }
 
     return (
@@ -88,6 +104,9 @@ export default class SendTokens extends PureComponent {
         initialValues={initialValues}
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
+        token={this.props.token}
+        blockchain={this.props.blockchain}
+        address={this.props.address}
       />
     )
   }

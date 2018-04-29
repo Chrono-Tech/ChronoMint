@@ -4,14 +4,14 @@
  */
 
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-import { assets } from '../../settings'
+import { Button } from '../../settings'
 
 import './LoginWithMnemonic.scss'
 
@@ -88,17 +88,18 @@ class LoginWithMnemonic extends PureComponent {
         </div>
         <div styleName='actions'>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value='LoginWithMnemonic.generateMnemonic' />}
+            <Button
+              styleName='whiteButton'
+              flat
               fullWidth
               disabled={isLoading}
               onTouchTap={() => this.props.onGenerate()}
-              icon={<img styleName='generateIcon' src={assets.MnemonicGenerateIcon} />}
-              {...styles.flatButton}
-            />
+            >
+              <Translate value='LoginWithMnemonic.generateMnemonic' />
+            </Button>
           </div>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading
                 ? <CircularProgress
                   style={{ verticalAlign: 'middle', marginTop: -2 }}
@@ -106,11 +107,8 @@ class LoginWithMnemonic extends PureComponent {
                   thickness={1.5}
                 />
                 : <Translate value='LoginWithMnemonic.loginWithMnemonic' />}
-              fullWidth
-              primary
               disabled={!isValidated || isLoading}
               onTouchTap={() => this.props.onLogin(mnemonicKey)}
-              {...styles.primaryButton}
             />
           </div>
         </div>

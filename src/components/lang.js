@@ -17,12 +17,20 @@ import * as exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
+import DepositsList from 'components/Deposits/DepositsList/lang'
+import Deposit from 'components/Deposits/Deposit/lang'
+import TxConfirmations from 'components/common/TxConfirmations/lang'
+import WalletWidget from 'components/wallet/WalletWidget/lang'
+import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/lang'
+import TokensListWidget from 'components/wallet/TokensListWidget/lang'
+import PendingTxWidget from 'components/wallet/PendingTxWidget/lang'
+import OwnersListWidget from 'components/wallet/OwnersListWidget/lang'
+import AddWalletWidget from 'components/wallet/AddWalletWidget/lang'
 
 export default {
   en: {
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
-    Dashboard: Dashboard.en,
     Assets: Assets.en,
     WalletAddEditForm: WalletAddEditForm.en,
     UpdateProvideDialog: UpdateProvideDialog.en,
@@ -37,5 +45,14 @@ export default {
     TwoFA: TwoFA.en,
     EditSignaturesDialog: EditSignaturesDialog.en,
     SendTokens: SendTokens.en,
-  }
+    DepositsList: DepositsList.en,
+    Deposit: Deposit.en,
+    TxConfirmations: TxConfirmations.en,
+    WalletWidget: WalletWidget.en,
+    WalletWidgetDetail: WalletWidgetDetail.en,
+    TokensListWidget: TokensListWidget.en,
+    PendingTxWidget: PendingTxWidget.en,
+    OwnersListWidget: OwnersListWidget.en,
+    AddWalletWidget: AddWalletWidget.en,
+  },
 }

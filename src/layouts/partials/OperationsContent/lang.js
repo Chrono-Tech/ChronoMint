@@ -7,6 +7,6 @@ export default {
   en: {
     pendingOperations: 'Pending operations',
     completedOperations: 'Completed operations',
-  }
+  },
 }
 

@@ -7,6 +7,8 @@ import * as a from './actions'
 
 const initialState = {
   isMultisig: false,
+  blockchain: null,
+  address: null,
 }
 
 export default (state = initialState, action) => {
@@ -15,6 +17,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isMultisig: action.isMultisig,
+      }
+    case a.WALLET_SELECT_WALLET:
+      return {
+        ...state,
+        blockchain: action.blockchain,
+        address: action.address,
       }
     default:
       return state

@@ -12,5 +12,5 @@ export default {
     dialogTitle: 'Required signatures',
     submit: 'update',
     description: WalletAddEditForm.en.requiredSignaturesDescription,
-  }
+  },
 }

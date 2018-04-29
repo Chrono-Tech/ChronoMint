@@ -47,10 +47,10 @@
   border-bottom: solid 1px transparent;
   &.selected {
     border-radius: 2px;
-    background-color: #e9efff;
-    border-top: solid 1px #2962ff;
-    border-right: solid 1px #2962ff;
-    border-bottom: solid 1px #2962ff;
+    background-color: $color-primary-light;
+    border-top: solid 1px $color-blue;
+    border-right: solid 1px $color-blue;
+    border-bottom: solid 1px $color-blue;
   }
 }
 
@@ -72,7 +72,7 @@
   height: 100%;
   cursor: pointer;
   font-size: 16px;
-  color: #00005f;
+  color: $color-primary-0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -103,7 +103,7 @@
   height: 80px;
   justify-content: center;
   &:hover, &.selected {
-    background: #e9efff;
+    background: $color-primary-light;
   }
 }
 

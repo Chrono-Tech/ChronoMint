@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CircularProgress, RaisedButton, FlatButton, FontIcon } from 'material-ui'
+import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -45,10 +46,9 @@ export default class CBEAddresses extends PureComponent {
         <div styleName='panelHead'>
           <h3 styleName='headTitle'><Translate value={prefix('cbeAddresses')} /></h3>
           <div styleName='headActions'>
-            <FlatButton
-              icon={<FontIcon className='material-icons'>add</FontIcon>}
+            <Button
+              flat
               label={<Translate value={prefix('addCbe')} />}
-              primary
               onTouchTap={() => this.props.form(new CBEModel())}
             />
           </div>
@@ -99,7 +99,7 @@ export default class CBEAddresses extends PureComponent {
                           ? (<CircularProgress size={24} thickness={1.5} style={{ float: 'right' }} />)
                           : (
                             <div styleName='actionsItem'>
-                              <RaisedButton
+                              <Button
                                 label={<Translate value={prefix('remove')} />}
                                 disabled={this.props.account === address}
                                 onTouchTap={() => this.props.revoke(item)}

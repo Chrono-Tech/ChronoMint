@@ -23,5 +23,5 @@ export default {
     owners_1: 'Owner',
     owners_2: 'Owners',
     selectWallet: 'Select Wallet',
-  }
+  },
 }

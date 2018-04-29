@@ -101,6 +101,7 @@ export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 })
 
 export function selectBTCNode (engine) {
+  console.log('engine.getNetwork(): ', engine.getNetwork(), engine.getNetwork() !== networks.bitcoin)
   return engine.getNetwork() !== networks.bitcoin
     ? BTC_TESTNET_NODE
     : BTC_MAINNET_NODE

@@ -14,6 +14,6 @@ export default {
     generalInquiries: 'General inquiries',
     menu: 'Menu',
     socialNetwork: 'Social Network',
-  }
+  },
 }
 

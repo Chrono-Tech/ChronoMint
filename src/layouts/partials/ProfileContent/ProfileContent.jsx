@@ -60,7 +60,8 @@ class ProfileContent extends PureComponent {
   }
 
   static defaultProps = {
-    onProfileClose: () => {},
+    onProfileClose: () => {
+    },
   }
 
   handleProfileClose = () => {
@@ -157,7 +158,7 @@ class ProfileContent extends PureComponent {
                 </div>
                 <div styleName='address-icons'>
                   <div styleName='address-qr-code'>
-                    <QRIcon iconStyle='average' value={token.address} />
+                    {token.address && <QRIcon iconStyle='average' value={token.address} />}
                   </div>
                   <div styleName='address-copy-icon'>
                     <CopyIcon iconStyle='average' value={token.address} />

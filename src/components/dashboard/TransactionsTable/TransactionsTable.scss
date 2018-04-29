@@ -2,239 +2,110 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
-$cell-padding: 24px 0px;
-
 .root {
-  margin-top: 24px;
-
-  .header {
-    padding: 24px 24px 115px 24px;
-    background-color: $color-panel-bg-3;
-
-    @include md-only {
-      padding: 24px 24px;
-    }
-
-    h3 {
-      color: $color-white;
-      font-size: 34px;
-      font-weight: 300;
-      display: block;
-      padding: 0;
-      margin: 0;
-    }
-  }
-
+  color: $color-primary-3;
+  background: $color-white;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
   .content {
-    padding: 0 8px;
-    color: $color-primary-0;
-
     .table {
-      display: table;
-      width: 100%;
-      position: relative;
-      table-layout: fixed;
-
-      @include md-only {
-        display: block;
-        overflow-x: scroll;
-      }
-
-      .table-head {
-
-        display: table-row-group;
-        opacity: 0.5;
-        font-size: 16px;
-
-        .row {
-
-          display: table-row;
-
-          .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
-            display: table-cell;
-            padding: $cell-padding;
-            padding-bottom: 8px;
-            position: relative;
-            overflow: hidden;
-          }
-        }
-      }
-
       .table-body {
-
-        display: table-row-group;
-        font-size: 14px;
-        font-weight: 400;
-
         .row {
-
-          display: table-row;
-
-          .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
-            display: table-cell;
-            padding: $cell-padding;
-            position: relative;
-            overflow: hidden;
-          }
-
-          .label {
-            display: none;
-          }
-
-          .property {
-          }
-        }
-      }
-
-      .col-time {
-        width: 8%
-      }
-      .col-block {
-        width: 12%
-      }
-      .col-type {
-        width: 8%
-      }
-      .col-txid {
-        width: 18%
-      }
-      .col-from {
-        width: 18%
-      }
-      .col-to {
-        width: 18%
-      }
-      .col-value {
-        width: 18%
-      }
-
-      .value {
-        :global(.TokenValue__root) {
-          font-size: 16px;
-        }
-      }
-
-      .text-normal, .text-faded, .text-light {
-        @include ellipsis;
-        position: relative;
-        margin-right: 20px;
-
-        @include md-only {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-      }
-
-      .text-normal a {
-        color: $color-primary-0;
-      }
-
-      .text-faded {
-        opacity: 0.5;
-      }
-
-      .text-light {
-        color: $color-primary-1;
-      }
-
-      .badge-in {
-        @include badge($color-white, $badge-green);
-      }
-
-      .badge-out {
-        @include badge($color-white, $badge-red);
-      }
-
-      // a {
-      //   color: $color-primary-1;
-      //   text-decoration: none;
-      //   &:hover {
-      //     text-decoration: underline;
-      //   }
-      // }
-    }
-
-    @include md-only {
-
-      .section {
-        margin: 10px 0px;
-      }
-
-      .table {
-        display: block;
-        .table-head {
-          display: none;
-        }
-        .table-body {
-          margin: 5px 5px;
-          display: table;
-          width: 100%;
-          table-layout: fixed;
-
-          margin-top: 10px;
-          .row {
-            display: table-row-group;
-            padding: 0;
-            .col-time, .col-block, .col-type, .col-txid, .col-from, .col-to, .col-value {
-              display: table-row;
-            }
-            .label {
-              width: 70px;
-              display: table-cell;
-            }
-            .property {
-              display: table-cell;
-            }
-
-            .col-value {
-              .property {
-                padding-bottom: 20px;
+          padding: 25px 30px;
+          display: flex;
+          border-bottom: 1px solid $button-color-3;
+          .confirmations {
+            :global {
+              .TxConfirmations__root {
+                width: 40px;
+                height: 40px;
               }
             }
+            padding-right: 20px;
           }
+
+          .link {
+            flex-grow: 1;
+            text-decoration: none;
+            color: $color-primary-3;
+          }
+          .info {
+            flex-grow: 1;
+            .title {
+              font-size: 14px;
+              line-height: 20px;
+            }
+            .address {
+              font-size: 14px;
+              color: $color-grey-2;
+            }
+          }
+
+          .valuesWrapper {
+            text-align: right;
+            .value {
+              text-align: right;
+              line-height: 19px;
+            }
+            .receiving {
+              &::before {
+                content: '+ ';
+                font-weight: 500;
+                color: $color-green-1;
+              }
+              :global {
+                .TokenValue__root {
+                  text-transform: uppercase;
+                  font-weight: 500;
+                  color: $color-green-1;
+                }
+              }
+            }
+            .sending {
+              &::before {
+                content: '- ';
+                font-weight: 500;
+                color: $color-red-2;
+              }
+              :global {
+                .TokenValue__root {
+                  text-transform: uppercase;
+                  font-weight: 500;
+                  color: $color-red-2;
+                }
+              }
+            }
+            .confirmationsText {
+              text-align: right;
+              font-size: 14px;
+              color: $color-grey-2;
+            }
+          }
+
         }
       }
     }
-
     .no-transactions-section {
-      margin: 0 -8px;
     }
-
     .section, .no-transactions-section {
-
       .section-header {
-
-        background-color: $color-panel-bg-4;
-
-        h5 {
-          display: block;
-          opacity: 0.6;
-          font-size: 16px;
-          line-height: 32px;
-          font-weight: 300;
-          text-align: center;
-          margin: 0;
-          padding: 0;
-        }
-
+        padding: 10px 30px;
+        border-bottom: 1px solid $button-color-3;
+        font-size: 14px;
+        line-height: 17px;
+        font-weight: 500;
         .no-transactions {
-          line-height: 100px
         }
-
         .txs-loading {
-          text-align: center;
-          padding: 25px;
         }
       }
     }
   }
-
   .footer {
-    padding: 24px 16px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 }

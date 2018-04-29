@@ -7,7 +7,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import Partials from 'layouts/partials'
 import React, { Component } from 'react'
 
-import './DashboardPage.scss'
+import './AssetsPage.scss'
 
 export default class AssetsPage extends Component {
   render () {
@@ -24,9 +24,7 @@ export default class AssetsPage extends Component {
           <Partials.InfoPartial />
           <Partials.AssetsContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
 }
-

@@ -13,7 +13,7 @@ import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 
-const BLOCKCHAIN_NEM = 'NEM'
+export const BLOCKCHAIN_NEM = 'NEM'
 export const NEM_XEM_SYMBOL = 'XEM'
 export const NEM_XEM_NAME = 'XEM'
 export const NEM_DECIMALS = 6
