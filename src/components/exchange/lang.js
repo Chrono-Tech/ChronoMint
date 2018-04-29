@@ -16,12 +16,5 @@ export default {
     BuyTokensDialog: BuyTokensDialog.en,
     AddExchangeForm: AddExchangeForm.en,
     ExchangeTransferDialog: ExchangeTransferDialog.en,
-  },
-  ru: {
-    ExchangeWidget: ExchangeWidget.ru,
-    OrdersTable: OrdersTable.ru,
-    BuyTokensDialog: BuyTokensDialog.ru,
-    AddExchangeForm: AddExchangeForm.ru,
-    ExchangeTransferDialog: ExchangeTransferDialog.ru,
-  },
+  }
 }
