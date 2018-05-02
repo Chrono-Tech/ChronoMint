@@ -45,7 +45,7 @@ export default class AbstractNode extends EventEmitter {
   }
 
   _handleConnectionError = (e) => {
-    this.trace(`Failed to connect. Retry after ${this._timeout / 1000} seconds`, e)
+    this.trace('Failed to connect to %s server. Retry after %s seconds', this._socket.baseURL, this._timeout / 1000, e)
     setTimeout(this._handleConnectionTimeout, this._timeout)
   }
 
