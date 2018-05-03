@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { change, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
+import MultisigWalletForm from 'dialogs/wallet/MultisigWalletForm/MultisigWalletForm'
 import { Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
 
@@ -18,9 +19,10 @@ export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 const STEPS = {
   selectType: 'selectType',
   createWallet: 'createWallet',
+  createMultisigEthWallet: 'createMultisigEthWallet',
 }
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
   return {
     step: selector(state, 'step'),
@@ -43,9 +45,14 @@ export default class AddWalletWidget extends PureComponent {
     ...formPropTypes,
   }
 
-  selectWalletType = (type: string) => {
+  selectWalletBlockchain = (blockchain: string) => {
     this.props.dispatch(change(FORM_ADD_NEW_WALLET, 'step', STEPS.createWallet))
-    this.props.dispatch(change(FORM_ADD_NEW_WALLET, 'type', type))
+    this.props.dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', blockchain))
+  }
+
+  selectWalletType = (type: string) => {
+    this.props.dispatch(change(FORM_ADD_NEW_WALLET, 'step', STEPS.createMultisigEthWallet))
+    this.props.dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', type))
   }
 
   renderStep () {
@@ -54,7 +61,7 @@ export default class AddWalletWidget extends PureComponent {
         return (
           <div styleName='widget'>
             <div styleName='title'><Translate value={`${prefix}.addWallet`} /></div>
-            <div styleName='body'><SelectWalletType handleTouchTap={this.selectWalletType} /></div>
+            <div styleName='body'><SelectWalletType handleTouchTap={this.selectWalletBlockchain} /></div>
           </div>
         )
       case STEPS.createWallet:
@@ -62,6 +69,13 @@ export default class AddWalletWidget extends PureComponent {
           <div styleName='widget'>
             <div styleName='title'><Translate value={`${prefix}.createWallet`} /></div>
             <div styleName='body'><SelectEthWallet handleTouchTap={this.selectWalletType} /></div>
+          </div>
+        )
+      case STEPS.createMultisigEthWallet:
+        return (
+          <div styleName='widget'>
+            <div styleName='title'><Translate value={`${prefix}.multisignatureWallet`} /></div>
+            <div styleName='body'><MultisigWalletForm /></div>
           </div>
         )
       default:

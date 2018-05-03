@@ -9,6 +9,7 @@ import * as Dashboard from 'components/dashboard/lang'
 import TwoFA from 'components/dialogs/TwoFA/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
+import MultisigWalletForm from 'components/dialogs/wallet/MultisigWalletForm/lang'
 import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
@@ -54,5 +55,6 @@ export default {
     PendingTxWidget: PendingTxWidget.en,
     OwnersListWidget: OwnersListWidget.en,
     AddWalletWidget: AddWalletWidget.en,
+    MultisigWalletForm: MultisigWalletForm.en,
   },
 }

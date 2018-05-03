@@ -14,6 +14,7 @@ export default {
     nem: 'NEM Wallet',
     lgo: 'List goes on ...',
     createWallet: 'Add an Ethereum Wallet',
+    multisignatureWallet: 'Multi-signature Wallet',
     st: {
       title: 'Standard Wallet',
       description: '',
