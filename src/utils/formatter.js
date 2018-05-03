@@ -11,9 +11,9 @@ import BigNumber from 'bignumber.js'
  * \u00a0 = &nbsp;
  */
 export function integerWithDelimiter (value: any, withFraction = false, fractionPrecision = 2): string {
-  // error "15 Significant digit limit"
-  BigNumber.config({ ERRORS: false })
-  const valueBN = new BigNumber(value || 0)
+  //TODO @abdulov, check after release a new version of BigNumber
+  // issue https://github.com/MikeMcl/bignumber.js/issues/148
+  const valueBN = new BigNumber(value.toString() || 0)
   if (valueBN.isZero() || valueBN.isNaN()) {
     return withFraction ? '0.00' : '0'
   }

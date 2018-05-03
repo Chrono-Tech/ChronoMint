@@ -25,6 +25,7 @@ import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import { ETH } from 'redux/mainWallet/actions'
 
 import './WalletWidget.scss'
 import { prefix } from './lang'
@@ -176,14 +177,23 @@ export default class WalletWidget extends PureComponent {
       return null
     }
 
-    const firstToken = walletInfo.tokens[ 0 ]
+    let ethToken = null
+
+    walletInfo.tokens.some((token) => {
+      if (token.symbol === ETH) {
+        ethToken = token
+        return true
+      }
+    })
 
     return (
       <div styleName='amount-list-container'>
         <div styleName='amount-list'>
-          <span styleName='amount-text'>
-            {`${firstToken.symbol} ${firstToken.amount.toFixed(2)}`}, {`+ ${walletInfo.tokens.length - 1} more`}
-          </span>
+          {ethToken && (
+            <span styleName='amount-text'>
+              {`${ethToken.symbol} ${ethToken.amount}`}, {`+ ${walletInfo.tokens.length - 1} more`}
+            </span>
+          )}
         </div>
         <div styleName='show-all'>
           <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
