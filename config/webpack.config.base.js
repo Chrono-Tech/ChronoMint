@@ -4,6 +4,7 @@
  */
 
 let path = require('path')
+let fs = require('fs')
 
 process.traceDeprecation = true
 
@@ -27,6 +28,12 @@ let indexHtmlPath = path.resolve(__dirname, relativePath, 'index.html')
 let indexPresentationHtmlPath = path.resolve(__dirname, relativePath, 'index-presentation.html')
 let faviconPath = path.resolve(__dirname, relativePath, 'favicon.png')
 let buildPath = path.join(__dirname, isInNodeModules ? '../../..' : '..', 'build')
+
+// creating i18nJson empty file for i18n
+if (!fs.existsSync(buildPath)) {
+  fs.mkdirSync(buildPath)
+}
+fs.writeFileSync(buildPath + '/i18nJson.js', 'var i18nJson = {}')
 
 const buildConfig = (factory) => {
 
