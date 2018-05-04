@@ -9,7 +9,7 @@ import { Link } from 'react-router'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { selectWallet, switchWallet } from 'redux/wallet/actions'
+import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { walletInfoSelector } from 'redux/wallet/selectors'
@@ -59,7 +59,6 @@ function mapDispatchToProps (dispatch) {
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
-    switchWallet: (wallet) => dispatch(switchWallet(wallet)),
   }
 }
 
@@ -206,7 +205,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   isMainWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
+    return !this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked()
   }
 
   isLockedWallet = () => {
@@ -231,6 +230,7 @@ export default class WalletWidget extends PureComponent {
 
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
+    const firstToken = walletInfo.tokens[0]
 
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
@@ -257,20 +257,29 @@ export default class WalletWidget extends PureComponent {
                   <h3>{this.getWalletName()}</h3>
                   <span styleName='address-address'>{address}</span>
                 </div>
-                <div styleName='token-amount'>
+
+                { this.isMySharedWallet() && <div styleName='token-amount'>
                   <div styleName='crypto-amount'>
                     USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
                   </div>
-                </div>
+                </div>}
+                {this.isMainWallet() && <div styleName='token-amount'>
+                  <div styleName='crypto-amount'>
+                    {firstToken.symbol} {integerWithDelimiter(firstToken.amount, true, null)}
+                  </div>
+                  <div styleName='usd-amount'>
+                    USD {integerWithDelimiter(firstToken.amountPrice.toFixed(2), true)}
+                  </div>
+                </div>}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
               {this.getAmountList()}
 
-              <div styleName='tokens-list'>
+              { this.getTokensList().length > 1 && <div styleName='tokens-list'>
                 <div styleName='tokens-list-table'>
-                  {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
+                  {this.getTokensList().map((tokenMap) => {
                     const token = this.props.tokens.item(tokenMap.symbol)
 
                     return (
@@ -287,9 +296,8 @@ export default class WalletWidget extends PureComponent {
                       </div>
                     )
                   })}
-
                 </div>
-              </div>
+              </div>}
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button

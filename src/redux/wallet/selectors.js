@@ -258,6 +258,8 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           .removeDecimals(amount)
           .toNumber()
 
+      console.log('mainWalletBalances: ', mainWalletBalances.toJS())
+
       const walletTokensAndBalanceByAddress = mainWalletBalances // BalancesCollection, array of BalanceModel
         .filter((balanceItem) => {
           const bSymbol = balanceItem.symbol()
@@ -300,6 +302,12 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           balance: 0,
           tokens: [],
         })
+
+      // result.tokens.push({
+      //   symbol: 'BTC',
+      //   amount: 1,
+      //   amountPrice: 10000000000.32132,
+      // })
 
       // Let's add an address of Main Wallet into final result
       const currentWallet = addressesAndBlockchains

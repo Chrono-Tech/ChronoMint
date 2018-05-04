@@ -202,6 +202,27 @@
   text-align: left;
 }
 
+.token-amount-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.token-amount-text-container {
+  flex: 1;
+}
+
+.token-amount-text {
+  font-size: 30px;
+  line-height: 36px;
+  color: $color-primary-3;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+}
+
+.token-amount-price {
+  flex: 1;
+}
+
 .tokens-list {
   display: flex;
 }
