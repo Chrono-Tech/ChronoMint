@@ -19,6 +19,7 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
+import { goToWallets } from 'redux/mainWallet/actions'
 
 import './WalletContent.scss'
 import { prefix } from './lang'
@@ -42,7 +43,7 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goToWallets: () => dispatch(push('/wallets')),
+    goToWallets: () => dispatch(goToWallets()),
   }
 }
 

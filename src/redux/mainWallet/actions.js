@@ -6,6 +6,7 @@
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
 import ethereumDAO from 'dao/EthereumDAO'
@@ -50,6 +51,8 @@ export const BCC = 'BCC'
 export const BTG = 'BTG'
 export const LTC = 'LTC'
 export const XEM = 'XEM'
+
+export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
