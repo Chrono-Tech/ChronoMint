@@ -1,8 +1,7 @@
 import { modalsOpen } from 'redux/modals/actions'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { push } from 'react-router-redux'
-import WalletAddEditDialog from 'components/dialogs/wallet/WalletAddDialog/WalletAddDialog'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { goBackForAddWalletsForm } from 'redux/mainWallet/actions'
 
 export default {
   '/deposits': {
@@ -33,14 +32,6 @@ export default {
   '/add-wallet': {
     title: 'nav.addWallet',
     backButton: true,
-    buttons: [
-      {
-        title: 'addWallet',
-        action: () => modalsOpen({
-          component: WalletAddEditDialog,
-          props: { wallet: new MultisigWalletModel() },
-        }),
-      },
-    ],
+    backButtonAction: () => goBackForAddWalletsForm(),
   },
 }

@@ -5,6 +5,8 @@
 
 import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { change, formValueSelector } from 'redux-form/immutable'
+import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
@@ -31,6 +33,7 @@ import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
+export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 
 // TODO @ipavlenko: Odd code, remove WALLET_BALANCE
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
@@ -53,6 +56,24 @@ export const LTC = 'LTC'
 export const XEM = 'XEM'
 
 export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
+
+export const goBackForAddWalletsForm = () => (dispatch, getState) => {
+  const selector = formValueSelector(FORM_ADD_NEW_WALLET)
+  const state = getState()
+  let blockchain = selector(state, 'blockchain')
+  let ethWalletType = selector(state, 'ethWalletType')
+
+  if (ethWalletType) {
+    dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
+    return
+  }
+
+  if (blockchain) {
+    dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
+    return
+  }
+  history.goBack()
+}
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)

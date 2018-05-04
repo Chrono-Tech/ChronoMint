@@ -9,6 +9,10 @@ import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { BTC, ETH, LTC, XEM } from 'redux/mainWallet/actions'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'
@@ -25,22 +29,26 @@ export default class SelectWalletType extends PureComponent {
   render () {
     const wallets = [
       {
-        type: 'BTC',
+        blockchain: BLOCKCHAIN_BITCOIN,
+        symbol: BTC,
         title: `${prefix}.btc`,
         disabled: true,
       },
       {
-        type: 'LTC',
+        blockchain: BLOCKCHAIN_LITECOIN,
+        symbol: LTC,
         title: `${prefix}.ltc`,
         disabled: true,
       },
       {
-        type: 'ETH',
+        blockchain: BLOCKCHAIN_ETHEREUM,
+        symbol: ETH,
         title: `${prefix}.eth`,
         disabled: false,
       },
       {
-        type: 'XEM',
+        blockchain: BLOCKCHAIN_NEM,
+        symbol: XEM,
         title: `${prefix}.nem`,
         disabled: true,
       },
@@ -50,8 +58,8 @@ export default class SelectWalletType extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.type} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type.type)}>
-              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.type ]} /></div>
+            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type.blockchain)}>
+              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
               <div styleName='title'><Translate value={type.title} /></div>
               <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
             </div>

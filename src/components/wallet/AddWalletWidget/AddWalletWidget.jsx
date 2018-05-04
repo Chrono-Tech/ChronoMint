@@ -8,14 +8,17 @@ import React, { PureComponent } from 'react'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { prefix } from './lang'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { FORM_ADD_NEW_WALLET } from 'redux/mainWallet/actions'
 
 import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
 import SelectEthWallet from './SelectEthWallet/SelectEthWallet'
 import MultisigWalletForm from './MultisigWalletForm/MultisigWalletForm'
+import { prefix } from './lang'
 
-export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 const STEPS = {
   selectType: 'selectType',
   createWallet: 'createWallet',
@@ -25,18 +28,17 @@ const STEPS = {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
   return {
-    step: selector(state, 'step'),
+    blockchain: selector(state, 'blockchain'),
+    ethWalletType: selector(state, 'ethWalletType'),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     selectWalletBlockchain: (blockchain: string) => {
-      dispatch(change(FORM_ADD_NEW_WALLET, 'step', STEPS.createWallet))
       dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', blockchain))
     },
     selectWalletType: (type: string) => {
-      dispatch(change(FORM_ADD_NEW_WALLET, 'step', STEPS.createMultisigEthWallet))
       dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', type))
     },
   }
@@ -45,7 +47,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class AddWalletWidget extends PureComponent {
   static propTypes = {
-    step: PropTypes.string,
+    blockchain: PropTypes.string,
+    ethWalletType: PropTypes.string,
     selectWalletBlockchain: PropTypes.func,
     selectWalletType: PropTypes.func,
   }
@@ -59,29 +62,41 @@ export default class AddWalletWidget extends PureComponent {
   }
 
   renderStep () {
-    switch (this.props.step) {
-      case STEPS.createWallet:
-        return (
-          <div styleName='widget'>
-            <div styleName='title'><Translate value={`${prefix}.createWallet`} /></div>
-            <div styleName='body'><SelectEthWallet handleTouchTap={this.handleSelectWalletType} /></div>
-          </div>
-        )
-      case STEPS.createMultisigEthWallet:
-        return (
-          <div styleName='widget'>
-            <div styleName='title'><Translate value={`${prefix}.multisignatureWallet`} /></div>
-            <div styleName='body'><MultisigWalletForm /></div>
-          </div>
-        )
-      case STEPS.selectType:
-      default:
-        return (
-          <div styleName='widget'>
-            <div styleName='title'><Translate value={`${prefix}.addWallet`} /></div>
-            <div styleName='body'><SelectWalletType handleTouchTap={this.handleSelectWalletBlockchain} /></div>
-          </div>
-        )
+    const { blockchain, ethWalletType } = this.props
+    if (blockchain) {
+      switch (blockchain) {
+        case BLOCKCHAIN_BITCOIN:
+        case BLOCKCHAIN_LITECOIN:
+        case BLOCKCHAIN_NEM:
+          return (
+            <div>soon</div>
+          )
+        case BLOCKCHAIN_ETHEREUM:
+          // eslint-disable-next-line
+          console.log('renderStep', blockchain, ethWalletType)
+          if (ethWalletType) {
+            return (
+              <div styleName='widget'>
+                <div styleName='title'><Translate value={`${prefix}.multisignatureWallet`} /></div>
+                <div styleName='body'><MultisigWalletForm /></div>
+              </div>
+            )
+          } else {
+            return (
+              <div styleName='widget'>
+                <div styleName='title'><Translate value={`${prefix}.createWallet`} /></div>
+                <div styleName='body'><SelectEthWallet handleTouchTap={this.handleSelectWalletType} /></div>
+              </div>
+            )
+          }
+      }
+    } else {
+      return (
+        <div styleName='widget'>
+          <div styleName='title'><Translate value={`${prefix}.addWallet`} /></div>
+          <div styleName='body'><SelectWalletType handleTouchTap={this.handleSelectWalletBlockchain} /></div>
+        </div>
+      )
     }
   }
 
