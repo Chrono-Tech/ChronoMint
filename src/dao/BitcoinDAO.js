@@ -62,15 +62,25 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
-    return {
-      balance: balance0 || balance6,
+    try {
+      const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
+      return {
+        balance: balance0 || balance6,
+      }
+    } catch (error) {
+      //eslint-disable-next-line no-console
+      console.warn('BitcoinDao getAccountBalances', error)
     }
   }
 
   async getAccountBalance () {
-    const balances = await this.getAccountBalances()
-    return balances.balance
+    try {
+      const balances = await this.getAccountBalances()
+      return balances.balance
+    } catch (error) {
+      //eslint-disable-next-line no-console
+      console.warn('BitcoinDao getAccountBalance', error)
+    }
   }
 
   accept (transfer: TransferExecModel) {
@@ -112,7 +122,7 @@ export default class BitcoinDAO extends EventEmitter {
       return await this._bitcoinProvider.transfer(from, to, amount, feeMultiplier * token.feeRate())
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
+      console.warn('Transfer failed', e)
       throw e
     }
   }

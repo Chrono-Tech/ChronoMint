@@ -75,19 +75,29 @@ export default class NemDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
-    return {
-      confirmed,
-      unconfirmed: unconfirmed != null
-        ? unconfirmed
-        : confirmed,
-      vested,
+    try {
+      const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
+      return {
+        confirmed,
+        unconfirmed: unconfirmed != null
+          ? unconfirmed
+          : confirmed,
+        vested,
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('NemDao getAccountBalances', error)
     }
   }
 
   async getAccountBalance () {
-    const { unconfirmed } = await this.getAccountBalances()
-    return unconfirmed
+    try {
+      const { unconfirmed } = await this.getAccountBalances()
+      return unconfirmed
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('NemDao getAccountBalance', error)
+    }
   }
 
   accept (transfer: TransferExecModel) {
@@ -132,7 +142,7 @@ export default class NemDAO extends EventEmitter {
       return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
+      console.warn('Transfer failed', e)
       throw e
     }
   }
