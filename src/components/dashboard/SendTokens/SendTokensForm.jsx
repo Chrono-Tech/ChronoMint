@@ -4,27 +4,19 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { btcProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
-import WalletMainSVG from 'assets/img/icn-wallet-main.svg'
-import WalletMultiSVG from 'assets/img/icn-wallet-multi.svg'
 import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import ColoredSection from 'components/dashboard/ColoredSection/ColoredSection'
-import IconSection from 'components/dashboard/IconSection/IconSection'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import web3Converter from 'utils/Web3Converter'
-import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
 import Amount from 'models/Amount'
 import Immutable from 'immutable'
 import { MenuItem, MuiThemeProvider, Paper } from 'material-ui'
-import BalanceModel from 'models/tokens/BalanceModel'
 import TokenModel from 'models/tokens/TokenModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
-import MainWallet from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import PropTypes from 'prop-types'
 import { integerWithDelimiter } from 'utils/formatter'
 import React, { PureComponent } from 'react'
@@ -32,20 +24,18 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField, Checkbox } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { DUCK_MAIN_WALLET, getSpendersAllowance } from 'redux/mainWallet/actions'
-import { estimateGas } from 'redux/tokens/actions'
+import { getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS, estimateGas } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
-import WalletAddEditDialog from "../../dialogs/wallet/WalletAddDialog/WalletAddDialog";
-import {untouch} from "redux-form";
+import WalletAddEditDialog from "../../dialogs/wallet/WalletAddDialog/WalletAddDialog"
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -61,11 +51,10 @@ const FEE_RATE_MULTIPLIER = {
   step: 0.1,
 }
 
-
 function mapDispatchToProps (dispatch) {
   return {
     estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
-   }
+  }
 }
 
 function mapStateToProps (state, ownProps) {
@@ -102,7 +91,6 @@ function mapStateToProps (state, ownProps) {
   }
 }
 
-
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class SendTokensForm extends PureComponent {
@@ -133,7 +121,7 @@ export default class SendTokensForm extends PureComponent {
       advancedFee: 0,
       xOfAverageFee: 1,
       gasFee: null,
-      gasPrice: null
+      gasPrice: null,
     }
 
     this.timeout = null
@@ -181,6 +169,10 @@ export default class SendTokensForm extends PureComponent {
       amount: 0,
       recipient: this.props.recipient,
     }))
+  }
+
+  handleChangeFeeSlider = async (event, multiplier) => {
+    this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
   }
 
   getFeeTitle () {
@@ -252,51 +244,48 @@ export default class SendTokensForm extends PureComponent {
     return ['Blockchain', 'Ethereum'].includes(this.props.token.blockchain())
   }
 
-  calculatingFeeSlider = async (event, multiplier) => {
-    this.calculatingFee({}, Number((multiplier * this.props.token.feeRate()).toFixed(1)))
-  }
 
   handleEstimateGas = (tokenId, params, feeMultiplier) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.props.estimateGas(tokenId, params, (nullParam, params) => {
-        const {gasFee, gasLimit, gasPrice} = params
+        const { gasFee, gasLimit, gasPrice } = params
         this.setState({
           gasFee,
           gasLimit,
-          gasPrice
+          gasPrice,
         })
       }, feeMultiplier)
     }, 1000)
   }
 
   getTransactionFeeDescription = () => {
-    let amount = 0
     if (this.props.token.symbol() === 'BTC') {
-      return (<span styleName='description'>
+      return (
+        <span styleName='description'>
           {`${this.props.token.symbol()}  ${this.state.advancedFee} (≈USD `}
           <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.advancedFee, this.props.token.symbol())} />
           {`) ${this.state.xOfAverageFee}x `}
           <Translate value={`${prefix}.averageFee`} />
-        </span>
-      )
+        </span>)
     } else if (this.props.token.symbol() === 'ETH') {
-      return (<div styleName='description'>
-        <div>
-          <div><span >{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span></div>
+      return (
+        <div styleName='description'>
           <div>
-            {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
-            {this.state.gasPrice && <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />}
+            <div><span >{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span></div>
+            <div>
+              {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
+              {this.state.gasPrice && <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />}
+            </div>
           </div>
-        </div>
-      </div>)
+        </div>)
     }
 
     return null
   }
 
   renderHead () {
-    const { token, isMultiToken, walletInfo, wallet, allowance, tokenInfo } = this.props
+    const { token, isMultiToken, walletInfo, wallet, tokenInfo } = this.props
 
     return (
       <div styleName='head'>
@@ -398,12 +387,12 @@ export default class SendTokensForm extends PureComponent {
           />
         </div>
         <div styleName='row'>
-            <Field
-              component={TextField}
-              name='amount'
-              floatingLabelText={<Translate value={`${prefix}.amount`} />}
-              fullWidth
-            />
+          <Field
+            component={TextField}
+            name='amount'
+            floatingLabelText={<Translate value={`${prefix}.amount`} />}
+            fullWidth
+          />
         </div>
         {!(this.state.mode === MODE_SIMPLE && feeMultiplier && token.feeRate()) ? null : (
           <div styleName='row'>

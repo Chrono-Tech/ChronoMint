@@ -94,7 +94,6 @@ export default class WalletWidget extends PureComponent {
   }
 
   handleSend = (tokenId, blockchain, address) => {
-    console.log('tokenId, blockchain, address: ', tokenId, blockchain, address)
     this.props.send(tokenId, blockchain, address)
   }
 
