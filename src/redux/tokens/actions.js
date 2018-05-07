@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -193,6 +194,16 @@ export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier 
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
       gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
     })
+  } catch (e) {
+    callback(e)
+  }
+}
+
+export const estimateBtcFee = async (params, callback) => {
+  try {
+    const { address, recipient, amount, formFee } = params
+    const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+    callback(null, { fee: fee })
   } catch (e) {
     callback(e)
   }

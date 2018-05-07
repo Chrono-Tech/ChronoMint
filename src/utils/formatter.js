@@ -19,7 +19,7 @@ export function integerWithDelimiter (value: any, withFraction = false, fraction
   }
 
   if (withFraction) {
-    return valueBN.toFixed().replace(/(\d)(?=(\d{3})+\.)/g, '$1\u00a0')
+    return valueBN.toFixed(fractionPrecision).replace(/(\d)(?=(\d{3})+\.)/g, '$1\u00a0')
   }
   const roundedValue = valueBN.lt(0) ? valueBN.ceil() : valueBN.floor()
   const sign = valueBN.lt(0) ? '-' : ''

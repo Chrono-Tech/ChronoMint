@@ -258,7 +258,6 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           .removeDecimals(amount)
           .toNumber()
 
-      console.log('mainWalletBalances: ', mainWalletBalances.toJS())
 
       const walletTokensAndBalanceByAddress = mainWalletBalances // BalancesCollection, array of BalanceModel
         .filter((balanceItem) => {

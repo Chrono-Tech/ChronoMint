@@ -57,7 +57,6 @@ export class BitcoinProvider extends AbstractProvider {
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    console.log('utxos: ', utxos)
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }

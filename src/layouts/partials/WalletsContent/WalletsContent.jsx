@@ -36,6 +36,8 @@ export default class WalletsContent extends Component {
   }
 
   render () {
+    // console.log('this.props.walletsList: ', this.props.walletsList)
+
     return (
       <div styleName='root'>
         {this.props.walletsList.map((walletGroup) => (
