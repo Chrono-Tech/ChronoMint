@@ -15,9 +15,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+let srcAppArg = process.argv.find(e => e.startsWith('--src-app='))
+const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
+
 module.exports = config.buildConfig(
   ({ srcPath, modulesPath, buildPath, indexHtmlPath, indexPresentationHtmlPath, faviconPath }) => ({
-    entry: path.join(srcPath, 'index'),
+    entry: path.join(srcPath, srcApp),
     output: {
       path: buildPath,
       filename: '[name].js',
@@ -52,6 +55,7 @@ module.exports = config.buildConfig(
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
         WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',
+        PUBLIC_BACKEND_REST_URL: '"' + (process.env.PUBLIC_BACKEND_REST_URL || 'https://backend.chronobank.io') + '"',
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.optimize.DedupePlugin(),

@@ -13,11 +13,4 @@ export default {
     unblockAssetButton: 'Block asset',
     cancel: 'Cancel',
   },
-  ru: {
-    dialogTitle: 'Черный список',
-    dialogSubTitle: 'Пользователи с адресами, перечисленными здесь, не смогут выполнять какие-либо транзакции с вашим ассетом.',
-    blockAssetButton: 'Заблокировать ассет',
-    unblockAssetButton: 'Разблокировать ассет',
-    cancel: 'Отмена',
-  },
 }

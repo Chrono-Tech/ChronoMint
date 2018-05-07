@@ -48,14 +48,20 @@ export class NemProvider extends AbstractProvider {
   }
 
   async getAccountBalances (mosaic = null) {
-    const node = this._selectNode(this._engine)
-    const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
-    if (mosaic) {
-      return (mosaics && (mosaic in mosaics))
-        ? mosaics[ mosaic ]
-        : { confirmed: new BigNumber(0) } // When no such mosaic specified
+    try {
+      const node = this._selectNode(this._engine)
+      const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
+      if (mosaic) {
+        return (mosaics && (mosaic in mosaics))
+          ? mosaics[ mosaic ]
+          : { confirmed: new BigNumber(0) } // When no such mosaic specified
+      }
+      return balance
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('NemProvider getAccountBalances', error)
+      throw error
     }
-    return balance
   }
 
   async getTransactionsList (address, skip, offset) {

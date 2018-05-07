@@ -11,11 +11,3 @@ export const en = {
   },
   back: 'Back',
 }
-export const ru = {
-  backTo: {
-    options: 'Назад к вариантам входа',
-    loginWithMnemonic: 'Назад к авторизации',
-    loginWithWallet: 'Назад к авторизации',
-  },
-  back: 'Назад',
-}

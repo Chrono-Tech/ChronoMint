@@ -20,22 +20,5 @@ export default {
     showOnlyMyExchanges: 'Configure my exchanges',
     depositTokens: 'deposit/withdrawal %{symbol}',
     depositEth: 'deposit/withdrawal ETH',
-  },
-  ru: {
-    orderBook: 'Книга Ордеров',
-    exchangeAddress: 'Адрес обменника',
-    price: 'Цена',
-    buyPrice: 'Цена продажи',
-    sellPrice: 'Цена покупки',
-    buyLimits: 'Лимит продажи',
-    sellLimits: 'Лимит покупки',
-    limits: 'Лимиты',
-    buy: 'Купить',
-    sell: 'Продать',
-    statusPending: 'Статус: ожидает манинга',
-    getNextPage: 'Загрузить слудующую страницу',
-    showOnlyMyExchanges: 'Настроить мои обменники',
-    depositTokens: 'Внести/вывести %{symbol}',
-    depositEth: 'Внести/вывести ETH',
-  },
+  }
 }

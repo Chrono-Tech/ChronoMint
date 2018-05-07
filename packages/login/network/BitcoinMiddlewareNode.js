@@ -122,7 +122,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
         balance6: new BigNumber(confirmations6.satoshis),
       }
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinMiddlewareNode getAddressInfo ${address} failed`, e)
       throw e
     }
   }
@@ -132,7 +132,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinMiddlewareNode getAddressUTXOS ${address} failed`, e)
       throw e
     }
   }
@@ -148,7 +148,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       })
       return model
     } catch (e) {
-      this.trace(`send transaction ${rawtx} failed`, e)
+      this.trace(`BitcoinMiddlewareNode send transaction ${rawtx} failed`, e)
       throw e
     }
   }

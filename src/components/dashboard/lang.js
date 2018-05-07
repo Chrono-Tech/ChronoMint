@@ -10,9 +10,5 @@ export default {
   en: {
     Voting: Voting.en,
     Rewards: Rewards.en,
-  },
-  ru: {
-    Voting: Voting.ru,
-    Rewards: Rewards.ru,
-  },
+  }
 }

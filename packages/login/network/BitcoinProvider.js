@@ -49,9 +49,15 @@ export class BitcoinProvider extends AbstractProvider {
   }
 
   async getAccountBalances () {
-    const node = this._selectNode(this._engine)
-    const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
-    return { balance0, balance6 }
+    try {
+      const node = this._selectNode(this._engine)
+      const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
+      return { balance0, balance6 }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('BitcoinProvider getAccountBalances error', error)
+      throw error
+    }
   }
 
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {

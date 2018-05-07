@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Control panel for ChronoBank",
   "private": true,
   "author": "chronobank",
@@ -153,6 +153,8 @@
     "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
     "build": "node ./scripts/build.js",
+    "i18n:pack": "node ./scripts/i18npack.js",
+    "build:i18n": "node ./scripts/build.js --src-app=i18nApp",
     "build-archive": "yarn build && node ./scripts/compress.js build build.zip",
     "standalone": "NODE_ENV=standalone node ./scripts/build.js",
     "test": "NODE_ENV=development jest --useStderr --forceExit --runInBand",

@@ -15,17 +15,5 @@ export default {
     sellPrice: 'Sell price (ETH)',
     create: 'Create',
     enterTokenSymbol: 'Enter token symbol',
-  },
-  ru: {
-    chooseToken: 'Выберите токен',
-    showAllAvailableTokens: 'Показать все доступные токены',
-    hideAllAvailableTokens: 'Скрыть все доступные токены',
-    dialogTitle: 'Создать обменник',
-    availableExchangeBalance: 'Доступный баланс:',
-    setThePrices: 'Установите цены:',
-    buyPrice: 'Цена покупки (ETH)',
-    sellPrice: 'Цена продажи (ETH)',
-    create: 'Создать',
-    enterTokenSymbol: 'Введите символ токена',
-  },
+  }
 }
