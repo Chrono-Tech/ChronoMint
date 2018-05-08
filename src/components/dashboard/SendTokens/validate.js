@@ -6,7 +6,6 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 import tokenService from 'services/TokenService'
-import Amount from 'models/Amount'
 
 export default (values, props) => {
   const { token, wallet, tokenInfo } = props
@@ -17,6 +16,11 @@ export default (values, props) => {
   const balance = token.addDecimals(tokenInfo.amount)
   const amount = values.get('amount')
   const recipient = values.get('recipient')
+  const satPerByte = values.get('satPerByte')
+
+  const satPerByteError = validator.positiveNumber(satPerByte)
+  const satPerByteErrors = new ErrorList()
+    .add(satPerByteError)
 
   const amountFormatError = validator.currencyNumber(amount, token.decimals())
   const amountErrors = new ErrorList()
@@ -41,5 +45,6 @@ export default (values, props) => {
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),
+    satPerByte: satPerByteErrors.getErrors(),
   }
 }

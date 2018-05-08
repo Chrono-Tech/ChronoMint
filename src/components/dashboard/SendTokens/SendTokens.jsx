@@ -13,10 +13,7 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
-import { estimateGas } from 'redux/tokens/actions'
-import BalanceModel from 'models/tokens/BalanceModel'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { BALANCES_COMPARATOR_SYMBOL, getVisibleBalances } from 'redux/session/selectors'
+import { estimateGas, DUCK_TOKENS } from 'redux/tokens/actions'
 import { getCurrentWallet } from 'redux/wallet/actions'
 
 function mapDispatchToProps (dispatch) {
@@ -81,7 +78,7 @@ export default class SendTokens extends PureComponent {
     const { isModal, token } = this.props
     const initialValues = {
       feeMultiplier: 1,
-      symbol: token
+      symbol: token,
     }
 
     if (isModal) {

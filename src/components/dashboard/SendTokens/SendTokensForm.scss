@@ -141,6 +141,7 @@
   margin-bottom: 20px;
 
   .title {
+    white-space: pre;
     font-family: 'proxima nova', sans-serif;
     font-weight: 700;
     font-size: 14px;
@@ -155,6 +156,10 @@
     font-size: 14px;
     text-align: left;
     font-family: 'proxima nova', sans-serif;
+  }
+
+  .gwei-multiplier {
+    display: block;
   }
 }
 

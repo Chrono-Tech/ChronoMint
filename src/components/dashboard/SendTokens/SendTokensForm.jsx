@@ -35,7 +35,6 @@ import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
 import validate from './validate'
-import WalletAddEditDialog from "../../dialogs/wallet/WalletAddDialog/WalletAddDialog"
 
 export const FORM_SEND_TOKENS = 'FormSendTokens'
 
@@ -120,6 +119,7 @@ export default class SendTokensForm extends PureComponent {
       isContract: false,
       mode: MODE_SIMPLE,
       btcFee: null,
+      btcFeeMultiplier: this.props.feeMultiplier,
       gasFee: null,
       gasPrice: null,
     }
@@ -151,11 +151,15 @@ export default class SendTokensForm extends PureComponent {
       (this.state.mode === MODE_ADVANCED && newProps.satPerByte !== this.props.satPerByte)
     ) {
       this.handleEstimateBtcFee(
-        this.props.address,
-        this.props.recipient,
-        new Amount(this.props.amount, this.props.token.symbol()),
-        this.getFormFee(),
+        newProps.address,
+        newProps.recipient,
+        new Amount(newProps.amount, newProps.token.symbol()),
+        this.getFormFee(newProps),
       )
+    }
+
+    if (this.state.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) {
+      this.props.dispatch(change(FORM_SEND_TOKENS, 'satPerByte', this.getFormFee(newProps)))
     }
 
     if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
@@ -193,34 +197,6 @@ export default class SendTokensForm extends PureComponent {
     })
   }
 
-  getFeeTitle () {
-    const { token } = this.props
-
-    switch (token.blockchain()) {
-      case BLOCKCHAIN_BITCOIN:
-      case BLOCKCHAIN_BITCOIN_CASH:
-      case BLOCKCHAIN_BITCOIN_GOLD:
-      case BLOCKCHAIN_LITECOIN:
-        return 'feeRate'
-      case BLOCKCHAIN_ETHEREUM:
-        return 'gasPrice'
-      default:
-        return ''
-    }
-  }
-
-  checkIsContract (address): Promise {
-    return contractsManagerDAO.isContract(address)
-  }
-
-  getFormFee = () => {
-    return this.state.mode === MODE_SIMPLE ? Number((this.props.feeMultiplier * this.props.token.feeRate()).toFixed(1)) : this.props.satPerByte
-  }
-
-  isTransactionFeeAvailable = () => {
-    return [BLOCKCHAIN_BITCOIN, BLOCKCHAIN_ETHEREUM].includes(this.props.token.blockchain())
-  }
-
   handleEstimateGas = (tokenId, params, feeMultiplier) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
@@ -244,42 +220,90 @@ export default class SendTokensForm extends PureComponent {
         formFee,
       }
       this.props.estimateFee(params, (error, { fee }) => {
-        console.log('this.props.estimateFee(params: ', fee)
         this.setState({
           btcFee: fee,
+          btcFeeMultiplier: this.props.feeMultiplier,
         })
       })
     }, 1000)
+  }
+
+  getFormFee = (props = this.props) => {
+    return this.state.mode === MODE_SIMPLE ? Number(((props.feeMultiplier) * props.token.feeRate()).toFixed(1)) : props.satPerByte
+  }
+
+  getFeeTitle () {
+    const { token } = this.props
+
+    switch (token.blockchain()) {
+      case BLOCKCHAIN_BITCOIN:
+      case BLOCKCHAIN_BITCOIN_CASH:
+      case BLOCKCHAIN_BITCOIN_GOLD:
+      case BLOCKCHAIN_LITECOIN:
+        return 'feeRate'
+      case BLOCKCHAIN_ETHEREUM:
+        return 'gasPrice'
+      default:
+        return ''
+    }
+  }
+
+  getBtcXOfAverage = () => {
+    if (this.state.mode === MODE_ADVANCED) {
+      return (this.props.satPerByte / this.props.token.feeRate()).toFixed(2).replace(/0+$/g, '')
+    }
+    return this.state.btcFeeMultiplier.toFixed(1)
+  }
+
+  getTransactionFeeDescription = () => {
+
+    if (this.props.token.symbol() === 'BTC') {
+
+      if (this.state.mode === MODE_ADVANCED && !this.props.satPerByte) {
+        return <Translate value={`${prefix}.errorFillSatPerBiteField`} />
+      }
+
+      if (this.state.btcFee) {
+        return (
+          <span styleName='description'>
+            {`${this.props.token.symbol()}  ${this.convertSatoshiToBTC(this.state.btcFee)} (≈USD `}
+            <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.btcFee, this.props.token.symbol())} />{')'}
+            <span styleName='gwei-multiplier'>
+              <Translate value={`${prefix}.averageFee`} multiplier={this.getBtcXOfAverage()} />
+            </span>
+          </span>)
+      }
+
+    } else if (this.props.token.symbol() === 'ETH') {
+      return (
+        <span styleName='description'>
+          {this.state.gasFee && (
+            <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈USD `}
+              <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
+            </span>
+          )}
+          {this.state.gasPrice && (
+            <span styleName='gwei-multiplier'>
+              {` ${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
+              <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />
+            </span>
+          )}
+        </span>)
+    }
+
+    return null
+  }
+
+  checkIsContract (address): Promise {
+    return contractsManagerDAO.isContract(address)
   }
 
   convertSatoshiToBTC = (satoshiAmount) => {
     return satoshiAmount / 100000000
   }
 
-  getTransactionFeeDescription = () => {
-
-    if (this.props.token.symbol() === 'BTC' && this.state.btcFee) {
-      return (
-        <span styleName='description'>
-          {`${this.props.token.symbol()}  ${this.convertSatoshiToBTC(this.state.btcFee)} (≈USD `}
-          <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.btcFee, this.props.token.symbol())} />
-          {`) ${this.props.feeMultiplier}x `}
-          <Translate value={`${prefix}.averageFee`} />
-        </span>)
-    } else if (this.props.token.symbol() === 'ETH') {
-      return (
-        <div styleName='description'>
-          <div>
-            <div><span >{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span></div>
-            <div>
-              {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
-              {this.state.gasPrice && <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />}
-            </div>
-          </div>
-        </div>)
-    }
-
-    return null
+  isTransactionFeeAvailable = () => {
+    return [BLOCKCHAIN_BITCOIN, BLOCKCHAIN_ETHEREUM].includes(this.props.token.blockchain())
   }
 
   renderHead () {
@@ -369,7 +393,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance, recipient } = this.props
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance } = this.props
     const { isContract } = this.state
     const isApprove = allowance.amount().lte(0)
     const isTimeLocked = wallet.isTimeLocked()

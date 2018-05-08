@@ -527,9 +527,9 @@ export default {
   },
   errors: {
     required: 'Required',
-    invalidPositiveInt: 'Should be positive integer',
-    invalidPositiveNumber: 'Should be positive number',
-    invalidPositiveNumberOrZero: 'Should be positive number or zero',
+    invalidPositiveInt: 'Should be a positive integer',
+    invalidPositiveNumber: 'Should be a positive number',
+    invalidPositiveNumberOrZero: 'Should be a positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
