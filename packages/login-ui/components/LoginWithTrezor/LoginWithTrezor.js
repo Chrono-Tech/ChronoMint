@@ -1,5 +1,9 @@
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
+import networkService from '@chronobank/login/network/NetworkService'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
+import Subheader from 'material-ui/Subheader'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -30,7 +34,7 @@ const mapStateToProps = (state) => {
   return {
     trezor: state.get('trezor'),
     isLoading: network.isLoading,
-    account: network.selectedAccount,
+    account: network.accounts
   }
 }
 
@@ -51,6 +55,10 @@ class LoginTrezor extends PureComponent {
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
     account: PropTypes.string,
+  }
+
+  state = {
+    value: 0
   }
 
   componentWillMount () {
@@ -93,6 +101,12 @@ class LoginTrezor extends PureComponent {
       ))
   }
 
+  _buildItem(item, index) {
+    return <MenuItem value={index} key={index} primaryText={item}/>
+  }
+
+  handleChange = (event, index, value) => {this.setState({value}); networkService.selectAccount(this.props.account[index])}
+
   render () {
     const { isLoading, trezor, account } = this.props
 
@@ -109,8 +123,15 @@ class LoginTrezor extends PureComponent {
 
         {trezor.isFetched && (
           <div styleName='account'>
-            <div styleName='accountLabel'><Translate value='LoginWithTrezor.ethAddress' /></div>
-            <div styleName='accountValue'>{account}</div>
+            <SelectField floatingLabelText="Select address"
+                         autoWidth={true}
+                         fullWidth={true}
+                         floatingLabelStyle={{ color: 'white' }}
+                         labelStyle={{ color: 'white' }}
+                         value={this.state.value}
+                         onChange={this.handleChange}>
+              {this.props.account.map(this._buildItem)}
+            </SelectField>
           </div>
         )}
 

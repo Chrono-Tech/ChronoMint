@@ -3,7 +3,7 @@ import TrezorWalletSubproviderFactory from 'ledger-wallet-provider'
 import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
-import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
+import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
 import EthereumEngine from './EthereumEngine'
 import HardwareWallet from './HardwareWallet'
 import { byEthereumNetwork } from './NetworkProvider'
@@ -43,7 +43,7 @@ class TrezorProvider extends EventEmitter {
   setupAndStart (providerURL) {
     this._engine.addProvider(this._trezorSubprovider)
     this._engine.addProvider(new FilterSubprovider())
-    this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
+    this._engine.addProvider(new RpcSubprovider({rpcUrl: providerURL}))
     this._engine.start()
   }
 
@@ -59,7 +59,7 @@ class TrezorProvider extends EventEmitter {
           if (error) {
             resolve(null)
           }
-          this._wallet = new HardwareWallet(accounts[0])
+          this._wallet = new HardwareWallet(accounts)
           resolve(accounts)
         })
       }, 200)

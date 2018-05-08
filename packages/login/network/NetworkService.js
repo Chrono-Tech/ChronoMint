@@ -48,6 +48,7 @@ class NetworkService extends EventEmitter {
   }
 
   createNetworkSession = (account, provider, network) => {
+    console.log('account is' + account)
     if (!this._account) {
       this._account = account
     }
@@ -184,7 +185,7 @@ class NetworkService extends EventEmitter {
 
     const accounts = await this.loadAccounts()
 
-    this.selectAccount(accounts[ 0 ])
+    //this.selectAccount(accounts[ 0 ])
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
     btcProvider.setEngine(btc)
@@ -194,6 +195,7 @@ class NetworkService extends EventEmitter {
   }
 
   selectAccount = (selectedAccount) => {
+    console.log('select account')
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 

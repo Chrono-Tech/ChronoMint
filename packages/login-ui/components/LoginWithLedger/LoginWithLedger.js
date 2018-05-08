@@ -1,5 +1,9 @@
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
+import networkService from '@chronobank/login/network/NetworkService'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
+import Subheader from 'material-ui/Subheader'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -35,7 +39,7 @@ const mapStateToProps = (state) => {
   return {
     ledger: state.get('ledger'),
     isLoading: network.isLoading,
-    account: network.selectedAccount,
+    account: network.accounts
   }
 }
 
@@ -60,8 +64,12 @@ class LoginLedger extends PureComponent {
       isETHAppOpened: PropTypes.bool,
     }),
     isLoading: PropTypes.bool,
-    account: PropTypes.string,
+    account: PropTypes.array,
   }
+
+  state = {
+    value: 0,
+  };
 
   componentWillMount () {
     this.props.startLedgerSync()
@@ -70,6 +78,7 @@ class LoginLedger extends PureComponent {
   componentWillReceiveProps ({ ledger }) {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
+      console.log('fetch called again')
     }
   }
 
@@ -103,6 +112,12 @@ class LoginLedger extends PureComponent {
       ))
   }
 
+  _buildItem(item, index) {
+    return <MenuItem value={index} key={index} primaryText={item}/>
+  }
+
+  handleChange = (event, index, value) => {this.setState({value}); networkService.selectAccount(this.props.account[value])}
+
   render () {
     const { isLoading, ledger, account } = this.props
 
@@ -119,8 +134,15 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <div styleName='accountLabel'><Translate value='LoginWithLedger.ethAddress' /></div>
-            <div styleName='accountValue'>{account}</div>
+            <SelectField floatingLabelText="Select address"
+                         autoWidth={true}
+                         fullWidth={true}
+                         floatingLabelStyle={{ color: 'white' }}
+                         labelStyle={{ color: 'white' }}
+                         value={this.state.value}
+                         onChange={this.handleChange}>
+              {this.props.account.map(this._buildItem)}
+            </SelectField>
           </div>
         )}
 
@@ -139,7 +161,7 @@ class LoginLedger extends PureComponent {
               }
               primary
               fullWidth
-              disabled={isLoading || !account}
+              disabled={isLoading || !this.state.value}
               onTouchTap={this.props.onLogin}
             />
           </div>

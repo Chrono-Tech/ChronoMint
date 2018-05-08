@@ -2,6 +2,6 @@
   "name": "@chronobank/login",
   "version": "0.6.0",
   "dependencies": {
-    "ledger-wallet-provider": "github:dkchv/ledger-wallet-provider"
+    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider"
   }
 }
