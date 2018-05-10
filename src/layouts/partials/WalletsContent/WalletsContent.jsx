@@ -36,12 +36,10 @@ export default class WalletsContent extends Component {
   }
 
   render () {
-    // console.log('this.props.walletsList: ', this.props.walletsList)
-
     return (
       <div styleName='root'>
         {this.props.walletsList.map((walletGroup) => (
-          <div key={walletGroup.title}>
+          <div key={walletGroup.title} id={walletGroup.title}>
             {walletGroup.data.map((wallet) => (
               <WalletWidget
                 key={`${walletGroup.title}-${wallet.address}`}

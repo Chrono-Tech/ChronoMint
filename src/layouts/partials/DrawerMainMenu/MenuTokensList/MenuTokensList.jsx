@@ -128,6 +128,13 @@ export default class MenuTokensList extends PureComponent {
     }
   }
 
+  handleScrollToBlockchain = (blockchain) => {
+    const element = document.getElementById(blockchain)
+    if (element) {
+      element.scrollIntoView(true)
+    }
+  }
+
   render () {
     const setToken = (token) => {
       return () => {
@@ -136,38 +143,19 @@ export default class MenuTokensList extends PureComponent {
         }
       }
     }
-    const mainWallet = {
-      title: 'mainAddress',
-      symbol: ETH,
-      blockchain: BLOCKCHAIN_ETHEREUM,
-      address: this.props.account,
-    }
 
     const { selectedToken } = this.state
     return (
       <div styleName='root'>
-        <div styleName='item'>
-          <div styleName='syncIcon'>
-            {this.renderStatus()}
-          </div>
-          <div styleName='addressTitle'>
-            <div styleName='addressName'><Translate value={`${prefix}.${mainWallet.title}`} /></div>
-            <div styleName='address'>
-              {this.props.account}
-            </div>
-          </div>
-          <div
-            styleName={classnames('itemMenu', { 'selected': selectedToken && selectedToken.title === mainWallet.title })}
-            onTouchTap={setToken(mainWallet)}
-          >
-            <i className='material-icons'>more_vert</i>
-          </div>
-        </div>
-
         {this.props.tokens
           .map((token) => (
             <div styleName='item' key={token.blockchain}>
-              <div styleName='syncIcon'>
+              <div
+                styleName='syncIcon'
+                onTouchTap={((blockchain) => {
+                  this.handleScrollToBlockchain(blockchain)
+                })(token.blockchain)}
+              >
                 <span
                   styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
                   title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}

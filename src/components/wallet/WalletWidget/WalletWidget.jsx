@@ -224,7 +224,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='header-container'>
-        {!wallet.isTimeLocked() && !wallet.isMultisig() && <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+        {!wallet.isTimeLocked() && !wallet.isMultisig() && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>

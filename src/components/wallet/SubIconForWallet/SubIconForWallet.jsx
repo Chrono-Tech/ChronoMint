@@ -20,6 +20,10 @@ export default class SubIconForWallet extends PureComponent {
 
   render () {
     const { wallet } = this.props
+    if (!wallet.isMultisig() && !wallet.isTimeLocked()) {
+      return null
+    }
+
     let icon = 'wallet-circle'
     if (wallet.isMultisig()) {
       if (wallet.is2FA && wallet.is2FA()) {
