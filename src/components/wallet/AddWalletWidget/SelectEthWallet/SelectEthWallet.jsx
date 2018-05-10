@@ -4,6 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 
@@ -16,7 +17,9 @@ export default class SelectEthWallet extends PureComponent {
   }
 
   handleTouchTap = (type) => () => {
-    this.props.handleTouchTap(type)
+    if (!type.disabled) {
+      this.props.handleTouchTap(type.type)
+    }
   }
 
   render () {
@@ -24,8 +27,9 @@ export default class SelectEthWallet extends PureComponent {
       {
         title: `${prefix}.st.title`,
         type: 'ST',
-        icon: 'wallet',
+        icon: 'wallet-circle',
         description: `${prefix}.st.description`,
+        disabled: true,
       },
       {
         title: `${prefix}.tl.title`,
@@ -36,13 +40,14 @@ export default class SelectEthWallet extends PureComponent {
       {
         title: `${prefix}.fa.title`,
         type: '2FA',
-        icon: 'security',
+        icon: 'security-circle',
         description: `${prefix}.fa.description`,
+        disabled: true,
       },
       {
         title: `${prefix}.ms.title`,
         type: 'MS',
-        icon: 'people',
+        icon: 'multisig',
         description: `${prefix}.ms.description`,
       },
       {
@@ -50,6 +55,7 @@ export default class SelectEthWallet extends PureComponent {
         type: 'CW',
         icon: 'advanced-circle',
         description: `${prefix}.cw.description`,
+        disabled: true,
       },
     ]
 
@@ -57,11 +63,12 @@ export default class SelectEthWallet extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.type} styleName='walletType' onTouchTap={this.handleTouchTap(type.type)}>
+            <div key={type.type} styleName={classnames('walletType', { 'notAllowed': type.disabled })} onTouchTap={this.handleTouchTap(type)}>
               <div styleName='icon'><i className='chronobank-icon'>{type.icon}</i></div>
               <div styleName='info'>
                 <div styleName='title'><Translate value={type.title} /></div>
                 <div styleName='description'><Translate value={type.description} /></div>
+                {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
               </div>
               <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
             </div>

@@ -10,6 +10,7 @@ import TwoFA from 'components/dialogs/TwoFA/lang'
 import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
 import MultisigWalletForm from 'components/wallet/AddWalletWidget/MultisigWalletForm/lang'
+import TimeLockedWalletForm from 'components/wallet/AddWalletWidget/TimeLockedWalletForm/lang'
 import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
 import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
@@ -56,5 +57,6 @@ export default {
     OwnersListWidget: OwnersListWidget.en,
     AddWalletWidget: AddWalletWidget.en,
     MultisigWalletForm: MultisigWalletForm.en,
+    TimeLockedWalletForm: TimeLockedWalletForm.en,
   },
 }

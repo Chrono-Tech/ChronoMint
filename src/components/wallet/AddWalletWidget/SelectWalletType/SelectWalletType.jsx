@@ -23,7 +23,9 @@ export default class SelectWalletType extends PureComponent {
   }
 
   handleTouchTap = (type) => () => {
-    this.props.handleTouchTap(type)
+    if (!type.disabled) {
+      this.props.handleTouchTap(type.blockchain)
+    }
   }
 
   render () {
@@ -58,9 +60,12 @@ export default class SelectWalletType extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type.blockchain)}>
+            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type)}>
               <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
-              <div styleName='title'><Translate value={type.title} /></div>
+              <div styleName='title'>
+                <Translate value={type.title} />
+                {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
+              </div>
               <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
             </div>
           ))

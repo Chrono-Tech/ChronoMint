@@ -15,6 +15,8 @@ export default {
     lgo: 'List goes on ...',
     createWallet: 'Add an Ethereum Wallet',
     multisignatureWallet: 'Multi-signature Wallet',
+    timeLockedWallet: 'Time-Locked Wallet',
+    soon: 'Soon...',
     st: {
       title: 'Standard Wallet',
       description: '',
