@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from 'dao/RewardsDAO'
 import AssetModel from 'models/assetHolder/AssetModel'

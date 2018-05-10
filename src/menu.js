@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   global: [
     { key: 'about', title: 'global.about', path: 'https://chronobank.io/' },
@@ -9,10 +14,7 @@ export default {
   ],
   user: [
     {
-      key: 'dashboard', title: 'nav.dashboard', icon: 'dashboard', path: '/dashboard',
-    },
-    {
-      key: 'wallet', title: 'nav.wallet', icon: 'account_balance_wallet', path: '/wallet',
+      key: 'deposits', title: 'nav.deposits', icon: 'dashboard', path: '/deposits',
     },
     {
       key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange',
@@ -24,7 +26,7 @@ export default {
       key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards',
     },
     {
-      key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets',
+      key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets', showMoreButton: true,
     },
   ],
   cbe: [

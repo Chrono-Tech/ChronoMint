@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
 import TransactionErrorNoticeModel from 'models/notices/TransactionErrorNoticeModel'
@@ -15,6 +20,7 @@ import { initTokens } from 'redux/tokens/actions'
 import { showConfirmTxModal, watchInitUserMonitor } from 'redux/ui/actions'
 import { watchInitPolls } from 'redux/voting/actions'
 import { watchInitProfile } from 'redux/session/actions'
+import { initMultisigWalletManager } from 'redux/multisigWallet/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -68,6 +74,7 @@ export const globalWatcher = () => async (dispatch) => {
 
 // for all logged in users
 export const watcher = () => async (dispatch) => {
+  dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
   dispatch(initMainWallet())

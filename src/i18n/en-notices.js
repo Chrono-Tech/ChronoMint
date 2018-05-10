@@ -1,3 +1,17 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import {
+  ASSET_PAUSED,
+  ASSET_UNPAUSED,
+  MANAGER_ADDED,
+  MANAGER_REMOVED,
+  USER_ADDED_TO_BLACKLIST,
+  USER_DELETED_FROM_BLACKLIST,
+} from 'models/notices/AssetsManagerNoticeModel'
+
 export default {
   approval: {
     title: 'Approval',
@@ -85,7 +99,11 @@ export default {
   },
   assetsManager: {
     title: 'Assets manager',
-    managerAdded: 'Manager added',
-    managerRemoved: 'Manager removed',
+    [ MANAGER_ADDED ]: 'Manager added',
+    [ MANAGER_REMOVED ]: 'Manager removed',
+    [ ASSET_PAUSED ]: 'Asset %{symbol} was blocked',
+    [ ASSET_UNPAUSED ]: 'Asset %{symbol} was unblocked',
+    [ USER_ADDED_TO_BLACKLIST ]: 'User (%{address}) was added to blacklist',
+    [ USER_DELETED_FROM_BLACKLIST ]: 'User (%{address}) was deleted from blacklist',
   },
 }

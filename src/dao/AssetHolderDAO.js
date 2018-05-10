@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Amount from 'models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
@@ -27,8 +32,6 @@ export default class AssetHolderDAO extends AbstractContractDAO {
 
   async getAssetDAO (): Promise<ERC20DAO> {
     const assetAddress = await this.getSharesContract()
-    // eslint-disable-next-line
-    console.log('--AssetHolderDAO#getAssetDAO', assetAddress)
     return tokenService.getDAO(assetAddress)
   }
 
@@ -36,12 +39,14 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this._call('wallet')
   }
 
-  async deposit (tokenAddress: String, amount: Amount) {
+  async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1) {
     return this._tx(TX_DEPOSIT, [
       tokenAddress,
       new BigNumber(amount),
     ], {
       amount,
+    }, new BigNumber(0), {
+      feeMultiplier,
     })
   }
 
@@ -49,11 +54,15 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this._call('defaultShareholdersCount')
   }
 
-  async withdraw (tokenAddress: String, amount: Amount) {
+  async withdraw (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1) {
     return this._tx(TX_WITHDRAW_SHARES, [
       tokenAddress,
       new BigNumber(amount),
-    ], { amount })
+    ], {
+      amount,
+    }, new BigNumber(0), {
+      feeMultiplier,
+    })
   }
 
   getDeposit (tokenAddress: String, account: String): Promise {

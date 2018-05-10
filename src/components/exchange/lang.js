@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import * as ExchangeWidget from './ExchangeWidget/lang'
 import * as OrdersTable from './ExchangesTable/lang'
 import * as BuyTokensDialog from './BuyTokensDialog/lang'
@@ -11,12 +16,5 @@ export default {
     BuyTokensDialog: BuyTokensDialog.en,
     AddExchangeForm: AddExchangeForm.en,
     ExchangeTransferDialog: ExchangeTransferDialog.en,
-  },
-  ru: {
-    ExchangeWidget: ExchangeWidget.ru,
-    OrdersTable: OrdersTable.ru,
-    BuyTokensDialog: BuyTokensDialog.ru,
-    AddExchangeForm: AddExchangeForm.ru,
-    ExchangeTransferDialog: ExchangeTransferDialog.ru,
   },
 }

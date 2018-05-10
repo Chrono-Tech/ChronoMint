@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import '../LoginPageShared';
 
@@ -13,7 +18,7 @@ $gutter: 16px;
   padding: 10px;
   display: flex;
   justify-content: center;
-  color: $color-secondary;
+  color: $color-blue;
   text-transform: uppercase;
   font-weight: 500;
   font-size: 14px;
@@ -46,7 +51,7 @@ $gutter: 16px;
   @extend %mui-button-secondary-content;
 
   &:hover {
-    background-color: rgba($color-secondary, 0.4);
+    background-color: rgba($color-blue, 0.4);
   }
 }
 
@@ -95,4 +100,12 @@ $gutter: 16px;
 .action {
   margin: 0 ($gutter / 2);
   width: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.whiteButton {
+  button {
+    color: $color-white;
+  }
 }

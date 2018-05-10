@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { LOCAL_ID, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 
 const isW = window.hasOwnProperty('localStorage')

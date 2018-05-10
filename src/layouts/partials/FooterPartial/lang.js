@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   en: {
     download: 'Download',
@@ -9,17 +14,6 @@ export default {
     generalInquiries: 'General inquiries',
     menu: 'Menu',
     socialNetwork: 'Social Network',
-  },
-  ru: {
-    download: 'Скачать',
-    subscribe: 'Подписаться',
-    enterEmailForNews: 'Введите email для новостей',
-    newsletter: 'Новостная рассылка (скоро)',
-    contactUs: 'Свяжитесь с нами',
-    technicalSupport: 'Техническая поддержка',
-    generalInquiries: 'Общие вопросы',
-    menu: 'Меню',
-    socialNetwork: 'Социальные Сети',
   },
 }
 

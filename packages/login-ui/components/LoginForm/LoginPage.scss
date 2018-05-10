@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -87,14 +92,14 @@ input:-webkit-autofill:active {
 @keyframes autofill {
   100% {
     background: transparent;
-    color: #000000;
+    color: $color-primary-3;
   }
 }
 
 @-webkit-keyframes autofill {
   100% {
     background: transparent;
-    color: #000000;
+    color: $color-primary-3;
   }
 }
 

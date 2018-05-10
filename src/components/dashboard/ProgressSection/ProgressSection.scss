@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 
 .root {
@@ -13,7 +18,7 @@
     flex: 1 1 auto;
     height: 8px;
     border-radius: 4px;
-    background-image: linear-gradient(to left, #3023ae, #c96dd8);
+    background-image: linear-gradient(to left, $color-gradient, $color-gradient-1);
   }
 
   .current {
@@ -27,7 +32,7 @@
       transform: translate(-50%, -50%);
       color: $color-white;
       font-size: 16px;
-      background: #3124ae;
+      background: $color-gradient-2;
       border-radius: 50%;
       text-align: center;
       line-height: 40px;
@@ -40,7 +45,7 @@
     transform: translateY(-4px);
     flex: 1 1 auto;
     height: 8px;
-    background-image: linear-gradient(to right, #fbda61, #f98019);
+    background-image: linear-gradient(to right, $color-yelow, $color-yelow);
     border-radius: 4px;
   }
 }

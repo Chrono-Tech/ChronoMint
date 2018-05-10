@@ -1,4 +1,13 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
+
+.root {
+  background-color: $sideMenu-background;
+}
 
 .balances {
   text-shadow: $text-shadow-title;
@@ -9,4 +18,20 @@
   color: $color-white;
   line-height: 0.5em;
   margin-top: 14px;
+}
+
+.header {
+  padding: 16px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.content {
+  background: $color-white;
+  padding: 16px;
+  border-radius: 2px 2px 0 0;
 }

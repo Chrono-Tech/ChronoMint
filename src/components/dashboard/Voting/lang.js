@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   en: {
     votingOngoing: 'Voting ongoing',
@@ -6,14 +11,6 @@ export default {
     process: 'Process',
     moreInfo: 'more info',
     finished: 'percent of TIME received',
-  },
-  ru: {
-    votingOngoing: 'Запущенные голосования',
-    allPolls: 'Все опросы',
-    published: 'Опубликовано',
-    process: 'До завершения',
-    moreInfo: 'больше информации',
-    finished: 'процентов TIME получено',
-  },
+  }
 }
 

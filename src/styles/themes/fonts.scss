@@ -1,4 +1,8 @@
 /**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+/**
  * @license
  * MyFonts Webfont Build ID 3416249, 2017-07-04T09:23:12-0400
  *
@@ -42,29 +46,127 @@
  *
  * © 2017 MyFonts Inc
 */
-
-
 /* @import must be at top of file, otherwise CSS will not work */
 @import url("//hello.myfonts.net/count/3420b9");
 
-@font-face {font-family: 'ProximaNovaA-Bold';src: url('assets/fonts/webfonts/3420B9_0_0.eot');src: url('assets/fonts/webfonts/3420B9_0_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_0_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_0_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_0_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNovaS-Bold';src: url('assets/fonts/webfonts/3420B9_1_0.eot');src: url('assets/fonts/webfonts/3420B9_1_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_1_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_1_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_1_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNova-Bold';src: url('assets/fonts/webfonts/3420B9_2_0.eot');src: url('assets/fonts/webfonts/3420B9_2_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_2_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_2_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_2_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNovaA-Semibold';src: url('assets/fonts/webfonts/3420B9_3_0.eot');src: url('assets/fonts/webfonts/3420B9_3_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_3_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_3_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_3_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNovaS-Semibold';src: url('assets/fonts/webfonts/3420B9_4_0.eot');src: url('assets/fonts/webfonts/3420B9_4_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_4_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_4_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_4_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNova-Semibold';src: url('assets/fonts/webfonts/3420B9_5_0.eot');src: url('assets/fonts/webfonts/3420B9_5_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_5_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_5_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_5_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNovaA-Regular';src: url('assets/fonts/webfonts/3420B9_6_0.eot');src: url('assets/fonts/webfonts/3420B9_6_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_6_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_6_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_6_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNovaS-Regular';src: url('assets/fonts/webfonts/3420B9_7_0.eot');src: url('assets/fonts/webfonts/3420B9_7_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_7_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_7_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_7_0.ttf') format('truetype');}
-@font-face {font-family: 'ProximaNova-Regular';src: url('assets/fonts/webfonts/3420B9_8_0.eot');src: url('assets/fonts/webfonts/3420B9_8_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_8_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_8_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_8_0.ttf') format('truetype');}
+@font-face {
+  font-family: 'ProximaNovaA-Bold';
+  src: url('assets/fonts/webfonts/3420B9_0_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_0_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_0_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_0_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_0_0.ttf') format('truetype');
+}
 
-@font-face {font-weight:700;font-family: 'Proxima Nova';src: url('assets/fonts/webfonts/3420B9_2_0.eot');src: url('assets/fonts/webfonts/3420B9_2_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_2_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_2_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_2_0.ttf') format('truetype');}
-@font-face {font-weight:500;font-family: 'Proxima Nova';src: url('assets/fonts/webfonts/3420B9_5_0.eot');src: url('assets/fonts/webfonts/3420B9_5_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_5_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_5_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_5_0.ttf') format('truetype');}
-@font-face {font-weight:400;font-family: 'Proxima Nova';src: url('assets/fonts/webfonts/3420B9_8_0.eot');src: url('assets/fonts/webfonts/3420B9_8_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_8_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_8_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_8_0.ttf') format('truetype');}
+@font-face {
+  font-family: 'ProximaNovaS-Bold';
+  src: url('assets/fonts/webfonts/3420B9_1_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_1_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_1_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_1_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_1_0.ttf') format('truetype');
+}
 
-@font-face {font-weight:700;font-family: 'Proxima NovaA';src: url('assets/fonts/webfonts/3420B9_0_0.eot');src: url('assets/fonts/webfonts/3420B9_0_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_0_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_0_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_0_0.ttf') format('truetype');}
-@font-face {font-weight:500;font-family: 'Proxima NovaA';src: url('assets/fonts/webfonts/3420B9_3_0.eot');src: url('assets/fonts/webfonts/3420B9_3_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_3_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_3_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_3_0.ttf') format('truetype');}
-@font-face {font-weight:400;font-family: 'Proxima NovaA';src: url('assets/fonts/webfonts/3420B9_6_0.eot');src: url('assets/fonts/webfonts/3420B9_6_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_6_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_6_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_6_0.ttf') format('truetype');}
+@font-face {
+  font-family: 'ProximaNova-Bold';
+  src: url('assets/fonts/webfonts/3420B9_2_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_2_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_2_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_2_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_2_0.ttf') format('truetype');
+}
 
-@font-face {font-weight:700;font-family: 'Proxima NovaS';src: url('assets/fonts/webfonts/3420B9_1_0.eot');src: url('assets/fonts/webfonts/3420B9_1_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_1_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_1_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_1_0.ttf') format('truetype');}
-@font-face {font-weight:500;font-family: 'Proxima NovaS';src: url('assets/fonts/webfonts/3420B9_4_0.eot');src: url('assets/fonts/webfonts/3420B9_4_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_4_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_4_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_4_0.ttf') format('truetype');}
-@font-face {font-weight:400;font-family: 'Proxima NovaS';src: url('assets/fonts/webfonts/3420B9_7_0.eot');src: url('assets/fonts/webfonts/3420B9_7_0.eot?#iefix') format('embedded-opentype'),url('assets/fonts/webfonts/3420B9_7_0.woff2') format('woff2'),url('assets/fonts/webfonts/3420B9_7_0.woff') format('woff'),url('assets/fonts/webfonts/3420B9_7_0.ttf') format('truetype');}
+@font-face {
+  font-family: 'ProximaNovaA-Semibold';
+  src: url('assets/fonts/webfonts/3420B9_3_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_3_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_3_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_3_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_3_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ProximaNovaS-Semibold';
+  src: url('assets/fonts/webfonts/3420B9_4_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_4_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_4_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_4_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_4_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ProximaNova-Semibold';
+  src: url('assets/fonts/webfonts/3420B9_5_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_5_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_5_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_5_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_5_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ProximaNovaA-Regular';
+  src: url('assets/fonts/webfonts/3420B9_6_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_6_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_6_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_6_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_6_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ProximaNovaS-Regular';
+  src: url('assets/fonts/webfonts/3420B9_7_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_7_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_7_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_7_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_7_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ProximaNova-Regular';
+  src: url('assets/fonts/webfonts/3420B9_8_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_8_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_8_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_8_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_8_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 700;
+  font-family: 'Proxima Nova';
+  src: url('assets/fonts/webfonts/3420B9_2_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_2_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_2_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_2_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_2_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 500;
+  font-family: 'Proxima Nova';
+  src: url('assets/fonts/webfonts/3420B9_5_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_5_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_5_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_5_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_5_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 400;
+  font-family: 'Proxima Nova';
+  src: url('assets/fonts/webfonts/3420B9_8_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_8_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_8_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_8_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_8_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 700;
+  font-family: 'Proxima NovaA';
+  src: url('assets/fonts/webfonts/3420B9_0_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_0_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_0_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_0_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_0_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 500;
+  font-family: 'Proxima NovaA';
+  src: url('assets/fonts/webfonts/3420B9_3_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_3_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_3_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_3_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_3_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 400;
+  font-family: 'Proxima NovaA';
+  src: url('assets/fonts/webfonts/3420B9_6_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_6_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_6_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_6_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_6_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 700;
+  font-family: 'Proxima NovaS';
+  src: url('assets/fonts/webfonts/3420B9_1_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_1_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_1_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_1_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_1_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 500;
+  font-family: 'Proxima NovaS';
+  src: url('assets/fonts/webfonts/3420B9_4_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_4_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_4_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_4_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_4_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-weight: 400;
+  font-family: 'Proxima NovaS';
+  src: url('assets/fonts/webfonts/3420B9_7_0.eot');
+  src: url('assets/fonts/webfonts/3420B9_7_0.eot?#iefix') format('embedded-opentype'), url('assets/fonts/webfonts/3420B9_7_0.woff2') format('woff2'), url('assets/fonts/webfonts/3420B9_7_0.woff') format('woff'), url('assets/fonts/webfonts/3420B9_7_0.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'ChronoBankIcons';
+  src: url('assets/fonts/ChronoBankIcons.eot') format('embedded-opentype'), url('assets/fonts/ChronoBankIcons.ttf') format('truetype'), url('assets/fonts/ChronoBankIcons.woff') format('woff'), url('assets/fonts/ChronoBankIcons.svg') format('svg'),
+}

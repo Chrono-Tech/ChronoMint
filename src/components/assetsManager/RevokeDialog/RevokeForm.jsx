@@ -1,8 +1,13 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_MANAGER, revokeAsset } from 'redux/assetsManager/actions'
@@ -11,7 +16,7 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import validate from './validate'
 import './RevokeForm.scss'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.RevokeForm.${token}`
 }
 
@@ -23,7 +28,7 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   return {
     formErrors: form.get(FORM_NAME) && form.get(FORM_NAME).get('syncErrors'),
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }
@@ -46,13 +51,6 @@ export default class AddPlatformForm extends PureComponent {
   render () {
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           <Field
@@ -64,12 +62,11 @@ export default class AddPlatformForm extends PureComponent {
 
         </div>
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             disabled={!!this.props.formErrors}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

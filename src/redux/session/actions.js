@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import networkService from '@chronobank/login/network/NetworkService'
 import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
@@ -19,8 +24,8 @@ export const SESSION_DESTROY = 'session/DESTROY'
 export const SESSION_PROFILE = 'session/PROFILE'
 export const SESSION_PROFILE_UPDATE = 'session/PROFILE_UPDATE'
 
-export const DEFAULT_USER_URL = '/dashboard'
-export const DEFAULT_CBE_URL = '/dashboard'
+export const DEFAULT_USER_URL = '/wallets'
+export const DEFAULT_CBE_URL = '/wallets'
 
 export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
 
@@ -78,7 +83,7 @@ export const login = (account) => async (dispatch, getState) => {
 
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())
-  dispatch(replace((isCBE && ls.getLastURL()) || defaultURL))
+  dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
 export const bootstrap = (relogin = true) => async (dispatch) => {

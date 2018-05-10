@@ -1,10 +1,29 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import TxModel from 'models/TxModel'
 import AbstractNode from './AbstractNode'
+
+const eventsList = [
+  'platformrequested',
+  'assetcreated',
+  'restricted',
+  'unrestricted',
+  'paused',
+  'unpaused',
+  'issue',
+  'revoke',
+]
 
 export default class EthereumMiddlewareNode extends AbstractNode {
   constructor () {
     super(...arguments)
+
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+    this.connect()
   }
 
   async _handleSubscribe ({ ethAddress, nemAddress }) {
@@ -16,6 +35,16 @@ export default class EthereumMiddlewareNode extends AbstractNode {
         address: ethAddress,
         nem: nemAddress,
       })
+
+      this.executeOrSchedule(() => {
+        eventsList.map((event) => {
+          this._openSubscription(`${this._socket.channels.events}.${event}`, (data) => {
+            this.trace(event, data)
+            this.emit(event, data)
+          })
+        })
+      })
+
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -30,5 +59,20 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     } catch (e) {
       this.trace('Address unsubscription error', e)
     }
+  }
+
+  async getTransactionsList (address, id, skip, offset) {
+    const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
+    const { data } = await this._api.get(url)
+    return data
+  }
+
+  async getEventsData (eventName: string, queryFilter: string, mapCallback) {
+    const response = await this._api.get(`events/${eventName}/?${queryFilter}`)
+    if (response && response.data.length) {
+      return typeof mapCallback === 'function' ? response.data.map(mapCallback) : response.data
+    }
+
+    return []
   }
 }

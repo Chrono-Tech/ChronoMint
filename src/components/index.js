@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export { default as SideStack } from './common/SideStack/SideStack'
 export { default as ModalStack } from './common/ModalStack/ModalStack'
 export { default as Points } from './common/Points/Points'
@@ -42,3 +47,7 @@ export { default as CopyDialog } from './dialogs/CopyDialog/CopyDialog'
 
 export { default as WalletChanger } from './wallet/WalletChanger/WalletChanger'
 export { default as WalletPendingTransfers } from './wallet/WalletPendingTransfers'
+export { default as WalletWidget } from './wallet/WalletWidget/WalletWidget'
+export { default as Button } from './common/ui/Button/Button'
+export { default as TxConfirmations } from './common/TxConfirmations/TxConfirmations'
+export { default as TopButtons } from './common/TopButtons/TopButtons'

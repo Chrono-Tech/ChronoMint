@@ -1,5 +1,11 @@
-import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
-import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from 'material-ui/svg-icons'
+import { CircularProgress, IconButton, TextField } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import IconAttach from 'assets/file-select/icon-attach.svg'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
@@ -193,14 +199,15 @@ class FileSelect extends PureComponent {
           </div>
           <div styleName='attachStatus'>{this.renderStatus()}</div>
           <div styleName='attachAction'>
-            <FlatButton
+            <Button
+              flat
               onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value={this.props.label || 'fileSelect.addAttachments'} />}
-              secondary
-              style={{ color: globalStyles.colors.blue }}
-              icon={<img src={IconAttach} alt='icon' styleName='attachIcon' />}
               disabled={this.getFilesLeft() === 0}
-            />
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Translate value={this.props.label || 'fileSelect.addAttachments'} />
+              </div>
+            </Button>
           </div>
         </div>
 

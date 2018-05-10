@@ -1,6 +1,12 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { CircularProgress, MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -15,7 +21,7 @@ import platformIconInCircle from 'assets/img/assets1.svg'
 import { ACCEPT_ALL } from 'models/FileSelect/FileExtension'
 import FileModel from 'models/FileSelect/FileModel'
 import TokenModel from 'models/tokens/TokenModel'
-import { createAsset } from 'redux/assetsManager/actions'
+import { createAsset, DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
@@ -26,19 +32,19 @@ import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.AddTokenForm.${token}`
 }
 
 export const FORM_ADD_TOKEN_DIALOG = 'AddTokenDialog'
 
 function mapStateToProps (state) {
-  const assetsManager = state.get('assetsManager')
+  const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const form = state.get('form')
   return {
     formValues: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('values'),
     formErrors: form.get(FORM_ADD_TOKEN_DIALOG) && form.get(FORM_ADD_TOKEN_DIALOG).get('syncErrors'),
-    platformsList: assetsManager.usersPlatforms,
+    platformsList: assetsManager.usersPlatforms(),
   }
 }
 
@@ -316,13 +322,6 @@ export default class AddTokenForm extends PureComponent {
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           {this.renderTokenInfo()}
@@ -416,24 +415,13 @@ export default class AddTokenForm extends PureComponent {
               </div>
             </div>
           </div>
-
-          {/*<Field
-            styleName='checkboxField'
-            component={Checkbox}
-            name='startWithCrowdsale'
-            label={<Translate value={prefix('startWithCrowdsale')} />}
-          />*/}
-
         </div>
-        <div
-          styleName='dialogFooter'
-        >
-          <RaisedButton
+        <div styleName='dialogFooter'>
+          <Button
             onTouchTap={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

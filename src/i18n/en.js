@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { en as Login } from '@chronobank/login-ui/lang'
 import { en as components } from 'components/lang'
 import * as assetDonator from 'dao/AssetDonatorDAO'
@@ -15,6 +20,7 @@ import * as time from 'dao/AssetHolderDAO'
 import * as user from 'dao/UserManagerDAO'
 import { en as layouts } from 'layouts/lang'
 import * as votingManager from 'dao/VotingManagerDAO'
+import * as chronoBankAsset from 'dao/ChronoBankAssetDAO'
 
 export default {
   copyright: 'Copyright © 2018 LaborX Pty Ltd. All Rights Reserved.',
@@ -37,13 +43,15 @@ export default {
   },
   nav: {
     project: 'ChronoMint',
-    dashboard: 'Dashboard',
+    deposits: 'Deposits',
+    deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
+    addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Bonuses',
@@ -66,7 +74,12 @@ export default {
     of: 'of %{count}',
   },
   wallet: {
+    modeAdvanced: 'Advanced',
+    modeSimple: 'Simple',
+    templateName: 'Template name',
+    satPerByte: 'SAT / byte',
     sendTokens: 'Send tokens',
+    walletName: 'Wallet name',
     recipientAddress: 'Recipient address',
     selectTokenIcon: 'Please select icon file',
     multisignature: 'Multisignature',
@@ -365,6 +378,9 @@ export default {
       },
     },
     LOCManager: {
+      [ loc.standardFuncs.SET_STATUS ]: {
+        title: 'Set Status',
+      },
       [ loc.standardFuncs.ADD_LOC ]: {
         title: 'Add LOC',
         name: 'Name',
@@ -488,6 +504,25 @@ export default {
     VotingManager: {
       [ votingManager.TX_CREATE_POLL ]: {
         title: 'Create Poll',
+      },
+    },
+    ChronoBankAsset: {
+      [ chronoBankAsset.TX_PAUSE ]: {
+        title: 'Block asset',
+      },
+      [ chronoBankAsset.TX_UNPAUSE ]: {
+        title: 'Unblock asset',
+      },
+      [ chronoBankAsset.TX_RESTRICT ]: {
+        title: 'Add user to blacklist',
+      },
+      [ chronoBankAsset.TX_UNRESTRICT ]: {
+        title: 'Remove user from blacklist',
+      },
+    },
+    WalletsManager: {
+      'createWallet': {
+        title: 'Create multisignature wallet',
       },
     },
   },
@@ -694,61 +729,90 @@ export default {
   },
   components: {
     ...components.components,
-    dashboard: {
-      TransactionsTable: {
-        latestTransactions: 'Latest transactions',
-        time: 'Time',
-        block: 'Block',
-        type: 'Type',
-        hash: 'Hash',
-        from: 'From',
-        to: 'To',
-        value: 'Value',
-      },
-      DepositTokens: {
-        depositTime: 'Deposit Time',
-        amount: 'Amount',
-        yourSymbolBalance: 'Your %{symbol} balance',
-        yourSymbolDeposit: 'Your %{symbol} deposit',
-        symbolHolderAllowance: '%{symbol} holder allowance',
-        requireTime: 'Require TIME',
-        withdraw: 'Withdraw',
-      },
-      RewardsPeriod: {
-        rewardsPeriodIndex: 'Bonus period #%{index}',
-        ongoing: 'Ongoing',
-        closed: 'Closed',
-        startDate: 'Start date',
-        inDaysDays: 'in %{days} days',
-        endDate: 'End date',
-        totalTimeTokensDeposited: 'Total TIME tokens deposited',
-        percentOfTotalCount: '%{percent}% of total count',
-        uniqueShareholders: 'Unique shareholders',
-        yourTimeTokensEligible: 'Your TIME tokens eligible for bonuses in the period',
-        percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
-        dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
-        yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
-      },
-      Poll: {
-        new: 'New',
-        ongoing: 'Ongoing',
-        daysLeft: 'days left',
-        daysLeft_1: 'day left',
-        finished: 'Finished',
-        timeHoldersAlreadyVoted: 'percent of TIME received',
-        no: 'No',
-        requiredVotes: 'Required TIME',
-        receivedVotes: 'Received TIME',
-        variants: 'Variants',
-        documents: 'Documents',
-        remove: 'Remove',
-        details: 'Details',
-        endPoll: 'End Poll',
-        activate: 'Activate',
-        vote: 'Vote',
-        published: 'Published',
-        endDate: 'End Date',
-      },
+    TransactionsTable: {
+      latestTransactions: 'Latest transactions',
+      time: 'Time',
+      block: 'Block',
+      type: 'Type',
+      hash: 'Hash',
+      from: 'From',
+      to: 'To',
+      value: 'Value',
+    },
+    DepositTokens: {
+      depositTime: 'Deposit Time',
+      withdraw: 'Withdraw',
+      depositAccount: 'Deposit account',
+      amount: 'Amount, %{symbol}',
+      slow: 'Slow transaction',
+      fast: 'Fast',
+      yourSymbolBalance: 'Your %{symbol} balance',
+      yourDeposit: 'Your deposit',
+      holderAllowance: 'holder allowance',
+      transactionFee: 'Transaction fee',
+      requestTime: 'Request TIME',
+      multiplier: ', it is %{multiplier}x of average fee.',
+      enterAmount: 'Enter amount greater than 0',
+      note: 'Please note.',
+      noteText: `In order deposit you'll need to pay two around the same fees.  We're informing you about applicable fees on each step. You also will be able to revoke operation, but not the processed fee.`,
+      noteTwo: `Your deposit request has been processed. Please set a fee to place funds in your deposit or revoke the operation.`,
+      noteEth: `Your Ethereum account has insufficient funds. Please add Ethereum on your account in order to withdraw.`,
+      noteBalance: `Your TIME account has insufficient funds. Please add TIME on your account in order to withdraw.`,
+      buyTime: 'Buy Time',
+      receiveEth: 'Receive Eth',
+      gasPrice: 'Gas price',
+      firstStep: '1. Deposit Amount',
+      secondStep: '2. Finish Deposit',
+      proceed: 'PROCEED',
+      revoke: 'REVOKE',
+      finish: 'FINISH',
+      depositAmount: 'Amount on deposit',
+      balanceAmount: 'Your balance',
+      changeAmount: 'Change',
+    },
+    ReceiveTokenModal: {
+      receive: 'Receive',
+      important: 'Important!',
+      warningText1: `Make sure you're receiving `,
+      warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
+      receivingTitle: 'Your receiving %{symbol} address',
+      qrTitle: 'Your QR code for the %{symbol} address',
+      buyTitle: 'Also, you can buy %{symbol} in exchanges',
+    },
+    RewardsPeriod: {
+      rewardsPeriodIndex: 'Bonus period #%{index}',
+      ongoing: 'Ongoing',
+      closed: 'Closed',
+      startDate: 'Start date',
+      inDaysDays: 'in %{days} days',
+      endDate: 'End date',
+      totalTimeTokensDeposited: 'Total TIME tokens deposited',
+      percentOfTotalCount: '%{percent}% of total count',
+      uniqueShareholders: 'Unique shareholders',
+      yourTimeTokensEligible: 'Your TIME tokens eligible for bonuses in the period',
+      percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
+      dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
+      yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
+    },
+    Poll: {
+      new: 'New',
+      ongoing: 'Ongoing',
+      daysLeft: 'days left',
+      daysLeft_1: 'day left',
+      finished: 'Finished',
+      timeHoldersAlreadyVoted: 'percent of TIME received',
+      no: 'No',
+      requiredVotes: 'Required TIME',
+      receivedVotes: 'Received TIME',
+      variants: 'Variants',
+      documents: 'Documents',
+      remove: 'Remove',
+      details: 'Details',
+      endPoll: 'End Poll',
+      activate: 'Activate',
+      vote: 'Vote',
+      published: 'Published',
+      endDate: 'End Date',
     },
     locs: {
       PageTitle: {
@@ -860,5 +924,9 @@ export default {
         vote: 'Vote',
       },
     },
+  },
+  topButtons: {
+    addDeposit: 'Add deposit',
+    addWallet: 'Add wallet',
   },
 }

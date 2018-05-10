@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import validator from 'models/validator'
@@ -431,16 +436,11 @@ export default class AbstractContractDAO extends EventEmitter {
       params: args,
     })
 
-    /** ESTIMATE GAS */
-    const estimateGas = (func, args, value) => {
-      return this._estimateGas(func, args, value)
-    }
-
     let gasLimit = null
 
     /** START */
     try {
-      tx = await AbstractContractDAO.txStart(tx, estimateGas, feeMultiplier)
+      tx = await AbstractContractDAO.txStart(tx, this.estimateGas, feeMultiplier)
       gasLimit = tx.gasLimit()
       args = tx.params()
 
@@ -516,14 +516,14 @@ export default class AbstractContractDAO extends EventEmitter {
             errorCode = TX_FRONTEND_ERROR_CODES.FRONTEND_UNKNOWN
           }
           if (!this._okCodes.includes(errorCode)) {
+            // eslint-disable-next-line
+            console.warn(
+              this._error(
+                'Tx Error', func, args, value, gasLimit,
+                this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
+              ))
             throw new TxError('Error event was emitted', errorCode)
           }
-          // eslint-disable-next-line
-          console.warn(
-            this._error(
-              'Tx Error', func, args, value, gasLimit,
-              this._txErrorDefiner(new TxError('Error event was emitted for OK code', errorCode)),
-            ))
         }
       }
 
@@ -551,11 +551,10 @@ export default class AbstractContractDAO extends EventEmitter {
     }
   }
 
-  /** @private */
-  async _estimateGas (func: string, args = [], value = null): number | Object {
+  estimateGas = async (func: string, args = [], value = null): number | Object => {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
-      throw this._error('_estimateGas func not found', func)
+      throw this._error('estimateGas func not found', func)
     }
 
     const [ gasPrice, estimatedGas ] = await Promise.all([

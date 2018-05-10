@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import '~styles/partials/variables';
 
 $gutter: 24px;
@@ -11,8 +16,6 @@ $gutter: 24px;
 .header {
   display: flex;
   align-items: center;
-  background: $color-panel-bg-5;
-  padding: 16px 54px 16px 16px;
 }
 
 .headerIcon {
@@ -23,7 +26,6 @@ $gutter: 24px;
 .headerTitle {
   margin-left: 16px;
   color: $color-white;
-  text-transform: uppercase;
 }
 
 // common
@@ -85,7 +87,7 @@ $gutter: 24px;
 .actions {
   display: flex;
   justify-content: flex-end;
-  padding: 24px 16px;
+  padding: 24px 16px 16px;
 }
 
 .action {

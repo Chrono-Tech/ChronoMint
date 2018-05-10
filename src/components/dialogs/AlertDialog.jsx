@@ -1,8 +1,14 @@
-import { Dialog, FlatButton } from 'material-ui'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Dialog } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
+import Button from 'components/common/ui/Button/Button'
 
 @connect(null, mapDispatchToProps)
 export default class AlertDialog extends PureComponent {
@@ -14,10 +20,10 @@ export default class AlertDialog extends PureComponent {
 
   renderActions () {
     return [
-      <FlatButton
+      <Button
+        flat
         key='close'
         label='Close'
-        primary
         onTouchTap={() => this.props.handleClose()}
       />,
     ]

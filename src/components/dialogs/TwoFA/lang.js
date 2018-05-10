@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export const prefix = 'TwoFA'
 
 export default {
@@ -24,8 +29,5 @@ export default {
     //  actions
     enable2FA: 'Enable two-factor authentication',
     proceedToActivation: 'Proceed to activation',
-  },
-  ru: {
-    // TODO @dkchv: translate
-  },
+  }
 }

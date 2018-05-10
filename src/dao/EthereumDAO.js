@@ -1,15 +1,17 @@
-import networkService from '@chronobank/login/network/NetworkService'
-import axios from 'axios'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
-import ls from 'utils/LocalStorage'
 import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import AbstractTokenDAO, { EVENT_NEW_BLOCK, EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -32,6 +34,10 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   getGasPrice (): Promise {
     return this._web3Provider.getGasPrice()
+  }
+
+  getBlockNumber (): Promise {
+    return this._web3Provider.getBlockNumber()
   }
 
   getAccountBalance (account): Promise {
@@ -70,8 +76,10 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   /** @private */
   _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
-    const gasPrice = new BigNumber(tx.gasPrice)
-    const gasFee = gasPrice.mul(tx.gas)
+    // error "15 Significant digit limit"
+    BigNumber.config({ ERRORS: false })
+    const gasPrice = tx.gasPrice && new BigNumber(tx.gasPrice)
+    const gasFee = gasPrice && gasPrice.mul(tx.gas)
 
     return new TxModel({
       txHash: tx.hash,
@@ -102,7 +110,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     const gasFee = gasPriceBN.mul(gasLimit)
 
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
-
   }
 
   async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
@@ -197,6 +204,9 @@ export class EthereumDAO extends AbstractTokenDAO {
         return
       }
       const block = await this._web3Provider.getBlock(r, true)
+
+      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber })
+
       const time = block.timestamp * 1000
       if (time < startTime) {
         return
@@ -213,62 +223,22 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async getTransfer (id, account): Promise<TxModel> {
-    const apiURL = networkService.getScanner(ls.getNetwork(), ls.getProvider(), true)
-    if (apiURL) {
-      try {
-        const test = await axios.get(`${apiURL}/api`)
-        if (test.status === 200) {
-          return this._getTransferFromEtherscan(apiURL, account, id)
+  async getTransfer (id, account, skip, offset): Promise<TxModel> {
+    let txs = []
+    try {
+      const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
+      for (const tx of txsResult) {
+        if (!tx.value || tx.value === '0') {
+          continue
         }
-      } catch (e) {
-        // eslint-disable-next-line
-        console.warn('Etherscan API is not available, fallback to block-by-block scanning', e)
+        txs.push(this._getTxModel(tx, account, tx.timestamp))
       }
-    } else {
+    } catch (e) {
       // eslint-disable-next-line
-      console.warn('Etherscan API is not available for selected provider, enabled block-by-block scanning for ETH txs')
+      console.warn('Middleware API is not available, fallback to block-by-block scanning', e)
+      return this._getTransferFromBlocks(account, id)
     }
-    return this._getTransferFromBlocks(account, id)
-  }
-
-  async _getTransferFromEtherscan (apiURL, account, id): Array<TxModel> {
-    const offset = 10000 // limit of Etherscan
-    const cache = this._getFilterCache(id) || {}
-    const toBlock = cache.toBlock || await this._web3Provider.getBlockNumber()
-    const txs = cache.txs || []
-    let page = cache.page || 1
-    let end = cache.end || false
-
-    while (txs.length < TXS_PER_PAGE && !end) {
-      const url = `${apiURL}/api?module=account&action=txlist&address=${account}&startblock=0&endblock=${toBlock}&page=${page}&offset=${offset}&sort=desc`
-      try {
-        const result = await axios.get(url)
-        if (typeof result !== 'object' || !result.data) {
-          throw new Error('invalid result')
-        }
-        if (result.data.status !== '1') {
-          throw new Error(`result not OK: ${result.data.message}`)
-        }
-        for (const tx of result.data.result) {
-          if (tx.value === '0') {
-            continue
-          }
-          txs.push(this._getTxModel(tx, account, tx.timeStamp))
-        }
-      } catch (e) {
-        end = true
-        // eslint-disable-next-line
-        console.warn('EthereumDAO getTransfer Etherscan', e)
-      }
-      page++
-    }
-
-    this._setFilterCache(id, {
-      toBlock, page, txs: txs.slice(TXS_PER_PAGE), end,
-    })
-
-    return txs.slice(0, TXS_PER_PAGE)
+    return txs
   }
 
   /**

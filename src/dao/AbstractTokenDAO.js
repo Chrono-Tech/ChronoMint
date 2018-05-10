@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import type Amount from 'models/Amount'
 import type TxModel from 'models/TxModel'
 import { address } from 'models/validator'
@@ -5,6 +10,7 @@ import TokenModel from 'models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
+export const EVENT_NEW_BLOCK = 'TokenNewBlock'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
 export const FETCH_NEW_BALANCE = 'TokenFetchNewBalance'
 export const EVENT_MODIFY_BALANCE = 'TokenModifyBalance'

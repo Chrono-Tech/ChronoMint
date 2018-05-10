@@ -1,7 +1,13 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { FlatButton } from 'material-ui'
 import React from 'react'
 import ReactPaginate from 'react-paginate'
 import createFragment from 'react-addons-create-fragment'
+import Button from './ui/Button/Button'
 
 const styles = {
   btn: {
@@ -17,9 +23,9 @@ class Pagination extends ReactPaginate {
   // TODO fix eslint when Pagination will be implemented
   // eslint-disable-next-line
   pageView = (index) => {
-    return (<FlatButton
+    return (<Button
+      flat
       onTouchTap={this.handlePageSelected.bind(null, index)}
-      style={Object.assign({}, styles.btn, this.state.selected === index ? styles.selected : {})}
       label={index + 1}
     />)
   }
@@ -74,7 +80,7 @@ class Pagination extends ReactPaginate {
         // noinspection JSUnusedAssignment
         if (this.props.breakLabel && breakLabelValue !== breakView) {
           breakView = (
-            <FlatButton disabled label='...' style={styles.btn} />
+            <Button flat disabled label='...' style={styles.btn} />
           )
 
           items[`key${index}`] = breakView
@@ -87,7 +93,8 @@ class Pagination extends ReactPaginate {
   render () {
     return (
       <p style={{ textAlign: 'center' }}>
-        <FlatButton
+        <Button
+          flat
           onTouchTap={this.handlePreviousPage}
           label={this.props.previousLabel}
           disabled={this.state.selected === 0}
@@ -95,7 +102,8 @@ class Pagination extends ReactPaginate {
 
         {createFragment(this.pagination())}
 
-        <FlatButton
+        <Button
+          flat
           onTouchTap={this.handleNextPage}
           label={this.props.nextLabel}
           disabled={this.state.selected === this.props.pageCount - 1}

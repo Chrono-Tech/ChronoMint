@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import type PendingManagerDAO from 'dao/PendingManagerDAO'
@@ -39,7 +44,7 @@ export default class AbstractMultisigContractDAO extends AbstractContractDAO {
       await this._tx(func, args, infoArgs, null, {
         ...options,
         addDryRunFrom: dao.getInitAddress(),
-        addDryRunOkCodes: [resultCodes.OK],
+        addDryRunOkCodes: this._okCodes,
       }),
     ])
 

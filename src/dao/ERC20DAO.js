@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
@@ -169,8 +174,10 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   async getTransfer (id, account): Promise<Array<TxModel>> {
-    const result = await this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`)
-    const result2 = await this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`)
+    const [ result, result2 ] = await Promise.all([
+      this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`),
+      this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`),
+    ])
 
     const callback = (tx) => promises.push(this._getTxModel(tx, account))
     const promises = []
@@ -178,5 +185,10 @@ export default class ERC20DAO extends AbstractTokenDAO {
     result2.forEach(callback)
 
     return Promise.all(promises)
+  }
+
+  /** ESTIMATE GAS */
+  estimateGas (func, args, value) {
+    return this._estimateGas(func, args, value)
   }
 }

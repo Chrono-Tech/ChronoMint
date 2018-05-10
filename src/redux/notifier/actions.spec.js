@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { store, accounts } from 'specsInit'
 import CBEModel from 'models/CBEModel'
 import CBENoticeModel from 'models/notices/CBENoticeModel'

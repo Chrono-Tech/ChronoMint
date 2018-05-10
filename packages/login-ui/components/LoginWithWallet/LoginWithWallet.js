@@ -1,13 +1,18 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, FlatButton, RaisedButton, TextField } from 'material-ui'
+import { CircularProgress, FlatButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
-
 import './LoginWithWallet.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -160,27 +165,24 @@ class LoginWithWallet extends PureComponent {
 
         <div styleName='actions'>
           <div styleName='action'>
-            <FlatButton
+            <Button
+              flat
+              styleName='whiteButton'
               label={<Translate value='LoginWithWallet.generateNewWallet' />}
               fullWidth
               disabled={isLoading}
               onTouchTap={this.props.onGenerate}
-              icon={<i className='material-icons' styleName='buttonIcon'>account_balance_wallet</i>}
-              {...styles.flatButton}
             />
           </div>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading ? <CircularProgress
                 style={{ verticalAlign: 'middle', marginTop: -2 }}
                 size={24}
                 thickness={1.5}
               /> : <Translate value='LoginWithWallet.login' />}
-              primary
-              fullWidth
               disabled={isLoading || !isUploaded || !password || password === ''}
               onTouchTap={this.handleEnterPassword}
-              style={styles.primaryButton}
             />
           </div>
         </div>

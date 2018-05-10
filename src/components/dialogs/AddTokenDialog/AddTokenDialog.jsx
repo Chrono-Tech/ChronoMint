@@ -1,6 +1,12 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { FlatButton, RaisedButton } from 'material-ui'
+import { FlatButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -144,16 +150,16 @@ export default class AddTokenDialog extends PureComponent {
             />
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
               onTouchTap={this.handleClose}
             />
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('save')} />}
               type='submit'
-              primary
               disabled={this.props.submitting}
             />
           </div>

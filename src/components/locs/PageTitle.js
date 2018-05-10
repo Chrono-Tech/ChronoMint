@@ -1,5 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Button } from 'components'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
@@ -10,13 +15,7 @@ import SendToExchangeDialog from 'components/dialogs/LOC/LOCSendToExchangeDialog
 import LOCModel from 'models/LOCModel'
 import Amount from 'models/Amount'
 import globalStyles from '../../styles'
-
-const styles = {
-  btn: {
-    marginRight: 10,
-    marginBottom: 10,
-  },
-}
+import './styles.scss'
 
 const mapDispatchToProps = (dispatch) => ({
   showCreateLOCModal: (loc) => dispatch(modalsOpen({
@@ -64,22 +63,17 @@ class PageTitle extends PureComponent {
     return (
       <div style={globalStyles.title2Wrapper}>
         <h3 style={globalStyles.title2}><Translate value={prefix('labourOfferingCompanies')} /></h3>
-        <RaisedButton
-          label={<Translate value='locs.new' />}
-          primary
-          style={styles.btn}
-          onTouchTap={this.handleShowLOCModal}
-          buttonStyle={{ ...globalStyles.raisedButton }}
-          labelStyle={globalStyles.raisedButtonLabel}
-        />
-        <RaisedButton
-          label={<Translate value='locs.sendToExchange' />}
-          primary
-          style={styles.btn}
-          onTouchTap={this.handleSendToExchange}
-          buttonStyle={{ ...globalStyles.raisedButton }}
-          labelStyle={globalStyles.raisedButtonLabel}
-        />
+        <div styleName='buttonWrapper'>
+          <Button
+            label={<Translate value='locs.new' />}
+            primary
+            onTouchTap={this.handleShowLOCModal}
+          />
+          <Button
+            label={<Translate value='locs.sendToExchange' />}
+            onTouchTap={this.handleSendToExchange}
+          />
+        </div>
       </div>
     )
   }

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import networkService from '@chronobank/login/network/NetworkService'
 import { LOCAL_ID, TESTRPC_URL, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'

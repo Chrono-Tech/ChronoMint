@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Link } from 'react-router'
 import { List, ListItem, IconButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -19,6 +24,34 @@ export default class DrawerPartial extends PureComponent {
     isCBE: PropTypes.bool,
     handleDrawerToggle: PropTypes.func,
     handleDrawerHide: PropTypes.func,
+  }
+
+  renderItem (item) {
+    return (
+      <ListItem
+        key={item.key}
+        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
+        innerDivStyle={styles.drawer.item.innerDivStyle}
+        disabled={item.disabled}
+        primaryText={<Translate value={item.title} />}
+        onTouchTap={this.props.handleDrawerHide}
+        leftIcon={
+          <FontIcon
+            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
+            className='material-icons'
+          >{item.icon}
+          </FontIcon>
+        }
+        containerElement={!item.disabled
+          ? <Link
+            styleName='item'
+            activeClassName='drawer-item-active'
+            to={{ pathname: item.path }}
+          />
+          : <div />
+        }
+      />
+    )
   }
 
   render () {
@@ -49,34 +82,6 @@ export default class DrawerPartial extends PureComponent {
           )}
         </div>
       </div>
-    )
-  }
-
-  renderItem (item) {
-    return (
-      <ListItem
-        key={item.key}
-        style={item.disabled ? styles.drawer.item.styleDisabled : styles.drawer.item.style}
-        innerDivStyle={styles.drawer.item.innerDivStyle}
-        disabled={item.disabled}
-        primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerHide}
-        leftIcon={
-          <FontIcon
-            style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
-            className='material-icons'
-          >{item.icon}
-          </FontIcon>
-        }
-        containerElement={!item.disabled
-          ? <Link
-            styleName='item'
-            activeClassName='drawer-item-active'
-            to={{ pathname: item.path }}
-          />
-          : <div />
-        }
-      />
     )
   }
 }

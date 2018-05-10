@@ -1,10 +1,17 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import BigNumber from 'bignumber.js'
-import BitcoinAbstractNode, { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
+import TxModel from 'models/TxModel'
+import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
     super(args)
+    console.log('BitcoinMiddlewareNode : ', args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
     this._feeRate = feeRate
     this._subscriptions = {}
@@ -84,8 +91,17 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     }
   }
 
-  async getTransactionsList (/*address*/) {
-    return []
+  async getTransactionsList (address, id, skip, offset) {
+    const url = `tx/${address}/history?skip=${skip}&limit=${offset}`
+    const { data } = await this._api.get(url)
+    let txs = []
+    if (!data) {
+      throw new Error('invalid result')
+    }
+    for (const tx of data) {
+      txs.push(this._createTxModel(tx, address))
+    }
+    return txs
   }
 
   getFeeRate (): Promise {
@@ -115,6 +131,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   async getAddressUTXOS (address) {
     try {
       const res = await this._api.get(`addr/${address}/utxo`)
+      console.log('getAddressUTXOS: ', res)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -139,24 +156,27 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   }
 
   _createTxModel (tx, account): BitcoinTx {
-    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => input.addresses.join(',')).join(',')
-    const to = tx.outputs.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
-
+    const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
+      return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
+    }).join(',')
+    const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      if (output.scriptPubKey.addresses.indexOf(account) < 0) {
+      if (output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
 
     return new BitcoinTx({
-      txHash: tx.txid,
-      time: Date.now() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
+      blockHash: tx.blockHash,
+      blockNumber: tx.blockNumber,
+      txHash: tx.hash,
+      time: tx.timestamp,
       from,
       to,
       value,
-      fee: new BigNumber(tx.fee).mul(DECIMALS),
-      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.addresses.indexOf(account) >= 0).length,
+      fee: new BigNumber(tx.fee || 0).mul(DECIMALS),
+      credited: tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length,
     })
   }
 }

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Divider from 'material-ui/Divider'
 import Paper from 'material-ui/Paper'
 import PropTypes from 'prop-types'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -233,7 +238,7 @@
 }
 
 .foot {
-  padding: 8px 0px;
+  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -262,11 +267,13 @@
   flex-wrap: wrap;
   max-width: 100%;
   justify-content: flex-end;
+  .action {
+    padding-left: 16px;
+  }
 }
 
 .action {
   flex: 0 0 auto;
   display: inline-block;
-  margin: 16px 16px;
   vertical-align: top;
 }

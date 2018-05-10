@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import networkService from '@chronobank/login/network/NetworkService'
@@ -9,8 +14,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
-
 import './LoginWithTrezor.scss'
+import { Button } from '../../settings'
 
 const trezorStates = [ {
   flag: 'isHttps',
@@ -137,7 +142,7 @@ class LoginTrezor extends PureComponent {
 
         <div styleName='actions'>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={isLoading
                 ? (
                   <CircularProgress
@@ -148,8 +153,6 @@ class LoginTrezor extends PureComponent {
                 )
                 : <Translate value='LoginWithTrezor.login' />
               }
-              primary
-              fullWidth
               disabled={isLoading || !account}
               onTouchTap={() => this.props.onLogin()}
             />

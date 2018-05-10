@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
@@ -19,7 +24,7 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import './RewardsPeriod.scss'
 
 function prefix (token) {
-  return `components.dashboard.RewardsPeriod.${token}`
+  return `components.RewardsPeriod.${token}`
 }
 
 function mapStateToProps (state) {

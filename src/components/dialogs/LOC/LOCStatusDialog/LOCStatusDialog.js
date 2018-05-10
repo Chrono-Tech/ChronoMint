@@ -1,3 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Translate } from 'react-redux-i18n'
+import ModalDialog from 'components/dialogs/ModalDialog'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -25,12 +32,12 @@ class IssueLHModal extends PureComponent {
 
   render () {
     return (
-      <ModalDialogBase title='locs.updateStatus'>
+      <ModalDialog title={<Translate value='locs.updateStatus' />}>
         <LOCStatusForm
           initialValues={{ status: this.props.loc.status() }}
           onSubmitSuccess={this.handleSubmitSuccess}
         />
-      </ModalDialogBase>
+      </ModalDialog>
     )
   }
 }

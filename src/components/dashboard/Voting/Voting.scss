@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -150,7 +155,7 @@
   font-size: 24px;
   font-weight: 600;
   text-align: left;
-  color: #00005f;
+  color: $color-primary-0;
 
 }
 
@@ -174,12 +179,12 @@
   margin-left: -60px;
   .label {
     font-size: 16px;
-    color: #00005f;
+    color: $color-primary-0;
     text-align: center;
   }
   .percent {
     font-size: 45px;
-    color: #00005f;
+    color: $color-primary-0;
     text-align: center;
   }
 }
@@ -188,7 +193,6 @@
   font-size: 14px;
   font-weight: 600;
   text-align: left;
-  color: #2962ff;
+  color: $color-blue;
   cursor: pointer;
 }
-

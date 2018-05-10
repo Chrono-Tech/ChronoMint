@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -42,10 +47,10 @@
   border-bottom: solid 1px transparent;
   &.selected {
     border-radius: 2px;
-    background-color: #e9efff;
-    border-top: solid 1px #2962ff;
-    border-right: solid 1px #2962ff;
-    border-bottom: solid 1px #2962ff;
+    background-color: $color-primary-light;
+    border-top: solid 1px $color-blue;
+    border-right: solid 1px $color-blue;
+    border-bottom: solid 1px $color-blue;
   }
 }
 
@@ -67,7 +72,7 @@
   height: 100%;
   cursor: pointer;
   font-size: 16px;
-  color: #00005f;
+  color: $color-primary-0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -96,10 +101,9 @@
   position: relative;
   padding-left: 125px;
   height: 80px;
-  margin-right: 16px;
   justify-content: center;
   &:hover, &.selected {
-    background: #e9efff;
+    background: $color-primary-light;
   }
 }
 
@@ -147,4 +151,23 @@
 .addressWrap {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.blockedIcon {
+  background: $color-red;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  padding: 1px;
+  top: 15px;
+  left: -5px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }

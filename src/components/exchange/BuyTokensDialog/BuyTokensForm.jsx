@@ -1,11 +1,14 @@
-import globalStyles from 'layouts/partials/styles'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Button, IPFSImage } from 'components'
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import BigNumber from 'bignumber.js'
-import { IPFSImage } from 'components'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Immutable from 'immutable'
-import { RaisedButton } from 'material-ui'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -203,18 +206,16 @@ export default class BuyTokensForm extends React.PureComponent {
                     {!this.props.isBuy &&
                     <div>
                       {allowance > 0
-                        ? <RaisedButton
+                        ? <Button
                           type='button'
                           label={(
                             <span styleName='buttonLabel'>
                               <Translate value={prefix('revoke')} />
                             </span>
                           )}
-                          primary
                           onTouchTap={this.handleApprove}
-                          {...globalStyles.buttonRaisedMultyLine}
                         />
-                        : <RaisedButton
+                        : <Button
                           disabled={this.props.pristine || !this.props.valid || showWarningMessage}
                           type='button'
                           label={(
@@ -222,19 +223,15 @@ export default class BuyTokensForm extends React.PureComponent {
                               <Translate value={prefix('approve')} />
                             </span>
                           )}
-                          primary
                           onClick={this.handleApprove}
-                          {...globalStyles.buttonRaisedMultyLine}
                         />
                       }
                     </div>
                     }
-                    <RaisedButton
+                    <Button
                       disabled={!this.props.valid || (!this.props.isBuy && exchangeToken.removeDecimals(allowance).toString() !== this.props.buy) || showWarningMessage}
                       type='submit'
-                      label={<span styleName='buttonLabel'><Translate value={prefix('sendRequest')} /></span>}
-                      {...globalStyles.buttonRaisedMultyLine}
-                      primary
+                      label={<Translate value={prefix('sendRequest')} />}
                     />
                   </div>
                 </div>

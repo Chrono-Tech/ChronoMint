@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { I18n } from 'platform/i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -18,6 +23,7 @@ export default class CopyIcon extends PureComponent {
     onModalOpen: PropTypes.func,
     showCopyDialog: PropTypes.func,
     iconStyle: PropTypes.string,
+    children: PropTypes.node,
   }
 
   static defaultProps = {
@@ -43,9 +49,12 @@ export default class CopyIcon extends PureComponent {
 
   render () {
     return (
-      <div styleName='root'>
-        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }}>
-          <i className='material-icons'>content_copy</i>
+      <div styleName='root' className='MicroIcon__root'>
+        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }} >
+          {this.props.children
+            ? this.props.children
+            : <i className='material-icons'>content_copy</i>
+          }
         </a>
       </div>
     )
@@ -54,9 +63,7 @@ export default class CopyIcon extends PureComponent {
 
 function mapDispatchToProps (dispatch) {
   return {
-    showCopyDialog: ({
-      copyValue, title, controlTitle, description,
-    }) => dispatch(modalsOpen({
+    showCopyDialog: ({ copyValue, title, controlTitle, description }) => dispatch(modalsOpen({
       component: CopyDialog,
       props: {
         copyValue,

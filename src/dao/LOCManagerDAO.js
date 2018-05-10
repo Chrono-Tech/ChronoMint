@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Immutable from 'immutable'
 import LOCModel from 'models/LOCModel'
 import LOCNoticeModel, { statuses } from 'models/notices/LOCNoticeModel'
@@ -15,6 +20,7 @@ export const standardFuncs = {
   GET_LOC_BY_ID: 'getLOCById',
   ADD_LOC: 'addLOC',
   SET_LOC: 'setLOC',
+  SET_STATUS: 'setStatus',
 }
 
 export const multisigFuncs = {

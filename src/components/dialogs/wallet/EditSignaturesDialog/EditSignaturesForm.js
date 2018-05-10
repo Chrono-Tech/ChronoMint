@@ -1,5 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
-import { RaisedButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { Component } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
@@ -37,10 +42,9 @@ export default class EditSignaturesForm extends Component {
             />
           </div>
           <div styleName='action'>
-            <RaisedButton
+            <Button
               label={<Translate value={`${prefix}.submit`} />}
               type='submit'
-              primary
               disabled={pristine || !valid}
             />
           </div>

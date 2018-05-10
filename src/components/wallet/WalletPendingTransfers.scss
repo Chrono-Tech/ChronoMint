@@ -1,9 +1,14 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import '~styles/partials/variables';
 @import '~styles/partials/mixins';
 
 .header {
   background-color: $color-panel-bg-3;
-  color: white;
+  color: $color-white;
   display: flex;
   flex-direction: row;
   padding: 24px 16px;

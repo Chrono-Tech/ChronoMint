@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 
 .root {
@@ -91,11 +96,11 @@
 }
 
 .secondary {
-  color: $color-secondary;
+  color: $color-blue;
 }
 
 .link {
-  color: $color-secondary;
+  color: $color-blue;
   cursor: pointer;
   font-weight: $font-weight-bold;
 }

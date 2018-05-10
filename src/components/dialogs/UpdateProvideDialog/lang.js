@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export const prefix = 'UpdateProvideDialog'
 
 export default {
@@ -12,17 +17,5 @@ export default {
     website: 'Website',
     email: 'Email',
     button: 'Confirm Edits',
-  },
-  ru: {
-    title: 'Изменение аккаунта',
-    yourName: 'Ваше имя',
-    yourCompany: 'Ваша компания',
-    accountAddress: 'Адрес аккаунта',
-    fileTitle: 'Добавить/изменить фото профиля',
-    name: 'Имя',
-    company: 'Компания',
-    website: 'Сайт',
-    email: 'Email',
-    button: 'Потвердить изменения',
-  },
+  }
 }

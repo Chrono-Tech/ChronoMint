@@ -1,13 +1,18 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Button } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BuyTokensDialog from 'components/exchange/BuyTokensDialog/BuyTokensDialog'
 import Immutable from 'immutable'
-import { RaisedButton, Toggle } from 'material-ui'
+import { Toggle } from 'material-ui'
 import type ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import ExchangesCollection from 'models/exchange/ExchangesCollection'
 import PropTypes from 'prop-types'
 import React from 'react'
-import globalStyles from 'layouts/partials/styles'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Amount from 'models/Amount'
@@ -122,24 +127,19 @@ export default class ExchangesTable extends React.PureComponent {
         {!exchange.isPending() ?
           <div styleName='colActions'>
             <div styleName='buttonWrapper'>
-              <RaisedButton
-                label={(
-                  <span styleName='buttonLabel'>
-                    <Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />
-                  </span>)}
+              <Button
+                label={<Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />}
                 onTouchTap={() => {
                   this.props.handleOpenTransfer(exchange, exchange.symbol())
                 }}
-                {...globalStyles.buttonRaisedMultyLine}
               />
             </div>
             <div styleName='buttonWrapper'>
-              <RaisedButton
-                label={<span styleName='buttonLabel'><Translate value={prefix('depositEth')} /></span>}
+              <Button
+                label={<Translate value={prefix('depositEth')} />}
                 onTouchTap={() => {
                   this.props.handleOpenTransfer(exchange, 'ETH')
                 }}
-                {...globalStyles.buttonRaisedMultyLine}
               />
             </div>
           </div>
@@ -203,8 +203,8 @@ export default class ExchangesTable extends React.PureComponent {
         <div styleName='colActions'>
           {showBuy && exchange.assetBalance().gt(0) &&
           <div styleName='buttonWrapper'>
-            <RaisedButton
-              label={<span><Translate value={prefix('buy')} /> {exchange.symbol()}</span>}
+            <Button
+              label={<Translate value={prefix('buy')} symbol={exchange.symbol()} />}
               onTouchTap={() => {
                 this.props.handleOpenDetails(exchange, true)
               }}
@@ -213,8 +213,8 @@ export default class ExchangesTable extends React.PureComponent {
           }
           {showSell && exchange.ethBalance().gt(0) &&
           <div styleName='buttonWrapper'>
-            <RaisedButton
-              label={<span><Translate value={prefix('sell')} /> {exchange.symbol()}</span>}
+            <Button
+              label={<Translate value={prefix('sell')} symbol={exchange.symbol()} />}
               onTouchTap={() => {
                 this.props.handleOpenDetails(exchange, false)
               }}
@@ -237,9 +237,8 @@ export default class ExchangesTable extends React.PureComponent {
 
     if (this.props.exchanges.isFetched() && this.props.lastPages < this.props.pagesCount) {
       return (
-        <RaisedButton
+        <Button
           label={<Translate value={prefix('getNextPage')} />}
-          primary
           onTouchTap={this.props.handleGetNextPage}
         />
       )

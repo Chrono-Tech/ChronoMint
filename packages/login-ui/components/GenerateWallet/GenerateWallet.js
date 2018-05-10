@@ -1,7 +1,12 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import walletGenerator from '@chronobank/login/network/walletGenerator'
 import { addError, clearErrors } from '@chronobank/login/redux/network/actions'
 import download from 'js-file-download'
-import { Checkbox, MuiThemeProvider, RaisedButton, TextField } from 'material-ui'
+import { Checkbox, MuiThemeProvider, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -9,8 +14,8 @@ import { Translate } from 'react-redux-i18n'
 import BackButton from '../../components/BackButton/BackButton'
 import styles from '../../components/stylesLoginPage'
 import Warning from '../../components/Warning/Warning'
-
 import './GenerateWallet.scss'
+import { Button } from '../../settings'
 
 const initialState = {
   password: '',
@@ -112,12 +117,10 @@ class GenerateWallet extends PureComponent {
                   />
                 </div>
               )}
-              <RaisedButton
+              <Button
                 label={<Translate value='GenerateWallet.continue' />}
-                primary
                 disabled={!isDownloaded && (!isWarningSuppressed || !isPasswordValid)}
                 onTouchTap={this.handleGenerateWalletClick}
-                style={styles.primaryButton}
               />
             </div>
           </div>

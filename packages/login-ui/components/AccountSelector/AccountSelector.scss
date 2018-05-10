@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -8,6 +13,4 @@
 }
 
 .action {
-  flex-grow: 0;
-  width: 50%;
 }

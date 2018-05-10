@@ -1,79 +1,45 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 600px;
-  > * {
-    flex: 0 0 auto;
-  }
-}
-
-.col {
-  background-color: black;
-  height: 100px;
-}
-
 .root {
-  flex: 1 0 auto;
+  margin-top: 100px;
   display: flex;
+  position: relative;
   flex-direction: column;
-  position: relative;
+  align-items: center;
+  background-color: $background-color;
+  height: 100%;
   width: 100%;
-}
-
-.content {
-  position: relative;
-  margin: 50px 80px;
-
-  @include md-only {
-    margin: 30px 25px;
-  }
-
   :global {
-    .WalletContent__grid {
-      @include grid(6, 64px, 40px);
+    .WalletWidgetDetail__root, .TokensListWidget__root, .PendingTxWidget__root {
+      width: 590px;
+      margin-bottom: 30px;
     }
   }
-}
-
-.headLight {
-  :global {
-    .ColoredSection__head {
-      background-color: $color-panel-bg-1;
+  .transactions {
+    width: 590px;
+    margin-bottom: 30px;
+    background: $color-white;
+    color: $color-primary-3;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    .header {
+      padding: 25px 30px;
+      border-bottom: 1px solid $color-grey-1;
+      font-weight: 500;
+      font-size: 26px;
+      line-height: 31px;
+    }
+    :global {
+      .TransactionsTable__root {
+        box-shadow: none;
+        width: 100%;
+        margin-bottom: 0;
+      }
     }
   }
-}
-
-.headDark {
-  :global {
-    .ColoredSection__head {
-      background-color: $color-panel-bg-2;
-    }
-  }
-}
-
-.instructions {
-  color: $color-primary-0;
-  padding: 0 16px;
-  margin-bottom: 32px;
-
-  h3 {
-    font-size: 24px;
-    font-weight: bold;
-    display: block;
-    padding: 0;
-    margin-bottom: 24px;
-  }
-}
-
-.instructionsDescription {
-  opacity: 0.6;
-  font-size: 18px;
-}
-
-.spacer {
-  height: 40px
 }

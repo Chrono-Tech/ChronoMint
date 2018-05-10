@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Poll, PollEditDialog } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { RaisedButton } from 'material-ui'
@@ -15,6 +20,7 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { DUCK_VOTING, listPolls } from 'redux/voting/actions'
 import VotingCollection from 'models/voting/VotingCollection'
 import getStatistics from 'redux/voting/getters'
+import { Button } from 'components'
 
 import './VotingContent.scss'
 
@@ -141,7 +147,7 @@ export default class VotingContent extends Component {
                 <div styleName='contentAlignRight'>
                   <div styleName='entries' />
                   <div>
-                    <RaisedButton
+                    <Button
                       disabled={this.props.deposit.isZero()}
                       label={<Translate value={prefix('newPoll')} />}
                       styleName='action'

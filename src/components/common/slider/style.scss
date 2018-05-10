@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 .slider.editable {
   margin-top: 20px;
   text-align: left;
@@ -61,7 +66,7 @@
   width: 100%;
   height: .4rem;
   overflow: hidden;
-  background: #ccc;
+  background: $color-grey-8;
 }
 
 .value {
@@ -78,11 +83,11 @@
 
 .value {
   transform: scaleX(0.5);
-  background-color: red;
+  background-color: $color-red;
 }
 
 .slider.pinned.cyan .value {
-  background-color: #009688;
+  background-color: $color-green-3;
 }
 
 .slider.pinned.disabled .value {
@@ -116,7 +121,7 @@
   width: 1px;
   height: 1px;
   content: "";
-  background-color: #000;
+  background-color: $color-primary-0;
   border-radius: 50%;
 }
 
@@ -125,7 +130,7 @@
   width: 1px;
   height: 1px;
   content: "";
-  background-color: #000;
+  background-color: $color-primary-0;
   border-radius: 50%;
 }
 
@@ -152,7 +157,7 @@
 }
 
 .slider.pinned.cyan .innerknob:before {
-  background-color: #009688;
+  background-color: $color-green-3;
 }
 
 .slider.pinned.disabled .innerknob:before {
@@ -167,7 +172,7 @@
 .slider.pinned .innerknob:after {
   width: 3.2rem;
   font-size: 14px;
-  color: #fff;
+  color: $color-white;
   text-align: center;
   content: attr(data-value);
   -webkit-transform: scale(0) translate(0);

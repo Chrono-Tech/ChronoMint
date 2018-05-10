@@ -1,14 +1,12 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
 .root {
-
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  flex: 1 1 auto;
-  overflow-y: auto;
   overflow-x: hidden;
 
   :global {

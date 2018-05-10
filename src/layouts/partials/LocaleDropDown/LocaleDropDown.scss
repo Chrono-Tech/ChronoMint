@@ -1,9 +1,30 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
-.LocaleDropDown{
+.LocaleDropDown {
   @include xs-only {
     width: 100%;
     top: 10px;
+  }
+}
+
+.root {
+
+}
+
+.langButton {
+  button {
+    color: $color-white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: lighter;
   }
 }

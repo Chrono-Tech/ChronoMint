@@ -1,16 +1,21 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
-.root {}
+.root {
+}
 
 .content {
   max-width: 362px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
 }
 
 .header {
   height: 144px;
-  background: $color-panel-bg-5;
   display: flex;
   position: relative;
   padding: 50px 8px 24px 8px;
@@ -61,11 +66,18 @@
 
 .body {
   padding: 0 16px;
+  background: $color-white;
+  border-radius: 2px 2px 0 0;
+  overflow: hidden;
 }
 
 .footer {
   padding: 24px 16px;
   text-align: right;
+  background: $color-white;
+  border-radius: 0 0 2px 2px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action {

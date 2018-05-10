@@ -1,4 +1,9 @@
-import FlatButton from 'material-ui/FlatButton'
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -80,30 +85,34 @@ class Buttons extends PureComponent {
       // TODO @dkchv: view contract disable until MINT-277 (fileSelect & ipfs)
       <div styleName='buttonsWrap'>
         {isNotExpired && (
-          <FlatButton
+          <Button
+            flat
             label={<Translate value='locs.issueS' asset={currency} />}
             disabled={!isActive || isPending}
-            onTouchTap={isActive && !isPending && this.handleShowLOCIssueDialog}
+            onTouchTap={this.handleShowLOCIssueDialog}
           />
         )}
         {isNotExpired && (
-          <FlatButton
+          <Button
+            flat
             label={<Translate value='locs.redeemS' asset={currency} />}
             disabled={!isActive || isPending || loc.issued() === 0}
-            onTouchTap={isActive && !isPending && loc.issued() !== 0 && this.handleShowLOCRedeemDialog}
+            onTouchTap={this.handleShowLOCRedeemDialog}
           />
         )}
         {isNotExpired && (
-          <FlatButton
+          <Button
+            flat
             label={<Translate value='terms.status' />}
             disabled={isPending}
-            onTouchTap={!isPending && this.handleShowLOCStatusDialog}
+            onTouchTap={this.handleShowLOCStatusDialog}
           />
         )}
-        <FlatButton
+        <Button
+          flat
           label={<Translate value='locs.editInfo' />}
           disabled={isPending || isActive}
-          onTouchTap={!isPending && !isActive && this.handleShowLOCDialog}
+          onTouchTap={this.handleShowLOCDialog}
         />
       </div>
     )

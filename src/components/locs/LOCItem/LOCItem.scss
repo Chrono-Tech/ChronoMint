@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 
 .root {
@@ -66,7 +71,7 @@
   width: 144px;
   height: 144px;
   border-radius: 50%;
-  border: 5px solid #9095da;
+  border: 5px solid $color-purpule-1;
   font-size: 24px;
   font-weight: bold;
   color: $color-primary-0;
@@ -76,16 +81,16 @@
 .pending {
   padding: 4px;
   border-radius: 2px;
-  background-color: #ccc;
-  color: #fff;
+  background-color: $color-grey-8;
+  color: $color-white;
   text-transform: uppercase;
 }
 
 .failed {
   padding: 4px;
   border-radius: 2px;
-  background-color: red;
-  color: #fff;
+  background-color: $color-red;
+  color: $color-white;
   text-transform: uppercase;
 }
 

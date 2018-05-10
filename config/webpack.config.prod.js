@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 const path = require('path')
 const webpack = require('webpack')
 const babel = require('./babel.prod')
@@ -10,9 +15,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackIncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+let srcAppArg = process.argv.find(e => e.startsWith('--src-app='))
+const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
+
 module.exports = config.buildConfig(
-  ({ srcPath, modulesPath, buildPath, indexPresentationHtmlPath, faviconPath }) => ({
-    entry: path.join(srcPath, 'index'),
+  ({ srcPath, modulesPath, buildPath, indexHtmlPath, indexPresentationHtmlPath, faviconPath }) => ({
+    entry: path.join(srcPath, srcApp),
     output: {
       path: buildPath,
       filename: '[name].js',
@@ -22,7 +30,9 @@ module.exports = config.buildConfig(
     plugins: [
       new HtmlWebpackPlugin({
         inject: 'head',
-        template: indexPresentationHtmlPath,
+        template: process.env.NODE_ENV === 'standalone'
+          ? indexHtmlPath
+          : indexPresentationHtmlPath,
         favicon: faviconPath,
         hash: true,
         minify: {
@@ -45,6 +55,7 @@ module.exports = config.buildConfig(
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,
         WEB3_RPC_LOCATION: '"' + process.env.WEB3_RPC_LOCATION + '"',
+        PUBLIC_BACKEND_REST_URL: '"' + (process.env.PUBLIC_BACKEND_REST_URL || 'https://backend.chronobank.io') + '"',
       }),
       new webpack.optimize.OccurrenceOrderPlugin(),
       new webpack.optimize.DedupePlugin(),
@@ -62,22 +73,26 @@ module.exports = config.buildConfig(
         },
       }),
       new ExtractTextPlugin('[name].[contenthash].css'),
-      new CopyWebpackPlugin([
-        {
-          context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
-          from: '**',
-          to: path.join(buildPath, 'chronomint-presentation'),
-        },
-      ]),
-      new HtmlWebpackIncludeAssetsPlugin({
-        assets: [
-          'chronomint-presentation/css/index.css',
-          'chronomint-presentation/js/vendor.js',
-          'chronomint-presentation/js/index.js',
-        ],
-        hash: true,
-        append: false,
-      }),
-    ],
+      process.env.NODE_ENV === 'standalone'
+        ? null
+        : new CopyWebpackPlugin([
+          {
+            context: path.join(modulesPath, '@chronobank/chronomint-presentation/dist/chronomint-presentation'),
+            from: '**',
+            to: path.join(buildPath, 'chronomint-presentation'),
+          },
+        ]),
+      process.env.NODE_ENV === 'standalone'
+        ? null
+        : new HtmlWebpackIncludeAssetsPlugin({
+          assets: [
+            'chronomint-presentation/css/index.css',
+            'chronomint-presentation/js/vendor.js',
+            'chronomint-presentation/js/index.js',
+          ],
+          hash: true,
+          append: false,
+        }),
+    ].filter((p) => p !== null),
   })
 )

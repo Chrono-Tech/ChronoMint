@@ -1,6 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
-
 
 .root {
   background: $color-white;
@@ -20,14 +24,16 @@
 }
 
 .content {
-  padding: 24px 16px 0px 16px;
+  padding: 24px 16px 0 16px;
 }
 
 .footer {
-  padding: 24px 16px;
+  padding: 24px 16px 16px;
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action {
-  margin: 0px 0px 0px 10px;
+  margin: 0 0 0 10px;
 }

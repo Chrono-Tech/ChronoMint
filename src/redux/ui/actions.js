@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import moment from 'moment'
 import { setLocale } from 'platform/i18n'
 import ls from 'utils/LocalStorage'
@@ -60,7 +65,7 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
   return { isConfirmed: false }
 })
 
-export const changeMomentLocale = (locale, dispatch) => {
+export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
   ls.setLocale(locale)
   dispatch(setLocale(locale))

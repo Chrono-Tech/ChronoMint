@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import Immutable from 'immutable'
 import BalanceModel from 'models/tokens/BalanceModel'
 import BalancesCollection from 'models/tokens/BalancesCollection'

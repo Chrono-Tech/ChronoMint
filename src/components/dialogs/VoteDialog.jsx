@@ -1,5 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
@@ -212,11 +217,10 @@ export default class VoteDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('vote')} />}
               type='submit'
-              primary
               disabled={this.state.choice === null}
             />
           </div>

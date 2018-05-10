@@ -1,5 +1,11 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, reduxForm } from 'redux-form/immutable'
-import { MenuItem, RaisedButton } from 'material-ui'
+import { MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { SelectField } from 'redux-form-material-ui'
@@ -19,7 +25,7 @@ class LOCStatusForm extends PureComponent {
   render () {
     const { pristine, handleSubmit } = this.props
     return (
-      <form name='LOCStatusFormName' onSubmit={handleSubmit}>
+      <form name='LOCStatusFormName' onSubmit={handleSubmit} styleName='root'>
         <p styleName='subHeader'><Translate value='forms.mustBeCoSigned' /></p>
 
         <Field
@@ -35,9 +41,8 @@ class LOCStatusForm extends PureComponent {
         </Field>
 
         <div styleName='footer'>
-          <RaisedButton
+          <Button
             label={<Translate value='locs.updateStatus' />}
-            primary
             onTouchTap={handleSubmit}
             disabled={pristine}
           />

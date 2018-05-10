@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export default {
   en: {
     dialogTitle: 'Add token',
@@ -16,23 +21,5 @@ export default {
     addNewPlatform: 'Add new platform',
     platformError: 'Choose platform',
     PlatformNotSelected: 'Platform not selected',
-  },
-  ru: {
-    dialogTitle: 'Добавить токен',
-    platformName: 'Платформa',
-    tokenSymbol: 'Символ токена',
-    smallestUnit: 'Наименьшая единица',
-    reissuable: 'Перевыпускаемый',
-    amount: 'Сумма',
-    withFee: 'С коммиссией',
-    feePercent: 'Процент коммиссии',
-    startWithCrowdsale: 'Начать с crowdsale',
-    description: 'Название токена',
-    uploading: 'Загрузка',
-    choosePlatform: 'Выберите платформу',
-    feeAddress: 'Адресс для коммиссии',
-    addNewPlatform: 'Добавить новую платформу',
-    platformError: 'Выберите платформу',
-    PlatformNotSelected: 'Платформа не выбрана',
   },
 }

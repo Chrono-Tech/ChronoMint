@@ -1,6 +1,11 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { Field, reduxForm, reset } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -22,7 +27,7 @@ function mapStateToProps (state) {
   const assetsManager = state.get(DUCK_ASSETS_MANAGER)
   const tokens = state.get(DUCK_TOKENS)
   return {
-    selectedToken: assetsManager.selectedToken,
+    selectedToken: assetsManager.selectedToken(),
     tokens,
   }
 }
@@ -54,9 +59,8 @@ export default class ReissueAssetForm extends PureComponent {
               floatingLabelText={<Translate value={prefix('reissueAmount')} />}
             />
           </div>
-          <RaisedButton
+          <Button
             type='submit'
-            primary
             label={<Translate value={prefix('reissue')} />}
             styleName='action'
           />

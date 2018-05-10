@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import ledgerProvider from '../../network/LedgerProvider'
 import web3Provider from '../../network/Web3Provider'
 import networkService from '../../network/NetworkService'

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
 import AssetHolderDAO from 'dao/AssetHolderDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
@@ -116,18 +121,18 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel) => async () => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
   try {
-    await assetHolderDAO.deposit(token.address(), amount)
+    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel) => async () => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
   try {
-    await assetHolderDAO.withdraw(token.address(), amount)
+    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)

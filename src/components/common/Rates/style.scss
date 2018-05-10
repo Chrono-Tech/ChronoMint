@@ -1,9 +1,14 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
 
 .logosWrap {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  color: white;
+  color: $color-white;
 }
 
 .header {
@@ -11,9 +16,9 @@
   font-size: 34px;
   text-align: center;
   span {
-    color: #00c853;
+    color: $color-green-2;
     &:last-child {
-      color: #ffffff;
+      color: $color-white;
     }
   }
 }
@@ -34,20 +39,20 @@
 .marketName {
   font-size: 14px;
   text-align: left;
-  color: #768fff;
+  color: $color-primary-1;
 }
 
 .price {
   font-size: 16px;
   text-align: left;
-  color: #ffffff;
+  color: $color-white;
 }
 
 .currency {
   opacity: 0.6;
   font-size: 14px;
   text-align: left;
-  color: #ffffff;
+  color: $color-white;
 }
 
 .changePct {
@@ -58,7 +63,7 @@
 }
 
 .changePct.up {
-  color: #00c853;
+  color: $color-green-2;
 }
 
 .changePct.up .changeIcon {
@@ -66,7 +71,7 @@
 }
 
 .changePct.down {
-  color: #ff1744;
+  color: $color-red;
 }
 
 .changePct.down .changeIcon {
@@ -117,4 +122,3 @@
   left: 0;
   width: auto;
 }
-

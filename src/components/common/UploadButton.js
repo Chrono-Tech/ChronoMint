@@ -1,5 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+import { Button } from 'components'
 import PropTypes from 'prop-types'
-import RaisedButton from 'material-ui/RaisedButton'
 import React, { PureComponent } from 'react'
 import ReactDOM from 'react-dom'
 
@@ -32,7 +37,7 @@ class UploadButton extends PureComponent {
   render () {
     return (
       <div>
-        <RaisedButton
+        <Button
           label={this.props.label}
           onClick={this.openFileDialog.bind(this)}
         />

@@ -1,8 +1,14 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import SplitSection from 'components/dashboard/SplitSection/SplitSection'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -86,12 +92,11 @@ export default class Voting extends PureComponent {
             )}
             foot={(
               <div styleName='buttons'>
-                <RaisedButton
+                <Button
                   containerElement={
                     <Link activeClassName='active' to={{ pathname: '/voting' }} />
                   }
                   label={<Translate value={prefix('allPolls')} />}
-                  primary
                 />
               </div>
             )}

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { FULL_DATE } from 'models/constants'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
@@ -29,6 +34,10 @@ class TxModel extends abstractModel({
     return this._getSet('tokenAddress', value)
   }
 
+  blockNumber (value) {
+    return this._getSet('blockNumber', value)
+  }
+
   to () {
     return this.get('to')
   }
@@ -49,8 +58,12 @@ class TxModel extends abstractModel({
     return this.get('from')
   }
 
+  txHash () {
+    return this.get('txHash')
+  }
+
   id () {
-    return `${this.txHash} - ${this.from()} - ${this.to()}`
+    return `${this.type()} - ${this.txHash()} - ${this.from()} - ${this.to()}`
   }
 
   time () {

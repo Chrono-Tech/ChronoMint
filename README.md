@@ -42,3 +42,10 @@ yarn tconsole
 yarn test
 ```
 To test separate specs just add your regex at the end of this command. Ensure what `yarn testrpc` is already ran in separate console 
+
+
+## License
+ [GNU AGPLv3](LICENSE)
+
+## Copyright
+LaborX PTY

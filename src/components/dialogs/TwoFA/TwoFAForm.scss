@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 
 $bulletRadius: 16px;
@@ -128,7 +133,7 @@ $stepMargin: 24px;
 .storeIcon {
   width: 12px;
   height: 12px;
-  background-color: red;
+  background-color: $color-red;
 }
 
 // step1
@@ -196,7 +201,7 @@ $stepMargin: 24px;
   width: 128px;
   height: 128px;
   margin-right: 16px;
-  background-color: #ccc;
+  background-color: $color-grey-8;
 }
 
 .step3content {

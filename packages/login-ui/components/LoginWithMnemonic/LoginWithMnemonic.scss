@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/variables";
 @import '../LoginPageShared';
 
@@ -23,4 +28,12 @@ $gutter: 16px;
   margin: 0 ($gutter/2);
   width: calc(50% - 16px);
   flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.whiteButton {
+  button {
+    color: $color-white;
+  }
 }

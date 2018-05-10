@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import axios from 'axios'
 import { networks } from 'bitcoinjs-lib'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
@@ -46,7 +51,7 @@ const BCC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 
 const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://btgexplorer.com/api',
+    baseURL: 'https://explorer.bitcoingold.org/insight-api',
     timeout: 4000,
   }),
   trace: false,
@@ -54,7 +59,7 @@ const BTG_MAINNET_NODE = new BitcoinBlockexplorerNode({
 
 const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://testnet.btgexplorer.com/api',
+    baseURL: 'https://test-explorer.bitcoingold.org/insight-api',
     timeout: 4000,
   }),
   trace: false,
@@ -96,6 +101,7 @@ export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
 })
 
 export function selectBTCNode (engine) {
+  console.log('engine.getNetwork(): ', engine.getNetwork(), engine.getNetwork() !== networks.bitcoin)
   return engine.getNetwork() !== networks.bitcoin
     ? BTC_TESTNET_NODE
     : BTC_MAINNET_NODE

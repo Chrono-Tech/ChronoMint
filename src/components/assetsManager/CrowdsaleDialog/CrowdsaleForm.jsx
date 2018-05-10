@@ -1,9 +1,14 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { TOKEN_ICONS } from 'assets'
+import { Button, IPFSImage, TokenValue } from 'components'
 import BigNumber from 'bignumber.js'
 import classnames from 'classnames'
-import { IPFSImage, TokenValue } from 'components'
 import { get } from 'lodash'
-import { DatePicker, FlatButton, RaisedButton } from 'material-ui'
+import { DatePicker } from 'material-ui'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -65,7 +70,7 @@ class CrowdsaleCurrency extends PureComponent {
         onClick={this.handleClick}
         styleName={classnames('currencyItem', { selected: currentCurrency === currency })}
       >
-        <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS[currency.toUpperCase()]} />
+        <IPFSImage styleName='tokenIcon' fallback={TOKEN_ICONS[ currency.toUpperCase() ]} />
         <div styleName='name'>Ethereum</div>
       </button>
     )
@@ -183,9 +188,7 @@ export default class CrowdsaleForm extends PureComponent {
             {CROWDSALE_COINS.map(this.renderCrowdsaleCurrency)}
           </div>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value={prefix('allAvailableCurrencies')} />}
-            />
+            <Button flat label={<Translate value={prefix('allAvailableCurrencies')} />} />
           </div>
         </div>
 
@@ -341,18 +344,15 @@ export default class CrowdsaleForm extends PureComponent {
             </div>
           </div>
           <div styleName='action'>
-            <FlatButton
-              label={<Translate value={prefix('allAvailableCurrencies')} />}
-            />
+            <Button flat label={<Translate value={prefix('allAvailableCurrencies')} />} />
           </div>
         </div>
 
         <div styleName='dialogFooter'>
-          <RaisedButton
+          <Button
             styleName='action'
             label={<Translate value={prefix('confirmAndStart')} />}
             type='submit'
-            primary
           />
         </div>
       </div>

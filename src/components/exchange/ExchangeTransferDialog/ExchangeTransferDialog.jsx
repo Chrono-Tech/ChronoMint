@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import ModalDialog from 'components/dialogs/ModalDialog'
 import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
 import TokenModel from 'models/tokens/TokenModel'
@@ -87,17 +92,8 @@ export default class ExchangeTransferDialog extends React.PureComponent {
       : new Amount(this.props.exchange.assetBalance(), this.props.exchange.symbol())
 
     return (
-      <ModalDialog>
+      <ModalDialog title={<span><Translate value={prefix(`title`)} />{` ${this.props.tokenSymbol} `}</span>}>
         <div styleName='root'>
-          <div styleName='header'>
-            <div styleName='headerWrapper'>
-              <div styleName='title'>
-                <Translate
-                  value={prefix(`title`)}
-                />{` ${this.props.tokenSymbol} `}
-              </div>
-            </div>
-          </div>
           <div styleName='content'>
             {
               showMessage &&

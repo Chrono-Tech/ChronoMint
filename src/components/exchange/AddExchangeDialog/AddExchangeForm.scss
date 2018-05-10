@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 @import "~styles/partials/mixins";
 @import '~styles/partials/variables';
 
@@ -10,18 +15,6 @@
   @include xs-only {
     width: 100vw;
   }
-}
-
-.dialogHeader {
-  display: flex;
-  position: relative;
-  align-items: baseline;
-  box-sizing: border-box;
-  background: $color-primary-1;
-  height: 180px;
-  padding: 24px 16px;
-  text-align: left;
-  color: #ffffff;
 }
 
 .dialogHeaderStuff {
@@ -40,7 +33,7 @@
 }
 
 .dialogFooter {
-  padding: 24px 16px;
+  padding: 24px 16px 16px;
   text-align: right;
 }
 
