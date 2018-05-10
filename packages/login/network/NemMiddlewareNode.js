@@ -110,7 +110,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       throw new Error('invalid result')
     }
     for (const tx of data) {
-      txs.push(this.createTxModel(tx, address))
+      txs.push(createTxModel(tx, address))
     }
     return txs
   }
