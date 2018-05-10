@@ -19,6 +19,7 @@ import SelectEthWallet from './SelectEthWallet/SelectEthWallet'
 import MultisigWalletForm from './MultisigWalletForm/MultisigWalletForm'
 import TimeLockedWalletForm from './TimeLockedWalletForm/TimeLockedWalletForm'
 import { prefix } from './lang'
+import CustomWalletForm from './CustomWalletForm/CustomWalletForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
@@ -67,6 +68,10 @@ export default class AddWalletWidget extends PureComponent {
       case 'TL':
         title = `${prefix}.timeLockedWallet`
         Component = TimeLockedWalletForm
+        break
+      case 'CW':
+        title = `${prefix}.customWallet`
+        Component = CustomWalletForm
         break
     }
 

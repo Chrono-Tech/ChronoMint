@@ -1,0 +1,35 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+$gutter: 24px;
+
+.root {
+  min-width: 300px;
+  max-width: 460px;
+  background-color: $color-white;
+  .body {
+    .block {
+      border-bottom: 1px solid $color-grey300;
+      color: $color-black;
+
+      &:last-child {
+        border-bottom: none;
+      }
+      .tokensList {
+
+      }
+    }
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 30px;
+    .action {
+      margin-left: 10px;
+    }
+  }
+}
+
