@@ -38,7 +38,6 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
     changeSignatures: (count) => dispatch(change(FORM_TIME_LOCKED_WALLET_ADD, 'requiredSignatures', count)),
     onSubmit: (values, dispatch, props) => {
       // owners
@@ -81,20 +80,12 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_TIME_LOCKED_WALLET_ADD })
 export default class TimeLockedWalletForm extends PureComponent {
   static propTypes = {
-    onClose: PropTypes.func,
     isTimeLocked: PropTypes.bool,
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,
     changeSignatures: PropTypes.func,
     requiredSignatures: PropTypes.number,
     ...formPropTypes,
-  }
-
-  handleChangeOwner = (owners) => {
-    console.log('--WalletAddForm#handleChangeOwner', owners.length, this.props.requiredSignatures)
-    if (owners.length < this.props.requiredSignatures) {
-      this.props.changeSignatures(owners.length)
-    }
   }
 
   render () {

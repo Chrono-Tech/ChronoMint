@@ -5,7 +5,6 @@
 
 import OwnersList from 'components/wallet/OwnersList/OwnersList'
 import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
-import Immutable from 'immutable'
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -16,7 +15,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { modalsClose } from 'redux/modals/actions'
 import { goToWallets } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
@@ -43,7 +41,6 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onClose: () => dispatch(modalsClose()),
     changeSignatures: (count) => dispatch(change(FORM_MULTISIG_WALLET_ADD, 'requiredSignatures', count)),
     onSubmit: (values, dispatch, props) => {
       // owners
@@ -87,7 +84,6 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_MULTISIG_WALLET_ADD, validate })
 export default class MultisigWalletForm extends PureComponent {
   static propTypes = {
-    onClose: PropTypes.func,
     isTimeLocked: PropTypes.bool,
     is2FA: PropTypes.bool,
     ownersCount: PropTypes.number,

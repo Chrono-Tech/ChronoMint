@@ -5614,7 +5614,7 @@ ipaddr.js@1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.6.0.tgz#e3fa357b773da619f26e95f049d055c72796f86b"
 
-ipfs-api@*:
+ipfs-api@^20.2.1:
   version "20.2.1"
   resolved "https://registry.yarnpkg.com/ipfs-api/-/ipfs-api-20.2.1.tgz#fe6399632c70c5e2f925d6285a70144d2a016849"
   dependencies:

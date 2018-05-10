@@ -16,10 +16,11 @@ export default {
     createWallet: 'Add an Ethereum Wallet',
     multisignatureWallet: 'Multi-signature Wallet',
     timeLockedWallet: 'Time-Locked Wallet',
+    customWallet: 'Configure Tokens',
     soon: 'Soon...',
     st: {
       title: 'Standard Wallet',
-      description: '',
+      description: ' ',
     },
     tl: {
       title: 'Time Locked',
