@@ -34,6 +34,10 @@
     .title {
       padding-left: 20px;
       flex-grow: 1;
+      .soon {
+        font-size: 14px;
+        color: $color-grey-5;
+      }
     }
     .arrow {
       width: 15px;

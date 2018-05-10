@@ -17,13 +17,8 @@ import './AddWalletWidget.scss'
 import SelectWalletType from './SelectWalletType/SelectWalletType'
 import SelectEthWallet from './SelectEthWallet/SelectEthWallet'
 import MultisigWalletForm from './MultisigWalletForm/MultisigWalletForm'
+import TimeLockedWalletForm from './TimeLockedWalletForm/TimeLockedWalletForm'
 import { prefix } from './lang'
-
-const STEPS = {
-  selectType: 'selectType',
-  createWallet: 'createWallet',
-  createMultisigEthWallet: 'createMultisigEthWallet',
-}
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
@@ -61,6 +56,30 @@ export default class AddWalletWidget extends PureComponent {
     this.props.selectWalletType(type)
   }
 
+  renderEthWalletForm (ethWalletType) {
+    let title = null
+    let Component = null
+    switch (ethWalletType) {
+      case 'MS':
+        title = `${prefix}.multisignatureWallet`
+        Component = MultisigWalletForm
+        break
+      case 'TL':
+        title = `${prefix}.timeLockedWallet`
+        Component = TimeLockedWalletForm
+        break
+    }
+
+    return (
+      <div styleName='widget'>
+        <div styleName='title'><Translate value={title} /></div>
+        <div styleName='body'>
+          <Component />
+        </div>
+      </div>
+    )
+  }
+
   renderStep () {
     const { blockchain, ethWalletType } = this.props
     if (blockchain) {
@@ -72,15 +91,8 @@ export default class AddWalletWidget extends PureComponent {
             <div>soon</div>
           )
         case BLOCKCHAIN_ETHEREUM:
-          // eslint-disable-next-line
-          console.log('renderStep', blockchain, ethWalletType)
           if (ethWalletType) {
-            return (
-              <div styleName='widget'>
-                <div styleName='title'><Translate value={`${prefix}.multisignatureWallet`} /></div>
-                <div styleName='body'><MultisigWalletForm /></div>
-              </div>
-            )
+            return this.renderEthWalletForm(ethWalletType)
           } else {
             return (
               <div styleName='widget'>

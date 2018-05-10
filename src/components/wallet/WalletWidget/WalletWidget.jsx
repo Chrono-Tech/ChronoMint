@@ -29,6 +29,8 @@ import { ETH } from 'redux/mainWallet/actions'
 
 import './WalletWidget.scss'
 import { prefix } from './lang'
+import Moment from '../../common/Moment'
+import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -212,25 +214,9 @@ export default class WalletWidget extends PureComponent {
     return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
   }
 
-  renderIconForWallet (wallet) {
-    let icon = 'wallet'
-    if (wallet.isMultisig()) {
-      if (wallet.is2FA && wallet.is2FA()) {
-        icon = 'security'
-      } else {
-        icon = 'multisig'
-      }
-    }
-    return (
-      <div styleName='additional-icon'>
-        <div styleName='security-icon' className='chronobank-icon'>{icon}</div>
-      </div>
-    )
-  }
-
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
-    const firstToken = walletInfo.tokens[0]
+    const firstToken = walletInfo.tokens[ 0 ]
 
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
@@ -238,7 +224,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='header-container'>
-        {!wallet.isMultisig() && <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+        {!wallet.isTimeLocked() && !wallet.isMultisig() && <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>
@@ -246,7 +232,7 @@ export default class WalletWidget extends PureComponent {
             {/*<div styleName='settings-icon' className='chronobank-icon'>settings</div>*/}
             {/*</div>*/}
             <div styleName='token-container'>
-              {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
+              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
               <div styleName='token-icon'>
                 <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
               </div>
@@ -258,46 +244,58 @@ export default class WalletWidget extends PureComponent {
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                { this.isMySharedWallet() && <div styleName='token-amount'>
-                  <div styleName='crypto-amount'>
-                    USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
+                {this.isMainWallet() ? (
+                  <div styleName='token-amount'>
+                    <div styleName='crypto-amount'>
+                      {firstToken.symbol} {integerWithDelimiter(firstToken.amount, true, null)}
+                    </div>
+                    <div styleName='usd-amount'>
+                      USD {integerWithDelimiter(firstToken.amountPrice.toFixed(2), true)}
+                    </div>
                   </div>
-                </div>}
-                {this.isMainWallet() && <div styleName='token-amount'>
-                  <div styleName='crypto-amount'>
-                    {firstToken.symbol} {integerWithDelimiter(firstToken.amount, true, null)}
+                ) : (
+                  <div styleName='token-amount'>
+                    <div styleName='crypto-amount'>
+                      USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
+                    </div>
                   </div>
-                  <div styleName='usd-amount'>
-                    USD {integerWithDelimiter(firstToken.amountPrice.toFixed(2), true)}
-                  </div>
-                </div>}
+                )}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
               {this.getAmountList()}
 
-              { this.getTokensList().length > 1 && <div styleName='tokens-list'>
-                <div styleName='tokens-list-table'>
-                  {this.getTokensList().map((tokenMap) => {
-                    const token = this.props.tokens.item(tokenMap.symbol)
+              {this.getTokensList().length > 1 && (
+                <div styleName='tokens-list'>
+                  <div styleName='tokens-list-table'>
+                    {this.getTokensList().map((tokenMap) => {
+                      const token = this.props.tokens.item(tokenMap.symbol)
 
-                    return (
-                      <div styleName='tokens-list-table-tr' key={token.id()}>
-                        <div styleName='tokens-list-table-cell-icon'>
-                          <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
+                      return (
+                        <div styleName='tokens-list-table-tr' key={token.id()}>
+                          <div styleName='tokens-list-table-cell-icon'>
+                            <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
+                          </div>
+                          <div styleName='tokens-list-table-cell-amount'>
+                            {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
+                          </div>
+                          <div styleName='tokens-list-table-cell-usd'>
+                            USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
+                          </div>
                         </div>
-                        <div styleName='tokens-list-table-cell-amount'>
-                          {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
-                        </div>
-                        <div styleName='tokens-list-table-cell-usd'>
-                          USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
-                        </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>}
+              )}
+
+              {wallet.isTimeLocked() && (
+                <div styleName='unlockDateWrapper'>
+                  <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime()} format='HH:mm, Do MMMM YYYY' />
+                </div>
+              )}
+
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
@@ -318,7 +316,7 @@ export default class WalletWidget extends PureComponent {
                     onTouchTap={this.handleReceive}
                   />
                 </div>
-                {blockchain === BLOCKCHAIN_ETHEREUM && (
+                {/*blockchain === BLOCKCHAIN_ETHEREUM && (
                   <div styleName='action'>
                     <Button
                       disabled={false}
@@ -328,7 +326,7 @@ export default class WalletWidget extends PureComponent {
                       onTouchTap={this.handleDeposit}
                     />
                   </div>
-                )}
+                )*/}
               </div>
             </div>
           </div>

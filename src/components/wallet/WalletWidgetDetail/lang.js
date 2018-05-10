@@ -14,5 +14,6 @@ export default {
     tokensTitle: '%{count} tokens',
     ownersTitle: '%{count} Owners',
     pending: '%{count} pending',
+    unlockDate: 'Unlocks on ',
   },
 }
