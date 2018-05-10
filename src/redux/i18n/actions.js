@@ -11,7 +11,7 @@ export const loadI18n = (locale) => async (dispatch, getState) => {
 
   if (translations) {
     // filter all empty objects '{}'
-    const translationsFiltered = {};
+    const translationsFiltered = {}
     Object.entries(translations).filter((t) => {
       return typeof t[1] === 'object' && Object.keys(t[1]).length
     }).map((t) => translationsFiltered[t[0]] = t[1])

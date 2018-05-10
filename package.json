@@ -94,7 +94,7 @@
     "ethereumjs-testrpc": "^6.0.3",
     "ethereumjs-wallet": "^0.6.0",
     "immutable": ">=3",
-    "ipfs-api": "^16.0.0",
+    "ipfs-api": "^20.2.1",
     "js-file-download": "^0.4.1",
     "keythereum": "^0.5.2",
     "lodash": "^4.17.4",

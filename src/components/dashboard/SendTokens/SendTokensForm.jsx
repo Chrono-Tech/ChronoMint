@@ -10,6 +10,7 @@ import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
@@ -98,11 +99,15 @@ export default class SendTokensForm extends PureComponent {
     blockchain: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     account: PropTypes.string,
-    wallet: PropTypes.object,
+    wallet: PropTypes.instanceOf(MainWalletModel),
     allowance: PropTypes.instanceOf(AllowanceModel),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
-    tokenInfo: PropTypes.object,
+    tokenInfo: PropTypes.shape({
+      amount: PropTypes.number,
+      amountPrice: PropTypes.number,
+      symbol: PropTypes.string,
+    }),
     feeMultiplier: PropTypes.number,
     isMultiTokenWallet: PropTypes.bool,
     transfer: PropTypes.func,

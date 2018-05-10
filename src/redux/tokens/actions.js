@@ -185,7 +185,7 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier = 1) => {
+export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
   try {
     const { gasLimit, gasFee, gasPrice } = await tokenDao._estimateGas(...params)
@@ -199,7 +199,7 @@ export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier 
   }
 }
 
-export const estimateBtcFee = async (params, callback) => {
+export const estimateBtcFee = (params, callback) => async (dispatch) => {
   try {
     const { address, recipient, amount, formFee } = params
     const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
