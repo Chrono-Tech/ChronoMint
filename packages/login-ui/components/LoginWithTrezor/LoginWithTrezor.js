@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import networkService from '@chronobank/login/network/NetworkService'
@@ -59,7 +60,7 @@ class LoginTrezor extends PureComponent {
     onLogin: PropTypes.func.isRequired,
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
-    account: PropTypes.string,
+    account: PropTypes.array,
   }
 
   state = {
@@ -110,7 +111,7 @@ class LoginTrezor extends PureComponent {
     return <MenuItem value={index} key={index} primaryText={item}/>
   }
 
-  handleChange = (event, index, value) => {this.setState({value}); networkService.selectAccount(this.props.account[index])}
+  handleChange = (event, index, value) => {this.setState({value}); trezorProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index])}
 
   render () {
     const { isLoading, trezor, account } = this.props

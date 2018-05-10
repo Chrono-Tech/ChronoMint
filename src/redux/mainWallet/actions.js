@@ -161,6 +161,7 @@ export const initMainWallet = () => async (dispatch, getState) => {
     ethereumProvider,
   ]
   providers.map((provider) => {
+    console.log(provider)
     dispatch({
       type: WALLET_ADDRESS, address: new AddressModel({
         id: provider.id(),
