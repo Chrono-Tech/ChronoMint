@@ -14,10 +14,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from 'redux/session/actions'
-import { getProfileTokensList } from 'redux/session/selectors'
+import { getBlockchainAddressesList } from 'redux/session/selectors'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
-import { ETH } from 'redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import MenuTokenMoreInfo, { MENU_TOKEN_MORE_INFO_PANEL_KEY } from '../MenuTokenMoreInfo/MenuTokenMoreInfo'
 import { prefix } from './lang'
 
@@ -29,7 +27,7 @@ function mapStateToProps (state) {
 
   return {
     account: session.account,
-    tokens: getProfileTokensList()(state),
+    tokens: getBlockchainAddressesList()(state),
     networkStatus: monitor.network,
     syncStatus: monitor.sync,
     networkName: networkService.getName(),
@@ -107,6 +105,13 @@ export default class MenuTokensList extends PureComponent {
     this.props.handleTokenMoreInfo(selectedToken, handleClose)
   }
 
+  handleScrollToBlockchain = (blockchain) => {
+    const element = document.getElementById(blockchain)
+    if (element) {
+      element.scrollIntoView({ block: 'start',  behavior: 'smooth' })
+    }
+  }
+
   renderStatus () {
     const { networkStatus, syncStatus, networkName } = this.props
 
@@ -128,13 +133,6 @@ export default class MenuTokensList extends PureComponent {
     }
   }
 
-  handleScrollToBlockchain = (blockchain) => {
-    const element = document.getElementById(blockchain)
-    if (element) {
-      element.scrollIntoView(true)
-    }
-  }
-
   render () {
     const setToken = (token) => {
       return () => {
@@ -150,18 +148,18 @@ export default class MenuTokensList extends PureComponent {
         {this.props.tokens
           .map((token) => (
             <div styleName='item' key={token.blockchain}>
-              <div
-                styleName='syncIcon'
-                onTouchTap={((blockchain) => {
-                  this.handleScrollToBlockchain(blockchain)
-                })(token.blockchain)}
-              >
+              <div styleName='syncIcon'>
                 <span
                   styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
                   title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
                 />
               </div>
-              <div styleName='addressTitle'>
+              <div
+                styleName='addressTitle'
+                onTouchTap={((blockchain) => () =>  {
+                  this.handleScrollToBlockchain(blockchain)}
+                )(token.blockchain)}
+              >
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
                   {token.address || <Translate value={`${prefix}.notAvailable`} />}

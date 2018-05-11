@@ -45,7 +45,7 @@ export const BALANCES_COMPARATOR_URGENCY = (item1, item2) => {
   return s1 < s2 ? -1 : (s1 > s2 ? 1 : 0)
 }
 
-export const getProfileTokensList = () => createSelector(
+export const getBlockchainAddressesList = () => createSelector(
   [ getMainWallet ],
   (mainWallet) => {
     const addressesInWallet = mainWallet.addresses()
