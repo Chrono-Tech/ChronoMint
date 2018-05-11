@@ -3,19 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as Assets from 'components/assetsManager/lang'
-import * as Timer from 'components/common/Timer/lang'
-import * as Dashboard from 'components/dashboard/lang'
+import Assets from 'components/assetsManager/lang'
+import Timer from 'components/common/Timer/lang'
 import TwoFA from 'components/dialogs/TwoFA/lang'
-import * as UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
-import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
+import UserActiveDialog from 'components/dialogs/UserActiveDialog/lang'
 import MultisigWalletForm from 'components/wallet/AddWalletWidget/MultisigWalletForm/lang'
 import TimeLockedWalletForm from 'components/wallet/AddWalletWidget/TimeLockedWalletForm/lang'
 import UpdateProvideDialog from 'components/dialogs/UpdateProvideDialog/lang'
 import OwnersList from 'components/wallet/OwnersList/lang'
-import WalletSelectDialog from 'components/dialogs/wallet/WalletSelectDialog/lang'
 import SignaturesList from 'components/wallet/SignaturesList/lang'
-import * as exchange from 'components/exchange/lang'
+import exchange from 'components/exchange/lang'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/lang'
 import SendTokens from 'components/dashboard/SendTokens/lang'
 import * as GasSlider from 'components/common/GasSlider/lang'
@@ -34,9 +31,7 @@ export default {
     UserActiveDialog: UserActiveDialog.en,
     Timer: Timer.en,
     Assets: Assets.en,
-    WalletAddEditForm: WalletAddEditForm.en,
     UpdateProvideDialog: UpdateProvideDialog.en,
-    WalletSelectDialog: WalletSelectDialog.en,
     OwnersList: OwnersList.en,
     SignaturesList: SignaturesList.en,
     // TODO @Abdulov refactor this

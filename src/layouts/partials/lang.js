@@ -4,7 +4,6 @@
  */
 
 import * as FooterPartial from 'layouts/partials/FooterPartial/lang'
-import * as InfoPartial from 'layouts/partials/InfoPartial/lang'
 import * as OperationsContent from 'layouts/partials/OperationsContent/lang'
 import * as RewardsContent from 'layouts/partials/RewardsContent/lang'
 import * as VotingContent from 'layouts/partials/VotingContent/lang'
@@ -23,7 +22,6 @@ export default {
   en: {
     FooterPartial: FooterPartial.en,
     WalletContent: WalletContent.en,
-    InfoPartial: InfoPartial.en,
     OperationsContent: OperationsContent.en,
     RewardsContent: RewardsContent.en,
     VotingContent: VotingContent.en,

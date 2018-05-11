@@ -21,7 +21,6 @@ export default class AssetsPage extends Component {
           transitionEnterTimeout={250}
           transitionLeaveTimeout={250}
         >
-          <Partials.InfoPartial />
           <Partials.AssetsContent />
         </CSSTransitionGroup>
       </div>

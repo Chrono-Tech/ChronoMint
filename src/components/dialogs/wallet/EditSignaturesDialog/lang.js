@@ -3,14 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import WalletAddEditForm from 'components/dialogs/wallet/WalletAddDialog/lang'
-
 export const prefix = 'EditSignaturesDialog'
 
 export default {
   en: {
     dialogTitle: 'Required signatures',
     submit: 'update',
-    description: WalletAddEditForm.en.requiredSignaturesDescription,
   },
 }

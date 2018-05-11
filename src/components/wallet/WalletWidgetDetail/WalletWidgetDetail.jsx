@@ -39,12 +39,17 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: () => dispatch(modalsOpen({
-      component: SendTokens,
-      props: {
-        isModal: true,
-      },
-    })),
+    send: (tokenId, blockchain, address) => {
+      dispatch(modalsOpen({
+        component: SendTokens,
+        props: {
+          isModal: true,
+          token: tokenId,
+          blockchain,
+          address,
+        },
+      }))
+    },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
       props: {
@@ -99,7 +104,7 @@ export default class WalletWidgetDetail extends PureComponent {
   handleEditSignatures = () => this.props.openEditSignaturesDialog(this.props.wallet)
 
   handleSend = () => {
-    this.props.send()
+    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address)
   }
 
   handleReceive = () => {

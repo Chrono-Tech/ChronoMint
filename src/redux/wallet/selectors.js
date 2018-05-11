@@ -8,6 +8,7 @@
 import {
   createSelector,
 } from 'reselect'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_MARKET } from 'redux/market/action'
@@ -15,7 +16,6 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 
 import { getCurrentWallet } from './actions'
 
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 

@@ -94,8 +94,8 @@ export default class WalletWidget extends PureComponent {
     }
   }
 
-  handleSend = (tokenId, blockchain, address) => {
-    this.props.send(tokenId, blockchain, address)
+  handleSend = () => {
+    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address)
   }
 
   handleReceive = () => {
@@ -302,10 +302,7 @@ export default class WalletWidget extends PureComponent {
                     disabled={false}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={() => {
-                      this.handleSelectWallet()
-                      this.handleSend(token.id(), blockchain, address)
-                    }}
+                    onTouchTap={this.handleSend}
                   />
                 </div>
                 <div styleName='action'>

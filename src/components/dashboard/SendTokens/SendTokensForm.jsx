@@ -30,7 +30,6 @@ import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
 import { DUCK_TOKENS, estimateGas, estimateBtcFee } from 'redux/tokens/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
 import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import { prefix } from './lang'
@@ -75,7 +74,6 @@ function mapStateToProps (state, ownProps) {
 
   return {
     wallet,
-    balance: getCurrentWallet(state).balances().item(tokenId).amount(),
     tokens: state.get(DUCK_TOKENS),
     allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
