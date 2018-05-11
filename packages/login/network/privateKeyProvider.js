@@ -7,50 +7,99 @@ import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import bigi from 'bigi'
 import wallet from 'ethereumjs-wallet'
+import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
 import NemWallet from './NemWallet'
 
+const COIN_TYPE_ETH = 60
+const COIN_TYPE_BTC_MAINNET = 0
+const COIN_TYPE_BTC_TESTNET = 1
+const COIN_TYPE_LTC_MAINNET = 9
+const COIN_TYPE_LTC_TESTNET = 8
+const COIN_TYPE_BTG_MAINNET = 17
+const COIN_TYPE_BTG_TESTNET = 16
+
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
-    const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
-    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
-    const btg = network && network.bitcoinGold && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinGold])
-    const ltc = network && network.litecoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.litecoin])
-    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
+
+    const bitcoinLikeEngines = Object.create(null) // Object.create(null) creating really empty object with no __proto__
+    bitcoinLikeEngines.bcc = false // Bitcoin Cache
+    bitcoinLikeEngines.btc = false // Bitcoin
+    bitcoinLikeEngines.btg = false // Bitcoin Gold
+    bitcoinLikeEngines.ltc = false // Litecoin
+    bitcoinLikeEngines.nem = false // Nem
+
+    if (network) {
+
+      // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope
+      const prepareEngine = (net, creteWallet, createEngine) => {
+	console.log('net is ' + net)      
+        if (network) {
+          const wallet = creteWallet(privateKey, net)
+          return createEngine(wallet, net)
+        }
+      }
+
+      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
+      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
+      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
+      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
+      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
+
+      bitcoinLikeEngines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
+      bitcoinLikeEngines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
+      bitcoinLikeEngines.btg = prepareEngine(btgNetwork, this.createBitcoinGoldWallet, createBTGEngine)
+      bitcoinLikeEngines.ltc = prepareEngine(ltcNetwork, this.createLitecoinWallet, createLTCEngine)
+//      bitcoinLikeEngines.nem = prepareEngine(nemNetwork, NemWallet.fromMnemonic, createNEMEngine)
+
+    }
 
     return {
       networkCode,
       ethereum: new EthereumEngine(ethereumWallet, network, url),
-      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
-      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
-      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
-      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
-      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
+      ...bitcoinLikeEngines,
     }
+	
   }
 
   createBitcoinWallet (privateKey, network) {
-    const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
-      network,
-    })
-    return {
-      keyPair,
-      getNetwork () {
-        return keyPair.getNetwork()
-      },
-      getAddress () {
-        return keyPair.getAddress()
-      },
-    }
+    const coinType = network === bitcoin.networks.testnet
+      ? COIN_TYPE_BTC_TESTNET
+      : COIN_TYPE_BTC_MAINNET
+    console.log(network)
+    return bitcoin.HDNode.fromBase58(privateKey)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+  }
+
+  createLitecoinWallet (privateKey, network) {
+    const coinType = network === bitcoin.networks.litecoin_testnet
+      ? COIN_TYPE_LTC_TESTNET
+      : COIN_TYPE_LTC_MAINNET
+    return bitcoin.HDNode
+      .fromBase58(privateKey)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+  }
+
+  createBitcoinGoldWallet (privateKey, network) {
+    const coinType = network === bitcoin.networks.bitcoingold_testnet
+      ? COIN_TYPE_BTG_TESTNET
+      : COIN_TYPE_BTG_MAINNET
+    return bitcoin.HDNode
+      .fromBase58(privateKey)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createEthereumWallet (privateKey) {
-    return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+    const hdWallet = hdKey.fromExtendedKey(privateKey)
+    // get the first account using the standard hd path
+    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0`
+    return hdWallet.derivePath(walletHDPath).getWallet()
+    //return wallet.fromExtendedPrivateKey(privateKey.toString('hex'))
   }
 
   validatePrivateKey (privateKey: string): boolean {

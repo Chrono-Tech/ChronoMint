@@ -60,6 +60,7 @@ const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
 })
 
 export default function selectEthereumNode (engine) {
+  console.log(engine)
   switch (engine.getNetwork().id) {
     case NETWORK_MAIN_ID :
       return ETHEREUM_MAINNET_NODE

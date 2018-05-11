@@ -157,6 +157,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, networkService.getProviderSettings())
+    networkService.selectAccount(provider.ethereum.getAddress())
     this.setupAndLogin(provider)
   }
 
@@ -165,6 +166,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings())
+      networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -211,6 +213,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const provider = walletProvider.getProvider(wallet, password, networkService.getProviderSettings())
+      networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)

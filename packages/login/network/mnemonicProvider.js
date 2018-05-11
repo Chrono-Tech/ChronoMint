@@ -45,6 +45,7 @@ class MnemonicProvider {
       // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope
       const prepareEngine = (net, creteWallet, createEngine) => {
         if (network) {
+          console.log('net is ' + net)
           const wallet = creteWallet(mnemonic, net)
           return createEngine(wallet, net)
         }
@@ -74,7 +75,8 @@ class MnemonicProvider {
   createEthereumWallet (mnemonic, nonce = 0) {
     const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
     // get the first account using the standard hd path
-    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/${nonce}`
+    console.log(hdWallet.privateExtendedKey())
+    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0`
     return hdWallet.derivePath(walletHDPath).getWallet()
   }
 
@@ -83,7 +85,7 @@ class MnemonicProvider {
       ? COIN_TYPE_BTC_TESTNET
       : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
-      .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
+      .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), bitcoin.networks.mainnet)
       .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 

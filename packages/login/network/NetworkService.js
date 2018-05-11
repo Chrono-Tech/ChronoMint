@@ -62,9 +62,9 @@ class NetworkService extends EventEmitter {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
     const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    if (!accounts.includes(account)) {
-      throw new Error('Account not registered')
-    }
+    //if (!accounts.includes(account)) {
+    //  throw new Error('Account not registered')
+    //}
 
     web3Provider.resolve()
 
@@ -163,7 +163,7 @@ class NetworkService extends EventEmitter {
       }
       dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
       if (accounts.length === 1) {
-        this.selectAccount(accounts[ 0 ])
+        this.selectAccount(accounts[0])
       }
       dispatch(loading(false))
       return accounts
@@ -200,7 +200,7 @@ class NetworkService extends EventEmitter {
   }
 
   selectAccount = (selectedAccount) => {
-    console.log('select account')
+    console.log('select account ' + selectedAccount)
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 
