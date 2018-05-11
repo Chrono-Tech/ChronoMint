@@ -50,11 +50,11 @@ class MnemonicProvider {
         }
       }
 
-      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
-      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
-      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
-      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
-      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
+      const btcNetwork = network.bitcoin && bitcoin.networks[ network.bitcoin ]
+      const bccNetwork = network.bitcoinCash && bitcoin.networks[ network.bitcoinCash ]
+      const btgNetwork = network.bitcoinGold && bitcoin.networks[ network.bitcoinGold ]
+      const ltcNetwork = network.litecoin && bitcoin.networks[ network.litecoin ]
+      const nemNetwork = network.nem && nemSdk.model.network.data[ network.nem ]
 
       bitcoinLikeEngines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       bitcoinLikeEngines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
@@ -73,8 +73,17 @@ class MnemonicProvider {
 
   createEthereumWallet (mnemonic, nonce = 0) {
     const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
+    // eslint-disable-next-line
+    console.log('createEthereumWallet', bip39.mnemonicToSeed(mnemonic))
+    // eslint-disable-next-line
+    console.log('createEthereumWallet', bip39.mnemonicToSeed(mnemonic).toString('hex'))
+    // eslint-disable-next-line
+    console.log('createEthereumWallet', hdWallet.derivePath(`m/44'/60'/0'/0/0`).getWallet().getAddressString())
+    console.log('createEthereumWallet', hdWallet.derivePath(`m/44'/60'/0'/0/1`).getWallet().getAddressString())
+
     // get the first account using the standard hd path
     const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/${nonce}`
+
     return hdWallet.derivePath(walletHDPath).getWallet()
   }
 
