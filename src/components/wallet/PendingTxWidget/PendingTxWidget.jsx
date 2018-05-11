@@ -16,7 +16,7 @@ import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import Amount from 'models/Amount'
 import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
-import { DUCK_I18N } from 'redux/configureStore'
+import { DUCK_I18N } from 'redux/i18n/actions'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'

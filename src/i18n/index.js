@@ -7,5 +7,5 @@ import en from './en'
 
 export default {
   en: en,
-  ru: {...en, title: 'Рус'},
+  ru: { ...en, title: 'Рус' },
 }
