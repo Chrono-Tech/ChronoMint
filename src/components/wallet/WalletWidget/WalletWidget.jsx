@@ -84,6 +84,7 @@ export default class WalletWidget extends PureComponent {
     receive: PropTypes.func,
     deposit: PropTypes.func,
     selectWallet: PropTypes.func,
+    showGroupTitle: PropTypes.bool,
   }
 
   constructor (props) {
@@ -215,7 +216,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, walletInfo, wallet } = this.props
+    const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
     const firstToken = walletInfo.tokens[ 0 ]
 
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
@@ -224,7 +225,7 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='header-container'>
-        {!wallet.isTimeLocked() && !wallet.isMultisig() && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
+        {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>

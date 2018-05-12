@@ -16,8 +16,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-  }
+  return {}
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -40,8 +39,9 @@ export default class WalletsContent extends Component {
       <div styleName='root'>
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title} id={walletGroup.title}>
-            {walletGroup.data.map((wallet) => (
+            {walletGroup.data.map((wallet, index) => (
               <WalletWidget
+                showGroupTitle={!index}
                 key={`${walletGroup.title}-${wallet.address}`}
                 blockchain={walletGroup.title}
                 address={wallet.address}

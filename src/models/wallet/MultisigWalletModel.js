@@ -23,9 +23,14 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   is2FA: false,
   addresses: new AddressesCollection(),
   releaseTime: new Date(0),
+  deriveNumber: null,
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
+  }
+
+  deriveNumber () {
+    return this.get('deriveNumber')
   }
 
   owners (value) {

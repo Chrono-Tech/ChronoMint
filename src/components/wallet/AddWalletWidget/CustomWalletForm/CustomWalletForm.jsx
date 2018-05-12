@@ -8,8 +8,9 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { goToWallets } from 'redux/mainWallet/actions'
+import { createNewChildAddress, goToWallets } from 'redux/mainWallet/actions'
 import { getChronobankTokens } from 'redux/settings/erc20/tokens/selectors'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import { prefix } from './lang'
 import './CusotmWalletForm.scss'
@@ -26,6 +27,7 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values, dispatch, props) => {
+      dispatch(createNewChildAddress(BLOCKCHAIN_ETHEREUM))
       dispatch(goToWallets())
     },
   }
