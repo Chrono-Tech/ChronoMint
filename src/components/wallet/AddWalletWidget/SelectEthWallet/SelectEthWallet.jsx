@@ -5,21 +5,42 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-
+import { createNewChildAddress, goToWallets } from 'redux/mainWallet/actions'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import './SelectEthWallet.scss'
 import { prefix } from '../lang'
 
+function mapStateToProps () {
+  return {}
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onCreateWallet: () => {
+      dispatch(createNewChildAddress(BLOCKCHAIN_ETHEREUM))
+      dispatch(goToWallets())
+    },
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SelectEthWallet extends PureComponent {
   static propTypes = {
     handleTouchTap: PropTypes.func,
+    onCreateWallet: PropTypes.func,
   }
 
   handleTouchTap = (type) => () => {
     if (!type.disabled) {
       this.props.handleTouchTap(type.type)
     }
+  }
+
+  handleCreateWallet = () => {
+    this.props.onCreateWallet()
   }
 
   render () {
@@ -29,7 +50,7 @@ export default class SelectEthWallet extends PureComponent {
         type: 'ST',
         icon: 'wallet-circle',
         description: `${prefix}.st.description`,
-        disabled: true,
+        action: this.handleCreateWallet,
       },
       {
         title: `${prefix}.tl.title`,
@@ -62,7 +83,7 @@ export default class SelectEthWallet extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.type} styleName={classnames('walletType', { 'notAllowed': type.disabled })} onTouchTap={this.handleTouchTap(type)}>
+            <div key={type.type} styleName={classnames('walletType', { 'notAllowed': type.disabled })} onTouchTap={type.action || this.handleTouchTap(type)}>
               <div styleName='icon'><i className='chronobank-icon'>{type.icon}</i></div>
               <div styleName='info'>
                 <div styleName='title'><Translate value={type.title} /></div>

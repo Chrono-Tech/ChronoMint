@@ -31,6 +31,10 @@ import type TxModel from 'models/TxModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from 'redux/multisigWallet/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -332,5 +336,66 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
     })
   } catch (e) {
     callback(e)
+  }
+}
+
+const getTokensBalances = (address, blockchain) => (token) => async (dispatch) => {
+  if (blockchain !== token.blockchain()) {
+    return null
+  }
+  const dao = tokenService.getDAO(token)
+  const balance = await dao.getAccountBalance(address)
+  dispatch({
+    type: MULTISIG_BALANCE,
+    walletId: address,
+    balance: new BalanceModel({
+      id: token.id(),
+      amount: new Amount(balance, token.symbol(), true),
+    }),
+  })
+
+}
+
+export const createNewChildAddress = (blockchain: string) => async (dispatch, getState) => {
+  const account = getState().get(DUCK_SESSION).account
+  const wallets = getState().get(DUCK_MULTISIG_WALLET)
+  let ownersCollection = new OwnerCollection()
+  ownersCollection = ownersCollection.update(new OwnerModel({
+    address: account,
+    isSelf: true,
+  }))
+
+  let lastDeriveNumber = -1
+  wallets
+    .items()
+    .map((wallet) => {
+      const deriveNumber = wallet.deriveNumber()
+      if (deriveNumber !== null && deriveNumber > lastDeriveNumber) {
+        lastDeriveNumber = deriveNumber
+      }
+    })
+
+  switch (blockchain) {
+    case 'Ethereum':
+      const newDeriveNumber = lastDeriveNumber + 1
+      const newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
+      const wallet = new MultisigWalletModel({
+        address: newWallet.getAddressString(),
+        owners: ownersCollection,
+        isMultisig: false,
+        requiredSignatures: 0,
+        is2FA: false,
+        isFetched: true,
+        deriveNumber: newDeriveNumber,
+      })
+      dispatch({ type: MULTISIG_FETCHED, wallet: wallet })
+      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain)))
+      return
+    case 'Bitcoin':
+    case 'Bitcoin Gold':
+    case 'Litecoin':
+    case 'NEM':
+    default:
+      return null
   }
 }
