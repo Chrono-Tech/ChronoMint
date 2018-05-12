@@ -260,7 +260,7 @@ export default class SendTokensForm extends PureComponent {
 
   getTransactionFeeDescription = () => {
 
-    if (this.props.token.symbol() === 'BTC') {
+    if (this.props.token.blockchain() === BLOCKCHAIN_BITCOIN) {
 
       if (this.state.mode === MODE_ADVANCED && !this.props.satPerByte) {
         return <Translate value={`${prefix}.errorFillSatPerBiteField`} />
@@ -277,7 +277,7 @@ export default class SendTokensForm extends PureComponent {
           </span>)
       }
 
-    } else if (this.props.token.symbol() === 'ETH') {
+    } else if (this.props.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
       return (
         <span styleName='description'>
           {this.state.gasFee && (
