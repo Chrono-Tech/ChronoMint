@@ -18,9 +18,9 @@ import {
   COIN_TYPE_BTC_TESTNET,
   COIN_TYPE_BTG_MAINNET,
   COIN_TYPE_BTG_TESTNET,
-  COIN_TYPE_ETH,
   COIN_TYPE_LTC_MAINNET,
   COIN_TYPE_LTC_TESTNET,
+  WALLET_HD_PATH,
 } from './mnemonicProvider'
 
 class PrivateKeyProvider {
@@ -68,7 +68,7 @@ class PrivateKeyProvider {
       : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
   createLitecoinWallet (privateKey, network) {
@@ -80,7 +80,7 @@ class PrivateKeyProvider {
       : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
   createBitcoinGoldWallet (privateKey, network) {
@@ -92,19 +92,16 @@ class PrivateKeyProvider {
       : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
-  createEthereumWallet (privateKey, nonce = 0) {
+  createEthereumWallet (privateKey) {
     if (privateKey.length <= 64) {
       return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
     }
 
     const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
-    // get the first account using the standard hd path
-    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/${nonce}`
-
-    return hdWallet.derivePath(walletHDPath).getWallet()
+    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
   }
 
   validatePrivateKey (privateKey: string): boolean {
