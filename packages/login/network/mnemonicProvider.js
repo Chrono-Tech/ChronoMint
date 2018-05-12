@@ -20,13 +20,13 @@ import EthereumEngine from './EthereumEngine'
 import NemWallet from './NemWallet'
 
 // coin_types 8, 9, 16, 17 used, but they are not standardized
-const COIN_TYPE_ETH = 60
-const COIN_TYPE_BTC_MAINNET = 0
-const COIN_TYPE_BTC_TESTNET = 1
-const COIN_TYPE_LTC_MAINNET = 9
-const COIN_TYPE_LTC_TESTNET = 8
-const COIN_TYPE_BTG_MAINNET = 17
-const COIN_TYPE_BTG_TESTNET = 16
+export const COIN_TYPE_ETH = 60
+export const COIN_TYPE_BTC_MAINNET = 0
+export const COIN_TYPE_BTC_TESTNET = 1
+export const COIN_TYPE_LTC_MAINNET = 9
+export const COIN_TYPE_LTC_TESTNET = 8
+export const COIN_TYPE_BTG_MAINNET = 17
+export const COIN_TYPE_BTG_TESTNET = 16
 
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
@@ -73,14 +73,6 @@ class MnemonicProvider {
 
   createEthereumWallet (mnemonic, nonce = 0) {
     const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
-    // eslint-disable-next-line
-    console.log('createEthereumWallet', bip39.mnemonicToSeed(mnemonic))
-    // eslint-disable-next-line
-    console.log('createEthereumWallet', bip39.mnemonicToSeed(mnemonic).toString('hex'))
-    // eslint-disable-next-line
-    console.log('createEthereumWallet', hdWallet.derivePath(`m/44'/60'/0'/0/0`).getWallet().getAddressString())
-    console.log('createEthereumWallet', hdWallet.derivePath(`m/44'/60'/0'/0/1`).getWallet().getAddressString())
-
     // get the first account using the standard hd path
     const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0/${nonce}`
 
