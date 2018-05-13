@@ -4,12 +4,17 @@
  */
 
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
+import { REHYDRATE } from 'redux-persist'
 import * as a from './actions'
 
 const initialState = new MultisigWalletCollection()
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case REHYDRATE:
+      const incoming = action.payload.multisigWallet
+      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.isInited(true)
+      return state
     case a.MULTISIG_INIT:
       return state.isInited(action.isInited)
     case a.MULTISIG_FETCHING:

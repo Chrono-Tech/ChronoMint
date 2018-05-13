@@ -273,6 +273,9 @@ export default class WalletWidget extends PureComponent {
                     {this.getTokensList().map((tokenMap) => {
                       const token = this.props.tokens.item(tokenMap.symbol)
 
+                      if (!token.isFetched()) {
+                        return null
+                      }
                       return (
                         <div styleName='tokens-list-table-tr' key={token.id()}>
                           <div styleName='tokens-list-table-cell-icon'>
