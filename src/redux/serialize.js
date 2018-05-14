@@ -67,8 +67,6 @@ function serialize (Immutable, refs) {
       if (value instanceof AddressesCollection) return refer(value, 'AddressesCollection', 'toObject', refs)
       if (value instanceof MultisigWalletModel) return refer(value, 'MultisigWalletModel', 'toObject', refs)
       if (value instanceof MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
-      //       if(value instanceof )
-      //       if(value instanceof )
 
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
       if (value instanceof Immutable.Range) return extract(value, 'ImmutableRange')

@@ -388,7 +388,7 @@ export const createNewChildAddress = (blockchain: string) => async (dispatch, ge
         isFetched: true,
         deriveNumber: newDeriveNumber,
       })
-      dispatch({ type: MULTISIG_FETCHED, wallet: wallet })
+      dispatch({ type: MULTISIG_FETCHED, wallet })
       dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain)))
       return
     case 'Bitcoin':

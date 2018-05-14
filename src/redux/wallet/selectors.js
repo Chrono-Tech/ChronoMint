@@ -18,6 +18,9 @@ import { getCurrentWallet } from './actions'
 
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
+import { DUCK_SESSION } from '../session/actions'
+import { getAccount } from '../session/selectors'
+import OwnerModel from '../../models/wallet/OwnerModel'
 
 /**
  * SIMPLE SELECTORS
@@ -28,7 +31,9 @@ export const getMainWallet = (state) => {
   return state.get(DUCK_MAIN_WALLET)
 }
 
-export const getMultisigWallets = (state) => state.get(DUCK_MULTISIG_WALLET)
+export const getMultisigWallets = (state) => {
+  return state.get(DUCK_MULTISIG_WALLET)
+}
 
 export const getMainWalletBalance = (symbol) => createSelector(
   [ getMainWallet ],
@@ -91,10 +96,12 @@ export const multisigWalletsSelector = () => createSelector(
   [
     getMainWallet,
     getMultisigWallets,
+    getAccount,
   ],
   (
     mainWallet,
     multisigWallets,
+    account,
   ) => {
     // final result will be svaed here
     const sectionsObject = {}
@@ -121,22 +128,31 @@ export const multisigWalletsSelector = () => createSelector(
     })
 
     // Add multisig wallets
-    multisigWallets.list().map((aWallet) => {
-      const currentWalletAddress: string = aWallet.address()
-      if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-          data: [ {
+    multisigWallets
+      .list()
+      .map((aWallet) => {
+        const owners = aWallet.owners()
+
+        // if user not owner
+        if (owners.items().filter((owner) => owner.address() === account).length <= 0) {
+          return
+        }
+
+        const currentWalletAddress: string = aWallet.address()
+        if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
+          sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
+            data: [ {
+              address: currentWalletAddress,
+              wallet: aWallet,
+            } ],
+          }
+        } else {
+          sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
             address: currentWalletAddress,
             wallet: aWallet,
-          } ],
+          })
         }
-      } else {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
-          address: currentWalletAddress,
-          wallet: aWallet,
-        })
-      }
-    })
+      })
 
     // Sort main sections and make an array
     const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
@@ -415,12 +431,14 @@ export const walletDetailSelector = (walletBlockchain, walletAddress) => createS
     })
 
     // Add multisig wallets
-    multisigWallets.list().map((aWallet) => {
-      const currentWalletAddress: string = aWallet.address()
-      if (currentWalletAddress === walletAddress) {
-        wallet = aWallet
-      }
-    })
+    multisigWallets
+      .list()
+      .map((aWallet) => {
+        const currentWalletAddress: string = aWallet.address()
+        if (currentWalletAddress === walletAddress) {
+          wallet = aWallet
+        }
+      })
 
     return wallet
   },

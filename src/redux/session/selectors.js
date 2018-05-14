@@ -9,6 +9,11 @@ import { DUCK_SESSION, rebuildProfileTokens } from './actions'
 import { getMainWallet } from '../wallet/selectors'
 import { getTokens } from '../tokens/selectors'
 
+export const getAccount = (state) => {
+  const { account } = state.get(DUCK_SESSION)
+  return account
+}
+
 export const getProfile = (state) => {
   const { profile } = state.get(DUCK_SESSION)
   return profile
@@ -49,14 +54,15 @@ export const getBlockchainAddressesList = () => createSelector(
     const addressesInWallet = mainWallet.addresses()
     return PROFILE_PANEL_TOKENS
       .map((token) => {
-        return { ...token,
+        return {
+          ...token,
           address: addressesInWallet.item(token.blockchain).address(),
         }
       })
-  }
+  },
 )
 
-export const getProfileTokens = () => createSelector([getProfile, getTokens],
+export const getProfileTokens = () => createSelector([ getProfile, getTokens ],
   (profile, tokens) => {
     return rebuildProfileTokens(profile, tokens)
   },

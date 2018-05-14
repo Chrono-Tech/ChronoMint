@@ -197,8 +197,6 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
 }
 
 export const initMultisigWalletManager = () => async (dispatch, getState) => {
-  // eslint-disable-next-line
-  console.log('getState().get(DUCK_MULTISIG_WALLET)', getState().get(DUCK_MULTISIG_WALLET))
   if (getState().get(DUCK_MULTISIG_WALLET).isInited()) {
     return
   }
