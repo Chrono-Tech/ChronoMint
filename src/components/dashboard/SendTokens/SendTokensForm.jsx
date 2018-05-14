@@ -6,18 +6,17 @@
 import { Button, IPFSImage } from 'components'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { TOKEN_ICONS } from 'assets'
-import Moment from 'components/common/Moment'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
 import Immutable from 'immutable'
 import { MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import TokenModel from 'models/tokens/TokenModel'
-import AllowanceModel from 'models/wallet/AllowanceModel'
 import PropTypes from 'prop-types'
 import { integerWithDelimiter } from 'utils/formatter'
 import React, { PureComponent } from 'react'
@@ -72,10 +71,11 @@ function mapStateToProps (state, ownProps) {
   const token = state.get(DUCK_TOKENS).item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
 
+  console.log('Wallet: ', wallet)
+
   return {
     wallet,
     tokens: state.get(DUCK_TOKENS),
-    allowance: wallet.allowances().item(recipient, tokenId),
     account: state.get(DUCK_SESSION).account,
     amount,
     token,
@@ -97,8 +97,7 @@ export default class SendTokensForm extends PureComponent {
     blockchain: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWalletModel),
-    allowance: PropTypes.instanceOf(AllowanceModel),
+    wallet: PropTypes.instanceOf([MainWalletModel, MultisigWalletModel]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokenInfo: PropTypes.shape({
@@ -146,7 +145,7 @@ export default class SendTokensForm extends PureComponent {
 
     if (newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier) {
       const { token, recipient, amount, feeMultiplier } = newProps
-      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol())], feeMultiplier)
+      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier)
     }
 
     if (newProps.token.blockchain() === BLOCKCHAIN_BITCOIN &&
@@ -175,9 +174,6 @@ export default class SendTokensForm extends PureComponent {
   }
 
   handleApprove = (values) => {
-    if (this.props.allowance.amount().gt(0)) {
-      values = values.set('amount', 0)
-    }
     this.props.onSubmit(values.set('action', ACTION_APPROVE))
   }
 
@@ -203,7 +199,8 @@ export default class SendTokensForm extends PureComponent {
   handleEstimateGas = (tokenId, params, feeMultiplier) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      this.props.estimateGas(tokenId, params, (nullParam, params) => {
+      this.props.estimateGas(tokenId, params, (error, params) => {
+        console.log('handleEstimateGas: ', error, params)
         const { gasFee, gasPrice } = params
         this.setState({
           gasFee,
@@ -380,25 +377,12 @@ export default class SendTokensForm extends PureComponent {
             </span>
           </div>
         </div>
-        {token.isERC20() && this.props.allowance &&
-        <div styleName='balance'>
-          <div styleName='label'>
-            <Translate value={`${prefix}.allowance`} />:
-            <TokenValue
-              isInvert
-              value={this.props.allowance.amount()}
-            />
-          </div>
-        </div>
-        }
       </div>
     )
   }
 
   renderBody () {
-    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet, allowance } = this.props
-    const { isContract } = this.state
-    const isApprove = allowance.amount().lte(0)
+    const { invalid, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
     const isTimeLocked = wallet.isTimeLocked()
 
     return (
@@ -494,8 +478,6 @@ export default class SendTokensForm extends PureComponent {
   }
 
   render () {
-    // const { visibleBalances } = this.props
-
     return (
       <Paper>
         <form onSubmit={this.props.handleSubmit}>

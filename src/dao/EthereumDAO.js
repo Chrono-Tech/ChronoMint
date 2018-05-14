@@ -102,6 +102,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   estimateGas = (func, args, value) => {
+    console.log('ETHEREUM DAO: func, args, value: ', func, args, value)
     const [ to, amount ] = args
     return this._estimateGas(to, value)
   }
@@ -125,6 +126,11 @@ export class EthereumDAO extends AbstractTokenDAO {
       value,
     }
 
+    /** ESTIMATE GAS */
+    const estimateGastransfer = (func, args, value) => {
+      return this._estimateGas(args.to, value)
+    }
+
     let tx = new TxExecModel({
       contract: this.getContractName(),
       func: TX_TRANSFER,
@@ -144,7 +150,7 @@ export class EthereumDAO extends AbstractTokenDAO {
 
     return new Promise(async (resolve, reject) => {
       try {
-        tx = await AbstractContractDAO.txStart(tx, this.estimateGas, feeMultiplier)
+        tx = await AbstractContractDAO.txStart(tx, estimateGastransfer, feeMultiplier)
         txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
         txData.gasPrice = tx.gasPrice()
 
