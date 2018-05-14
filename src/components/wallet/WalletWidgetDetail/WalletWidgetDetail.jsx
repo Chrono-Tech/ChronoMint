@@ -26,6 +26,7 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import Moment from 'components/common/Moment'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -75,6 +76,7 @@ export default class WalletWidgetDetail extends PureComponent {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),

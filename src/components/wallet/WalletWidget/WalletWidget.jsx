@@ -26,7 +26,7 @@ import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { ETH } from 'redux/mainWallet/actions'
-
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -71,6 +71,7 @@ export default class WalletWidget extends PureComponent {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -218,6 +219,10 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
 
+    if (wallet.address() === '0xa730d066980bab6a3bef301ca21293b8faac0da4') {
+      // eslint-disable-next-line
+      console.log('render', walletInfo, wallet.toJS())
+    }
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
     }

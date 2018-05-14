@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import './WalletsContent.scss'
 
 const mapStateToProps = (state, ownProps) => {
@@ -29,6 +30,7 @@ export default class WalletsContent extends Component {
         wallet: PropTypes.oneOfType([
           PropTypes.instanceOf(MainWalletModel),
           PropTypes.instanceOf(MultisigWalletModel),
+          PropTypes.instanceOf(DerivedWalletModel),
         ]),
       }),
     ),

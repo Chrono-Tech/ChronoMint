@@ -31,10 +31,10 @@ import type TxModel from 'models/TxModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from 'redux/multisigWallet/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -371,7 +371,7 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
   wallets
     .items()
     .map((wallet) => {
-      const deriveNumber = wallet.deriveNumber()
+      const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
       if (deriveNumber !== null && deriveNumber > lastDeriveNumber) {
         lastDeriveNumber = deriveNumber
       }
@@ -381,20 +381,32 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
     case 'Ethereum':
       const newDeriveNumber = lastDeriveNumber + 1
       const newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
-      const wallet = new MultisigWalletModel({
+      const wallet = new DerivedWalletModel({
         address: newWallet.getAddressString(),
         owners: ownersCollection,
         isMultisig: false,
-        requiredSignatures: 0,
-        is2FA: false,
         isFetched: true,
         deriveNumber: newDeriveNumber,
         customTokens: tokens,
+        blockchain,
       })
       dispatch({ type: MULTISIG_FETCHED, wallet })
       dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain, tokens)))
       return
     case 'Bitcoin':
+      const newDeriveNumberBTC = lastDeriveNumber + 1
+      const newWalletBTC = btcProvider.createNewChildAddress(newDeriveNumberBTC)
+      const walletBTC = new DerivedWalletModel({
+        address: newWalletBTC.getAddress(),
+        owners: ownersCollection,
+        isMultisig: false,
+        isFetched: true,
+        deriveNumber: newDeriveNumberBTC,
+        blockchain,
+      })
+      dispatch({ type: MULTISIG_FETCHED, wallet: walletBTC })
+      dispatch(subscribeOnTokens(getTokensBalances(newWalletBTC.getAddress(), blockchain, tokens)))
+      return
     case 'Bitcoin Gold':
     case 'Litecoin':
     case 'NEM':

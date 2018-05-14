@@ -4,22 +4,38 @@
  */
 
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BTC, createNewChildAddress, ETH, goToWallets, LTC, XEM } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
-import { BTC, ETH, LTC, XEM } from 'redux/mainWallet/actions'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'
 
+function mapStateToProps () {
+  return {}
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onCreateWallet: (blockchain) => {
+      dispatch(createNewChildAddress({ blockchain }))
+      // dispatch(goToWallets())
+    },
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SelectWalletType extends PureComponent {
   static propTypes = {
     handleTouchTap: PropTypes.func,
+    onCreateWallet: PropTypes.func,
   }
 
   handleTouchTap = (type) => () => {
@@ -28,13 +44,17 @@ export default class SelectWalletType extends PureComponent {
     }
   }
 
+  handleCreateWallet = (blockchain) => () => {
+    this.props.onCreateWallet(blockchain)
+  }
+
   render () {
     const wallets = [
       {
         blockchain: BLOCKCHAIN_BITCOIN,
         symbol: BTC,
         title: `${prefix}.btc`,
-        disabled: true,
+        action: this.handleCreateWallet(BLOCKCHAIN_BITCOIN),
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,
@@ -60,7 +80,7 @@ export default class SelectWalletType extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type)}>
+            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={type.action || this.handleTouchTap(type)}>
               <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
               <div styleName='title'>
                 <Translate value={type.title} />
