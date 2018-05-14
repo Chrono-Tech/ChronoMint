@@ -217,12 +217,12 @@ export default class WalletWidget extends PureComponent {
 
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
-    const firstToken = walletInfo.tokens[ 0 ]
 
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
     }
 
+    const firstToken = walletInfo.tokens[ 0 ]
     return (
       <div styleName='header-container'>
         {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}

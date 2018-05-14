@@ -17,7 +17,7 @@ import Amount from 'models/Amount'
 import AssetsCollection from 'models/assetHolder/AssetsCollection'
 import TokenModel from 'models/tokens/TokenModel'
 import TokensCollection from 'models/tokens/TokensCollection'
-import MainWallet from 'models/wallet/MainWalletModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -65,7 +65,7 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
-  const wallet: MainWallet = state.get(DUCK_MAIN_WALLET)
+  const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
@@ -117,7 +117,7 @@ export default class DepositTokensForm extends PureComponent {
     isShowTIMERequired: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWallet),
+    wallet: PropTypes.instanceOf(MainWalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     selectedToken: PropTypes.string,
     assets: PropTypes.instanceOf(AssetsCollection),

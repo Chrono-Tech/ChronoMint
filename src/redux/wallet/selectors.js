@@ -3,24 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-/* @flow */
-
-import {
-  createSelector,
-} from 'reselect'
+import { createSelector } from 'reselect'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_MARKET } from 'redux/market/action'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { getAccount } from 'redux/session/selectors'
 
 import { getCurrentWallet } from './actions'
-
-import MainWalletModel from '../../models/wallet/MainWalletModel'
-import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
-import { DUCK_SESSION } from '../session/actions'
-import { getAccount } from '../session/selectors'
-import OwnerModel from '../../models/wallet/OwnerModel'
 
 /**
  * SIMPLE SELECTORS
@@ -364,11 +357,15 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
       if (!multisigWallets.item(addressTitle)) {
         return null
       }
+      const customTokens = multisigWallets.item(addressTitle).customTokens()
       const walletTokensAndBalanceByAddress = multisigWallets
         .item(addressTitle)
         .balances()
         .list()
         .map((balance) => {
+          if (balance.symbol() !== ETH && customTokens && !customTokens.includes(balance.symbol())) {
+            return
+          }
           const bAmount = balance.amount()
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)

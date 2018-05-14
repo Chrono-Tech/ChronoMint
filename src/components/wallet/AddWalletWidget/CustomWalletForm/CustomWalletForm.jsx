@@ -4,6 +4,7 @@
  */
 import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
+import { Map } from 'immutable'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -26,8 +27,9 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values, dispatch, props) => {
-      dispatch(createNewChildAddress(BLOCKCHAIN_ETHEREUM))
+    onSubmit: (values: Map, dispatch, props) => {
+      const tokens = Object.keys(values.filter((token) => token).toObject())
+      dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens }))
       dispatch(goToWallets())
     },
   }
@@ -42,7 +44,7 @@ export default class CustomWalletForm extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid } = this.props
+    const { handleSubmit } = this.props
 
     return (
       <form styleName='root' onSubmit={handleSubmit}>
@@ -61,7 +63,6 @@ export default class CustomWalletForm extends PureComponent {
             styleName='action'
             label={<Translate value={`${prefix}.addWallet`} />}
             type='submit'
-            disabled={pristine || !valid}
           />
         </div>
       </form>
