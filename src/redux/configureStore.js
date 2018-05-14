@@ -82,8 +82,9 @@ const configureStore = () => {
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
+      const walletsState = state.get('multisigWallet')
       state = new Immutable.Map()
-      state = state.set('i18n', i18nState)
+      state = state.set('i18n', i18nState).set('multisigWallet', walletsState)
     }
     return appReducer(state, action)
   }

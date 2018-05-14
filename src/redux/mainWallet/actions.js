@@ -339,10 +339,12 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   }
 }
 
-const getTokensBalances = (address, blockchain) => (token) => async (dispatch) => {
-  if (blockchain !== token.blockchain()) {
+const getTokensBalances = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
+
+  if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
   }
+
   const dao = tokenService.getDAO(token)
   const balance = await dao.getAccountBalance(address)
   dispatch({
@@ -356,7 +358,7 @@ const getTokensBalances = (address, blockchain) => (token) => async (dispatch) =
 
 }
 
-export const createNewChildAddress = (blockchain: string) => async (dispatch, getState) => {
+export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch, getState) => {
   const account = getState().get(DUCK_SESSION).account
   const wallets = getState().get(DUCK_MULTISIG_WALLET)
   let ownersCollection = new OwnerCollection()
@@ -387,9 +389,10 @@ export const createNewChildAddress = (blockchain: string) => async (dispatch, ge
         is2FA: false,
         isFetched: true,
         deriveNumber: newDeriveNumber,
+        customTokens: tokens,
       })
-      dispatch({ type: MULTISIG_FETCHED, wallet: wallet })
-      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain)))
+      dispatch({ type: MULTISIG_FETCHED, wallet })
+      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain, tokens)))
       return
     case 'Bitcoin':
     case 'Bitcoin Gold':

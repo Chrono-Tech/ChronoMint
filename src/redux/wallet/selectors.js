@@ -3,21 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-/* @flow */
-
-import {
-  createSelector,
-} from 'reselect'
+import { createSelector } from 'reselect'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_MARKET } from 'redux/market/action'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { getAccount } from 'redux/session/selectors'
 
 import { getCurrentWallet } from './actions'
-
-import MainWalletModel from '../../models/wallet/MainWalletModel'
-import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 
 /**
  * SIMPLE SELECTORS
@@ -28,7 +24,9 @@ export const getMainWallet = (state) => {
   return state.get(DUCK_MAIN_WALLET)
 }
 
-export const getMultisigWallets = (state) => state.get(DUCK_MULTISIG_WALLET)
+export const getMultisigWallets = (state) => {
+  return state.get(DUCK_MULTISIG_WALLET)
+}
 
 export const getMainWalletBalance = (symbol) => createSelector(
   [ getMainWallet ],
@@ -91,10 +89,12 @@ export const multisigWalletsSelector = () => createSelector(
   [
     getMainWallet,
     getMultisigWallets,
+    getAccount,
   ],
   (
     mainWallet,
     multisigWallets,
+    account,
   ) => {
     // final result will be svaed here
     const sectionsObject = {}
@@ -121,22 +121,31 @@ export const multisigWalletsSelector = () => createSelector(
     })
 
     // Add multisig wallets
-    multisigWallets.list().map((aWallet) => {
-      const currentWalletAddress: string = aWallet.address()
-      if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-          data: [ {
+    multisigWallets
+      .list()
+      .map((aWallet) => {
+        const owners = aWallet.owners()
+
+        // if user not owner
+        if (owners.items().filter((owner) => owner.address() === account).length <= 0) {
+          return
+        }
+
+        const currentWalletAddress: string = aWallet.address()
+        if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
+          sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
+            data: [ {
+              address: currentWalletAddress,
+              wallet: aWallet,
+            } ],
+          }
+        } else {
+          sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
             address: currentWalletAddress,
             wallet: aWallet,
-          } ],
+          })
         }
-      } else {
-        sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
-          address: currentWalletAddress,
-          wallet: aWallet,
-        })
-      }
-    })
+      })
 
     // Sort main sections and make an array
     const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
@@ -348,11 +357,15 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
       if (!multisigWallets.item(addressTitle)) {
         return null
       }
+      const customTokens = multisigWallets.item(addressTitle).customTokens()
       const walletTokensAndBalanceByAddress = multisigWallets
         .item(addressTitle)
         .balances()
         .list()
         .map((balance) => {
+          if (balance.symbol() !== ETH && customTokens && !customTokens.includes(balance.symbol())) {
+            return
+          }
           const bAmount = balance.amount()
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)
@@ -415,12 +428,14 @@ export const walletDetailSelector = (walletBlockchain, walletAddress) => createS
     })
 
     // Add multisig wallets
-    multisigWallets.list().map((aWallet) => {
-      const currentWalletAddress: string = aWallet.address()
-      if (currentWalletAddress === walletAddress) {
-        wallet = aWallet
-      }
-    })
+    multisigWallets
+      .list()
+      .map((aWallet) => {
+        const currentWalletAddress: string = aWallet.address()
+        if (currentWalletAddress === walletAddress) {
+          wallet = aWallet
+        }
+      })
 
     return wallet
   },
