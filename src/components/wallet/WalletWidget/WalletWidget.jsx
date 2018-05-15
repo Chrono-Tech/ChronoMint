@@ -172,36 +172,19 @@ export default class WalletWidget extends PureComponent {
     return 'My Wallet'
   }
 
-  getAmountList = () => {
+  getTokenAmountList = () => {
     const walletInfo = this.props.walletInfo
+    let tokenList = walletInfo.tokens
 
-    if (walletInfo.tokens.length < 3) {
+    if (tokenList.length < 3) {
       return null
     }
 
-    let ethToken = null
+    if (tokenList.length >= 4) {
+      tokenList = tokenList.slice(0, 3)
+    }
 
-    walletInfo.tokens.some((token) => {
-      if (token.symbol === ETH) {
-        ethToken = token
-        return true
-      }
-    })
-
-    return (
-      <div styleName='amount-list-container'>
-        <div styleName='amount-list'>
-          {ethToken && (
-            <span styleName='amount-text'>
-              {`${ethToken.symbol} ${ethToken.amount}`}, {`+ ${walletInfo.tokens.length - 1} more`}
-            </span>
-          )}
-        </div>
-        <div styleName='show-all'>
-          <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
-        </div>
-      </div>
-    )
+    return tokenList.map((token) => `${token.symbol} ${token.amount.toFixed(2)}`).join(', ')
   }
 
   isMySharedWallet = () => {
@@ -219,15 +202,11 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
 
-    if (wallet.address() === '0xa730d066980bab6a3bef301ca21293b8faac0da4') {
-      // eslint-disable-next-line
-      console.log('render', walletInfo, wallet.toJS())
-    }
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
     }
 
-    const firstToken = walletInfo.tokens[ 0 ]
+    const firstToken = walletInfo.tokens[0]
     return (
       <div styleName='header-container'>
         {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
@@ -240,7 +219,7 @@ export default class WalletWidget extends PureComponent {
             <div styleName='token-container'>
               {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
               <div styleName='token-icon'>
-                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
+                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
               </div>
             </div>
             <div styleName='content-container'>
@@ -250,7 +229,7 @@ export default class WalletWidget extends PureComponent {
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                {this.isMainWallet() ? (
+                {walletInfo.tokens.length === 1 ? (
                   <div styleName='token-amount'>
                     <div styleName='crypto-amount'>
                       {firstToken.symbol} {integerWithDelimiter(firstToken.amount, true, null)}
@@ -264,13 +243,24 @@ export default class WalletWidget extends PureComponent {
                     <div styleName='crypto-amount'>
                       USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
                     </div>
+                    <div styleName='usd-amount'>
+                      {this.getTokenAmountList()}
+                    </div>
                   </div>
                 )}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
-              {this.getAmountList()}
+              { walletInfo.tokens.length >= 3 &&
+              <div styleName='amount-list-container'>
+                <div styleName='amount-list'>
+                  <span styleName='amount-text'>{`You have ${walletInfo.tokens.length} tokens`}</span>
+                </div>
+                <div styleName='show-all'>
+                  <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
+                </div>
+              </div> }
 
               {this.getTokensList().length > 1 && (
                 <div styleName='tokens-list'>
