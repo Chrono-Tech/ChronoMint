@@ -71,8 +71,6 @@ function mapStateToProps (state, ownProps) {
   const token = state.get(DUCK_TOKENS).item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
 
-  console.log('Wallet: ', wallet)
-
   return {
     wallet,
     tokens: state.get(DUCK_TOKENS),
@@ -143,7 +141,8 @@ export default class SendTokensForm extends PureComponent {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
 
-    if (newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier) {
+    if ((newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier)
+        || newProps.token.symbol() !== this.props.token.symbol()) {
       const { token, recipient, amount, feeMultiplier } = newProps
       this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier)
     }
@@ -200,7 +199,6 @@ export default class SendTokensForm extends PureComponent {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.props.estimateGas(tokenId, params, (error, params) => {
-        console.log('handleEstimateGas: ', error, params)
         const { gasFee, gasPrice } = params
         this.setState({
           gasFee,
@@ -298,6 +296,7 @@ export default class SendTokensForm extends PureComponent {
     return contractsManagerDAO.isContract(address)
   }
 
+  // @todo move to util
   convertSatoshiToBTC = (satoshiAmount) => {
     return satoshiAmount / 100000000
   }
