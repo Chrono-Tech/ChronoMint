@@ -20,6 +20,7 @@ import AddressModel from 'models/wallet/AddressModel'
 import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 function mark (data, type, transformMethod) {
   return {
@@ -66,6 +67,7 @@ function serialize (Immutable, refs) {
       if (value instanceof AddressModel) return refer(value, 'AddressModel', 'toObject', refs)
       if (value instanceof AddressesCollection) return refer(value, 'AddressesCollection', 'toObject', refs)
       if (value instanceof MultisigWalletModel) return refer(value, 'MultisigWalletModel', 'toObject', refs)
+      if (value instanceof DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
       if (value instanceof MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
 
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
@@ -113,6 +115,8 @@ function serialize (Immutable, refs) {
             return new AddressesCollection(data)
           case 'MultisigWalletModel':
             return new MultisigWalletModel(data)
+          case 'DerivedWalletModel':
+            return new DerivedWalletModel(data)
           case 'MultisigWalletCollection':
             return new MultisigWalletCollection(data)
           // Immutable types

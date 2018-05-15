@@ -19,6 +19,7 @@ import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidge
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
 import { goToWallets } from 'redux/mainWallet/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import './WalletContent.scss'
 import { prefix } from './lang'
@@ -59,6 +60,7 @@ export default class WalletContent extends Component {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     walletInfo: PropTypes.shape({
       address: PropTypes.string,

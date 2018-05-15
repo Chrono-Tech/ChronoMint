@@ -20,7 +20,7 @@ function mapStateToProps () {
 function mapDispatchToProps (dispatch) {
   return {
     onCreateWallet: () => {
-      dispatch(createNewChildAddress(BLOCKCHAIN_ETHEREUM))
+      dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM }))
       dispatch(goToWallets())
     },
   }

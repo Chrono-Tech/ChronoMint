@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import MainWalletModel from 'models/wallet/MainWalletModel'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import './SubIconForWallet.scss'
 
@@ -15,6 +16,7 @@ export default class SubIconForWallet extends PureComponent {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
   }
 

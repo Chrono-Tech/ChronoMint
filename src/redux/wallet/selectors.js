@@ -12,6 +12,7 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { getAccount } from 'redux/session/selectors'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import { getCurrentWallet } from './actions'
 
@@ -357,7 +358,7 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
       if (!multisigWallets.item(addressTitle)) {
         return null
       }
-      const customTokens = multisigWallets.item(addressTitle).customTokens()
+      const customTokens = multisigWallets.item(addressTitle).customTokens ? multisigWallets.item(addressTitle).customTokens() : null
       const walletTokensAndBalanceByAddress = multisigWallets
         .item(addressTitle)
         .balances()
@@ -445,7 +446,7 @@ export const walletInfoSelector = (wallet, blockchain, address, state) => {
   if (wallet instanceof MainWalletModel) {
     return makeGetWalletTokensAndBalanceByAddress(blockchain, address)(state)
   }
-  if (wallet instanceof MultisigWalletModel) {
+  if (wallet instanceof MultisigWalletModel || wallet instanceof DerivedWalletModel) {
     return makeGetWalletTokensForMultisig(blockchain, address)(state)
   }
 }
