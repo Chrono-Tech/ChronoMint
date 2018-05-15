@@ -32,6 +32,6 @@ export default class EthereumEngine {
 
   createNewChildAddress (deriveNumber = 0) {
     const hdWallet = hdKey.fromMasterSeed(this._wallet.getPrivateKey())
-    return hdWallet.derivePath(WALLET_HD_PATH + deriveNumber).getWallet()
+    return hdWallet.derivePath(`${WALLET_HD_PATH}/${deriveNumber}`).getWallet()
   }
 }

@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { createNewChildAddress, goToWallets } from 'redux/mainWallet/actions'
+import { createNewChildAddress, goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { getChronobankTokens } from 'redux/settings/erc20/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import TokenModel from 'models/tokens/TokenModel'
@@ -19,7 +19,7 @@ import TokensList from './TokensList'
 
 export const FORM_CUSTOM_WALLET_ADD = 'CustomWalletForm'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   return {
     tokens: getChronobankTokens()(state),
   }
@@ -27,10 +27,11 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values: Map, dispatch, props) => {
+    onSubmit: (values: Map) => {
       const tokens = Object.keys(values.filter((token) => token).toObject())
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens }))
       dispatch(goToWallets())
+      dispatch(resetWalletsForm())
     },
   }
 }

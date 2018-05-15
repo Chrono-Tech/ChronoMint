@@ -30,17 +30,17 @@ export const getMultisigWallets = (state) => {
 }
 
 export const getMainWalletBalance = (symbol) => createSelector(
-  [ getMainWallet ],
+  [getMainWallet],
   (mainWallet) => mainWallet.balances().item(symbol),
 )
 
 export const getCurrentWalletBalance = (symbol) => createSelector(
-  [ getCurrentWallet ],
+  [getCurrentWallet],
   (currentWallet) => currentWallet.balances().item(symbol),
 )
 
 export const getWalletsCount = () => createSelector(
-  [ getCurrentWallet ],
+  [getCurrentWallet],
   (currentWallet) => {
     let i = 0
     currentWallet.balances().items().map((balance) => {
@@ -106,14 +106,14 @@ export const multisigWalletsSelector = () => createSelector(
       const addrID = addrJS.id
       if (addrJS.address != null) {
         if (!sectionsObject.hasOwnProperty(addrID)) {
-          sectionsObject[ addrID ] = {
-            data: [ {
+          sectionsObject[addrID] = {
+            data: [{
               address: addrJS.address,
               wallet: mainWallet,
-            } ],
+            }],
           }
         } else {
-          sectionsObject[ addrID ].data.push({
+          sectionsObject[addrID].data.push({
             address: addrJS.address,
             wallet: mainWallet,
           })
@@ -133,15 +133,15 @@ export const multisigWalletsSelector = () => createSelector(
         }
 
         const currentWalletAddress: string = aWallet.address()
-        if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
-          sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
-            data: [ {
+        if (!sectionsObject.hasOwnProperty(aWallet.blockchain())) {
+          sectionsObject[aWallet.blockchain()] = {
+            data: [{
               address: currentWalletAddress,
               wallet: aWallet,
-            } ],
+            }],
           }
         } else {
-          sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
+          sectionsObject[aWallet.blockchain()].data.push({
             address: currentWalletAddress,
             wallet: aWallet,
           })
@@ -149,12 +149,12 @@ export const multisigWalletsSelector = () => createSelector(
       })
 
     // Sort main sections and make an array
-    const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[ k ] = o[ k ], r), {})
+    const sortSectionsObject = (o) => Object.keys(o).sort().reduce((r, k) => (r[k] = o[k], r), {})
     const sortedSections = sortSectionsObject(sectionsObject)
     return Object.keys(sortedSections).map((sectionName) => {
       return {
         title: sectionName,
-        data: sortedSections[ sectionName ].data,
+        data: sortedSections[sectionName].data,
       }
     })
   },
@@ -177,7 +177,7 @@ export const getMainWalletSections = createSelector(
         const address = addressModel.address() // AddressModel.address() returns string with wallet's address
         accumulator.push({
           // data must contains an array (requirement of SectionList component in React Native, sorry)
-          data: [ address ],
+          data: [address],
           title: blockchainTitle,
         })
         return accumulator
@@ -268,7 +268,6 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           .removeDecimals(amount)
           .toNumber()
 
-
       const walletTokensAndBalanceByAddress = mainWalletBalances // BalancesCollection, array of BalanceModel
         .filter((balanceItem) => {
           const bSymbol = balanceItem.symbol()
@@ -280,19 +279,19 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)
           let tokenAmountKeyValuePair = {}
-          tokenAmountKeyValuePair[ bSymbol ] = tAmount
+          tokenAmountKeyValuePair[bSymbol] = tAmount
           return {
             symbol: bSymbol,
             amount: tAmount,
           }
         })
 
-      const arrWalletTokensAndBalanceByAddress = [ ...walletTokensAndBalanceByAddress.values() ]
+      const arrWalletTokensAndBalanceByAddress = [...walletTokensAndBalanceByAddress.values()]
       const result = arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
 
-          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || 0
+          const tokenPrice = prices[symbol] && prices[symbol][selectedCurrency] || 0
           if (tokenPrice && amount > 0) {
             accumulator.balance += (amount * tokenPrice)
           }
@@ -323,7 +322,7 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
         .find((mainWalletAddrAndChain) => {
           return mainWalletAddrAndChain.title === blockchainTitle
         })
-      result.address = currentWallet && currentWallet.data && currentWallet.data[ 0 ]
+      result.address = currentWallet && currentWallet.data && currentWallet.data[0]
 
       return result
     },
@@ -371,19 +370,19 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)
           let tokenAmountKeyValuePair = {}
-          tokenAmountKeyValuePair[ bSymbol ] = tAmount
+          tokenAmountKeyValuePair[bSymbol] = tAmount
           return {
             symbol: bSymbol,
             amount: tAmount,
           }
         })
 
-      const arrWalletTokensAndBalanceByAddress = [ ...walletTokensAndBalanceByAddress.values() ]
+      const arrWalletTokensAndBalanceByAddress = [...walletTokensAndBalanceByAddress.values()]
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
 
-          const tokenPrice = prices[ symbol ] && prices[ symbol ][ selectedCurrency ] || 0
+          const tokenPrice = prices[symbol] && prices[symbol][selectedCurrency] || 0
           if (tokenPrice && amount > 0) {
             accumulator.balance += (amount * tokenPrice)
           }
@@ -393,8 +392,8 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
             amountPrice: amount * tokenPrice,
           })
           accumulator.tokens = accumulator.tokens.sort((a, b) => {
-            const oA = Object.keys(a)[ 0 ]
-            const oB = Object.keys(b)[ 0 ]
+            const oA = Object.keys(a)[0]
+            const oB = Object.keys(b)[0]
             return (oA > oB) - (oA < oB)
           }) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
           return accumulator

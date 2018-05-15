@@ -8,7 +8,7 @@ import classnames from 'classnames'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { createNewChildAddress, goToWallets } from 'redux/mainWallet/actions'
+import { createNewChildAddress, goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import './SelectEthWallet.scss'
 import { prefix } from '../lang'
@@ -22,6 +22,7 @@ function mapDispatchToProps (dispatch) {
     onCreateWallet: () => {
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM }))
       dispatch(goToWallets())
+      dispatch(resetWalletsForm())
     },
   }
 }

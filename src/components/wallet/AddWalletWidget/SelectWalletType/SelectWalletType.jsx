@@ -11,7 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
-import { BTC, createNewChildAddress, ETH, goToWallets, LTC, XEM } from 'redux/mainWallet/actions'
+import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
 
@@ -26,7 +26,8 @@ function mapDispatchToProps (dispatch) {
   return {
     onCreateWallet: (blockchain) => {
       dispatch(createNewChildAddress({ blockchain }))
-      // dispatch(goToWallets())
+      dispatch(goToWallets())
+      dispatch(resetWalletsForm())
     },
   }
 }
@@ -60,7 +61,7 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_LITECOIN,
         symbol: LTC,
         title: `${prefix}.ltc`,
-        disabled: true,
+        action: this.handleCreateWallet(BLOCKCHAIN_LITECOIN),
       },
       {
         blockchain: BLOCKCHAIN_ETHEREUM,

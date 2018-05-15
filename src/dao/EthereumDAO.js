@@ -4,7 +4,10 @@
  */
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import BigNumber from 'bignumber.js'
+import networkService from '@chronobank/login/network/NetworkService'
+import Web3 from 'web3'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
@@ -103,12 +106,12 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   estimateGas = (func, args, value) => {
     console.log('ETHEREUM DAO: func, args, value: ', func, args, value)
-    const [ to, amount ] = args
+    const [to, amount] = args
     return this._estimateGas(to, value)
   }
 
   _estimateGas = async (to, value) => {
-    const [ gasPrice, gasLimit ] = await Promise.all([
+    const [gasPrice, gasLimit] = await Promise.all([
       this._web3Provider.getGasPrice(),
       this._web3Provider.estimateGas({ to, value }),
     ])
@@ -118,7 +121,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, deriveNumber: number = null): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -170,7 +173,7 @@ export class EthereumDAO extends AbstractTokenDAO {
           })
           filter = null
 
-          const [ receipt, transaction ] = await Promise.all([
+          const [receipt, transaction] = await Promise.all([
             this._web3Provider.getTransactionReceipt(txHash),
             this._web3Provider.getTransaction(txHash),
           ])
@@ -254,7 +257,7 @@ export class EthereumDAO extends AbstractTokenDAO {
    * @private
    */
   async _getTransferFromBlocks (account, id): Array<TxModel> {
-    let [ i, limit ] = this._getFilterCache(id) || [ await this._web3Provider.getBlockNumber(), 0 ]
+    let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
     if (limit === 0) {
       limit = Math.max(i - 150, 0)
     }
@@ -274,7 +277,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       i--
     }
-    this._setFilterCache(id, [ i, limit ])
+    this._setFilterCache(id, [i, limit])
     return result
   }
 

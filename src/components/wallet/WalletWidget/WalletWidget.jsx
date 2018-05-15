@@ -42,10 +42,11 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, blockchain, address) => {
+    send: (tokenId, blockchain, address, wallet) => {
       dispatch(modalsOpen({
         component: SendTokens,
         props: {
+          wallet,
           isModal: true,
           token: tokenId,
           blockchain,
@@ -96,8 +97,8 @@ export default class WalletWidget extends PureComponent {
     }
   }
 
-  handleSend = () => {
-    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address)
+  handleSend = (wallet) => () => {
+    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address, wallet)
   }
 
   handleReceive = () => {
@@ -274,7 +275,7 @@ export default class WalletWidget extends PureComponent {
                       return (
                         <div styleName='tokens-list-table-tr' key={token.id()}>
                           <div styleName='tokens-list-table-cell-icon'>
-                            <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
+                            <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
                           </div>
                           <div styleName='tokens-list-table-cell-amount'>
                             {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
@@ -301,7 +302,7 @@ export default class WalletWidget extends PureComponent {
                     disabled={false}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={this.handleSend}
+                    onTouchTap={this.handleSend(wallet)}
                   />
                 </div>
                 <div styleName='action'>

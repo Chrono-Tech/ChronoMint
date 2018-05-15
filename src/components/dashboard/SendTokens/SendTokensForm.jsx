@@ -27,8 +27,9 @@ import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redu
 import { getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
-import { walletDetailSelector, makeGetWalletTokensAndBalanceByAddress } from 'redux/wallet/selectors'
-import { DUCK_TOKENS, estimateGas, estimateBtcFee } from 'redux/tokens/actions'
+import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
+import { DUCK_TOKENS, estimateBtcFee, estimateGas } from 'redux/tokens/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import inversedTheme from 'styles/themes/inversed'
 import styles from '../styles'
 import { prefix } from './lang'
@@ -59,7 +60,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
-  const walletInfo = makeGetWalletTokensAndBalanceByAddress(ownProps.blockchain)(state)
+  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
   const tokenId = walletInfo.tokens.some((token) => token.symbol === symbol) ? symbol : walletInfo.tokens[0].symbol
@@ -100,6 +101,7 @@ export default class SendTokensForm extends PureComponent {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     recipient: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -147,7 +149,7 @@ export default class SendTokensForm extends PureComponent {
     }
 
     if ((newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier)
-        || newProps.token.symbol() !== this.props.token.symbol()) {
+      || newProps.token.symbol() !== this.props.token.symbol()) {
       const { token, recipient, amount, feeMultiplier } = newProps
       this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier)
     }
@@ -332,7 +334,7 @@ export default class SendTokensForm extends PureComponent {
           <IPFSImage
             styleName='content'
             multihash={token.icon()}
-            fallback={TOKEN_ICONS[ token.symbol() ]}
+            fallback={TOKEN_ICONS[token.symbol()]}
           />
         </div>
 
@@ -341,36 +343,38 @@ export default class SendTokensForm extends PureComponent {
             <Translate value='wallet.sendTokens' />
           </span>
         </div>
-        { isMultiToken && <div styleName='head-token-choose-form'>
-          <MuiThemeProvider theme={inversedTheme}>
-            {walletInfo.tokens.length === 0
-              ? <Preloader />
-              : (
-                <Field
-                  component={SelectField}
-                  name='symbol'
-                  fullWidth
-                  {...styles}
-                >
-                  {walletInfo.tokens
-                    .map((tokenData) => {
-                      const token: TokenModel = this.props.tokens.item(tokenData.symbol)
-                      if (token.isLocked()) {
-                        return
-                      }
-                      return (
-                        <MenuItem
-                          key={token.id()}
-                          value={token.id()}
-                          primaryText={token.symbol()}
-                        />
-                      )
-                    })}
-                </Field>
-              )
-            }
-          </MuiThemeProvider>
-        </div> }
+        {isMultiToken && (
+          <div styleName='head-token-choose-form'>
+            <MuiThemeProvider theme={inversedTheme}>
+              {walletInfo.tokens.length === 0
+                ? <Preloader />
+                : (
+                  <Field
+                    component={SelectField}
+                    name='symbol'
+                    fullWidth
+                    {...styles}
+                  >
+                    {walletInfo.tokens
+                      .map((tokenData) => {
+                        const token: TokenModel = this.props.tokens.item(tokenData.symbol)
+                        if (token.isLocked()) {
+                          return
+                        }
+                        return (
+                          <MenuItem
+                            key={token.id()}
+                            value={token.id()}
+                            primaryText={token.symbol()}
+                          />
+                        )
+                      })}
+                  </Field>
+                )
+              }
+            </MuiThemeProvider>
+          </div>
+        )}
         <div styleName='wallet-name-section'>
           <div styleName='wallet-name-title-section'>
             <span styleName='wallet-name-title'>
@@ -437,7 +441,7 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
-        { this.state.mode === MODE_ADVANCED && (
+        {this.state.mode === MODE_ADVANCED && (
           <div styleName='advanced-mode-container'>
             <div styleName='field'>
               <Field
@@ -455,22 +459,22 @@ export default class SendTokensForm extends PureComponent {
             <Translate value={`${prefix}.transactionFee`} />
           </span> &nbsp;
           {this.getTransactionFeeDescription()}
-        </div> }
+        </div>}
         {/*<div styleName='template-container'>*/}
-          {/*<div styleName='template-checkbox'>*/}
-            {/*<Field*/}
-              {/*component={Checkbox}*/}
-              {/*name='isTemplateEnabled'*/}
-            {/*/>*/}
-          {/*</div>*/}
-          {/*<div styleName='template-name'>*/}
-            {/*<Field*/}
-              {/*component={TextField}*/}
-              {/*name='TemplateName'*/}
-              {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
-              {/*fullWidth*/}
-            {/*/>*/}
-          {/*</div>*/}
+        {/*<div styleName='template-checkbox'>*/}
+        {/*<Field*/}
+        {/*component={Checkbox}*/}
+        {/*name='isTemplateEnabled'*/}
+        {/*/>*/}
+        {/*</div>*/}
+        {/*<div styleName='template-name'>*/}
+        {/*<Field*/}
+        {/*component={TextField}*/}
+        {/*name='TemplateName'*/}
+        {/*floatingLabelText={<Translate value={'wallet.templateName'} />}*/}
+        {/*fullWidth*/}
+        {/*/>*/}
+        {/*</div>*/}
         {/*</div>*/}
 
         <div styleName='actions-row'>

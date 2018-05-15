@@ -13,14 +13,16 @@ import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
 import { mainApprove, mainTransfer } from 'redux/mainWallet/actions'
 import { multisigTransfer } from 'redux/multisigWallet/actions'
-import { estimateGas, DUCK_TOKENS } from 'redux/tokens/actions'
-import { getCurrentWallet } from 'redux/wallet/actions'
+import { DUCK_TOKENS, estimateGas } from 'redux/tokens/actions'
+import MainWalletModel from 'models/wallet/MainWalletModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 function mapDispatchToProps (dispatch) {
   return {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
-    mainTransfer: (token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(token, amount, recipient, feeMultiplier)),
+    mainTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier)),
     estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
@@ -32,7 +34,6 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    wallet: getCurrentWallet(state),
     tokens: state.get(DUCK_TOKENS),
   }
 }
@@ -40,7 +41,11 @@ function mapStateToProps (state) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class SendTokens extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.object,
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MainWalletModel),
+      PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
+    ]),
     isModal: PropTypes.bool,
     mainApprove: PropTypes.func,
     mainTransfer: PropTypes.func,
@@ -67,7 +72,7 @@ export default class SendTokens extends PureComponent {
       case ACTION_TRANSFER:
         wallet.isMultisig()
           ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier)
-          : this.props.mainTransfer(token, value, recipient, feeMultiplier)
+          : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier)
     }
   }
 

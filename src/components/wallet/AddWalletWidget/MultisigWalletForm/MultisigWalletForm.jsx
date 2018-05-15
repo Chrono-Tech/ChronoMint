@@ -15,7 +15,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, FieldArray, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { goToWallets } from 'redux/mainWallet/actions'
+import { goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import validate from './validate'
@@ -76,6 +76,7 @@ function mapDispatchToProps (dispatch) {
 
       dispatch(createWallet(wallet))
       dispatch(goToWallets())
+      dispatch(resetWalletsForm())
     },
   }
 }
