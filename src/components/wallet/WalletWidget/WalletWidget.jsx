@@ -219,10 +219,6 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
 
-    if (wallet.address() === '0xa730d066980bab6a3bef301ca21293b8faac0da4') {
-      // eslint-disable-next-line
-      console.log('render', walletInfo, wallet.toJS())
-    }
     if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
       return null
     }

@@ -12,8 +12,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { modalsClose } from 'redux/modals/actions'
-import { goToWallets } from 'redux/mainWallet/actions'
+import { goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DatePicker, TimePicker } from 'redux-form-material-ui'
 import { prefix } from './lang'
@@ -72,6 +71,7 @@ function mapDispatchToProps (dispatch) {
 
       dispatch(createWallet(wallet))
       dispatch(goToWallets())
+      dispatch(resetWalletsForm())
     },
   }
 }

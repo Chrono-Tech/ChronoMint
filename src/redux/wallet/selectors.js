@@ -133,15 +133,15 @@ export const multisigWalletsSelector = () => createSelector(
         }
 
         const currentWalletAddress: string = aWallet.address()
-        if (!sectionsObject.hasOwnProperty(BLOCKCHAIN_ETHEREUM)) {
-          sectionsObject[ BLOCKCHAIN_ETHEREUM ] = {
+        if (!sectionsObject.hasOwnProperty(aWallet.blockchain())) {
+          sectionsObject[ aWallet.blockchain() ] = {
             data: [ {
               address: currentWalletAddress,
               wallet: aWallet,
             } ],
           }
         } else {
-          sectionsObject[ BLOCKCHAIN_ETHEREUM ].data.push({
+          sectionsObject[ aWallet.blockchain() ].data.push({
             address: currentWalletAddress,
             wallet: aWallet,
           })

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
@@ -11,7 +11,7 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import ethereumDAO from 'dao/EthereumDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
@@ -367,21 +367,25 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
     isSelf: true,
   }))
 
-  let lastDeriveNumber = -1
+  let lastDeriveNumbers = {}
   wallets
     .items()
     .map((wallet) => {
       const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
-      if (deriveNumber !== null && deriveNumber > lastDeriveNumber) {
-        lastDeriveNumber = deriveNumber
+      if (!lastDeriveNumbers[ wallet.blockchain() ] || (lastDeriveNumbers[ wallet.blockchain() ] && lastDeriveNumbers[ wallet.blockchain() ] < deriveNumber)) {
+        lastDeriveNumbers[ wallet.blockchain() ] = deriveNumber
       }
     })
 
+  let wallet
+  let newDeriveNumber
+  let newWallet
+
   switch (blockchain) {
-    case 'Ethereum':
-      const newDeriveNumber = lastDeriveNumber + 1
-      const newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
-      const wallet = new DerivedWalletModel({
+    case BLOCKCHAIN_ETHEREUM:
+      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_ETHEREUM ] || 0) + 1
+      newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
+      wallet = new DerivedWalletModel({
         address: newWallet.getAddressString(),
         owners: ownersCollection,
         isMultisig: false,
@@ -393,24 +397,42 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
       dispatch({ type: MULTISIG_FETCHED, wallet })
       dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain, tokens)))
       return
-    case 'Bitcoin':
-      const newDeriveNumberBTC = lastDeriveNumber + 1
-      const newWalletBTC = btcProvider.createNewChildAddress(newDeriveNumberBTC)
-      const walletBTC = new DerivedWalletModel({
-        address: newWalletBTC.getAddress(),
+    case BLOCKCHAIN_BITCOIN:
+      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_BITCOIN ] || 0) + 1
+      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      wallet = new DerivedWalletModel({
+        address: newWallet.getAddress(),
         owners: ownersCollection,
         isMultisig: false,
         isFetched: true,
-        deriveNumber: newDeriveNumberBTC,
+        deriveNumber: newDeriveNumber,
         blockchain,
       })
-      dispatch({ type: MULTISIG_FETCHED, wallet: walletBTC })
-      dispatch(subscribeOnTokens(getTokensBalances(newWalletBTC.getAddress(), blockchain, tokens)))
+      dispatch({ type: MULTISIG_FETCHED, wallet })
+      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddress(), blockchain, tokens)))
+      return
+    case BLOCKCHAIN_LITECOIN:
+      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_LITECOIN ] || 0) + 1
+      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      wallet = new DerivedWalletModel({
+        address: newWallet.getAddress(),
+        owners: ownersCollection,
+        isMultisig: false,
+        isFetched: true,
+        deriveNumber: newDeriveNumber,
+        blockchain,
+      })
+      dispatch({ type: MULTISIG_FETCHED, wallet })
+      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddress(), blockchain, tokens)))
       return
     case 'Bitcoin Gold':
-    case 'Litecoin':
     case 'NEM':
     default:
       return null
   }
+}
+
+export const resetWalletsForm = () => (dispatch) => {
+  dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
+  dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }

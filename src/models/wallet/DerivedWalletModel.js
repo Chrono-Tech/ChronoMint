@@ -59,4 +59,8 @@ export default class DerivedWalletModel extends abstractFetchingModel({
   isTimeLocked () {
     return false
   }
+
+  blockchain () {
+    return this.get('blockchain')
+  }
 }
