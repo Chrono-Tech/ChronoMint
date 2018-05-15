@@ -52,11 +52,11 @@ class MnemonicProvider {
         }
       }
 
-      const btcNetwork = network.bitcoin && bitcoin.networks[ network.bitcoin ]
-      const bccNetwork = network.bitcoinCash && bitcoin.networks[ network.bitcoinCash ]
-      const btgNetwork = network.bitcoinGold && bitcoin.networks[ network.bitcoinGold ]
-      const ltcNetwork = network.litecoin && bitcoin.networks[ network.litecoin ]
-      const nemNetwork = network.nem && nemSdk.model.network.data[ network.nem ]
+      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
+      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
+      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
+      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
+      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
 
       bitcoinLikeEngines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       bitcoinLikeEngines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)

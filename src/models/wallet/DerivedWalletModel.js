@@ -8,6 +8,7 @@ import BalancesCollection from 'models/tokens/BalancesCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
+import AddressesCollection from './AddressesCollection'
 
 export default class DerivedWalletModel extends abstractFetchingModel({
   address: null, //
@@ -19,6 +20,7 @@ export default class DerivedWalletModel extends abstractFetchingModel({
   customTokens: null,
   deriveNumber: null,
   blockchain: null,
+  addresses: new AddressesCollection(),
 }) {
   id () {
     return this.get('address')
@@ -62,5 +64,9 @@ export default class DerivedWalletModel extends abstractFetchingModel({
 
   blockchain () {
     return this.get('blockchain')
+  }
+
+  addresses (value) {
+    return this._getSet('addresses', value)
   }
 }

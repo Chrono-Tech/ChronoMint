@@ -35,6 +35,7 @@ import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from 'redux/multisigWallet/actions'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import AddressesCollection from '../../models/wallet/AddressesCollection'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -199,11 +200,12 @@ export const initMainWallet = () => async (dispatch, getState) => {
 
 }
 
-export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
-    const wallet: MainWalletModel = getState().get(DUCK_MAIN_WALLET)
+    const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
-    await tokenDAO.transfer(wallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
+    let deriveNumber = wallet.deriveNumber && wallet.deriveNumber()
+    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }
@@ -277,7 +279,7 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
     }
     const result = await Promise.all(promises)
     for (let pack of result) {
-      newTxs = [ ...newTxs, ...pack ]
+      newTxs = [...newTxs, ...pack]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
@@ -372,64 +374,51 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
     .items()
     .map((wallet) => {
       const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
-      if (!lastDeriveNumbers[ wallet.blockchain() ] || (lastDeriveNumbers[ wallet.blockchain() ] && lastDeriveNumbers[ wallet.blockchain() ] < deriveNumber)) {
-        lastDeriveNumbers[ wallet.blockchain() ] = deriveNumber
+      if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {
+        lastDeriveNumbers[wallet.blockchain()] = deriveNumber
       }
     })
 
   let wallet
   let newDeriveNumber
   let newWallet
+  let address
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_ETHEREUM ] || 0) + 1
+      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
-      wallet = new DerivedWalletModel({
-        address: newWallet.getAddressString(),
-        owners: ownersCollection,
-        isMultisig: false,
-        isFetched: true,
-        deriveNumber: newDeriveNumber,
-        customTokens: tokens,
-        blockchain,
-      })
-      dispatch({ type: MULTISIG_FETCHED, wallet })
-      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddressString(), blockchain, tokens)))
-      return
+      address = newWallet.getAddressString()
+      break
     case BLOCKCHAIN_BITCOIN:
-      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_BITCOIN ] || 0) + 1
+      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
-      wallet = new DerivedWalletModel({
-        address: newWallet.getAddress(),
-        owners: ownersCollection,
-        isMultisig: false,
-        isFetched: true,
-        deriveNumber: newDeriveNumber,
-        blockchain,
-      })
-      dispatch({ type: MULTISIG_FETCHED, wallet })
-      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddress(), blockchain, tokens)))
-      return
+      address = newWallet.getAddress()
+      break
     case BLOCKCHAIN_LITECOIN:
-      newDeriveNumber = (lastDeriveNumbers[ BLOCKCHAIN_LITECOIN ] || 0) + 1
+      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
-      wallet = new DerivedWalletModel({
-        address: newWallet.getAddress(),
-        owners: ownersCollection,
-        isMultisig: false,
-        isFetched: true,
-        deriveNumber: newDeriveNumber,
-        blockchain,
-      })
-      dispatch({ type: MULTISIG_FETCHED, wallet })
-      dispatch(subscribeOnTokens(getTokensBalances(newWallet.getAddress(), blockchain, tokens)))
-      return
+      address = newWallet.getAddress()
+      break
     case 'Bitcoin Gold':
     case 'NEM':
     default:
       return null
   }
+
+  wallet = new DerivedWalletModel({
+    address,
+    addresses: new AddressesCollection()
+      .add(new AddressModel({ id: blockchain, address })),
+    owners: ownersCollection,
+    isMultisig: false,
+    isFetched: true,
+    deriveNumber: newDeriveNumber,
+    blockchain,
+  })
+
+  dispatch({ type: MULTISIG_FETCHED, wallet })
+  dispatch(subscribeOnTokens(getTokensBalances(address, blockchain, tokens)))
 }
 
 export const resetWalletsForm = () => (dispatch) => {
