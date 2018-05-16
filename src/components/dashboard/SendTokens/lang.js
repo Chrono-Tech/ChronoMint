@@ -15,6 +15,8 @@ export default {
     transactionFee: 'Transaction fee:',
     averageFee: '%{multiplier}x of average fee',
     errorFillSatPerBiteField: 'Need to fill SAT/byte field',
+    errorEstimateFee: 'An error has occur during the fee estimation',
+    errorFillAllFields: 'Need to fill all necessary fields',
     gasPrice: 'Gas Price:',
     approve: 'Approve',
     revoke: 'Revoke',

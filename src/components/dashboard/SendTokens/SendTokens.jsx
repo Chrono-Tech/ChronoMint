@@ -77,7 +77,7 @@ export default class SendTokens extends PureComponent {
   }
 
   handleSubmitSuccess = () => {
-    this.props.resetForm()
+    // this.props.resetForm()
   }
 
   render () {

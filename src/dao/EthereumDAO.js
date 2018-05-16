@@ -105,7 +105,6 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   estimateGas = (func, args, value) => {
-    console.log('ETHEREUM DAO: func, args, value: ', func, args, value)
     const [to, amount] = args
     return this._estimateGas(to, value)
   }

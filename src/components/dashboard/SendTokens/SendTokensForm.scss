@@ -10,6 +10,14 @@
   width: 430px;
 }
 
+.fee-loader-container {
+  width: 150px;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  justify-content: center;
+}
+
 .head {
   background-color: $button-color-1;
   width: 430px;
@@ -138,6 +146,7 @@
 
 .transaction-fee {
   display: flex;
+  min-height: 35px;
   margin-top: 20px;
   margin-bottom: 20px;
 
