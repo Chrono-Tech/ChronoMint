@@ -42,9 +42,9 @@ export default class TxConfirmations extends PureComponent {
     }
 
     if (confirmations <= 4) {
-      icon = TX_CONFIRMATIONS[ `${prefix}_${confirmations}` ]
+      icon = TX_CONFIRMATIONS[`${prefix}_${confirmations}`]
     } else {
-      icon = TX_CONFIRMATIONS[ `${prefix}_4` ]
+      icon = TX_CONFIRMATIONS[`${prefix}_4`]
     }
 
     return <img src={icon} alt='' />

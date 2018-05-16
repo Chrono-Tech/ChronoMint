@@ -41,8 +41,6 @@ export default class HDWalletProvider {
   // returns the address of the given address_index, first checking the cache
   getAddress (idx) {
     if (!(idx in Object.keys(this.addresses))) {
-      // eslint-disable-next-line
-      console.log('getAddress', `${this.wallet_hdpath}/${idx}`)
       let wallet = this.hdwallet.derivePath(`${this.wallet_hdpath}/${idx}`).getWallet()
       this.wallets.push(wallet)
       this.addresses[idx] = wallet.getAddressString()

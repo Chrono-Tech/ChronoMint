@@ -20,7 +20,6 @@ import TokenModel from 'models/tokens/TokenModel'
 import validator from 'models/validator'
 import AddressModel from 'models/wallet/AddressModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import TransactionsCollection, { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
 import { notify, notifyError } from 'redux/notifier/actions'
@@ -36,6 +35,7 @@ import OwnerModel from 'models/wallet/OwnerModel'
 import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from 'redux/multisigWallet/actions'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import AddressesCollection from '../../models/wallet/AddressesCollection'
+import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -83,6 +83,7 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
+  const walletsAccounts = getDeriveWalletsAddresses(getState())
 
   dispatch(fetchTokenBalance(token))
   if (tokens.leftToFetch() === 0) {
@@ -95,30 +96,59 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      // TODO @dkchv: will be moved to notifications
-      dispatch(notify(new TransferNoticeModel({
-        value: token.removeDecimals(tx.value()),
-        symbol,
-        from: tx.from(),
-        to: tx.to(),
-        credited: tx.isCredited(),
-      })))
+      if (tx.from() === account || tx.to() === account) { // for main wallet
+        // TODO @dkchv: will be moved to notifications
+        dispatch(notify(new TransferNoticeModel({
+          value: token.removeDecimals(tx.value()),
+          symbol,
+          from: tx.from(),
+          to: tx.to(),
+        })))
 
-      // add to table
-      // TODO @dkchv: !!! restore after fix
-      dispatch({ type: WALLET_TRANSACTION, tx })
-      if (!(tx.from() === account || tx.to() === account)) {
-        return
+        // add to table
+        // TODO @dkchv: !!! restore after fix
+        dispatch({ type: WALLET_TRANSACTION, tx })
+        if (!(tx.from() === account || tx.to() === account)) {
+          return
+        }
+        // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
+        if (!tokenDAO.hasBalancesStream()) {
+          // update balance
+          dispatch(fetchTokenBalance(token))
+        }
+        // update donator
+        if (tx.from() === assetDonatorDAO.getInitAddress()) {
+          dispatch(updateIsTIMERequired())
+        }
       }
-      // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
-      if (!tokenDAO.hasBalancesStream()) {
-        // update balance
-        dispatch(fetchTokenBalance(token))
+
+      if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
+        const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
+        const callback = async (wallet: DerivedWalletModel) => {
+
+          dispatch({ type: MULTISIG_FETCHED, wallet: wallet.transactions(wallet.transactions().add(tx)) })
+
+          const dao = tokenService.getDAO(token)
+          const balance = await dao.getAccountBalance(wallet.address())
+          dispatch({
+            type: MULTISIG_BALANCE,
+            walletId: wallet.address(),
+            balance: new BalanceModel({
+              id: token.id(),
+              amount: new Amount(balance, token.symbol(), true),
+            }),
+          })
+        }
+
+        if (walletFrom && walletFrom.isFetched()) {
+          callback(walletFrom)
+        }
+        const walletTo = getState().get(DUCK_MULTISIG_WALLET).item(tx.to())
+        if (walletTo && walletTo.isFetched()) {
+          callback(walletTo)
+        }
       }
-      // update donator
-      if (tx.from() === assetDonatorDAO.getInitAddress()) {
-        dispatch(updateIsTIMERequired())
-      }
+
     })
     .on(FETCH_NEW_BALANCE, () => {
       dispatch(fetchTokenBalance(token))
@@ -151,7 +181,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch(account)
+  await tokenDAO.watch([...walletsAccounts, account])
 
   dispatch(addMarketToken(token.symbol()))
 

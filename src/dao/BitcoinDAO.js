@@ -132,7 +132,6 @@ export default class BitcoinDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
         }))
       }
     } catch (e) {
@@ -165,7 +164,6 @@ export default class BitcoinDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
         }),
       )
     })

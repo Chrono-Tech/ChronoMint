@@ -9,7 +9,6 @@ import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import Moment from 'components/common/Moment/index'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import { Paper } from 'material-ui'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -32,7 +31,6 @@ function mapStateToProps (state) {
   return {
     account: state.get(DUCK_SESSION).account,
     locale: state.get(DUCK_I18N).locale,
-    // transactions: getTxs()(state),
     selectedNetworkId,
     selectedProviderId,
     tokens: state.get(DUCK_TOKENS),
@@ -48,6 +46,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
+    walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(TransactionsCollection),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
@@ -61,14 +60,15 @@ export default class TransactionsTable extends PureComponent {
     this.props.getAccountTransactions()
   }
 
-  renderRow ({ timeTitle, trx }) {
+  renderRow ({ trx }) {
+    const account = this.props.walletAddress || this.props.account
     const token: TokenModel = this.props.tokens.item(trx.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
 
     const info = (
       <div styleName='info'>
-        <div styleName='title'><Translate value={`${prefix}.${trx.to() === this.props.account ? 'receiving' : 'sending'}`} /></div>
-        <div styleName='address'>{trx.to() === this.props.account ? trx.from() : trx.to()}</div>
+        <div styleName='title'><Translate value={`${prefix}.${trx.to() === account ? 'receiving' : 'sending'}`} /></div>
+        <div styleName='address'>{trx.to() === account ? trx.from() : trx.to()}</div>
       </div>
     )
 
@@ -82,7 +82,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div styleName={classnames('value', { 'receiving': trx.to() === this.props.account, 'sending': trx.from() === this.props.account })}>
+          <div styleName={classnames('value', { 'receiving': trx.to() === account, 'sending': trx.from() === account })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>
@@ -158,12 +158,12 @@ function buildTableData (transactions, locale) {
   const groups = transactions.items()
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
-      data[ groupBy ] = data[ groupBy ] || {
+      data[groupBy] = data[groupBy] || {
         dateBy: trx.date('YYYY-MM-DD'),
         dateTitle: <Moment date={trx.date('YYYY-MM-DD')} format='DD MMMM YYYY' />,
         transactions: [],
       }
-      data[ groupBy ].transactions.push({
+      data[groupBy].transactions.push({
         trx,
         timeBy: trx.date('HH:mm:ss'),
         timeTitle: trx.date('HH:mm'),

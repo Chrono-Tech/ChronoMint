@@ -165,12 +165,8 @@ class NetworkService extends EventEmitter {
         this.selectAccount(accounts[0])
       }
       dispatch(loading(false))
-      // eslint-disable-next-line
-      console.log('loadAccounts', accounts)
       return accounts
     } catch (e) {
-      // eslint-disable-next-line
-      console.log('loadAccounts', e)
       dispatch(addError(e.message))
     }
   }
@@ -192,8 +188,6 @@ class NetworkService extends EventEmitter {
     networkProvider.setNetworkCode(networkCode)
 
     const accounts = await this.loadAccounts()
-    // eslint-disable-next-line
-    console.log('setup', accounts)
 
     this.selectAccount(accounts[0])
     ethereumProvider.setEngine(ethereum, nem)

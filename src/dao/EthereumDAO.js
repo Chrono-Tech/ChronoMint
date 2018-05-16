@@ -29,9 +29,9 @@ export class EthereumDAO extends AbstractTokenDAO {
     this._contractName = 'Ethereum'
   }
 
-  watch (account): Promise {
+  watch (accounts: Array<string>): Promise {
     return Promise.all([
-      this.watchTransfer(account),
+      this.watchTransfer(accounts),
     ])
   }
 
@@ -78,7 +78,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   /** @private */
-  _getTxModel (tx, account, time = Date.now() / 1000): TxModel {
+  _getTxModel (tx, time = Date.now() / 1000): TxModel {
     // error "15 Significant digit limit"
     BigNumber.config({ ERRORS: false })
     const gasPrice = tx.gasPrice && new BigNumber(tx.gasPrice)
@@ -97,7 +97,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       gas: tx.gas,
       gasFee,
       input: tx.input,
-      credited: tx.to === account,
       // TODO @dkchv: token ???
       token: this._symbol,
       symbol: this._symbol,
@@ -121,7 +120,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, deriveNumber: number = null): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -201,7 +200,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async watchTransfer (account) {
+  async watchTransfer (accounts) {
     const web3 = await this._web3Provider.getWeb3()
     const filter = web3.eth.filter('latest')
     const startTime = AbstractContractDAO._eventsWatchStartTime
@@ -222,10 +221,10 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       const txs = block.transactions || []
       txs.forEach((tx) => {
-        if (tx.from === account || tx.to === account) {
+        if (accounts.includes(tx.from) || accounts.includes(tx.to)) {
           this.emit(FETCH_NEW_BALANCE)
           if (tx.value.toNumber() > 0) {
-            this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx, account))
+            this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx))
           }
         }
       })
@@ -240,7 +239,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         if (!tx.value || tx.value === '0') {
           continue
         }
-        txs.push(this._getTxModel(tx, account, tx.timestamp))
+        txs.push(this._getTxModel(tx, tx.timestamp))
       }
     } catch (e) {
       // eslint-disable-next-line
@@ -268,7 +267,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         const txs = block.transactions || []
         txs.forEach((tx) => {
           if ((tx.to === account || tx.from === account) && tx.value > 0) {
-            result.push(this._getTxModel(tx, account, block.timestamp))
+            result.push(this._getTxModel(tx, block.timestamp))
           }
         })
       } catch (e) {
