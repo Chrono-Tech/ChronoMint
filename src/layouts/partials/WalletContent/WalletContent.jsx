@@ -97,7 +97,7 @@ export default class WalletContent extends Component {
 
         <div styleName='transactions'>
           <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
-          <TransactionsTable transactions={wallet.transactions()} />
+          <TransactionsTable transactions={wallet.transactions()} walletAddress={wallet.address()} />
         </div>
       </div>
     )

@@ -153,7 +153,6 @@ export default class NemDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
         }))
       }
     } catch (e) {
@@ -197,7 +196,6 @@ export default class NemDAO extends EventEmitter {
       to: tx.to,
       value: new Amount(tx.value, this._symbol),
       fee: new Amount(tx.fee, this._symbol),
-      credited: tx.credited,
     })
   }
 
@@ -212,7 +210,6 @@ export default class NemDAO extends EventEmitter {
       to: tx.to,
       value: new Amount(tx.mosaics[ this._namespace ], this._symbol),
       fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
-      credited: tx.credited,
     })
   }
 

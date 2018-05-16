@@ -27,20 +27,20 @@ class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
-    const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[ network.bitcoin ])
-    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[ network.bitcoinCash ])
-    const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[ network.bitcoinGold ])
-    const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[ network.litecoin ])
-    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[ network.nem ])
+    const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
+    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
+    const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
+    const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
+    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
 
     return {
       networkCode,
       ethereum: new EthereumEngine(ethereumWallet, network, url),
-      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[ network.bitcoin ]),
-      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[ network.bitcoinCash ]),
-      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[ network.bitcoinGold ]),
-      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[ network.litecoin ]),
-      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[ network.nem ]),
+      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
+      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
+      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
+      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
+      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
     }
   }
 

@@ -23,7 +23,6 @@ class TxModel extends abstractModel({
   fee: new BigNumber(0), // TODO @ipavlenko: remove gasFee, use fee
   gasFee: new BigNumber(0),
   input: null,
-  credited: null,
   symbol: '',
   tokenAddress: null,
   type: '',
@@ -78,8 +77,13 @@ class TxModel extends abstractModel({
     return this.get('value')
   }
 
-  isCredited () {
-    return this.get('credited')
+  isCredited (account) {
+    if (account === this.from()) {
+      return false
+    }
+    if (account === this.to()) {
+      return true
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols
