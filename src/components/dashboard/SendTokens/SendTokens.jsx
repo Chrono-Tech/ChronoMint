@@ -8,6 +8,8 @@ import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS } fro
 import Amount from 'models/Amount'
 import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
+import web3Converter from 'utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change, untouch } from 'redux-form'
@@ -22,7 +24,7 @@ function mapDispatchToProps (dispatch) {
   return {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
-    mainTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier)),
+    mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
     estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
@@ -60,8 +62,9 @@ export default class SendTokens extends PureComponent {
   handleSubmit = (values) => {
     const { wallet, tokens } = this.props
 
-    const { action, symbol, amount, recipient, feeMultiplier } = values.toJS()
+    const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, gasLimit } = values.toJS()
     const token = tokens.item(symbol)
+    const advancedModeParams = { gweiPerGas: new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei')), gasLimit }
 
     const value = new Amount(token.addDecimals(amount), symbol)
 
@@ -72,7 +75,7 @@ export default class SendTokens extends PureComponent {
       case ACTION_TRANSFER:
         wallet.isMultisig()
           ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier)
-          : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier)
+          : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
     }
   }
 

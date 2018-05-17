@@ -232,12 +232,12 @@ export const initMainWallet = () => async (dispatch, getState) => {
 
 }
 
-export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, advacnedModeParams = null ) => async (dispatch, getState) => {
   try {
     const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
     let deriveNumber = wallet.deriveNumber && wallet.deriveNumber()
-    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber)
+    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber, advacnedModeParams)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }

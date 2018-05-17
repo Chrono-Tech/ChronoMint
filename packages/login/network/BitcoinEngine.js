@@ -55,7 +55,6 @@ export class BitcoinEngine {
       vout: output.vout,
       value: output.satoshis,
     })), targets, Math.ceil(feeRate))
-    console.log('describeTransaction: ', inputs, outputs, fee)
     return { inputs, outputs, fee }
   }
 

@@ -78,6 +78,7 @@ export default {
     templateName: 'Template name',
     satPerByte: 'SAT / byte',
     gweiPerGas: 'GWEI 0 / gas',
+    gasLimit: 'Gas limit',
     sendTokens: 'Send tokens',
     walletName: 'Wallet name',
     recipientAddress: 'Recipient address',

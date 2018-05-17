@@ -71,6 +71,7 @@ function mapStateToProps (state, ownProps) {
   const amount = selector(state, 'amount')
   const satPerByte = selector(state, 'satPerByte')
   const gweiPerGas = selector(state, 'gweiPerGas')
+  const gasLimit = selector(state, 'gasLimit')
   const token = state.get(DUCK_TOKENS).item(tokenId)
   const isMultiToken = walletInfo.tokens.length > 1
 
@@ -87,6 +88,7 @@ function mapStateToProps (state, ownProps) {
     symbol,
     feeMultiplier,
     satPerByte,
+    gasLimit,
     gweiPerGas,
     gasPriceMultiplier: getGasPriceMultiplier(token.blockchain())(state),
   }
@@ -112,6 +114,9 @@ export default class SendTokensForm extends PureComponent {
       symbol: PropTypes.string,
     }),
     feeMultiplier: PropTypes.number,
+    satPerByte: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    gasLimit: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    gweiPerGas: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     isMultiTokenWallet: PropTypes.bool,
     transfer: PropTypes.func,
     estimateGas: PropTypes.func,
@@ -131,6 +136,7 @@ export default class SendTokensForm extends PureComponent {
       btcFeeError: false,
       gasFee: null,
       gasPrice: null,
+      gasLimit: null,
       gasFeeError: false,
       gasFeeLoading: false,
     }
@@ -161,11 +167,10 @@ export default class SendTokensForm extends PureComponent {
       this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier, wallet.address())
     }
 
-    if (this.isBTCLikeBlockchain(newProps.token.blockchain()) &&
+    if (this.isBTCLikeBlockchain(newProps.token.blockchain()) && !newProps.invalid && !newProps.pristine &&
       ((this.state.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) ||
-        (this.state.mode === MODE_ADVANCED && newProps.satPerByte !== this.props.satPerByte) ||
-        (newProps.invalid === false && newProps.invalid !== this.props.invalid))
-    ) {
+        (this.state.mode === MODE_ADVANCED && newProps.satPerByte !== this.props.satPerByte)))
+    {
       this.handleEstimateBtcFee(
         newProps.address,
         newProps.recipient,
@@ -184,6 +189,9 @@ export default class SendTokensForm extends PureComponent {
     }
     if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', newProps.gasPriceMultiplier))
+    }
+    if (!this.props.gasLimit && this.state.gasLimit && this.props.gasLimit !== this.state.gasLimit) {
+      this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimit))
     }
   }
 
@@ -220,27 +228,44 @@ export default class SendTokensForm extends PureComponent {
 
   handleEstimateGas = (tokenId, params, feeMultiplier, address) => {
     clearTimeout(this.timeout)
-    this.setState({
-      gasFeeLoading: true,
-    }, () => {
-      this.timeout = setTimeout(() => {
-        this.props.estimateGas(tokenId, params, (error, params) => {
-          if (error) {
-            this.setState({
-              gasFeeError: true,
-            })
-          } else {
-            const { gasFee, gasPrice } = params
-            this.setState({
-              gasFee,
-              gasPrice,
-              gasFeeError: false,
-              gasFeeLoading: false,
-            })
-          }
-        }, feeMultiplier, address)
-      }, 1000)
-    })
+    if (this.state.mode === MODE_ADVANCED && this.props.gasLimit && this.props.gweiPerGas) {
+      console.log('handleEstimateGas: ', this.props.gasLimit && this.props.gweiPerGas)
+
+      this.setState((state, props) => {
+        return {
+          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas, 'gwei') * props.gasLimit, props.token.symbol()),
+          gasPrice: props.gweiPerGas,
+          gasLimit: props.gasLimit,
+          gasFeeError: false,
+          gasFeeLoading: false,
+        }
+      })
+    } else {
+      this.setState({
+        gasFeeLoading: true,
+      }, () => {
+        this.timeout = setTimeout(() => {
+          this.props.estimateGas(tokenId, params, (error, params) => {
+            if (error) {
+              this.setState({
+                gasFeeError: true,
+              })
+            } else {
+              const { gasLimit, gasFee, gasPrice } = params
+              this.setState(() => {
+                return {
+                  gasFee,
+                  gasPrice,
+                  gasLimit,
+                  gasFeeError: false,
+                  gasFeeLoading: false,
+                }
+              })
+            }
+          }, feeMultiplier, address)
+        }, 1000)
+      })
+    }
   }
 
   handleEstimateBtcFee = (address, recipient, amount, formFee) => {
@@ -363,7 +388,7 @@ export default class SendTokensForm extends PureComponent {
               <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
             </span>
           )}
-          {this.state.gasPrice && (
+          { this.state.mode === MODE_SIMPLE && this.state.gasPrice && (
             <span styleName='gwei-multiplier'>
               {` ${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
               <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />
@@ -531,6 +556,14 @@ export default class SendTokensForm extends PureComponent {
                 component={TextField}
                 name='gweiPerGas'
                 floatingLabelText={<Translate value='wallet.gweiPerGas' />}
+                fullWidth
+              />
+            </div>
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='gasLimit'
+                floatingLabelText={<Translate value='wallet.gasLimit' />}
                 fullWidth
               />
             </div>

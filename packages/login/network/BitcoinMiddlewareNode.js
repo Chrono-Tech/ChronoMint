@@ -130,7 +130,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   async getAddressUTXOS (address) {
     try {
       const res = await this._api.get(`addr/${address}/utxo`)
-      console.log('getAddressUTXOS: ', res)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
