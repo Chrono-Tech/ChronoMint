@@ -553,9 +553,7 @@ export default class AbstractContractDAO extends EventEmitter {
     }
   }
 
-  estimateGas = async (func: string, args = [], value = null): number | Object => {
-    console.log('AbstractDAO estimateGas: ', func, args, value)
-
+  estimateGas = async (func: string, args = [], value = null, account): number | Object => {
     const deployed = await this.contract
     if (!deployed.hasOwnProperty(func)) {
       throw this._error('estimateGas func not found', func)
@@ -564,13 +562,11 @@ export default class AbstractContractDAO extends EventEmitter {
     const [gasPrice, estimatedGas] = await Promise.all([
       this._web3Provider.getGasPrice(),
       deployed[func].estimateGas(...args, {
-        from: this.getAccount(),
+        from: account || this.getAccount(),
         value,
         gas: DEFAULT_GAS,
       }),
     ])
-
-    console.log('AbstractDAO estimateGas result: ', gasPrice, estimatedGas)
 
     const gasPriceBN = new BigNumber(gasPrice)
     const gasLimit = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : estimatedGas + 1

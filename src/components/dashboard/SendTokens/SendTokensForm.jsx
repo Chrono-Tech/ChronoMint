@@ -53,7 +53,7 @@ const FEE_RATE_MULTIPLIER = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriseMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier, address)),
     estimateFee: (params, callback) => dispatch(estimateBtcFee(params, callback)),
   }
 }
@@ -157,14 +157,14 @@ export default class SendTokensForm extends PureComponent {
       || (newProps.invalid === false && newProps.invalid !== this.props.invalid)
       || (this.state.mode === MODE_ADVANCED && newProps.gweiPerGas !== this.props.gweiPerGas)
     ) {
-      const { token, recipient, amount, feeMultiplier } = newProps
-      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier)
+      const { token, recipient, amount, feeMultiplier, wallet } = newProps
+      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier, wallet.address())
     }
 
     if (this.isBTCLikeBlockchain(newProps.token.blockchain()) &&
-      (this.state.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) ||
-      (this.state.mode === MODE_ADVANCED && newProps.satPerByte !== this.props.satPerByte) ||
-      (newProps.invalid === false && newProps.invalid !== this.props.invalid)
+      ((this.state.mode === MODE_SIMPLE && newProps.feeMultiplier !== this.props.feeMultiplier) ||
+        (this.state.mode === MODE_ADVANCED && newProps.satPerByte !== this.props.satPerByte) ||
+        (newProps.invalid === false && newProps.invalid !== this.props.invalid))
     ) {
       this.handleEstimateBtcFee(
         newProps.address,
@@ -218,7 +218,7 @@ export default class SendTokensForm extends PureComponent {
     })
   }
 
-  handleEstimateGas = (tokenId, params, feeMultiplier) => {
+  handleEstimateGas = (tokenId, params, feeMultiplier, address) => {
     clearTimeout(this.timeout)
     this.setState({
       gasFeeLoading: true,
@@ -238,7 +238,7 @@ export default class SendTokensForm extends PureComponent {
               gasFeeLoading: false,
             })
           }
-        }, feeMultiplier)
+        }, feeMultiplier, address)
       }, 1000)
     })
   }
@@ -512,7 +512,7 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
-        { this.state.mode === MODE_ADVANCED && this.isBTCLikeBlockchain(token) && (
+        {this.state.mode === MODE_ADVANCED && this.isBTCLikeBlockchain(token) && (
           <div styleName='advanced-mode-container'>
             <div styleName='field'>
               <Field
@@ -523,8 +523,8 @@ export default class SendTokensForm extends PureComponent {
               />
             </div>
           </div>
-        ) }
-        { this.state.mode === MODE_ADVANCED && token.blockchain() === BLOCKCHAIN_ETHEREUM && (
+        )}
+        {this.state.mode === MODE_ADVANCED && token.blockchain() === BLOCKCHAIN_ETHEREUM && (
           <div styleName='advanced-mode-container'>
             <div styleName='field'>
               <Field
@@ -535,8 +535,8 @@ export default class SendTokensForm extends PureComponent {
               />
             </div>
           </div>
-        ) }
-        { this.isTransactionFeeAvailable(token.blockchain()) &&
+        )}
+        {this.isTransactionFeeAvailable(token.blockchain()) &&
         <div styleName='transaction-fee'>
           <span styleName='title'>
             <Translate value={`${prefix}.transactionFee`} />
@@ -562,7 +562,7 @@ export default class SendTokensForm extends PureComponent {
 
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
-            { (this.isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
+            {(this.isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
               <div onTouchTap={this.handleChangeMode}>
                 <span styleName='advanced-text'>
                   <Translate value={this.state.mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple'} />

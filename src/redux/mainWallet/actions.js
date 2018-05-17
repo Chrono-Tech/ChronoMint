@@ -406,9 +406,11 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
   wallets
     .items()
     .map((wallet) => {
-      const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
-      if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {
-        lastDeriveNumbers[wallet.blockchain()] = deriveNumber
+      if (wallet.owners().items().filter((owner) => owner.address() === account).length > 0 && wallet instanceof DerivedWalletModel) {
+        const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
+        if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {
+          lastDeriveNumbers[wallet.blockchain()] = deriveNumber
+        }
       }
     })
 

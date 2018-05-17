@@ -163,13 +163,22 @@ export default class WalletWidget extends PureComponent {
   }
 
   getWalletName = () => {
+    let key = null
     if (this.isMySharedWallet()) {
-      return 'My Shared Wallet'
+      key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
-      return 'My Locked Wallet'
+      key = 'lockedWallet'
+    } else if (this.props.wallet instanceof DerivedWalletModel) {
+      if (this.props.wallet.customTokens()) {
+        key = 'customWallet'
+      } else {
+        key = 'additionalStandardWallet'
+      }
+    } else {
+      key = 'standardWallet'
     }
 
-    return 'My Wallet'
+    return <Translate value={`${prefix}.${key}`} />
   }
 
   getTokenAmountList = () => {
@@ -252,7 +261,7 @@ export default class WalletWidget extends PureComponent {
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
-              { walletInfo.tokens.length >= 3 &&
+              {walletInfo.tokens.length >= 3 &&
               <div styleName='amount-list-container'>
                 <div styleName='amount-list'>
                   <span styleName='amount-text'>{`You have ${walletInfo.tokens.length} tokens`}</span>
@@ -260,7 +269,7 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='show-all'>
                   <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
                 </div>
-              </div> }
+              </div>}
 
               {this.getTokensList().length > 1 && (
                 <div styleName='tokens-list'>
