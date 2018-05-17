@@ -168,8 +168,8 @@ export default class ERC20DAO extends AbstractTokenDAO {
       }
     }
     await Promise.all([
-      this._watch(EVENT_TRANSFER, internalCallback, { from: account }),
-      this._watch(EVENT_TRANSFER, internalCallback, { to: account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { from: accounts }),
+      this._watch(EVENT_TRANSFER, internalCallback, { to: accounts }),
     ])
   }
 

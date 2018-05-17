@@ -83,7 +83,6 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
-  const walletsAccounts = getDeriveWalletsAddresses(getState())
 
   dispatch(fetchTokenBalance(token))
   if (tokens.leftToFetch() === 0) {
@@ -96,15 +95,18 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      if (tx.from() === account || tx.to() === account) { // for main wallet
-        // TODO @dkchv: will be moved to notifications
+      const walletsAccounts = getDeriveWalletsAddresses(getState())
+
+      if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),
           symbol,
           from: tx.from(),
           to: tx.to(),
         })))
+      }
 
+      if (tx.from() === account || tx.to() === account) { // for main wallet
         // add to table
         // TODO @dkchv: !!! restore after fix
         dispatch({ type: WALLET_TRANSACTION, tx })
@@ -181,7 +183,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch([...walletsAccounts, account])
+  await tokenDAO.watch([...getDeriveWalletsAddresses(getState()), account])
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -371,7 +373,7 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   }
 }
 
-const getTokensBalances = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
+const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
 
   if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
@@ -388,6 +390,7 @@ const getTokensBalances = (address, blockchain, customTokens: Array<string>) => 
     }),
   })
 
+  await dao.watch(address)
 }
 
 export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch, getState) => {
@@ -416,17 +419,17 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddressString()
       break
     case BLOCKCHAIN_BITCOIN:
-      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
       break
     case BLOCKCHAIN_LITECOIN:
-      newDeriveNumber = lastDeriveNumbers[blockchain] ? lastDeriveNumbers[blockchain] + 1 : 0
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
       break
@@ -448,7 +451,7 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
   })
 
   dispatch({ type: MULTISIG_FETCHED, wallet })
-  dispatch(subscribeOnTokens(getTokensBalances(address, blockchain, tokens)))
+  dispatch(subscribeOnTokens(getTokensBalancesAndWatch(address, blockchain, tokens)))
 }
 
 export const resetWalletsForm = () => (dispatch) => {

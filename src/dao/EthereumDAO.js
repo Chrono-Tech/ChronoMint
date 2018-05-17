@@ -220,7 +220,11 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       const txs = block.transactions || []
       txs.forEach((tx) => {
-        if (accounts.includes(tx.from) || accounts.includes(tx.to)) {
+        const condition = Array.isArray(accounts)
+          ? accounts.includes(tx.from) || accounts.includes(tx.to)
+          : accounts === tx.from || accounts === tx.to
+
+        if (condition) {
           this.emit(FETCH_NEW_BALANCE)
           if (tx.value.toNumber() > 0) {
             this.emit(EVENT_NEW_TRANSFER, this._getTxModel(tx))
