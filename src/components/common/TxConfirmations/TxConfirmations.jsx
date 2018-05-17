@@ -8,16 +8,15 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import TxModel from 'models/TxModel'
-import TokensCollection from 'models/tokens/TokensCollection'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { TX_CONFIRMATIONS } from 'assets'
 import { DUCK_SESSION } from 'redux/session/actions'
+import { makeGetLastBlockForBlockchain } from 'redux/tokens/selectors'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
-    tokens: state.get(DUCK_TOKENS),
+    latestBlock: makeGetLastBlockForBlockchain(ownProps.transaction.symbol())(state),
     account: state.get(DUCK_SESSION).account,
   }
 }
@@ -26,7 +25,9 @@ function mapStateToProps (state) {
 export default class TxConfirmations extends PureComponent {
   static propTypes = {
     transaction: PropTypes.instanceOf(TxModel).isRequired,
-    tokens: PropTypes.instanceOf(TokensCollection),
+    latestBlock: PropTypes.shape({
+      blockNumber: PropTypes.number,
+    }),
     account: PropTypes.string,
     textMode: PropTypes.bool,
   }
@@ -51,12 +52,11 @@ export default class TxConfirmations extends PureComponent {
   }
 
   renderText () {
-    const { transaction, tokens, textMode } = this.props
-    const { blockNumber: latestBlock } = (tokens.latestBlocksForSymbol(transaction.symbol()) || {})
-    if (!latestBlock) {
-      return null
+    const { transaction, latestBlock, textMode } = this.props
+    let confirmations = 0
+    if (latestBlock && latestBlock.blockNumber) {
+      confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
     }
-    const confirmations = latestBlock - transaction.blockNumber() + 1
 
     if (textMode) {
       let remaning
@@ -70,11 +70,10 @@ export default class TxConfirmations extends PureComponent {
   }
 
   render () {
-    const { transaction, tokens, textMode } = this.props
-    const { blockNumber: latestBlock } = (tokens.latestBlocksForSymbol(transaction.symbol()) || {})
-    const confirmations = latestBlock - transaction.blockNumber() + 1
-    if (!latestBlock) {
-      return null
+    const { transaction, latestBlock, textMode } = this.props
+    let confirmations = 0
+    if (latestBlock && latestBlock.blockNumber) {
+      confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
     }
 
     return (

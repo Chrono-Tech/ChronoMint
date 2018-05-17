@@ -448,6 +448,7 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
     isFetched: true,
     deriveNumber: newDeriveNumber,
     blockchain,
+    customTokens: tokens,
   })
 
   dispatch({ type: MULTISIG_FETCHED, wallet })

@@ -17,7 +17,7 @@ import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/Tran
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTransferModal } from 'redux/ui/actions'
-import { EVENT_NEW_BLOCK } from 'dao/AbstractTokenDAO'
+import { EVENT_NEW_BLOCK } from 'dao/AbstractContractDAO'
 import Amount from 'models/Amount'
 import { ETH } from 'redux/mainWallet/actions'
 
@@ -102,7 +102,7 @@ export const initTokens = () => async (dispatch, getState) => {
 }
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
-  const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
+  const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch({ type: TOKENS_FETCHING, count: currentCount + btcLikeTokens.length })
 

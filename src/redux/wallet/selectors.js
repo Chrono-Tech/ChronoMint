@@ -357,15 +357,14 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
       if (!multisigWallets.item(addressTitle)) {
         return null
       }
-      const customTokens = multisigWallets.item(addressTitle).customTokens ? multisigWallets.item(addressTitle).customTokens() : null
+      const customTokens = multisigWallets.item(addressTitle) instanceof DerivedWalletModel ? multisigWallets.item(addressTitle).customTokens() : null
       const walletTokensAndBalanceByAddress = multisigWallets
         .item(addressTitle)
         .balances()
         .list()
+        .filter((balance) => balance.symbol() === ETH || (customTokens ? customTokens.includes(balance.symbol()) : true))
+        .filter((balance) => mainWalletTokens.item(balance.symbol()).isFetched())
         .map((balance) => {
-          if (balance.symbol() !== ETH && customTokens && !customTokens.includes(balance.symbol())) {
-            return
-          }
           const bAmount = balance.amount()
           const bSymbol = balance.symbol()
           const tAmount = convertAmountToNumber(bSymbol, bAmount)

@@ -13,8 +13,8 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
-import AbstractContractDAO, { DEFAULT_GAS, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_BLOCK, EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import AbstractContractDAO, { DEFAULT_GAS, EVENT_NEW_BLOCK, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
+import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 
 export const TX_TRANSFER = 'transfer'
 
@@ -212,7 +212,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       }
       const block = await this._web3Provider.getBlock(r, true)
 
-      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber })
+      this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
 
       const time = block.timestamp * 1000
       if (time < startTime) {
