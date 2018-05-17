@@ -18,7 +18,7 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { goToWallets } from 'redux/mainWallet/actions'
+import { getTransactionsForWallet, goToWallets } from 'redux/mainWallet/actions'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import './WalletContent.scss'
@@ -44,6 +44,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goToWallets: () => dispatch(goToWallets()),
+    getTransactions: (wallet) => dispatch(getTransactionsForWallet(wallet)),
   }
 }
 
@@ -67,7 +68,7 @@ export default class WalletContent extends Component {
       balance: PropTypes.number,
       tokens: PropTypes.array,
     }),
-
+    getTransactions: PropTypes.func,
   }
 
   constructor (props) {
@@ -75,6 +76,12 @@ export default class WalletContent extends Component {
 
     if (!props.blockchain || !props.address) {
       props.goToWallets()
+    }
+  }
+
+  componentDidMount () {
+    if (this.props.wallet instanceof DerivedWalletModel) {
+      this.props.getTransactions(this.props.wallet)
     }
   }
 

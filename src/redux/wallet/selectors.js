@@ -391,8 +391,8 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
             amountPrice: amount * tokenPrice,
           })
           accumulator.tokens = accumulator.tokens.sort((a, b) => {
-            const oA = Object.keys(a)[0]
-            const oB = Object.keys(b)[0]
+            const oA = a.symbol
+            const oB = b.symbol
             return (oA > oB) - (oA < oB)
           }) // sort by blocakchains titles (TODO: it does not effective to resort whole array each time in reduce, need better place...)
           return accumulator

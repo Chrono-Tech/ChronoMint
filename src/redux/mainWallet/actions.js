@@ -32,9 +32,9 @@ import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
-import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED } from 'redux/multisigWallet/actions'
+import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDATE } from 'redux/multisigWallet/actions'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
-import AddressesCollection from '../../models/wallet/AddressesCollection'
+import AddressesCollection from 'models/wallet/AddressesCollection'
 import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
@@ -458,4 +458,44 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
 export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
+}
+
+export const getTransactionsForWallet = (wallet) => async (dispatch, getState) => {
+  const tokens = getState().get(DUCK_TOKENS).items()
+  dispatch({ type: MULTISIG_UPDATE, wallet: wallet.transactions(wallet.transactions().isFetching(true)) })
+
+  let transactions: TransactionsCollection = wallet.transactions()
+  const offset = 0
+  const newOffset = offset + TXS_PER_PAGE
+  let newTxs = []
+  const promises = []
+  if (wallet.customTokens()) {
+    wallet.customTokens().map((symbol) => {
+      const tokenDAO = tokenService.getDAO(symbol)
+      promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+    })
+  } else {
+    for (let token: TokenModel of tokens) {
+      if (token.symbol()) {
+        const tokenDAO = tokenService.getDAO(token.id())
+        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      }
+    }
+  }
+  const result = await Promise.all(promises)
+  for (let pack of result) {
+    newTxs = [...newTxs, ...pack]
+  }
+
+  newTxs.sort((a, b) => b.get('time') - a.get('time'))
+
+  for (let tx: TxModel of newTxs) {
+    transactions = transactions.add(tx)
+  }
+
+  if (transactions.items().length < newOffset) {
+    transactions = transactions.endOfList(true)
+  }
+
+  dispatch({ type: MULTISIG_UPDATE, wallet: wallet.transactions(transactions.offset(newOffset).isFetching(false).isFetched(true)) })
 }
