@@ -13,13 +13,15 @@ export default {
     recipientAddress: 'Recipient address',
     amount: 'Amount',
     transactionFee: 'Transaction fee:',
-    transactionFeeDescription: '%{symbol} %{feeValue} (≈USD %{feeAsUSD}) %{averageFee}x of average fee.',
-    averageFee: 'of average fee',
+    averageFee: '%{multiplier}x of average fee',
+    errorFillSatPerBiteField: 'Need to fill SAT/byte field',
+    errorEstimateFee: 'An error has occur during the fee estimation',
+    errorFillAllFields: 'Need to fill all necessary fields',
     gasPrice: 'Gas Price:',
     approve: 'Approve',
     revoke: 'Revoke',
     allowance: 'Allowance',
     send: 'Send',
     timeLockedWarn: 'You select Time-locked wallet. Outgoing transfers locked until',
-  }
+  },
 }

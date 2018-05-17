@@ -42,4 +42,12 @@ export default class Amount extends BigNumber {
   div (value: number | string | BigNumber, base?: number) {
     return new Amount(super.div(value, base), this._symbol, this._isLoaded)
   }
+
+  transform () {
+    return {
+      value: this.toString(),
+      symbol: this.symbol(),
+      isLoaded: this.isLoaded(),
+    }
+  }
 }

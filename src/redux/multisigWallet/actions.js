@@ -16,11 +16,9 @@ import type TxModel from 'models/TxModel'
 import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from 'models/wallet/OwnerModel'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
-import { switchWallet } from 'redux/wallet/actions'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -126,10 +124,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       dispatch({ type: MULTISIG_FETCHING, count })
     })
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
-      if (getState().get(DUCK_MULTISIG_WALLET).size() === 1) {
-        // the last ms-wallet
-        dispatch(switchWallet(getState().get(DUCK_MAIN_WALLET)))
-      }
       dispatch({ type: MULTISIG_REMOVE, id: walletId })
     })
 }

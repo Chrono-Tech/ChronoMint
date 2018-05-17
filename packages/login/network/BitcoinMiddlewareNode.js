@@ -11,7 +11,6 @@ import { DECIMALS } from './BitcoinEngine'
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   constructor ({ feeRate, ...args }) {
     super(args)
-    console.log('BitcoinMiddlewareNode : ', args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
     this._feeRate = feeRate
     this._subscriptions = {}

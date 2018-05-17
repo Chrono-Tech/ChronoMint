@@ -4,6 +4,8 @@
  */
 
 import Web3Utils from '@chronobank/login/network/Web3Utils'
+import hdKey from 'ethereumjs-wallet/hdkey'
+import { WALLET_HD_PATH } from './mnemonicProvider'
 
 export default class EthereumEngine {
   constructor (wallet, network, url, engine) {
@@ -26,5 +28,10 @@ export default class EthereumEngine {
 
   getPrivateKey () {
     return this._wallet && this._wallet.getPrivateKey && Buffer.from(this._wallet.getPrivateKey()).toString('hex')
+  }
+
+  createNewChildAddress (deriveNumber = 0) {
+    const hdWallet = hdKey.fromMasterSeed(this._wallet.getPrivateKey())
+    return hdWallet.derivePath(`${WALLET_HD_PATH}/${deriveNumber}`).getWallet()
   }
 }

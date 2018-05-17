@@ -163,6 +163,13 @@
   flex-direction: row;
   margin-right: 40px;
   margin-left: 40px;
+  :global {
+    .SubIconForWallet_root {
+      position: absolute;
+      top: 50px;
+      left: 2px;
+    }
+  }
 }
 
 .token-icon {
@@ -170,21 +177,6 @@
   width: 100px;
   height: 100px;
   margin-top: 50px;
-}
-
-.additional-icon {
-  position: absolute;
-  top: 50px;
-  left: 2px;
-  width: 20px;
-  height: 24px;
-}
-
-.security-icon {
-  color: $button-color-2;
-  font-size: 30px;
-  background: $color-white;
-  line-height: 15px;
 }
 
 .address-title {
@@ -200,6 +192,27 @@
   font-weight: 400;
   line-height: 20px;
   text-align: left;
+}
+
+.token-amount-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.token-amount-text-container {
+  flex: 1;
+}
+
+.token-amount-text {
+  font-size: 30px;
+  line-height: 36px;
+  color: $color-primary-3;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+}
+
+.token-amount-price {
+  flex: 1;
 }
 
 .tokens-list {
@@ -292,4 +305,13 @@
   &:hover, &:hover .address-address {
     color: $color-blue-5;
   }
+}
+
+.unlockDateWrapper {
+  border-top: 1px solid $color-grey-1;
+  color: $color-grey-2;
+  font-weight: 500;
+  padding-top: 20px;
+  font-size: 14px;
+  margin: 15px 0 10px;
 }

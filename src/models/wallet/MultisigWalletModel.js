@@ -8,6 +8,7 @@ import BalancesCollection from 'models/tokens/BalancesCollection'
 import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
 
@@ -127,5 +128,9 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       ownersCount: this.owners().size(),
       requiredSignatures: this.requiredSignatures(),
     }
+  }
+
+  blockchain () {
+    return BLOCKCHAIN_ETHEREUM
   }
 }

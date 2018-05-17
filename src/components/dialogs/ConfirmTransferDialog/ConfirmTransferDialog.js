@@ -16,7 +16,7 @@ import TransferExecModel from 'models/TransferExecModel'
 import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
 
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClear } from 'redux/modals/actions'
 import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
@@ -37,7 +37,7 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps (dispatch) {
   return {
-    modalsClose: () => dispatch(modalsClose()),
+    modalsClear: () => dispatch(modalsClear()),
   }
 }
 
@@ -46,7 +46,7 @@ export default class ConfirmTransferDialog extends PureComponent {
   static propTypes = {
     confirm: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
-    modalsClose: PropTypes.func.isRequired,
+    modalsClear: PropTypes.func.isRequired,
     tx: PropTypes.instanceOf(TransferExecModel),
     // TODO @ipavlenko: Replace with redux binding when DAOs collection will be moved to the redux, use feeToken from props.tx to get DAO
     dao: PropTypes.oneOfType([
@@ -66,13 +66,13 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   handleConfirm = () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
     this.props.confirm(tx)
   }
 
   handleClose = () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
     this.props.reject(tx)
   }

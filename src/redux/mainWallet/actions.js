@@ -3,12 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { bccProvider, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
+import { bccProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { change, formValueSelector } from 'redux-form/immutable'
+import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
-import ethereumDAO from 'dao/EthereumDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import Amount from 'models/Amount'
 import ApprovalNoticeModel from 'models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from 'models/notices/TransferNoticeModel'
@@ -17,7 +20,6 @@ import TokenModel from 'models/tokens/TokenModel'
 import validator from 'models/validator'
 import AddressModel from 'models/wallet/AddressModel'
 import AllowanceModel from 'models/wallet/AllowanceModel'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import TransactionsCollection, { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import { addMarketToken } from 'redux/market/action'
 import { notify, notifyError } from 'redux/notifier/actions'
@@ -28,8 +30,15 @@ import type TxModel from 'models/TxModel'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDATE } from 'redux/multisigWallet/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import AddressesCollection from 'models/wallet/AddressesCollection'
+import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
+export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 
 // TODO @ipavlenko: Odd code, remove WALLET_BALANCE
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
@@ -51,6 +60,26 @@ export const BTG = 'BTG'
 export const LTC = 'LTC'
 export const XEM = 'XEM'
 
+export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
+
+export const goBackForAddWalletsForm = () => (dispatch, getState) => {
+  const selector = formValueSelector(FORM_ADD_NEW_WALLET)
+  const state = getState()
+  let blockchain = selector(state, 'blockchain')
+  let ethWalletType = selector(state, 'ethWalletType')
+
+  if (ethWalletType) {
+    dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
+    return
+  }
+
+  if (blockchain) {
+    dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
+    return
+  }
+  history.goBack()
+}
+
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const { account } = getState().get(DUCK_SESSION)
   const tokens = getState().get(DUCK_TOKENS)
@@ -66,30 +95,62 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      // TODO @dkchv: will be moved to notifications
-      dispatch(notify(new TransferNoticeModel({
-        value: token.removeDecimals(tx.value()),
-        symbol,
-        from: tx.from(),
-        to: tx.to(),
-        credited: tx.isCredited(),
-      })))
+      const walletsAccounts = getDeriveWalletsAddresses(getState())
 
-      // add to table
-      // TODO @dkchv: !!! restore after fix
-      dispatch({ type: WALLET_TRANSACTION, tx })
-      if (!(tx.from() === account || tx.to() === account)) {
-        return
+      if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
+        dispatch(notify(new TransferNoticeModel({
+          value: token.removeDecimals(tx.value()),
+          symbol,
+          from: tx.from(),
+          to: tx.to(),
+        })))
       }
-      // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
-      if (!tokenDAO.hasBalancesStream()) {
-        // update balance
-        dispatch(fetchTokenBalance(token))
+
+      if (tx.from() === account || tx.to() === account) { // for main wallet
+        // add to table
+        // TODO @dkchv: !!! restore after fix
+        dispatch({ type: WALLET_TRANSACTION, tx })
+        if (!(tx.from() === account || tx.to() === account)) {
+          return
+        }
+        // No need to update balance manually for tokens with balance stream support, see EVENT_UPDATE_BALANCE
+        if (!tokenDAO.hasBalancesStream()) {
+          // update balance
+          dispatch(fetchTokenBalance(token))
+        }
+        // update donator
+        if (tx.from() === assetDonatorDAO.getInitAddress()) {
+          dispatch(updateIsTIMERequired())
+        }
       }
-      // update donator
-      if (tx.from() === assetDonatorDAO.getInitAddress()) {
-        dispatch(updateIsTIMERequired())
+
+      if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
+        const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
+        const callback = async (wallet: DerivedWalletModel) => {
+
+          dispatch({ type: MULTISIG_FETCHED, wallet: wallet.transactions(wallet.transactions().add(tx)) })
+
+          const dao = tokenService.getDAO(token)
+          const balance = await dao.getAccountBalance(wallet.address())
+          dispatch({
+            type: MULTISIG_BALANCE,
+            walletId: wallet.address(),
+            balance: new BalanceModel({
+              id: token.id(),
+              amount: new Amount(balance, token.symbol(), true),
+            }),
+          })
+        }
+
+        if (walletFrom && walletFrom.isFetched()) {
+          callback(walletFrom)
+        }
+        const walletTo = getState().get(DUCK_MULTISIG_WALLET).item(tx.to())
+        if (walletTo && walletTo.isFetched()) {
+          callback(walletTo)
+        }
       }
+
     })
     .on(FETCH_NEW_BALANCE, () => {
       dispatch(fetchTokenBalance(token))
@@ -122,7 +183,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch(account)
+  await tokenDAO.watch([...getDeriveWalletsAddresses(getState()), account])
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -171,11 +232,12 @@ export const initMainWallet = () => async (dispatch, getState) => {
 
 }
 
-export const mainTransfer = (token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
   try {
-    const wallet: MainWalletModel = getState().get(DUCK_MAIN_WALLET)
+    const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
-    await tokenDAO.transfer(wallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier)
+    let deriveNumber = wallet.deriveNumber && wallet.deriveNumber()
+    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }
@@ -249,7 +311,7 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
     }
     const result = await Promise.all(promises)
     for (let pack of result) {
-      newTxs = [ ...newTxs, ...pack ]
+      newTxs = [...newTxs, ...pack]
     }
 
     newTxs.sort((a, b) => b.get('time') - a.get('time'))
@@ -309,4 +371,133 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   } catch (e) {
     callback(e)
   }
+}
+
+const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
+
+  if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
+    return null
+  }
+
+  const dao = tokenService.getDAO(token)
+  const balance = await dao.getAccountBalance(address)
+  dispatch({
+    type: MULTISIG_BALANCE,
+    walletId: address,
+    balance: new BalanceModel({
+      id: token.id(),
+      amount: new Amount(balance, token.symbol(), true),
+    }),
+  })
+
+  await dao.watch(address)
+}
+
+export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch, getState) => {
+  const account = getState().get(DUCK_SESSION).account
+  const wallets = getState().get(DUCK_MULTISIG_WALLET)
+  let ownersCollection = new OwnerCollection()
+  ownersCollection = ownersCollection.update(new OwnerModel({
+    address: account,
+    isSelf: true,
+  }))
+
+  let lastDeriveNumbers = {}
+  wallets
+    .items()
+    .map((wallet) => {
+      if (wallet.owners().items().filter((owner) => owner.address() === account).length > 0 && wallet instanceof DerivedWalletModel) {
+        const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
+        if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {
+          lastDeriveNumbers[wallet.blockchain()] = deriveNumber
+        }
+      }
+    })
+
+  let wallet
+  let newDeriveNumber
+  let newWallet
+  let address
+
+  switch (blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
+      address = newWallet.getAddressString()
+      break
+    case BLOCKCHAIN_BITCOIN:
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      address = newWallet.getAddress()
+      break
+    case BLOCKCHAIN_LITECOIN:
+      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      address = newWallet.getAddress()
+      break
+    case 'Bitcoin Gold':
+    case 'NEM':
+    default:
+      return null
+  }
+
+  wallet = new DerivedWalletModel({
+    address,
+    addresses: new AddressesCollection()
+      .add(new AddressModel({ id: blockchain, address })),
+    owners: ownersCollection,
+    isMultisig: false,
+    isFetched: true,
+    deriveNumber: newDeriveNumber,
+    blockchain,
+    customTokens: tokens,
+  })
+
+  dispatch({ type: MULTISIG_FETCHED, wallet })
+  dispatch(subscribeOnTokens(getTokensBalancesAndWatch(address, blockchain, tokens)))
+}
+
+export const resetWalletsForm = () => (dispatch) => {
+  dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
+  dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
+}
+
+export const getTransactionsForWallet = (wallet) => async (dispatch, getState) => {
+  const tokens = getState().get(DUCK_TOKENS).items()
+  dispatch({ type: MULTISIG_UPDATE, wallet: wallet.transactions(wallet.transactions().isFetching(true)) })
+
+  let transactions: TransactionsCollection = wallet.transactions()
+  const offset = 0
+  const newOffset = offset + TXS_PER_PAGE
+  let newTxs = []
+  const promises = []
+  if (wallet.customTokens()) {
+    wallet.customTokens().map((symbol) => {
+      const tokenDAO = tokenService.getDAO(symbol)
+      promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+    })
+  } else {
+    for (let token: TokenModel of tokens) {
+      if (token.symbol()) {
+        const tokenDAO = tokenService.getDAO(token.id())
+        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      }
+    }
+  }
+  const result = await Promise.all(promises)
+  for (let pack of result) {
+    newTxs = [...newTxs, ...pack]
+  }
+
+  newTxs.sort((a, b) => b.get('time') - a.get('time'))
+
+  for (let tx: TxModel of newTxs) {
+    transactions = transactions.add(tx)
+  }
+
+  if (transactions.items().length < newOffset) {
+    transactions = transactions.endOfList(true)
+  }
+
+  dispatch({ type: MULTISIG_UPDATE, wallet: wallet.transactions(transactions.offset(newOffset).isFetching(false).isFetched(true)) })
 }

@@ -137,7 +137,7 @@ describe('Exchange tests', () => {
     const token = tokens.getBySymbol('TIME')
     const address = exchange.address()
 
-    await store.dispatch(mainTransfer(token, '10', address))
+    await store.dispatch(mainTransfer(null, token, '10', address))
 
     const testMock = mock.set(a.DUCK_EXCHANGE, new ExchangeModel({ tokens }))
     store = mockStore(testMock)

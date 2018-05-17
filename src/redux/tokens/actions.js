@@ -3,7 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
@@ -16,7 +18,7 @@ import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/Tran
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTransferModal } from 'redux/ui/actions'
-import { EVENT_NEW_BLOCK } from 'dao/AbstractTokenDAO'
+import { EVENT_NEW_BLOCK } from 'dao/AbstractContractDAO'
 import Amount from 'models/Amount'
 import { ETH } from 'redux/mainWallet/actions'
 
@@ -101,7 +103,7 @@ export const initTokens = () => async (dispatch, getState) => {
 }
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
-  const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
+  const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch({ type: TOKENS_FETCHING, count: currentCount + btcLikeTokens.length })
 
@@ -184,15 +186,26 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = async (tokenId, params, callback, gasPriseMultiplier = 1) => {
+export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
+  const [to, amount, func] = params
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao._estimateGas(...params)
+    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(amount), address)
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
       gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
     })
+  } catch (e) {
+    callback(e)
+  }
+}
+
+export const estimateBtcFee = (params, callback) => async (dispatch) => {
+  try {
+    const { address, recipient, amount, formFee } = params
+    const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+    callback(null, { fee: fee })
   } catch (e) {
     callback(e)
   }

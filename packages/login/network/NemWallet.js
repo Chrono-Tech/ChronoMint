@@ -27,8 +27,14 @@ export default class NemWallet {
     return this._keyPair.sign(data)
   }
 
-  static fromPrivateKey (hex, network) {
-    return new NemWallet(hex, nem.crypto.keyPair.create(hex), network)
+  static fromPrivateKey (original, network) {
+    if (original.length > 64) {
+      const part1 = Buffer.from(original.substr(0, 64), 'hex')
+      const part2 = Buffer.from(original.substr(64, 64), 'hex')
+      const hex = xor(part1, part2).toString('hex')
+      return new NemWallet(hex, nem.crypto.keyPair.create(hex), network)
+    }
+    return new NemWallet(original, nem.crypto.keyPair.create(original), network)
   }
 
   static fromMnemonic (mnemonic, network) {

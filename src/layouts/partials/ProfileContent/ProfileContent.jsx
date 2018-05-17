@@ -11,7 +11,7 @@ import ProfileModel from 'models/ProfileModel'
 import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
-import { getProfileTokensList } from 'redux/session/selectors'
+import { getBlockchainAddressesList } from 'redux/session/selectors'
 import { FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
@@ -29,7 +29,7 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     networkName: networkService.getName(),
-    tokens: getProfileTokensList()(state),
+    tokens: getBlockchainAddressesList()(state),
   }
 }
 

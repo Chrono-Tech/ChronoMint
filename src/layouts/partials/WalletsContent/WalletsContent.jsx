@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import './WalletsContent.scss'
 
 const mapStateToProps = (state, ownProps) => {
@@ -16,8 +17,7 @@ const mapStateToProps = (state, ownProps) => {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {
-  }
+  return {}
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -30,6 +30,7 @@ export default class WalletsContent extends Component {
         wallet: PropTypes.oneOfType([
           PropTypes.instanceOf(MainWalletModel),
           PropTypes.instanceOf(MultisigWalletModel),
+          PropTypes.instanceOf(DerivedWalletModel),
         ]),
       }),
     ),
@@ -39,9 +40,10 @@ export default class WalletsContent extends Component {
     return (
       <div styleName='root'>
         {this.props.walletsList.map((walletGroup) => (
-          <div key={walletGroup.title}>
-            {walletGroup.data.map((wallet) => (
+          <div key={walletGroup.title} id={walletGroup.title}>
+            {walletGroup.data.map((wallet, index) => (
               <WalletWidget
+                showGroupTitle={!index}
                 key={`${walletGroup.title}-${wallet.address}`}
                 blockchain={walletGroup.title}
                 address={wallet.address}

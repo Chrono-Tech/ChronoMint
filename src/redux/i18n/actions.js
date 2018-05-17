@@ -1,4 +1,4 @@
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
+import { loadTranslations, setLocale } from 'platform/i18n'
 import { merge } from 'lodash'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 
@@ -11,11 +11,12 @@ export const loadI18n = (locale) => async (dispatch, getState) => {
 
   if (translations) {
     // filter all empty objects '{}'
-    const translationsFiltered = {};
+    const translationsFiltered = {}
     Object.entries(translations).filter((t) => {
       return typeof t[1] === 'object' && Object.keys(t[1]).length
     }).map((t) => translationsFiltered[t[0]] = t[1])
 
+    // i18nJson is global object getting from ./i18nJson.js file
     dispatch(loadTranslations(merge({}, currentI18n.translations, translationsFiltered, i18nJson)))
   }
 

@@ -16,7 +16,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import GasSlider from 'components/common/GasSlider/GasSlider'
@@ -35,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps (dispatch) {
   return {
+    modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     handleUpdateTx: (tx) => dispatch({ type: WATCHER_TX_SET, tx }),
   }
@@ -45,6 +46,7 @@ export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     localFeeMultiplier: PropTypes.number,
     callback: PropTypes.func.isRequired,
+    modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.instanceOf(TxExecModel),
@@ -82,7 +84,7 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   handleConfirm = () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     this.props.callback(true, this.props.tx)
   }
 

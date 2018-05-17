@@ -16,7 +16,7 @@ export const getTokens = (state) => {
 }
 
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
-  [ getTokens ],
+  [getTokens],
   (tokens) => {
     switch (blockchain) {
       case BLOCKCHAIN_BITCOIN:
@@ -36,7 +36,7 @@ export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
 )
 
 export const getTokensForBlockchain = (blockchain) => createSelector(
-  [ getTokens ],
+  [getTokens],
   (tokens) => {
     return tokens
       .filter((token) => token.blockchain() === blockchain)
@@ -44,3 +44,19 @@ export const getTokensForBlockchain = (blockchain) => createSelector(
       .toArray()
   },
 )
+
+export const makeGetLastBlockForBlockchain = (symbol) => {
+  return createSelector(
+    [
+      getTokens,
+    ],
+    (
+      tokens,
+    ) => {
+      if (!symbol) {
+        return null
+      }
+      return tokens.latestBlocks()[tokens.item(symbol).blockchain()]
+    },
+  )
+}
