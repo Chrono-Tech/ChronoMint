@@ -9,8 +9,8 @@ import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
 import HDWalletProvider from './HDWalletProvider'
 
 export default class Web3Utils {
-  static createEngine (wallet, providerUrl) {
-    return new HDWalletProvider(wallet, providerUrl, 0, 100)
+  static createEngine (wallet, providerUrl, deriveNumber) {
+    return new HDWalletProvider(wallet, providerUrl, 0, deriveNumber)
   }
 
   static createStatusEngine (providerUrl) {

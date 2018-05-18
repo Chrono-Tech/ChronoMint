@@ -92,11 +92,11 @@ export default class TransactionsTable extends PureComponent {
   }
 
   render () {
-    const { transactions, locale } = this.props
+    const { transactions, locale, walletAddress } = this.props
     const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
-    const data = buildTableData(transactions, locale)
+    const data = buildTableData(transactions, locale, walletAddress)
 
     return (
       <div styleName='root' className='TransactionsTable__root'>
@@ -153,9 +153,11 @@ export default class TransactionsTable extends PureComponent {
   }
 }
 
-function buildTableData (transactions, locale) {
+function buildTableData (transactions, locale, address) {
   moment.locale(locale)
-  const groups = transactions.items()
+  const groups = transactions
+    .items()
+    .filter((tx) => tx.from() === address || tx.to() === address)
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {
