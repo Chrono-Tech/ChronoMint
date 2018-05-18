@@ -8,10 +8,10 @@ import hdKey from 'ethereumjs-wallet/hdkey'
 import { WALLET_HD_PATH } from './mnemonicProvider'
 
 export default class EthereumEngine {
-  constructor (wallet, network, url, engine) {
+  constructor (wallet, network, url, engine, deriveNumber) {
     this._wallet = wallet
     this._network = network
-    this._engine = engine || Web3Utils.createEngine(wallet, url)
+    this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
 
   getNetwork () {

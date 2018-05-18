@@ -10,7 +10,6 @@ import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
 import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import { loginLedger } from '@chronobank/login/redux/ledger/actions'
 import { addError, clearErrors, loading } from '@chronobank/login/redux/network/actions'
 import { loginTrezor } from '@chronobank/login/redux/trezor/actions'
@@ -157,6 +156,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, networkService.getProviderSettings())
+    networkService.selectAccount(provider.ethereum.getAddress())
     this.setupAndLogin(provider)
   }
 
@@ -165,6 +165,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings())
+      networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -211,6 +212,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const provider = walletProvider.getProvider(wallet, password, networkService.getProviderSettings())
+      networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -271,7 +273,7 @@ class LoginWithOptions extends PureComponent {
 
   renderStep (step) {
     const renderer = `render${pascalCase(step)}`
-    return this[ renderer ] ? this[ renderer ]() : null
+    return this[renderer] ? this[renderer]() : null
   }
 
   renderStepSelectOption () {
