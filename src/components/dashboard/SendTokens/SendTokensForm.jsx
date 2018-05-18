@@ -12,6 +12,7 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { TX_TRANSFER } from "dao/ERC20DAO"
 import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
 import Immutable from 'immutable'
@@ -164,7 +165,7 @@ export default class SendTokensForm extends PureComponent {
       || (this.state.mode === MODE_ADVANCED && newProps.gweiPerGas !== this.props.gweiPerGas)
     ) {
       const { token, recipient, amount, feeMultiplier, wallet } = newProps
-      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), 'transfer'], feeMultiplier, wallet.address())
+      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), TX_TRANSFER], feeMultiplier, wallet.address())
     }
 
     if (this.isBTCLikeBlockchain(newProps.token.blockchain()) && !newProps.invalid && !newProps.pristine &&

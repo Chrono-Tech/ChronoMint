@@ -237,7 +237,7 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
     const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
     let deriveNumber = wallet.deriveNumber && wallet.deriveNumber()
-    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber, advacnedModeParams)
+    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, advacnedModeParams)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }

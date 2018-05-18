@@ -23,6 +23,7 @@ class TxExecModel extends abstractModel({
   params: null,
   gasLimit: null,
   gasPrice: null,
+  options: {},
 }) {
   constructor (data) {
     super({
@@ -37,6 +38,15 @@ class TxExecModel extends abstractModel({
 
   params (value) {
     return this._getSet('params', value)
+  }
+
+  options (options) {
+    return this._getSet('options', options)
+  }
+
+  isAdvancedFeeMode () {
+    const options = this.get('options')
+    return typeof options.advancedParams === 'object'
   }
 
   time () {

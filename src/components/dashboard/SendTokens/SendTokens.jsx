@@ -64,7 +64,12 @@ export default class SendTokens extends PureComponent {
 
     const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, gasLimit } = values.toJS()
     const token = tokens.item(symbol)
-    const advancedModeParams = { gweiPerGas: new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei')), gasLimit }
+    const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
+    const advancedModeParams = {
+      gweiPerGas: gweiPerGasBN,
+      gasLimit,
+      gasFee: gweiPerGasBN.mul(gasLimit),
+    }
 
     const value = new Amount(token.addDecimals(amount), symbol)
 

@@ -121,7 +121,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, deriveNumber, advancedModeParam): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, advancedModeParam): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -148,8 +148,12 @@ export class EthereumDAO extends AbstractTokenDAO {
       params: {
         to,
       },
+      options: {
+        advancedParams:  advancedModeParam,
+      },
     })
     AbstractContractDAO.txGas(tx)
+    console.log('TX ETHEREUM DAO: ', tx)
 
     return new Promise(async (resolve, reject) => {
       try {
