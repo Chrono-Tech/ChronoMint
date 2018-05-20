@@ -25,7 +25,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
-import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, getFormValues, reduxForm } from 'redux-form/immutable'
 import { getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
@@ -64,6 +64,7 @@ function mapStateToProps (state, ownProps) {
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
   const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
+  const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
   const tokenId = walletInfo.tokens.some((token) => token.symbol === symbol) ? symbol : walletInfo.tokens[0].symbol
   const tokenInfo = walletInfo.tokens.find((token) => token.symbol === tokenId)
@@ -87,6 +88,7 @@ function mapStateToProps (state, ownProps) {
     walletInfo,
     recipient,
     symbol,
+    formValues: (formValues(state) && JSON.stringify(formValues(state).toJSON())) || null,
     feeMultiplier,
     satPerByte,
     gasLimit,
@@ -138,6 +140,7 @@ export default class SendTokensForm extends PureComponent {
       gasFee: null,
       gasPrice: null,
       gasLimit: null,
+      gasLimitEstimated: null,
       gasFeeError: false,
       gasFeeLoading: false,
     }
@@ -159,11 +162,7 @@ export default class SendTokensForm extends PureComponent {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
 
-    if ((newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.feeMultiplier !== this.props.feeMultiplier)
-      || newProps.token.symbol() !== this.props.token.symbol()
-      || (newProps.invalid === false && newProps.invalid !== this.props.invalid)
-      || (this.state.mode === MODE_ADVANCED && newProps.gweiPerGas !== this.props.gweiPerGas)
-    ) {
+    if (newProps.formValues !== this.props.formValues || newProps.mode !== this.props.mode) {
       const { token, recipient, amount, feeMultiplier, wallet } = newProps
       this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), TX_TRANSFER], feeMultiplier, wallet.address())
     }
@@ -229,14 +228,17 @@ export default class SendTokensForm extends PureComponent {
 
   handleEstimateGas = (tokenId, params, feeMultiplier, address) => {
     clearTimeout(this.timeout)
-    if (this.state.mode === MODE_ADVANCED && this.props.gasLimit && this.props.gweiPerGas) {
-      console.log('handleEstimateGas: ', this.props.gasLimit && this.props.gweiPerGas)
+    console.log('VALUES: ', this.props.values)
+    console.log('(this.props.gasLimit || this.state.gasLimitEstimated) && this.props.gweiPerGas: ', (this.props.gasLimit || this.state.gasLimitEstimated) , this.props.gweiPerGas)
+    if (this.state.mode === MODE_ADVANCED && (this.props.gasLimit || this.state.gasLimitEstimated) && this.props.gweiPerGas) {
 
       this.setState((state, props) => {
+        const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
+        console.log('customGasLimit: ', customGasLimit, props)
         return {
-          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas, 'gwei') * props.gasLimit, props.token.symbol()),
+          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, props.token.symbol()),
           gasPrice: props.gweiPerGas,
-          gasLimit: props.gasLimit,
+          // gasLimit: props.gasLimit,
           gasFeeError: false,
           gasFeeLoading: false,
         }
@@ -257,7 +259,7 @@ export default class SendTokensForm extends PureComponent {
                 return {
                   gasFee,
                   gasPrice,
-                  gasLimit,
+                  gasLimitEstimated: gasLimit,
                   gasFeeError: false,
                   gasFeeLoading: false,
                 }
