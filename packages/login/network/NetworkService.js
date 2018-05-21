@@ -187,6 +187,7 @@ class NetworkService extends EventEmitter {
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
 
+    await this.loadAccounts()
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
     btcProvider.setEngine(btc)
