@@ -15,5 +15,10 @@ export default {
     ownersTitle: '%{count} Owners',
     pending: '%{count} pending',
     unlockDate: 'Unlocks on ',
+    sharedWallet: 'My Shared Wallet',
+    lockedWallet: 'My Locked Wallet',
+    customWallet: 'My custom Wallet',
+    additionalStandardWallet: 'My additional standard Wallet',
+    standardWallet: 'My Wallet',
   },
 }

@@ -29,7 +29,7 @@ const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistor
 const getNestedReducers = (ducks) => {
   let reducers = {}
   Object.keys(ducks).forEach((r) => {
-    reducers = { ...reducers, ...(typeof (ducks[ r ]) === 'function' ? { [ r ]: ducks[ r ] } : getNestedReducers(ducks[ r ])) }
+    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
   })
   return reducers
 }
@@ -82,9 +82,13 @@ const configureStore = () => {
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
+      const mainWalletsState = state.get('mainWallet')
       const walletsState = state.get('multisigWallet')
       state = new Immutable.Map()
-      state = state.set('i18n', i18nState).set('multisigWallet', walletsState)
+      state = state
+        .set('i18n', i18nState)
+        .set('multisigWallet', walletsState)
+        .set('mainWallet', mainWalletsState)
     }
     return appReducer(state, action)
   }
@@ -113,8 +117,8 @@ export const store = configureStore()
 store.dispatch(globalWatcher())
 
 const persistorConfig = {
-  whitelist: [ 'multisigWallet' ],
-  transforms: [ transformer() ],
+  whitelist: ['multisigWallet', 'mainWallet'],
+  transforms: [transformer()],
 }
 store.__persistor = persistStore(store, persistorConfig)
 

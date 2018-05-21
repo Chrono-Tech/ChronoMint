@@ -11,6 +11,7 @@ import OwnerCollection from './OwnerCollection'
 import AddressesCollection from './AddressesCollection'
 
 export default class DerivedWalletModel extends abstractFetchingModel({
+  name: null,
   address: null, //
   balances: new BalancesCollection(),
   tokens: new Immutable.Map(), //
@@ -24,6 +25,10 @@ export default class DerivedWalletModel extends abstractFetchingModel({
 }) {
   id () {
     return this.get('address')
+  }
+
+  name (value) {
+    return this._getSet('name', value)
   }
 
   address () {

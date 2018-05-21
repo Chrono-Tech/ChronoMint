@@ -4,12 +4,17 @@
  */
 
 import MainWalletModel from 'models/wallet/MainWalletModel'
+import { REHYDRATE } from 'redux-persist'
 import * as a from './actions'
 
 const initialState = new MainWalletModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case REHYDRATE:
+      const incoming = action.payload.mainWallet
+      if (incoming && incoming instanceof MainWalletModel) return state.names(incoming.names())
+      return state
     case a.WALLET_INIT:
       return state.isInited(action.isInited)
     case a.WALLET_BALANCE: // TODO @ipavlenko: Odd code, remove WALLET_BALANCE
@@ -32,6 +37,8 @@ export default (state = initialState, action) => {
       return state.balances(state.balances().update(
         action.balance,
       ))
+    case a.WALLET_SET_NAME:
+      return state.names(state.names().set(`${action.blockchain}-${action.address}`, action.name))
     default:
       return state
   }
