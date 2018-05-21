@@ -59,16 +59,22 @@ export default class SendTokens extends PureComponent {
     address: PropTypes.string,
   }
 
-  handleSubmit = (values) => {
+  handleSubmit = (values, options = {}) => {
     const { wallet, tokens } = this.props
 
+    console.log('handleSubmit options: ', values, options)
+
     const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, gasLimit } = values.toJS()
+    let advancedModeParams = undefined
+
     const token = tokens.item(symbol)
-    const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
-    const advancedModeParams = {
-      gweiPerGas: gweiPerGasBN,
-      gasLimit,
-      gasFee: gweiPerGasBN.mul(gasLimit),
+    if (options.advacnedMode) {
+      const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
+      advancedModeParams = {
+        gweiPerGas: gweiPerGasBN,
+        gasLimit,
+        gasFee: gweiPerGasBN.mul(gasLimit),
+      }
     }
 
     const value = new Amount(token.addDecimals(amount), symbol)
@@ -79,7 +85,7 @@ export default class SendTokens extends PureComponent {
         break
       case ACTION_TRANSFER:
         wallet.isMultisig()
-          ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier)
+          ? this.props.multisigTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
           : this.props.mainTransfer(wallet, token, value, recipient, feeMultiplier, advancedModeParams)
     }
   }

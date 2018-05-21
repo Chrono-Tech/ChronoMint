@@ -35,8 +35,6 @@ export const txHandlingFlow = () => (dispatch) => {
   AbstractContractDAO.txStart = async (tx: TxExecModel, estimateGas, localFeeMultiplier) => {
     dispatch({ type: WATCHER_TX_SET, tx })
 
-    console.log('txHandlingFlow: ', tx)
-
     const { isConfirmed, updatedTx } = await dispatch(showConfirmTxModal(estimateGas, localFeeMultiplier))
     if (!isConfirmed) {
       throw new TxError('Cancelled by user from custom tx confirmation modal', TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED)

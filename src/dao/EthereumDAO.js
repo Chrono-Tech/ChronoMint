@@ -114,7 +114,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       this._web3Provider.getGasPrice(),
       this._web3Provider.estimateGas({ to, value }),
     ])
-    console.log('_estimateGas: ', gasPrice.toString(), gasLimit)
     const gasPriceBN = new BigNumber(gasPrice)
     const gasFee = gasPriceBN.mul(gasLimit)
 
@@ -128,6 +127,8 @@ export class EthereumDAO extends AbstractTokenDAO {
       to,
       value,
     }
+
+    console.log('transfer advancedModeParam: ', advancedModeParam)
 
     /** ESTIMATE GAS */
     const estimateGastransfer = (func, args, value) => {
@@ -153,7 +154,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       },
     })
     AbstractContractDAO.txGas(tx)
-    console.log('TX ETHEREUM DAO: ', tx)
 
     return new Promise(async (resolve, reject) => {
       try {
@@ -199,7 +199,6 @@ export class EthereumDAO extends AbstractTokenDAO {
 
         txHash = await this._web3Provider.sendTransaction(txData)
         tx = tx.set('hash', txHash)
-        console.log('txHash: ', txHash, tx)
       } catch (e) {
         const error = this._txErrorDefiner(e)
         if (e.code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {

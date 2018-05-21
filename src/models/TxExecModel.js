@@ -46,6 +46,7 @@ class TxExecModel extends abstractModel({
 
   isAdvancedFeeMode () {
     const options = this.get('options')
+    console.log('isAdvancedFeeMode: ', options)
     return typeof options.advancedParams === 'object'
   }
 
