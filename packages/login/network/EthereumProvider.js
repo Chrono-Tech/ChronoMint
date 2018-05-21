@@ -3,9 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Web3 from 'web3'
 import networkService from './NetworkService'
-import networkProvider, { byEthereumNetwork } from './NetworkProvider'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
@@ -85,15 +83,12 @@ export class EthereumProvider extends AbstractProvider {
 
   addNewEthWallet (num_addresses) {
     const { network, url } = networkService.getProviderSettings()
-    const wallet = ethereumProvider.getWallet()
+    const wallet = this.getWallet()
     const newEngine = new EthereumEngine(wallet, network, url, null, num_addresses)
 
-    const web3 = new Web3()
+    this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
-    web3Provider.reinit(web3, newEngine.getProvider())
-    networkProvider.setNetworkCode(byEthereumNetwork(network))
-
-    ethereumProvider.setEngine(newEngine, ethereumProvider.getNemEngine())
+    web3Provider.pushWallet(num_addresses)
   }
 }
 

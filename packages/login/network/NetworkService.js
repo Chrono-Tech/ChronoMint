@@ -171,14 +171,14 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  async restoreLocalSession (account) {
+  async restoreLocalSession (account, wallets) {
     this.selectProvider(LOCAL_PROVIDER_ID)
     this.selectNetwork(LOCAL_ID)
     const accounts = await this.loadAccounts()
     this.selectAccount(account)
 
     const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings())
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
     await this.setup(provider)
   }
 

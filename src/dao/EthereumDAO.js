@@ -4,11 +4,7 @@
  */
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import BigNumber from 'bignumber.js'
-import networkService from '@chronobank/login/network/NetworkService'
-import Web3 from 'web3'
-import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'

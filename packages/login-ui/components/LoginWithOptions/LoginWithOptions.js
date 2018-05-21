@@ -115,6 +115,7 @@ class LoginOption extends PureComponent {
 }
 
 const mapStateToProps = (state) => ({
+  wallets: state.get('multisigWallet'),
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
   isLocal: state.get('network').isLocal,
@@ -164,7 +165,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings(), this.props.wallets)
       networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
@@ -176,7 +177,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const index = Math.max(this.props.accounts.indexOf(account), 0)
-      const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings(), this.props.wallets)
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
