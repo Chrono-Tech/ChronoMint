@@ -5,7 +5,6 @@
 
 import { bccProvider, BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN, btcProvider, btgProvider, ltcProvider } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import networkService from '@chronobank/login/network/NetworkService'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -37,7 +36,6 @@ import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDA
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import AddressesCollection from 'models/wallet/AddressesCollection'
 import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
-import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
