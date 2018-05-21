@@ -187,7 +187,6 @@ export default class SendTokensForm extends PureComponent {
       newProps.feeMultiplier !== this.props.feeMultiplier) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'gweiPerGas', this.getFormFee(newProps)))
     }
-    console.log('gasPriceMultiplier props: ', newProps)
     if (newProps.gasPriceMultiplier !== this.props.gasPriceMultiplier && newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'feeMultiplier', newProps.gasPriceMultiplier))
     }
@@ -227,14 +226,9 @@ export default class SendTokensForm extends PureComponent {
   handleChangeMode = () => {
     this.setState({
       mode: this.state.mode === MODE_SIMPLE ? MODE_ADVANCED : MODE_SIMPLE,
-    }, (state) => {
-      console.log('state: ', state)
-      this.handleEstimateBtcFee(
-        this.props.address,
-        this.props.recipient,
-        new Amount(this.props.amount, this.props.token.symbol()),
-        this.getFormFee(),
-      )
+    }, () => {
+      const { token, recipient, amount, feeMultiplier, wallet } = this.props
+      this.handleEstimateGas(token.symbol(), [recipient, new Amount(amount, token.symbol()), TX_TRANSFER], feeMultiplier, wallet.address())
     })
   }
 
@@ -404,8 +398,7 @@ export default class SendTokensForm extends PureComponent {
           )}
           { this.state.mode === MODE_SIMPLE && this.state.gasPrice && (
             <span styleName='gwei-multiplier'>
-              {` ${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
-              <Translate value={`${prefix}.multiplier`} multiplier={this.props.feeMultiplier} />
+              <Translate value={`${prefix}.averageFee`} multiplier={this.props.feeMultiplier} />
             </span>
           )}
         </span>)

@@ -191,7 +191,6 @@ export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, a
   const [to, amount, func] = params
   try {
     const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(amount), address)
-    console.log('estimateGas actions: ', gasLimit, gasFee, gasPrice)
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), tokenId),

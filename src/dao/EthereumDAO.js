@@ -128,8 +128,6 @@ export class EthereumDAO extends AbstractTokenDAO {
       value,
     }
 
-    console.log('transfer advancedModeParam: ', advancedModeParam)
-
     /** ESTIMATE GAS */
     const estimateGastransfer = (func, args, value) => {
       return this._estimateGas(args.to, value)
