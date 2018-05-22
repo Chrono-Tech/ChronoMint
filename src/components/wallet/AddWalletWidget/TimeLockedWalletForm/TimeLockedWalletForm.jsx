@@ -5,6 +5,7 @@
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { DatePicker, TextField, TimePicker } from 'redux-form-material-ui'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import PropTypes from 'prop-types'
@@ -14,7 +15,6 @@ import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { DatePicker, TimePicker } from 'redux-form-material-ui'
 import { prefix } from './lang'
 import './TimeLockedWalletForm.scss'
 
@@ -94,14 +94,14 @@ export default class TimeLockedWalletForm extends PureComponent {
     return (
       <form styleName='root' onSubmit={handleSubmit}>
         <div styleName='body'>
-          {/*<div styleName='block'>*/}
-          {/*<Field*/}
-          {/*component={TextField}*/}
-          {/*name='name'*/}
-          {/*fullWidth*/}
-          {/*floatingLabelText={<Translate value={`${prefix}.name`} />}*/}
-          {/*/>*/}
-          {/*</div>*/}
+          <div styleName='block'>
+            <Field
+              component={TextField}
+              name='name'
+              fullWidth
+              floatingLabelText={<Translate value={`${prefix}.name`} />}
+            />
+          </div>
           <div styleName='block'>
             <Translate styleName='title' value={`${prefix}.title`} />
             <Translate styleName='description' value={`${prefix}.description`} />

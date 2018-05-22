@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import TxModel from 'models/TxModel'
 import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 
@@ -27,7 +26,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     try {
       await this._api.post('addr', { address })
       this.executeOrSchedule(() => {
-        this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
+        this._subscriptions[`balance:${address}`] = this._client.subscribe(
           `${this._socket.channels.balance}.${address}`,
           // `${socket.channels.balance}.*`,
           (message) => {
@@ -62,9 +61,9 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       try {
         await this._api.delete('addr', { address })
         this.executeOrSchedule(() => {
-          const subscription = this._subscriptions[ `balance:${address}` ]
+          const subscription = this._subscriptions[`balance:${address}`]
           if (subscription) {
-            delete this._subscriptions[ `balance:${address}` ]
+            delete this._subscriptions[`balance:${address}`]
             subscription.unsubscribe()
           }
         })
@@ -130,7 +129,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   async getAddressUTXOS (address) {
     try {
       const res = await this._api.get(`addr/${address}/utxo`)
-      console.log('getAddressUTXOS: ', res)
       return res.data
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)

@@ -10,7 +10,6 @@ import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import { LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
 import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import { loginLedger } from '@chronobank/login/redux/ledger/actions'
 import { addError, clearErrors, loading } from '@chronobank/login/redux/network/actions'
 import { loginTrezor } from '@chronobank/login/redux/trezor/actions'
@@ -116,6 +115,7 @@ class LoginOption extends PureComponent {
 }
 
 const mapStateToProps = (state) => ({
+  wallets: state.get('multisigWallet'),
   selectedNetworkId: state.get('network').selectedNetworkId,
   accounts: state.get('network').accounts,
   isLocal: state.get('network').isLocal,
@@ -165,7 +165,7 @@ class LoginWithOptions extends PureComponent {
     this.props.loading()
     this.props.clearErrors()
     try {
-      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings(), this.props.wallets)
       networkService.selectAccount(provider.ethereum.getAddress())
       this.setupAndLogin(provider)
     } catch (e) {
@@ -177,7 +177,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     try {
       const index = Math.max(this.props.accounts.indexOf(account), 0)
-      const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings())
+      const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings(), this.props.wallets)
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
@@ -274,7 +274,7 @@ class LoginWithOptions extends PureComponent {
 
   renderStep (step) {
     const renderer = `render${pascalCase(step)}`
-    return this[ renderer ] ? this[ renderer ]() : null
+    return this[renderer] ? this[renderer]() : null
   }
 
   renderStepSelectOption () {

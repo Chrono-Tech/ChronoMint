@@ -4,10 +4,7 @@
  */
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import BigNumber from 'bignumber.js'
-import networkService from '@chronobank/login/network/NetworkService'
-import Web3 from 'web3'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
@@ -119,7 +116,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, advancedModeParam): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -146,14 +143,23 @@ export class EthereumDAO extends AbstractTokenDAO {
       params: {
         to,
       },
+      options: {
+        advancedParams: advancedModeParam,
+      },
     })
     AbstractContractDAO.txGas(tx)
 
     return new Promise(async (resolve, reject) => {
       try {
         tx = await AbstractContractDAO.txStart(tx, estimateGastransfer, feeMultiplier)
-        txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
-        txData.gasPrice = tx.gasPrice()
+
+        if (typeof advancedModeParam === 'object') {
+          txData.gasPrice = advancedModeParam.gweiPerGas
+          txData.gas = advancedModeParam.gasLimit
+        } else {
+          txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
+          txData.gasPrice = tx.gasPrice()
+        }
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()

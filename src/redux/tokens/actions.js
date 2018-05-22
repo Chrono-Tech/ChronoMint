@@ -3,7 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
@@ -46,8 +55,9 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 // It is not a redux action
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   try {
+    const txOptions = tx.options()
     // TODO @ipavlenko: Pass arguments
-    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier())
+    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
@@ -186,11 +196,11 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async (dispatch) => {
+export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async () => {
   const tokenDao = tokenService.getDAO(tokenId)
   const [to, amount, func] = params
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(amount), address)
+    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
@@ -201,10 +211,24 @@ export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, a
   }
 }
 
-export const estimateBtcFee = (params, callback) => async (dispatch) => {
+export const estimateBtcFee = (params, callback) => async () => {
   try {
-    const { address, recipient, amount, formFee } = params
-    const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+    const { address, recipient, amount, formFee, blockchain } = params
+    let fee
+    switch (blockchain) {
+      case BLOCKCHAIN_BITCOIN:
+        fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_CASH:
+        fee = await bccProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_GOLD:
+        fee = await btgProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_LITECOIN:
+        fee = await ltcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+    }
     callback(null, { fee: fee })
   } catch (e) {
     callback(e)

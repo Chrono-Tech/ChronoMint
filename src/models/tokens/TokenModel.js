@@ -106,7 +106,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   addDecimals (amount: BigNumber): BigNumber {
-    const amountBN = new BigNumber(amount)
+    const amountBN = new BigNumber(amount.toString())
     return amountBN.mul(Math.pow(10, this.decimals()))
   }
 

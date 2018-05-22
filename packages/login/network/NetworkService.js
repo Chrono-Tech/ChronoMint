@@ -172,14 +172,14 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  async restoreLocalSession (account) {
+  async restoreLocalSession (account, wallets) {
     this.selectProvider(LOCAL_PROVIDER_ID)
     this.selectNetwork(LOCAL_ID)
     const accounts = await this.loadAccounts()
     this.selectAccount(account)
 
     const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings())
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
     await this.setup(provider)
   }
 
@@ -188,9 +188,7 @@ class NetworkService extends EventEmitter {
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
 
-    //const accounts = await this.loadAccounts()
-
-    this.selectAccount(accounts[0])
+    await this.loadAccounts()
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
     btcProvider.setEngine(btc)

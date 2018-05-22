@@ -16,7 +16,7 @@ import TransferExecModel from 'models/TransferExecModel'
 import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
 
-import { modalsClear } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
@@ -38,6 +38,7 @@ const mapStateToProps = (state, ownProps) => {
 function mapDispatchToProps (dispatch) {
   return {
     modalsClear: () => dispatch(modalsClear()),
+    modalsClose: () => dispatch(modalsClose()),
   }
 }
 
@@ -47,6 +48,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     confirm: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
     modalsClear: PropTypes.func.isRequired,
+    modalsClose: PropTypes.func.isRequired,
     tx: PropTypes.instanceOf(TransferExecModel),
     // TODO @ipavlenko: Replace with redux binding when DAOs collection will be moved to the redux, use feeToken from props.tx to get DAO
     dao: PropTypes.oneOfType([
@@ -72,7 +74,7 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   handleClose = () => {
-    this.props.modalsClear()
+    this.props.modalsClose()
     const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
     this.props.reject(tx)
   }
@@ -141,6 +143,8 @@ export default class ConfirmTransferDialog extends PureComponent {
 
   render () {
     const { tx, amountBalance, feeBalance } = this.props
+    console.log('txOptions: ', tx)
+    console.log('txOptions: ', tx.options())
     const { feeMultiplier } = this.state
 
     const fee = tx.fee().mul(feeMultiplier)
@@ -168,7 +172,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
 
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
-    const hasFeeSlider = feeMultiplier && feeToken.feeRate()
+    const hasFeeSlider = feeMultiplier && feeToken.feeRate() && !tx.isAdvancedFeeMode()
 
     return (
       <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>

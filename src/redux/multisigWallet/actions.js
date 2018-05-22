@@ -94,14 +94,18 @@ const handleToken = (token, wallet) => (dispatch) => {
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigWalletModel) => {
-      const updatedWallet = wallet.transactionHash(null).isPending(false)
+      const wallets = getState().get(DUCK_MULTISIG_WALLET)
+      let updatedWallet = wallet.transactionHash(null).isPending(false)
+      if (wallets.item(wallet.id()) && wallets.item(wallet.id()).name()) {
+        updatedWallet = updatedWallet.name(wallets.item(wallet.id()).name())
+      }
       dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
 
       const txHash = wallet.transactionHash()
 
       if (txHash) {
         // reselect
-        const selectedWallet = getState().get(DUCK_MULTISIG_WALLET).selected()
+        const selectedWallet = wallets.selected()
         if (selectedWallet.transactionHash() && selectedWallet.transactionHash() === txHash) {
           dispatch(selectMultisigWallet(wallet.address()))
         }

@@ -156,7 +156,17 @@ export default class ConfirmTxDialog extends PureComponent {
 
   render () {
     const { tx, balance, gasPriceMultiplier } = this.props
-    const gasFee = tx.gas()
+    const txOptions = tx.options()
+    let gasFee
+
+    if (tx.isAdvancedFeeMode()) {
+      gasFee = txOptions.advancedParams.gasFee
+    } else {
+      gasFee = tx.gas()
+    }
+
+    console.log('gasFee:: ', gasFee, tx.isAdvancedFeeMode(), tx)
+
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
@@ -208,6 +218,7 @@ export default class ConfirmTxDialog extends PureComponent {
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
+            { !tx.isAdvancedFeeMode() &&
             <div styleName='gasSliderWrap'>
               <GasSlider
                 isLocal
@@ -216,7 +227,7 @@ export default class ConfirmTxDialog extends PureComponent {
                 initialValue={gasPriceMultiplier}
                 onDragStop={this.handleChangeGasPrice}
               />
-            </div>
+            </div>}
 
           </div>
           <div styleName='footer'>

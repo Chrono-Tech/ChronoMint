@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -19,7 +18,7 @@
   align-items: center;
   justify-content: center;
   min-height: 600px;
-  >* {
+  > * {
     flex: 0 0 auto;
   }
 }
@@ -30,9 +29,9 @@
 }
 
 .inner {
-  margin: 24px 16px;
+  margin: 0 80px;
   @include xs-only {
-    margin: 30px 20px;
+    margin: 0 20px;
   }
   position: relative;
 }

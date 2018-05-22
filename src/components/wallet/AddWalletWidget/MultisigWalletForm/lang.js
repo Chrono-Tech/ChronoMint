@@ -15,8 +15,7 @@ export default {
     save: 'Save',
     ownerAddress: 'Owner address',
     you: 'You',
-    name: 'Name',
-    // fields
+    name: 'Enter wallet name',
     walletOwners: 'Multi-signature (%{count})',
     walletOwnersDescription: 'Add owners here. Note the wallet should have at least 2 owners.',
     walletOwners2FADescription: 'Disable 2FA in order to specify the wallet owners',

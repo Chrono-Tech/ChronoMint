@@ -67,7 +67,7 @@ export const login = (account) => async (dispatch, getState) => {
   }
 
   const dao = await contractsManagerDAO.getUserManagerDAO()
-  const [ isCBE, profile, memberId ] = await Promise.all([
+  const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account),
     dao.getMemberId(account),
@@ -86,7 +86,7 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch(replace(ls.getLastURL() || defaultURL))
 }
 
-export const bootstrap = (relogin = true) => async (dispatch) => {
+export const bootstrap = (relogin = true) => async (dispatch, getState) => {
   networkService.checkMetaMask()
   if (networkService) {
     networkService
@@ -102,7 +102,7 @@ export const bootstrap = (relogin = true) => async (dispatch) => {
   const localAccount = ls.getLocalAccount()
   const isPassed = await networkService.checkLocalSession(localAccount)
   if (isPassed) {
-    await networkService.restoreLocalSession(localAccount)
+    await networkService.restoreLocalSession(localAccount, getState().get('multisigWallet'))
     networkService.createNetworkSession(localAccount, LOCAL_PROVIDER_ID, LOCAL_ID)
     dispatch(login(localAccount))
   } else {
@@ -140,7 +140,7 @@ export const rebuildProfileTokens = (profile, tokens) => {
       let token
       if (typeof item === 'string') {
         if (item.indexOf('/') + 1) {            // for 'Bitcoin/BTC'
-          const [ , symbol ] = item.split('/')
+          const [, symbol] = item.split('/')
           token = tokens.item(symbol)
         } else {                                // for 'address'
           token = tokens.getByAddress(item)

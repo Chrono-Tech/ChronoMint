@@ -7,6 +7,7 @@ export const prefix = 'TimeLockedWalletForm'
 
 export default {
   en: {
+    name: 'Enter wallet name',
     title: 'Time Lock Settings',
     description: 'Make this wallet active for transactions on specific date and time.',
     date: 'Date',

@@ -24,6 +24,7 @@ export default class MainWalletModel extends abstractFetchingModel({
   allowances: new AllowanceCollection(),
   transactions: new TransactionsCollection(),
   addresses: new AddressesCollection(),
+  names: new Immutable.Map(),
 }) {
 
   address () {
@@ -40,6 +41,14 @@ export default class MainWalletModel extends abstractFetchingModel({
    */
   tokens (value) {
     return this._getSet('tokens', value)
+  }
+
+  names (value) {
+    return this._getSet('names', value)
+  }
+
+  name (blockchain, address) {
+    return this.get('names').get(`${blockchain}-${address}`)
   }
 
   transactions (value) {

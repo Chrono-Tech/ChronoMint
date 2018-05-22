@@ -50,6 +50,7 @@ export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
+export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -95,7 +96,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      const walletsAccounts = getDeriveWalletsAddresses(getState())
+      const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
@@ -183,7 +184,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch([...getDeriveWalletsAddresses(getState()), account])
+  await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -230,15 +231,13 @@ export const initMainWallet = () => async (dispatch, getState) => {
       }),
     })
   })
-
 }
 
-export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, advancedModeParams = undefined) => async (dispatch, getState) => {
   try {
     const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
-    let deriveNumber = wallet.deriveNumber && wallet.deriveNumber()
-    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, deriveNumber)
+    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, advancedModeParams)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }
@@ -394,7 +393,7 @@ const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<stri
   await dao.watch(address)
 }
 
-export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch, getState) => {
+export const createNewChildAddress = ({ blockchain, tokens, name }) => async (dispatch, getState) => {
   const account = getState().get(DUCK_SESSION).account
   const wallets = getState().get(DUCK_MULTISIG_WALLET)
   let ownersCollection = new OwnerCollection()
@@ -425,6 +424,8 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
       newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddressString()
+
+      ethereumProvider.addNewEthWallet(newDeriveNumber)
       break
     case BLOCKCHAIN_BITCOIN:
       newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
@@ -443,6 +444,7 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
   }
 
   wallet = new DerivedWalletModel({
+    name,
     address,
     addresses: new AddressesCollection()
       .add(new AddressModel({ id: blockchain, address })),
@@ -475,13 +477,17 @@ export const getTransactionsForWallet = (wallet) => async (dispatch, getState) =
   if (wallet.customTokens()) {
     wallet.customTokens().map((symbol) => {
       const tokenDAO = tokenService.getDAO(symbol)
-      promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      if (tokenDAO) {
+        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      }
     })
   } else {
     for (let token: TokenModel of tokens) {
       if (token.symbol()) {
         const tokenDAO = tokenService.getDAO(token.id())
-        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+        if (tokenDAO) {
+          promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+        }
       }
     }
   }

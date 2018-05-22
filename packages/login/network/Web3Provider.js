@@ -74,6 +74,12 @@ export class Web3Provider {
     this.afterReset()
   }
 
+  pushWallet (idx) {
+    this._provider.pushWallet(idx)
+    const web3 = this._web3instance
+    web3.setProvider(this._provider)
+  }
+
   setWeb3 (Web3ClassOrInstance) {
     typeof Web3ClassOrInstance === 'function'
       ? this._web3instance = new Web3ClassOrInstance()
