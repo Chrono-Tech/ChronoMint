@@ -157,7 +157,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   watchApproval (accounts) {
     return this._watch(EVENT_APPROVAL, (result) => {
       this.emit(EVENT_APPROVAL_TRANSFER, result.args)
-    }, { from: accounts[0] })
+    }, { from: accounts })
   }
 
   async watchTransfer (accounts) {

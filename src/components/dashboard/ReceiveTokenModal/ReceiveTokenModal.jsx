@@ -65,6 +65,9 @@ function mapStateToProps (state, ownProps) {
     token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
     tokens: getTokensForBlockchain(ownProps.blockchain)(state),
     address: wallet.addresses().item(ownProps.blockchain).address(),
+    initialValues: {
+      tokenId: ownProps.tokenId || ownProps.tokens[0].id(),
+    },
   }
 }
 
@@ -93,7 +96,6 @@ export default class ReceiveTokenModal extends PureComponent {
   }
 
   componentDidMount () {
-    this.handleSelectToken(this.props.tokens[ 0 ].id())
     QRCode.toDataURL(this.props.address, (err, qrData) => {
       this.setState({
         qrData,
@@ -120,7 +122,7 @@ export default class ReceiveTokenModal extends PureComponent {
             <IPFSImage
               styleName='iconImg'
               multihash={token.icon()}
-              fallback={TOKEN_ICONS[ symbol ] || TOKEN_ICONS.DEFAULT}
+              fallback={TOKEN_ICONS[symbol] || TOKEN_ICONS.DEFAULT}
             />
           </div>
         </div>

@@ -60,6 +60,7 @@
 }
 
 .middleContent {
+  padding-top: 100px;
   @include sm-only {
     position: absolute;
     top: 0;

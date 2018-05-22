@@ -25,7 +25,9 @@ function mapStateToProps (state) {
   return {
     tokens: getChronobankTokens()(state),
     initialValues: {
-      [ETH]: true,
+      tokens: {
+        [ETH]: true,
+      },
     },
   }
 }
@@ -33,7 +35,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values: Map) => {
-      const tokens = Object.keys(values.filter((token) => token).toObject()) || []
+      const tokens = Object.keys(values.get('tokens').filter((token) => token).toObject()) || []
       const name = values.get('name')
       dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
       dispatch(goToWallets())
@@ -66,10 +68,7 @@ export default class CustomWalletForm extends PureComponent {
           </div>
           <div styleName='block'>
             <div styleName='tokensList'>
-              <FieldArray
-                component={TokensList}
-                name='tokens'
-              />
+              <TokensList />
             </div>
           </div>
         </div>
