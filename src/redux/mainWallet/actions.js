@@ -50,6 +50,7 @@ export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
+export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -392,7 +393,7 @@ const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<stri
   await dao.watch(address)
 }
 
-export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch, getState) => {
+export const createNewChildAddress = ({ blockchain, tokens, name }) => async (dispatch, getState) => {
   const account = getState().get(DUCK_SESSION).account
   const wallets = getState().get(DUCK_MULTISIG_WALLET)
   let ownersCollection = new OwnerCollection()
@@ -443,6 +444,7 @@ export const createNewChildAddress = ({ blockchain, tokens }) => async (dispatch
   }
 
   wallet = new DerivedWalletModel({
+    name,
     address,
     addresses: new AddressesCollection()
       .add(new AddressModel({ id: blockchain, address })),

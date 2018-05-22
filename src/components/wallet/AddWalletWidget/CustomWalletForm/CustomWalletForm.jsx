@@ -2,13 +2,15 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
+
 import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import { Map } from 'immutable'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
+import { Field, FieldArray, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { createNewChildAddress, ETH, goToWallets, resetWalletsForm } from 'redux/mainWallet/actions'
 import { getChronobankTokens } from 'redux/settings/erc20/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
@@ -32,7 +34,8 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values: Map) => {
       const tokens = Object.keys(values.filter((token) => token).toObject()) || []
-      dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens }))
+      const name = values.get('name')
+      dispatch(createNewChildAddress({ blockchain: BLOCKCHAIN_ETHEREUM, tokens, name }))
       dispatch(goToWallets())
       dispatch(resetWalletsForm())
     },
@@ -53,6 +56,14 @@ export default class CustomWalletForm extends PureComponent {
     return (
       <form styleName='root' onSubmit={handleSubmit}>
         <div styleName='body'>
+          <div styleName='nameBlock'>
+            <Field
+              component={TextField}
+              name='name'
+              fullWidth
+              floatingLabelText={<Translate value={`${prefix}.name`} />}
+            />
+          </div>
           <div styleName='block'>
             <div styleName='tokensList'>
               <FieldArray

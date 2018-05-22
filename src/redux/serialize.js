@@ -21,10 +21,13 @@ import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import AllowanceCollection from 'models/wallet/AllowanceCollection'
+import AllowanceModel from 'models/wallet/AllowanceModel'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 
 function mark (data, type, transformMethod) {
   return {
-    data: transformMethod ? data[ transformMethod ]() : data,
+    data: transformMethod ? data[transformMethod]() : data,
     __serializedType__: type,
   }
 }
@@ -40,7 +43,7 @@ function refer (data, type, isArray, refs) {
   let r = mark(data, type, isArray)
   if (!refs) return r
   for (let i = 0; i < refs.length; i++) {
-    let ref = refs[ i ]
+    let ref = refs[i]
     if (typeof ref === 'function' && data instanceof ref) {
       r.__serializedRef__ = i
       return r
@@ -69,6 +72,9 @@ function serialize (Immutable, refs) {
       if (value instanceof MultisigWalletModel) return refer(value, 'MultisigWalletModel', 'toObject', refs)
       if (value instanceof DerivedWalletModel) return refer(value, 'DerivedWalletModel', 'toObject', refs)
       if (value instanceof MultisigWalletCollection) return refer(value, 'MultisigWalletCollection', 'toObject', refs)
+      if (value instanceof AllowanceModel) return refer(value, 'AllowanceModel', 'toObject', refs)
+      if (value instanceof AllowanceCollection) return refer(value, 'AllowanceCollection', 'toObject', refs)
+      if (value instanceof MainWalletModel) return refer(value, 'MainWalletModel', 'toObject', refs)
 
       if (value instanceof Immutable.Record) return refer(value, 'ImmutableRecord', 'toObject', refs)
       if (value instanceof Immutable.Range) return extract(value, 'ImmutableRange')
@@ -119,6 +125,13 @@ function serialize (Immutable, refs) {
             return new DerivedWalletModel(data)
           case 'MultisigWalletCollection':
             return new MultisigWalletCollection(data)
+          case 'AllowanceModel':
+            return new AllowanceModel(data)
+          case 'AllowanceCollection':
+            return new AllowanceCollection(data)
+          case 'MainWalletModel':
+            return new MainWalletModel(data)
+
           // Immutable types
           case 'ImmutableMap':
             return Immutable.Map(data)
@@ -139,8 +152,8 @@ function serialize (Immutable, refs) {
           case 'ImmutableStack':
             return Immutable.Stack(data)
           case 'ImmutableRecord':
-            return refs && refs[ value.__serializedRef__ ]
-              ? new refs[ value.__serializedRef__ ](data)
+            return refs && refs[value.__serializedRef__]
+              ? new refs[value.__serializedRef__](data)
               : Immutable.Map(data)
           default:
             return data
