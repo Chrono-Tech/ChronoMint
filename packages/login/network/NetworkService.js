@@ -157,7 +157,10 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
     try {
-      const accounts = await web3Provider.getAccounts()
+      let accounts = this._accounts
+      console.log('acc is: ',accounts)
+      if (accounts == null)
+        accounts = await web3Provider.getAccounts()
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
@@ -200,6 +203,10 @@ class NetworkService extends EventEmitter {
   selectAccount = (selectedAccount) => {
     console.log('select account ' + selectedAccount)
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
+  }
+
+  setAccounts = (accounts) => {
+      this._accounts = accounts;
   }
 
   getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
