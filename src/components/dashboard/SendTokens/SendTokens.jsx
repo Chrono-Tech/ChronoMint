@@ -65,15 +65,6 @@ export default class SendTokens extends PureComponent {
     address: PropTypes.string,
   }
 
-  isBTCLikeBlockchain = (blockchain) => {
-    return [
-      BLOCKCHAIN_BITCOIN,
-      BLOCKCHAIN_BITCOIN_CASH,
-      BLOCKCHAIN_BITCOIN_GOLD,
-      BLOCKCHAIN_LITECOIN,
-    ].includes(blockchain)
-  }
-
   handleSubmit = (values) => {
     const { wallet, tokens } = this.props
 
@@ -111,6 +102,15 @@ export default class SendTokens extends PureComponent {
 
   handleSubmitSuccess = () => {
     // this.props.resetForm()
+  }
+
+  isBTCLikeBlockchain = (blockchain) => {
+    return [
+      BLOCKCHAIN_BITCOIN,
+      BLOCKCHAIN_BITCOIN_CASH,
+      BLOCKCHAIN_BITCOIN_GOLD,
+      BLOCKCHAIN_LITECOIN,
+    ].includes(blockchain)
   }
 
   render () {
