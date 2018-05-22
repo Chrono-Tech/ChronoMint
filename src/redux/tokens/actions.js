@@ -46,8 +46,9 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 // It is not a redux action
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   try {
+    const txOptions = tx.options()
     // TODO @ipavlenko: Pass arguments
-    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier())
+    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
@@ -189,14 +190,16 @@ export const watchLatestBlock = () => async (dispatch) => {
 export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async (dispatch) => {
   const tokenDao = tokenService.getDAO(tokenId)
   const [to, amount, func] = params
+  console.log('tokenDao: ', tokenDao, to, amount, func)
   try {
-    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(amount), address)
+    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
     callback(null, {
       gasLimit,
       gasFee: new Amount(gasFee.mul(gasPriseMultiplier), tokenId),
       gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), tokenId),
     })
   } catch (e) {
+    console.log('estimateGas error: ', e)
     callback(e)
   }
 }
@@ -205,8 +208,10 @@ export const estimateBtcFee = (params, callback) => async (dispatch) => {
   try {
     const { address, recipient, amount, formFee } = params
     const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+    console.log('estimateBtcFee : fee: ', fee)
     callback(null, { fee: fee })
   } catch (e) {
+    console.log('estimateBtcFee: ', e)
     callback(e)
   }
 }

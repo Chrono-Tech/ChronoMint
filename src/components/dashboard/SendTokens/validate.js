@@ -6,6 +6,7 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 import tokenService from 'services/TokenService'
+import { MODE_ADVANCED, MODE_SIMPLE } from './SendTokensForm'
 
 export default (values, props) => {
   const { token, wallet, tokenInfo } = props
@@ -17,10 +18,18 @@ export default (values, props) => {
   const amount = values.get('amount')
   const recipient = values.get('recipient')
   const satPerByte = values.get('satPerByte')
+  const gweiPerGas = values.get('gweiPerGas')
+  const mode = values.get('mode')
 
   const satPerByteError = validator.positiveNumber(satPerByte)
   const satPerByteErrors = new ErrorList()
+    .add(mode === MODE_ADVANCED ? validator.required(amount) : null)
     .add(satPerByteError)
+
+  const gweiPerGasError = validator.positiveNumber(satPerByte)
+  const gweiPerGasErrors = new ErrorList()
+    .add(mode === MODE_ADVANCED ? validator.required(gweiPerGas) : null)
+    .add(gweiPerGasError)
 
   const amountFormatError = validator.currencyNumber(amount, token.decimals())
   const amountErrors = new ErrorList()
@@ -46,5 +55,6 @@ export default (values, props) => {
       .getErrors(),
     amount: amountErrors.getErrors(),
     satPerByte: satPerByteErrors.getErrors(),
+    gweiPerGas: gweiPerGasErrors.getErrors(),
   }
 }
