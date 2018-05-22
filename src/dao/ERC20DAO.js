@@ -10,6 +10,7 @@ import TxModel from 'models/TxModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
+import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
@@ -130,6 +131,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       token: this.getInitAddress(),
+      blockchain: BLOCKCHAIN_ETHEREUM,
     })
   }
 
