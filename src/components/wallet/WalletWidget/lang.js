@@ -11,5 +11,11 @@ export default {
     receiveButton: 'RECEIVE',
     depositButton: 'DEPOSIT',
     walletTitle: '%{title} wallet',
+    unlockDate: 'Unlocks on ',
+    sharedWallet: 'My Shared Wallet',
+    lockedWallet: 'My Locked Wallet',
+    customWallet: 'My custom Wallet',
+    additionalStandardWallet: 'My additional standard Wallet',
+    standardWallet: 'My Wallet',
   },
 }

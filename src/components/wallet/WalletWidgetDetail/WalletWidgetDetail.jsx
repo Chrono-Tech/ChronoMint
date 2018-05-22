@@ -25,7 +25,9 @@ import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
-
+import Moment from 'components/common/Moment'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
 
@@ -38,12 +40,17 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: () => dispatch(modalsOpen({
-      component: SendTokens,
-      props: {
-        isModal: true,
-      },
-    })),
+    send: (tokenId, blockchain, address) => {
+      dispatch(modalsOpen({
+        component: SendTokens,
+        props: {
+          isModal: true,
+          token: tokenId,
+          blockchain,
+          address,
+        },
+      }))
+    },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
       props: {
@@ -69,6 +76,7 @@ export default class WalletWidgetDetail extends PureComponent {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -98,7 +106,7 @@ export default class WalletWidgetDetail extends PureComponent {
   handleEditSignatures = () => this.props.openEditSignaturesDialog(this.props.wallet)
 
   handleSend = () => {
-    this.props.send()
+    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address)
   }
 
   handleReceive = () => {
@@ -203,22 +211,6 @@ export default class WalletWidgetDetail extends PureComponent {
     return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
   }
 
-  renderIconForWallet (wallet) {
-    let icon = 'wallet'
-    if (wallet.isMultisig()) {
-      if (wallet.is2FA && wallet.is2FA()) {
-        icon = 'security'
-      } else {
-        icon = 'multisig'
-      }
-    }
-    return (
-      <div styleName='additional-icon'>
-        <div styleName='security-icon' className='chronobank-icon'>{icon}</div>
-      </div>
-    )
-  }
-
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
 
@@ -234,7 +226,7 @@ export default class WalletWidgetDetail extends PureComponent {
           <div styleName='wallet-container'>
             <div styleName='body'>
               <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && this.renderIconForWallet(wallet)}
+                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
                   <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
                 </div>
@@ -264,6 +256,13 @@ export default class WalletWidgetDetail extends PureComponent {
                       )}
                   </div>
                 </div>
+
+                {wallet.isTimeLocked() && (
+                  <div styleName='unlockDateWrapper'>
+                    <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime()} format='HH:mm, Do MMMM YYYY' />
+                  </div>
+                )}
+
               </div>
             </div>
             <div styleName='footer'>
@@ -291,7 +290,7 @@ export default class WalletWidgetDetail extends PureComponent {
                     onTouchTap={this.handleReceive}
                   />
                 </div>
-                {blockchain === BLOCKCHAIN_ETHEREUM && (
+                {/*blockchain === BLOCKCHAIN_ETHEREUM && (
                   <div styleName='action'>
                     <Button
                       disabled={false}
@@ -302,7 +301,7 @@ export default class WalletWidgetDetail extends PureComponent {
                       onTouchTap={this.handleDeposit}
                     />
                   </div>
-                )}
+                )*/}
               </div>
             </div>
           </div>

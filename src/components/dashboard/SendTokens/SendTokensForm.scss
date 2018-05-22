@@ -10,6 +10,14 @@
   width: 430px;
 }
 
+.fee-loader-container {
+  width: 150px;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  justify-content: center;
+}
+
 .head {
   background-color: $button-color-1;
   width: 430px;
@@ -19,6 +27,7 @@
   .head-token-choose-form {
     display: block;
     width: 100%;
+    margin-top: 20px;
   }
 
   .head-section-text {
@@ -48,7 +57,7 @@
   }
 
   .wallet-name-section {
-    padding-top: 30px;
+    padding-top: 20px;
     padding-left: 30px;
   }
 
@@ -137,10 +146,12 @@
 
 .transaction-fee {
   display: flex;
+  min-height: 35px;
   margin-top: 20px;
   margin-bottom: 20px;
 
   .title {
+    white-space: pre;
     font-family: 'proxima nova', sans-serif;
     font-weight: 700;
     font-size: 14px;
@@ -155,6 +166,10 @@
     font-size: 14px;
     text-align: left;
     font-family: 'proxima nova', sans-serif;
+  }
+
+  .gwei-multiplier {
+    display: block;
   }
 }
 

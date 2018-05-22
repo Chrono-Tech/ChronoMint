@@ -60,11 +60,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   getAccountBalance (account): Promise {
-    return this._call('balanceOf', [ account ])
+    return this._call('balanceOf', [account])
   }
 
   getAccountAllowance (account, spender): Promise {
-    return this._call('allowance', [ account, spender ])
+    return this._call('allowance', [account, spender])
   }
 
   approve (account: string, amount: Amount, feeMultiplier: Number = 1): Promise {
@@ -104,11 +104,12 @@ export default class ERC20DAO extends AbstractTokenDAO {
       currency: amount.symbol(),
     }, new BigNumber(0), {
       feeMultiplier,
+      from,
     })
   }
 
   /** @private */
-  _createTxModel (tx, account, block, time): TxModel {
+  _createTxModel (tx, accounts, block, time): TxModel {
     const gasPrice = new BigNumber(tx.gasPrice)
     const gasFee = gasPrice.mul(tx.gas)
 
@@ -126,12 +127,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       token: this.getInitAddress(),
-      credited: tx.args.to === account,
     })
   }
 
   /** @private */
-  async _getTxModel (tx, account, block = null, time = null): Promise<?TxModel> {
+  async _getTxModel (tx, accounts, block = null, time = null): Promise<?TxModel> {
     if (!tx.args.value) {
       return null
     }
@@ -141,40 +141,40 @@ export default class ERC20DAO extends AbstractTokenDAO {
     tx.gas = txDetails.gas
 
     if (block && time) {
-      return this._createTxModel(tx, account, block, time)
+      return this._createTxModel(tx, accounts, block, time)
     }
     const minedBlock = await this._web3Provider.getBlock(tx.blockHash)
-    return this._createTxModel(tx, account, tx.blockNumber, minedBlock.timestamp)
+    return this._createTxModel(tx, accounts, tx.blockNumber, minedBlock.timestamp)
   }
 
-  watch (account): Promise {
+  watch (accounts: Array<string>): Promise {
     return Promise.all([
-      this.watchTransfer(account),
-      this.watchApproval(account),
+      this.watchTransfer(accounts),
+      this.watchApproval(accounts),
     ])
   }
 
-  watchApproval (account) {
+  watchApproval (accounts) {
     return this._watch(EVENT_APPROVAL, (result) => {
       this.emit(EVENT_APPROVAL_TRANSFER, result.args)
-    }, { from: account })
+    }, { from: accounts[0] })
   }
 
-  async watchTransfer (account) {
+  async watchTransfer (accounts) {
     const internalCallback = async (result, block, time) => {
-      const tx = await this._getTxModel(result, account, block, time / 1000)
+      const tx = await this._getTxModel(result, accounts, block, time / 1000)
       if (tx) {
         this.emit(EVENT_NEW_TRANSFER, tx)
       }
     }
     await Promise.all([
-      this._watch(EVENT_TRANSFER, internalCallback, { from: account }),
-      this._watch(EVENT_TRANSFER, internalCallback, { to: account }),
+      this._watch(EVENT_TRANSFER, internalCallback, { from: accounts }),
+      this._watch(EVENT_TRANSFER, internalCallback, { to: accounts }),
     ])
   }
 
   async getTransfer (id, account): Promise<Array<TxModel>> {
-    const [ result, result2 ] = await Promise.all([
+    const [result, result2] = await Promise.all([
       this._get(EVENT_TRANSFER, 0, 'latest', { from: account }, TXS_PER_PAGE, `${id}-in`),
       this._get(EVENT_TRANSFER, 0, 'latest', { to: account }, TXS_PER_PAGE, `${id}-out`),
     ])
@@ -187,8 +187,4 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return Promise.all(promises)
   }
 
-  /** ESTIMATE GAS */
-  estimateGas (func, args, value) {
-    return this._estimateGas(func, args, value)
-  }
 }

@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/variables';
 
 $gutter: 24px;
@@ -36,7 +35,7 @@ $gutter: 24px;
 
 .block {
   border-bottom: 1px solid $color-grey300;
-  padding: 24px 16px;
+  padding: 30px;
   color: $color-black;
 
   &:last-child {

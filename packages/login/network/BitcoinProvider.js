@@ -4,9 +4,11 @@
  */
 
 import type BigNumber from 'bignumber.js'
+import bitcoin from 'bitcoinjs-lib'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
+import { COIN_TYPE_BTC_MAINNET, COIN_TYPE_BTC_TESTNET, COIN_TYPE_LTC_MAINNET, COIN_TYPE_LTC_TESTNET } from './mnemonicProvider'
 
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
@@ -57,7 +59,6 @@ export class BitcoinProvider extends AbstractProvider {
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    console.log('utxos: ', utxos)
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }
@@ -87,6 +88,25 @@ export class BitcoinProvider extends AbstractProvider {
 
   getPrivateKey () {
     return this._engine ? this._engine.getPrivateKey() : null
+  }
+
+  createNewChildAddress (deriveNumber) {
+    let coinType = null
+
+    switch (this._id) {
+      case BLOCKCHAIN_BITCOIN:
+        coinType = this._engine._network === bitcoin.networks.testnet
+          ? COIN_TYPE_BTC_TESTNET
+          : COIN_TYPE_BTC_MAINNET
+        break
+      case BLOCKCHAIN_LITECOIN:
+        coinType = this._engine._network === bitcoin.networks.litecoin_testnet
+          ? COIN_TYPE_LTC_TESTNET
+          : COIN_TYPE_LTC_MAINNET
+        break
+    }
+
+    return this._engine && coinType ? this._engine.createNewChildAddress(deriveNumber, coinType) : null
   }
 }
 

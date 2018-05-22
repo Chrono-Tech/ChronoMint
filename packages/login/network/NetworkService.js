@@ -148,7 +148,7 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [ address ] })
+    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
     this.selectAccount(address)
   }
 
@@ -179,7 +179,7 @@ class NetworkService extends EventEmitter {
     this.selectAccount(account)
 
     const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[ index ], this.getProviderSettings())
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings())
     await this.setup(provider)
   }
 
@@ -190,7 +190,7 @@ class NetworkService extends EventEmitter {
 
     //const accounts = await this.loadAccounts()
 
-    //this.selectAccount(accounts[ 0 ])
+    this.selectAccount(accounts[0])
     ethereumProvider.setEngine(ethereum, nem)
     bccProvider.setEngine(bcc)
     btcProvider.setEngine(btc)
@@ -299,7 +299,7 @@ class NetworkService extends EventEmitter {
       if (this.checkerIndex <= this.checkers.length) {
         web3Provider.beforeReset()
         web3Provider.afterReset()
-        this.checkers[ this.checkerIndex ]()
+        this.checkers[this.checkerIndex]()
         this.checkerIndex++
       } else {
         resetCheckers()

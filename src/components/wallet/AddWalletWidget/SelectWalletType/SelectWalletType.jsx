@@ -4,43 +4,74 @@
  */
 
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import classnames from 'classnames'
 import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
+import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM } from 'redux/mainWallet/actions'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'
 
+function mapStateToProps () {
+  return {}
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onCreateWallet: (blockchain) => {
+      dispatch(createNewChildAddress({ blockchain }))
+      dispatch(goToWallets())
+      dispatch(resetWalletsForm())
+    },
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SelectWalletType extends PureComponent {
   static propTypes = {
     handleTouchTap: PropTypes.func,
+    onCreateWallet: PropTypes.func,
   }
 
   handleTouchTap = (type) => () => {
-    this.props.handleTouchTap(type)
+    if (!type.disabled) {
+      this.props.handleTouchTap(type.blockchain)
+    }
+  }
+
+  handleCreateWallet = (blockchain) => () => {
+    this.props.onCreateWallet(blockchain)
   }
 
   render () {
     const wallets = [
       {
-        type: 'BTC',
+        blockchain: BLOCKCHAIN_BITCOIN,
+        symbol: BTC,
         title: `${prefix}.btc`,
-        disabled: true,
+        action: this.handleCreateWallet(BLOCKCHAIN_BITCOIN),
       },
       {
-        type: 'LTC',
+        blockchain: BLOCKCHAIN_LITECOIN,
+        symbol: LTC,
         title: `${prefix}.ltc`,
-        disabled: true,
+        action: this.handleCreateWallet(BLOCKCHAIN_LITECOIN),
       },
       {
-        type: 'ETH',
+        blockchain: BLOCKCHAIN_ETHEREUM,
+        symbol: ETH,
         title: `${prefix}.eth`,
         disabled: false,
       },
       {
-        type: 'XEM',
+        blockchain: BLOCKCHAIN_NEM,
+        symbol: XEM,
         title: `${prefix}.nem`,
         disabled: true,
       },
@@ -50,9 +81,12 @@ export default class SelectWalletType extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.type} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={this.handleTouchTap(type.type)}>
-              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.type ]} /></div>
-              <div styleName='title'><Translate value={type.title} /></div>
+            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={type.action || this.handleTouchTap(type)}>
+              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
+              <div styleName='title'>
+                <Translate value={type.title} />
+                {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
+              </div>
               <div styleName='arrow'><i className='chronobank-icon'>next</i></div>
             </div>
           ))

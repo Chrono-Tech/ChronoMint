@@ -7,7 +7,6 @@ import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
-import { push } from 'react-router-redux'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_WALLET } from 'redux/wallet/actions'
@@ -19,6 +18,8 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
+import { getTransactionsForWallet, goToWallets } from 'redux/mainWallet/actions'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import './WalletContent.scss'
 import { prefix } from './lang'
@@ -42,7 +43,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    goToWallets: () => dispatch(push('/wallets')),
+    goToWallets: () => dispatch(goToWallets()),
+    getTransactions: (wallet) => dispatch(getTransactionsForWallet(wallet)),
   }
 }
 
@@ -59,13 +61,14 @@ export default class WalletContent extends Component {
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
       PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
     ]),
     walletInfo: PropTypes.shape({
       address: PropTypes.string,
       balance: PropTypes.number,
       tokens: PropTypes.array,
     }),
-
+    getTransactions: PropTypes.func,
   }
 
   constructor (props) {
@@ -73,6 +76,12 @@ export default class WalletContent extends Component {
 
     if (!props.blockchain || !props.address) {
       props.goToWallets()
+    }
+  }
+
+  componentDidMount () {
+    if (this.props.wallet instanceof DerivedWalletModel) {
+      this.props.getTransactions(this.props.wallet)
     }
   }
 
@@ -95,7 +104,7 @@ export default class WalletContent extends Component {
 
         <div styleName='transactions'>
           <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
-          <TransactionsTable transactions={wallet.transactions()} />
+          <TransactionsTable transactions={wallet.transactions()} walletAddress={wallet.address()} />
         </div>
       </div>
     )

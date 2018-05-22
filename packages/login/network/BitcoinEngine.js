@@ -27,6 +27,12 @@ export class BitcoinEngine {
     return this._wallet.keyPair.d.toBuffer().toString('hex')
   }
 
+  createNewChildAddress (deriveNumber = 0, coinType) {
+    return bitcoin.HDNode
+      .fromSeedBuffer(this._wallet.keyPair.d.toBuffer(), this._network)
+      .derivePath(`m/44'/${coinType}'/0'/0/${deriveNumber}`)
+  }
+
   isAddressValid (address) {
     try {
       bitcoin.address.toOutputScript(address, this._network)
@@ -49,6 +55,7 @@ export class BitcoinEngine {
       vout: output.vout,
       value: output.satoshis,
     })), targets, Math.ceil(feeRate))
+    console.log('describeTransaction: ', inputs, outputs, fee)
     return { inputs, outputs, fee }
   }
 

@@ -15,13 +15,15 @@
     &:hover {
       background-color: $color-grey-9;
     }
+    &.notAllowed {
+      cursor: not-allowed;
+    }
     .icon {
       width: 32px;
       height: 32px;
       border-radius: 16px;
-      background: $button-color-2;
-      color: $color-white;
-      font-size: 25px;
+      color: $button-color-2;
+      font-size: 45px;
       text-align: center;
       line-height: 32px;
       flex-shrink: 0;
@@ -41,6 +43,10 @@
       font-weight: 400;
       font-size: 16px;
       line-height: 22px;
+    }
+    .soon {
+      font-size: 14px;
+      color: $color-grey-5;
     }
   }
   .arrow {

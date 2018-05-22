@@ -58,7 +58,7 @@ class TopButtons extends PureComponent {
       <div styleName='root'>
         <div styleName='backButtonWrapper'>
           {page && page.backButton ? (
-            <Button styleName='backButton' onTouchTap={history.goBack}>
+            <Button styleName='backButton' onTouchTap={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
               <i styleName='backIcon' className='chronobank-icon'>back</i>
             </Button>
           ) : null}

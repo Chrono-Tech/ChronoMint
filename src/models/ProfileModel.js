@@ -16,6 +16,7 @@ class ProfileModel extends abstractModel({
   tokens: new Immutable.Set(),
   version: null,
   hash: null,
+  wallets: new Immutable.Map(),
 }) {
   constructor (data = {}) {
     data = data || {}
@@ -51,6 +52,10 @@ class ProfileModel extends abstractModel({
 
   tokens (value): Immutable.Set {
     return this._getSet('tokens', value)
+  }
+
+  wallets (value): Immutable.Map {
+    return this._getSet('wallets', value)
   }
 
   isEmpty () {

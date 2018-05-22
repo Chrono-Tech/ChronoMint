@@ -6,13 +6,23 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import bigi from 'bigi'
+import hdKey from 'ethereumjs-wallet/hdkey'
 import wallet from 'ethereumjs-wallet'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
-import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
+import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
 import NemWallet from './NemWallet'
+import {
+  COIN_TYPE_BTC_MAINNET,
+  COIN_TYPE_BTC_TESTNET,
+  COIN_TYPE_BTG_MAINNET,
+  COIN_TYPE_BTG_TESTNET,
+  COIN_TYPE_LTC_MAINNET,
+  COIN_TYPE_LTC_TESTNET,
+  WALLET_HD_PATH,
+} from './mnemonicProvider'
 
 const COIN_TYPE_ETH = 60
 const COIN_TYPE_BTC_MAINNET = 0
@@ -26,38 +36,11 @@ class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
-
-    const bitcoinLikeEngines = Object.create(null) // Object.create(null) creating really empty object with no __proto__
-    bitcoinLikeEngines.bcc = false // Bitcoin Cache
-    bitcoinLikeEngines.btc = false // Bitcoin
-    bitcoinLikeEngines.btg = false // Bitcoin Gold
-    bitcoinLikeEngines.ltc = false // Litecoin
-    bitcoinLikeEngines.nem = false // Nem
-
-    if (network) {
-
-      // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope
-      const prepareEngine = (net, creteWallet, createEngine) => {
-	console.log('net is ' + net)      
-        if (network) {
-          const wallet = creteWallet(privateKey, net)
-          return createEngine(wallet, net)
-        }
-      }
-
-      const btcNetwork = network.bitcoin && bitcoin.networks[network.bitcoin]
-      const bccNetwork = network.bitcoinCash && bitcoin.networks[network.bitcoinCash]
-      const btgNetwork = network.bitcoinGold && bitcoin.networks[network.bitcoinGold]
-      const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
-      const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
-
-      bitcoinLikeEngines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
-      bitcoinLikeEngines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)
-      bitcoinLikeEngines.btg = prepareEngine(btgNetwork, this.createBitcoinGoldWallet, createBTGEngine)
-      bitcoinLikeEngines.ltc = prepareEngine(ltcNetwork, this.createLitecoinWallet, createLTCEngine)
-//      bitcoinLikeEngines.nem = prepareEngine(nemNetwork, NemWallet.fromMnemonic, createNEMEngine)
-
-    }
+    const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
+    const bcc = network && network.bitcoinCash && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoinCash])
+    const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
+    const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
+    const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
 
     return {
       networkCode,
@@ -67,53 +50,69 @@ class PrivateKeyProvider {
 	
   }
 
+  createBitcoinWalletFromPK (privateKey, network) {
+    const keyPair = new bitcoin.ECPair(bigi.fromBuffer(Buffer.from(privateKey, 'hex')), null, {
+      network,
+    })
+    return {
+      keyPair,
+      getNetwork () {
+        return keyPair.getNetwork()
+      },
+      getAddress () {
+        return keyPair.getAddress()
+      },
+    }
+  }
+
   createBitcoinWallet (privateKey, network) {
+    if (privateKey.length <= 64) {
+      return this.createBitcoinWalletFromPK(privateKey, network)
+    }
     const coinType = network === bitcoin.networks.testnet
       ? COIN_TYPE_BTC_TESTNET
       : COIN_TYPE_BTC_MAINNET
-    console.log(network)
-    return bitcoin.HDNode.fromBase58(privateKey)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+    return bitcoin.HDNode
+      .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
   createLitecoinWallet (privateKey, network) {
+    if (privateKey.length <= 64) {
+      return this.createBitcoinWalletFromPK(privateKey, network)
+    }
     const coinType = network === bitcoin.networks.litecoin_testnet
       ? COIN_TYPE_LTC_TESTNET
       : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
-      .fromBase58(privateKey)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+      .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
   createBitcoinGoldWallet (privateKey, network) {
+    if (privateKey.length <= 64) {
+      return this.createBitcoinWalletFromPK(privateKey, network)
+    }
     const coinType = network === bitcoin.networks.bitcoingold_testnet
       ? COIN_TYPE_BTG_TESTNET
       : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
-      .fromBase58(privateKey)
-      .derivePath(`m/44'/${coinType}'/0'/0/0`)
+      .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
+      .derivePath(`m/44'/${coinType}'/0'/0`)
   }
 
   createEthereumWallet (privateKey) {
-    const hdWallet = hdKey.fromExtendedKey(privateKey)
-    // get the first account using the standard hd path
-    const walletHDPath = `m/44'/${COIN_TYPE_ETH}'/0'/0`
-    return hdWallet.derivePath(walletHDPath).getWallet()
-    //return wallet.fromExtendedPrivateKey(privateKey.toString('hex'))
+    if (privateKey.length <= 64) {
+      return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+    }
+
+    const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
+    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
   }
 
   validatePrivateKey (privateKey: string): boolean {
     try {
-      // not used now
-
-      // if (/^xprv/.test(privateKey)) {
-      // @see https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
-      // wallet.fromExtendedPrivateKey(privateKey)
-      // } else {
-
-      // dry test
-      wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-      // }
+      this.createEthereumWallet(privateKey)
       return true
     } catch (e) {
       return false

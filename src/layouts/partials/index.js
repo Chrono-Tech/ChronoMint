@@ -9,7 +9,6 @@ import DrawerPartial from './DrawerPartial/DrawerPartial'
 import ExchangeContent from './ExchangeContent/ExchangeContent'
 import FooterPartial from './FooterPartial/FooterPartial'
 import HeaderPartial from './HeaderPartial/HeaderPartial'
-import InfoPartial from './InfoPartial/InfoPartial'
 import LOCContent from './LOCContent/LOCContent'
 import OperationsContent from './OperationsContent/OperationsContent'
 import RewardsContent from './RewardsContent/RewardsContent'
@@ -27,7 +26,6 @@ import DepositContent from './DepositContent/DepositContent'
 export {
   HeaderPartial,
   BrandPartial,
-  InfoPartial,
   FooterPartial,
   DrawerPartial,
   ExchangeContent,
@@ -50,7 +48,6 @@ export {
 export default {
   HeaderPartial,
   BrandPartial,
-  InfoPartial,
   FooterPartial,
   DrawerPartial,
   ExchangeContent,

@@ -5,21 +5,12 @@
 
 import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
-import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
-import WalletSubprovider from 'web3-provider-engine/subproviders/wallet'
-import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
+import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
+import HDWalletProvider from './HDWalletProvider'
 
 export default class Web3Utils {
   static createEngine (wallet, providerUrl) {
-    const engine = new ProviderEngine()
-
-
-    engine.addProvider(new FilterSubprovider())
-    engine.addProvider(new WalletSubprovider(wallet, {}))
-    engine.addProvider(new RpcSubprovider({rpcUrl: providerUrl}))
-    engine.start()
-
-    return engine
+    return new HDWalletProvider(wallet, providerUrl, 0, 100)
   }
 
   static createStatusEngine (providerUrl) {

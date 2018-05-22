@@ -16,9 +16,9 @@
     line-height: 31px;
   }
   .body {
-
+    padding: 0 30px 10px;
     .row {
-      padding: 10px 30px;
+      padding: 10px 0;
       border-top: 1px solid $color-grey-3;
       &:last-child {
         border-bottom: 1px solid $color-grey-3;

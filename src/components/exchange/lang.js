@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as ExchangeWidget from './ExchangeWidget/lang'
-import * as OrdersTable from './ExchangesTable/lang'
-import * as BuyTokensDialog from './BuyTokensDialog/lang'
-import * as ExchangeTransferDialog from './ExchangeTransferDialog/lang'
-import * as AddExchangeForm from './AddExchangeDialog/lang'
+import ExchangeWidget from './ExchangeWidget/lang'
+import OrdersTable from './ExchangesTable/lang'
+import BuyTokensDialog from './BuyTokensDialog/lang'
+import ExchangeTransferDialog from './ExchangeTransferDialog/lang'
+import AddExchangeForm from './AddExchangeDialog/lang'
 
 export default {
   en: {
