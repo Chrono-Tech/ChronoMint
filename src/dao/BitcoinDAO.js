@@ -128,17 +128,20 @@ export default class BitcoinDAO extends EventEmitter {
     try {
       const txsResult = await this._bitcoinProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
-        txs.push(new TxModel({
-          txHash: tx.txHash,
-          blockHash: tx.blockHash,
-          blockNumber: tx.blockNumber,
-          time: tx.time,
-          from: tx.from,
-          to: tx.to,
-          symbol: this._symbol,
-          value: new Amount(tx.value, this._symbol),
-          fee: new Amount(tx.fee, this._symbol),
-        }))
+        if (tx.value > 0) {
+          txs.push(new TxModel({
+            txHash: tx.txHash,
+            blockHash: tx.blockHash,
+            blockNumber: tx.blockNumber,
+            time: tx.time,
+            from: tx.from,
+            to: tx.to,
+            symbol: this._symbol,
+            value: new Amount(tx.value, this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
+            blockchain: this._name,
+          }))
+        }
       }
     } catch (e) {
       // eslint-disable-next-line
@@ -170,6 +173,7 @@ export default class BitcoinDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
+          blockchain: this._name,
         }),
       )
     })
