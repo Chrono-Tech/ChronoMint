@@ -187,19 +187,17 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async (dispatch) => {
+export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async () => {
   const tokenDao = tokenService.getDAO(tokenId)
   const [to, amount, func] = params
-  console.log('tokenDao: ', tokenDao, to, amount, func)
   try {
     const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), tokenId),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), tokenId),
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
     })
   } catch (e) {
-    console.log('estimateGas error: ', e)
     callback(e)
   }
 }

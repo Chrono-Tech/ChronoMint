@@ -144,7 +144,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         to,
       },
       options: {
-        advancedParams:  advancedModeParam,
+        advancedParams: advancedModeParam,
       },
     })
     AbstractContractDAO.txGas(tx)

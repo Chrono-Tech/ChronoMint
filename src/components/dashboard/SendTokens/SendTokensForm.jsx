@@ -17,7 +17,7 @@ import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import { MenuItem, MuiThemeProvider, Paper, CircularProgress } from 'material-ui'
+import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import { integerWithDelimiter } from 'utils/formatter'
@@ -25,8 +25,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
-import { change, Field, formPropTypes, formValueSelector, getFormValues, reduxForm, getFormSyncErrors } from 'redux-form/immutable'
-import { getSpendersAllowance } from 'redux/mainWallet/actions'
+import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
+import { ETH, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
@@ -176,8 +176,7 @@ export default class SendTokensForm extends PureComponent {
     }
 
     if (this.isBTCLikeBlockchain(newProps.token.blockchain()) &&
-      (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode))
-    {
+      (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
       try {
         const value = new Amount(newProps.token.addDecimals(new BigNumber(newProps.amount)), newProps.symbol)
         this.handleEstimateBtcFee(
@@ -245,8 +244,8 @@ export default class SendTokensForm extends PureComponent {
       this.setState((state, props) => {
         const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
         return {
-          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'wei') * customGasLimit, props.token.symbol()),
-          gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'wei'),
+          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
+          gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'gwei'),
           gasFeeError: false,
           gasFeeLoading: false,
         }
@@ -264,7 +263,6 @@ export default class SendTokensForm extends PureComponent {
             } else {
               const { gasLimit, gasFee, gasPrice } = params
               this.setState(() => {
-                console.log('setState gasFee: ', gasFee, gasFee.toString())
                 return {
                   gasFee,
                   gasPrice,
@@ -406,7 +404,7 @@ export default class SendTokensForm extends PureComponent {
               <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
             </span>
           )}
-          { this.props.mode === MODE_SIMPLE && this.state.gasPrice && (
+          {this.props.mode === MODE_SIMPLE && this.state.gasPrice && (
             <span styleName='gwei-multiplier'>
               <Translate value={`${prefix}.averageFee`} multiplier={this.props.feeMultiplier} />
             </span>

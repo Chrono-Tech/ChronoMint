@@ -6,7 +6,7 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 import tokenService from 'services/TokenService'
-import { MODE_ADVANCED, MODE_SIMPLE } from './SendTokensForm'
+import { MODE_ADVANCED } from './SendTokensForm'
 
 export default (values, props) => {
   const { token, wallet, tokenInfo } = props
@@ -26,7 +26,7 @@ export default (values, props) => {
     .add(mode === MODE_ADVANCED ? validator.required(amount) : null)
     .add(satPerByteError)
 
-  const gweiPerGasError = validator.positiveNumber(satPerByte)
+  const gweiPerGasError = validator.positiveNumber(gweiPerGas)
   const gweiPerGasErrors = new ErrorList()
     .add(mode === MODE_ADVANCED ? validator.required(gweiPerGas) : null)
     .add(gweiPerGasError)

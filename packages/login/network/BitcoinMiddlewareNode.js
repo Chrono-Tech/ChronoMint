@@ -27,7 +27,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     try {
       await this._api.post('addr', { address })
       this.executeOrSchedule(() => {
-        this._subscriptions[ `balance:${address}` ] = this._client.subscribe(
+        this._subscriptions[`balance:${address}`] = this._client.subscribe(
           `${this._socket.channels.balance}.${address}`,
           // `${socket.channels.balance}.*`,
           (message) => {
@@ -62,9 +62,9 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       try {
         await this._api.delete('addr', { address })
         this.executeOrSchedule(() => {
-          const subscription = this._subscriptions[ `balance:${address}` ]
+          const subscription = this._subscriptions[`balance:${address}`]
           if (subscription) {
-            delete this._subscriptions[ `balance:${address}` ]
+            delete this._subscriptions[`balance:${address}`]
             subscription.unsubscribe()
           }
         })

@@ -92,11 +92,9 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams) {
-    console.log('submit submit : ', advancedParams)
     const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
     setImmediate(async () => {
       const fee = await this._bitcoinProvider.estimateFee(from, to, amount, tokenFeeRate) // use feeMultiplier = 1 to estimate default fee
-      console.log('._bitcoinProvider.estimateFee: ', fee)
       this.emit('submit', new TransferExecModel({
         title: `tx.Bitcoin.${this._name}.transfer.title`,
         from,
