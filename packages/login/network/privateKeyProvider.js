@@ -6,7 +6,6 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import bigi from 'bigi'
-import hdKey from 'ethereumjs-wallet/hdkey'
 import wallet from 'ethereumjs-wallet'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
@@ -23,14 +22,6 @@ import {
   COIN_TYPE_LTC_TESTNET,
   WALLET_HD_PATH,
 } from './mnemonicProvider'
-
-const COIN_TYPE_ETH = 60
-const COIN_TYPE_BTC_MAINNET = 0
-const COIN_TYPE_BTC_TESTNET = 1
-const COIN_TYPE_LTC_MAINNET = 9
-const COIN_TYPE_LTC_TESTNET = 8
-const COIN_TYPE_BTG_MAINNET = 17
-const COIN_TYPE_BTG_TESTNET = 16
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
