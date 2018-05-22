@@ -3,7 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { btcProvider } from '@chronobank/login/network/BitcoinProvider'
+import {
+  bccProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
@@ -202,14 +211,26 @@ export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, a
   }
 }
 
-export const estimateBtcFee = (params, callback) => async (dispatch) => {
+export const estimateBtcFee = (params, callback) => async () => {
   try {
-    const { address, recipient, amount, formFee } = params
-    const fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
-    console.log('estimateBtcFee : fee: ', fee)
+    const { address, recipient, amount, formFee, blockchain } = params
+    let fee
+    switch (blockchain) {
+      case BLOCKCHAIN_BITCOIN:
+        fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_CASH:
+        fee = await bccProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_GOLD:
+        fee = await btgProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_LITECOIN:
+        fee = await ltcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+    }
     callback(null, { fee: fee })
   } catch (e) {
-    console.log('estimateBtcFee: ', e)
     callback(e)
   }
 }

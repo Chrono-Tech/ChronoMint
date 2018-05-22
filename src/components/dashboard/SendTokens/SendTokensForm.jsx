@@ -185,6 +185,7 @@ export default class SendTokensForm extends PureComponent {
           newProps.recipient,
           value,
           this.getFormFee(newProps),
+          newProps.token.blockchain(),
         )
       } catch (error) {
       }
@@ -291,7 +292,7 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
-  handleEstimateBtcFee = (address, recipient, amount, formFee) => {
+  handleEstimateBtcFee = (address, recipient, amount, formFee, blockchain) => {
     clearTimeout(this.timeout)
     this.setState({
       btcFeeLoading: true,
@@ -302,6 +303,7 @@ export default class SendTokensForm extends PureComponent {
           recipient,
           amount,
           formFee,
+          blockchain,
         }
         this.props.estimateFee(params, (error, { fee }) => {
           if (error) {
