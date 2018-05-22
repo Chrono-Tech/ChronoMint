@@ -42,9 +42,6 @@ export default class WalletsContent extends Component {
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title} id={walletGroup.title}>
             {walletGroup.data.map((wallet, index) => {
-              if (walletGroup.title !== 'Litecoin') {
-                return null
-              }
               return (<WalletWidget
                 showGroupTitle={!index}
                 key={`${walletGroup.title}-${wallet.address}`}
