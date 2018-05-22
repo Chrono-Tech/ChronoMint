@@ -242,7 +242,7 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
   }
 }
 
-export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number = 1) => async (dispatch, getState) => {
+export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number = 1, ) => async (dispatch, getState) => {
   const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })

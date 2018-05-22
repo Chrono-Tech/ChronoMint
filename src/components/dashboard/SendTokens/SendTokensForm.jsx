@@ -167,7 +167,8 @@ export default class SendTokensForm extends PureComponent {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
 
-    if (newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
+    if (newProps.token.blockchain() === BLOCKCHAIN_ETHEREUM && newProps.amount > 0 &&
+      (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
       const { token, recipient, amount, feeMultiplier, wallet } = newProps
       try {
         const value = new Amount(token.addDecimals(amount), newProps.symbol)
@@ -177,7 +178,8 @@ export default class SendTokensForm extends PureComponent {
     }
 
     if (this.isBTCLikeBlockchain(newProps.token.blockchain()) &&
-      (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode)) {
+      (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode) &&
+      newProps.amount > 0) {
       try {
         const value = new Amount(newProps.token.addDecimals(new BigNumber(newProps.amount)), newProps.symbol)
         this.handleEstimateBtcFee(

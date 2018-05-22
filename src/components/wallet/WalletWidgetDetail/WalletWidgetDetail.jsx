@@ -230,8 +230,6 @@ export default class WalletWidgetDetail extends PureComponent {
   render () {
     const { address, token, blockchain, walletInfo, wallet } = this.props
 
-    console.log('WalletWidgetDetail: ', wallet)
-
     if (walletInfo.balance === null || walletInfo.tokens.length <= 0 || !wallet) {
       return null
     }
