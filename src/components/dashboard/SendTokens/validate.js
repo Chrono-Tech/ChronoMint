@@ -19,6 +19,7 @@ export default (values, props) => {
   const recipient = values.get('recipient')
   const satPerByte = values.get('satPerByte')
   const gweiPerGas = values.get('gweiPerGas')
+  const gasLimit = values.get('gasLimit')
   const mode = values.get('mode')
 
   const satPerByteError = validator.positiveNumber(satPerByte)
@@ -30,6 +31,11 @@ export default (values, props) => {
   const gweiPerGasErrors = new ErrorList()
     .add(mode === MODE_ADVANCED ? validator.required(gweiPerGas) : null)
     .add(gweiPerGasError)
+
+  const gasLimitErrors = new ErrorList()
+  if (gasLimit) {
+    gasLimitErrors.add(validator.positiveNumber(gasLimit))
+  }
 
   const amountFormatError = validator.currencyNumber(amount, token.decimals())
   const amountErrors = new ErrorList()
@@ -56,5 +62,6 @@ export default (values, props) => {
     amount: amountErrors.getErrors(),
     satPerByte: satPerByteErrors.getErrors(),
     gweiPerGas: gweiPerGasErrors.getErrors(),
+    gasLimit: gasLimitErrors.getErrors(),
   }
 }

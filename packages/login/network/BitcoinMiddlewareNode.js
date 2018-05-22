@@ -4,7 +4,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import TxModel from 'models/TxModel'
 import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstractNode'
 import { DECIMALS } from './BitcoinEngine'
 

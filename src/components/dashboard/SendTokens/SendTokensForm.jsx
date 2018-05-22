@@ -17,6 +17,7 @@ import web3Converter from 'utils/Web3Converter'
 import Amount from 'models/Amount'
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import * as validators from 'models/validator'
 import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import TokenModel from 'models/tokens/TokenModel'
 import PropTypes from 'prop-types'
@@ -239,17 +240,29 @@ export default class SendTokensForm extends PureComponent {
 
   handleEstimateGas = (tokenId, params, feeMultiplier, address) => {
     clearTimeout(this.timeout)
-    if (this.props.mode === MODE_ADVANCED && (this.props.gasLimit || this.state.gasLimitEstimated) && this.props.gweiPerGas) {
+    const { gasLimit, gweiPerGas } = this.props
+    if (this.props.mode === MODE_ADVANCED && (gasLimit || this.state.gasLimitEstimated) && gweiPerGas) {
 
-      this.setState((state, props) => {
-        const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
-        return {
-          gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
-          gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'gwei'),
+      if ((gasLimit && validators.positiveNumber(gasLimit)) || validators.positiveNumber(gweiPerGas))
+      {
+        this.setState({
+          gasFee: null,
+          gasPrice: null,
           gasFeeError: false,
           gasFeeLoading: false,
-        }
-      })
+        })
+      } else {
+        this.setState((state, props) => {
+          const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
+          return {
+            gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
+            gasPrice: web3Converter.toWei(props.gweiPerGas || 0, 'gwei'),
+            gasFeeError: false,
+            gasFeeLoading: false,
+          }
+        })
+      }
+
     } else {
       this.setState({
         gasFeeLoading: true,
@@ -415,6 +428,10 @@ export default class SendTokensForm extends PureComponent {
     return null
   }
 
+  isFieldValid = (fieldName) => {
+    return fieldName in this.props.formErrors
+  }
+
   checkIsContract (address): Promise {
     return contractsManagerDAO.isContract(address)
   }
@@ -514,8 +531,10 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
+    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet, dispatch } = this.props
     const isTimeLocked = wallet.isTimeLocked()
+
+    console.log('this.props.gasLimitEstimated: ', this.props, this.props.gasLimitEstimated, this.props.gasLimit)
 
     return (
       <div styleName='form-container'>
@@ -586,6 +605,17 @@ export default class SendTokensForm extends PureComponent {
                 fullWidth
               />
             </div>
+            { this.state.gasLimitEstimated && !this.props.gasLimit &&
+            <div styleName='gas-limit-based-container'>
+              <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
+                <span
+                  styleName='based-limit-value'
+                  onTouchTap={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
+                >
+                  {this.state.gasLimitEstimated}
+                </span>
+              </span>
+            </div> }
           </div>
         )}
         {this.isTransactionFeeAvailable(token.blockchain()) &&
