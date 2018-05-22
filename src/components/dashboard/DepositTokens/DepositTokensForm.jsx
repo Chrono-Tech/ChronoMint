@@ -102,7 +102,7 @@ function mapDispatchToProps (dispatch) {
     mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
     mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier)),
     requireTIME: () => dispatch(requireTIME()),
-    receiveToken: (tokenId) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId } })),
+    receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, blockchain } })),
   }
 }
 
@@ -186,7 +186,7 @@ export default class DepositTokensForm extends PureComponent {
     this.timeout = setTimeout(() => {
       estimateGasForDeposit(
         action,
-        [ action, [ spender, new BigNumber(amount) ] ],
+        [action, [spender, new BigNumber(amount)]],
         (error, { gasFee, gasPrice }) => {
           if (!error) {
             this.setState({ gasFee, gasPrice })
@@ -232,9 +232,9 @@ export default class DepositTokensForm extends PureComponent {
     this.props.requireTIME()
   }
 
-  handleReceiveToken = (tokenId) => () => {
+  handleReceiveToken = (tokenId, blockchain) => () => {
     this.props.onCloseModal()
-    this.props.receiveToken(tokenId)
+    this.props.receiveToken(tokenId, blockchain)
   }
 
   getIsLockValid (amount) {
@@ -254,7 +254,7 @@ export default class DepositTokensForm extends PureComponent {
             <IPFSImage
               styleName='iconImg'
               multihash={token.icon()}
-              fallback={TOKEN_ICONS[ symbol ]}
+              fallback={TOKEN_ICONS[symbol]}
             />
           </div>
         </div>
@@ -403,7 +403,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onTouchTap={this.handleReceiveToken(ETH)}
+              onTouchTap={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
             />
           </div>
         )}
@@ -412,7 +412,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('buyTime')} />}
-              onTouchTap={this.handleReceiveToken(token.id())}
+              onTouchTap={this.handleReceiveToken(token.id(), token.blockchain())}
             />
           </div>
         )}

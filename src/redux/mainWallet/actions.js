@@ -96,7 +96,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      const walletsAccounts = getDeriveWalletsAddresses(getState())
+      const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
@@ -184,7 +184,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch([...getDeriveWalletsAddresses(getState()), account])
+  await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -476,13 +476,17 @@ export const getTransactionsForWallet = (wallet) => async (dispatch, getState) =
   if (wallet.customTokens()) {
     wallet.customTokens().map((symbol) => {
       const tokenDAO = tokenService.getDAO(symbol)
-      promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      if (tokenDAO) {
+        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+      }
     })
   } else {
     for (let token: TokenModel of tokens) {
       if (token.symbol()) {
         const tokenDAO = tokenService.getDAO(token.id())
-        promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+        if (tokenDAO) {
+          promises.push(tokenDAO.getTransfer(wallet.address(), wallet.address()))
+        }
       }
     }
   }

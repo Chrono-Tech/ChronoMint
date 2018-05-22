@@ -449,12 +449,12 @@ export const walletInfoSelector = (wallet, blockchain, address, state) => {
   }
 }
 
-export const getDeriveWalletsAddresses = (state) => {
+export const getDeriveWalletsAddresses = (state, blockchain) => {
   let accounts = []
   state.get(DUCK_MULTISIG_WALLET)
     .list()
     .map((wallet) => {
-      if (wallet instanceof DerivedWalletModel) {
+      if (wallet instanceof DerivedWalletModel && wallet.blockchain() === blockchain) {
         accounts.push(wallet.address())
       }
     })
