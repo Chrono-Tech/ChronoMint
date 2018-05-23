@@ -97,6 +97,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       // TODO @dkchv: token ???
       token: this._symbol,
       symbol: this._symbol,
+      blockchain: BLOCKCHAIN_ETHEREUM,
     })
   }
 

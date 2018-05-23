@@ -99,8 +99,12 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
-    mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier)),
+    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender, 2, {
+      skipSlider: true,
+    })),
+    mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier, {
+      skipSlider: true,
+    })),
     requireTIME: () => dispatch(requireTIME()),
     receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, blockchain } })),
   }

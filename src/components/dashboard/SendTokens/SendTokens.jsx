@@ -69,7 +69,9 @@ export default class SendTokens extends PureComponent {
     const { wallet, tokens } = this.props
 
     const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, satPerByte, gasLimit, mode } = values.toJS()
-    let advancedModeParams = undefined
+    let advancedModeParams = {
+      mode,
+    }
 
     const token = tokens.item(symbol)
     if (mode === MODE_ADVANCED && token.blockchain() === BLOCKCHAIN_ETHEREUM) {
@@ -78,6 +80,7 @@ export default class SendTokens extends PureComponent {
         gweiPerGas: gweiPerGasBN,
         gasLimit,
         gasFee: gweiPerGasBN.mul(gasLimit),
+        ...advancedModeParams,
       }
     }
 

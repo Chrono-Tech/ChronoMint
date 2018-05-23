@@ -22,7 +22,6 @@ import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/sele
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './ConfirmTransferDialog.scss'
@@ -143,8 +142,6 @@ export default class ConfirmTransferDialog extends PureComponent {
 
   render () {
     const { tx, amountBalance, feeBalance } = this.props
-    console.log('txOptions: ', tx)
-    console.log('txOptions: ', tx.options())
     const { feeMultiplier } = this.state
 
     const fee = tx.fee().mul(feeMultiplier)
@@ -172,7 +169,6 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
 
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
-    const hasFeeSlider = feeMultiplier && feeToken.feeRate() && !tx.isAdvancedFeeMode()
 
     return (
       <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>
@@ -198,18 +194,6 @@ export default class ConfirmTransferDialog extends PureComponent {
             <div styleName='errorMessage'>
               {!isValid && <div styleName='error'>Not enough coins</div>}
             </div>
-
-            {!hasFeeSlider ? null : (
-              <div styleName='feeSliderWrap'>
-                <GasSlider
-                  isLocal
-                  hideTitle
-                  token={feeToken}
-                  initialValue={feeMultiplier}
-                  onDragStop={this.handleChangeFee}
-                />
-              </div>
-            )}
 
           </div>
           <div styleName='footer'>

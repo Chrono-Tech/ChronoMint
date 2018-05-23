@@ -46,6 +46,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
+    blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(TransactionsCollection),
     selectedNetworkId: PropTypes.number,
@@ -92,11 +93,11 @@ export default class TransactionsTable extends PureComponent {
   }
 
   render () {
-    const { transactions, locale, walletAddress } = this.props
+    const { transactions, locale, walletAddress, blockchain } = this.props
     const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
-    const data = buildTableData(transactions, locale, walletAddress)
+    const data = buildTableData(transactions, locale, walletAddress, blockchain)
 
     return (
       <div styleName='root' className='TransactionsTable__root'>
@@ -153,11 +154,11 @@ export default class TransactionsTable extends PureComponent {
   }
 }
 
-function buildTableData (transactions, locale, address) {
+function buildTableData (transactions, locale, address, blockchain) {
   moment.locale(locale)
   const groups = transactions
     .items()
-    .filter((tx) => tx.from() === address || tx.to() === address)
+    .filter((tx) => ((tx.from() === address || tx.to() === address) && tx.blockchain() === blockchain))
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {

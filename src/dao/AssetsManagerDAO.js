@@ -19,6 +19,7 @@ import AbstractContractDAO from './AbstractContractDAO'
 import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
 import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
+import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ASSET_CREATED = 'AssetCreated'
 
@@ -36,7 +37,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   getTokenExtension (platform) {
-    return this._call('getTokenExtension', [ platform ])
+    return this._call('getTokenExtension', [platform])
   }
 
   async getSystemAssetsForOwner (account: string) {
@@ -45,14 +46,14 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
     const assetListObject = {}
     if (assetList && assetList.length) {
       for (const asset of assetList) {
-        assetListObject[ asset.token ] = { ...asset, address: asset.token }
+        assetListObject[asset.token] = { ...asset, address: asset.token }
       }
     }
     return assetListObject
   }
 
   async getAssetDataBySymbol (symbol: string) {
-    const [ asset ] = await ethereumProvider.getEventsData('mint/asset', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
+    const [asset] = await ethereumProvider.getEventsData('mint/asset', `symbol='${web3Converter.stringToBytesWithZeros(symbol)}'`)
     asset.address = asset.token
     return asset
   }
@@ -89,7 +90,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
   }
 
   async getManagersForAssetSymbol (symbol: string, excludeAccounts: Array<string> = []) {
-    const managersListForSymbol = await this.getManagers([ symbol ], excludeAccounts)
+    const managersListForSymbol = await this.getManagers([symbol], excludeAccounts)
     let formatManagersList = new OwnerCollection()
     managersListForSymbol.map((address) => {
       formatManagersList = formatManagersList.add(new OwnerModel({ address }))
@@ -115,6 +116,7 @@ export default class AssetsManagerDAO extends AbstractContractDAO {
       symbol: tx.args.symbol && web3Converter.bytesToString(tx.args.symbol).toUpperCase(),
       tokenAddress: tx.args.token,
       args: tx.args,
+      blockchain: BLOCKCHAIN_ETHEREUM,
     })
   }
 

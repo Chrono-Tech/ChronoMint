@@ -165,8 +165,6 @@ export default class ConfirmTxDialog extends PureComponent {
       gasFee = tx.gas()
     }
 
-    console.log('gasFee:: ', gasFee, tx.isAdvancedFeeMode(), tx)
-
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
@@ -218,7 +216,7 @@ export default class ConfirmTxDialog extends PureComponent {
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
-            { !tx.isAdvancedFeeMode() &&
+            { !tx.isSkipSlider() &&
             <div styleName='gasSliderWrap'>
               <GasSlider
                 isLocal
