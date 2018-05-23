@@ -49,9 +49,9 @@ class TxExecModel extends abstractModel({
     return options.advancedParams && options.advancedParams.mode === 'advanced'
   }
 
-  isNewForm () {
+  isSkipSlider () {
     const options = this.get('options')
-    return !!(options.advancedParams && options.advancedParams.mode)
+    return !!(options.advancedParams && (options.advancedParams.mode || options.advancedParams.skipSlider))
   }
 
   time () {

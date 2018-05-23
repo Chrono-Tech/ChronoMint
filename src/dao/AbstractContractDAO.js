@@ -418,7 +418,7 @@ export default class AbstractContractDAO extends EventEmitter {
       useDefaultGasLimit,
       additionalAction,
       feeMultiplier,
-      advancedParams = undefined,
+      advancedOptions = undefined,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
     const deployed = await this.contract
@@ -430,7 +430,7 @@ export default class AbstractContractDAO extends EventEmitter {
       ? (typeof infoArgs.txSummary === 'function' ? infoArgs.txSummary() : infoArgs)
       : this._argsWithNames(func, args)
 
-    const advancedOptions = advancedParams && typeof advancedParams === 'object' ? advancedParams : {}
+    const advancedParams = advancedOptions && typeof advancedOptions === 'object' ? advancedOptions : {}
 
     let tx = new TxExecModel({
       contract: this.getContractName(),
@@ -440,7 +440,7 @@ export default class AbstractContractDAO extends EventEmitter {
       additionalAction,
       params: args,
       options: {
-        advancedParams: advancedOptions,
+        advancedParams: advancedParams,
       },
     })
 

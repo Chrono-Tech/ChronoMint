@@ -216,7 +216,7 @@ export default class ConfirmTxDialog extends PureComponent {
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
-            { !tx.isNewForm() &&
+            { !tx.isSkipSlider() &&
             <div styleName='gasSliderWrap'>
               <GasSlider
                 isLocal

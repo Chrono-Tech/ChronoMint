@@ -121,18 +121,18 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch(subscribeOnTokens(handleToken))
 }
 
-export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
+export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async () => {
   try {
-    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier)
+    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e.message)
   }
 }
 
-export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1) => async () => {
+export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async () => {
   try {
-    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier)
+    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier, advancedOptions)
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e.message)
