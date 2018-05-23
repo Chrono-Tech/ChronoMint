@@ -13,6 +13,7 @@ export default {
     recipientAddress: 'Recipient address',
     amount: 'Amount',
     transactionFee: 'Transaction fee:',
+    basedOnLimit: 'Based on estimated gas limit: ',
     averageFee: '%{multiplier}x of average fee',
     errorFillSatPerBiteField: 'Need to fill SAT/byte field',
     errorEstimateFee: 'An error has occur during the fee estimation',

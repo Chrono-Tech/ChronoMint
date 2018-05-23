@@ -8,6 +8,7 @@ import SignaturesList from 'components/wallet/SignaturesList/SignaturesList'
 import Button from 'components/common/ui/Button/Button'
 import { createWallet } from 'redux/multisigWallet/actions'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { TextField } from 'redux-form-material-ui'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import PropTypes from 'prop-types'
@@ -107,14 +108,14 @@ export default class MultisigWalletForm extends PureComponent {
     return (
       <form styleName='root' onSubmit={this.props.handleSubmit}>
         <div styleName='body'>
-          {/*<div styleName='block'>*/}
-          {/*<Field*/}
-          {/*component={TextField}*/}
-          {/*name='name'*/}
-          {/*fullWidth*/}
-          {/*floatingLabelText={<Translate value={`${prefix}.name`} />}*/}
-          {/*/>*/}
-          {/*</div>*/}
+          <div styleName='block'>
+            <Field
+              component={TextField}
+              name='name'
+              fullWidth
+              floatingLabelText={<Translate value={`${prefix}.name`} />}
+            />
+          </div>
           <div styleName='block'>
             <Translate styleName='title' count={ownersCount} value={`${prefix}.walletOwners`} />
             <Translate styleName='description' value={`${prefix}.walletOwnersDescription`} />

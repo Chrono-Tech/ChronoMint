@@ -40,7 +40,7 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, blockchain, address) => {
+    send: (tokenId, blockchain, address, wallet) => {
       dispatch(modalsOpen({
         component: SendTokens,
         props: {
@@ -48,6 +48,7 @@ function mapDispatchToProps (dispatch) {
           token: tokenId,
           blockchain,
           address,
+          wallet,
         },
       }))
     },
@@ -106,7 +107,7 @@ export default class WalletWidgetDetail extends PureComponent {
   handleEditSignatures = () => this.props.openEditSignaturesDialog(this.props.wallet)
 
   handleSend = () => {
-    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address)
+    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address, this.props.wallet)
   }
 
   handleReceive = () => {
@@ -167,13 +168,28 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   getWalletName = () => {
-    if (this.isMySharedWallet()) {
-      return 'My Shared Wallet'
-    } else if (this.isLockedWallet()) {
-      return 'My Locked Wallet'
+    const { wallet, blockchain, address } = this.props
+    const name = wallet instanceof MainWalletModel ? wallet.name(blockchain, address) : wallet.name()
+    if (name) {
+      return name
     }
 
-    return 'My Wallet'
+    let key = null
+    if (this.isMySharedWallet()) {
+      key = 'sharedWallet'
+    } else if (this.isLockedWallet()) {
+      key = 'lockedWallet'
+    } else if (wallet instanceof DerivedWalletModel) {
+      if (wallet.customTokens()) {
+        key = 'customWallet'
+      } else {
+        key = 'additionalStandardWallet'
+      }
+    } else {
+      key = 'standardWallet'
+    }
+
+    return <Translate value={`${prefix}.${key}`} />
   }
 
   getAmountList = () => {
@@ -183,7 +199,7 @@ export default class WalletWidgetDetail extends PureComponent {
       return null
     }
 
-    const firstToken = walletInfo.tokens[ 0 ]
+    const firstToken = walletInfo.tokens[0]
 
     return (
       <div styleName='amount-list-container'>
@@ -228,7 +244,7 @@ export default class WalletWidgetDetail extends PureComponent {
               <div styleName='token-container'>
                 {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
+                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
                 </div>
               </div>
               <div styleName='content-container'>
@@ -241,8 +257,8 @@ export default class WalletWidgetDetail extends PureComponent {
                     {tokensList.length === 1
                       ? (
                         <div>
-                          <div>{tokensList[ 0 ].symbol} {integerWithDelimiter(tokensList[ 0 ].amount.toFixed(2), true)}</div>
-                          <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[ 0 ].amountPrice.toFixed(2), true)}</div>
+                          <div>{tokensList[0].symbol} {integerWithDelimiter(tokensList[0].amount.toFixed(2), true)}</div>
+                          <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[0].amountPrice.toFixed(2), true)}</div>
                         </div>
                       )
                       : (

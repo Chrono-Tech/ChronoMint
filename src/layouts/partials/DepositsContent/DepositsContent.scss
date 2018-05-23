@@ -20,7 +20,7 @@
 }
 
 .inner {
-  margin: 100px 80px;
+  margin: 0 80px;
   @include xs-only {
     margin: 30px 20px;
   }

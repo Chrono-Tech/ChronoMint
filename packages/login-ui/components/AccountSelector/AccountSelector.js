@@ -40,12 +40,6 @@ class AccountSelector extends PureComponent {
 
   componentWillMount () {
     this.props.loadAccounts().then(() => {
-      // TODO @dkchv: move to actions ?
-      // autoselect if only one account exists
-      const { accounts } = this.props
-      if (accounts.length === 1) {
-        this.props.selectAccount(accounts[ 0 ])
-      }
     }).catch((e) => {
       this.props.selectAccount(null)
       this.props.addError(e.message)

@@ -69,8 +69,6 @@ class IPFS {
 
         resolve(JSON.parse(Buffer.from(result.data).toString()))
       } catch (e) {
-        // eslint-disable-next-line
-        console.warn('IPFS get error', e, 'hash', hash)
         resolve(null)
       }
     })

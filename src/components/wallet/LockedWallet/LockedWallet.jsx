@@ -36,7 +36,6 @@ export default class LockedWallet extends PureComponent {
 
   render () {
     const { token } = this.props
-    console.log('SharedWallet: ', this.props)
 
 
     return (

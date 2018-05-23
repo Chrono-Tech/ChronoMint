@@ -55,7 +55,6 @@ export class BitcoinEngine {
       vout: output.vout,
       value: output.satoshis,
     })), targets, Math.ceil(feeRate))
-    console.log('describeTransaction: ', inputs, outputs, fee)
     return { inputs, outputs, fee }
   }
 
@@ -116,7 +115,7 @@ export class BTGEngine extends BitcoinEngine {
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ i ].value)
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[i].value)
     }
   }
 }
@@ -129,7 +128,7 @@ export class BCCEngine extends BitcoinEngine {
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[ i ].value)
+      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[i].value)
     }
   }
 }

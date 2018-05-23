@@ -10,6 +10,7 @@ import TxModel from 'models/TxModel'
 import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
+import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
@@ -67,7 +68,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     return this._call('allowance', [account, spender])
   }
 
-  approve (account: string, amount: Amount, feeMultiplier: Number = 1): Promise {
+  approve (account: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(amount),
@@ -77,10 +78,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
       currency: amount.symbol(),
     }, new BigNumber(0), {
       feeMultiplier,
+      advancedOptions,
     })
   }
 
-  revoke (account: string, symbol: string, feeMultiplier: Number = 1): Promise {
+  revoke (account: string, symbol: string, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
     return this._tx('approve', [
       account,
       new BigNumber(0),
@@ -90,10 +92,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
       currency: symbol,
     }, new BigNumber(0), {
       feeMultiplier,
+      advancedOptions,
     })
   }
 
-  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1): Promise {
+  transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
     return this._tx(TX_TRANSFER, [
       to,
       new BigNumber(amount),
@@ -105,6 +108,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
     }, new BigNumber(0), {
       feeMultiplier,
       from,
+      advancedOptions,
     })
   }
 
@@ -127,6 +131,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
       gasFee,
       time,
       token: this.getInitAddress(),
+      blockchain: BLOCKCHAIN_ETHEREUM,
     })
   }
 
@@ -157,7 +162,7 @@ export default class ERC20DAO extends AbstractTokenDAO {
   watchApproval (accounts) {
     return this._watch(EVENT_APPROVAL, (result) => {
       this.emit(EVENT_APPROVAL_TRANSFER, result.args)
-    }, { from: accounts[0] })
+    }, { from: accounts })
   }
 
   async watchTransfer (accounts) {

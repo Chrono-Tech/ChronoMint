@@ -18,6 +18,29 @@
   justify-content: center;
 }
 
+.gas-limit-based {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-primary-3;
+}
+
+.gas-limit-based-container {
+  width: 220px;
+  height: 20px;
+  margin-top: 5px;
+  display: flex;
+  z-index: 999;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.based-limit-value {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-blue-2;
+  cursor: pointer;
+}
+
 .head {
   background-color: $button-color-1;
   width: 430px;

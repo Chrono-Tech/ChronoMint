@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 
 export default class Amount extends BigNumber {
   constructor (value = 0, symbol, isLoaded = true) {
-    super(value)
+    super('' + value)
     this._symbol = symbol
     this._isLoaded = isLoaded
   }

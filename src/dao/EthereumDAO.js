@@ -4,17 +4,39 @@
  */
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import BigNumber from 'bignumber.js'
-import networkService from '@chronobank/login/network/NetworkService'
-import Web3 from 'web3'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
 import TxError from 'models/TxError'
 import TxExecModel from 'models/TxExecModel'
 import TxModel from 'models/TxModel'
+import solidityEvent from 'web3/lib/web3/event'
 import AbstractContractDAO, { DEFAULT_GAS, EVENT_NEW_BLOCK, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+
+const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
+const signatureDefinition = {
+  "anonymous": false,
+  "inputs": [
+    {
+      "indexed": true,
+      "name": "from",
+      "type": "address",
+    },
+    {
+      "indexed": true,
+      "name": "to",
+      "type": "address",
+    },
+    {
+      "indexed": false,
+      "name": "value",
+      "type": "uint256",
+    },
+  ],
+  "name": "Transfer",
+  "type": "event",
+}
 
 export const TX_TRANSFER = 'transfer'
 
@@ -79,9 +101,7 @@ export class EthereumDAO extends AbstractTokenDAO {
 
   /** @private */
   _getTxModel (tx, time = Date.now() / 1000): TxModel {
-    // error "15 Significant digit limit"
-    BigNumber.config({ ERRORS: false })
-    const gasPrice = tx.gasPrice && new BigNumber(tx.gasPrice)
+    const gasPrice = tx.gasPrice && new BigNumber('' + tx.gasPrice)
     const gasFee = gasPrice && gasPrice.mul(tx.gas)
 
     return new TxModel({
@@ -91,15 +111,16 @@ export class EthereumDAO extends AbstractTokenDAO {
       transactionIndex: tx.transactionIndex,
       from: tx.from,
       to: tx.to,
-      value: new Amount(tx.value, this._symbol),
+      value: new Amount(tx.value, tx.symbol || this._symbol),
       time,
       gasPrice,
       gas: tx.gas,
       gasFee,
       input: tx.input,
       // TODO @dkchv: token ???
-      token: this._symbol,
-      symbol: this._symbol,
+      token: tx.symbol || this._symbol,
+      symbol: tx.symbol || this._symbol,
+      blockchain: BLOCKCHAIN_ETHEREUM,
     })
   }
 
@@ -119,7 +140,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit, gasFee, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number): Promise {
+  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, advancedModeParam): Promise {
     const value = new BigNumber(amount)
     const txData = {
       from,
@@ -146,14 +167,23 @@ export class EthereumDAO extends AbstractTokenDAO {
       params: {
         to,
       },
+      options: {
+        advancedParams: advancedModeParam,
+      },
     })
     AbstractContractDAO.txGas(tx)
 
     return new Promise(async (resolve, reject) => {
       try {
         tx = await AbstractContractDAO.txStart(tx, estimateGastransfer, feeMultiplier)
-        txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
-        txData.gasPrice = tx.gasPrice()
+
+        if (typeof advancedModeParam === 'object') {
+          txData.gasPrice = advancedModeParam.gweiPerGas
+          txData.gas = advancedModeParam.gasLimit
+        } else {
+          txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
+          txData.gasPrice = tx.gasPrice()
+        }
 
         let txHash
         const web3 = await this._web3Provider.getWeb3()
@@ -234,15 +264,42 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async getTransfer (id, account, skip, offset): Promise<TxModel> {
+  async getTransfer (id, account, skip, offset, tokens): Promise<TxModel> {
+    let tokensMap = {}
+    tokens.items().map((token) => {
+      if (token.address()) {
+        tokensMap[token.address()] = token.symbol()
+      }
+    })
     let txs = []
     try {
       const txsResult = await ethereumProvider.getTransactionsList(account, skip, offset)
       for (const tx of txsResult) {
-        if (!tx.value || tx.value === '0') {
-          continue
+        if (tx.logs.length > 0) {
+          let txToken
+          if (tokensMap[tx.from]) {
+            txToken = tokensMap[tx.from]
+          }
+          if (tokensMap[tx.to]) {
+            txToken = tokensMap[tx.to]
+          }
+          tx.logs.map((log) => {
+            if (tokensMap[log.address]) {
+              txToken = tokensMap[log.address]
+            }
+            if (log.signature === transferSignature) {
+              let resultDecoded = new solidityEvent(null, signatureDefinition).decode(log)
+              tx.from = resultDecoded.args.from
+              tx.to = resultDecoded.args.to
+              tx.value = resultDecoded.args.value
+            }
+          })
+          if (txToken) {
+            tx.symbol = txToken
+          }
         }
-        txs.push(this._getTxModel(tx, tx.timestamp))
+
+        txs.push(this._getTxModel(tx, tx.timestamp, tokens))
       }
     } catch (e) {
       // eslint-disable-next-line

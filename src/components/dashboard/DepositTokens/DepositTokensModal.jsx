@@ -18,9 +18,9 @@ import './DepositTokensForm.scss'
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
-    depositAsset: (amount, token, feeMultiplier) => dispatch(depositAsset(amount, token, feeMultiplier)),
-    withdrawAsset: (amount, token, feeMultiplier) => dispatch(withdrawAsset(amount, token, feeMultiplier)),
+    mainApprove: (token, amount, spender, feeMultiplier, advancedOptions = undefined) => dispatch(mainApprove(token, amount, spender, feeMultiplier, advancedOptions)),
+    depositAsset: (amount, token, feeMultiplier, advancedOptions = undefined) => dispatch(depositAsset(amount, token, feeMultiplier, advancedOptions)),
+    withdrawAsset: (amount, token, feeMultiplier, advancedOptions = undefined) => dispatch(withdrawAsset(amount, token, feeMultiplier, advancedOptions)),
     resetForm: () => dispatch(change(FORM_DEPOSIT_TOKENS, 'amount', '')),
     handleCloseModal: () => dispatch(modalsClose()),
   }
@@ -49,13 +49,19 @@ export default class DepositTokensModal extends PureComponent {
 
     switch (values.get('action')) {
       case ACTION_APPROVE:
-        this.props.mainApprove(token, amount, values.get('spender'), feeMultiplier)
+        this.props.mainApprove(token, amount, values.get('spender'), feeMultiplier, {
+          skipSlider: true,
+        })
         break
       case ACTION_DEPOSIT:
-        this.props.depositAsset(amount, token, feeMultiplier)
+        this.props.depositAsset(amount, token, feeMultiplier, {
+          skipSlider: true,
+        })
         break
       case ACTION_WITHDRAW:
-        this.props.withdrawAsset(amount, token, feeMultiplier)
+        this.props.withdrawAsset(amount, token, feeMultiplier, {
+          skipSlider: true,
+        })
         break
     }
   }

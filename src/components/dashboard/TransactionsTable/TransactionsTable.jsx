@@ -37,27 +37,22 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    getAccountTransactions: () => dispatch(getAccountTransactions()),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
+    blockchain: PropTypes.string,
     walletAddress: PropTypes.string,
     transactions: PropTypes.instanceOf(TransactionsCollection),
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
-    getAccountTransactions: PropTypes.func,
+    onGetTransactions: PropTypes.func.isRequired,
     tokens: PropTypes.instanceOf(TokensCollection),
     account: PropTypes.string,
   }
 
   handleLoadMore = () => {
-    this.props.getAccountTransactions()
+    this.props.onGetTransactions()
   }
 
   renderRow ({ trx }) {
@@ -155,7 +150,9 @@ export default class TransactionsTable extends PureComponent {
 
 function buildTableData (transactions, locale) {
   moment.locale(locale)
-  const groups = transactions.items()
+  const groups = transactions
+    .items()
+    .filter((tx) => tx.value().gt(0))
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {

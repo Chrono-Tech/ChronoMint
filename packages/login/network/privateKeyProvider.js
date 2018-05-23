@@ -24,7 +24,7 @@ import {
 } from './mnemonicProvider'
 
 class PrivateKeyProvider {
-  getPrivateKeyProvider (privateKey, { url, network } = {}) {
+  getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = this.createEthereumWallet(privateKey)
     const btc = network && network.bitcoin && this.createBitcoinWallet(privateKey, bitcoin.networks[network.bitcoin])
@@ -33,9 +33,19 @@ class PrivateKeyProvider {
     const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
 
+    let lastDeriveNumbers = 0
+
+    wallets && wallets
+      .items()
+      .map((wallet) => {
+        if (wallet.owners().items().filter((owner) => owner.address() === ethereumWallet.getAddressString()).length > 0 && wallet.constructor.name === 'DerivedWalletModel') {
+          lastDeriveNumbers++
+        }
+      })
+
     return {
       networkCode,
-      ethereum: new EthereumEngine(ethereumWallet, network, url),
+      ethereum: new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),

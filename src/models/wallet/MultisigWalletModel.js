@@ -13,6 +13,7 @@ import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
+  name: null,
   address: null, //
   balances: new BalancesCollection(),
   tokens: new Immutable.Map(), //
@@ -27,6 +28,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
+  }
+
+  name (value) {
+    return this._getSet('name', value)
   }
 
   owners (value) {
@@ -69,8 +74,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('isMultisig')
   }
 
-  transactions (value) {
-    return this._getSet('transactions', value)
+  transactions () {
+    return this.get('transactions')
   }
 
   txSummary () {

@@ -7,18 +7,14 @@
 $gutter: 24px;
 
 .root {
-  min-width: 300px;
-  max-width: 460px;
+  min-width: 450px;
+  max-width: 450px;
   background-color: $color-white;
   .body {
-    .nameBlock {
-      border-bottom: 1px solid $color-grey300;
-      color: $color-black;
-      padding: 30px;
-    }
     .block {
       border-bottom: 1px solid $color-grey300;
       color: $color-black;
+      padding: 30px;
 
       &:last-child {
         border-bottom: none;

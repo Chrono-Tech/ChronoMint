@@ -44,7 +44,7 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goToWallets: () => dispatch(goToWallets()),
-    getTransactions: (wallet) => dispatch(getTransactionsForWallet(wallet)),
+    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
   }
 }
 
@@ -80,9 +80,12 @@ export default class WalletContent extends Component {
   }
 
   componentDidMount () {
-    if (this.props.wallet instanceof DerivedWalletModel) {
-      this.props.getTransactions(this.props.wallet)
-    }
+    this.handleGetTransactions()
+  }
+
+  handleGetTransactions = () => {
+    const { wallet, address, blockchain } = this.props
+    this.props.getTransactions({ wallet, address, blockchain })
   }
 
   render () {
@@ -90,6 +93,12 @@ export default class WalletContent extends Component {
 
     if (!wallet || !walletInfo) {
       return null
+    }
+    let transactions
+    if (wallet instanceof MainWalletModel) {
+      transactions = wallet.transactions({ blockchain, address })
+    } else {
+      transactions = wallet.transactions()
     }
 
     return (
@@ -104,7 +113,7 @@ export default class WalletContent extends Component {
 
         <div styleName='transactions'>
           <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
-          <TransactionsTable transactions={wallet.transactions()} walletAddress={wallet.address()} />
+          <TransactionsTable transactions={transactions} walletAddress={address} blockchain={blockchain} onGetTransactions={this.handleGetTransactions} />
         </div>
       </div>
     )

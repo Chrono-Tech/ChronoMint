@@ -41,15 +41,15 @@ export default class WalletsContent extends Component {
       <div styleName='root'>
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title} id={walletGroup.title}>
-            {walletGroup.data.map((wallet, index) => (
-              <WalletWidget
+            {walletGroup.data.map((wallet, index) => {
+              return (<WalletWidget
                 showGroupTitle={!index}
                 key={`${walletGroup.title}-${wallet.address}`}
                 blockchain={walletGroup.title}
                 address={wallet.address}
                 wallet={wallet.wallet}
-              />
-            ))}
+              />)}
+            )}
           </div>
         ))}
       </div>

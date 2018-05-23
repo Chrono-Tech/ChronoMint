@@ -41,6 +41,7 @@
   height: 24px;
   font-size: 32px;
   opacity: 0.2;
+  cursor: pointer;
 
   &:hover {
     opacity: 1;
@@ -184,6 +185,7 @@
   font-family: 'proxima nova', sans-serif;
   font-weight: 700;
   line-height: 22px;
+  word-break: break-all;
 }
 
 .address-address {

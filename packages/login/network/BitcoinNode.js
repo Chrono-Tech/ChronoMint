@@ -97,6 +97,14 @@ export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
     baseURL: 'https://testnet.litecore.io/api',
     timeout: 4000,
   }),
+  socket: {
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
+    channels: {
+      balance: '/exchange/events/testnet-litecoin-middleware-chronobank-io_balance',
+    },
+  },
   trace: false,
 })
 

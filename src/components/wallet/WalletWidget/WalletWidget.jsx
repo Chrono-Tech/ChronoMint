@@ -30,6 +30,7 @@ import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
+import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
 
 function mapStateToProps (state, ownProps) {
   return {
@@ -61,12 +62,21 @@ function mapDispatchToProps (dispatch) {
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
+    setWalletName: (wallet, blockchain, address) => dispatch(modalsOpen({
+      component: WalletSettingsForm,
+      props: {
+        wallet,
+        blockchain,
+        address,
+      },
+    })),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletWidget extends PureComponent {
   static propTypes = {
+    setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
     wallet: PropTypes.oneOfType([
       PropTypes.instanceOf(MainWalletModel),
@@ -93,17 +103,16 @@ export default class WalletWidget extends PureComponent {
 
     this.state = {
       isShowAll: false,
+      isSettingsOpen: false,
     }
   }
 
   handleSend = (wallet) => () => {
     this.props.send(this.props.token.id(), this.props.blockchain, this.props.address, wallet)
   }
-
   handleReceive = () => {
     this.props.receive(this.props.blockchain)
   }
-
   handleDeposit = () => {
     this.props.deposit()
   }
@@ -163,13 +172,19 @@ export default class WalletWidget extends PureComponent {
   }
 
   getWalletName = () => {
+    const { wallet, blockchain, address } = this.props
+    const name = wallet instanceof MainWalletModel ? wallet.name(blockchain, address) : wallet.name()
+    if (name) {
+      return name
+    }
+
     let key = null
     if (this.isMySharedWallet()) {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
-    } else if (this.props.wallet instanceof DerivedWalletModel) {
-      if (this.props.wallet.customTokens()) {
+    } else if (wallet instanceof DerivedWalletModel) {
+      if (wallet.customTokens()) {
         key = 'customWallet'
       } else {
         key = 'additionalStandardWallet'
@@ -179,6 +194,10 @@ export default class WalletWidget extends PureComponent {
     }
 
     return <Translate value={`${prefix}.${key}`} />
+  }
+
+  handleOpenSettings = () => {
+    this.props.setWalletName(this.props.wallet, this.props.blockchain, this.props.address)
   }
 
   getTokenAmountList = () => {
@@ -222,9 +241,10 @@ export default class WalletWidget extends PureComponent {
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>
-            {/*<div styleName='settings-container'>*/}
-            {/*<div styleName='settings-icon' className='chronobank-icon'>settings</div>*/}
-            {/*</div>*/}
+            <div styleName='settings-container'>
+              <div styleName='settings-icon' className='chronobank-icon' onTouchTap={this.handleOpenSettings}>settings
+              </div>
+            </div>
             <div styleName='token-container'>
               {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
               <div styleName='token-icon'>

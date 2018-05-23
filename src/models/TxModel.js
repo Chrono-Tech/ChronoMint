@@ -28,9 +28,14 @@ class TxModel extends abstractModel({
   type: '',
   token: null, // address
   args: null,
+  blockchain: null,
 }) {
   tokenAddress (value) {
     return this._getSet('tokenAddress', value)
+  }
+
+  blockchain (value) {
+    return this._getSet('blockchain', value)
   }
 
   blockNumber (value) {
@@ -62,7 +67,7 @@ class TxModel extends abstractModel({
   }
 
   id () {
-    return `${this.type()} - ${this.txHash()} - ${this.from()} - ${this.to()}`
+    return `${this.blockchain()}-${this.txHash()}-${this.from()}-${this.to()}`
   }
 
   time () {
