@@ -37,13 +37,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    getAccountTransactions: () => dispatch(getAccountTransactions()),
-  }
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 export default class TransactionsTable extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
@@ -52,13 +46,13 @@ export default class TransactionsTable extends PureComponent {
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     locale: PropTypes.string,
-    getAccountTransactions: PropTypes.func,
+    onGetTransactions: PropTypes.func.isRequired,
     tokens: PropTypes.instanceOf(TokensCollection),
     account: PropTypes.string,
   }
 
   handleLoadMore = () => {
-    this.props.getAccountTransactions()
+    this.props.onGetTransactions()
   }
 
   renderRow ({ trx }) {
@@ -93,11 +87,11 @@ export default class TransactionsTable extends PureComponent {
   }
 
   render () {
-    const { transactions, locale, walletAddress, blockchain } = this.props
+    const { transactions, locale } = this.props
     const size = transactions.size()
     const endOfList = transactions.endOfList()
     const isFetching = transactions.isFetching()
-    const data = buildTableData(transactions, locale, walletAddress, blockchain)
+    const data = buildTableData(transactions, locale)
 
     return (
       <div styleName='root' className='TransactionsTable__root'>
@@ -154,11 +148,11 @@ export default class TransactionsTable extends PureComponent {
   }
 }
 
-function buildTableData (transactions, locale, address, blockchain) {
+function buildTableData (transactions, locale) {
   moment.locale(locale)
   const groups = transactions
     .items()
-    .filter((tx) => ((tx.from() === address || tx.to() === address) && tx.blockchain() === blockchain))
+    .filter((tx) => tx.value().gt(0))
     .reduce((data, trx) => {
       const groupBy = trx.date('YYYY-MM-DD')
       data[groupBy] = data[groupBy] || {

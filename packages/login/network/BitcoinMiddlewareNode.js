@@ -167,7 +167,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     return new BitcoinTx({
       blockHash: tx.blockHash,
       blockNumber: tx.blockNumber,
-      txHash: tx.hash,
+      txHash: tx.hash || tx._id,
       time: tx.timestamp,
       from,
       to,
