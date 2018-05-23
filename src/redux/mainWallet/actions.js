@@ -340,7 +340,6 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   const { account } = getState().get(DUCK_SESSION)
   const dao = tokenService.getDAO(tokenId)
   const allowance = await dao.getAccountAllowance(account, spender)
-  console.log('--actions#', 1)
   dispatch({
     type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
       amount: new Amount(allowance, tokenId),

@@ -29,7 +29,6 @@ export default class EditSignaturesDialog extends PureComponent {
   }
 
   handleSubmitSuccess = (newRequired) => {
-    console.log('--EditSignaturesDialog#handleSubmitSuccess', newRequired)
     this.props.modalsClose()
     this.props.handleAddOwner(this.props.wallet, newRequired)
   }

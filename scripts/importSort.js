@@ -24,7 +24,6 @@ function transform (file) {
   if (!/\.jsx?$/.test(file)) {
     return
   }
-  console.log(file)
 
   const data = fs.readFileSync(file)
   const fd = fs.openSync(file, 'w')
