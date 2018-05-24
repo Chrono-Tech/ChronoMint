@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
 import './WalletsContent.scss'
 
 const mapStateToProps = (state, ownProps) => {
@@ -30,7 +30,6 @@ export default class WalletsContent extends Component {
         wallet: PropTypes.oneOfType([
           PropTypes.instanceOf(MainWalletModel),
           PropTypes.instanceOf(MultisigWalletModel),
-          PropTypes.instanceOf(DerivedWalletModel),
         ]),
       }),
     ),
@@ -39,17 +38,17 @@ export default class WalletsContent extends Component {
   render () {
     return (
       <div styleName='root'>
+        <TwoFAWarningWidget />
         {this.props.walletsList.map((walletGroup) => (
-          <div key={walletGroup.title} id={walletGroup.title}>
-            {walletGroup.data.map((wallet, index) => {
-              return (<WalletWidget
-                showGroupTitle={!index}
+          <div key={walletGroup.title}>
+            {walletGroup.data.map((wallet) => (
+              <WalletWidget
                 key={`${walletGroup.title}-${wallet.address}`}
                 blockchain={walletGroup.title}
                 address={wallet.address}
                 wallet={wallet.wallet}
-              />)}
-            )}
+              />
+            ))}
           </div>
         ))}
       </div>

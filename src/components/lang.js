@@ -26,6 +26,7 @@ import TokensListWidget from 'components/wallet/TokensListWidget/lang'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/lang'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/lang'
 import AddWalletWidget from 'components/wallet/AddWalletWidget/lang'
+import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/lang'
 
 export default {
   en: {
@@ -55,5 +56,6 @@ export default {
     MultisigWalletForm: MultisigWalletForm.en,
     TimeLockedWalletForm: TimeLockedWalletForm.en,
     WalletSettingsForm: WalletSettingsForm.en,
+    TwoFAWarningWidget: TwoFAWarningWidget.en,
   },
 }
