@@ -65,7 +65,7 @@ export default class SendTokens extends PureComponent {
     address: PropTypes.string,
   }
 
-  handleSubmit = (values) => {
+  handleSubmit = (values, formState) => {
     const { wallet, tokens } = this.props
 
     const { action, symbol, amount, recipient, feeMultiplier, gweiPerGas, satPerByte, gasLimit, mode } = values.toJS()
@@ -73,13 +73,15 @@ export default class SendTokens extends PureComponent {
       mode,
     }
 
+    const currentGasLimit = gasLimit || formState.gasLimitEstimated
+
     const token = tokens.item(symbol)
     if (mode === MODE_ADVANCED && token.blockchain() === BLOCKCHAIN_ETHEREUM) {
       const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
       advancedModeParams = {
         gweiPerGas: gweiPerGasBN,
         gasLimit,
-        gasFee: gweiPerGasBN.mul(gasLimit),
+        gasFee: gweiPerGasBN.mul(currentGasLimit),
         ...advancedModeParams,
       }
     }
