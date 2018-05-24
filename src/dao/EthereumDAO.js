@@ -177,7 +177,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       try {
         tx = await AbstractContractDAO.txStart(tx, estimateGastransfer, feeMultiplier)
 
-        if (typeof advancedModeParam === 'object') {
+        if (tx.isAdvancedFeeMode()) {
           txData.gas = advancedModeParam.gasLimit
           txData.gasPrice = advancedModeParam.gweiPerGas
         } else {
