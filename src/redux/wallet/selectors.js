@@ -39,16 +39,21 @@ export const getCurrentWalletBalance = (symbol) => createSelector(
   (currentWallet) => currentWallet.balances().item(symbol),
 )
 
-export const getWalletsCount = () => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => {
-    let i = 0
-    currentWallet.balances().items().map((balance) => {
-      if (balance.amount().gt(0)) {
-        i++
-      }
-    })
-    return i
+export const getWalletsCount = (account) => createSelector(
+  [getMainWallet, getMultisigWallets],
+  (mainWallet, multisigWallets) => {
+    const mainWalletsCount =  mainWallet.addresses().items().length
+    const multissigWalletsCount = multisigWallets.items().filter((wallet) => {
+      const ownerList = wallet.owners().items()
+      return !!ownerList.filter((owner) => {
+        console.log('owner list: ', owner.address(), account)
+        return owner.address() === account
+      }).length
+    }).length
+
+    console.log('getWalletsCount  mainWallet :', mainWallet.addresses().toJSON())
+
+    return mainWalletsCount + multissigWalletsCount
   },
 )
 
