@@ -9,6 +9,7 @@ import { CopyIcon, IPFSImage, QRIcon } from 'components'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { selectWallet } from 'redux/wallet/actions'
 import { getToken } from 'redux/locs/selectors'
 import TokenModel from 'models/tokens/TokenModel'
 import { Translate } from 'react-redux-i18n'
@@ -45,6 +46,7 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     onMainMenuClose: () => dispatch({ type: SIDES_TOGGLE_MAIN_MENU, mainMenuIsOpen: false }),
+    selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
   }
 }
 
@@ -64,21 +66,23 @@ export default class MenuTokenMoreInfo extends PureComponent {
     }),
     onProfileClose: PropTypes.func,
     onMainMenuClose: PropTypes.func,
+    selectWallet: PropTypes.func,
   }
 
   handleClose = () => {
     this.props.onProfileClose()
   }
 
-  handleSelectLink = () => {
+  handleSelectLink = (blockchain, address) => {
     this.props.onMainMenuClose()
     this.handleClose()
+    this.props.selectWallet(blockchain, address)
   }
 
   renderWallet = (wallet) => {
     return (
       <div styleName='walletIrem' key={wallet.address()}>
-        <Link to='/wallet' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
+        <Link to='/wallet' href styleName='walletTitle' onTouchTap={() => this.handleSelectLink(wallet.blockchain(), wallet.address())}>
           <div styleName='walletName'><Translate value={`${prefix}.multisignatureWallet`} /></div>
           <div styleName='walletAddress'>{wallet.address()}</div>
           <div styleName='walletLink'>
@@ -150,7 +154,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallet' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
+            <Link to='/wallet' href styleName='walletTitle' onTouchTap={() => {this.handleSelectLink(token.blockchain(), walletAddress.address())}}>
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress.address()}</div>
               <div styleName='walletLink'>
