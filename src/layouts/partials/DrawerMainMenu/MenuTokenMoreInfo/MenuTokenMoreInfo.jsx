@@ -24,6 +24,7 @@ import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import { SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
+import { DUCK_SESSION } from 'redux/session/actions'
 import './MenuTokenMoreInfo.scss'
 import { prefix } from './lang'
 
@@ -32,6 +33,7 @@ export const MENU_TOKEN_MORE_INFO_PANEL_KEY = 'MenuTokenMoreInfo_panelKey'
 function mapStateToProps (state, ownProps) {
   const multiSigWallet = state.get(DUCK_MULTISIG_WALLET)
   const monitor = state.get(DUCK_MONITOR)
+  const { account } = state.get(DUCK_SESSION)
 
   return {
     networkStatus: monitor.network,
@@ -39,6 +41,7 @@ function mapStateToProps (state, ownProps) {
     token: getToken(ownProps.selectedToken ? ownProps.selectedToken.symbol : null)(state),
     walletAddress: getWalletAddress(ownProps.selectedToken ? ownProps.selectedToken.blockchain : null)(state),
     multiSigWallet,
+    account,
   }
 }
 
@@ -64,6 +67,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
     }),
     onProfileClose: PropTypes.func,
     onMainMenuClose: PropTypes.func,
+    account: PropTypes.string,
   }
 
   handleClose = () => {
@@ -76,6 +80,12 @@ export default class MenuTokenMoreInfo extends PureComponent {
   }
 
   renderWallet = (wallet) => {
+    const owners = wallet.owners()
+    // if user not owner
+    if (owners.items().filter((owner) => owner.address() === this.props.account).length <= 0) {
+      return null
+    }
+
     return (
       <div styleName='walletIrem' key={wallet.address()}>
         <Link to='/wallet' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
@@ -140,7 +150,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
       <div styleName='root'>
         <div styleName='content-part'>
           <div styleName='title'>
-            <IPFSImage styleName='tokenIcon' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ]} />
+            <IPFSImage styleName='tokenIcon' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
             <div styleName='titleText'>{token.name() || token.symbol() || <Translate value={`${prefix}.title`} />}</div>
             <div styleName='close' onTouchTap={this.handleClose}>
               <IconButton>
