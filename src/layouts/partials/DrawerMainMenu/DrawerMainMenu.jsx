@@ -221,7 +221,8 @@ export default class DrawerMainMenu extends PureComponent {
               <div styleName='title'>
                 <Translate value='Wallets' />
               </div>
-              <div styleName='count'>{this.props.walletsCount}</div>
+              {/* TODO uncomment*/}
+              {/*<div styleName='count'>{this.props.walletsCount}</div>*/}
             </Link>
 
             <MenuTokensList onSelectLink={this.handleSelectLink} />

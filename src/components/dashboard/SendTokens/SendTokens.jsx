@@ -80,7 +80,7 @@ export default class SendTokens extends PureComponent {
       const gweiPerGasBN = new BigNumber(web3Converter.toWei(gweiPerGas, 'gwei'))
       advancedModeParams = {
         gweiPerGas: gweiPerGasBN,
-        gasLimit,
+        gasLimit: currentGasLimit,
         gasFee: gweiPerGasBN.mul(currentGasLimit),
         ...advancedModeParams,
       }
