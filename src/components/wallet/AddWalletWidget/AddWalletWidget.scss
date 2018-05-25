@@ -5,23 +5,9 @@
 @import '~styles/partials/variables';
 
 .root {
-  .widget {
-    width: 430px;
-    border-radius: 2px;
-    .title {
-      border-radius: 2px 2px 0 0;
-      min-height: 74px;
-      background-color: $color-blue-4;
-      font-size: 30px;
-      color: $color-white;
-      font-weight: 400;
-      padding: 0 30px;
-      display: flex;
-      align-items: center;
-    }
-    .body {
-      background: $color-white;
-      border-radius: 0 0 2px 2px;
+  :global {
+    .WidgetContainer__root {
+      width: 430px;
     }
   }
 }

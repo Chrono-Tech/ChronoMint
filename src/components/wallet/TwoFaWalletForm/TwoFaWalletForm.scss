@@ -1,0 +1,58 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  padding: 30px;
+  .img {
+    padding: 20px 0 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .title {
+    font-weight: 700;
+    color: $color-primary-3;
+    font-size: 20px;
+    line-height: 28px;
+    padding-bottom: 20px;
+  }
+  .description {
+    color: $color-primary-3;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 30px;
+  }
+  .slider {
+    .tagsWrap {
+      display: flex;
+      justify-content: space-between;
+      color: $border-color;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      margin-bottom: 15px;
+    }
+  }
+  .transactionFee {
+    margin: 20px 0;
+    .title {
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+    .description {
+      .gweiMultiplier {
+
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+}
+

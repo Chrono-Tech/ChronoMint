@@ -27,7 +27,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { ETH, getSpendersAllowance } from 'redux/mainWallet/actions'
+import { ETH, FEE_RATE_MULTIPLIER, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
@@ -46,12 +46,6 @@ export const MODE_ADVANCED = 'advanced'
 
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
-
-const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -246,8 +240,7 @@ export default class SendTokensForm extends PureComponent {
     const { gasLimit, gweiPerGas } = this.props
     if (this.props.mode === MODE_ADVANCED && (gasLimit || this.state.gasLimitEstimated) && gweiPerGas) {
 
-      if ((gasLimit && validators.positiveNumber(gasLimit)) || validators.positiveNumber(gweiPerGas))
-      {
+      if ((gasLimit && validators.positiveNumber(gasLimit)) || validators.positiveNumber(gweiPerGas)) {
         this.setState({
           gasFee: null,
           gasPrice: null,
@@ -607,7 +600,7 @@ export default class SendTokensForm extends PureComponent {
                 fullWidth
               />
             </div>
-            { this.state.gasLimitEstimated && !this.props.gasLimit &&
+            {this.state.gasLimitEstimated && !this.props.gasLimit &&
             <div styleName='gas-limit-based-container'>
               <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
                 <span
@@ -617,7 +610,7 @@ export default class SendTokensForm extends PureComponent {
                   {this.state.gasLimitEstimated}
                 </span>
               </span>
-            </div> }
+            </div>}
           </div>
         )}
         {this.isTransactionFeeAvailable(token.blockchain()) &&

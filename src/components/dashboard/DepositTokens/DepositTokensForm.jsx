@@ -24,7 +24,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -46,12 +46,6 @@ export const ACTION_WITHDRAW = 'deposit/withdraw'
 const DEPOSIT_FIRST = 'depositFirst'
 const DEPOSIT_SECOND = 'depositSecond'
 const WITHDRAW = 'withdraw'
-
-const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
 
 function prefix (token) {
   return `components.DepositTokens.${token}`
