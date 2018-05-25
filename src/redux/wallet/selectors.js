@@ -39,24 +39,6 @@ export const getCurrentWalletBalance = (symbol) => createSelector(
   (currentWallet) => currentWallet.balances().item(symbol),
 )
 
-export const getWalletsCount = (account) => createSelector(
-  [getMainWallet, getMultisigWallets],
-  (mainWallet, multisigWallets) => {
-    const mainWalletsCount =  mainWallet.addresses().items().length
-    const multissigWalletsCount = multisigWallets.items().filter((wallet) => {
-      const ownerList = wallet.owners().items()
-      return !!ownerList.filter((owner) => {
-        console.log('owner list: ', owner.address(), account)
-        return owner.address() === account
-      }).length
-    }).length
-
-    console.log('getWalletsCount  mainWallet :', mainWallet.addresses().toJSON())
-
-    return mainWalletsCount + multissigWalletsCount
-  },
-)
-
 export const selectMainWalletBalancesListStore = (state) =>
   state.get(DUCK_MAIN_WALLET).balances().list() // BalancesCollection, array of BalanceModel
 
