@@ -142,7 +142,6 @@ export default class NemDAO extends EventEmitter {
     try {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
-        // TODO @abdulov now, it not worked, blocked by Middleware
         if (tx.value > 0) {
           txs.push(new TxModel({
             txHash: tx.txHash,

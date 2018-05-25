@@ -104,12 +104,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
       const txHash = wallet.transactionHash()
 
       if (txHash) {
-        // reselect
-        const selectedWallet = wallets.selected()
-        if (selectedWallet.transactionHash() && selectedWallet.transactionHash() === txHash) {
-          dispatch(selectMultisigWallet(wallet.address()))
-        }
-
         // created via event
         // address arrived, delete temporary hash
         dispatch({ type: MULTISIG_REMOVE, id: txHash })

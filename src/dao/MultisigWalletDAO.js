@@ -109,7 +109,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchError (wallet, callback) {
     return this._watch('Error', (result) => {
-      console.log('--MultisigWalletDAO#', result)
       callback(this._c.hexToDecimal(result.args.errorCode))
     }, { self: wallet.address() })
   }
@@ -238,7 +237,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async _decodeArgs (func: string, args: Object) {
-    console.log('--MultisigWalletDAO#_decodeArgs', func, args)
     switch (func) {
       case 'transfer':
         const symbol = this._c.bytesToString(args._symbol)

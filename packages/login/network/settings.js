@@ -45,19 +45,19 @@ const blockExplorersMap = {
       'https://rinkeby.etherscan.io',
     ],
   },
-  [ BLOCKCHAIN_BITCOIN ]: {
+  [BLOCKCHAIN_BITCOIN]: {
     mainnet: 'https://blockexplorer.com/tx',
-    testnet: 'https://tbtc.blockdozer.com/insight/tx',
+    testnet: 'https://tbtc.blockdozer.com/tx',
   },
-  [ BLOCKCHAIN_BITCOIN_CASH ]: {
+  [BLOCKCHAIN_BITCOIN_CASH]: {
     mainnet: 'https://bcc.blockdozer.com/insight/tx',
     testnet: 'https://tbcc.blockdozer.com/insight/tx',
   },
-  [ BLOCKCHAIN_BITCOIN_GOLD ]: {
+  [BLOCKCHAIN_BITCOIN_GOLD]: {
     mainnet: 'https://btgexplorer.com/tx',
     testnet: null,
   },
-  [ BLOCKCHAIN_LITECOIN ]: {
+  [BLOCKCHAIN_LITECOIN]: {
     mainnet: 'https://live.blockcypher.com/ltc/tx',
     testnet: 'https://chain.so/tx/LTCTEST',
   },
@@ -232,34 +232,34 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
     case providerMap.uport.id:
     case providerMap.metamask.id: {
-      return [ ...BASE_NETWORK_MAP ]
+      return [...BASE_NETWORK_MAP]
     }
     case providerMap.infura.id: {
-      const networks = [ ...infuraNetworkMap ]
+      const networks = [...infuraNetworkMap]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
     }
     case providerMap.giveth.id: {
-      const networks = [ ...givethNetworkMap ]
+      const networks = [...givethNetworkMap]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
     }
     case providerMap.mew.id: {
-      const networks = [ ...mewNetworkMap ]
+      const networks = [...mewNetworkMap]
       if (withLocal) {
         networks.push(infuraLocalNetwork)
       }
       return networks
     }
     case providerMap.chronoBank.id: {
-      return [ ...chronoBankMap ]
+      return [...chronoBankMap]
     }
     case providerMap.local.id: {
-      return [ infuraLocalNetwork ]
+      return [infuraLocalNetwork]
     }
     default: {
       return []
@@ -268,7 +268,7 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 }
 
 export const getProviderById = (providerId) => {
-  return providerMap[ Object.keys(providerMap).find((key) => providerMap[ key ].id === providerId) ] || {}
+  return providerMap[Object.keys(providerMap).find((key) => providerMap[key].id === providerId)] || {}
 }
 
 export const getNetworkById = (networkId, providerId, withLocal = false) => {
@@ -279,7 +279,7 @@ export const getNetworkById = (networkId, providerId, withLocal = false) => {
 export const getScannerById = (networkId, providerId, api = false) => {
   let scanner = getNetworkById(networkId, providerId).scanner
   if (Array.isArray(scanner)) {
-    scanner = scanner[ api ? 1 : 0 ]
+    scanner = scanner[api ? 1 : 0]
   }
   return scanner
 }
@@ -287,15 +287,15 @@ export const getScannerById = (networkId, providerId, api = false) => {
 export const getBlockExplorerUrl = (networkId, providerId, txHash, blockchain) => {
   try {
     const isTestnet = isTestingNetwork(networkId, providerId)
-    const explorers = blockExplorersMap[ blockchain ]
+    const explorers = blockExplorersMap[blockchain]
     if (!explorers) {
       // TODO @ipavlenko: We have no TX history & TX explorers for some blockchains, for NEM for example
       // Public installations have no https support.
       return null
     }
-    let baseUrl = explorers[ isTestnet ? 'testnet' : 'mainnet' ]
+    let baseUrl = explorers[isTestnet ? 'testnet' : 'mainnet']
     if (Array.isArray(baseUrl)) {
-      baseUrl = baseUrl[ 0 ]
+      baseUrl = baseUrl[0]
     }
 
     return baseUrl ? (`${baseUrl}/${txHash}`) : null

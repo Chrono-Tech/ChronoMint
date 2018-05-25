@@ -538,8 +538,6 @@ export default class SendTokensForm extends PureComponent {
     const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet, dispatch } = this.props
     const isTimeLocked = wallet.isTimeLocked()
 
-    console.log('this.props.gasLimitEstimated: ', this.props, this.props.gasLimitEstimated, this.props.gasLimit)
-
     return (
       <div styleName='form-container'>
         <div>

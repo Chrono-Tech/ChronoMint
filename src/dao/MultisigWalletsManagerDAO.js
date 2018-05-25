@@ -57,12 +57,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async fetchWallets () {
-    const [ addresses, is2FA ] = await this._call('getWallets')
+    const [addresses, is2FA] = await this._call('getWallets')
     const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
     this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
     validAddresses.forEach((address, i) => {
-      this._createWalletModel(address, is2FA[ i ])
+      this._createWalletModel(address, is2FA[i])
     })
   }
 
@@ -79,7 +79,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
-    const [ owners, requiredSignatures, pendingTxList, releaseTime ] = await Promise.all([
+    const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
       walletDAO.getPendings(),

@@ -47,8 +47,8 @@ export default class DerivedWalletModel extends abstractFetchingModel({
     return this.get('isMultisig')
   }
 
-  transactions (value) {
-    return this._getSet('transactions', value)
+  transactions () {
+    return this.get('transactions')
   }
 
   owners (value) {

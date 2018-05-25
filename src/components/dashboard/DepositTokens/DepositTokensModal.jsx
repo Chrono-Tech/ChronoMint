@@ -47,8 +47,6 @@ export default class DepositTokensModal extends PureComponent {
     const amount = new Amount(token.addDecimals(values.get('amount')), token.id())
     const feeMultiplier = values.get('feeMultiplier') || 1
 
-    console.log('handleSubmit modal: ', feeMultiplier)
-
     switch (values.get('action')) {
       case ACTION_APPROVE:
         this.props.mainApprove(token, amount, values.get('spender'), feeMultiplier, {
