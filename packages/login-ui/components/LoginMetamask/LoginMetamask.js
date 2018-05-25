@@ -44,8 +44,9 @@ class LoginMetamask extends PureComponent {
   componentWillMount () {
     const web3 = new Web3(window.web3.currentProvider)
     console.log(window.web3.currentProvider)
+    //networkService.networkProvider.setNetworkCode(4)
     web3Provider.reinit(web3, window.web3.currentProvider)
-    const engine = new EthereumEngine(null,null,4,window.web3.currentProvider,null)    
+    const engine = new EthereumEngine(null,{id: 4},null,window.web3.currentProvider,null)    
     ethereumProvider.setEngine(engine, null) 
     window.web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {

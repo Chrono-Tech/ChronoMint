@@ -4,6 +4,7 @@
  */
 
 import Web3Utils from '@chronobank/login/network/Web3Utils'
+import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import { WALLET_HD_PATH } from './mnemonicProvider'
 
@@ -11,17 +12,19 @@ export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
     this._wallet = wallet
     this._network = network
+    const web3 = engine && new Web3(engine) 
+    this._address = engine && web3.eth.accounts[0]
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
 
-  getNetwork () {
+  getNetwork() {
     return this._network
   }
 
   getAddress () {
-    return this._wallet.getAddressString()
+    return this._address || this._wallet.getAddressString()
   }
-
+ 
   getProvider () {
     return this._engine
   }
