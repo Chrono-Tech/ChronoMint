@@ -28,7 +28,7 @@
     .tagsWrap {
       display: flex;
       justify-content: space-between;
-      color: $border-color;
+      color: $button-color-1;
       font-weight: 400;
       font-size: 16px;
       line-height: 19px;
@@ -51,8 +51,24 @@
 
   .actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin-bottom: 10px;
+  }
+  .preloader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: $button-color-1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    :global {
+      .Preloader__root {
+        circle {
+          stroke: $color-white !important;
+        }
+      }
+    }
   }
 }
 

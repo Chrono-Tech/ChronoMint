@@ -9,6 +9,10 @@ import PropTypes from 'prop-types'
 import './Preloader.scss'
 
 const PRESETS = {
+  big: {
+    size: 30,
+    thickness: 2,
+  },
   normal: {
     size: 24,
     thickness: 1.5,
@@ -29,9 +33,13 @@ export default class Preloader extends PureComponent {
   static propTypes = {
     small: PropTypes.bool,
     medium: PropTypes.bool,
+    big: PropTypes.bool,
   }
 
   getPreset () {
+    if (this.props.big) {
+      return 'big'
+    }
     if (this.props.small) {
       return 'small'
     }
@@ -42,7 +50,7 @@ export default class Preloader extends PureComponent {
   }
 
   render () {
-    const preset = PRESETS[ this.getPreset() ]
+    const preset = PRESETS[this.getPreset()]
     return (
       <div styleName='root' className='Preloader__root'>
         <CircularProgress {...preset} />

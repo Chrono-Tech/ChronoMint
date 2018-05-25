@@ -10,23 +10,25 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { ETH, FEE_RATE_MULTIPLIER } from 'redux/mainWallet/actions'
+import { ETH, FEE_RATE_MULTIPLIER, goToWallets } from 'redux/mainWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import Preloader from 'components/common/Preloader/Preloader'
 import Amount from 'models/Amount'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 
-function mapDispatchToProps (dispatch) {
+function mapStateToProps () {
   return {}
 }
 
-function mapStateToProps (state, ownProps) {
-
-  return {}
+function mapDispatchToProps (dispatch) {
+  return {
+    handleGoWallets: () => dispatch(goToWallets()),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -34,6 +36,7 @@ function mapStateToProps (state, ownProps) {
 export default class TwoFaWalletForm extends PureComponent {
   static propTypes = {
     feeMultiplier: PropTypes.number,
+    handleGoWallets: PropTypes.func,
   }
 
   static defaultProps = {
@@ -48,10 +51,9 @@ export default class TwoFaWalletForm extends PureComponent {
     }
   }
 
-  render () {
+  renderFormStep () {
     return (
-      <div styleName='root'>
-        <div styleName='img'><img src={TWO_FA_LOGO_PNG} alt='2 fa logo' /></div>
+      <div>
         <div styleName='title'><Translate value={`${prefix}.title`} /></div>
         <div styleName='description'><Translate value={`${prefix}.description`} /></div>
         <div styleName='slider'>
@@ -84,10 +86,57 @@ export default class TwoFaWalletForm extends PureComponent {
         </div>
 
         <div styleName='actions'>
+          <div />
           <Button
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>
+      </div>
+    )
+  }
+
+  renderWaitStep () {
+    return (
+      <div>
+        <div styleName='title'><Translate value={`${prefix}.waitTitle`} /></div>
+        <div styleName='description'><Translate value={`${prefix}.waitDescription`} /></div>
+
+        <div styleName='actions'>
+          <div styleName='preloader'>
+            <Preloader big />
+          </div>
+          <Button
+            label={<Translate value={`${prefix}.goToMyWallets`} />}
+            onTouchTap={this.props.handleGoWallets}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderSuccessStep () {
+    return (
+      <div>
+        <div styleName='title'><Translate value={`${prefix}.successTitle`} /></div>
+        <div styleName='description'><Translate value={`${prefix}.successDescription`} /></div>
+
+        <div styleName='actions'>
+          <div />
+          <Button
+            label={<Translate value={`${prefix}.proceed`} />}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  render () {
+    return (
+      <div styleName='root'>
+        <div styleName='img'><img src={TWO_FA_LOGO_PNG} alt='2 fa logo' /></div>
+        {this.renderFormStep()}
+        {this.renderWaitStep()}
+        {this.renderSuccessStep()}
       </div>
     )
   }

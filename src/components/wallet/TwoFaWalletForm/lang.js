@@ -14,5 +14,10 @@ export default {
     fast: 'Fast',
     transactionFee: 'Transaction fee:',
     averageFee: '%{multiplier}x of average fee',
+    waitTitle: 'We are enabling 2fa for your account',
+    waitDescription: 'This process may take more than 30 seconds. You can leave the page and we will send you a notification once the process is completed.',
+    goToMyWallets: 'go to my wallets',
+    successTitle: '2FA option has been enabled!',
+    successDescription: 'Click Proceed button to finalize setup.',
   },
 }
