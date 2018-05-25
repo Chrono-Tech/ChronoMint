@@ -6,6 +6,7 @@
 import { Button } from 'components'
 import web3Converter from 'utils/Web3Converter'
 import React, { PureComponent } from 'react'
+import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
@@ -28,6 +29,7 @@ function mapStateToProps () {
 function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
+    handleGoTo2FA: () => dispatch(push('/2fa')),
   }
 }
 
@@ -37,6 +39,7 @@ export default class TwoFaWalletForm extends PureComponent {
   static propTypes = {
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
+    handleGoTo2FA: PropTypes.func,
   }
 
   static defaultProps = {
@@ -122,9 +125,7 @@ export default class TwoFaWalletForm extends PureComponent {
 
         <div styleName='actions'>
           <div />
-          <Button
-            label={<Translate value={`${prefix}.proceed`} />}
-          />
+          <Button label={<Translate value={`${prefix}.proceed`} />} onTouchTap={this.props.handleGoTo2FA} />
         </div>
       </div>
     )

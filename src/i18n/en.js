@@ -65,6 +65,7 @@ export default {
     newRewards: 'New Bonuses',
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
+    twoFa: 'Enable 2FA',
   },
   common: {
     name: 'Name',
@@ -267,28 +268,28 @@ export default {
       },
     },
     UserManager: {
-      [ user.TX_ADD_CBE ]: {
+      [user.TX_ADD_CBE]: {
         title: 'Add CBE',
         name: 'Name',
         address: 'Address',
       },
-      [ user.TX_REVOKE_CBE ]: {
+      [user.TX_REVOKE_CBE]: {
         title: 'Revoke CBE',
         name: 'Name',
         address: 'Address',
       },
-      [ user.TX_SET_REQUIRED_SIGNS ]: {
+      [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Set Required Signatures',
         _required: 'Quantity',
       },
-      [ user.TX_SET_OWN_HASH ]: {
+      [user.TX_SET_OWN_HASH]: {
         title: 'Update profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company',
         tokens: 'Tokens',
       },
-      [ user.TX_SET_MEMBER_HASH ]: {
+      [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
         address: 'Address',
         name: 'Name',
@@ -301,7 +302,7 @@ export default {
       },
     },
     Ethereum: {
-      [ eth.TX_TRANSFER ]: {
+      [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
       },
     },
@@ -312,77 +313,77 @@ export default {
     /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     ChronoBankAssetWithFeeProxy: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     PendingManager: {
-      [ operations.TX_CONFIRM ]: {
+      [operations.TX_CONFIRM]: {
         title: 'Confirm Operation',
       },
-      [ operations.TX_REVOKE ]: {
+      [operations.TX_REVOKE]: {
         title: 'Revoke Operation',
       },
     },
     TimeHolder: {
-      [ time.TX_DEPOSIT ]: {
+      [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
         amount: 'Amount',
       },
-      [ time.TX_WITHDRAW_SHARES ]: {
+      [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
       },
     },
     Rewards: {
-      [ rewards.TX_WITHDRAW_REWARD ]: {
+      [rewards.TX_WITHDRAW_REWARD]: {
         title: 'Withdraw Bonus',
         amount: 'Amount',
       },
-      [ rewards.TX_CLOSE_PERIOD ]: {
+      [rewards.TX_CLOSE_PERIOD]: {
         title: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
-      [ assetDonator.TX_REQUIRE_TIME ]: {
+      [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
       },
     },
     PlatformsManager: {
-      [ platformsManager.TX_CREATE_PLATFORM ]: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
         title: 'Confirm create platform',
       },
-      [ platformsManager.TX_ATTACH_PLATFORM ]: {
+      [platformsManager.TX_ATTACH_PLATFORM]: {
         title: 'Confirm attach platform',
       },
-      [ platformsManager.TX_DETACH_PLATFORM ]: {
+      [platformsManager.TX_DETACH_PLATFORM]: {
         title: 'Confirm detach platform',
       },
     },
     LOCManager: {
-      [ loc.standardFuncs.SET_STATUS ]: {
+      [loc.standardFuncs.SET_STATUS]: {
         title: 'Set Status',
       },
-      [ loc.standardFuncs.ADD_LOC ]: {
+      [loc.standardFuncs.ADD_LOC]: {
         title: 'Add LOC',
         name: 'Name',
         website: 'Website',
@@ -391,7 +392,7 @@ export default {
         expDate: 'Expiration Date',
         currency: 'Currency',
       },
-      [ loc.standardFuncs.SET_LOC ]: {
+      [loc.standardFuncs.SET_LOC]: {
         title: 'Update LOC',
         name: 'Name',
         website: 'Website',
@@ -399,47 +400,47 @@ export default {
         publishedHash: 'Contract',
         expDate: 'Expiration Date',
       },
-      [ loc.multisigFuncs.REMOVE_LOC ]: {
+      [loc.multisigFuncs.REMOVE_LOC]: {
         title: 'Remove LOC',
         name: 'Name',
       },
-      [ loc.multisigFuncs.REISSUE_ASSET ]: {
+      [loc.multisigFuncs.REISSUE_ASSET]: {
         title: 'Issue asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [ loc.multisigFuncs.REVOKE_ASSET ]: {
+      [loc.multisigFuncs.REVOKE_ASSET]: {
         title: 'Revoke Asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [ loc.multisigFuncs.UPDATE_LOC_STATUS ]: {
+      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status',
       },
-      [ loc.multisigFuncs.SEND_ASSET ]: {
+      [loc.multisigFuncs.SEND_ASSET]: {
         title: 'Send Asset',
       },
     },
     ERC20Manager: {
-      [ erc20Manager.TX_MODIFY_TOKEN ]: {
+      [erc20Manager.TX_MODIFY_TOKEN]: {
         title: 'Modify Token',
       },
-      [ erc20Manager.TX_REMOVE_TOKEN ]: {
+      [erc20Manager.TX_REMOVE_TOKEN]: {
         title: 'Remove Token',
       },
-      [ erc20Manager.TX_ADD_TOKEN ]: {
+      [erc20Manager.TX_ADD_TOKEN]: {
         title: 'Add Token',
       },
     },
     ERC20Interface: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve to transfer your tokens',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
@@ -451,16 +452,16 @@ export default {
       },
     },
     Exchange: {
-      [ exchange.TX_BUY ]: {
+      [exchange.TX_BUY]: {
         title: 'Confirm buy tokens for ETH',
       },
-      [ exchange.TX_SELL ]: {
+      [exchange.TX_SELL]: {
         title: 'Confirm sell tokens for ETH',
       },
-      [ exchange.TX_WITHDRAW_TOKENS ]: {
+      [exchange.TX_WITHDRAW_TOKENS]: {
         title: 'Confirm withdraw tokens',
       },
-      [ exchange.TX_WITHDRAW_ETH ]: {
+      [exchange.TX_WITHDRAW_ETH]: {
         title: 'Confirm withdraw ETH',
       },
     },
@@ -489,35 +490,35 @@ export default {
       },
     },
     PollInterface: {
-      [ pollInterface.TX_ACTIVATE_POLL ]: {
+      [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
       },
-      [ pollInterface.TX_REMOVE_POLL ]: {
+      [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
       },
-      [ pollInterface.TX_END_POLL ]: {
+      [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
       },
-      [ pollInterface.TX_VOTE ]: {
+      [pollInterface.TX_VOTE]: {
         title: 'Vote',
       },
     },
     VotingManager: {
-      [ votingManager.TX_CREATE_POLL ]: {
+      [votingManager.TX_CREATE_POLL]: {
         title: 'Create Poll',
       },
     },
     ChronoBankAsset: {
-      [ chronoBankAsset.TX_PAUSE ]: {
+      [chronoBankAsset.TX_PAUSE]: {
         title: 'Block asset',
       },
-      [ chronoBankAsset.TX_UNPAUSE ]: {
+      [chronoBankAsset.TX_UNPAUSE]: {
         title: 'Unblock asset',
       },
-      [ chronoBankAsset.TX_RESTRICT ]: {
+      [chronoBankAsset.TX_RESTRICT]: {
         title: 'Add user to blacklist',
       },
-      [ chronoBankAsset.TX_UNRESTRICT ]: {
+      [chronoBankAsset.TX_UNRESTRICT]: {
         title: 'Remove user from blacklist',
       },
     },

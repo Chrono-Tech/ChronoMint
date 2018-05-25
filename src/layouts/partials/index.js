@@ -22,6 +22,7 @@ import ProfileContent from './ProfileContent/ProfileContent'
 import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 import DepositsContent from './DepositsContent/DepositsContent'
 import DepositContent from './DepositContent/DepositContent'
+import TwoFAContent from './TwoFAContent/TwoFAContent'
 
 export {
   HeaderPartial,
@@ -43,6 +44,7 @@ export {
   DepositsContent,
   DepositContent,
   AddWalletContent,
+  TwoFAContent,
 }
 
 export default {
@@ -65,4 +67,5 @@ export default {
   DepositsContent,
   DepositContent,
   AddWalletContent,
+  TwoFAContent,
 }

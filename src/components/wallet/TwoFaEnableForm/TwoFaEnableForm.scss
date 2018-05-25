@@ -1,0 +1,110 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  padding: 30px;
+  .img {
+    padding: 20px 0 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .title {
+    font-weight: 700;
+    color: $color-primary-3;
+    font-size: 20px;
+    line-height: 28px;
+    padding-bottom: 20px;
+  }
+  .description {
+    color: $color-primary-3;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 30px;
+  }
+  .markets {
+    display: flex;
+    justify-content: flex-start;
+    img {
+      height: 32px;
+      margin-right: 30px;
+    }
+    margin-bottom: 50px;
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .enableStep {
+    padding-top: 20px;
+    padding-left: 15px;
+    .step {
+      position: relative;
+      border-left: 2px solid $button-color-1;
+      padding-left: 35px;
+      &:last-child {
+        border-color: transparent;
+      }
+      .stepNumber {
+        position: absolute;
+        left: -17px;
+        width: 32px;
+        height: 32px;
+        background: $button-color-1;
+        border-radius: 50%;
+        color: $color-white;
+        font-weight: bolder;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .title {
+        font-weight: 700;
+        color: $button-color-1;
+        font-size: 20px;
+        line-height: 28px;
+        padding-bottom: 5px;
+      }
+      .description {
+        line-height: 22px;
+        font-size: 14px;
+        margin: 0;
+      }
+      .code {
+        margin-top: 20px;
+        color: $color-primary-3;
+        font-weight: 700;
+        line-height: 22px;
+        padding-bottom: 50px;
+      }
+      .qrCode {
+        img {
+          margin-left: -20px;
+          width: 240px;
+          height: 240px;
+        }
+        padding-bottom: 33px;
+      }
+      .field {
+
+      }
+    }
+
+  }
+  .confirm {
+    margin: 37px 0 40px;
+    display: flex;
+    padding-left: 7px;
+    .checkbox {
+      width: 45px;
+    }
+    .confirmDescription {
+      font-size: 14px;
+      line-height: 24px;
+      flex-shrink: 1;
+    }
+  }
+}
+

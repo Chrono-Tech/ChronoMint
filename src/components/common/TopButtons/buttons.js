@@ -34,4 +34,8 @@ export default {
     backButton: true,
     backButtonAction: () => goBackForAddWalletsForm(),
   },
+  '/2fa': {
+    title: 'nav.twoFa',
+    backButton: true,
+  },
 }

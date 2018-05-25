@@ -28,6 +28,7 @@ import OwnersListWidget from 'components/wallet/OwnersListWidget/lang'
 import AddWalletWidget from 'components/wallet/AddWalletWidget/lang'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/lang'
 import TwoFaWalletForm from 'components/wallet/TwoFaWalletForm/lang'
+import TwoFaEnableForm from 'components/wallet/TwoFaEnableForm/lang'
 
 export default {
   en: {
@@ -59,5 +60,6 @@ export default {
     WalletSettingsForm: WalletSettingsForm.en,
     TwoFAWarningWidget: TwoFAWarningWidget.en,
     TwoFaWalletForm: TwoFaWalletForm.en,
+    TwoFaEnableForm: TwoFaEnableForm.en,
   },
 }

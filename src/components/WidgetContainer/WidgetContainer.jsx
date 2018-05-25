@@ -18,7 +18,7 @@ export default class WidgetContainer extends PureComponent {
     const { title, children } = this.props
     return (
       <div styleName='root' className='WidgetContainer__root'>
-        <div styleName='title'><Translate value={title} /></div>
+        {title && <div styleName='title'><Translate value={title} /></div>}
         <div styleName='body'>
           {children}
         </div>
