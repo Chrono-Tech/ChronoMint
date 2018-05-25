@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { modalsOpen } from 'redux/modals/actions'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { push } from 'react-router-redux'
