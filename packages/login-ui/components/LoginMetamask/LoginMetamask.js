@@ -6,6 +6,9 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import { getNetworkById, LOCAL_ID, providerMap } from '@chronobank/login/network/settings'
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import Web3 from 'web3'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import EthereumEngine from '@chronobank/login/network/EthereumEngine'
 import { addError } from '@chronobank/login/redux/network/actions'
 import { TextField } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -39,7 +42,11 @@ class LoginMetamask extends PureComponent {
   }
 
   componentWillMount () {
-    web3Provider.reinit(window.web3, window.web3.currentProvider)
+    const web3 = new Web3(window.web3.currentProvider)
+    console.log(window.web3.currentProvider)
+    web3Provider.reinit(web3, window.web3.currentProvider)
+    const engine = new EthereumEngine(null,null,4,window.web3.currentProvider,null)    
+    ethereumProvider.setEngine(engine, null) 
     window.web3.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)

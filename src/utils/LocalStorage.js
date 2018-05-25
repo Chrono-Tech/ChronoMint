@@ -15,11 +15,11 @@ const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
   createSession (account, provider: number, network: number) {
-    if (this.token) {
-      // eslint-disable-next-line
-      console.warn('Session already created', this.token)
-      return
-    }
+    //if (this.token) {
+    //  // eslint-disable-next-line
+    //  console.warn('Session already created', this.token)
+    //  return
+    //}
     this.account = account // TODO @bshevchenko: all this properties should be private!
     this.provider = provider
     this.network = network

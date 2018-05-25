@@ -27,6 +27,8 @@ class metaMaskResolver extends EventEmitter {
       set: (web3) => {
         timer && clearTimeout(timer)
         metaMaskInstance = web3
+	console.log('metaMaskInstance is: ')
+        console.log(web3)
         this.emit('resolve', true)
       },
       get: () => {

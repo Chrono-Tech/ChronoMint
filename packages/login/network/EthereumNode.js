@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios'
+import Web3 from 'web3'
 import { LOCAL_ID, NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
@@ -60,7 +61,6 @@ const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
 })
 
 export default function selectEthereumNode (engine) {
-  console.log(engine)
   switch (engine.getNetwork().id) {
     case NETWORK_MAIN_ID :
       return ETHEREUM_MAINNET_NODE
