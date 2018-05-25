@@ -8,7 +8,7 @@
 $copyRightPadding: 200px;
 
 .root {
-  background-image: $bg-gradient-0;
+  background-color: #242045;
   position: relative;
   padding-bottom: 130px; // for footer
   display: flex;
@@ -53,6 +53,19 @@ $copyRightPadding: 200px;
     padding: 20px;
     flex-direction: column-reverse;
   }
+}
+
+.header-container {
+  display: flex;
+  justify-content: center;
+  border: 1px solid red;
+  height: 430px;
+}
+
+.header-picture {
+  display: flex;
+  position: absolute;
+  flex: 1;
 }
 
 .copyright {

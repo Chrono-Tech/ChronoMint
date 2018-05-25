@@ -1,0 +1,214 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$copyRightPadding: 200px;
+
+.root {
+  background-image: $bg-gradient-0;
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  @include md-only {
+    padding-bottom: 230px;
+  }
+
+  &:after {
+    // hack for preloading material icons and avoid FUOC on render
+    content: '';
+    font-family: 'Material Icons';
+  }
+}
+
+.content {
+  flex: 1;
+  width: 470px;
+  margin: 0 auto;
+  padding-top: 40px;
+
+  @include md-only {
+    padding-top: 80px;
+  }
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.1);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 700px;
+  padding: 17px 80px;
+  align-items: center;
+  justify-content: flex-start;
+
+  @include md-only {
+    padding: 20px;
+    flex-direction: column-reverse;
+  }
+
+  .subscription {
+    position: absolute;
+    display: flex;
+    bottom: 55px;
+    left: 895px;
+  }
+
+  .subscription-input {
+    width: 280px;
+    display: flex;
+  }
+
+  .subscription-button {
+    width: 280px;
+    margin-left: 30px;
+    display: flex;
+
+    .button {
+
+    }
+  }
+
+  .copyright {
+    display: flex;
+    margin-top: 30px;
+    width: 870px;
+  }
+
+  .copyright-text {
+    color: #9997B2;
+    font-family: $font-family-main;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: left;
+  }
+
+  .footer-container {
+    display: flex;
+  }
+
+  .navigation-chrono-logo-container {
+    overflow: hidden;
+    display: flex;
+  }
+
+  .navigation-chrono-logo {
+    width: 250px;
+    display: block;
+    margin-left: -67px;
+  }
+
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 310px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+
+  .navigation-list {
+
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+
+    li {
+      display: flex;
+      color: $color-light-blue;
+      font-family: $font-family-main;
+      font-weight: 500;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+
+  }
+
+  .title-container {
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 10px;
+  }
+
+  .title {
+    color: $color-orange;
+    font-family: $font-family-main;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  .downloads {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    .market-logo-container {
+      display: block;
+      margin-bottom: 30px;
+    }
+
+    .ios-market-logo {
+      display: block;
+      width: 125px;
+    }
+
+    .android-market-logo {
+      display: block;
+      width: 125px;
+    }
+
+  }
+
+  .connect {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+
+    padding-left: 30px;
+    padding-right: 30px;
+
+    .logos-container {
+      display: flex;
+      width: 125px;
+      height: 130px;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+    }
+
+    .img-logo {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+.link {
+  color: white;
+  margin: auto 45px;
+  text-decoration: none;
+  font-family: $font-family-main;
+  font-size: 18px;
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
