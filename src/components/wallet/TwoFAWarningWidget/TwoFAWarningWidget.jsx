@@ -6,24 +6,26 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import { push } from 'react-router-redux'
+import PropTypes from 'prop-types'
 import Button from 'components/common/ui/Button/Button'
 import './TwoFAWarningWidget.scss'
 import { prefix } from './lang'
 
 function mapStateToProps (state, ownProps) {
-  return {
-  }
+  return {}
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    handleGoTo2FA: () => dispatch(push('/2fa')),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class TwoFAWarningWidget extends PureComponent {
-  static propTypes = {}
-
-  handleConnect2fa = () => () => {
+  static propTypes = {
+    handleGoTo2FA: PropTypes.func,
   }
 
   render () {
@@ -49,7 +51,7 @@ export default class TwoFAWarningWidget extends PureComponent {
                     disabled={false}
                     type='submit'
                     label={<Translate value={`${prefix}.button`} />}
-                    onTouchTap={this.handleConnect2fa}
+                    onTouchTap={this.props.handleGoTo2FA}
                   />
                 </div>
               </div>

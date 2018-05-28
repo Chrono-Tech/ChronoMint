@@ -20,6 +20,10 @@ import { prefix } from './lang'
 import './TwoFaEnableForm.scss'
 
 export const FORM_2FA_ENABLE = 'Form2FAEnable'
+const STEPS = [
+  'downloadStep',
+  'enableStep',
+]
 
 function mapStateToProps () {
   return {
@@ -46,6 +50,7 @@ export default class TwoFaEnableForm extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
+      step: STEPS[0],
       qrData: null,
     }
   }
@@ -56,6 +61,10 @@ export default class TwoFaEnableForm extends PureComponent {
         qrData,
       })
     })
+  }
+
+  handleShowNextStep = () => {
+    this.setState({ step: STEPS[1] })
   }
 
   renderDownloadStep () {
@@ -72,6 +81,7 @@ export default class TwoFaEnableForm extends PureComponent {
         </div>
         <div styleName='actions'>
           <Button
+            onTouchTap={this.handleShowNextStep}
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>
@@ -129,11 +139,12 @@ export default class TwoFaEnableForm extends PureComponent {
   }
 
   render () {
+    const { step } = this.state
     return (
       <WidgetContainer title={`${prefix}.pageTitle`}>
         <div styleName='root'>
-          {this.renderDownloadStep()}
-          {this.renderEnableStep()}
+          {step === STEPS[0] && this.renderDownloadStep()}
+          {step === STEPS[1] && this.renderEnableStep()}
         </div>
       </WidgetContainer>
     )

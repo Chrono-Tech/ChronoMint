@@ -116,4 +116,15 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     ], wallet.toCreateWalletTx())
     return result.tx
   }
+
+  async create2FAWallet (wallet: MultisigWalletModel, feeMultiplier) {
+    const result = await this._tx(
+      'create2FAWallet',
+      [Math.floor(wallet.releaseTime() / 1000)],
+      wallet.toCreateWalletTx(),
+      null,
+      { feeMultiplier },
+    )
+    return result.tx
+  }
 }

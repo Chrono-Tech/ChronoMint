@@ -10204,7 +10204,7 @@ redux-form-material-ui@^4.3.0:
   version "4.3.4"
   resolved "https://registry.yarnpkg.com/redux-form-material-ui/-/redux-form-material-ui-4.3.4.tgz#4b42c045a5d51872450019737df6586570ea2f24"
 
-redux-form@^7.1.1:
+redux-form@^7.3.0:
   version "7.3.0"
   resolved "https://registry.yarnpkg.com/redux-form/-/redux-form-7.3.0.tgz#b92ef1639c86a6009b0821aacfc80ad8b5ac8c05"
   dependencies:

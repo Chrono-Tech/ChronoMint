@@ -5,8 +5,10 @@
 
 import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import BigNumber from 'bignumber.js'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from 'dao/MultisigWalletsManagerDAO'
+import { change } from 'redux-form/immutable'
 import Amount from 'models/Amount'
 import WalletNoticeModel, { statuses } from 'models/notices/WalletNoticeModel'
 import BalanceModel from 'models/tokens/BalanceModel'
@@ -31,6 +33,14 @@ import multisigWalletService, {
   EE_SINGLE_TRANSACTION,
 } from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
+import { ETH } from '../mainWallet/actions'
+
+export const FORM_2FA_WALLET = 'Form2FAWallet'
+export const FORM_2FA_STEPS = [
+  'formStep',
+  'waitStep',
+  'successStep',
+]
 
 export const DUCK_MULTISIG_WALLET = 'multisigWallet'
 
@@ -100,6 +110,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         updatedWallet = updatedWallet.name(wallets.item(wallet.id()).name())
       }
       dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
+      dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
 
       const txHash = wallet.transactionHash()
 
@@ -228,6 +239,17 @@ export const createWallet = (wallet: MultisigWalletModel) => async (dispatch) =>
   }
 }
 
+export const create2FAWallet = (wallet: MultisigWalletModel, feeMultiplier) => async (dispatch) => {
+  try {
+    const txHash = await walletsManagerDAO.create2FAWallet(wallet, feeMultiplier)
+    dispatch(updateWallet(wallet.isPending(true).transactionHash(txHash)))
+    return txHash
+  } catch (e) {
+    // eslint-disable-next-line
+    console.error('create wallet error', e.message)
+  }
+}
+
 export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, getState) => {
   try {
     const { account } = getState().get(DUCK_SESSION)
@@ -314,7 +336,18 @@ export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) =>
   }
 }
 
-export const create2FAWallet = () => (dispatch) => {
-  // TODO @dkchv: implement
-  console.log('--actions#', 1)
+export const estimateGasFor2FAForm = async (account, gasPriseMultiplier = 1, callback) => {
+  try {
+    if (!walletsManagerDAO) {
+      throw new Error('Dao is undefined')
+    }
+    const { gasLimit, gasFee, gasPrice } = await walletsManagerDAO.estimateGas('create2FAWallet', [0], new BigNumber(0), account)
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
+  }
 }

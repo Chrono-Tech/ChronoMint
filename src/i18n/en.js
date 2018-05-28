@@ -526,6 +526,9 @@ export default {
       'createWallet': {
         title: 'Create multisignature wallet',
       },
+      'create2FAWallet': {
+        title: 'Create 2FA wallet',
+      },
     },
   },
   errors: {

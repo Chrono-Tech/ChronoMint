@@ -34,6 +34,8 @@ export default class Preloader extends PureComponent {
     small: PropTypes.bool,
     medium: PropTypes.bool,
     big: PropTypes.bool,
+    size: PropTypes.number,
+    thickness: PropTypes.number,
   }
 
   getPreset () {
@@ -50,7 +52,17 @@ export default class Preloader extends PureComponent {
   }
 
   render () {
-    const preset = PRESETS[this.getPreset()]
+    const { size, thickness } = this.props
+    let preset = PRESETS[this.getPreset()]
+
+    if (size) {
+      preset.size = size
+    }
+
+    if (thickness) {
+      preset.thickness = thickness
+    }
+
     return (
       <div styleName='root' className='Preloader__root'>
         <CircularProgress {...preset} />

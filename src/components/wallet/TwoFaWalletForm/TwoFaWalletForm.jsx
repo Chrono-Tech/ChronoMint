@@ -6,30 +6,72 @@
 import { Button } from 'components'
 import web3Converter from 'utils/Web3Converter'
 import React, { PureComponent } from 'react'
+import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { push } from 'react-router-redux'
+import { Field, formValueSelector, reduxForm, change } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
-import { ETH, FEE_RATE_MULTIPLIER, goToWallets } from 'redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER, goToWallets } from 'redux/mainWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Preloader from 'components/common/Preloader/Preloader'
-import Amount from 'models/Amount'
+import { create2FAWallet, estimateGasFor2FAForm, FORM_2FA_STEPS, FORM_2FA_WALLET } from 'redux/multisigWallet/actions'
+import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerModel from 'models/wallet/OwnerModel'
+import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
-export const FORM_2FA_WALLET = 'Form2FAWallet'
+function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_2FA_WALLET)
+  const feeMultiplier = selector(state, 'feeMultiplier')
+  const step = selector(state, 'step')
+  const { account } = state.get(DUCK_SESSION)
 
-function mapStateToProps () {
-  return {}
+  return {
+    step,
+    account,
+    feeMultiplier,
+    initialValues: {
+      step: FORM_2FA_STEPS[0],
+      feeMultiplier: feeMultiplier || getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
+    },
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
     handleGoTo2FA: () => dispatch(push('/2fa')),
+    onSubmit: (values, dispatch, props) => {
+      // owners
+      let ownersCollection = new OwnerCollection()
+      ownersCollection = ownersCollection.add(new OwnerModel({
+        address: props.account,
+      }))
+
+      // date
+      let releaseTime = new Date(0)
+
+      const wallet = new MultisigWalletModel({
+        ...props.initialValues.toJS(),
+        ...values.toJS(),
+        releaseTime,
+        owners: ownersCollection,
+      })
+
+      dispatch(create2FAWallet(wallet, values.get('feeMultiplier')))
+      dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
+    },
+    onSubmitSuccess: (a, b, c, d) => {
+      // eslint-disable-next-line
+      console.log('onSubmitSuccess', a, b, c, d)
+
+    },
   }
 }
 
@@ -37,26 +79,65 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_2FA_WALLET })
 export default class TwoFaWalletForm extends PureComponent {
   static propTypes = {
+    handleSubmit: PropTypes.func,
+    account: PropTypes.string,
+    gasPriceMultiplier: PropTypes.number,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
     handleGoTo2FA: PropTypes.func,
-  }
-
-  static defaultProps = {
-    feeMultiplier: 1,
+    dispatch: PropTypes.func,
+    step: PropTypes.string,
   }
 
   constructor () {
     super(...arguments)
 
-    this.state = {
-      gasFee: new Amount(10000000000000, ETH),
+    this.state = {}
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.feeMultiplier > 0 && newProps.feeMultiplier !== this.props.feeMultiplier) {
+      this.handleGetGasPrice(newProps.account, newProps.feeMultiplier)
     }
+  }
+
+  handleGetGasPrice = (account: string, feeMultiplier: number) => {
+    clearTimeout(this.timeout)
+    this.setState({ isFeeLoading: true })
+    this.timeout = setTimeout(() => {
+      estimateGasFor2FAForm(
+        account,
+        feeMultiplier,
+        (error, { gasFee, gasPrice }) => {
+          if (!error) {
+            this.setState({ gasFee, gasPrice, isFeeLoading: false })
+          } else {
+            // eslint-disable-next-line
+            console.log(error)
+          }
+        },
+        feeMultiplier,
+      )
+    }, 1000)
+  }
+
+  renderFee () {
+    if (this.state.isFeeLoading) {
+      return <span styleName='feeLoaderContainer'><Preloader size={12} thickness={1.5} /></span>
+    }
+    if (this.state.gasFee) {
+      return (
+        <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈USD `}
+          <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
+        </span>
+      )
+    }
+    return null
   }
 
   renderFormStep () {
     return (
-      <div>
+      <form onSubmit={this.props.handleSubmit}>
         <div styleName='title'><Translate value={`${prefix}.title`} /></div>
         <div styleName='description'><Translate value={`${prefix}.description`} /></div>
         <div styleName='slider'>
@@ -77,11 +158,7 @@ export default class TwoFaWalletForm extends PureComponent {
             <Translate value={`${prefix}.transactionFee`} />
           </span> &nbsp;
           <span styleName='description'>
-            {this.state.gasFee && (
-              <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈USD `}
-                <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
-              </span>
-            )}
+            {this.renderFee()}
             <div styleName='gweiMultiplier'>
               <Translate value={`${prefix}.averageFee`} multiplier={this.props.feeMultiplier} />
             </div>
@@ -90,11 +167,9 @@ export default class TwoFaWalletForm extends PureComponent {
 
         <div styleName='actions'>
           <div />
-          <Button
-            label={<Translate value={`${prefix}.proceed`} />}
-          />
+          <Button type='submit' label={<Translate value={`${prefix}.proceed`} />} />
         </div>
-      </div>
+      </form>
     )
   }
 
@@ -131,13 +206,22 @@ export default class TwoFaWalletForm extends PureComponent {
     )
   }
 
+  renderStep () {
+    switch (this.props.step) {
+      case FORM_2FA_STEPS[2]:
+        return this.renderSuccessStep()
+      case FORM_2FA_STEPS[1]:
+        return this.renderWaitStep()
+      default:
+        return this.renderFormStep()
+    }
+  }
+
   render () {
     return (
       <div styleName='root'>
         <div styleName='img'><img src={TWO_FA_LOGO_PNG} alt='2 fa logo' /></div>
-        {this.renderFormStep()}
-        {this.renderWaitStep()}
-        {this.renderSuccessStep()}
+        {this.renderStep()}
       </div>
     )
   }

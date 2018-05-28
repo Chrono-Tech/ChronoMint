@@ -73,4 +73,13 @@ export default class EthereumMiddlewareNode extends AbstractNode {
 
     return []
   }
+
+  async get2FAEncodedKey (walletAddress, callback) {
+    const response = await this._api.post(`/wallet/${walletAddress}`, {
+      pubkey: null, // TODO add pubkey
+    })
+    if (response && response.data.length) {
+      return typeof mapCallback === 'function' ? response.data.map(callback) : response.data
+    }
+  }
 }

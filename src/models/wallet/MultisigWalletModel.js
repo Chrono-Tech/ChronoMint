@@ -138,4 +138,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   blockchain () {
     return BLOCKCHAIN_ETHEREUM
   }
+
+  is2FA () {
+    return this.get('is2FA')
+  }
 }

@@ -43,6 +43,13 @@
       font-weight: 700;
     }
     .description {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      .feeLoaderContainer {
+        width: 150px;
+        display: inline-flex;
+        justify-content: center;
+      }
       .gweiMultiplier {
 
       }
