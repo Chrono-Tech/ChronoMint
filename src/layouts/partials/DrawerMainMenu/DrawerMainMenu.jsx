@@ -12,6 +12,7 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
+import { multisigWalletsSelector } from 'redux/wallet/selectors'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from 'redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
@@ -19,7 +20,6 @@ import ProfileModel from 'models/ProfileModel'
 import profileImgJPG from 'assets/img/profile-photo-1.jpg'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
-import { getWalletsCount } from 'redux/wallet/selectors'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
@@ -29,11 +29,11 @@ import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
 import './DrawerMainMenu.scss'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
 
   return {
-    walletsCount: getWalletsCount()(state),
+    walletsCount: multisigWalletsSelector()(state, ownProps).length,
     isCBE,
     profile,
     isDrawerOpen: state.get('drawer').isOpen,

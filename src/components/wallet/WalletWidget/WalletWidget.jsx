@@ -128,8 +128,8 @@ export default class WalletWidget extends PureComponent {
     this.props.selectWallet(blockchain, address)
   }
 
-  getTokensList = () => {
-    return this.state.isShowAll ? this.props.walletInfo.tokens : this.props.walletInfo.tokens.slice(0, 2)
+  handleOpenSettings = () => {
+    this.props.setWalletName(this.props.wallet, this.props.blockchain, this.props.address)
   }
 
   getOwnersList = () => {
@@ -196,8 +196,8 @@ export default class WalletWidget extends PureComponent {
     return <Translate value={`${prefix}.${key}`} />
   }
 
-  handleOpenSettings = () => {
-    this.props.setWalletName(this.props.wallet, this.props.blockchain, this.props.address)
+  getTokensList = () => {
+    return this.state.isShowAll ? this.props.walletInfo.tokens : this.props.walletInfo.tokens.slice(0, 2)
   }
 
   getTokenAmountList = () => {
