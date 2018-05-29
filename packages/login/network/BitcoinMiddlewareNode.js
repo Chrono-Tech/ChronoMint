@@ -96,8 +96,10 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     if (!data) {
       throw new Error('invalid result')
     }
-    for (const tx of data) {
-      txs.push(this._createTxModel(tx, address))
+    if (Array.isArray(data)) {
+      for (const tx of data) {
+        txs.push(this._createTxModel(tx, address))
+      }
     }
     return txs
   }
