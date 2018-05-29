@@ -54,6 +54,10 @@ export class EthereumProvider extends AbstractProvider {
     return this._engine ? this._engine.getPrivateKey() : null
   }
 
+  getPublicKey () {
+    return this._engine ? this._engine.getPublicKey() : null
+  }
+
   createNewChildAddress (deriveNumber) {
     return this._engine ? this._engine.createNewChildAddress(deriveNumber) : null
   }
@@ -89,6 +93,11 @@ export class EthereumProvider extends AbstractProvider {
     this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
     web3Provider.pushWallet(num_addresses)
+  }
+
+  get2FAEncodedKey (walletAddress, callback) {
+    const node = this._selectNode(this._engine)
+    return node.get2FAEncodedKey(this._engine, walletAddress, callback)
   }
 }
 

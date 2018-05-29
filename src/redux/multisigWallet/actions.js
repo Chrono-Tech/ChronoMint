@@ -6,6 +6,7 @@
 import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import BigNumber from 'bignumber.js'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from 'dao/MultisigWalletsManagerDAO'
 import { change } from 'redux-form/immutable'
@@ -350,4 +351,12 @@ export const estimateGasFor2FAForm = async (account, gasPriseMultiplier = 1, cal
   } catch (e) {
     callback(e)
   }
+}
+
+export const get2FAEncodedKey = (walletAddress, callback) => () => {
+  return ethereumProvider.get2FAEncodedKey(walletAddress, callback)
+}
+
+export const checkConfirmCode = (secret, confirmToken) => () => {
+  // TODO implement method
 }

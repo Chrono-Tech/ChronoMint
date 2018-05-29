@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 import AbstractNode from './AbstractNode'
+import EthCrypto from 'eth-crypto'
 
 const eventsList = [
   'platformrequested',
@@ -74,12 +75,25 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     return []
   }
 
-  async get2FAEncodedKey (walletAddress, callback) {
-    const response = await this._api.post(`/wallet/${walletAddress}`, {
-      pubkey: null, // TODO add pubkey
+  async get2FAEncodedKey (engine, walletAddress, callback) {
+    const response = await this._twoFA.post(`/wallet/${walletAddress}`, {
+      pubkey: engine.getPublicKey(),
     })
-    if (response && response.data.length) {
-      return typeof mapCallback === 'function' ? response.data.map(callback) : response.data
+    // eslint-disable-next-line
+    console.log('get2FAEncodedKey', engine.getPrivateKey(), response.data)
+    const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, response.data)
+    if (code) {
+      return typeof callback === 'function' ? callback(code) : code
+    }
+  }
+
+  async confirm2FAtx (engine, walletAddress, callback) {
+    const response = await this._twoFA.post(`/wallet/${walletAddress}/confirm`, {
+      pubkey: engine.getPublicKey(),
+    })
+    const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, response.data)
+    if (code) {
+      return typeof callback === 'function' ? callback(code) : code
     }
   }
 }

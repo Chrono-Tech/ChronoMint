@@ -9,13 +9,15 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
-import { Field, reduxForm } from 'redux-form/immutable'
+import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets } from 'redux/mainWallet/actions'
+import { checkConfirmCode, get2FAEncodedKey } from 'redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import APPSTORE_SVG from 'assets/img/appstore.svg'
 import PLAY_SVG from 'assets/img/play.svg'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
+import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import './TwoFaEnableForm.scss'
 
@@ -25,15 +27,27 @@ const STEPS = [
   'enableStep',
 ]
 
-function mapStateToProps () {
+function mapStateToProps (state) {
+  const { account } = state.get(DUCK_SESSION)
+  const selector = formValueSelector(FORM_2FA_ENABLE)
+  const code = selector(state, 'code')
+  const confirmToken = selector(state, 'confirmToken')
   return {
-    code: 'otpauth://totp/Example:chrono@google.com?secret=UT45KQPOI1VBUI5P&issuer=2fa',
+    account,
+    code,
+    confirmToken,
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
+    get2FAEncodedKey: (walletAddress) => {
+      dispatch(get2FAEncodedKey(walletAddress, (code) => {
+        dispatch(change(FORM_2FA_ENABLE, 'code', code))
+      }))
+    },
+    checkConfirmCode: (secret, confToken) => dispatch(checkConfirmCode(secret, confToken)),
   }
 }
 
@@ -41,10 +55,14 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_2FA_ENABLE })
 export default class TwoFaEnableForm extends PureComponent {
   static propTypes = {
+    account: PropTypes.string,
+    confirmToken: PropTypes.number,
+    checkConfirmCode: PropTypes.func,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
     handleGoTo2FA: PropTypes.func,
     code: PropTypes.string,
+    get2FAEncodedKey: PropTypes.func,
   }
 
   constructor (props) {
@@ -56,15 +74,27 @@ export default class TwoFaEnableForm extends PureComponent {
   }
 
   componentDidMount () {
-    QRCode.toDataURL(this.props.code, (err, qrData) => {
-      this.setState({
-        qrData,
+    this.props.get2FAEncodedKey(this.props.account)
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (newProps.code && newProps.code !== this.props.code) {
+      const code = `otpauth://totp/Example:chrono@google.com?secret=${newProps.code}&issuer=2fa`
+      QRCode.toDataURL(code, (err, qrData) => {
+        this.setState({
+          qrData,
+        })
       })
-    })
+    }
   }
 
   handleShowNextStep = () => {
     this.setState({ step: STEPS[1] })
+  }
+
+  handleCheckConfirmCode = () => {
+    const { checkConfirmCode, code, confirmToken } = this.props
+    checkConfirmCode(code, confirmToken)
   }
 
   renderDownloadStep () {
@@ -98,7 +128,7 @@ export default class TwoFaEnableForm extends PureComponent {
             <div styleName='stepNumber'>1</div>
             <div styleName='title'><Translate value={`${prefix}.firstStepTitle`} /></div>
             <div styleName='description'><Translate value={`${prefix}.firstStepDescription`} /></div>
-            <div styleName='code'>UT45KQPOI1VBUI5P</div>
+            <div styleName='code'>{this.props.code}</div>
           </div>
           <div styleName='step'>
             <div styleName='stepNumber'>2</div>
@@ -113,7 +143,7 @@ export default class TwoFaEnableForm extends PureComponent {
             <div styleName='field'>
               <Field
                 component={TextField}
-                name='authCode'
+                name='confirmToken'
                 floatingLabelText={<Translate value={`${prefix}.authCode`} />}
               />
             </div>
@@ -123,13 +153,14 @@ export default class TwoFaEnableForm extends PureComponent {
           <div styleName='checkbox'>
             <Field
               component={Checkbox}
-              name='confirm'
+              name='confirmRules'
             />
           </div>
           <div styleName='confirmDescription'><Translate value={`${prefix}.confirm`} /></div>
         </div>
         <div styleName='actions'>
           <Button
+            onTouchTap={this.handleCheckConfirmCode}
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>

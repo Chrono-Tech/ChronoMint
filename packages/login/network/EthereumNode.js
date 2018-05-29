@@ -47,6 +47,10 @@ const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
     baseURL: 'http://localhost:8083',
     timeout: 4000,
   }),
+  twoFA: axios.create({
+    baseURL: 'http://localhost:8081',
+    timeout: 4000,
+  }),
   socket: {
     baseURL: 'http://localhost:15674/stomp',
     user: 'guest',

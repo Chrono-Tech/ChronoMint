@@ -30,6 +30,10 @@ export default class EthereumEngine {
     return this._wallet && this._wallet.getPrivateKey && Buffer.from(this._wallet.getPrivateKey()).toString('hex')
   }
 
+  getPublicKey () {
+    return this._wallet && this._wallet.getPublicKey && Buffer.from(this._wallet.getPublicKey()).toString('hex')
+  }
+
   createNewChildAddress (deriveNumber = 0) {
     const hdWallet = hdKey.fromMasterSeed(this._wallet.getPrivateKey())
     return hdWallet.derivePath(`${WALLET_HD_PATH}/${deriveNumber}`).getWallet()

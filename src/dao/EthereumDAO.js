@@ -215,6 +215,8 @@ export class EthereumDAO extends AbstractTokenDAO {
           throw new TxError(e.message, TX_FRONTEND_ERROR_CODES.FRONTEND_WEB3_FILTER_FAILED)
         })
 
+        // eslint-disable-next-line
+        console.log('txData', txData)
         txHash = await this._web3Provider.sendTransaction(txData)
         tx = tx.set('hash', txHash)
       } catch (e) {
