@@ -287,8 +287,13 @@ export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
 
 export const multisigTransfer = (wallet, token, amount, recipient, feeMultiplier) => async () => {
   try {
+    let value
+    if (wallet.is2FA()) {
+      const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
+      value = await walletsManagerDAO.getOraclePrice()
+    }
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
-    await dao.transfer(wallet, token, amount, recipient, feeMultiplier)
+    await dao.transfer(wallet, token, amount, recipient, feeMultiplier, value)
   } catch (e) {
     // eslint-disable-next-line
     console.error('ms transfer error', e.message)
@@ -357,6 +362,6 @@ export const get2FAEncodedKey = (walletAddress, callback) => () => {
   return ethereumProvider.get2FAEncodedKey(walletAddress, callback)
 }
 
-export const checkConfirmCode = (secret, confirmToken) => () => {
-  // TODO implement method
+export const confirm2FATransfer = (tx, confirmToken, callback) => () => {
+  return ethereumProvider.confirm2FAtx(tx.id(), confirmToken, callback)
 }

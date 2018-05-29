@@ -100,6 +100,7 @@ export default {
     value: 'Value',
     revoke: 'Revoke',
     sign: 'Sign',
+    enterCode: 'Enter Code',
   },
   exchange: {
     tokens: 'Exchange tokens',
@@ -549,6 +550,7 @@ export default {
     moreThanOrEqual: 'Should be more or equal than %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
+    invalidConfirm2FACode: 'Should be a 6-digit code',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',

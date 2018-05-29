@@ -87,13 +87,12 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async confirm2FAtx (engine, walletAddress, callback) {
-    const response = await this._twoFA.post(`/wallet/${walletAddress}/confirm`, {
-      pubkey: engine.getPublicKey(),
+  async confirm2FAtx (txAddress, token, callback) {
+    const response = await this._twoFA.post(`/wallet/${txAddress}/confirm`, {
+      token,
     })
-    const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, response.data)
-    if (code) {
-      return typeof callback === 'function' ? callback(code) : code
+    if (response.data) {
+      return typeof callback === 'function' ? callback(response.data) : response.data
     }
   }
 }

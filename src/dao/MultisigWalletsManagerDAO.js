@@ -127,4 +127,8 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
     )
     return result.tx
   }
+
+  getOraclePrice () {
+    return this._call('getOraclePrice')
+  }
 }

@@ -123,14 +123,14 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [ values, operations, isConfirmed ] = await this._call('getPendings')
+    const [values, operations, isConfirmed] = await this._call('getPendings')
 
     operations.filter(this.isValidId).forEach((id, i) => {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
-        value: values [ i ],
-        isConfirmed: isConfirmed[ i ],
+        value: values [i],
+        isConfirmed: isConfirmed[i],
       })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
@@ -141,7 +141,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     const counter = await this._callNum('m_numOwners')
     let promises = []
     for (let i = 0; i < counter; i++) {
-      promises.push(this._call('getOwner', [ i ]))
+      promises.push(this._call('getOwner', [i]))
     }
     return Promise.all(promises)
   }
@@ -151,7 +151,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
-    const data = await this._call('getData', [ id ])
+    const data = await this._call('getData', [id])
     return this.decodeData(data)
   }
 
@@ -191,7 +191,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to/*, feeMultiplier: Number = 1*/) {
+  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
     // const tokenDAO = tokenService.getDAO(token.id())
     // const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
@@ -203,7 +203,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       to,
       symbol: token.symbol(),
       amount,
-    })
+    }, value)
     return result.tx
   }
 

@@ -241,8 +241,7 @@ export default class SendTokensForm extends PureComponent {
     if (this.props.mode === MODE_ADVANCED && (gasLimit || this.state.gasLimitEstimated) && gweiPerGas) {
 
       this.setState((state, props) => {
-        if (!validators.positiveNumber(props.gweiPerGas))
-        {
+        if (!validators.positiveNumber(props.gweiPerGas)) {
           const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
           return {
             gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
