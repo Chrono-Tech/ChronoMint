@@ -243,6 +243,7 @@ class NetworkService extends EventEmitter {
         try {
           if (isMetaMask) {
             this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
+	    this.isMetamask = true
           }
         } catch (e) {
           // eslint-disable-next-line
@@ -250,6 +251,10 @@ class NetworkService extends EventEmitter {
         }
       })
       .start()
+  }
+
+  isMetaMask = () => {
+    return this.isMetamask
   }
 
   async checkTestRPC (providerUrl) {

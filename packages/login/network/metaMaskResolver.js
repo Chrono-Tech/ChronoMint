@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-const WAIT_FOR_METAMASK = 2000 // ms
+const WAIT_FOR_METAMASK = 100 // ms
 
 import EventEmitter from 'events'
 
@@ -18,8 +18,10 @@ class metaMaskResolver extends EventEmitter {
     }, WAIT_FOR_METAMASK)
 
     if (window.web3 !== undefined || window.hasOwnProperty('web3')) {
-      clearTimeout(timer)
-      return this.emit('resolve', true)
+      if (window.web3.eth.accounts[0]) {
+        clearTimeout(timer)
+        return this.emit('resolve', true)
+      }
     }
 
     // wait for metamask
