@@ -120,7 +120,7 @@ export default class ConfirmTxDialog extends PureComponent {
 
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
-      const arg = args[ key ]
+      const arg = args[key]
       let value
       if (arg === null || arg === undefined) return
       // parse value
@@ -219,7 +219,7 @@ export default class ConfirmTxDialog extends PureComponent {
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
-            { !tx.isSkipSlider() &&
+            {!tx.isSkipSlider() &&
             <div styleName='gasSliderWrap'>
               <GasSlider
                 isLocal

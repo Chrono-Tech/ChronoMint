@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 
 import './WalletPage.scss'
 
-export default class WalletPage extends Component {
+export default class WalletsPage extends Component {
   render () {
     return (
       <div styleName='root'>

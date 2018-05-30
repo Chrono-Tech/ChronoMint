@@ -39,19 +39,6 @@ export const getCurrentWalletBalance = (symbol) => createSelector(
   (currentWallet) => currentWallet.balances().item(symbol),
 )
 
-export const getWalletsCount = () => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => {
-    let i = 0
-    currentWallet.balances().items().map((balance) => {
-      if (balance.amount().gt(0)) {
-        i++
-      }
-    })
-    return i
-  },
-)
-
 export const selectMainWalletBalancesListStore = (state) =>
   state.get(DUCK_MAIN_WALLET).balances().list() // BalancesCollection, array of BalanceModel
 
