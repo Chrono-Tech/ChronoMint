@@ -191,13 +191,13 @@ class NetworkService extends EventEmitter {
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
 
-    //await this.loadAccounts()
+    await this.loadAccounts()
     ethereumProvider.setEngine(ethereum, nem)
-    bccProvider.setEngine(bcc)
-    btcProvider.setEngine(btc)
-    btgProvider.setEngine(btg)
-    ltcProvider.setEngine(ltc)
-    nemProvider.setEngine(nem)
+    bcc && bccProvider.setEngine(bcc)
+    btc && btcProvider.setEngine(btc)
+    btg && btgProvider.setEngine(btg)
+    ltc && ltcProvider.setEngine(ltc)
+    nem && nemProvider.setEngine(nem)
   }
 
   selectAccount = (selectedAccount) => {

@@ -64,7 +64,7 @@ class TrezorProvider extends EventEmitter {
           if (error) {
             resolve(null)
           }
-          //this._wallet = new HardwareWallet(accounts)
+          this._wallet = new HardwareWallet(accounts)
           resolve(accounts)
         })
       }, 200)

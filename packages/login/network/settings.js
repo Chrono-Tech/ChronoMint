@@ -82,7 +82,7 @@ const RINKEBY_BASE = {
   scanner: blockExplorersMap.Ethereum.testnet,
   bitcoin: 'testnet',
   bitcoinCash: 'testnet',
-  // bitcoinGold: 'bitcoingold_testnet',
+  bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'testnet',
 }
