@@ -95,14 +95,19 @@ export class EthereumProvider extends AbstractProvider {
     web3Provider.pushWallet(num_addresses)
   }
 
-  get2FAEncodedKey (walletAddress, callback) {
+  get2FAEncodedKey (callback) {
     const node = this._selectNode(this._engine)
-    return node.get2FAEncodedKey(this._engine, walletAddress, callback)
+    return node.get2FAEncodedKey(this._engine, callback)
   }
 
-  confirm2FAtx (txAddress, token, callback) {
+  confirm2FASecret (account, confirmToken, callback) {
     const node = this._selectNode(this._engine)
-    return node.confirm2FAtx(txAddress, token, callback)
+    return node.confirm2FASecret(account, confirmToken, callback)
+  }
+
+  confirm2FAtx (txAddress, walletAddress, confirmToken, callback) {
+    const node = this._selectNode(this._engine)
+    return node.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
   }
 }
 

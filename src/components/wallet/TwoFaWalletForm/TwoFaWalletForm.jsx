@@ -8,7 +8,7 @@ import web3Converter from 'utils/Web3Converter'
 import React, { PureComponent } from 'react'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { push } from 'react-router-redux'
-import { Field, formValueSelector, reduxForm, change } from 'redux-form/immutable'
+import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Slider } from 'redux-form-material-ui'
@@ -17,7 +17,7 @@ import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Preloader from 'components/common/Preloader/Preloader'
-import { create2FAWallet, estimateGasFor2FAForm, FORM_2FA_STEPS, FORM_2FA_WALLET } from 'redux/multisigWallet/actions'
+import { create2FAWallet, DUCK_MULTISIG_WALLET, estimateGasFor2FAForm, FORM_2FA_STEPS, FORM_2FA_WALLET } from 'redux/multisigWallet/actions'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
@@ -31,8 +31,10 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')
   const { account } = state.get(DUCK_SESSION)
+  const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()
 
   return {
+    check2FAChecked,
     step,
     account,
     feeMultiplier,
@@ -79,6 +81,7 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_2FA_WALLET })
 export default class TwoFaWalletForm extends PureComponent {
   static propTypes = {
+    check2FAChecked: PropTypes.bool,
     handleSubmit: PropTypes.func,
     account: PropTypes.string,
     gasPriceMultiplier: PropTypes.number,
@@ -183,10 +186,7 @@ export default class TwoFaWalletForm extends PureComponent {
           <div styleName='preloader'>
             <Preloader big />
           </div>
-          <Button
-            label={<Translate value={`${prefix}.goToMyWallets`} />}
-            onTouchTap={this.props.handleGoWallets}
-          />
+          <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onTouchTap={this.props.handleGoWallets} />
         </div>
       </div>
     )
@@ -200,7 +200,9 @@ export default class TwoFaWalletForm extends PureComponent {
 
         <div styleName='actions'>
           <div />
-          <Button label={<Translate value={`${prefix}.proceed`} />} onTouchTap={this.props.handleGoTo2FA} />
+          {this.props.check2FAChecked
+            ? <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onTouchTap={this.props.handleGoWallets} />
+            : <Button label={<Translate value={`${prefix}.proceed`} />} onTouchTap={this.props.handleGoTo2FA} />}
         </div>
       </div>
     )

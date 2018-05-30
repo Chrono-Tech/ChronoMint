@@ -53,6 +53,7 @@ export const MULTISIG_BALANCE = 'multisigWallet/BALANCE'
 export const MULTISIG_SELECT = 'multisigWallet/SELECT'
 export const MULTISIG_REMOVE = 'multisigWallet/REMOVE'
 export const MULTISIG_PENDING_TX = 'multisigWallet/PENDING_TX'
+export const MULTISIG_2_FA_CONFIRMED = 'multisigWallet/2_FA_CONFIRMED'
 
 let walletsManagerDAO
 
@@ -217,6 +218,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())
 
+  dispatch(check2FAChecked())
   // all ready, start fetching
   walletsManagerDAO.fetchWallets()
 }
@@ -358,10 +360,25 @@ export const estimateGasFor2FAForm = async (account, gasPriseMultiplier = 1, cal
   }
 }
 
-export const get2FAEncodedKey = (walletAddress, callback) => () => {
-  return ethereumProvider.get2FAEncodedKey(walletAddress, callback)
+export const get2FAEncodedKey = (callback) => () => {
+  return ethereumProvider.get2FAEncodedKey(callback)
 }
 
-export const confirm2FATransfer = (tx, confirmToken, callback) => () => {
-  return ethereumProvider.confirm2FAtx(tx.id(), confirmToken, callback)
+export const confirm2FASecret = (account, confirmToken, callback) => () => {
+  return ethereumProvider.confirm2FASecret(account, confirmToken, callback)
+}
+
+export const confirm2FATransfer = (txAddress, walletAddress, confirmToken, callback) => () => {
+  return ethereumProvider.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
+}
+
+export const check2FAChecked = () => async (dispatch) => {
+  const result = await dispatch(get2FAEncodedKey())
+  let twoFAConfirmed
+  if (typeof result === 'object' && result.code) {
+    twoFAConfirmed = true
+  } else {
+    twoFAConfirmed = false
+  }
+  dispatch({ type: MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
 }

@@ -75,24 +75,37 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     return []
   }
 
-  async get2FAEncodedKey (engine, walletAddress, callback) {
-    const response = await this._twoFA.post(`/wallet/${walletAddress}`, {
+  async get2FAEncodedKey (engine, callback) {
+    const { data } = await this._twoFA.post(`/wallet/secret`, {
       pubkey: engine.getPublicKey(),
     })
-    // eslint-disable-next-line
-    console.log('get2FAEncodedKey', engine.getPrivateKey(), response.data)
-    const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, response.data)
-    if (code) {
-      return typeof callback === 'function' ? callback(code) : code
+    if (data.code === 401) {
+      return typeof callback === 'function' ? callback(data) : data
+    } else {
+      const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, data)
+      if (code) {
+        return typeof callback === 'function' ? callback(code) : code
+      }
     }
   }
 
-  async confirm2FAtx (txAddress, token, callback) {
-    const response = await this._twoFA.post(`/wallet/${txAddress}/confirm`, {
+  async confirm2FASecret (account, confirmToken, callback) {
+    const { data } = await this._twoFA.post(`/wallet/secret/confirm`, {
+      address: account,
+      token: confirmToken,
+    })
+    const success = data.code === 404 // success code
+    return typeof callback === 'function' ? callback(success) : success
+  }
+
+  async confirm2FAtx (txAddress, walletAddress, token, callback) {
+    const { data } = await this._twoFA.post(`/wallet/confirm`, {
+      operation: txAddress,
+      wallet: walletAddress,
       token,
     })
-    if (response.data) {
-      return typeof callback === 'function' ? callback(response.data) : response.data
+    if (data) {
+      return typeof callback === 'function' ? callback(data) : data
     }
   }
 }

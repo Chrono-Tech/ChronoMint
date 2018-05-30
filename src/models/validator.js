@@ -131,7 +131,7 @@ export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
     : null
 }
 
-export const confirm2FACode = (value) => isNaN(value) || ('' + value).length < 6 ? 'errors.invalidConfirm2FACode' : null
+export const confirm2FACode = (value) => isNaN(value) || ('' + value).length !== 6 ? 'errors.invalidConfirm2FACode' : null
 
 export default {
   required,

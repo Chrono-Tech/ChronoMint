@@ -9,22 +9,25 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
-import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { goToWallets } from 'redux/mainWallet/actions'
-import { checkConfirmCode, get2FAEncodedKey } from 'redux/multisigWallet/actions'
+import { confirm2FASecret, get2FAEncodedKey, MULTISIG_2_FA_CONFIRMED } from 'redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import TWO_FA_LOGO_PNG from 'assets/img/2fa/2-fa.png'
 import APPSTORE_SVG from 'assets/img/appstore.svg'
 import PLAY_SVG from 'assets/img/play.svg'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
+import Preloader from 'components/common/Preloader/Preloader'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
+import validate from './validate'
 import './TwoFaEnableForm.scss'
 
 export const FORM_2FA_ENABLE = 'Form2FAEnable'
 const STEPS = [
   'downloadStep',
   'enableStep',
+  'successStep',
 ]
 
 function mapStateToProps (state) {
@@ -32,37 +35,48 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_2FA_ENABLE)
   const code = selector(state, 'code')
   const confirmToken = selector(state, 'confirmToken')
+  const confirmRules = selector(state, 'confirmRules')
   return {
     account,
     code,
     confirmToken,
+    confirmRules,
+    initialValues: {
+      confirmRules: false,
+    },
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     handleGoWallets: () => dispatch(goToWallets()),
-    get2FAEncodedKey: (walletAddress) => {
-      dispatch(get2FAEncodedKey(walletAddress, (code) => {
+    get2FAEncodedKey: () => {
+      dispatch(get2FAEncodedKey((code) => {
         dispatch(change(FORM_2FA_ENABLE, 'code', code))
       }))
     },
-    checkConfirmCode: (secret, confToken) => dispatch(checkConfirmCode(secret, confToken)),
+    confirm2FASecret: (account, confirmToken, callback) => {
+      dispatch(confirm2FASecret(account, confirmToken, callback))
+    },
+    handleSetTwoFAConfirmed: (twoFAConfirmed) => dispatch({ type: MULTISIG_2_FA_CONFIRMED, twoFAConfirmed }),
+    handleGoToWallets: () => dispatch(goToWallets()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_2FA_ENABLE })
+@reduxForm({ form: FORM_2FA_ENABLE, validate })
 export default class TwoFaEnableForm extends PureComponent {
   static propTypes = {
+    handleSetTwoFAConfirmed: PropTypes.func,
     account: PropTypes.string,
-    confirmToken: PropTypes.number,
-    checkConfirmCode: PropTypes.func,
     feeMultiplier: PropTypes.number,
     handleGoWallets: PropTypes.func,
+    confirm2FASecret: PropTypes.func,
     handleGoTo2FA: PropTypes.func,
     code: PropTypes.string,
     get2FAEncodedKey: PropTypes.func,
+    handleGoToWallets: PropTypes.func,
+    ...formPropTypes,
   }
 
   constructor (props) {
@@ -70,11 +84,12 @@ export default class TwoFaEnableForm extends PureComponent {
     this.state = {
       step: STEPS[0],
       qrData: null,
+      isLoading: false,
     }
   }
 
   componentDidMount () {
-    this.props.get2FAEncodedKey(this.props.account)
+    this.props.get2FAEncodedKey()
   }
 
   componentWillReceiveProps (newProps) {
@@ -93,8 +108,16 @@ export default class TwoFaEnableForm extends PureComponent {
   }
 
   handleCheckConfirmCode = () => {
-    const { checkConfirmCode, code, confirmToken } = this.props
-    checkConfirmCode(code, confirmToken)
+    const { confirm2FASecret, account, confirmToken } = this.props
+    this.setState({ isLoading: true, success: null })
+    confirm2FASecret(account, confirmToken, (success) => {
+      let newState = { isLoading: false, success }
+      if (success) {
+        newState.step = STEPS[2]
+        this.props.handleSetTwoFAConfirmed(success)
+      }
+      this.setState(newState)
+    })
   }
 
   renderDownloadStep () {
@@ -120,7 +143,8 @@ export default class TwoFaEnableForm extends PureComponent {
   }
 
   renderEnableStep () {
-
+    const { isLoading, success } = this.state
+    const { pristine, invalid, confirmRules } = this.props
     return (
       <div>
         <div styleName='enableStep'>
@@ -139,14 +163,19 @@ export default class TwoFaEnableForm extends PureComponent {
           <div styleName='step'>
             <div styleName='stepNumber'>3</div>
             <div styleName='title'><Translate value={`${prefix}.thirdStepTitle`} /></div>
-            <div styleName='description'><Translate value={`${prefix}.thirdStepDescription`} /></div>
-            <div styleName='field'>
-              <Field
-                component={TextField}
-                name='confirmToken'
-                floatingLabelText={<Translate value={`${prefix}.authCode`} />}
-              />
-            </div>
+            {!isLoading && <div styleName='description'><Translate value={`${prefix}.thirdStepDescription`} /></div>}
+            {!isLoading ? (
+              <div styleName='field'>
+                <Field
+                  component={TextField}
+                  name='confirmToken'
+                  floatingLabelText={<Translate value={`${prefix}.authCode`} />}
+                />
+                {success === false && <div styleName='wrongCode'><Translate value={`${prefix}.confirmCodeWrong`} /></div>}
+              </div>
+            ) : (
+              <div><Preloader /></div>
+            )}
           </div>
         </div>
         <div styleName='confirm'>
@@ -160,23 +189,38 @@ export default class TwoFaEnableForm extends PureComponent {
         </div>
         <div styleName='actions'>
           <Button
+            disabled={pristine || invalid || !confirmRules}
             onTouchTap={this.handleCheckConfirmCode}
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>
       </div>
     )
+  }
 
+  renderSuccessStep () {
+    return (
+      <div>
+        <div styleName='title'><Translate value={`${prefix}.successTitle`} /></div>
+        <div styleName='actions'>
+          <Button
+            onTouchTap={this.props.handleGoToWallets}
+            label={<Translate value={`${prefix}.goToWallets`} />}
+          />
+        </div>
+      </div>
+    )
   }
 
   render () {
     const { step } = this.state
     return (
       <WidgetContainer title={`${prefix}.pageTitle`}>
-        <div styleName='root'>
+        <form styleName='root'>
           {step === STEPS[0] && this.renderDownloadStep()}
           {step === STEPS[1] && this.renderEnableStep()}
-        </div>
+          {step === STEPS[2] && this.renderSuccessStep()}
+        </form>
       </WidgetContainer>
     )
   }

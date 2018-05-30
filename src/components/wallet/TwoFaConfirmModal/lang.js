@@ -11,5 +11,6 @@ export default {
     description: 'Enter a code you see in your App.',
     authCode: 'Authentication code',
     confirm: 'confirm',
+    confirmCodeWrong: 'Confirmation code incorrect. Please try again',
   },
 }

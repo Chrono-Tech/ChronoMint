@@ -22,5 +22,8 @@ export default {
     authCode: 'Authentication code',
     confirm: 'I’ve stored the backup code',
     done: 'done',
+    confirmCodeWrong: 'Confirmation code incorrect. Please try again',
+    successTitle: '2FA success enabled!',
+    goToWallets: 'go to wallets',
   },
 }

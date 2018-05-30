@@ -88,7 +88,10 @@
         padding-bottom: 33px;
       }
       .field {
-
+        .wrongCode {
+          color: $error-color;
+          font-size: 14px;
+        }
       }
     }
 

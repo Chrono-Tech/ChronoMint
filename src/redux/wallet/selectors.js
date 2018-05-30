@@ -447,3 +447,13 @@ export const getDeriveWalletsAddresses = (state, blockchain) => {
     })
   return accounts
 }
+
+export const getIsHave2FAWallets = (state) => {
+  return state.get(DUCK_MULTISIG_WALLET)
+    .list()
+    .some((wallet) => {
+      if (wallet.is2FA()) {
+        return true
+      }
+    })
+}
