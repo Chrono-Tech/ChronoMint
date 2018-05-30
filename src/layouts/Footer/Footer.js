@@ -6,9 +6,10 @@
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import { reduxForm, Field } from 'redux-form/immutable'
+
 import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
-import ChronoBankLogo from 'components/common/ChronoBankLogo/ChronoBankLogo'
 import LogoChronobankFull from 'assets/img/logo-chrono-bank-full.svg'
 import PlayWhite from 'assets/img/play-white.svg'
 import AppstoreWhite from 'assets/img/appstore-white.svg'
@@ -18,10 +19,15 @@ import instagram from 'assets/img/instagram.svg'
 import github from 'assets/img/github.svg'
 import twitter from 'assets/img/twitter.svg'
 import telegramm from 'assets/img/telegramm.svg'
+import StripesToCropFooter from 'assets/img/stripes-2-crop-footer.jpg'
 
 import './Footer.scss'
+import styles from './styles'
 
-class Footer extends Component {
+const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
+
+@reduxForm({ form: FORM_FOOTER_EMAIL_SUBSCRIPTION })
+export default class Footer extends Component {
   static propTypes = {
     children: PropTypes.node,
   }
@@ -66,17 +72,6 @@ class Footer extends Component {
               <li>Desktop App (MacOS)</li>
             </ul>
 
-            <div styleName='subscription'>
-              <div styleName='subscription-input'>
-                <TextField fullWidth placeholder={'Enter email to subscribe for newsletter'} />
-              </div>
-              <div styleName='subscription-button'>
-                <Button
-                  styleName='button'
-                  label={<Translate value='subscribe' />}
-                />
-              </div>
-            </div>
           </div>
 
           <div styleName='connect'>
@@ -105,10 +100,29 @@ class Footer extends Component {
             </div>
 
             <ul styleName='navigation-list' >
-              <li>info@chronobank.io</li>
+              <li styleName='first'>info@chronobank.io</li>
               <li>support@chronobank.io</li>
             </ul>
           </div>
+
+          <form name={FORM_FOOTER_EMAIL_SUBSCRIPTION} styleName='subscription'>
+            <div styleName='subscription-input'>
+              <Field
+                component={TextField}
+                name='email'
+                floatingLabelText='Enter email to subscribe for newsletter'
+                fullWidth
+                {...styles.textField}
+              />
+            </div>
+            <div styleName='subscription-button'>
+              <Button
+                styleName='button'
+                label={<Translate value='subscribe' />}
+              />
+            </div>
+          </form>
+
         </div>
         <div styleName='copyright'>
           <span styleName='copyright-text'>
@@ -116,9 +130,9 @@ class Footer extends Component {
           </span>
         </div>
 
+        <img styleName='background' src={StripesToCropFooter} alt='' />
+
       </div>
     )
   }
 }
-
-export default Footer

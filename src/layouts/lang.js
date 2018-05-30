@@ -4,12 +4,10 @@
  */
 
 import * as partials from 'layouts/partials/lang'
-import * as splash from 'layouts/Splash/lang'
 
 export default {
   en: {
     partials: partials.en,
-    splash: splash.en,
   },
 }
 

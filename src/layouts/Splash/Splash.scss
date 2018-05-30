@@ -10,13 +10,14 @@ $copyRightPadding: 200px;
 .root {
   background-color: #242045;
   position: relative;
-  padding-bottom: 130px; // for footer
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  font-family: $font-proxima;
 
   @include md-only {
-    padding-bottom: 230px;
+    min-height: 100vh;
+    padding: 0;
   }
 
   &:after {
@@ -31,15 +32,10 @@ $copyRightPadding: 200px;
   flex: 1;
   justify-content: center;
   flex-direction: column;
-  width: 700px;
   margin: 0 auto;
-  padding-top: 40px;
 
-  @include md-only {
-    padding-top: 80px;
-  }
   @include xs-only {
-    width: 100vw;
+    padding: 80px 20px 0;
   }
 }
 
@@ -63,6 +59,11 @@ $copyRightPadding: 200px;
   justify-content: center;
   height: 340px;
   overflow: hidden;
+  margin-bottom: 20px;
+
+  @include md-only {
+    display: none;
+  }
 }
 
 .header-picture {
@@ -113,24 +114,21 @@ $copyRightPadding: 200px;
 }
 
 .create-title {
-  display: flex;
-  justify-content: center;
   color: $color-white;
-  font-family: $font-family-main;
   font-weight: 700;
   font-size: 30px;
   line-height: 42px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .create-title-description {
-  display: flex;
-  justify-content: center;
-  font-family: $font-family-main;
   font-weight: 400;
   color: $color-description;
   font-size: 16px;
   line-height: 22px;
-  margin-top: 10px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
 .links {
@@ -150,14 +148,41 @@ $copyRightPadding: 200px;
   }
 }
 
-.link {
+.actions {
   color: white;
+  text-align: center;
+  line-height: 30px;
+  margin-bottom: 45px;
+}
+
+.link {
+  color: $border-color;
   margin: auto 45px;
   text-decoration: none;
-  font-family: $font-family-main;
-  font-size: 18px;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
 
   @include md-only {
     margin: 0 0 10px;
+  }
+}
+
+.fields-block {
+  margin: 0 auto 50px;
+  max-width: 300px;
+}
+
+.button {
+  margin-bottom: 25px;
+
+  button {
+    font: 700 16px $font-proxima;
+    line-height: 45px;
+    padding: 0 50px;
+    border-radius: 50px;
+    white-space: nowrap;
   }
 }

@@ -40,9 +40,9 @@ $copyRightPadding: 200px;
 }
 
 .footer {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.1);
   bottom: 0;
   left: 0;
   right: 0;
@@ -53,14 +53,15 @@ $copyRightPadding: 200px;
 
   @include md-only {
     padding: 20px;
-    flex-direction: column-reverse;
+    min-width: 0;
+    //flex-direction: column-reverse;
   }
 
   .subscription {
     position: absolute;
     display: flex;
-    bottom: 55px;
-    left: 895px;
+    bottom: 0;
+    left: 335px;
   }
 
   .subscription-input {
@@ -72,9 +73,20 @@ $copyRightPadding: 200px;
     width: 280px;
     margin-left: 30px;
     display: flex;
+    align-items: flex-end;
 
     .button {
+      button {
+        background: $color-light-blue;
+        font-size: 14px;
+        border-radius: 50px;
+        padding: 0 17px;
+        min-height: 30px;
 
+        &:hover {
+          background: #E2A864;
+        }
+      }
     }
   }
 
@@ -82,11 +94,16 @@ $copyRightPadding: 200px;
     display: flex;
     margin-top: 30px;
     width: 870px;
+    z-index: 2;
+
+    @include md-only {
+      width: auto;
+      text-align: center;
+    }
   }
 
   .copyright-text {
     color: #9997B2;
-    font-family: $font-family-main;
     font-weight: 400;
     font-size: 12px;
     line-height: 14px;
@@ -95,6 +112,12 @@ $copyRightPadding: 200px;
 
   .footer-container {
     display: flex;
+    z-index: 2;
+    position: relative;
+
+    @include md-only {
+      display: none;
+    }
   }
 
   .navigation-chrono-logo-container {
@@ -127,23 +150,24 @@ $copyRightPadding: 200px;
     li {
       display: flex;
       color: $color-light-blue;
-      font-family: $font-family-main;
       font-weight: 500;
       font-size: 14px;
       margin-top: 20px;
+
+      &.first {
+        margin: 0;
+      }
     }
 
   }
 
   .title-container {
     display: flex;
-    margin-bottom: 20px;
-    margin-top: 10px;
+    margin: 10px 0 30px;
   }
 
   .title {
-    color: $color-orange;
-    font-family: $font-family-main;
+    color: #E2A864;
     font-weight: 700;
     font-size: 20px;
     line-height: 24px;
@@ -158,7 +182,7 @@ $copyRightPadding: 200px;
 
     .market-logo-container {
       display: block;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
     }
 
     .ios-market-logo {
@@ -205,10 +229,18 @@ $copyRightPadding: 200px;
   color: white;
   margin: auto 45px;
   text-decoration: none;
-  font-family: $font-family-main;
   font-size: 18px;
 
+}
+
+.background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: -750px;
+  margin: auto;
+
   @include md-only {
-    margin: 0 0 10px;
+    display: none;
   }
 }
