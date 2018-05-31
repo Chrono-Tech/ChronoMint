@@ -9,11 +9,12 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm, formValueSelector } from 'redux-form/immutable'
-import { confirm2FATransfer } from 'redux/multisigWallet/actions'
+import { confirm2FATransfer, updatePendingTx } from 'redux/multisigWallet/actions'
 import PropTypes from 'prop-types'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import Preloader from 'components/common/Preloader/Preloader'
+import { modalsClose } from 'redux/modals/actions'
 import { prefix } from './lang'
 import './TwoFaConfirmModal.scss'
 import validate from './validate'
@@ -31,6 +32,8 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     confirm2FATransfer: (txAddress, walletAddress, confirmToken, callback) => dispatch(confirm2FATransfer(txAddress, walletAddress, confirmToken, callback)),
+    handleCloseModal: () => dispatch(modalsClose()),
+    handleUpdatePendingTx: (walletAddress, tx) => dispatch(updatePendingTx(walletAddress, tx)),
   }
 }
 
@@ -40,6 +43,7 @@ export default class TwoFaConfirmModal extends PureComponent {
   static propTypes = {
     confirm2FATransfer: PropTypes.func,
     wallet: PropTypes.instanceOf(MultisigWalletModel),
+    handleUpdatePendingTx: PropTypes.func,
     tx: PropTypes.instanceOf(MultisigWalletPendingTxModel),
     ...formPropTypes,
   }
@@ -55,10 +59,12 @@ export default class TwoFaConfirmModal extends PureComponent {
     const { confirm2FATransfer, tx, wallet, confirmToken } = this.props
     this.setState({ isLoading: true, success: null })
     confirm2FATransfer(tx.id(), wallet.address(), confirmToken, (data) => {
-      // eslint-disable-next-line
-      console.log('data', data)
-      let newState = { isLoading: false, success: false }
-      this.setState(newState)
+      if (data.hash) {
+        this.props.handleCloseModal()
+        this.props.handleUpdatePendingTx(wallet.address(), tx)
+      } else {
+        this.setState({ isLoading: false, success: false })
+      }
     })
   }
 

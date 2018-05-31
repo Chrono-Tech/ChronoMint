@@ -78,4 +78,8 @@ export default class DerivedWalletModel extends abstractFetchingModel({
   is2FA () {
     return false
   }
+
+  isDerived () {
+    return true
+  }
 }

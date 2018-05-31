@@ -108,4 +108,12 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       return typeof callback === 'function' ? callback(data) : data
     }
   }
+
+  async checkConfirm2FAtx (txAddress, callback) {
+    const { data } = await this._twoFA.get(`/wallets/${txAddress}/info`)
+    if (data) {
+      return typeof callback === 'function' ? callback(data) : data
+    }
+  }
 }
+

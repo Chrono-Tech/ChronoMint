@@ -142,4 +142,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   is2FA () {
     return this.get('is2FA')
   }
+
+  isDerived () {
+    return false
+  }
 }

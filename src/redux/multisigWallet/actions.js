@@ -382,3 +382,12 @@ export const check2FAChecked = () => async (dispatch) => {
   }
   dispatch({ type: MULTISIG_2_FA_CONFIRMED, twoFAConfirmed })
 }
+
+export const updatePendingTx = (walletAddress: string, tx: MultisigWalletPendingTxModel) => (dispatch, getState) => {
+  const wallet = getState().get(DUCK_MULTISIG_WALLET).item(walletAddress)
+  dispatch(updateWallet(wallet.pendingTxList(wallet.pendingTxList().update(tx.isPending(true)))))
+}
+
+export const checkConfirm2FAtx = (txAddress, callback) => {
+  return ethereumProvider.checkConfirm2FAtx(txAddress, callback)
+}

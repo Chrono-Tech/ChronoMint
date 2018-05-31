@@ -109,6 +109,11 @@ export class EthereumProvider extends AbstractProvider {
     const node = this._selectNode(this._engine)
     return node.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
   }
+
+  checkConfirm2FAtx (txAddress, callback) {
+    const node = this._selectNode(this._engine)
+    return node.checkConfirm2FAtx(txAddress, callback)
+  }
 }
 
 export const ethereumProvider = new EthereumProvider(selectEthereumNode)

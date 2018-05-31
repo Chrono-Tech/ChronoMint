@@ -124,57 +124,56 @@ export default class PendingTxWidget extends PureComponent {
 
     return (
       <div styleName='row' key={item.id()}>
-        {item.isPending()
-          ? <Preloader />
-          : (
-            <div styleName='rowTable'>
-              {this.renderIcon(item)}
-              <div styleName='values'>
-                <div styleName='title'>{item.title()}</div>
-                {item.details().map((item, index) => {
-                  const value = item.value instanceof Amount
-                    ? <TokenValue value={item.value} />
-                    : item.value
-                  return (
-                    <div key={index}>
-                      <span>{item.label}:&nbsp;</span>
-                      <span>{value}</span>
-                    </div>
-                  )
-                })}
-              </div>
-              {wallet.is2FA()
-                ? (
-                  <div styleName='actions'>
+        <div styleName='rowTable'>
+          {this.renderIcon(item)}
+          <div styleName='values'>
+            <div styleName='title'>{item.title()}</div>
+            {item.details().map((item, index) => {
+              const value = item.value instanceof Amount
+                ? <TokenValue value={item.value} />
+                : item.value
+              return (
+                <div key={index}>
+                  <span>{item.label}:&nbsp;</span>
+                  <span>{value}</span>
+                </div>
+              )
+            })}
+          </div>
+          {wallet.is2FA()
+            ? (
+              <div styleName='actions'>
+                {item.isPending()
+                  ? <Preloader />
+                  : (
                     <Button
                       label={<Translate value='wallet.enterCode' />}
                       onTouchTap={this.handleEnterCode(wallet, item)}
                     />
-                  </div>
-                ) : (
-                  <div styleName='actions'>
-                    <Button
-                      flat
-                      label={<Translate value='wallet.revoke' />}
-                      disabled={!isConfirmed}
-                      onTouchTap={isConfirmed
-                        ? this.handleRevoke(wallet, item)
-                        : undefined
-                      }
-                    />
-                    <Button
-                      label={<Translate value='wallet.sign' />}
-                      disabled={isConfirmed}
-                      onTouchTap={!isConfirmed
-                        ? this.handleConfirm(wallet, item)
-                        : undefined
-                      }
-                    />
-                  </div>
-                )}
-            </div>
-          )
-        }
+                  )}
+              </div>
+            ) : (
+              <div styleName='actions'>
+                <Button
+                  flat
+                  label={<Translate value='wallet.revoke' />}
+                  disabled={!isConfirmed}
+                  onTouchTap={isConfirmed
+                    ? this.handleRevoke(wallet, item)
+                    : undefined
+                  }
+                />
+                <Button
+                  label={<Translate value='wallet.sign' />}
+                  disabled={isConfirmed}
+                  onTouchTap={!isConfirmed
+                    ? this.handleConfirm(wallet, item)
+                    : undefined
+                  }
+                />
+              </div>
+            )}
+        </div>
       </div>
     )
   }

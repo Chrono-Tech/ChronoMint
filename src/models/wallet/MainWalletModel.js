@@ -89,4 +89,9 @@ export default class MainWalletModel extends abstractFetchingModel({
   isTimeLocked () {
     return false
   }
+
+  isDerived () {
+    return false
+  }
 }
+

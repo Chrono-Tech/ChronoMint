@@ -63,16 +63,12 @@ function mapDispatchToProps (dispatch) {
         ...props.initialValues.toJS(),
         ...values.toJS(),
         releaseTime,
+        is2FA: true,
         owners: ownersCollection,
       })
 
       dispatch(create2FAWallet(wallet, values.get('feeMultiplier')))
       dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[1]))
-    },
-    onSubmitSuccess: (a, b, c, d) => {
-      // eslint-disable-next-line
-      console.log('onSubmitSuccess', a, b, c, d)
-
     },
   }
 }

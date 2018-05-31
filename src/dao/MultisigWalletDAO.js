@@ -13,6 +13,7 @@ import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
 
@@ -125,12 +126,19 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
     const [values, operations, isConfirmed] = await this._call('getPendings')
 
+    let promises = []
+    operations.map((operation) => {
+      promises.push(ethereumProvider.checkConfirm2FAtx(operation))
+    })
+    const verifiedOperations = await Promise.all(promises)
+
     operations.filter(this.isValidId).forEach((id, i) => {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
         value: values [i],
         isConfirmed: isConfirmed[i],
+        isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
       })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
@@ -265,5 +273,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         console.warn('warn: decoder not implemented for function: ', func)
         return args
     }
+  }
+
+  use2FA () {
+    return this._call('use2FA')
   }
 }

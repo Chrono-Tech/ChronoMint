@@ -42,7 +42,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   watchWalletCreate () {
     return this._watch(
       'WalletCreated',
-      (result) => this._createWalletModel(result.args.wallet, false, result.transactionHash),
+      async (result) => {
+        const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(result.args.wallet)
+        const is2FA = await walletDAO.use2FA()
+        return this._createWalletModel(result.args.wallet, is2FA, result.transactionHash)
+      },
       { by: this.getAccount() },
     )
   }
