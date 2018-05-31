@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import css from './UserRow.scss'
 
 export default class UserRow extends React.Component {
@@ -37,7 +38,6 @@ export default class UserRow extends React.Component {
       subtitle,
       onClick,
     } = this.props
-    const actionIconClasses = [].concat(actionIconClass)
 
     return (
       <div className={[css.userBlock, onClick ? '' : css.userBlockSingle ].join(' ')} onClick={onClick ? onClick : () => {}}>
@@ -59,7 +59,7 @@ export default class UserRow extends React.Component {
         { !hideActionIcon ? (
           <div className={css.actionWrapper}>
             <span className={[css.actionListTrigger, onClick ? '' : css.actionListTriggerDisabled].join(' ')}>
-              <img className={actionIconClasses.join(' ')} src={actionIcon} alt='' />
+              <img className={actionIconClass} src={actionIcon} alt='' />
             </span>
           </div>
         ) : null}
