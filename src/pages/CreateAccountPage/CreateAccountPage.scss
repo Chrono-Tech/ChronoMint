@@ -27,6 +27,30 @@ $copyRightPadding: 200px;
   }
 }
 
+.form {
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+  margin: 0 auto;
+
+  @include xs-only {
+    padding: 0 20px;
+  }
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0 auto;
+
+  @include xs-only {
+    padding: 80px 20px 0;
+  }
+}
+
 .footer {
   display: flex;
   background-color: rgba(255, 255, 255, 0.1);
@@ -48,8 +72,10 @@ $copyRightPadding: 200px;
   height: 340px;
   overflow: hidden;
   margin-bottom: 20px;
-  position: relative;
 
+  @include md-only {
+    display: none;
+  }
 }
 
 .header-picture {
@@ -115,7 +141,7 @@ $copyRightPadding: 200px;
   line-height: 22px;
   margin-bottom: 10px;
   text-align: center;
-  width: 520px;
+  max-width: 520px;
 }
 
 .links {
@@ -164,12 +190,4 @@ $copyRightPadding: 200px;
 
 .button {
   margin-bottom: 25px;
-
-  button {
-    font: 700 16px $font-proxima;
-    line-height: 45px;
-    padding: 0 50px;
-    border-radius: 50px;
-    white-space: nowrap;
-  }
 }

@@ -50,8 +50,9 @@ $copyRightPadding: 200px;
   padding: 17px 80px;
   align-items: center;
   justify-content: flex-start;
+  overflow: hidden;
 
-  @include md-only {
+  @include xs-only {
     padding: 20px;
     min-width: 0;
     //flex-direction: column-reverse;

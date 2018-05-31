@@ -40,3 +40,53 @@ ul.actions {
   }
 }
 
+.form {
+  max-width: 380px;
+  margin:0 auto;
+
+  @include xs-only {
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.user-row {
+  border-top: 1px solid #424066;
+}
+
+.field {
+  margin-bottom: 50px;
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
