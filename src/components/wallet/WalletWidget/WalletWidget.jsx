@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
+import { ETH } from 'redux/mainWallet/actions'
 import { walletInfoSelector } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
@@ -34,7 +35,7 @@ import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSett
 
 function mapStateToProps (state, ownProps) {
   return {
-    walletInfo: walletInfoSelector(ownProps.wallet, ownProps.blockchain, ownProps.address, state),
+    walletInfo: walletInfoSelector(ownProps.wallet, ownProps.blockchain, ownProps.address, false, state),
     token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
   }
@@ -179,7 +180,9 @@ export default class WalletWidget extends PureComponent {
     }
 
     let key = null
-    if (this.isMySharedWallet()) {
+    if (this.isMy2FAWallet()) {
+      key = 'twoFAWallet'
+    } else if (this.isMySharedWallet()) {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
@@ -197,11 +200,34 @@ export default class WalletWidget extends PureComponent {
   }
 
   getTokensList = () => {
-    return this.state.isShowAll ? this.props.walletInfo.tokens : this.props.walletInfo.tokens.slice(0, 2)
+    const tokens = this.props.walletInfo.tokens.sort((a, b) => {
+      if (a.amount < b.amount) {
+        return 1
+      }
+      if (a.amount > b.amount) {
+        return -1
+      }
+      return 0
+    })
+    return this.state.isShowAll ? tokens : tokens.slice(0, 2)
   }
 
   getTokenAmountList = () => {
     const walletInfo = this.props.walletInfo
+    if (this.props.blockchain === BLOCKCHAIN_ETHEREUM) {
+      let eth
+      walletInfo.tokens.some((token) => {
+        if (token.symbol === ETH) {
+          eth = token
+          return true
+        }
+      })
+
+      if (eth) {
+        return `${eth.symbol} ${eth.amount.toFixed(2)}`
+      }
+      return null
+    }
     let tokenList = walletInfo.tokens
 
     if (tokenList.length < 3) {
@@ -216,7 +242,11 @@ export default class WalletWidget extends PureComponent {
   }
 
   isMySharedWallet = () => {
-    return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked()
+    return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked() && !this.props.wallet.is2FA()
+  }
+
+  isMy2FAWallet = () => {
+    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
   }
 
   isMainWallet = () => {
@@ -235,12 +265,19 @@ export default class WalletWidget extends PureComponent {
     }
 
     const firstToken = walletInfo.tokens[0]
+    const pendingslength = wallet.pendingTxList ? wallet.pendingTxList().size() : 0
+
     return (
       <div styleName='header-container'>
         {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>
+            {pendingslength > 0 && (
+              <div styleName='pendings-container'>
+                <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={pendingslength} /></div>
+              </div>
+            )}
             <div styleName='settings-container'>
               <div styleName='settings-icon' className='chronobank-icon' onTouchTap={this.handleOpenSettings}>settings
               </div>
@@ -284,7 +321,7 @@ export default class WalletWidget extends PureComponent {
               {walletInfo.tokens.length >= 3 &&
               <div styleName='amount-list-container'>
                 <div styleName='amount-list'>
-                  <span styleName='amount-text'>{`You have ${walletInfo.tokens.length} tokens`}</span>
+                  <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={walletInfo.tokens.length} /></span>
                 </div>
                 <div styleName='show-all'>
                   <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
@@ -294,29 +331,32 @@ export default class WalletWidget extends PureComponent {
               {this.getTokensList().length > 1 && (
                 <div styleName='tokens-list'>
                   <div styleName='tokens-list-table'>
-                    {this.getTokensList().map((tokenMap) => {
-                      const token = this.props.tokens.item(tokenMap.symbol)
+                    {this.getTokensList()
+                      .map((tokenMap) => {
+                        const token = this.props.tokens.item(tokenMap.symbol)
 
-                      if (!token.isFetched()) {
-                        return null
-                      }
-                      return (
-                        <div styleName='tokens-list-table-tr' key={token.id()}>
-                          <div styleName='tokens-list-table-cell-icon'>
-                            <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
+                        if (!token.isFetched()) {
+                          return null
+                        }
+                        return (
+                          <div styleName='tokens-list-table-tr' key={token.id()}>
+                            <div styleName='tokens-list-table-cell-icon'>
+                              <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
+                            </div>
+                            <div styleName='tokens-list-table-cell-amount'>
+                              {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
+                            </div>
+                            <div styleName='tokens-list-table-cell-usd'>
+                              USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
+                            </div>
                           </div>
-                          <div styleName='tokens-list-table-cell-amount'>
-                            {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
-                          </div>
-                          <div styleName='tokens-list-table-cell-usd'>
-                            USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
-                          </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      })}
                   </div>
                 </div>
               )}
+
+              {this.isMySharedWallet() && this.getTokensList().length <= 0 && (<div styleName='separator' />)}
 
               {wallet.isTimeLocked() && (
                 <div styleName='unlockDateWrapper'>

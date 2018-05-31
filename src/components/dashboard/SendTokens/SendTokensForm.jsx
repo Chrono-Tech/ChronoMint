@@ -57,7 +57,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
-  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, state)
+  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, true, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')

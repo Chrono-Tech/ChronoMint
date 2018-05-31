@@ -174,7 +174,9 @@ export default class WalletWidgetDetail extends PureComponent {
     }
 
     let key = null
-    if (this.isMySharedWallet()) {
+    if (this.isMy2FAWallet()) {
+      key = 'twoFAWallet'
+    } else if (this.isMySharedWallet()) {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
@@ -212,6 +214,10 @@ export default class WalletWidgetDetail extends PureComponent {
         </div>
       </div>
     )
+  }
+
+  isMy2FAWallet = () => {
+    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
   }
 
   isMySharedWallet = () => {

@@ -115,6 +115,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   }
 
   toCreateWalletTx () {
+    if (this.is2FA()) {
+      return {}
+    }
+
     const data = {
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),

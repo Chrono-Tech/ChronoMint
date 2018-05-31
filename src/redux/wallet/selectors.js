@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { DUCK_MARKET } from 'redux/market/action'
@@ -226,7 +226,7 @@ export const makeGetSectionedWallets = () => createSelector(
  * @return { { balance: number, tokens: [ {ETH: number } ] } }
  *         Returns list of sections for the ReactNative SectionList.
  */
-export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
+export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle, address, isAmountGt) => {
   return createSelector(
     [
       getMainWalletSections,
@@ -277,6 +277,9 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
       const result = arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
+          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+            return accumulator
+          }
 
           const tokenPrice = prices[symbol] && prices[symbol][selectedCurrency] || 0
           if (tokenPrice && amount > 0) {
@@ -298,12 +301,6 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
           tokens: [],
         })
 
-      // result.tokens.push({
-      //   symbol: 'BTC',
-      //   amount: 1,
-      //   amountPrice: 10000000000.32132,
-      // })
-
       // Let's add an address of Main Wallet into final result
       const currentWallet = addressesAndBlockchains
         .find((mainWalletAddrAndChain) => {
@@ -316,7 +313,7 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle) => {
   )
 }
 
-export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) => {
+export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle, isAmountGt) => {
   return createSelector(
     [
       getMultisigWallets,
@@ -367,6 +364,9 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle) =>
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
+          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+            return accumulator
+          }
 
           const tokenPrice = prices[symbol] && prices[symbol][selectedCurrency] || 0
           if (tokenPrice && amount > 0) {
@@ -427,12 +427,12 @@ export const walletDetailSelector = (walletBlockchain, walletAddress) => createS
   },
 )
 
-export const walletInfoSelector = (wallet, blockchain, address, state) => {
+export const walletInfoSelector = (wallet, blockchain, address, isAmountGt, state) => {
   if (wallet instanceof MainWalletModel) {
-    return makeGetWalletTokensAndBalanceByAddress(blockchain, address)(state)
+    return makeGetWalletTokensAndBalanceByAddress(blockchain, address, isAmountGt)(state)
   }
   if (wallet instanceof MultisigWalletModel || wallet instanceof DerivedWalletModel) {
-    return makeGetWalletTokensForMultisig(blockchain, address)(state)
+    return makeGetWalletTokensForMultisig(blockchain, address, isAmountGt)(state)
   }
 }
 
