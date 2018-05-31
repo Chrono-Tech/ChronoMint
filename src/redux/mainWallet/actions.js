@@ -515,6 +515,8 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain }) => asy
 
   if (transactions.items().length < newOffset) {
     transactions = transactions.endOfList(true)
+  } else {
+    transactions = transactions.endOfList(false)
   }
 
   if (wallet instanceof MainWalletModel) {
