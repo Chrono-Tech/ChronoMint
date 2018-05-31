@@ -52,10 +52,9 @@ $copyRightPadding: 200px;
   justify-content: flex-start;
   overflow: hidden;
 
-  @include xs-only {
+  @include md-only {
     padding: 20px;
     min-width: 0;
-    //flex-direction: column-reverse;
   }
 
   .subscription {
