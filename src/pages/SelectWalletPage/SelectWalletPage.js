@@ -28,6 +28,35 @@ export default class SelectWalletPage extends PureComponent {
     walletsList: [],
   }
 
+  renderWalletsList (){
+    const { onWalletSelect, walletsList } = this.props
+
+    if (!walletsList || !walletsList.length){
+      return (
+        <div styleName='empty-list'>
+          Sorry, there are no accounts to display
+        </div>
+      )
+    }
+
+    return (
+      <div styleName='wallets-list'>
+        {
+          walletsList ? walletsList.map((w, i) => (
+            <UserRow
+              key={i}
+              title={w.address}
+              avatar={w.img}
+              actionIcon={arrow}
+              actionIconClass={pageStyles.actionIcon}
+              onClick={() => onWalletSelect(w)}
+            />
+          )) : null
+        }
+      </div>
+    )
+  }
+
   render () {
     const { onWalletSelect, walletsList } = this.props
     return (
@@ -36,20 +65,7 @@ export default class SelectWalletPage extends PureComponent {
 
           <div styleName='page-title'>My Accounts</div>
 
-          <div styleName='user-rows'>
-            {
-              walletsList ? walletsList.map((w, i) => (
-                <UserRow
-                  key={i}
-                  title={w.address}
-                  avatar={w.img}
-                  actionIcon={arrow}
-                  actionIconClass={pageStyles.actionIcon}
-                  onClick={() => onWalletSelect(w)}
-                />
-              )) : null
-            }
-          </div>
+          { this.renderWalletsList() }
 
           <div styleName='actions'>
             <Button

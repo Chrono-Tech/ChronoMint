@@ -40,26 +40,26 @@ export default class UserRow extends React.Component {
     } = this.props
 
     return (
-      <div className={[css.userBlock, onClick ? '' : css.userBlockSingle ].join(' ')} onClick={onClick ? onClick : () => {}}>
-        <div className={css.userBlockInner}>
-          <div className={css.userBlockAvatar}>
-            <img className={css.userAvatar} src={avatar} alt='' />
+      <div styleName={classnames('userBlock', onClick ? '' : 'userBlockSingle')} onClick={onClick ? onClick : () => {}}>
+        <div styleName={classnames('userBlockInner')}>
+          <div styleName={classnames('userBlockAvatar')}>
+            <img styleName={classnames('userAvatar')} src={avatar} alt='' />
           </div>
-          <div className={css.userBlockInfo}>
+          <div styleName={classnames('userBlockInfo')}>
             { title ? (
-              <div className={[css.title].join(' ')}>
+              <div styleName={classnames('title')}>
                 {title}
               </div>) : null}
             { subtitle ? (
-              <div className={[css.subtitle].join(' ')}>
+              <div styleName={classnames('subtitle')}>
                 {subtitle}
               </div>) : null}
           </div>
         </div>
         { !hideActionIcon ? (
-          <div className={css.actionWrapper}>
-            <span className={[css.actionListTrigger, onClick ? '' : css.actionListTriggerDisabled].join(' ')}>
-              <img className={actionIconClass} src={actionIcon} alt='' />
+          <div styleName={classnames('actionWrapper')}>
+            <span styleName={classnames('actionListTrigger', onClick ? '' : 'actionListTriggerDisabled')}>
+              <img styleName={actionIconClass} src={actionIcon} alt='' />
             </span>
           </div>
         ) : null}
