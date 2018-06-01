@@ -14,6 +14,7 @@ import {
   SelectWalletPage,
   RecoverAccountPage,
   ResetPasswordPage,
+  ImportMethodsPage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -82,6 +83,7 @@ const router = (
         <Route path='/select-wallet' component={SelectWalletPage} />
         <Route path='/recover' component={RecoverAccountPage} />
         <Route path='/reset-password' component={ResetPasswordPage} />
+        <Route path='/import-methods' component={ImportMethodsPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

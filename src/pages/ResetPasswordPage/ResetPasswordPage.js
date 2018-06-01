@@ -5,7 +5,6 @@
 
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
-import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { UserRow, Button } from 'components'
@@ -30,35 +29,35 @@ export default class ResetPasswordPage extends PureComponent {
               avatar={'/src/assets/img/profile-photo-1.jpg'}
               onClick={() => {}}
             />
+          </div>
 
-            <div styleName='field'>
-              <Field
-                component={TextField}
-                name='password'
-                type='password'
-                floatingLabelText='Enter New Password'
-                fullWidth
-                {...styles.textField}
-              />
-              <Field
-                component={TextField}
-                name='confirm-password'
-                type='password'
-                floatingLabelText='Confirm New Password'
-                fullWidth
-                {...styles.textField}
-              />
-            </div>
+          <div styleName='field'>
+            <Field
+              component={TextField}
+              name='password'
+              type='password'
+              floatingLabelText='Enter New Password'
+              fullWidth
+              {...styles.textField}
+            />
+            <Field
+              component={TextField}
+              name='confirm-password'
+              type='password'
+              floatingLabelText='Confirm New Password'
+              fullWidth
+              {...styles.textField}
+            />
+          </div>
 
-            <div styleName='actions'>
-              <Button
-                styleName='button'
-                buttonType='login'
-                type='submit'
-              >
-                Reset
-              </Button>
-            </div>
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              type='submit'
+            >
+              Reset
+            </Button>
           </div>
 
         </form>
