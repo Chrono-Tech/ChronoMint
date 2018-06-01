@@ -10,6 +10,7 @@ import WalletTitleBG from 'assets/img/wallet-title-bg.png'
 import StripesToCrop from 'assets/img/stripes-2-crop.jpg'
 import ChronoWalletLogoBright from 'assets/img/chronowalletlogobright.svg'
 import ChronoWalletTextBright from 'assets/img/chronowallettextbright.svg'
+import BackIcon from 'assets/img/icons/back.svg'
 
 import Footer from '../Footer/Footer'
 
@@ -18,10 +19,17 @@ import './Splash.scss'
 export default class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
+    goBack: PropTypes.func,
+    navigatorText: PropTypes.string,
+  }
+
+  static defaultProps = {
+    goBack: null,
+    navigatorText: '',
   }
 
   render () {
-    const { children } = this.props
+    const { children, goBack, navigatorText } = this.props
 
     return (
       <div styleName='root'>
@@ -37,6 +45,19 @@ export default class Splash extends Component {
             <img styleName='chrono-wallet-text-bright' src={ChronoWalletTextBright} alt='' />
           </div>
         </div>
+
+        {
+          goBack ? (
+            <div styleName='header-navigator'>
+              <button styleName='back-button' onClick={goBack}>
+                <img src={BackIcon} alt='' />
+              </button>
+              <span styleName='navigator-text'>
+                { navigatorText }
+              </span>
+            </div>
+          ) : null
+        }
 
         { children ? children : null }
 

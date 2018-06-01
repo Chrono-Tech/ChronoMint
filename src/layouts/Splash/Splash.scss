@@ -52,6 +52,44 @@ $copyRightPadding: 200px;
 
 }
 
+.header-images {
+
+}
+
+.header-navigator {
+  position: absolute;
+  display: none;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 70px;
+  height: 70px;
+  padding-left: 20px;
+
+  @include xs-only {
+    display: flex;
+  }
+}
+
+.back-button {
+  background: transparent;
+  border:0;
+  cursor: pointer;
+  margin-right: 20px;
+
+  img {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+}
+
+.navigator-text {
+  color: #fff;
+  font-weight: 700;
+}
+
 .header-picture {
   display: flex;
   position: absolute;
