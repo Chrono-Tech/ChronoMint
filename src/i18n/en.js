@@ -29,6 +29,7 @@ export default {
   title: 'Eng',
   true: 'yes',
   false: 'no',
+  tokenNotAvailable: 'Token Not Available',
   ...Login,
   ...components,
   layouts,

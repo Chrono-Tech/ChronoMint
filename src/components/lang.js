@@ -30,6 +30,7 @@ import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/lang'
 import TwoFaWalletForm from 'components/wallet/TwoFaWalletForm/lang'
 import TwoFaEnableForm from 'components/wallet/TwoFaEnableForm/lang'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/lang'
+import WalletWidgetMini from 'components/wallet/WalletWidgetMini/lang'
 
 export default {
   en: {
@@ -63,5 +64,6 @@ export default {
     TwoFaWalletForm: TwoFaWalletForm.en,
     TwoFaEnableForm: TwoFaEnableForm.en,
     TwoFaConfirmModal: TwoFaConfirmModal.en,
+    WalletWidgetMini: WalletWidgetMini.en,
   },
 }

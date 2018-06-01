@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getIsHave2FAWallets, sectionsSelector } from 'redux/wallet/selectors'
+import { getIsHave2FAWallets } from 'redux/wallet/selectors'
 import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -15,6 +15,7 @@ import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
 import { DUCK_UI } from 'redux/ui/reducer'
 import './WalletsContent.scss'
+import { sectionsSelector } from './selectors'
 
 const mapStateToProps = (state) => {
   const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()

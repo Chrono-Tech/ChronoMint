@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'WalletWidget'
+export const prefix = 'WalletWidgetMini'
 
 export default {
   en: {
@@ -12,6 +12,7 @@ export default {
     depositButton: 'DEPOSIT',
     walletTitle: '%{title} wallet',
     unlockDate: 'Unlocks on ',
+    tokensCount: '%{count} Tokens',
     pending: '%{count} pending',
     twoFAWallet: 'My 2FA Wallet',
     sharedWallet: 'My Shared Wallet',

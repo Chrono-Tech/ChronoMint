@@ -285,7 +285,7 @@ export default class WalletWidget extends PureComponent {
               </div>
             </div>
             <div styleName='token-container'>
-              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+              {/*{blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}*/}
               <div styleName='token-icon'>
                 <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
               </div>

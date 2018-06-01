@@ -6,34 +6,36 @@
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
 import { Link } from 'react-router'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { getWallet, walletInfoSelector } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import TokensCollection from 'models/tokens/TokensCollection'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
+import { tokensCountSelector } from 'redux/mainWallet/selectors'
 import './WalletWidgetMini.scss'
 import { prefix } from './lang'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
+import { getWalletInfo } from './selectors'
+import WalletWidgetMiniUsdAmount from './WalletWidgetMiniUsdAmount'
 
-function mapStateToProps (state, ownProps) {
-  const wallet = getWallet(ownProps.blockchain, ownProps.address)(state)
-  return {
-    wallet,
-    walletInfo: walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, false, state),
-    token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
-    tokens: state.get(DUCK_TOKENS),
+function makeMapStateToProps (state, ownProps) {
+  const token = getMainTokenForWalletByBlockchain(ownProps.blockchain)(state)
+  const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address, token.symbol())
+  const getTokensCount = tokensCountSelector(ownProps.blockchain)
+  const mapStateToProps = (ownState) => {
+    return {
+      wallet: getWallet(ownState),
+      token,
+      tokensCount: getTokensCount(ownState),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -54,26 +56,28 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletWidgetMini extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PropTypes.shape({
+      address: PropTypes.string,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      customTokens: PropTypes.arrayOf(),
+    }),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
-    walletInfo: PropTypes.shape({
-      address: PropTypes.string,
-      balance: PropTypes.number,
-      tokens: PropTypes.array,
-    }),
     send: PropTypes.func,
     selectWallet: PropTypes.func,
     showGroupTitle: PropTypes.bool,
+    tokensCount: PropTypes.number,
   }
 
   handleSelectWallet = () => {
@@ -82,8 +86,8 @@ export default class WalletWidgetMini extends PureComponent {
   }
 
   getWalletName = () => {
-    const { wallet, blockchain, address } = this.props
-    const name = wallet instanceof MainWalletModel ? wallet.name(blockchain, address) : wallet.name()
+    const { wallet } = this.props
+    const name = wallet.name
     if (name) {
       return name
     }
@@ -95,8 +99,8 @@ export default class WalletWidgetMini extends PureComponent {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
-    } else if (wallet instanceof DerivedWalletModel) {
-      if (wallet.customTokens()) {
+    } else if (wallet.isDerived) {
+      if (wallet.customTokens) {
         key = 'customWallet'
       } else {
         key = 'additionalStandardWallet'
@@ -109,25 +113,19 @@ export default class WalletWidgetMini extends PureComponent {
   }
 
   isMySharedWallet = () => {
-    return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked() && !this.props.wallet.is2FA()
+    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
   }
 
   isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
+    return this.props.wallet.isMultisig && this.props.wallet.is2FA
   }
 
   isLockedWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
+    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
   }
 
   render () {
-    const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
-
-    if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
-      return null
-    }
-
-    const pendingslength = wallet.pendingTxList ? wallet.pendingTxList().size() : 0
+    const { address, token, blockchain, wallet, showGroupTitle, tokensCount } = this.props
 
     return (
       <div styleName='container'>
@@ -138,7 +136,7 @@ export default class WalletWidgetMini extends PureComponent {
               <div styleName='token-container'>
                 {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
                 </div>
               </div>
               <div styleName='content-container'>
@@ -148,12 +146,25 @@ export default class WalletWidgetMini extends PureComponent {
                     <span styleName='address-address'>{address}</span>
                   </div>
                 </Link>
+                <div styleName='amount'>
+                  <div styleName='amount-crypto'>
+                    {token.symbol()}&nbsp;<TokenValueSimple value={wallet.amount} withFraction />
+                  </div>
+                  <div styleName='amount-fiat'>
+                    {tokensCount > 0
+                      ? (
+                        <Translate value={`${prefix}.tokensCount`} count={tokensCount} />
+                      ) : (
+                        <span>USD &nbsp;<WalletWidgetMiniUsdAmount wallet={wallet} /></span>
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
-            {pendingslength > 0 && (
+            {wallet.pendingCount > 0 && (
               <div styleName='additional-info'>
                 <div styleName='pendings-container'>
-                  <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={pendingslength} /></div>
+                  <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
                 </div>
               </div>
             )}

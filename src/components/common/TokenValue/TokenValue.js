@@ -66,8 +66,8 @@ class TokenValue extends PureComponent {
 
   renderPrice (valueWithoutDecimals, symbol) {
     const { prices, selectedCurrency, isInited } = this.props
-    const price = isInited && prices[ symbol ] && prices[ symbol ][ selectedCurrency ]
-      ? prices[ symbol ][ selectedCurrency ]
+    const price = isInited && prices[symbol] && prices[symbol][selectedCurrency]
+      ? prices[symbol][selectedCurrency]
       : null
     if (price === null || price === 0) {
       return this.props.onlyPriceValue ? '0.00' : null
