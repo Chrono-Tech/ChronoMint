@@ -1,0 +1,83 @@
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.userBlock {
+  color: $additionalData-color-1;
+  border-bottom: 1px solid $color-purpule;
+  padding: 18px 0;
+  text-align: left;
+  font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+
+  &.userBlockSingle {
+    cursor: initial;
+  }
+
+  &:hover .userBlockInfo {
+    color: $color-hover;
+  }
+
+  .userBlockInner {
+    display: flex;
+
+    .userBlockAvatar {
+      .userAvatar {
+        width: 40px;
+        border-radius: 20px;
+        margin-right: 20px;
+      }
+    }
+
+    .userBlockInfo {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+
+      .title {
+        font-size: 16px;
+        line-height: 22px;
+        min-width: 0;
+        word-break: break-all;
+        padding-right: 20px;
+        font-weight: 500;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        line-height: 17px;
+        min-width: 0;
+        word-break: break-all;
+      }
+    }
+  }
+
+  .actionWrapper {
+    align-items: center;
+    display: flex;
+  }
+
+  .actionListTrigger {
+    background: transparent;
+    width: 24px;
+    border: none;
+    opacity: 0.25;
+    cursor: pointer;
+    outline: none;
+
+    &.actionListTriggerDisabled {
+      cursor: initial;
+    }
+
+    &:hover {
+      opacity: 1;
+    }
+
+    img {
+      display: block;
+    }
+  }
+
+}

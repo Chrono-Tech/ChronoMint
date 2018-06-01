@@ -7,8 +7,14 @@ import Markup from 'layouts/Markup'
 import { Provider } from 'react-redux'
 import React from 'react'
 import { Route, Router } from 'react-router'
-import NotFoundPage from 'pages/NotFound/NotFound'
-import LoginPage from 'pages/LoginPage/LoginPage'
+import {
+  NotFoundPage,
+  LoginPage,
+  CreateAccountPage,
+  SelectWalletPage,
+  RecoverAccountPage,
+  ResetPasswordPage,
+} from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
@@ -71,7 +77,11 @@ const router = (
       </Route>
 
       <Route component={Splash}>
+        <Route path='/create-account' component={CreateAccountPage} />
         <Route path='/' component={LoginPage} />
+        <Route path='/select-wallet' component={SelectWalletPage} />
+        <Route path='/recover' component={RecoverAccountPage} />
+        <Route path='/reset-password' component={ResetPasswordPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

@@ -6,41 +6,7 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-ul.actions {
-  position: absolute;
-  top: 30px;
-  right: 80px;
-  display: flex;
-  justify-content: flex-end;
-  flex: 0 0 auto;
-  padding: 0;
-  list-style: none;
-  font-size: 18px;
-  line-height: 48px;
-
-  @include md-only {
-    top: 10px;
-    right: 10px;
-    flex: 1 1 auto;
-  }
-
-  li {
-
-    flex: 0 0 auto;
-
-    a {
-      padding: 10px 20px;
-      text-decoration: none;
-      color: $color-white;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-}
-
-.form {
+.wrapper {
   max-width: 380px;
   margin:0 auto;
 
@@ -58,22 +24,31 @@ ul.actions {
   text-align: center;
 }
 
-.user-row {
+.wallets-list {
   border-top: 1px solid $color-purpule;
+  margin-bottom: 45px;
+  color: #fff;
 }
 
-.field {
-  margin-bottom: 50px;
-}
-
-.button {
-  text-align: center;
+.empty-list {
+  border-top: 1px solid $color-purpule;
+  border-bottom: 1px solid $color-purpule;
+  padding: 18px 0;
   margin-bottom: 30px;
+  text-align: center;
+  color: #fff;
+  width: 380px;
+
+  @include xs-only {
+    width: 100%;
+  }
 }
 
 .actions {
   text-align: center;
   margin-bottom: 45px;
+  line-height: 30px;
+  color: #fff;
 }
 
 .link {
@@ -89,4 +64,17 @@ ul.actions {
   @include md-only {
     margin: 0 0 10px;
   }
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 22px;
+
+  button {
+    padding: 0 30px;
+  }
+}
+
+.actionIcon {
+  transform: matrix(-1,0,0,-1,0,0);
 }

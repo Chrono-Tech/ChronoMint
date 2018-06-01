@@ -11,18 +11,18 @@ import { TextField } from 'redux-form-material-ui'
 import { UserRow, Button } from 'components'
 
 import styles from 'layouts/Splash/styles'
-import './LoginPage.scss'
+import './ResetPasswordPage.scss'
 
 const FORM_LOGIN_PAGE = 'FormLoginPage'
 
 @reduxForm({ form: FORM_LOGIN_PAGE })
-class LoginPage extends PureComponent {
+export default class ResetPasswordPage extends PureComponent {
   render () {
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form'>
 
-          <div styleName='page-title'>Log In</div>
+          <div styleName='page-title'>Reset password</div>
 
           <div styleName='user-row'>
             <UserRow
@@ -36,7 +36,15 @@ class LoginPage extends PureComponent {
                 component={TextField}
                 name='password'
                 type='password'
-                floatingLabelText='Enter Password'
+                floatingLabelText='Enter New Password'
+                fullWidth
+                {...styles.textField}
+              />
+              <Field
+                component={TextField}
+                name='confirm-password'
+                type='password'
+                floatingLabelText='Confirm New Password'
                 fullWidth
                 {...styles.textField}
               />
@@ -48,10 +56,8 @@ class LoginPage extends PureComponent {
                 buttonType='login'
                 type='submit'
               >
-                Log In
+                Reset
               </Button>
-
-              <Link to='/' href styleName='link'>Forgot you password?</Link>
             </div>
           </div>
 
@@ -60,5 +66,3 @@ class LoginPage extends PureComponent {
     )
   }
 }
-
-export default LoginPage
