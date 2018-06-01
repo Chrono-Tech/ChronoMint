@@ -1,0 +1,204 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.contentBlock {
+  padding: 50px 135px 25px;
+
+  @media (max-width: 1023px) {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+.page-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.description {
+  margin-bottom: 54px;
+
+  @media (max-width: 1023px) {
+    margin-bottom: 30px;
+  }
+}
+
+.passPhraseWrapper {
+  position: relative;
+  margin-bottom: 50px;
+  border: 1px solid transparent;
+
+  &:hover, &:focus {
+    border-color: #00A0D2;
+  }
+}
+
+.passPhrase {
+  background: #F0F0F0;
+  padding: 10px 45px 10px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #333;
+  text-align: left;
+  min-height: 46px;
+  width: 100%;
+
+  @media (max-width: 1023px) {
+    min-height: 70px;
+  }
+
+}
+
+.wordsBlock {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.word {
+  white-space: nowrap;
+  width: 23%;
+  margin-bottom: 10px;
+  cursor: pointer;
+  user-select: none;
+
+  button {
+    width: 100%;
+    text-transform: lowercase;
+    line-height: 40px;
+  }
+}
+
+.wordInactive {
+  background: #E5E5E5;
+
+  &:hover {
+    background: #E5E5E5;
+  }
+}
+
+.submitButton {
+  background: #00A0D2;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  border-radius: 21px;
+  cursor: pointer;
+  line-height: 40px;
+  height: 40px;
+  min-width: 150px;
+  border: none;
+  margin-bottom: 40px;
+  padding: 0;
+  box-shadow: none;
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 1023px) {
+    min-width: 180px;
+  }
+
+  &:hover {
+    background: #0088C3;
+  }
+}
+
+.progressBlock {
+  width: 70px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progressPoint {
+  background: #00A0D2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &.progressPointInactive {
+    background: #BFBFBF;
+  }
+}
+
+.clearMnemonic {
+  width: 23px;
+  height: 23px;
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 11px;
+  cursor: pointer;
+  box-sizing: content-box;
+
+  img {
+    width: 100%;
+  }
+}
+
+.controlsBlock {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 35px;
+
+  .clearAllButton,
+  .clearLastButton {
+    width: 49%;
+    line-height: 42px;
+    font-size: 14px;
+    border: 1px solid #00A0D2;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background: #0088C3;
+      color: #fff;
+    }
+  }
+
+}
+
+.form {
+  text-align: center;
+  width: 870px;
+  margin: 0 auto;
+  color: #fff;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.submit {
+  margin-bottom: 25px;
+}

@@ -6,3 +6,4 @@ export { default as SelectWalletPage } from './SelectWalletPage/SelectWalletPage
 export { default as RecoverAccountPage } from './RecoverAccountPage/RecoverAccountPage'
 export { default as ResetPasswordPage } from './ResetPasswordPage/ResetPasswordPage'
 export { default as ImportMethodsPage } from './ImportMethodsPage/ImportMethodsPage'
+export { default as ConfirmMnemonic } from './ConfirmMnemonic/ConfirmMnemonic'
