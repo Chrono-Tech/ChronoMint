@@ -17,9 +17,9 @@ import './RecoverAccountPage.scss'
 export const FORM_RECOVER_ACCOUNT_PAGE = 'RecoverAccountPage'
 
 @reduxForm({ form: FORM_RECOVER_ACCOUNT_PAGE })
-export default class CreateAccountPage extends PureComponent {
+export default class RecoverAccountPage extends PureComponent {
   render () {
-    const { handleSubmit} = this.props
+    const { handleSubmit } = this.props
 
     const wordsArray = new Array(12).fill()
 

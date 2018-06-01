@@ -4,7 +4,7 @@ export default {
       height: 62,
     },
     underlineStyle: {
-      borderColor: '#A3A3CC',
+      borderColor: '#424066',
       bottom: 0,
     },
     underlineFocusStyle: {

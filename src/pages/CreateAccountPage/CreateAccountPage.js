@@ -13,6 +13,7 @@ import { TextField } from 'redux-form-material-ui'
 import { Button } from 'components'
 
 import styles from 'layouts/Splash/styles'
+import fieldStyles from './styles'
 import './CreateAccountPage.scss'
 
 export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
@@ -56,6 +57,7 @@ export default class CreateAccountPage extends PureComponent {
               floatingLabelText='Wallet name'
               fullWidth
               {...styles.textField}
+              {...fieldStyles.textField}
             />
             <Field
               component={TextField}
@@ -64,6 +66,7 @@ export default class CreateAccountPage extends PureComponent {
               floatingLabelText='Password'
               fullWidth
               {...styles.textField}
+              {...fieldStyles.textField}
             />
             <Field
               component={TextField}
@@ -72,6 +75,7 @@ export default class CreateAccountPage extends PureComponent {
               floatingLabelText='Confirm Password'
               fullWidth
               {...styles.textField}
+              {...fieldStyles.textField}
             />
           </div>
 
