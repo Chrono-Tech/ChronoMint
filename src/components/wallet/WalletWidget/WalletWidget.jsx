@@ -259,6 +259,15 @@ export default class WalletWidget extends PureComponent {
     return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
   }
 
+  getWalletObj (wallet) {
+    return {
+      isMultisig: wallet.isMultisig(),
+      isTimeLocked: wallet.isTimeLocked(),
+      is2FA: wallet.is2FA ? wallet.is2FA() : false,
+      isDerived: wallet.isDerived(),
+    }
+  }
+
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
 
@@ -285,7 +294,7 @@ export default class WalletWidget extends PureComponent {
               </div>
             </div>
             <div styleName='token-container'>
-              {/*{blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}*/}
+              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={this.getWalletObj(wallet)} />}
               <div styleName='token-icon'>
                 <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
               </div>

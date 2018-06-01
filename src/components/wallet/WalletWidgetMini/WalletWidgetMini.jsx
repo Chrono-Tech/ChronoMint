@@ -13,26 +13,24 @@ import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
+import { getMainSymbolForBlockchain, getTokens } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
-import { tokensCountSelector } from 'redux/mainWallet/selectors'
 import './WalletWidgetMini.scss'
 import { prefix } from './lang'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import { getWalletInfo } from './selectors'
 import WalletWidgetMiniUsdAmount from './WalletWidgetMiniUsdAmount'
+import WalletTokensCount from './WalletTokensCount'
 
 function makeMapStateToProps (state, ownProps) {
-  const token = getMainTokenForWalletByBlockchain(ownProps.blockchain)(state)
-  const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address, token.symbol())
-  const getTokensCount = tokensCountSelector(ownProps.blockchain)
+  const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
   const mapStateToProps = (ownState) => {
+    const tokens = getTokens(ownState)
     return {
       wallet: getWallet(ownState),
-      token,
-      tokensCount: getTokensCount(ownState),
+      token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
     }
   }
   return mapStateToProps
@@ -77,7 +75,6 @@ export default class WalletWidgetMini extends PureComponent {
     send: PropTypes.func,
     selectWallet: PropTypes.func,
     showGroupTitle: PropTypes.bool,
-    tokensCount: PropTypes.number,
   }
 
   handleSelectWallet = () => {
@@ -125,7 +122,7 @@ export default class WalletWidgetMini extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle, tokensCount } = this.props
+    const { address, token, blockchain, wallet, showGroupTitle} = this.props
 
     return (
       <div styleName='container'>
@@ -147,17 +144,9 @@ export default class WalletWidgetMini extends PureComponent {
                   </div>
                 </Link>
                 <div styleName='amount'>
-                  <div styleName='amount-crypto'>
-                    {token.symbol()}&nbsp;<TokenValueSimple value={wallet.amount} withFraction />
-                  </div>
-                  <div styleName='amount-fiat'>
-                    {tokensCount > 0
-                      ? (
-                        <Translate value={`${prefix}.tokensCount`} count={tokensCount} />
-                      ) : (
-                        <span>USD &nbsp;<WalletWidgetMiniUsdAmount wallet={wallet} /></span>
-                      )}
-                  </div>
+                  <div styleName='amount-crypto'> {token.symbol()}&nbsp;<TokenValueSimple value={wallet.amount} withFraction /></div>
+                  <div styleName='amount-fiat'><WalletWidgetMiniUsdAmount wallet={wallet} /></div>
+                  <div styleName='amount-fiat'><WalletTokensCount wallet={wallet} /></div>
                 </div>
               </div>
             </div>

@@ -8,18 +8,20 @@ import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors'
 import BalanceModel from 'models/tokens/BalanceModel'
+import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
 
 // provides filtered list of addresses of MainWallets
-export const selectWallet = (blockchain, address, symbol) => createSelector(
+export const selectWallet = (blockchain, address) => createSelector(
   [
     getMainWallet,
     getMultisigWallets,
   ],
   (mainWallet: MainWalletModel, multisigWallets: MultisigWalletCollection): any[] => {
 
+    const mainSymbol = getMainSymbolForBlockchain(blockchain)
     const multisigWallet = multisigWallets.item(address)
     if (multisigWallet) {
-      const balance: BalanceModel = multisigWallet.balances().item(symbol)
+      const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
       return {
         address: multisigWallet.address(),
         blockchain: multisigWallet.blockchain(),
@@ -36,7 +38,7 @@ export const selectWallet = (blockchain, address, symbol) => createSelector(
       }
     }
     else {
-      const balance: BalanceModel = mainWallet.balances().item(symbol)
+      const balance: BalanceModel = mainWallet.balances().item(mainSymbol)
       return {
         address: address,
         blockchain: blockchain,
@@ -86,9 +88,9 @@ const createWalletSelector = createSelectorCreator(
   },
 )
 
-export const getWalletInfo = (blockchain, address, symbol) => createWalletSelector(
+export const getWalletInfo = (blockchain, address) => createWalletSelector(
   [
-    selectWallet(blockchain, address, symbol),
+    selectWallet(blockchain, address),
   ],
   (
     wallet,

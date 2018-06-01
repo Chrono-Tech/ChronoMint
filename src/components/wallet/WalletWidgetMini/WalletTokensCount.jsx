@@ -4,29 +4,31 @@
  */
 
 import PropTypes from 'prop-types'
+import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { balanceSelector } from 'redux/mainWallet/selectors'
-import { multisigBalanceSelector } from 'redux/multisigWallet/selectors'
+import { tokensCountSelector } from 'redux/mainWallet/selectors'
+import { multisigTokensCountSelector } from 'redux/multisigWallet/selectors'
 import { connect } from 'react-redux'
+import { prefix } from './lang'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
-  let getAmount
+  let getTokensCount
   if (wallet.isMain) {
-    getAmount = balanceSelector(wallet.blockchain)
+    getTokensCount = tokensCountSelector(wallet.blockchain)
   } else {
-    getAmount = multisigBalanceSelector(wallet.address)
+    getTokensCount = multisigTokensCountSelector(wallet.address)
   }
   const mapStateToProps = (ownState) => {
     return {
-      amount: getAmount(ownState),
+      tokensCount: getTokensCount(ownState),
     }
   }
   return mapStateToProps
 }
 
 @connect(makeMapStateToProps)
-export default class WalletWidgetMiniUsdAmount extends PureComponent {
+export default class WalletTokensCount extends PureComponent {
   static propTypes = {
     wallet: PropTypes.shape({
       address: PropTypes.string,
@@ -40,10 +42,13 @@ export default class WalletWidgetMiniUsdAmount extends PureComponent {
       isDerived: PropTypes.bool,
       customTokens: PropTypes.arrayOf(),
     }),
-    amount: PropTypes.number,
+    tokensCount: PropTypes.number,
   }
 
   render () {
-    return <span>USD&nbsp;{this.props.amount}</span>
+    if (this.props.tokensCount > 1) {
+      return <Translate value={`${prefix}.tokensCount`} count={this.props.tokensCount} />
+    }
+    return null
   }
 }
