@@ -12,6 +12,7 @@ import {
   LoginPage,
   CreateAccountPage,
   SelectWalletPage,
+  RecoverAccountPage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -78,6 +79,7 @@ const router = (
         <Route path='/create-account' component={CreateAccountPage} />
         <Route path='/' component={LoginPage} />
         <Route path='/select-wallet' component={SelectWalletPage} />
+        <Route path='/recover' component={RecoverAccountPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

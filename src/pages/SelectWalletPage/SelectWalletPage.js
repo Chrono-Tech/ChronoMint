@@ -58,7 +58,6 @@ export default class SelectWalletPage extends PureComponent {
   }
 
   render () {
-    const { onWalletSelect, walletsList } = this.props
     return (
       <MuiThemeProvider>
         <div styleName='wrapper'>
