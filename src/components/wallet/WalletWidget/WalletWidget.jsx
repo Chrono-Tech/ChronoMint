@@ -13,7 +13,7 @@ import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { ETH } from 'redux/mainWallet/actions'
-import { walletInfoSelector } from 'redux/wallet/selectors'
+import { walletInfoSelector, getWallet } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
@@ -34,8 +34,10 @@ import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
 
 function mapStateToProps (state, ownProps) {
+  const wallet = getWallet(ownProps.blockchain, ownProps.address)(state)
   return {
-    walletInfo: walletInfoSelector(ownProps.wallet, ownProps.blockchain, ownProps.address, false, state),
+    wallet,
+    walletInfo: walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, false, state),
     token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
     tokens: state.get(DUCK_TOKENS),
   }

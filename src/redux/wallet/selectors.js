@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { createSelector } from 'reselect'
+import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
@@ -12,6 +12,8 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { getAccount } from 'redux/session/selectors'
+import AddressModel from 'models/wallet/AddressModel'
+import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import { getCurrentWallet } from './actions'
@@ -457,3 +459,117 @@ export const getIsHave2FAWallets = (state) => {
       }
     })
 }
+
+// provides filtered list of addresses of MainWallets
+export const selectMainWalletsList = createSelector(
+  [
+    getMainWallet,
+  ],
+  (mainWallet: MainWalletModel): any[] =>
+    mainWallet
+      .addresses()
+      .items()
+      .filter((addressModel: AddressModel) =>
+        addressModel.id() && addressModel.address(),
+      )
+      .map((addressModel: AddressModel) => {
+        const blockchain: string = addressModel.id()
+        const address: ?string = addressModel.address()
+        const jsWallet = Object.create(null)
+        jsWallet['address'] = address
+        jsWallet['blockchain'] = blockchain
+        return jsWallet
+      })
+      .sort(({ blockchain: a }, { blockchain: b }) =>
+        (a > b) - (a < b),
+      ),
+)
+
+// provides filtered list of addresses of MainWallets
+export const selectMultisigWalletsList = createSelector(
+  [
+    getMultisigWallets,
+  ],
+  (MultisigWallets: MultisigWalletCollection): any[] =>
+    MultisigWallets
+      .items()
+      .map((wallet: MultisigWalletModel) => {
+        const jsWallet = Object.create(null)
+        jsWallet['address'] = wallet.address()
+        jsWallet['blockchain'] = wallet.blockchain()
+        return jsWallet
+      })
+      .sort(({ blockchain: a }, { blockchain: b }) =>
+        (a > b) - (a < b),
+      ),
+)
+
+const createSectionsSelector = createSelectorCreator(
+  defaultMemoize,
+  (a, b) => {
+    if (a.length !== b.length) {
+      return false
+    }
+    let compareResult = true
+    for (let i = 0; i++; i <= a.length) {
+      if (a[i].blockchain !== b[i].blockchain || a[i].address !== b[i].address) {
+        compareResult = false
+        break
+      }
+    }
+    return compareResult
+  },
+)
+
+export const sectionsSelector = createSectionsSelector(
+  [
+    selectMainWalletsList,
+    selectMultisigWalletsList,
+  ],
+  (
+    mainWalletsList,
+    multisigWalletsList,
+  ) => {
+
+    const sectionsObject = {}
+    const callback = (mainWallet) => {
+      const { address, blockchain } = mainWallet
+      if (!sectionsObject.hasOwnProperty(blockchain)) {
+        sectionsObject[blockchain] = {
+          title: blockchain,
+          address,
+          data: [],
+        }
+      }
+      sectionsObject[blockchain].data.push({
+        address: address,
+        blockchain,
+      })
+    }
+
+    mainWalletsList
+      .forEach(callback)
+
+    multisigWalletsList
+      .forEach(callback)
+
+    return Object.values(sectionsObject)
+  },
+)
+
+export const getWallet = (blockchain, address) => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (mainWallet, multisigWallets) => {
+    const multisigWallet = multisigWallets.item(address)
+    if (multisigWallet) {
+      return multisigWallet
+    }
+    else {
+      return mainWallet
+    }
+
+  },
+)
