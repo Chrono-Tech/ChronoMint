@@ -47,7 +47,6 @@ class MnemonicProvider {
       // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope
       const prepareEngine = (net, creteWallet, createEngine) => {
         if (network) {
-          console.log('net is ' + net)
           const wallet = creteWallet(mnemonic, net)
           return createEngine(wallet, net)
         }

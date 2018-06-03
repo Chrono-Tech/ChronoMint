@@ -28,7 +28,6 @@ export default class MainWalletModel extends abstractFetchingModel({
 }) {
 
   address () {
-    console.log('ls get account = ' + ls.getAccount())
     return ls.getAccount()
   }
 

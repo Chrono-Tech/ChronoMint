@@ -120,6 +120,17 @@
   version "10.1.1"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.1.1.tgz#ca39d8607fa1fcb146b0530420b93f1dd4802f6c"
 
+"@waves/waves-api@0.28.2":
+  version "0.28.2"
+  resolved "https://registry.yarnpkg.com/@waves/waves-api/-/waves-api-0.28.2.tgz#5d0db0a2b58db0e7e387d3d18002a051984c6b11"
+  dependencies:
+    bignumber.js "4.1.0"
+    crypto-js "3.1.9-1"
+    node-fetch "1.7.3"
+    parse-json-bignumber "0.0.2"
+    ts-api-validator "2.1.2"
+    ts-utils "6.0.1"
+
 abab@^1.0.3, abab@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.4.tgz#5faad9c2c07f60dd76770f71cf025b62a63cfd4e"
@@ -1568,7 +1579,7 @@ bigi@^1.1.0, bigi@^1.4.0:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/bigi/-/bigi-1.4.2.tgz#9c665a95f88b8b08fc05cfd731f561859d725825"
 
-bignumber.js@^4.1.0:
+bignumber.js@4.1.0, bignumber.js@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
 
@@ -7899,16 +7910,16 @@ node-dir@0.1.8:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/node-dir/-/node-dir-0.1.8.tgz#55fb8deb699070707fb67f91a460f0448294c77d"
 
-node-fetch@2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
-
-node-fetch@^1.0.1, node-fetch@~1.7.1:
+node-fetch@1.7.3, node-fetch@^1.0.1, node-fetch@~1.7.1:
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
+
+node-fetch@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
 
 node-forge@0.7.5, node-forge@^0.7.1, node-forge@^0.7.5:
   version "0.7.5"
@@ -8491,6 +8502,10 @@ parse-headers@^2.0.0:
   dependencies:
     for-each "^0.3.2"
     trim "0.0.1"
+
+parse-json-bignumber@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/parse-json-bignumber/-/parse-json-bignumber-0.0.2.tgz#0e436d93e45e50f0ce860ae2aafcc53096c597df"
 
 parse-json@^2.2.0:
   version "2.2.0"
@@ -11795,6 +11810,20 @@ truffle@^4.1.5:
     mocha "^3.4.2"
     original-require "^1.0.1"
     solc "0.4.23"
+
+ts-api-validator@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/ts-api-validator/-/ts-api-validator-2.1.2.tgz#b661abbc8e83af61cbb1b17943bd8f281459bbd5"
+  dependencies:
+    ts-utils "^4.0.2"
+
+ts-utils@6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/ts-utils/-/ts-utils-6.0.1.tgz#e35299ae8f76535cca1046850760903dd6da39ac"
+
+ts-utils@^4.0.2:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/ts-utils/-/ts-utils-4.5.0.tgz#be3cfde0037b29f251fd1fc4aa212294d83c7656"
 
 tty-browserify@0.0.0:
   version "0.0.0"

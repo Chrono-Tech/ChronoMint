@@ -53,7 +53,6 @@ class NetworkService extends EventEmitter {
   }
 
   createNetworkSession = (account, provider, network) => {
-    console.log('account is' + account)
     if (!this._account) {
       this._account = account
     }
@@ -158,7 +157,6 @@ class NetworkService extends EventEmitter {
     dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
     try {
       let accounts = this._accounts
-      console.log('acc is: ',accounts)
       if (accounts == null)
         accounts = await web3Provider.getAccounts()
       if (!accounts || accounts.length === 0) {
@@ -201,7 +199,6 @@ class NetworkService extends EventEmitter {
   }
 
   selectAccount = (selectedAccount) => {
-    console.log('select account ' + selectedAccount)
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
   }
 
