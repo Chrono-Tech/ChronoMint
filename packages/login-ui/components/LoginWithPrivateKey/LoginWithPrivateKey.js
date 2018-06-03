@@ -37,7 +37,7 @@ class LoginWithPrivateKey extends PureComponent {
 
   handlePrivateKeyChange = () => {
     const privateKey = this.privateKey.getValue()
-    const isValidated = true//privateKeyProvider.validatePrivateKey(privateKey.trim())
+    const isValidated = privateKeyProvider.validatePrivateKey(privateKey.trim())
     this.setState({ privateKey, isValidated })
   }
 
