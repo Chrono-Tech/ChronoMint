@@ -17,6 +17,7 @@ import {
   ImportMethodsPage,
   ConfirmMnemonicPage,
   MnemonicPage,
+  DownloadWalletFilePage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -88,6 +89,7 @@ const router = (
         <Route path='/import-methods' component={ImportMethodsPage} />
         <Route path='/confirm-mnemonic' component={ConfirmMnemonicPage} />
         <Route path='/mnemonic' component={MnemonicPage} />
+        <Route path='/download-wallet' component={DownloadWalletFilePage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

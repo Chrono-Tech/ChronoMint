@@ -30,7 +30,7 @@
   font-weight: 400;
 
   @include md-only {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
   }
 }
 
@@ -41,6 +41,10 @@
   min-height: 100px;
   border-radius: 2px;
   padding: 30px 60px 20px 30px;
+
+  @include md-only {
+    margin-bottom: 0;
+  }
 }
 
 .passPhrase {
@@ -59,7 +63,7 @@
 
 
 .progressBlock {
-  width: 70px;
+  width: 50px;
   margin: 0 auto 20px;
   display: flex;
   justify-content: space-between;
@@ -110,6 +114,9 @@
   border-radius: 3px;
   margin-bottom: 40px;
 
+  @include md-only {
+    border-radius: 0;
+  }
 }
 
 .infoBlockList {

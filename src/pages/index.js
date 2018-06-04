@@ -8,3 +8,4 @@ export { default as ResetPasswordPage } from './ResetPasswordPage/ResetPasswordP
 export { default as ImportMethodsPage } from './ImportMethodsPage/ImportMethodsPage'
 export { default as ConfirmMnemonicPage } from './ConfirmMnemonicPage/ConfirmMnemonicPage'
 export { default as MnemonicPage } from './MnemonicPage/MnemonicPage'
+export { default as DownloadWalletFilePage } from './DownloadWalletFilePage/DownloadWalletFilePage'

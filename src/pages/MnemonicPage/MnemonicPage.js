@@ -39,7 +39,7 @@ export default class MnemonicPage extends Component {
             </p>
 
             <div styleName='passPhraseWrapper'>
-              <div styleName='passPhrase'>abra cadabra</div>
+              <div styleName='passPhrase'>{ this.props.mnemonic }</div>
               <div styleName='printButtonWrapper'>
                 <div styleName='printButton' onClick={() => {}}>
                   <img src={PrintIcon} alt='' />
