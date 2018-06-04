@@ -37,12 +37,6 @@ export default class MnemonicPage extends Component {
               The file is protected by the same password as your created before.
             </p>
 
-            <div styleName='row'>
-              <Button styleName='button' type='button'>
-                <img styleName='wallet-img' src={WalletIcon} alt='' />
-                Download
-              </Button>
-            </div>
 
             <div styleName='actions'>
               <Button styleName='submit' buttonType='login'>

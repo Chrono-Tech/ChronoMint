@@ -9,3 +9,4 @@ export { default as ImportMethodsPage } from './ImportMethodsPage/ImportMethodsP
 export { default as ConfirmMnemonicPage } from './ConfirmMnemonicPage/ConfirmMnemonicPage'
 export { default as MnemonicPage } from './MnemonicPage/MnemonicPage'
 export { default as DownloadWalletFilePage } from './DownloadWalletFilePage/DownloadWalletFilePage'
+export { default as UploadWalletPage } from './UploadWalletPage/UploadWalletPage'
