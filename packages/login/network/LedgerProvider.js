@@ -108,12 +108,6 @@ class LedgerProvider extends EventEmitter {
 
   async fetchAccount () {
     return new Promise((resolve) => {
-	console.log('fetching addresses')
-        //if (this._ledger.connectionOpened) {
-          // busy
-        //  return
-        //}
-        //clearInterval(timer)
         this._ledger.getAccounts((error, accounts) => {
           console.log(accounts)
           if (error) {

@@ -39,7 +39,6 @@ export const stopLedgerSync = (isReset = false) => (dispatch) => {
 }
 
 export const fetchAccount = () => async (dispatch) => {
-  console.log('fetch account runned')
   dispatch({ type: LEDGER_FETCHING })
   const accounts = await ledgerProvider.fetchAccount()
   if (!accounts) {
@@ -47,7 +46,6 @@ export const fetchAccount = () => async (dispatch) => {
     return
   }
   dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
-  //networkService.selectAccount(accounts[ 0 ])
   dispatch({ type: LEDGER_FETCHED, isFetched: true })
   // we do not need to watching eth app on login
   dispatch(stopLedgerSync())

@@ -83,7 +83,6 @@ class LoginLedger extends PureComponent {
   componentWillReceiveProps ({ ledger }) {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
-      console.log('fetch called again')
     }
   }
 

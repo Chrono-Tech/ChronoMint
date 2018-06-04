@@ -141,6 +141,7 @@
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "uniqid": "^4.1.1",
     "uport-connect": "^0.6.0",
+    "@waves/waves-api": "0.28.2",
     "web3": "^0.20.1",
     "web3-provider-engine": "^14.0.3",
     "webstomp-client": "^1.2.0"

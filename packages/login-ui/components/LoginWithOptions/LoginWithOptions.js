@@ -156,8 +156,6 @@ class LoginWithOptions extends PureComponent {
   handleMnemonicLogin = (mnemonicKey) => {
     this.props.loading()
     this.props.clearErrors()
-    console.log('network settings are: ')
-    console.log(networkService.getProviderSettings())
     const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, networkService.getProviderSettings())
     networkService.selectAccount(provider.ethereum.getAddress())
     this.setupAndLogin(provider)
