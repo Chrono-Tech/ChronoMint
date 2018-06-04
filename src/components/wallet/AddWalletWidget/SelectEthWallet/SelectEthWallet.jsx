@@ -64,7 +64,6 @@ export default class SelectEthWallet extends PureComponent {
         type: '2FA',
         icon: 'security-circle',
         description: `${prefix}.fa.description`,
-        disabled: true,
       },
       {
         title: `${prefix}.ms.title`,

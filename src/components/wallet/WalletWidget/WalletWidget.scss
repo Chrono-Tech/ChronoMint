@@ -61,7 +61,7 @@
 
     .amount-text {
       color: $color-grey-2;
-      font-family: proxima-nova, sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       font-weight: 500;
       text-align: left;
       font-size: 14px;
@@ -114,6 +114,7 @@
 }
 
 .owners-list {
+  border-top: 1px solid $button-color-3;
   display: flex;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -316,4 +317,28 @@
   padding-top: 20px;
   font-size: 14px;
   margin: 15px 0 10px;
+}
+
+.pendings-container {
+  position: absolute;
+  top: 20px;
+  right: 75px;
+  .pendings-icon {
+    line-height: 14px;
+    background-color: $color-red-2;
+    font-size: 12px;
+    text-align: center;
+    padding: 3px 10px;
+    min-height: 17px;
+    position: relative;
+    white-space: nowrap;
+    border-radius: 13px;
+    color: $color-white;
+    font-weight: bolder;
+    text-transform: uppercase;
+  }
+}
+
+.separator {
+  border-top: 1px solid $color-grey-1;
 }

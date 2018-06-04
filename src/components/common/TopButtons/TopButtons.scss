@@ -15,8 +15,15 @@
     display: none;
   }
   .topButton {
+    margin-left: 10px;
     button {
-      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 21px;
+      i {
+        font-size: 30px;
+      }
     }
   }
   .backButtonWrapper {
@@ -37,3 +44,9 @@
   }
 }
 
+.iconButton {
+  button {
+    width: 40px;
+    height: 40px;
+  }
+}

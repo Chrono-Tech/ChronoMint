@@ -1,0 +1,81 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.header-container {
+  width: 587px;
+  margin-bottom: 28px;
+  margin-top: 28px;
+  .wallet-list-container {
+    display: flex;
+    flex-direction: column;
+    .wallet-container {
+      display: flex;
+      position: relative;
+      width: 590px;
+      margin-top: 20px;
+      min-height: 260px;
+      background-color: $color-white;
+      border-radius: 2px;
+      box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+      .token-container {
+        display: flex;
+        position: relative;
+        flex-direction: row;
+        margin-right: 40px;
+        margin-left: 40px;
+        .subIcon {
+          position: absolute;
+          top: 50px;
+          left: 2px;
+          .icon {
+            font-size: 35px;
+            line-height: 25px;
+            color: $color-hover;
+          }
+        }
+        .token-icon {
+          display: flex;
+          width: 100px;
+          height: 100px;
+          margin-top: 50px;
+          .imageIcon {
+            color: $sideMenu-background;
+            font-size: 142px;
+          }
+        }
+      }
+    }
+    .content-container {
+      display: flex;
+      flex-direction: column;
+      padding-top: 50px;
+      width: 370px;
+      .title {
+        color: $color-primary-3;
+        line-height: 22px;
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 30px;
+      }
+      .text {
+        color: $color-primary-3;
+        font-weight: 400;
+        font-size: 14px;
+      }
+      .actions-container {
+        display: flex;
+        margin-top: 35px;
+        margin-bottom: 40px;
+
+        .action {
+          display: flex;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+

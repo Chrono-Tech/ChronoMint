@@ -17,6 +17,8 @@ import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxM
 import Amount from 'models/Amount'
 import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
 import { DUCK_I18N } from 'redux/i18n/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
@@ -32,6 +34,13 @@ function mapDispatchToProps (dispatch) {
   return {
     revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
     confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
+    enterCode: (wallet, tx) => dispatch(modalsOpen({
+      component: TwoFaConfirmModal,
+      props: {
+        wallet,
+        tx,
+      },
+    })),
     getPendingData: (wallet, pending) => dispatch(getPendingData(wallet, pending)),
   }
 }
@@ -45,6 +54,7 @@ export default class PendingTxWidget extends PureComponent {
     getPendingData: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     locale: PropTypes.string,
+    enterCode: PropTypes.func,
   }
 
   componentWillMount () {
@@ -61,6 +71,10 @@ export default class PendingTxWidget extends PureComponent {
 
   handleConfirm = (wallet, item) => () => {
     this.props.confirm(wallet, item)
+  }
+
+  handleEnterCode = (wallet, item) => () => {
+    this.props.enterCode(wallet, item)
   }
 
   checkAndFetchPendings (wallet) {
@@ -99,7 +113,7 @@ export default class PendingTxWidget extends PureComponent {
         break
     }
     return (
-      <div styleName={classnames('iconWrapper', { [ styleName ]: styleName })}>
+      <div styleName={classnames('iconWrapper', { [styleName]: styleName })}>
         <i className='chronobank-icon'>{icon}</i>
       </div>
     )
@@ -110,25 +124,35 @@ export default class PendingTxWidget extends PureComponent {
 
     return (
       <div styleName='row' key={item.id()}>
-        {item.isPending()
-          ? <Preloader />
-          : (
-            <div styleName='rowTable'>
-              {this.renderIcon(item)}
-              <div styleName='values'>
-                <div styleName='title'>{item.title()}</div>
-                {item.details().map((item, index) => {
-                  const value = item.value instanceof Amount
-                    ? <TokenValue value={item.value} />
-                    : item.value
-                  return (
-                    <div key={index}>
-                      <span>{item.label}:&nbsp;</span>
-                      <span>{value}</span>
-                    </div>
-                  )
-                })}
+        <div styleName='rowTable'>
+          {this.renderIcon(item)}
+          <div styleName='values'>
+            <div styleName='title'>{item.title()}</div>
+            {item.details().map((item, index) => {
+              const value = item.value instanceof Amount
+                ? <TokenValue value={item.value} />
+                : item.value
+              return (
+                <div key={index}>
+                  <span>{item.label}:&nbsp;</span>
+                  <span>{value}</span>
+                </div>
+              )
+            })}
+          </div>
+          {wallet.is2FA()
+            ? (
+              <div styleName='actions'>
+                {item.isPending()
+                  ? <Preloader />
+                  : (
+                    <Button
+                      label={<Translate value='wallet.enterCode' />}
+                      onTouchTap={this.handleEnterCode(wallet, item)}
+                    />
+                  )}
               </div>
+            ) : (
               <div styleName='actions'>
                 <Button
                   flat
@@ -148,9 +172,8 @@ export default class PendingTxWidget extends PureComponent {
                   }
                 />
               </div>
-            </div>
-          )
-        }
+            )}
+        </div>
       </div>
     )
   }

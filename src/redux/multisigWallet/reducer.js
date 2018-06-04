@@ -31,6 +31,8 @@ export default (state = initialState, action) => {
       return state.balance(action.walletId, action.balance)
     case a.MULTISIG_PENDING_TX:
       return state.pending(action.walletId, action.pending)
+    case a.MULTISIG_2_FA_CONFIRMED:
+      return state.twoFAConfirmed(action.twoFAConfirmed)
     default:
       return state
   }

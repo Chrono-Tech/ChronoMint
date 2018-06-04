@@ -72,6 +72,12 @@ export const BTG = 'BTG'
 export const LTC = 'LTC'
 export const XEM = 'XEM'
 
+export const FEE_RATE_MULTIPLIER = {
+  min: 0.1,
+  max: 1.9,
+  step: 0.1,
+}
+
 export const goToWallets = () => (dispatch) => dispatch(push('/wallets'))
 
 export const goBackForAddWalletsForm = () => (dispatch, getState) => {

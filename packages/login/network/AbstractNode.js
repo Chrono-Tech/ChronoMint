@@ -10,8 +10,9 @@ import Stomp from 'webstomp-client'
 const TIMEOUT_BASE = 1000
 
 export default class AbstractNode extends EventEmitter {
-  constructor ({ api, socket, trace }) {
+  constructor ({ twoFA, api, socket, trace }) {
     super()
+    this._twoFA = twoFA
     this._api = api
     this._trace = trace
     this._socket = socket
@@ -50,15 +51,15 @@ export default class AbstractNode extends EventEmitter {
   }
 
   _closeSubscription (channel) {
-    const subscription = this._subscriptions[ channel ]
+    const subscription = this._subscriptions[channel]
     if (subscription) {
-      delete this._subscriptions[ channel ]
+      delete this._subscriptions[channel]
       subscription.unsubscribe()
     }
   }
 
   _openSubscription (channel, handler) {
-    this._subscriptions[ channel ] = this._client.subscribe(
+    this._subscriptions[channel] = this._client.subscribe(
       channel,
       (message) => {
         try {

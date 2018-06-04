@@ -10,5 +10,8 @@ export default {
     title: 'Tokens (%{count})',
     more: 'More',
     less: 'Less',
+    token: 'Token',
+    amount: 'Amount',
+    fiat: 'USD',
   },
 }
