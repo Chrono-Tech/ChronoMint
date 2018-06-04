@@ -15,11 +15,6 @@ const ERROR_NO_TOKEN = 'LocalStorage token not found'
 
 class LocalStorage {
   createSession (account, provider: number, network: number) {
-    if (this.token) {
-      // eslint-disable-next-line
-      console.warn('Session already created', this.token)
-      return
-    }
     this.account = account // TODO @bshevchenko: all this properties should be private!
     this.provider = provider
     this.network = network
@@ -30,7 +25,6 @@ class LocalStorage {
       this.setLocalAccount(account)
     }
     this._memoryWithToken = LocalStorage._getFromLS(this.token) || {}
-    // console.info('LocalStorage: session created', this.token)
   }
 
   isSession () {
@@ -57,7 +51,6 @@ class LocalStorage {
     this._memoryWithToken = {}
     this.localAccount = null
     LocalStorage._removeFromLS(TEST_RPC_ACCOUNT)
-    // console.info('LocalStorage: session destroyed')
   }
 
   setLocalAccount (account) {

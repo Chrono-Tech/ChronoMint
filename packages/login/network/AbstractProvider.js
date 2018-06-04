@@ -27,13 +27,12 @@ export default class AbstractProvider extends EventEmitter {
   }
 
   setEngine (engine: NemEngine | BitcoinEngine) {
-    if (this._engine) {
+    if (this._engine != null) {
       this.unsubscribe(this._engine)
+      this._engine = null
     }
     this._engine = engine
-    if (this._engine) {
-      this.subscribe(this._engine)
-    }
+    this.subscribe(this._engine)
   }
 
   subscribe (engine: NemEngine | BitcoinEngine) {

@@ -219,9 +219,6 @@ export const fetchTokenBalance = (token: TokenModel) => async (dispatch, getStat
 }
 
 export const initMainWallet = () => async (dispatch, getState) => {
-  if (getState().get(DUCK_MAIN_WALLET).isInited()) {
-    return
-  }
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))

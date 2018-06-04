@@ -6,8 +6,8 @@
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
 import bigi from 'bigi'
-import hdKey from 'ethereumjs-wallet/hdkey'
 import wallet from 'ethereumjs-wallet'
+import hdKey from 'ethereumjs-wallet/hdkey'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
@@ -52,6 +52,7 @@ class PrivateKeyProvider {
       ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
     }
+	
   }
 
   createBitcoinWalletFromPK (privateKey, network) {

@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios'
+import Web3 from 'web3'
 import { LOCAL_ID, NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 

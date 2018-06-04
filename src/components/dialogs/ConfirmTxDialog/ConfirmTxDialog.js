@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import networkService from '@chronobank/login/network/NetworkService'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
@@ -169,6 +170,8 @@ export default class ConfirmTxDialog extends PureComponent {
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
+    if (networkService.isMetaMask())
+      this.handleConfirm()
     return (
       <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
         <div styleName='root'>

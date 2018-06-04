@@ -5,7 +5,7 @@
 
 export default class HardwareWallet {
   constructor (address) {
-    this._address = address
+    this._address = address[0]
   }
 
   getAddressString () {
