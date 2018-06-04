@@ -19,6 +19,7 @@ export class EthereumProvider extends AbstractProvider {
   setEngine (ethEngine: EthereumEngine, nemEngine) {
     if (this._isInited) {
       this.unsubscribe(this._engine, this._nemEngine)
+      this._isInited = false;
     }
     this._engine = ethEngine
     this._nemEngine = nemEngine

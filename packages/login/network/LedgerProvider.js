@@ -8,12 +8,12 @@ import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
 import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
-import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
+import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
 import EthereumEngine from './EthereumEngine'
 import { byEthereumNetwork } from './NetworkProvider'
 import HardwareWallet from './HardwareWallet'
 
-const DEFAULT_DERIVATION_PATH = '44\'/60\'/0\'/0/0'
+const DEFAULT_DERIVATION_PATH = ["44'/60'/0'/0"]
 const LEDGER_TTL = 1500
 
 class LedgerProvider extends EventEmitter {
@@ -55,7 +55,7 @@ class LedgerProvider extends EventEmitter {
   setupAndStart (providerURL) {
     this._engine.addProvider(new FilterSubprovider())
     this._engine.addProvider(this._ledgerSubprovider)
-    this._engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(providerURL)))
+    this._engine.addProvider(new RpcSubprovider({rpcUrl: providerURL}))
     this._engine.start()
   }
 
@@ -108,21 +108,19 @@ class LedgerProvider extends EventEmitter {
 
   async fetchAccount () {
     return new Promise((resolve) => {
-      const timer = setInterval(() => {
-        if (this._ledger.connectionOpened) {
-          // busy
-          return
-        }
-        clearInterval(timer)
         this._ledger.getAccounts((error, accounts) => {
+          console.log(accounts)
           if (error) {
             resolve(null)
           }
-          this._wallet = new HardwareWallet(accounts[ 0 ])
+          this._wallet = new HardwareWallet(accounts)
           resolve(accounts)
         })
-      }, 200)
     })
+  }
+
+  setWallet(account) {
+    this._wallet = new HardwareWallet(account)
   }
 
   stop () {

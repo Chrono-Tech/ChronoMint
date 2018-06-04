@@ -6,7 +6,7 @@
 import hdkey from 'ethereumjs-wallet/hdkey'
 import ProviderEngine from 'web3-provider-engine'
 import FiltersSubprovider from 'web3-provider-engine/subproviders/filters'
-import Web3Subprovider from 'web3-provider-engine/subproviders/web3'
+import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
 import Web3 from 'web3'
 import WalletSubprovider from './wallet'
 import { WALLET_HD_PATH } from './mnemonicProvider'
@@ -32,7 +32,7 @@ export default class HDWalletProvider {
     this.engine = new ProviderEngine()
     this.engine.addProvider(new WalletSubprovider(this.wallets, {}))
     this.engine.addProvider(new FiltersSubprovider())
-    this.engine.addProvider(new Web3Subprovider(new Web3.providers.HttpProvider(provider_url)))
+    this.engine.addProvider(new RpcSubprovider({rpcUrl:provider_url}))
     this.engine.start() // Required by the provider engine.
   }
 
