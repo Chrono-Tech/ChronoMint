@@ -15,7 +15,8 @@ import {
   RecoverAccountPage,
   ResetPasswordPage,
   ImportMethodsPage,
-  ConfirmMnemonic,
+  ConfirmMnemonicPage,
+  MnemonicPage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -85,7 +86,8 @@ const router = (
         <Route path='/recover' component={RecoverAccountPage} />
         <Route path='/reset-password' component={ResetPasswordPage} />
         <Route path='/import-methods' component={ImportMethodsPage} />
-        <Route path='/confirm-mnemonic' component={ConfirmMnemonic} />
+        <Route path='/confirm-mnemonic' component={ConfirmMnemonicPage} />
+        <Route path='/mnemonic' component={MnemonicPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

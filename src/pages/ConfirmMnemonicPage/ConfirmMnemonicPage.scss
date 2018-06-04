@@ -6,14 +6,6 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.contentBlock {
-  padding: 50px 135px 25px;
-
-  @media (max-width: 1023px) {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-}
 
 .page-title {
   font-size: 30px;
@@ -22,38 +14,33 @@
 }
 
 .description {
-  margin-bottom: 54px;
+  margin-bottom: 30px;
+  color: $additionalData-color-1;
 
-  @media (max-width: 1023px) {
-    margin-bottom: 30px;
-  }
 }
 
 .passPhraseWrapper {
   position: relative;
-  margin-bottom: 50px;
-  border: 1px solid transparent;
-
-  &:hover, &:focus {
-    border-color: #00A0D2;
-  }
+  margin-bottom: 20px;
+  background: $background-color-1;
+  min-height: 100px;
+  border-radius: 2px;
+  padding: 20px 45px 20px 30px;
 }
 
 .passPhrase {
-  background: #F0F0F0;
-  padding: 10px 45px 10px 20px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 24px;
-  color: #333;
+  color: $button-color-2;
   text-align: left;
   min-height: 46px;
   width: 100%;
 
-  @media (max-width: 1023px) {
+  @include md-only {
     min-height: 70px;
+    color: $synced-color;
   }
-
 }
 
 .wordsBlock {
@@ -68,11 +55,21 @@
   margin-bottom: 10px;
   cursor: pointer;
   user-select: none;
+  color: #FFFFFF;
+  background-color: #614DBA;
+  text-transform: lowercase;
+  line-height: 62px;
+  border-radius: 2px;
+  font-size: 16px;
+  font-weight: 700;
 
-  button {
-    width: 100%;
-    text-transform: lowercase;
-    line-height: 40px;
+  &:hover {
+    background-color: $button-color-2;
+    color: $background-color-1;
+  }
+
+  @include md-only {
+    width: 31%;
   }
 }
 
@@ -103,7 +100,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: 1023px) {
+  @include md-only {
     min-width: 180px;
   }
 
@@ -120,13 +117,13 @@
 }
 
 .progressPoint {
-  background: #00A0D2;
+  background: $button-color-2;
   width: 10px;
   height: 10px;
   border-radius: 50%;
 
   &.progressPointInactive {
-    background: #BFBFBF;
+    background: $color-blue-4;
   }
 }
 
@@ -153,18 +150,20 @@
   justify-content: space-between;
   margin-bottom: 35px;
 
-  .clearAllButton,
-  .clearLastButton {
+  .control {
     width: 49%;
     line-height: 42px;
-    font-size: 14px;
-    border: 1px solid #00A0D2;
+    font-size: 16px;
+    border: 1px solid $color-blue-4;
+    border-radius: 2px;
+    color: $color-blue-4;
     cursor: pointer;
-    font-weight: 500;
+    font-weight: 700;
 
     &:hover {
-      background: #0088C3;
-      color: #fff;
+      background: $color-hover;
+      color: $background-color-1;
+      border: 0;
     }
   }
 
@@ -172,9 +171,13 @@
 
 .form {
   text-align: center;
-  width: 870px;
+  max-width: 600px;
   margin: 0 auto;
   color: #fff;
+
+  @include md-only {
+    padding: 0 20px;
+  }
 }
 
 .actions {

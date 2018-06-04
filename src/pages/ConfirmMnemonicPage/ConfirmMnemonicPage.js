@@ -7,16 +7,16 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router'
-import { UserRow, Button } from 'components'
+import { Button } from 'components'
 
-import './ConfirmMnemonic.scss'
+import './ConfirmMnemonicPage.scss'
 
 const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 
 @reduxForm({ form: FORM_CONFIRM_MNEMONIC })
-export default class ConfirmMnemonic extends PureComponent {
+export default class ConfirmMnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
   }
@@ -48,19 +48,18 @@ export default class ConfirmMnemonic extends PureComponent {
       const wordSelected = this.state.confirmPhrase.includes(item)
 
       return (
-        <Button
+        <div
           key={index}
           onClick={this.onClickWord.bind(this, item)}
-          disabled={wordSelected}
-          styleName='word'
+          styleName={classnames('word', wordSelected ? 'wordInactive' : '')}
         >
           { item.word }
-        </Button>
+        </div>
       )}
     )
   }
 
-  onClickWord (word){
+  onClickWord (word, e){
     const { dispatch, change } = this.props
 
     if (!this.state.confirmPhrase.includes(word)) {
@@ -95,7 +94,7 @@ export default class ConfirmMnemonic extends PureComponent {
     return (
       <MuiThemeProvider>
         <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
-          <div styleName='contentBlock'>
+          <div>
             <div styleName='page-title'>Confirm back-up phrase</div>
 
             <p styleName='description'>Click on back-up phrase words in the correct order.</p>
@@ -117,8 +116,8 @@ export default class ConfirmMnemonic extends PureComponent {
             </div>
 
             <div styleName='controlsBlock'>
-              <div styleName='clearAllButton' onClick={this.clearMnemonic.bind(this)}>Start Over</div>
-              <div styleName='clearLastButton' onClick={this.clearLastWord.bind(this)}>Undo</div>
+              <div styleName='control' onClick={this.clearMnemonic.bind(this)}>Start Over</div>
+              <div styleName='control' onClick={this.clearLastWord.bind(this)}>Undo</div>
             </div>
 
             <div styleName='actions'>
