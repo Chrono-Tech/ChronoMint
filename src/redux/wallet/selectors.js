@@ -36,9 +36,15 @@ export const getMainWalletBalance = (symbol) => createSelector(
   (mainWallet) => mainWallet.balances().item(symbol),
 )
 
-export const getCurrentWalletBalance = (symbol) => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => currentWallet.balances().item(symbol),
+export const getCurrentWalletBalance = (address, blockchain, symbol) => createSelector(
+  [getMainWallet, getMultisigWallets],
+  (mainWallet, multisigWallets) => {
+    let wallet: MultisigWalletModel = multisigWallets.item(address)
+    if (wallet) {
+      return wallet.balances().item(symbol)
+    }
+    return mainWallet.balances().item(symbol)
+  },
 )
 
 export const selectMainWalletBalancesListStore = (state) =>

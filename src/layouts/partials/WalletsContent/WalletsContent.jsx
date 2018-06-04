@@ -13,6 +13,7 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
+import { getBalance } from 'redux/mainWallet/actions'
 import { DUCK_UI } from 'redux/ui/reducer'
 import './WalletsContent.scss'
 import { sectionsSelector } from './selectors'
@@ -29,7 +30,9 @@ const mapStateToProps = (state) => {
 }
 
 function mapDispatchToProps (dispatch) {
-  return {}
+  return {
+    getBalance: () => dispatch(getBalance()),
+  }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -48,6 +51,11 @@ export default class WalletsContent extends Component {
         ]),
       }),
     ),
+    getBalance: PropTypes.func,
+  }
+
+  componentDidMount () {
+    this.props.getBalance()
   }
 
   render () {

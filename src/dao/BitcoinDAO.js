@@ -61,15 +61,15 @@ export default class BitcoinDAO extends EventEmitter {
     return this._bitcoinProvider.getFeeRate()
   }
 
-  async getAccountBalances () {
-    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
+  async getAccountBalances (address) {
+    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances(address)
     return {
       balance: balance0 || balance6,
     }
   }
 
-  async getAccountBalance () {
-    const balances = await this.getAccountBalances()
+  async getAccountBalance (address) {
+    const balances = await this.getAccountBalances(address)
     return balances.balance
   }
 
@@ -114,7 +114,7 @@ export default class BitcoinDAO extends EventEmitter {
   async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
     try {
       const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
-      return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
+      return await this._bitcoinProvider.transfer(from, to, amount, tokenRate, advancedParams.deriveNumber)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)

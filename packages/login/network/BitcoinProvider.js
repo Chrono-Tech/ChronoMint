@@ -50,23 +50,27 @@ export class BitcoinProvider extends AbstractProvider {
     return node.getFeeRate()
   }
 
-  async getAccountBalances () {
+  async getAccountBalances (address) {
     const node = this._selectNode(this._engine)
-    const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
+    const { balance0, balance6 } = await node.getAddressInfo(address || this._engine.getAddress())
     return { balance0, balance6 }
   }
 
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(this._engine.getAddress())
+    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }
 
-  async transfer (from: string, to, amount: BigNumber, feeRate: Number) {
+  async transfer (from: string, to, amount: BigNumber, feeRate: Number, deriveNumber = null) {
     const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, feeRate, utxos)
+    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
+    let wallet
+    if (deriveNumber !== null) {
+      wallet = this.createNewChildAddress(deriveNumber)
+    }
+    const { tx /*, fee*/ } = this._engine.createTransaction(from, to, amount, feeRate, utxos, wallet)
     return node.send(from, tx.toHex())
   }
 
@@ -80,7 +84,7 @@ export class BitcoinProvider extends AbstractProvider {
 
   async onBalance (balance: BitcoinBalance) {
     this.emit('balance', {
-      account: this.getAddress(),
+      account: balance.address || this.getAddress(),
       time: new Date().getTime(),
       balance,
     })

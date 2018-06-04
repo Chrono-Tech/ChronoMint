@@ -63,7 +63,7 @@ export class BitcoinEngine {
    * @param to Destination address
    * @param amount BTC amount in BTC with decimals
    */
-  createTransaction (to, amount: BigNumber, feeRate, utxos) {
+  createTransaction (from, to, amount: BigNumber, feeRate, utxos, wallet) {
     const { inputs, outputs, fee } = this.describeTransaction(to, amount, feeRate, utxos)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
@@ -82,12 +82,12 @@ export class BitcoinEngine {
 
     for (const output of outputs) {
       if (!output.address) {
-        output.address = this.getAddress()
+        output.address = from || this.getAddress()
       }
       txb.addOutput(output.address, output.value)
     }
 
-    this._signInputs(txb, inputs)
+    this._signInputs(txb, inputs, wallet)
 
     return {
       tx: txb.build(),
@@ -97,9 +97,9 @@ export class BitcoinEngine {
 }
 
 export class BTCEngine extends BitcoinEngine {
-  _signInputs (txb, inputs) {
+  _signInputs (txb, inputs, wallet) {
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair)
+      txb.sign(i, (wallet || this._wallet).keyPair)
     }
   }
 }

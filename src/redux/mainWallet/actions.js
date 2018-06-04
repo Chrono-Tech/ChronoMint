@@ -138,7 +138,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
-        const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
         const callback = async (wallet: DerivedWalletModel) => {
 
           dispatch({ type: MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
@@ -155,6 +154,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           })
         }
 
+        const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
         if (walletFrom && walletFrom.isFetched()) {
           callback(walletFrom)
         }
@@ -168,15 +168,21 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     .on(FETCH_NEW_BALANCE, () => {
       dispatch(fetchTokenBalance(token))
     })
-    .on(EVENT_UPDATE_BALANCE, ({ /* account, time, */ balance }) => {
-      // TODO @ipavlenko: Always check user account
-      dispatch({
-        type: WALLET_TOKEN_BALANCE,
-        balance: new BalanceModel({
-          id: token.id(),
-          amount: new Amount(balance, token.symbol()),
-        }),
-      })
+    .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
+      const addresses = getState().get(DUCK_MAIN_WALLET)
+        .addresses()
+        .items()
+        .map((address: AddressModel) => address.address())
+
+      if (addresses.includes(account)) {
+        dispatch({
+          type: WALLET_TOKEN_BALANCE,
+          balance: new BalanceModel({
+            id: token.id(),
+            amount: new Amount(balance, token.symbol()),
+          }),
+        })
+      }
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
       dispatch(notify(new ApprovalNoticeModel({
@@ -208,7 +214,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 export const fetchTokenBalance = (token: TokenModel) => async (dispatch, getState) => {
   const tokenDAO = tokenService.getDAO(token.id())
   const { account } = getState().get(DUCK_SESSION)
-  const balance = await tokenDAO.getAccountBalance(account)
+  const balance = await tokenDAO.getAccountBalance(token.blockchain() === BLOCKCHAIN_ETHEREUM ? account : null)
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({
@@ -241,10 +247,13 @@ export const initMainWallet = () => async (dispatch, getState) => {
   })
 }
 
-export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch, getState) => {
   try {
     const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
     const tokenDAO = tokenService.getDAO(token.id())
+    if (sendWallet.deriveNumber && sendWallet.deriveNumber() !== null) {
+      additionalOptions.deriveNumber = sendWallet.deriveNumber()
+    }
     await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, additionalOptions)
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
@@ -441,7 +450,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name }) => async (di
       break
     case BLOCKCHAIN_LITECOIN:
       newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
-      newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
+      newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
       break
     case 'Bitcoin Gold':
