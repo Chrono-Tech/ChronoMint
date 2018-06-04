@@ -79,7 +79,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     const { data } = await this._twoFA.post(`/wallet/secret`, {
       pubkey: engine.getPublicKey(),
     })
-    if (data.code === 401) {
+    if (data.code) {
       return typeof callback === 'function' ? callback(data) : data
     } else {
       const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, data)
