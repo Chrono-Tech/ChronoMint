@@ -12,9 +12,8 @@ import { DUCK_TOKENS } from 'redux/tokens/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { getAccount } from 'redux/session/selectors'
-import AddressModel from 'models/wallet/AddressModel'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import Amount from 'models/Amount'
 
 import { getCurrentWallet } from './actions'
 
@@ -474,5 +473,29 @@ export const getWallet = (blockchain, address) => createSelector(
       return mainWallet
     }
 
+  },
+)
+
+const priceCalculator = (symbol: string) => createSelector(
+  [
+    selectMarketPricesSelectedCurrencyStore,
+    selectMarketPricesListStore,
+  ],
+  (
+    selectedCurrency,
+    priceList,
+  ) => {
+    return priceList[symbol] && priceList[symbol][selectedCurrency] || null
+  },
+)
+
+export const priceTokenSelector = (value: Amount) => createSelector(
+  [
+    priceCalculator(value.symbol()),
+  ],
+  (
+    price,
+  ) => {
+    return value.mul((price || 0))
   },
 )

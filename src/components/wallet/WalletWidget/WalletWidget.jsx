@@ -6,41 +6,42 @@
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
 import { Link } from 'react-router'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { ETH } from 'redux/mainWallet/actions'
-import { walletInfoSelector, getWallet } from 'redux/wallet/selectors'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { integerWithDelimiter } from 'utils/formatter'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
 import TokensCollection from 'models/tokens/TokensCollection'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
+import { getMainSymbolForBlockchain, getTokens } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
+import { getWalletInfo } from '../WalletWidgetMini/selectors'
+import WalletMainCoinBalance from './WalletMainCoinBalance'
+import WalletTokensList from './WalletTokensList'
 
-function mapStateToProps (state, ownProps) {
-  const wallet = getWallet(ownProps.blockchain, ownProps.address)(state)
-  return {
-    wallet,
-    walletInfo: walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, false, state),
-    token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
-    tokens: state.get(DUCK_TOKENS),
+function makeMapStateToProps (state, ownProps) {
+  const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
+  const mapStateToProps = (ownState) => {
+    const tokens = getTokens(ownState)
+    return {
+      wallet: getWallet(ownState),
+      token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
+      tokens: state.get(DUCK_TOKENS),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -76,16 +77,24 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletWidget extends PureComponent {
   static propTypes = {
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PropTypes.shape({
+      address: PropTypes.string,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      owners: PropTypes.arrayOf(PropTypes.string),
+      customTokens: PropTypes.arrayOf(),
+    }),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -136,16 +145,16 @@ export default class WalletWidget extends PureComponent {
   }
 
   getOwnersList = () => {
-    const ownersList = this.props.wallet.owners().items()
+    const ownersList = this.props.wallet.owners
 
     if (ownersList.length <= 3) {
       return (
         <div styleName='owners-amount'>
           <div styleName='owners-list'>
-            {ownersList.map((owner) => {
+            {ownersList.map((ownerAddress) => {
               return (
-                <div styleName='owner-icon' key={owner.address()}>
-                  <div styleName='owner' className='chronobank-icon' title={owner.address()}>profile</div>
+                <div styleName='owner-icon' key={ownerAddress}>
+                  <div styleName='owner' className='chronobank-icon' title={ownerAddress}>profile</div>
                 </div>
               )
             })
@@ -175,8 +184,8 @@ export default class WalletWidget extends PureComponent {
   }
 
   getWalletName = () => {
-    const { wallet, blockchain, address } = this.props
-    const name = wallet instanceof MainWalletModel ? wallet.name(blockchain, address) : wallet.name()
+    const { wallet } = this.props
+    const name = wallet.name
     if (name) {
       return name
     }
@@ -188,8 +197,8 @@ export default class WalletWidget extends PureComponent {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
-    } else if (wallet instanceof DerivedWalletModel) {
-      if (wallet.customTokens()) {
+    } else if (wallet.isDerived) {
+      if (wallet.customTokens) {
         key = 'customWallet'
       } else {
         key = 'additionalStandardWallet'
@@ -244,38 +253,38 @@ export default class WalletWidget extends PureComponent {
   }
 
   isMySharedWallet = () => {
-    return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked() && !this.props.wallet.is2FA()
+    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
   }
 
   isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
+    return this.props.wallet.isMultisig && this.props.wallet.is2FA
   }
 
   isMainWallet = () => {
-    return !this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked()
+    return !this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked
   }
 
   isLockedWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
+    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
   }
 
   getWalletObj (wallet) {
     return {
-      isMultisig: wallet.isMultisig(),
-      isTimeLocked: wallet.isTimeLocked(),
-      is2FA: wallet.is2FA ? wallet.is2FA() : false,
-      isDerived: wallet.isDerived(),
+      isMultisig: wallet.isMultisig,
+      isTimeLocked: wallet.isTimeLocked,
+      is2FA: wallet.is2FA ? wallet.is2FA : false,
+      isDerived: wallet.isDerived,
     }
   }
 
   render () {
     const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
 
-    if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
-      return null
-    }
+    // if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
+    //   return null
+    // }
 
-    const firstToken = walletInfo.tokens[0]
+    // const firstToken = walletInfo.tokens[0]
     const pendingslength = wallet.pendingTxList ? wallet.pendingTxList().size() : 0
 
     return (
@@ -294,7 +303,7 @@ export default class WalletWidget extends PureComponent {
               </div>
             </div>
             <div styleName='token-container'>
-              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={this.getWalletObj(wallet)} />}
+              {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
               <div styleName='token-icon'>
                 <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
               </div>
@@ -306,72 +315,16 @@ export default class WalletWidget extends PureComponent {
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                {walletInfo.tokens.length === 1 ? (
-                  <div styleName='token-amount'>
-                    <div styleName='crypto-amount'>
-                      {firstToken.symbol} {integerWithDelimiter(firstToken.amount, true, null)}
-                    </div>
-                    <div styleName='usd-amount'>
-                      USD {integerWithDelimiter(firstToken.amountPrice.toFixed(2), true)}
-                    </div>
-                  </div>
-                ) : (
-                  <div styleName='token-amount'>
-                    <div styleName='crypto-amount'>
-                      USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}
-                    </div>
-                    <div styleName='usd-amount'>
-                      {this.getTokenAmountList()}
-                    </div>
-                  </div>
-                )}
+                <WalletMainCoinBalance wallet={wallet} />
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
-              {walletInfo.tokens.length >= 3 &&
-              <div styleName='amount-list-container'>
-                <div styleName='amount-list'>
-                  <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={walletInfo.tokens.length} /></span>
-                </div>
-                <div styleName='show-all'>
-                  <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
-                </div>
-              </div>}
+              <WalletTokensList wallet={wallet} />
 
-              {this.getTokensList().length > 1 && (
-                <div styleName='tokens-list'>
-                  <div styleName='tokens-list-table'>
-                    {this.getTokensList()
-                      .map((tokenMap) => {
-                        const token = this.props.tokens.item(tokenMap.symbol)
-
-                        if (!token.isFetched()) {
-                          return null
-                        }
-                        return (
-                          <div styleName='tokens-list-table-tr' key={token.id()}>
-                            <div styleName='tokens-list-table-cell-icon'>
-                              <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                            </div>
-                            <div styleName='tokens-list-table-cell-amount'>
-                              {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
-                            </div>
-                            <div styleName='tokens-list-table-cell-usd'>
-                              USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
-                            </div>
-                          </div>
-                        )
-                      })}
-                  </div>
-                </div>
-              )}
-
-              {this.isMySharedWallet() && this.getTokensList().length <= 0 && (<div styleName='separator' />)}
-
-              {wallet.isTimeLocked() && (
+              {wallet.isTimeLocked && (
                 <div styleName='unlockDateWrapper'>
-                  <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime()} format='HH:mm, Do MMMM YYYY' />
+                  <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime} format='HH:mm, Do MMMM YYYY' />
                 </div>
               )}
 

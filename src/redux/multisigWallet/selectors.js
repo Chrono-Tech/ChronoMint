@@ -20,7 +20,7 @@ export const getWallet = (address) => createSelector(
   },
 )
 
-export const filteredBalancesAndTokens = (address) => createSelector(
+export const filteredBalancesAndTokens = (address, symbol: string) => createSelector(
   [
     getWallet(address),
     getTokens,
@@ -31,6 +31,7 @@ export const filteredBalancesAndTokens = (address) => createSelector(
   ) => {
     return wallet.balances()
       .list()
+      .filter((balance) => symbol ? balance.symbol() === symbol : true)
       .map((balance) => {
         return {
           balance: balance,
@@ -40,9 +41,9 @@ export const filteredBalancesAndTokens = (address) => createSelector(
   },
 )
 
-export const tokensAndAmountsSelector = (blockchain: string) => createSelector(
+export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
   [
-    filteredBalancesAndTokens(blockchain),
+    filteredBalancesAndTokens(address, symbol),
   ],
   (
     balancesInfo,
@@ -64,9 +65,9 @@ export const tokensAndAmountsSelector = (blockchain: string) => createSelector(
   },
 )
 
-const balanceCalculator = (address: string) => createSelector(
+const balanceCalculator = (address: string, symbol: string) => createSelector(
   [
-    tokensAndAmountsSelector(address),
+    multisigTokensAndAmountsSelector(address, symbol),
     selectMarketPricesSelectedCurrencyStore,
     selectMarketPricesListStore,
   ],
@@ -86,9 +87,9 @@ const balanceCalculator = (address: string) => createSelector(
   },
 )
 
-export const multisigBalanceSelector = (address: string) => createSelector(
+export const multisigBalanceSelector = (address: string, symbol: string) => createSelector(
   [
-    balanceCalculator(address),
+    balanceCalculator(address, symbol),
   ],
   (
     calculatedBalance,
@@ -97,9 +98,9 @@ export const multisigBalanceSelector = (address: string) => createSelector(
   },
 )
 
-export const tokensCountBalanceSelector = (address: string) => createSelector(
+export const tokensCountBalanceSelector = (address: string, symbol: string, notFilterZero: boolean) => createSelector(
   [
-    filteredBalancesAndTokens(address),
+    filteredBalancesAndTokens(address, symbol),
   ],
   (
     balancesInfo,
@@ -114,7 +115,7 @@ export const tokensCountBalanceSelector = (address: string) => createSelector(
         }
       })
       .filter((balance) => {
-        return balance.value > 0
+        return notFilterZero ? true : balance.value > 0
       })
       .toArray()
   },
@@ -128,5 +129,27 @@ export const multisigTokensCountSelector = (address: string) => createSelector(
     balances,
   ) => {
     return balances.length
+  },
+)
+
+export const multisigWalletBalanceSelector = (address: string, symbol: string) => createSelector(
+  [
+    tokensCountBalanceSelector(address, symbol, true),
+  ],
+  (
+    balancesInfo,
+  ) => {
+    return balancesInfo[0] ? balancesInfo[0].value : 0
+  },
+)
+
+export const multisigWalletTokenBalanceSelector = (address: string) => createSelector(
+  [
+    tokensCountBalanceSelector(address),
+  ],
+  (
+    balancesInfo,
+  ) => {
+    return balancesInfo
   },
 )

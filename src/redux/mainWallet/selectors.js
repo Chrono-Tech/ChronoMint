@@ -29,7 +29,7 @@ export const getDeposit = (tokenId) => createSelector(
   },
 )
 
-export const filteredBalances = (blockchain: string) => createSelector(
+export const filteredBalances = (blockchain: string, filterSymbol) => createSelector(
   [
     selectMainWalletBalancesListStore,
     getTokens,
@@ -42,14 +42,14 @@ export const filteredBalances = (blockchain: string) => createSelector(
       .filter((balance) => {
         const symbol = balance.symbol()
         const token = symbol && tokens.item(symbol)
-        return token && token.blockchain() === blockchain
+        return token && token.blockchain() === blockchain && (filterSymbol ? symbol === filterSymbol : true)
       })
   },
 )
 
-export const filteredBalancesAndTokens = (blockchain: string) => createSelector(
+export const filteredBalancesAndTokens = (blockchain: string, symbol: string) => createSelector(
   [
-    filteredBalances(blockchain),
+    filteredBalances(blockchain, symbol),
     getTokens,
   ],
   (
@@ -66,9 +66,9 @@ export const filteredBalancesAndTokens = (blockchain: string) => createSelector(
   },
 )
 
-export const tokensAndAmountsSelector = (blockchain: string) => createSelector(
+export const tokensAndAmountsSelector = (blockchain: string, symbol: string) => createSelector(
   [
-    filteredBalancesAndTokens(blockchain),
+    filteredBalancesAndTokens(blockchain, symbol),
   ],
   (
     balancesInfo,
@@ -90,9 +90,9 @@ export const tokensAndAmountsSelector = (blockchain: string) => createSelector(
   },
 )
 
-const balanceCalculator = (blockchain: string) => createSelector(
+const balanceCalculator = (blockchain: string, symbol: string) => createSelector(
   [
-    tokensAndAmountsSelector(blockchain),
+    tokensAndAmountsSelector(blockchain, symbol),
     selectMarketPricesSelectedCurrencyStore,
     selectMarketPricesListStore,
   ],
@@ -112,9 +112,9 @@ const balanceCalculator = (blockchain: string) => createSelector(
   },
 )
 
-export const balanceSelector = (blockchain: string) => createSelector(
+export const balanceSelector = (blockchain: string, symbol: string) => createSelector(
   [
-    balanceCalculator(blockchain),
+    balanceCalculator(blockchain, symbol),
   ],
   (
     calculatedBalance,
@@ -123,9 +123,9 @@ export const balanceSelector = (blockchain: string) => createSelector(
   },
 )
 
-export const tokensCountBalanceSelector = (blockchain: string) => createSelector(
+export const tokensCountBalanceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
   [
-    filteredBalancesAndTokens(blockchain),
+    filteredBalancesAndTokens(blockchain, symbol),
   ],
   (
     balancesInfo,
@@ -140,7 +140,7 @@ export const tokensCountBalanceSelector = (blockchain: string) => createSelector
         }
       })
       .filter((balance) => {
-        return balance.value > 0
+        return notFilterZero ? true : balance.value > 0
       })
       .toArray()
   },
@@ -154,5 +154,27 @@ export const tokensCountSelector = (blockchain: string) => createSelector(
     balances,
   ) => {
     return balances.length
+  },
+)
+
+export const mainWalletBalanceSelector = (blockchain: string, symbol: string) => createSelector(
+  [
+    tokensCountBalanceSelector(blockchain, symbol, true),
+  ],
+  (
+    balancesInfo,
+  ) => {
+    return balancesInfo[0] ? balancesInfo[0].value : 0
+  },
+)
+
+export const mainWalletTokenBalanceSelector = (blockchain: string) => createSelector(
+  [
+    tokensCountBalanceSelector(blockchain),
+  ],
+  (
+    balancesInfo,
+  ) => {
+    return balancesInfo
   },
 )
