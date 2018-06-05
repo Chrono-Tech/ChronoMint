@@ -481,7 +481,7 @@ export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
-export const getTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch, getState) => {
+export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOffset }) => async (dispatch, getState) => {
   if (!wallet || !address || !blockchain) {
     return null
   }
@@ -494,7 +494,7 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain }) => asy
   }
 
   let transactions: TransactionsCollection = wallet.transactions({ blockchain, address }) || new TransactionsCollection()
-  const offset = transactions.size() || 0
+  const offset = forcedOffset ? 0 : (transactions.size() || 0)
   const newOffset = offset + TXS_PER_PAGE
 
   let txList = []

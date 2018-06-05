@@ -10,7 +10,7 @@ import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
 const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
   api: axios.create({
-    baseURL: 'https://blockexplorer.com/api',
+    baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
   trace: false,
@@ -65,16 +65,6 @@ const BTG_TESTNET_NODE = new BitcoinBlockexplorerNode({
   trace: false,
 })
 
-// const LTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
-//   api: axios.create({
-//     baseURL: 'https://insight.litecore.io/api',
-//     // Only http API available
-//     // baseURL: 'http://explorer.litecointools.com',
-//     timeout: 4000,
-//   }),
-//   trace: false,
-// })
-
 export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   feeRate: 900,
   api: axios.create({
@@ -92,9 +82,9 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   trace: true,
 })
 
-export const LTC_TESTNET_NODE = new BitcoinBlockexplorerNode({
+export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
-    baseURL: 'https://testnet.litecore.io/api',
+    baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {

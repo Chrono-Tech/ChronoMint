@@ -158,13 +158,27 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
     }).join(',')
+    // eslint-disable-next-line
+    console.log('=================================================================')
+    const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
+
+    // eslint-disable-next-line
+    console.log(tx.hash || tx._id, 'credited', credited, account)
+
     const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      if (output.address.indexOf(account) < 0) {
+      // eslint-disable-next-line
+      console.log('_createTxModel', output.address, account, output.address.indexOf(account) < 0, output.value)
+      if (credited ? output.address.indexOf(account) >= 0 : output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
+
+    // eslint-disable-next-line
+    console.log('_createTxModel', +value)
+    // eslint-disable-next-line
+    console.log('=================================================================')
 
     return new BitcoinTx({
       blockHash: tx.blockHash,

@@ -80,12 +80,12 @@ export default class WalletContent extends Component {
   }
 
   componentDidMount () {
-    this.handleGetTransactions()
+    this.handleGetTransactions(true)
   }
 
-  handleGetTransactions = () => {
+  handleGetTransactions = (forcedOffset) => {
     const { wallet, address, blockchain } = this.props
-    this.props.getTransactions({ wallet, address, blockchain })
+    this.props.getTransactions({ wallet, address, blockchain, forcedOffset })
   }
 
   render () {

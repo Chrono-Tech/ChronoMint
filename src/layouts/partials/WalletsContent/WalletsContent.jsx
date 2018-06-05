@@ -55,7 +55,7 @@ export default class WalletsContent extends Component {
   }
 
   componentDidMount () {
-    this.props.getBalance()
+    // this.props.getBalance()
   }
 
   render () {
