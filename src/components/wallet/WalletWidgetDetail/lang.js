@@ -21,5 +21,6 @@ export default {
     customWallet: 'My custom Wallet',
     additionalStandardWallet: 'My additional standard Wallet',
     standardWallet: 'My Wallet',
+    tokenNotAvailable: 'Token Not Available',
   },
 }

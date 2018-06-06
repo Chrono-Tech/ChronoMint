@@ -7,16 +7,26 @@ import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import TokensCollection from 'models/tokens/TokensCollection'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
-import OwnerModel from 'models/wallet/OwnerModel'
 
 import { prefix } from './lang'
 import './OwnersListWidget.scss'
 
 export default class OwnersListWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.shape({
+      address: PropTypes.string,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      owners: PropTypes.arrayOf(PropTypes.string),
+      customTokens: PropTypes.arrayOf(),
+    }),
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,
@@ -24,14 +34,14 @@ export default class OwnersListWidget extends PureComponent {
     locale: PropTypes.string,
   }
 
-  renderRow (item: OwnerModel) {
+  renderRow (item: string) {
     return (
-      <div styleName='row' key={item.id()}>
+      <div styleName='row' key={item}>
         <div styleName='rowTable'>
           <div styleName='iconWrapper'>
             <i className='chronobank-icon'>profile</i>
           </div>
-          <div styleName='values'>{item.address()}</div>
+          <div styleName='values'>{item}</div>
         </div>
       </div>
     )
@@ -39,6 +49,10 @@ export default class OwnersListWidget extends PureComponent {
 
   render () {
     const { wallet } = this.props
+
+    if (!wallet.isMultisig) {
+      return null
+    }
 
     return (
       <div styleName='root' className='PendingTxWidget__root'>
@@ -48,9 +62,9 @@ export default class OwnersListWidget extends PureComponent {
         <div styleName='body'>
           {!wallet
             ? <Preloader />
-            : wallet.owners().items().map((item) => this.renderRow(item))
+            : wallet.owners.map((item) => this.renderRow(item))
           }
-          <div styleName='signatures'><Translate value={`${prefix}.signatures`} s1={wallet.requiredSignatures()} s2={wallet.owners().size()} /></div>
+          <div styleName='signatures'><Translate value={`${prefix}.signatures`} s1={wallet.requiredSignatures} s2={wallet.owners.length} /></div>
         </div>
       </div>
     )

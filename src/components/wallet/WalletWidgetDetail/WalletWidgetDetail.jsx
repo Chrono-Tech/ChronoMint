@@ -5,19 +5,14 @@
 
 import PropTypes from 'prop-types'
 import TokenModel from 'models/tokens/TokenModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import { integerWithDelimiter } from 'utils/formatter'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
-import TokensCollection from 'models/tokens/TokensCollection'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import { getMainTokenForWalletByBlockchain } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
@@ -25,31 +20,28 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import Moment from 'components/common/Moment'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import { openSendForm } from 'redux/wallet/actions'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
+import WalletMainCoinBalance from '../WalletWidget/WalletMainCoinBalance'
 
 function mapStateToProps (state, ownProps) {
   return {
-    token: getMainTokenForWalletByBlockchain(ownProps.blockchain)(state),
-    tokens: state.get(DUCK_TOKENS),
+    token: getMainTokenForWalletByBlockchain(ownProps.wallet.blockchain)(state),
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, blockchain, address, wallet) => {
-      dispatch(modalsOpen({
-        component: SendTokens,
-        props: {
-          isModal: true,
-          token: tokenId,
-          blockchain,
-          address,
-          wallet,
-        },
-      }))
+    send: (tokenId, wallet) => {
+      dispatch(openSendForm({
+        wallet,
+        isModal: true,
+        token: tokenId,
+        blockchain: wallet.blockchain,
+        address: wallet.address,
+      }, SendTokens))
     },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
@@ -72,20 +64,20 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletWidgetDetail extends PureComponent {
   static propTypes = {
-    blockchain: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
-    address: PropTypes.string,
-    token: PropTypes.instanceOf(TokenModel),
-    tokens: PropTypes.instanceOf(TokensCollection),
-    walletInfo: PropTypes.shape({
+    wallet: PropTypes.shape({
       address: PropTypes.string,
-      balance: PropTypes.number,
-      tokens: PropTypes.array,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      owners: PropTypes.arrayOf(PropTypes.string),
+      customTokens: PropTypes.arrayOf(),
     }),
+    token: PropTypes.instanceOf(TokenModel),
     send: PropTypes.func,
     receive: PropTypes.func,
     deposit: PropTypes.func,
@@ -105,12 +97,12 @@ export default class WalletWidgetDetail extends PureComponent {
 
   handleEditSignatures = () => this.props.openEditSignaturesDialog(this.props.wallet)
 
-  handleSend = () => {
-    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address, this.props.wallet)
+  handleSend = (wallet) => () => {
+    this.props.send(this.props.token.id(), wallet)
   }
 
   handleReceive = () => {
-    this.props.receive(this.props.blockchain)
+    this.props.receive(this.props.wallet.blockchain)
   }
 
   handleDeposit = () => {
@@ -167,8 +159,8 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   getWalletName = () => {
-    const { wallet, blockchain, address } = this.props
-    const name = wallet instanceof MainWalletModel ? wallet.name(blockchain, address) : wallet.name()
+    const { wallet } = this.props
+    const name = wallet.name
     if (name) {
       return name
     }
@@ -180,8 +172,8 @@ export default class WalletWidgetDetail extends PureComponent {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
-    } else if (wallet instanceof DerivedWalletModel) {
-      if (wallet.customTokens()) {
+    } else if (wallet.isDerived) {
+      if (wallet.customTokens) {
         key = 'customWallet'
       } else {
         key = 'additionalStandardWallet'
@@ -217,79 +209,46 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
+    return this.props.wallet.isMultisig && this.props.wallet.is2FA
   }
 
   isMySharedWallet = () => {
-    return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked()
+    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked
   }
 
   isMainWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
+    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
   }
 
   isLockedWallet = () => {
-    return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
-  }
-
-  getWalletObj (wallet) {
-    return {
-      isMultisig: wallet.isMultisig(),
-      isTimeLocked: wallet.isTimeLocked(),
-      is2FA: wallet.is2FA ? wallet.is2FA() : false,
-      isDerived: wallet.isDerived(),
-    }
+    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
   }
 
   render () {
-    const { address, token, blockchain, walletInfo, wallet } = this.props
-
-    if (walletInfo.balance === null || walletInfo.tokens.length <= 0 || !wallet) {
-      return null
-    }
-    const tokensList = this.getTokensList() || []
+    const { token, wallet } = this.props
 
     return (
       <div styleName='header-container' className='WalletWidgetDetail__root'>
-        <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>
+        <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={wallet.blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
             <div styleName='body'>
               <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={this.getWalletObj(wallet)} />}
+                {wallet.blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
                 <div styleName='token-icon'>
-                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+                  <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
                 </div>
               </div>
               <div styleName='content-container'>
                 <div styleName='address-title'>
                   <h3>{this.getWalletName()}</h3>
-                  <span styleName='address-address'>{address}</span>
+                  <span styleName='address-address'>{wallet.address}</span>
                 </div>
-                <div styleName='token-amount'>
-                  <div styleName='crypto-amount'>
-                    {tokensList.length === 1
-                      ? (
-                        <div>
-                          <div>{tokensList[0].symbol} {integerWithDelimiter(tokensList[0].amount.toFixed(2), true)}</div>
-                          <div styleName='amountSubTitle'>USD {integerWithDelimiter(tokensList[0].amountPrice.toFixed(2), true)}</div>
-                        </div>
-                      )
-                      : (
-                        <div>
-                          <div>USD {integerWithDelimiter(walletInfo.balance.toFixed(2), true)}</div>
-                          <div styleName='tokensSubTitle'>
-                            <Translate value={`${prefix}.tokensTitle`} count={tokensList.length} />
-                            {wallet.isMultisig() ? <span>, <Translate value={`${prefix}.ownersTitle`} count={wallet.owners().size()} /></span> : null}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                </div>
+                {token && token.isFetched() ? <WalletMainCoinBalance wallet={wallet} /> : <span styleName='noToken'><Translate value={`${prefix}.tokenNotAvailable`} /></span>}
 
-                {wallet.isTimeLocked() && (
+                {wallet.isTimeLocked && (
                   <div styleName='unlockDateWrapper'>
-                    <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime()} format='HH:mm, Do MMMM YYYY' />
+                    <Translate value={`${prefix}.unlockDate`} /> <Moment data={wallet.releaseTime} format='HH:mm, Do MMMM YYYY' />
                   </div>
                 )}
 
@@ -297,24 +256,24 @@ export default class WalletWidgetDetail extends PureComponent {
             </div>
             <div styleName='footer'>
               <div styleName='pendingOperations'>
-                {wallet.isMultisig() && (
+                {wallet.pendingCount > 0 && (
                   <div styleName='pendingOperationsCount'>
-                    <Translate value={`${prefix}.pending`} count={wallet.pendingTxList().size()} />
+                    <Translate value={`${prefix}.pending`} count={wallet.pendingCount} />
                   </div>
                 )}
               </div>
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
-                    disabled={false}
+                    disabled={!token || !token.isFetched()}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={this.handleSend}
+                    onTouchTap={this.handleSend(wallet)}
                   />
                 </div>
                 <div styleName='action'>
                   <Button
-                    disabled={false}
+                    disabled={!token || !token.isFetched()}
                     type='submit'
                     label={<Translate value={`${prefix}.receiveButton`} />}
                     onTouchTap={this.handleReceive}

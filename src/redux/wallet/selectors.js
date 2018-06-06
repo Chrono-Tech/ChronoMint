@@ -499,3 +499,20 @@ export const priceTokenSelector = (value: Amount) => createSelector(
     return value.mul((price || 0))
   },
 )
+
+export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (
+    mainWalletState,
+    multisigWalletsCollection,
+  ) => {
+    if (multisigWalletsCollection.item(address)) {
+      return multisigWalletsCollection.item(address).transactions()
+    } else {
+      return mainWalletState.transactions({ blockchain, address })
+    }
+  },
+)

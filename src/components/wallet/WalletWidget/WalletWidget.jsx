@@ -307,7 +307,7 @@ export default class WalletWidget extends PureComponent {
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                {token && token.isFetched() ? <WalletMainCoinBalance wallet={wallet} /> : <span>Token Not Available</span>}
+                {token && token.isFetched() ? <WalletMainCoinBalance wallet={wallet} /> : <span styleName='noToken'><Translate value={`${prefix}.tokenNotAvailable`} /></span>}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
@@ -323,7 +323,7 @@ export default class WalletWidget extends PureComponent {
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
-                    disabled={false}
+                    disabled={!token || !token.isFetched()}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
                     onTouchTap={this.handleSend(wallet)}
@@ -331,7 +331,7 @@ export default class WalletWidget extends PureComponent {
                 </div>
                 <div styleName='action'>
                   <Button
-                    disabled={false}
+                    disabled={!token || !token.isFetched()}
                     type='submit'
                     label={<Translate value={`${prefix}.receiveButton`} />}
                     onTouchTap={this.handleReceive}

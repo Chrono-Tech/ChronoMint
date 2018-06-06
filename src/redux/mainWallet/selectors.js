@@ -178,3 +178,44 @@ export const mainWalletTokenBalanceSelector = (blockchain: string) => createSele
     return balancesInfo
   },
 )
+
+export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
+  [
+    filteredBalancesAndTokens(blockchain, symbol),
+    selectMarketPricesSelectedCurrencyStore,
+    selectMarketPricesListStore,
+  ],
+  (
+    balancesInfo,
+    selectedCurrency,
+    priceList,
+  ) => {
+
+    return balancesInfo
+      .map((info) => {
+        const symbol = info.balance.symbol()
+        const tokenPrice = priceList[symbol] && priceList[symbol][selectedCurrency] || null
+
+        return {
+          'symbol': symbol,
+          'value': info.token.removeDecimals(info.balance.amount()).toNumber(),
+          'valueUsd': info.token.removeDecimals(info.balance.amount()).mul(tokenPrice || 0).toNumber(),
+        }
+      })
+      .filter((balance) => {
+        return notFilterZero ? true : balance.value > 0
+      })
+      .toArray()
+  },
+)
+
+export const mainWalletTokenBalanceWithPriceSelector = (blockchain: string) => createSelector(
+  [
+    tokensCountBalanceAndPriceSelector(blockchain),
+  ],
+  (
+    balancesInfo,
+  ) => {
+    return balancesInfo
+  },
+)

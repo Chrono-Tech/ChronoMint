@@ -15,22 +15,30 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import Amount from 'models/Amount'
-import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
+import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
+  let wallet
+  if (!ownProps.walletInfo.isMain) {
+    wallet = state.get(DUCK_MULTISIG_WALLET).item(ownProps.walletInfo.address)
+  }
+
   return {
+    wallet,
     tokens: state.get(DUCK_TOKENS),
     locale: state.get(DUCK_I18N).locale,
   }
 }
 
 function mapDispatchToProps (dispatch) {
+
   return {
     revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
     confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
@@ -48,16 +56,32 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PendingTxWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
+    ]),
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     locale: PropTypes.string,
     enterCode: PropTypes.func,
+    walletInfo: PropTypes.shape({
+      address: PropTypes.string,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      owners: PropTypes.arrayOf(PropTypes.string),
+      customTokens: PropTypes.arrayOf(),
+    }),
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.checkAndFetchPendings(this.props.wallet)
   }
 
@@ -78,7 +102,7 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   checkAndFetchPendings (wallet) {
-    if (wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
+    if (!wallet || (!wallet.is2FA() && !wallet.isMultisig()) || wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
       return
     }
 
@@ -179,7 +203,11 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   render () {
-    const { wallet } = this.props
+    const { wallet, walletInfo } = this.props
+
+    if (!walletInfo.isMultisig || !walletInfo.is2FA) {
+      return null
+    }
 
     return (
       <div styleName='root' className='PendingTxWidget__root'>

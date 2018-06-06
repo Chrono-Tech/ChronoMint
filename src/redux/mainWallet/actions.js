@@ -472,6 +472,17 @@ export const resetWalletsForm = () => (dispatch) => {
   dispatch(change(FORM_ADD_NEW_WALLET, 'ethWalletType', null))
 }
 
+export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch, getState) => {
+  let walletModel
+  const multisigCollection = getState().get(DUCK_MULTISIG_WALLET)
+  if (multisigCollection.item(wallet.address)) {
+    walletModel = multisigCollection.item(wallet.address)
+  } else {
+    walletModel = getState().get(DUCK_MAIN_WALLET)
+  }
+  return dispatch(getTransactionsForWallet({ wallet: walletModel, address, blockchain }))
+}
+
 export const getTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch, getState) => {
   if (!wallet || !address || !blockchain) {
     return null
@@ -489,37 +500,41 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain }) => asy
   const newOffset = offset + TXS_PER_PAGE
 
   let txList = []
+  let dao
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      txList = await tokenService.getDAO(ETH).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(ETH)
       break
     case BLOCKCHAIN_BITCOIN:
-      txList = await tokenService.getDAO(BTC).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(BTC)
       break
     case BLOCKCHAIN_BITCOIN_CASH:
-      txList = await tokenService.getDAO(BCC).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(BCC)
       break
     case BLOCKCHAIN_BITCOIN_GOLD:
-      txList = await tokenService.getDAO(BTG).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(BTG)
       break
     case BLOCKCHAIN_LITECOIN:
-      txList = await tokenService.getDAO(LTC).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(LTC)
       break
     case BLOCKCHAIN_NEM:
-      txList = await tokenService.getDAO(XEM).getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+      dao = tokenService.getDAO(XEM)
       break
   }
+  if (dao) {
+    txList = await dao.getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
 
-  txList.sort((a, b) => b.get('time') - a.get('time'))
+    txList.sort((a, b) => b.get('time') - a.get('time'))
 
-  for (let tx: TxModel of txList) {
-    transactions = transactions.add(tx)
-  }
+    for (let tx: TxModel of txList) {
+      transactions = transactions.add(tx)
+    }
 
-  if (transactions.items().length < newOffset) {
-    transactions = transactions.endOfList(true)
-  } else {
-    transactions = transactions.endOfList(false)
+    if (transactions.items().length < newOffset) {
+      transactions = transactions.endOfList(true)
+    } else {
+      transactions = transactions.endOfList(false)
+    }
   }
 
   if (wallet instanceof MainWalletModel) {
