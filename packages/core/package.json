@@ -1,0 +1,7 @@
+{
+  "name": "@chronobank/core",
+  "version": "0.8.1",
+  "peerDependencies": {
+    "@chronobank/core-dependencies": "*"
+  }
+}
