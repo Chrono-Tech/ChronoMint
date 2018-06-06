@@ -21,17 +21,20 @@ import { prefix } from './lang'
 
 import './MenuTokensList.scss'
 
-function mapStateToProps (state) {
-  const session = state.get(DUCK_SESSION)
-  const monitor = state.get(DUCK_MONITOR)
-
-  return {
-    account: session.account,
-    tokens: getBlockchainAddressesList()(state),
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
-    networkName: networkService.getName(),
+function makeMapStateToProps () {
+  const getwallets = getBlockchainAddressesList()
+  const mapStateToProps = (ownState) => {
+    const session = ownState.get(DUCK_SESSION)
+    const monitor = ownState.get(DUCK_MONITOR)
+    return {
+      account: session.account,
+      tokens: getwallets(ownState),
+      networkStatus: monitor.network,
+      syncStatus: monitor.sync,
+      networkName: networkService.getName(),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -68,7 +71,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class MenuTokensList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,

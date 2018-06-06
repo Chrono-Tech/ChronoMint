@@ -7,15 +7,18 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { balanceSelector } from 'redux/mainWallet/selectors'
 import { multisigBalanceSelector } from 'redux/multisigWallet/selectors'
+import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
 import { connect } from 'react-redux'
+import { integerWithDelimiter } from 'utils/formatter'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
   let getAmount
+  const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   if (wallet.isMain) {
-    getAmount = balanceSelector(wallet.blockchain)
+    getAmount = balanceSelector(wallet.blockchain, mainSymbol)
   } else {
-    getAmount = multisigBalanceSelector(wallet.address)
+    getAmount = multisigBalanceSelector(wallet.address, mainSymbol)
   }
   const mapStateToProps = (ownState) => {
     return {
@@ -44,6 +47,6 @@ export default class WalletWidgetMiniUsdAmount extends PureComponent {
   }
 
   render () {
-    return <span>USD&nbsp;{this.props.amount}</span>
+    return <span>USD&nbsp;{integerWithDelimiter(this.props.amount.toFixed(2), true)}</span>
   }
 }

@@ -4,6 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
+import MainWalletModel from 'models/wallet/MainWalletModel'
 import { MANDATORY_TOKENS, PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
 import { DUCK_SESSION, rebuildProfileTokens } from './actions'
 import { getMainWallet } from '../wallet/selectors'
@@ -24,7 +25,7 @@ export const getGasSliderCollection = (state) => {
   return gasPriceMultiplier
 }
 
-export const getGasPriceMultiplier = (blockchain) => createSelector([ getGasSliderCollection ],
+export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
     return gasSliderCollection.get(blockchain) || 1
   },
@@ -48,21 +49,34 @@ export const BALANCES_COMPARATOR_URGENCY = (item1, item2) => {
   return s1 < s2 ? -1 : (s1 > s2 ? 1 : 0)
 }
 
-export const getBlockchainAddressesList = () => createSelector(
-  [ getMainWallet ],
-  (mainWallet) => {
-    const addressesInWallet = mainWallet.addresses()
-    return PROFILE_PANEL_TOKENS
-      .map((token) => {
-        return {
-          ...token,
-          address: addressesInWallet.item(token.blockchain).address(),
-        }
-      })
+export const getAddressesList = () => createSelector(
+  [getMainWallet],
+  (mainWallet: MainWalletModel) => {
+    const addressesInWallet = mainWallet.addresses().list().toObject()
+    let result = {}
+    Object.keys(addressesInWallet).map((blockchain) => {
+      result[blockchain] = addressesInWallet[blockchain].address()
+    })
+    return result
   },
 )
 
-export const getProfileTokens = () => createSelector([ getProfile, getTokens ],
+export const getBlockchainAddressesList = () => createSelector(
+  [getAddressesList()],
+  (addresses) => {
+    let result = []
+    PROFILE_PANEL_TOKENS
+      .map((token) => {
+        result.push({
+          ...token,
+          address: addresses[token.blockchain],
+        })
+      })
+    return result
+  },
+)
+
+export const getProfileTokens = () => createSelector([getProfile, getTokens],
   (profile, tokens) => {
     return rebuildProfileTokens(profile, tokens)
   },

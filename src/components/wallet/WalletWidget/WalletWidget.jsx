@@ -279,10 +279,6 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, wallet, showGroupTitle } = this.props
 
-    if (!token || !token.isFetched()) {
-      return null
-    }
-
     return (
       <div styleName='header-container'>
         {showGroupTitle && <h1 styleName='header-text' id={blockchain}><Translate value={`${prefix}.walletTitle`} title={blockchain} /></h1>}
@@ -301,7 +297,7 @@ export default class WalletWidget extends PureComponent {
             <div styleName='token-container'>
               {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
               <div styleName='token-icon'>
-                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
+                <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
               </div>
             </div>
             <div styleName='content-container'>
@@ -311,12 +307,12 @@ export default class WalletWidget extends PureComponent {
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                <WalletMainCoinBalance wallet={wallet} />
+                {token && token.isFetched() ? <WalletMainCoinBalance wallet={wallet} /> : <span>Token Not Available</span>}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
 
-              <WalletTokensList wallet={wallet} />
+              {token && token.isFetched() && <WalletTokensList wallet={wallet} />}
 
               {wallet.isTimeLocked && (
                 <div styleName='unlockDateWrapper'>
