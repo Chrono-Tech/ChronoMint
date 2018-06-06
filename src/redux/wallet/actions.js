@@ -5,6 +5,7 @@
 
 import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet/actions'
+import { modalsOpen } from 'redux/modals/actions'
 
 export const DUCK_WALLET = 'wallet'
 
@@ -30,4 +31,20 @@ export const getCurrentWallet = (state) => {
 
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
+}
+
+export const openSendForm = (formProps, Component) => (dispatch, getState) => {
+  let wallet
+  if (formProps.wallet.isMain) {
+    wallet = getState().get(DUCK_MAIN_WALLET)
+  } else {
+    wallet = getState().get(DUCK_MULTISIG_WALLET).item(formProps.wallet.address)
+  }
+  formProps.wallet = wallet
+
+  dispatch(modalsOpen({
+    component: Component,
+    props: formProps,
+  }))
+
 }

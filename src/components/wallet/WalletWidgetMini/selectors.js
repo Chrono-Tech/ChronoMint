@@ -24,8 +24,8 @@ export const selectWallet = (blockchain, address) => createSelector(
     if (multisigWallet) {
       const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
       return {
-        address: multisigWallet.address(),
-        blockchain: multisigWallet.blockchain(),
+        address,
+        blockchain,
         name: multisigWallet.name(),
         requiredSignatures: multisigWallet.requiredSignatures && multisigWallet.requiredSignatures(),
         pendingCount: multisigWallet.pendingCount && multisigWallet.pendingCount(),
@@ -43,8 +43,8 @@ export const selectWallet = (blockchain, address) => createSelector(
     else {
       const balance: BalanceModel = mainWallet.balances().item(mainSymbol)
       return {
-        address: address,
-        blockchain: blockchain,
+        address,
+        blockchain,
         name: mainWallet.name(blockchain, address),
         requiredSignatures: null,
         owners: null,

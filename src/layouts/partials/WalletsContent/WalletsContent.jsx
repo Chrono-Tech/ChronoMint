@@ -54,7 +54,7 @@ export default class WalletsContent extends Component {
     const Component = this.props.isCompactWalletView ? WalletWidgetMini : WalletWidget
     return (
       <div styleName='root'>
-        {!this.props.check2FAChecked && this.props.isHave2FAWallets && <TwoFAWarningWidget />}
+        {this.props.check2FAChecked === false && this.props.isHave2FAWallets && <TwoFAWarningWidget />}
         {this.props.walletsList.map((walletGroup) => (
           <div key={walletGroup.title}>
             {walletGroup.data.map((wallet, i) => (

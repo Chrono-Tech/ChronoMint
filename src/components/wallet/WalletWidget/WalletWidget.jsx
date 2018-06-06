@@ -8,7 +8,7 @@ import TokenModel from 'models/tokens/TokenModel'
 import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { selectWallet } from 'redux/wallet/actions'
+import { openSendForm, selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { ETH } from 'redux/mainWallet/actions'
@@ -46,17 +46,14 @@ function makeMapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, blockchain, address, wallet) => {
-      dispatch(modalsOpen({
-        component: SendTokens,
-        props: {
-          wallet,
-          isModal: true,
-          token: tokenId,
-          blockchain,
-          address,
-        },
-      }))
+    send: (tokenId, wallet) => {
+      dispatch(openSendForm({
+        wallet,
+        isModal: true,
+        token: tokenId,
+        blockchain: wallet.blockchain,
+        address: wallet.address,
+      }, SendTokens))
     },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
@@ -120,11 +117,13 @@ export default class WalletWidget extends PureComponent {
   }
 
   handleSend = (wallet) => () => {
-    this.props.send(this.props.token.id(), this.props.blockchain, this.props.address, wallet)
+    this.props.send(this.props.token.id(), wallet)
   }
+
   handleReceive = () => {
     this.props.receive(this.props.blockchain)
   }
+
   handleDeposit = () => {
     this.props.deposit()
   }
@@ -278,14 +277,11 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, walletInfo, wallet, showGroupTitle } = this.props
+    const { address, token, blockchain, wallet, showGroupTitle } = this.props
 
-    // if (!walletInfo || walletInfo.balance === null || !walletInfo.tokens.length > 0) {
-    //   return null
-    // }
-
-    // const firstToken = walletInfo.tokens[0]
-    const pendingslength = wallet.pendingTxList ? wallet.pendingTxList().size() : 0
+    if (!token || !token.isFetched()) {
+      return null
+    }
 
     return (
       <div styleName='header-container'>
@@ -293,9 +289,9 @@ export default class WalletWidget extends PureComponent {
         <div styleName='wallet-list-container'>
 
           <div styleName='wallet-container'>
-            {pendingslength > 0 && (
+            {wallet.pendingCount > 0 && (
               <div styleName='pendings-container'>
-                <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={pendingslength} /></div>
+                <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
               </div>
             )}
             <div styleName='settings-container'>

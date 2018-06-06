@@ -108,7 +108,7 @@ export default class MenuTokensList extends PureComponent {
   handleScrollToBlockchain = (blockchain) => {
     const element = document.getElementById(blockchain)
     if (element) {
-      element.scrollIntoView({ block: 'start',  behavior: 'smooth' })
+      element.scrollIntoView({ block: 'start', behavior: 'smooth' })
     }
   }
 
@@ -156,8 +156,7 @@ export default class MenuTokensList extends PureComponent {
               </div>
               <div
                 styleName='addressTitle'
-                onTouchTap={((blockchain) => () =>  {
-                  this.handleScrollToBlockchain(blockchain)}
+                onTouchTap={((blockchain) => () => this.handleScrollToBlockchain(blockchain)
                 )(token.blockchain)}
               >
                 <div styleName='addressName'>{token.title}</div>
