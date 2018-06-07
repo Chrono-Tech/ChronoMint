@@ -11,7 +11,7 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MARKET } from 'redux/market/action'
+import { DUCK_MARKET } from 'redux/market/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { integerWithDelimiter } from 'utils/formatter'
 

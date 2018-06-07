@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { DUCK_MAIN_WALLET } from '../../mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from '../../multisigWallet/actions'
-import { DUCK_MARKET } from '../../market/action'
+import { DUCK_MARKET } from '../../market/actions'
 import { DUCK_TOKENS } from '../../tokens/actions'
 import { getCurrentWallet } from '../actions'
 
