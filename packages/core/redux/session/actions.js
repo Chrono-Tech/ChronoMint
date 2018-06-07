@@ -8,7 +8,7 @@ import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
-import { push, replace } from 'react-router-redux'
+import { push, replace } from '../../utils/router'
 import ls from '../../utils/LocalStorage'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { removeWatchersUserMonitor } from '../ui/actions'
