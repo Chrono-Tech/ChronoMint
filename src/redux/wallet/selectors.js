@@ -3,55 +3,34 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
+import { createSelector } from 'reselect'
 import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
-import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
+import { ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import { DUCK_MARKET } from 'redux/market/action'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { getAccount } from 'redux/session/selectors'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import Amount from 'models/Amount'
+import {
+  getMainWallet,
+  getMultisigWallets,
+  selectMainWalletAddressesListStore,
+  selectMainWalletBalancesListStore,
+  selectMarketPricesListStore,
+  selectMarketPricesSelectedCurrencyStore,
+  selectTokensStore,
+} from './selectors/models'
 
-import { getCurrentWallet } from './actions'
-
-/**
- * SIMPLE SELECTORS
- * ==============================================================================
- */
-
-export const getMainWallet = (state) => {
-  return state.get(DUCK_MAIN_WALLET)
-}
-
-export const getMultisigWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
-}
-
-export const getMainWalletBalance = (symbol) => createSelector(
-  [getMainWallet],
-  (mainWallet) => mainWallet.balances().item(symbol),
-)
-
-export const getCurrentWalletBalance = (symbol) => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => currentWallet.balances().item(symbol),
-)
-
-export const selectMainWalletBalancesListStore = (state) =>
-  state.get(DUCK_MAIN_WALLET).balances().list() // BalancesCollection, array of BalanceModel
-
-export const selectTokensStore = (state) =>
-  state.get(DUCK_TOKENS) // TokensCollection, array of TokenModel
-
-export const selectMainWalletAddressesListStore = (state) => {
-  return state.get(DUCK_MAIN_WALLET).addresses().list() // This is an instance of MainWalletModel
-}
-
-export const selectMarketPricesListStore = (state) => state.get(DUCK_MARKET).prices
-export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK_MARKET).selectedCurrency
+export { getMainWallet } from 'redux/wallet/selectors/models'
+export { getMultisigWallets } from 'redux/wallet/selectors/models'
+export { getMainWalletBalance } from 'redux/wallet/selectors/models'
+export { getCurrentWalletBalance } from 'redux/wallet/selectors/models'
+export { selectMainWalletBalancesListStore } from 'redux/wallet/selectors/models'
+export { selectTokensStore } from 'redux/wallet/selectors/models'
+export { selectMainWalletAddressesListStore } from 'redux/wallet/selectors/models'
+export { selectMarketPricesListStore } from 'redux/wallet/selectors/models'
+export { selectMarketPricesSelectedCurrencyStore } from 'redux/wallet/selectors/models'
 
 /**
  * WALLET SECTIONS
