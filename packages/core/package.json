@@ -1,6 +1,10 @@
 {
   "name": "@chronobank/core",
   "version": "0.8.1",
+  "dependencies": {
+    "chronobank-smart-contracts": "1.1.47",
+    "eth-crypto": "^1.2.0"
+  },
   "peerDependencies": {
     "@chronobank/core-dependencies": "*"
   }
