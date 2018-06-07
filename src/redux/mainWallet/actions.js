@@ -169,19 +169,31 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       dispatch(fetchTokenBalance(token))
     })
     .on(EVENT_UPDATE_BALANCE, ({ account, balance }) => {
-      const addresses = getState().get(DUCK_MAIN_WALLET)
-        .addresses()
-        .items()
-        .map((address: AddressModel) => address.address())
-
-      if (addresses.includes(account)) {
+      const wallets = getState().get(DUCK_MULTISIG_WALLET)
+      if (wallets.item(account)) {
         dispatch({
-          type: WALLET_TOKEN_BALANCE,
+          type: MULTISIG_BALANCE,
+          walletId: account,
           balance: new BalanceModel({
             id: token.id(),
-            amount: new Amount(balance, token.symbol()),
+            amount: new Amount(balance, token.symbol(), true),
           }),
         })
+      } else {
+        const addresses = getState().get(DUCK_MAIN_WALLET)
+          .addresses()
+          .items()
+          .map((address: AddressModel) => address.address())
+
+        if (addresses.includes(account)) {
+          dispatch({
+            type: WALLET_TOKEN_BALANCE,
+            balance: new BalanceModel({
+              id: token.id(),
+              amount: new Amount(balance, token.symbol()),
+            }),
+          })
+        }
       }
     })
     .on(EVENT_APPROVAL_TRANSFER, ({ spender, value }) => {
@@ -389,7 +401,7 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   }
 }
 
-const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
+export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
 
   if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
@@ -447,11 +459,13 @@ export const createNewChildAddress = ({ blockchain, tokens, name }) => async (di
       newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
+      btcProvider.subscribeNewWallet(address)
       break
     case BLOCKCHAIN_LITECOIN:
       newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
+      ltcProvider.subscribeNewWallet(address)
       break
     case 'Bitcoin Gold':
     case 'NEM':

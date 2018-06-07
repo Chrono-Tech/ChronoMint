@@ -23,6 +23,11 @@ export class BitcoinProvider extends AbstractProvider {
     this._id = id
   }
 
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
+  }
+
   subscribe (engine) {
     const node = super.subscribe(engine)
     node.addListener('tx', this._handleTransaction)

@@ -22,6 +22,16 @@ import OwnerModel from 'models/wallet/OwnerModel'
 import { notify, notifyError } from 'redux/notifier/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
+import {
+  bccProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -34,7 +44,7 @@ import multisigWalletService, {
   EE_SINGLE_TRANSACTION,
 } from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
-import { ETH } from '../mainWallet/actions'
+import { ETH, getTokensBalancesAndWatch } from 'redux/mainWallet/actions'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -214,6 +224,28 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   dispatch({ type: MULTISIG_INIT, isInited: true })
 
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
+  let wallets = getState().get(DUCK_MULTISIG_WALLET)
+  wallets.items().map((wallet) => {
+    if (wallet.isDerived()) {
+      switch (wallet.blockchain()) {
+        case BLOCKCHAIN_BITCOIN:
+          btcProvider.subscribeNewWallet(wallet.address())
+          break
+        case BLOCKCHAIN_BITCOIN_CASH:
+          bccProvider.subscribeNewWallet(wallet.address())
+          break
+        case BLOCKCHAIN_BITCOIN_GOLD:
+          btgProvider.subscribeNewWallet(wallet.address())
+          break
+        case BLOCKCHAIN_LITECOIN:
+          ltcProvider.subscribeNewWallet(wallet.address())
+          break
+        default:
+      }
+
+      dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address(), wallet.blockchain(), wallet.customTokens())))
+    }
+  })
 
   dispatch(subscribeOnWalletManager())
   dispatch(subscribeOnMultisigWalletService())

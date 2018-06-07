@@ -53,7 +53,7 @@ export class BitcoinEngine {
     const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
       txId: output.txid,
       vout: output.vout,
-      value: output.satoshis,
+      value: Number.parseFloat(output.satoshis),
     })), targets, Math.ceil(feeRate))
     return { inputs, outputs, fee }
   }

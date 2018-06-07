@@ -19,6 +19,11 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     this.connect()
   }
 
+  subscribeNewWallet (address) {
+    this._handleSubscribe(address)
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+  }
+
   async _handleSubscribe (address) {
     if (!this._socket) {
       return
@@ -28,7 +33,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       this.executeOrSchedule(() => {
         this._subscriptions[`balance:${address}`] = this._client.subscribe(
           `${this._socket.channels.balance}.${address}`,
-          // `${socket.channels.balance}.*`,
           (message) => {
             try {
               const data = JSON.parse(message.body)
@@ -142,7 +146,17 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     try {
       const params = new URLSearchParams()
       params.append('tx', rawtx)
-      const res = await this._api.post('tx/send', params)
+      let res = await this._api.post('tx/send', params)
+      let formatInputs = res.data.inputs.map((input) => {
+        input.address = input.addresses.join(',')
+        return input
+      })
+      let formatOutputs = res.data.outputs.map((output) => {
+        output.address = output.addresses.join(',')
+        return output
+      })
+      res.data.inputs = formatInputs
+      res.data.outputs = formatOutputs
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
         this.emit('tx', model)
@@ -158,27 +172,14 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
     }).join(',')
-    // eslint-disable-next-line
-    console.log('=================================================================')
     const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
-
-    // eslint-disable-next-line
-    console.log(tx.hash || tx._id, 'credited', credited, account)
-
     const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      // eslint-disable-next-line
-      console.log('_createTxModel', output.address, account, output.address.indexOf(account) < 0, output.value)
       if (credited ? output.address.indexOf(account) >= 0 : output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }
-
-    // eslint-disable-next-line
-    console.log('_createTxModel', +value)
-    // eslint-disable-next-line
-    console.log('=================================================================')
 
     return new BitcoinTx({
       blockHash: tx.blockHash,

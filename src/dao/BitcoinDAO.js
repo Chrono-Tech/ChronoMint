@@ -209,6 +209,10 @@ export default class BitcoinDAO extends EventEmitter {
       feeRate,
     })
   }
+
+  subscribeNewWallet (address) {
+    this._bitcoinProvider.subscribeNewWallet(address)
+  }
 }
 
 export const btcDAO = new BitcoinDAO(BLOCKCHAIN_BITCOIN, 'BTC', btcProvider)
