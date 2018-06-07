@@ -14,7 +14,7 @@ export const address = (value, required = true, blockchain = 'Ethereum') => {
   return null
 }
 
-export const bitcoinAddress = (validateAddress, blockchain) => (value, required = true,) => {
+export const bitcoinAddress = (validateAddress, blockchain) => (value, required = true) => {
   // TODO @ipavlenko: Provide better validation
   if ((!value && required) || (value && !validateAddress(value))) {
     return { value: 'errors.invalidAddress', blockchain }
@@ -138,6 +138,8 @@ export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
     : null
 }
 
+export const confirm2FACode = (value) => isNaN(value) || ('' + value).length !== 6 ? 'errors.invalidConfirm2FACode' : null
+
 export default {
   required,
   address,
@@ -153,4 +155,5 @@ export default {
   moreThan,
   validIpfsFileList,
   unique,
+  confirm2FACode,
 }

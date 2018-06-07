@@ -74,4 +74,12 @@ export default class DerivedWalletModel extends abstractFetchingModel({
   addresses (value) {
     return this._getSet('addresses', value)
   }
+
+  is2FA () {
+    return false
+  }
+
+  isDerived () {
+    return true
+  }
 }

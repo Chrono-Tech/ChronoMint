@@ -34,7 +34,7 @@ function mapStateToProps (state) {
     blockchain,
     address,
     wallet,
-    walletInfo: walletInfoSelector(wallet, blockchain, address, state),
+    walletInfo: walletInfoSelector(wallet, blockchain, address, false, state),
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
     isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
@@ -105,7 +105,7 @@ export default class WalletContent extends Component {
       <div styleName='root'>
         <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
 
-        <TokensListWidget tokensList={walletInfo.tokens} />
+        {walletInfo.tokens.length > 1 && <TokensListWidget tokensList={walletInfo.tokens} />}
 
         {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
 

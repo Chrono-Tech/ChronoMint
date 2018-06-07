@@ -91,6 +91,7 @@
     "coinselect": "^3.1.11",
     "d3": "^4.10.0",
     "debug": "^3.1.0",
+    "eth-crypto": "^1.2.0",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
     "ganache-cli": "^6.1.0",

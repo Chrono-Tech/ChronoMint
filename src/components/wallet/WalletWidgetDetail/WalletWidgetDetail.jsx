@@ -174,7 +174,9 @@ export default class WalletWidgetDetail extends PureComponent {
     }
 
     let key = null
-    if (this.isMySharedWallet()) {
+    if (this.isMy2FAWallet()) {
+      key = 'twoFAWallet'
+    } else if (this.isMySharedWallet()) {
       key = 'sharedWallet'
     } else if (this.isLockedWallet()) {
       key = 'lockedWallet'
@@ -214,6 +216,10 @@ export default class WalletWidgetDetail extends PureComponent {
     )
   }
 
+  isMy2FAWallet = () => {
+    return this.props.wallet.isMultisig() && this.props.wallet.is2FA()
+  }
+
   isMySharedWallet = () => {
     return this.props.wallet.isMultisig() && !this.props.wallet.isTimeLocked()
   }
@@ -224,6 +230,15 @@ export default class WalletWidgetDetail extends PureComponent {
 
   isLockedWallet = () => {
     return this.props.wallet.isMultisig() && this.props.wallet.isTimeLocked()
+  }
+
+  getWalletObj (wallet) {
+    return {
+      isMultisig: wallet.isMultisig(),
+      isTimeLocked: wallet.isTimeLocked(),
+      is2FA: wallet.is2FA ? wallet.is2FA() : false,
+      isDerived: wallet.isDerived(),
+    }
   }
 
   render () {
@@ -241,7 +256,7 @@ export default class WalletWidgetDetail extends PureComponent {
           <div styleName='wallet-container'>
             <div styleName='body'>
               <div styleName='token-container'>
-                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={wallet} />}
+                {blockchain === BLOCKCHAIN_ETHEREUM && <SubIconForWallet wallet={this.getWalletObj(wallet)} />}
                 <div styleName='token-icon'>
                   <IPFSImage styleName='image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
                 </div>

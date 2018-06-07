@@ -43,6 +43,8 @@ export default class TokensListWidget extends PureComponent {
 
     this.state = {
       isShowAll: false,
+      sortBy: 'symbol',
+      direction: true,
     }
   }
 
@@ -53,7 +55,30 @@ export default class TokensListWidget extends PureComponent {
   }
 
   getTokensList = () => {
-    return this.state.isShowAll ? this.props.tokensList : this.props.tokensList.slice(0, 2)
+    const { sortBy, direction } = this.state
+    const tokens = this.props.tokensList.sort((a, b) => {
+      if (a[sortBy] < b[sortBy]) {
+        return direction
+      }
+      if (a[sortBy] > b[sortBy]) {
+        return !direction
+      }
+      return 0
+    })
+    return this.state.isShowAll ? tokens : tokens.slice(0, 2)
+  }
+
+  setSort = (sortBy) => () => {
+    this.setState((prevState) => ({
+      sortBy, direction: sortBy === prevState.sortBy ? !prevState.direction : true,
+    }))
+  }
+
+  renderDirection (sortBy) {
+    if (sortBy === this.state.sortBy) {
+      return <i className='chronobank-icon'>{this.state.direction ? 'down' : 'up'}</i>
+    }
+    return null
   }
 
   render () {
@@ -66,18 +91,33 @@ export default class TokensListWidget extends PureComponent {
 
         <div styleName='tokens-list'>
           <div styleName='tokens-list-table'>
+            <div styleName='tokens-list-table-tr'>
+              <div styleName='tokens-list-table-cell-sort-token' onTouchTap={this.setSort('symbol')}>
+                <Translate value={`${prefix}.token`} />&nbsp;
+                {this.renderDirection('symbol')}
+              </div>
+              <div styleName='tokens-list-table-cell-sort-amount' onTouchTap={this.setSort('amount')}>
+                <Translate value={`${prefix}.amount`} />&nbsp;
+                {this.renderDirection('amount')}
+              </div>
+              <div styleName='tokens-list-table-cell-sort-usd' onTouchTap={this.setSort('amountPrice')}>
+                <Translate value={`${prefix}.fiat`} />&nbsp;
+                {this.renderDirection('amountPrice')}
+              </div>
+            </div>
             {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
               const token = this.props.tokens.item(tokenMap.symbol)
               return (
                 <div styleName='tokens-list-table-tr' key={token.id()}>
                   <div styleName='tokens-list-table-cell-icon'>
-                    <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[ token.symbol() ] || TOKEN_ICONS.DEFAULT} />
+                    <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
+                    {tokenMap.symbol}
                   </div>
                   <div styleName='tokens-list-table-cell-amount'>
-                    {tokenMap.symbol} {integerWithDelimiter(tokenMap.amount, true, null)}
+                    {integerWithDelimiter(tokenMap.amount, true, null)}
                   </div>
                   <div styleName='tokens-list-table-cell-usd'>
-                    USD {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
+                    {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
                   </div>
                 </div>
               )

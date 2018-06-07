@@ -24,11 +24,11 @@
       border-bottom: 1px solid $button-color-3;
       .tokens-list-table-tr {
         display: grid;
-        grid-template-columns: 60px 1fr 1fr;
+        grid-template-columns: 160px 1fr 1fr;
         border-top: 1px solid $button-color-3;
         font-weight: 500;
-        padding: 15px 30px;
         .tokens-list-table-cell-icon {
+          padding: 15px 30px;
           display: flex;
           align-items: center;
           vertical-align: middle;
@@ -38,9 +38,11 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
+            margin-right: 20px;
           }
         }
         .tokens-list-table-cell-amount {
+          padding: 15px 30px;
           display: flex;
           align-items: center;
           font-size: 14px;
@@ -48,11 +50,61 @@
           color: $color-primary-3;
         }
         .tokens-list-table-cell-usd {
+          padding: 15px 30px;
           display: flex;
           align-items: center;
-          color: $color-grey-2;
+          color: $color-primary-3;
           font-size: 14px;
           line-height: 17px
+        }
+        .tokens-list-table-cell-sort-token {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: flex;
+          align-items: center;
+          vertical-align: middle;
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
+          .table-image {
+            width: 40px;
+            height: 40px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+          }
+        }
+        .tokens-list-table-cell-sort-amount {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          line-height: 17px;
+          color: $color-primary-3;
+          border-right: 1px solid $button-color-3;
+          border-left: 1px solid $button-color-3;
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
+        }
+        .tokens-list-table-cell-sort-usd {
+          cursor: pointer;
+          padding: 10px 30px;
+          display: flex;
+          align-items: center;
+          color: $color-primary-3;
+          font-size: 14px;
+          line-height: 17px;
+          &:hover {
+            padding-top: 10px;
+            background-color: $color-grey-3;
+            padding-bottom: 10px;
+          }
         }
       }
     }

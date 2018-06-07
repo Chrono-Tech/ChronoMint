@@ -23,6 +23,7 @@ import {
   DepositsPage,
   DepositPage,
   AddWalletPage,
+  TwoFAPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from './utils/LocalStorage'
@@ -54,6 +55,7 @@ const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
       <Route component={Markup} onEnter={requireAuth}>
+        <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
         <Route path='wallet' component={WalletPage} />
         <Route path='add-wallet' component={AddWalletPage} />

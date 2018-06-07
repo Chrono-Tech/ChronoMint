@@ -12,15 +12,9 @@ import { GAS_SLIDER_MULTIPLIER_CHANGE } from 'redux/session/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokenModel from 'models/tokens/TokenModel'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
-import { ETH } from 'redux/mainWallet/actions'
+import { ETH, FEE_RATE_MULTIPLIER } from 'redux/mainWallet/actions'
 import './GasSlider.scss'
 import { prefix } from './lang'
-
-const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
 
 let timoutId = null
 

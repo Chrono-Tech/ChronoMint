@@ -27,7 +27,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { SelectField, Slider, TextField } from 'redux-form-material-ui'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
-import { ETH, getSpendersAllowance } from 'redux/mainWallet/actions'
+import { ETH, FEE_RATE_MULTIPLIER, getSpendersAllowance } from 'redux/mainWallet/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { getGasPriceMultiplier } from 'redux/session/selectors'
 import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
@@ -47,12 +47,6 @@ export const MODE_ADVANCED = 'advanced'
 export const ACTION_TRANSFER = 'action/transfer'
 export const ACTION_APPROVE = 'action/approve'
 
-const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
-
 function mapDispatchToProps (dispatch) {
   return {
     estimateGas: (tokenId, params, callback, gasPriseMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier, address)),
@@ -63,7 +57,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state, ownProps) {
 
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
-  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, state)
+  const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, true, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
   const formValues = getFormValues(FORM_SEND_TOKENS)
   const symbol = selector(state, 'symbol')
@@ -247,8 +241,7 @@ export default class SendTokensForm extends PureComponent {
     if (this.props.mode === MODE_ADVANCED && (gasLimit || this.state.gasLimitEstimated) && gweiPerGas) {
 
       this.setState((state, props) => {
-        if (!validators.positiveNumber(props.gweiPerGas))
-        {
+        if (!validators.positiveNumber(props.gweiPerGas)) {
           const customGasLimit = props.gasLimit || this.state.gasLimitEstimated
           return {
             gasFee: new Amount(web3Converter.toWei(props.gweiPerGas || 0, 'gwei') * customGasLimit, ETH),
@@ -600,7 +593,7 @@ export default class SendTokensForm extends PureComponent {
                 fullWidth
               />
             </div>
-            { this.state.gasLimitEstimated && !this.props.gasLimit &&
+            {this.state.gasLimitEstimated && !this.props.gasLimit &&
             <div styleName='gas-limit-based-container'>
               <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
                 <span
@@ -610,7 +603,7 @@ export default class SendTokensForm extends PureComponent {
                   {this.state.gasLimitEstimated}
                 </span>
               </span>
-            </div> }
+            </div>}
           </div>
         )}
         {this.isTransactionFeeAvailable(token.blockchain()) &&

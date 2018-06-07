@@ -16,26 +16,27 @@ export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
+export const getMainSymbolForBlockchain = (blockchain) => {
+  switch (blockchain) {
+    case BLOCKCHAIN_BITCOIN:
+      return BTC
+    case BLOCKCHAIN_BITCOIN_CASH:
+      return BCC
+    case BLOCKCHAIN_BITCOIN_GOLD:
+      return BTG
+    case BLOCKCHAIN_LITECOIN:
+      return LTC
+    case BLOCKCHAIN_ETHEREUM:
+      return ETH
+    case BLOCKCHAIN_NEM:
+      return XEM
+    case BLOCKCHAIN_WAVES:
+      return WAVES
+  }
+}
 export const getMainTokenForWalletByBlockchain = (blockchain) => createSelector(
   [getTokens],
-  (tokens) => {
-    switch (blockchain) {
-      case BLOCKCHAIN_BITCOIN:
-        return tokens.item(BTC)
-      case BLOCKCHAIN_BITCOIN_CASH:
-        return tokens.item(BCC)
-      case BLOCKCHAIN_BITCOIN_GOLD:
-        return tokens.item(BTG)
-      case BLOCKCHAIN_LITECOIN:
-        return tokens.item(LTC)
-      case BLOCKCHAIN_ETHEREUM:
-        return tokens.item(ETH)
-      case BLOCKCHAIN_NEM:
-        return tokens.item(XEM)
-      case BLOCKCHAIN_WAVES:
-        return tokens.item(WAVES)
-    }
-  },
+  (tokens) => tokens.item(getMainSymbolForBlockchain(blockchain)),
 )
 
 export const getTokensForBlockchain = (blockchain) => createSelector(
