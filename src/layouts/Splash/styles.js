@@ -26,5 +26,10 @@ export default {
       textAlign: 'center',
       transformOrigin: 'center center',
     },
+    errorStyle: {
+      bottom: 0,
+      marginTop: 5,
+      textAlign: 'center',
+    },
   },
 }

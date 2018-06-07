@@ -29,6 +29,9 @@ const initialState = {
   selectedProviderId: null,
   networks: [],
   selectedNetworkId: null,
+  newAccountName: null,
+  newAccountPassword: null,
+  newAccountMnemonic: null,
 }
 
 export default (state = initialState, action) => {
@@ -67,6 +70,17 @@ export default (state = initialState, action) => {
         ...state,
         isLoading: false,
         errors: [ ...state.errors, action.error ],
+      }
+    case actions.NETWORK_SET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: action.walletName,
+        newAccountPassword: action.walletPassword,
+      }
+    case actions.NETWORK_SET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: action.mnemonic,
       }
     default:
       return state

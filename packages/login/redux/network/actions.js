@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { push } from 'react-router-redux'
+import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
@@ -18,6 +20,8 @@ export const NETWORK_SET_TEST_RPC = 'network/SET_TEST_RPC'
 export const NETWORK_SET_TEST_METAMASK = 'network/SET_TEST_METAMASK'
 export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
+export const NETWORK_SET_NEW_ACCOUNT_CREDENTIALS = 'network/SET_NEW_ACCOUNT_CREDENTIALS'
+export const NETWORK_SET_NEW_MNEMONIC = 'network/SET_NEW_MNEMONIC'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -29,6 +33,48 @@ export const addError = (error) => (dispatch) => {
 
 export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
+}
+
+export const navigateToCreateAccount = () => (dispatch) => {
+  dispatch(push('/create-account'))
+}
+
+export const initConfirmMnemonicPage = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { newAccountMnemonic } = state.get('network')
+
+  if (!newAccountMnemonic){
+    dispatch(navigateToCreateAccount())
+  }
+
+}
+
+export const initMnemonicPage = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { newAccountName, newAccountPassword } = state.get('network')
+
+  const emptyAccountCredentials = !newAccountName || !newAccountPassword
+
+  if (emptyAccountCredentials){
+    dispatch(push('/create-account'))
+  }
+
+  dispatch(generateNewMnemonic())
+}
+
+export const generateNewMnemonic = () => (dispatch) => {
+  const mnemonic = mnemonicProvider.generateMnemonic()
+
+  dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
+}
+
+export const setNewAccountCredentials = (walletName, walletPassword) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
+
+  dispatch(push('/mnemonic'))
+
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

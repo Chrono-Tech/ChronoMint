@@ -5,38 +5,61 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { Button } from 'components'
+import { initConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 
 import './ConfirmMnemonicPage.scss'
 
 const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 
+function mapStateToProps (state, ownProps) {
+
+  return {
+    mnemonic: state.get('network').newAccountMnemonic,
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    navigateToConfirmPage: () => dispatch(push('/confirm-mnemonic')),
+    initConfirmMnemonicPage: () => dispatch(initConfirmMnemonicPage()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_CONFIRM_MNEMONIC })
 export default class ConfirmMnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
+    initConfirmMnemonicPage: PropTypes.func,
   }
 
   static defaultProps = {
-    mnemonic: 'together minute slide illegal mandate recycle claw like real above idea north',
+    mnemonic: '',
   }
 
   constructor (props){
     super(props)
 
-    const wordsArray = props.mnemonic.split(' ').map((word, index) => {
-      return { index, word }
-    })
-
+    const wordsArray = props.mnemonic ?
+      props.mnemonic.split(' ').map((word, index) => {
+        return { index, word }
+      }) : []
 
     this.state = {
       confirmPhrase: [],
       currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
     }
+  }
+
+  componentDidMount(){
+    this.props.initConfirmMnemonicPage()
   }
 
   getCurrentMnemonic (){

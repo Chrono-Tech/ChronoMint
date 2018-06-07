@@ -4,24 +4,52 @@
  */
 
 import PropTypes from 'prop-types'
+import { push } from 'react-router-redux'
+import { connect } from 'react-redux'
 import classnames from 'classnames'
 import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
+import { initMnemonicPage } from '@chronobank/login/redux/network/actions'
 
 import PrintIcon from 'assets/img/icons/print-white.svg'
 
 import './MnemonicPage.scss'
 
+function mapStateToProps (state, ownProps) {
+
+  return {
+    mnemonic: state.get('network').newAccountMnemonic,
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    initMnemonicPage: () => dispatch(initMnemonicPage()),
+    navigateToConfirmPage: () => dispatch(push('/confirm-mnemonic')),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class MnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
+    initMnemonicPage: PropTypes.func,
+    navigateToConfirmPage: PropTypes.func,
   }
 
   static defaultProps = {
     mnemonic: '',
+  }
+
+  componentDidMount(){
+    this.props.initMnemonicPage()
+  }
+
+  navigateToConfirmPage(){
+    this.props.navigateToConfirmPage()
   }
 
   render () {
@@ -69,7 +97,11 @@ export default class MnemonicPage extends Component {
             </div>
 
             <div styleName='actions'>
-              <Button styleName='submit' buttonType='login'>
+              <Button
+                styleName='submit'
+                buttonType='login'
+                onClick={this.navigateToConfirmPage.bind(this)}
+              >
                 Proceed
               </Button>
             </div>

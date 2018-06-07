@@ -11,6 +11,8 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 
 import { Button } from 'components'
+import { setNewAccountCredentials } from '@chronobank/login/redux/network/actions'
+import validate from './validate'
 
 import styles from 'layouts/Splash/styles'
 import fieldStyles from './styles'
@@ -27,13 +29,16 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onSubmit: (values) => {
+      const walletName = values.get('walletName')
+      const password = values.get('password')
 
+      dispatch(setNewAccountCredentials(walletName, password))
     },
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_CREATE_ACCOUNT })
+@reduxForm({ form: FORM_CREATE_ACCOUNT, validate })
 export default class CreateAccountPage extends PureComponent {
   render () {
     const { handleSubmit, pristine, valid, initialValues } = this.props
