@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as a from './action'
+import * as a from './actions'
 import reducer from './reducer'
 
 describe('Market reducer', () => {

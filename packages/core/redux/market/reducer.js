@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as actions from './action'
+import * as actions from './actions'
 
 export const initialState = {
   isInited: false,

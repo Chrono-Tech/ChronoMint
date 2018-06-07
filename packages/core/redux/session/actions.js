@@ -12,7 +12,7 @@ import { push, replace } from '../../utils/router'
 import ls from '../../utils/LocalStorage'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { removeWatchersUserMonitor } from '../ui/actions'
-import { watchStopMarket } from '../market/action'
+import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 
 export const DUCK_SESSION = 'session'
