@@ -14,6 +14,7 @@ import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/netwo
 import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
 
 import './SelectWalletType.scss'
 import { prefix } from '../lang'
@@ -73,6 +74,12 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_NEM,
         symbol: XEM,
         title: `${prefix}.nem`,
+        disabled: true,
+      },
+      {
+	blockchain: BLOCKCHAIN_WAVES,
+        symbol: WAVES,
+        title: `${prefix}.waves`,
         disabled: true,
       },
     ]

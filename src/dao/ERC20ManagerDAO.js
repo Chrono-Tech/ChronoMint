@@ -17,10 +17,12 @@ export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
 export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
 export const PROFILE_PANEL_TOKENS = [
   { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
+  { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
   { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
   { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
+  { symbol: 'WAVES', blockchain: 'WAVES', title: 'WAVES' },
 ]
 
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'

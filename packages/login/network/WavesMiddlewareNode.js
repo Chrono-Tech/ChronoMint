@@ -4,13 +4,12 @@
  */
 
 import BigNumber from 'bignumber.js'
-import waves from 'waves-api'
 import WavesAbstractNode, { WavesBalance, WavesTx } from './WavesAbstractNode'
 
 export default class WavesMiddlewareNode extends WavesAbstractNode {
-  constructor ({ mosaics, ...args }) {
+  constructor ({ assets, ...args }) {
     super(args)
-    this._mosaics = mosaics
+    this._assets = assets
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
@@ -25,20 +24,25 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
       await this._api.post('addr', { address })
       this.executeOrSchedule(() => {
         this._openSubscription(`${this._socket.channels.balance}.${address}`, (data) => {
+          console.log('Waves data is:')
+          console.log(data)
           this.trace('Address Balance', data)
-          const { balance, mosaics } = data
-          this.emit('balance', new NemBalance({
+          const { balance, assets } = data
+          this.emit('balance', new WavesBalance({
             address,
-            balance: readWavesBalance(balance),
-            mosaics: readMosaicsBalances(mosaics),
+            balance: balance,
+            assets: assets,
           }))
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
+          console.log('Waves TXdata is:')
+          console.log(data)
           this.trace('WAVES Tx', data)
           this.emit('tx', createTxModel(data, address))
         })
       })
     } catch (e) {
+      console.log(e)
       this.trace('Address subscription error', e)
     }
   }
@@ -68,18 +72,20 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
     }
   }
 
-  getMosaics () {
-    return this._mosaics
+  getAssets () {
+    return this._assets
   }
 
   async getAddressInfo (address) {
     try {
       const { data } = await this._api.get(`addr/${address}/balance`)
-      const { balance, mosaics } = data
-      return new NemBalance({
+      console.log('Waves data is:')
+      console.log(data)
+      const { balance, assets } = data
+      return new WavesBalance({
         address,
-        balance: readWavesBalance(balance),
-        mosaics: readMosaicsBalances(mosaics),
+        balance: balance,
+        assets: assets,
       })
     } catch (e) {
       this.trace(`getAddressInfo ${address} failed`, e)
@@ -115,41 +121,22 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
   }
 }
 
-function createTxModel (tx, account): NemTx {
-  return new NemTx({
-    txHash: tx.hash,
-    time: new Date(nem.utils.format.nemDate(tx.timeStamp)).getTime() / 1000, // TODO @ipavlenko: Fix tx.time = 0 on the Middleware
-    from: tx.sender,
-    signer: tx.signer,
-    to: tx.recipient,
-    value: new BigNumber(tx.amount || 0),
-    fee: new BigNumber(tx.fee),
-    credited: tx.recipient === account,
-    mosaics: !(tx.mosaics && tx.mosaics.length)
-      ? null
-      : tx.mosaics.reduce((t, m) => ({
-        ...t,
-        [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
-      }), {}),
-    unconfirmed: tx.unconfirmed || false,
+function createTxModel (tx, account): WavesTx {
+  return new WavesTx({
+    type: tx.type,
+    id: tx.id,
+    sender: tx.sender,
+    signerPublicKey: tx.signerPublicKey,
+    fee: tx.fee,
+    timestamp: tx.timestamp,
+    signature: tx.signature,
+    recipient: tx.recipient === account,
+    assetId: tx.assetId,
+    amount: tx.amount,
+    feeAsset: tx.feeAsset,
+    attachment: tx.attachment,
+    blockNumber: tx.blockNumber,
+    hash: tx.hash,
+    address: tx.address,
   })
-}
-
-function readWavesBalance (balance) {
-  const { confirmed, unconfirmed, vested } = balance
-  return {
-    confirmed: confirmed.value == null ? null : new BigNumber(confirmed.value),
-    unconfirmed: unconfirmed.value == null ? null : new BigNumber(unconfirmed.value),
-    vested: vested.value == null ? null : new BigNumber(vested.value),
-  }
-}
-
-function readMosaicsBalances (mosaics) {
-  return Object.entries(mosaics || {}).reduce((t, [k, v]) => ({
-    ...t,
-    [k]: {
-      confirmed: v.confirmed == null ? null : new BigNumber(v.confirmed.value),
-      unconfirmed: v.unconfirmed == null ? null : new BigNumber(v.unconfirmed.value),
-    },
-  }), {})
 }

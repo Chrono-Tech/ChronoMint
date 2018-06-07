@@ -14,12 +14,14 @@ import {
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from 'dao/NemDAO'
+import WavesDAO, { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from 'dao/WavesDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
 import type TransferExecModel from 'models/TransferExecModel'
@@ -109,6 +111,7 @@ export const initTokens = () => async (dispatch, getState) => {
 
   dispatch(initBtcLikeTokens())
   dispatch(initNemTokens())
+  dispatch(initWavesTokens())
   dispatch(watchLatestBlock())
 }
 
@@ -163,6 +166,48 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
           dispatch({ type: TOKENS_FETCHED, token })
           dispatch(alternateTxHandlingFlow(dao))
         } catch (e) {
+          dispatch({ type: TOKENS_FAILED })
+        }
+      }),
+  )
+}
+
+export const initWavesTokens = () => async (dispatch, getState) => {
+  try {
+    console.log('Init Waves')
+    const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+    dispatch({ type: TOKENS_FETCHING, count: currentCount + 1 })
+    const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
+    console.log('Waves DAO is: ')
+    console.log(dao)
+    const waves = await dao.fetchToken()
+    tokenService.registerDAO(waves, dao)
+    dispatch({ type: TOKENS_FETCHED, token: waves })
+    dispatch(alternateTxHandlingFlow(dao))
+    dispatch(initWavesAssetTokens(waves))
+  } catch (e) {
+    console.log(e)
+    dispatch({ type: TOKENS_FAILED })
+  }
+}
+
+export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
+
+  const assets = wavesProvider.getAssets()
+  const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+  dispatch({ type: TOKENS_FETCHING, count: currentCount + assets.length })
+  // do not wait until initialized, it is ok to lazy load all the tokens
+  return Promise.all(
+    assets
+      .map((m) => new WavesDAO(m.name, m.symbol, wavesProvider, m.decimals, assets))
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch({ type: TOKENS_FETCHED, token })
+          dispatch(alternateTxHandlingFlow(dao))
+        } catch (e) {
+          console.log(e)
           dispatch({ type: TOKENS_FAILED })
         }
       }),

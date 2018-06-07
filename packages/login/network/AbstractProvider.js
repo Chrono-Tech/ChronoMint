@@ -6,6 +6,7 @@
 import EventEmitter from 'events'
 import type { BitcoinEngine } from './BitcoinEngine'
 import type { NemEngine } from './NemEngine'
+import type { WavesEngine } from './WavesEngine'
 
 export default class AbstractProvider extends EventEmitter {
   constructor (selectNode) {
@@ -26,7 +27,7 @@ export default class AbstractProvider extends EventEmitter {
 
   }
 
-  setEngine (engine: NemEngine | BitcoinEngine) {
+  setEngine (engine: NemEngine | BitcoinEngine | WavesEngine) {
     if (this._engine != null) {
       this.unsubscribe(this._engine)
       this._engine = null
@@ -35,13 +36,13 @@ export default class AbstractProvider extends EventEmitter {
     this.subscribe(this._engine)
   }
 
-  subscribe (engine: NemEngine | BitcoinEngine) {
+  subscribe (engine: NemEngine | BitcoinEngine | WavesEngine) {
     const node = this._selectNode(engine)
     node.emit('subscribe', engine.getAddress())
     return node
   }
 
-  unsubscribe (engine: NemEngine | BitcoinEngine) {
+  unsubscribe (engine: NemEngine | BitcoinEngine | WavesEngine) {
     const node = this._selectNode(engine)
     node.emit('unsubscribe', engine.getAddress())
     return node

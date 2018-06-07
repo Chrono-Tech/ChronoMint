@@ -4,14 +4,14 @@
  */
 
 import type BigNumber from 'bignumber.js'
-import waves from 'waves-api'
-
-export const DECIMALS = 1000000
+import * as WavesAPI from '@waves/waves-api'
 
 export class WavesEngine {
   constructor (wallet, network) {
     this._wallet = wallet
     this._network = network
+    this._Waves = WavesAPI.create(network)
+    this._Transactions = this._Waves.Transactions
   }
 
   getNetwork () {
@@ -19,6 +19,8 @@ export class WavesEngine {
   }
 
   getAddress () {
+    console.log('Waves get address:')
+    console.log(this._wallet)
     return this._wallet.getAddress()
   }
 
@@ -26,80 +28,72 @@ export class WavesEngine {
     return this._wallet.getPrivateKey()
   }
 
-  // eslint-disable-next-line
-  describeTransaction (to, amount: BigNumber, mosaicDefinition = null) {
-    return mosaicDefinition
-      ? this._describeMosaicTransaction(to, amount, mosaicDefinition)
-      : this._describeWavesTransaction(to, amount)
-    // return { fee: 0.1 * DECIMALS }
-  }
-
-  createTransaction (to, amount: BigNumber, mosaicDefinition = null) {
-    return mosaicDefinition
-      ? this._createMosaicTransaction(to, amount, mosaicDefinition)
-      : this._createWavesTransaction(to, amount)
-  }
-
-  _describeWavesTransaction (to, amount: BigNumber) {
-    const value = amount.div(DECIMALS).toNumber() // NEM-SDK works with Number data type
-    const common = nem.model.objects.get("common")
-    common.privateKey = this._wallet.getPrivateKey()
-    const transferTransaction = nem.model.objects.create("transferTransaction")(
-      to,
-      value,
-      'Tx from ChronoMint',
-    )
-
-    const transactionEntity = nem.model.transactions.prepare("transferTransaction")(common, transferTransaction, this._network.id)
-    return transactionEntity
-  }
-
-  _createWavesTransaction (to, amount: BigNumber) {
-    const transactionEntity = this._describeWavesTransaction(to, amount)
-    const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
-    const signature = this._wallet.sign(serialized)
-    return {
-      tx: {
-        address: this._wallet.getAddress(),
-        data: nem.utils.convert.ua2hex(serialized),
-        signature: signature.toString(),
-      },
-      fee: transactionEntity.fee,
+  describeTransaction (type, params) {
+    switch (type) {
+      case 'ISSUE' :
+        return this._describeIssueTransaction(params)
+      case 'TRANSFER' :
+        return this._describeTransferTransaction(params)
+      default:
+        return null;
     }
   }
 
-  _describeMosaicTransaction (to, amount: BigNumber, mosaicDefinition) {
-    const value = amount.toNumber() // NEM-SDK works with Number data type
-    const common = nem.model.objects.get("common")
-    common.privateKey = this._wallet.getPrivateKey()
-    const transferTransaction = nem.model.objects.create("transferTransaction")(
-      to,
-      1, // works as a multiplier
-      'Tx from ChronoMint',
-    )
 
-    const mosaicAttachment = nem.model.objects.create("mosaicAttachment")(mosaicDefinition.id.namespaceId, mosaicDefinition.id.name, value)
-    transferTransaction.mosaics.push(mosaicAttachment)
+  createTransaction (type, params) {
 
-    const transactionEntity = nem.model.transactions.prepare("mosaicTransferTransaction")(common, transferTransaction, {
-      [ `${mosaicDefinition.id.namespaceId}:${mosaicDefinition.id.name}` ]: {
-        mosaicDefinition,
-      },
-    }, this._network.id)
-    return transactionEntity
+    const data = this.describeTransaction(type, params)
+
+    const transferTransaction = new this._Transactions.TransferTransaction(data);
+
+    const api = transferTransaction.prepareForAPI(keys.privateKey).then((preparedData) => {
+      return preparedData
+    })
+
   }
 
-  _createMosaicTransaction (to, amount: BigNumber, mosaicDefinition) {
-    const transactionEntity = this._describeMosaicTransaction(to, amount, mosaicDefinition)
-    const serialized = nem.utils.serialization.serializeTransaction(transactionEntity)
-    const signature = this._wallet.sign(serialized)
-    return {
-      tx: {
-        address: this._wallet.getAddress(),
-        data: nem.utils.convert.ua2hex(serialized),
-        signature: signature.toString(),
-      },
-      fee: transactionEntity.fee,
+  _describeIssueTransaction (name, description, amount: BigNumber, reissuable = false) {
+    const issueData = {
+
+      name: name,
+      description: description,
+
+      quantity: amount,
+      precision: 5,
+
+      // This flag defines whether additional emission is possible
+      reissuable: reissuable,
+
+      fee: 100000000,
+      timestamp: Date.now()
+
     }
+    return issueData
   }
+
+  _describeTransferTransaction (to, amount: BigNumber, feeRate: Number, asset) {
+    const transferData = {
+
+      // An arbitrary address; mine, in this example
+      recipient: to,
+
+      // ID of a token, or WAVES
+      assetId: asset,
+
+      // The real amount is the given number divided by 10^(precision of the token)
+      amount: amount,
+
+      // The same rules for these two fields
+      feeAssetId: 'WAVES',
+      fee: 100000,
+
+      // 140 bytes of data (it's allowed to use Uint8Array here)
+      attachment: '',
+
+      timestamp: Date.now()
+
+    }
+    return transferData
+  }
+
 }

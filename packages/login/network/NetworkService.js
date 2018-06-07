@@ -26,6 +26,7 @@ import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
+import { wavesProvider } from './WavesProvider'
 import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
 import {
@@ -184,7 +185,7 @@ class NetworkService extends EventEmitter {
     await this.setup(provider)
   }
 
-  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
+  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
     const web3 = new Web3()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
@@ -196,6 +197,7 @@ class NetworkService extends EventEmitter {
     btg && btgProvider.setEngine(btg)
     ltc && ltcProvider.setEngine(ltc)
     nem && nemProvider.setEngine(nem)
+    waves && wavesProvider.setEngine(waves)
   }
 
   selectAccount = (selectedAccount) => {

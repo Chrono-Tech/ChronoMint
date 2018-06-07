@@ -73,6 +73,7 @@ const MAINNET_BASE = {
   bitcoinGold: 'bitcoingold',
   litecoin: 'litecoin',
   nem: 'mainnet',
+  waves: 'MAINNET_CONFIG',
 }
 
 const RINKEBY_BASE = {
@@ -85,6 +86,7 @@ const RINKEBY_BASE = {
   bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'testnet',
+  waves: 'TESTNET_CONFIG',
 }
 
 const LOCALHOST_BASE = {
@@ -149,6 +151,7 @@ export const givethNetworkMap = [
     bitcoinGold: 'bitcoingold',
     litecoin: 'litecoin',
     nem: 'mainnet',
+    waves: 'MAINNET_CONFIG',
     host: `mew.giveth.io`,
   },
 ]
@@ -176,6 +179,7 @@ if (process.env.NODE_ENV === 'development') {
     // bitcoinGold: 'bitcoingold_testnet',
     litecoin: 'litecoin_testnet',
     nem: 'testnet',
+    waves: 'TESTNET_CONFIG',
   })
 }
 
@@ -188,6 +192,7 @@ export const infuraLocalNetwork = {
   // bitcoinGold: 'bitcoingold_testnet',
   litecoin: 'litecoin_testnet',
   nem: 'testnet',
+  waves: 'TESTNET_CONFIG',
 }
 
 export const providerMap = {

@@ -33,27 +33,20 @@ export class WavesProvider extends AbstractProvider {
     return node.getTransactionInfo(txid)
   }
 
-  async getFeeRate () {
+  getAssets () {
     const node = this._selectNode(this._engine)
-    return node.getFeeRate()
-  }
-
-  getMosaics () {
-    const node = this._selectNode(this._engine)
-    return node.getMosaics() || []
+    return node.getAssets() || []
   }
 
   getPrivateKey () {
     return this._engine ? this._engine.getPrivateKey() : null
   }
 
-  async getAccountBalances (mosaic = null) {
+  async getAccountBalances (asset) {
     const node = this._selectNode(this._engine)
-    const { balance, mosaics } = await node.getAddressInfo(this._engine.getAddress())
-    if (mosaic) {
-      return (mosaics && (mosaic in mosaics))
-        ? mosaics[mosaic]
-        : { confirmed: new BigNumber(0) } // When no such mosaic specified
+    const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
+    if (assets) {
+      return assets[asset]
     }
     return balance
   }
@@ -63,20 +56,14 @@ export class WavesProvider extends AbstractProvider {
     return node.getTransactionsList(address, id, skip, offset)
   }
 
-  async estimateFee (from: string, to, amount: BigNumber, mosaicDefinition) {
-    const { fee } = this._engine.describeTransaction(to, amount, mosaicDefinition)
-    return fee
-  }
-
   // eslint-disable-next-line
-  async transfer (from: string, to: string, amount: BigNumber, mosaicDefinition, feeMultiplier: Number) {
-    // TODO @ipavlenko: Implement for XEM and Mosaics
+  async transfer (from: string, to: string, amount: BigNumber, asset) {
     const node = this._selectNode(this._engine)
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, mosaicDefinition)
+    const { tx /*, fee*/ } = this._engine.createTransaction('TRANSFER', {to:to, amount:amount, asset:asset})
     return node.send(from, tx)
   }
 
-  async onTransaction (tx: NemTx) {
+  async onTransaction (tx: WavesTx) {
     this.emit('tx', {
       account: this.getAddress(),
       time: new Date().getTime(),
@@ -84,7 +71,7 @@ export class WavesProvider extends AbstractProvider {
     })
   }
 
-  async onBalance (balance: NemBalance) {
+  async onBalance (balance: WavesBalance) {
     this.emit('balance', {
       account: this.getAddress(),
       time: new Date().getTime(),

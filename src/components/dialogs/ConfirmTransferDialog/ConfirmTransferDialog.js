@@ -15,6 +15,7 @@ import BalanceModel from 'models/tokens/BalanceModel'
 import TransferExecModel from 'models/TransferExecModel'
 import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
+import WavesDAO from 'dao/WavesDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
@@ -53,6 +54,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     dao: PropTypes.oneOfType([
       PropTypes.instanceOf(BitcoinDAO),
       PropTypes.instanceOf(NemDAO),
+      PropTypes.instanceOf(WavesDAO),
     ]),
     amountBalance: PropTypes.instanceOf(BalanceModel),
     feeBalance: PropTypes.instanceOf(BalanceModel),
