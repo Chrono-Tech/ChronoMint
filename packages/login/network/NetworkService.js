@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
+import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import {
