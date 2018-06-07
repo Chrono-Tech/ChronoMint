@@ -15,7 +15,7 @@ import {
 } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
-import { history } from '../configureStore' // @TODO: core
+import { pop } from '../../utils/router' // @TODO: core
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { push } from '../../utils/router'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
@@ -98,7 +98,7 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
     dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
     return
   }
-  history.goBack()
+  pop()
 }
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
