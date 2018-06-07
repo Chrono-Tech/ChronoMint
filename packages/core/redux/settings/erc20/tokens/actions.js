@@ -17,7 +17,7 @@ import { TOKENS_FETCHED, TOKENS_REMOVE, TOKENS_UPDATE } from '../../../tokens/ac
 import tokenService from '../../../../services/TokenService'
 import Amount from '../../../../models/Amount'
 import ERC20DAO from '../../../../dao/ERC20DAO'
-import { FORM_CBE_TOKEN } from '../../../../components/dialogs/CBETokenDialog/CBETokenDialog'
+import { FORM_CBE_TOKEN } from '@chronobank/core-dependencies/constants'
 
 export const DUCK_SETTINGS_ERC20_TOKENS = 'settingsERC20Tokens'
 
