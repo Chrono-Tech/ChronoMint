@@ -60,13 +60,14 @@ export const FORM_RECEIVE_TOKENS = 'FormReceiveTokens'
 function mapStateToProps (state, ownProps) {
   const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
   const selector = formValueSelector(FORM_RECEIVE_TOKENS)
+  const tokens = getTokensForBlockchain(ownProps.blockchain)(state)
 
   return {
     token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
-    tokens: getTokensForBlockchain(ownProps.blockchain)(state),
+    tokens,
     address: wallet.addresses().item(ownProps.blockchain).address(),
     initialValues: {
-      tokenId: ownProps.tokenId || ownProps.tokens[0].id(),
+      tokenId: ownProps.tokenId || tokens[0].id(),
     },
   }
 }
