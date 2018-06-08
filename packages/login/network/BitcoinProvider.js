@@ -20,6 +20,7 @@ export class BitcoinProvider extends AbstractProvider {
     super(...arguments)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
+    this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
     this._id = id
   }
 
@@ -32,12 +33,14 @@ export class BitcoinProvider extends AbstractProvider {
     const node = super.subscribe(engine)
     node.addListener('tx', this._handleTransaction)
     node.addListener('balance', this._handleBalance)
+    node.addListener('lastBlock', this._handleLastBlock)
   }
 
   unsubscribe (engine) {
     const node = super.unsubscribe(engine)
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
+    node.removeListener('lastBlock', this._handleLastBlock)
   }
 
   async getTransactionInfo (txid) {
@@ -93,6 +96,10 @@ export class BitcoinProvider extends AbstractProvider {
       time: new Date().getTime(),
       balance,
     })
+  }
+
+  async onLastBlock (lastBlock) {
+    this.emit('lastBlock', { ...lastBlock })
   }
 
   getPrivateKey () {

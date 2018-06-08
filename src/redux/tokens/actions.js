@@ -30,6 +30,7 @@ import { showConfirmTransferModal } from 'redux/ui/actions'
 import { EVENT_NEW_BLOCK } from 'dao/AbstractContractDAO'
 import Amount from 'models/Amount'
 import { ETH } from 'redux/mainWallet/actions'
+import { EVENT_UPDATE_LAST_BLOCK } from 'dao/AbstractTokenDAO'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -121,6 +122,8 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
+          dao.on(EVENT_UPDATE_LAST_BLOCK, (block) => dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...block }))
+          await dao.watchLastBlock()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })

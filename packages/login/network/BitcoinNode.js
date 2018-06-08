@@ -8,11 +8,20 @@ import { networks } from 'bitcoinjs-lib'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
 
-const BTC_MAINNET_NODE = new BitcoinBlockexplorerNode({
+const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
+  socket: {
+    baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
+    user: 'rabbitmq_user',
+    password: '38309100024',
+    channels: {
+      balance: '/exchange/events/mainnet-bitcoin-middleware-chronobank-io_balance',
+      block: '/exchange/events/mainnet-bitcoin-middleware-chronobank-io_block',
+    },
+  },
   trace: false,
 })
 
@@ -28,6 +37,7 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_balance',
+      block: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_block',
     },
   },
   trace: true,
@@ -77,6 +87,7 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/mainnet-litecoin-middleware-chronobank-io_balance',
+      block: '/exchange/events/mainnet-litecoin-middleware-chronobank-io_block',
     },
   },
   trace: true,
@@ -94,6 +105,7 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     password: '38309100024',
     channels: {
       balance: '/exchange/events/testnet-litecoin-middleware-chronobank-io_balance',
+      block: '/exchange/events/testnet-litecoin-middleware-chronobank-io_block',
     },
   },
   trace: false,

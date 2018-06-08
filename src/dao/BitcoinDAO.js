@@ -20,10 +20,11 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
+const EVENT_LAST_BLOCK = 'lastBlock'
 
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
@@ -179,6 +180,15 @@ export default class BitcoinDAO extends EventEmitter {
   async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
       this.emit(EVENT_UPDATE_BALANCE, { account, time, balance: balance.balance0 })
+    })
+  }
+
+  async watchLastBlock () {
+    this._bitcoinProvider.addListener(EVENT_LAST_BLOCK, async ({ block }) => {
+      this.emit(EVENT_UPDATE_LAST_BLOCK, {
+        blockchain: this._name,
+        block: { blockNumber: block },
+      })
     })
   }
 
