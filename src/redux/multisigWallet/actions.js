@@ -229,15 +229,19 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
     if (wallet.isDerived()) {
       switch (wallet.blockchain()) {
         case BLOCKCHAIN_BITCOIN:
+          btcProvider.createNewChildAddress(wallet.deriveNumber())
           btcProvider.subscribeNewWallet(wallet.address())
           break
         case BLOCKCHAIN_BITCOIN_CASH:
+          bccProvider.createNewChildAddress(wallet.deriveNumber())
           bccProvider.subscribeNewWallet(wallet.address())
           break
         case BLOCKCHAIN_BITCOIN_GOLD:
+          btgProvider.createNewChildAddress(wallet.deriveNumber())
           btgProvider.subscribeNewWallet(wallet.address())
           break
         case BLOCKCHAIN_LITECOIN:
+          ltcProvider.createNewChildAddress(wallet.deriveNumber())
           ltcProvider.subscribeNewWallet(wallet.address())
           break
         default:

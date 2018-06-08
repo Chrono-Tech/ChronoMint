@@ -11,8 +11,11 @@ export const DECIMALS = 100000000
 
 export class BitcoinEngine {
   constructor (wallet, network) {
-    this._wallet = wallet
+    this._wallet = wallet // main wallet as fallback
     this._network = network
+    this._walletsMap = {
+      [wallet.getAddress()]: wallet,
+    }
   }
 
   getNetwork () {
@@ -28,9 +31,13 @@ export class BitcoinEngine {
   }
 
   createNewChildAddress (deriveNumber = 0, coinType) {
-    return bitcoin.HDNode
+    const wallet = bitcoin.HDNode
       .fromSeedBuffer(this._wallet.keyPair.d.toBuffer(), this._network)
       .derivePath(`m/44'/${coinType}'/0'/0/${deriveNumber}`)
+
+    this._walletsMap[wallet.getAddress()] = wallet
+
+    return wallet
   }
 
   isAddressValid (address) {
@@ -53,7 +60,7 @@ export class BitcoinEngine {
     const { inputs, outputs, fee } = coinselect(utxos.map((output) => ({
       txId: output.txid,
       vout: output.vout,
-      value: Number.parseFloat(output.satoshis),
+      value: Number.parseInt(output.satoshis),
     })), targets, Math.ceil(feeRate))
     return { inputs, outputs, fee }
   }
@@ -63,7 +70,8 @@ export class BitcoinEngine {
    * @param to Destination address
    * @param amount BTC amount in BTC with decimals
    */
-  createTransaction (from, to, amount: BigNumber, feeRate, utxos, wallet) {
+  createTransaction (to, amount: BigNumber, utxos, options) {
+    const { from, feeRate } = options
     const { inputs, outputs, fee } = this.describeTransaction(to, amount, feeRate, utxos)
 
     if (!inputs || !outputs) throw new Error('Bad transaction data')
@@ -87,7 +95,7 @@ export class BitcoinEngine {
       txb.addOutput(output.address, output.value)
     }
 
-    this._signInputs(txb, inputs, wallet)
+    this._signInputs(txb, inputs, options)
 
     return {
       tx: txb.build(),
@@ -97,9 +105,10 @@ export class BitcoinEngine {
 }
 
 export class BTCEngine extends BitcoinEngine {
-  _signInputs (txb, inputs, wallet) {
+  _signInputs (txb, inputs, options) {
+    const wallet = this._walletsMap[options.from] || this._wallet
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, (wallet || this._wallet).keyPair)
+      txb.sign(i, wallet.keyPair)
     }
   }
 }
@@ -108,27 +117,29 @@ export class LTCEngine extends BTCEngine {
 }
 
 export class BTGEngine extends BitcoinEngine {
-  _signInputs (txb, inputs) {
+  _signInputs (txb, inputs, options) {
     txb.enableBitcoinGold(true)
     txb.setVersion(2)
 
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+    const wallet = this._walletsMap[options.from] || this._wallet
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[i].value)
+      txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
     }
   }
 }
 
 export class BCCEngine extends BitcoinEngine {
-  _signInputs (txb, inputs) {
+  _signInputs (txb, inputs, options) {
     txb.enableBitcoinCash(true)
     txb.setVersion(2)
 
     const hashType = bitcoin.Transaction.SIGHASH_ALL | bitcoin.Transaction.SIGHASH_BITCOINCASHBIP143
+    const wallet = this._walletsMap[options.from] || this._wallet
 
     for (let i = 0; i < inputs.length; i++) {
-      txb.sign(i, this._wallet.keyPair, null, hashType, inputs[i].value)
+      txb.sign(i, wallet.keyPair, null, hashType, inputs[i].value)
     }
   }
 }

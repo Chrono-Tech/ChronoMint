@@ -54,8 +54,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             }
           },
         )
-        if (!this._subscriptions[`lasBlock`]) {
-          this._subscriptions[`lasBlock`] = this._client.subscribe(
+        if (!this._subscriptions[`lastBlock`]) {
+          this._subscriptions[`lastBlock`] = this._client.subscribe(
             `${this._socket.channels.block}`,
             (message) => {
               try {

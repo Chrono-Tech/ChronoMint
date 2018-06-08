@@ -29,6 +29,10 @@ export class BitcoinProvider extends AbstractProvider {
     node.subscribeNewWallet(address)
   }
 
+  addDerivedWallet (wallet) {
+    this._engine.addWallet(wallet)
+  }
+
   subscribe (engine) {
     const node = super.subscribe(engine)
     node.addListener('tx', this._handleTransaction)
@@ -71,14 +75,14 @@ export class BitcoinProvider extends AbstractProvider {
     return fee
   }
 
-  async transfer (from: string, to, amount: BigNumber, feeRate: Number, deriveNumber = null) {
+  async transfer (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
     const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
-    let wallet
-    if (deriveNumber !== null) {
-      wallet = this.createNewChildAddress(deriveNumber)
+    const options = {
+      from,
+      feeRate,
     }
-    const { tx /*, fee*/ } = this._engine.createTransaction(from, to, amount, feeRate, utxos, wallet)
+    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
     return node.send(from, tx.toHex())
   }
 
