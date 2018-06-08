@@ -12,23 +12,32 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { Button } from 'components'
-import { initConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
+import {
+  initConfirmMnemonicPage,
+  navigateToConfirmMnemonicPage,
+  onSubmitConfirmMnemonic,
+  onSubmitConfirmMnemonicSuccess,
+  onSubmitConfirmMnemonicFail,
+} from '@chronobank/login/redux/network/actions'
 
 import './ConfirmMnemonicPage.scss'
 
-const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
+export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
 
   return {
     mnemonic: state.get('network').newAccountMnemonic,
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
-    navigateToConfirmPage: () => dispatch(push('/confirm-mnemonic')),
+    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
     initConfirmMnemonicPage: () => dispatch(initConfirmMnemonicPage()),
+    onSubmit: (values) => dispatch(onSubmitConfirmMnemonic(values)),
+    onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
+    onSubmitFail: () => dispatch(onSubmitConfirmMnemonicFail()),
   }
 }
 
@@ -71,13 +80,14 @@ export default class ConfirmMnemonicPage extends Component {
       const wordSelected = this.state.confirmPhrase.includes(item)
 
       return (
-        <div
+        <Button
           key={index}
           onClick={this.onClickWord.bind(this, item)}
-          styleName={classnames('word', wordSelected ? 'wordInactive' : '')}
+          styleName={classnames('word')}
+          disabled={wordSelected}
         >
           { item.word }
-        </div>
+        </Button>
       )}
     )
   }
@@ -88,7 +98,7 @@ export default class ConfirmMnemonicPage extends Component {
     if (!this.state.confirmPhrase.includes(word)) {
       this.setState(
         { confirmPhrase: this.state.confirmPhrase.concat(word) },
-        () => dispatch(change('mnemonic', this.getCurrentMnemonic()))
+        () => change('mnemonic', this.getCurrentMnemonic())
       )
     }
   }
@@ -98,7 +108,7 @@ export default class ConfirmMnemonicPage extends Component {
 
     this.setState(
       { confirmPhrase: [] },
-      () => dispatch(change('mnemonic', this.getCurrentMnemonic()))
+      () => change('mnemonic', this.getCurrentMnemonic())
     )
   }
 
@@ -107,12 +117,13 @@ export default class ConfirmMnemonicPage extends Component {
 
     this.setState(
       { confirmPhrase: this.state.confirmPhrase.slice(0, -1) },
-      () => dispatch(change('mnemonic', this.getCurrentMnemonic()))
+      () => change('mnemonic', this.getCurrentMnemonic())
     )
   }
 
   render () {
     const { handleSubmit } = this.props
+    console.log('confirm mnemonic page', this.props)
 
     return (
       <MuiThemeProvider>
@@ -125,7 +136,6 @@ export default class ConfirmMnemonicPage extends Component {
             <div styleName='passPhraseWrapper'>
               <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
               <Field
-                styleName='passPhrase'
                 component='input'
                 type='hidden'
                 name='mnemonic'
@@ -144,11 +154,11 @@ export default class ConfirmMnemonicPage extends Component {
             </div>
 
             <div styleName='actions'>
-              <Button styleName='submit' buttonType='login'>
+              <Button styleName='submit' type='submit' buttonType='login'>
                 Done
               </Button>
 
-              <Link to='/' href styleName='link'>Back</Link>
+              <Link to='/mnemonic' href styleName='link'>Back</Link>
             </div>
 
             <div styleName='progressBlock'>

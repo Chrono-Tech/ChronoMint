@@ -50,18 +50,23 @@
 }
 
 .word {
-  white-space: nowrap;
   width: 23%;
   margin-bottom: 10px;
-  cursor: pointer;
-  user-select: none;
-  color: #FFFFFF;
-  background-color: #614DBA;
-  text-transform: lowercase;
-  line-height: 62px;
-  border-radius: 2px;
-  font-size: 16px;
-  font-weight: 700;
+
+  button {
+    white-space: nowrap;
+    width: 100%;
+    cursor: pointer;
+    user-select: none;
+    color: #FFFFFF;
+    background-color: #614DBA;
+    text-transform: lowercase;
+    line-height: 62px;
+    border-radius: 2px;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 0;
+  }
 
   &:hover {
     background-color: $button-color-2;
@@ -70,14 +75,6 @@
 
   @include md-only {
     width: 31%;
-  }
-}
-
-.wordInactive {
-  background: #E5E5E5;
-
-  &:hover {
-    background: #E5E5E5;
   }
 }
 
@@ -171,11 +168,12 @@
 
 .form {
   text-align: center;
-  max-width: 600px;
+  width: 600px;
   margin: 0 auto;
   color: #fff;
 
   @include md-only {
+    width: auto;
     padding: 0 20px;
   }
 }

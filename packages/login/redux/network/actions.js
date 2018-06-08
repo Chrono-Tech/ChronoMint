@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { FORM_CONFIRM_MNEMONIC } from 'pages'
+import { stopSubmit } from 'redux-form'
 import { push } from 'react-router-redux'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
@@ -39,6 +41,10 @@ export const navigateToCreateAccount = () => (dispatch) => {
   dispatch(push('/create-account'))
 }
 
+export const navigateToConfirmMnemonicPage = () => (dispatch) => {
+  dispatch(push('/confirm-mnemonic'))
+}
+
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
   const state = getState()
 
@@ -60,8 +66,6 @@ export const initMnemonicPage = () => (dispatch, getState) => {
   if (emptyAccountCredentials){
     dispatch(push('/create-account'))
   }
-
-  dispatch(generateNewMnemonic())
 }
 
 export const generateNewMnemonic = () => (dispatch) => {
@@ -73,8 +77,29 @@ export const generateNewMnemonic = () => (dispatch) => {
 export const setNewAccountCredentials = (walletName, walletPassword) => (dispatch) => {
   dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
 
+  dispatch(generateNewMnemonic())
+
   dispatch(push('/mnemonic'))
 
+}
+
+export const onSubmitConfirmMnemonicSuccess = () => (dispatch) => {
+  dispatch(push('/'))
+}
+
+export const onSubmitConfirmMnemonicFail = () => (dispatch) => {
+  dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, { key: 'Wrong confirm phrase' }))
+}
+
+export const onSubmitConfirmMnemonic = (values) => (dispatch, getState) => {
+  const state = getState()
+
+  const confirmMnemonic = values.get('mnemonic')
+  const { newAccountMnemonic } = state.get('network')
+
+  if (confirmMnemonic !== newAccountMnemonic){
+    throw new Error('Please enter correct mnemonic phrase')
+  }
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
