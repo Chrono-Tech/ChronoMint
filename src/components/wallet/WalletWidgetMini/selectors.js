@@ -17,30 +17,10 @@ export const selectWallet = (blockchain, address) => createSelector(
     getMainWallet,
     getMultisigWallets,
   ],
-  (mainWallet: MainWalletModel, multisigWallets: MultisigWalletCollection): any[] => {
-
+  (mainWallet: MainWalletModel, multisigWallets: MultisigWalletCollection) => {
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
     const multisigWallet = multisigWallets.item(address)
-    if (multisigWallet) {
-      const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
-      return {
-        address,
-        blockchain,
-        name: multisigWallet.name(),
-        requiredSignatures: multisigWallet.requiredSignatures && multisigWallet.requiredSignatures(),
-        pendingCount: multisigWallet.pendingCount && multisigWallet.pendingCount(),
-        isMultisig: multisigWallet.isMultisig(),
-        isTimeLocked: multisigWallet.isTimeLocked(),
-        owners: multisigWallet.owners ? multisigWallet.owners().items().map((owner: OwnerModel) => owner.address()) : null,
-        is2FA: multisigWallet.is2FA(),
-        isDerived: multisigWallet.isDerived(),
-        customTokens: multisigWallet.customTokens ? multisigWallet.customTokens() : null,
-        releaseTime: multisigWallet.releaseTime ? multisigWallet.releaseTime() : null,
-        amount: balance.amount(),
-        isMain: false,
-      }
-    }
-    else {
+    if (!multisigWallet) {
       const balance: BalanceModel = mainWallet.balances().item(mainSymbol)
       return {
         address,
@@ -58,6 +38,23 @@ export const selectWallet = (blockchain, address) => createSelector(
         amount: balance.amount(),
         isMain: true,
       }
+    }
+    const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
+    return {
+      address,
+      blockchain,
+      name: multisigWallet.name(),
+      requiredSignatures: multisigWallet.requiredSignatures && multisigWallet.requiredSignatures(),
+      pendingCount: multisigWallet.pendingCount && multisigWallet.pendingCount(),
+      isMultisig: multisigWallet.isMultisig(),
+      isTimeLocked: multisigWallet.isTimeLocked(),
+      owners: multisigWallet.owners ? multisigWallet.owners().items().map((owner: OwnerModel) => owner.address()) : null,
+      is2FA: multisigWallet.is2FA(),
+      isDerived: multisigWallet.isDerived(),
+      customTokens: multisigWallet.customTokens ? multisigWallet.customTokens() : null,
+      releaseTime: multisigWallet.releaseTime ? multisigWallet.releaseTime() : null,
+      amount: balance.amount(),
+      isMain: false,
     }
   },
 )

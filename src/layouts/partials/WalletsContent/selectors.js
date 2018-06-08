@@ -15,7 +15,7 @@ export const selectMainWalletsList = createSelector(
   [
     getMainWallet,
   ],
-  (mainWallet: MainWalletModel): any[] => {
+  (mainWallet: MainWalletModel) => {
     return mainWallet
       .addresses()
       .items()
@@ -41,7 +41,7 @@ export const selectMultisigWalletsList = createSelector(
   [
     getMultisigWallets,
   ],
-  (MultisigWallets: MultisigWalletCollection): any[] =>
+  (MultisigWallets: MultisigWalletCollection) =>
     MultisigWallets
       .items()
       .map((wallet: MultisigWalletModel) => {

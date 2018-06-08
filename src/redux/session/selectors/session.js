@@ -4,12 +4,12 @@
  */
 
 import { createSelector } from 'reselect'
-import MainWalletModel from 'models/wallet/MainWalletModel'
 import { PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
 import { rebuildProfileTokens } from 'redux/session/actions'
-import { getMainWallet } from 'redux/wallet/selectors'
+import { selectMainWalletAddressesListStore } from 'redux/wallet/selectors'
 import { getTokens } from 'redux/tokens/selectors'
 import { getGasSliderCollection, getProfile } from 'redux/session/selectors/models'
+import AddressModel from 'models/wallet/AddressModel'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {
@@ -18,14 +18,13 @@ export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSlide
 )
 
 export const getAddressesList = () => createSelector(
-  [getMainWallet],
-  (mainWallet: MainWalletModel) => {
-    const addressesInWallet = mainWallet.addresses().list().toObject()
-    let result = {}
-    Object.keys(addressesInWallet).map((blockchain) => {
-      result[blockchain] = addressesInWallet[blockchain].address()
-    })
-    return result
+  [selectMainWalletAddressesListStore],
+  (addressesInWallet: Array<AddressModel>) => {
+    return addressesInWallet
+      .reduce((accumulator, address: AddressModel, blockchain: string) => {
+        accumulator[blockchain] = address.address()
+        return accumulator
+      }, {})
   },
 )
 

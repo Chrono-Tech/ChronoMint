@@ -30,7 +30,7 @@ export const filteredBalancesAndTokens = (address, symbol: string) => createSele
   },
 )
 
-export const balanceCalculator = (address: string, symbol: string) => createSelector(
+const balanceCalculator = (address: string, symbol: string) => createSelector(
   [
     multisigTokensAndAmountsSelector(address, symbol),
     selectMarketPricesSelectedCurrencyStore,

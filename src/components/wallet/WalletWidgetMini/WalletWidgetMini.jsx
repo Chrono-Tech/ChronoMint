@@ -23,6 +23,7 @@ import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import { getWalletInfo } from './selectors'
 import WalletWidgetMiniUsdAmount from './WalletWidgetMiniUsdAmount'
 import WalletTokensCount from './WalletTokensCount'
+import WalletName from '../WalletName/WalletName'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
@@ -82,47 +83,8 @@ export default class WalletWidgetMini extends PureComponent {
     this.props.selectWallet(blockchain, address)
   }
 
-  getWalletName = () => {
-    const { wallet } = this.props
-    const name = wallet.name
-    if (name) {
-      return name
-    }
-
-    let key = null
-    if (this.isMy2FAWallet()) {
-      key = 'twoFAWallet'
-    } else if (this.isMySharedWallet()) {
-      key = 'sharedWallet'
-    } else if (this.isLockedWallet()) {
-      key = 'lockedWallet'
-    } else if (wallet.isDerived) {
-      if (wallet.customTokens) {
-        key = 'customWallet'
-      } else {
-        key = 'additionalStandardWallet'
-      }
-    } else {
-      key = 'standardWallet'
-    }
-
-    return <Translate value={`${prefix}.${key}`} />
-  }
-
-  isMySharedWallet = () => {
-    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
-  }
-
-  isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.is2FA
-  }
-
-  isLockedWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
-  }
-
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle} = this.props
+    const { address, token, blockchain, wallet, showGroupTitle } = this.props
 
     return (
       <div styleName='container'>
@@ -139,7 +101,7 @@ export default class WalletWidgetMini extends PureComponent {
               <div styleName='content-container'>
                 <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
                   <div styleName='address-title'>
-                    <div>{this.getWalletName()}</div>
+                    <div><WalletName wallet={wallet} /></div>
                     <span styleName='address-address'>{address}</span>
                   </div>
                 </Link>

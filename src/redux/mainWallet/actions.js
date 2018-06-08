@@ -47,6 +47,7 @@ import AddressesCollection from 'models/wallet/AddressesCollection'
 import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors/models'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -138,7 +139,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
-        const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
+        const walletFrom = getMultisigWallets(getState()).item(tx.from())
         const callback = async (wallet: DerivedWalletModel) => {
 
           dispatch({ type: MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
@@ -158,7 +159,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         if (walletFrom && walletFrom.isFetched()) {
           callback(walletFrom)
         }
-        const walletTo = getState().get(DUCK_MULTISIG_WALLET).item(tx.to())
+        const walletTo = getMultisigWallets(getState()).item(tx.to())
         if (walletTo && walletTo.isFetched()) {
           callback(walletTo)
         }
@@ -243,7 +244,7 @@ export const initMainWallet = () => async (dispatch, getState) => {
 
 export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
   try {
-    const sendWallet = wallet || getState().get(DUCK_MAIN_WALLET)
+    const sendWallet = wallet || getMainWallet(getState())
     const tokenDAO = tokenService.getDAO(token.id())
     await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, additionalOptions)
   } catch (e) {
@@ -252,7 +253,7 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
 }
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
-  const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
+  const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
@@ -264,7 +265,7 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
 }
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
-  const allowance = getState().get(DUCK_MAIN_WALLET).allowances().item(spender, token.id())
+  const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
@@ -304,7 +305,7 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   const tokens = getState().get(DUCK_TOKENS).items()
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
-  const wallet = getState().get(DUCK_MAIN_WALLET)
+  const wallet = getMainWallet(getState())
   let transactions: TransactionsCollection = wallet.transactions()
   const offset = transactions.offset() || 0
   const newOffset = offset + TXS_PER_PAGE
@@ -402,7 +403,7 @@ const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<stri
 
 export const createNewChildAddress = ({ blockchain, tokens, name }) => async (dispatch, getState) => {
   const account = getState().get(DUCK_SESSION).account
-  const wallets = getState().get(DUCK_MULTISIG_WALLET)
+  const wallets = getMultisigWallets(getState())
   let ownersCollection = new OwnerCollection()
   ownersCollection = ownersCollection.update(new OwnerModel({
     address: account,
@@ -474,11 +475,11 @@ export const resetWalletsForm = () => (dispatch) => {
 
 export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockchain }) => async (dispatch, getState) => {
   let walletModel
-  const multisigCollection = getState().get(DUCK_MULTISIG_WALLET)
+  const multisigCollection = getMultisigWallets(getState())
   if (multisigCollection.item(wallet.address)) {
     walletModel = multisigCollection.item(wallet.address)
   } else {
-    walletModel = getState().get(DUCK_MAIN_WALLET)
+    walletModel = getMainWallet(getState())
   }
   return dispatch(getTransactionsForWallet({ wallet: walletModel, address, blockchain }))
 }

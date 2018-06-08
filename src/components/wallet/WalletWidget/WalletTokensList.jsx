@@ -11,6 +11,7 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { integerWithDelimiter } from 'utils/formatter'
+import { getMarket } from 'redux/market/selectors'
 import { mainWalletTokenBalanceSelector } from 'redux/mainWallet/selectors'
 import { multisigWalletTokenBalanceSelector } from 'redux/multisigWallet/selectors'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
@@ -28,7 +29,9 @@ function makeMapStateToProps (state, props) {
     getAmount = multisigWalletTokenBalanceSelector(wallet.address)
   }
   const mapStateToProps = (ownState) => {
+    const { selectedCurrency } = getMarket(state)
     return {
+      selectedCurrency,
       tokensBalances: getAmount(ownState),
       tokens: ownState.get(DUCK_TOKENS),
     }
@@ -39,6 +42,7 @@ function makeMapStateToProps (state, props) {
 @connect(makeMapStateToProps)
 export default class WalletTokensList extends PureComponent {
   static propTypes = {
+    selectedCurrency: PropTypes.string,
     tokens: PropTypes.instanceOf(TokensCollection),
     tokensBalances: PropTypes.arrayOf(PropTypes.shape({
       symbol: PropTypes.string,
@@ -74,15 +78,7 @@ export default class WalletTokensList extends PureComponent {
   }
 
   getTokensList = () => {
-    const tokens = this.props.tokensBalances.sort((a, b) => {
-      if (a.amount < b.amount) {
-        return 1
-      }
-      if (a.amount > b.amount) {
-        return -1
-      }
-      return 0
-    })
+    const tokens = this.props.tokensBalances.sort(({ amount: a }, { amount: b }) => (a > b) - (a < b))
     return this.state.isShowAll ? tokens : tokens.slice(0, 2)
   }
 
@@ -124,7 +120,7 @@ export default class WalletTokensList extends PureComponent {
                         {token.symbol()} {integerWithDelimiter(tokenBalance.value, true, null)}
                       </div>
                       <div styleName='tokens-list-table-cell-usd'>
-                        USD <TokenPrice value={new Amount(tokenBalance.value, tokenBalance.symbol)} />
+                        {this.props.selectedCurrency} <TokenPrice value={new Amount(tokenBalance.value, tokenBalance.symbol)} />
                       </div>
                     </div>
                   )

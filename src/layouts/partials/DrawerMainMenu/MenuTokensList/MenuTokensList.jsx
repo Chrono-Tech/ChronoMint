@@ -115,6 +115,10 @@ export default class MenuTokensList extends PureComponent {
     }
   }
 
+  handleTouchTitle = (blockchain) => () => {
+    return this.handleScrollToBlockchain(blockchain)
+  }
+
   renderStatus () {
     const { networkStatus, syncStatus, networkName } = this.props
 
@@ -157,11 +161,7 @@ export default class MenuTokensList extends PureComponent {
                   title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
                 />
               </div>
-              <div
-                styleName='addressTitle'
-                onTouchTap={((blockchain) => () => this.handleScrollToBlockchain(blockchain)
-                )(token.blockchain)}
-              >
+              <div styleName='addressTitle' onTouchTap={this.handleTouchTitle(token.blockchain)}>
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
                   {token.address || <Translate value={`${prefix}.notAvailable`} />}

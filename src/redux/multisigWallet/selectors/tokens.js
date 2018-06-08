@@ -4,12 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import { filteredBalancesAndTokens, tokensCountBalanceSelector } from './balances'
-
-export const getWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
-}
 
 export const multisigTokensAndAmountsSelector = (address: string, symbol: string) => createSelector(
   [

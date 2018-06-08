@@ -45,7 +45,7 @@ export const filteredBalancesAndTokens = (blockchain: string, symbol: string) =>
   },
 )
 
-export const balanceCalculator = (blockchain: string, symbol: string) => createSelector(
+const balanceCalculator = (blockchain: string, symbol: string) => createSelector(
   [
     tokensAndAmountsSelector(blockchain, symbol),
     selectMarketPricesSelectedCurrencyStore,

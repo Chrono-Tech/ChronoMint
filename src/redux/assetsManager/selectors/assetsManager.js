@@ -19,13 +19,16 @@ export const getUserTokens = () => createSelector(
   [getTokens, getPlatforms, getAssets],
   (tokens: TokensCollection, platforms, assets) => {
     let result = {}
-    platforms.map((platform) => result[platform.address] = {})
+    platforms.forEach((platform) => result[platform.address] = {})
 
-    Object.values(assets).map((asset) => {
-      if (!result[asset.platform]) {
-        result[asset.platform] = {}
+    Object.values(assets).forEach((asset) => {
+      const assetPlatform = asset.platform
+      const assetAddress = asset.address
+
+      if (!result.hasOwnProperty(assetPlatform)) {
+        result[assetPlatform] = {}
       }
-      result[asset.platform][asset.address] = tokens.getByAddress(asset.address)
+      result[assetPlatform][assetAddress] = tokens.getByAddress(assetAddress)
     })
 
     return result

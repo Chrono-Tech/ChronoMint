@@ -15,23 +15,19 @@ import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import Preloader from 'components/common/Preloader/Preloader'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
 import Amount from 'models/Amount'
-import { confirmMultisigTx, DUCK_MULTISIG_WALLET, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
+import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multisigWallet/actions'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import { getMultisigWallets } from 'redux/wallet/selectors/models'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
 
 function mapStateToProps (state, ownProps) {
-  let wallet
-  if (!ownProps.walletInfo.isMain) {
-    wallet = state.get(DUCK_MULTISIG_WALLET).item(ownProps.walletInfo.address)
-  }
-
   return {
-    wallet,
+    wallet: !ownProps.walletInfo.isMain ? getMultisigWallets(state).item(ownProps.walletInfo.address) : null,
     tokens: state.get(DUCK_TOKENS),
     locale: state.get(DUCK_I18N).locale,
   }
@@ -205,7 +201,7 @@ export default class PendingTxWidget extends PureComponent {
   render () {
     const { wallet, walletInfo } = this.props
 
-    if (!walletInfo.isMultisig || !walletInfo.is2FA) {
+    if (!walletInfo || !walletInfo.isMultisig || !walletInfo.is2FA) {
       return null
     }
 

@@ -11,7 +11,6 @@ import { connect } from 'react-redux'
 import { openSendForm, selectWallet } from 'redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
-import { ETH } from 'redux/mainWallet/actions'
 import { TOKEN_ICONS } from 'assets'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
@@ -30,6 +29,7 @@ import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSett
 import { getWalletInfo } from '../WalletWidgetMini/selectors'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
+import WalletName from '../WalletName/WalletName'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
@@ -46,11 +46,11 @@ function makeMapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, wallet) => {
+    send: (token, wallet) => {
       dispatch(openSendForm({
         wallet,
         isModal: true,
-        token: tokenId,
+        token,
         blockchain: wallet.blockchain,
         address: wallet.address,
       }, SendTokens))
@@ -107,15 +107,6 @@ export default class WalletWidget extends PureComponent {
     showGroupTitle: PropTypes.bool,
   }
 
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      isShowAll: false,
-      isSettingsOpen: false,
-    }
-  }
-
   handleSend = (wallet) => () => {
     this.props.send(this.props.token.id(), wallet)
   }
@@ -126,12 +117,6 @@ export default class WalletWidget extends PureComponent {
 
   handleDeposit = () => {
     this.props.deposit()
-  }
-
-  handleChangeShowAll = () => {
-    this.setState({
-      isShowAll: !this.state.isShowAll,
-    })
   }
 
   handleSelectWallet = () => {
@@ -182,102 +167,13 @@ export default class WalletWidget extends PureComponent {
     )
   }
 
-  getWalletName = () => {
-    const { wallet } = this.props
-    const name = wallet.name
-    if (name) {
-      return name
-    }
-
-    let key = null
-    if (this.isMy2FAWallet()) {
-      key = 'twoFAWallet'
-    } else if (this.isMySharedWallet()) {
-      key = 'sharedWallet'
-    } else if (this.isLockedWallet()) {
-      key = 'lockedWallet'
-    } else if (wallet.isDerived) {
-      if (wallet.customTokens) {
-        key = 'customWallet'
-      } else {
-        key = 'additionalStandardWallet'
-      }
-    } else {
-      key = 'standardWallet'
-    }
-
-    return <Translate value={`${prefix}.${key}`} />
-  }
-
-  getTokensList = () => {
-    const tokens = this.props.walletInfo.tokens.sort((a, b) => {
-      if (a.amount < b.amount) {
-        return 1
-      }
-      if (a.amount > b.amount) {
-        return -1
-      }
-      return 0
-    })
-    return this.state.isShowAll ? tokens : tokens.slice(0, 2)
-  }
-
-  getTokenAmountList = () => {
-    const walletInfo = this.props.walletInfo
-    if (this.props.blockchain === BLOCKCHAIN_ETHEREUM) {
-      let eth
-      walletInfo.tokens.some((token) => {
-        if (token.symbol === ETH) {
-          eth = token
-          return true
-        }
-      })
-
-      if (eth) {
-        return `${eth.symbol} ${eth.amount.toFixed(2)}`
-      }
-      return null
-    }
-    let tokenList = walletInfo.tokens
-
-    if (tokenList.length < 3) {
-      return null
-    }
-
-    if (tokenList.length >= 4) {
-      tokenList = tokenList.slice(0, 3)
-    }
-
-    return tokenList.map((token) => `${token.symbol} ${token.amount.toFixed(2)}`).join(', ')
-  }
-
   isMySharedWallet = () => {
     return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
   }
 
-  isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.is2FA
-  }
-
-  isMainWallet = () => {
-    return !this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked
-  }
-
-  isLockedWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
-  }
-
-  getWalletObj (wallet) {
-    return {
-      isMultisig: wallet.isMultisig,
-      isTimeLocked: wallet.isTimeLocked,
-      is2FA: wallet.is2FA ? wallet.is2FA : false,
-      isDerived: wallet.isDerived,
-    }
-  }
-
   render () {
     const { address, token, blockchain, wallet, showGroupTitle } = this.props
+    const tokenIsFetched = (token && token.isFetched())
 
     return (
       <div styleName='header-container'>
@@ -303,11 +199,17 @@ export default class WalletWidget extends PureComponent {
             <div styleName='content-container'>
               <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
                 <div styleName='address-title'>
-                  <h3>{this.getWalletName()}</h3>
+                  <h3><WalletName wallet={wallet} /></h3>
                   <span styleName='address-address'>{address}</span>
                 </div>
 
-                {token && token.isFetched() ? <WalletMainCoinBalance wallet={wallet} /> : <span styleName='noToken'><Translate value={`${prefix}.tokenNotAvailable`} /></span>}
+                {token && token.isFetched()
+                  ? <WalletMainCoinBalance wallet={wallet} />
+                  : (
+                    <span styleName='noToken'>
+                      <Translate value={`${prefix}.tokenNotAvailable`} />
+                    </span>
+                  )}
               </Link>
 
               {this.isMySharedWallet() && this.getOwnersList()}
@@ -323,7 +225,7 @@ export default class WalletWidget extends PureComponent {
               <div styleName='actions-container'>
                 <div styleName='action'>
                   <Button
-                    disabled={!token || !token.isFetched()}
+                    disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
                     onTouchTap={this.handleSend(wallet)}
@@ -331,7 +233,7 @@ export default class WalletWidget extends PureComponent {
                 </div>
                 <div styleName='action'>
                   <Button
-                    disabled={!token || !token.isFetched()}
+                    disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.receiveButton`} />}
                     onTouchTap={this.handleReceive}

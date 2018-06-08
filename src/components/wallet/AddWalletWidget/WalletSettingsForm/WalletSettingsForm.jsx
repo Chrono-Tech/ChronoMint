@@ -10,11 +10,8 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { MULTISIG_UPDATE } from 'redux/multisigWallet/actions'
+import { setMultisigWalletName } from 'redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { WALLET_SET_NAME } from 'redux/mainWallet/actions'
 import { prefix } from './lang'
@@ -23,10 +20,9 @@ import './WalletSettingsForm.scss'
 export const FORM_WALLET_SETTINGS = 'WalletSettingsForm'
 
 function mapStateToProps (state, ownProps) {
-  const name = ownProps.wallet instanceof MainWalletModel ? ownProps.wallet.name(ownProps.blockchain, ownProps.address) : ownProps.wallet.name()
   return {
     initialValues: {
-      name,
+      name: ownProps.wallet.name,
     },
   }
 }
@@ -36,10 +32,10 @@ function mapDispatchToProps (dispatch, ownProps) {
     onSubmit: (values: Map) => {
       const name = values.get('name')
       const { wallet, blockchain, address } = ownProps
-      if (wallet instanceof MainWalletModel) {
+      if (wallet.isMain) {
         dispatch({ type: WALLET_SET_NAME, blockchain, address, name })
       } else {
-        dispatch({ type: MULTISIG_UPDATE, wallet: wallet.name(name) })
+        dispatch(setMultisigWalletName(address, name))
       }
       dispatch(modalsClose())
     },
@@ -52,11 +48,19 @@ export default class WalletSettingsForm extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     address: PropTypes.string,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]).isRequired,
+    wallet: PropTypes.shape({
+      address: PropTypes.string,
+      blockchain: PropTypes.string,
+      name: PropTypes.string,
+      requiredSignatures: PropTypes.number,
+      pendingCount: PropTypes.number,
+      isMultisig: PropTypes.bool,
+      isTimeLocked: PropTypes.bool,
+      is2FA: PropTypes.bool,
+      isDerived: PropTypes.bool,
+      owners: PropTypes.arrayOf(PropTypes.string),
+      customTokens: PropTypes.arrayOf(),
+    }).isRequired,
     ...formPropTypes,
   }
 

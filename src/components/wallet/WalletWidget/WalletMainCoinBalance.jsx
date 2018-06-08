@@ -7,14 +7,11 @@ import PropTypes from 'prop-types'
 import { integerWithDelimiter } from 'utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import { ETH } from 'redux/mainWallet/actions'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { balanceSelector, mainWalletBalanceSelector } from 'redux/mainWallet/selectors'
 import { multisigBalanceSelector, multisigWalletBalanceSelector } from 'redux/multisigWallet/selectors'
 import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
+import { getMarket } from 'redux/market/selectors'
 import './WalletWidget.scss'
-import { prefix } from './lang'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
@@ -29,10 +26,12 @@ function makeMapStateToProps (state, props) {
     getBalance = multisigWalletBalanceSelector(wallet.address, mainSymbol)
   }
   const mapStateToProps = (ownState) => {
+    const { selectedCurrency } = getMarket(ownState)
     return {
       mainSymbol,
-      amountUsd: getAmount(ownState),
+      amountCurrency: getAmount(ownState),
       balance: getBalance(ownState),
+      selectedCurrency,
     }
   }
   return mapStateToProps
@@ -42,8 +41,9 @@ function makeMapStateToProps (state, props) {
 export default class WalletMainCoinBalance extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
-    amountUsd: PropTypes.number,
+    amountCurrency: PropTypes.number,
     balance: PropTypes.number,
+    selectedCurrency: PropTypes.string,
     wallet: PropTypes.shape({
       address: PropTypes.string,
       blockchain: PropTypes.string,
@@ -59,7 +59,7 @@ export default class WalletMainCoinBalance extends PureComponent {
   }
 
   render () {
-    const { mainSymbol, amountUsd, balance } = this.props
+    const { selectedCurrency, mainSymbol, amountCurrency, balance } = this.props
 
     return (
       <div styleName='token-amount' className='WalletMainCoinBalance__root'>
@@ -67,7 +67,7 @@ export default class WalletMainCoinBalance extends PureComponent {
           {mainSymbol} {integerWithDelimiter(balance, true, null)}
         </div>
         <div styleName='usd-amount' className='WalletMainCoinBalance__usd-amount'>
-          USD {integerWithDelimiter(amountUsd.toFixed(2), true)}
+          {selectedCurrency} {integerWithDelimiter(amountCurrency.toFixed(2), true)}
         </div>
       </div>
     )
