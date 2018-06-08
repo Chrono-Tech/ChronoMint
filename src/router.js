@@ -19,6 +19,7 @@ import {
   MnemonicPage,
   DownloadWalletFilePage,
   UploadWalletPage,
+  MnemonicLoginPage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -92,6 +93,7 @@ const router = (
         <Route path='/mnemonic' component={MnemonicPage} />
         <Route path='/download-wallet' component={DownloadWalletFilePage} />
         <Route path='/upload-wallet' component={UploadWalletPage} />
+        <Route path='/mnemonic-login' component={MnemonicLoginPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

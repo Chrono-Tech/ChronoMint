@@ -102,6 +102,10 @@ export const onSubmitConfirmMnemonic = (values) => (dispatch, getState) => {
   }
 }
 
+export const navigateToSelectImportMethod = () => (dispatch) => {
+  dispatch(push('/import-methods'))
+}
+
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
   switch (blockchain) {
     case 'Ethereum':

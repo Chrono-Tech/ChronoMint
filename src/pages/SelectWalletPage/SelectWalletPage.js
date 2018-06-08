@@ -5,13 +5,22 @@
 
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
+import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
+import { navigateToSelectImportMethod } from '@chronobank/login/redux/network/actions'
 
 import arrow from 'assets/img/icons/prev-white.svg'
 import pageStyles from './SelectWalletPage.scss'
 
+function mapDispatchToProps (dispatch) {
+  return {
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod())
+  }
+}
+
+@connect(null, mapDispatchToProps)
 export default class SelectWalletPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
@@ -21,6 +30,7 @@ export default class SelectWalletPage extends PureComponent {
         address: PropTypes.string,
       })
     ),
+    navigateToSelectImportMethod: PropTypes.func,
   }
 
   static defaultProps = {
@@ -70,7 +80,7 @@ export default class SelectWalletPage extends PureComponent {
             <Button
               styleName='button'
               buttonType='login'
-              type='submit'
+              onClick={this.props.navigateToSelectImportMethod}
             >
               Add an existing account
             </Button>
