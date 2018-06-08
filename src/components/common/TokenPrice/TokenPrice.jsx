@@ -3,13 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from 'utils/formatter'
-import { priceTokenSelector } from 'redux/wallet/selectors'
+import { priceTokenSelector } from '@chronobank/core/redux/wallet/selectors'
 
 function makeMapStateToProps (state, props) {
   const getBalance = priceTokenSelector(props.value)

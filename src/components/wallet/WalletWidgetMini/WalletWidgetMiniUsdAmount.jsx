@@ -5,13 +5,13 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
-import { balanceSelector } from 'redux/mainWallet/selectors'
-import { multisigBalanceSelector } from 'redux/multisigWallet/selectors'
-import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
-import { PTWallet } from 'redux/wallet/types'
+import { balanceSelector } from '@chronobank/core/redux/mainWallet/selectors'
+import { multisigBalanceSelector } from '@chronobank/core/redux/multisigWallet/selectors'
+import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from 'utils/formatter'
-import { getMarket } from 'redux/market/selectors'
+import { getMarket } from '@chronobank/core/redux/market/selectors'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps

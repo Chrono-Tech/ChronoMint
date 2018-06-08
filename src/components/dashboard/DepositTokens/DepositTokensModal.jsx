@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { change } from 'redux-form'
-import { depositAsset, initAssetsHolder, withdrawAsset } from 'redux/assetsHolder/actions'
+import { depositAsset, initAssetsHolder, withdrawAsset } from '@chronobank/core/redux/assetsHolder/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { mainApprove } from 'redux/mainWallet/actions'
+import { mainApprove } from '@chronobank/core/redux/mainWallet/actions'
 import { ModalDialog } from 'components'
 import DepositTokensForm, { ACTION_APPROVE, ACTION_DEPOSIT, ACTION_WITHDRAW, FORM_DEPOSIT_TOKENS } from './DepositTokensForm'
 import './DepositTokensForm.scss'

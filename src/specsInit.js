@@ -16,8 +16,8 @@ import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
-import AbstractContractDAO from './dao/AbstractContractDAO'
-import MarketSocket from './market/MarketSocket'
+import AbstractContractDAO from '@chronobank/dao/AbstractContractDAO'
+import MarketSocket from '@chronobank/core/market/MarketSocket'
 import ls from './utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })

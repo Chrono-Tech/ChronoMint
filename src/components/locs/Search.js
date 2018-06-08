@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import TextField from 'material-ui/TextField'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { updateLOCFilter } from 'redux/locs/actions'
+import { updateLOCFilter } from '@chronobank/core/redux/locs/actions'
 
 const mapStateToProps = (state) => ({
   filter: state.get('locs').filter

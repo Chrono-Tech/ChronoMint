@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 
-import IPFS from 'utils/IPFS'
+import IPFS from '@chronobank/core/utils/IPFS'
 
 import './IPFSImage.scss'
 

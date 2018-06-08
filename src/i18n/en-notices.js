@@ -10,7 +10,7 @@ import {
   MANAGER_REMOVED,
   USER_ADDED_TO_BLACKLIST,
   USER_DELETED_FROM_BLACKLIST,
-} from 'models/notices/AssetsManagerNoticeModel'
+} from '@chronobank/core/models/notices/AssetsManagerNoticeModel'
 
 export default {
   approval: {
