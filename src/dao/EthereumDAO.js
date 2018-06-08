@@ -90,7 +90,6 @@ export class EthereumDAO extends AbstractTokenDAO {
     return new TokenModel({
       name: 'Ethereum', // ???
       symbol: this._symbol,
-      isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,

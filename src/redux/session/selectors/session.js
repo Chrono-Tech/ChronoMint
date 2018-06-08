@@ -4,8 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { PROFILE_PANEL_TOKENS } from 'dao/ERC20ManagerDAO'
-import { rebuildProfileTokens } from 'redux/session/actions'
+import { rebuildProfileTokens, PROFILE_PANEL_TOKENS } from 'redux/session/actions'
 import { selectMainWalletAddressesListStore } from 'redux/wallet/selectors'
 import { getTokens } from 'redux/tokens/selectors'
 import { getGasSliderCollection, getProfile } from 'redux/session/selectors/models'

@@ -10,10 +10,10 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ProfileModel from 'models/ProfileModel'
 import { push, replace } from 'react-router-redux'
 import { watchStopMarket } from 'redux/market/action'
+import { DEFAULT_TOKENS } from 'redux/tokens/actions'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import { notify } from 'redux/notifier/actions'
 
 export const DUCK_SESSION = 'session'
@@ -30,6 +30,14 @@ export const DEFAULT_CBE_URL = '/wallets'
 export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
 
 export const CURRENT_PROFILE_VERSION = 1
+export const PROFILE_PANEL_TOKENS = [
+  { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
+  { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
+  { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
+  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
+  { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
+  { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
+]
 
 export const createSession = ({ account, provider, network, dispatch }) => {
   ls.createSession(account, provider, network)

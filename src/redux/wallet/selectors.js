@@ -4,7 +4,7 @@
  */
 
 import { createSelector } from 'reselect'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
+import { DEFAULT_TOKENS } from 'redux/tokens/actions'
 import { ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
