@@ -8,7 +8,7 @@ import PropTypes from 'prop-types'
 import Moment from 'components/common/Moment/index'
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import { Translate } from 'react-redux-i18n'
 
