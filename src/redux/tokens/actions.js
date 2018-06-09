@@ -40,8 +40,6 @@ export const TOKENS_FETCHED = 'tokens/fetched'
 export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
-export const DEFAULT_TOKENS = ['TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN']
-
 // It is not a redux action
 const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   try {

@@ -10,7 +10,6 @@ import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ProfileModel from 'models/ProfileModel'
 import { push, replace } from 'react-router-redux'
 import { watchStopMarket } from 'redux/market/action'
-import { DEFAULT_TOKENS } from 'redux/tokens/actions'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
@@ -134,65 +133,6 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
     console.error('update profile error', e.message)
     dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   }
-}
-
-export const rebuildProfileTokens = (profile, tokens) => {
-  let profileTokens = []
-
-  if (profile.version() !== CURRENT_PROFILE_VERSION) {
-    profile.tokens().toArray().map((item) => {
-      if (!item) {                              // for null
-        return
-      }
-
-      let token
-      if (typeof item === 'string') {
-        if (item.indexOf('/') + 1) {            // for 'Bitcoin/BTC'
-          const [, symbol] = item.split('/')
-          token = tokens.item(symbol)
-        } else {                                // for 'address'
-          token = tokens.getByAddress(item)
-        }
-      }
-
-      if (item.symbol) {                        // for 'BTC'
-        token = tokens.item(item.symbol)
-      }
-
-      token.isFetched() && profileTokens.push({
-        address: token.address(),
-        symbol: token.symbol(),
-        blockchain: token.blockchain(),
-        show: true,
-      })
-
-    })
-  } else {
-    profileTokens = profile.tokens().toArray()
-  }
-
-  const defaultTokens = DEFAULT_TOKENS.filter((symbol) => {
-    let inIncluded = false
-    profileTokens.map((profileToken) => {
-      if (profileToken.symbol === symbol) {
-        inIncluded = true
-      }
-    })
-    return !inIncluded
-  })
-
-  defaultTokens.map((symbol) => {
-    let token = tokens.item(symbol)
-
-    token.isFetched() && profileTokens.push({
-      address: token.address(),
-      symbol: token.symbol(),
-      blockchain: token.blockchain(),
-      show: true,
-    })
-  })
-
-  return profileTokens
 }
 
 export const watchInitProfile = () => async (dispatch) => {

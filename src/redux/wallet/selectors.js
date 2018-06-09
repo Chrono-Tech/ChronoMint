@@ -4,7 +4,6 @@
  */
 
 import { createSelector } from 'reselect'
-import { DEFAULT_TOKENS } from 'redux/tokens/actions'
 import { ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
@@ -257,7 +256,7 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle, address,
       const result = arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+          if (!isAmountGt && amount <= 0) {
             return accumulator
           }
 
@@ -344,7 +343,7 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle, is
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+          if (!isAmountGt && amount <= 0) {
             return accumulator
           }
 
