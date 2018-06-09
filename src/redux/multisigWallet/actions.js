@@ -35,6 +35,8 @@ import multisigWalletService, {
 } from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
 import { ETH } from '../mainWallet/actions'
+import { getTokens } from '../tokens/selectors'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -145,9 +147,13 @@ const handleTransfer = (walletId, multisigTransactionModel) => (dispatch, getSta
   dispatch(updateWallet(wallet.pendingTxList(pendingTxList)))
 
   if (!multisigTransactionModel.symbol()) {
+    getTokens(getState()).items().map((token) => {
+      if (token.blockchain() === BLOCKCHAIN_ETHEREUM) {
+        dispatch(fetchBalanceForToken(token, wallet))
+      }
+    })
     return
   }
-
   const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
   dispatch(fetchBalanceForToken(token, wallet))
 }
