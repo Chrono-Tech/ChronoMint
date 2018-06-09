@@ -63,12 +63,6 @@ export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
 export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
 
-export const WALLETS_ADD = 'mainWallet/WALLETS_ADD'
-export const WALLETS_SELECT = 'mainWallet/WALLETS_SELECT'
-export const WALLETS_LOAD = 'mainWallet/WALLETS_LOAD'
-export const WALLETS_UPDATE_LIST = 'mainWallet/WALLETS_UPDATE_LIST'
-export const WALLETS_REMOVE = 'mainWallet/WALLETS_REMOVE'
-
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
 export const LHT = 'LHT'
@@ -530,76 +524,4 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain }) => asy
   } else {
     dispatch({ type: MULTISIG_UPDATE, wallet: wallet.set('transactions', transactions.offset(newOffset).isFetching(false).isFetched(true)) })
   }
-}
-
-export const walletAdd = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_ADD, wallet })
-}
-
-export const walletSelect = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_SELECT, wallet })
-}
-
-export const walletLoad = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_LOAD, wallet })
-}
-
-export const walletUpdateList = (walletList) => (dispatch) => {
-  dispatch({ type: WALLETS_UPDATE_LIST, walletList })
-}
-
-export const walletRemove = (name) => (dispatch) => {
-  dispatch({ type: WALLETS_REMOVE, name })
-}
-
-export const onSubmitMnemonic = (values) => (dispatch, getState) => {
-
-  const web3 = web3Selector()(getState())
-  web3.eth.accounts.wallet.clear()
-
-  const account = web3.eth.accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(values.mnemonic)}`)
-
-
-  const signInModel = new SignInModel({
-    method: SignInModel.METHODS.MNEMONIC,
-    key: values.mnemonic,
-    address: account.address,
-  })
-
-  dispatch(setSignInModel(signInModel))
-
-}
-
-export const onSubmitMnemonicSuccess = () => (dispatch) => {
-  dispatch(navigateToCreateWallet())
-}
-
-export const onSubmitMnemonicFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_MNEMONIC, { key: 'Wrong mnemonic' }))
-}
-
-export const onSubmitPrivateKey = (values) => async (dispatch, getState) => {
-
-  const web3 = web3Selector()(getState())
-  web3.eth.accounts.wallet.clear()
-
-  const account = await web3.eth.accounts.privateKeyToAccount(`0x${values.key}`)
-
-  const signInModel = new SignInModel({
-    method: SignInModel.METHODS.PRIVATE_KEY,
-    key: values.key,
-    address: account.address,
-  })
-
-  dispatch(setSignInModel(signInModel))
-
-}
-
-export const onSubmitPrivateKeySuccess = () => (dispatch) => {
-  dispatch(navigateToCreateWallet())
-}
-
-export const onSubmitPrivateKeyFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_PRIVATE_KEY, { key: 'Wrong private key' }))
-
 }

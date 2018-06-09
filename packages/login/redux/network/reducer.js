@@ -32,6 +32,9 @@ const initialState = {
   newAccountName: null,
   newAccountPassword: null,
   newAccountMnemonic: null,
+  walletsList: [],
+  decryptedWallet: null,
+  selectedWallet: null,
 }
 
 export default (state = initialState, action) => {
@@ -82,6 +85,33 @@ export default (state = initialState, action) => {
         ...state,
         newAccountMnemonic: action.mnemonic,
       }
+    case actions.WALLETS_ADD :
+      return {
+        ...state,
+        walletsList: [
+          ...state.walletsList,
+          action.wallet,
+        ],
+      }
+
+    case actions.WALLETS_SELECT :
+      return {
+        ...state,
+        selectedWallet: action.wallet,
+      }
+
+    case actions.WALLETS_LOAD :
+      return {
+        ...state,
+        decryptedWallet: action.wallet,
+      }
+
+    case actions.WALLETS_UPDATE_LIST :
+      return {
+        ...state,
+        walletsList: action.walletsList,
+      }
+
     default:
       return state
   }

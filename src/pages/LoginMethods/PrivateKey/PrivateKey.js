@@ -5,21 +5,38 @@
 
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { UserRow, Button } from 'components'
-
 import styles from 'layouts/Splash/styles'
-import './ResetPasswordPage.scss'
+import { Button } from 'components'
+import {
+  onSubmitMnemonicLoginForm,
+  onSubmitMnemonicLoginFormSuccess,
+  onSubmitMnemonicLoginFormFail,
+} from '@chronobank/login/redux/network/actions'
 
-const FORM_LOGIN_PAGE = 'MnemonicLoginPageForm'
+import './PrivateKey.scss'
 
-@reduxForm({ form: FORM_LOGIN_PAGE })
+export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'PrivateKeyLoginPageForm'
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onSubmit: (values) => dispatch(onSubmitMnemonicLoginForm(values)),
+    onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
+    onSubmitFail: () => dispatch(onSubmitMnemonicLoginFormFail()),
+  }
+}
+
+@connect(null, mapDispatchToProps)
+@reduxForm({ form: FORM_PRIVATE_KEY_LOGIN_PAGE })
 export default class MnemonicLoginPage extends PureComponent {
   render () {
+    const { handleSubmit } = this.props
+
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
-        <form styleName='form'>
+        <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>Mnemonic form</div>
 
