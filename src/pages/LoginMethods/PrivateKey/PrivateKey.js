@@ -11,9 +11,9 @@ import { TextField } from 'redux-form-material-ui'
 import styles from 'layouts/Splash/styles'
 import { Button } from 'components'
 import {
-  onSubmitMnemonicLoginForm,
-  onSubmitMnemonicLoginFormSuccess,
-  onSubmitMnemonicLoginFormFail,
+  onSubmitPrivateKeyLoginForm,
+  onSubmitPrivateKeyLoginFormSuccess,
+  onSubmitPrivateKeyLoginFormFail,
 } from '@chronobank/login/redux/network/actions'
 
 import './PrivateKey.scss'
@@ -22,9 +22,9 @@ export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'PrivateKeyLoginPageForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => dispatch(onSubmitMnemonicLoginForm(values)),
-    onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFail: () => dispatch(onSubmitMnemonicLoginFormFail()),
+    onSubmit: (values) => dispatch(onSubmitPrivateKeyLoginForm(values)),
+    onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
+    onSubmitFail: () => dispatch(onSubmitPrivateKeyLoginFormFail()),
   }
 }
 
@@ -38,14 +38,14 @@ export default class MnemonicLoginPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>Mnemonic form</div>
+          <div styleName='page-title'>Private key form</div>
 
           <div styleName='field'>
             <Field
               component={TextField}
-              name='mnemonic'
+              name='pk'
               type='text'
-              floatingLabelText='Mnemonic'
+              floatingLabelText='Private key'
               fullWidth
               {...styles.textField}
             />
