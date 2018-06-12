@@ -12,6 +12,7 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import { makeGetTxListForWallet } from 'redux/wallet/selectors'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import { formatDataAndGetTransactionsForWallet } from 'redux/mainWallet/actions'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './TransactionsListWidget.scss'
@@ -37,19 +38,7 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class TransactionsListWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,

@@ -4,25 +4,13 @@
  */
 
 import React, { PureComponent } from 'react'
-import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
+import { PTWallet } from 'redux/wallet/types'
 import { prefix } from './lang'
 
 export default class WalletName extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }).isRequired,
+    wallet: PTWallet.isRequired,
   }
 
   getWalletName = () => {

@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react'
 import { balanceSelector } from 'redux/mainWallet/selectors'
 import { multisigBalanceSelector } from 'redux/multisigWallet/selectors'
 import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
+import { PTWallet } from 'redux/wallet/types'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from 'utils/formatter'
 import { getMarket } from 'redux/market/selectors'
@@ -35,18 +36,7 @@ function makeMapStateToProps (state, ownProps) {
 export default class WalletWidgetMiniUsdAmount extends PureComponent {
   static propTypes = {
     selectedCurrency: PropTypes.string,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     amount: PropTypes.number,
   }
 

@@ -21,6 +21,7 @@ import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditO
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import Moment from 'components/common/Moment'
 import { openSendForm } from 'redux/wallet/actions'
+import { PTWallet } from 'redux/wallet/types'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
 import { prefix } from './lang'
@@ -65,19 +66,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class WalletWidgetDetail extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     token: PropTypes.instanceOf(TokenModel),
     send: PropTypes.func,
     receive: PropTypes.func,

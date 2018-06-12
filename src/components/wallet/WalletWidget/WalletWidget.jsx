@@ -21,6 +21,7 @@ import { getMainSymbolForBlockchain, getTokens } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import { PTWallet } from 'redux/wallet/types'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -79,19 +80,7 @@ export default class WalletWidget extends PureComponent {
   static propTypes = {
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),

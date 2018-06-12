@@ -15,6 +15,7 @@ import TokensCollection from 'models/tokens/TokensCollection'
 import { Button } from 'components'
 import { mainWalletTokenBalanceWithPriceSelector } from 'redux/mainWallet/selectors'
 import { multisigWalletTokenBalanceWithPriceSelector } from 'redux/multisigWallet/selectors'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './TokensListWidget.scss'
@@ -48,19 +49,7 @@ export default class TokensListWidget extends PureComponent {
       symbol: PropTypes.string,
       value: PropTypes.number,
     })),
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
   }
 
   constructor (props) {

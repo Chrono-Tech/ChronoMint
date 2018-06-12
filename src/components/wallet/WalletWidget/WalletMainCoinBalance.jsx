@@ -11,6 +11,7 @@ import { balanceSelector, mainWalletBalanceSelector } from 'redux/mainWallet/sel
 import { multisigBalanceSelector, multisigWalletBalanceSelector } from 'redux/multisigWallet/selectors'
 import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
 import { getMarket } from 'redux/market/selectors'
+import { PTWallet } from 'redux/wallet/types'
 import './WalletWidget.scss'
 
 function makeMapStateToProps (state, props) {
@@ -44,18 +45,7 @@ export default class WalletMainCoinBalance extends PureComponent {
     amountCurrency: PropTypes.number,
     balance: PropTypes.number,
     selectedCurrency: PropTypes.string,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
   }
 
   render () {

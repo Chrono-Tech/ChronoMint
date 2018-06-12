@@ -8,25 +8,14 @@ import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import TokensCollection from 'models/tokens/TokensCollection'
 import Preloader from 'components/common/Preloader/Preloader'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './OwnersListWidget.scss'
 
 export default class OwnersListWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,

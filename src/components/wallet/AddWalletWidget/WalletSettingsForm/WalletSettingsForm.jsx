@@ -14,6 +14,7 @@ import ModalDialog from 'components/dialogs/ModalDialog'
 import { setMultisigWalletName } from 'redux/multisigWallet/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { WALLET_SET_NAME } from 'redux/mainWallet/actions'
+import { PTWallet } from 'redux/wallet/types'
 import { prefix } from './lang'
 import './WalletSettingsForm.scss'
 
@@ -48,19 +49,7 @@ export default class WalletSettingsForm extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
     address: PropTypes.string,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }).isRequired,
+    wallet: PTWallet.isRequired,
     ...formPropTypes,
   }
 

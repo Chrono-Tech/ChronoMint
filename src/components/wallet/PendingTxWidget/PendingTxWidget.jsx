@@ -21,6 +21,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import { getMultisigWallets } from 'redux/wallet/selectors/models'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
@@ -62,19 +63,7 @@ export default class PendingTxWidget extends PureComponent {
     tokens: PropTypes.instanceOf(TokensCollection),
     locale: PropTypes.string,
     enterCode: PropTypes.func,
-    walletInfo: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    walletInfo: PTWallet,
   }
 
   componentDidMount () {

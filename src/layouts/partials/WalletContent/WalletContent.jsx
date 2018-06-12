@@ -16,6 +16,7 @@ import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidge
 import { goToWallets } from 'redux/mainWallet/actions'
 import { getWalletInfo } from 'components/wallet/WalletWidgetMini/selectors'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
+import { PTWallet } from 'redux/wallet/types'
 
 import './WalletContent.scss'
 
@@ -47,19 +48,7 @@ export default class WalletContent extends Component {
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     goToWallets: PropTypes.func,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      owners: PropTypes.arrayOf(PropTypes.string),
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
   }
 
   constructor (props) {
