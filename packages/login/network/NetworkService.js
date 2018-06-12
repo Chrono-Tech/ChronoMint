@@ -191,7 +191,7 @@ class NetworkService extends EventEmitter {
     networkProvider.setNetworkCode(networkCode)
 
     await this.loadAccounts()
-    ethereumProvider.setEngine(ethereum, nem)
+    ethereumProvider.setEngine(ethereum, nem, waves)
     bcc && bccProvider.setEngine(bcc)
     btc && btcProvider.setEngine(btc)
     btg && btgProvider.setEngine(btg)

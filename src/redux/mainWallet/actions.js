@@ -7,7 +7,7 @@ import {
   bccProvider,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_BITCOIN_GOLD, 
+  BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
   btcProvider,
   btgProvider,
@@ -17,7 +17,7 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { wavesProvider} from '@chronobank/login/network/WavesProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'

@@ -59,7 +59,9 @@ export class WavesProvider extends AbstractProvider {
   // eslint-disable-next-line
   async transfer (from: string, to: string, amount: BigNumber, asset) {
     const node = this._selectNode(this._engine)
-    const { tx /*, fee*/ } = this._engine.createTransaction('TRANSFER', {to:to, amount:amount, asset:asset})
+    const { tx /*, fee*/ } = await this._engine.createTransaction('TRANSFER', {to:to, amount:amount, asset:asset})
+    console.log('waves tx is:')
+    console.log(tx)
     return node.send(from, tx)
   }
 
@@ -75,7 +77,7 @@ export class WavesProvider extends AbstractProvider {
     this.emit('balance', {
       account: this.getAddress(),
       time: new Date().getTime(),
-      balance, // structured for NEM
+      balance,
     })
   }
 }

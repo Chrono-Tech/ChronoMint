@@ -25,7 +25,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.connect()
   }
 
-  async _handleSubscribe ({ ethAddress, nemAddress }) {
+  async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
     if (!this._socket) {
       return
     }
@@ -33,6 +33,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       await this._api.post('addr', {
         address: ethAddress,
         nem: nemAddress,
+        waves: wavesAddress,
       })
 
       this.executeOrSchedule(() => {
@@ -45,19 +46,25 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       })
 
     } catch (e) {
+      console.log('Address subscription error')
+      console.log(e)
       this.trace('Address subscription error', e)
     }
   }
 
-  async _handleUnsubscribe ({ ethAddress, nemAddress }) {
-    try {
+  async _handleUnsubscribe ({ ethAddress, nemAddress, wavesAddress }) {
+
+    //No method delete in API, I'm not sure if we need the procedure bellow
+
+    /*try {
       await this._api.delete('addr', {
         address: ethAddress,
-        nem: nemAddress,
+        //nem: nemAddress,
+        //waves: wavesAddress,
       })
     } catch (e) {
       this.trace('Address unsubscription error', e)
-    }
+    }*/
   }
 
   async getTransactionsList (address, id, skip, offset) {

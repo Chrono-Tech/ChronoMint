@@ -156,13 +156,13 @@ export default class WavesDAO extends EventEmitter {
   async watchTransfer () {
     this._wavesProvider.addListener(EVENT_TX, async ({ tx }) => {
       if (tx.unconfirmed) {
-        if (!this._mosaic) {
-          if (!tx.mosaics) {
+        if (!this._asset) {
+          if (!tx.assets) {
             this.emit(EVENT_NEW_TRANSFER, this._createXemTxModel(tx))
           }
         } else {
-          if (tx.mosaics && (this._namespace in tx.mosaics)) {
-            this.emit(EVENT_NEW_TRANSFER, this._createMosaicTxModel(tx))
+          if (tx.assets && (this._asset in tx.assets)) {
+            this.emit(EVENT_NEW_TRANSFER, this._createAssetTxModel(tx))
           }
         }
       }
