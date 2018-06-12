@@ -94,7 +94,7 @@
     "eth-crypto": "^1.2.0",
     "ethereumjs-abi": "^0.6.4",
     "ethereumjs-wallet": "^0.6.0",
-    "ganache-cli": "^6.1.2",
+    "ganache-cli": "^6.1.0",
     "immutable": ">=3",
     "ipfs-api": "^20.2.1",
     "js-file-download": "^0.4.1",
