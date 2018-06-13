@@ -9,6 +9,9 @@ const initialState = {
   isMultisig: false,
   blockchain: null,
   address: null,
+  walletsList: [],
+  selectedWallet: null,
+  decryptedWallet: null,
 }
 
 export default (state = initialState, action) => {
@@ -24,6 +27,34 @@ export default (state = initialState, action) => {
         blockchain: action.blockchain,
         address: action.address,
       }
+
+    case a.WALLETS_ADD :
+      return {
+        ...state,
+        walletsList: [
+          ...state.walletsList,
+          action.wallet,
+        ],
+      }
+
+    case a.WALLETS_SELECT :
+      return {
+        ...state,
+        selectedWallet: action.wallet,
+      }
+
+    case a.WALLETS_LOAD :
+      return {
+        ...state,
+        decryptedWallet: action.wallet,
+      }
+
+    case a.WALLETS_UPDATE_LIST :
+      return {
+        ...state,
+        walletsList: action.walletsList,
+      }
+
     default:
       return state
   }

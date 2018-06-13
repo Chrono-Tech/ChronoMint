@@ -10,4 +10,9 @@ export { default as ConfirmMnemonicPage, FORM_CONFIRM_MNEMONIC } from './Confirm
 export { default as MnemonicPage } from './MnemonicPage/MnemonicPage'
 export { default as DownloadWalletFilePage } from './DownloadWalletFilePage/DownloadWalletFilePage'
 export { default as UploadWalletPage } from './UploadWalletPage/UploadWalletPage'
-export * from './LoginMethods'
+export {
+  MnemonicLoginPage,
+  PrivateKeyLoginPage,
+  FORM_MNEMONIC_LOGIN_PAGE,
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+} from './LoginMethods'
