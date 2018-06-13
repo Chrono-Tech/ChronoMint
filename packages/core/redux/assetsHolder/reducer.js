@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AssetHolderModel from 'models/assetHolder/AssetHolderModel'
+import AssetHolderModel from '../../models/assetHolder/AssetHolderModel'
 import * as a from './actions'
 
 const initialState = new AssetHolderModel()

@@ -4,9 +4,9 @@
  */
 
 import Immutable from 'immutable'
-import BalanceModel from 'models/tokens/BalanceModel'
-import BalancesCollection from 'models/tokens/BalancesCollection'
-import ls from 'utils/LocalStorage'
+import BalanceModel from '../tokens/BalanceModel'
+import BalancesCollection from '../tokens/BalancesCollection'
+import ls from '../../utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'

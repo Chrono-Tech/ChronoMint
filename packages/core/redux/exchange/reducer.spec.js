@@ -4,8 +4,8 @@
  */
 
 import Immutable from 'immutable'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import ExchangesCollection from 'models/exchange/ExchangesCollection'
+import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
+import ExchangesCollection from '../../models/exchange/ExchangesCollection'
 import * as a from './actions'
 import reducer, { initialState } from './reducer'
 

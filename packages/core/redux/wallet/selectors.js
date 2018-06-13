@@ -4,13 +4,13 @@
  */
 
 import { createSelector } from 'reselect'
-import { ETH } from 'redux/mainWallet/actions'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import { getAccount } from 'redux/session/selectors'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
-import Amount from 'models/Amount'
+import { ETH } from '../mainWallet/actions'
+import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
+import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
+import { getAccount } from '../session/selectors'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import Amount from '../../models/Amount'
 import {
   getMainWallet,
   getMultisigWallets,
@@ -21,15 +21,15 @@ import {
   selectTokensStore,
 } from './selectors/models'
 
-export { getMainWallet } from 'redux/wallet/selectors/models'
-export { getMultisigWallets } from 'redux/wallet/selectors/models'
-export { getMainWalletBalance } from 'redux/wallet/selectors/models'
-export { getCurrentWalletBalance } from 'redux/wallet/selectors/models'
-export { selectMainWalletBalancesListStore } from 'redux/wallet/selectors/models'
-export { selectTokensStore } from 'redux/wallet/selectors/models'
-export { selectMainWalletAddressesListStore } from 'redux/wallet/selectors/models'
-export { selectMarketPricesListStore } from 'redux/wallet/selectors/models'
-export { selectMarketPricesSelectedCurrencyStore } from 'redux/wallet/selectors/models'
+export { getMainWallet } from './selectors/models'
+export { getMultisigWallets } from './selectors/models'
+export { getMainWalletBalance } from './selectors/models'
+export { getCurrentWalletBalance } from './selectors/models'
+export { selectMainWalletBalancesListStore } from './selectors/models'
+export { selectTokensStore } from './selectors/models'
+export { selectMainWalletAddressesListStore } from './selectors/models'
+export { selectMarketPricesListStore } from './selectors/models'
+export { selectMarketPricesSelectedCurrencyStore } from './selectors/models'
 
 /**
  * WALLET SECTIONS

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import RewardsCollection from 'models/rewards/RewardsCollection'
+import RewardsCollection from '../../models/rewards/RewardsCollection'
 import * as a from './actions'
 
 const initialState = new RewardsCollection()

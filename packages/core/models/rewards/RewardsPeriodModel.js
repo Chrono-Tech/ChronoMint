@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
+import Amount from '../Amount'
 import moment from 'moment'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 

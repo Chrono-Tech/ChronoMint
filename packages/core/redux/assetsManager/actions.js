@@ -4,13 +4,13 @@
  */
 
 import Immutable from 'immutable'
-import { notify } from 'redux/notifier/actions'
-import web3Converter from 'utils/Web3Converter'
-import contractManager from 'dao/ContractsManagerDAO'
-import ReissuableModel from 'models/tokens/ReissuableModel'
-import TokenModel from 'models/tokens/TokenModel'
-import OwnerCollection from 'models/wallet/OwnerCollection'
-import OwnerModel from 'models/wallet/OwnerModel'
+import { notify } from '../notifier/actions'
+import web3Converter from '../../utils/Web3Converter'
+import contractManager from '../../dao/ContractsManagerDAO'
+import ReissuableModel from '../../models/tokens/ReissuableModel'
+import TokenModel from '../../models/tokens/TokenModel'
+import OwnerCollection from '../../models/wallet/OwnerCollection'
+import OwnerModel from '../../models/wallet/OwnerModel'
 import {
   MIDDLEWARE_EVENT_ISSUE,
   MIDDLEWARE_EVENT_PLATFORM_REQUESTED,
@@ -19,9 +19,9 @@ import {
   MIDDLEWARE_EVENT_UNRESTRICTED,
   MIDDLEWARE_EVENT_PAUSED,
   MIDDLEWARE_EVENT_UNPAUSED,
-} from 'dao/AssetsManagerDAO'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from 'redux/tokens/actions'
+} from '../../dao/AssetsManagerDAO'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED, TOKENS_UPDATE } from '../tokens/actions'
 import AssetsManagerNoticeModel, {
   ASSET_PAUSED,
   ASSET_UNPAUSED,
@@ -29,9 +29,9 @@ import AssetsManagerNoticeModel, {
   MANAGER_REMOVED,
   USER_ADDED_TO_BLACKLIST,
   USER_DELETED_FROM_BLACKLIST,
-} from 'models/notices/AssetsManagerNoticeModel'
-import PausedModel from 'models/tokens/PausedModel'
-import BlacklistModel from 'models/tokens/BlacklistModel'
+} from '../../models/notices/AssetsManagerNoticeModel'
+import PausedModel from '../../models/tokens/PausedModel'
+import BlacklistModel from '../../models/tokens/BlacklistModel'
 
 export const DUCK_ASSETS_MANAGER = 'assetsManager'
 

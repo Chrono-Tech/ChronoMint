@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ExchangeModel from 'models/exchange/ExchangeModel'
-import ExchangesCollection from 'models/exchange/ExchangesCollection'
+import ExchangeModel from '../../models/exchange/ExchangeModel'
+import ExchangesCollection from '../../models/exchange/ExchangesCollection'
 import * as a from './actions'
 
 export const initialState = new ExchangeModel()

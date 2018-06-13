@@ -3,15 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
-import type MultisigWalletDAO from 'dao/MultisigWalletDAO'
-import AddressesCollection from 'models/wallet/AddressesCollection'
-import AddressModel from 'models/wallet/AddressModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import OwnerCollection from 'models/wallet/OwnerCollection'
-import OwnerModel from 'models/wallet/OwnerModel'
-import multisigWalletService from 'services/MultisigWalletService'
+import AbstractContractDAO from './AbstractContractDAO'
+import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import type MultisigWalletDAO from './MultisigWalletDAO'
+import AddressesCollection from '../models/wallet/AddressesCollection'
+import AddressModel from '../models/wallet/AddressModel'
+import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
+import OwnerCollection from '../models/wallet/OwnerCollection'
+import OwnerModel from '../models/wallet/OwnerModel'
+import multisigWalletService from '../services/MultisigWalletService'
 import { MultiEventsHistoryABI, WalletsManagerABI } from './abi'
 
 export const EE_MS_WALLET_ADDED = 'MSWalletAdded'

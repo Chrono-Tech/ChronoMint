@@ -4,8 +4,8 @@
  */
 
 import { createSelector } from 'reselect'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
-import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
+import MultisigWalletModel from '../../../models/wallet/MultisigWalletModel'
+import { DUCK_MULTISIG_WALLET } from '../actions'
 
 export const getWallets = (state) => {
   return state.get(DUCK_MULTISIG_WALLET)

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
-import TxError from 'models/TxError'
+import { I18n } from '../../utils/i18n'
+import TxError from '../TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxExecModel from '../TxExecModel'
 

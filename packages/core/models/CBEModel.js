@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
-import validator from 'models/validator'
+import ErrorList from '../utils/ErrorList'
+import validator from './validator'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ProfileModel from './ProfileModel'
 

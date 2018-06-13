@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
-import { Icons } from 'platform/icons'
+import { I18n } from '../../utils/i18n'
+import { Icons } from '../../utils/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ErrorNoticeModel extends abstractNoticeModel({

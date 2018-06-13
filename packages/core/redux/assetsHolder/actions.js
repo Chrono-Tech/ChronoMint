@@ -3,17 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from 'dao/AbstractTokenDAO'
-import AssetHolderDAO from 'dao/AssetHolderDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import Amount from 'models/Amount'
-import AssetModel from 'models/assetHolder/AssetModel'
-import TokenModel from 'models/tokens/TokenModel'
-import AllowanceModel from 'models/wallet/AllowanceModel'
-import { WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { subscribeOnTokens } from 'redux/tokens/actions'
-import tokenService from 'services/TokenService'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from '../../dao/AbstractTokenDAO'
+import AssetHolderDAO from '../../dao/AssetHolderDAO'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import Amount from '../../models/Amount'
+import AssetModel from '../../models/assetHolder/AssetModel'
+import TokenModel from '../../models/tokens/TokenModel'
+import AllowanceModel from '../../models/wallet/AllowanceModel'
+import { WALLET_ALLOWANCE } from '../mainWallet/actions'
+import { DUCK_SESSION } from '../session/actions'
+import { subscribeOnTokens } from '../tokens/actions'
+import tokenService from '../../services/TokenService'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 

@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import type LOCManagerDAO from 'dao/LOCManagerDAO'
-import { TX_FRONTEND_ERROR_CODES } from 'dao/AbstractContractDAO'
-import LOCModel from 'models/LOCModel'
-import LOCNoticeModel from 'models/notices/LOCNoticeModel'
-import type TokenModel from 'models/tokens/TokenModel'
-import { notify } from 'redux/notifier/actions'
-import Amount from 'models/Amount'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import type LOCManagerDAO from '../../dao/LOCManagerDAO'
+import { TX_FRONTEND_ERROR_CODES } from '../../dao/AbstractContractDAO'
+import LOCModel from '../../models/LOCModel'
+import LOCNoticeModel from '../../models/notices/LOCNoticeModel'
+import type TokenModel from '../../models/tokens/TokenModel'
+import { notify } from '../notifier/actions'
+import Amount from '../../models/Amount'
 
 export const LOCS_LIST_FETCH = 'locs/LIST_FETCH'
 export const LOCS_LIST = 'locs/LIST'

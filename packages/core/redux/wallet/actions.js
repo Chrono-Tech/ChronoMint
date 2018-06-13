@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
-import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from 'redux/multisigWallet/actions'
-import { modalsOpen } from 'redux/modals/actions'
+import { DUCK_MAIN_WALLET } from '../mainWallet/actions'
+import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from '../multisigWallet/actions'
+import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
 import { getMainWallet, getMultisigWallets } from './selectors/models'
 
 export const DUCK_WALLET = 'wallet'

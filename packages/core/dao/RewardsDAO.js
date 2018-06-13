@@ -5,12 +5,12 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import type ERC20DAO from 'dao/ERC20DAO'
-import Amount from 'models/Amount'
-import AssetModel from 'models/assetHolder/AssetModel'
-import AssetsCollection from 'models/assetHolder/AssetsCollection'
-import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
-import tokenService from 'services/TokenService'
+import type ERC20DAO from './ERC20DAO'
+import Amount from '../models/Amount'
+import AssetModel from '../models/assetHolder/AssetModel'
+import AssetsCollection from '../models/assetHolder/AssetsCollection'
+import RewardsPeriodModel from '../models/rewards/RewardsPeriodModel'
+import tokenService from '../services/TokenService'
 import { MultiEventsHistoryABI, RewardsABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 

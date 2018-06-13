@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { getAccount } from 'redux/session/selectors/models'
-export { getProfile } from 'redux/session/selectors/models'
-export { getGasSliderCollection } from 'redux/session/selectors/models'
-export { getGasPriceMultiplier }  from 'redux/session/selectors/session'
-export { getAddressesList }from 'redux/session/selectors/session'
-export { getBlockchainAddressesList } from 'redux/session/selectors/session'
+export { getAccount } from './selectors/models'
+export { getProfile } from './selectors/models'
+export { getGasSliderCollection } from './selectors/models'
+export { getGasPriceMultiplier }  from './selectors/session'
+export { getAddressesList }from './selectors/session'
+export { getBlockchainAddressesList } from './selectors/session'

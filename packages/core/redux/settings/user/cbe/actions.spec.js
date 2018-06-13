@@ -5,12 +5,12 @@
 
 import Immutable from 'immutable'
 import { store, accounts } from 'specsInit'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import CBEModel from 'models/CBEModel'
-import CBENoticeModel from 'models/notices/CBENoticeModel'
-import ProfileModel from 'models/ProfileModel'
-import * as notifier from 'redux/notifier/actions'
-import * as validator from 'models/validator'
+import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
+import CBEModel from '../../../../models/CBEModel'
+import CBENoticeModel from '../../../../models/notices/CBENoticeModel'
+import ProfileModel from '../../../../models/ProfileModel'
+import * as notifier from '../../../notifier/actions'
+import * as validator from '../../../../models/validator'
 import * as a from './actions'
 
 const user = new ProfileModel({ name: 'testUser' })

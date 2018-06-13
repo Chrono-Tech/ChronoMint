@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MainAssetsManagerModel from 'models/assetsManager/MainAssetsManagerModel'
+import MainAssetsManagerModel from '../../models/assetsManager/MainAssetsManagerModel'
 import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,

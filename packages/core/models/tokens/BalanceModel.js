@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
+import Amount from '../Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class BalanceModel extends abstractFetchingModel({

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import VotingMainModel from 'models/voting/VotingMainModel'
+import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
   POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT,
 } from './actions'

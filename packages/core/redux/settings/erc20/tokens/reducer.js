@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TokenModel from 'models/tokens/TokenModel'
+import TokenModel from '../../../../models/tokens/TokenModel'
 import * as a from './actions'
 
 const initialState = {

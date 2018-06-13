@@ -4,9 +4,9 @@
  */
 
 import Immutable from 'immutable'
-import TokenModel from 'models/tokens/TokenModel'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import TokenModel from '../../models/tokens/TokenModel'
+import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
+import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import * as a from './actions'
 import reducer from './reducer'
 

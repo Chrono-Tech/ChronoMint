@@ -4,9 +4,9 @@
  */
 
 import Immutable from 'immutable'
-import OperationModel from 'models/OperationModel'
-import * as a from 'redux/operations/actions'
-import reducer from 'redux/operations/reducer'
+import OperationModel from '../../models/OperationModel'
+import * as a from './actions'
+import reducer from './reducer'
 
 let list = new Immutable.Map()
 const operation = new OperationModel({ id: 'hash', isConfirmed: true, remained: 1 })

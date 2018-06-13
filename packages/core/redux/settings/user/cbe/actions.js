@@ -4,11 +4,11 @@
  */
 
 import { change } from 'redux-form/immutable'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import type CBEModel from 'models/CBEModel'
-import type CBENoticeModel from 'models/notices/CBENoticeModel'
-import { notify } from 'redux/notifier/actions'
+import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
+import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel'
+import type CBEModel from '../../../../models/CBEModel'
+import type CBENoticeModel from '../../../../models/notices/CBENoticeModel'
+import { notify } from '../../../notifier/actions'
 
 export const CBE_LIST = 'settings/CBE_LIST'
 export const CBE_FORM = 'settings/CBE_FORM'

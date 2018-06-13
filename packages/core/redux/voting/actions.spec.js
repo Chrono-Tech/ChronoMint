@@ -3,21 +3,21 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PollEmitter from 'dao/PollEmitterDAO'
-import tokenService from 'services/TokenService'
+import PollEmitter from '../../dao/PollEmitterDAO'
+import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import PollModel from 'models/PollModel'
-import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_VOTED, } from 'models/notices/PollNoticeModel'
-import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
-import TokenModel from 'models/tokens/TokenModel'
-import TokensCollection from 'models/tokens/TokensCollection'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import VotingMainModel from 'models/voting/VotingMainModel'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import PollModel from '../../models/PollModel'
+import PollNoticeModel, { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_VOTED, } from '../../models/notices/PollNoticeModel'
+import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
+import TokenModel from '../../models/tokens/TokenModel'
+import TokensCollection from '../../models/tokens/TokensCollection'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS } from '../tokens/actions'
+import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
   activatePoll,
   createPoll,

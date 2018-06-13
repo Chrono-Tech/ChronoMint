@@ -3,5 +3,5 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export { getSelectedTokenId, getAssets, getPlatforms } from 'redux/assetsManager/selectors/models'
-export { getSelectedToken, getUserTokens } from 'redux/assetsManager/selectors/assetsManager'
+export { getSelectedTokenId, getAssets, getPlatforms } from './selectors/models'
+export { getSelectedToken, getUserTokens } from './selectors/assetsManager'

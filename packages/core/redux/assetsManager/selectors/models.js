@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
+import { DUCK_ASSETS_MANAGER } from '../actions'
 
 export const getSelectedTokenId = (state) => {
   return state.get(DUCK_ASSETS_MANAGER).selectedToken()

@@ -5,9 +5,9 @@
 
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-import { I18n } from 'platform/i18n'
-import Amount from 'models/Amount'
-import TokenModel from 'models/tokens/TokenModel'
+import { I18n } from '../utils/i18n'
+import Amount from './Amount'
+import TokenModel from './tokens/TokenModel'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import { dateFormatOptions } from './constants'
 

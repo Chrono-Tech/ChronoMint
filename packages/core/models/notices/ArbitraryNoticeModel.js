@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
+import { I18n } from '../../utils/i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ArbitraryNoticeModel extends abstractNoticeModel({

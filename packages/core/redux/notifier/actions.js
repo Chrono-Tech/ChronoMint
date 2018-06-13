@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import type AbstractNoticeModel from 'models/notices/AbstractNoticeModel'
-import ErrorNoticeModel from 'models/notices/ErrorNoticeModel'
+import type AbstractNoticeModel from '../../models/notices/AbstractNoticeModel'
+import ErrorNoticeModel from '../../models/notices/ErrorNoticeModel'
 
 export const NOTIFIER_MESSAGE = 'notifier/MESSAGE'
 export const NOTIFIER_READ = 'notifier/READ'
