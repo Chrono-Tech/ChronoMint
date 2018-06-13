@@ -44,7 +44,7 @@ import multisigWalletService, {
   EE_SINGLE_TRANSACTION,
 } from 'services/MultisigWalletService'
 import tokenService from 'services/TokenService'
-import { ETH, getTokensBalancesAndWatch } from 'redux/mainWallet/actions'
+import { ETH, getTokensBalancesAndWatch, getTransactionsForWallet } from 'redux/mainWallet/actions'
 import { getTokens } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { getMultisigWallets } from 'redux/wallet/selectors/models'
@@ -125,6 +125,7 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
         updatedWallet = updatedWallet.name(wallets.item(wallet.id()).name())
       }
       dispatch({ type: MULTISIG_FETCHED, wallet: updatedWallet })
+      await dispatch(check2FAChecked())
       dispatch(change(FORM_2FA_WALLET, 'step', FORM_2FA_STEPS[2]))
 
       const txHash = wallet.transactionHash()
@@ -152,10 +153,12 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     })
 }
 
-const handleTransfer = (walletId, multisigTransactionModel) => (dispatch, getState) => {
-  const wallet = getMultisigWallets(getState()).item(walletId)
+const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {
+  let wallet = getMultisigWallets(getState()).item(walletId)
   const pendingTxList = wallet.pendingTxList().remove(multisigTransactionModel)
-  dispatch(updateWallet(wallet.pendingTxList(pendingTxList)))
+  wallet = wallet.pendingTxList(pendingTxList)
+  dispatch(updateWallet(wallet))
+  await dispatch(getTransactionsForWallet({ wallet, address: wallet.address(), blockchain: wallet.blockchain(), forcedOffset: true }))
 
   if (!multisigTransactionModel.symbol()) {
     getTokens(getState()).items().map((token) => {
@@ -308,7 +311,7 @@ export const removeWallet = (wallet: MultisigWalletModel) => async (dispatch, ge
   }
 }
 
-export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async (dispatch) => {
+export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => async (/*dispatch*/) => {
   // dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
@@ -319,7 +322,7 @@ export const addOwner = (wallet: MultisigWalletModel, ownerAddress: string) => a
   }
 }
 
-export const removeOwner = (wallet, ownerAddress) => async (dispatch) => {
+export const removeOwner = (wallet, ownerAddress) => async (/*dispatch*/) => {
   // dispatch(updateWallet(wallet.isPending(true)))
   try {
     const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
