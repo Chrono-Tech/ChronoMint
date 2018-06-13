@@ -151,6 +151,14 @@
   flex-direction: column;
   padding-top: 50px;
   width: 370px;
+  :global {
+    .WalletMainCoinBalance__root {
+      color: $color-white;
+    }
+    .WalletMainCoinBalance__usd-amount {
+      color: $additionalData-color-1;
+    }
+  }
 }
 
 .token-container {
@@ -324,4 +332,8 @@
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 30px;
+}
+
+.noToken {
+  color: $error-color;
 }

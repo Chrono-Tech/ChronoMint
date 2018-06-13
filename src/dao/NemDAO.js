@@ -252,7 +252,6 @@ export default class NemDAO extends EventEmitter {
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
-      isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
     })

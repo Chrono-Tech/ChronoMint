@@ -22,11 +22,14 @@ import OwnerCollection from 'models/wallet/OwnerCollection'
 import OwnerModel from 'models/wallet/OwnerModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import { getMarket } from 'redux/market/selectors'
 import { DUCK_SESSION } from 'redux/session/actions'
 import { prefix } from './lang'
 import './TwoFaWalletForm.scss'
 
 function mapStateToProps (state) {
+
+  const { selectedCurrency } = getMarket(state)
   const selector = formValueSelector(FORM_2FA_WALLET)
   const feeMultiplier = selector(state, 'feeMultiplier')
   const step = selector(state, 'step')
@@ -34,6 +37,7 @@ function mapStateToProps (state) {
   const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()
 
   return {
+    selectedCurrency,
     check2FAChecked,
     step,
     account,
@@ -77,6 +81,7 @@ function mapDispatchToProps (dispatch) {
 @reduxForm({ form: FORM_2FA_WALLET })
 export default class TwoFaWalletForm extends PureComponent {
   static propTypes = {
+    selectedCurrency: PropTypes.string,
     check2FAChecked: PropTypes.bool,
     handleSubmit: PropTypes.func,
     account: PropTypes.string,
@@ -126,7 +131,7 @@ export default class TwoFaWalletForm extends PureComponent {
     }
     if (this.state.gasFee) {
       return (
-        <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈USD `}
+        <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
           <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
         </span>
       )

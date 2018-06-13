@@ -13,7 +13,6 @@ import { watchStopMarket } from 'redux/market/action'
 import { removeWatchersUserMonitor } from 'redux/ui/actions'
 import { cbeWatcher, watcher } from 'redux/watcher/actions'
 import ls from 'utils/LocalStorage'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
 import { notify } from 'redux/notifier/actions'
 
 export const DUCK_SESSION = 'session'
@@ -30,6 +29,14 @@ export const DEFAULT_CBE_URL = '/wallets'
 export const GAS_SLIDER_MULTIPLIER_CHANGE = 'session/GAS_SLIDER_MULTIPLIER_CHANGE'
 
 export const CURRENT_PROFILE_VERSION = 1
+export const PROFILE_PANEL_TOKENS = [
+  { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
+  { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
+  { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
+  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
+  { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
+  { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
+]
 
 export const createSession = ({ account, provider, network, dispatch }) => {
   ls.createSession(account, provider, network)
@@ -126,65 +133,6 @@ export const updateUserProfile = (newProfile: ProfileModel) => async (dispatch, 
     console.error('update profile error', e.message)
     dispatch({ type: SESSION_PROFILE_UPDATE, profile })
   }
-}
-
-export const rebuildProfileTokens = (profile, tokens) => {
-  let profileTokens = []
-
-  if (profile.version() !== CURRENT_PROFILE_VERSION) {
-    profile.tokens().toArray().map((item) => {
-      if (!item) {                              // for null
-        return
-      }
-
-      let token
-      if (typeof item === 'string') {
-        if (item.indexOf('/') + 1) {            // for 'Bitcoin/BTC'
-          const [, symbol] = item.split('/')
-          token = tokens.item(symbol)
-        } else {                                // for 'address'
-          token = tokens.getByAddress(item)
-        }
-      }
-
-      if (item.symbol) {                        // for 'BTC'
-        token = tokens.item(item.symbol)
-      }
-
-      token.isFetched() && profileTokens.push({
-        address: token.address(),
-        symbol: token.symbol(),
-        blockchain: token.blockchain(),
-        show: true,
-      })
-
-    })
-  } else {
-    profileTokens = profile.tokens().toArray()
-  }
-
-  const defaultTokens = DEFAULT_TOKENS.filter((symbol) => {
-    let inIncluded = false
-    profileTokens.map((profileToken) => {
-      if (profileToken.symbol === symbol) {
-        inIncluded = true
-      }
-    })
-    return !inIncluded
-  })
-
-  defaultTokens.map((symbol) => {
-    let token = tokens.item(symbol)
-
-    token.isFetched() && profileTokens.push({
-      address: token.address(),
-      symbol: token.symbol(),
-      blockchain: token.blockchain(),
-      show: true,
-    })
-  })
-
-  return profileTokens
 }
 
 export const watchInitProfile = () => async (dispatch) => {

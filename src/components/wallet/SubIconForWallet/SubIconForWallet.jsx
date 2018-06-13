@@ -3,25 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PropTypes from 'prop-types'
+import { PTWallet } from 'redux/wallet/types'
 import React, { PureComponent } from 'react'
 
 import './SubIconForWallet.scss'
 
 export default class SubIconForWallet extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
   }
 
   render () {
