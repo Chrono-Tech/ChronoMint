@@ -13,7 +13,7 @@ import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidge
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { goToWallets } from 'redux/mainWallet/actions'
+import { getTransactionsForWallet, goToWallets } from 'redux/mainWallet/actions'
 import { getWalletInfo } from 'components/wallet/WalletWidgetMini/selectors'
 import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
 import { PTWallet } from 'redux/wallet/types'
@@ -38,6 +38,7 @@ function makeMapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     goToWallets: () => dispatch(goToWallets()),
+    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
   }
 }
 
@@ -48,6 +49,7 @@ export default class WalletContent extends Component {
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
     goToWallets: PropTypes.func,
+    getTransactions: PropTypes.func,
     wallet: PTWallet,
   }
 
@@ -57,6 +59,15 @@ export default class WalletContent extends Component {
     if (!props.wallet.blockchain || !props.wallet.address) {
       props.goToWallets()
     }
+  }
+
+  componentDidMount () {
+    this.handleGetTransactions(true)
+  }
+
+  handleGetTransactions = (forcedOffset) => {
+    const { wallet, address, blockchain } = this.props
+    this.props.getTransactions({ wallet, address, blockchain, forcedOffset })
   }
 
   render () {
