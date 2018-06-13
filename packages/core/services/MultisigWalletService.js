@@ -3,13 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerModel from 'models/wallet/OwnerModel'
-import MultisigWalletDAO from 'dao/MultisigWalletDAO'
+import OwnerModel from '../models/wallet/OwnerModel'
+import MultisigWalletDAO from '../dao/MultisigWalletDAO'
 import EventEmitter from 'events'
-import type MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
-import type MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import type MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
+import type MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
 
 export const EE_CONFIRMATION = 'Confirmation'
 export const EE_REVOKE = 'Revoke'

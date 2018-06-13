@@ -3,13 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from 'dao/RewardsDAO'
-import AssetModel from 'models/assetHolder/AssetModel'
-import RewardsPeriodModel from 'models/rewards/RewardsPeriodModel'
-import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { subscribeOnTokens } from 'redux/tokens/actions'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import { EE_REWARDS_ERROR, EE_REWARDS_PERIOD, EE_REWARDS_PERIOD_CLOSED } from '../../dao/RewardsDAO'
+import AssetModel from '../../models/assetHolder/AssetModel'
+import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
+import TokenModel from '../../models/tokens/TokenModel'
+import { DUCK_SESSION } from '../session/actions'
+import { subscribeOnTokens } from '../tokens/actions'
 
 export const DUCK_REWARDS = 'rewards'
 

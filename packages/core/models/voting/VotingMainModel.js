@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import { abstractFetchingModel } from 'models/AbstractFetchingModel'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import BigNumber from 'bignumber.js'
 import VotingCollection from './VotingCollection'
 

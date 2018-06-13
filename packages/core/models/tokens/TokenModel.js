@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerCollection from '../wallet/OwnerCollection'
 import BigNumber from 'bignumber.js'
-import type AbstractTokenDAO from 'dao/AbstractTokenDAO'
-import type ERC20DAO from 'dao/ERC20DAO'
-import Amount from 'models/Amount'
+import type AbstractTokenDAO from '../../dao/AbstractTokenDAO'
+import type ERC20DAO from '../../dao/ERC20DAO'
+import Amount from '../Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import FeeModel from './FeeModel'
 import ReissuableModel from './ReissuableModel'

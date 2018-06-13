@@ -4,8 +4,8 @@
  */
 
 import { store, accounts } from 'specsInit'
-import CBEModel from 'models/CBEModel'
-import CBENoticeModel from 'models/notices/CBENoticeModel'
+import CBEModel from '../../models/CBEModel'
+import CBENoticeModel from '../../models/notices/CBENoticeModel'
 import * as a from './actions'
 
 const cbe = new CBEModel({ address: accounts[1] })

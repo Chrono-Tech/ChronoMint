@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TokensCollection from 'models/tokens/TokensCollection'
+import TokensCollection from '../../models/tokens/TokensCollection'
 import * as a from './actions'
 
 const initialState = new TokensCollection()

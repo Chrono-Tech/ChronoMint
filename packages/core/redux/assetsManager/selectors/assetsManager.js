@@ -4,9 +4,9 @@
  */
 
 import { createSelector } from 'reselect'
-import TokensCollection from 'models/tokens/TokensCollection'
-import { getTokens } from 'redux/tokens/selectors'
-import { getSelectedTokenId, getPlatforms, getAssets } from 'redux/assetsManager/selectors/models'
+import TokensCollection from '../../../models/tokens/TokensCollection'
+import { getTokens } from '../../tokens/selectors'
+import { getSelectedTokenId, getPlatforms, getAssets } from './models'
 
 export const getSelectedToken = () => createSelector(
   [getTokens, getSelectedTokenId],

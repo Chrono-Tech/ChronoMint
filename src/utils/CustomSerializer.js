@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 
 class CustomSerializer {
   test (val) {

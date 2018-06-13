@@ -4,10 +4,10 @@
  */
 
 import BigNumber from 'bignumber.js'
-import VotingCollection from 'models/voting/VotingCollection'
-import PollModel from 'models/PollModel'
-import PollDetailsModel from 'models/PollDetailsModel'
-import VotingMainModel from 'models/voting/VotingMainModel'
+import VotingCollection from '../../models/voting/VotingCollection'
+import PollModel from '../../models/PollModel'
+import PollDetailsModel from '../../models/PollDetailsModel'
+import VotingMainModel from '../../models/voting/VotingMainModel'
 import * as a from './actions'
 import reducer from './reducer'
 

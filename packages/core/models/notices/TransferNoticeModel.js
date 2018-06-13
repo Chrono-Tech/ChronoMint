@@ -4,8 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from 'platform/i18n'
-import { Icons } from 'platform/icons'
+import { I18n } from '../../utils/i18n'
+import { Icons } from '../../utils/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
 

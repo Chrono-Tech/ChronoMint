@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import type Amount from 'models/Amount'
-import type TxModel from 'models/TxModel'
-import { address } from 'models/validator'
-import TokenModel from 'models/tokens/TokenModel'
+import type Amount from '../models/Amount'
+import type TxModel from '../models/TxModel'
+import { address } from '../models/validator'
+import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'

@@ -4,11 +4,11 @@
  */
 
 import Immutable from 'immutable'
-import BalancesCollection from 'models/tokens/BalancesCollection'
-import AddressesCollection from 'models/wallet/AddressesCollection'
-import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
-import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import BalancesCollection from '../tokens/BalancesCollection'
+import AddressesCollection from './AddressesCollection'
+import MultisigWalletPendingTxCollection from './MultisigWalletPendingTxCollection'
+import TransactionsCollection from './TransactionsCollection'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
 

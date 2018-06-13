@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '../models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import tokenService from 'services/TokenService'
+import tokenService from '../services/TokenService'
 import { AssetHolderABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'

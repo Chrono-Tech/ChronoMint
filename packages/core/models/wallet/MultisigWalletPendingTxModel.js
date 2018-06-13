@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TxExecModel from 'models/TxExecModel'
+import TxExecModel from '../TxExecModel'
 import BigNumber from 'bignumber.js'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 

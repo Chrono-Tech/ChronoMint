@@ -3,18 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from 'services/TokenService'
+import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Immutable from 'immutable'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
-import { DUCK_SESSION } from 'redux/session/actions'
-import exchangeService from 'services/ExchangeService'
-import { fetchTokenBalance, WALLET_ALLOWANCE } from 'redux/mainWallet/actions'
-import TokenModel from 'models/tokens/TokenModel'
-import { DUCK_TOKENS, subscribeOnTokens } from 'redux/tokens/actions'
-import AllowanceModel from 'models/wallet/AllowanceModel'
-import Amount from 'models/Amount'
+import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
+import { DUCK_SESSION } from '../session/actions'
+import exchangeService from '../../services/ExchangeService'
+import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
+import TokenModel from '../../models/tokens/TokenModel'
+import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import AllowanceModel from '../../models/wallet/AllowanceModel'
+import Amount from '../../models/Amount'
 
 export const DUCK_EXCHANGE = 'exchange'
 

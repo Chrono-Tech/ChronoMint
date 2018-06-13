@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
-import { Icons } from 'platform/icons'
-import type TokenModel from 'models/tokens/TokenModel'
+import { I18n } from '../../utils/i18n'
+import { Icons } from '../../utils/icons'
+import type TokenModel from '../tokens/TokenModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export const IS_ADDED = 'isAdded'

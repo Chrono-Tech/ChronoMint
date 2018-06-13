@@ -5,8 +5,8 @@
 
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
-import { TIME } from 'redux/mainWallet/actions'
+import Amount from '../models/Amount'
+import { TIME } from '../redux/mainWallet/actions'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 

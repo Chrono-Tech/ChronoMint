@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import TxExecModel from 'models/TxExecModel'
+import TxExecModel from '../../models/TxExecModel'
 import * as a from './actions'
 
 export const initialState = {

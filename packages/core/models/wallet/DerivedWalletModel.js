@@ -4,8 +4,8 @@
  */
 
 import Immutable from 'immutable'
-import BalancesCollection from 'models/tokens/BalancesCollection'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import BalancesCollection from '../tokens/BalancesCollection'
+import TransactionsCollection from './TransactionsCollection'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
 import AddressesCollection from './AddressesCollection'

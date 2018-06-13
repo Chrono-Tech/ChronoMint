@@ -4,9 +4,9 @@
  */
 
 import Immutable from 'immutable'
-import OperationNoticeModel from 'models/notices/OperationNoticeModel'
-import OperationModel from 'models/OperationModel'
-import type TxExecModel from 'models/TxExecModel'
+import OperationNoticeModel from '../models/notices/OperationNoticeModel'
+import OperationModel from '../models/OperationModel'
+import type TxExecModel from '../models/TxExecModel'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'

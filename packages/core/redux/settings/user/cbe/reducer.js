@@ -4,7 +4,7 @@
  */
 
 import Immutable from 'immutable'
-import CBEModel from 'models/CBEModel'
+import CBEModel from '../../../../models/CBEModel'
 import * as a from './actions'
 
 const initialState = {

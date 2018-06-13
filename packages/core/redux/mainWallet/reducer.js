@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MainWalletModel from 'models/wallet/MainWalletModel'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { REHYDRATE } from 'redux-persist'
-import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import TransactionsCollection from '../../models/wallet/TransactionsCollection'
 import * as a from './actions'
 
 const initialState = new MainWalletModel()

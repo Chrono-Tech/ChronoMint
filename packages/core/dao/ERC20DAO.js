@@ -4,10 +4,10 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Amount from 'models/Amount'
-import TokenModel from 'models/tokens/TokenModel'
-import TxModel from 'models/TxModel'
-import { TXS_PER_PAGE } from 'models/wallet/TransactionsCollection'
+import Amount from '../models/Amount'
+import TokenModel from '../models/tokens/TokenModel'
+import TxModel from '../models/TxModel'
+import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'

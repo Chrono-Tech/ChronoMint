@@ -4,10 +4,10 @@
  */
 
 import { createSelector } from 'reselect'
-import { PROFILE_PANEL_TOKENS } from 'redux/session/actions'
-import { selectMainWalletAddressesListStore } from 'redux/wallet/selectors'
-import { getGasSliderCollection } from 'redux/session/selectors/models'
-import AddressModel from 'models/wallet/AddressModel'
+import { PROFILE_PANEL_TOKENS } from '../actions'
+import { selectMainWalletAddressesListStore } from '../../wallet/selectors'
+import { getGasSliderCollection } from './models'
+import AddressModel from '../../../models/wallet/AddressModel'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
   (gasSliderCollection) => {

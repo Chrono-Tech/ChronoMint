@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '../actions'
 
 export const getAccount = (state) => {
   const { account } = state.get(DUCK_SESSION)

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import CCC from 'market/ccc-streamer-utilities'
+import CCC from './ccc-streamer-utilities'
 import EventEmitter from 'events'
 import openSocket from 'socket.io-client'
 

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
-import TransferError from 'models/TransferError'
+import { I18n } from '../../utils/i18n'
+import TransferError from '../TransferError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TransferExecModel from '../TransferExecModel'
 

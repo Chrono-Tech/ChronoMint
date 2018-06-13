@@ -4,10 +4,10 @@
  */
 
 import { createSelector } from 'reselect'
-import AddressModel from 'models/wallet/AddressModel'
-import { getAssetsFromAssetHolder } from 'redux/assetsHolder/selectors'
-import { getTokens } from 'redux/tokens/selectors'
-import { DUCK_MAIN_WALLET } from 'redux/mainWallet/actions'
+import AddressModel from '../../../models/wallet/AddressModel'
+import { getAssetsFromAssetHolder } from '../../assetsHolder/selectors'
+import { getTokens } from '../../tokens/selectors'
+import { DUCK_MAIN_WALLET } from '../actions'
 
 export const getWallet = (state) => {
   return state.get(DUCK_MAIN_WALLET).addresses()

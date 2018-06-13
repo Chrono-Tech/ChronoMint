@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from 'platform/i18n'
+import { I18n } from '../utils/i18n'
 import Immutable from 'immutable'
 import moment from 'moment'
 import uniqid from 'uniqid'

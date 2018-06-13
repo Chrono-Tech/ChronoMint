@@ -4,12 +4,12 @@
  */
 
 import { store } from 'specsInit'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
-import fakeCoinDAO from 'dao/FakeCoinDAO'
-import type AbstractFetchingModel from 'models/AbstractFetchingModel'
-import TokenModel from 'models/tokens/TokenModel'
-import type TokenNoticeModel from 'models/notices/TokenNoticeModel'
-import { TIME } from 'redux/mainWallet/actions'
+import contractsManagerDAO from '../../../../dao/ContractsManagerDAO'
+import fakeCoinDAO from '../../../../dao/FakeCoinDAO'
+import type AbstractFetchingModel from '../../../../models/AbstractFetchingModel'
+import TokenModel from '../../../../models/tokens/TokenModel'
+import type TokenNoticeModel from '../../../../models/notices/TokenNoticeModel'
+import { TIME } from '../../../mainWallet/actions'
 import * as a from './actions'
 
 let token: TokenModel | AbstractFetchingModel

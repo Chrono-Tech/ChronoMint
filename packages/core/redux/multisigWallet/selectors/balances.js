@@ -4,38 +4,23 @@
  */
 
 import { createSelector } from 'reselect'
-import { getTokens } from 'redux/tokens/selectors'
-import { selectMainWalletBalancesListStore, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from 'redux/wallet/selectors'
-import { tokensAndAmountsSelector, tokensCountBalanceSelector } from './tokens'
+import { getTokens } from '../../tokens/selectors'
+import { selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore } from '../../wallet/selectors'
+import { multisigTokensAndAmountsSelector } from './tokens'
+import { getWallet } from './models'
 
-export const filteredBalances = (blockchain: string, filterSymbol) => createSelector(
+export const filteredBalancesAndTokens = (address, symbol: string) => createSelector(
   [
-    selectMainWalletBalancesListStore,
+    getWallet(address),
     getTokens,
   ],
   (
-    balances,
+    wallet,
     tokens,
   ) => {
-    return balances
-      .filter((balance) => {
-        const symbol = balance.symbol()
-        const token = symbol && tokens.item(symbol)
-        return token && token.blockchain() === blockchain && (filterSymbol ? symbol === filterSymbol : true)
-      })
-  },
-)
-
-export const filteredBalancesAndTokens = (blockchain: string, symbol: string) => createSelector(
-  [
-    filteredBalances(blockchain, symbol),
-    getTokens,
-  ],
-  (
-    balances,
-    tokens,
-  ) => {
-    return balances
+    return wallet.balances()
+      .list()
+      .filter((balance) => symbol ? balance.symbol() === symbol : true)
       .map((balance) => {
         return {
           balance: balance,
@@ -45,9 +30,9 @@ export const filteredBalancesAndTokens = (blockchain: string, symbol: string) =>
   },
 )
 
-const balanceCalculator = (blockchain: string, symbol: string) => createSelector(
+const balanceCalculator = (address: string, symbol: string) => createSelector(
   [
-    tokensAndAmountsSelector(blockchain, symbol),
+    multisigTokensAndAmountsSelector(address, symbol),
     selectMarketPricesSelectedCurrencyStore,
     selectMarketPricesListStore,
   ],
@@ -67,9 +52,9 @@ const balanceCalculator = (blockchain: string, symbol: string) => createSelector
   },
 )
 
-export const balanceSelector = (blockchain: string, symbol: string) => createSelector(
+export const multisigBalanceSelector = (address: string, symbol: string) => createSelector(
   [
-    balanceCalculator(blockchain, symbol),
+    balanceCalculator(address, symbol),
   ],
   (
     calculatedBalance,
@@ -78,9 +63,32 @@ export const balanceSelector = (blockchain: string, symbol: string) => createSel
   },
 )
 
-export const mainWalletBalanceSelector = (blockchain: string, symbol: string) => createSelector(
+export const tokensCountBalanceSelector = (address: string, symbol: string, notFilterZero: boolean) => createSelector(
   [
-    tokensCountBalanceSelector(blockchain, symbol, true),
+    filteredBalancesAndTokens(address, symbol),
+  ],
+  (
+    balancesInfo,
+  ) => {
+
+    return balancesInfo
+      .map((info) => {
+        const symbol = info.balance.symbol()
+        return {
+          'symbol': symbol,
+          'value': info.token.removeDecimals(info.balance.amount()).toNumber(),
+        }
+      })
+      .filter((balance) => {
+        return notFilterZero ? true : balance.value > 0
+      })
+      .toArray()
+  },
+)
+
+export const multisigWalletBalanceSelector = (address: string, symbol: string) => createSelector(
+  [
+    tokensCountBalanceSelector(address, symbol, true),
   ],
   (
     balancesInfo,
@@ -89,9 +97,9 @@ export const mainWalletBalanceSelector = (blockchain: string, symbol: string) =>
   },
 )
 
-export const mainWalletTokenBalanceSelector = (blockchain: string) => createSelector(
+export const multisigWalletTokenBalanceSelector = (address: string) => createSelector(
   [
-    tokensCountBalanceSelector(blockchain),
+    tokensCountBalanceSelector(address),
   ],
   (
     balancesInfo,
@@ -130,7 +138,7 @@ export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: s
   },
 )
 
-export const mainWalletTokenBalanceWithPriceSelector = (blockchain: string) => createSelector(
+export const multisigWalletTokenBalanceWithPriceSelector = (blockchain: string) => createSelector(
   [
     tokensCountBalanceAndPriceSelector(blockchain),
   ],
