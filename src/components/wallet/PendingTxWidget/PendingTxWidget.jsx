@@ -19,18 +19,23 @@ import { confirmMultisigTx, getPendingData, revokeMultisigTx } from 'redux/multi
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/TwoFaConfirmModal'
+import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import { getMultisigWallets } from 'redux/wallet/selectors/models'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './PendingTxWidget.scss'
 
-function mapStateToProps (state) {
+function mapStateToProps (state, ownProps) {
   return {
+    wallet: !ownProps.walletInfo.isMain ? getMultisigWallets(state).item(ownProps.walletInfo.address) : null,
     tokens: state.get(DUCK_TOKENS),
     locale: state.get(DUCK_I18N).locale,
   }
 }
 
 function mapDispatchToProps (dispatch) {
+
   return {
     revoke: (wallet, tx) => dispatch(revokeMultisigTx(wallet, tx)),
     confirm: (wallet, tx) => dispatch(confirmMultisigTx(wallet, tx)),
@@ -48,16 +53,20 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class PendingTxWidget extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MultisigWalletModel),
+    wallet: PropTypes.oneOfType([
+      PropTypes.instanceOf(MultisigWalletModel),
+      PropTypes.instanceOf(DerivedWalletModel),
+    ]),
     revoke: PropTypes.func,
     confirm: PropTypes.func,
     getPendingData: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     locale: PropTypes.string,
     enterCode: PropTypes.func,
+    walletInfo: PTWallet,
   }
 
-  componentWillMount () {
+  componentDidMount () {
     this.checkAndFetchPendings(this.props.wallet)
   }
 
@@ -78,7 +87,7 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   checkAndFetchPendings (wallet) {
-    if (wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
+    if (!wallet || (!wallet.is2FA() && !wallet.isMultisig()) || wallet.pendingTxList().isFetched() || wallet.pendingTxList().isFetching()) {
       return
     }
 
@@ -179,7 +188,11 @@ export default class PendingTxWidget extends PureComponent {
   }
 
   render () {
-    const { wallet } = this.props
+    const { wallet, walletInfo } = this.props
+
+    if (!walletInfo || !walletInfo.isMultisig || !walletInfo.is2FA) {
+      return null
+    }
 
     return (
       <div styleName='root' className='PendingTxWidget__root'>

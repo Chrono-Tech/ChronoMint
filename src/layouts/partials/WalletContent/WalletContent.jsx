@@ -5,76 +5,56 @@
 
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_WALLET } from 'redux/wallet/actions'
 import WalletWidgetDetail from 'components/wallet/WalletWidgetDetail/WalletWidgetDetail'
-import { TransactionsTable } from 'components'
-import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import TokensListWidget from 'components/wallet/TokensListWidget/TokensListWidget'
 import PendingTxWidget from 'components/wallet/PendingTxWidget/PendingTxWidget'
 import OwnersListWidget from 'components/wallet/OwnersListWidget/OwnersListWidget'
-import { getTransactionsForWallet, goToWallets } from 'redux/mainWallet/actions'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import { goToWallets } from 'redux/mainWallet/actions'
+import { getWalletInfo } from 'components/wallet/WalletWidgetMini/selectors'
+import TransactionsListWidget from 'components/wallet/TransactionsListWidget/TransactionsListWidget'
+import { PTWallet } from 'redux/wallet/types'
 
 import './WalletContent.scss'
-import { prefix } from './lang'
 
-function mapStateToProps (state) {
-  const network = state.get(DUCK_NETWORK)
-  const { isMultisig, blockchain, address } = state.get(DUCK_WALLET)
-  const wallet = walletDetailSelector(blockchain, address)(state)
-
-  return {
-    isMultisig,
-    blockchain,
-    address,
-    wallet,
-    walletInfo: walletInfoSelector(wallet, blockchain, address, false, state),
-    selectedNetworkId: network.selectedNetworkId,
-    selectedProviderId: network.selectedProviderId,
-    isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
+function makeMapStateToProps (state) {
+  const { blockchain, address } = state.get(DUCK_WALLET)
+  const getWallet = getWalletInfo(blockchain, address)
+  const mapStateToProps = (ownState) => {
+    const network = state.get(DUCK_NETWORK)
+    return {
+      wallet: getWallet(ownState),
+      selectedNetworkId: network.selectedNetworkId,
+      selectedProviderId: network.selectedProviderId,
+      isTesting: isTestingNetwork(network.selectedNetworkId, network.selectedProviderId),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     goToWallets: () => dispatch(goToWallets()),
-    getTransactions: (params) => dispatch(getTransactionsForWallet(params)),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletContent extends Component {
   static propTypes = {
-    isMultisig: PropTypes.bool,
     isTesting: PropTypes.bool,
     selectedNetworkId: PropTypes.number,
     selectedProviderId: PropTypes.number,
-    blockchain: PropTypes.string,
-    address: PropTypes.string,
     goToWallets: PropTypes.func,
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
-    walletInfo: PropTypes.shape({
-      address: PropTypes.string,
-      balance: PropTypes.number,
-      tokens: PropTypes.array,
-    }),
-    getTransactions: PropTypes.func,
+    wallet: PTWallet,
   }
 
   constructor (props) {
     super(props)
 
-    if (!props.blockchain || !props.address) {
+    if (!props.wallet.blockchain || !props.wallet.address) {
       props.goToWallets()
     }
   }
@@ -89,32 +69,19 @@ export default class WalletContent extends Component {
   }
 
   render () {
-    const { blockchain, address, wallet, walletInfo } = this.props
-
-    if (!wallet || !walletInfo) {
-      return null
-    }
-    let transactions
-    if (wallet instanceof MainWalletModel) {
-      transactions = wallet.transactions({ blockchain, address })
-    } else {
-      transactions = wallet.transactions()
-    }
+    const { wallet } = this.props
 
     return (
       <div styleName='root'>
-        <WalletWidgetDetail blockchain={blockchain} address={address} wallet={wallet} walletInfo={walletInfo} />
+        <WalletWidgetDetail wallet={wallet} />
 
-        {walletInfo.tokens.length > 1 && <TokensListWidget tokensList={walletInfo.tokens} />}
+        <TokensListWidget wallet={wallet} />
 
-        {wallet.isMultisig() && <PendingTxWidget wallet={wallet} />}
+        <PendingTxWidget walletInfo={wallet} />
 
-        {wallet.isMultisig() && <OwnersListWidget wallet={wallet} />}
+        <OwnersListWidget wallet={wallet} />
 
-        <div styleName='transactions'>
-          <div styleName='header'><Translate value={`${prefix}.transactions`} /></div>
-          <TransactionsTable transactions={transactions} walletAddress={address} blockchain={blockchain} onGetTransactions={this.handleGetTransactions} />
-        </div>
+        <TransactionsListWidget wallet={wallet} />
       </div>
     )
   }

@@ -13,29 +13,43 @@ import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { integerWithDelimiter } from 'utils/formatter'
 import TokensCollection from 'models/tokens/TokensCollection'
 import { Button } from 'components'
+import { mainWalletTokenBalanceWithPriceSelector } from 'redux/mainWallet/selectors'
+import { multisigWalletTokenBalanceWithPriceSelector } from 'redux/multisigWallet/selectors'
+import { PTWallet } from 'redux/wallet/types'
 
 import { prefix } from './lang'
 import './TokensListWidget.scss'
 
-function mapStateToProps (state, ownProps) {
-  return {
-    tokens: state.get(DUCK_TOKENS),
+function makeMapStateToProps (state, props) {
+  const { wallet } = props
+  let getAmount
+  if (wallet.isMain) {
+    getAmount = mainWalletTokenBalanceWithPriceSelector(wallet.blockchain)
+  } else {
+    getAmount = multisigWalletTokenBalanceWithPriceSelector(wallet.address)
   }
+  const mapStateToProps = (ownState) => {
+    return {
+      tokensBalances: getAmount(ownState),
+      tokens: ownState.get(DUCK_TOKENS),
+    }
+  }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
   return {}
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class TokensListWidget extends PureComponent {
   static propTypes = {
     tokens: PropTypes.instanceOf(TokensCollection),
-    tokensList: PropTypes.arrayOf(PropTypes.shape({
-      amount: PropTypes.number,
-      amountPrice: PropTypes.number,
+    tokensBalances: PropTypes.arrayOf(PropTypes.shape({
       symbol: PropTypes.string,
+      value: PropTypes.number,
     })),
+    wallet: PTWallet,
   }
 
   constructor (props) {
@@ -56,7 +70,7 @@ export default class TokensListWidget extends PureComponent {
 
   getTokensList = () => {
     const { sortBy, direction } = this.state
-    const tokens = this.props.tokensList.sort((a, b) => {
+    const tokens = this.props.tokensBalances.sort((a, b) => {
       if (a[sortBy] < b[sortBy]) {
         return direction
       }
@@ -82,11 +96,16 @@ export default class TokensListWidget extends PureComponent {
   }
 
   render () {
-    const { tokensList } = this.props
+    const { tokensBalances } = this.props
+
+    if (tokensBalances.length < 2) {
+      return null
+    }
+
     return (
       <div styleName='root' className='TokensListWidget__root'>
         <div styleName='header'>
-          <Translate value={`${prefix}.title`} count={tokensList.length} />
+          <Translate value={`${prefix}.title`} count={tokensBalances.length} />
         </div>
 
         <div styleName='tokens-list'>
@@ -96,13 +115,13 @@ export default class TokensListWidget extends PureComponent {
                 <Translate value={`${prefix}.token`} />&nbsp;
                 {this.renderDirection('symbol')}
               </div>
-              <div styleName='tokens-list-table-cell-sort-amount' onTouchTap={this.setSort('amount')}>
+              <div styleName='tokens-list-table-cell-sort-amount' onTouchTap={this.setSort('value')}>
                 <Translate value={`${prefix}.amount`} />&nbsp;
-                {this.renderDirection('amount')}
+                {this.renderDirection('value')}
               </div>
-              <div styleName='tokens-list-table-cell-sort-usd' onTouchTap={this.setSort('amountPrice')}>
+              <div styleName='tokens-list-table-cell-sort-usd' onTouchTap={this.setSort('valueUsd')}>
                 <Translate value={`${prefix}.fiat`} />&nbsp;
-                {this.renderDirection('amountPrice')}
+                {this.renderDirection('valueUsd')}
               </div>
             </div>
             {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
@@ -114,10 +133,10 @@ export default class TokensListWidget extends PureComponent {
                     {tokenMap.symbol}
                   </div>
                   <div styleName='tokens-list-table-cell-amount'>
-                    {integerWithDelimiter(tokenMap.amount, true, null)}
+                    {integerWithDelimiter(tokenMap.value, true, null)}
                   </div>
                   <div styleName='tokens-list-table-cell-usd'>
-                    {integerWithDelimiter(tokenMap.amountPrice.toFixed(2), true)}
+                    {integerWithDelimiter(tokenMap.valueUsd.toFixed(2), true)}
                   </div>
                 </div>
               )
@@ -126,7 +145,7 @@ export default class TokensListWidget extends PureComponent {
         </div>
 
         <div styleName='more'>
-          {tokensList.length > 2 && (
+          {tokensBalances.length > 2 && (
             <Button
               flat
               label={<Translate value={`${prefix}.${this.state.isShowAll ? 'less' : 'more'}`} />}
