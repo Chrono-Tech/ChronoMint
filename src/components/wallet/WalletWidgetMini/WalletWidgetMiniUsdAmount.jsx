@@ -7,18 +7,25 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { balanceSelector } from 'redux/mainWallet/selectors'
 import { multisigBalanceSelector } from 'redux/multisigWallet/selectors'
+import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
+import { PTWallet } from 'redux/wallet/types'
 import { connect } from 'react-redux'
+import { integerWithDelimiter } from 'utils/formatter'
+import { getMarket } from 'redux/market/selectors'
 
 function makeMapStateToProps (state, ownProps) {
   const { wallet } = ownProps
   let getAmount
+  const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   if (wallet.isMain) {
-    getAmount = balanceSelector(wallet.blockchain)
+    getAmount = balanceSelector(wallet.blockchain, mainSymbol)
   } else {
-    getAmount = multisigBalanceSelector(wallet.address)
+    getAmount = multisigBalanceSelector(wallet.address, mainSymbol)
   }
   const mapStateToProps = (ownState) => {
+    const { selectedCurrency } = getMarket(state)
     return {
+      selectedCurrency,
       amount: getAmount(ownState),
     }
   }
@@ -28,22 +35,12 @@ function makeMapStateToProps (state, ownProps) {
 @connect(makeMapStateToProps)
 export default class WalletWidgetMiniUsdAmount extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      customTokens: PropTypes.arrayOf(),
-    }),
+    selectedCurrency: PropTypes.string,
+    wallet: PTWallet,
     amount: PropTypes.number,
   }
 
   render () {
-    return <span>USD&nbsp;{this.props.amount}</span>
+    return <span>{this.props.selectedCurrency}&nbsp;{integerWithDelimiter(this.props.amount.toFixed(2), true)}</span>
   }
 }

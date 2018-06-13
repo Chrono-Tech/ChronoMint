@@ -342,3 +342,7 @@
 .separator {
   border-top: 1px solid $color-grey-1;
 }
+
+.noToken {
+  color: $error-color;
+}

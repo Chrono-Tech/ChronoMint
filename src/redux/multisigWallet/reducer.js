@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
       const incoming = action.payload.multisigWallet
-      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.isInited(false)
+      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.twoFAConfirmed(null).isInited(false)
       return state
     case a.MULTISIG_INIT:
       return state.isInited(action.isInited)

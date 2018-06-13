@@ -20,10 +20,11 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
+const EVENT_LAST_BLOCK = 'lastBlock'
 
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
@@ -61,15 +62,15 @@ export default class BitcoinDAO extends EventEmitter {
     return this._bitcoinProvider.getFeeRate()
   }
 
-  async getAccountBalances () {
-    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
+  async getAccountBalances (address) {
+    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances(address)
     return {
       balance: balance0 || balance6,
     }
   }
 
-  async getAccountBalance () {
-    const balances = await this.getAccountBalances()
+  async getAccountBalance (address) {
+    const balances = await this.getAccountBalances(address)
     return balances.balance
   }
 
@@ -182,6 +183,15 @@ export default class BitcoinDAO extends EventEmitter {
     })
   }
 
+  async watchLastBlock () {
+    this._bitcoinProvider.addListener(EVENT_LAST_BLOCK, async ({ block }) => {
+      this.emit(EVENT_UPDATE_LAST_BLOCK, {
+        blockchain: this._name,
+        block: { blockNumber: block },
+      })
+    })
+  }
+
   async stopWatching () {
     // Ignore
   }
@@ -203,11 +213,14 @@ export default class BitcoinDAO extends EventEmitter {
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
-      isOptional: false,
       isFetched: true,
       blockchain: this._name,
       feeRate,
     })
+  }
+
+  subscribeNewWallet (address) {
+    this._bitcoinProvider.subscribeNewWallet(address)
   }
 }
 

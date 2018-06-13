@@ -9,6 +9,7 @@ import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors'
 import BalanceModel from 'models/tokens/BalanceModel'
 import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
+import OwnerModel from 'models/wallet/OwnerModel'
 
 // provides filtered list of addresses of MainWallets
 export const selectWallet = (blockchain, address) => createSelector(
@@ -16,34 +17,18 @@ export const selectWallet = (blockchain, address) => createSelector(
     getMainWallet,
     getMultisigWallets,
   ],
-  (mainWallet: MainWalletModel, multisigWallets: MultisigWalletCollection): any[] => {
-
+  (mainWallet: MainWalletModel, multisigWallets: MultisigWalletCollection) => {
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
     const multisigWallet = multisigWallets.item(address)
-    if (multisigWallet) {
-      const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
-      return {
-        address: multisigWallet.address(),
-        blockchain: multisigWallet.blockchain(),
-        name: multisigWallet.name(),
-        requiredSignatures: multisigWallet.requiredSignatures(),
-        pendingCount: multisigWallet.pendingCount(),
-        isMultisig: multisigWallet.isMultisig(),
-        isTimeLocked: multisigWallet.isTimeLocked(),
-        is2FA: multisigWallet.is2FA(),
-        isDerived: multisigWallet.isDerived(),
-        customTokens: multisigWallet.customTokens ? multisigWallet.customTokens() : null,
-        amount: balance.amount(),
-        isMain: false,
-      }
-    }
-    else {
+    if (!multisigWallet) {
       const balance: BalanceModel = mainWallet.balances().item(mainSymbol)
       return {
-        address: address,
-        blockchain: blockchain,
+        address,
+        blockchain,
         name: mainWallet.name(blockchain, address),
         requiredSignatures: null,
+        owners: null,
+        releaseTime: null,
         pendingCount: null,
         isMultisig: false,
         isTimeLocked: false,
@@ -53,6 +38,23 @@ export const selectWallet = (blockchain, address) => createSelector(
         amount: balance.amount(),
         isMain: true,
       }
+    }
+    const balance: BalanceModel = multisigWallet.balances().item(mainSymbol)
+    return {
+      address,
+      blockchain,
+      name: multisigWallet.name(),
+      requiredSignatures: multisigWallet.requiredSignatures && multisigWallet.requiredSignatures(),
+      pendingCount: multisigWallet.pendingCount && multisigWallet.pendingCount(),
+      isMultisig: multisigWallet.isMultisig(),
+      isTimeLocked: multisigWallet.isTimeLocked(),
+      owners: multisigWallet.owners ? multisigWallet.owners().items().map((owner: OwnerModel) => owner.address()) : null,
+      is2FA: multisigWallet.is2FA(),
+      isDerived: multisigWallet.isDerived(),
+      customTokens: multisigWallet.customTokens ? multisigWallet.customTokens() : null,
+      releaseTime: multisigWallet.releaseTime ? multisigWallet.releaseTime() : null,
+      amount: balance.amount(),
+      isMain: false,
     }
   },
 )
