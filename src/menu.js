@@ -16,15 +16,15 @@ export default {
     {
       key: 'deposits', title: 'nav.deposits', icon: 'dashboard', path: '/deposits',
     },
-    {
+    /*{
       key: 'exchange', title: 'nav.exchange', icon: 'compare_arrows', path: '/exchange',
-    },
+    },*/
     {
       key: 'voting', title: 'nav.voting', icon: 'done', path: '/voting',
     },
-    {
+    /*{
       key: 'rewards', title: 'nav.rewards', icon: 'card_giftcard', path: '/rewards',
-    },
+    },*/
     {
       key: 'assets', title: 'nav.assets', icon: 'toll', path: '/assets', showMoreButton: true,
     },
