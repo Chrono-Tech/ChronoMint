@@ -22,7 +22,10 @@ export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'PrivateKeyLoginPageForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => dispatch(onSubmitPrivateKeyLoginForm(values)),
+    onSubmit: (values) => {
+      const privateKey = values.get('pk')
+      dispatch(onSubmitPrivateKeyLoginForm(privateKey))
+    },
     onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
     onSubmitFail: () => dispatch(onSubmitPrivateKeyLoginFormFail()),
   }

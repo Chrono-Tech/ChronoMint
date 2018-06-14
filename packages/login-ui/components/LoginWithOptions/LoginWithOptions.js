@@ -240,6 +240,7 @@ class LoginWithOptions extends PureComponent {
   }
 
   async setupAndLogin (provider) {
+    console.log('setupAndLogin', provider)
     try {
       await networkService.setup(provider)
       this.props.onLogin()

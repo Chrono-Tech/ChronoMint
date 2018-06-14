@@ -13,6 +13,7 @@ import { Button } from 'components'
 import {
   navigateToMnemonicImportMethod,
   navigateToCreateAccount,
+  initImportMethodsPage,
 } from '@chronobank/login/redux/network/actions'
 
 import Trezor from 'assets/img/icons/trezor-white.svg'
@@ -30,6 +31,7 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToMnemonicImportMethod: () => dispatch(navigateToMnemonicImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
+    initImportMethodsPage: () => dispatch(initImportMethodsPage()),
   }
 }
 
@@ -37,6 +39,11 @@ function mapDispatchToProps (dispatch) {
 export default class ImportMethodsPage extends PureComponent {
   static propTypes = {
     navigateToMnemonicImportMethod: PropTypes.func,
+    initImportMethodsPage: PropTypes.func,
+  }
+
+  componentDidMount(){
+    this.props.initImportMethodsPage()
   }
 
   handleMnemonicLogin = () => this.props.navigateToMnemonicImportMethod()

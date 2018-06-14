@@ -35,7 +35,11 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
     initConfirmMnemonicPage: () => dispatch(initConfirmMnemonicPage()),
-    onSubmit: (values) => dispatch(onSubmitConfirmMnemonic(values)),
+    onSubmit: (values) => {
+      const confirmMnemonic = values.get('mnemonic')
+
+      dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
+    },
     onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
     onSubmitFail: () => dispatch(onSubmitConfirmMnemonicFail()),
   }

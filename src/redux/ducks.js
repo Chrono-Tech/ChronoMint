@@ -24,6 +24,7 @@ import * as wallet from './wallet'
 import * as watcher from './watcher'
 import * as tokens from './tokens'
 import * as assetsHolder from './assetsHolder'
+import * as persistWallet from './persistWallet'
 
 export default {
   ui,
@@ -46,5 +47,6 @@ export default {
   assetsManager,
   tokens,
   assetsHolder,
+  persistWallet,
   ...Login,
 }

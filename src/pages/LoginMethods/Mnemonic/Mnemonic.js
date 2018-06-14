@@ -22,7 +22,10 @@ export const FORM_MNEMONIC_LOGIN_PAGE = 'MnemonicLoginPageForm'
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => dispatch(onSubmitMnemonicLoginForm(values)),
+    onSubmit: (values) => {
+      const confirmMnemonic = values.get('mnemonic')
+      dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
+    },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
     onSubmitFail: () => dispatch(onSubmitMnemonicLoginFormFail()),
   }

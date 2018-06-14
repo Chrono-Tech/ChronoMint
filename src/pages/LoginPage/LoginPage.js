@@ -8,19 +8,39 @@ import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
+import { connect } from 'react-redux'
 import { UserRow, Button } from 'components'
+import { onSubmitLoginForm } from '@chronobank/login/redux/network/actions'
 
 import styles from 'layouts/Splash/styles'
 import './LoginPage.scss'
+import { FORM_CREATE_ACCOUNT } from "../CreateAccountPage/CreateAccountPage";
 
 const FORM_LOGIN_PAGE = 'FormLoginPage'
 
+function mapStateToProps (state, ownProps) {
+
+  return {
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    onSubmit: (values) => {
+      dispatch(onSubmitLoginForm())
+    },
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_LOGIN_PAGE })
 class LoginPage extends PureComponent {
   render () {
+    const { handleSubmit, pristine, valid, initialValues, isImportMode } = this.props
+
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
-        <form styleName='form'>
+        <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>Log In</div>
 

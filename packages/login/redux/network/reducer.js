@@ -35,6 +35,7 @@ const initialState = {
   walletsList: [],
   decryptedWallet: null,
   selectedWallet: null,
+  importAccountMode: false,
 }
 
 export default (state = initialState, action) => {
@@ -84,6 +85,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         newAccountMnemonic: action.mnemonic,
+      }
+    case actions.NETWORK_SET_IMPORT_ACCOUNT_MODE:
+      return {
+        ...state,
+        importAccountMode: true,
+      }
+    case actions.NETWORK_RESET_IMPORT_ACCOUNT_MODE:
+      return {
+        ...state,
+        importAccountMode: false,
       }
 
     default:

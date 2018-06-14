@@ -3,6 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import {
+  createWallet,
+  resetPasswordWallet,
+  validateMnemonicForWallet,
+  validateWalletName,
+  decryptWallet,
+} from 'redux/persistWallet/actions'
 import { FORM_CONFIRM_MNEMONIC, FORM_MNEMONIC_LOGIN_PAGE, FORM_PRIVATE_KEY_LOGIN_PAGE } from 'pages'
 import { stopSubmit } from 'redux-form'
 import { push } from 'react-router-redux'
@@ -24,6 +31,10 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 export const NETWORK_SET_NEW_ACCOUNT_CREDENTIALS = 'network/SET_NEW_ACCOUNT_CREDENTIALS'
 export const NETWORK_SET_NEW_MNEMONIC = 'network/SET_NEW_MNEMONIC'
+export const NETWORK_SET_IMPORT_MNEMONIC = 'network/SET_IMPORT_MNEMONIC'
+export const NETWORK_SET_IMPORT_PRIVATE_KEY = 'network/SET_NEW_PRIVATE_KEY'
+export const NETWORK_SET_IMPORT_ACCOUNT_MODE = 'network/SET_IMPORT_ACCOUNT_MODE'
+export const NETWORK_RESET_IMPORT_ACCOUNT_MODE = 'network/RESET_IMPORT_ACCOUNT_MODE'
 
 export const WALLETS_ADD = 'network/WALLETS_ADD'
 export const WALLETS_SELECT = 'network/WALLETS_SELECT'
@@ -80,8 +91,35 @@ export const generateNewMnemonic = () => (dispatch) => {
   dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
 }
 
-export const setNewAccountCredentials = (walletName, walletPassword) => (dispatch) => {
+// export const setNewImportPrivateKey = (privateKey) => (dispatch) => {
+//   dispatch({ type: NETWORK_SET_NEW_PRIVATE_KEY, privateKey })
+// }
+
+export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { importAccountMode, newAccountMnemonic } = state.get('network')
+
   dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
+
+  if (importAccountMode){
+    console.log('import account mode', arguments, importAccountMode, newAccountMnemonic)
+
+    let wallet = await dispatch(createWallet({
+      name: walletName,
+      password: walletPassword,
+      mnemonic: newAccountMnemonic,
+      numberOfAccounts: 0,
+    }))
+
+    console.log('wallet', wallet)
+
+    dispatch(walletAdd(wallet))
+
+    dispatch(navigateToLoginPage())
+
+    return
+  }
 
   dispatch(generateNewMnemonic())
 
@@ -89,23 +127,47 @@ export const setNewAccountCredentials = (walletName, walletPassword) => (dispatc
 
 }
 
-export const onSubmitConfirmMnemonicSuccess = () => (dispatch) => {
-  dispatch(push('/'))
+
+
+
+export const initImportMethodsPage = () => (dispatch) => {
+  dispatch({ type: NETWORK_SET_IMPORT_ACCOUNT_MODE })
 }
 
-export const onSubmitConfirmMnemonicFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, { key: 'Wrong confirm phrase' }))
-}
-
-export const onSubmitConfirmMnemonic = (values) => (dispatch, getState) => {
+export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState) => {
   const state = getState()
 
-  const confirmMnemonic = values.get('mnemonic')
   const { newAccountMnemonic } = state.get('network')
 
   if (confirmMnemonic !== newAccountMnemonic){
     throw new Error('Please enter correct mnemonic phrase')
   }
+
+}
+
+export const onSubmitConfirmMnemonicSuccess = () => async (dispatch, getState) => {
+  const state = getState()
+
+  const { newAccountMnemonic, newAccountName, newAccountPassword } = state.get('network')
+
+  console.log('onSubmit confirm success')
+
+  let wallet = await dispatch(createWallet({
+    name: newAccountName,
+    password: newAccountPassword,
+    mnemonic: newAccountMnemonic,
+    numberOfAccounts: 0,
+  }))
+
+  console.log('onsubmit wallet', wallet)
+
+  dispatch(navigateToLoginPage())
+}
+
+export const onSubmitConfirmMnemonicFail = () => (dispatch) => {
+  console.log('onSubmit confirm success')
+
+  dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, { key: 'Wrong confirm phrase' }))
 }
 
 export const navigateToSelectImportMethod = () => (dispatch) => {
@@ -116,16 +178,18 @@ export const navigateToMnemonicImportMethod = () => (dispatch) => {
   dispatch(push('/mnemonic-login'))
 }
 
+
 export const navigateToLoginPage = () => (dispatch) => {
   dispatch(push('/'))
 }
 
-export const onSubmitMnemonicLoginForm = (values) => (dispatch) => {
+export const onSubmitMnemonicLoginForm = (mnemonic) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
 
 }
 
 export const onSubmitMnemonicLoginFormSuccess = () => (dispatch) => {
-  dispatch(navigateToLoginPage())
+  dispatch(navigateToCreateAccount())
 }
 
 export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
@@ -133,7 +197,8 @@ export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
 
 }
 
-export const onSubmitPrivateKeyLoginForm = (values) => (dispatch) => {
+export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
+
 
 }
 

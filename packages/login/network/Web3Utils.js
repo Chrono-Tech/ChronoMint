@@ -16,6 +16,7 @@ export default class Web3Utils {
   static createStatusEngine (providerUrl) {
     const engine = new ProviderEngine()
 
+    console.log('createStatusEngine', providerUrl)
     const httpProvider = new Web3.providers.HttpProvider(providerUrl)
     engine.addProvider(new Web3Subprovider(httpProvider))
     engine.start()
