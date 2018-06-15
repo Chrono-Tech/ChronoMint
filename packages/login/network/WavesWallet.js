@@ -13,8 +13,6 @@ export default class WavesWallet {
   }
 
   getAddress () {
-    console.log('Waves address:')
-    console.log(this._seed.address)
     return this._seed.address
   }
 

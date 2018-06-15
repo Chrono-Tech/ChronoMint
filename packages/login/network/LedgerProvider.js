@@ -109,7 +109,6 @@ class LedgerProvider extends EventEmitter {
   async fetchAccount () {
     return new Promise((resolve) => {
         this._ledger.getAccounts((error, accounts) => {
-          console.log(accounts)
           if (error) {
             resolve(null)
           }

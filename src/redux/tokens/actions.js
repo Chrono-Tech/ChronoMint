@@ -186,7 +186,6 @@ export const initWavesTokens = () => async (dispatch, getState) => {
     dispatch(alternateTxHandlingFlow(dao))
     //dispatch(initWavesAssetTokens(waves))
   } catch (e) {
-    console.log(e)
     dispatch({ type: TOKENS_FAILED })
   }
 }
@@ -207,7 +206,6 @@ export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getS
           dispatch({ type: TOKENS_FETCHED, token })
           dispatch(alternateTxHandlingFlow(dao))
         } catch (e) {
-          console.log(e)
           dispatch({ type: TOKENS_FAILED })
         }
       }),

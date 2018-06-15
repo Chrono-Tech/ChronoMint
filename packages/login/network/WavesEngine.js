@@ -19,8 +19,6 @@ export class WavesEngine {
   }
 
   getAddress () {
-    console.log('Waves get address:')
-    console.log(this._wallet)
     return this._wallet.getAddress()
   }
 
@@ -45,7 +43,6 @@ export class WavesEngine {
 
 
   createTransaction (type, params) {
-    console.log(params)
     const data = this.describeTransaction(type, params)
 
     const transferTransaction = new this._Transactions.TransferTransaction(data);

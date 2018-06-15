@@ -63,8 +63,6 @@ class MnemonicProvider {
       const ltcNetwork = network.litecoin && bitcoin.networks[network.litecoin]
       const nemNetwork = network.nem && nemSdk.model.network.data[network.nem]
       const wavesNetwork = network.waves && WavesApi[network.waves]
-      console.log('Waves network is:')
-      console.log(wavesNetwork)
 
       Engines.bcc = prepareEngine(bccNetwork, this.createBitcoinWallet, createBCCEngine)
       Engines.btc = prepareEngine(btcNetwork, this.createBitcoinWallet, createBTCEngine)

@@ -72,12 +72,10 @@ export default class WavesDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    console.log('get waves balance 2')
     return await this._wavesProvider.getAccountBalances(this._asset)
   }
 
   async getAccountBalance () {
-    console.log('get waves balance 1')
     return await this.getAccountBalances()
   }
 
@@ -119,7 +117,6 @@ export default class WavesDAO extends EventEmitter {
       return await this._wavesProvider.transfer(from, to, amount, this._asset)
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
       throw e
     }
   }

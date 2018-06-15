@@ -46,8 +46,6 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       })
 
     } catch (e) {
-      console.log('Address subscription error')
-      console.log(e)
       this.trace('Address subscription error', e)
     }
   }

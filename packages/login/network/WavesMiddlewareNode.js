@@ -24,8 +24,6 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
       await this._api.post('addr', { address })
       this.executeOrSchedule(() => {
         this._openSubscription(`${this._socket.channels.balance}.${address}`, (data) => {
-          console.log('Waves data is:')
-          console.log(data)
           this.trace('Address Balance', data)
           const { balance, assets } = data
           this.emit('balance', new WavesBalance({
@@ -35,14 +33,11 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
           }))
         })
         this._openSubscription(`${this._socket.channels.transaction}.${address}`, (data) => {
-          console.log('Waves TXdata is:')
-          console.log(data)
           this.trace('WAVES Tx', data)
           this.emit('tx', createTxModel(data, address))
         })
       })
     } catch (e) {
-      console.log(e)
       this.trace('Address subscription error', e)
     }
   }
@@ -94,7 +89,6 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
   async send (account, rawtx) {
     try {
       const { data } = await this._api.post('tx/send', rawtx)
-      console.log(data)
       // const model = createTxModel(data.transaction, account)
       // setImmediate(() => {
       //   this.emit('tx', model)

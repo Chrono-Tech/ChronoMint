@@ -231,11 +231,6 @@ export const fetchTokenBalance = (token: TokenModel) => async (dispatch, getStat
   const tokenDAO = tokenService.getDAO(token.id())
   const { account } = getState().get(DUCK_SESSION)
   const balance = await tokenDAO.getAccountBalance(token.blockchain() === BLOCKCHAIN_ETHEREUM ? account : null)
-  if(token.blockchain() === BLOCKCHAIN_WAVES) {
-  console.log('Token balance is: ')
-  console.log(tokenDAO)
-  console.log(balance)
-  }
   dispatch({
     type: WALLET_TOKEN_BALANCE,
     balance: new BalanceModel({
