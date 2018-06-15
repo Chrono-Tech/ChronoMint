@@ -82,7 +82,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
         mosaics: readMosaicsBalances(mosaics),
       })
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`NemMiddlewareNode getAddressInfo ${address} failed`, e)
       throw e
     }
   }
