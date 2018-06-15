@@ -166,7 +166,7 @@ class LoginLedger extends PureComponent {
               primary
               fullWidth
               disabled={isLoading || !account}
-              onTouchTap={this.props.onLogin}
+              onClick={this.props.onLogin}
             />
           </div>
         </div>

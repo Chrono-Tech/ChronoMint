@@ -167,7 +167,7 @@ export default class AddCurrencyDialog extends PureComponent {
           <div styleName='actions'>
             <div styleName='items'>
               <div styleName='item'>
-                <FloatingActionButton onTouchTap={this.props.handleAddToken}>
+                <FloatingActionButton onClick={this.props.handleAddToken}>
                   <FontIcon className='material-icons'>add</FontIcon>
                 </FloatingActionButton>
               </div>
@@ -202,12 +202,12 @@ export default class AddCurrencyDialog extends PureComponent {
             <Button
               styleName='action'
               label={<Translate value={prefix('save')} />}
-              onTouchTap={this.handleSave}
+              onClick={this.handleSave}
             />
             <Button
               styleName='action'
               label={<Translate value={prefix('close')} />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
           </div>
         </div>

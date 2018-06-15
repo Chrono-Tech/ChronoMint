@@ -17,6 +17,7 @@ import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
@@ -47,6 +48,7 @@ import AddressesCollection from 'models/wallet/AddressesCollection'
 import { getDeriveWalletsAddresses } from 'redux/wallet/selectors'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
 import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors/models'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
@@ -72,6 +74,7 @@ export const BCC = 'BCC'
 export const BTG = 'BTG'
 export const LTC = 'LTC'
 export const XEM = 'XEM'
+export const WAVES = 'WAVES'
 
 export const FEE_RATE_MULTIPLIER = {
   min: 0.1,
@@ -248,6 +251,7 @@ export const initMainWallet = () => async (dispatch, getState) => {
     ltcProvider,
     btcProvider,
     nemProvider,
+    wavesProvider,
     ethereumProvider,
   ]
   providers.map((provider) => {
@@ -467,6 +471,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name }) => async (di
       break
     case 'Bitcoin Gold':
     case 'NEM':
+    case 'WAVES':
     default:
       return null
   }
@@ -540,6 +545,9 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
       break
     case BLOCKCHAIN_NEM:
       dao = tokenService.getDAO(XEM)
+      break
+    case BLOCKCHAIN_WAVES:
+      dao = tokenService.getDAO(WAVES)
       break
   }
   if (dao) {

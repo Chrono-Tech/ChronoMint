@@ -138,7 +138,7 @@ export default class WalletWidgetDetail extends PureComponent {
                     disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={this.handleSend(wallet)}
+                    onClick={this.handleSend(wallet)}
                   />
                 </div>
                 <div styleName='action'>
@@ -146,7 +146,7 @@ export default class WalletWidgetDetail extends PureComponent {
                     disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.receiveButton`} />}
-                    onTouchTap={this.handleReceive}
+                    onClick={this.handleReceive}
                   />
                 </div>
                 {/*blockchain === BLOCKCHAIN_ETHEREUM && (
@@ -157,7 +157,7 @@ export default class WalletWidgetDetail extends PureComponent {
                       styleName='depositTokensButton'
                       type='submit'
                       label={<Translate value={`${prefix}.depositButton`} />}
-                      onTouchTap={this.handleDeposit}
+                      onClick={this.handleDeposit}
                     />
                   </div>
                 )*/}

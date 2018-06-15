@@ -36,7 +36,7 @@ class BackButton extends PureComponent {
           </div>
         )}
         disabled={isLoading}
-        onTouchTap={onClick}
+        onClick={onClick}
       />
     )
   }

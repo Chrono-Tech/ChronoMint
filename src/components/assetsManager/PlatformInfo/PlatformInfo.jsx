@@ -157,7 +157,7 @@ export default class PlatformInfo extends PureComponent {
                 <Translate value={prefix('managers')} />
               </div>
               <div styleName='addManager'>
-                <button onTouchTap={this.props.handleAddManagerDialog} styleName='addManagerButton'>
+                <button onClick={this.props.handleAddManagerDialog} styleName='addManagerButton'>
                   <span>
                     <Translate value={prefix('manageButton')} size={managersList.size()} />
                   </span>
@@ -182,7 +182,7 @@ export default class PlatformInfo extends PureComponent {
                 <Translate value={prefix('blacklist')} />
               </div>
               <div styleName='blacklistButtonWrap'>
-                <button onTouchTap={this.handleBlacklistDialog} styleName='blacklistButton'>
+                <button onClick={this.handleBlacklistDialog} styleName='blacklistButton'>
                   <span>
                     <Translate value={prefix('manageButton')} size={blacklist.list().size} />
                   </span>
@@ -264,7 +264,7 @@ export default class PlatformInfo extends PureComponent {
             <Button
               disabled={isPaused.isFetching() || !isPaused.isFetched()}
               styleName={classnames('action', { 'block': !selectedToken.isPaused().value() })}
-              onTouchTap={this.handleBlockAssetDialog}
+              onClick={this.handleBlockAssetDialog}
               label={isPaused.isFetching() || !isPaused.isFetched()
                 ? <Preloader />
                 : <Translate value={prefix(selectedToken.isPaused().value() ? 'unblockAsset' : 'blockAsset')} />
@@ -272,7 +272,7 @@ export default class PlatformInfo extends PureComponent {
             />
 
             <Button
-              onTouchTap={this.props.handleRevokeDialog}
+              onClick={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'
             />

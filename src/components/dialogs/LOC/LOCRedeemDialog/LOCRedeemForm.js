@@ -48,7 +48,7 @@ class LOCRedeemForm extends PureComponent {
         <div styleName='footer'>
           <Button
             label={<Translate value='locs.redeemS' asset={loc.currency()} />}
-            onTouchTap={handleSubmit}
+            onClick={handleSubmit}
             disabled={pristine}
           />
         </div>

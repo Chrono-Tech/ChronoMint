@@ -97,7 +97,7 @@ export default class OwnersList extends PureComponent {
             <button
               styleName='action'
               className='material-icons'
-              onTouchTap={this.handleAddItem(fields)}
+              onClick={this.handleAddItem(fields)}
               disabled={isDisabled}
             >
               add_circle

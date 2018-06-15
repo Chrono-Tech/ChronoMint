@@ -28,7 +28,6 @@ export default class AbstractNode extends EventEmitter {
       return
     }
     // eslint-disable-next-line
-    console.log(...arguments)
   }
 
   _handleConnectionSuccess = () => {

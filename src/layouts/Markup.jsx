@@ -104,12 +104,12 @@ export default class Markup extends PureComponent {
         <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />
-            <div styleName='overlay' onTouchTap={this.handleToggleMainMenu} />
+            <div styleName='overlay' onClick={this.handleToggleMainMenu} />
           </div>
           <div styleName='middle'>
             <div styleName='middleTop'>
               <div styleName='mainMenuToggle'>
-                <IconButton onTouchTap={this.handleToggleMainMenu}>
+                <IconButton onClick={this.handleToggleMainMenu}>
                   <i className='material-icons'>menu</i>
                 </IconButton>
               </div>

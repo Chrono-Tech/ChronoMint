@@ -84,7 +84,7 @@ export default class TokenListSelector extends PureComponent {
                         'hide': !(tokenItem.symbol().toUpperCase().indexOf(`${this.state.symbolFilter}`.toUpperCase()) + 1),
                       },
                     )}
-                    onTouchTap={() => this.props.input.onChange(tokenItem)}
+                    onClick={() => this.props.input.onChange(tokenItem)}
                   >
                     <IPFSImage
                       multihash={tokenItem.icon()}

@@ -155,7 +155,7 @@ class LoginTrezor extends PureComponent {
                 : <Translate value='LoginWithTrezor.login' />
               }
               disabled={isLoading || !account}
-              onTouchTap={() => this.props.onLogin()}
+              onClick={() => this.props.onLogin()}
             />
           </div>
         </div>

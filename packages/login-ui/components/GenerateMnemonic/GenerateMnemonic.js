@@ -69,7 +69,7 @@ class GenerateMnemonic extends PureComponent {
               <Button
                 label={<Translate value='GenerateMnemonic.continue' />}
                 disabled={!isConfirmed}
-                onTouchTap={() => this.props.onBack()}
+                onClick={() => this.props.onBack()}
               />
             </div>
           </div>

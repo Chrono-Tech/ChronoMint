@@ -24,7 +24,7 @@ export default class AlertDialog extends PureComponent {
         flat
         key='close'
         label='Close'
-        onTouchTap={() => this.props.handleClose()}
+        onClick={() => this.props.handleClose()}
       />,
     ]
   }

@@ -89,7 +89,7 @@ export default class TwoFaConfirmModal extends PureComponent {
           </div>
           <div styleName='actions'>
             <Button
-              onTouchTap={this.handleCheckConfirmCode}
+              onClick={this.handleCheckConfirmCode}
               label={<Translate value={`${prefix}.confirm`} />}
             />
           </div>

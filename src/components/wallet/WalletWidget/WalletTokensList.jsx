@@ -86,7 +86,7 @@ export default class WalletTokensList extends PureComponent {
             <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={tokensBalances.length} /></span>
           </div>
           <div styleName='show-all'>
-            <span styleName='show-all-a' onTouchTap={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
+            <span styleName='show-all-a' onClick={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
           </div>
         </div>}
 

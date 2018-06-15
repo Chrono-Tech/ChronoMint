@@ -123,7 +123,7 @@ export default class CBETokenDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <Button flat styleName='action' label='Cancel' onTouchTap={this.props.onClose} />
+            <Button flat styleName='action' label='Cancel' onClick={this.props.onClose} />
             <Button
               disabled={this.props.isFetching || this.props.pristine || this.props.invalid}
               styleName='action'

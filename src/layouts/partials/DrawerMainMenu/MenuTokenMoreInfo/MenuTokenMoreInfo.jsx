@@ -92,7 +92,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
 
     return (
       <div styleName='walletIrem' key={wallet.address()}>
-        <Link to='/wallet' href styleName='walletTitle' onTouchTap={() => this.handleSelectLink(wallet.blockchain(), wallet.address())}>
+        <Link to='/wallet' href styleName='walletTitle' onClick={() => this.handleSelectLink(wallet.blockchain(), wallet.address())}>
           <div styleName='walletName'><Translate value={`${prefix}.multisignatureWallet`} /></div>
           <div styleName='walletAddress'>{wallet.address()}</div>
           <div styleName='walletLink'>
@@ -156,7 +156,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
           <div styleName='title'>
             <IPFSImage styleName='tokenIcon' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()]} />
             <div styleName='titleText'>{token.name() || token.symbol() || <Translate value={`${prefix}.title`} />}</div>
-            <div styleName='close' onTouchTap={this.handleClose}>
+            <div styleName='close' onClick={this.handleClose}>
               <IconButton>
                 <i className='material-icons'>close</i>
               </IconButton>
@@ -164,7 +164,7 @@ export default class MenuTokenMoreInfo extends PureComponent {
           </div>
 
           <div styleName='walletIrem'>
-            <Link to='/wallet' href styleName='walletTitle' onTouchTap={() => {this.handleSelectLink(token.blockchain(), walletAddress.address())}}>
+            <Link to='/wallet' href styleName='walletTitle' onClick={() => {this.handleSelectLink(token.blockchain(), walletAddress.address())}}>
               <div styleName='walletName'><Translate value={`${prefix}.mainWalletTitle`} /></div>
               <div styleName='walletAddress'>{walletAddress.address()}</div>
               <div styleName='walletLink'>

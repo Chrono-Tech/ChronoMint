@@ -154,7 +154,7 @@ export default class AddTokenDialog extends PureComponent {
               flat
               styleName='action'
               label={<Translate value={prefix('cancel')} />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
             <Button
               styleName='action'

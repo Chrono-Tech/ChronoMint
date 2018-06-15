@@ -132,7 +132,6 @@ export default class NemDAO extends EventEmitter {
       return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {
       // eslint-disable-next-line
-      console.log('Transfer failed', e)
       throw e
     }
   }

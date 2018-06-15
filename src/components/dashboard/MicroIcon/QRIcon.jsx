@@ -57,7 +57,7 @@ export default class QRIcon extends PureComponent {
       <div styleName='root' className='QRIcon__root'>
         <span
           styleName={this.props.iconStyle}
-          onTouchTap={(e) => {
+          onClick={(e) => {
             e.preventDefault()
             this.handleQROpen(e.currentTarget)
           }}

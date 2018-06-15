@@ -134,7 +134,7 @@ export default class TwoFaEnableForm extends PureComponent {
         </div>
         <div styleName='actions'>
           <Button
-            onTouchTap={this.handleShowNextStep}
+            onClick={this.handleShowNextStep}
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>
@@ -190,7 +190,7 @@ export default class TwoFaEnableForm extends PureComponent {
         <div styleName='actions'>
           <Button
             disabled={pristine || invalid || !confirmRules}
-            onTouchTap={this.handleCheckConfirmCode}
+            onClick={this.handleCheckConfirmCode}
             label={<Translate value={`${prefix}.proceed`} />}
           />
         </div>
@@ -204,7 +204,7 @@ export default class TwoFaEnableForm extends PureComponent {
         <div styleName='title'><Translate value={`${prefix}.successTitle`} /></div>
         <div styleName='actions'>
           <Button
-            onTouchTap={this.props.handleGoToWallets}
+            onClick={this.props.handleGoToWallets}
             label={<Translate value={`${prefix}.goToWallets`} />}
           />
         </div>

@@ -70,7 +70,7 @@ class LoginWithMnemonic extends PureComponent {
           onClick={() => this.props.onBack()}
           to='options'
         />
-        <div onTouchTap={() => this.mnemonicKey.focus()}>
+        <div onClick={() => this.mnemonicKey.focus()}>
           <TextField
             ref={(input) => {
               this.mnemonicKey = input
@@ -93,7 +93,7 @@ class LoginWithMnemonic extends PureComponent {
               flat
               fullWidth
               disabled={isLoading}
-              onTouchTap={() => this.props.onGenerate()}
+              onClick={() => this.props.onGenerate()}
             >
               <Translate value='LoginWithMnemonic.generateMnemonic' />
             </Button>
@@ -108,7 +108,7 @@ class LoginWithMnemonic extends PureComponent {
                 />
                 : <Translate value='LoginWithMnemonic.loginWithMnemonic' />}
               disabled={!isValidated || isLoading}
-              onTouchTap={() => this.props.onLogin(mnemonicKey)}
+              onClick={() => this.props.onLogin(mnemonicKey)}
             />
           </div>
         </div>

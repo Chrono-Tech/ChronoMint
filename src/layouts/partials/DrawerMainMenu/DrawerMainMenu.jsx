@@ -152,7 +152,7 @@ export default class DrawerMainMenu extends PureComponent {
           styleName='menuItem'
           activeClassName='drawer-item-active'
           to={{ pathname: item.path }}
-          onTouchTap={this.handleSelectLink}
+          onClick={this.handleSelectLink}
           href
         >
           <i styleName='icon' className='material-icons'>{item.icon}</i>
@@ -163,7 +163,7 @@ export default class DrawerMainMenu extends PureComponent {
         {item.showMoreButton && (
           <div
             styleName={classnames('itemMenuMore' /*{ 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title }*/)}
-            onTouchTap={this.handleShowAssetsManagerMore}
+            onClick={this.handleShowAssetsManagerMore}
           >
             <i className='material-icons'>more_vert</i>
           </div>
@@ -189,7 +189,7 @@ export default class DrawerMainMenu extends PureComponent {
 
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
-                <div styleName='avatar-icon' onTouchTap={this.props.handleProfileEdit}>
+                <div styleName='avatar-icon' onClick={this.props.handleProfileEdit}>
                   <IPFSImage
                     styleName='avatar-icon-content'
                     multihash={this.props.profile.icon()}
@@ -205,7 +205,7 @@ export default class DrawerMainMenu extends PureComponent {
                   {this.props.networkName}
                 </div>
               </div>
-              <div styleName='exit' onTouchTap={this.props.handleLogout}>
+              <div styleName='exit' onClick={this.props.handleLogout}>
                 <img src={exitSvg} alt='logout' title={I18n.t(`${prefix}.logout`)} />
               </div>
             </div>
@@ -213,7 +213,7 @@ export default class DrawerMainMenu extends PureComponent {
             <Link
               activeClassName='drawer-item-active'
               to='/wallets'
-              onTouchTap={this.handleSelectLink}
+              onClick={this.handleSelectLink}
               href
               styleName={classnames('menuItem', 'item')}
             >

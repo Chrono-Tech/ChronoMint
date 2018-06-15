@@ -65,7 +65,6 @@ export const multisigWalletsSelector = () => createSelector(
   ) => {
     // final result will be svaed here
     const sectionsObject = {}
-
     // Go through mainWallet's addresses
     mainWallet.addresses().items().map((address) => {
       const addrJS = address.toJS()
