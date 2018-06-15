@@ -17,12 +17,14 @@ import { getMainSymbolForBlockchain, getTokens } from 'redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
+import { PTWallet } from 'redux/wallet/types'
 import './WalletWidgetMini.scss'
 import { prefix } from './lang'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import { getWalletInfo } from './selectors'
 import WalletWidgetMiniUsdAmount from './WalletWidgetMiniUsdAmount'
 import WalletTokensCount from './WalletTokensCount'
+import WalletName from '../WalletName/WalletName'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
@@ -58,18 +60,7 @@ function mapDispatchToProps (dispatch) {
 export default class WalletWidgetMini extends PureComponent {
   static propTypes = {
     blockchain: PropTypes.string,
-    wallet: PropTypes.shape({
-      address: PropTypes.string,
-      blockchain: PropTypes.string,
-      name: PropTypes.string,
-      requiredSignatures: PropTypes.number,
-      pendingCount: PropTypes.number,
-      isMultisig: PropTypes.bool,
-      isTimeLocked: PropTypes.bool,
-      is2FA: PropTypes.bool,
-      isDerived: PropTypes.bool,
-      customTokens: PropTypes.arrayOf(),
-    }),
+    wallet: PTWallet,
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     send: PropTypes.func,
@@ -82,47 +73,8 @@ export default class WalletWidgetMini extends PureComponent {
     this.props.selectWallet(blockchain, address)
   }
 
-  getWalletName = () => {
-    const { wallet } = this.props
-    const name = wallet.name
-    if (name) {
-      return name
-    }
-
-    let key = null
-    if (this.isMy2FAWallet()) {
-      key = 'twoFAWallet'
-    } else if (this.isMySharedWallet()) {
-      key = 'sharedWallet'
-    } else if (this.isLockedWallet()) {
-      key = 'lockedWallet'
-    } else if (wallet.isDerived) {
-      if (wallet.customTokens) {
-        key = 'customWallet'
-      } else {
-        key = 'additionalStandardWallet'
-      }
-    } else {
-      key = 'standardWallet'
-    }
-
-    return <Translate value={`${prefix}.${key}`} />
-  }
-
-  isMySharedWallet = () => {
-    return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
-  }
-
-  isMy2FAWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.is2FA
-  }
-
-  isLockedWallet = () => {
-    return this.props.wallet.isMultisig && this.props.wallet.isTimeLocked
-  }
-
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle} = this.props
+    const { address, token, blockchain, wallet, showGroupTitle } = this.props
 
     return (
       <div styleName='container'>
@@ -137,9 +89,9 @@ export default class WalletWidgetMini extends PureComponent {
                 </div>
               </div>
               <div styleName='content-container'>
-                <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
+                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>
-                    <div>{this.getWalletName()}</div>
+                    <div><WalletName wallet={wallet} /></div>
                     <span styleName='address-address'>{address}</span>
                   </div>
                 </Link>

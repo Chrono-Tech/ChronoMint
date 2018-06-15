@@ -17,6 +17,7 @@ export const TOKEN_ICONS = {
   LHAU: require('./img/icn-lhau.svg'),
   XEM: require('./img/icn-xem.svg'),
   XMIN: require('./img/icn-xmin.svg'),
+  WAVES: require('./img/waves.svg'),
   DEFAULT: require('assets/img/asset_stub.svg'),
 }
 

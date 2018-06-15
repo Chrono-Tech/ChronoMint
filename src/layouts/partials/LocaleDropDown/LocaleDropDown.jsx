@@ -88,7 +88,7 @@ export default class LocaleDropDown extends PureComponent {
           <Menu styleName='LocaleDropDown'>
             {locales.map((item) => (
               <MenuItem
-                onTouchTap={() => this.handleChangeLocale(item.name)}
+                onClick={() => this.handleChangeLocale(item.name)}
                 value={item.name}
                 key={item.name}
                 primaryText={item.title}

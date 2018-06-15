@@ -401,7 +401,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onTouchTap={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
+              onClick={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
             />
           </div>
         )}
@@ -410,7 +410,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('buyTime')} />}
-              onTouchTap={this.handleReceiveToken(token.id(), token.blockchain())}
+              onClick={this.handleReceiveToken(token.id(), token.blockchain())}
             />
           </div>
         )}
@@ -419,7 +419,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('requestTime')} />}
-              onTouchTap={this.handleRequireTime}
+              onClick={this.handleRequireTime}
             />
           </div>
         )}
@@ -428,7 +428,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('proceed')} />}
-              onTouchTap={handleSubmit(this.handleApproveAsset)}
+              onClick={handleSubmit(this.handleApproveAsset)}
               disabled={isApproveDisabled}
             />
           </div>
@@ -439,7 +439,7 @@ export default class DepositTokensForm extends PureComponent {
               flat
               styleName='actionButton'
               label={<Translate value={prefix('revoke')} />}
-              onTouchTap={handleSubmit(this.handleRevokeAsset)}
+              onClick={handleSubmit(this.handleRevokeAsset)}
               disabled={isRevokeDisabled}
             />
           </div>
@@ -449,7 +449,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('finish')} />}
-              onTouchTap={handleSubmit(this.handleDepositAsset)}
+              onClick={handleSubmit(this.handleDepositAsset)}
               disabled={isLockDisabled}
             />
           </div>
@@ -459,7 +459,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('withdraw')} />}
-              onTouchTap={handleSubmit(this.handleWithdrawAsset)}
+              onClick={handleSubmit(this.handleWithdrawAsset)}
               disabled={isWithdrawDisabled}
             />
           </div>

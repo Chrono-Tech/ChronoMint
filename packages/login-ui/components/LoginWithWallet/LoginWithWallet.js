@@ -109,7 +109,7 @@ class LoginWithWallet extends PureComponent {
           {!isUploaded && !isUploading && (
             <div
               styleName='upload'
-              onTouchTap={() => this.walletFileUploadInput.click()}
+              onClick={() => this.walletFileUploadInput.click()}
             >
               <div styleName='uploadContent'>{<Translate value='LoginWithWallet.uploadWalletFile' />}</div>
             </div>
@@ -133,7 +133,7 @@ class LoginWithWallet extends PureComponent {
               <div
                 styleName='walletRemove'
                 className='material-icons'
-                onTouchTap={this.handleRemoveWallet}
+                onClick={this.handleRemoveWallet}
               >delete
               </div>
             </div>
@@ -171,7 +171,7 @@ class LoginWithWallet extends PureComponent {
               label={<Translate value='LoginWithWallet.generateNewWallet' />}
               fullWidth
               disabled={isLoading}
-              onTouchTap={this.props.onGenerate}
+              onClick={this.props.onGenerate}
             />
           </div>
           <div styleName='action'>
@@ -182,7 +182,7 @@ class LoginWithWallet extends PureComponent {
                 thickness={1.5}
               /> : <Translate value='LoginWithWallet.login' />}
               disabled={isLoading || !isUploaded || !password || password === ''}
-              onTouchTap={this.handleEnterPassword}
+              onClick={this.handleEnterPassword}
             />
           </div>
         </div>

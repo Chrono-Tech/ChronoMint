@@ -215,7 +215,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('remove')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollRemove}
+                    onClick={this.props.handlePollRemove}
                   />
                 )
                 : null
@@ -227,7 +227,7 @@ export default class Poll extends PureComponent {
                 label={<Translate value={prefix('details')} />}
                 styleName='action'
                 disabled={model.isFetching()}
-                onTouchTap={this.props.handlePollDetails}
+                onClick={this.props.handlePollDetails}
               />
               {isCBE && details.status && details.active
                 ? (
@@ -235,7 +235,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('endPoll')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollEnd}
+                    onClick={this.props.handlePollEnd}
                   />
                 )
                 : null
@@ -246,7 +246,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('activate')} />}
                     styleName='action'
                     disabled={model.isFetching()}
-                    onTouchTap={this.props.handlePollActivate}
+                    onClick={this.props.handlePollActivate}
                   />
                 )
                 : null
@@ -257,7 +257,7 @@ export default class Poll extends PureComponent {
                     label={<Translate value={prefix('vote')} />}
                     styleName='action'
                     disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onTouchTap={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
+                    onClick={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
                   />
                 )
                 : null

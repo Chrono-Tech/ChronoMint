@@ -16,7 +16,7 @@ import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 export const BLOCKCHAIN_WAVES = 'WAVES'
 export const WAVES_WAVES_SYMBOL = 'WAVES'
 export const WAVES_WAVES_NAME = 'WAVES'
-export const WAVES_DECIMALS = 5
+export const WAVES_DECIMALS = 8
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
@@ -72,10 +72,12 @@ export default class WavesDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
+    console.log('get waves balance 2')
     return await this._wavesProvider.getAccountBalances(this._asset)
   }
 
   async getAccountBalance () {
+    console.log('get waves balance 1')
     return await this.getAccountBalances()
   }
 
@@ -104,6 +106,9 @@ export default class WavesDAO extends EventEmitter {
         to,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
+	feeToken: token,
+	fee: new Amount(10000, token.symbol()),
+	feeMultiplier,
       }))
     })
   }
@@ -229,7 +234,6 @@ export default class WavesDAO extends EventEmitter {
       console.warn(message)
       throw new Error(message)
     }
-
     const token = new TokenModel({
       name: this._name,
       decimals: this._decimals,
@@ -238,7 +242,6 @@ export default class WavesDAO extends EventEmitter {
       isFetched: true,
       blockchain: BLOCKCHAIN_WAVES,
     })
-
     return token
   }
 }

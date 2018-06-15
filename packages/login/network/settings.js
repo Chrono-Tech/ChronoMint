@@ -43,7 +43,7 @@ const blockExplorersMap = {
   },
   [BLOCKCHAIN_BITCOIN]: {
     mainnet: 'https://blockexplorer.com/tx',
-    testnet: 'https://tbtc.blockdozer.com/tx',
+    testnet: 'https://live.blockcypher.com/btc-testnet/tx',
   },
   [BLOCKCHAIN_BITCOIN_CASH]: {
     mainnet: 'https://bcc.blockdozer.com/insight/tx',

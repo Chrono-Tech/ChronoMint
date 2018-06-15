@@ -127,12 +127,12 @@ export default class AssetManager extends PureComponent {
                   <div styleName='actions'>
                     <Button
                       disabled={!platformsCount}
-                      onTouchTap={this.props.handleAddTokenDialog}
+                      onClick={this.props.handleAddTokenDialog}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
                     />
                     <Button
-                      onTouchTap={this.props.handleAddPlatformDialog}
+                      onClick={this.props.handleAddPlatformDialog}
                       label={<Translate value={prefix('addNewPlatform')} />}
                       styleName='action'
                     />

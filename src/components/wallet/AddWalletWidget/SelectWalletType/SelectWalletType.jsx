@@ -11,7 +11,7 @@ import { Translate } from 'react-redux-i18n'
 import { IPFSImage } from 'components'
 import { TOKEN_ICONS } from 'assets'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
-import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM } from 'redux/mainWallet/actions'
+import { BTC, createNewChildAddress, ETH, goToWallets, LTC, resetWalletsForm, XEM, WAVES } from 'redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
@@ -88,7 +88,7 @@ export default class SelectWalletType extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onTouchTap={type.action || this.handleTouchTap(type)}>
+            <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
               <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
               <div styleName='title'>
                 <Translate value={type.title} />

@@ -56,7 +56,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
     const assetsList = this.props.assets[ platformAddress ]
     return (
       <div styleName='walletIrem' key={platformAddress}>
-        <Link to='/assets' href styleName='walletTitle' onTouchTap={this.handleSelectLink}>
+        <Link to='/assets' href styleName='walletTitle' onClick={this.handleSelectLink}>
           <div styleName='walletName'><Translate value={`${prefix}.assetPlatform`} num={key + 1} /></div>
           <div styleName='walletAddress'>{platformAddress}</div>
           <div styleName='walletLink'>
@@ -69,7 +69,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
             return null
           }
           return (
-            <Link to='/assets' href styleName='action' key={token.address()} onTouchTap={this.handleSelectLink}>
+            <Link to='/assets' href styleName='action' key={token.address()} onClick={this.handleSelectLink}>
               <div styleName='actionIcon'>
                 <IPFSImage multihash={token && token.icon()} fallback={iconTokenDefaultSVG} />
               </div>
@@ -92,7 +92,7 @@ export default class MenuAssetsManagerMoreInfo extends PureComponent {
           <div styleName='title'>
             <img src={iconSvg} alt='' styleName='tokenIcon' />
             <div styleName='titleText'><Translate value={`${prefix}.title`} /></div>
-            <div styleName='close' onTouchTap={this.handleClose}>
+            <div styleName='close' onClick={this.handleClose}>
               <IconButton>
                 <i className='material-icons'>close</i>
               </IconButton>

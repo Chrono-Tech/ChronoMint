@@ -28,12 +28,16 @@ export class WavesEngine {
     return this._wallet.getPrivateKey()
   }
 
+  getPublicKey () {
+    return this._wallet.getPublicKey()
+  }
+
   describeTransaction (type, params) {
     switch (type) {
       case 'ISSUE' :
         return this._describeIssueTransaction(params)
       case 'TRANSFER' :
-        return this._describeTransferTransaction(params)
+        return this._describeTransferTransaction(params.to,params.amount,params.asset)
       default:
         return null;
     }
@@ -41,15 +45,14 @@ export class WavesEngine {
 
 
   createTransaction (type, params) {
-
+    console.log(params)
     const data = this.describeTransaction(type, params)
 
     const transferTransaction = new this._Transactions.TransferTransaction(data);
 
-    const api = transferTransaction.prepareForAPI(keys.privateKey).then((preparedData) => {
+    return transferTransaction.prepareForAPI(this.getPrivateKey()).then((preparedData) => {
       return preparedData
     })
-
   }
 
   _describeIssueTransaction (name, description, amount: BigNumber, reissuable = false) {
@@ -71,9 +74,9 @@ export class WavesEngine {
     return issueData
   }
 
-  _describeTransferTransaction (to, amount: BigNumber, feeRate: Number, asset) {
+  _describeTransferTransaction (to, amount: BigNumber, asset) {
     const transferData = {
-
+      senderPublicKey: this.getPublicKey(), 
       // An arbitrary address; mine, in this example
       recipient: to,
 

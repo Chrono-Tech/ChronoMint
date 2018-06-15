@@ -201,7 +201,7 @@ class FileSelect extends PureComponent {
           <div styleName='attachAction'>
             <Button
               flat
-              onTouchTap={this.handleOpenFileDialog}
+              onClick={this.handleOpenFileDialog}
               disabled={this.getFilesLeft() === 0}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -224,7 +224,7 @@ class FileSelect extends PureComponent {
         <div styleName='wrapper'>
           <TextField
             key={selectedFile}
-            onTouchTap={this.handleOpenFileDialog}
+            onClick={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
             floatingLabelText={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
@@ -250,7 +250,7 @@ class FileSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
+                onClick={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
                 {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
               </IconButton>

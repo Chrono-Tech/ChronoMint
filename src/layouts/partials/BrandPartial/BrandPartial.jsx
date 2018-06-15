@@ -42,7 +42,7 @@ export default class BrandPartial extends PureComponent {
               height: 30,
             }}
             iconStyle={styles.brand.toggle.iconStyle}
-            onTouchTap={() => this.handleToggle()}
+            onClick={() => this.handleToggle()}
           >
             <FontIcon className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
           </IconButton>

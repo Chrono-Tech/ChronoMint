@@ -128,14 +128,14 @@ class LOCForm extends PureComponent {
                   <Button
                     flat
                     label={<Translate value='locs.delete' />}
-                    onTouchTap={this.handleDeleteClick}
+                    onClick={this.handleDeleteClick}
                   />
                 </div>
               )}
               <div styleName='action'>
                 <Button
                   label={<Translate value={isNew ? 'locs.create' : 'terms.save'} />}
-                  onTouchTap={handleSubmit}
+                  onClick={handleSubmit}
                   disabled={pristine}
                 />
               </div>

@@ -13,18 +13,6 @@ export const TX_ADD_TOKEN = 'addToken'
 export const TX_MODIFY_TOKEN = 'setToken'
 export const TX_REMOVE_TOKEN = 'removeTokenByAddress'
 
-export const MANDATORY_TOKENS = [ 'TIME', 'ETH' ]
-export const DEFAULT_TOKENS = [ 'TIME', 'ETH', 'BTC', 'BCC', 'BTG', 'LTC', 'XEM', 'XMIN' ]
-export const PROFILE_PANEL_TOKENS = [
-  { symbol: 'BTC', blockchain: 'Bitcoin', title: 'BTC' },
-  { symbol: 'BCC', blockchain: 'Bitcoin Cash', title: 'BCC' },
-  { symbol: 'BTG', blockchain: 'Bitcoin Gold', title: 'BTG' },
-  { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
-  { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
-  { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
-  { symbol: 'WAVES', blockchain: 'WAVES', title: 'WAVES' },
-]
-
 export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
 
@@ -34,20 +22,19 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
   }
 
   async fetchTokens (tokenAddresses = []) {
-    const [ addresses, names, symbols, urls, decimalsArr, ipfsHashes ] = await this._call('getTokens', [ tokenAddresses ])
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
     const feeRate = await ethereumDAO.getGasPrice()
 
     addresses.forEach((address, i) => {
-      const symbol = this._c.bytesToString(symbols[ i ]).toUpperCase()
+      const symbol = this._c.bytesToString(symbols[i]).toUpperCase()
       const model = new TokenModel({
         address,
-        name: this._c.bytesToString(names[ i ]),
+        name: this._c.bytesToString(names[i]),
         symbol,
-        url: this._c.bytesToString(urls[ i ]),
-        decimals: decimalsArr[ i ].toNumber(),
-        icon: this._c.bytes32ToIPFSHash(ipfsHashes[ i ]),
-        isOptional: !MANDATORY_TOKENS.includes(symbol),
+        url: this._c.bytesToString(urls[i]),
+        decimals: decimalsArr[i].toNumber(),
+        icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
@@ -62,7 +49,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     if (!symbol) {
       return null
     }
-    const address = await this._call('getTokenAddressBySymbol', [ symbol ])
+    const address = await this._call('getTokenAddressBySymbol', [symbol])
     return this.isEmptyAddress(address) ? null : address
   }
 
@@ -103,7 +90,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    */
   modifyToken (oldToken: TokenModel, newToken: TokenModel) {
     const summary = this._setTokenSummary(newToken)
-    return this._tx(TX_MODIFY_TOKEN, [ oldToken.address(), ...this._setTokenParams(newToken) ], summary)
+    return this._tx(TX_MODIFY_TOKEN, [oldToken.address(), ...this._setTokenParams(newToken)], summary)
   }
 
   /**
@@ -111,7 +98,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
    */
   removeToken (token: TokenModel) {
     const summary = this._setTokenSummary(token)
-    return this._tx(TX_REMOVE_TOKEN, [ token.address() ], summary)
+    return this._tx(TX_REMOVE_TOKEN, [token.address()], summary)
   }
 
   /** @private */
@@ -127,7 +114,6 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         icon: this._c.bytes32ToIPFSHash(result.args.ipfsHash),
         blockchain: BLOCKCHAIN_ETHEREUM,
         isERC20: true,
-        isOptional: !MANDATORY_TOKENS.includes(symbol),
         isFetched: true,
       }),
       time, isRemoved, isAdded, result.transactionHash || null,

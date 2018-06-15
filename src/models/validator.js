@@ -30,7 +30,8 @@ export const nemAddress = (value, required = true, blockchain = 'NEM') => {
 }
 
 export const wavesAddress = (value, required = true, blockchain = 'WAVES') => {
-  if ((!value && required) || (value && !/^[a-zA-Z0-9]{40}$/.test(value))) {
+  // TODO @mikefluff: Waves address validation
+  if (!value && required) {
     return { value: 'errors.invalidAddress', blockchain }
   }
   return null

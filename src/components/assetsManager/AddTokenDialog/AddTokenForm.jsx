@@ -96,7 +96,7 @@ class Platform extends PureComponent {
     return (
       <div
         styleName={classnames('platformItem', { 'selectedPlatform': platform === selectedPlatform })}
-        onTouchTap={this.handleClick}
+        onClick={this.handleClick}
         key={platform.address}
       >
         <div styleName='icon'>
@@ -209,7 +209,7 @@ export default class AddTokenForm extends PureComponent {
       <div styleName='tokenImgWrap'>
         {
           !isUploading && !isUploaded && (
-            <div styleName='upload' onTouchTap={this.handleWalletClick}>
+            <div styleName='upload' onClick={this.handleWalletClick}>
               <div styleName='uploadContent'><img src={avaToken} alt='' /></div>
             </div>
           )
@@ -229,7 +229,7 @@ export default class AddTokenForm extends PureComponent {
         {!isUploading && isUploaded &&
         <IPFSImage
           styleName='tokenImg'
-          onTouchTap={this.handleWalletClick}
+          onClick={this.handleWalletClick}
           multihash={tokenImg}
         />
         }
@@ -251,7 +251,7 @@ export default class AddTokenForm extends PureComponent {
         <div styleName='addNewPlatformTitle'>
           <Translate value={prefix('choosePlatform')} />
         </div>
-        <div onTouchTap={this.handleAddNewPlatform} styleName='createNewPlatform'>
+        <div onClick={this.handleAddNewPlatform} styleName='createNewPlatform'>
           <div styleName='icon'>
             <img src={icnPlus} alt='' />
           </div>
@@ -418,7 +418,7 @@ export default class AddTokenForm extends PureComponent {
         </div>
         <div styleName='dialogFooter'>
           <Button
-            onTouchTap={this.handleSubmitClick}
+            onClick={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'

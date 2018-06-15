@@ -129,7 +129,7 @@ export default class PollEditForm extends Component {
             styleName='optionsAction'
             type='flat'
             // eslint-disable-next-line
-            onTouchTap={() => this.handleOptionCreate(options)}
+            onClick={() => this.handleOptionCreate(options)}
           />
         </div>
         <div styleName='optionsList'>
@@ -140,7 +140,7 @@ export default class PollEditForm extends Component {
                 key={index}
                 styleName={classnames('tableItem', { active: this.state.selectedOptionIndex === index })}
                 // eslint-disable-next-line
-                onTouchTap={() => this.handleOptionSelect(index)}
+                onClick={() => this.handleOptionSelect(index)}
               >
                 <div styleName='itemLeft'>
                   <div styleName='symbol symbolFill'>#{index + 1}</div>
@@ -157,7 +157,7 @@ export default class PollEditForm extends Component {
                     <FontIcon
                       className='material-icons'
                       // eslint-disable-next-line
-                      onTouchTap={() => this.handleOptionRemove(options, index)}
+                      onClick={() => this.handleOptionRemove(options, index)}
                     >delete
                     </FontIcon>
                   </IconButton>

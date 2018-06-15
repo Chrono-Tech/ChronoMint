@@ -32,6 +32,7 @@ import { showConfirmTransferModal } from 'redux/ui/actions'
 import { EVENT_NEW_BLOCK } from 'dao/AbstractContractDAO'
 import Amount from 'models/Amount'
 import { ETH } from 'redux/mainWallet/actions'
+import { EVENT_UPDATE_LAST_BLOCK } from 'dao/AbstractTokenDAO'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -124,6 +125,8 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
+          dao.on(EVENT_UPDATE_LAST_BLOCK, (block) => dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...block }))
+          await dao.watchLastBlock()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })
@@ -174,17 +177,14 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
 
 export const initWavesTokens = () => async (dispatch, getState) => {
   try {
-    console.log('Init Waves')
     const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
     dispatch({ type: TOKENS_FETCHING, count: currentCount + 1 })
     const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
-    console.log('Waves DAO is: ')
-    console.log(dao)
     const waves = await dao.fetchToken()
     tokenService.registerDAO(waves, dao)
     dispatch({ type: TOKENS_FETCHED, token: waves })
     dispatch(alternateTxHandlingFlow(dao))
-    dispatch(initWavesAssetTokens(waves))
+    //dispatch(initWavesAssetTokens(waves))
   } catch (e) {
     console.log(e)
     dispatch({ type: TOKENS_FAILED })

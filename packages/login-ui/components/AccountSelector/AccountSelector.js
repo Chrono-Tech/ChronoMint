@@ -75,7 +75,7 @@ class AccountSelector extends PureComponent {
                 size={24}
                 thickness={1.5}
               /> : <Translate value='AccountSelector.selectAddress' />}
-              onTouchTap={this.handleSelect}
+              onClick={this.handleSelect}
               disabled={!selectedAccount || isLoading}
             />
           </div>

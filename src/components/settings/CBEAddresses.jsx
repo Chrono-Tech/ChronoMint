@@ -49,7 +49,7 @@ export default class CBEAddresses extends PureComponent {
             <Button
               flat
               label={<Translate value={prefix('addCbe')} />}
-              onTouchTap={() => this.props.form(new CBEModel())}
+              onClick={() => this.props.form(new CBEModel())}
             />
           </div>
         </div>
@@ -102,7 +102,7 @@ export default class CBEAddresses extends PureComponent {
                               <Button
                                 label={<Translate value={prefix('remove')} />}
                                 disabled={this.props.account === address}
-                                onTouchTap={() => this.props.revoke(item)}
+                                onClick={() => this.props.revoke(item)}
                               />
                             </div>
                           )

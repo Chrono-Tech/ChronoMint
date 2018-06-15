@@ -19,7 +19,11 @@ export default class WavesWallet {
   }
 
   getPrivateKey () {
-    return this._seed.privateKey
+    return this._keyPair.privateKey
+  }
+
+  getPublicKey () {
+    return this._keyPair.publicKey
   }
 
   static fromPrivateKey (original, network) {

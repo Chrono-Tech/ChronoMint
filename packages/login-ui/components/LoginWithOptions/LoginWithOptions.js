@@ -105,7 +105,7 @@ class LoginOption extends PureComponent {
       <div
         key={this.props.option.title}
         styleName='optionBox'
-        onTouchTap={this.handleClick}
+        onClick={this.handleClick}
       >
         <div styleName='optionName'><Translate value={this.props.option.title} /></div>
         <div className='material-icons' styleName='arrow'>arrow_forward</div>

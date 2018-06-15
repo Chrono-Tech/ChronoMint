@@ -62,7 +62,7 @@ export default class OperationsSettingsDialog extends PureComponent {
             />
           </div>
           <div styleName='footer'>
-            <Button flat styleName='action' label={<Translate value={prefix('cancel')} />} onTouchTap={() => this.props.onClose()} />
+            <Button flat styleName='action' label={<Translate value={prefix('cancel')} />} onClick={() => this.props.onClose()} />
             <Button styleName='action' label={<Translate value={prefix('save')} />} type='submit' />
           </div>
         </form>

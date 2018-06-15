@@ -15,8 +15,8 @@ export const selectMainWalletsList = createSelector(
   [
     getMainWallet,
   ],
-  (mainWallet: MainWalletModel): any[] =>
-    mainWallet
+  (mainWallet: MainWalletModel) => {
+    return mainWallet
       .addresses()
       .items()
       .filter((addressModel: AddressModel) =>
@@ -32,7 +32,8 @@ export const selectMainWalletsList = createSelector(
       })
       .sort(({ blockchain: a }, { blockchain: b }) =>
         (a > b) - (a < b),
-      ),
+      )
+  },
 )
 
 // provides filtered list of addresses of MainWallets
@@ -40,7 +41,7 @@ export const selectMultisigWalletsList = createSelector(
   [
     getMultisigWallets,
   ],
-  (MultisigWallets: MultisigWalletCollection): any[] =>
+  (MultisigWallets: MultisigWalletCollection) =>
     MultisigWallets
       .items()
       .map((wallet: MultisigWalletModel) => {

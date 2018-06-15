@@ -3,56 +3,33 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { DEFAULT_TOKENS } from 'dao/ERC20ManagerDAO'
-import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
+import { createSelector } from 'reselect'
+import { ETH } from 'redux/mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from 'redux/multisigWallet/actions'
-import { DUCK_MARKET } from 'redux/market/action'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
 import MainWalletModel from 'models/wallet/MainWalletModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import { getAccount } from 'redux/session/selectors'
-import AddressModel from 'models/wallet/AddressModel'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
+import Amount from 'models/Amount'
+import {
+  getMainWallet,
+  getMultisigWallets,
+  selectMainWalletAddressesListStore,
+  selectMainWalletBalancesListStore,
+  selectMarketPricesListStore,
+  selectMarketPricesSelectedCurrencyStore,
+  selectTokensStore,
+} from './selectors/models'
 
-import { getCurrentWallet } from './actions'
-
-/**
- * SIMPLE SELECTORS
- * ==============================================================================
- */
-
-export const getMainWallet = (state) => {
-  return state.get(DUCK_MAIN_WALLET)
-}
-
-export const getMultisigWallets = (state) => {
-  return state.get(DUCK_MULTISIG_WALLET)
-}
-
-export const getMainWalletBalance = (symbol) => createSelector(
-  [getMainWallet],
-  (mainWallet) => mainWallet.balances().item(symbol),
-)
-
-export const getCurrentWalletBalance = (symbol) => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => currentWallet.balances().item(symbol),
-)
-
-export const selectMainWalletBalancesListStore = (state) =>
-  state.get(DUCK_MAIN_WALLET).balances().list() // BalancesCollection, array of BalanceModel
-
-export const selectTokensStore = (state) =>
-  state.get(DUCK_TOKENS) // TokensCollection, array of TokenModel
-
-export const selectMainWalletAddressesListStore = (state) => {
-  return state.get(DUCK_MAIN_WALLET).addresses().list() // This is an instance of MainWalletModel
-}
-
-export const selectMarketPricesListStore = (state) => state.get(DUCK_MARKET).prices
-export const selectMarketPricesSelectedCurrencyStore = (state) => state.get(DUCK_MARKET).selectedCurrency
+export { getMainWallet } from 'redux/wallet/selectors/models'
+export { getMultisigWallets } from 'redux/wallet/selectors/models'
+export { getMainWalletBalance } from 'redux/wallet/selectors/models'
+export { getCurrentWalletBalance } from 'redux/wallet/selectors/models'
+export { selectMainWalletBalancesListStore } from 'redux/wallet/selectors/models'
+export { selectTokensStore } from 'redux/wallet/selectors/models'
+export { selectMainWalletAddressesListStore } from 'redux/wallet/selectors/models'
+export { selectMarketPricesListStore } from 'redux/wallet/selectors/models'
+export { selectMarketPricesSelectedCurrencyStore } from 'redux/wallet/selectors/models'
 
 /**
  * WALLET SECTIONS
@@ -278,7 +255,7 @@ export const makeGetWalletTokensAndBalanceByAddress = (blockchainTitle, address,
       const result = arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+          if (!isAmountGt && amount <= 0) {
             return accumulator
           }
 
@@ -365,7 +342,7 @@ export const makeGetWalletTokensForMultisig = (blockchainTitle, addressTitle, is
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {
           const { amount, symbol } = tokenKeyValuePair
-          if (!isAmountGt && !DEFAULT_TOKENS.includes(symbol) && amount <= 0) {
+          if (!isAmountGt && amount <= 0) {
             return accumulator
           }
 
@@ -473,5 +450,53 @@ export const getWallet = (blockchain, address) => createSelector(
       return mainWallet
     }
 
+  },
+)
+
+const priceCalculator = (symbol: string) => createSelector(
+  [
+    selectMarketPricesSelectedCurrencyStore,
+    selectMarketPricesListStore,
+  ],
+  (
+    selectedCurrency,
+    priceList,
+  ) => {
+    return priceList[symbol] && priceList[symbol][selectedCurrency] || null
+  },
+)
+
+export const priceTokenSelector = (value: Amount) => createSelector(
+  [
+    priceCalculator(value.symbol()),
+  ],
+  (
+    price,
+  ) => {
+    return value.mul((price || 0))
+  },
+)
+
+export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
+  [
+    getMainWallet,
+    getMultisigWallets,
+  ],
+  (
+    mainWalletState,
+    multisigWalletsCollection,
+  ) => {
+    if (multisigWalletsCollection.item(address)) {
+      return multisigWalletsCollection.item(address).transactions()
+    } else {
+      return mainWalletState.transactions({ blockchain, address })
+    }
+  },
+)
+
+export const getWalletBalanceForSymbol = (address, blockchain, symbol) => createSelector(
+  [getWallet(blockchain, address)],
+  (currentWallet) => {
+    return currentWallet.balances().item(symbol)
   },
 )

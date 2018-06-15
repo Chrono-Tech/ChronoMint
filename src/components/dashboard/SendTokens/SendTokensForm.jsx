@@ -34,6 +34,7 @@ import { walletDetailSelector, walletInfoSelector } from 'redux/wallet/selectors
 import { DUCK_TOKENS, estimateBtcFee, estimateGas } from 'redux/tokens/actions'
 import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 import inversedTheme from 'styles/themes/inversed'
+import { getMarket } from 'redux/market/selectors'
 import styles from '../styles'
 import { prefix } from './lang'
 import './SendTokensForm.scss'
@@ -56,6 +57,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state, ownProps) {
 
+  const { selectedCurrency } = getMarket(state)
   const wallet = walletDetailSelector(ownProps.blockchain, ownProps.address)(state)
   const walletInfo = walletInfoSelector(wallet, ownProps.blockchain, ownProps.address, true, state)
   const selector = formValueSelector(FORM_SEND_TOKENS)
@@ -75,6 +77,7 @@ function mapStateToProps (state, ownProps) {
   const isMultiToken = walletInfo.tokens.length > 1
 
   return {
+    selectedCurrency,
     wallet,
     tokens: state.get(DUCK_TOKENS),
     account: state.get(DUCK_SESSION).account,
@@ -100,6 +103,7 @@ function mapStateToProps (state, ownProps) {
 @reduxForm({ form: FORM_SEND_TOKENS, validate })
 export default class SendTokensForm extends PureComponent {
   static propTypes = {
+    selectedCurrency: PropTypes.string,
     blockchain: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     account: PropTypes.string,
@@ -374,7 +378,7 @@ export default class SendTokensForm extends PureComponent {
       if (this.state.btcFee) {
         return (
           <span styleName='description'>
-            {`${this.props.token.symbol()}  ${this.convertSatoshiToBTC(this.state.btcFee)} (≈USD `}
+            {`${this.props.token.symbol()}  ${this.convertSatoshiToBTC(this.state.btcFee)} (≈${this.props.selectedCurrency} `}
             <TokenValue renderOnlyPrice onlyPriceValue value={new Amount(this.state.btcFee, this.props.token.symbol())} />{')'}
             <span styleName='gwei-multiplier'>
               <Translate value={`${prefix}.averageFee`} multiplier={this.getBtcXOfAverage()} />
@@ -403,7 +407,7 @@ export default class SendTokensForm extends PureComponent {
       return (
         <span styleName='description'>
           {this.state.gasFee && (
-            <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈USD `}
+            <span>{`ETH ${web3Converter.fromWei(this.state.gasFee, 'wei').toString()} (≈${this.props.selectedCurrency} `}
               <TokenValue renderOnlyPrice onlyPriceValue value={this.state.gasFee} />{')'}
             </span>
           )}
@@ -512,7 +516,7 @@ export default class SendTokensForm extends PureComponent {
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              ≈USD {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
+              ≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
             </span>
           </div>
         </div>
@@ -598,7 +602,7 @@ export default class SendTokensForm extends PureComponent {
               <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
                 <span
                   styleName='based-limit-value'
-                  onTouchTap={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
+                  onClick={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
                 >
                   {this.state.gasLimitEstimated}
                 </span>
@@ -633,7 +637,7 @@ export default class SendTokensForm extends PureComponent {
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
             {(this.isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
-              <div onTouchTap={this.handleChangeMode}>
+              <div onClick={this.handleChangeMode}>
                 <span styleName='advanced-text'>
                   <Translate value={mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple'} />
                 </span>
@@ -643,7 +647,7 @@ export default class SendTokensForm extends PureComponent {
             <Button
               label={<Translate value={`${prefix}.send`} />}
               disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={handleSubmit(this.handleTransfer)}
+              onClick={handleSubmit(this.handleTransfer)}
             />
           </div>
         </div>

@@ -72,7 +72,7 @@ class ProfileContent extends PureComponent {
     return (
       <div styleName='profile'>
 
-        <div styleName='close-icon' onTouchTap={this.handleProfileClose}>
+        <div styleName='close-icon' onClick={this.handleProfileClose}>
           <FontIcon color='white' className='material-icons'>clear</FontIcon>
         </div>
 
@@ -105,10 +105,10 @@ class ProfileContent extends PureComponent {
             </div>
           </div>
           <div styleName='account-info-icons'>
-            <div styleName='account-info-setting' onTouchTap={this.props.handleProfileEdit}>
+            <div styleName='account-info-setting' onClick={this.props.handleProfileEdit}>
               <FontIcon color='white' className='material-icons'>settings</FontIcon>
             </div>
-            <div styleName='account-info-setting' onTouchTap={this.props.handleLogout}>
+            <div styleName='account-info-setting' onClick={this.props.handleLogout}>
               <FontIcon color='white' className='material-icons'>power_settings_new</FontIcon>
             </div>
           </div>

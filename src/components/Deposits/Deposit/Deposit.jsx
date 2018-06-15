@@ -102,8 +102,8 @@ export default class Deposit extends PureComponent {
               <div styleName='amount'><TokenValue value={deposit} noRenderPrice /></div>
               <div styleName='price'><TokenValue value={deposit} renderOnlyPrice /></div>
               <div styleName='actions'>
-                <Button styleName='action' onTouchTap={this.handleWithdrawDeposit}><Translate value={`${prefix}.withdraw`} /></Button>
-                <Button styleName='action' onTouchTap={this.handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
+                <Button styleName='action' onClick={this.handleWithdrawDeposit}><Translate value={`${prefix}.withdraw`} /></Button>
+                <Button styleName='action' onClick={this.handleAddDeposit}><Translate value={`${prefix}.deposit`} /></Button>
               </div>
             </div>
           </div>

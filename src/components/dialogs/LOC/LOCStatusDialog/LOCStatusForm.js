@@ -43,7 +43,7 @@ class LOCStatusForm extends PureComponent {
         <div styleName='footer'>
           <Button
             label={<Translate value='locs.updateStatus' />}
-            onTouchTap={handleSubmit}
+            onClick={handleSubmit}
             disabled={pristine}
           />
         </div>

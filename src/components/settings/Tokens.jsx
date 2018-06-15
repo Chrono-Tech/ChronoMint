@@ -76,7 +76,7 @@ export default class Tokens extends PureComponent {
             <Button
               flat
               label={<Translate value={prefix('addToken')} />}
-              onTouchTap={this.handleEdit()}
+              onClick={this.handleEdit()}
             />
           </div>
         </div>
@@ -122,13 +122,13 @@ export default class Tokens extends PureComponent {
                           <div styleName='actionsItem'>
                             <Button
                               label={<Translate value='terms.modify' />}
-                              onTouchTap={this.handleEdit(token, true)}
+                              onClick={this.handleEdit(token, true)}
                             />
                           </div>
                           <div styleName='actionsItem'>
                             <Button
                               label={<Translate value='terms.remove' />}
-                              onTouchTap={this.handleRemove(token)}
+                              onClick={this.handleRemove(token)}
                             />
                           </div>
                         </div>

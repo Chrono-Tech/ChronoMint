@@ -18,7 +18,7 @@ import NemDAO from 'dao/NemDAO'
 import WavesDAO from 'dao/WavesDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
+import { getMainWalletBalance, getWalletBalanceForSymbol } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -30,7 +30,7 @@ import './ConfirmTransferDialog.scss'
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
   return ({
-    amountBalance: getCurrentWalletBalance(tx.amountToken().symbol())(state),
+    amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
     feeBalance: getMainWalletBalance(tx.feeToken().symbol())(state),
   })
 }
@@ -203,14 +203,14 @@ export default class ConfirmTransferDialog extends PureComponent {
               flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
             <Button
               flat
               styleName='action'
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}
-              onTouchTap={isValid ? this.handleConfirm : undefined}
+              onClick={isValid ? this.handleConfirm : undefined}
             />
           </div>
         </div>

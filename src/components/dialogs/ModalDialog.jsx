@@ -58,7 +58,7 @@ export default class ModalDialog extends PureComponent {
           >
             <div
               styleName='dialog'
-              onTouchTap={this.handleStopPropagation}
+              onClick={this.handleStopPropagation}
             >
               {this.props.title && (
                 <div styleName='header'>
@@ -70,7 +70,7 @@ export default class ModalDialog extends PureComponent {
               </div>
               <div
                 styleName='close'
-                onTouchTap={this.handleClose}
+                onClick={this.handleClose}
               >
                 <i className='material-icons'>close</i>
               </div>

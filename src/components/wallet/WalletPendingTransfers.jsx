@@ -101,7 +101,7 @@ export default class WalletPendingTransfers extends PureComponent {
             <Button
               label={<Translate value='wallet.revoke' />}
               disabled={!isConfirmed}
-              onTouchTap={isConfirmed
+              onClick={isConfirmed
                 ? this.handleRevoke(wallet, item)
                 : undefined
               }
@@ -110,7 +110,7 @@ export default class WalletPendingTransfers extends PureComponent {
           <Button
             label={<Translate value='wallet.sign' />}
             disabled={isConfirmed}
-            onTouchTap={!isConfirmed
+            onClick={!isConfirmed
               ? this.handleConfirm(wallet, item)
               : undefined
             }

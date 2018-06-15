@@ -79,8 +79,6 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
   async getAddressInfo (address) {
     try {
       const { data } = await this._api.get(`addr/${address}/balance`)
-      console.log('Waves data is:')
-      console.log(data)
       const { balance, assets } = data
       return new WavesBalance({
         address,
@@ -96,6 +94,7 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
   async send (account, rawtx) {
     try {
       const { data } = await this._api.post('tx/send', rawtx)
+      console.log(data)
       // const model = createTxModel(data.transaction, account)
       // setImmediate(() => {
       //   this.emit('tx', model)

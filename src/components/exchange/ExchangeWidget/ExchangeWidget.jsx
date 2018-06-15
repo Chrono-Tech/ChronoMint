@@ -85,7 +85,7 @@ export default class ExchangeWidget extends React.Component {
           <div styleName='headerTitle'><Translate value={prefix('exchange')} /></div>
           <div styleName='createExchangeWrapper'><Button
             label={<Translate value={prefix('createExchange')} />}
-            onTouchTap={this.props.handleOpenAddExchangeDialog}
+            onClick={this.props.handleOpenAddExchangeDialog}
           />
           </div>
           {this.props.showFilter &&
@@ -95,7 +95,7 @@ export default class ExchangeWidget extends React.Component {
                 styleName='tab'
                 key={el.name}
                 className={el === this.props.filterMode ? 'active' : null}
-                onTouchTap={() => this.handleChangeMode(index)}
+                onClick={() => this.handleChangeMode(index)}
               >
                 <span styleName='tabTitle'>
                   <i className='material-icons'>compare_arrows</i>

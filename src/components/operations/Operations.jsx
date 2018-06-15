@@ -111,8 +111,8 @@ export default class PendingOperations extends PureComponent {
             {!op.isDone() && (
               <div styleName='tableCellActionsItem'>
                 {op.isConfirmed()
-                  ? (<Button label='Revoke' onTouchTap={() => this.props.handleRevoke(op)} />)
-                  : (<Button label='Confirm' onTouchTap={() => this.props.handleConfirm(op)} />)
+                  ? (<Button label='Revoke' onClick={() => this.props.handleRevoke(op)} />)
+                  : (<Button label='Confirm' onClick={() => this.props.handleConfirm(op)} />)
                 }
               </div>
             )}
@@ -137,7 +137,7 @@ export default class PendingOperations extends PureComponent {
                   flat
                   label={<Translate value={prefix('settings')} />}
                   primary
-                  onTouchTap={this.props.handleSettings}
+                  onClick={this.props.handleSettings}
                 />
               </div>
             )
@@ -173,7 +173,7 @@ export default class PendingOperations extends PureComponent {
             <div styleName='panelMore'>
               <Button
                 label={<Translate value='nav.loadMore' />}
-                onTouchTap={this.props.handleLoadMore}
+                onClick={this.props.handleLoadMore}
               />
             </div>
           )

@@ -20,5 +20,6 @@ export default {
     additionalStandardWallet: 'My additional standard Wallet',
     standardWallet: 'My Wallet',
     tokensTitle: 'Other positive balance tokens (%{count})',
+    tokenNotAvailable: 'Token Not Available',
   },
 }

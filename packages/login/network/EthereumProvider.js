@@ -40,7 +40,7 @@ export class EthereumProvider extends AbstractProvider {
     return node
   }
 
-  unsubscribe (ethEngine: EthereumEngine, nemEngine) {
+  unsubscribe (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
     const node = this._selectNode(ethEngine)
     node.emit('unsubscribe', {
       ethAddress: ethEngine.getAddress(),
