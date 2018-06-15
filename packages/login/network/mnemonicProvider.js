@@ -46,7 +46,6 @@ class MnemonicProvider {
     Engines.nem = false // Nem
     Engines.waves = false // Waves
 
-
     if (network) {
 
       // This method may be used only inside getMnemonicProvider, becuse of 'mnemonic' and 'bitcoin' in scope

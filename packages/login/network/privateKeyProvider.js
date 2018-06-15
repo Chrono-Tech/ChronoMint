@@ -5,6 +5,7 @@
 
 import bitcoin from 'bitcoinjs-lib'
 import nemSdk from 'nem-sdk'
+import * as WavesApi from '@waves/waves-api'
 import bigi from 'bigi'
 import wallet from 'ethereumjs-wallet'
 import hdKey from 'ethereumjs-wallet/hdkey'
@@ -34,7 +35,7 @@ class PrivateKeyProvider {
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
     const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
-    const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, waves.networks[network.waves])
+    const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
     let lastDeriveNumbers = 0
 
@@ -54,6 +55,7 @@ class PrivateKeyProvider {
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
       ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
+      waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
     }
 
   }
