@@ -37,7 +37,9 @@
     border-color: $button-color-4;
   }
   &:disabled {
-    background-color: $button-color-3;
+    border: none;
+    color: $color-grey-7;
+    background-color: $color-grey-3;
   }
 }
 
