@@ -590,7 +590,7 @@ export default class AbstractContractDAO extends EventEmitter {
   async _watch (event, callback, filters = {}) {
     await this.contract
     const deployed = await this._eventsContract
-    if (!deployed.hasOwnProperty(event)) {
+    if (!deployed || !deployed.hasOwnProperty(event)) {
       throw this._error('_watch event not found', event, filters)
     }
 
