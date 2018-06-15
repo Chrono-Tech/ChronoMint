@@ -28,7 +28,6 @@ export default class WavesWallet {
   static fromPrivateKey (original, network) {
     const Waves = WavesAPI.create(network)
     const seed = Waves.Seed.fromExistingPhrase(original)
-    console.log(seed)
     return new WavesWallet(seed, seed.keyPair, network)
   }
 
