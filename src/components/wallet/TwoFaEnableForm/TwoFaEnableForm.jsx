@@ -94,7 +94,7 @@ export default class TwoFaEnableForm extends PureComponent {
 
   componentWillReceiveProps (newProps) {
     if (newProps.code && newProps.code !== this.props.code) {
-      const code = `otpauth://totp/ChronoWallet?secret=${newProps.code}&issuer=2fa`
+      const code = `otpauth://totp/${newProps.account}?secret=${newProps.code}&issuer=ChronoWallet-2FA`
       QRCode.toDataURL(code, (err, qrData) => {
         this.setState({
           qrData,

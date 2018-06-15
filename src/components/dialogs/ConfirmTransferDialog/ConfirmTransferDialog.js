@@ -86,16 +86,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
   }
 
-  getDetails ({
-                tx,
-                amountToken,
-                amountBalance,
-                amountBalanceAfter,
-                feeToken,
-                feeBalance,
-                feeBalanceAfter,
-                feeMultiplier,
-              }) {
+  getDetails ({ tx, amountToken, amountBalance, amountBalanceAfter, feeToken, feeBalance, feeBalanceAfter, feeMultiplier }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
       { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },

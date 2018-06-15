@@ -54,7 +54,7 @@ export default class WalletMainCoinBalance extends PureComponent {
     return (
       <div styleName='token-amount' className='WalletMainCoinBalance__root'>
         <div styleName='crypto-amount'>
-          {mainSymbol} {integerWithDelimiter(balance, true, null)}
+          {mainSymbol} {balance !== null ? integerWithDelimiter(balance, true, null) : '--'}
         </div>
         <div styleName='usd-amount' className='WalletMainCoinBalance__usd-amount'>
           {selectedCurrency} {integerWithDelimiter(amountCurrency.toFixed(2), true)}

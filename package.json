@@ -80,6 +80,8 @@
     "webpack-dev-server": "2.9.4"
   },
   "dependencies": {
+    "@ledgerhq/hw-transport-u2f": "^4.13.0",
+    "@waves/waves-api": "0.28.2",
     "axios": "^0.16.2",
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.1.0",
@@ -142,7 +144,6 @@
     "uglify-es": "github:mishoo/UglifyJS2#harmony",
     "uniqid": "^4.1.1",
     "uport-connect": "^0.6.0",
-    "@waves/waves-api": "0.28.2",
     "web3": "^0.20.1",
     "web3-provider-engine": "^14.0.3",
     "webstomp-client": "^1.2.0"
