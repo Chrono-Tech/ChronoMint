@@ -602,7 +602,7 @@ export default class SendTokensForm extends PureComponent {
               <span styleName='gas-limit-based'><Translate value={`${prefix}.basedOnLimit`} limit={this.state.gasLimitEstimated} />
                 <span
                   styleName='based-limit-value'
-                  onTouchTap={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
+                  onClick={() => this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimitEstimated))}
                 >
                   {this.state.gasLimitEstimated}
                 </span>
@@ -637,7 +637,7 @@ export default class SendTokensForm extends PureComponent {
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
             {(this.isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
-              <div onTouchTap={this.handleChangeMode}>
+              <div onClick={this.handleChangeMode}>
                 <span styleName='advanced-text'>
                   <Translate value={mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple'} />
                 </span>
@@ -647,7 +647,7 @@ export default class SendTokensForm extends PureComponent {
             <Button
               label={<Translate value={`${prefix}.send`} />}
               disabled={pristine || invalid || isTimeLocked}
-              onTouchTap={handleSubmit(this.handleTransfer)}
+              onClick={handleSubmit(this.handleTransfer)}
             />
           </div>
         </div>

@@ -138,7 +138,7 @@ export default class TransactionsTable extends PureComponent {
                   thickness={1.5}
                 /> : 'Load More'}
                 disabled={isFetching}
-                onTouchTap={this.handleLoadMore}
+                onClick={this.handleLoadMore}
               />
             </div>
           )}

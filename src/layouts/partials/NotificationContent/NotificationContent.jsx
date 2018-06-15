@@ -118,7 +118,7 @@ class NotificationContent extends PureComponent {
         <div>
           <div styleName='section-header'>
             <div styleName='title'><Translate value={`${prefix}.currentTransactions`} /></div>
-            <div styleName='close' onTouchTap={this.handleClose}>
+            <div styleName='close' onClick={this.handleClose}>
               <IconButton>
                 <i className='material-icons'>close</i>
               </IconButton>

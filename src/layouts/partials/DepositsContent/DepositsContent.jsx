@@ -66,7 +66,7 @@ export default class DepositsContent extends Component {
                 <DepositsList onAddDeposit={this.handleAddDeposit} onWithdrawDeposit={this.handleWithdrawDeposit} />
               )}
           </div>
-          <Button styleName='addDeposit' onTouchTap={this.handleAddDeposit}>
+          <Button styleName='addDeposit' onClick={this.handleAddDeposit}>
             <i className='chronobank-icon'>add</i>
           </Button>
         </div>

@@ -120,7 +120,7 @@ class GenerateWallet extends PureComponent {
               <Button
                 label={<Translate value='GenerateWallet.continue' />}
                 disabled={!isDownloaded && (!isWarningSuppressed || !isPasswordValid)}
-                onTouchTap={this.handleGenerateWalletClick}
+                onClick={this.handleGenerateWalletClick}
               />
             </div>
           </div>

@@ -89,7 +89,7 @@ export default class WalletWidgetMini extends PureComponent {
                 </div>
               </div>
               <div styleName='content-container'>
-                <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
+                <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                   <div styleName='address-title'>
                     <div><WalletName wallet={wallet} /></div>
                     <span styleName='address-address'>{address}</span>

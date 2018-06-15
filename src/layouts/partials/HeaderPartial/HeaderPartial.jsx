@@ -53,7 +53,7 @@ export default class HeaderPartial extends PureComponent {
 
           <LocaleDropDown />
 
-          <Button styleName='action' onTouchTap={this.props.handleNotificationTap}>
+          <Button styleName='action' onClick={this.props.handleNotificationTap}>
             <i className='material-icons'>notifications_active</i>
           </Button>
         </div>

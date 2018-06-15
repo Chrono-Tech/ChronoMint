@@ -12,7 +12,9 @@ import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createBTGEngine, createLTCEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
+import { createWAVESEngine } from './WavesUtils'
 import NemWallet from './NemWallet'
+import WavesWallet from './WavesWallet'
 import {
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_BTC_TESTNET,
@@ -32,6 +34,7 @@ class PrivateKeyProvider {
     const btg = network && network.bitcoinGold && this.createBitcoinGoldWallet(privateKey, bitcoin.networks[network.bitcoinGold])
     const ltc = network && network.litecoin && this.createLitecoinWallet(privateKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(privateKey, nemSdk.model.network.data[network.nem])
+    const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, waves.networks[network.waves])
 
     let lastDeriveNumbers = 0
 
@@ -52,7 +55,7 @@ class PrivateKeyProvider {
       ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
     }
-	
+
   }
 
   createBitcoinWalletFromPK (privateKey, network) {

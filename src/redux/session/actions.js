@@ -36,6 +36,7 @@ export const PROFILE_PANEL_TOKENS = [
   { symbol: 'LTC', blockchain: 'Litecoin', title: 'LTC' },
   { symbol: 'ETH', blockchain: 'Ethereum', title: 'ETH' },
   { symbol: 'XEM', blockchain: 'NEM', title: 'NEM' },
+  { symbol: 'WAVES', blockchain: 'WAVES', title: 'WAVES' },
 ]
 
 export const createSession = ({ account, provider, network, dispatch }) => {

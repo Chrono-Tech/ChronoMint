@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
 import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import { FORM_ADD_NEW_WALLET } from 'redux/mainWallet/actions'
 

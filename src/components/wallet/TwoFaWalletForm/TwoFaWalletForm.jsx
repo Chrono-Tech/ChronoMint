@@ -187,7 +187,7 @@ export default class TwoFaWalletForm extends PureComponent {
           <div styleName='preloader'>
             <Preloader big />
           </div>
-          <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onTouchTap={this.props.handleGoWallets} />
+          <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onClick={this.props.handleGoWallets} />
         </div>
       </div>
     )
@@ -202,8 +202,8 @@ export default class TwoFaWalletForm extends PureComponent {
         <div styleName='actions'>
           <div />
           {this.props.check2FAChecked
-            ? <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onTouchTap={this.props.handleGoWallets} />
-            : <Button label={<Translate value={`${prefix}.proceed`} />} onTouchTap={this.props.handleGoTo2FA} />}
+            ? <Button label={<Translate value={`${prefix}.goToMyWallets`} />} onClick={this.props.handleGoWallets} />
+            : <Button label={<Translate value={`${prefix}.proceed`} />} onClick={this.props.handleGoTo2FA} />}
         </div>
       </div>
     )

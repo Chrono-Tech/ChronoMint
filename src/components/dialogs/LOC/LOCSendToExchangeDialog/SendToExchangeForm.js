@@ -46,7 +46,7 @@ class SendToExchangeForm extends PureComponent {
           <Button
             label={<Translate value='terms.send' />}
             disabled={pristine || invalid}
-            onTouchTap={handleSubmit}
+            onClick={handleSubmit}
           />
         </div>
 

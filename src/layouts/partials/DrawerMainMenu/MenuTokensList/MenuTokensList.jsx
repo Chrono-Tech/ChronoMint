@@ -161,7 +161,7 @@ export default class MenuTokensList extends PureComponent {
                   title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
                 />
               </div>
-              <div styleName='addressTitle' onTouchTap={this.handleTouchTitle(token.blockchain)}>
+              <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
                   {token.address || <Translate value={`${prefix}.notAvailable`} />}
@@ -169,7 +169,7 @@ export default class MenuTokensList extends PureComponent {
               </div>
               <div
                 styleName={classnames('itemMenu', { 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title })}
-                onTouchTap={setToken(token)}
+                onClick={setToken(token)}
               >
                 <i className='material-icons'>more_vert</i>
               </div>

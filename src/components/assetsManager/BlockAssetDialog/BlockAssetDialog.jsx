@@ -68,18 +68,18 @@ export default class BlockAssetDialog extends PureComponent {
             <Button
               styleName='action'
               label={<Translate value={`${prefix}.cancel`} />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
             {isPaused
               ? <Button
                 styleName='action'
                 label={<Translate value={`${prefix}.unblockAssetButton`} />}
-                onTouchTap={this.handleUnblockAsset}
+                onClick={this.handleUnblockAsset}
               />
               : <Button
                 styleName='action block'
                 label={<Translate value={`${prefix}.blockAssetButton`} />}
-                onTouchTap={this.handleBlockAsset}
+                onClick={this.handleBlockAsset}
               />
             }
           </div>

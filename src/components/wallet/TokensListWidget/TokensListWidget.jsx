@@ -111,15 +111,15 @@ export default class TokensListWidget extends PureComponent {
         <div styleName='tokens-list'>
           <div styleName='tokens-list-table'>
             <div styleName='tokens-list-table-tr'>
-              <div styleName='tokens-list-table-cell-sort-token' onTouchTap={this.setSort('symbol')}>
+              <div styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
                 <Translate value={`${prefix}.token`} />&nbsp;
                 {this.renderDirection('symbol')}
               </div>
-              <div styleName='tokens-list-table-cell-sort-amount' onTouchTap={this.setSort('value')}>
+              <div styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
                 <Translate value={`${prefix}.amount`} />&nbsp;
                 {this.renderDirection('value')}
               </div>
-              <div styleName='tokens-list-table-cell-sort-usd' onTouchTap={this.setSort('valueUsd')}>
+              <div styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
                 <Translate value={`${prefix}.fiat`} />&nbsp;
                 {this.renderDirection('valueUsd')}
               </div>
@@ -149,7 +149,7 @@ export default class TokensListWidget extends PureComponent {
             <Button
               flat
               label={<Translate value={`${prefix}.${this.state.isShowAll ? 'less' : 'more'}`} />}
-              onTouchTap={this.handleChangeShowAll}
+              onClick={this.handleChangeShowAll}
             />
           )}
         </div>

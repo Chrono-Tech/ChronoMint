@@ -62,7 +62,7 @@ export default class UserActiveDialog extends PureComponent {
               styleName='action'
               label={<Translate value='UserActiveDialog.here' />}
               type='submit'
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
           </div>
         </div>

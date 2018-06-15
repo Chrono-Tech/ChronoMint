@@ -51,7 +51,7 @@ export default class TwoFAWarningWidget extends PureComponent {
                     disabled={false}
                     type='submit'
                     label={<Translate value={`${prefix}.button`} />}
-                    onTouchTap={this.props.handleGoTo2FA}
+                    onClick={this.props.handleGoTo2FA}
                   />
                 </div>
               </div>

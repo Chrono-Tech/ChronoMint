@@ -213,7 +213,7 @@ export default class BuyTokensForm extends React.PureComponent {
                               <Translate value={prefix('revoke')} />
                             </span>
                           )}
-                          onTouchTap={this.handleApprove}
+                          onClick={this.handleApprove}
                         />
                         : <Button
                           disabled={this.props.pristine || !this.props.valid || showWarningMessage}

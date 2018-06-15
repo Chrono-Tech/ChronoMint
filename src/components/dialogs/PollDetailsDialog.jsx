@@ -231,7 +231,7 @@ export default class VoteDialog extends PureComponent {
             <Button
               styleName='action'
               label='Close'
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
           </div>
         </form>

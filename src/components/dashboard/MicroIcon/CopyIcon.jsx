@@ -50,7 +50,7 @@ export default class CopyIcon extends PureComponent {
   render () {
     return (
       <div styleName='root' className='MicroIcon__root'>
-        <a styleName={this.props.iconStyle} onTouchTap={(e) => { e.preventDefault(); this.handleCopy() }} >
+        <a styleName={this.props.iconStyle} onClick={(e) => { e.preventDefault(); this.handleCopy() }} >
           {this.props.children
             ? this.props.children
             : <i className='material-icons'>content_copy</i>

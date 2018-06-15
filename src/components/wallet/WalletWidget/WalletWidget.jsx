@@ -183,7 +183,7 @@ export default class WalletWidget extends PureComponent {
               </div>
             )}
             <div styleName='settings-container'>
-              <div styleName='settings-icon' className='chronobank-icon' onTouchTap={this.handleOpenSettings}>settings
+              <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
               </div>
             </div>
             <div styleName='token-container'>
@@ -193,7 +193,7 @@ export default class WalletWidget extends PureComponent {
               </div>
             </div>
             <div styleName='content-container'>
-              <Link styleName='addressWrapper' href='' to='/wallet' onTouchTap={this.handleSelectWallet}>
+              <Link styleName='addressWrapper' href='' to='/wallet' onClick={this.handleSelectWallet}>
                 <div styleName='address-title'>
                   <h3><WalletName wallet={wallet} /></h3>
                   <span styleName='address-address'>{address}</span>
@@ -224,7 +224,7 @@ export default class WalletWidget extends PureComponent {
                     disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.sendButton`} />}
-                    onTouchTap={this.handleSend(wallet)}
+                    onClick={this.handleSend(wallet)}
                   />
                 </div>
                 <div styleName='action'>
@@ -232,7 +232,7 @@ export default class WalletWidget extends PureComponent {
                     disabled={!tokenIsFetched}
                     type='submit'
                     label={<Translate value={`${prefix}.receiveButton`} />}
-                    onTouchTap={this.handleReceive}
+                    onClick={this.handleReceive}
                   />
                 </div>
                 {/*blockchain === BLOCKCHAIN_ETHEREUM && (
@@ -242,7 +242,7 @@ export default class WalletWidget extends PureComponent {
                       flat
                       type='submit'
                       label={<Translate value={`${prefix}.depositButton`} />}
-                      onTouchTap={this.handleDeposit}
+                      onClick={this.handleDeposit}
                     />
                   </div>
                 )*/}

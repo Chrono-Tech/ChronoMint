@@ -48,7 +48,7 @@ export default class TwoFAForm extends Component {
                 <Button
                   label={<Translate value={`${prefix}.proceedToActivation`} />}
                   styleName='action'
-                  onTouchTap={this.handleProceedToActivation}
+                  onClick={this.handleProceedToActivation}
                 />
               </div>
               <div styleName='stepCol2 highlight step1'>
@@ -103,7 +103,7 @@ export default class TwoFAForm extends Component {
             <Button
               label={<Translate value={`${prefix}.enable2FA`} />}
               styleName='action'
-              onTouchTap={this.handleEnable2FA}
+              onClick={this.handleEnable2FA}
             />
           </div>
         </div>

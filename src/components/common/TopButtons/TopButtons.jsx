@@ -59,14 +59,14 @@ class TopButtons extends PureComponent {
       <div styleName='root'>
         <div styleName='backButtonWrapper'>
           {page && page.backButton ? (
-            <Button styleName='backButton' onTouchTap={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
+            <Button styleName='backButton' onClick={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
               <i styleName='backIcon' className='chronobank-icon'>back</i>
             </Button>
           ) : null}
         </div>
         {
           buttons.map((button, i) => (
-            <Button key={i} styleName={classnames('topButton', { 'iconButton': !!button.chronobankIcon })} onTouchTap={this.handleAction(button.action)}>
+            <Button key={i} styleName={classnames('topButton', { 'iconButton': !!button.chronobankIcon })} onClick={this.handleAction(button.action)}>
               {button.chronobankIcon && <i className='chronobank-icon'>{button.chronobankIcon}</i>}
               {button.title && <Translate value={`topButtons.${button.title}`} />}
             </Button>

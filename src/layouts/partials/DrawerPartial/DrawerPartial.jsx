@@ -34,7 +34,7 @@ export default class DrawerPartial extends PureComponent {
         innerDivStyle={styles.drawer.item.innerDivStyle}
         disabled={item.disabled}
         primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerHide}
+        onClick={this.props.handleDrawerHide}
         leftIcon={
           <FontIcon
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
@@ -62,11 +62,11 @@ export default class DrawerPartial extends PureComponent {
       >
         <div
           styleName='backdrop'
-          onTouchTap={this.props.handleDrawerToggle}
+          onClick={this.props.handleDrawerToggle}
         />
         <div styleName='content'>
           <div styleName='menu'>
-            <IconButton onTouchTap={this.props.handleDrawerToggle}>
+            <IconButton onClick={this.props.handleDrawerToggle}>
               <FontIcon className='material-icons'>menu</FontIcon>
             </IconButton>
           </div>
