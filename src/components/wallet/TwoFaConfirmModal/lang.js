@@ -8,7 +8,7 @@ export const prefix = 'TwoFaConfirmModal'
 export default {
   en: {
     title: 'Enter Code',
-    description: 'Enter a code you see in your App.',
+    description: 'In order to complete the transaction open Google Authenticator and enter a code  provided for your ChronoWallet Account.',
     authCode: 'Authentication code',
     confirm: 'confirm',
     confirmCodeWrong: 'Confirmation code incorrect. Please try again',
