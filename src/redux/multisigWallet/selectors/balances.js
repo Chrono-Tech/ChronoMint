@@ -93,7 +93,7 @@ export const multisigWalletBalanceSelector = (address: string, symbol: string) =
   (
     balancesInfo,
   ) => {
-    return balancesInfo[0] ? balancesInfo[0].value : 0
+    return balancesInfo[0] ? balancesInfo[0].value : null
   },
 )
 

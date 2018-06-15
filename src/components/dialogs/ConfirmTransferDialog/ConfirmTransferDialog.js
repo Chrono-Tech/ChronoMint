@@ -17,7 +17,7 @@ import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
 
 import { modalsClear, modalsClose } from 'redux/modals/actions'
-import { getCurrentWalletBalance, getMainWalletBalance } from 'redux/wallet/selectors'
+import { getMainWalletBalance, getWalletBalanceForSymbol } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
@@ -29,7 +29,7 @@ import './ConfirmTransferDialog.scss'
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
   return ({
-    amountBalance: getCurrentWalletBalance(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
+    amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
     feeBalance: getMainWalletBalance(tx.feeToken().symbol())(state),
   })
 }
@@ -84,16 +84,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
   }
 
-  getDetails ({
-                tx,
-                amountToken,
-                amountBalance,
-                amountBalanceAfter,
-                feeToken,
-                feeBalance,
-                feeBalanceAfter,
-                feeMultiplier,
-              }) {
+  getDetails ({ tx, amountToken, amountBalance, amountBalanceAfter, feeToken, feeBalance, feeBalanceAfter, feeMultiplier }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
       { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },

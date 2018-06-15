@@ -15,7 +15,7 @@ const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
     timeout: 4000,
   }),
   twoFA: axios.create({
-    baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io/2fa',
+    baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io/2fa',
     timeout: 4000,
   }),
   socket: {

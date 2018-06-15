@@ -22,6 +22,7 @@ import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { PTWallet } from 'redux/wallet/types'
+import { getAccount } from 'redux/session/selectors'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -40,6 +41,7 @@ function makeMapStateToProps (state, ownProps) {
       wallet: getWallet(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
+      account: getAccount(ownState),
     }
   }
   return mapStateToProps
@@ -78,6 +80,7 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class WalletWidget extends PureComponent {
   static propTypes = {
+    account: PropTypes.string,
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
     wallet: PTWallet,
@@ -161,8 +164,12 @@ export default class WalletWidget extends PureComponent {
   }
 
   render () {
-    const { address, token, blockchain, wallet, showGroupTitle } = this.props
+    const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
     const tokenIsFetched = (token && token.isFetched())
+
+    if (Array.isArray(wallet.owners) && !wallet.owners.includes(account)) {
+      return null
+    }
 
     return (
       <div styleName='header-container'>

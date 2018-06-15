@@ -494,3 +494,10 @@ export const makeGetTxListForWallet = (blockchain: string, address: string) => c
     }
   },
 )
+
+export const getWalletBalanceForSymbol = (address, blockchain, symbol) => createSelector(
+  [getWallet(blockchain, address)],
+  (currentWallet) => {
+    return currentWallet.balances().item(symbol)
+  },
+)
