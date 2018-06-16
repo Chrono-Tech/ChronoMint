@@ -6,7 +6,7 @@
 import TxModel from 'models/TxModel'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
 
-export const TXS_PER_PAGE = 100
+export const TXS_PER_PAGE = 20
 
 export default class TransactionsCollection extends abstractFetchingCollection({
   endOfList: false,

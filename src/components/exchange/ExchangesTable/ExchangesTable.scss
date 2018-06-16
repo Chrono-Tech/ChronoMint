@@ -125,11 +125,10 @@ $cell-padding: 16px 8px;
   display: flex;
   justify-content: flex-end;
   margin-bottom: 10px;
-  white-space: nowrap;
 }
 
 .colWrapper {
-  height: 46px;
+  height: 60px;
   @include sm-only {
     height: auto;
   }

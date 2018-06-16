@@ -1,0 +1,83 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.root {
+  border-style: solid;
+  border-color: $border-color;
+  background-color: transparent;
+  border-width: 1px 0px 0px;
+}
+
+.item {
+  display: flex;
+  padding-top: 15px;
+  padding-bottom: 13px;
+  &:hover {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 100%)
+  }
+}
+
+.syncIcon {
+  display: flex;
+  padding: 5px 0 0 5px;
+  flex: 1;
+  .icon {
+    background-color: $badge-grey;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    &.status-offline {
+      background-color: $badge-red;
+    }
+    &.status-syncing {
+      background-color: $badge-orange;
+    }
+    &.status-synced {
+      background-color: $badge-green;
+    }
+  }
+}
+
+.addressTitle {
+  flex: 6;
+  cursor: pointer;
+}
+
+.addressName {
+  font-weight: bold;
+  color: $color-white;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.address {
+  color: $additionalData-color;
+  font-size: 12px;
+  line-height: 14px;
+  word-break: break-all;
+}
+
+.itemMenu {
+  height: 45px;
+  color: $color-white;
+  opacity: .15;
+  flex: 2;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 7px;
+  align-items: center;
+  cursor: pointer;
+  &.hover:hover, &.selected {
+    opacity: 1;
+  }
+}
+
+:global {
+  .drawer-item-active {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1) 100%)
+  }
+}

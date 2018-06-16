@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import nem from 'nem-sdk'
-import TxModel from 'models/TxModel'
 import NemAbstractNode, { NemBalance, NemTx } from './NemAbstractNode'
 
 export default class NemMiddlewareNode extends NemAbstractNode {
@@ -110,7 +109,7 @@ export default class NemMiddlewareNode extends NemAbstractNode {
       throw new Error('invalid result')
     }
     for (const tx of data) {
-      txs.push(this.createTxModel(tx, address))
+      txs.push(createTxModel(tx, address))
     }
     return txs
   }
@@ -123,14 +122,14 @@ function createTxModel (tx, account): NemTx {
     from: tx.sender,
     signer: tx.signer,
     to: tx.recipient,
-    value: new BigNumber(tx.amount),
+    value: new BigNumber(tx.amount || 0),
     fee: new BigNumber(tx.fee),
     credited: tx.recipient === account,
     mosaics: !(tx.mosaics && tx.mosaics.length)
       ? null
       : tx.mosaics.reduce((t, m) => ({
         ...t,
-        [ `${m.mosaicId.namespaceId}:${m.mosaicId.name}` ]: m.quantity,
+        [`${m.mosaicId.namespaceId}:${m.mosaicId.name}`]: m.quantity,
       }), {}),
     unconfirmed: tx.unconfirmed || false,
   })
@@ -146,9 +145,9 @@ function readXemBalance (balance) {
 }
 
 function readMosaicsBalances (mosaics) {
-  return Object.entries(mosaics || {}).reduce((t, [ k, v ]) => ({
+  return Object.entries(mosaics || {}).reduce((t, [k, v]) => ({
     ...t,
-    [ k ]: {
+    [k]: {
       confirmed: v.confirmed == null ? null : new BigNumber(v.confirmed.value),
       unconfirmed: v.unconfirmed == null ? null : new BigNumber(v.unconfirmed.value),
     },

@@ -29,12 +29,12 @@ export default class TokenModel extends abstractFetchingModel({
   totalSupply: new Amount(0, null, false),
   managersList: new OwnerCollection(),
   isReissuable: new ReissuableModel(),
-  isOptional: true, // used in add token dialog for determine its selectable
   blockchain: null,
   isERC20: false,
   isLocked: false, // flag for do not operate this token
   isPaused: new PausedModel(),
   blacklist: new BlacklistModel(),
+  latestBlock: null,
 }) {
   id () {
     return this.get('transactionHash') || this.symbol() || this.address()
@@ -62,10 +62,6 @@ export default class TokenModel extends abstractFetchingModel({
 
   isReissuable (value) {
     return this._getSet('isReissuable', value)
-  }
-
-  isOptional () {
-    return this.get('isOptional')
   }
 
   setSymbol (v): TokenModel {
@@ -105,7 +101,7 @@ export default class TokenModel extends abstractFetchingModel({
   }
 
   addDecimals (amount: BigNumber): BigNumber {
-    const amountBN = new BigNumber(amount)
+    const amountBN = new BigNumber(amount.toString())
     return amountBN.mul(Math.pow(10, this.decimals()))
   }
 

@@ -30,7 +30,7 @@ function prefix (token) {
 function mapDispatchToProps (dispatch) {
   return {
     handleClose: () => dispatch(modalsClose()),
-    depositToExchange: (token: TokenModel, amount: string, recipient: string) => dispatch(mainTransfer(token, amount, recipient)),
+    depositToExchange: (token: TokenModel, amount: string, recipient: string) => dispatch(mainTransfer(null, token, amount, recipient)),
     withdrawFromExchange: (exchange: ExchangeOrderModel, wallet, amount: string, symbol: string) => {
       dispatch(withdrawFromExchange(exchange, wallet, amount, symbol))
     },
@@ -92,17 +92,8 @@ export default class ExchangeTransferDialog extends React.PureComponent {
       : new Amount(this.props.exchange.assetBalance(), this.props.exchange.symbol())
 
     return (
-      <ModalDialog>
+      <ModalDialog title={<span><Translate value={prefix(`title`)} />{` ${this.props.tokenSymbol} `}</span>}>
         <div styleName='root'>
-          <div styleName='header'>
-            <div styleName='headerWrapper'>
-              <div styleName='title'>
-                <Translate
-                  value={prefix(`title`)}
-                />{` ${this.props.tokenSymbol} `}
-              </div>
-            </div>
-          </div>
           <div styleName='content'>
             {
               showMessage &&

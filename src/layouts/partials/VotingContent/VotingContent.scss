@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
@@ -26,7 +25,7 @@
 
 .content {
   position: relative;
-  margin: 50px 80px;
+  margin: 0 80px;
 
   @include lg-only {
     margin: 24px 16px;

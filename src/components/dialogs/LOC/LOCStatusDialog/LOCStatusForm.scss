@@ -5,6 +5,10 @@
 
 @import '../../ModalDialogBase/ModalDialogBaseExtend';
 
+.root {
+  padding: 16px;
+}
+
 .footer {
   @extend %footer;
 }

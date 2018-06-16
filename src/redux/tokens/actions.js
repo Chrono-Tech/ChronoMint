@@ -3,12 +3,25 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import {
+  bccProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
+import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from 'dao/BitcoinDAO'
 import contractsManagerDAO from 'dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from 'dao/ERC20ManagerDAO'
-import ethereumDAO from 'dao/EthereumDAO'
-import NemDAO, { NEM_XEM_NAME, NEM_XEM_SYMBOL, NEM_DECIMALS } from 'dao/NemDAO'
+import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
+import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from 'dao/NemDAO'
+import WavesDAO, { WAVES_DECIMALS, WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL } from 'dao/WavesDAO'
 import TokenModel from 'models/tokens/TokenModel'
 import TransferErrorNoticeModel from 'models/notices/TransferErrorNoticeModel'
 import type TransferExecModel from 'models/TransferExecModel'
@@ -16,9 +29,14 @@ import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from 'models/Tran
 import tokenService, { EVENT_NEW_TOKEN } from 'services/TokenService'
 import { notify } from 'redux/notifier/actions'
 import { showConfirmTransferModal } from 'redux/ui/actions'
+import { EVENT_NEW_BLOCK } from 'dao/AbstractContractDAO'
+import Amount from 'models/Amount'
+import { ETH } from 'redux/mainWallet/actions'
+import { EVENT_UPDATE_LAST_BLOCK } from 'dao/AbstractTokenDAO'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
+export const TOKENS_UPDATE_LATEST_BLOCK = 'tokens/updateLatestBlock'
 export const TOKENS_INIT = 'tokens/init'
 export const TOKENS_FETCHING = 'tokens/fetching'
 export const TOKENS_FETCHED = 'tokens/fetched'
@@ -40,8 +58,9 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 // It is not a redux action
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   try {
+    const txOptions = tx.options()
     // TODO @ipavlenko: Pass arguments
-    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier())
+    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
@@ -93,10 +112,12 @@ export const initTokens = () => async (dispatch, getState) => {
 
   dispatch(initBtcLikeTokens())
   dispatch(initNemTokens())
+  dispatch(initWavesTokens())
+  dispatch(watchLatestBlock())
 }
 
 export const initBtcLikeTokens = () => async (dispatch, getState) => {
-  const btcLikeTokens = [ btcDAO, bccDAO, btgDAO, ltcDAO ]
+  const btcLikeTokens = [btcDAO, bccDAO, btgDAO, ltcDAO]
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch({ type: TOKENS_FETCHING, count: currentCount + btcLikeTokens.length })
 
@@ -104,6 +125,8 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
+          dao.on(EVENT_UPDATE_LAST_BLOCK, (block) => dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...block }))
+          await dao.watchLastBlock()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })
@@ -152,6 +175,43 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
   )
 }
 
+export const initWavesTokens = () => async (dispatch, getState) => {
+  try {
+    const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+    dispatch({ type: TOKENS_FETCHING, count: currentCount + 1 })
+    const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
+    const waves = await dao.fetchToken()
+    tokenService.registerDAO(waves, dao)
+    dispatch({ type: TOKENS_FETCHED, token: waves })
+    dispatch(alternateTxHandlingFlow(dao))
+    //dispatch(initWavesAssetTokens(waves))
+  } catch (e) {
+    dispatch({ type: TOKENS_FAILED })
+  }
+}
+
+export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
+
+  const assets = wavesProvider.getAssets()
+  const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
+  dispatch({ type: TOKENS_FETCHING, count: currentCount + assets.length })
+  // do not wait until initialized, it is ok to lazy load all the tokens
+  return Promise.all(
+    assets
+      .map((m) => new WavesDAO(m.name, m.symbol, wavesProvider, m.decimals, assets))
+      .map(async (dao) => {
+        try {
+          const token = await dao.fetchToken()
+          tokenService.registerDAO(token, dao)
+          dispatch({ type: TOKENS_FETCHED, token })
+          dispatch(alternateTxHandlingFlow(dao))
+        } catch (e) {
+          dispatch({ type: TOKENS_FAILED })
+        }
+      }),
+  )
+}
+
 export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   const handleToken = (token) => dispatch(callback(token))
   tokenService.on(EVENT_NEW_TOKEN, handleToken)
@@ -159,3 +219,62 @@ export const subscribeOnTokens = (callback) => (dispatch, getState) => {
   const tokens = getState().get(DUCK_TOKENS)
   tokens.list().forEach(handleToken)
 }
+
+export const watchLatestBlock = () => async (dispatch) => {
+  ethereumDAO.on(EVENT_NEW_BLOCK, (block) => {
+    dispatch({
+      type: TOKENS_UPDATE_LATEST_BLOCK,
+      blockchain: BLOCKCHAIN_ETHEREUM,
+      block,
+    })
+  })
+  const block = await ethereumDAO.getBlockNumber()
+  dispatch({
+    type: TOKENS_UPDATE_LATEST_BLOCK,
+    blockchain: BLOCKCHAIN_ETHEREUM,
+    block: {
+      blockNumber: block,
+    },
+  })
+
+}
+
+export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async () => {
+  const tokenDao = tokenService.getDAO(tokenId)
+  const [to, amount, func] = params
+  try {
+    const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
+  }
+}
+
+export const estimateBtcFee = (params, callback) => async () => {
+  try {
+    const { address, recipient, amount, formFee, blockchain } = params
+    let fee
+    switch (blockchain) {
+      case BLOCKCHAIN_BITCOIN:
+        fee = await btcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_CASH:
+        fee = await bccProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_BITCOIN_GOLD:
+        fee = await btgProvider.estimateFee(address, recipient, amount, formFee)
+        break
+      case BLOCKCHAIN_LITECOIN:
+        fee = await ltcProvider.estimateFee(address, recipient, amount, formFee)
+        break
+    }
+    callback(null, { fee: fee })
+  } catch (e) {
+    callback(e)
+  }
+}
+

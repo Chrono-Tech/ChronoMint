@@ -1,0 +1,80 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  padding: 30px;
+  .img {
+    padding: 20px 0 30px;
+    display: flex;
+    justify-content: center;
+  }
+  .title {
+    font-weight: 700;
+    color: $color-primary-3;
+    font-size: 20px;
+    line-height: 28px;
+    padding-bottom: 20px;
+  }
+  .description {
+    color: $color-primary-3;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 30px;
+  }
+  .slider {
+    .tagsWrap {
+      display: flex;
+      justify-content: space-between;
+      color: $button-color-1;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      margin-bottom: 15px;
+    }
+  }
+  .transactionFee {
+    margin: 20px 0;
+    .title {
+      font-size: 14px;
+      line-height: 17px;
+      font-weight: 700;
+    }
+    .description {
+      margin-top: 5px;
+      margin-bottom: 5px;
+      .feeLoaderContainer {
+        width: 150px;
+        display: inline-flex;
+        justify-content: center;
+      }
+      .gweiMultiplier {
+
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  .preloader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: $button-color-1;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    :global {
+      .Preloader__root {
+        circle {
+          stroke: $color-white !important;
+        }
+      }
+    }
+  }
+}
+

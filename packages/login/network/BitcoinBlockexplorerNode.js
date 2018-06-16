@@ -31,7 +31,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
   async getFeeRate () {
     try {
       const res = await this._api.get(`utils/estimatefee?nbBlocks=2`)
-      const rate = res.data[ '2' ]
+      const rate = res.data['2']
       return rate > 0
         ? DECIMALS * rate / 1024
         : 150 // default satoshis per byte for testnets
@@ -43,11 +43,11 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   async getAddressInfo (address) {
     try {
-      const [ confirmed, unconfirmed ] = await Promise.all([
+      const [confirmed, unconfirmed] = await Promise.all([
         this._api.get(`addr/${address}/balance`),
         this._api.get(`addr/${address}/unconfirmedBalance`),
       ])
-      const [ balanceSat, unconfirmedBalanceSat ] = [ confirmed.data, unconfirmed.data ]
+      const [balanceSat, unconfirmedBalanceSat] = [confirmed.data, unconfirmed.data]
       return {
         balance0: new BigNumber(balanceSat).plus(unconfirmedBalanceSat),
         balance3: new BigNumber(balanceSat),
@@ -94,7 +94,10 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-    const to = tx.vout.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
+    const to = tx.vout
+      .map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(','))
+      .filter((str) => str.length > 0)
+      .join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.vout) {

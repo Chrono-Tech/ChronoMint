@@ -1,0 +1,339 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.header-container {
+  width: 100%;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  .header-text {
+    color: $color-white;
+  }
+  .wallet-list-container {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.wallet-container {
+  width: 100%;
+  margin-top: 20px;
+  min-height: 260px;
+  background-color: $background-color-1;
+  border-radius: 2px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.settings-container {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  right: 20px;
+  top: 20px;
+}
+
+.settings-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 32px;
+  opacity: 0.2;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.amount-list-container {
+  display: flex;
+  flex: 4;
+  border-top: 1px solid $button-color-3;
+
+  .amount-list {
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .amount-text {
+      color: $color-grey-2;
+      font-family: 'Proxima Nova', sans-serif;
+      font-weight: 500;
+      text-align: left;
+      font-size: 14px;
+      line-height: 17px;
+    }
+  }
+}
+
+.show-all {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+
+  .show-all-a {
+    cursor: pointer;
+    color: $border-color;
+    font-family: 'proxima nova', sans-serif;
+    font-weight: 500;
+    text-align: right;
+    font-size: 14px;
+    line-height: 17px;
+  }
+}
+
+.owner-icon {
+  display: flex;
+  width: 24px;
+  margin-right: 10px;
+}
+
+.owner-counter {
+  font-size: 13px;
+  color: black;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: grey;
+  width: 24px;
+  height: 24px;
+}
+
+.counter {
+
+}
+
+.owners-amount {
+  display: flex;
+  flex-direction: row;
+}
+
+.owners-list {
+  display: flex;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex: 2;
+  flex-direction: row;
+}
+
+.owner {
+  font-size: 16px;
+  color: $color-grey-6;
+  line-height: 24px;
+  text-align: center;
+  border-radius: 12px;
+  background-color: grey;
+  width: 24px;
+  height: 24px;
+}
+
+.actions-container {
+  display: flex;
+}
+
+.action {
+  display: flex;
+  margin-right: 10px;
+}
+
+.image {
+  height: 100px;
+  width: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+  width: 370px;
+  :global {
+    .WalletMainCoinBalance__root {
+      color: $color-white;
+    }
+    .WalletMainCoinBalance__usd-amount {
+      color: $additionalData-color-1;
+    }
+  }
+}
+
+.token-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin-right: 40px;
+  margin-left: 40px;
+  :global {
+    .SubIconForWallet_root {
+      position: absolute;
+      top: 50px;
+      left: 2px;
+    }
+  }
+}
+
+.token-icon {
+  display: flex;
+  width: 100px;
+  height: 100px;
+  margin-top: 50px;
+}
+
+.address-title {
+  font-size: 16px;
+  color: $color-white;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 700;
+  line-height: 22px;
+  word-break: break-all;
+}
+
+.address-address {
+  font-size: 14px;
+  color: $additionalData-color-1;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+}
+
+.tokens-list {
+  display: flex;
+}
+
+.tokens-list-table {
+  display: table;
+  width: 100%;
+}
+
+.tokens-list-table-tr {
+  display: table-row;
+}
+
+.tokens-list-table-cell-icon {
+  display: table-cell;
+  border-top: 1px solid $button-color-3;
+  width: 10%;
+  vertical-align: middle;
+}
+
+.tokens-list-table-cell-amount {
+  border-top: 1px solid $button-color-3;
+  display: table-cell;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-right: 15px;
+  text-align: left;
+  font-size: 14px;
+  line-height: 17px;
+  width: 40%;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+  color: $color-primary-3;
+  vertical-align: middle;
+}
+
+.tokens-list-table-cell-usd {
+  display: table-cell;
+  border-top: 1px solid $button-color-3;
+  padding-left: 10px;
+
+  width: 50%;
+  vertical-align: middle;
+  color: $color-grey-2;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+  text-align: left;
+  font-size: 14px;
+  line-height: 17px
+}
+
+.table-image {
+  width: 24px;
+  height: 24px;
+  color: black;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.token-amount {
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.crypto-amount {
+  font-size: 30px;
+  color: $color-white;
+  line-height: 36px;
+  font-family: 'proxima nova', sans-serif;
+  font-weight: 500;
+  word-wrap: break-word;
+  .amountSubTitle {
+    font-size: 16px;
+    line-height: 19px;
+  }
+  .tokensSubTitle {
+    font-size: 16px;
+    line-height: 19px;
+    color: $additionalData-color-1;
+  }
+}
+
+.usd-amount {
+  font-size: 16px;
+  font-weight: 400;
+  color: $color-grey-2;
+  line-height: 19px;
+  font-family: 'proxima nova', sans-serif;
+}
+
+.depositTokensButton {
+  button {
+    color: $color-white;
+  }
+}
+
+.body {
+  display: flex;
+  position: relative;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  margin-bottom: 40px;
+  .pendingOperations {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    .pendingOperationsCount {
+      padding: 0 30px;
+      background: $color-red-2;
+      min-height: 17px;
+      border-radius: 13px;
+      line-height: 14px;
+      text-transform: uppercase;
+      font-size: 12px;
+      color: $color-white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+.unlockDateWrapper {
+  color: $additionalData-color-1;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.noToken {
+  color: $error-color;
+}

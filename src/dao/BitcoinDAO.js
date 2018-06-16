@@ -20,10 +20,11 @@ import TokenModel from 'models/tokens/TokenModel'
 import TxModel from 'models/TxModel'
 import TransferExecModel from 'models/TransferExecModel'
 import { bitcoinAddress } from 'models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
 const EVENT_BALANCE = 'balance'
+const EVENT_LAST_BLOCK = 'lastBlock'
 
 export default class BitcoinDAO extends EventEmitter {
   constructor (name, symbol, bitcoinProvider) {
@@ -61,26 +62,16 @@ export default class BitcoinDAO extends EventEmitter {
     return this._bitcoinProvider.getFeeRate()
   }
 
-  async getAccountBalances () {
-    try {
-      const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances()
-      return {
-        balance: balance0 || balance6,
-      }
-    } catch (error) {
-      //eslint-disable-next-line no-console
-      console.warn('BitcoinDao getAccountBalances', error)
+  async getAccountBalances (address) {
+    const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances(address)
+    return {
+      balance: balance0 || balance6,
     }
   }
 
-  async getAccountBalance () {
-    try {
-      const balances = await this.getAccountBalances()
-      return balances.balance
-    } catch (error) {
-      //eslint-disable-next-line no-console
-      console.warn('BitcoinDao getAccountBalance', error)
-    }
+  async getAccountBalance (address) {
+    const balances = await this.getAccountBalances(address)
+    return balances.balance
   }
 
   accept (transfer: TransferExecModel) {
@@ -96,13 +87,14 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   // TODO @ipavlenko: Replace with 'immediateTransfer' after all token DAOs will start using 'submit' method
-  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    this.submit(from, to, amount, token, feeMultiplier)
+  transfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
+    this.submit(from, to, amount, token, feeMultiplier, advancedParams)
   }
 
-  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams) {
+    const tokenFeeRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : token.feeRate()
     setImmediate(async () => {
-      const fee = await this._bitcoinProvider.estimateFee(from, to, amount, token.feeRate()) // use feeMultiplier = 1 to estimate default fee
+      const fee = await this._bitcoinProvider.estimateFee(from, to, amount, tokenFeeRate) // use feeMultiplier = 1 to estimate default fee
       this.emit('submit', new TransferExecModel({
         title: `tx.Bitcoin.${this._name}.transfer.title`,
         from,
@@ -112,17 +104,21 @@ export default class BitcoinDAO extends EventEmitter {
         fee: new Amount(fee, token.symbol()),
         feeToken: token,
         feeMultiplier,
+        options: {
+          advancedParams,
+        },
       }))
     })
   }
 
   // TODO @ipavlenko: Rename to 'transfer' after all token DAOs will start using 'submit' method and 'trans'
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
+  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
     try {
-      return await this._bitcoinProvider.transfer(from, to, amount, feeMultiplier * token.feeRate())
+      const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
+      return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('Transfer failed', e)
+      console.log('Transfer failed', e)
       throw e
     }
   }
@@ -142,7 +138,7 @@ export default class BitcoinDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
+          blockchain: this._name,
         }))
       }
     } catch (e) {
@@ -175,7 +171,7 @@ export default class BitcoinDAO extends EventEmitter {
           symbol: this._symbol,
           value: new Amount(tx.value, this._symbol),
           fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
+          blockchain: this._name,
         }),
       )
     })
@@ -184,6 +180,15 @@ export default class BitcoinDAO extends EventEmitter {
   async watchBalance () {
     this._bitcoinProvider.addListener(EVENT_BALANCE, async ({ account, time, balance }) => {
       this.emit(EVENT_UPDATE_BALANCE, { account, time, balance: balance.balance0 })
+    })
+  }
+
+  async watchLastBlock () {
+    this._bitcoinProvider.addListener(EVENT_LAST_BLOCK, async ({ block }) => {
+      this.emit(EVENT_UPDATE_LAST_BLOCK, {
+        blockchain: this._name,
+        block: { blockNumber: block },
+      })
     })
   }
 
@@ -208,11 +213,14 @@ export default class BitcoinDAO extends EventEmitter {
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
-      isOptional: false,
       isFetched: true,
       blockchain: this._name,
       feeRate,
     })
+  }
+
+  subscribeNewWallet (address) {
+    this._bitcoinProvider.subscribeNewWallet(address)
   }
 }
 

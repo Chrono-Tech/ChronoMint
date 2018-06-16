@@ -1,0 +1,66 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.root {
+  width: 100%;
+  background: $color-white;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+  border-radius: 2px;
+  .header {
+    font-weight: 500;
+    padding: 25px 30px;
+    font-size: 26px;
+    line-height: 31px;
+  }
+  .body {
+    padding: 0 30px 10px;
+    .row {
+      padding: 10px 0;
+      border-top: 1px solid $color-grey-3;
+      &:last-child {
+        border-bottom: 1px solid $color-grey-3;
+      }
+      .rowTable {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 60px 2fr 1fr;
+        .values {
+          white-space: normal;
+          word-break: break-all;
+          color: $color-grey-2;
+          font-size: 14px;
+          line-height: 20px;
+          .title {
+            color: $color-primary-3;
+          }
+        }
+        .actions {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          :global {
+            .Button_root {
+              padding-left: 10px;
+            }
+          }
+        }
+      }
+      .iconWrapper {
+        &.redColor {
+          background: $color-red
+        }
+        background: $color-grey-7;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        font-size: 30px;
+        line-height: 40px;
+        text-align: center;
+        color: $color-white-2;
+      }
+    }
+  }
+}

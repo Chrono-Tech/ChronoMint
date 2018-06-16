@@ -5,7 +5,8 @@
 
 import BigNumber from 'bignumber.js'
 import { Checkbox, SelectField, TextField } from 'redux-form-material-ui'
-import { CircularProgress, MenuItem, RaisedButton } from 'material-ui'
+import { CircularProgress, MenuItem } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -31,7 +32,7 @@ import validate, { normalizeSmallestUnit } from './validate'
 
 import './AddTokenForm.scss'
 
-function prefix (token) {
+export const prefix = (token) => {
   return `Assets.AddTokenForm.${token}`
 }
 
@@ -95,7 +96,7 @@ class Platform extends PureComponent {
     return (
       <div
         styleName={classnames('platformItem', { 'selectedPlatform': platform === selectedPlatform })}
-        onTouchTap={this.handleClick}
+        onClick={this.handleClick}
         key={platform.address}
       >
         <div styleName='icon'>
@@ -208,7 +209,7 @@ export default class AddTokenForm extends PureComponent {
       <div styleName='tokenImgWrap'>
         {
           !isUploading && !isUploaded && (
-            <div styleName='upload' onTouchTap={this.handleWalletClick}>
+            <div styleName='upload' onClick={this.handleWalletClick}>
               <div styleName='uploadContent'><img src={avaToken} alt='' /></div>
             </div>
           )
@@ -228,7 +229,7 @@ export default class AddTokenForm extends PureComponent {
         {!isUploading && isUploaded &&
         <IPFSImage
           styleName='tokenImg'
-          onTouchTap={this.handleWalletClick}
+          onClick={this.handleWalletClick}
           multihash={tokenImg}
         />
         }
@@ -250,7 +251,7 @@ export default class AddTokenForm extends PureComponent {
         <div styleName='addNewPlatformTitle'>
           <Translate value={prefix('choosePlatform')} />
         </div>
-        <div onTouchTap={this.handleAddNewPlatform} styleName='createNewPlatform'>
+        <div onClick={this.handleAddNewPlatform} styleName='createNewPlatform'>
           <div styleName='icon'>
             <img src={icnPlus} alt='' />
           </div>
@@ -321,13 +322,6 @@ export default class AddTokenForm extends PureComponent {
 
     return (
       <form styleName='content' onSubmit={this.props.handleSubmit}>
-        <div styleName='dialogHeader'>
-          <div styleName='dialogHeaderStuff'>
-            <div styleName='dialogHeaderTitle'>
-              <Translate value={prefix('dialogTitle')} />
-            </div>
-          </div>
-        </div>
         <div styleName='dialogBody'>
 
           {this.renderTokenInfo()}
@@ -421,24 +415,13 @@ export default class AddTokenForm extends PureComponent {
               </div>
             </div>
           </div>
-
-          {/*<Field
-            styleName='checkboxField'
-            component={Checkbox}
-            name='startWithCrowdsale'
-            label={<Translate value={prefix('startWithCrowdsale')} />}
-          />*/}
-
         </div>
-        <div
-          styleName='dialogFooter'
-        >
-          <RaisedButton
-            onTouchTap={this.handleSubmitClick}
+        <div styleName='dialogFooter'>
+          <Button
+            onClick={this.handleSubmitClick}
             styleName='action'
             label={<Translate value={prefix('dialogTitle')} />}
             type='submit'
-            primary
           />
         </div>
       </form>

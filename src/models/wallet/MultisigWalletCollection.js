@@ -9,8 +9,12 @@ import MultisigWalletModel from './MultisigWalletModel'
 import type MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
 
 export default class MultisigWalletCollection extends abstractFetchingCollection({
-  // defaults
+  twoFAConfirmed: true,
 }) {
+  twoFAConfirmed (value) {
+    return this._getSet('twoFAConfirmed', value)
+  }
+
   balance (walletId, balance: BalanceModel) {
     const wallet: MultisigWalletModel = this.item(walletId)
     const balances = wallet.balances().itemFetched(balance)

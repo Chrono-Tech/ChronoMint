@@ -95,7 +95,7 @@ export default class PlatformsList extends PureComponent {
               <div
                 key={asset.address}
                 styleName={classnames('tokenItem', { 'selected': selectedToken !== null && selectedToken === token.symbol() })}
-                onTouchTap={() => !token.isPending() && token.isFetched() ? this.props.handleSelectToken(token) : undefined}
+                onClick={() => !token.isPending() && token.isFetched() ? this.props.handleSelectToken(token) : undefined}
               >
                 <div styleName='tokenIcon'>
                   <IPFSImage styleName='content' multihash={token.icon()} fallback={tokenIconStubSVG} />
@@ -132,7 +132,7 @@ export default class PlatformsList extends PureComponent {
               <div styleName={classnames('platformHeader', { 'selected': selectedPlatform === address })}>
                 <div
                   styleName='platformTitleWrap'
-                  onTouchTap={() => {
+                  onClick={() => {
                     this.handleSelectPlatform(address)
                   }}
                 >
@@ -142,7 +142,7 @@ export default class PlatformsList extends PureComponent {
                     ? <div styleName='platformTitle'>{name}&nbsp;( <small>{address}</small> )</div>
                     : <div styleName='platformTitle'>{address}</div>
                   }
-                  {/*<button onTouchTap={() => handleDetachPlatform(address)}>detach platform</button>*/}
+                  {/*<button onClick={() => handleDetachPlatform(address)}>detach platform</button>*/}
                 </div>
               </div>
               {selectedPlatform === address && this.renderTokenList({ assets, tokens, selectedToken })}

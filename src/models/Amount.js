@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 
 export default class Amount extends BigNumber {
   constructor (value = 0, symbol, isLoaded = true) {
-    super(value)
+    super('' + value)
     this._symbol = symbol
     this._isLoaded = isLoaded
   }
@@ -41,5 +41,13 @@ export default class Amount extends BigNumber {
 
   div (value: number | string | BigNumber, base?: number) {
     return new Amount(super.div(value, base), this._symbol, this._isLoaded)
+  }
+
+  transform () {
+    return {
+      value: this.toString(),
+      symbol: this.symbol(),
+      isLoaded: this.isLoaded(),
+    }
   }
 }

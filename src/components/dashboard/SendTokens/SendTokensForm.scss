@@ -6,14 +6,124 @@
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
+.root-container {
+  width: 430px;
+}
+
+.fee-loader-container {
+  width: 150px;
+  display: flex;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  justify-content: center;
+}
+
+.gas-limit-based {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-primary-3;
+}
+
+.gas-limit-based-container {
+  width: 220px;
+  height: 20px;
+  margin-top: 5px;
+  display: flex;
+  z-index: 999;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.based-limit-value {
+  font-size: 12px;
+  line-height: 12px;
+  color: $color-blue-2;
+  cursor: pointer;
+}
+
+.head {
+  background-color: $button-color-1;
+  width: 430px;
+  display: block;
+  position: relative;
+
+  .head-token-choose-form {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .head-section-text {
+    letter-spacing: -1px;
+    font-size: 30px;
+    color: $color-white;
+    line-height: 36px;
+    font-family: 'Proxima Nova', sans-serif;
+    font-weight: 400;
+  }
+
+  .head-section {
+    padding: 20px 0 20px 30px;
+    border-bottom: 1px solid $color-blue-3;
+  }
+
+  .head-token-icon {
+    position: absolute;
+    right: 30px;
+    top: 35px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .wallet-name-title-section {
+
+  }
+
+  .wallet-name-section {
+    padding-top: 20px;
+    padding-left: 30px;
+  }
+
+  .wallet-name-title {
+    font-weight: 400;
+    line-height: 19px;
+    min-height: 20px;
+    font-family: 'Proxima Nova', sans-serif;
+    font-size: 16px;
+    color: $color-white;
+  }
+
+  .wallet-value {
+    font-weight: 400;
+    line-height: 19px;
+    min-height: 20px;
+    font-family: 'Proxima Nova', sans-serif;
+    font-size: 15px;
+    color: $additionalData-color-1;
+  }
+}
+
+
 .balance {
   margin-top: 20px;
+  padding-left: 30px;
+  padding-bottom: 50px;
   text-shadow: $text-shadow-title;
 
   .label {
     height: 17px;
     font-size: 14px;
     color: $color-white;
+  }
+
+  .value-amount {
+    color: $color-white;
+    font-weight: 400;
+    min-height: 20px;
+    font-size: 30px;
+    background-color: transparent;
+    font-family: 'proxima nova', sans-serif;
+    line-height: 36px;
   }
 
   .value {
@@ -23,18 +133,87 @@
       font-size: 34px;
     }
 
-    .value1 {
-      font-size: 34px;
-      font-weight: 300;
-      line-height: 41px;
-      vertical-align: baseline;
+    .price-value {
+      font-size: 16px;
+      line-height: 16px;
+      color: $color-white;
+      font-weight: 400;
+      min-height: 20px;
+      font-family: 'proxima nova', sans-serif;
     }
+  }
+}
 
-    .value2, .value3 {
-      font-size: 24px;
-      vertical-align: baseline;
-      opacity: 0.5;
-    }
+.form-container {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.wallet-tokens-selector-container {
+  display: flex;
+  flex-direction: row;
+  padding: 40px 30px 0 30px;
+}
+
+.advanced-mode-container {
+  display: flex;
+  flex-direction: column;
+
+  .field {
+    display: flex;
+    flex: 1;
+  }
+
+}
+
+
+.transaction-fee {
+  display: flex;
+  min-height: 35px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .title {
+    white-space: pre;
+    font-family: 'proxima nova', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    color: $color-primary-3;
+  }
+
+  .description {
+    line-height: 17px;
+    color: #333333;
+    font-weight: 400;
+    font-size: 14px;
+    text-align: left;
+    font-family: 'proxima nova', sans-serif;
+  }
+
+  .gwei-multiplier {
+    display: block;
+  }
+}
+
+.advanced-simple {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  cursor: pointer;
+}
+
+.advanced-text {
+  color: $border-color;
+  font-weight: 700;
+  text-align: left;
+  font-size: 16px;
+  font-family: 'Proxima Nova', sans-serif;
+  line-height: 19px;
+
+  &:hover {
+
   }
 }
 
@@ -96,6 +275,8 @@
 }
 
 .content {
+  width: 64px;
+  height: 64px;
   @include position(absolute, 10px, 10px, 10px, 10px);
   @include xs-only {
     @include position(absolute, 5px, 5px, 5px, 5px);
@@ -106,20 +287,60 @@
 
 .row {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  flex: 1;
+}
+
+.actions-row {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  padding-bottom: 30px;
 }
 
 .amount {
   width: 220px;
 }
 
+
+.template-container {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  margin-bottom: 30px;
+}
+
+.template-checkbox {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-bottom: 10px;
+}
+
+.template-name {
+  display: flex;
+  flex: 7;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .feeRate {
   margin-top: 20px;
-  width: 220px;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.button {
+  display: inline-block;
+
 }
 
 .send {
-  flex-grow: 1;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
   @include xs-only {
     display: flex;
     flex-direction: column;

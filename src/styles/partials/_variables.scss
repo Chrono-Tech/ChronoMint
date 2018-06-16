@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~material-colors-scss/function';
 
 $color-primary-0: #00005f;
@@ -25,6 +24,7 @@ $color-grey300: #{material-color('grey', '300')};
 $color-grey400: #{material-color('grey', '400')};
 $color-grey500: #{material-color('grey', '500')};
 $color-red: #FF1744;
+$error-color: #F44336;
 $color-red-1: #FF1645;
 $color-red-1-hover: #E51441;
 $color-black: #222;
@@ -55,11 +55,15 @@ $color-chart-bg: rgba(118, 143, 255, 0.5);
 $color-hr: #CCCCDF;
 $color-hr-1: #DDDDDF;
 
-$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24), 0 0 4px 0 rgba(0, 0, 0, .12);
-$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24), 0 0 8px 0 rgba(0, 0, 0, .12);
-$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24), 0 0 1px 0 rgba(0, 0, 0, 0.12);
+$box-shadow-0: 0 4px 4px 0 rgba(0, 0, 0, .24),
+0 0 4px 0 rgba(0, 0, 0, .12);
+$box-shadow-1: 0 8px 8px 0 rgba(0, 0, 0, .24),
+0 0 8px 0 rgba(0, 0, 0, .12);
+$box-shadow-2: 0 1px 1px 0 rgba(0, 0, 0, 0.24),
+0 0 1px 0 rgba(0, 0, 0, 0.12);
 
-$color-modal-backdrop-bg: rgba(0, 0, 0, 0.2);
+$color-modal-backdrop-bg: rgba(0, 0, 0, 0.7);
+$color-modal-backdrop-bg-1: rgba(0, 0, 0, 0.03);
 
 $media-size-xs: 480px;
 $media-size-sm: 768px;
@@ -77,8 +81,54 @@ $highlight-green: $color-green;
 $highlight-red: #{material-color('red', 'a400')};
 
 // fonts
-$font-family-main: 'Roboto', sans-serif;
+$font-family-main: 'Roboto',
+sans-serif;
 $font-size-base: 16px;
 $font-weight-bold: 600;
 
 $border-radius: 2px;
+$button-color-1: #614DBA;
+$button-color-2: #FFB54E;
+$button-color-3: #E5E5E5;
+$button-color-4: #A57848;
+$button-color-5: #413773;
+
+// Chrono-wallet vars
+$sideMenu-background: #614DBA;
+$border-color: #786AB7;
+$additionalData-color: #BCC6FF;
+$additionalData-color-1: #A3A3CC;
+$synced-color: #6EE289;
+$offline-color: #FD6041;
+$color-purpule: #424066;
+$color-white-1: #F7F7F7;
+$color-grey-1: #E5E5E5;
+$color-grey-2: #7F7F7F;
+$color-hover: #FFB54E;
+$cubic-animation: cubic-bezier(0.23, 1, 0.32, 1);
+$color-blue: #2f2d59;
+$background-color: #242045;
+$icon-color: #dbaa6e;
+$background-color-1: #302D59;
+$color-red-2: #C25451;
+$color-green-1: #68CC8E;
+$color-blue-3: #6D79BF;
+$color-blue-4: #5F4CBA;
+$color-grey-3: #F2F2F2;
+$color-grey-4: #CDCDCD;
+$color-red-3: #b65a55;
+$color-blue-5: #6671AE;
+$color-gradient: #3023ae;
+$color-gradient-1: #c96dd8;
+$color-gradient-2: #3124ae;
+$color-yelow: #fbda61;
+$color-orange: #f98019;
+$color-green-2: #00c853;
+$color-green-3: #009688;
+$color-grey-5: #9E9E9E;
+$color-grey-6: #AAAAAA;
+$color-grey-7: #bfbfbf;
+$color-white-2: #e6e6e6;
+$color-purpule-1: #9095da;
+$color-grey-8: #CCCCCC;
+$color-grey-9: #FCFCFC;

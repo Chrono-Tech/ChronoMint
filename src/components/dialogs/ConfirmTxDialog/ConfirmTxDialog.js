@@ -3,19 +3,21 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import networkService from '@chronobank/login/network/NetworkService'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { CircularProgress, FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import { CircularProgress, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import Amount from 'models/Amount'
+import Button from 'components/common/ui/Button/Button'
 import TxExecModel from 'models/TxExecModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_MAIN_WALLET, ETH } from 'redux/mainWallet/actions'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import GasSlider from 'components/common/GasSlider/GasSlider'
@@ -34,6 +36,7 @@ const mapStateToProps = (state, ownProps) => {
 
 function mapDispatchToProps (dispatch) {
   return {
+    modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     handleUpdateTx: (tx) => dispatch({ type: WATCHER_TX_SET, tx }),
   }
@@ -44,6 +47,7 @@ export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     localFeeMultiplier: PropTypes.number,
     callback: PropTypes.func.isRequired,
+    modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     open: PropTypes.bool,
     tx: PropTypes.instanceOf(TxExecModel),
@@ -81,7 +85,7 @@ export default class ConfirmTxDialog extends PureComponent {
   }
 
   handleConfirm = () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     this.props.callback(true, this.props.tx)
   }
 
@@ -98,25 +102,25 @@ export default class ConfirmTxDialog extends PureComponent {
 
   getActions () {
     return [
-      <FlatButton
+      <Button
+        flat
         key='close'
         label={<Translate value='terms.cancel' />}
-        primary
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
-      <FlatButton
+      <Button
+        flat
         key='confirm'
         label={<Translate value='terms.confirm' />}
-        primary
         disabled={this.props.balance.lt(0)}
-        onTouchTap={this.handleConfirm}
+        onClick={this.handleConfirm}
       />,
     ]
   }
 
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
-      const arg = args[ key ]
+      const arg = args[key]
       let value
       if (arg === null || arg === undefined) return
       // parse value
@@ -153,15 +157,24 @@ export default class ConfirmTxDialog extends PureComponent {
 
   render () {
     const { tx, balance, gasPriceMultiplier } = this.props
-    const gasFee = tx.gas()
+    const txOptions = tx.options()
+    let gasFee
+
+    if (tx.isAdvancedFeeMode()) {
+      gasFee = txOptions.advancedParams.gasFee
+    } else {
+      gasFee = tx.gas()
+    }
+
     const balanceAfter = balance.minus(tx.value() || 0).minus(gasFee)
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
+    if (networkService.isMetaMask())
+      this.handleConfirm()
     return (
-      <ModalDialog onModalClose={this.handleClose}>
+      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
         <div styleName='root'>
-          <div styleName='header'><h3 styleName='headerHead'><Translate value={tx.func()} /></h3></div>
           <div styleName='content'>
             <div>
               <Table selectable={false} className='adaptiveTable'>
@@ -206,6 +219,7 @@ export default class ConfirmTxDialog extends PureComponent {
               {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
             </div>
 
+            {!tx.isSkipSlider() &&
             <div styleName='gasSliderWrap'>
               <GasSlider
                 isLocal
@@ -214,28 +228,30 @@ export default class ConfirmTxDialog extends PureComponent {
                 initialValue={gasPriceMultiplier}
                 onDragStop={this.handleChangeGasPrice}
               />
-            </div>
+            </div>}
 
           </div>
           <div styleName='footer'>
             {additionalActionIsFailed &&
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value={additionalAction.repeatButtonName()} />}
-              onTouchTap={this.handleRepeatAction}
+              onClick={this.handleRepeatAction}
             />
             }
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
-            <FlatButton
+            <Button
+              flat
               styleName='action'
-              primary
               label={<Translate value='terms.confirm' />}
               disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
-              onTouchTap={gasFee.gte(0) && balanceAfter.gte(0) && balance.gt(0) && !additionalActionIsFailed ? this.handleConfirm : undefined}
+              onClick={this.handleConfirm}
             />
           </div>
         </div>

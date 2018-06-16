@@ -13,7 +13,7 @@ import Amount from 'models/Amount'
 import { nemAddress } from 'models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from 'dao/AbstractTokenDAO'
 
-const BLOCKCHAIN_NEM = 'NEM'
+export const BLOCKCHAIN_NEM = 'NEM'
 export const NEM_XEM_SYMBOL = 'XEM'
 export const NEM_XEM_NAME = 'XEM'
 export const NEM_DECIMALS = 6
@@ -75,29 +75,19 @@ export default class NemDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    try {
-      const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
-      return {
-        confirmed,
-        unconfirmed: unconfirmed != null
-          ? unconfirmed
-          : confirmed,
-        vested,
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('NemDao getAccountBalances', error)
+    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
+    return {
+      confirmed,
+      unconfirmed: unconfirmed != null
+        ? unconfirmed
+        : confirmed,
+      vested,
     }
   }
 
   async getAccountBalance () {
-    try {
-      const { unconfirmed } = await this.getAccountBalances()
-      return unconfirmed
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('NemDao getAccountBalance', error)
-    }
+    const { unconfirmed } = await this.getAccountBalances()
+    return unconfirmed
   }
 
   accept (transfer: TransferExecModel) {
@@ -142,7 +132,6 @@ export default class NemDAO extends EventEmitter {
       return await this._nemProvider.transfer(from, to, amount, this._mosaic, feeMultiplier)
     } catch (e) {
       // eslint-disable-next-line
-      console.warn('Transfer failed', e)
       throw e
     }
   }
@@ -152,19 +141,20 @@ export default class NemDAO extends EventEmitter {
     try {
       const txsResult = await this._nemProvider.getTransactionsList(account, id, skip, offset)
       for (const tx of txsResult) {
-        // TODO @abdulov now, it not worked, blocked by Middleware
-        txs.push(new TxModel({
-          txHash: tx.txHash,
-          blockHash: tx.blockHash,
-          blockNumber: tx.blockNumber,
-          time: tx.time,
-          from: tx.from,
-          to: tx.to,
-          symbol: this._symbol,
-          value: new Amount(tx.value, this._symbol),
-          fee: new Amount(tx.fee, this._symbol),
-          credited: tx.credited,
-        }))
+        if (tx.value > 0) {
+          txs.push(new TxModel({
+            txHash: tx.txHash,
+            blockHash: tx.blockHash,
+            blockNumber: tx.blockNumber,
+            time: tx.time,
+            from: tx.from,
+            to: tx.to,
+            symbol: this._symbol,
+            value: new Amount(tx.value, this._symbol),
+            fee: new Amount(tx.fee, this._symbol),
+            blockchain: BLOCKCHAIN_NEM,
+          }))
+        }
       }
     } catch (e) {
       // eslint-disable-next-line
@@ -207,7 +197,7 @@ export default class NemDAO extends EventEmitter {
       to: tx.to,
       value: new Amount(tx.value, this._symbol),
       fee: new Amount(tx.fee, this._symbol),
-      credited: tx.credited,
+      blockchain: BLOCKCHAIN_NEM,
     })
   }
 
@@ -220,9 +210,9 @@ export default class NemDAO extends EventEmitter {
       time: tx.time,
       from: tx.from || tx.signer,
       to: tx.to,
-      value: new Amount(tx.mosaics[ this._namespace ], this._symbol),
+      value: new Amount(tx.mosaics[this._namespace], this._symbol),
       fee: new Amount(tx.fee, NEM_XEM_SYMBOL),
-      credited: tx.credited,
+      blockchain: BLOCKCHAIN_NEM,
     })
   }
 
@@ -261,7 +251,6 @@ export default class NemDAO extends EventEmitter {
       name: this._name,
       decimals: this._decimals,
       symbol: this._symbol,
-      isOptional: false,
       isFetched: true,
       blockchain: BLOCKCHAIN_NEM,
     })
@@ -274,9 +263,9 @@ function readBalanceValue (symbol, balance, mosaic = null) {
   if (mosaic) {
     return (mosaic in balance.mosaics)
       ? (
-        balance.mosaics[ mosaic ].unconfirmed != null // nil check
-          ? balance.mosaics[ mosaic ].unconfirmed
-          : balance.mosaics[ mosaic ].confirmed
+        balance.mosaics[mosaic].unconfirmed != null // nil check
+          ? balance.mosaics[mosaic].unconfirmed
+          : balance.mosaics[mosaic].confirmed
       )
       : new Amount(0, symbol)
   }

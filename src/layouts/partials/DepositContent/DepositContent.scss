@@ -1,0 +1,42 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+}
+
+.content {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  :global {
+    .DashboardContent__grid {
+      @include grid(6, 65px, 65px);
+      @include xs-only {
+        @include grid(6, 40px, 40px);
+      }
+    }
+  }
+}
+
+.inner {
+  margin: 100px 80px;
+  @include xs-only {
+    margin: 30px 20px;
+  }
+  position: relative;
+}
+
+.warning {
+  color: $color-white;
+  text-align: center;
+}

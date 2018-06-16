@@ -7,21 +7,22 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { FlatButton, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import { Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 
 import Amount from 'models/Amount'
 import BalanceModel from 'models/tokens/BalanceModel'
 import TransferExecModel from 'models/TransferExecModel'
 import BitcoinDAO from 'dao/BitcoinDAO'
 import NemDAO from 'dao/NemDAO'
+import WavesDAO from 'dao/WavesDAO'
 
-import { modalsClose } from 'redux/modals/actions'
-import { getMainWalletBalance, getCurrentWalletBalance } from 'redux/wallet/selectors'
+import { modalsClear, modalsClose } from 'redux/modals/actions'
+import { getMainWalletBalance, getWalletBalanceForSymbol } from 'redux/wallet/selectors'
 
 import Value from 'components/common/Value/Value'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
 
 import './ConfirmTransferDialog.scss'
@@ -29,13 +30,14 @@ import './ConfirmTransferDialog.scss'
 const mapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
   return ({
-    amountBalance: getCurrentWalletBalance(tx.amountToken().symbol())(state),
+    amountBalance: getWalletBalanceForSymbol(tx.from(), tx.amountToken().blockchain(), tx.amountToken().symbol())(state),
     feeBalance: getMainWalletBalance(tx.feeToken().symbol())(state),
   })
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
   }
 }
@@ -45,12 +47,14 @@ export default class ConfirmTransferDialog extends PureComponent {
   static propTypes = {
     confirm: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
+    modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     tx: PropTypes.instanceOf(TransferExecModel),
     // TODO @ipavlenko: Replace with redux binding when DAOs collection will be moved to the redux, use feeToken from props.tx to get DAO
     dao: PropTypes.oneOfType([
       PropTypes.instanceOf(BitcoinDAO),
       PropTypes.instanceOf(NemDAO),
+      PropTypes.instanceOf(WavesDAO),
     ]),
     amountBalance: PropTypes.instanceOf(BalanceModel),
     feeBalance: PropTypes.instanceOf(BalanceModel),
@@ -65,7 +69,7 @@ export default class ConfirmTransferDialog extends PureComponent {
   }
 
   handleConfirm = () => {
-    this.props.modalsClose()
+    this.props.modalsClear()
     const tx = this.props.tx.feeMultiplier(this.state.feeMultiplier)
     this.props.confirm(tx)
   }
@@ -82,16 +86,7 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
   }
 
-  getDetails ({
-    tx,
-    amountToken,
-    amountBalance,
-    amountBalanceAfter,
-    feeToken,
-    feeBalance,
-    feeBalanceAfter,
-    feeMultiplier,
-  }) {
+  getDetails ({ tx, amountToken, amountBalance, amountBalanceAfter, feeToken, feeBalance, feeBalanceAfter, feeMultiplier }) {
 
     const feeDetails = feeToken === amountToken ? [] : [
       { key: 'feeBalance', type: 'TokenValue', label: 'tx.General.transfer.params.feeBalance', value: feeBalance },
@@ -167,14 +162,10 @@ export default class ConfirmTransferDialog extends PureComponent {
     })
 
     const isValid = fee.gt(0) && feeBalanceAfter.gte(0) || amountBalanceAfter.gte(0)
-    const hasFeeSlider = feeMultiplier && feeToken.feeRate()
 
     return (
-      <ModalDialog onModalClose={this.handleClose}>
+      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.title()} />}>
         <div styleName='root'>
-          <div styleName='header'>
-            <h3 styleName='headerHead'><Translate value={tx.title()} /></h3>
-          </div>
           <div styleName='content'>
             <div>
               <Table selectable={false} className='adaptiveTable'>
@@ -197,31 +188,20 @@ export default class ConfirmTransferDialog extends PureComponent {
               {!isValid && <div styleName='error'>Not enough coins</div>}
             </div>
 
-            {!hasFeeSlider ? null : (
-              <div styleName='feeSliderWrap'>
-                <GasSlider
-                  isLocal
-                  hideTitle
-                  token={feeToken}
-                  initialValue={feeMultiplier}
-                  onDragStop={this.handleChangeFee}
-                />
-              </div>
-            )}
-
           </div>
           <div styleName='footer'>
-            <FlatButton
+            <Button
+              flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
-            <FlatButton
+            <Button
+              flat
               styleName='action'
-              primary
               label={<Translate value='terms.confirm' />}
               disabled={!isValid}
-              onTouchTap={isValid ? this.handleConfirm : undefined}
+              onClick={isValid ? this.handleConfirm : undefined}
             />
           </div>
         </div>

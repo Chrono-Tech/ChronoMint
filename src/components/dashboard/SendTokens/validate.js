@@ -6,15 +6,36 @@
 import ErrorList from 'platform/ErrorList'
 import * as validator from 'models/validator'
 import tokenService from 'services/TokenService'
+import { MODE_ADVANCED } from './SendTokensForm'
 
 export default (values, props) => {
-  const { token, wallet, balance } = props
+  const { token, wallet, tokenInfo } = props
   if (!token) {
     return
   }
 
+  const balance = token.addDecimals(tokenInfo.amount)
   const amount = values.get('amount')
   const recipient = values.get('recipient')
+  const satPerByte = values.get('satPerByte')
+  const gweiPerGas = values.get('gweiPerGas')
+  const gasLimit = values.get('gasLimit')
+  const mode = values.get('mode')
+
+  const satPerByteError = validator.positiveNumber(satPerByte)
+  const satPerByteErrors = new ErrorList()
+    .add(mode === MODE_ADVANCED ? validator.required(amount) : null)
+    .add(satPerByteError)
+
+  const gweiPerGasError = validator.positiveNumber(gweiPerGas)
+  const gweiPerGasErrors = new ErrorList()
+    .add(mode === MODE_ADVANCED ? validator.required(gweiPerGas) : null)
+    .add(gweiPerGasError)
+
+  const gasLimitErrors = new ErrorList()
+  if (gasLimit) {
+    gasLimitErrors.add(validator.positiveNumber(gasLimit))
+  }
 
   const amountFormatError = validator.currencyNumber(amount, token.decimals())
   const amountErrors = new ErrorList()
@@ -24,7 +45,7 @@ export default (values, props) => {
   if (!amountFormatError) {
     // validate only numbers
     const amountWithDecimals = token.addDecimals(amount)
-    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'error.notEnoughTokens' : null)
+    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'errors.notEnoughTokens' : null)
   }
 
   const tokenDAO = tokenService.getDAO(token.id())
@@ -39,5 +60,8 @@ export default (values, props) => {
       .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),
+    satPerByte: satPerByteErrors.getErrors(),
+    gweiPerGas: gweiPerGasErrors.getErrors(),
+    gasLimit: gasLimitErrors.getErrors(),
   }
 }

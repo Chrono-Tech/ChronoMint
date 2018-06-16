@@ -77,7 +77,7 @@ export default class PKIcon extends PureComponent {
 
     return (
       <div styleName='root'>
-        <span styleName={this.props.iconStyle} onTouchTap={this.handleCopy}>
+        <span styleName={this.props.iconStyle} onClick={this.handleCopy}>
           <i className='material-icons'>vpn_key</i>
         </span>
       </div>

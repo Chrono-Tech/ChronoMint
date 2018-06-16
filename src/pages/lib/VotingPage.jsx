@@ -13,7 +13,6 @@ export default class VotingPage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear
@@ -23,7 +22,6 @@ export default class VotingPage extends Component {
         >
           <Partials.VotingContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

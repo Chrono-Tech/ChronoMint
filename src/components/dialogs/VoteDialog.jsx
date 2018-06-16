@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
@@ -195,7 +195,7 @@ export default class VoteDialog extends PureComponent {
                         <div
                           key={index}
                           styleName={classnames('tableItem', { active: index === this.state.choice })}
-                          onTouchTap={() => this.handleSelect(index)}
+                          onClick={() => this.handleSelect(index)}
                         >
                           <div styleName='itemLeft'>
                             {index === this.state.choice
@@ -217,11 +217,10 @@ export default class VoteDialog extends PureComponent {
             }
           </div>
           <div styleName='footer'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value={prefix('vote')} />}
               type='submit'
-              primary
               disabled={this.state.choice === null}
             />
           </div>

@@ -6,25 +6,11 @@
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 
-
 .root {
 
   .content {
     max-width: 544px;
     background-color: $color-white;
-
-    .header {
-      height: 180px;
-      padding: 24px 16px;
-      background-color: $color-panel-bg-3;
-      h3 {
-        color: $color-white;
-        font-size: 34px;
-        font-weight: 400;
-        margin: 0;
-        padding: 0;
-      }
-    }
 
     .person {
       display: flex;
@@ -91,7 +77,7 @@
     }
 
     .footer {
-      padding: 24px 16px;
+      padding: 24px 16px 16px;
       text-align: right;
 
       .action {

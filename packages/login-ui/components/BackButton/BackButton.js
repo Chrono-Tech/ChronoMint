@@ -3,14 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FlatButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import styles from '../../components/stylesLoginPage'
 
 import './BackButton.scss'
+import { Button } from '../../settings'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -27,17 +26,17 @@ class BackButton extends PureComponent {
   render () {
     const { to, isLoading, onClick } = this.props
     return (
-      <FlatButton
-        secondary
+      <Button
+        flat
+        styleName='button'
         label={(
           <div styleName='root'>
-            <div className='material-icons' styleName='arrow'>arrow_back</div>
+            <i className='material-icons' styleName='arrow'>arrow_back</i>
             <div>{to ? <Translate value={`BackButton.backTo.${to}`} /> : <Translate value='BackButton.back' />}</div>
           </div>
         )}
         disabled={isLoading}
-        onTouchTap={onClick}
-        {...styles.flatButton}
+        onClick={onClick}
       />
     )
   }

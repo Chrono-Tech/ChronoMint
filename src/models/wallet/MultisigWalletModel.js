@@ -8,10 +8,12 @@ import BalancesCollection from 'models/tokens/BalancesCollection'
 import AddressesCollection from 'models/wallet/AddressesCollection'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
+import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
+  name: null,
   address: null, //
   balances: new BalancesCollection(),
   tokens: new Immutable.Map(), //
@@ -26,6 +28,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
 }) {
   id () {
     return this.get('transactionHash') || this.get('address')
+  }
+
+  name (value) {
+    return this._getSet('name', value)
   }
 
   owners (value) {
@@ -68,8 +74,8 @@ export default class MultisigWalletModel extends abstractFetchingModel({
     return this.get('isMultisig')
   }
 
-  transactions (value) {
-    return this._getSet('transactions', value)
+  transactions () {
+    return this.get('transactions')
   }
 
   txSummary () {
@@ -109,6 +115,10 @@ export default class MultisigWalletModel extends abstractFetchingModel({
   }
 
   toCreateWalletTx () {
+    if (this.is2FA()) {
+      return {}
+    }
+
     const data = {
       requiredSignatures: this.requiredSignatures(),
       owners: this.ownersArray(),
@@ -127,5 +137,17 @@ export default class MultisigWalletModel extends abstractFetchingModel({
       ownersCount: this.owners().size(),
       requiredSignatures: this.requiredSignatures(),
     }
+  }
+
+  blockchain () {
+    return BLOCKCHAIN_ETHEREUM
+  }
+
+  is2FA () {
+    return this.get('is2FA')
+  }
+
+  isDerived () {
+    return false
   }
 }

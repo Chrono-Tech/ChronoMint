@@ -1,0 +1,76 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+
+.root {
+
+}
+
+.button {
+  line-height: 16px;
+  text-align: center;
+  font-weight: bolder;
+  text-transform: uppercase;
+  min-height: 40px;
+  border-radius: 21px;
+  padding: 12px 17px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  &:disabled {
+    cursor: not-allowed;
+  }
+  position: relative; //This is kinda important
+  overflow: hidden; //This too
+}
+
+.raised {
+  color: $color-white;
+  background-color: $button-color-1;
+  border-style: solid;
+  border-color: $button-color-5;
+  border-width: 0 0 1px;
+  &:hover, &:active {
+    background-color: $button-color-2;
+    border-color: $button-color-4;
+  }
+  &:disabled {
+    border: none;
+    color: $color-grey-7;
+    background-color: $color-grey-3;
+  }
+}
+
+.flat {
+  color: $button-color-1;
+  background-color: transparent;
+  &:hover, &:active {
+    background-color: transparent;
+    color: $button-color-2;
+  }
+}
+
+:global {
+  .ripple {
+    position: absolute;
+    background: $button-color-3;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    animation: rippleEffect 0.88s;
+    opacity: 0;
+  }
+}
+
+@keyframes:global(rippleEffect) {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(100);
+    opacity: 0;
+  }
+}

@@ -38,7 +38,6 @@ export default class ChronoBankPlatform extends AbstractContractDAO {
       return tx.tx
     } catch (e) {
       // eslint-disable-next-line
-      console.log(e.message)
     }
   }
 

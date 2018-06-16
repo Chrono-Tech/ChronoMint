@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { AlertError, ActionDone, NavigationClose, EditorAttachFile } from 'material-ui/svg-icons'
-import { CircularProgress, FlatButton, TextField, IconButton } from 'material-ui'
+import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from 'material-ui/svg-icons'
+import { CircularProgress, IconButton, TextField } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import IconAttach from 'assets/file-select/icon-attach.svg'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'
@@ -198,14 +199,15 @@ class FileSelect extends PureComponent {
           </div>
           <div styleName='attachStatus'>{this.renderStatus()}</div>
           <div styleName='attachAction'>
-            <FlatButton
-              onTouchTap={this.handleOpenFileDialog}
-              label={<Translate value={this.props.label || 'fileSelect.addAttachments'} />}
-              secondary
-              style={{ color: globalStyles.colors.blue }}
-              icon={<img src={IconAttach} alt='icon' styleName='attachIcon' />}
+            <Button
+              flat
+              onClick={this.handleOpenFileDialog}
               disabled={this.getFilesLeft() === 0}
-            />
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Translate value={this.props.label || 'fileSelect.addAttachments'} />
+              </div>
+            </Button>
           </div>
         </div>
 
@@ -222,7 +224,7 @@ class FileSelect extends PureComponent {
         <div styleName='wrapper'>
           <TextField
             key={selectedFile}
-            onTouchTap={this.handleOpenFileDialog}
+            onClick={this.handleOpenFileDialog}
             fullWidth
             name='singleUpload'
             floatingLabelText={<Translate value={this.props.floatingLabelText || 'fileSelect.selectFile'} />}
@@ -248,7 +250,7 @@ class FileSelect extends PureComponent {
           : (
             <div styleName='icon'>
               <IconButton
-                onTouchTap={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
+                onClick={fileCollection.uploaded() ? this.handleReset : this.handleOpenFileDialog}
               >
                 {fileCollection.uploaded() ? <NavigationClose /> : <EditorAttachFile />}
               </IconButton>

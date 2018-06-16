@@ -1,18 +1,43 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="91px" height="146px" viewBox="0 0 91 146" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
-    <title>icn-ethereum</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop-front-end-dashboard-1-Copy" transform="translate(-737.000000, -629.000000)" fill-rule="nonzero" fill="#000000">
-            <g id="icn-ethereum" transform="translate(737.000000, 629.000000)">
-                <polygon id="Shape" opacity="0.45" points="0.103148615 75.5866142 45.488539 102.487402 45.488539 0.057480315"></polygon>
-                <polygon id="Shape" opacity="0.6" points="0.103148615 75.5866142 45.488539 54.8937008 90.8739295 75.5866142 45.488539 102.487402"></polygon>
-                <polygon id="Shape" opacity="0.8" points="90.8739295 75.5866142 45.488539 102.487402 45.488539 0.057480315"></polygon>
-                <polygon id="Shape" opacity="0.45" points="45.488539 145.94252 45.488539 108.695276 0.103148615 81.7944882"></polygon>
-                <polygon id="Shape" opacity="0.8" points="45.488539 145.94252 45.488539 108.695276 90.8968514 81.7944882"></polygon>
-            </g>
-        </g>
-    </g>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #102026;
+      }
+
+      .cls-2 {
+        fill: #87acc2;
+      }
+
+      .cls-3 {
+        fill: #4f7c99;
+      }
+
+      .cls-4 {
+        fill: #95b4c9;
+      }
+
+      .cls-5 {
+        fill: #668aa5;
+      }
+
+      .cls-6 {
+        fill: #467392;
+      }
+
+      .cls-7 {
+        fill: #6993af;
+      }
+    </style>
+  </defs>
+  <title>f971e127-b9ff-4efd-9468-5a74887f6a63</title>
+  <rect class="cls-1" width="24" height="24" rx="12" ry="12"/>
+  <g>
+    <polygon class="cls-2" points="12 16.244 6.775 13.161 12 20.5 12 20.5 12 20.5 12 20.5 12 16.244"/>
+    <polygon class="cls-3" points="12 20.5 17.225 13.161 12 16.244 12 20.5"/>
+    <polygon class="cls-4" points="12 3.5 12 3.5 12 3.5 6.775 12.168 12 15.259 12 3.5"/>
+    <polygon class="cls-5" points="12 15.259 17.225 12.168 12 3.5 12 3.5 12 15.259"/>
+    <polygon class="cls-6" points="12 9.831 17.225 12.168 12 15.259 12 9.831"/>
+    <polygon class="cls-7" points="12 15.259 6.775 12.168 12 9.831 12 15.259"/>
+  </g>
 </svg>

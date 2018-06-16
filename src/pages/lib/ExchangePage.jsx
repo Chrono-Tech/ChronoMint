@@ -13,7 +13,6 @@ export default class ExchangePage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear
@@ -23,9 +22,7 @@ export default class ExchangePage extends Component {
         >
           <Partials.ExchangeContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }
 }
-

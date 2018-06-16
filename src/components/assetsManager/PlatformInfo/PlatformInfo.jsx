@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import classnames from 'classnames'
+import { Button, IPFSImage, TokenValue } from 'components'
 import Amount from 'models/Amount'
-import { IPFSImage, TokenValue } from 'components'
 import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/AssetManagerDialog'
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
@@ -156,7 +157,7 @@ export default class PlatformInfo extends PureComponent {
                 <Translate value={prefix('managers')} />
               </div>
               <div styleName='addManager'>
-                <button onTouchTap={this.props.handleAddManagerDialog} styleName='addManagerButton'>
+                <button onClick={this.props.handleAddManagerDialog} styleName='addManagerButton'>
                   <span>
                     <Translate value={prefix('manageButton')} size={managersList.size()} />
                   </span>
@@ -181,7 +182,7 @@ export default class PlatformInfo extends PureComponent {
                 <Translate value={prefix('blacklist')} />
               </div>
               <div styleName='blacklistButtonWrap'>
-                <button onTouchTap={this.handleBlacklistDialog} styleName='blacklistButton'>
+                <button onClick={this.handleBlacklistDialog} styleName='blacklistButton'>
                   <span>
                     <Translate value={prefix('manageButton')} size={blacklist.list().size} />
                   </span>
@@ -260,20 +261,18 @@ export default class PlatformInfo extends PureComponent {
           </div>
 
           <div styleName='actions'>
-            <RaisedButton
+            <Button
               disabled={isPaused.isFetching() || !isPaused.isFetched()}
-              styleName='action'
-              onTouchTap={!isPaused.isFetching() && isPaused.isFetched() ? this.handleBlockAssetDialog: undefined}
-              labelStyle={{ display: 'flex' }}
+              styleName={classnames('action', { 'block': !selectedToken.isPaused().value() })}
+              onClick={this.handleBlockAssetDialog}
               label={isPaused.isFetching() || !isPaused.isFetched()
                 ? <Preloader />
                 : <Translate value={prefix(selectedToken.isPaused().value() ? 'unblockAsset' : 'blockAsset')} />
               }
-              primary={selectedToken.isPaused().value()}
             />
 
-            <RaisedButton
-              onTouchTap={this.props.handleRevokeDialog}
+            <Button
+              onClick={this.props.handleRevokeDialog}
               label={<Translate value={prefix('revoke')} />}
               styleName='action'
             />

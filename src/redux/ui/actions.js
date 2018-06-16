@@ -13,6 +13,7 @@ import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
 import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
+import { CHANGE_WALLET_VIEW } from './reducer'
 
 export const removeWatchersUserMonitor = () => () => {
   userMonitorService
@@ -65,7 +66,7 @@ export const showConfirmTxModal = (estimateGas, localFeeMultiplier) => (dispatch
   return { isConfirmed: false }
 })
 
-export const changeMomentLocale = (locale, dispatch) => {
+export const changeMomentLocale = (locale) => (dispatch) => {
   moment.locale(locale)
   ls.setLocale(locale)
   dispatch(setLocale(locale))
@@ -82,4 +83,8 @@ export const download = (hash, name) => async () => {
   document.body.appendChild(ref)
   ref.click()
   document.body.removeChild(ref)
+}
+
+export const changeWalletView = () => (dispatch) => {
+  dispatch({ type: CHANGE_WALLET_VIEW })
 }

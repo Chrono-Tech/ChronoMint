@@ -15,7 +15,7 @@ import './DepositTokensForm.scss'
 function mapDispatchToProps (dispatch) {
   return {
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    mainApprove: (token, amount, spender) => dispatch(mainApprove(token, amount, spender)),
+    mainApprove: (token, amount, spender, feeMultiplier, advancedOptions) => dispatch(mainApprove(token, amount, spender, feeMultiplier, advancedOptions)),
     depositAsset: (amount, token) => dispatch(depositAsset(amount, token)),
     withdrawAsset: (amount, token) => dispatch(withdrawAsset(amount, token)),
   }
@@ -40,7 +40,9 @@ export default class DepositTokens extends PureComponent {
 
     switch (values.get('action')) {
       case ACTION_APPROVE:
-        this.props.mainApprove(token, amount, values.get('spender'))
+        this.props.mainApprove(token, amount, values.get('spender'), undefined, {
+          skipSlider: true,
+        })
         break
       case ACTION_DEPOSIT:
         this.props.depositAsset(amount, token)

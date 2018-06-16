@@ -51,7 +51,7 @@ class FileItem extends PureComponent {
           : (
             <FileFileDownload
               styleName='buttonItem'
-              onTouchTap={() => this.props.handleDownload(file.hash(), file.name())}
+              onClick={() => this.props.handleDownload(file.hash(), file.name())}
             />
           )
         }
@@ -60,7 +60,7 @@ class FileItem extends PureComponent {
             <ActionDelete
               styleName='buttonItem'
               color={file.hasErrors() ? globalStyles.colors.error : null}
-              onTouchTap={() => this.props.onRemove(file.id())}
+              onClick={() => this.props.onRemove(file.id())}
             />
           )
           : null

@@ -30,7 +30,7 @@ export default class OwnerItem extends PureComponent {
             <div
               styleName='action'
               className='material-icons'
-              onTouchTap={onRemove}
+              onClick={onRemove}
             >
               delete
             </div>
