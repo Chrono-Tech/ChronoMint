@@ -4,6 +4,7 @@
  */
 
 import * as WavesAPI from '@waves/waves-api'
+import bip39 from 'bip39'
 
 export default class WavesWallet {
   constructor (seed, keyPair, network) {
@@ -27,12 +28,12 @@ export default class WavesWallet {
   static fromPrivateKey (original, network) {
     const Waves = WavesAPI.create(network)
     const seed = Waves.Seed.fromExistingPhrase(original)
-    return new WavesWallet((seed, seed.keyPair), network)
+    return new WavesWallet(seed, seed.keyPair, network)
   }
 
   static fromMnemonic (mnemonic, network) {
     const Waves = WavesAPI.create(network)
-    const seed = Waves.Seed.fromExistingPhrase(mnemonic)
+    const seed = Waves.Seed.fromExistingPhrase(bip39.mnemonicToSeed(mnemonic).toString('hex'))
     return new WavesWallet(seed, seed.keyPair, network)
   }
 }
