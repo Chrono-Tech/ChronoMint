@@ -16,6 +16,7 @@ import { createNEMEngine } from './NemUtils'
 import { createWAVESEngine } from './WavesUtils'
 import NemWallet from './NemWallet'
 import WavesWallet from './WavesWallet'
+
 import {
   COIN_TYPE_BTC_MAINNET,
   COIN_TYPE_BTC_TESTNET,

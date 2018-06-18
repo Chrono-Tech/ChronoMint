@@ -4,13 +4,16 @@
  */
 
 import bitcoin from 'bitcoinjs-lib'
+import * as WavesApi from '@waves/waves-api'
 import nemSdk from 'nem-sdk'
 import Wallet from 'ethereumjs-wallet'
 import { byEthereumNetwork } from './NetworkProvider'
 import { createBCCEngine, createBTCEngine, createLTCEngine, createBTGEngine } from './BitcoinUtils'
 import EthereumEngine from './EthereumEngine'
 import { createNEMEngine } from './NemUtils'
+import { createWAVESEngine } from './WavesUtils'
 import NemWallet from './NemWallet'
+import WavesWallet from './WavesWallet'
 
 class WalletProvider {
   getProvider (walletJson, password, { url, network } = {}) {
@@ -21,6 +24,7 @@ class WalletProvider {
     const btg = network && network.bitcoinGold && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinGold])
     const ltc = network && network.litecoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.litecoin])
     const nem = network && network.nem && NemWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), nemSdk.model.network.data[network.nem])
+    const waves = network && network.waves && WavesWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), WavesApi[network.waves])
 
     return {
       networkCode,
@@ -30,6 +34,7 @@ class WalletProvider {
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
       ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
+      waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
     }
   }
 }
