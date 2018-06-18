@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 
 $color-usd-price: $color-grey-5;
@@ -31,7 +30,5 @@ $color-usd-price: $color-grey-5;
 }
 
 .price {
-  color: $color-usd-price;
   margin-left: 10px;
-  font-size: 0.8em;
 }
