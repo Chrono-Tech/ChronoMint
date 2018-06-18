@@ -74,7 +74,7 @@ export const decryptWallet = (entry, password) => async (dispatch, getState) => 
   const accounts = new Accounts(host)
   accounts.wallet.clear()
 
-  let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
+  let wallet = await accounts.wallet.decrypt(entry, password)
 
   const model = new WalletModel({
     entry,

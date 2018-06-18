@@ -11,7 +11,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { UserRow, Button } from 'components'
-import { onSubmitLoginForm, initLoginPage } from '@chronobank/login/redux/network/actions'
+import { onSubmitLoginForm, initLoginPage, navigateToSelectWallet } from '@chronobank/login/redux/network/actions'
 
 import styles from 'layouts/Splash/styles'
 import './LoginPage.scss'
@@ -33,6 +33,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       dispatch(onSubmitLoginForm(password))
     },
     initLoginPage: () => dispatch(initLoginPage()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }
 }
 
@@ -41,13 +42,14 @@ function mapDispatchToProps (dispatch, ownProps) {
 class LoginPage extends PureComponent {
   static propTypes = {
     initLoginPage: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
   }
 
   componentWillMount(){
     this.props.initLoginPage()
   }
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, selectedWallet } = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, selectedWallet, navigateToSelectWallet } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -59,7 +61,7 @@ class LoginPage extends PureComponent {
             <UserRow
               title={selectedWallet && selectedWallet.name}
               avatar={'/src/assets/img/profile-photo-1.jpg'}
-              onClick={() => {}}
+              onClick={navigateToSelectWallet}
             />
 
             <div styleName='field'>

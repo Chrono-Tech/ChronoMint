@@ -24,6 +24,7 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
+import bip39 from "bip39";
 
 export const DUCK_NETWORK = 'network'
 
@@ -147,9 +148,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
 }
 
-
-
-
 export const initImportMethodsPage = () => (dispatch) => {
   dispatch({ type: NETWORK_SET_IMPORT_ACCOUNT_MODE })
 }
@@ -214,7 +212,11 @@ export const navigateToLoginPage = () => (dispatch) => {
   dispatch(push('/'))
 }
 
-export const onSubmitMnemonicLoginForm = (mnemonic) => (dispatch) => {
+export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
+  if (!bip39.validateMnemonic(mnemonic)){
+    throw new Error('Invalid mnemonic')
+  }
+
   dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
 
 }
