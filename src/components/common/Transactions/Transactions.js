@@ -85,7 +85,7 @@ class Transactions extends PureComponent {
               <TableRowColumn>
                 <Button
                   label={<Translate value='nav.loadMore' />}
-                  onTouchTap={() => this.props.onLoadMore()}
+                  onClick={() => this.props.onLoadMore()}
                 />
               </TableRowColumn>
             </TableRow>

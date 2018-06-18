@@ -3,8 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
-import { CircularProgress } from 'material-ui'
+import { CircularProgress, RaisedButton } from 'material-ui'
+import networkService from '@chronobank/login/network/NetworkService'
+import SelectField from 'material-ui/SelectField'
+import MenuItem from 'material-ui/MenuItem'
+import Subheader from 'material-ui/Subheader'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -35,7 +40,7 @@ const mapStateToProps = (state) => {
   return {
     trezor: state.get('trezor'),
     isLoading: network.isLoading,
-    account: network.selectedAccount,
+    account: network.accounts
   }
 }
 
@@ -55,7 +60,11 @@ class LoginTrezor extends PureComponent {
     onLogin: PropTypes.func.isRequired,
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
-    account: PropTypes.string,
+    account: PropTypes.array,
+  }
+
+  state = {
+    value: 0
   }
 
   componentWillMount () {
@@ -98,6 +107,12 @@ class LoginTrezor extends PureComponent {
       ))
   }
 
+  _buildItem(item, index) {
+    return <MenuItem value={index} key={index} primaryText={item}/>
+  }
+
+  handleChange = (event, index, value) => {this.setState({value}); trezorProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]); networkService.setAccounts(this.props.account)}
+
   render () {
     const { isLoading, trezor, account } = this.props
 
@@ -114,8 +129,15 @@ class LoginTrezor extends PureComponent {
 
         {trezor.isFetched && (
           <div styleName='account'>
-            <div styleName='accountLabel'><Translate value='LoginWithTrezor.ethAddress' /></div>
-            <div styleName='accountValue'>{account}</div>
+            <SelectField floatingLabelText="Select address"
+                         autoWidth={true}
+                         fullWidth={true}
+                         floatingLabelStyle={{ color: 'white' }}
+                         labelStyle={{ color: 'white' }}
+                         value={this.state.value}
+                         onChange={this.handleChange}>
+              {this.props.account.map(this._buildItem)}
+            </SelectField>
           </div>
         )}
 
@@ -133,7 +155,7 @@ class LoginTrezor extends PureComponent {
                 : <Translate value='LoginWithTrezor.login' />
               }
               disabled={isLoading || !account}
-              onTouchTap={() => this.props.onLogin()}
+              onClick={() => this.props.onLogin()}
             />
           </div>
         </div>

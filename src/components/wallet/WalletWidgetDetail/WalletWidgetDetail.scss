@@ -58,7 +58,7 @@
 
     .amount-text {
       color: $color-grey-2;
-      font-family: proxima-nova, sans-serif;
+      font-family: 'Proxima Nova', sans-serif;
       font-weight: 500;
       text-align: left;
       font-size: 14px;
@@ -151,6 +151,14 @@
   flex-direction: column;
   padding-top: 50px;
   width: 370px;
+  :global {
+    .WalletMainCoinBalance__root {
+      color: $color-white;
+    }
+    .WalletMainCoinBalance__usd-amount {
+      color: $additionalData-color-1;
+    }
+  }
 }
 
 .token-container {
@@ -324,4 +332,8 @@
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 30px;
+}
+
+.noToken {
+  color: $error-color;
 }

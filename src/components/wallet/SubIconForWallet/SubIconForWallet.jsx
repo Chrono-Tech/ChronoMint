@@ -3,34 +3,27 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import PropTypes from 'prop-types'
-import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
+import { PTWallet } from 'redux/wallet/types'
 import React, { PureComponent } from 'react'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import DerivedWalletModel from 'models/wallet/DerivedWalletModel'
 
 import './SubIconForWallet.scss'
 
 export default class SubIconForWallet extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.oneOfType([
-      PropTypes.instanceOf(MainWalletModel),
-      PropTypes.instanceOf(MultisigWalletModel),
-      PropTypes.instanceOf(DerivedWalletModel),
-    ]),
+    wallet: PTWallet,
   }
 
   render () {
     const { wallet } = this.props
-    if (!wallet.isMultisig() && !wallet.isTimeLocked()) {
+    if (!wallet.isMultisig && !wallet.isTimeLocked) {
       return null
     }
 
     let icon = 'wallet-circle'
-    if (wallet.isMultisig()) {
-      if (wallet.is2FA && wallet.is2FA()) {
+    if (wallet.isMultisig) {
+      if (wallet.is2FA) {
         icon = 'security-circle'
-      } else if (wallet.isTimeLocked()) {
+      } else if (wallet.isTimeLocked) {
         icon = 'time-lock'
       } else {
         icon = 'multisig'

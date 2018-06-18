@@ -71,7 +71,7 @@ export default class CopyDialog extends PureComponent {
             <div styleName='footer'>
               <Button
                 label='Close'
-                onTouchTap={this.handleClose}
+                onClick={this.handleClose}
               />
             </div>
           </div>

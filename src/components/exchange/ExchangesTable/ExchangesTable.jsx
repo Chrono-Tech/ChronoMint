@@ -129,7 +129,7 @@ export default class ExchangesTable extends React.PureComponent {
             <div styleName='buttonWrapper'>
               <Button
                 label={<Translate value={prefix('depositTokens')} symbol={exchange.symbol()} />}
-                onTouchTap={() => {
+                onClick={() => {
                   this.props.handleOpenTransfer(exchange, exchange.symbol())
                 }}
               />
@@ -137,7 +137,7 @@ export default class ExchangesTable extends React.PureComponent {
             <div styleName='buttonWrapper'>
               <Button
                 label={<Translate value={prefix('depositEth')} />}
-                onTouchTap={() => {
+                onClick={() => {
                   this.props.handleOpenTransfer(exchange, 'ETH')
                 }}
               />
@@ -205,7 +205,7 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='buttonWrapper'>
             <Button
               label={<Translate value={prefix('buy')} symbol={exchange.symbol()} />}
-              onTouchTap={() => {
+              onClick={() => {
                 this.props.handleOpenDetails(exchange, true)
               }}
             />
@@ -215,7 +215,7 @@ export default class ExchangesTable extends React.PureComponent {
           <div styleName='buttonWrapper'>
             <Button
               label={<Translate value={prefix('sell')} symbol={exchange.symbol()} />}
-              onTouchTap={() => {
+              onClick={() => {
                 this.props.handleOpenDetails(exchange, false)
               }}
             />
@@ -239,7 +239,7 @@ export default class ExchangesTable extends React.PureComponent {
       return (
         <Button
           label={<Translate value={prefix('getNextPage')} />}
-          onTouchTap={this.props.handleGetNextPage}
+          onClick={this.props.handleGetNextPage}
         />
       )
     }

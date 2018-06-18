@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 import AbstractNode from './AbstractNode'
+import EthCrypto from 'eth-crypto'
 
 const eventsList = [
   'platformrequested',
@@ -24,7 +25,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     this.connect()
   }
 
-  async _handleSubscribe ({ ethAddress, nemAddress }) {
+  async _handleSubscribe ({ ethAddress, nemAddress, wavesAddress }) {
     if (!this._socket) {
       return
     }
@@ -32,6 +33,7 @@ export default class EthereumMiddlewareNode extends AbstractNode {
       await this._api.post('addr', {
         address: ethAddress,
         nem: nemAddress,
+        waves: wavesAddress,
       })
 
       this.executeOrSchedule(() => {
@@ -48,15 +50,19 @@ export default class EthereumMiddlewareNode extends AbstractNode {
     }
   }
 
-  async _handleUnsubscribe ({ ethAddress, nemAddress }) {
-    try {
+  async _handleUnsubscribe ({ ethAddress, nemAddress, wavesAddress }) {
+
+    //No method delete in API, I'm not sure if we need the procedure bellow
+
+    /*try {
       await this._api.delete('addr', {
         address: ethAddress,
-        nem: nemAddress,
+        //nem: nemAddress,
+        //waves: wavesAddress,
       })
     } catch (e) {
       this.trace('Address unsubscription error', e)
-    }
+    }*/
   }
 
   async getTransactionsList (address, id, skip, offset) {
@@ -73,4 +79,46 @@ export default class EthereumMiddlewareNode extends AbstractNode {
 
     return []
   }
+
+  async get2FAEncodedKey (engine, callback) {
+    const { data } = await this._twoFA.post(`/wallet/secret`, {
+      pubkey: engine.getPublicKey(),
+    })
+    if (data.code) {
+      return typeof callback === 'function' ? callback(data) : data
+    } else {
+      const code = await EthCrypto.decryptWithPrivateKey(`0x${engine.getPrivateKey()}`, data)
+      if (code) {
+        return typeof callback === 'function' ? callback(code) : code
+      }
+    }
+  }
+
+  async confirm2FASecret (account, confirmToken, callback) {
+    const { data } = await this._twoFA.post(`/wallet/secret/confirm`, {
+      address: account,
+      token: confirmToken,
+    })
+    const success = data.code === 404 // success code
+    return typeof callback === 'function' ? callback(success) : success
+  }
+
+  async confirm2FAtx (txAddress, walletAddress, token, callback) {
+    const { data } = await this._twoFA.post(`/wallet/confirm`, {
+      operation: txAddress,
+      wallet: walletAddress,
+      token,
+    })
+    if (data) {
+      return typeof callback === 'function' ? callback(data) : data
+    }
+  }
+
+  async checkConfirm2FAtx (txAddress, callback) {
+    const { data } = await this._twoFA.get(`/wallets/${txAddress}/info`)
+    if (data) {
+      return typeof callback === 'function' ? callback(data) : data
+    }
+  }
 }
+

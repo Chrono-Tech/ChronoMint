@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
       const incoming = action.payload.multisigWallet
-      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.isInited(false)
+      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.twoFAConfirmed(null).isInited(false)
       return state
     case a.MULTISIG_INIT:
       return state.isInited(action.isInited)
@@ -31,6 +31,8 @@ export default (state = initialState, action) => {
       return state.balance(action.walletId, action.balance)
     case a.MULTISIG_PENDING_TX:
       return state.pending(action.walletId, action.pending)
+    case a.MULTISIG_2_FA_CONFIRMED:
+      return state.twoFAConfirmed(action.twoFAConfirmed)
     default:
       return state
   }

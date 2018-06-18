@@ -76,7 +76,7 @@ class LoginWithPrivateKey extends PureComponent {
                   thickness={1.5}
                 /> : <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
               disabled={!isValidated || isLoading}
-              onTouchTap={() => this.props.onLogin(privateKey)}
+              onClick={() => this.props.onLogin(privateKey)}
             />
           </div>
         </div>

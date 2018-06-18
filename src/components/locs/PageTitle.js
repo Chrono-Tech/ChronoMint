@@ -67,11 +67,11 @@ class PageTitle extends PureComponent {
           <Button
             label={<Translate value='locs.new' />}
             primary
-            onTouchTap={this.handleShowLOCModal}
+            onClick={this.handleShowLOCModal}
           />
           <Button
             label={<Translate value='locs.sendToExchange' />}
-            onTouchTap={this.handleSendToExchange}
+            onClick={this.handleSendToExchange}
           />
         </div>
       </div>

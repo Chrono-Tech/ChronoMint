@@ -19,6 +19,11 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     this.connect()
   }
 
+  subscribeNewWallet (address) {
+    this._handleSubscribe(address)
+    this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
+  }
+
   async _handleSubscribe (address) {
     if (!this._socket) {
       return
@@ -28,7 +33,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       this.executeOrSchedule(() => {
         this._subscriptions[`balance:${address}`] = this._client.subscribe(
           `${this._socket.channels.balance}.${address}`,
-          // `${socket.channels.balance}.*`,
           (message) => {
             try {
               const data = JSON.parse(message.body)
@@ -50,6 +54,20 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             }
           },
         )
+        if (!this._subscriptions[`lastBlock`]) {
+          this._subscriptions[`lastBlock`] = this._client.subscribe(
+            `${this._socket.channels.block}`,
+            (message) => {
+              try {
+                const data = JSON.parse(message.body)
+                this.trace('Address Balance', data)
+                this.emit('lastBlock', data)
+              } catch (e) {
+                this.trace('Failed to decode message', e)
+              }
+            },
+          )
+        }
       })
     } catch (e) {
       this.trace('Address subscription error', e)
@@ -123,7 +141,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
         balance6: new BigNumber(confirmations6.satoshis),
       }
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinMiddlewareNode getAddressInfo ${address} failed`, e)
       throw e
     }
   }
@@ -133,7 +151,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinMiddlewareNode getAddressUTXOS ${address} failed`, e)
       throw e
     }
   }
@@ -142,14 +160,24 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     try {
       const params = new URLSearchParams()
       params.append('tx', rawtx)
-      const res = await this._api.post('tx/send', params)
+      let res = await this._api.post('tx/send', params)
+      let formatInputs = res.data.inputs.map((input) => {
+        input.address = input.addresses.join(',')
+        return input
+      })
+      let formatOutputs = res.data.outputs.map((output) => {
+        output.address = output.addresses.join(',')
+        return output
+      })
+      res.data.inputs = formatInputs
+      res.data.outputs = formatOutputs
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
         this.emit('tx', model)
       })
       return model
     } catch (e) {
-      this.trace(`send transaction ${rawtx} failed`, e)
+      this.trace(`BitcoinMiddlewareNode send transaction ${rawtx} failed`, e)
       throw e
     }
   }
@@ -158,10 +186,11 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
     }).join(',')
+    const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
     const to = tx.outputs.map((output) => `${output.address}`).join(',')
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
-      if (output.address.indexOf(account) < 0) {
+      if (credited ? output.address.indexOf(account) >= 0 : output.address.indexOf(account) < 0) {
         value = value.add(new BigNumber(output.value))
       }
     }

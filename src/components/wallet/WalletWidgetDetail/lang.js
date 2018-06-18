@@ -15,10 +15,12 @@ export default {
     ownersTitle: '%{count} Owners',
     pending: '%{count} pending',
     unlockDate: 'Unlocks on ',
+    twoFAWallet: 'My 2FA Wallet',
     sharedWallet: 'My Shared Wallet',
     lockedWallet: 'My Locked Wallet',
     customWallet: 'My custom Wallet',
     additionalStandardWallet: 'My additional standard Wallet',
     standardWallet: 'My Wallet',
+    tokenNotAvailable: 'Token Not Available',
   },
 }

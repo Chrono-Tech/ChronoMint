@@ -24,7 +24,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from 'redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
+import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevoke, requireTIME } from 'redux/mainWallet/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from 'dao/AssetHolderDAO'
 import { TX_APPROVE } from 'dao/ERC20DAO'
 import { DUCK_SESSION } from 'redux/session/actions'
@@ -46,12 +46,6 @@ export const ACTION_WITHDRAW = 'deposit/withdraw'
 const DEPOSIT_FIRST = 'depositFirst'
 const DEPOSIT_SECOND = 'depositSecond'
 const WITHDRAW = 'withdraw'
-
-const FEE_RATE_MULTIPLIER = {
-  min: 0.1,
-  max: 1.9,
-  step: 0.1,
-}
 
 function prefix (token) {
   return `components.DepositTokens.${token}`
@@ -407,7 +401,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onTouchTap={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
+              onClick={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
             />
           </div>
         )}
@@ -416,7 +410,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('buyTime')} />}
-              onTouchTap={this.handleReceiveToken(token.id(), token.blockchain())}
+              onClick={this.handleReceiveToken(token.id(), token.blockchain())}
             />
           </div>
         )}
@@ -425,7 +419,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('requestTime')} />}
-              onTouchTap={this.handleRequireTime}
+              onClick={this.handleRequireTime}
             />
           </div>
         )}
@@ -434,7 +428,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('proceed')} />}
-              onTouchTap={handleSubmit(this.handleApproveAsset)}
+              onClick={handleSubmit(this.handleApproveAsset)}
               disabled={isApproveDisabled}
             />
           </div>
@@ -445,7 +439,7 @@ export default class DepositTokensForm extends PureComponent {
               flat
               styleName='actionButton'
               label={<Translate value={prefix('revoke')} />}
-              onTouchTap={handleSubmit(this.handleRevokeAsset)}
+              onClick={handleSubmit(this.handleRevokeAsset)}
               disabled={isRevokeDisabled}
             />
           </div>
@@ -455,7 +449,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('finish')} />}
-              onTouchTap={handleSubmit(this.handleDepositAsset)}
+              onClick={handleSubmit(this.handleDepositAsset)}
               disabled={isLockDisabled}
             />
           </div>
@@ -465,7 +459,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('withdraw')} />}
-              onTouchTap={handleSubmit(this.handleWithdrawAsset)}
+              onClick={handleSubmit(this.handleWithdrawAsset)}
               disabled={isWithdrawDisabled}
             />
           </div>

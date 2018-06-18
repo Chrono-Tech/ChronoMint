@@ -64,7 +64,6 @@ export default class SelectEthWallet extends PureComponent {
         type: '2FA',
         icon: 'security-circle',
         description: `${prefix}.fa.description`,
-        disabled: true,
       },
       {
         title: `${prefix}.ms.title`,
@@ -84,7 +83,7 @@ export default class SelectEthWallet extends PureComponent {
       <div styleName='root'>
         {
           wallets.map((type) => (
-            <div key={type.type} styleName={classnames('walletType', { 'notAllowed': type.disabled })} onTouchTap={type.action || this.handleTouchTap(type)}>
+            <div key={type.type} styleName={classnames('walletType', { 'notAllowed': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
               <div styleName='icon'><i className='chronobank-icon'>{type.icon}</i></div>
               <div styleName='info'>
                 <div styleName='title'><Translate value={type.title} /></div>

@@ -54,7 +54,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
         balance6: new BigNumber(balanceSat),
       }
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinBlockexplorerNode getAddressInfo ${address} failed`, e)
       throw e
     }
   }
@@ -64,7 +64,7 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
       const res = await this._api.get(`addr/${address}/utxo`)
       return res.data
     } catch (e) {
-      this.trace(`getAddressInfo ${address} failed`, e)
+      this.trace(`BitcoinBlockexplorerNode getAddressUTXOS ${address} failed`, e)
       throw e
     }
   }
@@ -94,7 +94,10 @@ export default class BitcoinBlockexplorerNode extends BitcoinAbstractNode {
 
   _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.vin.map((input) => input.addr).join(',')
-    const to = tx.vout.map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(',')).join(',')
+    const to = tx.vout
+      .map((output) => output.scriptPubKey.addresses.filter((a) => a !== account).join(','))
+      .filter((str) => str.length > 0)
+      .join(',')
 
     let value = new BigNumber(0)
     for (const output of tx.vout) {

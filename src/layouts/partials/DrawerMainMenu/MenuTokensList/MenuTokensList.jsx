@@ -21,17 +21,20 @@ import { prefix } from './lang'
 
 import './MenuTokensList.scss'
 
-function mapStateToProps (state) {
-  const session = state.get(DUCK_SESSION)
-  const monitor = state.get(DUCK_MONITOR)
-
-  return {
-    account: session.account,
-    tokens: getBlockchainAddressesList()(state),
-    networkStatus: monitor.network,
-    syncStatus: monitor.sync,
-    networkName: networkService.getName(),
+function makeMapStateToProps () {
+  const getwallets = getBlockchainAddressesList()
+  const mapStateToProps = (ownState) => {
+    const session = ownState.get(DUCK_SESSION)
+    const monitor = ownState.get(DUCK_MONITOR)
+    return {
+      account: session.account,
+      tokens: getwallets(ownState),
+      networkStatus: monitor.network,
+      syncStatus: monitor.sync,
+      networkName: networkService.getName(),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -68,7 +71,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class MenuTokensList extends PureComponent {
   static propTypes = {
     account: PropTypes.string,
@@ -108,8 +111,12 @@ export default class MenuTokensList extends PureComponent {
   handleScrollToBlockchain = (blockchain) => {
     const element = document.getElementById(blockchain)
     if (element) {
-      element.scrollIntoView({ block: 'start',  behavior: 'smooth' })
+      element.scrollIntoView({ block: 'start', behavior: 'smooth' })
     }
+  }
+
+  handleTouchTitle = (blockchain) => () => {
+    return this.handleScrollToBlockchain(blockchain)
   }
 
   renderStatus () {
@@ -154,12 +161,7 @@ export default class MenuTokensList extends PureComponent {
                   title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
                 />
               </div>
-              <div
-                styleName='addressTitle'
-                onTouchTap={((blockchain) => () =>  {
-                  this.handleScrollToBlockchain(blockchain)}
-                )(token.blockchain)}
-              >
+              <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
                   {token.address || <Translate value={`${prefix}.notAvailable`} />}
@@ -167,7 +169,7 @@ export default class MenuTokensList extends PureComponent {
               </div>
               <div
                 styleName={classnames('itemMenu', { 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title })}
-                onTouchTap={setToken(token)}
+                onClick={setToken(token)}
               >
                 <i className='material-icons'>more_vert</i>
               </div>

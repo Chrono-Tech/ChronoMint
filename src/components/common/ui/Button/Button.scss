@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 
 .root {
@@ -15,7 +14,7 @@
   font-weight: bolder;
   text-transform: uppercase;
   min-height: 40px;
-  border-radius: 3px;
+  border-radius: 21px;
   padding: 12px 17px;
   font-size: 14px;
   cursor: pointer;
@@ -25,17 +24,22 @@
   }
   position: relative; //This is kinda important
   overflow: hidden; //This too
-  border: none;
 }
 
 .raised {
   color: $color-white;
   background-color: $button-color-1;
+  border-style: solid;
+  border-color: $button-color-5;
+  border-width: 0 0 1px;
   &:hover, &:active {
-    background-color: $button-color-2
+    background-color: $button-color-2;
+    border-color: $button-color-4;
   }
   &:disabled {
-    background-color: $button-color-3;
+    border: none;
+    color: $color-grey-7;
+    background-color: $color-grey-3;
   }
 }
 

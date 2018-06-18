@@ -26,6 +26,7 @@ import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
+import { wavesProvider } from './WavesProvider'
 import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
 import {
@@ -61,9 +62,9 @@ class NetworkService extends EventEmitter {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
     const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    if (!accounts.includes(account)) {
-      throw new Error('Account not registered')
-    }
+    //if (!accounts.includes(account)) {
+    //  throw new Error('Account not registered')
+    //}
 
     web3Provider.resolve()
 
@@ -157,7 +158,9 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
     try {
-      const accounts = await web3Provider.getAccounts()
+      let accounts = this._accounts
+      if (accounts == null)
+        accounts = await web3Provider.getAccounts()
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
@@ -183,22 +186,26 @@ class NetworkService extends EventEmitter {
     await this.setup(provider)
   }
 
-  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
+  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
     const web3 = new Web3()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
-
     await this.loadAccounts()
-    ethereumProvider.setEngine(ethereum, nem)
-    bccProvider.setEngine(bcc)
-    btcProvider.setEngine(btc)
-    btgProvider.setEngine(btg)
-    ltcProvider.setEngine(ltc)
-    nemProvider.setEngine(nem)
+    ethereumProvider.setEngine(ethereum, nem, waves)
+    bcc && bccProvider.setEngine(bcc)
+    btc && btcProvider.setEngine(btc)
+    btg && btgProvider.setEngine(btg)
+    ltc && ltcProvider.setEngine(ltc)
+    nem && nemProvider.setEngine(nem)
+    waves && wavesProvider.setEngine(waves)
   }
 
   selectAccount = (selectedAccount) => {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
+  }
+
+  setAccounts = (accounts) => {
+      this._accounts = accounts;
   }
 
   getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
@@ -235,6 +242,7 @@ class NetworkService extends EventEmitter {
         try {
           if (isMetaMask) {
             this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
+	    this.isMetamask = true
           }
         } catch (e) {
           // eslint-disable-next-line
@@ -242,6 +250,10 @@ class NetworkService extends EventEmitter {
         }
       })
       .start()
+  }
+
+  isMetaMask = () => {
+    return this.isMetamask
   }
 
   async checkTestRPC (providerUrl) {

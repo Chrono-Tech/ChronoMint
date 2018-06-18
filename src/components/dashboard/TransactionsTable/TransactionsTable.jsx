@@ -15,7 +15,6 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_I18N } from 'redux/i18n/actions'
-import { getAccountTransactions } from 'redux/mainWallet/actions'
 import Preloader from 'components/common/Preloader/Preloader'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
@@ -139,7 +138,7 @@ export default class TransactionsTable extends PureComponent {
                   thickness={1.5}
                 /> : 'Load More'}
                 disabled={isFetching}
-                onTouchTap={this.handleLoadMore}
+                onClick={this.handleLoadMore}
               />
             </div>
           )}

@@ -15,6 +15,7 @@ import WalletsPage from './WalletsPage'
 import WalletPage from './WalletPage'
 import AddWalletPage from './AddWalletPage'
 import DepositPage from './DepositPage'
+import TwoFAPage from './TwoFAPage'
 
 export {
   ExchangePage,
@@ -29,6 +30,7 @@ export {
   DepositsPage,
   DepositPage,
   AddWalletPage,
+  TwoFAPage,
 }
 
 export default {
@@ -44,4 +46,5 @@ export default {
   DepositsPage,
   DepositPage,
   AddWalletPage,
+  TwoFAPage,
 }

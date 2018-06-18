@@ -11,7 +11,7 @@ import './Button.scss'
 export default class Button extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
-    onTouchTap: PropTypes.func,
+    onClick: PropTypes.func,
     buttonType: PropTypes.string,
     flat: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -51,8 +51,8 @@ export default class Button extends PureComponent {
     if (this.props.disabled) {
       return
     }
-    if (typeof this.props.onTouchTap === 'function') {
-      return this.props.onTouchTap(e)
+    if (typeof this.props.onClick === 'function') {
+      return this.props.onClick(e)
     }
     if (typeof this.props.onClick === 'function') {
       return this.props.onClick(e)
@@ -78,7 +78,7 @@ export default class Button extends PureComponent {
           disabled={this.props.disabled}
           styleName={buttonClasses}
           type={this.props.type}
-          onTouchTap={this.handleTouchTap}
+          onClick={this.handleTouchTap}
         >
           {this.props.children
             ? this.props.children

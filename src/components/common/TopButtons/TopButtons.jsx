@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { history } from 'redux/configureStore'
+import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { DUCK_SIDES } from 'redux/sides/actions'
 import { Button } from 'components'
@@ -49,7 +50,7 @@ class TopButtons extends PureComponent {
 
   render () {
     const { location } = this.props
-    const page = BUTTONS[ location.pathname ]
+    const page = BUTTONS[location.pathname]
     let buttons = []
     if (page && page.buttons) {
       buttons = page.buttons
@@ -58,15 +59,16 @@ class TopButtons extends PureComponent {
       <div styleName='root'>
         <div styleName='backButtonWrapper'>
           {page && page.backButton ? (
-            <Button styleName='backButton' onTouchTap={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
+            <Button styleName='backButton' onClick={page.backButtonAction ? this.handleAction(page.backButtonAction) : history.goBack}>
               <i styleName='backIcon' className='chronobank-icon'>back</i>
             </Button>
           ) : null}
         </div>
         {
-          buttons.map((button) => (
-            <Button key={button.title} styleName='topButton' onTouchTap={this.handleAction(button.action)}>
-              <Translate value={`topButtons.${button.title}`} />
+          buttons.map((button, i) => (
+            <Button key={i} styleName={classnames('topButton', { 'iconButton': !!button.chronobankIcon })} onClick={this.handleAction(button.action)}>
+              {button.chronobankIcon && <i className='chronobank-icon'>{button.chronobankIcon}</i>}
+              {button.title && <Translate value={`topButtons.${button.title}`} />}
             </Button>
           ))
         }

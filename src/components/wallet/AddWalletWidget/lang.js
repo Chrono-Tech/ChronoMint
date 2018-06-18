@@ -17,6 +17,7 @@ export default {
     multisignatureWallet: 'Multi-signature Wallet',
     timeLockedWallet: 'Time-Locked Wallet',
     customWallet: 'Configure Tokens',
+    twoFA: 'Enable 2FA',
     soon: 'Soon...',
     st: {
       title: 'Standard Wallet',

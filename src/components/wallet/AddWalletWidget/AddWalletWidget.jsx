@@ -7,10 +7,11 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '@chronobank/login/network/BitcoinProvider'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 import { BLOCKCHAIN_NEM } from 'dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from 'dao/WavesDAO'
+import WidgetContainer from 'components/WidgetContainer/WidgetContainer'
 import { FORM_ADD_NEW_WALLET } from 'redux/mainWallet/actions'
 
 import './AddWalletWidget.scss'
@@ -20,6 +21,7 @@ import MultisigWalletForm from './MultisigWalletForm/MultisigWalletForm'
 import TimeLockedWalletForm from './TimeLockedWalletForm/TimeLockedWalletForm'
 import { prefix } from './lang'
 import CustomWalletForm from './CustomWalletForm/CustomWalletForm'
+import TwoFaWalletForm from '../TwoFaWalletForm/TwoFaWalletForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
@@ -49,11 +51,11 @@ export default class AddWalletWidget extends PureComponent {
     selectWalletType: PropTypes.func,
   }
 
-  handleSelectWalletBlockchain = (blockchain: string) => {
+  onSelectWalletBlockchain = (blockchain: string) => {
     this.props.selectWalletBlockchain(blockchain)
   }
 
-  handleSelectWalletType = (type: string) => {
+  onSelectWalletType = (type: string) => {
     this.props.selectWalletType(type)
   }
 
@@ -73,15 +75,15 @@ export default class AddWalletWidget extends PureComponent {
         title = `${prefix}.customWallet`
         Component = CustomWalletForm
         break
+      case '2FA':
+        title = `${prefix}.twoFA`
+        Component = TwoFaWalletForm
     }
 
     return (
-      <div styleName='widget'>
-        <div styleName='title'><Translate value={title} /></div>
-        <div styleName='body'>
-          <Component />
-        </div>
-      </div>
+      <WidgetContainer title={title}>
+        <Component />
+      </WidgetContainer>
     )
   }
 
@@ -100,19 +102,17 @@ export default class AddWalletWidget extends PureComponent {
             return this.renderEthWalletForm(ethWalletType)
           } else {
             return (
-              <div styleName='widget'>
-                <div styleName='title'><Translate value={`${prefix}.createWallet`} /></div>
-                <div styleName='body'><SelectEthWallet handleTouchTap={this.handleSelectWalletType} /></div>
-              </div>
+              <WidgetContainer title={`${prefix}.createWallet`}>
+                <SelectEthWallet handleTouchTap={this.onSelectWalletType} />
+              </WidgetContainer>
             )
           }
       }
     } else {
       return (
-        <div styleName='widget'>
-          <div styleName='title'><Translate value={`${prefix}.addWallet`} /></div>
-          <div styleName='body'><SelectWalletType handleTouchTap={this.handleSelectWalletBlockchain} /></div>
-        </div>
+        <WidgetContainer title={`${prefix}.addWallet`}>
+          <SelectWalletType handleTouchTap={this.onSelectWalletBlockchain} />
+        </WidgetContainer>
       )
     }
   }

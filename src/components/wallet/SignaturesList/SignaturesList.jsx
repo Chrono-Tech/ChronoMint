@@ -29,7 +29,7 @@ export default class SignaturesList extends Component {
         <span
           key={i}
           styleName={classnames('chip', { selected: i === input.value })}
-          onTouchTap={this.handleSelect(i)}
+          onClick={this.handleSelect(i)}
         >
           {i}
         </span>

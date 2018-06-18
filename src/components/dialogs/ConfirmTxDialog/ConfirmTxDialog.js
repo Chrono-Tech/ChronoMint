@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import networkService from '@chronobank/login/network/NetworkService'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
@@ -105,14 +106,14 @@ export default class ConfirmTxDialog extends PureComponent {
         flat
         key='close'
         label={<Translate value='terms.cancel' />}
-        onTouchTap={this.handleClose}
+        onClick={this.handleClose}
       />,
       <Button
         flat
         key='confirm'
         label={<Translate value='terms.confirm' />}
         disabled={this.props.balance.lt(0)}
-        onTouchTap={this.handleConfirm}
+        onClick={this.handleConfirm}
       />,
     ]
   }
@@ -169,6 +170,8 @@ export default class ConfirmTxDialog extends PureComponent {
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
+    if (networkService.isMetaMask())
+      this.handleConfirm()
     return (
       <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
         <div styleName='root'>
@@ -234,21 +237,21 @@ export default class ConfirmTxDialog extends PureComponent {
               flat
               styleName='action'
               label={<Translate value={additionalAction.repeatButtonName()} />}
-              onTouchTap={this.handleRepeatAction}
+              onClick={this.handleRepeatAction}
             />
             }
             <Button
               flat
               styleName='action'
               label={<Translate value='terms.cancel' />}
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
             <Button
               flat
               styleName='action'
               label={<Translate value='terms.confirm' />}
               disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
-              onTouchTap={this.handleConfirm}
+              onClick={this.handleConfirm}
             />
           </div>
         </div>

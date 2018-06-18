@@ -42,7 +42,7 @@ class LOCIssueForm extends PureComponent {
         <div styleName='footer'>
           <Button
             label={<Translate value='locs.issueS' asset={loc.currency()} />}
-            onTouchTap={handleSubmit}
+            onClick={handleSubmit}
             disabled={pristine}
           />
         </div>

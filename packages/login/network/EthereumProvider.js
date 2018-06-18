@@ -13,34 +13,39 @@ export class EthereumProvider extends AbstractProvider {
   constructor () {
     super(...arguments)
     this._nemEngine = null
+    this._wavesEngine = null
     this._id = 'Ethereum'
   }
 
-  setEngine (ethEngine: EthereumEngine, nemEngine) {
+  setEngine (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
     if (this._isInited) {
       this.unsubscribe(this._engine, this._nemEngine)
+      this._isInited = false;
     }
     this._engine = ethEngine
     this._nemEngine = nemEngine
-    this.subscribe(this._engine, this._nemEngine)
+    this._wavesEngine = wavesEngine
+    this.subscribe(this._engine, this._nemEngine, this._wavesEngine)
     this._isInited = true
   }
 
-  subscribe (ethEngine: EthereumEngine, nemEngine) {
+  subscribe (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
     const node = this._selectNode(ethEngine)
 
     node.emit('subscribe', {
       ethAddress: ethEngine.getAddress(),
       nemAddress: nemEngine && nemEngine.getAddress(),
+      wavesAddress: wavesEngine && wavesEngine.getAddress(),
     })
     return node
   }
 
-  unsubscribe (ethEngine: EthereumEngine, nemEngine) {
+  unsubscribe (ethEngine: EthereumEngine, nemEngine, wavesEngine) {
     const node = this._selectNode(ethEngine)
     node.emit('unsubscribe', {
       ethAddress: ethEngine.getAddress(),
       nemAddress: nemEngine && nemEngine.getAddress(),
+      wavesAddress: wavesEngine && wavesEngine.getAddress(),
     })
     return node
   }
@@ -52,6 +57,10 @@ export class EthereumProvider extends AbstractProvider {
 
   getPrivateKey () {
     return this._engine ? this._engine.getPrivateKey() : null
+  }
+
+  getPublicKey () {
+    return this._engine ? this._engine.getPublicKey() : null
   }
 
   createNewChildAddress (deriveNumber) {
@@ -89,6 +98,26 @@ export class EthereumProvider extends AbstractProvider {
     this.setEngine(newEngine, ethereumProvider.getNemEngine())
 
     web3Provider.pushWallet(num_addresses)
+  }
+
+  get2FAEncodedKey (callback) {
+    const node = this._selectNode(this._engine)
+    return node.get2FAEncodedKey(this._engine, callback)
+  }
+
+  confirm2FASecret (account, confirmToken, callback) {
+    const node = this._selectNode(this._engine)
+    return node.confirm2FASecret(account, confirmToken, callback)
+  }
+
+  confirm2FAtx (txAddress, walletAddress, confirmToken, callback) {
+    const node = this._selectNode(this._engine)
+    return node.confirm2FAtx(txAddress, walletAddress, confirmToken, callback)
+  }
+
+  checkConfirm2FAtx (txAddress, callback) {
+    const node = this._selectNode(this._engine)
+    return node.checkConfirm2FAtx(txAddress, callback)
   }
 }
 

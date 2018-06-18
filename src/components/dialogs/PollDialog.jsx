@@ -75,7 +75,7 @@ export class PollDialog extends React.Component {
             label='Add Option'
             styleName='action'
             // eslint-disable-next-line
-            onTouchTap={() => this.handleOptionCreate(options)}
+            onClick={() => this.handleOptionCreate(options)}
           />
         </div>
         <div styleName='options-list'>
@@ -86,7 +86,7 @@ export class PollDialog extends React.Component {
                 key={index}
                 styleName={classnames('table-item', { active: this.state.selectedOptionIndex === index })}
                 // eslint-disable-next-line
-                onTouchTap={() => this.handleOptionSelect(index)}
+                onClick={() => this.handleOptionSelect(index)}
               >
                 <div styleName='item-left'>
                   <div styleName='symbol symbol-fill'>#{index + 1}</div>
@@ -103,7 +103,7 @@ export class PollDialog extends React.Component {
                     <FontIcon
                       className='material-icons'
                       // eslint-disable-next-line
-                      onTouchTap={() => this.handleOptionRemove(options, index)}
+                      onClick={() => this.handleOptionRemove(options, index)}
                     >delete
                     </FontIcon>
                   </IconButton>

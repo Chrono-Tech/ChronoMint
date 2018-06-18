@@ -25,7 +25,7 @@ class Pagination extends ReactPaginate {
   pageView = (index) => {
     return (<Button
       flat
-      onTouchTap={this.handlePageSelected.bind(null, index)}
+      onClick={this.handlePageSelected.bind(null, index)}
       label={index + 1}
     />)
   }
@@ -95,7 +95,7 @@ class Pagination extends ReactPaginate {
       <p style={{ textAlign: 'center' }}>
         <Button
           flat
-          onTouchTap={this.handlePreviousPage}
+          onClick={this.handlePreviousPage}
           label={this.props.previousLabel}
           disabled={this.state.selected === 0}
         />
@@ -104,7 +104,7 @@ class Pagination extends ReactPaginate {
 
         <Button
           flat
-          onTouchTap={this.handleNextPage}
+          onClick={this.handleNextPage}
           label={this.props.nextLabel}
           disabled={this.state.selected === this.props.pageCount - 1}
         />

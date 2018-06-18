@@ -195,7 +195,7 @@ export default class VoteDialog extends PureComponent {
                         <div
                           key={index}
                           styleName={classnames('tableItem', { active: index === this.state.choice })}
-                          onTouchTap={() => this.handleSelect(index)}
+                          onClick={() => this.handleSelect(index)}
                         >
                           <div styleName='itemLeft'>
                             {index === this.state.choice
