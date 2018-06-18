@@ -2,34 +2,36 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
 .snackbar {
-
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  background: $color-panel-bg-5;
-  padding: 4px;
+  right: 30px;
+  background: $color-green-3;
   display: flex;
-
+  border-radius: 0 0 2px 2px;
+  padding: 4px 20px;
+  @media (min-width: 660px) {
+    min-width: 600px;
+  }
+  @media (max-width: 659px) {
+    left: 0;
+    right: 0;
+  }
   .snackbar-entry {
-
     flex: 0 0 auto;
-    margin-right: 16px;
+    margin-right: 5px;
     color: $color-white;
-    font-size: 12px;
-
+    font-size: 14px;
     .entry-status {
-      @include badge($color-white, $badge-orange);
+      font-weight: 700;
     }
     .entry-label {
     }
     .entry-value {
-      font-weight: bold;
+      font-weight: 500;
     }
     .entry-datetime {
       opacity: 0.6;
