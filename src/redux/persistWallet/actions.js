@@ -6,6 +6,7 @@
 import uniqid from 'uniqid'
 import bip39 from 'bip39'
 import Web3 from 'web3'
+import Accounts from 'web3-eth-accounts'
 
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import {
@@ -15,11 +16,8 @@ import {
 import networkService from '@chronobank/login/network/NetworkService'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import web3Utils from "../../../packages/login/network/Web3Utils";
-
-// const web3 = new Web3()
-// web3Provider.reinit(web3, web3Utils.createStatusEngine(networkService.getProviderURL()))
-// web3Provider.resolve()
+import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
+import { getSelectedNetwork } from './selectors'
 
 export const WALLETS_ADD = 'persistWallet/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistWallet/WALLETS_SELECT'
@@ -62,16 +60,21 @@ export const walletUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptWallet = (entry, password) => async (dispatch) => {
-  const web3 = web3Provider.getWeb3instance()
+export const decryptWallet = (entry, password) => async (dispatch, getState) => {
+  const state = getState()
+  const selectedNetwork = getSelectedNetwork()(state)
 
-  if (!web3){
+  if (!selectedNetwork){
     return
   }
 
-  web3.eth.accounts.wallet.clear()
+  const host = `${selectedNetwork.protocol}://${selectedNetwork.host}`
 
-  let wallet = await web3.eth.accounts.wallet.decrypt(entry.encrypted, password)
+  const web3 = new Web3()
+  const accounts = new Accounts(host)
+  accounts.wallet.clear()
+
+  let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
 
   const model = new WalletModel({
     entry,
@@ -129,50 +132,26 @@ export const resetPasswordWallet = (wallet, mnemonic, password) => (dispatch) =>
 }
 
 export const createWallet = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
-  // console.log('resolve network', this.props.getProviderURL())
-  const web3 = new Web3()
-  // let provider = new web3.providers.HttpProvider('https://rinkeby.infura.io/PVe9zSjxTKIP3eAuAHFA')
-  // web3Provider.reinit(web3, provider)
-  // web3Provider.resolve()
-  // const web3 = await web3Provider.getWeb3instance()
+  const state = getState()
 
-  if (!web3) {
+  const selectedNetwork = getSelectedNetwork()(state)
+  let wallet, hex =  privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
+
+  if (!selectedNetwork){
     return
   }
 
-  console.log('createWallet', web3, name, password, privateKey, mnemonic, numberOfAccounts)
+  const host = `${selectedNetwork.protocol}://${selectedNetwork.host}`
 
-  // web3.eth.accounts.wallet.clear()
-  let wallet
+  const web3 = new Web3()
+  const accounts = new Accounts(host)
+  accounts.wallet.clear()
 
-  if (privateKey) {
-    console.log('private key')
-    const provider = privateKeyProvider.getPrivateKeyProvider(privateKey, networkService.getProviderSettings(), this.props.wallets)
-    web3Provider.reinit(web3, provider.ethereum.getProvider())
-    wallet =  web3.eth.accounts.wallet.create(numberOfAccounts)
+  console.log('createWallet', hex, selectedNetwork, accounts, name, password, privateKey, mnemonic, numberOfAccounts)
 
-    const account = web3.eth.accounts.privateKeyToAccount(`0x${privateKey}`)
-    wallet.add(account)
-  }
-
-  if (mnemonic) {
-
-    const provider = mnemonicProvider.getMnemonicProvider(mnemonic, networkService.getProviderSettings())
-    // console.log('mnemonic', provider.ethereum.getProvider())
-    networkService.selectAccount(provider.ethereum.getAddress())
-    //
-    web3Provider.reinit(web3, provider.ethereum.getProvider())
-
-    wallet = web3.eth.accounts.wallet.create(numberOfAccounts)
-
-    console.log('wallet re init')
-
-    const account = web3.eth.accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
-
-    wallet.add(account)
-    console.log('mnemonic wallet, account', wallet, account)
-
-  }
+  wallet = await accounts.wallet.create(numberOfAccounts)
+  const account = accounts.privateKeyToAccount(`0x${hex}`)
+  wallet.add(account)
 
   return new WalletEntryModel({
     key: uniqid(),

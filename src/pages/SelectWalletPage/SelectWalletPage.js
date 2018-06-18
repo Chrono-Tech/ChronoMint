@@ -9,26 +9,33 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
-import { navigateToSelectImportMethod } from '@chronobank/login/redux/network/actions'
+import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
+import {
+  WalletEntryModel,
+} from 'models/persistWallet'
 
 import arrow from 'assets/img/icons/prev-white.svg'
-import pageStyles from './SelectWalletPage.scss'
+import './SelectWalletPage.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
-    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod())
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
   }
 }
 
-@connect(null, mapDispatchToProps)
+function mapStateToProps (state) {
+  return {
+    walletsList: state.get('persistWallet').walletsList,
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class SelectWalletPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
-      PropTypes.shape({
-        img: PropTypes.string,
-        address: PropTypes.string,
-      })
+      PropTypes.instanceOf(WalletEntryModel)
     ),
     navigateToSelectImportMethod: PropTypes.func,
   }
@@ -55,10 +62,8 @@ export default class SelectWalletPage extends PureComponent {
           walletsList ? walletsList.map((w, i) => (
             <UserRow
               key={i}
-              title={w.address}
-              avatar={w.img}
+              title={w.name}
               actionIcon={arrow}
-              actionIconClass={pageStyles.actionIcon}
               onClick={() => onWalletSelect(w)}
             />
           )) : null
@@ -85,7 +90,7 @@ export default class SelectWalletPage extends PureComponent {
               Add an existing account
             </Button>
             or <br />
-            <Link to='/' href styleName='link'>Create New Account</Link>
+            <Link to='/create-account' href styleName='link'>Create New Account</Link>
           </div>
 
         </div>

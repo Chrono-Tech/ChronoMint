@@ -9,8 +9,15 @@ import {
   validateMnemonicForWallet,
   validateWalletName,
   decryptWallet,
+  walletAdd,
+  walletSelect,
 } from 'redux/persistWallet/actions'
-import { FORM_CONFIRM_MNEMONIC, FORM_MNEMONIC_LOGIN_PAGE, FORM_PRIVATE_KEY_LOGIN_PAGE } from 'pages'
+import {
+  FORM_CONFIRM_MNEMONIC,
+  FORM_MNEMONIC_LOGIN_PAGE,
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
+  FORM_LOGIN_PAGE,
+} from 'pages'
 import { stopSubmit } from 'redux-form'
 import { push } from 'react-router-redux'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
@@ -85,6 +92,17 @@ export const initMnemonicPage = () => (dispatch, getState) => {
   }
 }
 
+export const initLoginPage = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedWallet } = state.get('persistWallet')
+
+  if (!selectedWallet){
+    dispatch(navigateToSelectWallet())
+  }
+
+}
+
 export const generateNewMnemonic = () => (dispatch) => {
   const mnemonic = mnemonicProvider.generateMnemonic()
 
@@ -116,6 +134,8 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
     dispatch(walletAdd(wallet))
 
+    dispatch(walletSelect(wallet))
+
     dispatch(navigateToLoginPage())
 
     return
@@ -140,7 +160,7 @@ export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState)
   const { newAccountMnemonic } = state.get('network')
 
   if (confirmMnemonic !== newAccountMnemonic){
-    throw new Error('Please enter correct mnemonic phrase')
+    // throw new Error('Please enter correct mnemonic phrase')
   }
 
 }
@@ -159,7 +179,11 @@ export const onSubmitConfirmMnemonicSuccess = () => async (dispatch, getState) =
     numberOfAccounts: 0,
   }))
 
-  console.log('onsubmit wallet', wallet)
+  console.log('onsubmit wallet', wallet.encrypted)
+
+  dispatch(walletAdd(wallet))
+
+  dispatch(walletSelect(wallet))
 
   dispatch(navigateToLoginPage())
 }
@@ -178,6 +202,13 @@ export const navigateToMnemonicImportMethod = () => (dispatch) => {
   dispatch(push('/mnemonic-login'))
 }
 
+export const navigateToPrivateKeyImportMethod = () => (dispatch) => {
+  dispatch(push('/mnemonic-login'))
+}
+
+export const navigateToSelectWallet = () => (dispatch) => {
+  dispatch(push('/select-wallet'))
+}
 
 export const navigateToLoginPage = () => (dispatch) => {
   dispatch(push('/'))
@@ -211,24 +242,27 @@ export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
 
 }
 
-export const walletAdd = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_ADD, wallet })
+export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedWallet } = state.get('persistWallet')
+  await dispatch(decryptWallet(selectedWallet, password))
+
 }
 
-export const walletSelect = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_SELECT, wallet })
+export const onSubmitLoginFormSuccess = () => (dispatch) => {
+  dispatch(push('/wallets'))
 }
 
-export const walletLoad = (wallet) => (dispatch) => {
-  dispatch({ type: WALLETS_LOAD, wallet })
+export const onSubmitLoginFormFail = () => (dispatch) => {
+  dispatch(stopSubmit(FORM_LOGIN_PAGE, { key: 'Wrong password' }))
+
 }
 
-export const walletUpdateList = (walletList) => (dispatch) => {
-  dispatch({ type: WALLETS_UPDATE_LIST, walletList })
-}
+export const onWalletSelect = (wallet) => (dispatch) => {
+  dispatch(walletSelect(wallet))
 
-export const walletRemove = (name) => (dispatch) => {
-  dispatch({ type: WALLETS_REMOVE, name })
+  dispatch(navigateToLoginPage())
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

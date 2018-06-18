@@ -66,7 +66,7 @@ export default class ConfirmMnemonicPage extends Component {
       }) : []
 
     this.state = {
-      confirmPhrase: [],
+      confirmPhrase: wordsArray,
       currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
     }
   }

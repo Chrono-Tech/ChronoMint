@@ -12,6 +12,7 @@ import { Button } from 'components'
 
 import {
   navigateToMnemonicImportMethod,
+  navigateToPrivateKeyImportMethod,
   navigateToCreateAccount,
   initImportMethodsPage,
 } from '@chronobank/login/redux/network/actions'
@@ -30,6 +31,7 @@ import './ImportMethodsPage.scss'
 function mapDispatchToProps (dispatch) {
   return {
     navigateToMnemonicImportMethod: () => dispatch(navigateToMnemonicImportMethod()),
+    navigateToPrivateKeyImportMethod: () => dispatch(navigateToPrivateKeyImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     initImportMethodsPage: () => dispatch(initImportMethodsPage()),
   }

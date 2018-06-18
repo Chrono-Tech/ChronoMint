@@ -3,8 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 import * as a from './actions'
 import { removeWallet } from './utils'
+
+const persistConfig = {
+  key: 'wallet',
+  storage: storage,
+  blacklist: ['decryptedWallet'],
+}
 
 const initialState = {
   walletsList: [],
@@ -12,7 +20,7 @@ const initialState = {
   decryptedWallet: null,
 }
 
-export default (state = initialState, action) => {
+const persistWallet = (state = initialState, action) => {
   switch (action.type) {
     case a.WALLETS_ADD :
       return {
@@ -51,3 +59,5 @@ export default (state = initialState, action) => {
       return state
   }
 }
+
+export default persistReducer(persistConfig, persistWallet)

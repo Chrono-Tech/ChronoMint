@@ -8,12 +8,7 @@ import { REHYDRATE } from 'redux-persist'
 import TransactionsCollection from 'models/wallet/TransactionsCollection'
 import * as a from './actions'
 
-const initialState = {
-  ...new MainWalletModel(),
-  walletsList: [],
-  selectedWallet: null,
-  decryptedWallet: null,
-}
+const initialState = new MainWalletModel()
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -56,33 +51,6 @@ export default (state = initialState, action) => {
       ))
     case a.WALLET_SET_NAME:
       return state.names(state.names().set(`${action.blockchain}-${action.address}`, action.name))
-
-    case a.WALLETS_ADD :
-      return {
-        ...state,
-        walletsList: [
-          ...state.walletsList,
-          action.wallet,
-        ],
-      }
-
-    case a.WALLETS_SELECT :
-      return {
-        ...state,
-        selectedWallet: action.wallet,
-      }
-
-    case a.WALLETS_LOAD :
-      return {
-        ...state,
-        decryptedWallet: action.wallet,
-      }
-
-    case a.WALLETS_UPDATE_LIST :
-      return {
-        ...state,
-        walletsList: action.walletsList,
-      }
 
     default:
       return state

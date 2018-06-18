@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
@@ -10,33 +11,43 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { UserRow, Button } from 'components'
-import { onSubmitLoginForm } from '@chronobank/login/redux/network/actions'
+import { onSubmitLoginForm, initLoginPage } from '@chronobank/login/redux/network/actions'
 
 import styles from 'layouts/Splash/styles'
 import './LoginPage.scss'
-import { FORM_CREATE_ACCOUNT } from "../CreateAccountPage/CreateAccountPage";
 
-const FORM_LOGIN_PAGE = 'FormLoginPage'
+export const FORM_LOGIN_PAGE = 'FormLoginPage'
 
 function mapStateToProps (state, ownProps) {
 
   return {
+    selectedWallet: state.get('persistWallet').selectedWallet,
   }
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     onSubmit: (values) => {
-      dispatch(onSubmitLoginForm())
+      const password = values.get('password')
+
+      dispatch(onSubmitLoginForm(password))
     },
+    initLoginPage: () => dispatch(initLoginPage()),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_LOGIN_PAGE })
 class LoginPage extends PureComponent {
+  static propTypes = {
+    initLoginPage: PropTypes.func,
+  }
+
+  componentWillMount(){
+    this.props.initLoginPage()
+  }
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode } = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, selectedWallet } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -46,7 +57,7 @@ class LoginPage extends PureComponent {
 
           <div styleName='user-row'>
             <UserRow
-              title='1Q1pE5vPGEEMqRcVRMbtBK842Y6Pzo6nK9'
+              title={selectedWallet && selectedWallet.name}
               avatar={'/src/assets/img/profile-photo-1.jpg'}
               onClick={() => {}}
             />
