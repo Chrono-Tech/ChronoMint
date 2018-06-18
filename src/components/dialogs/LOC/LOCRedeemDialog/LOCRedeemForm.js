@@ -5,7 +5,7 @@
 
 import { Field, reduxForm } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { I18n, Translate } from 'react-redux-i18n'
@@ -46,10 +46,9 @@ class LOCRedeemForm extends PureComponent {
         />
 
         <div styleName='footer'>
-          <RaisedButton
+          <Button
             label={<Translate value='locs.redeemS' asset={loc.currency()} />}
-            primary
-            onTouchTap={handleSubmit}
+            onClick={handleSubmit}
             disabled={pristine}
           />
         </div>

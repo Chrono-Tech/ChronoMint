@@ -3,19 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import {
-  CircularProgress,
-  Divider,
-  Paper,
-  RaisedButton,
-  Table,
-  TableBody,
-  TableFooter,
-  TableHeader,
-  TableHeaderColumn,
-  TableRow,
-  TableRowColumn,
-} from 'material-ui'
+import { Button } from 'components'
+import { CircularProgress, Divider, Paper, Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -24,10 +13,12 @@ import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import TokensCollection from 'models/tokens/TokensCollection'
 import TokenModel from 'models/tokens/TokenModel'
+import { DUCK_SESSION } from 'redux/session/actions'
 import globalStyles from '../../../styles'
 import styles from './styles'
 
 const mapStateToProps = (state) => ({
+  account: state.get(DUCK_SESSION).account,
   selectedNetworkId: state.get('network').selectedNetworkId,
   selectedProviderId: state.get('network').selectedProviderId,
   tokens: state.get(DUCK_TOKENS),
@@ -50,7 +41,7 @@ class Transactions extends PureComponent {
         </TableRowColumn>
         <TableRowColumn style={styles.columns.time}>{tx.time()}</TableRowColumn>
         <TableRowColumn style={styles.columns.value}>
-          {`${tx.sign() + tx.value()} ${tx.symbol()}`}
+          {`${tx.sign(this.props.account) + tx.value()} ${tx.symbol()}`}
         </TableRowColumn>
       </TableRow>
     )
@@ -92,11 +83,9 @@ class Transactions extends PureComponent {
           {!isFetching && !endOfList ? <TableFooter adjustForCheckbox={false}>
             <TableRow>
               <TableRowColumn>
-                <RaisedButton
+                <Button
                   label={<Translate value='nav.loadMore' />}
-                  onTouchTap={() => this.props.onLoadMore()}
-                  fullWidth
-                  primary
+                  onClick={() => this.props.onLoadMore()}
                 />
               </TableRowColumn>
             </TableRow>
@@ -108,6 +97,7 @@ class Transactions extends PureComponent {
 }
 
 Transactions.propTypes = {
+  account: PropTypes.string,
   selectedNetworkId: PropTypes.number,
   selectedProviderId: PropTypes.number,
   isFetched: PropTypes.bool,

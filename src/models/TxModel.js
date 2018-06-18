@@ -23,15 +23,23 @@ class TxModel extends abstractModel({
   fee: new BigNumber(0), // TODO @ipavlenko: remove gasFee, use fee
   gasFee: new BigNumber(0),
   input: null,
-  credited: null,
   symbol: '',
   tokenAddress: null,
   type: '',
   token: null, // address
   args: null,
+  blockchain: null,
 }) {
   tokenAddress (value) {
     return this._getSet('tokenAddress', value)
+  }
+
+  blockchain (value) {
+    return this._getSet('blockchain', value)
+  }
+
+  blockNumber (value) {
+    return this._getSet('blockNumber', value)
   }
 
   to () {
@@ -54,8 +62,12 @@ class TxModel extends abstractModel({
     return this.get('from')
   }
 
+  txHash () {
+    return this.get('txHash')
+  }
+
   id () {
-    return `${this.type()} - ${this.txHash} - ${this.from()} - ${this.to()}`
+    return `${this.blockchain()}-${this.txHash()}-${this.from()}-${this.to()}`
   }
 
   time () {
@@ -70,8 +82,13 @@ class TxModel extends abstractModel({
     return this.get('value')
   }
 
-  isCredited () {
-    return this.get('credited')
+  isCredited (account) {
+    if (account === this.from()) {
+      return false
+    }
+    if (account === this.to()) {
+      return true
+    }
   }
 
   // noinspection JSUnusedGlobalSymbols

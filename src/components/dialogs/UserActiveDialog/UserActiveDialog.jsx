@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import userMonitorService from 'user/monitorService'
@@ -48,15 +48,8 @@ export default class UserActiveDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog>
+      <ModalDialog title={<Translate value='UserActiveDialog.title' />}>
         <div styleName='content'>
-          <div styleName='dialogHeader'>
-            <div styleName='dialogHeaderStuff'>
-              <div styleName='dialogHeaderTitle'>
-                <Translate value='UserActiveDialog.title' />
-              </div>
-            </div>
-          </div>
           <div styleName='dialogBody'>
             <Translate value='UserActiveDialog.text' />
             <Timer
@@ -65,12 +58,11 @@ export default class UserActiveDialog extends PureComponent {
             />
           </div>
           <div styleName='dialogFooter'>
-            <RaisedButton
+            <Button
               styleName='action'
               label={<Translate value='UserActiveDialog.here' />}
               type='submit'
-              primary
-              onTouchTap={this.handleClose}
+              onClick={this.handleClose}
             />
           </div>
         </div>

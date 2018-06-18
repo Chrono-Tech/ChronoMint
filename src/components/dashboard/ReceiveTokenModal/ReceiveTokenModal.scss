@@ -1,0 +1,156 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  overflow: hidden;
+  max-width: 450px;
+
+  @include xs-only {
+    min-width: 100vw;
+    min-height: 100vh;
+  }
+}
+
+.head {
+  background: $sideMenu-background;
+  .tokenSelector {
+    margin: 20px 30px 0;
+    max-width: 185px;
+    padding-bottom: 20px;
+  }
+}
+
+.mainTitle {
+  font-size: 30px;
+  color: $color-white;
+  line-height: 36px;
+  font-weight: 400;
+  padding: 20px 30px;
+}
+
+.icon {
+  position: relative;
+  border-bottom: 1px solid $border-color;
+  overflow: visible;
+  height: 0;
+  width: 100%;
+  .imgWrapper {
+    position: absolute;
+    right: 30px;
+    top: -32px;
+    border-radius: 32px;
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.iconImg {
+  width: 100%;
+  height: 100%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.body {
+  background: $color-white;
+  padding: 10px 30px 0;
+  .warningWrapper {
+    border-bottom: 1px solid $color-grey-1;
+    padding: 20px 30px 30px;
+    margin: 0 -30px;
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 25px;
+      color: $color-blue-4;
+    }
+    .text {
+      font-size: 14px;
+    }
+  }
+  .addressWrapper {
+    border-bottom: 1px solid $color-grey-1;
+    padding: 25px 30px 30px;
+    margin: 0 -30px;
+    display: flex;
+    .title {
+      line-height: 25px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .address {
+      font-size: 14px;
+      word-break: break-all;
+    }
+    .copyIcon {
+      flex-grow: 0;
+      width: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      :global {
+        .MicroIcon__root {
+          > a {
+            display: block;
+            margin: 0;
+            padding: 0;
+            i {
+              width: 100%;
+              height: 100%;
+              font-size: 24px;
+              line-height: 24px;
+              color: $color-grey-4;
+            }
+          }
+        }
+      }
+    }
+  }
+  .qrWrapper {
+    padding: 25px 30px 0;
+    margin: 0 -30px;
+    border-bottom: 1px solid $color-grey-1;
+    .title {
+      line-height: 25px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .qrCode {
+      img {
+        margin-left: -30px;
+        width: 280px;
+        height: 280px;
+      }
+    }
+  }
+  .marketWrapper {
+    padding: 25px 30px 30px;
+    margin: 0 -30px;
+    > .title {
+      line-height: 25px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .marketList {
+      display: flex;
+      justify-content: space-between;
+      .market {
+        text-decoration: none;
+        text-align: center;
+        img {
+          width: 50px;
+        }
+        .title {
+          color: $color-primary-3;
+        }
+      }
+    }
+  }
+}
+

@@ -49,7 +49,7 @@ export default class TokenRow extends PureComponent {
       <div
         key={token.id()}
         styleName={classnames('row', { selected: isSelected || isMandatory })}
-        onTouchTap={this.handleClick}
+        onClick={this.handleClick}
       >
         <div styleName='cell'>
           <div styleName='icon'>

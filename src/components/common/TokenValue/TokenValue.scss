@@ -5,7 +5,7 @@
 
 @import "~styles/partials/variables";
 
-$color-usd-price: #9E9E9E;
+$color-usd-price: $color-grey-5;
 
 .default {
   color: $color-primary-0;
@@ -35,4 +35,3 @@ $color-usd-price: #9E9E9E;
   margin-left: 10px;
   font-size: 0.8em;
 }
-

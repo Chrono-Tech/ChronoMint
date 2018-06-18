@@ -19,5 +19,5 @@ export default {
     approve: 'Approve tokens',
     revoke: 'Revoke tokens',
     needToCreateWallet: 'You need to create %{symbol} wallet',
-  }
+  },
 }

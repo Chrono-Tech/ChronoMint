@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FlatButton } from 'material-ui'
+import Button from 'components/common/ui/Button/Button'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -54,7 +54,6 @@ export default class EditManagersBase extends PureComponent {
   render () {
     return (
       <form styleName='root' onSubmit={this.props.handleSubmit}>
-        <div styleName='header'><Translate value={prefix('dialogTitle')} /></div>
         <div styleName='content'>
           <div styleName='row'>
             <div styleName='iconBox'>
@@ -69,7 +68,8 @@ export default class EditManagersBase extends PureComponent {
               />
             </div>
             <div styleName='action'>
-              <FlatButton
+              <Button
+                flat
                 type='submit'
                 label={<Translate value={prefix('addManagersButton')} />}
               />

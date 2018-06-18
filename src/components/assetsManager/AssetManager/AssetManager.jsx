@@ -3,12 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Paper, RaisedButton } from 'material-ui'
+import { Paper } from 'material-ui'
+import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { createPlatform, DUCK_ASSETS_MANAGER, getAssetsManagerData } from 'redux/assetsManager/actions'
+import { createPlatform, DUCK_ASSETS_MANAGER } from 'redux/assetsManager/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import AddTokenDialog from 'components/assetsManager/AddTokenDialog/AddTokenDialog'
@@ -41,7 +42,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     createPlatform: () => dispatch(createPlatform()),
-    getAssetsManagerData: () => dispatch(getAssetsManagerData()),
     handleAddPlatformDialog: () => dispatch(modalsOpen({
       component: AddPlatformDialog,
     })),
@@ -61,11 +61,6 @@ export default class AssetManager extends PureComponent {
     managersCount: PropTypes.number,
     tokensOnCrowdsaleCount: PropTypes.number,
     assetsManagerCountsLoading: PropTypes.bool,
-    getAssetsManagerData: PropTypes.func,
-  }
-
-  componentDidMount () {
-    this.props.getAssetsManagerData()
   }
 
   renderHead () {
@@ -130,15 +125,14 @@ export default class AssetManager extends PureComponent {
                 <div styleName='contentAlignRight'>
                   <div styleName='entries' />
                   <div styleName='actions'>
-                    <RaisedButton
+                    <Button
                       disabled={!platformsCount}
-                      onTouchTap={this.props.handleAddTokenDialog}
+                      onClick={this.props.handleAddTokenDialog}
                       label={<Translate value={prefix('addToken')} />}
                       styleName='action'
-                      primary
                     />
-                    <RaisedButton
-                      onTouchTap={this.props.handleAddPlatformDialog}
+                    <Button
+                      onClick={this.props.handleAddPlatformDialog}
                       label={<Translate value={prefix('addNewPlatform')} />}
                       styleName='action'
                     />

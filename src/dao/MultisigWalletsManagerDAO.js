@@ -42,7 +42,11 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   watchWalletCreate () {
     return this._watch(
       'WalletCreated',
-      (result) => this._createWalletModel(result.args.wallet, false, result.transactionHash),
+      async (result) => {
+        const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(result.args.wallet)
+        const is2FA = await walletDAO.use2FA()
+        return this._createWalletModel(result.args.wallet, is2FA, result.transactionHash)
+      },
       { by: this.getAccount() },
     )
   }
@@ -57,12 +61,12 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
   // --------- actions ----------
 
   async fetchWallets () {
-    const [ addresses, is2FA ] = await this._call('getWallets')
+    const [addresses, is2FA] = await this._call('getWallets')
     const validAddresses = addresses.filter((address) => !this.isEmptyAddress(address))
     this.emit(EE_MS_WALLETS_COUNT, validAddresses.length)
 
     validAddresses.forEach((address, i) => {
-      this._createWalletModel(address, is2FA[ i ])
+      this._createWalletModel(address, is2FA[i])
     })
   }
 
@@ -79,7 +83,7 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
 
   async _createWalletModel (address, is2FA, transactionHash) {
     const walletDAO: MultisigWalletDAO = await multisigWalletService.createWalletDAO(address)
-    const [ owners, requiredSignatures, pendingTxList, releaseTime ] = await Promise.all([
+    const [owners, requiredSignatures, pendingTxList, releaseTime] = await Promise.all([
       walletDAO.getOwners(),
       walletDAO.getRequired(),
       walletDAO.getPendings(),
@@ -115,5 +119,20 @@ export default class WalletsManagerDAO extends AbstractContractDAO {
       Math.floor(wallet.releaseTime() / 1000),
     ], wallet.toCreateWalletTx())
     return result.tx
+  }
+
+  async create2FAWallet (wallet: MultisigWalletModel, feeMultiplier) {
+    const result = await this._tx(
+      'create2FAWallet',
+      [Math.floor(wallet.releaseTime() / 1000)],
+      wallet.toCreateWalletTx(),
+      null,
+      { feeMultiplier },
+    )
+    return result.tx
+  }
+
+  getOraclePrice () {
+    return this._call('getOraclePrice')
   }
 }

@@ -12,5 +12,5 @@ export default {
     amountIn: 'Amount in ',
     sendRequest: 'send request',
     needToCreateWallet: 'You need to create %{symbol} wallet',
-  }
+  },
 }

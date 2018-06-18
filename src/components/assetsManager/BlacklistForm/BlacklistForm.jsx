@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FlatButton } from 'material-ui'
 import OwnerCollection from 'models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -14,6 +13,7 @@ import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
 import { DUCK_SESSION } from 'redux/session/actions'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
 import BlacklistModel from 'models/tokens/BlacklistModel'
+import { Button } from 'components'
 import './BlacklistForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
@@ -54,7 +54,7 @@ export default class BlacklistForm extends PureComponent {
         </div>
         <div styleName='address'>{address}</div>
         {address !== account && (
-          <div onTouchTap={this.handleRemoveFromBlacklist(address)} styleName='action' role='button'>
+          <div onClick={this.handleRemoveFromBlacklist(address)} styleName='action' role='button'>
             <i className='material-icons'>delete</i>
           </div>
         )}
@@ -80,7 +80,8 @@ export default class BlacklistForm extends PureComponent {
               />
             </div>
             <div styleName='action'>
-              <FlatButton
+              <Button
+                flat
                 type='submit'
                 label={<Translate value={`${prefix}.addUserButton`} />}
               />

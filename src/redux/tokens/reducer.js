@@ -23,6 +23,8 @@ export default (state = initialState, action) => {
     // TODO @dkchv: useless?
     case a.TOKENS_UPDATE:
       return state.update(action.token)
+    case a.TOKENS_UPDATE_LATEST_BLOCK:
+      return state.latestBlocks({ ...state.latestBlocks(), [action.blockchain]: action.block })
     default:
       return state
   }

@@ -26,6 +26,7 @@ import { ethereumProvider } from './EthereumProvider'
 import metaMaskResolver from './metaMaskResolver'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE } from './MonitorService'
 import { nemProvider } from './NemProvider'
+import { wavesProvider } from './WavesProvider'
 import networkProvider from './NetworkProvider'
 import privateKeyProvider from './privateKeyProvider'
 import {
@@ -61,9 +62,9 @@ class NetworkService extends EventEmitter {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
     const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
-    if (!accounts.includes(account)) {
-      throw new Error('Account not registered')
-    }
+    //if (!accounts.includes(account)) {
+    //  throw new Error('Account not registered')
+    //}
 
     web3Provider.resolve()
 
@@ -147,7 +148,7 @@ class NetworkService extends EventEmitter {
     const encodedAddress: string = await provider.requestAddress()
     const { network, address }: UPortAddress = uportProvider.decodeMNIDaddress(encodedAddress)
     dispatch(this.selectNetwork(web3Converter.hexToDecimal(network)))
-    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [ address ] })
+    dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [address] })
     this.selectAccount(address)
   }
 
@@ -156,13 +157,15 @@ class NetworkService extends EventEmitter {
     dispatch(loading())
     dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
     try {
-      const accounts = await web3Provider.getAccounts()
+      let accounts = this._accounts
+      if (accounts == null)
+        accounts = await web3Provider.getAccounts()
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
       dispatch({ type: NETWORK_SET_ACCOUNTS, accounts })
       if (accounts.length === 1) {
-        this.selectAccount(accounts[ 0 ])
+        this.selectAccount(accounts[0])
       }
       dispatch(loading(false))
       return accounts
@@ -171,35 +174,37 @@ class NetworkService extends EventEmitter {
     }
   }
 
-  async restoreLocalSession (account) {
+  async restoreLocalSession (account, wallets) {
     this.selectProvider(LOCAL_PROVIDER_ID)
     this.selectNetwork(LOCAL_ID)
     const accounts = await this.loadAccounts()
     this.selectAccount(account)
 
     const index = Math.max(accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[ index ], this.getProviderSettings())
+    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], this.getProviderSettings(), wallets)
     await this.setup(provider)
   }
 
-  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem }) {
+  async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
     const web3 = new Web3()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
-
-    const accounts = await this.loadAccounts()
-
-    this.selectAccount(accounts[ 0 ])
-    ethereumProvider.setEngine(ethereum, nem)
-    bccProvider.setEngine(bcc)
-    btcProvider.setEngine(btc)
-    btgProvider.setEngine(btg)
-    ltcProvider.setEngine(ltc)
-    nemProvider.setEngine(nem)
+    await this.loadAccounts()
+    ethereumProvider.setEngine(ethereum, nem, waves)
+    bcc && bccProvider.setEngine(bcc)
+    btc && btcProvider.setEngine(btc)
+    btg && btgProvider.setEngine(btg)
+    ltc && ltcProvider.setEngine(ltc)
+    nem && nemProvider.setEngine(nem)
+    waves && wavesProvider.setEngine(waves)
   }
 
   selectAccount = (selectedAccount) => {
     this._dispatch({ type: NETWORK_SELECT_ACCOUNT, selectedAccount })
+  }
+
+  setAccounts = (accounts) => {
+      this._accounts = accounts;
   }
 
   getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
@@ -236,6 +241,7 @@ class NetworkService extends EventEmitter {
         try {
           if (isMetaMask) {
             this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
+	    this.isMetamask = true
           }
         } catch (e) {
           // eslint-disable-next-line
@@ -243,6 +249,10 @@ class NetworkService extends EventEmitter {
         }
       })
       .start()
+  }
+
+  isMetaMask = () => {
+    return this.isMetamask
   }
 
   async checkTestRPC (providerUrl) {
@@ -297,7 +307,7 @@ class NetworkService extends EventEmitter {
       if (this.checkerIndex <= this.checkers.length) {
         web3Provider.beforeReset()
         web3Provider.afterReset()
-        this.checkers[ this.checkerIndex ]()
+        this.checkers[this.checkerIndex]()
         this.checkerIndex++
       } else {
         resetCheckers()

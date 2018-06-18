@@ -4,9 +4,11 @@
  */
 
 import type BigNumber from 'bignumber.js'
+import bitcoin from 'bitcoinjs-lib'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
+import { COIN_TYPE_BTC_MAINNET, COIN_TYPE_BTC_TESTNET, COIN_TYPE_LTC_MAINNET, COIN_TYPE_LTC_TESTNET } from './mnemonicProvider'
 
 export const BLOCKCHAIN_BITCOIN = 'Bitcoin'
 export const BLOCKCHAIN_BITCOIN_CASH = 'Bitcoin Cash'
@@ -18,19 +20,31 @@ export class BitcoinProvider extends AbstractProvider {
     super(...arguments)
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
+    this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
     this._id = id
+  }
+
+  subscribeNewWallet (address) {
+    const node = this._selectNode(this._engine)
+    node.subscribeNewWallet(address)
+  }
+
+  addDerivedWallet (wallet) {
+    this._engine.addWallet(wallet)
   }
 
   subscribe (engine) {
     const node = super.subscribe(engine)
     node.addListener('tx', this._handleTransaction)
     node.addListener('balance', this._handleBalance)
+    node.addListener('lastBlock', this._handleLastBlock)
   }
 
   unsubscribe (engine) {
     const node = super.unsubscribe(engine)
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
+    node.removeListener('lastBlock', this._handleLastBlock)
   }
 
   async getTransactionInfo (txid) {
@@ -48,29 +62,27 @@ export class BitcoinProvider extends AbstractProvider {
     return node.getFeeRate()
   }
 
-  async getAccountBalances () {
-    try {
-      const node = this._selectNode(this._engine)
-      const { balance0, balance6 } = await node.getAddressInfo(this._engine.getAddress())
-      return { balance0, balance6 }
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn('BitcoinProvider getAccountBalances error', error)
-      throw error
-    }
+  async getAccountBalances (address) {
+    const node = this._selectNode(this._engine)
+    const { balance0, balance6 } = await node.getAddressInfo(address || this._engine.getAddress())
+    return { balance0, balance6 }
   }
 
   async estimateFee (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(this._engine.getAddress())
+    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
     const { fee } = this._engine.describeTransaction(to, amount, feeRate, utxos)
     return fee
   }
 
   async transfer (from: string, to, amount: BigNumber, feeRate: Number) {
     const node = this._selectNode(this._engine)
-    const utxos = await node.getAddressUTXOS(this._engine.getAddress())
-    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, feeRate, utxos)
+    const utxos = await node.getAddressUTXOS(from || this._engine.getAddress())
+    const options = {
+      from,
+      feeRate,
+    }
+    const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
     return node.send(from, tx.toHex())
   }
 
@@ -84,14 +96,37 @@ export class BitcoinProvider extends AbstractProvider {
 
   async onBalance (balance: BitcoinBalance) {
     this.emit('balance', {
-      account: this.getAddress(),
+      account: balance.address || this.getAddress(),
       time: new Date().getTime(),
       balance,
     })
   }
 
+  async onLastBlock (lastBlock) {
+    this.emit('lastBlock', { ...lastBlock })
+  }
+
   getPrivateKey () {
     return this._engine ? this._engine.getPrivateKey() : null
+  }
+
+  createNewChildAddress (deriveNumber) {
+    let coinType = null
+
+    switch (this._id) {
+      case BLOCKCHAIN_BITCOIN:
+        coinType = this._engine._network === bitcoin.networks.testnet
+          ? COIN_TYPE_BTC_TESTNET
+          : COIN_TYPE_BTC_MAINNET
+        break
+      case BLOCKCHAIN_LITECOIN:
+        coinType = this._engine._network === bitcoin.networks.litecoin_testnet
+          ? COIN_TYPE_LTC_TESTNET
+          : COIN_TYPE_LTC_MAINNET
+        break
+    }
+
+    return this._engine && coinType ? this._engine.createNewChildAddress(deriveNumber, coinType) : null
   }
 }
 

@@ -3,20 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { Button } from 'components'
 import Immutable from 'immutable'
-import { CircularProgress, RaisedButton, FontIcon, FlatButton } from 'material-ui'
+import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { getBlockExplorerUrl } from '@chronobank/login/network/settings'
 import { connect } from 'react-redux'
-import {
-  listOperations,
-  confirmOperation,
-  revokeOperation,
-  setupOperationsSettings,
-  loadMoreCompletedOperations,
-} from 'redux/operations/actions'
+import { confirmOperation, listOperations, loadMoreCompletedOperations, revokeOperation, setupOperationsSettings } from 'redux/operations/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import OperationsSettingsDialog from 'components/dialogs/OperationsSettingsDialog'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
@@ -110,14 +105,14 @@ export default class PendingOperations extends PureComponent {
           <div styleName='tableCellActions'>
             {href && (
               <div styleName='tableCellActionsItem'>
-                <RaisedButton label='View' href={href} target='_blank' />
+                <Button label='View' href={href} target='_blank' />
               </div>
             )}
             {!op.isDone() && (
               <div styleName='tableCellActionsItem'>
                 {op.isConfirmed()
-                  ? (<RaisedButton label='Revoke' primary onTouchTap={() => this.props.handleRevoke(op)} />)
-                  : (<RaisedButton label='Confirm' primary onTouchTap={() => this.props.handleConfirm(op)} />)
+                  ? (<Button label='Revoke' onClick={() => this.props.handleRevoke(op)} />)
+                  : (<Button label='Confirm' onClick={() => this.props.handleConfirm(op)} />)
                 }
               </div>
             )}
@@ -138,11 +133,11 @@ export default class PendingOperations extends PureComponent {
           {this.props.showSignatures
             ? (
               <div styleName='headActions'>
-                <FlatButton
-                  icon={<FontIcon className='material-icons'>settings</FontIcon>}
+                <Button
+                  flat
                   label={<Translate value={prefix('settings')} />}
                   primary
-                  onTouchTap={this.props.handleSettings}
+                  onClick={this.props.handleSettings}
                 />
               </div>
             )
@@ -176,11 +171,9 @@ export default class PendingOperations extends PureComponent {
         {!this.props.completedFetching && !this.props.completedEndOfList
           ? (
             <div styleName='panelMore'>
-              <RaisedButton
+              <Button
                 label={<Translate value='nav.loadMore' />}
-                onTouchTap={this.props.handleLoadMore}
-                fullWidth
-                primary
+                onClick={this.props.handleLoadMore}
               />
             </div>
           )

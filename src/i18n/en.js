@@ -30,6 +30,7 @@ export default {
   title: 'Eng',
   true: 'yes',
   false: 'no',
+  tokenNotAvailable: 'Token Not Available',
   ...Login,
   ...components,
   layouts,
@@ -43,13 +44,15 @@ export default {
   },
   nav: {
     project: 'ChronoMint',
-    dashboard: 'Dashboard',
+    deposits: 'Deposits',
+    deposit: 'Deposit',
     cbeDashboard: 'CBE Dashboard',
     locs: 'LOC Admin',
     lhOperations: 'LH Operations',
     operations: 'Operations',
     settings: 'Settings',
     wallet: 'Wallet',
+    addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
     rewards: 'Bonuses',
@@ -64,6 +67,7 @@ export default {
     newRewards: 'New Bonuses',
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
+    twoFa: 'Enable 2FA',
   },
   common: {
     name: 'Name',
@@ -72,7 +76,14 @@ export default {
     of: 'of %{count}',
   },
   wallet: {
+    modeAdvanced: 'Advanced',
+    modeSimple: 'Simple',
+    templateName: 'Template name',
+    satPerByte: 'SAT / byte',
+    gweiPerGas: 'GWEI 0 / gas',
+    gasLimit: 'Gas limit',
     sendTokens: 'Send tokens',
+    walletName: 'Wallet name',
     recipientAddress: 'Recipient address',
     selectTokenIcon: 'Please select icon file',
     multisignature: 'Multisignature',
@@ -91,6 +102,7 @@ export default {
     value: 'Value',
     revoke: 'Revoke',
     sign: 'Sign',
+    enterCode: 'Enter Code',
   },
   exchange: {
     tokens: 'Exchange tokens',
@@ -259,28 +271,28 @@ export default {
       },
     },
     UserManager: {
-      [ user.TX_ADD_CBE ]: {
+      [user.TX_ADD_CBE]: {
         title: 'Add CBE',
         name: 'Name',
         address: 'Address',
       },
-      [ user.TX_REVOKE_CBE ]: {
+      [user.TX_REVOKE_CBE]: {
         title: 'Revoke CBE',
         name: 'Name',
         address: 'Address',
       },
-      [ user.TX_SET_REQUIRED_SIGNS ]: {
+      [user.TX_SET_REQUIRED_SIGNS]: {
         title: 'Set Required Signatures',
         _required: 'Quantity',
       },
-      [ user.TX_SET_OWN_HASH ]: {
+      [user.TX_SET_OWN_HASH]: {
         title: 'Update profile',
         name: 'Name',
         email: 'E-mail',
         company: 'Company',
         tokens: 'Tokens',
       },
-      [ user.TX_SET_MEMBER_HASH ]: {
+      [user.TX_SET_MEMBER_HASH]: {
         title: 'Update profile',
         address: 'Address',
         name: 'Name',
@@ -293,7 +305,7 @@ export default {
       },
     },
     Ethereum: {
-      [ eth.TX_TRANSFER ]: {
+      [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
       },
     },
@@ -304,74 +316,77 @@ export default {
     /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve TIME',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer TIME',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     ChronoBankAssetWithFeeProxy: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve LHT',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer LHT',
         recipient: 'Recipient',
         amount: 'Amount',
       },
     },
     PendingManager: {
-      [ operations.TX_CONFIRM ]: {
+      [operations.TX_CONFIRM]: {
         title: 'Confirm Operation',
       },
-      [ operations.TX_REVOKE ]: {
+      [operations.TX_REVOKE]: {
         title: 'Revoke Operation',
       },
     },
     TimeHolder: {
-      [ time.TX_DEPOSIT ]: {
+      [time.TX_DEPOSIT]: {
         title: 'Deposit TIME',
         amount: 'Amount',
       },
-      [ time.TX_WITHDRAW_SHARES ]: {
+      [time.TX_WITHDRAW_SHARES]: {
         title: 'Withdraw TIME',
         amount: 'Amount',
       },
     },
     Rewards: {
-      [ rewards.TX_WITHDRAW_REWARD ]: {
+      [rewards.TX_WITHDRAW_REWARD]: {
         title: 'Withdraw Bonus',
         amount: 'Amount',
       },
-      [ rewards.TX_CLOSE_PERIOD ]: {
+      [rewards.TX_CLOSE_PERIOD]: {
         title: 'Close Bonuses Period',
       },
     },
     AssetDonator: {
-      [ assetDonator.TX_REQUIRE_TIME ]: {
+      [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
       },
     },
     PlatformsManager: {
-      [ platformsManager.TX_CREATE_PLATFORM ]: {
+      [platformsManager.TX_CREATE_PLATFORM]: {
         title: 'Confirm create platform',
       },
-      [ platformsManager.TX_ATTACH_PLATFORM ]: {
+      [platformsManager.TX_ATTACH_PLATFORM]: {
         title: 'Confirm attach platform',
       },
-      [ platformsManager.TX_DETACH_PLATFORM ]: {
+      [platformsManager.TX_DETACH_PLATFORM]: {
         title: 'Confirm detach platform',
       },
     },
     LOCManager: {
-      [ loc.standardFuncs.ADD_LOC ]: {
+      [loc.standardFuncs.SET_STATUS]: {
+        title: 'Set Status',
+      },
+      [loc.standardFuncs.ADD_LOC]: {
         title: 'Add LOC',
         name: 'Name',
         website: 'Website',
@@ -380,7 +395,7 @@ export default {
         expDate: 'Expiration Date',
         currency: 'Currency',
       },
-      [ loc.standardFuncs.SET_LOC ]: {
+      [loc.standardFuncs.SET_LOC]: {
         title: 'Update LOC',
         name: 'Name',
         website: 'Website',
@@ -388,47 +403,47 @@ export default {
         publishedHash: 'Contract',
         expDate: 'Expiration Date',
       },
-      [ loc.multisigFuncs.REMOVE_LOC ]: {
+      [loc.multisigFuncs.REMOVE_LOC]: {
         title: 'Remove LOC',
         name: 'Name',
       },
-      [ loc.multisigFuncs.REISSUE_ASSET ]: {
+      [loc.multisigFuncs.REISSUE_ASSET]: {
         title: 'Issue asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [ loc.multisigFuncs.REVOKE_ASSET ]: {
+      [loc.multisigFuncs.REVOKE_ASSET]: {
         title: 'Revoke Asset',
         amount: 'Amount',
         name: 'Name',
       },
-      [ loc.multisigFuncs.UPDATE_LOC_STATUS ]: {
+      [loc.multisigFuncs.UPDATE_LOC_STATUS]: {
         title: 'Update LOC status',
         name: 'Name',
         status: 'Status',
       },
-      [ loc.multisigFuncs.SEND_ASSET ]: {
+      [loc.multisigFuncs.SEND_ASSET]: {
         title: 'Send Asset',
       },
     },
     ERC20Manager: {
-      [ erc20Manager.TX_MODIFY_TOKEN ]: {
+      [erc20Manager.TX_MODIFY_TOKEN]: {
         title: 'Modify Token',
       },
-      [ erc20Manager.TX_REMOVE_TOKEN ]: {
+      [erc20Manager.TX_REMOVE_TOKEN]: {
         title: 'Remove Token',
       },
-      [ erc20Manager.TX_ADD_TOKEN ]: {
+      [erc20Manager.TX_ADD_TOKEN]: {
         title: 'Add Token',
       },
     },
     ERC20Interface: {
-      [ erc20.TX_APPROVE ]: {
+      [erc20.TX_APPROVE]: {
         title: 'Approve to transfer your tokens',
         account: 'Account',
         amount: 'Amount',
       },
-      [ erc20.TX_TRANSFER ]: {
+      [erc20.TX_TRANSFER]: {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
@@ -440,16 +455,16 @@ export default {
       },
     },
     Exchange: {
-      [ exchange.TX_BUY ]: {
+      [exchange.TX_BUY]: {
         title: 'Confirm buy tokens for ETH',
       },
-      [ exchange.TX_SELL ]: {
+      [exchange.TX_SELL]: {
         title: 'Confirm sell tokens for ETH',
       },
-      [ exchange.TX_WITHDRAW_TOKENS ]: {
+      [exchange.TX_WITHDRAW_TOKENS]: {
         title: 'Confirm withdraw tokens',
       },
-      [ exchange.TX_WITHDRAW_ETH ]: {
+      [exchange.TX_WITHDRAW_ETH]: {
         title: 'Confirm withdraw ETH',
       },
     },
@@ -478,44 +493,52 @@ export default {
       },
     },
     PollInterface: {
-      [ pollInterface.TX_ACTIVATE_POLL ]: {
+      [pollInterface.TX_ACTIVATE_POLL]: {
         title: 'Activate poll',
       },
-      [ pollInterface.TX_REMOVE_POLL ]: {
+      [pollInterface.TX_REMOVE_POLL]: {
         title: 'Remove Poll',
       },
-      [ pollInterface.TX_END_POLL ]: {
+      [pollInterface.TX_END_POLL]: {
         title: 'End Poll',
       },
-      [ pollInterface.TX_VOTE ]: {
+      [pollInterface.TX_VOTE]: {
         title: 'Vote',
       },
     },
     VotingManager: {
-      [ votingManager.TX_CREATE_POLL ]: {
+      [votingManager.TX_CREATE_POLL]: {
         title: 'Create Poll',
       },
     },
     ChronoBankAsset: {
-      [ chronoBankAsset.TX_PAUSE ]: {
+      [chronoBankAsset.TX_PAUSE]: {
         title: 'Block asset',
       },
-      [ chronoBankAsset.TX_UNPAUSE ]: {
+      [chronoBankAsset.TX_UNPAUSE]: {
         title: 'Unblock asset',
       },
-      [ chronoBankAsset.TX_RESTRICT ]: {
+      [chronoBankAsset.TX_RESTRICT]: {
         title: 'Add user to blacklist',
       },
-      [ chronoBankAsset.TX_UNRESTRICT ]: {
+      [chronoBankAsset.TX_UNRESTRICT]: {
         title: 'Remove user from blacklist',
+      },
+    },
+    WalletsManager: {
+      'createWallet': {
+        title: 'Create multisignature wallet',
+      },
+      'create2FAWallet': {
+        title: 'Create 2FA wallet',
       },
     },
   },
   errors: {
     required: 'Required',
-    invalidPositiveInt: 'Should be positive integer',
-    invalidPositiveNumber: 'Should be positive number',
-    invalidPositiveNumberOrZero: 'Should be positive number or zero',
+    invalidPositiveInt: 'Should be a positive integer',
+    invalidPositiveNumber: 'Should be a positive number',
+    invalidPositiveNumberOrZero: 'Should be a positive number or zero',
     invalidURL: 'Should be valid URL',
     invalidEmail: 'Should be valid email address',
     invalidLength: 'Should have length more than or equal 3 symbols',
@@ -529,6 +552,7 @@ export default {
     moreThanOrEqual: 'Should be more or equal than %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
+    invalidConfirm2FACode: 'Should be a 6-digit code',
 
     // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',
@@ -714,61 +738,90 @@ export default {
   },
   components: {
     ...components.components,
-    dashboard: {
-      TransactionsTable: {
-        latestTransactions: 'Latest transactions',
-        time: 'Time',
-        block: 'Block',
-        type: 'Type',
-        hash: 'Hash',
-        from: 'From',
-        to: 'To',
-        value: 'Value',
-      },
-      DepositTokens: {
-        depositTime: 'Deposit Time',
-        amount: 'Amount',
-        yourSymbolBalance: 'Your %{symbol} balance',
-        yourSymbolDeposit: 'Your %{symbol} deposit',
-        symbolHolderAllowance: '%{symbol} holder allowance',
-        requireTime: 'Require TIME',
-        withdraw: 'Withdraw',
-      },
-      RewardsPeriod: {
-        rewardsPeriodIndex: 'Bonus period #%{index}',
-        ongoing: 'Ongoing',
-        closed: 'Closed',
-        startDate: 'Start date',
-        inDaysDays: 'in %{days} days',
-        endDate: 'End date',
-        totalTimeTokensDeposited: 'Total TIME tokens deposited',
-        percentOfTotalCount: '%{percent}% of total count',
-        uniqueShareholders: 'Unique shareholders',
-        yourTimeTokensEligible: 'Your TIME tokens eligible for bonuses in the period',
-        percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
-        dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
-        yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
-      },
-      Poll: {
-        new: 'New',
-        ongoing: 'Ongoing',
-        daysLeft: 'days left',
-        daysLeft_1: 'day left',
-        finished: 'Finished',
-        timeHoldersAlreadyVoted: 'percent of TIME received',
-        no: 'No',
-        requiredVotes: 'Required TIME',
-        receivedVotes: 'Received TIME',
-        variants: 'Variants',
-        documents: 'Documents',
-        remove: 'Remove',
-        details: 'Details',
-        endPoll: 'End Poll',
-        activate: 'Activate',
-        vote: 'Vote',
-        published: 'Published',
-        endDate: 'End Date',
-      },
+    TransactionsTable: {
+      latestTransactions: 'Latest transactions',
+      time: 'Time',
+      block: 'Block',
+      type: 'Type',
+      hash: 'Hash',
+      from: 'From',
+      to: 'To',
+      value: 'Value',
+    },
+    DepositTokens: {
+      depositTime: 'Deposit Time',
+      withdraw: 'Withdraw',
+      depositAccount: 'Deposit account',
+      amount: 'Amount, %{symbol}',
+      slow: 'Slow transaction',
+      fast: 'Fast',
+      yourSymbolBalance: 'Your %{symbol} balance',
+      yourDeposit: 'Your deposit',
+      holderAllowance: 'holder allowance',
+      transactionFee: 'Transaction fee',
+      requestTime: 'Request TIME',
+      multiplier: ', it is %{multiplier}x of average fee.',
+      enterAmount: 'Enter amount greater than 0',
+      note: 'Please note.',
+      noteText: `In order deposit you'll need to pay two around the same fees.  We're informing you about applicable fees on each step. You also will be able to revoke operation, but not the processed fee.`,
+      noteTwo: `Your deposit request has been processed. Please set a fee to place funds in your deposit or revoke the operation.`,
+      noteEth: `Your Ethereum account has insufficient funds. Please add Ethereum on your account in order to withdraw.`,
+      noteBalance: `Your TIME account has insufficient funds. Please add TIME on your account in order to withdraw.`,
+      buyTime: 'Buy Time',
+      receiveEth: 'Receive Eth',
+      gasPrice: 'Gas price',
+      firstStep: '1. Deposit Amount',
+      secondStep: '2. Finish Deposit',
+      proceed: 'PROCEED',
+      revoke: 'REVOKE',
+      finish: 'FINISH',
+      depositAmount: 'Amount on deposit',
+      balanceAmount: 'Your balance',
+      changeAmount: 'Change',
+    },
+    ReceiveTokenModal: {
+      receive: 'Receive',
+      important: 'Important!',
+      warningText1: `Make sure you're receiving `,
+      warningText2: ` to the address provided below. Otherwise it can make the funds loss.`,
+      receivingTitle: 'Your receiving %{symbol} address',
+      qrTitle: 'Your QR code for the %{symbol} address',
+      buyTitle: 'Also, you can buy %{symbol} in exchanges',
+    },
+    RewardsPeriod: {
+      rewardsPeriodIndex: 'Bonus period #%{index}',
+      ongoing: 'Ongoing',
+      closed: 'Closed',
+      startDate: 'Start date',
+      inDaysDays: 'in %{days} days',
+      endDate: 'End date',
+      totalTimeTokensDeposited: 'Total TIME tokens deposited',
+      percentOfTotalCount: '%{percent}% of total count',
+      uniqueShareholders: 'Unique shareholders',
+      yourTimeTokensEligible: 'Your TIME tokens eligible for bonuses in the period',
+      percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
+      dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
+      yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
+    },
+    Poll: {
+      new: 'New',
+      ongoing: 'Ongoing',
+      daysLeft: 'days left',
+      daysLeft_1: 'day left',
+      finished: 'Finished',
+      timeHoldersAlreadyVoted: 'percent of TIME received',
+      no: 'No',
+      requiredVotes: 'Required TIME',
+      receivedVotes: 'Received TIME',
+      variants: 'Variants',
+      documents: 'Documents',
+      remove: 'Remove',
+      details: 'Details',
+      endPoll: 'End Poll',
+      activate: 'Activate',
+      vote: 'Vote',
+      published: 'Published',
+      endDate: 'End Date',
     },
     locs: {
       PageTitle: {
@@ -880,5 +933,9 @@ export default {
         vote: 'Vote',
       },
     },
+  },
+  topButtons: {
+    addDeposit: 'Add deposit',
+    addWallet: 'Add wallet',
   },
 }

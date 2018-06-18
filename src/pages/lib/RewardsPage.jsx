@@ -13,7 +13,6 @@ export default class RewardsPage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear
@@ -23,7 +22,6 @@ export default class RewardsPage extends Component {
         >
           <Partials.RewardsContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

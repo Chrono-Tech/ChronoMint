@@ -4,6 +4,7 @@
  */
 
 import axios from 'axios'
+import Web3 from 'web3'
 import { LOCAL_ID, NETWORK_MAIN_ID } from './settings'
 import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 
@@ -11,6 +12,10 @@ import EthereumMiddlewareNode from './EthereumMiddlewareNode'
 const ETHEREUM_TESTNET_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io',
+    timeout: 4000,
+  }),
+  twoFA: axios.create({
+    baseURL: 'https://middleware-ethereum-testnet-rest.chronobank.io/2fa',
     timeout: 4000,
   }),
   socket: {
@@ -30,6 +35,10 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
     baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
+  twoFA: axios.create({
+    baseURL: 'https://middleware-ethereum-mainnet-rest.chronobank.io/2fa',
+    timeout: 4000,
+  }),
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
@@ -45,6 +54,10 @@ const ETHEREUM_MAINNET_NODE = new EthereumMiddlewareNode({
 const ETHEREUM_TESTRPC_NODE = new EthereumMiddlewareNode({
   api: axios.create({
     baseURL: 'http://localhost:8083',
+    timeout: 4000,
+  }),
+  twoFA: axios.create({
+    baseURL: 'http://localhost:8081',
     timeout: 4000,
   }),
   socket: {

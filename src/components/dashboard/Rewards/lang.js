@@ -7,6 +7,6 @@ export default {
   en: {
     title: 'Bonuses',
     allPeriods: 'All Periods',
-  }
+  },
 }
 

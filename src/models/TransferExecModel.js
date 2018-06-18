@@ -22,6 +22,7 @@ export default class TransferExecModel extends abstractModel({
   hash: null,
   // TODO @ipavlenko: This is "extra" field, token-specific
   feeMultiplier: 1,
+  options: {},
 }) {
   constructor (data = {}) {
     super({
@@ -32,6 +33,15 @@ export default class TransferExecModel extends abstractModel({
 
   contract (): String {
     return this.get('contract')
+  }
+
+  options (options) {
+    return this._getSet('options', options)
+  }
+
+  isAdvancedFeeMode () {
+    const options = this.get('options')
+    return typeof options.advancedParams === 'object'
   }
 
   from (value: String): String {

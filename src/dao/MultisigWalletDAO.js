@@ -13,6 +13,7 @@ import MultisigTransactionModel from 'models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from 'models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from 'models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from 'models/wallet/MultisigWalletPendingTxModel'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import OwnerModel from 'models/wallet/OwnerModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
 
@@ -109,7 +110,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   watchError (wallet, callback) {
     return this._watch('Error', (result) => {
-      console.log('--MultisigWalletDAO#', result)
       callback(this._c.hexToDecimal(result.args.errorCode))
     }, { self: wallet.address() })
   }
@@ -124,14 +124,21 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 
   async getPendings () {
     let pendingTxCollection = new MultisigWalletPendingTxCollection()
-    const [ values, operations, isConfirmed ] = await this._call('getPendings')
+    const [values, operations, isConfirmed] = await this._call('getPendings')
+
+    let promises = []
+    operations.map((operation) => {
+      promises.push(ethereumProvider.checkConfirm2FAtx(operation))
+    })
+    const verifiedOperations = await Promise.all(promises)
 
     operations.filter(this.isValidId).forEach((id, i) => {
       let pendingTxModel
       pendingTxModel = new MultisigWalletPendingTxModel({
         id,
-        value: values [ i ],
-        isConfirmed: isConfirmed[ i ],
+        value: values [i],
+        isConfirmed: isConfirmed[i],
+        isPending: verifiedOperations[i] ? verifiedOperations[i].activated : false,
       })
       pendingTxCollection = pendingTxCollection.add(pendingTxModel)
     })
@@ -142,7 +149,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     const counter = await this._callNum('m_numOwners')
     let promises = []
     for (let i = 0; i < counter; i++) {
-      promises.push(this._call('getOwner', [ i ]))
+      promises.push(this._call('getOwner', [i]))
     }
     return Promise.all(promises)
   }
@@ -152,7 +159,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async getPendingData (id: string): Promise<TxExecModel> {
-    const data = await this._call('getData', [ id ])
+    const data = await this._call('getData', [id])
     return this.decodeData(data)
   }
 
@@ -192,7 +199,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
     return result.tx
   }
 
-  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to/*, feeMultiplier: Number = 1*/) {
+  async transfer (wallet: MultisigWalletModel, token: TokenModel, amount, to, feeMultiplier: Number = 1, value) {
     // const tokenDAO = tokenService.getDAO(token.id())
     // const value = tokenDAO.addDecimals(amount)
     const result = await this._tx('transfer', [
@@ -204,7 +211,7 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
       to,
       symbol: token.symbol(),
       amount,
-    })
+    }, value)
     return result.tx
   }
 
@@ -238,7 +245,6 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
   }
 
   async _decodeArgs (func: string, args: Object) {
-    console.log('--MultisigWalletDAO#_decodeArgs', func, args)
     switch (func) {
       case 'transfer':
         const symbol = this._c.bytesToString(args._symbol)
@@ -267,5 +273,9 @@ export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
         console.warn('warn: decoder not implemented for function: ', func)
         return args
     }
+  }
+
+  use2FA () {
+    return this._call('use2FA')
   }
 }

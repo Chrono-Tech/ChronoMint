@@ -5,7 +5,7 @@
 
 import { Field, reduxForm, reset } from 'redux-form/immutable'
 import PropTypes from 'prop-types'
-import { RaisedButton } from 'material-ui'
+import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
@@ -59,9 +59,8 @@ export default class ReissueAssetForm extends PureComponent {
               floatingLabelText={<Translate value={prefix('reissueAmount')} />}
             />
           </div>
-          <RaisedButton
+          <Button
             type='submit'
-            primary
             label={<Translate value={prefix('reissue')} />}
             styleName='action'
           />

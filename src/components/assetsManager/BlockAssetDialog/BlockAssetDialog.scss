@@ -8,7 +8,7 @@
 
 .content {
   width: 544px;
-  background-color: $color-white;
+  background-color: $sideMenu-background;
   @include xs-only {
     width: 100%;
   }
@@ -18,11 +18,10 @@
   position: relative;
   align-items: baseline;
   box-sizing: border-box;
-  background: $color-primary-1;
   min-height: 151px;
-  padding: 24px 16px;
+  padding: 16px;
   text-align: left;
-  color: #ffffff;
+  color: $color-white;
 }
 
 .dialogHeaderTitle {
@@ -39,10 +38,20 @@
 }
 
 .dialogFooter {
-  padding: 24px 16px;
+  padding: 16px;
   text-align: right;
+  border-radius: 2px 2px 0 0;
+  background: $color-white;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action {
   margin: 0 0 0 10px;
+}
+
+.block {
+  button {
+    background: $color-red-1;
+  }
 }

@@ -6,18 +6,20 @@
 import Immutable from 'immutable'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
-import { createStore, applyMiddleware, compose } from 'redux'
+import { applyMiddleware, compose, createStore } from 'redux'
+import { persistStore } from 'redux-persist-immutable'
 import { reducer as formReducer } from 'redux-form/immutable'
-import { loadI18n, DUCK_I18N } from 'redux/i18n/actions'
-import { loadTranslations, setLocale, i18nReducer, I18n } from 'platform/i18n'
+import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
+import { I18n, i18nReducer, loadTranslations, setLocale } from 'platform/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
-import { syncHistoryWithStore, routerMiddleware } from 'react-router-redux'
+import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import ls from 'utils/LocalStorage'
 import * as ducks from './ducks'
 import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
+import transformer from './serialize'
 import { SESSION_DESTROY } from './session/actions'
 
 let i18nJson // declaration of a global var for the i18n object for a standalone version
@@ -61,7 +63,8 @@ let logActions = process.env.NODE_ENV === 'development'
     // eslint-disable-next-line
     console.log(`%c ${action.type} `, 'color: #999; background: #333')
   }
-  : function () {}
+  : function () {
+  }
 
 const configureStore = () => {
   const initialState = new Immutable.Map()
@@ -79,8 +82,13 @@ const configureStore = () => {
 
     if (action.type === SESSION_DESTROY) {
       const i18nState = state.get('i18n')
+      const mainWalletsState = state.get('mainWallet')
+      const walletsState = state.get('multisigWallet')
       state = new Immutable.Map()
-      state = state.set('i18n', i18nState)
+      state = state
+        .set('i18n', i18nState)
+        .set('multisigWallet', walletsState)
+        .set('mainWallet', mainWalletsState)
     }
     return appReducer(state, action)
   }
@@ -90,7 +98,7 @@ const configureStore = () => {
     applyMiddleware(
       thunk,
       routerMiddleware(historyEngine),
-      saveAccountMiddleWare
+      saveAccountMiddleWare,
     ),
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
       ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
@@ -107,6 +115,12 @@ const configureStore = () => {
 
 export const store = configureStore()
 store.dispatch(globalWatcher())
+
+const persistorConfig = {
+  whitelist: ['multisigWallet', 'mainWallet'],
+  transforms: [transformer()],
+}
+store.__persistor = persistStore(store, persistorConfig)
 
 export const history = syncHistoryWithStore(historyEngine, store, {
   selectLocationState: createSelectLocationState(),

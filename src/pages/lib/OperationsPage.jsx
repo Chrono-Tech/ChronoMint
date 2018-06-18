@@ -13,7 +13,6 @@ export default class OperationsPage extends Component {
   render () {
     return (
       <div styleName='root'>
-        <Partials.BrandPartial />
         <CSSTransitionGroup
           transitionName='transition-opacity'
           transitionAppear
@@ -23,7 +22,6 @@ export default class OperationsPage extends Component {
         >
           <Partials.OperationsContent />
         </CSSTransitionGroup>
-        { !window.isMobile && <Partials.FooterPartial /> }
       </div>
     )
   }

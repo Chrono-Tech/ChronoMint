@@ -26,37 +26,6 @@ export default class DrawerPartial extends PureComponent {
     handleDrawerHide: PropTypes.func,
   }
 
-  render () {
-    return (
-      <div
-        styleName='root'
-        className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}
-      >
-        <div
-          styleName='backdrop'
-          onTouchTap={this.props.handleDrawerToggle}
-        />
-        <div styleName='content'>
-          <div styleName='menu'>
-            <IconButton onTouchTap={this.props.handleDrawerToggle}>
-              <FontIcon className='material-icons'>menu</FontIcon>
-            </IconButton>
-          </div>
-          {!menu.user ? null : (
-            <List styleName='menu-user'>
-              {menu.user.map((item) => this.renderItem(item))}
-            </List>
-          )}
-          {!this.props.isCBE ? null : (
-            <List styleName='menu-cbe'>
-              {menu.cbe.map((item) => this.renderItem(item))}
-            </List>
-          )}
-        </div>
-      </div>
-    )
-  }
-
   renderItem (item) {
     return (
       <ListItem
@@ -65,7 +34,7 @@ export default class DrawerPartial extends PureComponent {
         innerDivStyle={styles.drawer.item.innerDivStyle}
         disabled={item.disabled}
         primaryText={<Translate value={item.title} />}
-        onTouchTap={this.props.handleDrawerHide}
+        onClick={this.props.handleDrawerHide}
         leftIcon={
           <FontIcon
             style={item.disabled ? styles.drawer.item.iconStyleDisabled : styles.drawer.item.iconStyle}
@@ -82,6 +51,37 @@ export default class DrawerPartial extends PureComponent {
           : <div />
         }
       />
+    )
+  }
+
+  render () {
+    return (
+      <div
+        styleName='root'
+        className={classnames(this.props.isCBE ? 'root-cbe' : null, this.props.isDrawerOpen ? 'root-open' : null)}
+      >
+        <div
+          styleName='backdrop'
+          onClick={this.props.handleDrawerToggle}
+        />
+        <div styleName='content'>
+          <div styleName='menu'>
+            <IconButton onClick={this.props.handleDrawerToggle}>
+              <FontIcon className='material-icons'>menu</FontIcon>
+            </IconButton>
+          </div>
+          {!menu.user ? null : (
+            <List styleName='menu-user'>
+              {menu.user.map((item) => this.renderItem(item))}
+            </List>
+          )}
+          {!this.props.isCBE ? null : (
+            <List styleName='menu-cbe'>
+              {menu.cbe.map((item) => this.renderItem(item))}
+            </List>
+          )}
+        </div>
+      </div>
     )
   }
 }

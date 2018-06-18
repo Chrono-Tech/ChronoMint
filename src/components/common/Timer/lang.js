@@ -6,6 +6,6 @@
 export default {
   en: {
     sec: 'sec',
-  }
+  },
 }
 

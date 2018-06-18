@@ -1,0 +1,113 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/variables';
+
+.container {
+  width: 587px;
+  .header-text {
+    margin-top: 28px;
+    color: $color-white;
+  }
+  .wallet-list-container {
+    display: flex;
+    flex-direction: column;
+    .wallet-container {
+      position: relative;
+      width: 590px;
+      margin-top: 20px;
+      background-color: $color-white;
+      border-radius: 2px;
+      box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+      .main-info {
+        display: flex;
+        padding: 30px;
+        .token-container {
+          display: flex;
+          position: relative;
+          flex-direction: row;
+          margin-right: 15px;
+          :global {
+            .SubIconForWallet_root {
+              position: absolute;
+              left: -10px;
+            }
+          }
+          .token-icon {
+            display: flex;
+            width: 50px;
+            height: 50px;
+            .image {
+              height: 50px;
+              width: 50px;
+              background-size: contain;
+              background-repeat: no-repeat;
+              background-position: center center;
+            }
+          }
+        }
+        .content-container {
+          display: flex;
+          flex: 1;
+          .addressWrapper {
+            text-decoration: none;
+            color: $color-primary-3;
+            .address-address {
+              color: $color-grey-2;
+            }
+            &:hover, &:hover .address-address {
+              color: $color-blue-5;
+            }
+            .address-title {
+              font-size: 16px;
+              font-weight: 500;
+              line-height: 22px;
+              word-break: break-all;
+              .address-address {
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 20px;
+                text-align: left;
+              }
+            }
+          }
+          .amount {
+            flex: 1;
+            text-align: right;
+            padding-left: 15px;
+            .amount-crypto {
+            }
+            .amount-fiat {
+              color: $color-grey-2;
+            }
+          }
+        }
+      }
+      .additional-info {
+        padding: 10px 30px;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid $button-color-3;
+        .pendings-container {
+          .pendings-icon {
+            line-height: 14px;
+            background-color: $color-red-2;
+            font-size: 12px;
+            text-align: center;
+            padding: 3px 10px;
+            min-height: 17px;
+            position: relative;
+            white-space: nowrap;
+            border-radius: 13px;
+            color: $color-white;
+            font-weight: bolder;
+            text-transform: uppercase;
+          }
+        }
+      }
+    }
+  }
+}
+
+

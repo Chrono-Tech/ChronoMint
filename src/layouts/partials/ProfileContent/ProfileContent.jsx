@@ -11,7 +11,7 @@ import ProfileModel from 'models/ProfileModel'
 import networkService from '@chronobank/login/network/NetworkService'
 import React, { PureComponent } from 'react'
 import { logout } from 'redux/session/actions'
-import { getProfileTokensList } from 'redux/session/selectors'
+import { getBlockchainAddressesList } from 'redux/session/selectors'
 import { FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
 import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
@@ -29,7 +29,7 @@ function mapStateToProps (state) {
     account: session.account,
     profile: session.profile,
     networkName: networkService.getName(),
-    tokens: getProfileTokensList()(state),
+    tokens: getBlockchainAddressesList()(state),
   }
 }
 
@@ -60,7 +60,8 @@ class ProfileContent extends PureComponent {
   }
 
   static defaultProps = {
-    onProfileClose: () => {},
+    onProfileClose: () => {
+    },
   }
 
   handleProfileClose = () => {
@@ -71,7 +72,7 @@ class ProfileContent extends PureComponent {
     return (
       <div styleName='profile'>
 
-        <div styleName='close-icon' onTouchTap={this.handleProfileClose}>
+        <div styleName='close-icon' onClick={this.handleProfileClose}>
           <FontIcon color='white' className='material-icons'>clear</FontIcon>
         </div>
 
@@ -104,10 +105,10 @@ class ProfileContent extends PureComponent {
             </div>
           </div>
           <div styleName='account-info-icons'>
-            <div styleName='account-info-setting' onTouchTap={this.props.handleProfileEdit}>
+            <div styleName='account-info-setting' onClick={this.props.handleProfileEdit}>
               <FontIcon color='white' className='material-icons'>settings</FontIcon>
             </div>
-            <div styleName='account-info-setting' onTouchTap={this.props.handleLogout}>
+            <div styleName='account-info-setting' onClick={this.props.handleLogout}>
               <FontIcon color='white' className='material-icons'>power_settings_new</FontIcon>
             </div>
           </div>
@@ -157,7 +158,7 @@ class ProfileContent extends PureComponent {
                 </div>
                 <div styleName='address-icons'>
                   <div styleName='address-qr-code'>
-                    <QRIcon iconStyle='average' value={token.address} />
+                    {token.address && <QRIcon iconStyle='average' value={token.address} />}
                   </div>
                   <div styleName='address-copy-icon'>
                     <CopyIcon iconStyle='average' value={token.address} />
