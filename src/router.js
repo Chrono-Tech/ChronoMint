@@ -20,6 +20,7 @@ import {
   DownloadWalletFilePage,
   UploadWalletPage,
   MnemonicLoginPage,
+  PrivateKeyLoginPage,
 } from 'pages'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -96,6 +97,7 @@ const router = (
         <Route path='/download-wallet' component={DownloadWalletFilePage} />
         <Route path='/upload-wallet' component={UploadWalletPage} />
         <Route path='/mnemonic-login' component={MnemonicLoginPage} />
+        <Route path='/private-key-login' component={PrivateKeyLoginPage} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

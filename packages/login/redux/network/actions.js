@@ -24,7 +24,10 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
-import bip39 from "bip39";
+import bip39 from 'bip39'
+import networkService from "../../network/NetworkService";
+import privateKeyProvider from "../../network/privateKeyProvider";
+import { login } from 'redux/session/actions'
 
 export const DUCK_NETWORK = 'network'
 
@@ -39,8 +42,10 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 export const NETWORK_SET_NEW_ACCOUNT_CREDENTIALS = 'network/SET_NEW_ACCOUNT_CREDENTIALS'
 export const NETWORK_SET_NEW_MNEMONIC = 'network/SET_NEW_MNEMONIC'
+
 export const NETWORK_SET_IMPORT_MNEMONIC = 'network/SET_IMPORT_MNEMONIC'
 export const NETWORK_SET_IMPORT_PRIVATE_KEY = 'network/SET_NEW_PRIVATE_KEY'
+export const NETWORK_RESET_IMPORT_PRIVATE_KEY = 'network/RESET_NEW_PRIVATE_KEY'
 export const NETWORK_SET_IMPORT_ACCOUNT_MODE = 'network/SET_IMPORT_ACCOUNT_MODE'
 export const NETWORK_RESET_IMPORT_ACCOUNT_MODE = 'network/RESET_IMPORT_ACCOUNT_MODE'
 
@@ -117,7 +122,7 @@ export const generateNewMnemonic = () => (dispatch) => {
 export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
   const state = getState()
 
-  const { importAccountMode, newAccountMnemonic } = state.get('network')
+  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey } = state.get('network')
 
   dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
 
@@ -128,6 +133,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
       name: walletName,
       password: walletPassword,
       mnemonic: newAccountMnemonic,
+      privateKey: newAccountPrivateKey,
       numberOfAccounts: 0,
     }))
 
@@ -201,7 +207,7 @@ export const navigateToMnemonicImportMethod = () => (dispatch) => {
 }
 
 export const navigateToPrivateKeyImportMethod = () => (dispatch) => {
-  dispatch(push('/mnemonic-login'))
+  dispatch(push('/private-key-login'))
 }
 
 export const navigateToSelectWallet = () => (dispatch) => {
@@ -231,12 +237,11 @@ export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
 }
 
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
-
-
+  dispatch({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey })
 }
 
 export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
-  dispatch(navigateToLoginPage())
+  dispatch(navigateToCreateAccount())
 }
 
 export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
@@ -248,12 +253,21 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedWallet } = state.get('persistWallet')
-  await dispatch(decryptWallet(selectedWallet, password))
+  let wallet = await dispatch(decryptWallet(selectedWallet, password))
+
+  console.log('wallet', wallet)
+
+  let privateKey = wallet && wallet[0] && wallet[0].privateKey
+
+  if (privateKey){
+    console.log('pk', privateKey)
+    dispatch(handlePrivateKeyLogin(privateKey))
+  }
 
 }
 
 export const onSubmitLoginFormSuccess = () => (dispatch) => {
-  dispatch(push('/wallets'))
+  // dispatch(push('/wallets'))
 }
 
 export const onSubmitLoginFormFail = () => (dispatch) => {
@@ -265,6 +279,38 @@ export const onWalletSelect = (wallet) => (dispatch) => {
   dispatch(walletSelect(wallet))
 
   dispatch(navigateToLoginPage())
+}
+
+export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+
+  dispatch(loading())
+  dispatch(clearErrors())
+  console.log('handle', privateKey, selectedAccount, selectedProviderId, selectedNetworkId)
+  const provider = privateKeyProvider.getPrivateKeyProvider(privateKey.slice(2), networkService.getProviderSettings(), state.get('multisigWallet'))
+
+  networkService.selectAccount(provider.ethereum.getAddress())
+  await networkService.setup(provider)
+
+  dispatch(clearErrors())
+
+  const isPassed = await networkService.checkNetwork(
+    selectedAccount,
+    selectedProviderId,
+    selectedNetworkId,
+  )
+  if (isPassed) {
+    networkService.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    )
+    dispatch(login(selectedAccount))
+  }
+
+  dispatch(push('/wallets'))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

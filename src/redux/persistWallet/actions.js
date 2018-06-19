@@ -71,10 +71,12 @@ export const decryptWallet = (entry, password) => async (dispatch, getState) => 
   const host = `${selectedNetwork.protocol}://${selectedNetwork.host}`
 
   const web3 = new Web3()
-  const accounts = new Accounts(host)
-  accounts.wallet.clear()
+  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  await accounts.wallet.clear()
+  console.log('decrypt', entry, accounts, web3)
 
-  let wallet = await accounts.wallet.decrypt(entry, password)
+  let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
+  console.log('decrypt', wallet)
 
   const model = new WalletModel({
     entry,
@@ -82,6 +84,8 @@ export const decryptWallet = (entry, password) => async (dispatch, getState) => 
   })
 
   dispatch(walletLoad(model))
+
+  return wallet
 
 }
 

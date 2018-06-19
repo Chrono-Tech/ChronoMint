@@ -41,6 +41,7 @@ function mapDispatchToProps (dispatch) {
 export default class ImportMethodsPage extends PureComponent {
   static propTypes = {
     navigateToMnemonicImportMethod: PropTypes.func,
+    navigateToPrivateKeyImportMethod: PropTypes.func,
     initImportMethodsPage: PropTypes.func,
   }
 
@@ -50,7 +51,7 @@ export default class ImportMethodsPage extends PureComponent {
 
   handleMnemonicLogin = () => this.props.navigateToMnemonicImportMethod()
 
-  handlePrivateKeyLogin = () => {}
+  handlePrivateKeyLogin = () => this.props.navigateToPrivateKeyImportMethod()
 
   handleWalletFileLogin = () => {}
 

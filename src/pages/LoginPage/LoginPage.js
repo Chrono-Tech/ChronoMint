@@ -27,10 +27,10 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const password = values.get('password')
 
-      dispatch(onSubmitLoginForm(password))
+      await dispatch(onSubmitLoginForm(password))
     },
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
@@ -49,7 +49,7 @@ class LoginPage extends PureComponent {
     this.props.initLoginPage()
   }
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, selectedWallet, navigateToSelectWallet } = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet, navigateToSelectWallet } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>

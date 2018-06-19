@@ -5,6 +5,7 @@
 
 import { getNetworksByProvider, providerMap } from '../../network/settings'
 import * as actions from './actions'
+import { NETWORK_SET_IMPORT_PRIVATE_KEY } from "./actions";
 
 const initialState = {
   isLoading: false,
@@ -32,6 +33,7 @@ const initialState = {
   newAccountName: null,
   newAccountPassword: null,
   newAccountMnemonic: null,
+  newAccountPrivateKey: null,
   walletsList: [],
   decryptedWallet: null,
   selectedWallet: null,
@@ -85,6 +87,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         newAccountMnemonic: action.mnemonic,
+      }
+    case actions.NETWORK_SET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: action.privateKey,
+      }
+    case actions.NETWORK_RESET_IMPORT_PRIVATE_KEY:
+      return {
+        ...state,
+        newAccountPrivateKey: null,
       }
     case actions.NETWORK_SET_IMPORT_ACCOUNT_MODE:
       return {
