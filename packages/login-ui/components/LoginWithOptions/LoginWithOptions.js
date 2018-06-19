@@ -11,7 +11,7 @@ import { LOCAL_PRIVATE_KEYS } from '@chronobank/login/network/settings'
 import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import walletProvider from '@chronobank/login/network/walletProvider'
 import { loginLedger } from '@chronobank/login/redux/ledger/actions'
-import { addError, clearErrors, loading } from '@chronobank/login/redux/network/actions'
+import { addError, clearErrors, loading, NETWORK_SET_TEST_MNEMONIC, NETWORK_SET_TEST_WALLET_FILE } from '@chronobank/login/redux/network/actions'
 import { loginTrezor } from '@chronobank/login/redux/trezor/actions'
 import pascalCase from 'pascal-case'
 import PropTypes from 'prop-types'
@@ -122,13 +122,17 @@ const mapStateToProps = (state) => ({
   isMetamask: state.get('network').isMetamask,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  addError: (error) => dispatch(addError(error)),
-  clearErrors: () => dispatch(clearErrors()),
-  loading: () => dispatch(loading()),
-  loginLedger: () => loginLedger(),
-  loginTrezor: () => loginTrezor(),
-})
+const mapDispatchToProps = (dispatch) => {
+  return ({
+    addError: (error) => dispatch(addError(error)),
+    clearErrors: () => dispatch(clearErrors()),
+    loading: () => dispatch(loading()),
+    loginLedger: () => loginLedger(),
+    loginTrezor: () => loginTrezor(),
+    setIsMnemonic: () => dispatch({ type: NETWORK_SET_TEST_MNEMONIC }),
+    setIsWalletFile: () => dispatch({ type: NETWORK_SET_TEST_WALLET_FILE }),
+  })
+}
 
 @connect(mapStateToProps, mapDispatchToProps)
 class LoginWithOptions extends PureComponent {
@@ -144,6 +148,8 @@ class LoginWithOptions extends PureComponent {
     loading: PropTypes.func,
     loginLedger: PropTypes.func,
     loginTrezor: PropTypes.func,
+    setIsMnemonic: PropTypes.func,
+    setIsWalletFile: PropTypes.func,
   }
 
   constructor (props, context, updater) {
@@ -158,6 +164,7 @@ class LoginWithOptions extends PureComponent {
     this.props.clearErrors()
     const provider = mnemonicProvider.getMnemonicProvider(mnemonicKey, networkService.getProviderSettings())
     networkService.selectAccount(provider.ethereum.getAddress())
+    this.props.setIsMnemonic()
     this.setupAndLogin(provider)
   }
 
@@ -214,6 +221,7 @@ class LoginWithOptions extends PureComponent {
     try {
       const provider = walletProvider.getProvider(wallet, password, networkService.getProviderSettings())
       networkService.selectAccount(provider.ethereum.getAddress())
+      this.props.setIsWalletFile()
       this.setupAndLogin(provider)
     } catch (e) {
       this.props.addError(e.message)
