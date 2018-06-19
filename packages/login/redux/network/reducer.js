@@ -10,6 +10,8 @@ const initialState = {
   isLoading: false,
   isLocal: false,
   isMetamask: false,
+  isMnemonic: false,
+  isWalletFile: false,
   accounts: [],
   selectedAccount: null,
   errors: [],
@@ -62,11 +64,15 @@ export default (state = initialState, action) => {
       return { ...state, selectedAccount: action.selectedAccount }
     case actions.NETWORK_CLEAR_ERRORS:
       return { ...state, errors: [] }
+    case actions.NETWORK_SET_TEST_MNEMONIC:
+      return { ...state, isMnemonic: true }
+    case actions.NETWORK_SET_TEST_WALLET_FILE:
+      return { ...state, isWalletFile: true }
     case actions.NETWORK_ADD_ERROR:
       return {
         ...state,
         isLoading: false,
-        errors: [ ...state.errors, action.error ],
+        errors: [...state.errors, action.error],
       }
     default:
       return state
