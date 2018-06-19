@@ -184,24 +184,26 @@ export const initWavesTokens = () => async (dispatch, getState) => {
     tokenService.registerDAO(waves, dao)
     dispatch({ type: TOKENS_FETCHED, token: waves })
     dispatch(alternateTxHandlingFlow(dao))
-    //dispatch(initWavesAssetTokens(waves))
+    dispatch(initWavesAssetTokens())
   } catch (e) {
     dispatch({ type: TOKENS_FAILED })
   }
 }
 
-export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
-
-  const assets = wavesProvider.getAssets()
+export const initWavesAssetTokens = () => async (dispatch, getState) => {
+  const assets = await wavesProvider.getAssets()
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch({ type: TOKENS_FETCHING, count: currentCount + assets.length })
   // do not wait until initialized, it is ok to lazy load all the tokens
   return Promise.all(
     assets
-      .map((m) => new WavesDAO(m.name, m.symbol, wavesProvider, m.decimals, assets))
+      .map((m) => new WavesDAO(Object.keys(m)[0], Object.keys(m)[0], wavesProvider, Object.values(m)[0]['decimals'], Object.keys(m)[0]))
       .map(async (dao) => {
         try {
           const token = await dao.fetchToken()
+          console.log('Waves token is: ')
+	  console.log(dao)
+	  console.log(token)
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })
           dispatch(alternateTxHandlingFlow(dao))
