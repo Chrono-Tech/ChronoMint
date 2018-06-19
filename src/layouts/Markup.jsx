@@ -19,7 +19,6 @@ import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
 import { DUCK_MODALS } from 'redux/modals/actions'
 import './Markup.scss'
 import { DrawerMainMenu, HeaderPartial } from './partials'
-import TransferNoticeModel from '../models/notices/TransferNoticeModel'
 
 function mapStateToProps (state) {
   return {

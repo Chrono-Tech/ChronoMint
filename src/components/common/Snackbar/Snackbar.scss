@@ -13,6 +13,9 @@
   display: flex;
   border-radius: 0 0 2px 2px;
   padding: 4px 20px;
+  &.error-notice {
+    background: $color-red-1;
+  }
   @media (min-width: 660px) {
     min-width: 600px;
   }
