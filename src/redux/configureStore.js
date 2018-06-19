@@ -117,6 +117,7 @@ export const store = configureStore()
 store.dispatch(globalWatcher())
 
 const persistorConfig = {
+  key: 'root',
   whitelist: ['multisigWallet', 'mainWallet', 'persistWallet'],
   transforms: [transformer()],
 }

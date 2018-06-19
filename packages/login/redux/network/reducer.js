@@ -34,10 +34,6 @@ const initialState = {
   newAccountPassword: null,
   newAccountMnemonic: null,
   newAccountPrivateKey: null,
-  walletsList: [],
-  decryptedWallet: null,
-  selectedWallet: null,
-  importAccountMode: false,
 }
 
 export default (state = initialState, action) => {

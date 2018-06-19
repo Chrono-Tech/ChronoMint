@@ -13,6 +13,7 @@ import ChronoWalletTextBright from 'assets/img/chronowallettextbright.svg'
 import BackIcon from 'assets/img/icons/back.svg'
 
 import Footer from '../Footer/Footer'
+import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 
 import './Splash.scss'
 
@@ -59,7 +60,9 @@ export default class Splash extends Component {
           ) : null
         }
 
-        { children ? children : null }
+        <PersistWrapper>
+          {children ? children: null}
+        </PersistWrapper>
 
         {!window.isMobile && (<Footer />)}
       </div>

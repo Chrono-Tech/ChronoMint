@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { persistReducer } from 'redux-persist'
+import { persistReducer, REHYDRATE } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import * as a from './actions'
 import { removeWallet } from './utils'
@@ -18,10 +18,17 @@ const initialState = {
   walletsList: [],
   selectedWallet: null,
   decryptedWallet: null,
+  rehydrated: false,
 }
 
 const persistWallet = (state = initialState, action) => {
   switch (action.type) {
+    case REHYDRATE:
+      return {
+        ...state,
+        ...action.payload.persistWallet,
+        rehydrated: true,
+      }
     case a.WALLETS_ADD :
       return {
         ...state,

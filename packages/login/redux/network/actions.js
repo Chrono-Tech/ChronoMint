@@ -28,6 +28,8 @@ import bip39 from 'bip39'
 import networkService from "../../network/NetworkService";
 import privateKeyProvider from "../../network/privateKeyProvider";
 import { login } from 'redux/session/actions'
+import Web3 from "web3";
+import Accounts from "web3-eth-accounts";
 
 export const DUCK_NETWORK = 'network'
 
@@ -261,7 +263,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   if (privateKey){
     console.log('pk', privateKey)
-    dispatch(handlePrivateKeyLogin(privateKey))
+    await dispatch(handleMnemonicLogin(privateKey))
   }
 
 }
@@ -282,17 +284,20 @@ export const onWalletSelect = (wallet) => (dispatch) => {
 }
 
 export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
-  const state = getState()
-
-  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+  const web3 = new Web3()
+  const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
+  await accounts.wallet.clear()
 
   dispatch(loading())
   dispatch(clearErrors())
-  console.log('handle', privateKey, selectedAccount, selectedProviderId, selectedNetworkId)
   const provider = privateKeyProvider.getPrivateKeyProvider(privateKey.slice(2), networkService.getProviderSettings(), state.get('multisigWallet'))
 
   networkService.selectAccount(provider.ethereum.getAddress())
   await networkService.setup(provider)
+
+  const state = getState()
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+  console.log('handle', privateKey, selectedAccount, selectedProviderId, selectedNetworkId)
 
   dispatch(clearErrors())
 
@@ -301,6 +306,8 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
     selectedProviderId,
     selectedNetworkId,
   )
+
+  console.log('isPassed', isPassed)
   if (isPassed) {
     networkService.createNetworkSession(
       selectedAccount,
@@ -310,7 +317,43 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
     dispatch(login(selectedAccount))
   }
 
-  dispatch(push('/wallets'))
+}
+
+export const handleMnemonicLogin = () => async (dispatch, getState) => {
+  const web3 = new Web3()
+  const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
+  await accounts.wallet.clear()
+
+  let mnemonic = 'club bullet chief lend subway small merit engine harbor post scale market'
+  dispatch(loading())
+  dispatch(clearErrors())
+  const provider = mnemonicProvider.getMnemonicProvider(mnemonic, networkService.getProviderSettings())
+  networkService.selectAccount(provider.ethereum.getAddress())
+  await networkService.setup(provider)
+
+  const state = getState()
+
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+  console.log('handle', mnemonic, selectedAccount, selectedProviderId, selectedNetworkId, provider.ethereum.getAddress(), networkService.getProviderSettings())
+
+  dispatch(clearErrors())
+
+  const isPassed = await networkService.checkNetwork(
+    selectedAccount,
+    selectedProviderId,
+    selectedNetworkId,
+  )
+
+  console.log('isPassed', isPassed)
+  if (isPassed) {
+    networkService.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    )
+    dispatch(login(selectedAccount))
+  }
+
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

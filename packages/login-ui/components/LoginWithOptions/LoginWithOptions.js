@@ -240,10 +240,11 @@ class LoginWithOptions extends PureComponent {
   }
 
   async setupAndLogin (provider) {
-    console.log('setupAndLogin', provider)
     try {
       await networkService.setup(provider)
+      console.log('SETUP AND LOGIN')
       this.props.onLogin()
+      console.log('setup okay')
     } catch (e) {
       // eslint-disable-next-line
       console.error('login error', e.message)
