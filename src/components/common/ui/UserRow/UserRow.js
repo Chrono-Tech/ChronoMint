@@ -12,6 +12,7 @@ export default class UserRow extends React.Component {
     hideActionIcon: PropTypes.bool,
     actionIcon: PropTypes.string,
     actionIconClass: PropTypes.string,
+    reverseIcon: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -22,6 +23,7 @@ export default class UserRow extends React.Component {
     hideActionIcon: false,
     actionIcon: '/src/assets/img/icons/list.svg',
     actionIconClass: '',
+    reverseIcon: false,
   }
 
   render () {
@@ -32,11 +34,11 @@ export default class UserRow extends React.Component {
       invalid,
       avatar,
       actionIcon,
-      actionIconClass,
       hideActionIcon,
       title,
       subtitle,
       onClick,
+      reverseIcon,
     } = this.props
 
     return (
@@ -59,7 +61,7 @@ export default class UserRow extends React.Component {
         { !hideActionIcon ? (
           <div styleName={classnames('actionWrapper')}>
             <span styleName={classnames('actionListTrigger', onClick ? '' : 'actionListTriggerDisabled')}>
-              <img styleName={actionIconClass} src={actionIcon} alt='' />
+              <img styleName={classnames(reverseIcon ? 'reverseIcon' : '')} src={actionIcon} alt='' />
             </span>
           </div>
         ) : null}

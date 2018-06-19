@@ -257,13 +257,13 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet } = state.get('persistWallet')
   let wallet = await dispatch(decryptWallet(selectedWallet, password))
 
-  console.log('wallet', wallet)
+  console.log('wallet', wallet, selectedWallet)
 
   let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
   if (privateKey){
     console.log('pk', privateKey)
-    await dispatch(handleMnemonicLogin(privateKey))
+    await dispatch(handlePrivateKeyLogin(privateKey))
   }
 
 }
@@ -284,9 +284,10 @@ export const onWalletSelect = (wallet) => (dispatch) => {
 }
 
 export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
-  const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
-  await accounts.wallet.clear()
+  // const web3 = new Web3()
+  // const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
+  // await accounts.wallet.clear()
+  let state = getState()
 
   dispatch(loading())
   dispatch(clearErrors())
@@ -295,7 +296,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   networkService.selectAccount(provider.ethereum.getAddress())
   await networkService.setup(provider)
 
-  const state = getState()
+  state = getState()
   const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
   console.log('handle', privateKey, selectedAccount, selectedProviderId, selectedNetworkId)
 

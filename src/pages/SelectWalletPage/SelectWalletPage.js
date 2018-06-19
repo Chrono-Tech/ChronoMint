@@ -64,6 +64,7 @@ export default class SelectWalletPage extends PureComponent {
               key={i}
               title={w.name}
               actionIcon={arrow}
+              reverseIcon={true}
               onClick={() => onWalletSelect(w)}
             />
           )) : null

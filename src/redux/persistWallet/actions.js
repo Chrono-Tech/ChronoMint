@@ -62,16 +62,9 @@ export const walletUpdate = (wallet) => (dispatch, getState) => {
 
 export const decryptWallet = (entry, password) => async (dispatch, getState) => {
   const state = getState()
-  const selectedNetwork = getSelectedNetwork()(state)
-
-  if (!selectedNetwork){
-    return
-  }
-
-  const host = `${selectedNetwork.protocol}://${selectedNetwork.host}`
 
   const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
   console.log('decrypt', entry, accounts, web3)
 

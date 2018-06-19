@@ -12,9 +12,19 @@ import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { UserRow, Button } from 'components'
 import { onSubmitLoginForm, initLoginPage, navigateToSelectWallet } from '@chronobank/login/redux/network/actions'
+import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
+import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
 import styles from 'layouts/Splash/styles'
 import './LoginPage.scss'
+
+const STRATEGY_MANUAL = 'manual'
+const STRATEGY_AUTOMATIC = 'automatic'
+
+const nextStrategy = {
+  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
+  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
+}
 
 export const FORM_LOGIN_PAGE = 'FormLoginPage'
 
@@ -45,9 +55,53 @@ class LoginPage extends PureComponent {
     navigateToSelectWallet: PropTypes.func,
   }
 
+  constructor(props){
+    super(props)
+
+    this.state = {
+      isShowProvider: true,
+      strategy: STRATEGY_AUTOMATIC,
+    }
+  }
+
   componentWillMount(){
     this.props.initLoginPage()
   }
+
+  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
+
+  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
+
+  renderProviderSelector () {
+    switch (this.state.strategy) {
+      case STRATEGY_MANUAL:
+        return this.renderManualProviderSelector()
+      case STRATEGY_AUTOMATIC:
+        return this.renderAutomaticProviderSelector()
+      default:
+        return null
+    }
+  }
+
+  renderAutomaticProviderSelector () {
+    return (
+      <AutomaticProviderSelector
+        currentStrategy={this.state.strategy}
+        onSelectorSwitch={this.handleSelectorSwitch}
+      />
+    )
+  }
+
+  renderManualProviderSelector () {
+    return (
+      <ManualProviderSelector
+        show={this.state.isShowProvider}
+        currentStrategy={this.state.strategy}
+        onSelectorSwitch={this.handleSelectorSwitch}
+      />
+    )
+  }
+
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet, navigateToSelectWallet } = this.props
 
@@ -56,6 +110,10 @@ class LoginPage extends PureComponent {
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>Log In</div>
+
+          <div styleName='selector'>
+          { this.renderProviderSelector() }
+          </div>
 
           <div styleName='user-row'>
             <UserRow
