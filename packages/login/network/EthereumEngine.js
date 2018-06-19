@@ -12,7 +12,7 @@ export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
     this._wallet = wallet
     this._network = network
-    const web3 = engine && new Web3(engine) 
+    const web3 = engine && new Web3(engine)
     try {
       this._address = engine && web3.eth.accounts[0]
     } catch (e) {
@@ -21,14 +21,14 @@ export default class EthereumEngine {
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
 
-  getNetwork() {
+  getNetwork () {
     return this._network
   }
 
   getAddress () {
     return this._address || this._wallet.getAddressString()
   }
- 
+
   getProvider () {
     return this._engine
   }

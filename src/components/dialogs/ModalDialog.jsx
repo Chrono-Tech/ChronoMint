@@ -26,6 +26,7 @@ export default class ModalDialog extends PureComponent {
     modalsClose: PropTypes.func,
     onModalClose: PropTypes.func,
     title: PropTypes.node,
+    hideCloseIcon: PropTypes.bool,
   }
 
   handleClose = (e) => {
@@ -56,10 +57,7 @@ export default class ModalDialog extends PureComponent {
             transitionEnterTimeout={TRANSITION_TIMEOUT}
             transitionLeaveTimeout={TRANSITION_TIMEOUT}
           >
-            <div
-              styleName='dialog'
-              onClick={this.handleStopPropagation}
-            >
+            <div styleName='dialog' onClick={this.handleStopPropagation}>
               {this.props.title && (
                 <div styleName='header'>
                   {this.props.title}
@@ -68,12 +66,11 @@ export default class ModalDialog extends PureComponent {
               <div styleName='content'>
                 {this.props.children}
               </div>
-              <div
-                styleName='close'
-                onClick={this.handleClose}
-              >
-                <i className='material-icons'>close</i>
-              </div>
+              {!this.props.hideCloseIcon && (
+                <div styleName='close' onClick={this.handleClose}>
+                  <i className='material-icons'>close</i>
+                </div>
+              )}
             </div>
           </CSSTransitionGroup>
         </div>

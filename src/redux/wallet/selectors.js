@@ -473,7 +473,7 @@ export const priceTokenSelector = (value: Amount) => createSelector(
   (
     price,
   ) => {
-    return value.mul((price || 0))
+    return price
   },
 )
 

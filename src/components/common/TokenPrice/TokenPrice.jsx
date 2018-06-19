@@ -4,18 +4,20 @@
  */
 
 import Amount from 'models/Amount'
-import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { integerWithDelimiter } from 'utils/formatter'
 import { priceTokenSelector } from 'redux/wallet/selectors'
+import { getToken } from 'redux/locs/selectors'
+import TokenModel from 'models/tokens/TokenModel'
 
 function makeMapStateToProps (state, props) {
-  const getBalance = priceTokenSelector(props.value)
+  const getPrice = priceTokenSelector(props.value)
   const mapStateToProps = (ownState) => {
     return {
-      balance: getBalance(ownState),
+      price: getPrice(ownState),
+      token: getToken(props.value.symbol())(ownState),
     }
   }
   return mapStateToProps
@@ -25,12 +27,11 @@ function makeMapStateToProps (state, props) {
 export default class TokenPrice extends PureComponent {
   static propTypes = {
     value: PropTypes.instanceOf(Amount),
-    balance: PropTypes.oneOfType([
-      PropTypes.instanceOf(Amount),
-      PropTypes.instanceOf(BigNumber),
-    ]),
+    price: PropTypes.number,
     withFraction: PropTypes.bool,
     fractionPrecision: PropTypes.number,
+    isRemoveDecimals: PropTypes.bool,
+    token: PropTypes.instanceOf(TokenModel),
   }
 
   static defaultProps = {
@@ -39,8 +40,12 @@ export default class TokenPrice extends PureComponent {
   }
 
   render () {
-    const { balance, withFraction, fractionPrecision } = this.props
+    const { price, withFraction, fractionPrecision, isRemoveDecimals, token, value } = this.props
+    let valueWithoutDecimals
+    if (token.isFetched() && isRemoveDecimals) {
+      valueWithoutDecimals = token.removeDecimals(value)
+    }
 
-    return <span>{integerWithDelimiter(balance, withFraction, fractionPrecision)}</span>
+    return <span>{integerWithDelimiter((valueWithoutDecimals || value).mul((price || 0)), withFraction, fractionPrecision)}</span>
   }
 }

@@ -77,7 +77,7 @@ class TokenValue extends PureComponent {
       return valueInCurrency
     }
 
-    return <span styleName='price'>({`USD ${valueInCurrency}`})</span>
+    return <span styleName='price'>{`USD ${valueInCurrency}`}</span>
   }
 
   render () {

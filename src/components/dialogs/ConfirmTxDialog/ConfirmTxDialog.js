@@ -9,7 +9,6 @@ import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import classnames from 'classnames'
-import { CircularProgress, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import Amount from 'models/Amount'
 import Button from 'components/common/ui/Button/Button'
 import TxExecModel from 'models/TxExecModel'
@@ -23,6 +22,7 @@ import { DUCK_WATCHER, WATCHER_TX_SET } from 'redux/watcher/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
+import TokenPrice from 'components/common/TokenPrice/TokenPrice'
 import { BLOCKCHAIN_ETHEREUM } from 'dao/EthereumDAO'
 
 import './ConfirmTxDialog.scss'
@@ -122,43 +122,6 @@ export default class ConfirmTxDialog extends PureComponent {
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
       const arg = args[key]
-      let value
-      if (arg === null || arg === undefined) return
-      // parse value
-      switch (arg.constructor.name) {
-        case 'Amount':
-        case 'BigNumber':
-          value = <Value value={arg} />
-          break
-        case 'Object':
-          if (React.isValidElement(arg)) {
-            value = arg
-          } else if (arg.isFetching && arg.isFetching()) {
-            value = <Preloader />
-          } else {
-            return this.getKeyValueRows(arg, tokenBase)
-          }
-          break
-        default:
-          value = <Value value={arg} />
-      }
-
-      return (
-        <TableRow key={key}>
-          <TableRowColumn style={{ width: '35%' }}>
-            <Translate value={tokenBase + key} />
-          </TableRowColumn>
-          <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
-            {value}
-          </TableRowColumn>
-        </TableRow>
-      )
-    })
-  }
-
-  getKeyValueRowsNew (args, tokenBase) {
-    return Object.keys(args).map((key) => {
-      const arg = args[key]
 
       if (key === 'value') {
         return (
@@ -166,9 +129,7 @@ export default class ConfirmTxDialog extends PureComponent {
             <div styleName={classnames('value', { 'big': key === 'value' })}>
               <Value value={arg} params={{ noRenderPrice: true }} />
             </div>
-            <div styleName='price'>
-              <TokenValue value={new Amount(arg, ETH)} renderOnlyPrice />
-            </div>
+            <div styleName='price'>USD <TokenPrice value={new Amount(arg, ETH)} isRemoveDecimals /></div>
           </div>
         )
       }
@@ -226,11 +187,11 @@ export default class ConfirmTxDialog extends PureComponent {
       this.handleConfirm()
     }
     return (
-      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
+      <ModalDialog hideCloseIcon title={<Translate value={tx.func()} />}>
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='paramsList'>
-              {this.getKeyValueRowsNew(tx.args(), tx.i18nFunc())}
+              {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
               {additionalAction && additionalAction.isFetched() && this.getKeyValueRows(additionalAction.value(), tx.i18nFunc())}
 
