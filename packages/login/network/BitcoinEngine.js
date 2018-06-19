@@ -74,6 +74,8 @@ export class BitcoinEngine {
     const { from, feeRate } = options
     const { inputs, outputs, fee } = this.describeTransaction(to, amount, feeRate, utxos)
 
+    console.log('inputs, outputs, fee: ', inputs, outputs, fee, from, feeRate)
+
     if (!inputs || !outputs) throw new Error('Bad transaction data')
 
     // Commented code exists in the example but not really

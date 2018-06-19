@@ -54,6 +54,20 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             }
           },
         )
+        this._subscriptions[`transaction:${address}`] = this._client.subscribe(
+          `${this._socket.channels.transaction}.${address}`,
+          (message) => {
+            try {
+              const data = JSON.parse(message.body)
+              this.trace('Transaction Balance', data)
+
+
+
+            } catch (e) {
+              this.trace('Failed to decode message', e)
+            }
+          },
+        )
         if (!this._subscriptions[`lastBlock`]) {
           this._subscriptions[`lastBlock`] = this._client.subscribe(
             `${this._socket.channels.block}`,
