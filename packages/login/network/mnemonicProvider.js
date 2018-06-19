@@ -31,7 +31,7 @@ export const COIN_TYPE_LTC_TESTNET = 8
 export const COIN_TYPE_BTG_MAINNET = 17
 export const COIN_TYPE_BTG_TESTNET = 16
 // get the first account using the standard hd path
-export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0`
+export const WALLET_HD_PATH = `m/44'/${COIN_TYPE_ETH}'/0'/0/0`
 
 class MnemonicProvider {
   getMnemonicProvider (mnemonic, { url, network } = {}) {
@@ -45,7 +45,6 @@ class MnemonicProvider {
     Engines.ltc = false // Litecoin
     Engines.nem = false // Nem
     Engines.waves = false // Waves
-
 
     if (network) {
 
@@ -91,7 +90,7 @@ class MnemonicProvider {
       : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createLitecoinWallet (mnemonic, network) {
@@ -100,7 +99,7 @@ class MnemonicProvider {
       : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createBitcoinGoldWallet (mnemonic, network) {
@@ -109,7 +108,7 @@ class MnemonicProvider {
       : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   validateMnemonic (mnemonic) {

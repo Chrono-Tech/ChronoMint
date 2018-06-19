@@ -18,6 +18,7 @@ import { change, formValueSelector } from 'redux-form/immutable'
 import { history } from 'redux/configureStore'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { push } from 'react-router-redux'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from 'dao/AbstractTokenDAO'
 import assetDonatorDAO from 'dao/AssetDonatorDAO'
@@ -423,7 +424,7 @@ export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Arr
   await dao.watch(address)
 }
 
-export const createNewChildAddress = ({ blockchain, tokens, name }) => async (dispatch, getState) => {
+export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
   const account = getState().get(DUCK_SESSION).account
   const wallets = getMultisigWallets(getState())
   let ownersCollection = new OwnerCollection()
@@ -445,26 +446,32 @@ export const createNewChildAddress = ({ blockchain, tokens, name }) => async (di
     })
 
   let wallet
-  let newDeriveNumber
+  let newDeriveNumber = deriveNumber
   let newWallet
   let address
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      if (newDeriveNumber !== undefined) {
+        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      }
       newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddressString()
 
       ethereumProvider.addNewEthWallet(newDeriveNumber)
       break
     case BLOCKCHAIN_BITCOIN:
-      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      if (newDeriveNumber !== undefined) {
+        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      }
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
       btcProvider.subscribeNewWallet(address)
       break
     case BLOCKCHAIN_LITECOIN:
-      newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      if (newDeriveNumber !== undefined) {
+        newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
+      }
       newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
       address = newWallet.getAddress()
       ltcProvider.subscribeNewWallet(address)
