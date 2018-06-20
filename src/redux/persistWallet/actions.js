@@ -85,7 +85,7 @@ export const decryptWallet = (entry, password) => async (dispatch, getState) => 
 export const validateWalletName = (name) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.wallet
+  const { walletsList } = state.get('persistWallet')
 
   return !walletsList.find((item) => item.name === name)
 }

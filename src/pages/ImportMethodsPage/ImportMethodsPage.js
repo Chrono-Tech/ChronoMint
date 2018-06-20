@@ -63,19 +63,19 @@ export default class ImportMethodsPage extends PureComponent {
           <div styleName='page-title'>Add an Existing Account</div>
 
           <div styleName='methods'>
-            <Button styleName='button button-trezor'>
+            <Button styleName='button button-trezor' disabled>
               <img src={Trezor} alt='' />
               <br />
               Trezor
             </Button>
 
-            <Button styleName='button button-ledger'>
+            <Button styleName='button button-ledger' disabled>
               <img src={Ledger} alt='' />
               <br />
               LedgerNano
             </Button>
 
-            <Button styleName='button button-plugin'>
+            <Button styleName='button button-plugin' disabled>
               <img src={Plugin} alt='' />
               <br />
               Browser Plugin
@@ -102,13 +102,17 @@ export default class ImportMethodsPage extends PureComponent {
             <Button
               styleName='button'
               onClick={this.handleWalletFileLogin}
+              disabled
             >
               <img src={Wallet} alt='' />
               <br />
               Wallet File
             </Button>
 
-            <Button styleName='button button-uport'>
+            <Button
+              styleName='button button-uport'
+              disabled
+            >
               <img src={Uport} alt='' />
               <br />
               Uport

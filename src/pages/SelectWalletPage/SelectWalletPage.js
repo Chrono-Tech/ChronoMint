@@ -26,7 +26,9 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    walletsList: state.get('persistWallet').walletsList,
+    walletsList: state.get('persistWallet').walletsList.map(
+      (wallet) => new WalletEntryModel({...wallet})
+    ),
   }
 }
 
@@ -80,18 +82,26 @@ export default class SelectWalletPage extends PureComponent {
 
           <div styleName='page-title'>My Accounts</div>
 
-          { this.renderWalletsList() }
+          <div styleName='description'>
+            Browse account stored on your device.
+            <br />
+            If you have created an account before you may use Add an Existing Account option below.
+          </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              onClick={this.props.navigateToSelectImportMethod}
-            >
-              Add an existing account
-            </Button>
-            or <br />
-            <Link to='/create-account' href styleName='link'>Create New Account</Link>
+          <div styleName='content'>
+            { this.renderWalletsList() }
+
+            <div styleName='actions'>
+              <Button
+                styleName='button'
+                buttonType='login'
+                onClick={this.props.navigateToSelectImportMethod}
+              >
+                Add an existing account
+              </Button>
+              or <br />
+              <Link to='/create-account' href styleName='link'>Create New Account</Link>
+            </div>
           </div>
 
         </div>

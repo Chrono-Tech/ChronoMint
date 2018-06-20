@@ -6,6 +6,7 @@
 import { getNetworksByProvider, providerMap } from '../../network/settings'
 import * as actions from './actions'
 import { NETWORK_SET_IMPORT_PRIVATE_KEY } from "./actions";
+import { NETWORK_SET_LOGIN_LOADING } from "./actions";
 
 const initialState = {
   isLoading: false,
@@ -34,6 +35,7 @@ const initialState = {
   newAccountPassword: null,
   newAccountMnemonic: null,
   newAccountPrivateKey: null,
+  isLoginSubmitting: false,
 }
 
 export default (state = initialState, action) => {
@@ -103,6 +105,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         importAccountMode: false,
+      }
+    case actions.NETWORK_SET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: true,
+      }
+    case actions.NETWORK_RESET_LOGIN_SUBMITTING:
+      return {
+        ...state,
+        isLoginSubmitting: false,
       }
 
     default:

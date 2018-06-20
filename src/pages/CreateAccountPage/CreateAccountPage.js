@@ -12,7 +12,11 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 
 import { Button } from 'components'
-import { onSubmitCreateAccountPage } from '@chronobank/login/redux/network/actions'
+import {
+  onSubmitCreateAccountPage,
+  onSubmitCreateAccountPageSuccess,
+  onSubmitCreateAccountPageFail,
+} from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 import web3Provider from '@chronobank/login/network/Web3Provider'
@@ -42,18 +46,18 @@ function mapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch, ownProps) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const walletName = values.get('walletName')
       const password = values.get('password')
 
-      dispatch(onSubmitCreateAccountPage(walletName, password))
+      await dispatch(onSubmitCreateAccountPage(walletName, password))
     },
+    onSubmitSuccess: () => dispatch(onSubmitCreateAccountPageSuccess()),
+    onSubmitFail: () => dispatch(onSubmitCreateAccountPageFail()),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_CREATE_ACCOUNT, validate })
-export default class CreateAccountPage extends PureComponent {
+class CreateAccountPage extends PureComponent {
   static propTypes = {
     isImportMode: PropTypes.bool,
   }
@@ -116,7 +120,9 @@ export default class CreateAccountPage extends PureComponent {
             browser&apos;s local storage.
           </div>
 
-          { this.renderProviderSelector() }
+          <div styleName='selector'>
+            { this.renderProviderSelector() }
+          </div>
 
           <div styleName='fields-block'>
             <Field
@@ -156,7 +162,7 @@ export default class CreateAccountPage extends PureComponent {
               Create new account
             </Button>
             or<br />
-            <Link to='/' href styleName='link'>Use an existing account</Link>
+            <Link to='/import-methods' href styleName='link'>Use an existing account</Link>
           </div>
 
         </form>
@@ -165,3 +171,7 @@ export default class CreateAccountPage extends PureComponent {
     )
   }
 }
+
+const form = reduxForm({ form: FORM_CREATE_ACCOUNT, validate })(CreateAccountPage)
+export default connect(mapStateToProps, mapDispatchToProps)(form)
+

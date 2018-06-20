@@ -7,6 +7,7 @@ import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
+import { Link } from 'react-router'
 import { TextField } from 'redux-form-material-ui'
 import styles from 'layouts/Splash/styles'
 import { Button } from 'components'
@@ -17,6 +18,7 @@ import {
 } from '@chronobank/login/redux/network/actions'
 
 import './Mnemonic.scss'
+import { FORM_LOGIN_PAGE } from "../../LoginPage/LoginPage";
 
 export const FORM_MNEMONIC_LOGIN_PAGE = 'MnemonicLoginPageForm'
 
@@ -31,9 +33,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(null, mapDispatchToProps)
-@reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE })
-export default class MnemonicLoginPage extends PureComponent {
+class MnemonicLoginPage extends PureComponent {
   render () {
     const { handleSubmit } = this.props
 
@@ -62,6 +62,8 @@ export default class MnemonicLoginPage extends PureComponent {
             >
               Login
             </Button>
+            or&nbsp;
+            <Link to='/import-methods' href styleName='link'>back</Link>
           </div>
 
         </form>
@@ -69,3 +71,6 @@ export default class MnemonicLoginPage extends PureComponent {
     )
   }
 }
+
+const form = reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE })(MnemonicLoginPage)
+export default connect(null, mapDispatchToProps)(form)

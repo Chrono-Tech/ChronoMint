@@ -4,14 +4,20 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider, CircularProgress } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { UserRow, Button } from 'components'
-import { onSubmitLoginForm, initLoginPage, navigateToSelectWallet } from '@chronobank/login/redux/network/actions'
+import {
+  onSubmitLoginForm,
+  onSubmitLoginFormFail,
+  initLoginPage,
+  navigateToSelectWallet,
+} from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
@@ -32,6 +38,7 @@ function mapStateToProps (state, ownProps) {
 
   return {
     selectedWallet: state.get('persistWallet').selectedWallet,
+    isLoginSubmitting: state.get('network').isLoginSubmitting,
   }
 }
 
@@ -42,17 +49,17 @@ function mapDispatchToProps (dispatch, ownProps) {
 
       await dispatch(onSubmitLoginForm(password))
     },
+    onSubmitFail: () => dispatch(onSubmitLoginFormFail()),
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_LOGIN_PAGE })
 class LoginPage extends PureComponent {
   static propTypes = {
     initLoginPage: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
+    isLoginSubmitting: PropTypes.bool,
   }
 
   constructor(props){
@@ -103,7 +110,8 @@ class LoginPage extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet, navigateToSelectWallet } = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet,
+      navigateToSelectWallet, isLoginSubmitting } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -112,7 +120,7 @@ class LoginPage extends PureComponent {
           <div styleName='page-title'>Log In</div>
 
           <div styleName='selector'>
-          { this.renderProviderSelector() }
+            { this.renderProviderSelector() }
           </div>
 
           <div styleName='user-row'>
@@ -138,9 +146,14 @@ class LoginPage extends PureComponent {
                 styleName='button'
                 buttonType='login'
                 type='submit'
-              >
-                Log In
-              </Button>
+                label={isLoginSubmitting
+                  ? <CircularProgress
+                    style={{ verticalAlign: 'middle', marginTop: -2 }}
+                    size={24}
+                    thickness={1.5}
+                  /> : 'Log In'}
+                disabled={isLoginSubmitting}
+              />
 
               <Link to='/' href styleName='link'>Forgot you password?</Link>
             </div>
@@ -152,4 +165,5 @@ class LoginPage extends PureComponent {
   }
 }
 
-export default LoginPage
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
+export default connect(mapStateToProps, mapDispatchToProps)(form)

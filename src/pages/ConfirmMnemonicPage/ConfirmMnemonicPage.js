@@ -21,6 +21,7 @@ import {
 } from '@chronobank/login/redux/network/actions'
 
 import './ConfirmMnemonicPage.scss'
+import { FORM_CREATE_ACCOUNT } from "../CreateAccountPage/CreateAccountPage";
 
 export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 
@@ -45,9 +46,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
-@reduxForm({ form: FORM_CONFIRM_MNEMONIC })
-export default class ConfirmMnemonicPage extends Component {
+class ConfirmMnemonicPage extends Component {
   static propTypes = {
     mnemonic: PropTypes.string,
     initConfirmMnemonicPage: PropTypes.func,
@@ -66,7 +65,7 @@ export default class ConfirmMnemonicPage extends Component {
       }) : []
 
     this.state = {
-      confirmPhrase: wordsArray,
+      confirmPhrase: [],
       currentWordsArray: wordsArray.sort((a,b) => a.word < b.word),
     }
   }
@@ -168,7 +167,7 @@ export default class ConfirmMnemonicPage extends Component {
             <div styleName='progressBlock'>
               <div styleName='progressPoint' />
               <div styleName='progressPoint' />
-              <div styleName='progressPoint progressPointInactive' />
+              <div styleName='progressPoint' />
             </div>
           </div>
         </form>
@@ -176,3 +175,6 @@ export default class ConfirmMnemonicPage extends Component {
     )
   }
 }
+
+const form = reduxForm({ form: FORM_CONFIRM_MNEMONIC })(ConfirmMnemonicPage)
+export default connect(mapStateToProps, mapDispatchToProps)(form)

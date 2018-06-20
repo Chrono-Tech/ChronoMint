@@ -7,12 +7,16 @@
 @import "~styles/partials/mixins";
 
 .wrapper {
-  max-width: 380px;
   margin:0 auto;
 
   @include xs-only {
     padding: 0 20px;
   }
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 380px;
 }
 
 .page-title {
@@ -77,4 +81,13 @@
 
 .actionIcon {
   transform: matrix(-1,0,0,-1,0,0);
+}
+
+.description {
+  font-weight: 400;
+  color: $additionalData-color-1;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 40px;
+  text-align: center;
 }
