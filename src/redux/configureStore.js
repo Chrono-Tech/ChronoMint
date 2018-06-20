@@ -134,7 +134,7 @@ const locale = ls.getLocale()
 // set moment locale
 moment.locale(locale)
 
-store.dispatch(loadTranslations(require('../i18n/')))
+store.dispatch(loadTranslations(require('../i18n/').default))
 store.dispatch(setLocale(locale))
 
 // load i18n from the public site
