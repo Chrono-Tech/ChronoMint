@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Poll, PollEditDialog } from 'components'
+import { Poll } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
 import { RaisedButton } from 'material-ui'
 import Amount from 'models/Amount'
@@ -49,13 +49,6 @@ function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    handleNewPoll: async () => dispatch(modalsOpen({
-      component: PollEditDialog,
-      props: {
-        isModify: false,
-        initialValues: new PollModel(),
-      },
-    })),
   }
 }
 

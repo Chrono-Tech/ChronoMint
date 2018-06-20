@@ -55,6 +55,7 @@ export default {
     addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
+    newPoll: 'Create new poll',
     rewards: 'Bonuses',
     assets: 'My assets',
     profile: 'Profile',
@@ -719,7 +720,7 @@ export default {
     errors: {
       // TODO @dkchv: add errors
     },
-    addAttachments: 'Add attachments',
+    attachNew: 'Attach new',
     selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}',
   },
@@ -864,20 +865,6 @@ export default {
         cancel: 'Cancel',
         addAddress: 'Add Address',
       },
-      PollEditDialog: {
-        editPoll: 'Edit Poll',
-        newPoll: 'New Poll',
-        pollTitle: 'Poll title',
-        pollDescription: 'Poll description',
-        voteLimit: 'Vote Limit in TIME per option',
-        finishedDate: 'Finished date',
-        addAttachments: 'Add Attachments',
-        option: 'Option',
-        optionIndex: 'Option #%{index}',
-        updatePoll: 'Update Poll',
-        createPoll: 'Create Poll',
-        addOption: 'Add Option',
-      },
       PollDetailsDialog: {
         published: 'Published',
         finished: 'Finished',
@@ -937,5 +924,6 @@ export default {
   topButtons: {
     addDeposit: 'Add deposit',
     addWallet: 'Add wallet',
+    addPoll: 'Add a Poll',
   },
 }

@@ -2,8 +2,11 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/variables";
+
+.root {
+  margin-top: 20px;
+}
 
 .hide {
   display: none;
@@ -11,7 +14,7 @@
 
 .attach {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -35,6 +38,11 @@
 
 .attachAction {
   flex-grow: 0;
+  :global {
+    button {
+      padding: 12px 0;
+    }
+  }
 }
 
 .files {
@@ -63,13 +71,13 @@
 }
 
 .icon {
-  margin-left:-35px;
-  margin-top:25px;
+  margin-left: -35px;
+  margin-top: 25px;
   position: absolute;
 }
 
 .spinner {
-  margin-left:-20px;
-  margin-top:37px;
+  margin-left: -20px;
+  margin-top: 37px;
   position: absolute;
 }

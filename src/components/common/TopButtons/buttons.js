@@ -48,4 +48,19 @@ export default {
     title: 'nav.twoFa',
     backButton: true,
   },
+  '/voting': {
+    title: 'nav.voting',
+    buttons: [
+      {
+        chronobankIcon: 'add',
+        title: 'addPoll',
+        action: () => push('/new-poll'),
+      },
+    ],
+
+  },
+  '/new-poll': {
+    title: 'nav.newPoll',
+    backButton: true,
+  },
 }

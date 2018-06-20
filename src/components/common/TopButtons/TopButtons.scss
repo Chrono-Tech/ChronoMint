@@ -21,9 +21,6 @@
       align-items: center;
       justify-content: center;
       border-radius: 21px;
-      i {
-        font-size: 30px;
-      }
     }
   }
   .backButtonWrapper {
@@ -48,5 +45,20 @@
   button {
     width: 40px;
     height: 40px;
+  }
+  i {
+    font-size: 30px;
+  }
+}
+
+.buttonWithIcon {
+  button {
+    i {
+      margin-left: 5px;
+      font-size: 21px;
+    }
+    span {
+      margin-left: 10px;
+    }
   }
 }

@@ -23,6 +23,7 @@ import DrawerMainMenu from './DrawerMainMenu/DrawerMainMenu'
 import DepositsContent from './DepositsContent/DepositsContent'
 import DepositContent from './DepositContent/DepositContent'
 import TwoFAContent from './TwoFAContent/TwoFAContent'
+import NewPollContent from './NewPollContent/NewPollContent'
 
 export {
   HeaderPartial,
@@ -45,6 +46,7 @@ export {
   DepositContent,
   AddWalletContent,
   TwoFAContent,
+  NewPollContent,
 }
 
 export default {
@@ -68,4 +70,5 @@ export default {
   DepositContent,
   AddWalletContent,
   TwoFAContent,
+  NewPollContent,
 }
