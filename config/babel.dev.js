@@ -3,6 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+const resolver = (module) =>
+  (typeof module === 'string')
+    ? require.resolve(module)
+    : [require.resolve(module[0]), module[1]]
+
 module.exports = {
   cacheDirectory: true,
   presets: [
@@ -10,7 +15,7 @@ module.exports = {
     'babel-preset-env',
     'babel-preset-react-hmre',
     'babel-preset-stage-0',
-  ].map(require.resolve),
+  ].map(resolver),
   plugins: [
     'babel-plugin-transform-decorators-legacy',
     'babel-plugin-syntax-decorators',
@@ -20,7 +25,12 @@ module.exports = {
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     'babel-plugin-transform-class-properties',
-    'babel-plugin-react-css-modules',
+    ['babel-plugin-react-css-modules', {
+      "generateScopedName": "[name]__[local]___[hash:base64:5]",
+      "filetypes": {
+        ".scss": "postcss-scss",
+      },
+    }],
     'react-hot-loader/babel',
-  ].map(require.resolve),
+  ].map(resolver),
 }
