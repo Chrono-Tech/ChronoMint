@@ -20,7 +20,7 @@ module.exports = {
     'babel-plugin-transform-decorators-legacy',
     'babel-plugin-syntax-decorators',
     'babel-plugin-syntax-trailing-function-commas',
-    'babel-plugin-transform-runtime',
+    ['babel-plugin-transform-runtime', { polyfill: false }],
     'babel-plugin-transform-object-rest-spread',
     'babel-plugin-transform-react-constant-elements',
     'babel-plugin-transform-class-properties',
