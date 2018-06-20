@@ -19,7 +19,6 @@ module.exports = {
   plugins: [
     'babel-plugin-transform-decorators-legacy',
     'babel-plugin-syntax-decorators',
-    'babel-plugin-add-module-exports',
     'babel-plugin-syntax-trailing-function-commas',
     'babel-plugin-transform-runtime',
     'babel-plugin-transform-object-rest-spread',
