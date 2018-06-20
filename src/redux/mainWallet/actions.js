@@ -329,7 +329,11 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
   dispatch({ type: WALLET_TRANSACTIONS_FETCH })
 
   const wallet = getMainWallet(getState())
+
+  console.log('wallet: ', wallet)
+
   let transactions: TransactionsCollection = wallet.transactions()
+  console.log('transactions: ', transactions)
   const offset = transactions.offset() || 0
   const newOffset = offset + TXS_PER_PAGE
   let newTxs = []

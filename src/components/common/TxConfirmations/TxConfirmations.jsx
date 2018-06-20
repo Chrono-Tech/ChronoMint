@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import TxModel from 'models/TxModel'
 import { TX_CONFIRMATIONS } from 'assets'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_WALLET } from 'redux/wallet/actions'
 import { makeGetLastBlockForBlockchain } from 'redux/tokens/selectors'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
@@ -17,7 +17,7 @@ import './TxConfirmations.scss'
 function mapStateToProps (state, ownProps) {
   return {
     latestBlock: makeGetLastBlockForBlockchain(ownProps.transaction.symbol())(state),
-    account: state.get(DUCK_SESSION).account,
+    account: state.get(DUCK_WALLET).address,
   }
 }
 
@@ -34,13 +34,8 @@ export default class TxConfirmations extends PureComponent {
 
   renderConfirmations (confirmations) {
     const { account, transaction } = this.props
-    let prefix = null
     let icon = null
-    if (account === transaction.to()) {
-      prefix = 'r'
-    } else {
-      prefix = 's'
-    }
+    const prefix = (account === transaction.from())? 's' : 'r'
 
     if (confirmations <= 4) {
       icon = TX_CONFIRMATIONS[`${prefix}_${confirmations}`]

@@ -8,6 +8,8 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import './Button.scss'
 
+export const BUTTON_TYPE_PENDING = 'pending'
+
 export default class Button extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
@@ -77,6 +79,7 @@ export default class Button extends PureComponent {
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
+          { this.props.buttonType === BUTTON_TYPE_PENDING && <div styleName={'pending-border'} /> }
           {this.props.children
             ? this.props.children
             : <span>{this.props.label}</span>

@@ -61,8 +61,8 @@ export default class TransactionsTable extends PureComponent {
 
     const info = (
       <div styleName='info'>
-        <div styleName='title'><Translate value={`${prefix}.${trx.to() === account ? 'receiving' : 'sending'}`} /></div>
-        <div styleName='address'>{trx.to() === account ? trx.from() : trx.to()}</div>
+        <div styleName='title'><Translate value={`${prefix}.${trx.from() === account ? 'sending' : 'receiving'}`} /></div>
+        <div styleName='address'>{trx.from() === account ? trx.to() : trx.from()}</div>
       </div>
     )
 
@@ -76,7 +76,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div styleName={classnames('value', { 'receiving': trx.to() === account, 'sending': trx.from() === account })}>
+          <div styleName={classnames('value', { 'receiving': trx.from() !== account, 'sending': trx.from() === account })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>
