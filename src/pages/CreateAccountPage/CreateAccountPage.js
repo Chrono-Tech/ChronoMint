@@ -53,7 +53,7 @@ function mapDispatchToProps (dispatch, ownProps) {
       await dispatch(onSubmitCreateAccountPage(walletName, password))
     },
     onSubmitSuccess: () => dispatch(onSubmitCreateAccountPageSuccess()),
-    onSubmitFail: () => dispatch(onSubmitCreateAccountPageFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitCreateAccountPageFail(errors, dispatch, submitErrors)),
   }
 }
 
@@ -162,7 +162,7 @@ class CreateAccountPage extends PureComponent {
               Create new account
             </Button>
             or<br />
-            <Link to='/import-methods' href styleName='link'>Use an existing account</Link>
+            <Link to='/select-wallet' href styleName='link'>Use an existing account</Link>
           </div>
 
         </form>

@@ -42,7 +42,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(onSubmitConfirmMnemonic(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitConfirmMnemonicSuccess()),
-    onSubmitFail: () => dispatch(onSubmitConfirmMnemonicFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitConfirmMnemonicFail(errors, dispatch, submitErrors)),
   }
 }
 
@@ -125,7 +125,7 @@ class ConfirmMnemonicPage extends Component {
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, error } = this.props
     console.log('confirm mnemonic page', this.props)
 
     return (
@@ -145,6 +145,10 @@ class ConfirmMnemonicPage extends Component {
                 readOnly
               />
 
+            </div>
+
+            <div styleName={classnames({ error: true,  visible: error })}>
+              {error}
             </div>
 
             <div styleName='wordsBlock'>
@@ -167,7 +171,7 @@ class ConfirmMnemonicPage extends Component {
             <div styleName='progressBlock'>
               <div styleName='progressPoint' />
               <div styleName='progressPoint' />
-              <div styleName='progressPoint' />
+              <div styleName='progressPoint progressPointInactive' />
             </div>
           </div>
         </form>

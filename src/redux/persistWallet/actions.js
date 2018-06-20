@@ -44,7 +44,7 @@ export const walletUpdateList = (walletList) => (dispatch) => {
 export const walletUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.wallet
+  const { walletsList } = state.get('persistWallet')
 
   let index = walletsList.findIndex((item) => item.key === wallet.key)
 
@@ -52,11 +52,7 @@ export const walletUpdate = (wallet) => (dispatch, getState) => {
 
   copyWalletList.splice(index, 1, wallet)
 
-  const updatedWalletList = copyWalletList
-
-  dispatch(walletSelect(wallet))
-
-  dispatch({ type: WALLETS_UPDATE_LIST, walletsList: updatedWalletList })
+  dispatch({ type: WALLETS_UPDATE_LIST, walletsList: copyWalletList })
 
 }
 
@@ -90,63 +86,57 @@ export const validateWalletName = (name) => (dispatch, getState) => {
   return !walletsList.find((item) => item.name === name)
 }
 
-export const validateMnemonicForWallet = (wallet, mnemonic) => () => {
-  const web3 = web3Provider.getWeb3instance()
+export const validateMnemonicForWallet = (wallet, mnemonic) => async () => {
+  let host = networkService.getProviderSettings().url
 
-  if (!web3){
-    return
-  }
-
-  web3.eth.accounts.wallet.clear()
+  const web3 = new Web3()
+  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  accounts.wallet.clear()
 
   const walletAddress = wallet && wallet.encrypted && wallet.encrypted[0] && wallet.encrypted[0].address || ''
 
   const addressFromWallet = `0x${walletAddress}`
 
-  const account = web3.eth.accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
+  const account = accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
   const address = account && account.address && account.address.toLowerCase()
 
   return addressFromWallet === address
 }
 
-export const resetPasswordWallet = (wallet, mnemonic, password) => (dispatch) => {
-  const web3 = web3Provider.getWeb3instance()
+export const resetPasswordWallet = (wallet, mnemonic, password) => async (dispatch) => {
+  let host = networkService.getProviderSettings().url
 
-  if (!web3){
-    return
-  }
+  const web3 = new Web3()
+  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  accounts.wallet.clear()
 
-  web3.eth.accounts.wallet.clear()
-
-  const newCopy = dispatch(createWallet({ name: wallet.name, mnemonic, password }))
+  const newCopy = await dispatch(createWallet({ name: wallet.name, mnemonic, password }))
 
   let newWallet = {
     ...wallet,
     encrypted: newCopy.encrypted,
   }
 
+  console.log('resetpwd', newWallet, newCopy, wallet, mnemonic, password)
   dispatch(walletUpdate(newWallet))
+
+  dispatch(walletSelect(newWallet))
+
 }
 
 export const createWallet = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   const state = getState()
 
-  const selectedNetwork = getSelectedNetwork()(state)
-  let wallet, hex =  privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
+  let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
 
-  if (!selectedNetwork){
-    return
-  }
-
-  const host = `${selectedNetwork.protocol}://${selectedNetwork.host}`
+  let host = networkService.getProviderSettings().url
 
   const web3 = new Web3()
-  const accounts = new Accounts(host)
+  const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 
-  console.log('createWallet', hex, selectedNetwork, accounts, name, password, privateKey, mnemonic, numberOfAccounts)
-
   wallet = await accounts.wallet.create(numberOfAccounts)
+  console.log('createwallet', hex, privateKey, mnemonic)
   const account = accounts.privateKeyToAccount(`0x${hex}`)
   wallet.add(account)
 
@@ -157,6 +147,23 @@ export const createWallet = ({ name, password, privateKey, mnemonic, numberOfAcc
     encrypted: wallet && wallet.encrypt(password),
   })
 
+}
+
+export const downloadWallet = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedWallet } = state.get('persistWallet')
+
+  if (selectedWallet) {
+    const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0])
+    const element = document.createElement('a')
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
+    element.setAttribute('download', `Wallet.wlt`)
+    element.style.display = 'none'
+    document.body.appendChild(element)
+    element.click()
+    document.body.removeChild(element)
+  }
 }
 
 export const logout = () => (dispatch) => {

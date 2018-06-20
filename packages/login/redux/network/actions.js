@@ -18,12 +18,14 @@ import {
   FORM_PRIVATE_KEY_LOGIN_PAGE,
   FORM_LOGIN_PAGE,
   FORM_CREATE_ACCOUNT,
+  FORM_RECOVER_ACCOUNT,
+  FORM_RESET_PASSWORD,
 } from 'pages'
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from 'redux/session/actions'
-import { stopSubmit } from 'redux-form'
+import { stopSubmit, SubmissionError } from 'redux-form'
 import { push } from 'react-router-redux'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
@@ -45,14 +47,17 @@ export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 export const NETWORK_SET_NEW_ACCOUNT_CREDENTIALS = 'network/SET_NEW_ACCOUNT_CREDENTIALS'
 export const NETWORK_SET_NEW_MNEMONIC = 'network/SET_NEW_MNEMONIC'
+export const NETWORK_RESET_NEW_MNEMONIC = 'network/RESET_NEW_MNEMONIC'
 
 export const NETWORK_SET_IMPORT_MNEMONIC = 'network/SET_IMPORT_MNEMONIC'
 export const NETWORK_SET_IMPORT_PRIVATE_KEY = 'network/SET_NEW_PRIVATE_KEY'
 export const NETWORK_RESET_IMPORT_PRIVATE_KEY = 'network/RESET_NEW_PRIVATE_KEY'
 export const NETWORK_SET_IMPORT_ACCOUNT_MODE = 'network/SET_IMPORT_ACCOUNT_MODE'
 export const NETWORK_RESET_IMPORT_ACCOUNT_MODE = 'network/RESET_IMPORT_ACCOUNT_MODE'
-export const NETWORK_SET_LOGIN_SUBMITTING = 'network/NETWORK_SET_LOGIN_SUBMITTING'
-export const NETWORK_RESET_LOGIN_SUBMITTING = 'network/NETWORK_RESET_LOGIN_SUBMITTING'
+export const NETWORK_SET_LOGIN_SUBMITTING = 'network/SET_LOGIN_SUBMITTING'
+export const NETWORK_RESET_LOGIN_SUBMITTING = 'network/RESET_LOGIN_SUBMITTING'
+export const NETWORK_SET_ACCOUNT_RECOVERY_MODE = 'network/SET_ACCOUNT_RECOVERY_MODE'
+export const NETWORK_RESET_ACCOUNT_RECOVERY_MODE = 'network/RESET_ACCOUNT_RECOVERY_MODE'
 
 export const WALLETS_ADD = 'network/WALLETS_ADD'
 export const WALLETS_SELECT = 'network/WALLETS_SELECT'
@@ -76,8 +81,17 @@ export const navigateToCreateAccount = () => (dispatch) => {
   dispatch(push('/create-account'))
 }
 
+export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
+  dispatch(navigateToCreateAccount())
+  dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
+}
+
 export const navigateToConfirmMnemonicPage = () => (dispatch) => {
   dispatch(push('/confirm-mnemonic'))
+}
+
+export const navigateToDownloadWalletPage = () => (dispatch) => {
+  dispatch(push('/download-wallet'))
 }
 
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
@@ -116,6 +130,9 @@ export const initLoginPage = () => (dispatch, getState) => {
 
 }
 
+export const resetNewMnemonic = () => (dispatch) => {
+  dispatch({ type: NETWORK_RESET_NEW_MNEMONIC })
+}
 export const generateNewMnemonic = () => (dispatch) => {
   const mnemonic = mnemonicProvider.generateMnemonic()
 
@@ -138,7 +155,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   const validateName = dispatch(validateWalletName(walletName))
 
   if (!validateName){
-    throw new Error()
+    throw new SubmissionError({ walletName: 'Wrong wallet name' })
   }
 
   dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
@@ -173,8 +190,8 @@ export const onSubmitCreateAccountPageSuccess = () => (dispatch) => {
 
 }
 
-export const onSubmitCreateAccountPageFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_CREATE_ACCOUNT, { walletName: 'Wrong wallet name' }))
+export const onSubmitCreateAccountPageFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_CREATE_ACCOUNT, submitErrors && submitErrors.errors))
 }
 
 export const initImportMethodsPage = () => (dispatch) => {
@@ -187,7 +204,7 @@ export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState)
   const { newAccountMnemonic } = state.get('network')
 
   if (confirmMnemonic !== newAccountMnemonic){
-    throw new Error('Please enter correct mnemonic phrase')
+    throw new SubmissionError({ _error: 'Please enter correct mnemonic phrase'  })
   }
 
 }
@@ -208,11 +225,11 @@ export const onSubmitConfirmMnemonicSuccess = () => async (dispatch, getState) =
 
   dispatch(walletSelect(wallet))
 
-  dispatch(navigateToLoginPage())
+  dispatch(navigateToDownloadWalletPage())
 }
 
-export const onSubmitConfirmMnemonicFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, { key: 'Wrong confirm phrase' }))
+export const onSubmitConfirmMnemonicFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
 }
 
 export const navigateToSelectImportMethod = () => (dispatch) => {
@@ -235,6 +252,14 @@ export const navigateToLoginPage = () => (dispatch) => {
   dispatch(push('/'))
 }
 
+export const navigateToResetPasswordPage = () => (dispatch) => {
+  dispatch(push('/reset-password'))
+}
+
+export const navigateToRecoverAccountPage = () => (dispatch) => {
+  dispatch(push('/recover-account'))
+}
+
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   if (!bip39.validateMnemonic(mnemonic)){
     throw new Error('Invalid mnemonic')
@@ -254,7 +279,13 @@ export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
 }
 
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
-  dispatch({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey })
+  let pk = privateKey || ''
+
+  if (pk.slice(0, 2) === '0x'){
+    pk = pk.slice(2)
+  }
+
+  dispatch({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey: pk })
 }
 
 export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
@@ -262,7 +293,7 @@ export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
 }
 
 export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, { key: 'Wrong private key' }))
+  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, { pk: 'Wrong private key' }))
 
 }
 
@@ -280,16 +311,79 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     await dispatch(handlePrivateKeyLogin(privateKey))
   }
 
-  // dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
-
 }
 
 export const onSubmitLoginFormSuccess = () => (dispatch) => {
-  // dispatch(push('/wallets'))
 }
 
 export const onSubmitLoginFormFail = () => (dispatch) => {
   dispatch(stopSubmit(FORM_LOGIN_PAGE, { password: 'Wrong password' }))
+  dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
+
+}
+
+export const validateRecoveryForm = (mnemonic) => (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedWallet } = state.get('persistWallet')
+
+  return dispatch(validateMnemonicForWallet(selectedWallet, mnemonic))
+
+}
+
+export const initRecoverAccountPage = () => (dispatch) => {
+  dispatch(resetNewMnemonic())
+  dispatch({ type: NETWORK_SET_ACCOUNT_RECOVERY_MODE })
+}
+
+export const onSubmitRecoverAccountForm = (mnemonic) => (dispatch) => {
+  const validForm = dispatch(validateRecoveryForm(mnemonic))
+
+  if (!validForm) {
+    throw new SubmissionError({ _error: 'Mnemonic incorrect for this wallet' })
+  }
+
+  dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
+}
+
+export const onSubmitRecoverAccountFormSuccess = () => (dispatch) => {
+  dispatch(navigateToResetPasswordPage())
+}
+
+export const onSubmitRecoverAccountFormFail = () => (dispatch) => {
+  dispatch(stopSubmit(FORM_RECOVER_ACCOUNT, { pk: 'Wrong private key' }))
+
+}
+
+export const initResetPasswordPage = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { accountRecoveryMode } = state.get('network')
+
+  if (!accountRecoveryMode){
+    dispatch(navigateToRecoverAccountPage())
+  }
+}
+
+export const onSubmitResetAccountPasswordForm = (password) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { newAccountMnemonic } = state.get('network')
+  const { selectedWallet } = state.get('persistWallet')
+
+  await dispatch(resetPasswordWallet(selectedWallet, newAccountMnemonic, password))
+
+}
+
+export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
+  dispatch({ type: NETWORK_RESET_ACCOUNT_RECOVERY_MODE })
+  dispatch(navigateToLoginPage())
+
+}
+
+export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) => (dispatch) => {
+  console.log('onSubmitReset', submitError)
+  dispatch(stopSubmit(FORM_RESET_PASSWORD, { _error: 'Error' }))
 
 }
 
@@ -300,9 +394,6 @@ export const onWalletSelect = (wallet) => (dispatch) => {
 }
 
 export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
-  // const web3 = new Web3()
-  // const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
-  // await accounts.wallet.clear()
   let state = getState()
 
   dispatch(loading())
@@ -314,7 +405,6 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
   state = getState()
   const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
-  console.log('handle', privateKey, selectedAccount, selectedProviderId, selectedNetworkId)
 
   dispatch(clearErrors())
 
@@ -324,7 +414,6 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
     selectedNetworkId,
   )
 
-  console.log('isPassed', isPassed)
   if (isPassed) {
     networkService.createNetworkSession(
       selectedAccount,
@@ -336,12 +425,11 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
 }
 
-export const handleMnemonicLogin = () => async (dispatch, getState) => {
+export const handleMnemonicLogin = (mnemonic) => async (dispatch, getState) => {
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
 
-  let mnemonic = 'club bullet chief lend subway small merit engine harbor post scale market'
   dispatch(loading())
   dispatch(clearErrors())
   const provider = mnemonicProvider.getMnemonicProvider(mnemonic, networkService.getProviderSettings())
@@ -351,7 +439,6 @@ export const handleMnemonicLogin = () => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
-  console.log('handle', mnemonic, selectedAccount, selectedProviderId, selectedNetworkId, provider.ethereum.getAddress(), networkService.getProviderSettings())
 
   dispatch(clearErrors())
 
@@ -361,7 +448,6 @@ export const handleMnemonicLogin = () => async (dispatch, getState) => {
     selectedNetworkId,
   )
 
-  console.log('isPassed', isPassed)
   if (isPassed) {
     networkService.createNetworkSession(
       selectedAccount,

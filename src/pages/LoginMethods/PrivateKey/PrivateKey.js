@@ -28,7 +28,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(onSubmitPrivateKeyLoginForm(privateKey))
     },
     onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
-    onSubmitFail: () => dispatch(onSubmitPrivateKeyLoginFormFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, dispatch, submitErrors)),
   }
 }
 

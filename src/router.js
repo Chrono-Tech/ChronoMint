@@ -89,7 +89,7 @@ const router = (
         <Route path='/create-account' component={CreateAccountPage} />
         <Route path='/' component={LoginPage} />
         <Route path='/select-wallet' component={SelectWalletPage} />
-        <Route path='/recover' component={RecoverAccountPage} />
+        <Route path='/recover-account' component={RecoverAccountPage} />
         <Route path='/reset-password' component={ResetPasswordPage} />
         <Route path='/import-methods' component={ImportMethodsPage} />
         <Route path='/confirm-mnemonic' component={ConfirmMnemonicPage} />

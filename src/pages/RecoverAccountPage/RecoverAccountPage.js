@@ -5,35 +5,87 @@
 
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
+import {
+  WalletEntryModel,
+} from 'models/persistWallet'
+import {
+  onSubmitRecoverAccountForm,
+  onSubmitRecoverAccountFormSuccess,
+  onSubmitRecoverAccountFormFail,
+  initRecoverAccountPage,
+} from '@chronobank/login/redux/network/actions'
 
 import { Button, UserRow } from 'components'
 
 import styles from 'layouts/Splash/styles'
 import './RecoverAccountPage.scss'
 
-export const FORM_RECOVER_ACCOUNT_PAGE = 'RecoverAccountPage'
+export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 
-@reduxForm({ form: FORM_RECOVER_ACCOUNT_PAGE })
-export default class RecoverAccountPage extends PureComponent {
+function mapStateToProps (state, ownProps) {
+  const selectedWallet = state.get('persistWallet').selectedWallet
+  return {
+    selectedWallet: new WalletEntryModel({...selectedWallet}),
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    onSubmit: async (values) => {
+      let words = [], mnemonic = ''
+
+      for (let i = 1; i <= 12; i++) {
+        const word = values.get(`word-${i}`)
+        word && words.push(word)
+      }
+
+      mnemonic = words.join(' ')
+
+      await dispatch(onSubmitRecoverAccountForm(mnemonic))
+    },
+    onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, dispatch, submitErrors)),
+    initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
+  }
+}
+
+class RecoverAccountPage extends PureComponent {
+  static propTypes = {
+    selectedWallet: PropTypes.instanceOf(WalletEntryModel),
+    initRecoverAccountPage: PropTypes.func,
+  }
+
+  componentWillMount(){
+    this.props.initRecoverAccountPage()
+  }
+
+  get getSelectedWalletName(){
+    const { selectedWallet } = this.props
+    return selectedWallet && selectedWallet.name || ''
+  }
+
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, selectedWallet } = this.props
 
     const wordsArray = new Array(12).fill()
 
     return (
       <MuiThemeProvider>
-        <form styleName='form' name={FORM_RECOVER_ACCOUNT_PAGE} onSubmit={handleSubmit}>
+        <form styleName='form' name={FORM_RECOVER_ACCOUNT} onSubmit={handleSubmit}>
           <div styleName='title'>
             Enter mnemonic to reset password
           </div>
 
           <div styleName='user-row'>
             <UserRow
-              title='1Q1pE5vPGEEMqRcVRMbtBK842Y6Pzo6nK9'
-              onClick={() => {}}
+              title={this.getSelectedWalletName}
+              avatar={'/src/assets/img/profile-photo-1.jpg'}
+              hideActionIcon
             />
           </div>
 
@@ -71,3 +123,6 @@ export default class RecoverAccountPage extends PureComponent {
     )
   }
 }
+
+const form = reduxForm({ form: FORM_RECOVER_ACCOUNT })(RecoverAccountPage)
+export default connect(mapStateToProps, mapDispatchToProps)(form)

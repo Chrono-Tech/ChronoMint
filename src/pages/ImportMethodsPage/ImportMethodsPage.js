@@ -15,6 +15,7 @@ import {
   navigateToPrivateKeyImportMethod,
   navigateToCreateAccount,
   initImportMethodsPage,
+  navigateToCreateAccountWithoutImport,
 } from '@chronobank/login/redux/network/actions'
 
 import Trezor from 'assets/img/icons/trezor-white.svg'
@@ -33,6 +34,7 @@ function mapDispatchToProps (dispatch) {
     navigateToMnemonicImportMethod: () => dispatch(navigateToMnemonicImportMethod()),
     navigateToPrivateKeyImportMethod: () => dispatch(navigateToPrivateKeyImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
+    navigateToCreateAccountWithoutImport: () => dispatch(navigateToCreateAccountWithoutImport()),
     initImportMethodsPage: () => dispatch(initImportMethodsPage()),
   }
 }
@@ -43,6 +45,7 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToMnemonicImportMethod: PropTypes.func,
     navigateToPrivateKeyImportMethod: PropTypes.func,
     initImportMethodsPage: PropTypes.func,
+    navigateToCreateAccountWithoutImport: PropTypes.func,
   }
 
   componentDidMount(){
@@ -54,6 +57,8 @@ export default class ImportMethodsPage extends PureComponent {
   handlePrivateKeyLogin = () => this.props.navigateToPrivateKeyImportMethod()
 
   handleWalletFileLogin = () => {}
+
+  handleCreateAccount = () => this.props.navigateToCreateAccountWithoutImport()
 
   render () {
     return (
@@ -121,7 +126,7 @@ export default class ImportMethodsPage extends PureComponent {
 
           <div styleName='actions'>
             or <br />
-            <Link to='/create-account' href styleName='link'>Create New Account</Link>
+            <Link to='/create-account' href styleName='link' onClick={this.handleCreateAccount}>Create New Account</Link>
           </div>
 
         </div>

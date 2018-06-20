@@ -36,6 +36,7 @@ const initialState = {
   newAccountMnemonic: null,
   newAccountPrivateKey: null,
   isLoginSubmitting: false,
+  accountRecoveryMode: false,
 }
 
 export default (state = initialState, action) => {
@@ -86,6 +87,11 @@ export default (state = initialState, action) => {
         ...state,
         newAccountMnemonic: action.mnemonic,
       }
+    case actions.NETWORK_RESET_NEW_MNEMONIC:
+      return {
+        ...state,
+        newAccountMnemonic: null,
+      }
     case actions.NETWORK_SET_IMPORT_PRIVATE_KEY:
       return {
         ...state,
@@ -115,6 +121,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isLoginSubmitting: false,
+      }
+    case actions.NETWORK_SET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: true,
+      }
+    case actions.NETWORK_RESET_ACCOUNT_RECOVERY_MODE:
+      return {
+        ...state,
+        accountRecoveryMode: false,
       }
 
     default:

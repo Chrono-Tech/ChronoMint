@@ -84,11 +84,13 @@ const configureStore = () => {
       const i18nState = state.get('i18n')
       const mainWalletsState = state.get('mainWallet')
       const walletsState = state.get('multisigWallet')
+      const persistWallet = state.get('persistWallet')
       state = new Immutable.Map()
       state = state
         .set('i18n', i18nState)
         .set('multisigWallet', walletsState)
         .set('mainWallet', mainWalletsState)
+        .set('persistWallet', persistWallet)
     }
     return appReducer(state, action)
   }

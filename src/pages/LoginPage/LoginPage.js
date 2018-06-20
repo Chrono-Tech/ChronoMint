@@ -155,7 +155,7 @@ class LoginPage extends PureComponent {
                 disabled={isLoginSubmitting}
               />
 
-              <Link to='/' href styleName='link'>Forgot you password?</Link>
+              <Link to='/recover-account' href styleName='link'>Forgot you password?</Link>
             </div>
           </div>
 
