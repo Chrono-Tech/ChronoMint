@@ -71,7 +71,7 @@ export default class MnemonicPage extends Component {
               </Button>
               or
               <br />
-              <Link to='/' href styleName='link'>Back</Link>
+              <Link to='/login' href styleName='link'>Back</Link>
             </div>
 
           </div>

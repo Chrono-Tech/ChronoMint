@@ -12,7 +12,7 @@ import { UserRow, Button } from 'components'
 import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
 import {
   WalletEntryModel,
-} from 'models/persistWallet'
+} from 'models/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
 import './SelectWalletPage.scss'
@@ -26,7 +26,7 @@ function mapDispatchToProps (dispatch) {
 
 function mapStateToProps (state) {
   return {
-    walletsList: state.get('persistWallet').walletsList.map(
+    walletsList: state.get('persistAccount').walletsList.map(
       (wallet) => new WalletEntryModel({...wallet})
     ),
   }
@@ -100,7 +100,7 @@ export default class SelectWalletPage extends PureComponent {
                 Add an existing account
               </Button>
               or <br />
-              <Link to='/create-account' href styleName='link'>Create New Account</Link>
+              <Link to='/login/create-account' href styleName='link'>Create New Account</Link>
             </div>
           </div>
 

@@ -62,7 +62,7 @@ class MnemonicLoginPage extends PureComponent {
               Login
             </Button>
             or&nbsp;
-            <Link to='/import-methods' href styleName='link'>back</Link>
+            <Link to='/login/import-methods' href styleName='link'>back</Link>
           </div>
 
         </form>

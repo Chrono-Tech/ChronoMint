@@ -7,7 +7,7 @@ import './PersistWrapper.scss'
 
 const mapStateToProps = (state) => {
   return {
-    rehydrated: state.get('persistWallet').rehydrated,
+    rehydrated: state.get('persistAccount').rehydrated,
   }
 }
 

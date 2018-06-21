@@ -126,7 +126,7 @@ export default class ImportMethodsPage extends PureComponent {
 
           <div styleName='actions'>
             or <br />
-            <Link to='/create-account' href styleName='link' onClick={this.handleCreateAccount}>Create New Account</Link>
+            <Link to='/login/create-account' href styleName='link' onClick={this.handleCreateAccount}>Create New Account</Link>
           </div>
 
         </div>

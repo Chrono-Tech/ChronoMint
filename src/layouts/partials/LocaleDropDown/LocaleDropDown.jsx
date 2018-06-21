@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import i18n from 'i18n'
 import { Button } from 'components'
 import { changeMomentLocale } from 'redux/ui/actions'
+import classnames from 'classnames'
 
 import './LocaleDropDown.scss'
 
@@ -64,6 +65,7 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
+    const { locale } = this.props
     const locales = Object.entries(i18n).map(([ name, dictionary ]) => ({
       name,
       title: dictionary.title,
@@ -75,7 +77,7 @@ export default class LocaleDropDown extends PureComponent {
           styleName='langButton'
           onClick={this.handleClick}
         >
-          {this.props.locale}
+          {locale}
         </Button>
 
         <Popover
@@ -84,17 +86,24 @@ export default class LocaleDropDown extends PureComponent {
           anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
           onRequestClose={this.handleRequestClose}
+          style={{
+            background: 'transparent',
+          }}
         >
-          <Menu styleName='LocaleDropDown'>
-            {locales.map((item) => (
-              <MenuItem
+          <ul styleName='LocaleDropDown'>
+            {locales.map((item, i) => (
+              <li
+                key={i}
+                styleName={classnames({
+                  LocaleDropDownItem: true,
+                  LocaleDropDownItemActive: item.name === locale,
+                })}
                 onClick={() => this.handleChangeLocale(item.name)}
-                value={item.name}
-                key={item.name}
-                primaryText={item.title}
-              />
+              >
+                {item.title}
+              </li>
             ))}
-          </Menu>
+          </ul>
         </Popover>
       </div>
     )

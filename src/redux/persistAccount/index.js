@@ -3,6 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import persistWallet from './reducer'
+import persistAccount from './reducer'
 
-export { persistWallet }
+export { persistAccount }

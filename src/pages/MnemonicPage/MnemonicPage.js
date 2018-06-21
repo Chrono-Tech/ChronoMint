@@ -12,7 +12,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
-import { initMnemonicPage } from '@chronobank/login/redux/network/actions'
+import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 
 import PrintIcon from 'assets/img/icons/print-white.svg'
 
@@ -28,7 +28,7 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch, ownProps) {
   return {
     initMnemonicPage: () => dispatch(initMnemonicPage()),
-    navigateToConfirmPage: () => dispatch(push('/confirm-mnemonic')),
+    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
   }
 }
 

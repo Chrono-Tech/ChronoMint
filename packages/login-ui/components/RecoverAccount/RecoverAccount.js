@@ -23,7 +23,7 @@ import {
 import { Button, UserRow } from 'components'
 
 import styles from 'layouts/Splash/styles'
-import './RecoverAccountPage.scss'
+import './RecoverAccount.scss'
 
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 
@@ -114,7 +114,7 @@ class RecoverAccountPage extends PureComponent {
               Reset password
             </Button>
             or<br />
-            <Link to='/login/' href styleName='link'>Back</Link>
+            <Link to='/login' href styleName='link'>Back</Link>
           </div>
 
         </form>

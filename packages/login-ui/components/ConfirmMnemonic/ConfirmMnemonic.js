@@ -20,8 +20,7 @@ import {
   onSubmitConfirmMnemonicFail,
 } from '@chronobank/login/redux/network/actions'
 
-import './ConfirmMnemonicPage.scss'
-import { FORM_CREATE_ACCOUNT } from "../CreateAccountPage/CreateAccountPage";
+import './ConfirmMnemonic.scss'
 
 export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 

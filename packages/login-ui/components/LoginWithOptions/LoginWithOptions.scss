@@ -6,37 +6,119 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.optionBox {
+ul.actions {
+  position: absolute;
+  top: 30px;
+  right: 80px;
   display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  padding: 0;
+  list-style: none;
+  font-size: 18px;
+  line-height: 48px;
+
+  @include md-only {
+    top: 10px;
+    right: 10px;
+    flex: 1 1 auto;
+  }
+
+  li {
+
+    flex: 0 0 auto;
+
+    a {
+      padding: 10px 20px;
+      text-decoration: none;
+      color: $color-white;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.page {
+  max-width: 350px;
+  margin:0 auto;
+
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.user-row {
+  border-top: 1px solid $color-purpule;
+}
+
+.methods {
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.button {
+  width: 31%;
+  margin-bottom: 10px;
+
+  &.button-uport {
+    display: none;
+
+    @include xs-only {
+      display: inline-block;
+    }
+  }
+
+  &.button-trezor,
+  &.button-ledger,
+  &.button-plugin {
+    @include xs-only {
+      display: none;
+    }
+  }
+
+  button {
+    width: 100%;
+    height: 100px;
+    padding: 0;
+    text-transform: none;
+    border-radius: 3px;
+  }
+
+  img {
+    width: 50px;
+    margin-bottom: 5px;
+  }
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
   cursor: pointer;
-  transition: all 0.2s;
-  padding: 16px 8px 16px 16px;
-  border-bottom: 1px solid rgba($color-white, 0.1);
-
-  &:last-child {
-    border-bottom: 0;
-    border-radius: 0 0 $border-radius $border-radius;
-  }
-
-  &:first-child {
-    border-radius: $border-radius $border-radius 0 0;
-  }
+  font: 700 16px $font-proxima;
 
   &:hover {
-    background-color: rgba($color-white, 0.2);
+    color: #FFB54E;
   }
-}
 
-.optionTitle {
-  margin-bottom: 16px;
-  margin-top: 24px;
-  opacity: 0.6;
-}
-
-.optionName {
-  flex-grow: 1;
-}
-
-.arrow {
-  opacity: 0.6;
+  @include md-only {
+    margin: 0 0 10px;
+  }
 }

@@ -37,7 +37,7 @@ export const FORM_LOGIN_PAGE = 'FormLoginPage'
 function mapStateToProps (state, ownProps) {
 
   return {
-    selectedWallet: state.get('persistWallet').selectedWallet,
+    selectedWallet: state.get('persistAccount').selectedWallet,
     isLoginSubmitting: state.get('network').isLoginSubmitting,
   }
 }

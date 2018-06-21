@@ -21,12 +21,12 @@ const initialState = {
   rehydrated: false,
 }
 
-const persistWallet = (state = initialState, action) => {
+const persistAccount = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
       return {
         ...state,
-        ...action.payload.persistWallet,
+        ...action.payload.persistAccount,
         rehydrated: true,
       }
     case a.WALLETS_ADD :
@@ -67,4 +67,4 @@ const persistWallet = (state = initialState, action) => {
   }
 }
 
-export default persistReducer(persistConfig, persistWallet)
+export default persistReducer(persistConfig, persistAccount)

@@ -4,14 +4,14 @@
  */
 
 import {
-  createWallet,
-  resetPasswordWallet,
-  validateMnemonicForWallet,
-  validateWalletName,
-  decryptWallet,
-  walletAdd,
-  walletSelect,
-} from 'redux/persistWallet/actions'
+  createAccount,
+  resetPasswordAccount,
+  validateMnemonicForAccount,
+  validateAccountName,
+  decryptAccount,
+  accountAdd,
+  accountSelect,
+} from 'redux/persistAccount/actions'
 import {
   FORM_CONFIRM_MNEMONIC,
   FORM_MNEMONIC_LOGIN_PAGE,
@@ -79,21 +79,9 @@ export const clearErrors = () => (dispatch) => {
   dispatch({ type: NETWORK_CLEAR_ERRORS })
 }
 
-export const navigateToCreateAccount = () => (dispatch) => {
-  dispatch(push('/create-account'))
-}
-
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
-}
-
-export const navigateToConfirmMnemonicPage = () => (dispatch) => {
-  dispatch(push('/confirm-mnemonic'))
-}
-
-export const navigateToDownloadWalletPage = () => (dispatch) => {
-  dispatch(push('/download-wallet'))
 }
 
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
@@ -122,7 +110,7 @@ export const initMnemonicPage = () => (dispatch, getState) => {
 export const initLoginPage = () => (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistWallet')
+  const { selectedWallet } = state.get('persistAccount')
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
@@ -141,10 +129,6 @@ export const generateNewMnemonic = () => (dispatch) => {
   dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
 }
 
-// export const setNewImportPrivateKey = (privateKey) => (dispatch) => {
-//   dispatch({ type: NETWORK_SET_NEW_PRIVATE_KEY, privateKey })
-// }
-
 export const resetImportAccountMode = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
 }
@@ -154,7 +138,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey } = state.get('network')
 
-  const validateName = dispatch(validateWalletName(walletName))
+  const validateName = dispatch(validateAccountName(walletName))
 
   if (!validateName){
     throw new SubmissionError({ walletName: 'Wrong wallet name' })
@@ -163,7 +147,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
 
   if (importAccountMode){
-    let wallet = await dispatch(createWallet({
+    let wallet = await dispatch(createAccount({
       name: walletName,
       password: walletPassword,
       mnemonic: newAccountMnemonic,
@@ -171,9 +155,9 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
       numberOfAccounts: 0,
     }))
 
-    dispatch(walletAdd(wallet))
+    dispatch(accountAdd(wallet))
 
-    dispatch(walletSelect(wallet))
+    dispatch(accountSelect(wallet))
 
     dispatch(resetImportAccountMode())
 
@@ -184,7 +168,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   dispatch(generateNewMnemonic())
 
-  dispatch(push('/mnemonic'))
+  dispatch(navigateToGenerateMnemonicPage())
 
 }
 
@@ -216,16 +200,16 @@ export const onSubmitConfirmMnemonicSuccess = () => async (dispatch, getState) =
 
   const { newAccountMnemonic, newAccountName, newAccountPassword } = state.get('network')
 
-  let wallet = await dispatch(createWallet({
+  let wallet = await dispatch(createAccount({
     name: newAccountName,
     password: newAccountPassword,
     mnemonic: newAccountMnemonic,
     numberOfAccounts: 0,
   }))
 
-  dispatch(walletAdd(wallet))
+  dispatch(accountAdd(wallet))
 
-  dispatch(walletSelect(wallet))
+  dispatch(accountSelect(wallet))
 
   dispatch(navigateToDownloadWalletPage())
 }
@@ -234,32 +218,48 @@ export const onSubmitConfirmMnemonicFail = (errors, dispatch, submitErrors) => (
   dispatch(stopSubmit(FORM_CONFIRM_MNEMONIC, submitErrors && submitErrors.errors))
 }
 
+export const navigateToConfirmMnemonicPage = () => (dispatch) => {
+  dispatch(push('/login/confirm-mnemonic'))
+}
+
+export const navigateToDownloadWalletPage = () => (dispatch) => {
+  dispatch(push('/login/download-wallet'))
+}
+
+export const navigateToCreateAccount = () => (dispatch) => {
+  dispatch(push('/login/create-account'))
+}
+
 export const navigateToSelectImportMethod = () => (dispatch) => {
-  dispatch(push('/import-methods'))
+  dispatch(push('/login/import-methods'))
 }
 
 export const navigateToMnemonicImportMethod = () => (dispatch) => {
-  dispatch(push('/mnemonic-login'))
+  dispatch(push('/login/mnemonic-login'))
 }
 
 export const navigateToPrivateKeyImportMethod = () => (dispatch) => {
-  dispatch(push('/private-key-login'))
+  dispatch(push('/login/private-key-login'))
 }
 
 export const navigateToSelectWallet = () => (dispatch) => {
-  dispatch(push('/select-wallet'))
+  dispatch(push('/login/select-account'))
 }
 
 export const navigateToLoginPage = () => (dispatch) => {
-  dispatch(push('/'))
+  dispatch(push('/login'))
 }
 
 export const navigateToResetPasswordPage = () => (dispatch) => {
-  dispatch(push('/reset-password'))
+  dispatch(push('/login/reset-password'))
 }
 
 export const navigateToRecoverAccountPage = () => (dispatch) => {
-  dispatch(push('/recover-account'))
+  dispatch(push('/login/recover-account'))
+}
+
+export const navigateToGenerateMnemonicPage = () => (dispatch) => {
+  dispatch(push('/login/mnemonic'))
 }
 
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
@@ -304,8 +304,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   dispatch({ type: NETWORK_SET_LOGIN_SUBMITTING })
 
-  const { selectedWallet } = state.get('persistWallet')
-  let wallet = await dispatch(decryptWallet(selectedWallet, password))
+  const { selectedWallet } = state.get('persistAccount')
+  let wallet = await dispatch(decryptAccount(selectedWallet, password))
 
   let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
@@ -315,7 +315,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
 }
 
-export const onSubmitLoginFormSuccess = () => (dispatch) => {
+export const onSubmitLoginFormSuccess = () => () => {
 }
 
 export const onSubmitLoginFormFail = () => (dispatch) => {
@@ -327,9 +327,9 @@ export const onSubmitLoginFormFail = () => (dispatch) => {
 export const validateRecoveryForm = (mnemonic) => (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistWallet')
+  const { selectedWallet } = state.get('persistAccount')
 
-  return dispatch(validateMnemonicForWallet(selectedWallet, mnemonic))
+  return dispatch(validateMnemonicForAccount(selectedWallet, mnemonic))
 
 }
 
@@ -371,9 +371,9 @@ export const onSubmitResetAccountPasswordForm = (password) => async (dispatch, g
   const state = getState()
 
   const { newAccountMnemonic } = state.get('network')
-  const { selectedWallet } = state.get('persistWallet')
+  const { selectedWallet } = state.get('persistAccount')
 
-  await dispatch(resetPasswordWallet(selectedWallet, newAccountMnemonic, password))
+  await dispatch(resetPasswordAccount(selectedWallet, newAccountMnemonic, password))
 
 }
 
@@ -384,13 +384,12 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
 }
 
 export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) => (dispatch) => {
-  console.log('onSubmitReset', submitError)
   dispatch(stopSubmit(FORM_RESET_PASSWORD, { _error: 'Error' }))
 
 }
 
 export const onWalletSelect = (wallet) => (dispatch) => {
-  dispatch(walletSelect(wallet))
+  dispatch(accountSelect(wallet))
 
   dispatch(navigateToLoginPage())
 }

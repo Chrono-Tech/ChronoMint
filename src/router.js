@@ -6,22 +6,22 @@
 import Markup from 'layouts/Markup'
 import { Provider } from 'react-redux'
 import React from 'react'
-import { Route, Router } from 'react-router'
+import { Route, Router, IndexRoute, Redirect } from 'react-router'
 import {
   NotFoundPage,
-  LoginPage,
-  CreateAccountPage,
-  SelectWalletPage,
-  RecoverAccountPage,
-  ResetPasswordPage,
-  ImportMethodsPage,
-  ConfirmMnemonicPage,
-  MnemonicPage,
-  DownloadWalletFilePage,
+  LoginForm,
+  CreateAccount,
+  AccountSelector,
+  RecoverAccount,
+  ResetPassword,
+  LoginWithOptions,
+  ConfirmMnemonic,
+  GenerateMnemonic,
+  GenerateWallet,
   UploadWalletPage,
-  MnemonicLoginPage,
-  PrivateKeyLoginPage,
-} from 'pages'
+  LoginWithMnemonic,
+  LoginWithPrivateKey,
+} from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
@@ -67,6 +67,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
+      <Redirect from='/' to='/login'/>
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -85,19 +86,19 @@ const router = (
         </Route>
       </Route>
 
-      <Route component={Splash}>
-        <Route path='/create-account' component={CreateAccountPage} />
-        <Route path='/' component={LoginPage} />
-        <Route path='/select-wallet' component={SelectWalletPage} />
-        <Route path='/recover-account' component={RecoverAccountPage} />
-        <Route path='/reset-password' component={ResetPasswordPage} />
-        <Route path='/import-methods' component={ImportMethodsPage} />
-        <Route path='/confirm-mnemonic' component={ConfirmMnemonicPage} />
-        <Route path='/mnemonic' component={MnemonicPage} />
-        <Route path='/download-wallet' component={DownloadWalletFilePage} />
-        <Route path='/upload-wallet' component={UploadWalletPage} />
-        <Route path='/mnemonic-login' component={MnemonicLoginPage} />
-        <Route path='/private-key-login' component={PrivateKeyLoginPage} />
+      <Route path='/login' component={Splash}>
+        <IndexRoute component={LoginForm} />
+        <Route path='/login/create-account' component={CreateAccount} />
+        <Route path='/login/select-account' component={AccountSelector} />
+        <Route path='/login/recover-account' component={RecoverAccount} />
+        <Route path='/login/reset-password' component={ResetPassword} />
+        <Route path='/login/import-methods' component={LoginWithOptions} />
+        <Route path='/login/confirm-mnemonic' component={ConfirmMnemonic} />
+        <Route path='/login/mnemonic' component={GenerateMnemonic} />
+        <Route path='/login/download-wallet' component={GenerateWallet} />
+        <Route path='/login/upload-wallet' component={UploadWalletPage} />
+        <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
+        <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

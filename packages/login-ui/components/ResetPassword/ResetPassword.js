@@ -22,7 +22,7 @@ import { UserRow, Button } from 'components'
 
 import styles from 'layouts/Splash/styles'
 import validate from './validate'
-import './ResetPasswordPage.scss'
+import './ResetPassword.scss'
 
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 

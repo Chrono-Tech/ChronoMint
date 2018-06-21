@@ -15,7 +15,7 @@ import {
 } from 'models/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
-import './AccountSelector.scss'
+import './SelectWallet.scss'
 
 function mapDispatchToProps (dispatch) {
   return {

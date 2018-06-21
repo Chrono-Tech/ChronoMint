@@ -19,13 +19,12 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 
 import validate from './validate'
 
 import styles from 'layouts/Splash/styles'
 import fieldStyles from './styles'
-import './CreateAccountPage.scss'
+import './CreateAccount.scss'
 
 const STRATEGY_MANUAL = 'manual'
 const STRATEGY_AUTOMATIC = 'automatic'
@@ -37,14 +36,14 @@ const nextStrategy = {
 
 export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
 
   return {
     isImportMode: state.get('network').importAccountMode,
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
       const walletName = values.get('walletName')
