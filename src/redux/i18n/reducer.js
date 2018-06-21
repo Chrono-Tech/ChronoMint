@@ -5,7 +5,6 @@
 
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import * as a from './actions'
-import {I18N_LOADED} from "./actions";
 
 const initialState = new TokensCollection()
 
