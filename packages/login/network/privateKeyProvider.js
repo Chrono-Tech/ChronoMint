@@ -85,7 +85,7 @@ class PrivateKeyProvider {
       : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createLitecoinWallet (privateKey, network) {
@@ -97,7 +97,7 @@ class PrivateKeyProvider {
       : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createBitcoinGoldWallet (privateKey, network) {
@@ -109,7 +109,7 @@ class PrivateKeyProvider {
       : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(Buffer.from(privateKey, 'hex'), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createEthereumWallet (privateKey) {
