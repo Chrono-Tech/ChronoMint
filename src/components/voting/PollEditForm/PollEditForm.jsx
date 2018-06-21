@@ -37,6 +37,13 @@ import { prefix } from './lang'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
+const createDeadlineDate = (deadline, deadlineTime) => {
+  if (!deadline || !deadlineTime) {
+    return null
+  }
+  return new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate(), deadlineTime.getHours(), deadlineTime.getMinutes(), deadlineTime.getSeconds(), deadlineTime.getMilliseconds())
+}
+
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
 
@@ -72,8 +79,10 @@ function mapDispatchToProps (dispatch) {
     onSubmit: (values, dispatch, props) => {
       const limitInTIME = props.maxVoteLimitInTIME.div(100).mul(values.get('voteLimitInTIME'))
       const filesCollection = values.get('files')
+      const deadline = createDeadlineDate(values.get('deadline'), values.get('deadlineTime'))
       const poll = new PollModel({
         ...values.toJS(),
+        deadline,
         files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
         options: new Immutable.List(values.get('options')),
@@ -117,21 +126,21 @@ export default class PollEditForm extends Component {
     const { options, voteLimitInTIME, deadline, deadlineTime, feeMultiplier } = newProps
     const newOptionsSize = options.size
     const oldOptionsSize = this.props.options && this.props.options.size
-    const newDeadLine = this.createDeadLineDate(deadline, deadlineTime)
-    const oldDeadLine = this.createDeadLineDate(this.props.deadline, this.props.deadlineTime)
+    const newDeadline = createDeadlineDate(deadline, deadlineTime)
+    const oldDeadline = createDeadlineDate(this.props.deadline, this.props.deadlineTime)
 
-    if (newOptionsSize !== oldOptionsSize || voteLimitInTIME !== this.props.voteLimitInTIME || newDeadLine !== oldDeadLine) {
-      this.handleGetGasPrice(TX_CREATE_POLL, newOptionsSize, voteLimitInTIME, newDeadLine, feeMultiplier)
+    if (newOptionsSize !== oldOptionsSize || voteLimitInTIME !== this.props.voteLimitInTIME || newDeadline !== oldDeadline) {
+      this.handleGetGasPrice(TX_CREATE_POLL, newOptionsSize, voteLimitInTIME, newDeadline, feeMultiplier)
     }
   }
 
-  handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadLine: Date, feeMultiplier: number) => {
+  handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadline: Date, feeMultiplier: number) => {
 
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       estimateGasForVoting(
         action,
-        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadLine.getTime()], new BigNumber(0)],
+        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0)],
         (error, { gasFee, gasPrice }) => {
           if (!error) {
             this.setState({ gasFee, gasPrice })
@@ -159,13 +168,6 @@ export default class PollEditForm extends Component {
     if (this.state.selectedOptionIndex >= options.length) {
       this.setState({ selectedOptionIndex: options.length - 1 })
     }
-  }
-
-  createDeadLineDate = (deadline, deadlineTime) => {
-    if (!deadline || !deadlineTime) {
-      return null
-    }
-    return new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate(), deadlineTime.getHours(), deadlineTime.getMinutes(), deadlineTime.getSeconds(), deadlineTime.getMilliseconds())
   }
 
   renderOptions (options) {
@@ -354,10 +356,18 @@ export default class PollEditForm extends Component {
               </div>
               <div styleName='transactionsInfo'>
                 <div>
-                  <div><b><Translate value={`${prefix}.transactionFee`} />: </b> <span styleName='infoText'>{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span>
+                  <div><b><Translate value={`${prefix}.transactionFee`} /></b>
+                    <span styleName='infoText'>
+                      {this.state.gasFee && <TokenValue value={this.state.gasFee} noRenderPrice />}
+                      &nbsp;({this.state.gasFee && <TokenValue value={this.state.gasFee} renderOnlyPrice />})
+                    </span>
                   </div>
                   <div>
-                    <b><Translate value={`${prefix}.gasPrice`} />: </b>
+                    <Translate value={`${prefix}.averageFee`} multiplier={feeMultiplier} />
+                  </div>
+
+                  <div>
+                    <b><Translate value={`${prefix}.gasPrice`} /></b>
                     {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
                     {this.state.gasPrice && <Translate value={`${prefix}.multiplier`} multiplier={feeMultiplier} />}
                   </div>
@@ -370,10 +380,8 @@ export default class PollEditForm extends Component {
             <Button
               styleName='footerAction'
               label={<Translate value={`${prefix}.${isModify ? 'updatePoll' : 'createPoll'}`} />}
-              buttonType='flat'
               type='submit'
               disabled={pristine || invalid}
-              primary
             />
           </div>
         </form>

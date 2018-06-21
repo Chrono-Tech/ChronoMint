@@ -29,5 +29,10 @@ export default {
     limitTitle_3: '%{value} Time',
     deadlineTitle: 'End Poll Date',
     transactionFeeTitle: 'Transaction Fee',
+    transactionFee: 'Transaction Fee: ',
+    slow: 'Slow transaction',
+    fast: 'Fast',
+    averageFee: '%{multiplier}x of average fee.',
+    gasPrice: 'Gas price: ',
   },
 }

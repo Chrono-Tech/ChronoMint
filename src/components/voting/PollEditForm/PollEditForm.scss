@@ -24,6 +24,9 @@
 .content {
   max-width: 928px;
   background-color: $color-white;
+  font-family: proxima-nova, sans-serif;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
 .body {
@@ -36,6 +39,9 @@
 .column {
   padding: 30px;
   border-bottom: 1px solid $color-grey-7;
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .column-title {
@@ -61,7 +67,7 @@
 }
 
 .footer {
-  padding: 24px 16px;
+  padding: 30px;
   text-align: right;
 }
 
@@ -172,6 +178,13 @@
 .limitTitle {
   margin-top: 38px;
   color: $color-primary-0;
+  :global {
+    div {
+      display: inline-block;
+      margin-left: 5px;
+      line-height: 16px;
+    }
+  }
 }
 
 .voteLimitValue {
@@ -202,7 +215,7 @@
 }
 
 .sliderWrapper {
-  width: 60%;
+  width: 370px;
 }
 
 .timeWrapper {
@@ -213,15 +226,22 @@
 .transactionsInfo {
   padding-top: 10px;
   font-size: 14px;
+  color: $color-primary-3;
   > div {
     padding-top: 10px;
   }
   .infoText {
+    span {
+      font-size: 14px;
+      color: $color-primary-3;
+      margin: 0;
+    }
     :global {
       .TokenValue__root {
-        span {
-          font-size: 14px;
-          color: $color-primary-3;
+        div {
+          display: inline-block;
+          margin-left: 5px;
+          line-height: 16px;
         }
       }
     }
@@ -230,6 +250,7 @@
 
 .feeRate {
   padding-top: 40px;
+  width: 370px;
 }
 
 .feeMultiplier {
