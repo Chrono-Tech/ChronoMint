@@ -6,6 +6,7 @@
 @import '~styles/partials/variables';
 
 .root {
+  max-width: 587px;
   .header {
     min-height: 100px;
     box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
@@ -26,9 +27,7 @@
 }
 
 .body {
-  display: flex;
   color: $color-primary-0;
-
   @include md-only {
     display: block;
   }
@@ -211,23 +210,40 @@
   justify-content: flex-start;
 }
 
-.gasSlider {
-  .tagsWrap {
-    justify-content: space-between;
-    display: flex;
-    opacity: 0.6;
-    font-size: 12px;
-    text-transform: capitalize;
-    color: $color-primary-0;
-    position: relative;
+.transactionsInfo {
+  padding-top: 10px;
+  font-size: 14px;
+  > div {
+    padding-top: 10px;
   }
+  .infoText {
+    :global {
+      .TokenValue__root {
+        span {
+          font-size: 14px;
+          color: $color-primary-3;
+        }
+      }
+    }
+  }
+}
 
-  .tagDefault {
-    border: 6px solid transparent;
-    border-bottom: 6px solid $color-primary-0;
-    opacity: 0.6;
-    position: absolute;
-    left: calc(50% - 6px);
-    top: -5px;
-  }
+.feeRate {
+  padding-top: 40px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  color: $border-color;
+  font-weight: 400;
+  line-height: 19px;
+  font-size: 16px;
+}
+
+.tagDefault {
 }

@@ -5,6 +5,7 @@
 
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
+import web3Converter from 'utils/Web3Converter'
 import classnames from 'classnames'
 import FileSelect from 'components/common/FileSelect/FileSelect'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
@@ -16,23 +17,23 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { TimePicker, DatePicker, Slider, TextField } from 'redux-form-material-ui'
+import { DatePicker, Slider, TextField, TimePicker } from 'redux-form-material-ui'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { DUCK_TOKENS } from 'redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
 import { DUCK_SESSION } from 'redux/session/actions'
-import { createPoll, DUCK_VOTING } from 'redux/voting/actions'
+import { createPoll, DUCK_VOTING, estimateGasForVoting } from 'redux/voting/actions'
 import Amount from 'models/Amount'
 import TokenModel from 'models/tokens/TokenModel'
-import { TIME } from 'redux/mainWallet/actions'
+import { FEE_RATE_MULTIPLIER, TIME } from 'redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from 'models/PollDetailsModel'
 import FileModel from 'models/FileSelect/FileModel'
 import { Button } from 'components/index'
+import { TX_CREATE_POLL } from 'dao/VotingManagerDAO'
 import './PollEditForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
-import { FEE_RATE_MULTIPLIER } from '../../../redux/mainWallet/actions'
 
 export const FORM_EDIT_POLL = 'FormEditPoll'
 
@@ -40,6 +41,8 @@ function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
 
   return {
+    feeMultiplier: selector(state, 'feeMultiplier'),
+    deadline: selector(state, 'deadline'),
     deadlineTime: selector(state, 'deadlineTime'),
     options: selector(state, 'options'),
     files: selector(state, 'files'),
@@ -50,6 +53,7 @@ function mapStateToProps (state) {
     timeToken: state.get(DUCK_TOKENS).item('TIME'),
     locale: state.get(DUCK_I18N).locale,
     initialValues: {
+      feeMultiplier: 1,
       deadline: moment().add(1, 'day').toDate(),
       deadlineTime: new Date(),
       voteLimitInTIME: 1,
@@ -109,6 +113,38 @@ export default class PollEditForm extends Component {
     }
   }
 
+  componentWillReceiveProps (newProps) {
+    const { options, voteLimitInTIME, deadline, deadlineTime, feeMultiplier } = newProps
+    const newOptionsSize = options.size
+    const oldOptionsSize = this.props.options && this.props.options.size
+    const newDeadLine = this.createDeadLineDate(deadline, deadlineTime)
+    const oldDeadLine = this.createDeadLineDate(this.props.deadline, this.props.deadlineTime)
+
+    if (newOptionsSize !== oldOptionsSize || voteLimitInTIME !== this.props.voteLimitInTIME || newDeadLine !== oldDeadLine) {
+      this.handleGetGasPrice(TX_CREATE_POLL, newOptionsSize, voteLimitInTIME, newDeadLine, feeMultiplier)
+    }
+  }
+
+  handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadLine: Date, feeMultiplier: number) => {
+
+    clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      estimateGasForVoting(
+        action,
+        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadLine.getTime()], new BigNumber(0)],
+        (error, { gasFee, gasPrice }) => {
+          if (!error) {
+            this.setState({ gasFee, gasPrice })
+          } else {
+            // eslint-disable-next-line
+            console.log(error)
+          }
+        },
+        feeMultiplier,
+      )
+    }, 1000)
+  }
+
   handleOptionSelect (index) {
     this.setState({ selectedOptionIndex: index })
   }
@@ -123,6 +159,13 @@ export default class PollEditForm extends Component {
     if (this.state.selectedOptionIndex >= options.length) {
       this.setState({ selectedOptionIndex: options.length - 1 })
     }
+  }
+
+  createDeadLineDate = (deadline, deadlineTime) => {
+    if (!deadline || !deadlineTime) {
+      return null
+    }
+    return new Date(deadline.getFullYear(), deadline.getMonth(), deadline.getDate(), deadlineTime.getHours(), deadlineTime.getMinutes(), deadlineTime.getSeconds(), deadlineTime.getMilliseconds())
   }
 
   renderOptions (options) {
@@ -173,7 +216,7 @@ export default class PollEditForm extends Component {
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, deadlineTime } = this.props
+    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <div styleName='root'>
@@ -293,17 +336,31 @@ export default class PollEditForm extends Component {
 
               <div styleName='column-title'><Translate value={`${prefix}.transactionFeeTitle`} /></div>
 
-              <div styleName='gasSlider'>
-                <Field
-                  component={Slider}
-                  sliderStyle={{ marginBottom: 0, marginTop: 5 }}
-                  name='feeMultiplier'
-                  {...FEE_RATE_MULTIPLIER}
-                />
-                <div styleName='tagsWrap'>
-                  <div><Translate value={`${prefix}.slow`} /></div>
-                  <div styleName='tagDefault' />
-                  <div><Translate value={`${prefix}.fast`} /></div>
+              <div>
+                <div styleName='feeRate'>
+                  <div styleName='tagsWrap'>
+                    <div><Translate value={`${prefix}.slow`} /></div>
+                    <div styleName='tagDefault' />
+                    <div><Translate value={`${prefix}.fast`} /></div>
+                  </div>
+
+                  <Field
+                    component={Slider}
+                    sliderStyle={{ marginBottom: 0, marginTop: 5 }}
+                    name='feeMultiplier'
+                    {...FEE_RATE_MULTIPLIER}
+                  />
+                </div>
+              </div>
+              <div styleName='transactionsInfo'>
+                <div>
+                  <div><b><Translate value={`${prefix}.transactionFee`} />: </b> <span styleName='infoText'>{this.state.gasFee && <TokenValue value={this.state.gasFee} />}</span>
+                  </div>
+                  <div>
+                    <b><Translate value={`${prefix}.gasPrice`} />: </b>
+                    {this.state.gasPrice && `${web3Converter.fromWei(this.state.gasPrice, 'gwei').toString()} Gwei`}
+                    {this.state.gasPrice && <Translate value={`${prefix}.multiplier`} multiplier={feeMultiplier} />}
+                  </div>
                 </div>
               </div>
             </div>

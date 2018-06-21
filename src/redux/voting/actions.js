@@ -10,9 +10,10 @@ import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from 'dao/Po
 import type PollNoticeModel from 'models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from 'models/notices/PollNoticeModel'
 import PollDetailsModel from 'models/PollDetailsModel'
-import PollModel from 'models/PollModel'
 import { notify } from 'redux/notifier/actions'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from 'dao/VotingManagerDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from 'dao/VotingManagerDAO'
+import Amount from 'models/Amount'
+import { ETH } from 'redux/mainWallet/actions'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -52,7 +53,7 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 
 export const updateVoteLimit = () => async (dispatch) => {
   const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
-  const [ voteLimitInTIME, voteLimitInPercent ] = await Promise.all([
+  const [voteLimitInTIME, voteLimitInPercent] = await Promise.all([
     votingDAO.getVoteLimit(),
     votingDAO.getVoteLimitInPercent(),
   ])
@@ -166,4 +167,26 @@ export const getNextPage = () => async (dispatch, getState) => {
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
+}
+
+export const estimateGasForVoting = async (mode: string, params, callback, gasPriseMultiplier = 1) => {
+  let dao = null
+  switch (mode) {
+    case TX_CREATE_POLL:
+      dao = await contractsManagerDAO.getVotingManagerDAO()
+      break
+  }
+  try {
+    if (!dao) {
+      throw new Error('Dao is undefined')
+    }
+    const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
+    callback(null, {
+      gasLimit,
+      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+    })
+  } catch (e) {
+    callback(e)
+  }
 }
