@@ -158,6 +158,7 @@ export default class BitcoinDAO extends EventEmitter {
 
   async watchTransfer () {
     this._bitcoinProvider.addListener(EVENT_TX, async ({ tx }) => {
+      console.log('watchTransfer: ', tx)
       this.emit(
         EVENT_NEW_TRANSFER,
         new TxModel({
