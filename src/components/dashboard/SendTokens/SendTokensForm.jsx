@@ -136,7 +136,6 @@ export default class SendTokensForm extends PureComponent {
   constructor () {
     super(...arguments)
     this.state = {
-      isContract: false,
       btcFee: null,
       btcFeeMultiplier: this.props.feeMultiplier,
       btcFeeError: false,
@@ -152,15 +151,6 @@ export default class SendTokensForm extends PureComponent {
   }
 
   componentWillReceiveProps (newProps) {
-    if (newProps.token.address() !== this.props.token.address()) {
-      this.checkIsContract(newProps.token.address())
-        .then((result) => {
-          this.setState({
-            isContract: result,
-          })
-        })
-    }
-
     if ((newProps.token.address() !== this.props.token.address() || newProps.recipient !== this.props.recipient) && newProps.token.isERC20()) {
       this.props.dispatch(getSpendersAllowance(newProps.token.id(), newProps.recipient))
     }
