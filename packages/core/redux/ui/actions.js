@@ -3,6 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as actions from '@chronobank/core-dependencies/redux/ui/actions'
-
-export default actions
+export * from '@chronobank/core-dependencies/redux/ui/actions'
