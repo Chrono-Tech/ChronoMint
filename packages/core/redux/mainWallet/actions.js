@@ -113,8 +113,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
       const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
+      console.log('EVENT_NEW_TRANSFER3: ', tx, walletsAccounts, account)
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
+        console.log('EVENT_NEW_TRANSFER3 TransferNoticeModel: ', walletsAccounts)
+
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),
           symbol,
@@ -124,6 +127,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
 
       if (tx.from() === account || tx.to() === account) { // for main wallet
+        console.log('EVENT_NEW_TRANSFER3 account: ', account)
+
         // add to table
         // TODO @dkchv: !!! restore after fix
         dispatch({ type: WALLET_TRANSACTION, tx })
@@ -140,6 +145,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           dispatch(updateIsTIMERequired())
         }
       }
+
+      console.log('EVENT_NEW_TRANSFER3 walletsAccounts.includes: ', account)
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
         const callback = async (wallet: DerivedWalletModel) => {
