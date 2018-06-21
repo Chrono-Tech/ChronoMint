@@ -14,7 +14,7 @@ import LOCDialog from 'components/dialogs/LOC/LOCDialog/LOCDialog'
 import LOCIssueDialog from 'components/dialogs/LOC/LOCIssueDialog/LOCIssueDialog'
 import LOCRedeemDialog from 'components/dialogs/LOC/LOCRedeemDialog/LOCRedeemDialog'
 import LOCStatusDialog from 'components/dialogs/LOC/LOCStatusDialog/LOCStatusDialog'
-import IPFS from '@chronobank/core/utils/IPFS'
+import IPFS from '@chronobank/core-dependencies/utils/IPFS'
 import './LOCItem.scss'
 
 const mapDispatchToProps = (dispatch) => ({

@@ -6,7 +6,7 @@
 import Immutable from 'immutable'
 import BalanceModel from '../tokens/BalanceModel'
 import BalancesCollection from '../tokens/BalancesCollection'
-import ls from '../../utils/LocalStorage'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'

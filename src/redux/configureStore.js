@@ -4,6 +4,8 @@
  */
 
 import Immutable from 'immutable'
+import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
+import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
@@ -15,12 +17,10 @@ import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import ls from '@chronobank/core/utils/LocalStorage'
+import ls from 'platform/utils/LocalStorage'
 import * as ducks from './ducks'
-import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
 import routingReducer from './routing'
 import transformer from './serialize'
-import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
 
 let i18nJson // declaration of a global var for the i18n object for a standalone version
 

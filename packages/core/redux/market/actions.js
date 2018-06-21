@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MarketSocket from '../../market/MarketSocket'
 import get from 'lodash/get'
 import axios from 'axios'
+import MarketSocket from '../../market/MarketSocket'
 
 export const DUCK_MARKET = 'market'
 

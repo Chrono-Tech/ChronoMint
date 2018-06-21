@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { integerWithDelimiter } from 'utils/formatter'
+import { integerWithDelimiter } from 'platform/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { balanceSelector, mainWalletBalanceSelector } from '@chronobank/core/redux/mainWallet/selectors'
