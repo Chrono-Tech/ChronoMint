@@ -15,12 +15,11 @@ import {
 } from '@chronobank/login/network/BitcoinProvider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
-import { pop } from '../../utils/router' // @TODO: core
 import { nemProvider } from '@chronobank/login/network/NemProvider'
-import { push } from '../../utils/router'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
+import { pop, push } from '../../utils/router' // @TODO: core
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
@@ -49,6 +48,8 @@ import AddressesCollection from '../../models/wallet/AddressesCollection'
 import { getDeriveWalletsAddresses } from '../wallet/selectors'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
+import { getMainWallet, getMultisigWallets } from '../wallet/selectors/models'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
