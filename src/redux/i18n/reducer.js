@@ -13,7 +13,7 @@ export default (state = initialState, action) => {
     case a.LOAD_INIT:
       return state.isInited(action.isInited)
     case a.I18N_LOADED:
-      return {...state, list: action.payload.list}
+      return { ...state, list: action.payload.list }
     default:
       return state
   }
