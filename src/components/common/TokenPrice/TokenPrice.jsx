@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { integerWithDelimiter } from 'utils/formatter'
+import { integerWithDelimiter } from 'platform/utils/formatter'
 import { priceTokenSelector } from '@chronobank/core/redux/wallet/selectors'
 
 function makeMapStateToProps (state, props) {

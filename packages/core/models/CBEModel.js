@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from '../utils/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import validator from './validator'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ProfileModel from './ProfileModel'

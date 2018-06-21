@@ -6,15 +6,15 @@
 import Immutable from 'immutable'
 import { LOCAL_ID } from '@chronobank/login/network/settings'
 import networkService from '@chronobank/login/network/NetworkService'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import { accounts, mockStore } from 'specsInit'
+import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import VotingCollection from '../../models/voting/VotingCollection'
 import { DUCK_VOTING } from '../voting/actions'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { DUCK_TOKENS } from '../tokens/actions'
 import TokensCollection from '../../models/tokens/TokensCollection'
 import ProfileModel from '../../models/ProfileModel'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
-import { accounts, mockStore } from 'specsInit'
-import ls from '../../utils/LocalStorage'
 import * as a from './actions'
 
 let store

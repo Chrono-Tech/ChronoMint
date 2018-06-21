@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '../../utils/i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import TxError from '../TxError'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxExecModel from '../TxExecModel'

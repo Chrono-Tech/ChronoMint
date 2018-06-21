@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-import { I18n } from '../utils/i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import Amount from './Amount'
 import TokenModel from './tokens/TokenModel'
 import { abstractFetchingModel } from './AbstractFetchingModel'

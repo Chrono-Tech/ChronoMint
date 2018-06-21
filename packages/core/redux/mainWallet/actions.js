@@ -13,11 +13,13 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import { getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { history } from '@chronobank/core-dependencies/configureStore'
+import { push } from '@chronobank/core-dependencies/router'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
 import { pop, push } from '../../utils/router' // @TODO: core
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
@@ -99,7 +101,7 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
     dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
     return
   }
-  pop()
+  history.goBack()
 }
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {
