@@ -5,6 +5,8 @@
 
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
+import {CommonNetworkSelector} from '@chronobank/login-ui/components'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
 import WalletTitleBG from 'assets/img/wallet-title-bg.png'
 import StripesToCrop from 'assets/img/stripes-2-crop.jpg'
@@ -44,6 +46,14 @@ export default class Splash extends Component {
           <div styleName='header-logos'>
             <img styleName='chrono-wallet-logo-bright' src={ChronoWalletLogoBright} alt='' />
             <img styleName='chrono-wallet-text-bright' src={ChronoWalletTextBright} alt='' />
+          </div>
+          <div styleName='selectors'>
+            <div styleName='network-selector'>
+              <CommonNetworkSelector />
+            </div>
+            <div styleName='lang-selector'>
+              <LocaleDropDown />
+            </div>
           </div>
         </div>
 

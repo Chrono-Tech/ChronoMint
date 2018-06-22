@@ -211,3 +211,26 @@ $copyRightPadding: 200px;
     white-space: nowrap;
   }
 }
+
+.selectors {
+  position: absolute;
+  top: 30px;
+  display: flex;
+  margin-left: 360px;
+
+  @include md-only {
+    margin: 0;
+    left: 0;
+    right: 0;
+    justify-content: flex-end;
+    padding-right: 20px;
+  }
+}
+
+.lang-selector {
+
+}
+
+.network-selector {
+  margin-right: 10px;
+}
