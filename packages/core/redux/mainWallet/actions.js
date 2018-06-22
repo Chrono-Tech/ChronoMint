@@ -457,7 +457,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
 
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
-      if (newDeriveNumber !== undefined) {
+      if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       newWallet = ethereumProvider.createNewChildAddress(newDeriveNumber)
@@ -466,7 +466,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       ethereumProvider.addNewEthWallet(newDeriveNumber)
       break
     case BLOCKCHAIN_BITCOIN:
-      if (newDeriveNumber !== undefined) {
+      if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       newWallet = btcProvider.createNewChildAddress(newDeriveNumber)
@@ -474,7 +474,7 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
       btcProvider.subscribeNewWallet(address)
       break
     case BLOCKCHAIN_LITECOIN:
-      if (newDeriveNumber !== undefined) {
+      if (newDeriveNumber === undefined || newDeriveNumber === null) {
         newDeriveNumber = lastDeriveNumbers.hasOwnProperty(blockchain) ? lastDeriveNumbers[blockchain] + 1 : 0
       }
       newWallet = ltcProvider.createNewChildAddress(newDeriveNumber)
