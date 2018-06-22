@@ -15,6 +15,7 @@ import DepositsList from 'components/Deposits/DepositsList/DepositsList'
 import { Button } from 'components'
 import { modalsOpen } from 'redux/modals/actions'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
+import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/DepositWarningWidget'
 import { prefix } from './lang'
 import './DepositsContent.scss'
 
@@ -56,6 +57,7 @@ export default class DepositsContent extends Component {
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='inner'>
+            <DepositWarningWidget />
             {this.props.deposit.isZero()
               ? (
                 <div styleName='warning'>

@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Web3 from 'web3'
 import ProviderEngine from 'web3-provider-engine'
 import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
 import HDWalletProvider from './HDWalletProvider'
