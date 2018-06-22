@@ -13,7 +13,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { DUCK_MARKET } from '@chronobank/core/redux/market/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { integerWithDelimiter } from 'utils/formatter'
+import { integerWithDelimiter } from 'platform/utils/formatter'
 
 import './TokenValue.scss'
 

@@ -13,13 +13,14 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses } from '@chronobank/core/redux/wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import { history } from '@chronobank/core-dependencies/configureStore'
+import { push } from '@chronobank/core-dependencies/router'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
-import { pop, push } from '../../utils/router' // @TODO: core
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
@@ -45,11 +46,9 @@ import OwnerModel from '../../models/wallet/OwnerModel'
 import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDATE } from '../multisigWallet/actions'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import AddressesCollection from '../../models/wallet/AddressesCollection'
-import { getDeriveWalletsAddresses } from '../wallet/selectors'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
-import { getMainWallet, getMultisigWallets } from '../wallet/selectors/models'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -99,7 +98,7 @@ export const goBackForAddWalletsForm = () => (dispatch, getState) => {
     dispatch(change(FORM_ADD_NEW_WALLET, 'blockchain', null))
     return
   }
-  pop()
+  history.goBack()
 }
 
 const handleToken = (token: TokenModel) => async (dispatch, getState) => {

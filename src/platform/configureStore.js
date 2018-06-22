@@ -3,4 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export * from '@chronobank/core-dependencies/logger'
+export { history } from 'redux/configureStore'

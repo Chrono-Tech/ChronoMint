@@ -3,13 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import votingService from '../services/VotingService'
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import contractsManagerDAO from './ContractsManagerDAO'
 import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED, } from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
-import ipfs from '../utils/IPFS'
 import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
@@ -17,6 +16,7 @@ import Amount from '../models/Amount'
 import { TIME } from '../redux/mainWallet/actions'
 import { MultiEventsHistoryABI, VotingManagerABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import votingService from '../services/VotingService'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'

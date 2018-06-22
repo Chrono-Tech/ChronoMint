@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import SessionStorage from '@chronobank/core-dependencies/utils/SessionStorage'
 import { SESSION_CREATE } from './actions'
-import SessionStorage from '../../utils/SessionStorage'
 
 const saveAccountMiddleWare = (/*store*/) => (next) => (action) => {
   if (SESSION_CREATE === action.type && action.account) {

@@ -25,7 +25,7 @@ import { createAsset, DUCK_ASSETS_MANAGER } from '@chronobank/core/redux/assetsM
 import { modalsOpen } from 'redux/modals/actions'
 import AddPlatformDialog from 'components/assetsManager/AddPlatformDialog/AddPlatformDialog'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
-import ipfs from '@chronobank/core/utils/IPFS'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FeeModel from '@chronobank/core/models/tokens/FeeModel'
 import ReissuableModel from '@chronobank/core/models/tokens/ReissuableModel'
 import validate, { normalizeSmallestUnit } from './validate'
