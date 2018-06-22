@@ -14,7 +14,7 @@ import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNotic
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { download } from 'redux/ui/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
-import formatFileSize from 'utils/formatFileSize'
+import formatFileSize from 'platform/utils/formatFileSize'
 import FileIcon from './FileIcon'
 
 import './FileItem.scss'

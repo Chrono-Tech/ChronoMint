@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '../../utils/i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ArbitraryNoticeModel extends abstractNoticeModel({

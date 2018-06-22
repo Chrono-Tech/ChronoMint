@@ -4,8 +4,8 @@
  */
 
 import BigNumber from 'bignumber.js'
-import { I18n } from '../../utils/i18n'
-import { Icons } from '../../utils/icons'
+import { I18n } from '@chronobank/core-dependencies/i18n'
+import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxModel from '../TxModel'
 

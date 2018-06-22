@@ -5,15 +5,15 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import validator from '../models/validator'
+import truffleContract from 'truffle-contract'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import EventEmitter from 'events'
 import web3Provider from '@chronobank/login/network/Web3Provider'
+import validator from '../models/validator'
 import AbstractModel from '../models/AbstractModel'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
-import truffleContract from 'truffle-contract'
-import ipfs from '../utils/IPFS'
 import web3Converter from '../utils/Web3Converter'
-import EventEmitter from 'events'
 
 export const EVENT_NEW_BLOCK = 'TokenNewBlock'
 export const DEFAULT_GAS = 4700000

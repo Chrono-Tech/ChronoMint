@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from '../../utils/i18n'
-import { Icons } from '../../utils/icons'
+import { I18n } from '@chronobank/core-dependencies/i18n'
+import { Icons } from '@chronobank/core-dependencies/icons'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'

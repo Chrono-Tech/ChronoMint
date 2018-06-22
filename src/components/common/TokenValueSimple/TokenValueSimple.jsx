@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { integerWithDelimiter } from 'utils/formatter'
+import { integerWithDelimiter } from 'platform/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 
 const mapStateToProps = (state) => {

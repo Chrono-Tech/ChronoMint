@@ -3,9 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
-import Amount from '@chronobank/core/models/Amount'
-
 class CustomSerializer {
   test (val) {
     return this._serialize(val)
@@ -25,12 +22,12 @@ class CustomSerializer {
     let keys = Object.keys(object).sort()
 
     for (let key of keys) {
-      if (typeof object[ key ] === 'object' && object[ key ] !== null) {
-        sortedObject[ key ] = object[ key ].constructor.name === 'BigNumber' || object[ key ].constructor.name === 'Amount'
-          ? object[ key ].toString()
-          : this._keysSort(object[ key ])
+      if (typeof object[key] === 'object' && object[key] !== null) {
+        sortedObject[key] = object[key].constructor.name === 'BigNumber' || object[key].constructor.name === 'Amount'
+          ? object[key].toString()
+          : this._keysSort(object[key])
       } else {
-        sortedObject[ key ] = object[ key ]
+        sortedObject[key] = object[key]
       }
     }
 
