@@ -25,7 +25,6 @@ export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
 })
 
 export const WAVES_TESTNET_NODE = new WavesMiddlewareNode({
-  assets: ['MINUTES'],
   api: axios.create({
     baseURL: 'https://middleware-waves-testnet-rest.chronobank.io',
     timeout: 30000,

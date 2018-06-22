@@ -177,33 +177,38 @@ export const initNemMosaicTokens = (nem: TokenModel) => async (dispatch, getStat
 
 export const initWavesTokens = () => async (dispatch, getState) => {
   try {
+    console.log('Init waves')
     const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
     dispatch({ type: TOKENS_FETCHING, count: currentCount + 1 })
     const dao = new WavesDAO(WAVES_WAVES_NAME, WAVES_WAVES_SYMBOL, wavesProvider, WAVES_DECIMALS, 'WAVES')
     const waves = await dao.fetchToken()
+    console.log(dao)
+    console.log(waves)
     tokenService.registerDAO(waves, dao)
     dispatch({ type: TOKENS_FETCHED, token: waves })
     dispatch(alternateTxHandlingFlow(dao))
-    dispatch(initWavesAssetTokens())
+    dispatch(initWavesAssetTokens(waves))
   } catch (e) {
     dispatch({ type: TOKENS_FAILED })
   }
 }
 
-export const initWavesAssetTokens = () => async (dispatch, getState) => {
+export const initWavesAssetTokens = (waves: TokenModel) => async (dispatch, getState) => {
+  console.log('Init waves assets')
+  console.log(waves)
   const assets = await wavesProvider.getAssets()
   const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
   dispatch({ type: TOKENS_FETCHING, count: currentCount + assets.length })
   // do not wait until initialized, it is ok to lazy load all the tokens
   return Promise.all(
-    assets
-      .map((m) => new WavesDAO(Object.keys(m)[0], Object.keys(m)[0], wavesProvider, Object.values(m)[0]['decimals'], Object.keys(m)[0]))
+    Object.keys(assets)
+      .map((m) => new WavesDAO(m, m, wavesProvider, assets[m]['decimals'], assets[m]['id'], waves))
       .map(async (dao) => {
         try {
           const token = await dao.fetchToken()
           console.log('Waves token is: ')
-	  console.log(dao)
-	  console.log(token)
+	        console.log(dao)
+	        console.log(token)
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })
           dispatch(alternateTxHandlingFlow(dao))
