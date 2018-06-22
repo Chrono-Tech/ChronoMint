@@ -196,8 +196,7 @@ export class EthereumDAO extends AbstractTokenDAO {
             return
           }
 
-          filter.stopWatching(() => {
-          })
+          filter.stopWatching(() => {})
           filter = null
 
           const [receipt, transaction] = await Promise.all([

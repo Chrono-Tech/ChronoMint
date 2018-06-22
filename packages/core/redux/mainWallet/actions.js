@@ -13,7 +13,7 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses } from '@chronobank/core/redux/wallet/selectors'
+import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses, getMainWalletAddresses } from '@chronobank/core/redux/wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -112,11 +112,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   tokenDAO
     .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
       const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
-      console.log('EVENT_NEW_TRANSFER3: ', tx, walletsAccounts, account)
+      const mainWalletAddresses = getMainWalletAddresses(getState())
 
-      if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) || tx.from() === account || tx.to() === account) {
-        console.log('EVENT_NEW_TRANSFER3 TransferNoticeModel: ', walletsAccounts)
-
+      if (mainWalletAddresses.includes(tx.from()) ||  mainWalletAddresses.includes(tx.to()) ||
+        walletsAccounts.includes(tx.from()) ||  walletsAccounts.includes(tx.to()) ||
+        tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),
           symbol,
@@ -126,8 +126,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       }
 
       if (tx.from() === account || tx.to() === account) { // for main wallet
-        console.log('EVENT_NEW_TRANSFER3 account: ', account)
-
         // add to table
         // TODO @dkchv: !!! restore after fix
         dispatch({ type: WALLET_TRANSACTION, tx })
@@ -144,8 +142,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
           dispatch(updateIsTIMERequired())
         }
       }
-
-      console.log('EVENT_NEW_TRANSFER3 walletsAccounts.includes: ', account)
 
       if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
         const callback = async (wallet: DerivedWalletModel) => {
