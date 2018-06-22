@@ -83,13 +83,11 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
 
   async send (account, rawtx) {
     try {
-      console.log(JSON.stringify(rawtx))
       const { data } = await this._api.post('tx/send', rawtx)
       // const model = createTxModel(data.transaction, account)
       // setImmediate(() => {
       //   this.emit('tx', model)
       // })
-      console.log(data)
       return data
     } catch (e) {
       this.trace(`send transaction failed`, e)

@@ -73,7 +73,6 @@ export default class WavesDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    console.log(this._asset)
     return await this._wavesProvider.getAccountBalances(this._name)
   }
 
@@ -99,7 +98,6 @@ export default class WavesDAO extends EventEmitter {
   }
 
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
-    console.log(this._wavesToken)
     setImmediate(async () => {
       this.emit('submit', new TransferExecModel({
         title: `tx.Waves.${this._name ? 'Asset': 'WAVES'}.transfer.title`,
