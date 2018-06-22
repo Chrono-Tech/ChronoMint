@@ -102,7 +102,7 @@ export default class WavesDAO extends EventEmitter {
     console.log(this._wavesToken)
     setImmediate(async () => {
       this.emit('submit', new TransferExecModel({
-        title: `tx.Waves.${this._asset ? this._asset : 'WAVES'}.transfer.title`,
+        title: `tx.Waves.${this._name ? 'Asset': 'WAVES'}.transfer.title`,
         from,
         to,
         amount: new Amount(amount, token.symbol()),
