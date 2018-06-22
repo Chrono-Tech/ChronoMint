@@ -3,13 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import BigNumber from 'bignumber.js'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { change } from 'redux-form/immutable'
+import {
+  bccProvider,
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+  btcProvider,
+  btgProvider,
+  ltcProvider,
+} from '@chronobank/login/network/BitcoinProvider'
+import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/MultisigWalletsManagerDAO'
-import { change } from 'redux-form/immutable'
 import Amount from '../../models/Amount'
 import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeModel'
 import BalanceModel from '../../models/tokens/BalanceModel'
@@ -22,16 +32,6 @@ import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
-import {
-  bccProvider,
-  BLOCKCHAIN_BITCOIN,
-  BLOCKCHAIN_BITCOIN_GOLD,
-  BLOCKCHAIN_BITCOIN_CASH,
-  BLOCKCHAIN_LITECOIN,
-  btgProvider,
-  btcProvider,
-  ltcProvider,
-} from '@chronobank/login/network/BitcoinProvider'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
