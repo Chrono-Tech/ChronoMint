@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
 import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
 import {
-  WalletEntryModel,
+  AccountEntryModel,
 } from 'models/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
@@ -27,7 +27,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   return {
     walletsList: state.get('persistAccount').walletsList.map(
-      (wallet) => new WalletEntryModel({...wallet})
+      (wallet) => new AccountEntryModel({...wallet})
     ),
   }
 }
@@ -37,7 +37,7 @@ export default class SelectWalletPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
-      PropTypes.instanceOf(WalletEntryModel)
+      PropTypes.instanceOf(AccountEntryModel)
     ),
     navigateToSelectImportMethod: PropTypes.func,
   }

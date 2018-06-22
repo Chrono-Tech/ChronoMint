@@ -125,8 +125,6 @@ class ConfirmMnemonicPage extends Component {
 
   render () {
     const { handleSubmit, error } = this.props
-    console.log('confirm mnemonic page', this.props)
-
     return (
       <MuiThemeProvider>
         <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>

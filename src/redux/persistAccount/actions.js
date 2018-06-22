@@ -8,16 +8,11 @@ import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
 
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import {
-  WalletModel,
-  WalletEntryModel,
+  AccountModel,
+  AccountEntryModel,
 } from 'models/persistAccount'
 import networkService from '@chronobank/login/network/NetworkService'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { getSelectedNetwork } from './selectors'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -65,7 +60,7 @@ export const decryptAccount = (entry, password) => async (dispatch, getState) =>
 
   let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
 
-  const model = new WalletModel({
+  const model = new AccountModel({
     entry,
     wallet,
   })
@@ -136,7 +131,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   const account = accounts.privateKeyToAccount(`0x${hex}`)
   wallet.add(account)
 
-  return new WalletEntryModel({
+  return new AccountEntryModel({
     key: uniqid(),
     name,
     types,

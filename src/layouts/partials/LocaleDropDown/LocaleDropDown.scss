@@ -35,6 +35,19 @@
 
 .langButton {
   button {
+    color: $color-white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    padding: 0;
+    font-size: 20px;
+    font-weight: lighter;
+  }
+}
+
+.langButtonNewStyle {
+  button {
     color: #5DB3ED;
     border:1px solid #5DB3ED;
     background: transparent;

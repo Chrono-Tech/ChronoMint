@@ -52,7 +52,7 @@ export default class Splash extends Component {
               <CommonNetworkSelector />
             </div>
             <div styleName='lang-selector'>
-              <LocaleDropDown />
+              <LocaleDropDown newButtonStyle />
             </div>
           </div>
         </div>

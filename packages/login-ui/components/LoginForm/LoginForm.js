@@ -13,6 +13,9 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { UserRow, Button } from 'components'
 import {
+  AccountEntryModel,
+} from 'models/persistAccount'
+import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
   initLoginPage,
@@ -34,15 +37,16 @@ const nextStrategy = {
 
 export const FORM_LOGIN_PAGE = 'FormLoginPage'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
+  const selectedWallet = state.get('persistAccount').selectedWallet
 
   return {
-    selectedWallet: state.get('persistAccount').selectedWallet,
+    selectedWallet: selectedWallet && new AccountEntryModel({...selectedWallet}),
     isLoginSubmitting: state.get('network').isLoginSubmitting,
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
       const password = values.get('password')
@@ -117,10 +121,8 @@ class LoginPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>Log In</div>
-
-          <div styleName='selector'>
-            { this.renderProviderSelector() }
+          <div styleName='page-title'>
+            <Translate value='LoginForm.title' />
           </div>
 
           <div styleName='user-row'>
@@ -135,7 +137,7 @@ class LoginPage extends PureComponent {
                 component={TextField}
                 name='password'
                 type='password'
-                floatingLabelText='Enter Password'
+                floatingLabelText={<Translate value='LoginForm.enterPassword' />}
                 fullWidth
                 {...styles.textField}
               />
@@ -151,11 +153,13 @@ class LoginPage extends PureComponent {
                     style={{ verticalAlign: 'middle', marginTop: -2 }}
                     size={24}
                     thickness={1.5}
-                  /> : 'Log In'}
+                  /> : <Translate value='LoginForm.submitButton' />}
                 disabled={isLoginSubmitting}
               />
 
-              <Link to='/login/recover-account' href styleName='link'>Forgot you password?</Link>
+              <Link to='/login/recover-account' href styleName='link'>
+                <Translate value='LoginForm.forgotPassword' />
+              </Link>
             </div>
           </div>
 

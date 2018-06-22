@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import {
-  WalletEntryModel,
+  AccountEntryModel,
 } from 'models/persistAccount'
 import {
   onSubmitRecoverAccountForm,
@@ -27,14 +27,14 @@ import './RecoverAccount.scss'
 
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const selectedWallet = state.get('persistAccount').selectedWallet
   return {
-    selectedWallet: new WalletEntryModel({...selectedWallet}),
+    selectedWallet: selectedWallet && new AccountEntryModel(selectedWallet),
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch,) {
   return {
     onSubmit: async (values) => {
       let words = [], mnemonic = ''
@@ -56,7 +56,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 class RecoverAccountPage extends PureComponent {
   static propTypes = {
-    selectedWallet: PropTypes.instanceOf(WalletEntryModel),
+    selectedWallet: PropTypes.instanceOf(AccountEntryModel),
     initRecoverAccountPage: PropTypes.func,
   }
 

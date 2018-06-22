@@ -1,11 +1,9 @@
-import AbstractWalletModel from './AbstractWalletModel'
-import SignerModel from './SignerModel'
-import WalletEntryModel from './WalletEntryModel'
-import WalletModel from './WalletModel'
+import AbstractAccountModel from './AbstractAccountModel'
+import AccountEntryModel from './AccountEntryModel'
+import AccountModel from './AccountModel'
 
 export {
-  AbstractWalletModel,
-  SignerModel,
-  WalletEntryModel,
-  WalletModel,
+  AbstractAccountModel,
+  AccountEntryModel,
+  AccountModel,
 }

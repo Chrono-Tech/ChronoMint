@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import AbstractWalletModel from './AbstractWalletModel'
+import AbstractAccountModel from './AbstractAccountModel'
 
 const schema = {
   key: PropTypes.string,
@@ -8,7 +8,7 @@ const schema = {
   encrypted: PropTypes.array,
 }
 
-export default class WalletEntryModel extends AbstractWalletModel {
+export default class AccountEntryModel extends AbstractAccountModel {
   constructor (props) {
     super(props, schema)
     Object.assign(this, {

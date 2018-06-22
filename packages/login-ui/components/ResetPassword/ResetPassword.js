@@ -8,7 +8,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import {
-  WalletEntryModel,
+  AccountEntryModel,
 } from 'models/persistAccount'
 import {
   onSubmitResetAccountPasswordForm,
@@ -26,14 +26,14 @@ import './ResetPassword.scss'
 
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const selectedWallet = state.get('persistAccount').selectedWallet
   return {
-    selectedWallet: new WalletEntryModel({...selectedWallet}),
+    selectedWallet: selectedWallet && new AccountEntryModel(selectedWallet),
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
       const password = values.get('password')
@@ -48,7 +48,7 @@ function mapDispatchToProps (dispatch, ownProps) {
 
 class ResetPasswordPage extends PureComponent {
   static propTypes = {
-    selectedWallet: PropTypes.instanceOf(WalletEntryModel),
+    selectedWallet: PropTypes.instanceOf(AccountEntryModel),
     initResetPasswordPage: PropTypes.func,
   }
 

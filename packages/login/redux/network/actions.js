@@ -20,19 +20,19 @@ import {
   FORM_CREATE_ACCOUNT,
   FORM_RECOVER_ACCOUNT,
   FORM_RESET_PASSWORD,
-} from 'pages'
+} from '@chronobank/login-ui/components'
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from 'redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import { push } from 'react-router-redux'
+import networkService from '@chronobank/login/network/NetworkService'
+import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
-import networkService from '../../network/NetworkService'
-import privateKeyProvider from '../../network/privateKeyProvider'
 
 export const DUCK_NETWORK = 'network'
 

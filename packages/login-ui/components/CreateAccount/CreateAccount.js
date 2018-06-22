@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 
 import { Button } from 'components'
 import {
@@ -19,10 +20,10 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
+import styles from 'layouts/Splash/styles'
 
 import validate from './validate'
 
-import styles from 'layouts/Splash/styles'
 import fieldStyles from './styles'
 import './CreateAccount.scss'
 
@@ -127,7 +128,7 @@ class CreateAccountPage extends PureComponent {
             <Field
               component={TextField}
               name='walletName'
-              floatingLabelText='Wallet name'
+              floatingLabelText={<Translate value='CreateAccount.walletName' />}
               fullWidth
               {...styles.textField}
               {...fieldStyles.textField}
@@ -136,7 +137,7 @@ class CreateAccountPage extends PureComponent {
               component={TextField}
               name='password'
               type='password'
-              floatingLabelText='Password'
+              floatingLabelText={<Translate value='CreateAccount.password' />}
               fullWidth
               {...styles.textField}
               {...fieldStyles.textField}
@@ -145,7 +146,7 @@ class CreateAccountPage extends PureComponent {
               component={TextField}
               name='confirmPassword'
               type='password'
-              floatingLabelText='Confirm Password'
+              floatingLabelText={<Translate value='CreateAccount.confirmPassword' />}
               fullWidth
               {...styles.textField}
               {...fieldStyles.textField}

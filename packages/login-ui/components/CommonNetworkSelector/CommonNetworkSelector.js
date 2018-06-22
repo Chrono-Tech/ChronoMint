@@ -82,6 +82,7 @@ export default class CommonNetworkSelector extends PureComponent {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
     this.resolveNetwork()
+    this.handleRequestClose()
   }
 
   resolveNetwork = () => {

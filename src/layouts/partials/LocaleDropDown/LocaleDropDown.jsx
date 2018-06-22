@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Menu, MenuItem, Popover } from 'material-ui'
+import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -33,6 +33,11 @@ export default class LocaleDropDown extends PureComponent {
   static propTypes = {
     locale: PropTypes.string,
     onChangeLocale: PropTypes.func,
+    newButtonStyle: PropTypes.bool,
+  }
+
+  static defaultProps = {
+    newButtonStyle: false,
   }
 
   constructor (props) {
@@ -65,7 +70,7 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
-    const { locale } = this.props
+    const { locale, newButtonStyle } = this.props
     const locales = Object.entries(i18n).map(([ name, dictionary ]) => ({
       name,
       title: dictionary.title,
@@ -74,7 +79,7 @@ export default class LocaleDropDown extends PureComponent {
     return (
       <div styleName='root'>
         <Button
-          styleName='langButton'
+          styleName={newButtonStyle ? 'langButtonNewStyle' : 'langButton' }
           onClick={this.handleClick}
         >
           {locale}

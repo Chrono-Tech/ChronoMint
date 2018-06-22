@@ -9,9 +9,6 @@ const initialState = {
   isMultisig: false,
   blockchain: null,
   address: null,
-  walletsList: [],
-  selectedWallet: null,
-  decryptedWallet: null,
 }
 
 export default (state = initialState, action) => {

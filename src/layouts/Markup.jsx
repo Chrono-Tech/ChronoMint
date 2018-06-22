@@ -116,7 +116,7 @@ export default class Markup extends PureComponent {
               <div styleName='pageTitle'>
                 {this.renderPageTitle()}
               </div>
-              {/*<HeaderPartial location={this.props.location} />*/}
+              <HeaderPartial location={this.props.location} />
             </div>
             <div styleName='middleSnackbar'>
               <div styleName='middleSnackbarPanel'>
@@ -136,7 +136,7 @@ export default class Markup extends PureComponent {
             </div>
           </div>
           <div styleName='middleBottom' />
-          {/*<SideStack />*/}
+          <SideStack />
           <ModalStack />
         </div>
       </MuiThemeProvider>
