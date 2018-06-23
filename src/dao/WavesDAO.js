@@ -23,13 +23,14 @@ const EVENT_BALANCE = 'balance'
 
 export default class WavesDAO extends EventEmitter {
 
-  constructor (name, symbol, wavesProvider, decimals, asset) {
+  constructor (name, symbol, wavesProvider, decimals, asset, wavesToken) {
     super()
     this._name = name
     this._symbol = symbol
     this._decimals = decimals
     this._asset = asset
     this._wavesProvider = wavesProvider
+    this._wavesToken = wavesToken
   }
 
   getAddressValidator () {
@@ -72,7 +73,7 @@ export default class WavesDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    return await this._wavesProvider.getAccountBalances(this._asset)
+    return await this._wavesProvider.getAccountBalances(this._name)
   }
 
   async getAccountBalance () {
@@ -99,13 +100,13 @@ export default class WavesDAO extends EventEmitter {
   submit (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1) {
     setImmediate(async () => {
       this.emit('submit', new TransferExecModel({
-        title: `tx.Waves.${this._asset ? this._asset : 'WAVES'}.transfer.title`,
+        title: `tx.Waves.${this._name ? 'Asset': 'WAVES'}.transfer.title`,
         from,
         to,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
-	feeToken: token,
-	fee: new Amount(10000, token.symbol()),
+	feeToken: this._wavesToken,
+	fee: new Amount(10000, this._wavesToken.symbol()),
 	feeMultiplier,
       }))
     })
