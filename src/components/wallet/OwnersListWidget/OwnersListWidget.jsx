@@ -6,9 +6,9 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import TokensCollection from 'models/tokens/TokensCollection'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import Preloader from 'components/common/Preloader/Preloader'
-import { PTWallet } from 'redux/wallet/types'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
 import { prefix } from './lang'
 import './OwnersListWidget.scss'

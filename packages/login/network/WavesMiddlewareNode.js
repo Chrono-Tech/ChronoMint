@@ -7,9 +7,8 @@ import BigNumber from 'bignumber.js'
 import WavesAbstractNode, { WavesBalance, WavesTx } from './WavesAbstractNode'
 
 export default class WavesMiddlewareNode extends WavesAbstractNode {
-  constructor ({ assets, ...args }) {
+  constructor ({ ...args }) {
     super(args)
-    this._assets = assets
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
     this.addListener('unsubscribe', (address) => this._handleUnsubscribe(address))
@@ -65,10 +64,6 @@ export default class WavesMiddlewareNode extends WavesAbstractNode {
       this.trace(`getTransactionInfo ${txid} failed`, e)
       throw e
     }
-  }
-
-  getAssets () {
-    return this._assets
   }
 
   async getAddressInfo (address) {

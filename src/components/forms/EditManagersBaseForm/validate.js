@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import validator from 'models/validator'
+import validator from '@chronobank/core/models/validator'
 import ErrorList from 'platform/ErrorList'
 
 export default function (values) {

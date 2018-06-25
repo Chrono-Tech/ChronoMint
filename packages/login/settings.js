@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import web3Converter from 'utils/Web3Converter'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
 
 export const utils = {
   web3Converter,

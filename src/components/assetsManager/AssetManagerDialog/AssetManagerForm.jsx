@@ -4,13 +4,13 @@
  */
 
 import EditManagersBaseForm from 'components/forms/EditManagersBaseForm/EditManagersBaseForm'
-import TokenModel from 'models/tokens/TokenModel'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { addManager, removeManager } from 'redux/assetsManager/actions'
+import { addManager, removeManager } from '@chronobank/core/redux/assetsManager/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { getSelectedToken } from 'redux/assetsManager/selectors'
+import { getSelectedToken } from '@chronobank/core/redux/assetsManager/selectors'
 import './AssetManagerForm.scss'
 
 function mapStateToProps (state) {

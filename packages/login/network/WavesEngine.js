@@ -84,7 +84,7 @@ export class WavesEngine {
       amount: amount,
 
       // The same rules for these two fields
-      feeAssetId: 'WAVES',
+      feeAssetId: this._Waves.constants.WAVES,
       fee: 100000,
 
       // 140 bytes of data (it's allowed to use Uint8Array here)

@@ -4,7 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import * as validator from 'models/validator'
+import * as validator from '@chronobank/core/models/validator'
 import ErrorList from 'platform/ErrorList'
 
 export default function validate (values, props) {

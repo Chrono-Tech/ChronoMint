@@ -32,6 +32,7 @@ import TwoFaEnableForm from 'components/wallet/TwoFaEnableForm/lang'
 import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/lang'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/lang'
 import WalletName from 'components/wallet/WalletName/lang'
+import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
 import PollEditForm from 'components/voting/PollEditForm/lang'
 
 export default {
@@ -68,6 +69,7 @@ export default {
     TwoFaConfirmModal: TwoFaConfirmModal.en,
     WalletWidgetMini: WalletWidgetMini.en,
     WalletName: WalletName.en,
+    DepositWarningWidget: DepositWarningWidget.en,
     PollEditForm: PollEditForm.en,
   },
 }

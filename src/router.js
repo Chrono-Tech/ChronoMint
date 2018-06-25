@@ -27,7 +27,7 @@ import {
   NewPollPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
-import ls from './utils/LocalStorage'
+import ls from './platform/utils/LocalStorage'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {

@@ -33,7 +33,7 @@ export default class WavesWallet {
 
   static fromMnemonic (mnemonic, network) {
     const Waves = WavesAPI.create(network)
-    const seed = Waves.Seed.fromExistingPhrase(bip39.mnemonicToSeed(mnemonic).toString('hex'))
+    const seed = Waves.Seed.fromExistingPhrase(mnemonic)
     return new WavesWallet(seed, seed.keyPair, network)
   }
 }
