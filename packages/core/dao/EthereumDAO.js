@@ -125,7 +125,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   estimateGas = (func, args, value) => {
-    const [to, amount] = args
+    const [to] = args
     return this._estimateGas(to, value)
   }
 
