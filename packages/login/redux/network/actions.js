@@ -11,6 +11,7 @@ import {
   decryptAccount,
   accountAdd,
   accountSelect,
+  accountUpdate,
 } from 'redux/persistAccount/actions'
 import {
   FORM_CONFIRM_MNEMONIC,
@@ -28,6 +29,7 @@ import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import { push } from 'react-router-redux'
 import networkService from '@chronobank/login/network/NetworkService'
+import profileService from '@chronobank/login/network/ProfileService'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
 import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
@@ -61,11 +63,9 @@ export const NETWORK_RESET_LOGIN_SUBMITTING = 'network/RESET_LOGIN_SUBMITTING'
 export const NETWORK_SET_ACCOUNT_RECOVERY_MODE = 'network/SET_ACCOUNT_RECOVERY_MODE'
 export const NETWORK_RESET_ACCOUNT_RECOVERY_MODE = 'network/RESET_ACCOUNT_RECOVERY_MODE'
 
-export const WALLETS_ADD = 'network/WALLETS_ADD'
-export const WALLETS_SELECT = 'network/WALLETS_SELECT'
-export const WALLETS_LOAD = 'network/WALLETS_LOAD'
-export const WALLETS_UPDATE_LIST = 'network/WALLETS_UPDATE_LIST'
-export const WALLETS_REMOVE = 'network/WALLETS_REMOVE'
+export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_LOADING'
+export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = 'network/ACCOUNTS_SIGNATURES_RESOLVE'
+export const NETWORK_ACCOUNTS_SIGNATURES_REJECT = 'network/ACCOUNTS_SIGNATURES_REJECT'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -113,6 +113,8 @@ export const initLoginPage = () => (dispatch, getState) => {
   const { selectedWallet } = state.get('persistAccount')
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
+
+  dispatch(initAccountsSignature())
 
   if (!selectedWallet){
     dispatch(navigateToSelectWallet())
@@ -457,6 +459,43 @@ export const handleMnemonicLogin = (mnemonic) => async (dispatch, getState) => {
     )
     dispatch(login(selectedAccount))
   }
+
+}
+
+export const loadingAccountsSignatures = () => (dispatch) => {
+  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_LOADING })
+}
+
+export const resolveAccountsSignatures = (data) => (dispatch) => {
+  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_RESOLVE, data })
+}
+
+export const rejectAccountsSignatures = (data) => (dispatch) => {
+  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_REJECT, data })
+}
+
+export const initAccountsSignature = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { loadingAccountSignatures } = state.get('network')
+  const { walletsList } = state.get('persistAccount')
+
+  if (loadingAccountSignatures){
+    return
+  }
+
+  walletsList.map(async (account) => {
+    const signature = await profileService.getProfileSignature({
+      address: '',
+    })
+
+    const newAccount = {
+      ...account,
+      signature,
+    }
+
+    dispatch(accountUpdate(newAccount))
+  })
 
 }
 

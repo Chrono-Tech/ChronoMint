@@ -20,6 +20,7 @@ import {
   onSubmitLoginFormFail,
   initLoginPage,
   navigateToSelectWallet,
+  initAccountsSignature,
 } from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
@@ -56,6 +57,7 @@ function mapDispatchToProps (dispatch) {
     onSubmitFail: () => dispatch(onSubmitLoginFormFail()),
     initLoginPage: () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
   }
 }
 
@@ -64,6 +66,7 @@ class LoginPage extends PureComponent {
     initLoginPage: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
+    initAccountsSignature: PropTypes.func,
   }
 
   constructor(props){

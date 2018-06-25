@@ -9,7 +9,11 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
-import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
+import {
+  navigateToSelectImportMethod,
+  onWalletSelect,
+  initAccountsSignature,
+} from '@chronobank/login/redux/network/actions'
 import {
   AccountEntryModel,
 } from 'models/persistAccount'
@@ -21,6 +25,7 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
   }
 }
 
@@ -40,11 +45,16 @@ export default class SelectWalletPage extends PureComponent {
       PropTypes.instanceOf(AccountEntryModel)
     ),
     navigateToSelectImportMethod: PropTypes.func,
+    initAccountsSignature: PropTypes.func,
   }
 
   static defaultProps = {
     onWalletSelect: () => {},
     walletsList: [],
+  }
+
+  componentDidMount(){
+    this.props.initAccountsSignature()
   }
 
   renderWalletsList (){
