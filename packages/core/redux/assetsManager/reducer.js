@@ -7,6 +7,7 @@ import MainAssetsManagerModel from '../../models/assetsManager/MainAssetsManager
 import {
   GET_ASSETS_MANAGER_COUNTS,
   GET_ASSETS_MANAGER_COUNTS_START,
+  GET_ASSET_DATA,
   GET_PLATFORMS,
   GET_TRANSACTIONS_DONE,
   GET_TRANSACTIONS_START,
@@ -14,7 +15,6 @@ import {
   SELECT_TOKEN,
   SET_ASSETS,
   SET_NEW_MANAGERS_LIST,
-  GET_ASSET_DATA,
 } from './actions'
 
 export const initialState = new MainAssetsManagerModel()

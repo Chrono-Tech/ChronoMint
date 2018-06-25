@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { abstractFetchingModel } from './AbstractFetchingModel'
 import { PENDING_ID_PREFIX } from '../dao/PendingManagerDAO'
+import { abstractFetchingModel } from './AbstractFetchingModel'
 import TxExecModel from './TxExecModel'
 
 class OperationModel extends abstractFetchingModel({

@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import reducer from './reducer'
-import * as a from './actions'
 import RewardsModel from '../../models/rewards/RewardsModel'
 import RewardsPeriodModel from '../../models/rewards/RewardsPeriodModel'
 import { store } from '../../specsInit'
+import * as a from './actions'
+import reducer from './reducer'
 
 let data: RewardsModel = new RewardsModel({ address: '0x10' })
 

@@ -4,6 +4,7 @@
  */
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 

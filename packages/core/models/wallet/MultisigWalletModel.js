@@ -4,13 +4,14 @@
  */
 
 import Immutable from 'immutable'
+
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import BalancesCollection from '../tokens/BalancesCollection'
 import AddressesCollection from './AddressesCollection'
 import MultisigWalletPendingTxCollection from './MultisigWalletPendingTxCollection'
-import TransactionsCollection from './TransactionsCollection'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
 import OwnerCollection from './OwnerCollection'
+import TransactionsCollection from './TransactionsCollection'
 
 export default class MultisigWalletModel extends abstractFetchingModel({
   name: null,

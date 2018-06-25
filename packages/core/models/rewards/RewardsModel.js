@@ -4,9 +4,10 @@
  */
 
 import Immutable from 'immutable'
+
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import Amount from '../Amount'
 import AssetsCollection from '../assetHolder/AssetsCollection'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 export default class RewardsModel extends abstractFetchingModel({
   address: null,

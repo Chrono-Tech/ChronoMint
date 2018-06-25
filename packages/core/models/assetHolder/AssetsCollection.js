@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AssetModel from './AssetModel'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
+import AssetModel from './AssetModel'
 
 export default class AssetsCollection extends abstractFetchingCollection({
   emptyModel: new AssetModel(),

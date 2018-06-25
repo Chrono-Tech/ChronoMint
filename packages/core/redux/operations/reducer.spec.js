@@ -4,6 +4,7 @@
  */
 
 import Immutable from 'immutable'
+
 import OperationModel from '../../models/OperationModel'
 import * as a from './actions'
 import reducer from './reducer'

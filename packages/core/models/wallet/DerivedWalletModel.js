@@ -4,11 +4,12 @@
  */
 
 import Immutable from 'immutable'
-import BalancesCollection from '../tokens/BalancesCollection'
-import TransactionsCollection from './TransactionsCollection'
+
 import { abstractFetchingModel } from '../AbstractFetchingModel'
-import OwnerCollection from './OwnerCollection'
+import BalancesCollection from '../tokens/BalancesCollection'
 import AddressesCollection from './AddressesCollection'
+import OwnerCollection from './OwnerCollection'
+import TransactionsCollection from './TransactionsCollection'
 
 export default class DerivedWalletModel extends abstractFetchingModel({
   name: null,

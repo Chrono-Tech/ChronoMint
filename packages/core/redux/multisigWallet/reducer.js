@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
 import { REHYDRATE } from 'redux-persist'
+
+import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollection'
 import * as a from './actions'
 
 const initialState = new MultisigWalletCollection()

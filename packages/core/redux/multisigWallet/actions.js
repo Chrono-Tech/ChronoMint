@@ -3,23 +3,25 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { change } from 'redux-form/immutable'
 import {
-  bccProvider,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
+  bccProvider,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import BigNumber from 'bignumber.js'
+import { change } from 'redux-form/immutable'
+
 import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
-import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/MultisigWalletsManagerDAO'
+import { EE_MS_WALLETS_COUNT, EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED } from '../../dao/MultisigWalletsManagerDAO'
 import Amount from '../../models/Amount'
 import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeModel'
 import BalanceModel from '../../models/tokens/BalanceModel'
@@ -29,9 +31,6 @@ import type TxModel from '../../models/TxModel'
 import type MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../../models/wallet/OwnerModel'
-import { notify, notifyError } from '../notifier/actions'
-import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
@@ -45,8 +44,10 @@ import multisigWalletService, {
 } from '../../services/MultisigWalletService'
 import tokenService from '../../services/TokenService'
 import { ETH, getTokensBalancesAndWatch, getTransactionsForWallet } from '../mainWallet/actions'
+import { notify, notifyError } from '../notifier/actions'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
 import { getTokens } from '../tokens/selectors'
-import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { getMultisigWallets } from '../wallet/selectors/models'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'

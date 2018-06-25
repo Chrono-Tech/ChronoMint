@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TokenModel from './tokens/TokenModel'
 import LOCModel from './LOCModel'
+import TokenModel from './tokens/TokenModel'
 
 describe('LOC model', () => {
   it('should construct and return data', async () => {

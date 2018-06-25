@@ -4,12 +4,13 @@
  */
 
 import Immutable from 'immutable'
+
 import TokenModel from '../tokens/TokenModel'
 import TxModel from '../TxModel'
+import MultisigWalletModel from './MultisigWalletModel'
 import MultisigWalletPendingTxCollection from './MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
 import TransactionsCollection from './TransactionsCollection'
-import MultisigWalletModel from './MultisigWalletModel'
 
 const multisigWalletModel = new MultisigWalletModel({
   address: 'a1',

@@ -5,6 +5,7 @@
 
 import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
+
 import * as actions from './actions'
 
 let store

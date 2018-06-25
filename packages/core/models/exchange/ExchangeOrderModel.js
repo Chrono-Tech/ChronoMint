@@ -4,6 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
+
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import Amount from '../Amount'
 

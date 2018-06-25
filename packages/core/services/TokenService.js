@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ERC20DAO from '../dao/ERC20DAO'
 import EventEmitter from 'events'
+
+import ERC20DAO from '../dao/ERC20DAO'
 import TokenModel from '../models/tokens/TokenModel'
 
 export const EVENT_NEW_TOKEN = 'newToken'

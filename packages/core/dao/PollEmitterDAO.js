@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from './ContractsManagerDAO'
-import PollNoticeModel, { IS_VOTED, IS_ACTIVATED, IS_ENDED } from '../models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_ACTIVATED, IS_ENDED, IS_VOTED } from '../models/notices/PollNoticeModel'
 import { MultiEventsHistoryABI, PollEmitterABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
+import contractsManagerDAO from './ContractsManagerDAO'
 
 export const EVENT_POLL_VOTED = 'PollVoted'
 export const EVENT_POLL_ACTIVATED = 'PollActivated'

@@ -6,10 +6,11 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
+
 import { TIME } from '../redux/mainWallet/actions'
 import { abstractFetchingModel } from './AbstractFetchingModel'
-import PollModel from './PollModel'
 import Amount from './Amount'
+import PollModel from './PollModel'
 
 export default class PollDetailsModel extends abstractFetchingModel({
   id: null,

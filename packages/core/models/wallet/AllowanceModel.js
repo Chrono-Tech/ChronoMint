@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from '../Amount'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
+import Amount from '../Amount'
 
 export default class AllowanceModel extends abstractFetchingModel({
   amount: new Amount(0, null, false),

@@ -3,14 +3,15 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import Immutable from 'immutable'
+
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import BalanceModel from '../tokens/BalanceModel'
 import BalancesCollection from '../tokens/BalancesCollection'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
+import AddressesCollection from './AddressesCollection'
 import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'
-import AddressesCollection from './AddressesCollection'
 
 export default class MainWalletModel extends abstractFetchingModel({
   address: null,

@@ -7,6 +7,7 @@ import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
 import moment from 'moment'
 import uniqid from 'uniqid'
+
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols

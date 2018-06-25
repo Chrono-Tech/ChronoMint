@@ -4,6 +4,7 @@
  */
 
 import { modalsOpen } from '@chronobank/core-dependencies/redux/modals/actions'
+
 import { DUCK_MAIN_WALLET } from '../mainWallet/actions'
 import { DUCK_MULTISIG_WALLET, selectMultisigWallet } from '../multisigWallet/actions'
 import { getMainWallet, getMultisigWallets } from './selectors/models'

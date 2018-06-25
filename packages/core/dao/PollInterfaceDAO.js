@@ -3,8 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
+
 import Amount from '../models/Amount'
 import { TIME } from '../redux/mainWallet/actions'
 import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'

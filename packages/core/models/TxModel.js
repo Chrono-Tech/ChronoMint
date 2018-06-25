@@ -3,10 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FULL_DATE } from './constants'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import { abstractModel } from './AbstractModel'
+import { FULL_DATE } from './constants'
 
 class TxModel extends abstractModel({
   txHash: null,

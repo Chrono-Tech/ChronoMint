@@ -3,9 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import CCC from './ccc-streamer-utilities'
 import EventEmitter from 'events'
+
 import openSocket from 'socket.io-client'
+
+import CCC from './ccc-streamer-utilities'
 
 const markets = [
   'BTC38',

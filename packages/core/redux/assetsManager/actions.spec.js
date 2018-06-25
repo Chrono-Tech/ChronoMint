@@ -3,19 +3,20 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import Immutable from 'immutable'
 import networkService from '@chronobank/login/network/NetworkService'
-import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_SESSION } from '../session/actions'
+import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
-import FeeModel from '../../models/tokens/FeeModel'
+
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Amount from '../../models/Amount'
+import FeeModel from '../../models/tokens/FeeModel'
 import ReissuableModel from '../../models/tokens/ReissuableModel'
-import OwnerCollection from '../../models/wallet/OwnerCollection'
-import { DUCK_TOKENS, TOKENS_FETCHED } from '../tokens/actions'
+import TokenModel from '../../models/tokens/TokenModel'
 import TokensCollection from '../../models/tokens/TokensCollection'
+import OwnerCollection from '../../models/wallet/OwnerCollection'
 import OwnerModel from '../../models/wallet/OwnerModel'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS, TOKENS_FETCHED } from '../tokens/actions'
 import * as a from './actions'
 
 let store

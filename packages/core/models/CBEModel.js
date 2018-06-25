@@ -4,9 +4,10 @@
  */
 
 import ErrorList from '@chronobank/core-dependencies/ErrorList'
-import validator from './validator'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import ProfileModel from './ProfileModel'
+import validator from './validator'
 
 class CBEModel extends abstractFetchingModel({
   address: null,

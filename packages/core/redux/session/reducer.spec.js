@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import * as a from './actions'
-import { accounts } from '../../specsInit'
 import ProfileModel from '../../models/ProfileModel'
+import { accounts } from '../../specsInit'
+import * as a from './actions'
 import reducer from './reducer'
 
 const profile = new ProfileModel({ name: Math.random() })

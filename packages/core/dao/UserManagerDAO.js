@@ -5,15 +5,16 @@
 
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+
 import type AbstractModel from '../models/AbstractModel'
+import AdditionalActionModel from '../models/AdditionalActionModel'
 import CBEModel from '../models/CBEModel'
 import CBENoticeModel from '../models/notices/CBENoticeModel'
-import ProfileModel from '../models/ProfileModel'
-import AdditionalActionModel from '../models/AdditionalActionModel'
 import ProfileNoticeModel from '../models/notices/ProfileNoticeModel'
+import ProfileModel from '../models/ProfileModel'
 import { MultiEventsHistoryABI, UserManagerABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { DEFAULT_TX_OPTIONS } from './AbstractContractDAO'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export const TX_ADD_CBE = 'addCBE'
 export const TX_REVOKE_CBE = 'revokeCBE'

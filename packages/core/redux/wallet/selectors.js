@@ -4,13 +4,14 @@
  */
 
 import { createSelector } from 'reselect'
-import { ETH } from '../mainWallet/actions'
-import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
+
+import Amount from '../../models/Amount'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
+import { ETH } from '../mainWallet/actions'
+import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
 import { getAccount } from '../session/selectors'
-import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
-import Amount from '../../models/Amount'
 import {
   getMainWallet,
   getMultisigWallets,

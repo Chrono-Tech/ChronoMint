@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
 import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
+
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import VotingCollection from './VotingCollection'
 
 export default class VotingMainModel extends abstractFetchingModel({

@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxExecModel from '../models/TxExecModel'
@@ -13,9 +14,9 @@ import MultisigTransactionModel from '../models/wallet/MultisigTransactionModel'
 import MultisigWalletModel from '../models/wallet/MultisigWalletModel'
 import MultisigWalletPendingTxCollection from '../models/wallet/MultisigWalletPendingTxCollection'
 import MultisigWalletPendingTxModel from '../models/wallet/MultisigWalletPendingTxModel'
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import OwnerModel from '../models/wallet/OwnerModel'
 import { MultiEventsHistoryABI, WalletABI } from './abi'
+import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 
 export default class MultisigWalletDAO extends AbstractMultisigContractDAO {
 

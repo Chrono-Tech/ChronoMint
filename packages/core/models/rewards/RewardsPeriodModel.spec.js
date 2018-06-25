@@ -5,6 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+
 import RewardsPeriodModel from './RewardsPeriodModel'
 
 const model = new RewardsPeriodModel({

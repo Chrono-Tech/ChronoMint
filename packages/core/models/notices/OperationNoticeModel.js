@@ -5,9 +5,10 @@
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
-import { abstractNoticeModel } from './AbstractNoticeModel'
+
 import type OperationModel from '../OperationModel'
 import type TxExecModel from '../TxExecModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const CONFIRMED = 'notices.operations.confirmed'
 const CANCELLED = 'notices.operations.cancelled'

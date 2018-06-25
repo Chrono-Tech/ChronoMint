@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AllowanceModel from './AllowanceModel'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
+import AllowanceModel from './AllowanceModel'
 
 export default class AllowanceCollection extends abstractFetchingCollection({
   emptyModel: new AllowanceModel(),

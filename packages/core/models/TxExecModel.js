@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import { I18n } from '@chronobank/core-dependencies/i18n'
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
 import uniqid from 'uniqid'
+
 import { abstractModel } from './AbstractModel'
 
 class TxExecModel extends abstractModel({

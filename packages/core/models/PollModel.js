@@ -4,6 +4,7 @@
  */
 
 import Immutable from 'immutable'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
 
 class PollModel extends abstractFetchingModel({

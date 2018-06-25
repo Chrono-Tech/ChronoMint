@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Immutable from 'immutable'
+
 import OperationNoticeModel from '../models/notices/OperationNoticeModel'
 import OperationModel from '../models/OperationModel'
 import type TxExecModel from '../models/TxExecModel'
-import resultCodes from 'chronobank-smart-contracts/common/errors'
 import { MultiEventsHistoryABI, PendingManagerABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 import contractsManagerDAO from './ContractsManagerDAO'

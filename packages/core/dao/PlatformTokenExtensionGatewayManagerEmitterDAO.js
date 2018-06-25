@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { MultiEventsHistoryABI, PlatformTokenExtensionGatewayManagerEmitterABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { PlatformTokenExtensionGatewayManagerEmitterABI, MultiEventsHistoryABI } from './abi'
 
 const TX_ASSET_CREATED = 'AssetCreated'
 export default class PlatformTokenExtensionGatewayManagerEmitterDAO extends AbstractContractDAO {

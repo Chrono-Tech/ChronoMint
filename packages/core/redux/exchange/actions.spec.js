@@ -3,23 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import tokenService from '../../services/TokenService'
-import MainWalletModel from '../../models/wallet/MainWalletModel'
-import ExchangesCollection from '../../models/exchange/ExchangesCollection'
-import BigNumber from 'bignumber.js'
-import { mainTransfer, WALLET_ALLOWANCE } from '../mainWallet/actions'
-import Immutable from 'immutable'
 import networkService from '@chronobank/login/network/NetworkService'
-import exchangeService from '../../services/ExchangeService'
-import { DUCK_SESSION } from '../session/actions'
+import BigNumber from 'bignumber.js'
+import Immutable from 'immutable'
 import { accounts, mockStore } from 'specsInit'
-import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
-import ExchangeModel from '../../models/exchange/ExchangeModel'
-import TokensCollection from '../../models/tokens/TokensCollection'
-import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS } from '../tokens/actions'
+
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
+import ExchangeModel from '../../models/exchange/ExchangeModel'
+import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
+import ExchangesCollection from '../../models/exchange/ExchangesCollection'
+import TokenModel from '../../models/tokens/TokenModel'
+import TokensCollection from '../../models/tokens/TokensCollection'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
+import exchangeService from '../../services/ExchangeService'
+import tokenService from '../../services/TokenService'
+import { WALLET_ALLOWANCE, mainTransfer } from '../mainWallet/actions'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS } from '../tokens/actions'
 import * as a from './actions'
 
 let store

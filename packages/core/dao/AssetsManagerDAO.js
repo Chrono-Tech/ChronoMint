@@ -3,23 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
-import web3Converter from '../utils/Web3Converter'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import BigNumber from 'bignumber.js'
-import contractManager from './ContractsManagerDAO'
-import TxModel from '../models/TxModel'
+import Immutable from 'immutable'
 import { unionBy } from 'lodash'
+
+import BlacklistModel from '../models/tokens/BlacklistModel'
+import TxModel from '../models/TxModel'
 import OwnerCollection from '../models/wallet/OwnerCollection'
 import OwnerModel from '../models/wallet/OwnerModel'
-import BlacklistModel from '../models/tokens/BlacklistModel'
+import web3Converter from '../utils/Web3Converter'
 import { AssetsManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
-import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
-import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 import { TX_PAUSED, TX_RESTRICTED, TX_UNPAUSED, TX_UNRESTRICTED } from './ChronoBankAssetDAO'
+import { TX_ISSUE, TX_OWNERSHIP_CHANGE, TX_REVOKE } from './ChronoBankPlatformDAO'
+import contractManager from './ContractsManagerDAO'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import { TX_PLATFORM_ATTACHED, TX_PLATFORM_DETACHED, TX_PLATFORM_REQUESTED } from './PlatformsManagerDAO'
 
 export const TX_ASSET_CREATED = 'AssetCreated'
 

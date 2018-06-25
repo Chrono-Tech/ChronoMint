@@ -3,22 +3,24 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import EventEmitter from 'events'
+
 import {
-  bccProvider,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
+  bccProvider,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
+
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
-import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
+import TxModel from '../models/TxModel'
 import { bitcoinAddress } from '../models/validator'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK } from './AbstractTokenDAO'
 

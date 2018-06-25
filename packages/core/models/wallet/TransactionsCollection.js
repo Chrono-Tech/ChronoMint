@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TxModel from '../TxModel'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
+import TxModel from '../TxModel'
 
 export const TXS_PER_PAGE = 20
 

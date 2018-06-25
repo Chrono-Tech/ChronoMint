@@ -4,8 +4,9 @@
  */
 
 import Immutable from 'immutable'
-import * as types from './actions'
+
 import ProfileModel from '../../models/ProfileModel'
+import * as types from './actions'
 
 const initialState = {
   account: null,

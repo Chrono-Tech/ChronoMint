@@ -3,7 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { store, accounts } from 'specsInit'
+import { accounts, store } from 'specsInit'
+
 import CBEModel from '../../models/CBEModel'
 import CBENoticeModel from '../../models/notices/CBENoticeModel'
 import * as a from './actions'

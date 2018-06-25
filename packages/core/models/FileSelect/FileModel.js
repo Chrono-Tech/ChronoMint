@@ -4,7 +4,7 @@
  */
 
 import { abstractModel } from '../AbstractModel'
-import { IMAGE_MIME_TYPE, DOC_MIME_TYPE, XLS_MIME_TYPE, PPT_MIME_TYPE, PDF_MIME_TYPE } from './FileExtension'
+import { DOC_MIME_TYPE, IMAGE_MIME_TYPE, PDF_MIME_TYPE, PPT_MIME_TYPE, XLS_MIME_TYPE } from './FileExtension'
 
 export type fileConfig = {
   accept: Array,

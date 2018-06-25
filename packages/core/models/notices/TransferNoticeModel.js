@@ -3,11 +3,12 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
-import { abstractNoticeModel } from './AbstractNoticeModel'
+import BigNumber from 'bignumber.js'
+
 import type TxModel from '../TxModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class TransferNoticeModel extends abstractNoticeModel({
   value: new BigNumber(0), // with decimals

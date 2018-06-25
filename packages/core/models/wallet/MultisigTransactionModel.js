@@ -4,6 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
+
 import { abstractModel } from '../AbstractModel'
 
 class MultisigTransactionModel extends abstractModel({

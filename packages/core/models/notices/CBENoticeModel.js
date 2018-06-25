@@ -5,8 +5,9 @@
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
-import { abstractNoticeModel } from './AbstractNoticeModel'
+
 import type CBEModel from '../CBEModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class CBENoticeModel extends abstractNoticeModel({
   cbe: null,

@@ -3,13 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
-import { I18n } from '@chronobank/core-dependencies/i18n'
-import Amount from './Amount'
-import TokenModel from './tokens/TokenModel'
+
 import { abstractFetchingModel } from './AbstractFetchingModel'
+import Amount from './Amount'
 import { dateFormatOptions } from './constants'
+import TokenModel from './tokens/TokenModel'
 
 export const THE_90_DAYS = 90 * 24 * 60 * 60 * 1000
 

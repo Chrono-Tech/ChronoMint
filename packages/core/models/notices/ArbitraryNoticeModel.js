@@ -4,6 +4,7 @@
  */
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ArbitraryNoticeModel extends abstractNoticeModel({

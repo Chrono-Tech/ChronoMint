@@ -4,6 +4,7 @@
  */
 
 import Immutable from 'immutable'
+
 import * as a from './actions'
 
 const initialState = {

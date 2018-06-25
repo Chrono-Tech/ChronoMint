@@ -4,6 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
+
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'

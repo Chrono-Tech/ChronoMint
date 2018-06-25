@@ -10,10 +10,10 @@ import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
+import tokenService from '../../services/TokenService'
 import { WALLET_ALLOWANCE } from '../mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
-import tokenService from '../../services/TokenService'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 

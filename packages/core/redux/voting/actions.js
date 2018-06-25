@@ -3,16 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { DUCK_SESSION } from '../session/actions'
-import votingService from '../../services/VotingService'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../../dao/PollEmitterDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../../dao/VotingManagerDAO'
 import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from '../../models/notices/PollNoticeModel'
 import PollDetailsModel from '../../models/PollDetailsModel'
 import PollModel from '../../models/PollModel'
+import votingService from '../../services/VotingService'
 import { notify } from '../notifier/actions'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../../dao/VotingManagerDAO'
+import { DUCK_SESSION } from '../session/actions'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'

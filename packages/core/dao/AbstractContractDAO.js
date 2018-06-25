@@ -3,16 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import EventEmitter from 'events'
+
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import web3Provider from '@chronobank/login/network/Web3Provider'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import truffleContract from 'truffle-contract'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import EventEmitter from 'events'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import validator from '../models/validator'
+
 import AbstractModel from '../models/AbstractModel'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
+import validator from '../models/validator'
 import web3Converter from '../utils/Web3Converter'
 
 export const EVENT_NEW_BLOCK = 'TokenNewBlock'

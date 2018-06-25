@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BalanceModel from './BalanceModel'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
+import BalanceModel from './BalanceModel'
 
 export default class BalancesCollection extends abstractFetchingCollection({
   emptyModel: new BalanceModel(),

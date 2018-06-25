@@ -3,13 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
+
+import Amount from '../models/Amount'
 import LOCModel from '../models/LOCModel'
 import LOCNoticeModel, { statuses } from '../models/notices/LOCNoticeModel'
 import type TokenModel from '../models/tokens/TokenModel'
 import tokenService from '../services/TokenService'
-import BigNumber from 'bignumber.js'
-import Amount from '../models/Amount'
 import { LOCManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import { LHT } from './LHTDAO'

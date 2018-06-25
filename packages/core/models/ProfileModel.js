@@ -4,6 +4,7 @@
  */
 
 import Immutable from 'immutable'
+
 import { abstractModel } from './AbstractModel'
 import TokenModel from './tokens/TokenModel'
 

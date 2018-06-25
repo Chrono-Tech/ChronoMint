@@ -4,9 +4,10 @@
  */
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
+
 import TxError from '../TxError'
-import { abstractNoticeModel } from './AbstractNoticeModel'
 import type TxExecModel from '../TxExecModel'
+import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class TransactionErrorNoticeModel extends abstractNoticeModel({
   tx: null,

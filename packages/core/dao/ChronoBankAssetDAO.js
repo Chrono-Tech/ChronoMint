@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MultiEventsHistoryABI, ChronoBankAssetABI } from './abi'
+import { ChronoBankAssetABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const TX_PAUSE = 'pause'

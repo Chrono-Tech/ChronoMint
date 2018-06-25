@@ -4,10 +4,11 @@
  */
 
 import Immutable from 'immutable'
+
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import type AbstractFetchingModel from '../../models/AbstractFetchingModel'
-import OperationModel from '../../models/OperationModel'
 import OperationNoticeModel from '../../models/notices/OperationNoticeModel'
+import OperationModel from '../../models/OperationModel'
 import { notify } from '../notifier/actions'
 
 export const OPERATIONS_FETCH = 'operations/FETCH'

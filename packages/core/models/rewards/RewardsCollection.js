@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import RewardsCurrentPeriodModel from './RewardsCurrentPeriodModel'
-import AssetsCollection from '../assetHolder/AssetsCollection'
 import { abstractFetchingCollection } from '../AbstractFetchingCollection'
+import AssetsCollection from '../assetHolder/AssetsCollection'
+import RewardsCurrentPeriodModel from './RewardsCurrentPeriodModel'
 import RewardsPeriodModel from './RewardsPeriodModel'
 
 export default class RewardsCollection extends abstractFetchingCollection({

@@ -4,8 +4,9 @@
  */
 
 import { Map } from 'immutable'
-import * as a from './actions'
+
 import LOCModel from '../../models/LOCModel'
+import * as a from './actions'
 import reducer, { initialState } from './reducer'
 
 const init = {

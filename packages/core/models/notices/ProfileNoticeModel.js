@@ -5,6 +5,7 @@
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
+
 import ProfileModel from '../ProfileModel'
 import { abstractNoticeModel } from './AbstractNoticeModel'
 

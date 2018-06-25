@@ -5,12 +5,13 @@
 
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
+import solidityEvent from 'web3/lib/web3/event'
+
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'
 import TxModel from '../models/TxModel'
-import solidityEvent from 'web3/lib/web3/event'
 import AbstractContractDAO, { DEFAULT_GAS, EVENT_NEW_BLOCK, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
 import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
 

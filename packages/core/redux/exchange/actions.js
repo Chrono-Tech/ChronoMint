@@ -3,18 +3,19 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Immutable from 'immutable'
-import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
-import { DUCK_SESSION } from '../session/actions'
-import exchangeService from '../../services/ExchangeService'
-import { fetchTokenBalance, WALLET_ALLOWANCE } from '../mainWallet/actions'
-import TokenModel from '../../models/tokens/TokenModel'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
-import AllowanceModel from '../../models/wallet/AllowanceModel'
+
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Amount from '../../models/Amount'
+import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
+import TokenModel from '../../models/tokens/TokenModel'
+import AllowanceModel from '../../models/wallet/AllowanceModel'
+import exchangeService from '../../services/ExchangeService'
+import tokenService from '../../services/TokenService'
+import { WALLET_ALLOWANCE, fetchTokenBalance } from '../mainWallet/actions'
+import { DUCK_SESSION } from '../session/actions'
+import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
 
 export const DUCK_EXCHANGE = 'exchange'
 

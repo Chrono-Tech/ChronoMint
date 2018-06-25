@@ -5,6 +5,7 @@
 
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 const ADDED = 'notices.locs.added'

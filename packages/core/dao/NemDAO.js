@@ -3,14 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
-import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
-import TokenModel from '../models/tokens/TokenModel'
-import TxModel from '../models/TxModel'
-import TransferExecModel from '../models/TransferExecModel'
+
+import BigNumber from 'bignumber.js'
+
 import Amount from '../models/Amount'
+import TokenModel from '../models/tokens/TokenModel'
+import TransferExecModel from '../models/TransferExecModel'
+import TxModel from '../models/TxModel'
 import { nemAddress } from '../models/validator'
+import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE } from './AbstractTokenDAO'
 
 export const BLOCKCHAIN_NEM = 'NEM'

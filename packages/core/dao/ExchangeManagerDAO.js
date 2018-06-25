@@ -4,9 +4,10 @@
  */
 
 import exchangeProvider from '@chronobank/login/network/ExchangeProvider'
+import BigNumber from 'bignumber.js'
+
 import ExchangeOrderModel from '../models/exchange/ExchangeOrderModel'
 import ExchangesCollection from '../models/exchange/ExchangesCollection'
-import BigNumber from 'bignumber.js'
 import web3Converter from '../utils/Web3Converter'
 import { ExchangeManagerABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'

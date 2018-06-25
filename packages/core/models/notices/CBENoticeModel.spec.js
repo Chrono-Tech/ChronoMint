@@ -4,9 +4,10 @@
  */
 
 import moment from 'moment'
+
 import CBEModel from '../CBEModel'
-import CBENoticeModel from './CBENoticeModel'
 import ProfileModel from '../ProfileModel'
+import CBENoticeModel from './CBENoticeModel'
 
 const model = new CBENoticeModel({
   cbe: new CBEModel({

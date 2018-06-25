@@ -3,17 +3,18 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { push, replace } from '@chronobank/core-dependencies/router'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import networkService from '@chronobank/login/network/NetworkService'
 import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { push, replace } from '@chronobank/core-dependencies/router'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
-import { cbeWatcher, watcher } from '../watcher/actions'
-import { removeWatchersUserMonitor } from '../ui/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
+import { removeWatchersUserMonitor } from '../ui/actions'
+import { cbeWatcher, watcher } from '../watcher/actions'
 
 export const DUCK_SESSION = 'session'
 

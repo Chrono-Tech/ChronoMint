@@ -3,9 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import BigNumber from 'bignumber.js'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
+import BigNumber from 'bignumber.js'
+
 import { abstractNoticeModel } from './AbstractNoticeModel'
 
 export default class ApprovalNoticeModel extends abstractNoticeModel({

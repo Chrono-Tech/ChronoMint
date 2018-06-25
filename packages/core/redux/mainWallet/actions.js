@@ -3,52 +3,53 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { history } from '@chronobank/core-dependencies/configureStore'
+import { push } from '@chronobank/core-dependencies/router'
+import { getDeriveWalletsAddresses, getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
 import {
-  bccProvider,
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
   BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
+  bccProvider,
   btcProvider,
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses } from '@chronobank/core/redux/wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
-import { history } from '@chronobank/core-dependencies/configureStore'
-import { push } from '@chronobank/core-dependencies/router'
+import { change, formValueSelector } from 'redux-form/immutable'
+
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
+import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/AssetHolderDAO'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import { TX_APPROVE } from '../../dao/ERC20DAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
+import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
 import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
+import type TxModel from '../../models/TxModel'
 import validator from '../../models/validator'
+import AddressesCollection from '../../models/wallet/AddressesCollection'
 import AddressModel from '../../models/wallet/AddressModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
+import OwnerCollection from '../../models/wallet/OwnerCollection'
+import OwnerModel from '../../models/wallet/OwnerModel'
 import TransactionsCollection, { TXS_PER_PAGE } from '../../models/wallet/TransactionsCollection'
+import tokenService from '../../services/TokenService'
 import { addMarketToken } from '../market/actions'
+import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDATE } from '../multisigWallet/actions'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
-import tokenService from '../../services/TokenService'
-import type TxModel from '../../models/TxModel'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
-import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/AssetHolderDAO'
-import { TX_APPROVE } from '../../dao/ERC20DAO'
-import OwnerCollection from '../../models/wallet/OwnerCollection'
-import OwnerModel from '../../models/wallet/OwnerModel'
-import { DUCK_MULTISIG_WALLET, MULTISIG_BALANCE, MULTISIG_FETCHED, MULTISIG_UPDATE } from '../multisigWallet/actions'
-import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
-import AddressesCollection from '../../models/wallet/AddressesCollection'
-import MainWalletModel from '../../models/wallet/MainWalletModel'
-import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
-import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
