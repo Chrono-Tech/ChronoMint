@@ -90,7 +90,7 @@ class MnemonicProvider {
       : COIN_TYPE_BTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createLitecoinWallet (mnemonic, network) {
@@ -99,7 +99,7 @@ class MnemonicProvider {
       : COIN_TYPE_LTC_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   createBitcoinGoldWallet (mnemonic, network) {
@@ -108,7 +108,7 @@ class MnemonicProvider {
       : COIN_TYPE_BTG_MAINNET
     return bitcoin.HDNode
       .fromSeedBuffer(bip39.mnemonicToSeed(mnemonic), network)
-      .derivePath(`m/44'/${coinType}'/0'/0`)
+      .derivePath(`m/44'/${coinType}'/0'/0/0`)
   }
 
   validateMnemonic (mnemonic) {
