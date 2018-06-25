@@ -3,8 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-
 import { ChronoBankPlatformABI, MultiEventsHistoryABI } from './abi'
 import AbstractContractDAO from './AbstractContractDAO'
 

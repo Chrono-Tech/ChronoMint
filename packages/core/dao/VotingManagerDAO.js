@@ -9,7 +9,7 @@ import Immutable from 'immutable'
 
 import Amount from '../models/Amount'
 import FileModel from '../models/FileSelect/FileModel'
-import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED, } from '../models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
 import PollDetailsModel from '../models/PollDetailsModel'
 import PollModel from '../models/PollModel'
 import VotingCollection from '../models/voting/VotingCollection'
