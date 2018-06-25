@@ -51,8 +51,9 @@
     "html-webpack-include-assets-plugin": "^1.0.2",
     "html-webpack-plugin": "2.28.0",
     "http-server": "^0.10.0",
-    "import-sort": "^3.3.0",
-    "import-sort-parser-babylon": "^3.2.0",
+    "import-sort": "^5.0.0",
+    "import-sort-parser-babylon": "^5.0.0",
+    "import-sort-style-module": "^5.0.0",
     "jasmine": "^2.6.0",
     "jasmine-core": "^2.6.1",
     "jest": "21.2.1",
@@ -170,6 +171,7 @@
     "contracts": "cd node_modules/chronobank-smart-contracts && node --max_old_space_size=8000 ../truffle/build/cli.bundled.js migrate --network development",
     "tconsole": "cd node_modules/chronobank-smart-contracts && node ../truffle/build/cli.bundled.js console --verbose-rpc",
     "hs": "openssl req -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem && hs build -a localhost -o -S",
+    "import-sort": "import-sort",
     "rei": "rm -rf ./node_modules && yarn install && yarn contracts:compile"
   },
   "pre-commit": [],
@@ -204,5 +206,11 @@
   "workspaces": [
     "src/platform",
     "packages/*"
-  ]
+  ],
+  "importSort": {
+    ".js, .jsx, .es6, .es": {
+      "parser": "babylon",
+      "style": "module"
+    }
+  }
 }
