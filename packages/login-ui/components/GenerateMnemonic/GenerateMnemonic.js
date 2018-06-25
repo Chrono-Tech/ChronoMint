@@ -3,80 +3,117 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { Checkbox, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { Translate } from 'react-redux-i18n'
-import theme from 'styles/themes/default'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
-import Warning from '../../components/Warning/Warning'
+import { push } from 'react-router-redux'
+import { connect } from 'react-redux'
+import classnames from 'classnames'
+import { MuiThemeProvider } from 'material-ui'
+import { reduxForm, Field } from 'redux-form/immutable'
+import React, { Component } from 'react'
+import { Link } from 'react-router'
+import { UserRow, Button } from 'components'
+import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
+
+import PrintIcon from 'assets/img/icons/print-white.svg'
+
 import './GenerateMnemonic.scss'
-import { Button } from '../../settings'
 
-class GenerateMnemonic extends PureComponent {
-  static propTypes = {
-    onBack: PropTypes.func,
-  }
+function mapStateToProps (state, ownProps) {
 
-  constructor () {
-    super()
-    this.state = {
-      isConfirmed: false,
-      mnemonicKey: mnemonicProvider.generateMnemonic(),
-    }
-  }
-
-  componentWillMount () {
-    this.setState({ mnemonicKey: mnemonicProvider.generateMnemonic() })
-  }
-
-  componentWillUnmount () {
-    this.setState({ mnemonicKey: '' })
-  }
-
-  handleCheckClick = (target, value) => {
-    this.setState({ isConfirmed: value })
-  }
-
-  render () {
-    const { isConfirmed, mnemonicKey } = this.state
-
-    return (
-      <div>
-        <BackButton
-          onClick={() => this.props.onBack()}
-          to='loginWithMnemonic'
-        />
-        <MuiThemeProvider muiTheme={theme}>
-          <div styleName='root'>
-            <div styleName='keyBox'>
-              <div styleName='keyLabel'><Translate value='GenerateMnemonic.generateMnemonic' /></div>
-              <div styleName='keyValue'>{mnemonicKey}</div>
-            </div>
-            <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML /></div>
-            <Warning />
-            <div styleName='actions'>
-              <div styleName='actionConfirm'>
-                <Checkbox
-                  onCheck={this.handleCheckClick}
-                  label={<Translate value='GenerateMnemonic.iUnderstand' />}
-                  checked={isConfirmed}
-                  {...styles.checkbox}
-                />
-              </div>
-              <Button
-                label={<Translate value='GenerateMnemonic.continue' />}
-                disabled={!isConfirmed}
-                onClick={() => this.props.onBack()}
-              />
-            </div>
-          </div>
-        </MuiThemeProvider>
-      </div>
-    )
+  return {
+    mnemonic: state.get('network').newAccountMnemonic,
   }
 }
 
-export default GenerateMnemonic
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    initMnemonicPage: () => dispatch(initMnemonicPage()),
+    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class MnemonicPage extends Component {
+  static propTypes = {
+    mnemonic: PropTypes.string,
+    initMnemonicPage: PropTypes.func,
+    navigateToConfirmPage: PropTypes.func,
+  }
+
+  static defaultProps = {
+    mnemonic: '',
+  }
+
+  componentDidMount(){
+    this.props.initMnemonicPage()
+  }
+
+  navigateToConfirmPage(){
+    this.props.navigateToConfirmPage()
+  }
+
+  render () {
+    return (
+      <MuiThemeProvider>
+        <div styleName='wrapper'>
+          <div>
+            <div styleName='page-title'>Write down back-up phrase</div>
+
+            <p styleName='description'>
+              You can use this phrase to login and access your wallet,
+              even if you forgot your password. You may also print the key
+              which will be provided with a QR code. Use this QR code to
+              scan on phone on ChronoWallet recover page.
+            </p>
+
+            <div styleName='passPhraseWrapper'>
+              <div styleName='passPhrase'>{ this.props.mnemonic }</div>
+              <div styleName='printButtonWrapper'>
+                <div styleName='printButton' onClick={() => {}}>
+                  <img src={PrintIcon} alt='' />
+                </div>
+              </div>
+            </div>
+
+            <div styleName='infoBlock'>
+              <div styleName='infoBlockHeader'>Important! Read the security guidelines</div>
+
+              <ol styleName='infoBlockList'>
+                <li>
+                  <p styleName='listItemContent'>
+                    <b>Don&apos;t share your back-up phrase (mnemonic key) with someone you don&apos;t trust.</b>
+                    &nbsp;Double check services you&apos;re giving your mnemonic to and don&apos;t share your phrase with anyone.
+                  </p>
+                </li>
+
+                <li>
+                  <p styleName='listItemContent'>
+                    <b>Don&apos;t loose your back-up phrase (mnemonic key).</b>
+                    &nbsp;We do not store this information and Your account will be lost
+                    together with all your funds and history.
+                  </p>
+                </li>
+              </ol>
+            </div>
+
+            <div styleName='actions'>
+              <Button
+                styleName='submit'
+                buttonType='login'
+                onClick={this.navigateToConfirmPage.bind(this)}
+              >
+                Proceed
+              </Button>
+            </div>
+
+            <div styleName='progressBlock'>
+              <div styleName='progressPoint' />
+              <div styleName='progressPoint' />
+              <div styleName='progressPoint progressPointInactive' />
+            </div>
+          </div>
+        </div>
+      </MuiThemeProvider>
+    )
+  }
+}

@@ -3,192 +3,80 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, FlatButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
+import classnames from 'classnames'
+import { MuiThemeProvider } from 'material-ui'
+import { reduxForm, Field } from 'redux-form/immutable'
+import React, { Component } from 'react'
+import { Link } from 'react-router'
+import { UserRow, Button } from 'components'
+
+import FileIcon from 'assets/img/icons/file-white.svg'
+import DeleteIcon from 'assets/img/icons/delete-white.svg'
+import SpinnerGif from 'assets/img/spinningwheel.gif'
+import WarningIcon from 'assets/img/icons/warning.svg'
+import CheckIcon from 'assets/img/icons/check-green.svg'
+
 import './LoginWithWallet.scss'
-import { Button } from '../../settings'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  clearErrors: () => dispatch(clearErrors()),
-  loading: (isLoading) => dispatch(loading(isLoading)),
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
-class LoginWithWallet extends PureComponent {
+export default class LoginWithWallet extends Component {
   static propTypes = {
-    isLoading: PropTypes.bool,
-    onBack: PropTypes.func.isRequired,
-    onGenerate: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
-    clearErrors: PropTypes.func,
-    loading: PropTypes.func,
+    mnemonic: PropTypes.string,
   }
 
-  constructor () {
-    super()
-    this.state = {
-      password: '',
-      wallet: null,
-      isUploaded: false,
-      isUploading: false,
-      fileName: '',
-    }
-  }
-
-  handleFileUploaded = (e) => {
-    this.props.clearErrors()
-    this.setState({
-      isUploading: false,
-      isUploaded: true,
-      wallet: e.target.result,
-    })
-  }
-
-  handleUploadFile = (e) => {
-    const file = e.target.files[ 0 ]
-    if (!file) {
-      return
-    }
-    this.setState({
-      isUploading: true,
-      fileName: file.name,
-    })
-    const reader = new FileReader()
-    reader.onload = this.handleFileUploaded
-    reader.readAsText(file)
-    this.props.clearErrors()
-  }
-
-  handlePasswordChange = (target, value) => {
-    this.setState({ password: value })
-    this.props.clearErrors()
-  }
-
-  handleEnterPassword = () => {
-    this.props.clearErrors()
-    this.forceUpdate()
-    this.props.onLogin(this.state.wallet, this.state.password)
-  }
-
-  handleRemoveWallet = () => {
-    this.setState({
-      wallet: null,
-      isUploaded: false,
-      isUploading: false,
-      fileName: '',
-    })
-    this.walletFileUploadInput.value = ''
+  static defaultProps = {
+    mnemonic: '',
   }
 
   render () {
-    const { isLoading } = this.props
-    const {
-      password, isUploading, isUploaded, fileName,
-    } = this.state
-
     return (
-      <div styleName='root'>
-        <div styleName='back'>
-          <BackButton
-            onClick={this.props.onBack}
-            to='options'
-          />
-        </div>
-        <div>
+      <MuiThemeProvider>
+        <div styleName='wrapper'>
+          <div>
+            <div styleName='page-title'>Upload a Wallet File</div>
 
-          {!isUploaded && !isUploading && (
-            <div
-              styleName='upload'
-              onClick={() => this.walletFileUploadInput.click()}
-            >
-              <div styleName='uploadContent'>{<Translate value='LoginWithWallet.uploadWalletFile' />}</div>
+            <p styleName='description'>
+              Upload a wallet file to add the login information to your browser.
+              We provide the file on New Account Creation.
+            </p>
+
+            <div styleName='row'>
+              <Button styleName='button' buttonType='login'>
+                <img styleName='before-img' src={FileIcon} alt='' />
+                <span styleName='button-text'>Browse for a Wallet File</span>
+              </Button>
+
+              <Button styleName='button' buttonType='login' disabled>
+                <img styleName='before-img' src={SpinnerGif} alt='' />
+                <span styleName='button-text'>Uploading</span>
+                <img styleName='after-img' src={DeleteIcon} alt='' />
+              </Button>
+
+              <Button styleName='button' buttonType='login' disabled>
+                <img styleName='before-img' src={CheckIcon} alt='' />
+                <span styleName='button-text'>Uploading</span>
+                <img styleName='after-img' src={DeleteIcon} alt='' />
+              </Button>
+
+              <Button styleName='button button-warning' buttonType='login' disabled>
+                <img styleName='before-img' src={WarningIcon} alt='' />
+                <span styleName='button-text'>Upload Error</span>
+                <img styleName='after-img' src={FileIcon} alt='' />
+              </Button>
             </div>
-          )}
 
-          {isUploading && (
-            <div styleName='progress'>
-              <CircularProgress
-                size={16}
-                color={styles.colors.colorPrimary1}
-                thickness={1.5}
-              />
-              <span styleName='progressText'>{<Translate value='LoginWithWallet.uploading' />}</span>
+            <div styleName='actions'>
+              <Button styleName='submit' buttonType='login' disabled>
+                Proceed to login
+              </Button>
+              or
+              <br />
+              <Link to='/login' href styleName='link'>Back</Link>
             </div>
-          )}
 
-          {isUploaded && (
-            <div styleName='uploaded'>
-              <div styleName='walletIcon' className='material-icons'>attachment</div>
-              <div styleName='walletName'>{fileName}</div>
-              <div
-                styleName='walletRemove'
-                className='material-icons'
-                onClick={this.handleRemoveWallet}
-              >delete
-              </div>
-            </div>
-          )}
-
-          <input
-            onChange={this.handleUploadFile}
-            ref={(input) => this.walletFileUploadInput = input}
-            type='file'
-            styleName='hide'
-          />
-        </div>
-
-        <TextField
-          floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-          type='password'
-          value={password}
-          onChange={this.handlePasswordChange}
-          required
-          fullWidth
-          {...styles.textField}
-        />
-
-        {isLoading && (
-          <div styleName='tip'>
-            <em>{<Translate value='LoginWithWallet.bePatient' />}</em>
-          </div>
-        )}
-
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              flat
-              styleName='whiteButton'
-              label={<Translate value='LoginWithWallet.generateNewWallet' />}
-              fullWidth
-              disabled={isLoading}
-              onClick={this.props.onGenerate}
-            />
-          </div>
-          <div styleName='action'>
-            <Button
-              label={isLoading ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
-                size={24}
-                thickness={1.5}
-              /> : <Translate value='LoginWithWallet.login' />}
-              disabled={isLoading || !isUploaded || !password || password === ''}
-              onClick={this.handleEnterPassword}
-            />
           </div>
         </div>
-      </div>
+      </MuiThemeProvider>
     )
   }
 }
-
-export default LoginWithWallet

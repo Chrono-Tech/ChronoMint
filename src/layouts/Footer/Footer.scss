@@ -1,0 +1,246 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+$copyRightPadding: 200px;
+
+.root {
+  background-image: $bg-gradient-0;
+  position: relative;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+  @include md-only {
+    padding-bottom: 230px;
+  }
+
+  &:after {
+    // hack for preloading material icons and avoid FUOC on render
+    content: '';
+    font-family: 'Material Icons';
+  }
+}
+
+.content {
+  flex: 1;
+  width: 470px;
+  margin: 0 auto;
+  padding-top: 40px;
+
+  @include md-only {
+    padding-top: 80px;
+  }
+  @include xs-only {
+    width: 100vw;
+  }
+}
+
+.footer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-width: 700px;
+  padding: 17px 80px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+
+  @include md-only {
+    padding: 20px;
+    min-width: 0;
+  }
+
+  .subscription {
+    position: absolute;
+    display: flex;
+    bottom: 0;
+    left: 335px;
+  }
+
+  .subscription-input {
+    width: 280px;
+    display: flex;
+  }
+
+  .subscription-button {
+    width: 280px;
+    margin-left: 30px;
+    display: flex;
+    align-items: flex-end;
+
+    .button {
+      button {
+        background: $color-light-blue;
+        font-size: 14px;
+        border-radius: 50px;
+        padding: 0 17px;
+        min-height: 30px;
+
+        &:hover {
+          background: #E2A864;
+        }
+      }
+    }
+  }
+
+  .copyright {
+    display: flex;
+    margin-top: 30px;
+    width: 870px;
+    z-index: 2;
+
+    @include md-only {
+      width: auto;
+      text-align: center;
+    }
+  }
+
+  .copyright-text {
+    color: #9997B2;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+    text-align: left;
+  }
+
+  .footer-container {
+    display: flex;
+    z-index: 2;
+    position: relative;
+
+    @include md-only {
+      display: none;
+    }
+  }
+
+  .navigation-chrono-logo-container {
+    overflow: hidden;
+    display: flex;
+  }
+
+  .navigation-chrono-logo {
+    width: 250px;
+    display: block;
+    margin-left: -67px;
+  }
+
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 310px;
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+
+  .navigation-list {
+
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+
+    li {
+      display: flex;
+      color: $color-light-blue;
+      font-weight: 500;
+      font-size: 14px;
+      margin-top: 20px;
+
+      &.first {
+        margin: 0;
+      }
+    }
+
+  }
+
+  .title-container {
+    display: flex;
+    margin: 10px 0 30px;
+  }
+
+  .title {
+    color: #E2A864;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 24px;
+  }
+
+  .downloads {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    .market-logo-container {
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .ios-market-logo {
+      display: block;
+      width: 125px;
+    }
+
+    .android-market-logo {
+      display: block;
+      width: 125px;
+    }
+
+  }
+
+  .connect {
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+
+    padding-left: 30px;
+    padding-right: 30px;
+
+    .logos-container {
+      display: flex;
+      width: 125px;
+      height: 130px;
+      flex-direction: row;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      display: flex;
+    }
+
+    .img-logo {
+      width: 32px;
+      height: 32px;
+    }
+  }
+}
+
+.link {
+  color: white;
+  margin: auto 45px;
+  text-decoration: none;
+  font-size: 18px;
+
+}
+
+.background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: -750px;
+  margin: auto;
+
+  @include md-only {
+    display: none;
+  }
+}

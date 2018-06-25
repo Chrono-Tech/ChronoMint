@@ -24,6 +24,7 @@ export default (state = initialState, action) => {
         blockchain: action.blockchain,
         address: action.address,
       }
+
     default:
       return state
   }
