@@ -6,8 +6,8 @@
 import { PollEditForm } from 'components'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { initAssetsHolder } from 'redux/assetsHolder/actions'
-import { listPolls } from 'redux/voting/actions'
+import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
+import { listPolls } from '@chronobank/core/redux/voting/actions'
 import './NewPollContent.scss'
 
 function mapStateToProps (state) {

@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+export const prefix = 'layouts.partials.VotingContent'
+
 export default {
   en: {
     voting: 'Voting',
@@ -15,6 +17,8 @@ export default {
     warning1: 'Deposit TIME on ',
     warning2: 'Wallet page',
     warning3: ', if you want get access this page.',
+    ongoingPolls: 'Ongoing Polls',
+    pastPolls: 'Past Polls',
   },
 }
 

@@ -5,202 +5,48 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.progress {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 600px;
-  > * {
-    flex: 0 0 auto;
-  }
-}
-
 .root {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-}
-
-.content {
-  position: relative;
-  margin: 0 80px;
-
-  @include lg-only {
-    margin: 24px 16px;
-  }
-
-  :global {
-    .VotingContent__body {
-      @include grid(6, 32px, 32px);
+  .content {
+    .tabsFilterWrapper {
+      width: 587px;
+      display: flex;
+      margin: 0 auto;
+      .filterTab {
+        color: $color-white;
+        font-weight: 400;
+        font-size: 16px;
+        margin-right: 45px;
+        &:hover {
+          color: $color-orange-1;
+        }
+        &.active {
+          color: $color-hover;
+          font-weight: bold;
+        }
+      }
     }
-  }
-}
-
-.contentAlignRight {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-
-  .entries {
-    flex: 1 1 auto;
-  }
-
-  .actions {
-    flex: 0 0 auto;
-  }
-}
-
-.contentStats {
-  display: flex;
-  @include xs-only {
-    height: auto;
-  }
-}
-
-.contentStatsItem {
-  display: flex;
-  flex-direction: row;
-  flex: 0 0 auto;
-  position: relative;
-  width: 50%;
-  align-items: center;
-  margin-bottom: 20px;
-
-  .icon {
-    flex: 0 0 auto;
-    width: 32px;
-    height: 32px;
-    margin-right: 16px;
-    border-radius: 50%;
-    text-align: center;
-
-    :global {
-      .material-icons {
-        margin: 4px;
+    .accessDenied {
+      text-align: center;
+      padding: 50px 0;
+      .accessDeniedIcon {
+        font-size: 40px;
         vertical-align: middle;
+        margin-right: 20px;
+        color: $color-warning;
+      }
+    }
+    .pollsContent {
+      .pollWrapper {
+        margin: 35px auto 0;
+        width: 587px;
+        display: flex;
+        justify-content: center;
       }
     }
   }
-
-  &.statsAll {
-    .icon {
-      background-color: $badge-blue;
-    }
-  }
-
-  &.statsCompleted {
-    .icon {
-      background-color: $badge-green;
-    }
-  }
-
-  &.statsOutdated {
-    .icon {
-      background-color: $badge-grey;
-    }
-  }
-
-  &.statsInactive {
-    .icon {
-      background-color: $badge-red;
-    }
-  }
-
-  &.statsOngoing {
-    .icon {
-      background-color: $badge-orange;
-    }
-  }
-}
-
-.entry {
-  flex: 0 0 auto;
-  line-height: 22px;
-}
-
-.entryTitle {
-  font-size: 14px;
-  font-weight: 300;
-}
-
-.entryValue {
-  font-size: 16px;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  :global {
-    .Preloader__root {
-      justify-content: flex-start;
-    }
-  }
-
-}
-
-.head {
-  padding: 24px 16px;
-  background: $color-panel-bg-3;
-  color: $color-white;
-
-  h3 {
-    display: block;
-    margin: 0 0 20px 0;
-    padding: 0;
-    font-size: 34px;
-    font-weight: 300;
-  }
-
-  :global {
-    .VotingContent__head {
-      @include grid(2, 24px, 24px);
-    }
-  }
-}
-
-.headInner {
-  margin: 10px 80px 10px 80px;
-  position: relative;
-
-  @include lg-only {
-    margin: 0px;
-  }
-}
-
-.body {
-  padding: 24px 64px;
-  background-color: $color-panel-bg-0;
-
-  @include lg-only {
-    padding: 24px 24px;
-  }
-}
-
-.bodyInner {
-  margin: 30px 80px;
-  @include lg-only {
-    margin: 0px;
-  }
-  position: relative;
-}
-
-.accessDenied {
-  text-align: center;
-  padding: 50px 0;
-}
-
-.accessDeniedIcon {
-  font-size: 40px;
-  vertical-align: middle;
-  margin-right: 20px;
-  color: $color-warning;
-}
-
-.action {
-  vertical-align: bottom;
-  margin: 0px 0px 0px 30px;
 }

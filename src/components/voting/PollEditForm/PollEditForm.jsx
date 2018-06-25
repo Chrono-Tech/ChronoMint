@@ -5,32 +5,30 @@
 
 import moment from 'moment'
 import BigNumber from 'bignumber.js'
-import web3Converter from 'utils/Web3Converter'
-import classnames from 'classnames'
+import web3Converter from '@chronobank/core/utils/Web3Converter'
 import FileSelect from 'components/common/FileSelect/FileSelect'
-import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
+import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, reduxForm } from 'redux-form/immutable'
 import Immutable from 'immutable'
-import { FontIcon, IconButton } from 'material-ui'
-import { ACCEPT_DOCS } from 'models/FileSelect/FileExtension'
-import PollModel from 'models/PollModel'
+import { ACCEPT_DOCS } from '@chronobank/core/models/FileSelect/FileExtension'
+import PollModel from '@chronobank/core/models/PollModel'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DatePicker, Slider, TextField, TimePicker } from 'redux-form-material-ui'
 import { DUCK_I18N } from 'redux/i18n/actions'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import { modalsClose } from 'redux/modals/actions'
-import { DUCK_SESSION } from 'redux/session/actions'
-import { createPoll, DUCK_VOTING, estimateGasForVoting } from 'redux/voting/actions'
-import Amount from 'models/Amount'
-import TokenModel from 'models/tokens/TokenModel'
-import { FEE_RATE_MULTIPLIER, TIME } from 'redux/mainWallet/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
+import { createPoll, DUCK_VOTING, estimateGasForVoting } from '@chronobank/core/redux/voting/actions'
+import Amount from '@chronobank/core/models/Amount'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
+import { FEE_RATE_MULTIPLIER, TIME } from '@chronobank/core/redux/mainWallet/actions'
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import PollDetailsModel from 'models/PollDetailsModel'
-import FileModel from 'models/FileSelect/FileModel'
+import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
+import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { Button } from 'components/index'
-import { TX_CREATE_POLL } from 'dao/VotingManagerDAO'
+import { TX_CREATE_POLL } from '@chronobank/core/dao/VotingManagerDAO'
 import './PollEditForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
@@ -46,8 +44,10 @@ const createDeadlineDate = (deadline, deadlineTime) => {
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
+  const formErrors = getFormSyncErrors(FORM_EDIT_POLL)(state)
 
   return {
+    formErrors,
     feeMultiplier: selector(state, 'feeMultiplier'),
     deadline: selector(state, 'deadline'),
     deadlineTime: selector(state, 'deadlineTime'),
@@ -85,7 +85,7 @@ function mapDispatchToProps (dispatch) {
         deadline,
         files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
-        options: new Immutable.List(values.get('options')),
+        options: new Immutable.List(values.get('options').toArray().filter((option) => option.length > 0)),
       })
 
       dispatch(modalsClose())
@@ -117,9 +117,7 @@ export default class PollEditForm extends Component {
 
   constructor () {
     super(...arguments)
-    this.state = {
-      selectedOptionIndex: 0,
-    }
+    this.state = {}
   }
 
   componentWillReceiveProps (newProps) {
@@ -154,71 +152,12 @@ export default class PollEditForm extends Component {
     }, 1000)
   }
 
-  handleOptionSelect (index) {
-    this.setState({ selectedOptionIndex: index })
-  }
-
   handleOptionCreate = () => {
     this.props.addOption(this.props.options)
-    this.setState({ selectedOptionIndex: this.props.options.length + 1 })
-  }
-
-  handleOptionRemove (options, index) {
-    options.remove(index)
-    if (this.state.selectedOptionIndex >= options.length) {
-      this.setState({ selectedOptionIndex: options.length - 1 })
-    }
-  }
-
-  renderOptions (options) {
-    const optionsList = options.getAll()
-    return (
-      <div>
-        <div styleName='optionsActions'>
-          <Button
-            flat
-            label={<Translate value={`${prefix}.addOption`} />}
-            styleName='optionsAction'
-            onClick={() => this.handleOptionCreate(options)}
-          />
-        </div>
-        <div styleName='optionsList'>
-          <div styleName='listTable'>
-            {optionsList && optionsList.toArray().map((option, index) => (
-              <div
-                key={index}
-                styleName={classnames('tableItem', { active: this.state.selectedOptionIndex === index })}
-                onClick={() => this.handleOptionSelect(index)}
-              >
-                <div styleName='itemLeft'>
-                  <div styleName='symbol symbolFill'>#{index + 1}</div>
-                </div>
-                <div styleName='itemMain'>
-                  <div styleName='mainTitle'><Translate value={`${prefix}.optionIndex`} index={index + 1} /></div>
-                  <div styleName='mainOption'>{option}</div>
-                </div>
-                <div styleName='itemRight'>
-                  <IconButton>
-                    <FontIcon className='material-icons'>mode_edit</FontIcon>
-                  </IconButton>
-                  <IconButton>
-                    <FontIcon
-                      className='material-icons'
-                      onClick={() => this.handleOptionRemove(options, index)}
-                    >delete
-                    </FontIcon>
-                  </IconButton>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )
   }
 
   render () {
-    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier } = this.props
+    const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier, formErrors } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
     return (
       <div styleName='root'>
@@ -255,6 +194,8 @@ export default class PollEditForm extends Component {
             <div styleName='column'>
 
               <div styleName='column-title'><Translate value={`${prefix}.options`} /></div>
+
+              <div styleName='optionsCountWarning'>{formErrors.optionsCount ? <Translate value={`${prefix}.countOptions`} /> : null}</div>
 
               {options && options.map((value, i) => (
                 <div styleName='option' key={i}>
@@ -381,7 +322,7 @@ export default class PollEditForm extends Component {
               styleName='footerAction'
               label={<Translate value={`${prefix}.${isModify ? 'updatePoll' : 'createPoll'}`} />}
               type='submit'
-              disabled={pristine || invalid}
+              disabled={pristine || invalid || !!formErrors.optionsCount}
             />
           </div>
         </form>

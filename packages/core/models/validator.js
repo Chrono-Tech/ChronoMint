@@ -121,6 +121,14 @@ export function moreThan (value, limit, isEqual = false) {
   } : null
 }
 
+export function countsMoreThan (value, limit, isEqual = false) {
+  const isPassed = isEqual ? value >= limit : value > limit
+  return !isPassed ? {
+    value: isEqual ? 'errors.moreThanOrEqual' : 'errors.moreThan',
+    limit,
+  } : null
+}
+
 export function unique (value, origin: Array | Immutable.Map | Immutable.List) {
   if (!origin || !value) {
     return

@@ -8,7 +8,6 @@ import { Button } from 'components'
 import Moment from 'components/common/Moment'
 import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
-import { Paper } from 'material-ui'
 import Amount from '@chronobank/core/models/Amount'
 import { SHORT_DATE } from '@chronobank/core/models/constants'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -101,171 +100,169 @@ export default class Poll extends PureComponent {
     const details = model.details()
 
     return (
-      <Paper>
-        <div styleName='root'>
-          <div styleName='head'>
-            <div styleName='inner'>
-              <div styleName='layer layerHead'>
-                <div styleName='entry entryDate'>
-                  <div styleName='entryTitle'>{details.daysLeft}</div>
-                  <div styleName='entryLabel'>
-                    <Translate
-                      value={prefix('daysLeft')}
-                      count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10}
-                    />
-                  </div>
-                </div>
-                {this.renderStatus()}
-              </div>
-              <div styleName='layer layerChart'>
-                <div styleName='entry entryTotal'>
-                  <div styleName='entryTitle'>{details.percents.toString()}%</div>
-                  <div styleName='entryLabel'><Translate value={prefix('finished')} /></div>
-                </div>
-                <div styleName='chart chart1'>
-                  <DoughnutChart
-                    key={details}
-                    weight={0.08}
-                    items={[
-                      { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
-                      { value: details.daysLeft, fill: 'transparent' },
-                    ]}
-                  />
-                </div>
-                <div styleName='chart chart2'>
-                  <DoughnutChart
-                    key={details}
-                    weight={0.20}
-                    items={[
-                      {
-                        value: details.maxOptionTime.toNumber(),
-                        fillFrom: '#311b92',
-                        fillTo: '#d500f9',
-                      },
-                      { value: (details.voteLimitInTIME ? details.voteLimitInTIME.minus(details.maxOptionTime) : new BigNumber(0)).toNumber(), fill: 'transparent' },
-                    ]}
+      <div styleName='root'>
+        <div styleName='head'>
+          <div styleName='inner'>
+            <div styleName='layer layerHead'>
+              <div styleName='entry entryDate'>
+                <div styleName='entryTitle'>{details.daysLeft}</div>
+                <div styleName='entryLabel'>
+                  <Translate
+                    value={prefix('daysLeft')}
+                    count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10}
                   />
                 </div>
               </div>
-              <div styleName='layer layerEntries'>
-                <div styleName='entry entryPublished'>
-                  <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
-                  <div styleName='entryValue'>
-                    {details.published && <Moment date={details.published} format={SHORT_DATE} /> ||
-                    <i><Translate value={prefix('no')} /></i>}
-                  </div>
+              {this.renderStatus()}
+            </div>
+            <div styleName='layer layerChart'>
+              <div styleName='entry entryTotal'>
+                <div styleName='entryTitle'>{details.percents.toString()}%</div>
+                <div styleName='entryLabel'><Translate value={prefix('finished')} /></div>
+              </div>
+              <div styleName='chart chart1'>
+                <DoughnutChart
+                  key={details}
+                  weight={0.08}
+                  items={[
+                    { value: details.daysTotal - details.daysLeft, fillFrom: '#fbda61', fillTo: '#f98019' },
+                    { value: details.daysLeft, fill: 'transparent' },
+                  ]}
+                />
+              </div>
+              <div styleName='chart chart2'>
+                <DoughnutChart
+                  key={details}
+                  weight={0.20}
+                  items={[
+                    {
+                      value: details.maxOptionTime.toNumber(),
+                      fillFrom: '#311b92',
+                      fillTo: '#d500f9',
+                    },
+                    { value: (details.voteLimitInTIME ? details.voteLimitInTIME.minus(details.maxOptionTime) : new BigNumber(0)).toNumber(), fill: 'transparent' },
+                  ]}
+                />
+              </div>
+            </div>
+            <div styleName='layer layerEntries'>
+              <div styleName='entry entryPublished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('published')} />}:</div>
+                <div styleName='entryValue'>
+                  {details.published && <Moment date={details.published} format={SHORT_DATE} /> ||
+                  <i><Translate value={prefix('no')} /></i>}
                 </div>
-                <div styleName='entry entryFinished'>
-                  <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
-                  <div styleName='entryValue'>
-                    {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> ||
-                    <i><Translate value={prefix('no')} /></i>}
-                  </div>
+              </div>
+              <div styleName='entry entryFinished'>
+                <div styleName='entryLabel'>{<Translate value={prefix('endDate')} />}:</div>
+                <div styleName='entryValue'>
+                  {details.endDate && <Moment date={details.endDate} format={SHORT_DATE} /> ||
+                  <i><Translate value={prefix('no')} /></i>}
                 </div>
-                <div styleName='entry entryRequired'>
-                  <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
-                  <div styleName='entryValue'>
-                    {details.voteLimitInTIME === null
-                      ? (<i>Unlimited</i>)
-                      : (
-                        <span>{this.props.timeToken.isFetched()
-                          ? <TokenValue noRenderPrice precision={2} value={details.voteLimitInTIME} />
-                          : <Preloader />
-                        }
-                        </span>)
-                    }
-                  </div>
-                </div>
-                <div styleName='entry entryReceived'>
-                  <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
-                  <div styleName='entryValue'>
-                    <span>
-                      {
-                        this.props.timeToken.isFetched()
-                          ? <TokenValue noRenderPrice precision={2} value={details.received} />
-                          : <Preloader />
+              </div>
+              <div styleName='entry entryRequired'>
+                <div styleName='entryLabel'><Translate value={prefix('requiredVotes')} />:</div>
+                <div styleName='entryValue'>
+                  {details.voteLimitInTIME === null
+                    ? (<i>Unlimited</i>)
+                    : (
+                      <span>{this.props.timeToken.isFetched()
+                        ? <TokenValue noRenderPrice precision={2} value={details.voteLimitInTIME} />
+                        : <Preloader />
                       }
-                    </span>
-                  </div>
-                </div>
-                <div styleName='entry entryVariants'>
-                  <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
-                  <div styleName='entryValue'>{details.options.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}
-                  </div>
-                </div>
-                <div styleName='entry entryDocuments'>
-                  <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
-                  <div styleName='entryValue'>{details.files.count() || (
-                    <i><Translate value={prefix('no')} /></i>)}
-                  </div>
+                      </span>)
+                  }
                 </div>
               </div>
-            </div>
-          </div>
-          <div styleName='body'>
-            <h3 styleName='title'>{poll.title()}</h3>
-            <div styleName='description'>{poll.description()}</div>
-          </div>
-          <div styleName='foot'>
-            <div styleName='left'>
-              {isCBE && (!details.status || !details.active)
-                ? (
-                  <Button
-                    label={<Translate value={prefix('remove')} />}
-                    styleName='action'
-                    disabled={model.isFetching()}
-                    onClick={this.props.handlePollRemove}
-                  />
-                )
-                : null
-              }
-            </div>
-            <div styleName='right'>
-              <Button
-                flat
-                label={<Translate value={prefix('details')} />}
-                styleName='action'
-                disabled={model.isFetching()}
-                onClick={this.props.handlePollDetails}
-              />
-              {isCBE && details.status && details.active
-                ? (
-                  <Button
-                    label={<Translate value={prefix('endPoll')} />}
-                    styleName='action'
-                    disabled={model.isFetching()}
-                    onClick={this.props.handlePollEnd}
-                  />
-                )
-                : null
-              }
-              {isCBE && details.status && !details.active
-                ? (
-                  <Button
-                    label={<Translate value={prefix('activate')} />}
-                    styleName='action'
-                    disabled={model.isFetching()}
-                    onClick={this.props.handlePollActivate}
-                  />
-                )
-                : null
-              }
-              {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
-                ? (
-                  <Button
-                    label={<Translate value={prefix('vote')} />}
-                    styleName='action'
-                    disabled={model.isFetching() || this.props.deposit.isZero()}
-                    onClick={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
-                  />
-                )
-                : null
-              }
+              <div styleName='entry entryReceived'>
+                <div styleName='entryLabel'><Translate value={prefix('receivedVotes')} />:</div>
+                <div styleName='entryValue'>
+                  <span>
+                    {
+                      this.props.timeToken.isFetched()
+                        ? <TokenValue noRenderPrice precision={2} value={details.received} />
+                        : <Preloader />
+                    }
+                  </span>
+                </div>
+              </div>
+              <div styleName='entry entryVariants'>
+                <div styleName='entryLabel'><Translate value={prefix('variants')} />:</div>
+                <div styleName='entryValue'>{details.options.count() || (
+                  <i><Translate value={prefix('no')} /></i>)}
+                </div>
+              </div>
+              <div styleName='entry entryDocuments'>
+                <div styleName='entryLabel'><Translate value={prefix('documents')} />:</div>
+                <div styleName='entryValue'>{details.files.count() || (
+                  <i><Translate value={prefix('no')} /></i>)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </Paper>
+        <div styleName='body'>
+          <h3 styleName='title'>{poll.title()}</h3>
+          <div styleName='description'>{poll.description()}</div>
+        </div>
+        <div styleName='foot'>
+          <div styleName='left'>
+            {isCBE && (!details.status || !details.active)
+              ? (
+                <Button
+                  label={<Translate value={prefix('remove')} />}
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onClick={this.props.handlePollRemove}
+                />
+              )
+              : null
+            }
+          </div>
+          <div styleName='right'>
+            <Button
+              flat
+              label={<Translate value={prefix('details')} />}
+              styleName='action'
+              disabled={model.isFetching()}
+              onClick={this.props.handlePollDetails}
+            />
+            {isCBE && details.status && details.active
+              ? (
+                <Button
+                  label={<Translate value={prefix('endPoll')} />}
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onClick={this.props.handlePollEnd}
+                />
+              )
+              : null
+            }
+            {isCBE && details.status && !details.active
+              ? (
+                <Button
+                  label={<Translate value={prefix('activate')} />}
+                  styleName='action'
+                  disabled={model.isFetching()}
+                  onClick={this.props.handlePollActivate}
+                />
+              )
+              : null
+            }
+            {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
+              ? (
+                <Button
+                  label={<Translate value={prefix('vote')} />}
+                  styleName='action'
+                  disabled={model.isFetching() || this.props.deposit.isZero()}
+                  onClick={!model.isFetching() && !this.props.deposit.isZero() ? this.props.handleVote : undefined}
+                />
+              )
+              : null
+            }
+          </div>
+        </div>
+      </div>
     )
   }
 }

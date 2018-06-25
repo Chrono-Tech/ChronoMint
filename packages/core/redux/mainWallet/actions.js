@@ -114,8 +114,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
       const mainWalletAddresses = getMainWalletAddresses(getState())
 
-      if (mainWalletAddresses.includes(tx.from()) ||  mainWalletAddresses.includes(tx.to()) ||
-        walletsAccounts.includes(tx.from()) ||  walletsAccounts.includes(tx.to()) ||
+      if (mainWalletAddresses.includes(tx.from()) || mainWalletAddresses.includes(tx.to()) ||
+        walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) ||
         tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),

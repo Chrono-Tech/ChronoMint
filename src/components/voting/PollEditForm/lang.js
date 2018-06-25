@@ -34,5 +34,6 @@ export default {
     fast: 'Fast',
     averageFee: '%{multiplier}x of average fee.',
     gasPrice: 'Gas price: ',
+    countOptions: 'Count of options must be more than 1',
   },
 }

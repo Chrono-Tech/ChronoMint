@@ -13,7 +13,7 @@ import type PollNoticeModel from '../../models/notices/PollNoticeModel'
 import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } from '../../models/notices/PollNoticeModel'
 import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
-import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../../dao/VotingManagerDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
