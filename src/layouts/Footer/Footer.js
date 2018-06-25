@@ -7,6 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
+import { Link } from 'react-router'
 
 import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
@@ -42,14 +43,46 @@ export default class Footer extends Component {
             </div>
 
             <ul styleName='navigation-list' >
-              <li>Home</li>
-              <li>LaborX</li>
-              <li>Team</li>
-              <li>FAQ</li>
-              <li>Blog</li>
-              <li>Business Outline</li>
-              <li>Development Plan</li>
-              <li>White Paper</li>
+              <li>
+                <Link to='/' href styleName='footerLink'>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link href='https://chronobank.io/products/laborx' styleName='footerLink'>
+                  LaborX
+                </Link>
+              </li>
+              <li>
+                <Link href='https://chronobank.io/team' styleName='footerLink'>
+                  Team
+                </Link>
+              </li>
+              <li>
+                <Link href='https://chronobank.io/faq' styleName='footerLink'>
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href='https://blog.chronobank.io/' styleName='footerLink'>
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href='https://chronobank.io/files/business_outline.pdf' styleName='footerLink'>
+                  Business Outline
+                </Link>
+              </li>
+              <li>
+                <Link href='https://chronobank.io/files/dev_plan.pdf' styleName='footerLink'>
+                  Development Plan
+                </Link>
+              </li>
+              <li>
+                <Link href='https://files.chronobank.io/files/Chronobank_WP.pdf' styleName='footerLink'>
+                  White Paper
+                </Link>
+              </li>
             </ul>
 
           </div>
@@ -100,8 +133,16 @@ export default class Footer extends Component {
             </div>
 
             <ul styleName='navigation-list' >
-              <li styleName='first'>info@chronobank.io</li>
-              <li>support@chronobank.io</li>
+              <li styleName='first'>
+                <Link href='mailto:info@chronobank.io' styleName='footerLink'>
+                  info@chronobank.io
+                </Link>
+              </li>
+              <li>
+                <Link href='mailto:support@chronobank.io' styleName='footerLink'>
+                  support@chronobank.io
+                </Link>
+              </li>
             </ul>
           </div>
 
