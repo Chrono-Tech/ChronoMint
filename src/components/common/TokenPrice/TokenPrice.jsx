@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { integerWithDelimiter } from 'utils/formatter'
-import { priceTokenSelector } from 'redux/wallet/selectors'
-import { getToken } from 'redux/locs/selectors'
-import TokenModel from 'models/tokens/TokenModel'
+import { integerWithDelimiter } from 'platform/utils/formatter'
+import { priceTokenSelector } from '@chronobank/core/redux/wallet/selectors'
+import { getToken } from '@chronobank/core/redux/locs/selectors'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
 function makeMapStateToProps (state, props) {
   const getPrice = priceTokenSelector(props.value)

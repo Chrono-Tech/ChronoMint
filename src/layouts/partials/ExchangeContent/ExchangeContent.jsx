@@ -8,7 +8,7 @@ import { Paper } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { watchExchanges } from 'redux/exchange/actions'
+import { watchExchanges } from '@chronobank/core/redux/exchange/actions'
 import './ExchangeContent.scss'
 
 const mapDispatchToProps = (dispatch) => ({

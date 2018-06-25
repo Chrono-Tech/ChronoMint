@@ -6,9 +6,9 @@
 import PropTypes from 'prop-types'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
-import { tokensCountSelector } from 'redux/mainWallet/selectors'
-import { multisigTokensCountSelector } from 'redux/multisigWallet/selectors'
-import { PTWallet } from 'redux/wallet/types'
+import { tokensCountSelector } from '@chronobank/core/redux/mainWallet/selectors'
+import { multisigTokensCountSelector } from '@chronobank/core/redux/multisigWallet/selectors'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { connect } from 'react-redux'
 import { prefix } from './lang'
 

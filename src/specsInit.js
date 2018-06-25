@@ -5,7 +5,7 @@
 
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
-import customSerializer from 'utils/CustomSerializer'
+import customSerializer from 'platform/utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
@@ -16,9 +16,9 @@ import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3 from 'web3'
-import AbstractContractDAO from './dao/AbstractContractDAO'
-import MarketSocket from './market/MarketSocket'
-import ls from './utils/LocalStorage'
+import AbstractContractDAO from '@chronobank/dao/AbstractContractDAO'
+import MarketSocket from '@chronobank/core/market/MarketSocket'
+import ls from './platform/utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality

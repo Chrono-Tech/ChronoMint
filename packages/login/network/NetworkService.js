@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from 'dao/AbstractContractDAO'
-import contractsManagerDAO from 'dao/ContractsManagerDAO'
+import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
+import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import {
@@ -189,7 +189,6 @@ class NetworkService extends EventEmitter {
     const web3 = new Web3()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
-    await this.loadAccounts()
     ethereumProvider.setEngine(ethereum, nem, waves)
     bcc && bccProvider.setEngine(bcc)
     btc && btcProvider.setEngine(btc)
