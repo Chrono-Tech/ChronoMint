@@ -5,6 +5,7 @@
 
 import { getNetworksByProvider, providerMap } from '../../network/settings'
 import * as actions from './actions'
+import { NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING } from "./actions";
 
 const initialState = {
   isLoading: false,
@@ -143,6 +144,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loadingAccountSignatures: true,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
       }
     case actions.NETWORK_ACCOUNTS_SIGNATURES_RESOLVE:
       return {

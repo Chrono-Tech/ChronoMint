@@ -23,6 +23,16 @@ class ProfileService extends EventEmitter {
     return axios.create({ baseURL: this.getProfileHost() })
   }
 
+  withAuthorization(authorization, config = {})  {
+    return {
+      ...config,
+      headers: {
+        ...config.headers,
+        Authorization: `Bearer ${authorization}`,
+      },
+    }
+  }
+
   withAuthorizaionSignature(signature, config = {}) {
     return {
       ...config,
@@ -35,13 +45,10 @@ class ProfileService extends EventEmitter {
 
   async getProfileSignature({address}){
     const service = this.getProfileService()
-    const dispatch = this._dispatch
 
     const body = {
       purpose: `${address}`,
     }
-
-    dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_LOADING })
 
     return service.post('/api/v1/security/persons/query', body, this.withAuthorizaionSignature())
   }

@@ -64,6 +64,7 @@ export const NETWORK_SET_ACCOUNT_RECOVERY_MODE = 'network/SET_ACCOUNT_RECOVERY_M
 export const NETWORK_RESET_ACCOUNT_RECOVERY_MODE = 'network/RESET_ACCOUNT_RECOVERY_MODE'
 
 export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_LOADING'
+export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = 'network/ACCOUNTS_SIGNATURES_RESET_LOADING'
 export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = 'network/ACCOUNTS_SIGNATURES_RESOLVE'
 export const NETWORK_ACCOUNTS_SIGNATURES_REJECT = 'network/ACCOUNTS_SIGNATURES_REJECT'
 
@@ -466,6 +467,10 @@ export const loadingAccountsSignatures = () => (dispatch) => {
   dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_LOADING })
 }
 
+export const resetLoadingAccountsSignatures = () => (dispatch) => {
+  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING })
+}
+
 export const resolveAccountsSignatures = (data) => (dispatch) => {
   dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_RESOLVE, data })
 }
@@ -484,6 +489,8 @@ export const initAccountsSignature = () => (dispatch, getState) => {
     return
   }
 
+  dispatch(loadingAccountsSignatures())
+
   walletsList.map(async (account) => {
     const signature = await profileService.getProfileSignature({
       address: '',
@@ -497,6 +504,12 @@ export const initAccountsSignature = () => (dispatch, getState) => {
     dispatch(accountUpdate(newAccount))
   })
 
+  dispatch(resetLoadingAccountsSignatures())
+
+}
+
+export const initAccountsSelector = () => (dispatch) => {
+  dispatch(initAccountsSignature())
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

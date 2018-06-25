@@ -13,6 +13,7 @@ import {
   navigateToSelectImportMethod,
   onWalletSelect,
   initAccountsSignature,
+  initAccountsSelector,
 } from '@chronobank/login/redux/network/actions'
 import {
   AccountEntryModel,
@@ -26,6 +27,7 @@ function mapDispatchToProps (dispatch) {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
+    initAccountsSelector: () => dispatch(initAccountsSelector()),
   }
 }
 
@@ -46,6 +48,7 @@ export default class SelectWalletPage extends PureComponent {
     ),
     navigateToSelectImportMethod: PropTypes.func,
     initAccountsSignature: PropTypes.func,
+    initAccountsSelector: PropTypes.func,
   }
 
   static defaultProps = {
@@ -54,7 +57,7 @@ export default class SelectWalletPage extends PureComponent {
   }
 
   componentDidMount(){
-    this.props.initAccountsSignature()
+    this.props.initAccountsSelector()
   }
 
   renderWalletsList (){
@@ -75,6 +78,7 @@ export default class SelectWalletPage extends PureComponent {
             <UserRow
               key={i}
               title={w.name}
+              avatar={w.signature.avatar}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

@@ -18,7 +18,7 @@ export default class AccountEntryModel extends AbstractAccountModel {
       name: '',
       types: {},
       encrypted: [],
-      signature: {},
+      signature: new AccountSignatureModel(),
     }, props)
     Object.freeze(this)
   }
