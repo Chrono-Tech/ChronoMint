@@ -33,9 +33,10 @@ export class WavesProvider extends AbstractProvider {
     return node.getTransactionInfo(txid)
   }
 
-  getAssets () {
+  async getAssets () {
     const node = this._selectNode(this._engine)
-    return node.getAssets() || []
+    const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
+    return assets || []
   }
 
   getPrivateKey () {
@@ -45,9 +46,9 @@ export class WavesProvider extends AbstractProvider {
   async getAccountBalances (asset) {
     const node = this._selectNode(this._engine)
     const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
-    //if (assets) {
-    //  return assets[asset]
-    //}
+    if (Object.keys(assets).length && assets[asset]) {
+      return assets[asset]['balance']
+    }
     return balance
   }
 
