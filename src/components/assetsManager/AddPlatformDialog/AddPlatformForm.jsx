@@ -10,7 +10,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Checkbox, TextField } from 'redux-form-material-ui'
 import { Field, reduxForm } from 'redux-form/immutable'
-import { createPlatform } from 'redux/assetsManager/actions'
+import { createPlatform } from '@chronobank/core/redux/assetsManager/actions'
 import './AddPlatformForm.scss'
 import validate from './validate'
 

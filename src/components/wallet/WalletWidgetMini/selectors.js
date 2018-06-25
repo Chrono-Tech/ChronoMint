@@ -4,12 +4,12 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import MainWalletModel from 'models/wallet/MainWalletModel'
-import MultisigWalletCollection from 'models/wallet/MultisigWalletCollection'
-import { getMainWallet, getMultisigWallets } from 'redux/wallet/selectors'
-import BalanceModel from 'models/tokens/BalanceModel'
-import { getMainSymbolForBlockchain } from 'redux/tokens/selectors'
-import OwnerModel from 'models/wallet/OwnerModel'
+import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
+import { getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
+import BalanceModel from '@chronobank/core/models/tokens/BalanceModel'
+import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 
 // provides filtered list of addresses of MainWallets
 export const selectWallet = (blockchain, address) => createSelector(

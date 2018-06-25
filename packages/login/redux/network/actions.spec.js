@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from 'dao/AbstractContractDAO'
+import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import Immutable from 'immutable'
-import { createSession, destroySession, SESSION_CREATE, SESSION_DESTROY } from 'redux/session/actions'
+import { createSession, destroySession, SESSION_CREATE, SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
 import { accounts, mockStore, store } from 'specsInit'
 import Web3 from 'web3'
 import metaMaskResolver from '../../network/metaMaskResolver'
