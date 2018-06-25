@@ -4,8 +4,8 @@
  */
 
 import ErrorList from 'platform/ErrorList'
-import * as validator from 'models/validator'
-import TokenModel from 'models/tokens/TokenModel'
+import * as validator from '@chronobank/core/models/validator'
+import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 
 const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)
 

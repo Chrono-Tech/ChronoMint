@@ -3,16 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import OwnerCollection from 'models/wallet/OwnerCollection'
+import OwnerCollection from '@chronobank/core/models/wallet/OwnerCollection'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { DUCK_SESSION } from 'redux/session/actions'
+import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import UserIcon from 'components/common/HashedIcon/UserIcon'
-import BlacklistModel from 'models/tokens/BlacklistModel'
+import BlacklistModel from '@chronobank/core/models/tokens/BlacklistModel'
 import { Button } from 'components'
 import './BlacklistForm.scss'
 import validate from './validate'
