@@ -187,6 +187,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       res.data.outputs = formatOutputs
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
+        console.log('setImmediate tx: ', model)
         this.emit('tx', model)
       })
       return model
@@ -201,7 +202,10 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
     }).join(',')
     const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
-    const to = tx.outputs.map((output) => `${output.address}`).join(',')
+    let to = tx.outputs.filter((output) => output.address !== account).map((output) => `${output.address}`).join(',')
+    if (!to) {
+      to = account
+    }
     let value = new BigNumber(0)
     for (const output of tx.outputs) {
       if (credited ? output.address.indexOf(account) >= 0 : output.address.indexOf(account) < 0) {

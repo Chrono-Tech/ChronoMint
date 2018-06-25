@@ -75,6 +75,7 @@ class LoginTrezor extends PureComponent {
     if (!trezor.isFetched && !trezor.isFetching && trezor.isHttps && trezor.isU2F) {
       this.props.fetchAccount()
     }
+    trezorProvider.setWallet(this.props.account[0]); networkService.selectAccount(this.props.account[0]); networkService.setAccounts(this.props.account)
   }
 
   componentWillUnmount () {

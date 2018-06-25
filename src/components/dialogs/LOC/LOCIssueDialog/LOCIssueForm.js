@@ -9,7 +9,7 @@ import { Button } from 'components'
 import React, { PureComponent } from 'react'
 import { TextField } from 'redux-form-material-ui'
 import { Translate, I18n } from 'react-redux-i18n'
-import LOCModel from 'models/LOCModel'
+import LOCModel from '@chronobank/core/models/LOCModel'
 import validate from './validate'
 
 import './LOCIssueForm.scss'
