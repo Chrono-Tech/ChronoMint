@@ -313,6 +313,7 @@ export default {
     General: require('./en-tx-general'),
     Bitcoin: require('./en-tx-bitcoin'),
     Nem: require('./en-tx-nem'),
+    Waves: require('./en-tx-waves'),
     /* eslint-enable global-require */
     ContractsManager: {},
     ChronoBankAssetProxy: {
