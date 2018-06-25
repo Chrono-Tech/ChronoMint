@@ -3,14 +3,14 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from 'models/Amount'
+import Amount from '@chronobank/core/models/Amount'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
-import { DUCK_TOKENS } from 'redux/tokens/actions'
-import { integerWithDelimiter } from 'utils/formatter'
-import TokensCollection from 'models/tokens/TokensCollection'
+import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
+import { integerWithDelimiter } from 'platform/utils/formatter'
+import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 
 const mapStateToProps = (state) => {
   return {

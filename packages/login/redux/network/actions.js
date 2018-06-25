@@ -24,7 +24,7 @@ import {
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
-import { login } from 'redux/session/actions'
+import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import { push } from 'react-router-redux'
 import networkService from '@chronobank/login/network/NetworkService'

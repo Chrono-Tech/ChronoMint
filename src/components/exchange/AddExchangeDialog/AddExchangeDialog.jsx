@@ -5,9 +5,9 @@
 
 import { Translate } from 'react-redux-i18n'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import ExchangeOrderModel from 'models/exchange/ExchangeOrderModel'
+import ExchangeOrderModel from '@chronobank/core/models/exchange/ExchangeOrderModel'
 import React, { PureComponent } from 'react'
-import { createExchange } from 'redux/exchange/actions'
+import { createExchange } from '@chronobank/core/redux/exchange/actions'
 import { modalsClose } from 'redux/modals/actions'
 import AddExchangeForm, { prefix } from './AddExchangeForm'
 

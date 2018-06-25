@@ -5,7 +5,7 @@
 
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
-import { PTWallet } from 'redux/wallet/types'
+import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { prefix } from './lang'
 
 export default class WalletName extends PureComponent {

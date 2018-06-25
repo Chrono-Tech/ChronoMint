@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import ledgerProvider from '@chronobank/login/network/LedgerProvider'
 import { fetchAccount, startLedgerSync, stopLedgerSync } from '@chronobank/login/redux/ledger/actions'
 import { CircularProgress, RaisedButton } from 'material-ui'
 import networkService from '@chronobank/login/network/NetworkService'
@@ -84,6 +85,7 @@ class LoginLedger extends PureComponent {
     if (!ledger.isFetched && !ledger.isFetching && ledger.isHttps && ledger.isU2F && ledger.isETHAppOpened) {
       this.props.fetchAccount()
     }
+    ledgerProvider.setWallet(this.props.account[0]); networkService.selectAccount(this.props.account[0]); networkService.setAccounts(this.props.account)
   }
 
   componentWillUnmount () {
@@ -119,8 +121,8 @@ class LoginLedger extends PureComponent {
   _buildItem(item, index) {
     return <MenuItem value={index} key={index} primaryText={item}/>
   }
-
-  handleChange = (event, index, value) => {this.setState({value}); networkService.selectAccount(this.props.account[value])}
+	
+  handleChange = (event, index, value) => {this.setState({value}); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
 
   render () {
     const { isLoading, ledger, account } = this.props

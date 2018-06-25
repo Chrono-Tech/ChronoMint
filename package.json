@@ -1,12 +1,13 @@
 {
   "name": "@chronobank/mint",
-  "version": "0.9.0",
+  "version": "0.9.3",
   "description": "Control panel for ChronoBank",
   "private": true,
   "author": "chronobank",
   "license": "AGPL-3.0",
   "devDependencies": {
     "@chronobank/chronomint-presentation": "github:chronobank/ChronoMintPresentation",
+    "@chronobank/core": "*",
     "@chronobank/login": "*",
     "@chronobank/login-ui": "*",
     "archiver": "^2.0.0",
@@ -15,7 +16,6 @@
     "babel-eslint": "^8.1.1",
     "babel-jest": "21.2.0",
     "babel-loader": "7.0.0",
-    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-syntax-decorators": "^6.13.0",
     "babel-plugin-syntax-trailing-function-commas": "6.22.0",
     "babel-plugin-transform-class-properties": "6.24.1",
@@ -155,7 +155,7 @@
     "lint:report": "bash -c \"node ./node_modules/eslint/bin/eslint --format node_modules/eslint-html-reporter/reporter-team-city.js --output-file ./report/eslint-report-`date +%F`.html --debug --ext .js,.jsx .\"",
     "lint:sort": "bash -c \"node ./scripts/importSort.js `git diff --name-status $(git merge-base origin/develop HEAD)..HEAD | grep -E '^[AM]' | awk ' {print $2} ' | grep -E 'jsx?$'`\"",
     "lint:test": "node ./node_modules/eslint/bin/eslint.js --ext .js,.jsx .",
-    "start": "node ./scripts/start.js",
+    "start": "node --max-old-space-size=4096 ./scripts/start.js",
     "start:eval": "SOURCE_MAP=eval node ./scripts/start.js",
     "start:http": "BASE_SCHEMA=http node ./scripts/start.js",
     "stats": "node ./scripts/start.js --stats",
@@ -203,6 +203,7 @@
     "yarn": ">=1.0.0"
   },
   "workspaces": [
+    "src/platform",
     "packages/*"
   ]
 }

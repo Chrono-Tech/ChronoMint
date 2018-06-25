@@ -4,6 +4,8 @@
  */
 
 import Immutable from 'immutable'
+import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
+import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
@@ -12,15 +14,13 @@ import { reducer as formReducer } from 'redux-form/immutable'
 import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from 'platform/i18n'
 import moment from 'moment'
-import saveAccountMiddleWare from 'redux/session/saveAccountMiddleWare'
+import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import ls from 'utils/LocalStorage'
+import ls from 'platform/utils/LocalStorage'
 import * as ducks from './ducks'
-import { globalWatcher } from './watcher/actions'
 import routingReducer from './routing'
 import transformer from './serialize'
-import { SESSION_DESTROY } from './session/actions'
 
 let i18nJson // declaration of a global var for the i18n object for a standalone version
 
@@ -50,9 +50,9 @@ const createSelectLocationState = () => {
 
 // add noised action here
 const IGNORED_ACTIONS = [
-  'market/UPDATE_RATES',
-  'market/UPDATE_LAST_MARKET',
-  'market/UPDATE_PRICES',
+  '@chronobank/core/market/UPDATE_RATES',
+  '@chronobank/core/market/UPDATE_LAST_MARKET',
+  '@chronobank/core/market/UPDATE_PRICES',
 ]
 
 let logActions = process.env.NODE_ENV === 'development'
@@ -137,7 +137,7 @@ const locale = ls.getLocale()
 // set moment locale
 moment.locale(locale)
 
-store.dispatch(loadTranslations(require('../i18n/')))
+store.dispatch(loadTranslations(require('../i18n/').default))
 store.dispatch(setLocale(locale))
 
 // load i18n from the public site

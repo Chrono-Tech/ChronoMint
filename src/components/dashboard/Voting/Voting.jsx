@@ -14,9 +14,9 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-import { initAssetsHolder } from 'redux/assetsHolder/actions'
+import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
 import { modalsOpen } from 'redux/modals/actions'
-import { listPolls } from 'redux/voting/actions'
+import { listPolls } from '@chronobank/core/redux/voting/actions'
 
 import './Voting.scss'
 

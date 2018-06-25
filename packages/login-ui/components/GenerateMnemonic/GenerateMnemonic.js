@@ -4,14 +4,10 @@
  */
 
 import PropTypes from 'prop-types'
-import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
-import classnames from 'classnames'
 import { MuiThemeProvider } from 'material-ui'
-import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
-import { UserRow, Button } from 'components'
+import { Button } from '../../settings'
 import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 
 import PrintIcon from 'assets/img/icons/print-white.svg'
