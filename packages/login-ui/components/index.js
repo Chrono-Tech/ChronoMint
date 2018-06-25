@@ -9,3 +9,4 @@ export { default as ResetPassword, FORM_RESET_PASSWORD } from './ResetPassword/R
 export { default as CreateAccount, FORM_CREATE_ACCOUNT } from './CreateAccount/CreateAccount'
 export { default as ConfirmMnemonic, FORM_CONFIRM_MNEMONIC } from './ConfirmMnemonic/ConfirmMnemonic'
 export { default as CommonNetworkSelector } from './CommonNetworkSelector/CommonNetworkSelector'
+export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'

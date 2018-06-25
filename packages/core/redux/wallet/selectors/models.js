@@ -16,12 +16,10 @@ import { getCurrentWallet } from '../actions'
  */
 
 export const getMainWallet = (state) => {
-  console.log('getmain', state.get(DUCK_MAIN_WALLET))
   return state.get(DUCK_MAIN_WALLET)
 }
 
 export const getMultisigWallets = (state) => {
-  console.log('getmultisig', state.get(DUCK_MULTISIG_WALLET))
   return state.get(DUCK_MULTISIG_WALLET)
 }
 

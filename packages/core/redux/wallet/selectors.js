@@ -19,20 +19,23 @@ import {
   selectMarketPricesListStore,
   selectMarketPricesSelectedCurrencyStore,
   selectTokensStore,
+  getMainWalletBalance,
+  getCurrentWalletBalance,
+  getMainWalletAddresses,
 } from './selectors/models'
 
-console.log('getMainWallet @chrono', getMainWallet)
-
-export { getMainWallet } from './selectors/models'
-export { getMultisigWallets } from './selectors/models'
-export { getMainWalletBalance } from './selectors/models'
-export { getCurrentWalletBalance } from './selectors/models'
-export { selectMainWalletBalancesListStore } from './selectors/models'
-export { selectTokensStore } from './selectors/models'
-export { getMainWalletAddresses } from './selectors/models'
-export { selectMainWalletAddressesListStore } from './selectors/models'
-export { selectMarketPricesListStore } from './selectors/models'
-export { selectMarketPricesSelectedCurrencyStore } from './selectors/models'
+export {
+  getMainWallet,
+  getMultisigWallets,
+  getMainWalletBalance,
+  getCurrentWalletBalance,
+  selectMainWalletBalancesListStore,
+  selectTokensStore,
+  getMainWalletAddresses,
+  selectMainWalletAddressesListStore,
+  selectMarketPricesListStore,
+  selectMarketPricesSelectedCurrencyStore,
+}
 
 /**
  * WALLET SECTIONS
