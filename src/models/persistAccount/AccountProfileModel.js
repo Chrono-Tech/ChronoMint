@@ -4,16 +4,20 @@ import AbstractAccountModel from './AbstractAccountModel'
 const schema = {
   id: PropTypes.string,
   avatar: PropTypes.string,
-  ipfs: PropTypes.string,
+  address: PropTypes.string,
+  ipfsHash: PropTypes.string,
+  userName: PropTypes.string,
 }
 
-export default class AccountEntryModel extends AbstractAccountModel {
+export default class AccountProfileModel extends AbstractAccountModel {
   constructor (props) {
     super(props, schema)
     Object.assign(this, {
       id: '',
       avatar: '',
-      ipfs: '',
+      address: '',
+      ipfsHash: '',
+      userName: '',
     }, props)
     Object.freeze(this)
   }

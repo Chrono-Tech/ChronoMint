@@ -19,7 +19,7 @@ class ProfileService extends EventEmitter {
     return PROFILE_BACKEND_REST_URL
   }
 
-  getProfileService(){
+  getServerProvider(){
     return axios.create({ baseURL: this.getProfileHost() })
   }
 
@@ -43,14 +43,16 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  async getProfileSignature({address}){
-    const service = this.getProfileService()
+  async getPersonInfo(addresses = []){
+    const service = this.getServerProvider()
 
-    const body = {
-      purpose: `${address}`,
-    }
+    // const body = {
+    //   purpose: `exchange-session`,
+    // }
 
-    return service.post('/api/v1/security/persons/query', body, this.withAuthorizaionSignature())
+    const personInfo = await service.post('/api/v1/security/persons/query', addresses)
+
+    return personInfo
   }
 
 }

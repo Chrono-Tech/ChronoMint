@@ -131,7 +131,7 @@ class LoginPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={selectedWallet && selectedWallet.name}
-              avatar={selectedWallet.signature.avatar}
+              avatar={selectedWallet.profile.avatar}
               onClick={navigateToSelectWallet}
             />
 

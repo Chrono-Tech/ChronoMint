@@ -12,6 +12,7 @@ import {
   accountAdd,
   accountSelect,
   accountUpdate,
+  setProfilesForAccounts,
 } from 'redux/persistAccount/actions'
 import {
   FORM_CONFIRM_MNEMONIC,
@@ -479,7 +480,7 @@ export const rejectAccountsSignatures = (data) => (dispatch) => {
   dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_REJECT, data })
 }
 
-export const initAccountsSignature = () => (dispatch, getState) => {
+export const initAccountsSignature = () => async (dispatch, getState) => {
   const state = getState()
 
   const { loadingAccountSignatures } = state.get('network')
@@ -491,24 +492,16 @@ export const initAccountsSignature = () => (dispatch, getState) => {
 
   dispatch(loadingAccountsSignatures())
 
-  walletsList.map(async (account) => {
-    const signature = await profileService.getProfileSignature({
-      address: '',
-    })
+  // const addresses = ["0x29ebde3aa4c6a8ee350b5c9706a6fe431c663c8d"]
+  const accounts = await dispatch(setProfilesForAccounts(walletsList))
 
-    const newAccount = {
-      ...account,
-      signature,
-    }
-
-    dispatch(accountUpdate(newAccount))
-  })
+  accounts.forEach((account) => dispatch(accountUpdate(account)))
 
   dispatch(resetLoadingAccountsSignatures())
 
 }
 
-export const initAccountsSelector = () => (dispatch) => {
+export const initAccountsSelector = () => async (dispatch) => {
   dispatch(initAccountsSignature())
 }
 

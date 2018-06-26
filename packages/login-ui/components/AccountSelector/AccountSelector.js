@@ -78,7 +78,7 @@ export default class SelectWalletPage extends PureComponent {
             <UserRow
               key={i}
               title={w.name}
-              avatar={w.signature.avatar}
+              avatar={w.profile.avatar}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types'
 import AbstractAccountModel from './AbstractAccountModel'
-import AccountSignatureModel from './AccountSignatureModel'
+import AccountProfileModel from './AccountProfileModel'
 
 const schema = {
   key: PropTypes.string,
   name: PropTypes.string,
   types: PropTypes.object,
   encrypted: PropTypes.array,
-  signature: PropTypes.instanceOf(AccountSignatureModel),
+  profile: PropTypes.instanceOf(AccountProfileModel),
 }
 
 export default class AccountEntryModel extends AbstractAccountModel {
@@ -18,7 +18,7 @@ export default class AccountEntryModel extends AbstractAccountModel {
       name: '',
       types: {},
       encrypted: [],
-      signature: new AccountSignatureModel(),
+      profile: new AccountProfileModel(),
     }, props)
     Object.freeze(this)
   }

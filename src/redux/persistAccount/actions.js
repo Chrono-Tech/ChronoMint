@@ -7,12 +7,16 @@ import uniqid from 'uniqid'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
-
 import {
-  AccountModel,
   AccountEntryModel,
+  AccountProfileModel,
 } from 'models/persistAccount'
+import {
+  getWalletsListAddresses,
+  getAccountAddress,
+} from 'redux/persistAccount/utils'
 import networkService from '@chronobank/login/network/NetworkService'
+import profileService from '@chronobank/login/network/ProfileService'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -86,9 +90,7 @@ export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
   const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 
-  const walletAddress = wallet && wallet.encrypted && wallet.encrypted[0] && wallet.encrypted[0].address || ''
-
-  const addressFromWallet = `0x${walletAddress}`
+  const addressFromWallet = wallet && getAccountAddress(wallet, true)
 
   const account = accounts.privateKeyToAccount(`0x${bip39.mnemonicToSeedHex(mnemonic)}`)
   const address = account && account.address && account.address.toLowerCase()
@@ -131,12 +133,17 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   const account = accounts.privateKeyToAccount(`0x${hex}`)
   wallet.add(account)
 
-  return new AccountEntryModel({
+  const entry = new AccountEntryModel({
     key: uniqid(),
     name,
     types,
     encrypted: wallet && wallet.encrypt(password),
+    profile: null,
   })
+
+  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+
+  return newAccounts[0] || entry
 
 }
 
@@ -154,6 +161,27 @@ export const downloadWallet = () => (dispatch, getState) => {
     document.body.appendChild(element)
     element.click()
     document.body.removeChild(element)
+  }
+}
+
+export const setProfilesForAccounts = (walletsList) => async () => {
+
+  const addresses = getWalletsListAddresses(walletsList)
+  const { data } = await profileService.getPersonInfo(addresses)
+  console.log('signature', data)
+
+  if (Array.isArray(data)) {
+    return data.map((profile) => {
+      const account = walletsList.find((wallet) => getAccountAddress(wallet, true) === profile.address)
+
+      const profileModel = new AccountProfileModel(profile)
+      return new AccountEntryModel({
+        ...account,
+        profile: profileModel,
+      })
+    })
+  } else {
+    return walletsList
   }
 }
 
