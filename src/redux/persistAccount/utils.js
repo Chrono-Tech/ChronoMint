@@ -23,3 +23,7 @@ export const getAccountAddress = (account: AccountEntryModel, hexFormat = false)
 export const getWalletsListAddresses = (walletsList = []) => {
   return walletsList.map((wallet) => getAccountAddress(wallet, true))
 }
+
+export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
+  return walletsList.find((w) => getAccountAddress(w) === getAccountAddress(wallet))
+}

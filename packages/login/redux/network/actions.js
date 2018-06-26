@@ -16,6 +16,9 @@ import {
   accountUpdateList,
 } from 'redux/persistAccount/actions'
 import {
+  walletAddressExistInWalletsList,
+} from 'redux/persistAccount/utils'
+import {
   FORM_CONFIRM_MNEMONIC,
   FORM_MNEMONIC_LOGIN_PAGE,
   FORM_PRIVATE_KEY_LOGIN_PAGE,
@@ -142,6 +145,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   const state = getState()
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey } = state.get('network')
+  const { walletsList } = state.get('persistAccount')
 
   const validateName = dispatch(validateAccountName(walletName))
 
@@ -159,6 +163,10 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
       privateKey: newAccountPrivateKey,
       numberOfAccounts: 0,
     }))
+
+    if (walletAddressExistInWalletsList(wallet, walletsList)){
+      throw new SubmissionError({ walletName: 'Wallet is exist in wallets list' })
+    }
 
     dispatch(accountAdd(wallet))
 
@@ -304,9 +312,9 @@ export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
 
 }
 
-export const getSignInSignature = (password) => async (dispatch, getState) => {
-}
+export const getSignInSignature = () => async (dispatch, getState) => {
 
+}
 
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
@@ -318,9 +326,16 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
+  let signData = wallet && wallet[0] && wallet[0].sign({"purpose":"exchange-session"})
+
+  console.log('signData', signData)
+
+  await profileService.getProfile(signData.signature)
+
   if (privateKey){
     await dispatch(handlePrivateKeyLogin(privateKey))
   }
+
 
 }
 

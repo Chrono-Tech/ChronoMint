@@ -43,6 +43,19 @@ class ProfileService extends EventEmitter {
     }
   }
 
+  async getProfile(signature){
+    const service = this.getServerProvider()
+
+    const body = {"purpose":"exchange-session"}
+
+    const headers = {
+      Authorization: `Signature ${signature}`,
+    }
+
+    const { data } = await service.post('/api/v1/security/signin/signature', body, headers)
+    console.log('getProfile', data)
+  }
+
   async getPersonInfo(addresses = []){
     const service = this.getServerProvider()
 
