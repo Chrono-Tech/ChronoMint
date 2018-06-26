@@ -62,7 +62,7 @@ export default class DoughnutChart extends PureComponent {
     const arc = d3.arc()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius)
-      .cornerRadius(this.props.rounded ? outerRadius - innerRadius : 0)
+      .cornerRadius(0)
       .startAngle(0)
 
     const svg = d3.select(root).append('svg')

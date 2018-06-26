@@ -1,0 +1,28 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  position: absolute;
+  right: 0;
+  top: 0;
+  .menuButton {
+    padding: 5px 10px;
+    color: $color-white;
+    cursor: pointer;
+    &:hover {
+      color: $button-color-2;
+    }
+    .icon {
+      line-height: 36px;
+      font-size: 30px;
+      font-weight: bolder;
+    }
+  }
+  .menuDropDown {
+
+  }
+}

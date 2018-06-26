@@ -9,7 +9,6 @@ import * as assetDonator from '@chronobank/core/dao/AssetDonatorDAO'
 import * as erc20 from '@chronobank/core/dao/ERC20DAO'
 import * as erc20Manager from '@chronobank/core/dao/ERC20ManagerDAO'
 import * as eth from '@chronobank/core/dao/EthereumDAO'
-import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
 import * as exchange from '@chronobank/core/dao/ExchangeDAO'
 import * as loc from '@chronobank/core/dao/LOCManagerDAO'
 import * as operations from '@chronobank/core/dao/PendingManagerDAO'
@@ -806,26 +805,6 @@ export default {
       percentOfTotalDepositedAmount: '%{percent}% of total deposited amount',
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
-    },
-    Poll: {
-      new: 'New',
-      ongoing: 'Ongoing',
-      daysLeft: 'days left',
-      daysLeft_1: 'day left',
-      finished: 'Finished',
-      timeHoldersAlreadyVoted: 'percent of TIME received',
-      no: 'No',
-      requiredVotes: 'Required TIME',
-      receivedVotes: 'Received TIME',
-      variants: 'Variants',
-      documents: 'Documents',
-      remove: 'Remove',
-      details: 'Details',
-      endPoll: 'End Poll',
-      activate: 'Activate',
-      vote: 'Vote',
-      published: 'Published',
-      endDate: 'End Date',
     },
     locs: {
       PageTitle: {

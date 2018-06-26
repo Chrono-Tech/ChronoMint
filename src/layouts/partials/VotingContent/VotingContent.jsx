@@ -71,7 +71,7 @@ export default class VotingContent extends Component {
     return (
       <div styleName='pollsContent'>
         {polls.items().map((poll) => (
-          <div styleName='pollWrapper'>
+          <div styleName='pollWrapper' key={poll.id()}>
             <Poll
               model={poll}
               deposit={this.props.deposit}
