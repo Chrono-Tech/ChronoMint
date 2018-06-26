@@ -59,7 +59,15 @@ export default class VotingContent extends Component {
     deposit: PropTypes.instanceOf(Amount),
   }
 
-  componentWillMount () {
+  constructor () {
+    super(...arguments)
+
+    this.state = {
+      filter: 'ongoing',
+    }
+  }
+
+  componentDidMount () {
     this.props.initAssetsHolder()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -67,10 +75,32 @@ export default class VotingContent extends Component {
     }
   }
 
+  handleViewOngoing = () => {
+    this.setState({
+      filter: 'ongoing',
+    })
+  }
+
+  handleViewEnded = () => {
+    this.setState({
+      filter: 'ended',
+    })
+  }
+
   renderBody (polls) {
+    const { filter } = this.state
+    const filteredPolls = polls
+      .items()
+      .filter((poll) => {
+        const details = poll.details()
+        if (filter === 'ongoing') {
+          return details.active
+        }
+        return !details.active
+      })
     return (
       <div styleName='pollsContent'>
-        {polls.items().map((poll) => (
+        {filteredPolls.map((poll) => (
           <div styleName='pollWrapper' key={poll.id()}>
             <Poll
               model={poll}
@@ -87,12 +117,24 @@ export default class VotingContent extends Component {
       ? this.props.list.reverse()
       : new VotingCollection()
 
+    const { filter } = this.state
+
     return (
       <div styleName='root'>
         <div styleName='content'>
           <div styleName='tabsFilterWrapper'>
-            <div styleName={classnames('filterTab', 'active')}><Translate value={`${prefix}.ongoingPolls`} /></div>
-            <div styleName={classnames('filterTab')}><Translate value={`${prefix}.pastPolls`} /></div>
+            <button
+              styleName={classnames('filterTab', { 'active': filter === 'ongoing' })}
+              onClick={this.handleViewOngoing}
+            >
+              <Translate value={`${prefix}.ongoingPolls`} />
+            </button>
+            <button
+              styleName={classnames('filterTab', { 'active': filter === 'ended' })}
+              onClick={this.handleViewEnded}
+            >
+              <Translate value={`${prefix}.pastPolls`} />
+            </button>
           </div>
           {this.props.isFetched && this.props.deposit.isZero() &&
           (
