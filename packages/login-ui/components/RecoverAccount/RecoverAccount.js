@@ -12,7 +12,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import {
   AccountEntryModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 import {
   onSubmitRecoverAccountForm,
   onSubmitRecoverAccountFormSuccess,

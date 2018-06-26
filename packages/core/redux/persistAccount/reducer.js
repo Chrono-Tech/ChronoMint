@@ -9,9 +9,9 @@ import * as a from './actions'
 import { removeWallet } from './utils'
 
 const persistConfig = {
-  key: 'wallet',
+  key: 'account',
   storage: storage,
-  blacklist: ['decryptedWallet'],
+  blacklist: ['decryptedWallet', 'rehydrated'],
 }
 
 const initialState = {

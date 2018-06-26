@@ -9,7 +9,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import {
   AccountEntryModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 import {
   onSubmitResetAccountPasswordForm,
   onSubmitResetAccountPasswordSuccess,

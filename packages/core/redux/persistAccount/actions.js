@@ -7,15 +7,16 @@ import uniqid from 'uniqid'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
+
 import {
+  AccountModel,
   AccountEntryModel,
   AccountProfileModel,
-  AccountModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from 'redux/persistAccount/utils'
+} from '@chronobank/core/models/wallet/persistAccount/utils'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 
@@ -56,23 +57,14 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (entry, password) => async (dispatch, getState) => {
+export const decryptAccount = (encrypted, password) => async (dispatch, getState) => {
   const state = getState()
 
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
 
-  let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
-
-  console.log('decryptWallet', wallet, entry)
-
-  const model = new AccountModel({
-    entry,
-    wallet,
-  })
-
-  dispatch(accountLoad(model))
+  let wallet = await accounts.wallet.decrypt(encrypted, password)
 
   return wallet
 

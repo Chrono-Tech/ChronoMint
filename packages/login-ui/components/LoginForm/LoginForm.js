@@ -14,7 +14,7 @@ import { Translate } from 'react-redux-i18n'
 import { UserRow, Button } from 'components'
 import {
   AccountEntryModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
@@ -54,7 +54,7 @@ function mapDispatchToProps (dispatch) {
 
       await dispatch(onSubmitLoginForm(password))
     },
-    onSubmitFail: () => dispatch(onSubmitLoginFormFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
     initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
@@ -139,7 +139,7 @@ class LoginPage extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet,
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting } = this.props
 
     return (
@@ -181,6 +181,8 @@ class LoginPage extends PureComponent {
                   /> : <Translate value='LoginForm.submitButton' />}
                 disabled={isLoginSubmitting}
               />
+
+              { error ? (<div styleName='form-error'>{error}</div>) : null }
 
               <Link to='/login/recover-account' href styleName='link'>
                 <Translate value='LoginForm.forgotPassword' />

@@ -18,6 +18,7 @@ import {
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithMnemonic.scss'
+import bip39 from "bip39";
 
 export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
 
@@ -25,6 +26,7 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
       const confirmMnemonic = values.get('mnemonic')
+      console.log('bip39.mnemonicToSeedHex(mnemonic)', bip39.mnemonicToSeedHex(confirmMnemonic))
       dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),

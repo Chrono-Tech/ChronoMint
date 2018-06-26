@@ -94,3 +94,11 @@ ul.actions {
     margin: 0 0 10px;
   }
 }
+
+.form-error {
+  font-size: 12px;
+  line-height: 12px;
+  text-align:center;
+  color: $error-color;
+  margin-bottom: 10px;
+}
