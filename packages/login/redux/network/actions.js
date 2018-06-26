@@ -13,6 +13,7 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
+  accountUpdateList,
 } from 'redux/persistAccount/actions'
 import {
   FORM_CONFIRM_MNEMONIC,
@@ -109,7 +110,7 @@ export const initMnemonicPage = () => (dispatch, getState) => {
   }
 }
 
-export const initLoginPage = () => (dispatch, getState) => {
+export const initLoginPage = () => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedWallet } = state.get('persistAccount')
@@ -303,6 +304,10 @@ export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
 
 }
 
+export const getSignInSignature = (password) => async (dispatch, getState) => {
+}
+
+
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
 
@@ -486,13 +491,12 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
   const { loadingAccountSignatures } = state.get('network')
   const { walletsList } = state.get('persistAccount')
 
-  if (loadingAccountSignatures){
+  if (loadingAccountSignatures || !walletsList.length){
     return
   }
 
   dispatch(loadingAccountsSignatures())
 
-  // const addresses = ["0x29ebde3aa4c6a8ee350b5c9706a6fe431c663c8d"]
   const accounts = await dispatch(setProfilesForAccounts(walletsList))
 
   accounts.forEach((account) => dispatch(accountUpdate(account)))

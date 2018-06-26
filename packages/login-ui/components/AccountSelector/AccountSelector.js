@@ -60,6 +60,22 @@ export default class SelectWalletPage extends PureComponent {
     this.props.initAccountsSelector()
   }
 
+  getAccountName(account){
+    if (account && account.profile && account.profile.userName){
+      return account.profile.userName
+    }
+
+    return account.name
+  }
+
+  getAccountAvatar(account){
+    if (account && account.profile){
+      return account.profile.avatar
+    }
+
+    return ''
+  }
+
   renderWalletsList (){
     const { onWalletSelect, walletsList } = this.props
 
@@ -77,8 +93,8 @@ export default class SelectWalletPage extends PureComponent {
           walletsList ? walletsList.map((w, i) => (
             <UserRow
               key={i}
-              title={w.name}
-              avatar={w.profile.avatar}
+              title={this.getAccountName(w)}
+              avatar={this.getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

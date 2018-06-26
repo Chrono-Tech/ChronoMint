@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import css from './UserRow.scss'
 
+const DEFAULT_AVATAR = '/src/assets/img/profile-photo-1.jpg'
+
 export default class UserRow extends React.Component {
   static propTypes = {
     avatar: PropTypes.string,
@@ -16,7 +18,7 @@ export default class UserRow extends React.Component {
   }
 
   static defaultProps = {
-    avatar: '/src/assets/img/profile-photo-1.jpg',
+    avatar: DEFAULT_AVATAR,
     name: '',
     address: '',
     onClick: () => {},
@@ -45,7 +47,7 @@ export default class UserRow extends React.Component {
       <div styleName={classnames('userBlock', onClick ? '' : 'userBlockSingle')} onClick={onClick ? onClick : () => {}}>
         <div styleName={classnames('userBlockInner')}>
           <div styleName={classnames('userBlockAvatar')}>
-            <img styleName={classnames('userAvatar')} src={avatar} alt='' />
+            <img styleName={classnames('userAvatar')} src={avatar || DEFAULT_AVATAR} alt='' />
           </div>
           <div styleName={classnames('userBlockInfo')}>
             { title ? (

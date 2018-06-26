@@ -55,7 +55,7 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitLoginForm(password))
     },
     onSubmitFail: () => dispatch(onSubmitLoginFormFail()),
-    initLoginPage: () => dispatch(initLoginPage()),
+    initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
     initAccountsSignature: () => dispatch(initAccountsSignature()),
   }
@@ -116,6 +116,28 @@ class LoginPage extends PureComponent {
     )
   }
 
+  getAccountName(){
+    const { selectedWallet } = this.props
+
+    if (!selectedWallet){
+      return
+    }
+
+    if (selectedWallet && selectedWallet.profile && selectedWallet.profile.userName){
+      return selectedWallet.profile.userName
+    }
+
+    return selectedWallet.name
+  }
+
+  getAccountAvatar(){
+    const { selectedWallet } = this.props
+
+    if (selectedWallet && selectedWallet.profile){
+      return selectedWallet.profile.avatar
+    }
+  }
+
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting } = this.props
@@ -130,8 +152,8 @@ class LoginPage extends PureComponent {
 
           <div styleName='user-row'>
             <UserRow
-              title={selectedWallet && selectedWallet.name}
-              avatar={selectedWallet.profile.avatar}
+              title={this.getAccountName(selectedWallet)}
+              avatar={this.getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
             />
 

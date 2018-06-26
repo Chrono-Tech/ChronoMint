@@ -10,6 +10,7 @@ import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
   AccountProfileModel,
+  AccountModel,
 } from 'models/persistAccount'
 import {
   getWalletsListAddresses,
@@ -168,7 +169,6 @@ export const setProfilesForAccounts = (walletsList) => async () => {
 
   const addresses = getWalletsListAddresses(walletsList)
   const { data } = await profileService.getPersonInfo(addresses)
-  console.log('signature', data)
 
   if (Array.isArray(data)) {
     return data.map((profile) => {
