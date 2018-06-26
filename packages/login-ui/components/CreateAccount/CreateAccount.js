@@ -27,14 +27,6 @@ import validate from './validate'
 import fieldStyles from './styles'
 import './CreateAccount.scss'
 
-const STRATEGY_MANUAL = 'manual'
-const STRATEGY_AUTOMATIC = 'automatic'
-
-const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
-}
-
 export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 
 function mapStateToProps (state) {
@@ -62,49 +54,6 @@ class CreateAccountPage extends PureComponent {
     isImportMode: PropTypes.bool,
   }
 
-  constructor(){
-    super()
-
-    this.state = {
-      isShowProvider: true,
-      strategy: STRATEGY_AUTOMATIC,
-    }
-  }
-
-  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
-
-  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
-
-  renderProviderSelector () {
-    switch (this.state.strategy) {
-      case STRATEGY_MANUAL:
-        return this.renderManualProviderSelector()
-      case STRATEGY_AUTOMATIC:
-        return this.renderAutomaticProviderSelector()
-      default:
-        return null
-    }
-  }
-
-  renderAutomaticProviderSelector () {
-    return (
-      <AutomaticProviderSelector
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
-  renderManualProviderSelector () {
-    return (
-      <ManualProviderSelector
-        show={this.state.isShowProvider}
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode } = this.props
 
@@ -118,10 +67,6 @@ class CreateAccountPage extends PureComponent {
           <div styleName='create-title-description'>
             Created wallet will be encrypted using given password and stored in your
             browser&apos;s local storage.
-          </div>
-
-          <div styleName='selector'>
-            { this.renderProviderSelector() }
           </div>
 
           <div styleName='fields-block'>
