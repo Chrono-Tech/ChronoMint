@@ -21,6 +21,35 @@ import './LoginWithMnemonic.scss'
 
 export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
 
+const multiRowTextFieldStyle = {
+  textareaStyle: {
+    background: 'rgba(0,0,0,.2)',
+    borderRadius: 3,
+    color: '#FFB54E',
+    padding: 8,
+    fontWeight: 700,
+    height: 62,
+    margin: 0,
+  },
+  underlineFocusStyle:{
+    border: 'none',
+  },
+  underlineStyle: {
+    border: 'none',
+  },
+  hintStyle: {
+    margin: 'auto',
+    textAlign: 'center',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#A3A3CC',
+  },
+}
+
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
@@ -42,14 +71,22 @@ class LoginWithMnemonic extends PureComponent {
 
           <div styleName='page-title'>Mnemonic form</div>
 
+          <div styleName='description'>
+            Type or copy your mnemonic key into the box below
+          </div>
+
           <div styleName='field'>
             <Field
               component={TextField}
               name='mnemonic'
               type='text'
-              floatingLabelText='Mnemonic'
+              hintText='Mnemonic'
               fullWidth
+              multiLine
+              rows={2}
+              rowsMax={2}
               {...styles.textField}
+              {...multiRowTextFieldStyle}
             />
           </div>
 

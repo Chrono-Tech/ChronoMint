@@ -26,6 +26,11 @@ export default {
       textAlign: 'center',
       transformOrigin: 'center center',
     },
+    hintStyle: {
+      color: '#A3A3CC',
+      margin: 'auto',
+      textAlign: 'center',
+    },
     errorStyle: {
       bottom: 0,
       marginTop: 5,

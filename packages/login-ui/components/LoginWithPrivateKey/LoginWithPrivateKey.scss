@@ -41,10 +41,11 @@ ul.actions {
 }
 
 .form {
-  max-width: 380px;
   margin:0 auto;
+  width: 380px;
 
   @include xs-only {
+    width: 100%;
     padding: 0 20px;
   }
 }
@@ -56,6 +57,16 @@ ul.actions {
   line-height: 42px;
   margin-bottom: 40px;
   text-align: center;
+}
+
+.description {
+  font-weight: 400;
+  color: $color-description;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+  max-width: 520px;
 }
 
 .user-row {

@@ -7,10 +7,11 @@
 @import "~styles/partials/mixins";
 
 .form {
-  max-width: 380px;
   margin:0 auto;
+  width: 380px;
 
   @include xs-only {
+    width: 100%;
     padding: 0 20px;
   }
 }
