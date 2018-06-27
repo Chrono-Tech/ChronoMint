@@ -13,7 +13,7 @@ import { Link } from 'react-router'
 import { Button } from 'components'
 import {
   downloadWallet,
-} from 'redux/persistAccount/actions'
+} from '@chronobank/core/redux/persistAccount/actions'
 import {
   navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'

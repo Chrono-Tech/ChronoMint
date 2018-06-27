@@ -85,6 +85,7 @@ const configureStore = () => {
       const mainWalletsState = state.get('mainWallet')
       const walletsState = state.get('multisigWallet')
       const persistAccount = state.get('persistAccount')
+      console.log('persistAccount', persistAccount)
       state = new Immutable.Map()
       state = state
         .set('i18n', i18nState)

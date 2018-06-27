@@ -11,7 +11,7 @@ import Accounts from 'web3-eth-accounts'
 import {
   AccountModel,
   AccountEntryModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 import networkService from '@chronobank/login/network/NetworkService'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
@@ -132,7 +132,6 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   })
 
 }
-
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()

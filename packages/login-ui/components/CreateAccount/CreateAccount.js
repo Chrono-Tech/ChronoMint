@@ -55,7 +55,7 @@ class CreateAccountPage extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode } = this.props
+    const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -106,6 +106,7 @@ class CreateAccountPage extends PureComponent {
             >
               Create new account
             </Button>
+            { error && (<div styleName='form-error'>{error}</div>) }
             or<br />
             <Link to='/login/select-account' href styleName='link'>Use an existing account</Link>
           </div>

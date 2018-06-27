@@ -12,7 +12,7 @@ import { UserRow, Button } from 'components'
 import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
 import {
   AccountEntryModel,
-} from 'models/persistAccount'
+} from '@chronobank/core/models/wallet/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'

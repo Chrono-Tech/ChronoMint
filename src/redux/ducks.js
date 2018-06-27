@@ -20,11 +20,11 @@ import * as tokens from '@chronobank/core/redux/tokens'
 import * as voting from '@chronobank/core/redux/voting'
 import * as wallet from '@chronobank/core/redux/wallet'
 import * as watcher from '@chronobank/core/redux/watcher'
+import * as persistAccount from '@chronobank/core/redux/persistAccount'
 import * as drawer from './drawer'
 import * as modals from './modals'
 import * as sides from './sides'
 import * as ui from './ui'
-import * as persistAccount from './persistAccount'
 
 export default {
   ui,

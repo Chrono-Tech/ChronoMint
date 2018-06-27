@@ -189,9 +189,17 @@ $copyRightPadding: 200px;
 }
 
 .button {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .selector {
   color: #fff;
+}
+
+.form-error {
+  font-size: 12px;
+  line-height: 12px;
+  text-align:center;
+  color: $error-color;
+  margin-bottom: 10px;
 }
