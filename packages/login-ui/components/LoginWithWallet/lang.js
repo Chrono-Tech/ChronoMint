@@ -4,7 +4,7 @@
  */
 
 export const en = {
-  login: 'Login',
+  login: 'Proceed to login',
   generateNewWallet: 'Generate New Wallet',
   enterPassword: 'Enter password',
   uploading: 'Uploading',

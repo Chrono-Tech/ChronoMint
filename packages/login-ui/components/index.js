@@ -10,3 +10,4 @@ export { default as CreateAccount, FORM_CREATE_ACCOUNT } from './CreateAccount/C
 export { default as ConfirmMnemonic, FORM_CONFIRM_MNEMONIC } from './ConfirmMnemonic/ConfirmMnemonic'
 export { default as CommonNetworkSelector } from './CommonNetworkSelector/CommonNetworkSelector'
 export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'
+export { default as LoginWithWallet, FORM_WALLET_UPLOAD } from './LoginWithWallet/LoginWithWallet'

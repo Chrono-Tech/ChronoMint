@@ -64,7 +64,7 @@
     padding: 0 20px;
     line-height: 45px;
     min-width: 280px;
-    margin: 0 auto 20px;
+    margin: 0 auto 0;
     text-transform: none;
 
     &:disabled {
@@ -78,6 +78,10 @@
   .button-text {
     flex: 1;
     text-align: left;
+    min-width: 0;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .before-img {
@@ -105,4 +109,20 @@
   button:disabled {
     background: $background-color-1;
   }
+}
+
+.hide {
+  display: none;
+}
+
+.password-wrapper {
+  margin: auto;
+  width: 280px;
+}
+
+.error {
+  color:$color-error;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: center;
 }

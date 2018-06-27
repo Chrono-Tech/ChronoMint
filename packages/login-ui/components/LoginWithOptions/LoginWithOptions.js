@@ -16,6 +16,7 @@ import {
   navigateToCreateAccount,
   initImportMethodsPage,
   navigateToCreateAccountWithoutImport,
+  navigateToWalletUploadMethod,
 } from '@chronobank/login/redux/network/actions'
 
 import Trezor from 'assets/img/icons/trezor-white.svg'
@@ -36,6 +37,7 @@ function mapDispatchToProps (dispatch) {
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
     navigateToCreateAccountWithoutImport: () => dispatch(navigateToCreateAccountWithoutImport()),
     initImportMethodsPage: () => dispatch(initImportMethodsPage()),
+    navigateToWalletUploadMethod: () => dispatch(navigateToWalletUploadMethod()),
   }
 }
 
@@ -46,6 +48,7 @@ export default class ImportMethodsPage extends PureComponent {
     navigateToPrivateKeyImportMethod: PropTypes.func,
     initImportMethodsPage: PropTypes.func,
     navigateToCreateAccountWithoutImport: PropTypes.func,
+    navigateToWalletUploadMethod: PropTypes.func,
   }
 
   componentWillMount(){
@@ -56,7 +59,7 @@ export default class ImportMethodsPage extends PureComponent {
 
   handlePrivateKeyLogin = () => this.props.navigateToPrivateKeyImportMethod()
 
-  handleWalletFileLogin = () => {}
+  handleWalletFileLogin = () => this.props.navigateToWalletUploadMethod()
 
   handleCreateAccount = () => this.props.navigateToCreateAccountWithoutImport()
 
@@ -107,7 +110,6 @@ export default class ImportMethodsPage extends PureComponent {
             <Button
               styleName='button'
               onClick={this.handleWalletFileLogin}
-              disabled
             >
               <img src={Wallet} alt='' />
               <br />

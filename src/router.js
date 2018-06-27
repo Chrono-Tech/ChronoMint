@@ -18,7 +18,7 @@ import {
   ConfirmMnemonic,
   GenerateMnemonic,
   GenerateWallet,
-  UploadWalletPage,
+  LoginWithWallet,
   LoginWithMnemonic,
   LoginWithPrivateKey,
 } from '@chronobank/login-ui/components'
@@ -67,7 +67,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-      <Redirect from='/' to='/login'/>
+      <Redirect from='/' to='/login' />
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -96,7 +96,7 @@ const router = (
         <Route path='/login/confirm-mnemonic' component={ConfirmMnemonic} />
         <Route path='/login/mnemonic' component={GenerateMnemonic} />
         <Route path='/login/download-wallet' component={GenerateWallet} />
-        <Route path='/login/upload-wallet' component={UploadWalletPage} />
+        <Route path='/login/upload-wallet' component={LoginWithWallet} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
         <Route path='*' component={NotFoundPage} />

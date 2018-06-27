@@ -51,21 +51,14 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (entry, password) => async (dispatch, getState) => {
+export const decryptAccount = (encrypted, password) => async (dispatch, getState) => {
   const state = getState()
 
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
 
-  let wallet = await accounts.wallet.decrypt(entry.encrypted, password)
-
-  const model = new AccountModel({
-    entry,
-    wallet,
-  })
-
-  dispatch(accountLoad(model))
+  let wallet = await accounts.wallet.decrypt(encrypted, password)
 
   return wallet
 
@@ -139,6 +132,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   })
 
 }
+
 
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()

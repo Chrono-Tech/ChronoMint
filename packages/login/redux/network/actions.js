@@ -20,6 +20,7 @@ import {
   FORM_CREATE_ACCOUNT,
   FORM_RECOVER_ACCOUNT,
   FORM_RESET_PASSWORD,
+  FORM_WALLET_UPLOAD,
 } from '@chronobank/login-ui/components'
 import Web3 from 'web3'
 import bip39 from 'bip39'
@@ -262,6 +263,10 @@ export const navigateToGenerateMnemonicPage = () => (dispatch) => {
   dispatch(push('/login/mnemonic'))
 }
 
+export const navigateToWalletUploadMethod = () => (dispatch) => {
+  dispatch(push('/login/upload-wallet'))
+}
+
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   if (!bip39.validateMnemonic(mnemonic)){
     throw new Error('Invalid mnemonic')
@@ -305,7 +310,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch({ type: NETWORK_SET_LOGIN_SUBMITTING })
 
   const { selectedWallet } = state.get('persistAccount')
-  let wallet = await dispatch(decryptAccount(selectedWallet, password))
+  let wallet = await dispatch(decryptAccount(selectedWallet && selectedWallet.encrypted, password))
 
   let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
@@ -385,6 +390,45 @@ export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
 
 export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) => (dispatch) => {
   dispatch(stopSubmit(FORM_RESET_PASSWORD, { _error: 'Error' }))
+
+}
+
+export const onSubmitWalletUpload = (walletString, password) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedWallet } = state.get('persistAccount')
+
+  try {
+    let restoredWalletJSON = JSON.parse(walletString)
+
+    if ('Crypto' in restoredWalletJSON){
+      restoredWalletJSON.crypto = restoredWalletJSON.Crypto
+      delete restoredWalletJSON.Crypto
+    }
+
+    console.log ('restoredWalletJSON', restoredWalletJSON)
+    let wallet = await dispatch (decryptAccount([restoredWalletJSON], password))
+
+    let privateKey = wallet && wallet[0] && wallet[0].privateKey
+
+    console.log ('restoredWalletJSON private key', privateKey)
+
+    dispatch ({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey })
+  } catch(e){
+    console.log('throw', e)
+    console.dir(e)
+    throw new SubmissionError({ _error: e && e.message })
+  }
+
+}
+
+export const onSubmitWalletUploadSuccess = () => (dispatch) => {
+  dispatch(navigateToCreateAccount())
+
+}
+
+export const onSubmitWalletUploadFail = (error, dispatch, submitError) => (dispatch) => {
+  dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitError && submitError.errors))
 
 }
 
