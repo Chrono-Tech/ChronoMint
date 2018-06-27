@@ -49,8 +49,8 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
-    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
   }
 }
 
@@ -63,8 +63,8 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
-    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
   }
 }
 
