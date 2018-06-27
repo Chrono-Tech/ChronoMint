@@ -74,13 +74,23 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const maxOptionTime = this.votes().max((a, b) => a.gt(b))
     const received = new Amount(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)), TIME)
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
-    const shareholdersCount = this.shareholdersCount()
+    const shareholdersCount = new BigNumber(this.shareholdersCount())
     const percents = voteLimitInTIME
       ? (maxOptionTime || new BigNumber(0)).mul(100).div(voteLimitInTIME).round(0)
       : new BigNumber(100)
     const memberOption = poll.memberOption()
+    const id = this.id()
+    const title = poll.title()
+    const isFetched = this.isFetched()
+    const isFetching = this.isFetching()
+    const hasMember = poll.hasMember()
 
     return {
+      id,
+      isFetched,
+      isFetching,
+      title,
+      hasMember,
       endDate,
       published,
       voteLimitInTIME,

@@ -24,6 +24,7 @@ import DepositsContent from './DepositsContent/DepositsContent'
 import DepositContent from './DepositContent/DepositContent'
 import TwoFAContent from './TwoFAContent/TwoFAContent'
 import NewPollContent from './NewPollContent/NewPollContent'
+import PollContent from './PollContent/PollContent'
 
 export {
   HeaderPartial,
@@ -47,6 +48,7 @@ export {
   AddWalletContent,
   TwoFAContent,
   NewPollContent,
+  PollContent,
 }
 
 export default {
@@ -71,4 +73,5 @@ export default {
   AddWalletContent,
   TwoFAContent,
   NewPollContent,
+  PollContent,
 }

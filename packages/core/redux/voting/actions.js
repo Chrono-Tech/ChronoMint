@@ -21,6 +21,7 @@ export const POLLS_LIST = 'voting/POLLS_LIST'
 export const POLLS_CREATE = 'voting/POLLS_CREATE'
 export const POLLS_REMOVE = 'voting/POLLS_REMOVE'
 export const POLLS_UPDATE = 'voting/POLLS_UPDATE'
+export const POLLS_SELECTED = 'voting/POLLS_SELECTED'
 
 export const DUCK_VOTING = 'voting'
 const PAGE_SIZE = 20

@@ -4,8 +4,8 @@
  */
 
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
 import VoteDialog from 'components/dialogs/VoteDialog'
+import { push } from 'react-router-redux'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
@@ -15,8 +15,8 @@ import { Translate } from 'react-redux-i18n'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { activatePoll, endPoll, removePoll } from '@chronobank/core/redux/voting/actions'
-import { Link } from 'react-router'
+import { activatePoll, endPoll, POLLS_SELECTED, removePoll } from '@chronobank/core/redux/voting/actions'
+import { PTPoll } from '@chronobank/core/redux/voting/types'
 import BigNumber from 'bignumber.js'
 import { prefix } from './lang'
 import './Poll.scss'
@@ -35,25 +35,23 @@ function mapDispatchToProps (dispatch, props) {
     handleVote: () => dispatch(modalsOpen({
       component: VoteDialog,
       props: {
-        model: props.model,
+        poll: props.poll,
       },
     })),
-    handlePollDetails: () => dispatch(modalsOpen({
-      component: PollDetailsDialog,
-      props: {
-        model: props.model,
-      },
-    })),
-    handlePollRemove: () => dispatch(removePoll(props.model)),
-    handlePollActivate: () => dispatch(activatePoll(props.model)),
-    handlePollEnd: () => dispatch(endPoll(props.model)),
+    handlePollDetails: () => {
+      dispatch({ type: POLLS_SELECTED, id: props.poll.id })
+      dispatch(push('/poll'))
+    },
+    handlePollRemove: () => dispatch(removePoll(props.poll)),
+    handlePollActivate: () => dispatch(activatePoll(props.poll)),
+    handlePollEnd: () => dispatch(endPoll(props.poll)),
   }
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Poll extends PureComponent {
   static propTypes = {
-    // model: PropTypes.instanceOf(PollDetailsModel), // TODO fix this type
+    poll: PTPoll,
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
@@ -65,10 +63,9 @@ export default class Poll extends PureComponent {
   }
 
   renderStatus () {
-    const { model } = this.props
-    const details = model.details()
+    const { poll } = this.props
 
-    if (model.isFetching()) {
+    if (poll.isFetching) {
       return (
         <div styleName='entryStatus'>
           <div styleName='entryBadge badgeOrange'><Translate value={`${prefix}.processing`} /></div>
@@ -77,24 +74,18 @@ export default class Poll extends PureComponent {
     } else {
       return (
         <div styleName='entryStatus'>
-          {details.status && details.active &&
-          (<div styleName='entryBadge badgeOrange'><Translate value={`${prefix}.ongoing`} /></div>)}
+          {poll.status && poll.active &&
+          (<div styleName='entryBadge badgeOrange'><Translate value={`${prefix}.new`} /></div>)}
 
-          {details.status && !details.active &&
-          (<div styleName='entryBadge badgeGreen'><Translate value={`${prefix}.new`} /></div>)}
-
-          {!details.status &&
-          (<div styleName='entryBadge badgeBlue'><Translate value={`${prefix}.finished`} /></div>)}
+          {poll.status && !poll.active &&
+          (<div styleName='entryBadge badgeBlue'><Translate value={`${prefix}.draft`} /></div>)}
         </div>
       )
     }
   }
 
   render () {
-    const { model } = this.props
-    const poll = model.poll()
-
-    const details = model.details()
+    const { poll } = this.props
 
     return (
       <div styleName='root'>
@@ -102,23 +93,22 @@ export default class Poll extends PureComponent {
         <div styleName='content'>
           <div styleName='layerChart'>
             <div styleName='entry entryTotal'>
-              <div styleName='entryTitle'>{details.percents.toString()}%</div>
+              <div styleName='entryTitle'>{poll.percents.toString()}%</div>
               <div styleName='entryLabel'><Translate value={`${prefix}.finished`} /></div>
             </div>
             <div styleName='chart'>
               <DoughnutChart
-                key={details}
+                key={poll}
                 weight={0.35}
                 items={[
-                  { value: details.maxOptionTime.toNumber(), fill: '#6ee289' },
-                  { value: (details.voteLimitInTIME ? details.voteLimitInTIME.minus(details.maxOptionTime) : new BigNumber(0)).toNumber(), fill: '#6671ae' },
+                  { value: poll.maxOptionTime.toNumber(), fill: '#6ee289' },
+                  { value: (poll.voteLimitInTIME ? poll.voteLimitInTIME.minus(poll.maxOptionTime) : new BigNumber(0)).toNumber(), fill: '#6671ae' },
                 ]}
               />
             </div>
           </div>
           <div styleName='layerTitle'>
-            {/*<Link to='/poll-detail' styleName='title'>{poll.title()}</Link>*/}
-            <div onClick={this.props.handlePollDetails} styleName='title'>{poll.title()}</div>
+            <button onClick={this.props.handlePollDetails} styleName='title'>{poll.title}</button>
 
             <div styleName='status'>
               {this.renderStatus()}
@@ -126,7 +116,7 @@ export default class Poll extends PureComponent {
             <div styleName='days'>
               <Translate
                 value={`${prefix}.daysLeft`}
-                count={((details.daysLeft % 100 < 20) && (details.daysLeft % 100) > 10) ? 0 : details.daysLeft % 10}
+                count={((poll.daysLeft % 100 < 20) && (poll.daysLeft % 100) > 10) ? 0 : poll.daysLeft % 10}
               />
             </div>
           </div>

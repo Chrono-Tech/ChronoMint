@@ -8,9 +8,8 @@ export const prefix = 'Poll'
 export default {
   en: {
     new: 'New',
-    ongoing: 'Ongoing',
+    draft: 'Draft',
     daysLeft: '%{count} days left',
-    finished: 'Finished',
     timeHoldersAlreadyVoted: 'percent of TIME received',
     no: 'No',
     requiredVotes: 'Required TIME',

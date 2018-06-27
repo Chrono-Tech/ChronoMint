@@ -18,6 +18,7 @@ import {
   RewardsPage,
   SettingsPage,
   VotingPage,
+  PollPage,
   WalletsPage,
   WalletPage,
   DepositsPage,
@@ -65,6 +66,7 @@ const router = (
         <Route path='exchange' component={ExchangePage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />
+        <Route path='poll' component={PollPage} />
         <Route path='new-poll' component={NewPollPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>

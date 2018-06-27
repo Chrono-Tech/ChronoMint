@@ -5,7 +5,7 @@
 
 import VotingMainModel from '../../models/voting/VotingMainModel'
 import {
-  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_UPDATE, POLLS_VOTE_LIMIT,
+  POLLS_CREATE, POLLS_LIST, POLLS_LOAD, POLLS_REMOVE, POLLS_SELECTED, POLLS_UPDATE, POLLS_VOTE_LIMIT,
 } from './actions'
 
 const initialState = new VotingMainModel()
@@ -32,6 +32,8 @@ export default (state = initialState, action) => {
     case POLLS_REMOVE:
       return state
         .list(state.list().remove(action.id))
+    case POLLS_SELECTED:
+      return state.selectedPoll(action.id)
     default:
       return state
   }

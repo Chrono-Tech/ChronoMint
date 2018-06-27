@@ -8,12 +8,14 @@ import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { PTPoll } from '@chronobank/core/redux/voting/types'
 import { Translate } from 'react-redux-i18n'
 import { prefix } from './lang'
 import './PollActionMenu.scss'
 
 export default class PollActionMenu extends PureComponent {
   static propTypes = {
+    poll: PTPoll,
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
@@ -53,10 +55,7 @@ export default class PollActionMenu extends PureComponent {
   }
 
   render () {
-    const { model, isCBE, deposit } = this.props
-    const poll = model.poll()
-
-    const details = model.details()
+    const { poll, isCBE, deposit } = this.props
 
     return (
       <div styleName='root'>
@@ -72,47 +71,47 @@ export default class PollActionMenu extends PureComponent {
           onRequestClose={this.handleRequestClose}
         >
           <Menu styleName='menuDropDown'>
-            {isCBE && (!details.status || !details.active)
+            {isCBE && (!poll.status || !poll.active)
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.remove`} />}
-                  disabled={model.isFetching()}
+                  disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollRemove)}
                 />
               )
               : null
             }
             <MenuItem
-              primaryText={<Translate value={`${prefix}.details`} />}
-              disabled={model.isFetching()}
+              primaryText={<Translate value={`${prefix}.poll`} />}
+              disabled={poll.isFetching}
               onClick={this.handleItemClick(this.props.handlePollDetails)}
             />
-            {isCBE && details.status && details.active
+            {isCBE && poll.status && poll.active
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.endPoll`} />}
-                  disabled={model.isFetching()}
+                  disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollEnd)}
                 />
               )
               : null
             }
-            {isCBE && details.status && !details.active
+            {isCBE && poll.status && !poll.active
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.activate`} />}
-                  disabled={model.isFetching()}
+                  disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollActivate)}
                 />
               )
               : null
             }
-            {details.status && details.active && !poll.hasMember() && details.daysLeft > 0
+            {poll.status && poll.active && !poll.hasMember && poll.daysLeft > 0
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.vote`} />}
-                  disabled={model.isFetching() || deposit.isZero()}
-                  onClick={!model.isFetching() && !deposit.isZero() ? this.handleItemClick(this.props.handleVote) : undefined}
+                  disabled={poll.isFetching || deposit.isZero()}
+                  onClick={!poll.isFetching && !deposit.isZero() ? this.handleItemClick(this.props.handleVote) : undefined}
                 />
               )
               : null

@@ -10,6 +10,7 @@ import OperationsPage from './OperationsPage'
 import RewardsPage from './RewardsPage'
 import SettingsPage from './SettingsPage'
 import VotingPage from './VotingPage'
+import PollPage from './PollPage'
 import DepositsPage from './DepositsPage'
 import WalletsPage from './WalletsPage'
 import WalletPage from './WalletPage'
@@ -24,6 +25,7 @@ export {
   WalletPage,
   RewardsPage,
   VotingPage,
+  PollPage,
   OperationsPage,
   SettingsPage,
   LOCPage,
@@ -41,6 +43,7 @@ export default {
   WalletPage,
   RewardsPage,
   VotingPage,
+  PollPage,
   OperationsPage,
   SettingsPage,
   LOCPage,

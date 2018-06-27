@@ -11,31 +11,31 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
-import { DUCK_ASSETS_HOLDER, initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { DUCK_VOTING, listPolls } from '@chronobank/core/redux/voting/actions'
-import VotingCollection from '@chronobank/core/models/voting/VotingCollection'
-import getStatistics from '@chronobank/core/redux/voting/getters'
+import { getPollsDetailsList, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
+import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
+import { listPolls } from '@chronobank/core/redux/voting/actions'
+import { isCBE } from '@chronobank/core/redux/session/selectors'
+import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
+import { PTPoll } from '@chronobank/core/redux/voting/types'
 import { prefix } from './lang'
 
 import './VotingContent.scss'
 
-function mapStateToProps (state) {
-  const voting = state.get(DUCK_VOTING)
-  const tokens = state.get(DUCK_TOKENS)
+function makeMapStateToProps () {
+  const getPolls = getPollsDetailsList()
+  const getIsCBE = isCBE()
+  const getFlags = getVotingFlags()
+  const getDeposit = getDepositAmount()
 
-  const timeToken = tokens.item('TIME')
-
-  return {
-    list: voting.list(),
-    tokens,
-    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(timeToken.address()).deposit(),
-    statistics: getStatistics(voting),
-    isCBE: state.get(DUCK_SESSION).isCBE,
-    isFetched: voting.isFetched(),
-    isFetching: voting.isFetching() && !voting.isFetched(),
+  const mapStateToProps = (ownState) => {
+    return {
+      polls: getPolls(ownState),
+      deposit: getDeposit(ownState),
+      isCBE: getIsCBE(ownState),
+      ...getFlags(ownState),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
@@ -45,14 +45,13 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
   static propTypes = {
+    polls: PropTypes.arrayOf(PTPoll),
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    list: PropTypes.instanceOf(VotingCollection),
-    statistics: PropTypes.objectOf(PropTypes.number),
     initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func,
@@ -90,20 +89,18 @@ export default class VotingContent extends Component {
   renderBody (polls) {
     const { filter } = this.state
     const filteredPolls = polls
-      .items()
       .filter((poll) => {
-        const details = poll.details()
         if (filter === 'ongoing') {
-          return details.active
+          return poll.active || (poll.status && !poll.active)
         }
-        return !details.active
+        return !poll.status
       })
     return (
       <div styleName='pollsContent'>
         {filteredPolls.map((poll) => (
-          <div styleName='pollWrapper' key={poll.id()}>
+          <div styleName='pollWrapper' key={poll.id}>
             <Poll
-              model={poll}
+              poll={poll}
               deposit={this.props.deposit}
             />
           </div>
@@ -114,8 +111,8 @@ export default class VotingContent extends Component {
 
   render () {
     const polls = this.props.isFetched
-      ? this.props.list.reverse()
-      : new VotingCollection()
+      ? this.props.polls.reverse()
+      : []
 
     const { filter } = this.state
 
