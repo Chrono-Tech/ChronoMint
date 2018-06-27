@@ -24,6 +24,7 @@ import * as drawer from './drawer'
 import * as modals from './modals'
 import * as sides from './sides'
 import * as ui from './ui'
+import * as persistAccount from './persistAccount'
 
 export default {
   ui,
@@ -46,5 +47,6 @@ export default {
   assetsManager,
   tokens,
   assetsHolder,
+  persistAccount,
   ...Login,
 }

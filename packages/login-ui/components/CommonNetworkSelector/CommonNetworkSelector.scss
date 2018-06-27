@@ -1,0 +1,48 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/mixins";
+@import "~styles/partials/variables";
+
+.providersList {
+  border-radius: 20px;
+  border-top: 3px solid #E2A864;
+  overflow: hidden;
+  background: #fff;
+  margin-top: 10px;
+
+  @include xs-only {
+    width: 100%;
+    top: 10px;
+  }
+}
+.providerItem {
+  padding: 15px 20px;
+  font-size: 14px;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  cursor: pointer;
+
+  &:hover, &.providerItemActive {
+    background: #F2F2F2;
+  }
+}
+
+.root {
+
+}
+
+.langButton {
+  button {
+    color: #5DB3ED;
+    border:1px solid #5DB3ED;
+    background: transparent;
+    font-size: 14px;
+    text-transform: none;
+
+    &:hover {
+      color:#fff;
+      border-color: transparent;
+    }
+  }
+}

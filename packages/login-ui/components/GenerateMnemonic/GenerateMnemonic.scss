@@ -4,45 +4,164 @@
  */
 
 @import "~styles/partials/variables";
+@import "~styles/partials/mixins";
 
-.root {
-  background-color: white;
+.wrapper {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #fff;
+
+  @include md-only {
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.description {
+  margin-bottom: 30px;
+  color: $additionalData-color-1;
+  line-height: 22px;
+  font-weight: 400;
+
+  @include md-only {
+    margin-bottom: 20px;
+  }
+}
+
+.passPhraseWrapper {
+  position: relative;
+  margin-bottom: 20px;
+  background: $background-color-1;
+  min-height: 100px;
   border-radius: 2px;
-  color: $color-primary-0;
-  padding: 16px;
-  margin-top: 16px;
-  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
+  padding: 30px 60px 20px 30px;
+
+  @include md-only {
+    margin-bottom: 0;
+  }
 }
 
-.keyBox {
-  background-color: $color-primary-light;
-  padding: 7px 8px 11px;
+.passPhrase {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  color: $button-color-2;
+  text-align: left;
+  min-height: 46px;
+  width: 100%;
+
+  @include md-only {
+    min-height: 55px;
+  }
 }
 
-.keyLabel {
-  opacity: 0.6;
-  font-size: 12px;
+
+.progressBlock {
+  width: 50px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
-.keyValue {
-  font-size: 18px;
-  font-weight: 600;
-  margin-top: 7px;
-}
+.progressPoint {
+  background: $button-color-2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 
-.message {
-  font-size: 14px;
-  margin-top: 16px;
+  &.progressPointInactive {
+    background: $color-blue-4;
+  }
 }
 
 .actions {
-  margin-top: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
 }
 
-.actionConfirm {
-  margin-right: 40px;
-  flex-grow: 1;
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
 }
+
+.submit {
+  margin-bottom: 25px;
+}
+
+.infoBlock {
+  text-align: left;
+  padding: 32px 30px 10px;
+  border-top: 5px solid #FF6D6B;
+  background: $background-color-1;
+  border-radius: 3px;
+  margin-bottom: 40px;
+
+  @include md-only {
+    border-radius: 0;
+  }
+}
+
+.infoBlockList {
+  font-weight: bold;
+  font-size: 16px;
+  margin-left: 15px;
+}
+
+.listItemContent {
+  font-weight: 400;
+  color: #A3A3CC;
+  line-height: 22px;
+  margin-bottom: 20px;
+
+  b {
+    color: #fff;
+    font-weight: bold;
+  }
+}
+
+.infoBlockHeader {
+  color: #FF6D6B;
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.printButtonWrapper {
+  position: absolute;
+  right: 0;
+  width: 45px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.printButton {
+  width: 24px;
+  opacity: 0.25;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+

@@ -84,11 +84,13 @@ const configureStore = () => {
       const i18nState = state.get('i18n')
       const mainWalletsState = state.get('mainWallet')
       const walletsState = state.get('multisigWallet')
+      const persistAccount = state.get('persistAccount')
       state = new Immutable.Map()
       state = state
         .set('i18n', i18nState)
         .set('multisigWallet', walletsState)
         .set('mainWallet', mainWalletsState)
+        .set('persistAccount', persistAccount)
     }
     return appReducer(state, action)
   }
@@ -117,7 +119,8 @@ export const store = configureStore()
 store.dispatch(globalWatcher())
 
 const persistorConfig = {
-  whitelist: ['multisigWallet', 'mainWallet'],
+  key: 'root',
+  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount'],
   transforms: [transformer()],
 }
 store.__persistor = persistStore(store, persistorConfig)
