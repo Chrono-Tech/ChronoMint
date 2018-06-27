@@ -88,7 +88,7 @@ export default class Markup extends PureComponent {
     if (!currentPage) {
       Object.keys(BUTTONS).map((path) => {
         if (path === pathname) {
-          currentPage = BUTTONS[ path ]
+          currentPage = BUTTONS[path]
         }
       })
     }
