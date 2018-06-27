@@ -21,6 +21,7 @@ import BigNumber from 'bignumber.js'
 import { prefix } from './lang'
 import './Poll.scss'
 import PollActionMenu from './PollActionMenu'
+import PollStatus from '../PollStatus/PollStatus'
 
 function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
@@ -32,12 +33,15 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch, props) {
   return {
-    handleVote: () => dispatch(modalsOpen({
-      component: VoteDialog,
-      props: {
-        poll: props.poll,
-      },
-    })),
+    handleVote: (model) => {
+      dispatch({ type: POLLS_SELECTED, id: props.poll.id })
+      dispatch(modalsOpen({
+        component: VoteDialog,
+        props: {
+          model,
+        },
+      }))
+    },
     handlePollDetails: () => {
       dispatch({ type: POLLS_SELECTED, id: props.poll.id })
       dispatch(push('/poll'))
@@ -62,28 +66,6 @@ export default class Poll extends PureComponent {
     handlePollEnd: PropTypes.func,
   }
 
-  renderStatus () {
-    const { poll } = this.props
-
-    if (poll.isFetching) {
-      return (
-        <div styleName='entryStatus'>
-          <div styleName='entryBadge badgeOrange'><Translate value={`${prefix}.processing`} /></div>
-        </div>
-      )
-    } else {
-      return (
-        <div styleName='entryStatus'>
-          {poll.status && poll.active &&
-          (<div styleName='entryBadge badgeOrange'><Translate value={`${prefix}.new`} /></div>)}
-
-          {poll.status && !poll.active &&
-          (<div styleName='entryBadge badgeBlue'><Translate value={`${prefix}.draft`} /></div>)}
-        </div>
-      )
-    }
-  }
-
   render () {
     const { poll } = this.props
 
@@ -99,6 +81,7 @@ export default class Poll extends PureComponent {
             <div styleName='chart'>
               <DoughnutChart
                 key={poll}
+                rounded={false}
                 weight={0.35}
                 items={[
                   { value: poll.maxOptionTime.toNumber(), fill: '#6ee289' },
@@ -111,7 +94,7 @@ export default class Poll extends PureComponent {
             <button onClick={this.props.handlePollDetails} styleName='title'>{poll.title}</button>
 
             <div styleName='status'>
-              {this.renderStatus()}
+              <PollStatus poll={poll} />
             </div>
             <div styleName='days'>
               <Translate

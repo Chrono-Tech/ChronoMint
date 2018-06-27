@@ -7,18 +7,11 @@ export const prefix = 'layouts.partials.PollContent'
 
 export default {
   en: {
-    voting: 'Voting',
-    allPolls: 'All polls',
-    completedPolls: 'Completed polls',
-    outdatedPolls: 'Outdated polls',
-    inactivePolls: 'Inactive polls',
-    pollsOngoing: 'Polls ongoing',
-    newPoll: 'New Poll',
-    warning1: 'Deposit TIME on ',
-    warning2: 'Wallet page',
-    warning3: ', if you want get access this page.',
-    ongoingPolls: 'Ongoing Polls',
-    pastPolls: 'Past Polls',
+    duration: 'Duration',
+    mostPopularOptionReceived: 'Most popular option received',
+    of: 'of',
+    percent: '(%{num}%)',
+    castYourVoteBelow: 'Cast your vote below',
   },
 }
 

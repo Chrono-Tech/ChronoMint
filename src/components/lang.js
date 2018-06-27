@@ -35,6 +35,7 @@ import WalletName from 'components/wallet/WalletName/lang'
 import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
 import PollEditForm from 'components/voting/PollEditForm/lang'
 import Poll from 'components/voting/Poll/lang'
+import PollStatus from 'components/voting/PollStatus/lang'
 
 export default {
   en: {
@@ -73,5 +74,6 @@ export default {
     DepositWarningWidget: DepositWarningWidget.en,
     PollEditForm: PollEditForm.en,
     Poll: Poll.en,
+    PollStatus: PollStatus.en,
   },
 }

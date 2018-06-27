@@ -30,4 +30,6 @@ export const PTPoll = PropTypes.shape({
   percents: PropTypes.instanceOf(BigNumber),
   maxOptionTime: PropTypes.instanceOf(BigNumber),
   memberOption: PropTypes.number,
+  voteEntries: PropTypes.arrayOf(PropTypes.object),
+  description: PropTypes.string,
 })

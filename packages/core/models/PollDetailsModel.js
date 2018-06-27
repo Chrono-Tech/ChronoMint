@@ -81,15 +81,18 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const memberOption = poll.memberOption()
     const id = this.id()
     const title = poll.title()
+    const description = poll.description()
     const isFetched = this.isFetched()
     const isFetching = this.isFetching()
     const hasMember = poll.hasMember()
+    const voteEntries = this.voteEntries().toArray()
 
     return {
       id,
       isFetched,
       isFetching,
       title,
+      description,
       hasMember,
       endDate,
       published,
@@ -109,8 +112,9 @@ export default class PollDetailsModel extends abstractFetchingModel({
       votedCount,
       shareholdersCount,
       percents: percents.gt(100) ? new BigNumber(100) : percents,
-      maxOptionTime: maxOptionTime || new BigNumber(0),
+      maxOptionTime: maxOptionTime || new Amount(0, TIME),
       memberOption: memberOption && memberOption.toNumber(),
+      voteEntries,
     }
   }
 }

@@ -143,7 +143,7 @@ export default class VoteDialog extends PureComponent {
                       items={entries.toArray().map((item, index) => {
                         return {
                           value: item.count.toNumber(),
-                          fill: palette[ index % palette.length ],
+                          fill: palette[index % palette.length],
                         }
                       })}
                     />
@@ -161,7 +161,7 @@ export default class VoteDialog extends PureComponent {
                           <div styleName='legendItem' key={index}>
                             <div
                               styleName='itemPoint'
-                              style={{ backgroundColor: palette[ index % palette.length ] }}
+                              style={{ backgroundColor: palette[index % palette.length] }}
                             />
                             <div styleName='itemTitle'>
                               <Translate value={prefix('optionNumber')} number={index + 1} /> &mdash;

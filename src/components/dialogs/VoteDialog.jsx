@@ -16,6 +16,7 @@ import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import Moment from 'components/common/Moment'
 import { SHORT_DATE } from '@chronobank/core/models/constants'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
+import { getSelectedPollFromDuck } from '@chronobank/core/redux/voting/selectors/models'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ModalDialog from './ModalDialog'
 import './VoteDialog.scss'
@@ -24,17 +25,23 @@ function prefix (token) {
   return `components.dialogs.VoteDialog.${token}`
 }
 
+function mapStateToProps (state) {
+  return {
+    model: getSelectedPollFromDuck(state),
+  }
+}
+
 function mapDispatchToProps (dispatch, op) {
   return {
     modalsClose: () => dispatch(modalsClose()),
-    handleSubmit: ({ choice }) => {
+    handleSubmit: ({ choice, model }) => {
       dispatch(modalsClose())
-      dispatch(vote(op.model, choice))
+      dispatch(vote(model, choice))
     },
   }
 }
 
-@connect(null, mapDispatchToProps)
+@connect(mapStateToProps, mapDispatchToProps)
 export default class VoteDialog extends PureComponent {
   static propTypes = {
     model: PropTypes.instanceOf(PollDetailsModel),
@@ -52,7 +59,7 @@ export default class VoteDialog extends PureComponent {
   handleSubmit = (e) => {
     e.preventDefault()
     if (this.state.choice !== null) {
-      this.props.handleSubmit({ choice: this.state.choice + 1 })
+      this.props.handleSubmit({ choice: this.state.choice + 1, model: this.props.model })
     }
   }
 

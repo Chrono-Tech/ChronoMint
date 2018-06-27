@@ -14,6 +14,7 @@ import { IS_ACTIVATED, IS_CREATED, IS_ENDED, IS_REMOVED, IS_UPDATED, IS_VOTED } 
 import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
+import { PTPoll } from './types'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -96,7 +97,8 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
   }
 }
 
-export const removePoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
   try {
     dispatch(handlePollRemoved(poll.id()))
     const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
@@ -119,7 +121,8 @@ export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch)
   }
 }
 
-export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
   try {
     dispatch(handlePollUpdated(poll
       .poll(poll.poll().active(true))
@@ -131,7 +134,8 @@ export const activatePoll = (poll: PollDetailsModel) => async (dispatch) => {
   }
 }
 
-export const endPoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
   try {
     dispatch(handlePollUpdated(poll
       .set('poll', poll.poll()
