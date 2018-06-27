@@ -4,6 +4,7 @@
   "author": "chronobank",
   "license": "AGPL-3.0",
   "dependencies": {
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider"
+    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",
+    "@waves/waves-api": "0.28.2"
   }
 }
