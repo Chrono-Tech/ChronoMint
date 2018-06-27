@@ -58,11 +58,10 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           `${this._socket.channels.transaction}.${address}`,
           (message) => {
             try {
+              console.log('_subscriptions[`transaction:${address}`]: ', address, JSON.stringify(message.body))
               const data = JSON.parse(message.body)
+              this.emit('transaction:mained', data)
               this.trace('Transaction Balance', data)
-
-
-
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
@@ -74,6 +73,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             (message) => {
               try {
                 const data = JSON.parse(message.body)
+                console.log('Subscriptions lastBlock: ', data)
                 this.trace('Address Balance', data)
                 this.emit('lastBlock', data)
               } catch (e) {
@@ -83,6 +83,14 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           )
         }
       })
+
+      setTimeout(() => {
+        this.emit('transaction:mained', {
+          address: 'msfhJH1uiDa3mb36y7oyjjoTW5QMuJ6t4y',
+          txList: ['7ec683f66115179e3a9dc25ccea75d9beb1482c5c412a66a8600efb8c3dd0ae9'],
+          blockNumber: 1326491,
+        })
+      }, 3000)
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -187,7 +195,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       res.data.outputs = formatOutputs
       const model = this._createTxModel(res.data, account)
       setImmediate(() => {
-        console.log('setImmediate tx: ', model)
         this.emit('tx', model)
       })
       return model
@@ -217,6 +224,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       blockHash: tx.blockHash,
       blockNumber: tx.blockNumber,
       txHash: tx.hash || tx._id,
+      confirmations: tx.confirmations,
       time: tx.timestamp,
       from,
       to,

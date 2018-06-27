@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ERC20DAO from '../dao/ERC20DAO'
 import EventEmitter from 'events'
+import ERC20DAO from '../dao/ERC20DAO'
 import TokenModel from '../models/tokens/TokenModel'
 
 export const EVENT_NEW_TOKEN = 'newToken'
@@ -34,27 +34,6 @@ class TokenService extends EventEmitter {
   registerDAO (token, dao) {
     this._cache [ token.id() ] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
-  }
-
-  subscribeToDAO (model) {
-
-  }
-
-  unsubcribe (address) {
-
-  }
-
-  unsubscribeAll () {
-
-  }
-
-  // shortcuts
-  getTimeDAO () {
-
-  }
-
-  getBitcoinDAO () {
-
   }
 }
 

@@ -9,7 +9,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import TxModel from '@chronobank/core/models/TxModel'
 import { TX_CONFIRMATIONS } from 'assets'
-import { DUCK_WALLET } from '@chronobank/core/redux/session/actions'
+import { DUCK_WALLET } from '@chronobank/core/redux/wallet/actions'
 import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
@@ -49,14 +49,16 @@ export default class TxConfirmations extends PureComponent {
   renderText () {
     const { transaction, latestBlock, textMode } = this.props
     let confirmations = 0
-    if (latestBlock && latestBlock.blockNumber) {
+    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber() > 0) {
       confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
+    } else {
+      confirmations = transaction.confirmations()
     }
 
     if (textMode) {
       let remaning
-      if (confirmations > 0 && confirmations < 4) {
-        remaning = 30 * 4 / confirmations
+      if (confirmations < 4) {
+        remaning = confirmations ? 30 * 4 / confirmations : 30 * 4
         return <Translate value={`${prefix}.confirmations`} min={Math.ceil(remaning / 60)} confirmations={confirmations} />
       } else {
         return <Translate value={`${prefix}.done`} />
@@ -67,8 +69,10 @@ export default class TxConfirmations extends PureComponent {
   render () {
     const { transaction, latestBlock, textMode } = this.props
     let confirmations = 0
-    if (latestBlock && latestBlock.blockNumber) {
+    if (latestBlock && latestBlock.blockNumber && transaction.blockNumber() > 0) {
       confirmations = latestBlock.blockNumber - transaction.blockNumber() + 1
+    } else {
+      confirmations = transaction.confirmations()
     }
 
     return (

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import TxExecModel from '../TxExecModel'
 import BigNumber from 'bignumber.js'
+import TxExecModel from '../TxExecModel'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 
 class MultisigWalletPendingTxModel extends abstractFetchingModel({

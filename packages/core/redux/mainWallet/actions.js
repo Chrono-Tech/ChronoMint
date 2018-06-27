@@ -20,7 +20,7 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { history } from '@chronobank/core-dependencies/configureStore'
 import { push } from '@chronobank/core-dependencies/router'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE, EVENT_UPDATE_TRANSACTION_MAINED } from '../../dao/AbstractTokenDAO'
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
@@ -58,6 +58,7 @@ export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
+export const WALLET_TRANSACTION_MAINED = 'mainWallet/TRANSACTION_MAINED'
 export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
@@ -125,10 +126,13 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         })))
       }
 
-      if (tx.from() === account || tx.to() === account) { // for main wallet
+      if (mainWalletAddresses.includes(tx.from()) ||
+        mainWalletAddresses.includes(tx.to()) ||
+        tx.from() === account || tx.to() === account) { // for main wallet
         // add to table
         // TODO @dkchv: !!! restore after fix
         dispatch({ type: WALLET_TRANSACTION, tx })
+
         if (!(tx.from() === account || tx.to() === account)) {
           return
         }
@@ -219,6 +223,15 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         }),
       })
     })
+    .on(EVENT_UPDATE_TRANSACTION_MAINED, ({ address, txList, blockNumber }) => {
+      console.log('address, txList, blockNumber: ', address, txList, blockNumber)
+      dispatch({
+        type: WALLET_TRANSACTION_MAINED,
+        address,
+        txList,
+        blockNumber,
+      })
+    })
 
   await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
 
@@ -226,6 +239,19 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
   if (token.symbol() === 'TIME') {
     dispatch(updateIsTIMERequired())
+  }
+
+  // loading transaction for Current transaction list
+  if (token.blockchain() && !token.isERC20()) {
+    let address = getState().get(DUCK_MAIN_WALLET).addresses().item(token.blockchain())
+    if (address.address()) {
+      dispatch(getTransactionsForWallet({
+        wallet: getState().get(DUCK_MAIN_WALLET),
+        address: address.address(),
+        blockchain: token.blockchain(),
+        forcedOffset: true })
+      )
+    }
   }
 }
 
@@ -331,10 +357,7 @@ export const getAccountTransactions = () => async (dispatch, getState) => {
 
   const wallet = getMainWallet(getState())
 
-  console.log('wallet: ', wallet)
-
   let transactions: TransactionsCollection = wallet.transactions()
-  console.log('transactions: ', transactions)
   const offset = transactions.offset() || 0
   const newOffset = offset + TXS_PER_PAGE
   let newTxs = []
@@ -539,6 +562,7 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
 
   let txList = []
   let dao
+
   switch (blockchain) {
     case BLOCKCHAIN_ETHEREUM:
       dao = tokenService.getDAO(ETH)
@@ -562,6 +586,7 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
       dao = tokenService.getDAO(WAVES)
       break
   }
+
   if (dao) {
     txList = await dao.getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
 

@@ -10,6 +10,7 @@ import TokenModel from '../models/tokens/TokenModel'
 import AbstractContractDAO from './AbstractContractDAO'
 
 export const EVENT_NEW_TRANSFER = 'TokenTxTransfer'
+export const EVENT_UPDATE_TRANSACTION_MAINED = 'TokenTransactionMained'
 export const EVENT_UPDATE_BALANCE = 'TokenUpdateBalance'
 export const EVENT_UPDATE_LAST_BLOCK = 'updateLastBlock'
 export const FETCH_NEW_BALANCE = 'TokenFetchNewBalance'

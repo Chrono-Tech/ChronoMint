@@ -59,6 +59,10 @@ export default class TransactionsTable extends PureComponent {
     const token: TokenModel = this.props.tokens.item(trx.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
 
+    if (trx.txHash() === 'f3ae374c569f87b4c50381568f1dd1d24d16d754c9f67636b6a2edd6bebfe0c5') {
+      console.log('Render transaction: ', trx.toJSON())
+    }
+
     const info = (
       <div styleName='info'>
         <div styleName='title'><Translate value={`${prefix}.${trx.from() === account ? 'sending' : 'receiving'}`} /></div>

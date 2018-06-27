@@ -21,6 +21,7 @@ export class BitcoinProvider extends AbstractProvider {
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
+    this._handleTransactionMained = (address: String, txList: Array, blockNumber: Number) => this.onTransactionMained(address, txList, blockNumber)
     this._id = id
   }
 
@@ -35,9 +36,10 @@ export class BitcoinProvider extends AbstractProvider {
 
   subscribe (engine) {
     const node = super.subscribe(engine)
-    node.addListener('tx', this._handleTransaction)
+    node.addListener('tx', this._handleTransaction) // send transaction
     node.addListener('balance', this._handleBalance)
     node.addListener('lastBlock', this._handleLastBlock)
+    node.addListener('transaction:mained', this._handleTransactionMained) // transaction mained.
   }
 
   unsubscribe (engine) {
@@ -45,6 +47,7 @@ export class BitcoinProvider extends AbstractProvider {
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
     node.removeListener('lastBlock', this._handleLastBlock)
+    node.removeListener('transaction:mained', this._handleTransactionMained)
   }
 
   async getTransactionInfo (txid) {
@@ -84,6 +87,15 @@ export class BitcoinProvider extends AbstractProvider {
     }
     const { tx /*, fee*/ } = this._engine.createTransaction(to, amount, utxos, options)
     return node.send(from, tx.toHex())
+  }
+
+  async onTransactionMained (address: String, txList: Array, blockNumber: Number) {
+    console.log('onTransactionMained: ', address, txList, blockNumber)
+    this.emit('transaction:mained', {
+      address,
+      txList,
+      blockNumber,
+    })
   }
 
   async onTransaction (tx: BitcoinTx) {

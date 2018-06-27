@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import Immutable from 'immutable'
 import BalanceModel from '../tokens/BalanceModel'
 import BalancesCollection from '../tokens/BalancesCollection'
-import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import { abstractFetchingModel } from '../AbstractFetchingModel'
 import AllowanceCollection from './AllowanceCollection'
 import TransactionsCollection from './TransactionsCollection'
@@ -64,6 +64,17 @@ export default class MainWalletModel extends abstractFetchingModel({
     return this
       .updateTransactionsGroup({ blockchain: tx.blockchain(), address: tx.from(), group: txGroupFrom.add(tx) })
       .updateTransactionsGroup({ blockchain: tx.blockchain(), address: tx.to(), group: txGroupTo.add(tx) })
+  }
+
+  getAllPendingTransactions () {
+    let pendingTransactions = []
+    this.get('transactions').map((t, e) => {
+      pendingTransactions = pendingTransactions.concat(t.items().filter((tr) => {
+        return tr.blockNumber() === -1 || tr.blockNumber() === null
+      }))
+    })
+
+    return pendingTransactions
   }
 
   isTIMERequired (value) {

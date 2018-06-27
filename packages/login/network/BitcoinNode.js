@@ -28,7 +28,7 @@ const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
 export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   feeRate: 200,
   api: axios.create({
-    baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-testnet-internal-bitcoin-rest.chronobank.io',
     timeout: 4000,
   }),
   socket: {
@@ -36,9 +36,9 @@ export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_balance',
-      transaction: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_transaction',
-      block: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_block',
+      balance: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_transaction',
+      block: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_block',
     },
   },
   trace: true,
