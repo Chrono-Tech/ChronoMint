@@ -5,7 +5,7 @@
 
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
-import React, { PureComponent } from 'react'
+import React, { PureComponent, cloneElement } from 'react'
 import { Drawer } from 'material-ui'
 import { SIDES_TOGGLE } from 'redux/sides/actions'
 
@@ -84,10 +84,14 @@ class SidePanel extends PureComponent {
   }
 
   render () {
-    const {component} = this.props
+    const Component = this.props.component
+    if (!Component){
+      return null
+    }
+
     return (
       <Drawer {...this.getDrawerProps(this.props.drawerProps)}>
-        <component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
+        <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
       </Drawer>
     )
   }

@@ -139,8 +139,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey } = state.get('network')
 
-  console.log('create account page: before validate', newAccountPrivateKey)
-
   const validateName = dispatch(validateAccountName(walletName))
 
   if (!validateName){
@@ -151,7 +149,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   if (importAccountMode){
     try {
-      let wallet = await dispatch(createAccount({
+      let wallet = await dispatch (createAccount ({
         name: walletName,
         password: walletPassword,
         mnemonic: newAccountMnemonic,
@@ -159,21 +157,13 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
         numberOfAccounts: 0,
       }))
 
-      console.log('create account page', wallet)
+      dispatch (accountAdd (wallet))
 
-      dispatch(accountAdd(wallet))
+      dispatch (accountSelect (wallet))
 
-      console.log('create account add')
+      dispatch (resetImportAccountMode ())
 
-
-      dispatch(accountSelect(wallet))
-
-      console.log('select')
-
-
-      dispatch(resetImportAccountMode())
-
-      dispatch(navigateToLoginPage())
+      dispatch (navigateToLoginPage ())
     } catch(e){
       throw new SubmissionError({ _error: e && e.message })
     }
@@ -324,18 +314,21 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   dispatch({ type: NETWORK_SET_LOGIN_SUBMITTING })
 
   const { selectedWallet } = state.get('persistAccount')
-  let wallet = await dispatch(decryptAccount(selectedWallet && selectedWallet.encrypted, password))
 
-  let privateKey = wallet && wallet[0] && wallet[0].privateKey
+  try {
+    let wallet = await dispatch (decryptAccount (selectedWallet, password))
 
-  if (privateKey){
-    try {
-      await dispatch (handlePrivateKeyLogin(privateKey))
-    } catch (e){
-      throw new SubmissionError({ _error: e && e.message })
+    let privateKey = wallet && wallet[0] && wallet[0].privateKey
+
+    if (privateKey) {
+      await dispatch(handlePrivateKeyLogin(privateKey))
     }
-  }
 
+  } catch(e){
+    console.log('onSubmit', e)
+    console.dir(e)
+    throw new SubmissionError({ password: e && e.message })
+  }
 }
 
 export const onSubmitLoginFormSuccess = () => () => {
