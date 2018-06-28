@@ -1,0 +1,23 @@
+.loadingMessage {
+  text-align: center;
+  padding: 40px 130px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 24px;
+  margin-bottom: 45px;
+
+  @media (max-width: 640px) {
+    padding: 40px 20px;
+  }
+
+
+}
+
+.loadingMessageHeader {
+  line-height: 24px;
+  font-weight: bold;
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 50px;
+}

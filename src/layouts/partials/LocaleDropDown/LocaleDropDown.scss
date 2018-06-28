@@ -6,9 +6,26 @@
 @import "~styles/partials/variables";
 
 .LocaleDropDown {
+  border-radius: 20px;
+  border-top: 3px solid #E2A864;
+  overflow: hidden;
+  background: #fff;
+  margin-top: 10px;
+
   @include xs-only {
     width: 100%;
     top: 10px;
+  }
+}
+
+.LocaleDropDownItem {
+  padding: 15px 20px;
+  font-size: 14px;
+  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+  cursor: pointer;
+
+  &:hover, &.LocaleDropDownItemActive {
+    background: #F2F2F2;
   }
 }
 
@@ -24,5 +41,20 @@
     height: 40px;
     margin: 5px;
     padding: 0;
+  }
+}
+
+.langButtonNewStyle {
+  button {
+    color: #5DB3ED;
+    border:1px solid #5DB3ED;
+    background: transparent;
+    font-size: 16px;
+    text-transform: uppercase;
+
+    &:hover {
+      color:#fff;
+      border-color: transparent;
+    }
   }
 }

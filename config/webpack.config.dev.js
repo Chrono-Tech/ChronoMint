@@ -29,6 +29,7 @@ module.exports = config.buildConfig(
       path: buildPath,
       pathinfo: true,
       filename: 'bundle.js',
+      publicPath: '/',
     },
     babel,
     plugins: [
