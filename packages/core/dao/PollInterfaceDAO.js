@@ -24,14 +24,14 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
     if (!address) {
       return false
     }
-    return this._call('hasMember', [ address ])
+    return this._call('hasMember', [address])
   }
 
   memberOption (address: string) {
     if (!address) {
       return false
     }
-    return this._call('memberOptions', [ address ])
+    return this._call('memberOptions', [address])
   }
 
   getDetails () {
@@ -39,11 +39,11 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   async getVotesBalances () {
-    const [ options, values ] = await this._call('getVotesBalances') // [Array(options), Array(values)]
+    const [options, values] = await this._call('getVotesBalances') // [Array(options), Array(values)]
     let votes = new Immutable.Map()
     options.map((option, i) => {
-      if (!values[ i ].isZero()) {
-        votes = votes.set(option.toString(), new Amount(values[ i ] || 0, TIME))
+      if (!values[i].isZero()) {
+        votes = votes.set(option.toString(), new Amount(values[i] || 0, TIME))
       }
     })
     return votes
@@ -56,7 +56,7 @@ export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
   }
 
   vote (choice, choiceText) {
-    return this._tx(TX_VOTE, [ choice ], { choice: choiceText.option })
+    return this._tx(TX_VOTE, [choice + 1], { choice: choiceText.option }) // choice +1, because in SC, numbering starts from 1
   }
 
   removePoll () {

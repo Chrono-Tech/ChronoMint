@@ -4,7 +4,6 @@
  */
 
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
-import VoteDialog from 'components/dialogs/VoteDialog'
 import { push } from 'react-router-redux'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
@@ -12,7 +11,6 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import { activatePoll, endPoll, POLLS_SELECTED, removePoll } from '@chronobank/core/redux/voting/actions'
@@ -33,15 +31,6 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch, props) {
   return {
-    handleVote: (model) => {
-      dispatch({ type: POLLS_SELECTED, id: props.poll.id })
-      dispatch(modalsOpen({
-        component: VoteDialog,
-        props: {
-          model,
-        },
-      }))
-    },
     handlePollDetails: () => {
       dispatch({ type: POLLS_SELECTED, id: props.poll.id })
       dispatch(push('/poll'))
@@ -59,7 +48,6 @@ export default class Poll extends PureComponent {
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
-    handleVote: PropTypes.func,
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
     handlePollActivate: PropTypes.func,

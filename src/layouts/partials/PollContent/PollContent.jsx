@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getSelectedPoll, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { listPolls } from '@chronobank/core/redux/voting/actions'
+import { listPolls, vote } from '@chronobank/core/redux/voting/actions'
 import moment from 'moment'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
@@ -18,14 +18,12 @@ import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import { Translate } from 'react-redux-i18n'
 import PollStatus from 'components/voting/PollStatus/PollStatus'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
-import { modalsOpen } from 'redux/modals/actions'
-import PollDetailsDialog from 'components/dialogs/PollDetailsDialog'
-import { getSelectedPollFromDuck } from '@chronobank/core/redux/voting/selectors/models'
+import DocumentsList from 'components/common/DocumentsList/DocumentsList'
+import Amount from '@chronobank/core/models/Amount'
 import BigNumber from 'bignumber.js'
 import { prefix } from './lang'
 
 import './PollContent.scss'
-import DocumentsList from '../../../components/common/DocumentsList/DocumentsList'
 
 function makeMapStateToProps () {
   const getPoll = getSelectedPoll()
@@ -35,7 +33,6 @@ function makeMapStateToProps () {
 
   const mapStateToProps = (ownState) => {
     return {
-      model: getSelectedPollFromDuck(ownState),
       poll: getPoll(ownState),
       deposit: getDeposit(ownState),
       isCBE: getIsCBE(ownState),
@@ -49,13 +46,9 @@ function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    handlePollDetails: (model) => dispatch(modalsOpen({
-      component: PollDetailsDialog,
-      props: {
-        model,
-      },
-    })),
-
+    handleVote: (choice) => () => {
+      dispatch(vote(choice))
+    },
   }
 }
 
@@ -63,7 +56,10 @@ function mapDispatchToProps (dispatch) {
 export default class PollContent extends Component {
   static propTypes = {
     poll: PTPoll,
+    isCBE: PropTypes.bool,
+    deposit: PropTypes.instanceOf(Amount),
     palette: PropTypes.arrayOf(PropTypes.string),
+    handleVote: PropTypes.func,
   }
 
   static defaultProps = {
@@ -109,6 +105,30 @@ export default class PollContent extends Component {
         <TokenValueSimple value={poll.voteLimitInTIME} />&nbsp;
         <Translate value={`${prefix}.percent`} num={poll.maxOptionTime.mul(100).div(poll.voteLimitInTIME).toFixed(2)} />
       </span>
+    )
+  }
+
+  renderEntry (entry, i) {
+    const { palette, poll, deposit } = this.props
+    const { count } = entry
+    const progress = count.mul(100).div(poll.voteLimitInTIME).toFixed(2)
+    const background = palette[i % palette.length]
+    return (
+      <div styleName='entry' key={i}>
+        <div styleName='title'><b>{i + 1}.</b>&nbsp;{entry.option}</div>
+        {!poll.hasMember || poll.memberOption === (i + 1) ? (
+          <div styleName='action'>
+            <button
+              disabled={poll.isFetching || deposit.isZero()}
+              onClick={this.props.handleVote(i)}
+              style={{ background }}
+            >
+              <i className='chronobank-icon'>check</i>
+            </button>
+          </div>
+        ) : null}
+        <div styleName='progress' style={{ width: `${progress}%`, background }} />
+      </div>
     )
   }
 
@@ -164,18 +184,19 @@ export default class PollContent extends Component {
                 <div styleName='title'><Translate value={`${prefix}.mostPopularOptionReceived`} /></div>
                 <div styleName='value'>{this.renderMostPopularOption()}</div>
               </div>
-
-              <button onClick={() => this.props.handlePollDetails(this.props.model)}>show detail</button>
             </div>
           </div>
         </div>
         <div styleName='body'>
           <div styleName='description'>{poll.description}</div>
           <div styleName='filesList'>
-            <DocumentsList styleName='documents' documents={poll.files} />
+            <DocumentsList documents={poll.files} />
           </div>
           <div styleName='cast'>
             <Translate value={`${prefix}.castYourVoteBelow`} />
+          </div>
+          <div styleName='entriesWrapper'>
+            {poll.voteEntries.map((entry, i) => this.renderEntry(entry, i))}
           </div>
         </div>
       </div>

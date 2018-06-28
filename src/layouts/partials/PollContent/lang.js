@@ -12,6 +12,7 @@ export default {
     of: 'of',
     percent: '(%{num}%)',
     castYourVoteBelow: 'Cast your vote below',
+    daysLeft: '%{count} days left',
   },
 }
 

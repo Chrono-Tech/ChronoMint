@@ -63,4 +63,8 @@ export default {
     title: 'nav.newPoll',
     backButton: true,
   },
+  '/poll': {
+    title: 'nav.poll',
+    backButton: true,
+  },
 }

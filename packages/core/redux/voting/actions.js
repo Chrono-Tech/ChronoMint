@@ -15,6 +15,7 @@ import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
+import { getSelectedPollFromDuck } from './selectors/models'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -109,12 +110,13 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
   }
 }
 
-export const vote = (poll: PollDetailsModel, choice: Number) => async (dispatch) => {
+export const vote = (choice: Number) => async (dispatch, getState) => {
+  const poll = getSelectedPollFromDuck(getState())
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
     const options = poll.voteEntries()
     const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.vote(choice, options.get(choice - 1))
+    await dao.vote(choice, options.get(choice))
   } catch (e) {
     dispatch(handlePollUpdated(poll))
     throw e

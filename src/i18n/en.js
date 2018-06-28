@@ -68,6 +68,7 @@ export default {
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
     twoFa: 'Enable 2FA',
+    poll: 'Poll',
   },
   common: {
     name: 'Name',

@@ -19,8 +19,6 @@ export default class PollActionMenu extends PureComponent {
     timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
     deposit: PropTypes.instanceOf(Amount),
-    handleVote: PropTypes.func,
-    handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
     handlePollActivate: PropTypes.func,
     handlePollEnd: PropTypes.func,
@@ -81,11 +79,6 @@ export default class PollActionMenu extends PureComponent {
               )
               : null
             }
-            <MenuItem
-              primaryText={<Translate value={`${prefix}.poll`} />}
-              disabled={poll.isFetching}
-              onClick={this.handleItemClick(this.props.handlePollDetails)}
-            />
             {isCBE && poll.status && poll.active
               ? (
                 <MenuItem
@@ -102,16 +95,6 @@ export default class PollActionMenu extends PureComponent {
                   primaryText={<Translate value={`${prefix}.activate`} />}
                   disabled={poll.isFetching}
                   onClick={this.handleItemClick(this.props.handlePollActivate)}
-                />
-              )
-              : null
-            }
-            {poll.status && poll.active && !poll.hasMember && poll.daysLeft > 0
-              ? (
-                <MenuItem
-                  primaryText={<Translate value={`${prefix}.vote`} />}
-                  disabled={poll.isFetching || deposit.isZero()}
-                  onClick={!poll.isFetching && !deposit.isZero() ? this.handleItemClick(this.props.handleVote) : undefined}
                 />
               )
               : null
