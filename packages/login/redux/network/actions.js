@@ -13,11 +13,7 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
-  accountUpdateList,
 } from '@chronobank/core/redux/persistAccount/actions'
-import {
-  walletAddressExistInWalletsList,
-} from '@chronobank/core/redux/persistAccount/utils'
 import {
   FORM_CONFIRM_MNEMONIC,
   FORM_MNEMONIC_LOGIN_PAGE,

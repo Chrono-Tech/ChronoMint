@@ -15,7 +15,7 @@ import {
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from 'redux/persistAccount/utils'
+} from '@chronobank/core/redux/persistAccount/utils'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 
