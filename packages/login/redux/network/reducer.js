@@ -5,8 +5,6 @@
 
 import { getNetworksByProvider, providerMap } from '../../network/settings'
 import * as actions from './actions'
-import { NETWORK_SET_IMPORT_PRIVATE_KEY } from "./actions";
-import { NETWORK_SET_LOGIN_LOADING } from "./actions";
 
 const initialState = {
   isLoading: false,
@@ -40,6 +38,9 @@ const initialState = {
   isLoginSubmitting: false,
   accountRecoveryMode: false,
   walletFileImportMode: false,
+  accountSignaturesLoading: false,
+  accountSignaturesData: null,
+  accountSignaturesError: null,
 }
 
 export default (state = initialState, action) => {
@@ -154,6 +155,29 @@ export default (state = initialState, action) => {
       return {
         ...state,
         walletFileImportMode: false,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: true,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESOLVE:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
+        accountSignaturesData: action.data,
+      }
+    case actions.NETWORK_ACCOUNTS_SIGNATURES_REJECT:
+      return {
+        ...state,
+        loadingAccountSignatures: false,
+        accountSignaturesData: null,
+        accountSignaturesError: action.error,
       }
 
     default:

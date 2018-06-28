@@ -20,6 +20,7 @@ import {
   onSubmitLoginFormFail,
   initLoginPage,
   navigateToSelectWallet,
+  initAccountsSignature,
 } from '@chronobank/login/redux/network/actions'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
@@ -55,8 +56,9 @@ function mapDispatchToProps (dispatch) {
       await dispatch(onSubmitLoginForm(password))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
-    initLoginPage: () => dispatch(initLoginPage()),
+    initLoginPage: async () => dispatch(initLoginPage()),
     navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
   }
 }
 
@@ -65,6 +67,7 @@ class LoginPage extends PureComponent {
     initLoginPage: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
+    initAccountsSignature: PropTypes.func,
   }
 
   constructor(props){
@@ -114,6 +117,28 @@ class LoginPage extends PureComponent {
     )
   }
 
+  getAccountName(){
+    const { selectedWallet } = this.props
+
+    if (!selectedWallet){
+      return
+    }
+
+    if (selectedWallet && selectedWallet.profile && selectedWallet.profile.userName){
+      return selectedWallet.profile.userName
+    }
+
+    return selectedWallet.name
+  }
+
+  getAccountAvatar(){
+    const { selectedWallet } = this.props
+
+    if (selectedWallet && selectedWallet.profile){
+      return selectedWallet.profile.avatar
+    }
+  }
+
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting } = this.props
@@ -128,8 +153,8 @@ class LoginPage extends PureComponent {
 
           <div styleName='user-row'>
             <UserRow
-              title={selectedWallet && selectedWallet.name}
-              avatar={'/src/assets/img/profile-photo-1.jpg'}
+              title={this.getAccountName(selectedWallet)}
+              avatar={this.getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
             />
 

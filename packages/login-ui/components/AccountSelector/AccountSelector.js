@@ -9,7 +9,12 @@ import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { UserRow, Button } from 'components'
-import { navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
+import {
+  navigateToSelectImportMethod,
+  onWalletSelect,
+  initAccountsSignature,
+  initAccountsSelector,
+} from '@chronobank/login/redux/network/actions'
 import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
@@ -21,6 +26,8 @@ function mapDispatchToProps (dispatch) {
   return {
     navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
     onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
+    initAccountsSelector: () => dispatch(initAccountsSelector()),
   }
 }
 
@@ -40,11 +47,33 @@ export default class SelectWalletPage extends PureComponent {
       PropTypes.instanceOf(AccountEntryModel)
     ),
     navigateToSelectImportMethod: PropTypes.func,
+    initAccountsSignature: PropTypes.func,
+    initAccountsSelector: PropTypes.func,
   }
 
   static defaultProps = {
     onWalletSelect: () => {},
     walletsList: [],
+  }
+
+  componentDidMount(){
+    this.props.initAccountsSelector()
+  }
+
+  getAccountName(account){
+    if (account && account.profile && account.profile.userName){
+      return account.profile.userName
+    }
+
+    return account.name
+  }
+
+  getAccountAvatar(account){
+    if (account && account.profile){
+      return account.profile.avatar
+    }
+
+    return ''
   }
 
   renderWalletsList (){
@@ -64,7 +93,8 @@ export default class SelectWalletPage extends PureComponent {
           walletsList ? walletsList.map((w, i) => (
             <UserRow
               key={i}
-              title={w.name}
+              title={this.getAccountName(w)}
+              avatar={this.getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

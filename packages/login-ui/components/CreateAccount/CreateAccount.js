@@ -57,6 +57,7 @@ class CreateAccountPage extends PureComponent {
   render () {
     const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
+    console.log('create', this.props)
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>

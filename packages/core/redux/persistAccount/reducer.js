@@ -24,6 +24,7 @@ const initialState = {
 const persistAccount = (state = initialState, action) => {
   switch (action.type) {
     case REHYDRATE:
+      console.log('actions.payload', action.payload)
       return {
         ...state,
         ...action.payload.persistAccount,
