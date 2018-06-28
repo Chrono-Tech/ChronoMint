@@ -6,7 +6,7 @@
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Icons } from '@chronobank/core-dependencies/icons'
 import moment from 'moment'
-import uniqid from 'uniqid'
+import uuid from 'uuid/v1'
 import { abstractModel } from '../AbstractModel'
 
 // noinspection JSUnusedLocalSymbols
@@ -14,7 +14,7 @@ export const abstractNoticeModel = (defaultValues) => class AbstractNoticeModel 
   // neither id or time is a default record value
   constructor (data) {
     super({
-      id: uniqid(),
+      id: uuid(),
       timestamp: Date.now(),
       ...data,
     })

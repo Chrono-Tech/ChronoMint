@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import Immutable from 'immutable'
 import moment from 'moment'
-import uniqid from 'uniqid'
+import uuid from 'uuid/v1'
 import { abstractModel } from './AbstractModel'
 
 class TxExecModel extends abstractModel({
@@ -27,7 +27,7 @@ class TxExecModel extends abstractModel({
 }) {
   constructor (data) {
     super({
-      id: (data && data.id) || uniqid(),
+      id: (data && data.id) || uuid(),
       ...data,
     })
   }
