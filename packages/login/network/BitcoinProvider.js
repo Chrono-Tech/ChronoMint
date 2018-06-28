@@ -90,7 +90,6 @@ export class BitcoinProvider extends AbstractProvider {
   }
 
   async onTransactionMained (address: String, txList: Array, blockNumber: Number) {
-    console.log('onTransactionMained: ', address, txList, blockNumber)
     this.emit('transaction:mained', {
       address,
       txList,

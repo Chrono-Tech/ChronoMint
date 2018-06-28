@@ -115,9 +115,12 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       const walletsAccounts = getDeriveWalletsAddresses(getState(), token.blockchain())
       const mainWalletAddresses = getMainWalletAddresses(getState())
 
-      if (mainWalletAddresses.includes(tx.from()) ||  mainWalletAddresses.includes(tx.to()) ||
-        walletsAccounts.includes(tx.from()) ||  walletsAccounts.includes(tx.to()) ||
-        tx.from() === account || tx.to() === account) {
+      const isMainWalletFrom = tx.from().split(',').some((from) => mainWalletAddresses.includes(from))
+      const isMainWalletTo = tx.to().split(',').some((to) => mainWalletAddresses.includes(to))
+      const isMultiSigWalletsFrom = tx.from().split(',').some((from) => walletsAccounts.includes(from))
+      const isMultiSigWalletsTo = tx.to().split(',').some((to) => walletsAccounts.includes(to))
+
+      if (isMainWalletFrom || isMainWalletTo || isMultiSigWalletsFrom || isMultiSigWalletsTo || tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),
           symbol,
@@ -126,9 +129,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         })))
       }
 
-      if (mainWalletAddresses.includes(tx.from()) ||
-        mainWalletAddresses.includes(tx.to()) ||
-        tx.from() === account || tx.to() === account) { // for main wallet
+      if (isMainWalletFrom || isMainWalletTo || tx.from() === account || tx.to() === account) { // for main wallet
         // add to table
         // TODO @dkchv: !!! restore after fix
         dispatch({ type: WALLET_TRANSACTION, tx })
@@ -224,7 +225,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
     .on(EVENT_UPDATE_TRANSACTION_MAINED, ({ address, txList, blockNumber }) => {
-      console.log('address, txList, blockNumber: ', address, txList, blockNumber)
       dispatch({
         type: WALLET_TRANSACTION_MAINED,
         address,

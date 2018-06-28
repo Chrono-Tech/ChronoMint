@@ -73,7 +73,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             (message) => {
               try {
                 const data = JSON.parse(message.body)
-                console.log('Subscriptions lastBlock: ', data)
                 this.trace('Address Balance', data)
                 this.emit('lastBlock', data)
               } catch (e) {
@@ -83,14 +82,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           )
         }
       })
-
-      setTimeout(() => {
-        this.emit('transaction:mained', {
-          address: 'msfhJH1uiDa3mb36y7oyjjoTW5QMuJ6t4y',
-          txList: ['7ec683f66115179e3a9dc25ccea75d9beb1482c5c412a66a8600efb8c3dd0ae9'],
-          blockNumber: 1326491,
-        })
-      }, 3000)
     } catch (e) {
       this.trace('Address subscription error', e)
     }

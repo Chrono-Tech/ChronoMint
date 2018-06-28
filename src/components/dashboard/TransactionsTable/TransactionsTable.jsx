@@ -58,15 +58,12 @@ export default class TransactionsTable extends PureComponent {
     const account = this.props.walletAddress || this.props.account
     const token: TokenModel = this.props.tokens.item(trx.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
-
-    if (trx.txHash() === 'f3ae374c569f87b4c50381568f1dd1d24d16d754c9f67636b6a2edd6bebfe0c5') {
-      console.log('Render transaction: ', trx.toJSON())
-    }
+    const isFrom = trx.from().split(',').some((from) => from === account)
 
     const info = (
       <div styleName='info'>
-        <div styleName='title'><Translate value={`${prefix}.${trx.from() === account ? 'sending' : 'receiving'}`} /></div>
-        <div styleName='address'>{trx.from() === account ? trx.to() : trx.from()}</div>
+        <div styleName='title'><Translate value={`${prefix}.${isFrom ? 'sending' : 'receiving'}`} /></div>
+        <div styleName='address'>{isFrom ? trx.to() : trx.from()}</div>
       </div>
     )
 
@@ -80,7 +77,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div styleName={classnames('value', { 'receiving': trx.from() !== account, 'sending': trx.from() === account })}>
+          <div styleName={classnames('value', { 'receiving': !isFrom, 'sending': isFrom })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>

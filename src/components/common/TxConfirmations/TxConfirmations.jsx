@@ -11,6 +11,13 @@ import TxModel from '@chronobank/core/models/TxModel'
 import { TX_CONFIRMATIONS } from 'assets'
 import { DUCK_WALLET } from '@chronobank/core/redux/wallet/actions'
 import { makeGetLastBlockForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import {
+  BLOCKCHAIN_BITCOIN,
+  BLOCKCHAIN_BITCOIN_CASH,
+  BLOCKCHAIN_BITCOIN_GOLD,
+  BLOCKCHAIN_LITECOIN,
+} from '@chronobank/login/network/BitcoinProvider'
+import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { prefix } from './lang'
 import './TxConfirmations.scss'
 
@@ -32,10 +39,27 @@ export default class TxConfirmations extends PureComponent {
     textMode: PropTypes.bool,
   }
 
+  getBlockMiningTime = (blockchain: String) => {
+    switch (blockchain) {
+      case BLOCKCHAIN_BITCOIN:
+      case BLOCKCHAIN_BITCOIN_CASH:
+      case BLOCKCHAIN_BITCOIN_GOLD:
+      case BLOCKCHAIN_LITECOIN:
+        return 600
+
+      case BLOCKCHAIN_ETHEREUM:
+        return 30
+
+      default:
+        return 0
+    }
+  }
+
   renderConfirmations (confirmations) {
     const { account, transaction } = this.props
     let icon = null
-    const prefix = (account === transaction.from())? 's' : 'r'
+    const isFrom = transaction.from().split(',').some((from) => from === account)
+    const prefix = (!isFrom)? 's' : 'r'
 
     if (confirmations <= 4) {
       icon = TX_CONFIRMATIONS[`${prefix}_${confirmations}`]
@@ -57,8 +81,9 @@ export default class TxConfirmations extends PureComponent {
 
     if (textMode) {
       let remaning
+      const miningTime = this.getBlockMiningTime(transaction.blockchain())
       if (confirmations < 4) {
-        remaning = confirmations ? 30 * 4 / confirmations : 30 * 4
+        remaning = (4 - confirmations) * miningTime
         return <Translate value={`${prefix}.confirmations`} min={Math.ceil(remaning / 60)} confirmations={confirmations} />
       } else {
         return <Translate value={`${prefix}.done`} />
