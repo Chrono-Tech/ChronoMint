@@ -2,13 +2,13 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/mixins';
 @import '~styles/partials/variables';
 @import '~material-colors-scss/function';
 
 .root {
   max-width: 700px;
+  min-width: 350px;
   background-color: $color-white;
 
   p {
@@ -18,7 +18,7 @@
 
 .header {
   background-color: $color-primary-1;
-  padding: 24px 48px 24px 16px;
+  padding: 20px 30px;
 }
 
 .headerHead {
@@ -32,12 +32,13 @@
 
 .content {
   color: $color-primary-0;
-  padding: 24px 16px;
+  padding: 30px 30px 0;
 }
 
 .footer {
-  padding: 24px 16px;
-  text-align: right;
+  padding: 0 30px 30px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .action {
@@ -77,6 +78,38 @@
   :global {
     .GasSlider__tagsWrap {
       color: $color-primary-0;
+    }
+  }
+}
+
+.paramsList {
+  .param {
+    padding-bottom: 30px;
+    .label {
+      text-transform: capitalize;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19px;
+      padding-bottom: 5px;
+    }
+    .value {
+      font-size: 16px;
+      line-height: 19px;
+      &.big {
+        :global {
+          .TokenValue__root {
+            color: $color-blue-4;
+            font-size: 30px;
+            line-height: 36px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    .price {
+      color: $color-primary-0;
+      font-weight: 500;
+      font-size: 16px;
     }
   }
 }

@@ -8,8 +8,8 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { CircularProgress, Table, TableBody, TableRow, TableRowColumn } from 'material-ui'
 import Amount from '@chronobank/core/models/Amount'
+import classnames from 'classnames'
 import Button from 'components/common/ui/Button/Button'
 import TxExecModel from '@chronobank/core/models/TxExecModel'
 import PropTypes from 'prop-types'
@@ -23,6 +23,7 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import TokenPrice from 'components/common/TokenPrice/TokenPrice'
 
 import './ConfirmTxDialog.scss'
 
@@ -121,6 +122,18 @@ export default class ConfirmTxDialog extends PureComponent {
   getKeyValueRows (args, tokenBase) {
     return Object.keys(args).map((key) => {
       const arg = args[key]
+
+      if (key === 'value') {
+        return (
+          <div styleName='param' key={key}>
+            <div styleName={classnames('value', { 'big': key === 'value' })}>
+              <Value value={arg} params={{ noRenderPrice: true }} />
+            </div>
+            <div styleName='price'>USD <TokenPrice value={new Amount(arg, ETH)} isRemoveDecimals /></div>
+          </div>
+        )
+      }
+
       let value
       if (arg === null || arg === undefined) return
       // parse value
@@ -143,14 +156,14 @@ export default class ConfirmTxDialog extends PureComponent {
       }
 
       return (
-        <TableRow key={key}>
-          <TableRowColumn style={{ width: '35%' }}>
+        <div styleName='param' key={key}>
+          <div styleName='label'>
             <Translate value={tokenBase + key} />
-          </TableRowColumn>
-          <TableRowColumn style={{ width: '65%', whiteSpace: 'normal' }}>
+          </div>
+          <div styleName={classnames('value', { 'big': key === 'value' })}>
             {value}
-          </TableRowColumn>
-        </TableRow>
+          </div>
+        </div>
       )
     })
   }
@@ -170,54 +183,44 @@ export default class ConfirmTxDialog extends PureComponent {
     const additionalAction = tx.additionalAction()
     const additionalActionIsFailed = additionalAction && additionalAction.isFailed()
     const additionalActionIsFetched = additionalAction ? additionalAction.isFetched() : true
-    if (networkService.isMetaMask())
+    if (networkService.isMetaMask()) {
       this.handleConfirm()
+    }
     return (
-      <ModalDialog onModalClose={this.handleClose} title={<Translate value={tx.func()} />}>
+      <ModalDialog hideCloseIcon title={<Translate value={tx.func()} />}>
         <div styleName='root'>
           <div styleName='content'>
-            <div>
-              <Table selectable={false} className='adaptiveTable'>
-                <TableBody displayRowCheckbox={false}>
-                  {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
+            <div styleName='paramsList'>
+              {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
-                  {additionalAction && additionalAction.isFetched() && this.getKeyValueRows(additionalAction.value(), tx.i18nFunc())}
-                  <TableRow key='txFee'>
-                    <TableRowColumn style={{ width: '35%' }}>
-                      <Translate value='tx.fee' />
-                    </TableRowColumn>
-                    <TableRowColumn style={{ width: '65%' }}>
-                      {gasFee.gt(0)
-                        ? <TokenValue
-                          prefix='&asymp;&nbsp;'
-                          value={new Amount(gasFee, ETH)}
-                        />
-                        : <CircularProgress size={16} thickness={1.5} />
-                      }
-                    </TableRowColumn>
-                  </TableRow>
+              {additionalAction && additionalAction.isFetched() && this.getKeyValueRows(additionalAction.value(), tx.i18nFunc())}
 
-                  <TableRow key='txBalanceAfter'>
-                    <TableRowColumn style={{ width: '35%' }}>
-                      <Translate value='tx.balanceAfter' />
-                    </TableRowColumn>
-                    <TableRowColumn style={{ width: '65%' }}>
-                      {gasFee.gt(0)
-                        ? <TokenValue
-                          prefix='&asymp;&nbsp;'
-                          value={new Amount(balanceAfter, ETH)}
-                        />
-                        : <CircularProgress size={16} thickness={1.5} />}
-                    </TableRowColumn>
-                  </TableRow>
-                </TableBody>
-              </Table>
-              {balanceAfter.lt(0) && <div styleName='error'>Not enough ETH</div>}
+              <div styleName='param'>
+                <div styleName='label'>
+                  <Translate value='tx.fee' />
+                </div>
+                <div styleName='value'>
+                  {gasFee.gt(0)
+                    ? <TokenValue value={new Amount(gasFee, ETH)} />
+                    : <Preloader size={16} thickness={1.5} />
+                  }
+                </div>
+              </div>
+              <div styleName='param'>
+                <div styleName='label'>
+                  <Translate value='tx.balanceAfter' />
+                </div>
+                <div styleName='value'>
+                  {gasFee.gt(0)
+                    ? <TokenValue value={new Amount(balanceAfter, ETH)} />
+                    : <Preloader size={16} thickness={1.5} />
+                  }
+                </div>
+              </div>
             </div>
+            {balanceAfter.lt(0) && <div styleName='error'>Not enough ETH</div>}
 
-            <div styleName='errorMessage'>
-              {additionalActionIsFailed && <Translate value={additionalAction.errorMessage()} />}
-            </div>
+            {additionalActionIsFailed && <div styleName='errorMessage'><Translate value={additionalAction.errorMessage()} /></div>}
 
             {!tx.isSkipSlider() &&
             <div styleName='gasSliderWrap'>
@@ -247,7 +250,6 @@ export default class ConfirmTxDialog extends PureComponent {
               onClick={this.handleClose}
             />
             <Button
-              flat
               styleName='action'
               label={<Translate value='terms.confirm' />}
               disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
