@@ -4,6 +4,24 @@
   "author": "chronobank",
   "license": "AGPL-3.0",
   "dependencies": {
-    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider"
+    "@waves/waves-api": "0.28.2",
+    "axios": "^0.16.2",
+    "bignumber.js": "^4.1.0",
+    "bip39": "^2.3.0",
+    "bitcoinjs-lib": "github:chronobank/bitcoinjs-lib#opt-in-bitcoincash-sighash",
+    "coinselect": "^3.1.11",
+    "eth-crypto": "^1.2.0",
+    "ethereumjs-wallet": "^0.6.0",
+    "immutable": ">=3",
+    "keythereum": "^0.5.2",
+    "ledger-wallet-provider": "github:mikefluff/ledger-wallet-provider",
+    "mnid": "^0.1.1",
+    "nem-sdk": "github:ipavlenko/NEM-sdk",
+    "promisify-node-callback": "^1.0.2",
+    "sockjs-client": "1.0.3",
+    "uport-connect": "^0.6.0",
+    "web3-provider-engine": "^14.0.3",
+    "web3": "^0.20.1",
+    "webstomp-client": "^1.2.0"
   }
 }

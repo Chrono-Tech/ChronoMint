@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import web3Provider from '@chronobank/login/network/Web3Provider'
+import web3Provider from '../../network/Web3Provider'
 
 export const DUCK_MONITOR = 'monitor'
 

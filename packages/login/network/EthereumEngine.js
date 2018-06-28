@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Web3Utils from '@chronobank/login/network/Web3Utils'
 import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
+import Web3Utils from './Web3Utils'
 import { WALLET_HD_PATH } from './mnemonicProvider'
 
 export default class EthereumEngine {
