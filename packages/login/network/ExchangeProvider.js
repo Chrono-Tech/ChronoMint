@@ -4,7 +4,7 @@
  */
 
 import axios from 'axios'
-import networkService from '@chronobank/login/network/NetworkService'
+import networkService from './NetworkService'
 import { NETWORK_MAIN_ID, MIDDLEWARE_MAP, LOCAL_ID } from './settings'
 
 class ExchangeProvider {
