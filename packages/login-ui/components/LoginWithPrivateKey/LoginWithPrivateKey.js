@@ -3,86 +3,110 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import { CircularProgress, TextField } from 'material-ui'
-import PropTypes from 'prop-types'
+import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
+import { Link } from 'react-router'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
+import styles from 'layouts/Splash/styles'
+import { Button } from 'components'
+import {
+  onSubmitPrivateKeyLoginForm,
+  onSubmitPrivateKeyLoginFormSuccess,
+  onSubmitPrivateKeyLoginFormFail,
+} from '@chronobank/login/redux/network/actions'
 
 import './LoginWithPrivateKey.scss'
-import { Button } from '../../settings'
 
-const mapStateToProps = (state) => ({
-  isLoading: state.get('network').isLoading,
-})
+export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'FormPrivateKeyLoginPage'
 
-@connect(mapStateToProps, null)
-class LoginWithPrivateKey extends PureComponent {
-  static propTypes = {
-    isLoading: PropTypes.bool,
-    onBack: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
+const multiRowTextFieldStyle = {
+  textareaStyle: {
+    background: 'rgba(0,0,0,.2)',
+    borderRadius: 3,
+    color: '#FFB54E',
+    padding: 8,
+    fontWeight: 700,
+    height: 62,
+    margin: 0,
+  },
+  underlineFocusStyle:{
+    border: 'none',
+  },
+  underlineStyle: {
+    border: 'none',
+  },
+  hintStyle: {
+    margin: 'auto',
+    textAlign: 'center',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: '#A3A3CC',
+  },
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    onSubmit: (values) => {
+      const privateKey = values.get('pk')
+      dispatch(onSubmitPrivateKeyLoginForm(privateKey))
+    },
+    onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, dispatch, submitErrors)),
   }
+}
 
-  constructor () {
-    super()
-    this.state = {
-      privateKey: '',
-      isValidated: false,
-    }
-  }
-
-  handlePrivateKeyChange = () => {
-    const privateKey = this.privateKey.getValue()
-    const isValidated = privateKeyProvider.validatePrivateKey(privateKey.trim())
-    this.setState({ privateKey, isValidated })
-  }
-
+class MnemonicLoginPage extends PureComponent {
   render () {
-    const { isValidated, privateKey } = this.state
-    const { isLoading } = this.props
-    return (
-      <div>
-        <div styleName='back'>
-          <BackButton
-            onClick={() => this.props.onBack()}
-            to='options'
-          />
-        </div>
-        <TextField
-          ref={(input) => {
-            this.privateKey = input
-          }}
-          floatingLabelText={<Translate value='LoginWithPrivateKey.privateKey' />}
-          value={privateKey}
-          onChange={this.handlePrivateKeyChange}
-          errorText={(isValidated || privateKey === '') ? '' : <Translate value='LoginWithPrivateKey.wrongPrivateKey' />}
-          multiLine
-          fullWidth
-          spellCheck={false}
-          {...styles.textField}
-        />
+    const { handleSubmit } = this.props
 
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading
-                ? <CircularProgress
-                  style={{ verticalAlign: 'middle', marginTop: -2 }}
-                  size={24}
-                  thickness={1.5}
-                /> : <Translate value='LoginWithPrivateKey.loginWithPrivateKey' />}
-              disabled={!isValidated || isLoading}
-              onClick={() => this.props.onLogin(privateKey)}
+    return (
+      <MuiThemeProvider muiTheme={styles.inverted}>
+        <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
+
+          <div styleName='page-title'>Private key form</div>
+
+          <div styleName='description'>
+            Type or copy your private key into the box below
+          </div>
+
+          <div styleName='field'>
+            <Field
+              component={TextField}
+              name='pk'
+              type='text'
+              hintText='Private key'
+              fullWidth
+              multiLine
+              rows={2}
+              rowsMax={2}
+              {...styles.textField}
+              {...multiRowTextFieldStyle}
             />
           </div>
-        </div>
-      </div>
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              type='submit'
+            >
+              Login
+            </Button>
+            or&nbsp;
+            <Link to='/login/import-methods' href styleName='link'>back</Link>
+          </div>
+
+        </form>
+      </MuiThemeProvider>
     )
   }
 }
 
-export default LoginWithPrivateKey
+const form = reduxForm({ form: FORM_PRIVATE_KEY_LOGIN_PAGE })(MnemonicLoginPage)
+export default connect(null, mapDispatchToProps)(form)

@@ -84,10 +84,10 @@ class SidePanel extends PureComponent {
   }
 
   render () {
-    const Component = this.props.component
+    const {component} = this.props
     return (
       <Drawer {...this.getDrawerProps(this.props.drawerProps)}>
-        <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
+        <component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
       </Drawer>
     )
   }

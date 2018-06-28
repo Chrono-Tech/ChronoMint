@@ -24,6 +24,7 @@ import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletMode
 import AllowanceCollection from '@chronobank/core/models/wallet/AllowanceCollection'
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import AccountModel from '@chronobank/core/models/wallet/persistAccount/AccountModel'
 
 function mark (data, type, transformMethod) {
   return {
@@ -55,7 +56,7 @@ function refer (data, type, isArray, refs) {
 function serialize (Immutable, refs) {
   return {
     replacer: function (key, value) {
-
+      if (value instanceof AccountModel) return null
       if (value instanceof Date) return mark(value, 'Date', 'toString')
       if (value instanceof Amount) return mark(value, 'Amount', 'transform')
       if (value instanceof BalanceModel) return refer(value, 'BalanceModel', 'toObject', refs)
@@ -131,6 +132,8 @@ function serialize (Immutable, refs) {
             return new AllowanceCollection(data)
           case 'MainWalletModel':
             return new MainWalletModel(data)
+          case 'AccountModel':
+            return null
 
           // Immutable types
           case 'ImmutableMap':

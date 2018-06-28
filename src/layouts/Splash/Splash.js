@@ -3,38 +3,80 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import ChronoBankLogo from 'components/common/ChronoBankLogo/ChronoBankLogo'
+import {CommonNetworkSelector} from '@chronobank/login-ui/components'
+import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
+
+import WalletTitleBG from 'assets/img/wallet-title-bg.png'
+import StripesToCrop from 'assets/img/stripes-2-crop.jpg'
+import ChronoWalletLogoBright from 'assets/img/chronowalletlogobright.svg'
+import ChronoWalletTextBright from 'assets/img/chronowallettextbright.svg'
+import BackIcon from 'assets/img/icons/back.svg'
+
+import Footer from '../Footer/Footer'
+import PersistWrapper from '../partials/PersistWrapper/PersistWrapper'
 
 import './Splash.scss'
 
-class Splash extends Component {
+export default class Splash extends Component {
   static propTypes = {
     children: PropTypes.node,
+    goBack: PropTypes.func,
+    navigatorText: PropTypes.string,
+  }
+
+  static defaultProps = {
+    goBack: null,
+    navigatorText: '',
   }
 
   render () {
+    const { children, goBack, navigatorText } = this.props
+
     return (
       <div styleName='root'>
-        <div styleName='content'>
-          <ChronoBankLogo version={require('../../../package.json').version} />
-          {this.props.children}
-        </div>
-        {!window.isMobile && (
-          <div styleName='footer'>
-            <div styleName='copyright'><Translate value='copyright' /></div>
-            <div styleName='links'>
-              <a styleName='link' href='https://chronobank.io'><Translate value='chronobankSite' /></a>
-              <a styleName='link' href='https://chronobank.io/faq'><Translate value='qa' /></a>
-              <a styleName='link' href='https://chronobank.io/#contactus'><Translate value='contactUs' /></a>
+        <div styleName='header-container'>
+          <div styleName='header-picture'>
+            <img src={StripesToCrop} alt='' />
+          </div>
+          <div styleName='header-picture-crop'>
+            <img src={WalletTitleBG} alt='' />
+          </div>
+          <div styleName='header-logos'>
+            <img styleName='chrono-wallet-logo-bright' src={ChronoWalletLogoBright} alt='' />
+            <img styleName='chrono-wallet-text-bright' src={ChronoWalletTextBright} alt='' />
+          </div>
+          <div styleName='selectors'>
+            <div styleName='network-selector'>
+              <CommonNetworkSelector />
+            </div>
+            <div styleName='lang-selector'>
+              <LocaleDropDown newButtonStyle />
             </div>
           </div>
-        )}
+        </div>
+
+        {
+          goBack ? (
+            <div styleName='header-navigator'>
+              <button styleName='back-button' onClick={goBack}>
+                <img src={BackIcon} alt='' />
+              </button>
+              <span styleName='navigator-text'>
+                { navigatorText }
+              </span>
+            </div>
+          ) : null
+        }
+
+        <PersistWrapper>
+          {children ? children: null}
+        </PersistWrapper>
+
+        {!window.isMobile && (<Footer />)}
       </div>
     )
   }
 }
 
-export default Splash

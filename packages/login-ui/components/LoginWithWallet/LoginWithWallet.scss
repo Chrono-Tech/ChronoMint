@@ -4,108 +4,125 @@
  */
 
 @import "~styles/partials/variables";
-@import '../LoginPageShared';
+@import "~styles/partials/mixins";
 
-$gutter: 16px;
+.wrapper {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #fff;
 
-// TODO @dkchv: will be moved to mui lib
-%mui-button-secondary {
-  border-radius: $border-radius;
-  background-color: $color-white;
+  @include md-only {
+    padding: 0 20px;
+  }
 }
 
-%mui-button-secondary-content {
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  color: $color-blue;
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 14px;
+.page-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
-.root {
-  margin-top: 24px;
+.description {
+  margin-bottom: 50px;
+  color: $additionalData-color-1;
+  line-height: 22px;
+  font-weight: 400;
+
+  @include md-only {
+    margin-bottom: 20px;
+  }
 }
 
-.buttonIcon {
-  @extend %buttonIcon;
-  font-size: 16px;
-  color: $color-primary-1;
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.submit {
+  margin-bottom: 25px;
+}
+
+.row {
+  margin-bottom: 50px;
+}
+
+.button {
+  button {
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    line-height: 45px;
+    min-width: 280px;
+    margin: 0 auto 0;
+    text-transform: none;
+
+    &:disabled {
+      background: $background-color-1;
+    }
+  }
+
+  &.button-warning button {
+    background: $color-red-2;
+  }
+  .button-text {
+    flex: 1;
+    text-align: left;
+    min-width: 0;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .before-img {
+    width: 24px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  .after-img {
+    width: 24px;
+    display: inline-block;
+  }
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: $additionalData-color-1;
+  line-height: 30px;
+}
+
+.submit {
+  margin-bottom: 25px;
+
+  button:disabled {
+    background: $background-color-1;
+  }
 }
 
 .hide {
   display: none;
 }
 
-.back {
-  margin-bottom: 16px;
+.password-wrapper {
+  margin: auto;
+  width: 280px;
 }
 
-.upload {
-  @extend %mui-button-secondary;
-  cursor: pointer;
-}
-
-.uploadContent {
-  @extend %mui-button-secondary-content;
-
-  &:hover {
-    background-color: rgba($color-blue, 0.4);
-  }
-}
-
-.progress {
-  @extend %mui-button-secondary;
-  @extend %mui-button-secondary-content;
-}
-
-.progressText {
-  margin-left: 10px;
-}
-
-.uploaded {
-  @extend %mui-button-secondary;
-  @extend %mui-button-secondary-content;
-  align-items: center;
-}
-
-.walletIcon {
-  flex-grow: 0;
-  margin-right: 5px;
-}
-
-.walletName {
-  flex-grow: 1;
-}
-
-.walletRemove {
-  flex-grow: 0;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.tip {
-  margin-top: 10px;
+.error {
+  color:$color-error;
+  margin-bottom: 10px;
+  font-size: 14px;
   text-align: center;
-  color: white;
-  font-weight: 300;
-}
-
-.actions {
-  display: flex;
-  margin: 24px (-$gutter / 2) 0;
-}
-
-.action {
-  margin: 0 ($gutter / 2);
-  width: 50%;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.whiteButton {
-  button {
-    color: $color-white;
-  }
 }

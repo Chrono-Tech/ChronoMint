@@ -3,33 +3,57 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { clearErrors, loading } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, FlatButton, TextField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
-import { connect } from 'react-redux'
+import classnames from 'classnames'
+import { MuiThemeProvider, CircularProgress } from 'material-ui'
+import { TextField } from 'redux-form-material-ui'
+import { reduxForm, Field } from 'redux-form/immutable'
+import React, { Component } from 'react'
+import { Link } from 'react-router'
+import { UserRow, Button } from 'components'
 import { Translate } from 'react-redux-i18n'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
+import { connect } from 'react-redux'
+import {
+  onSubmitWalletUpload,
+  onSubmitWalletUploadSuccess,
+  onSubmitWalletUploadFail,
+  clearErrors,
+  loading,
+} from '@chronobank/login/redux/network/actions'
+
+import FileIcon from 'assets/img/icons/file-white.svg'
+import DeleteIcon from 'assets/img/icons/delete-white.svg'
+import SpinnerGif from 'assets/img/spinningwheel.gif'
+import WarningIcon from 'assets/img/icons/warning.svg'
+import CheckIcon from 'assets/img/icons/check-green.svg'
+
+import styles from 'layouts/Splash/styles'
 import './LoginWithWallet.scss'
-import { Button } from '../../settings'
+
+export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  clearErrors: () => dispatch(clearErrors()),
-  loading: (isLoading) => dispatch(loading(isLoading)),
-})
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearErrors: () => dispatch(clearErrors()),
+    loading: (isLoading) => dispatch(loading(isLoading)),
+    onSubmit: async (values, dispatch, walletString) => {
+      const password = values.get('password')
+      console.log('obsubmit', password, walletString)
 
-@connect(mapStateToProps, mapDispatchToProps)
-class LoginWithWallet extends PureComponent {
+      await dispatch(onSubmitWalletUpload(walletString, password))
+    },
+    onSubmitSuccess: () => dispatch(onSubmitWalletUploadSuccess()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, dispatch, submitErrors)),
+  }
+}
+
+class LoginWithWallet extends Component {
   static propTypes = {
     isLoading: PropTypes.bool,
-    onBack: PropTypes.func.isRequired,
-    onGenerate: PropTypes.func.isRequired,
-    onLogin: PropTypes.func.isRequired,
     clearErrors: PropTypes.func,
     loading: PropTypes.func,
   }
@@ -52,6 +76,7 @@ class LoginWithWallet extends PureComponent {
       isUploaded: true,
       wallet: e.target.result,
     })
+    console.log('file', e.target.result)
   }
 
   handleUploadFile = (e) => {
@@ -69,17 +94,6 @@ class LoginWithWallet extends PureComponent {
     this.props.clearErrors()
   }
 
-  handlePasswordChange = (target, value) => {
-    this.setState({ password: value })
-    this.props.clearErrors()
-  }
-
-  handleEnterPassword = () => {
-    this.props.clearErrors()
-    this.forceUpdate()
-    this.props.onLogin(this.state.wallet, this.state.password)
-  }
-
   handleRemoveWallet = () => {
     this.setState({
       wallet: null,
@@ -90,105 +104,100 @@ class LoginWithWallet extends PureComponent {
     this.walletFileUploadInput.value = ''
   }
 
+  async handleSubmitForm(values, dispatch, t,b,c){
+    const { onSubmit } = this.props
+    const { wallet } = this.state
+
+    await onSubmit(values, dispatch, wallet)
+  }
+
   render () {
-    const { isLoading } = this.props
-    const {
-      password, isUploading, isUploaded, fileName,
-    } = this.state
+    const { isLoading, handleSubmit, onSubmit, error } = this.props
+    const { isUploading, isUploaded, fileName } = this.state
+    console.log('error', error)
 
     return (
-      <div styleName='root'>
-        <div styleName='back'>
-          <BackButton
-            onClick={this.props.onBack}
-            to='options'
-          />
-        </div>
-        <div>
+      <MuiThemeProvider>
+        <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
+          <div styleName='page-title'>Upload a Wallet File</div>
 
-          {!isUploaded && !isUploading && (
-            <div
-              styleName='upload'
-              onClick={() => this.walletFileUploadInput.click()}
-            >
-              <div styleName='uploadContent'>{<Translate value='LoginWithWallet.uploadWalletFile' />}</div>
-            </div>
-          )}
+          <p styleName='description'>
+            Upload a wallet file to add the login information to your browser.
+            We provide the file on New Account Creation.
+          </p>
 
-          {isUploading && (
-            <div styleName='progress'>
-              <CircularProgress
-                size={16}
-                color={styles.colors.colorPrimary1}
-                thickness={1.5}
-              />
-              <span styleName='progressText'>{<Translate value='LoginWithWallet.uploading' />}</span>
-            </div>
-          )}
+          <div styleName='row'>
+            {!isUploaded && !isUploading && (
+              <Button
+                styleName='button'
+                buttonType='login'
+                onClick={() => this.walletFileUploadInput.click()}
+              >
+                <img styleName='before-img' src={FileIcon} alt='' />
+                <span styleName='button-text'>
+                  <Translate value='LoginWithWallet.uploadWalletFile' />
+                </span>
+              </Button>
+            )}
 
-          {isUploaded && (
-            <div styleName='uploaded'>
-              <div styleName='walletIcon' className='material-icons'>attachment</div>
-              <div styleName='walletName'>{fileName}</div>
-              <div
-                styleName='walletRemove'
-                className='material-icons'
-                onClick={this.handleRemoveWallet}
-              >delete
+            {isUploading && (
+              <Button styleName='button' buttonType='login' disabled>
+                <img styleName='before-img' src={SpinnerGif} alt='' />
+                <span styleName='button-text'>
+                  <Translate value='LoginWithWallet.uploading' />
+                </span>
+                <img styleName='after-img' src={DeleteIcon} alt='' />
+              </Button>
+            )}
+
+            {isUploaded && (
+              <div styleName='password-wrapper'>
+                <Button styleName='button' buttonType='login' disabled>
+                  <img styleName='before-img' src={CheckIcon} alt='' />
+                  <span styleName='button-text'>{fileName}</span>
+                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                </Button>
+                <Field
+                  component={TextField}
+                  name='password'
+                  type='password'
+                  floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
+                  fullWidth
+                  {...styles.textField}
+                />
               </div>
-            </div>
-          )}
+            )}
 
-          <input
-            onChange={this.handleUploadFile}
-            ref={(input) => this.walletFileUploadInput = input}
-            type='file'
-            styleName='hide'
-          />
-        </div>
-
-        <TextField
-          floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-          type='password'
-          value={password}
-          onChange={this.handlePasswordChange}
-          required
-          fullWidth
-          {...styles.textField}
-        />
-
-        {isLoading && (
-          <div styleName='tip'>
-            <em>{<Translate value='LoginWithWallet.bePatient' />}</em>
-          </div>
-        )}
-
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              flat
-              styleName='whiteButton'
-              label={<Translate value='LoginWithWallet.generateNewWallet' />}
-              fullWidth
-              disabled={isLoading}
-              onClick={this.props.onGenerate}
+            <input
+              onChange={this.handleUploadFile}
+              ref={(input) => this.walletFileUploadInput = input}
+              type='file'
+              styleName='hide'
             />
+
           </div>
-          <div styleName='action'>
+
+          <div styleName='actions'>
             <Button
+              styleName='submit'
+              buttonType='login'
+              type='submit'
+              disabled={isLoading || !isUploaded}
               label={isLoading ? <CircularProgress
                 style={{ verticalAlign: 'middle', marginTop: -2 }}
                 size={24}
                 thickness={1.5}
               /> : <Translate value='LoginWithWallet.login' />}
-              disabled={isLoading || !isUploaded || !password || password === ''}
-              onClick={this.handleEnterPassword}
             />
+            { error ? <div styleName='error'>{error}</div> : null }
+            or&nbsp;<Link to='/login' href styleName='link'>Back</Link>
           </div>
-        </div>
-      </div>
+
+        </form>
+      </MuiThemeProvider>
     )
   }
 }
 
-export default LoginWithWallet
+const form = reduxForm({ form: FORM_WALLET_UPLOAD })(LoginWithWallet)
+export default connect(mapStateToProps, mapDispatchToProps)(form)

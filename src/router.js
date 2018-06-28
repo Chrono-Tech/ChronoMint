@@ -6,9 +6,22 @@
 import Markup from 'layouts/Markup'
 import { Provider } from 'react-redux'
 import React from 'react'
-import { Route, Router } from 'react-router'
-import NotFoundPage from 'pages/NotFound/NotFound'
-import LoginPage from 'pages/LoginPage/LoginPage'
+import { Route, Router, IndexRoute, Redirect } from 'react-router'
+import {
+  NotFoundPage,
+  LoginForm,
+  CreateAccount,
+  AccountSelector,
+  RecoverAccount,
+  ResetPassword,
+  LoginWithOptions,
+  ConfirmMnemonic,
+  GenerateMnemonic,
+  GenerateWallet,
+  LoginWithWallet,
+  LoginWithMnemonic,
+  LoginWithPrivateKey,
+} from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
   AssetsPage,
@@ -54,6 +67,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
+      <Redirect from='/' to='/login' />
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -72,8 +86,19 @@ const router = (
         </Route>
       </Route>
 
-      <Route component={Splash}>
-        <Route path='/' component={LoginPage} />
+      <Route path='/login' component={Splash}>
+        <IndexRoute component={LoginForm} />
+        <Route path='/login/create-account' component={CreateAccount} />
+        <Route path='/login/select-account' component={AccountSelector} />
+        <Route path='/login/recover-account' component={RecoverAccount} />
+        <Route path='/login/reset-password' component={ResetPassword} />
+        <Route path='/login/import-methods' component={LoginWithOptions} />
+        <Route path='/login/confirm-mnemonic' component={ConfirmMnemonic} />
+        <Route path='/login/mnemonic' component={GenerateMnemonic} />
+        <Route path='/login/download-wallet' component={GenerateWallet} />
+        <Route path='/login/upload-wallet' component={LoginWithWallet} />
+        <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
+        <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

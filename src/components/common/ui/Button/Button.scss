@@ -52,6 +52,25 @@
   }
 }
 
+.login {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 45px;
+  padding: 0 50px;
+  min-width: 280px;
+  border-radius: 50px;
+  white-space: nowrap;
+  color: $color-white;
+  background-color: $button-color-1;
+
+  &:hover, &:active {
+    background-color: $button-color-2
+  }
+  &:disabled {
+    background-color: $button-color-3;
+  }
+}
+
 :global {
   .ripple {
     position: absolute;
