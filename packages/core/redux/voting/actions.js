@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import { push } from '@chronobank/core-dependencies/router'
 import Amount from '../../models/Amount'
 import { ETH } from '../../redux/mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
@@ -30,6 +31,8 @@ const PAGE_SIZE = 20
 
 // used to create unique ID for fetching models
 let counter = 1
+
+export const goToVoting = () => (dispatch) => dispatch(push('/voting'))
 
 export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   switch (notice.status()) {
@@ -87,21 +90,23 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
 
   try {
     dispatch(handlePollCreated(stub))
+    dispatch(goToVoting())
     const dao = await contractsManagerDAO.getVotingManagerDAO()
     const transactionHash = await dao.createPoll(poll.poll())
     dispatch(handlePollRemoved(stub.id()))
     dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
   } catch (e) {
-    // eslint-disable-next-line
-    console.error('create poll error', e.message)
     dispatch(handlePollRemoved(stub.id()))
   }
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
+  let poll = pollObject && pollObject.id
+    ? getState().get(DUCK_VOTING).list().item(pollObject.id)
+    : getSelectedPollFromDuck(getState())
   try {
     dispatch(handlePollRemoved(poll.id()))
+    dispatch(goToVoting())
     const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
     await dao.removePoll()
   } catch (e) {
@@ -124,7 +129,9 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
-  const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
+  let poll = pollObject && pollObject.id
+    ? getState().get(DUCK_VOTING).list().item(pollObject.id)
+    : getSelectedPollFromDuck(getState())
   try {
     dispatch(handlePollUpdated(poll
       .poll(poll.poll().active(true))

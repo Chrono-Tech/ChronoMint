@@ -86,6 +86,7 @@ function mapDispatchToProps (dispatch) {
         files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
         options: new Immutable.List(values.get('options').toArray().filter((option) => option.length > 0)),
+        owner: props.account,
       })
 
       dispatch(modalsClose())

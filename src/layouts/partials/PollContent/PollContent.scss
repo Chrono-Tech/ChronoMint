@@ -99,7 +99,6 @@
   .body {
     width: 587px;
     margin: 0 auto;
-    min-height: 510px;
     color: $color-primary-0;
     background-color: $color-white;
     font-size: 30px;
@@ -156,6 +155,9 @@
             font-size: 24px;
             opacity: 0.9;
             cursor: pointer;
+            &:disabled {
+              cursor: not-allowed;
+            }
             &:hover {
               opacity: 1;
             }

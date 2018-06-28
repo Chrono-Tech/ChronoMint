@@ -6,9 +6,12 @@
 @import "~styles/partials/mixins";
 
 .root {
+  margin: 35px auto 0;
+  width: 587px;
+  display: flex;
+  justify-content: center;
   overflow: hidden;
   position: relative;
-  width: 100%;
   background: $background-color-1;
   font-size: 30px;
   border-radius: 5px;

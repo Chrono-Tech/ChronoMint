@@ -12,6 +12,7 @@ export const PTPoll = PropTypes.shape({
   id: PropTypes.string,
   isFetched: PropTypes.bool,
   isFetching: PropTypes.bool,
+  owner: PropTypes.string,
   title: PropTypes.string,
   hasMember: PropTypes.bool,
   endDate: PropTypes.instanceOf(Date),
@@ -29,7 +30,10 @@ export const PTPoll = PropTypes.shape({
   shareholdersCount: PropTypes.instanceOf(BigNumber),
   percents: PropTypes.instanceOf(BigNumber),
   maxOptionTime: PropTypes.instanceOf(BigNumber),
-  memberOption: PropTypes.number,
+  memberOption: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.bool,
+  ]),
   voteEntries: PropTypes.arrayOf(PropTypes.object),
   description: PropTypes.string,
 })

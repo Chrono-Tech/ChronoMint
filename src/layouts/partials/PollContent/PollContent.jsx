@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { getSelectedPoll, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { listPolls, vote } from '@chronobank/core/redux/voting/actions'
+import { goToVoting, listPolls, vote } from '@chronobank/core/redux/voting/actions'
 import moment from 'moment'
 import { isCBE } from '@chronobank/core/redux/session/selectors'
 import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
@@ -49,6 +49,7 @@ function mapDispatchToProps (dispatch) {
     handleVote: (choice) => () => {
       dispatch(vote(choice))
     },
+    handleGoVotingPage: () => dispatch(goToVoting()),
   }
 }
 
@@ -60,6 +61,7 @@ export default class PollContent extends Component {
     deposit: PropTypes.instanceOf(Amount),
     palette: PropTypes.arrayOf(PropTypes.string),
     handleVote: PropTypes.func,
+    handleGoVotingPage: PropTypes.func,
   }
 
   static defaultProps = {
@@ -80,7 +82,7 @@ export default class PollContent extends Component {
 
   componentDidMount () {
     if (!this.props.poll) {
-      push('/voting')
+      this.props.handleGoVotingPage()
     }
   }
 
@@ -119,7 +121,7 @@ export default class PollContent extends Component {
         {!poll.hasMember || poll.memberOption === (i + 1) ? (
           <div styleName='action'>
             <button
-              disabled={poll.isFetching || deposit.isZero()}
+              disabled={poll.isFetching || deposit.isZero() || poll.hasMember || poll.daysLeft <= 0 || !(poll.status && poll.active)}
               onClick={this.props.handleVote(i)}
               style={{ background }}
             >

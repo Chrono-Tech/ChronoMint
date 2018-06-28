@@ -53,7 +53,14 @@ export default class PollActionMenu extends PureComponent {
   }
 
   render () {
-    const { poll, isCBE, deposit } = this.props
+    const { poll, isCBE } = this.props
+    const showRemove = isCBE && (!poll.status || !poll.active)
+    const showEnd = isCBE && poll.status && poll.active
+    const showActivate = isCBE && poll.status && !poll.active
+
+    if (!showActivate && !showEnd && !showRemove) {
+      return null
+    }
 
     return (
       <div styleName='root'>
@@ -69,7 +76,7 @@ export default class PollActionMenu extends PureComponent {
           onRequestClose={this.handleRequestClose}
         >
           <Menu styleName='menuDropDown'>
-            {isCBE && (!poll.status || !poll.active)
+            {showRemove
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.remove`} />}
@@ -79,7 +86,7 @@ export default class PollActionMenu extends PureComponent {
               )
               : null
             }
-            {isCBE && poll.status && poll.active
+            {showEnd
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.endPoll`} />}
@@ -89,7 +96,7 @@ export default class PollActionMenu extends PureComponent {
               )
               : null
             }
-            {isCBE && poll.status && !poll.active
+            {showActivate
               ? (
                 <MenuItem
                   primaryText={<Translate value={`${prefix}.activate`} />}

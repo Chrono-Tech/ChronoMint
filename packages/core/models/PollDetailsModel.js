@@ -86,11 +86,13 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const isFetching = this.isFetching()
     const hasMember = poll.hasMember()
     const voteEntries = this.voteEntries().toArray()
+    const owner = poll.owner()
 
     return {
       id,
       isFetched,
       isFetching,
+      owner,
       title,
       description,
       hasMember,

@@ -4,7 +4,7 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { getSelectedPollFromDuck, getPolls, getVoting } from './selectors/models'
+import { getPolls, getSelectedPollFromDuck, getVoting } from './selectors/models'
 import VotingCollection from '../../models/voting/VotingCollection'
 import PollDetailsModel from '../../models/PollDetailsModel'
 import VotingMainModel from '../../models/voting/VotingMainModel'

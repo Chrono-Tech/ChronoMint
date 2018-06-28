@@ -6,13 +6,10 @@
 import DoughnutChart from 'components/common/DoughnutChart/DoughnutChart'
 import { push } from 'react-router-redux'
 import Amount from '@chronobank/core/models/Amount'
-import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import { activatePoll, endPoll, POLLS_SELECTED, removePoll } from '@chronobank/core/redux/voting/actions'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
 import BigNumber from 'bignumber.js'
@@ -21,18 +18,10 @@ import './Poll.scss'
 import PollActionMenu from './PollActionMenu'
 import PollStatus from '../PollStatus/PollStatus'
 
-function mapStateToProps (state) {
-  const tokens = state.get(DUCK_TOKENS)
-  return {
-    isCBE: state.get(DUCK_SESSION).isCBE,
-    timeToken: tokens.item('TIME'),
-  }
-}
-
 function mapDispatchToProps (dispatch, props) {
   return {
-    handlePollDetails: () => {
-      dispatch({ type: POLLS_SELECTED, id: props.poll.id })
+    handlePollDetails: async () => {
+      await dispatch({ type: POLLS_SELECTED, id: props.poll.id })
       dispatch(push('/poll'))
     },
     handlePollRemove: () => dispatch(removePoll(props.poll)),
@@ -41,12 +30,12 @@ function mapDispatchToProps (dispatch, props) {
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(null, mapDispatchToProps)
 export default class Poll extends PureComponent {
   static propTypes = {
-    poll: PTPoll,
-    timeToken: PropTypes.instanceOf(TokenModel),
     isCBE: PropTypes.bool,
+    poll: PTPoll,
+    userAccount: PropTypes.string,
     deposit: PropTypes.instanceOf(Amount),
     handlePollDetails: PropTypes.func,
     handlePollRemove: PropTypes.func,
@@ -55,7 +44,10 @@ export default class Poll extends PureComponent {
   }
 
   render () {
-    const { poll } = this.props
+    const { poll, userAccount, isCBE } = this.props
+    if (!isCBE && !poll.active && poll.owner !== userAccount) {
+      return null
+    }
 
     return (
       <div styleName='root'>

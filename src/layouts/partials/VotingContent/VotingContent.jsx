@@ -10,28 +10,31 @@ import classnames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Link } from 'react-router'
 import { getPollsDetailsList, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
 import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
 import { listPolls } from '@chronobank/core/redux/voting/actions'
-import { isCBE } from '@chronobank/core/redux/session/selectors'
+import { isCBE, getAccount } from '@chronobank/core/redux/session/selectors'
 import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
 import { PTPoll } from '@chronobank/core/redux/voting/types'
+import PollDepositWarningWidget from 'components/voting/PollDepositWarningWidget/PollDepositWarningWidget'
+import Preloader from 'components/common/Preloader/Preloader'
 import { prefix } from './lang'
 
 import './VotingContent.scss'
 
-function makeMapStateToProps () {
+function makeMapStateToProps (state) {
   const getPolls = getPollsDetailsList()
   const getIsCBE = isCBE()
   const getFlags = getVotingFlags()
   const getDeposit = getDepositAmount()
+  const userAccount = getAccount(state)
 
   const mapStateToProps = (ownState) => {
     return {
       polls: getPolls(ownState),
       deposit: getDeposit(ownState),
       isCBE: getIsCBE(ownState),
+      userAccount: userAccount,
       ...getFlags(ownState),
     }
   }
@@ -48,6 +51,7 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
   static propTypes = {
+    userAccount: PropTypes.string,
     polls: PropTypes.arrayOf(PTPoll),
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
@@ -88,22 +92,28 @@ export default class VotingContent extends Component {
 
   renderBody (polls) {
     const { filter } = this.state
+    const { userAccount, isCBE } = this.props
     const filteredPolls = polls
       .filter((poll) => {
         if (filter === 'ongoing') {
-          return poll.active || (poll.status && !poll.active)
+          return poll.active || (poll.status && !poll.active) || poll.id.includes('stub')
         }
-        return !poll.status
+        return !poll.status && !poll.active && !poll.id.includes('stub')
       })
+      .sort((a: PTPoll, b: PTPoll) => {
+        return a.published > b.published ? -1 : a.published < b.published
+      })
+
     return (
       <div styleName='pollsContent'>
         {filteredPolls.map((poll) => (
-          <div styleName='pollWrapper' key={poll.id}>
-            <Poll
-              poll={poll}
-              deposit={this.props.deposit}
-            />
-          </div>
+          <Poll
+            key={poll.id}
+            isCBE={isCBE}
+            userAccount={userAccount}
+            poll={poll}
+            deposit={this.props.deposit}
+          />
         ))}
       </div>
     )
@@ -119,29 +129,26 @@ export default class VotingContent extends Component {
     return (
       <div styleName='root'>
         <div styleName='content'>
-          <div styleName='tabsFilterWrapper'>
-            <button
-              styleName={classnames('filterTab', { 'active': filter === 'ongoing' })}
-              onClick={this.handleViewOngoing}
-            >
-              <Translate value={`${prefix}.ongoingPolls`} />
-            </button>
-            <button
-              styleName={classnames('filterTab', { 'active': filter === 'ended' })}
-              onClick={this.handleViewEnded}
-            >
-              <Translate value={`${prefix}.pastPolls`} />
-            </button>
-          </div>
           {this.props.isFetched && this.props.deposit.isZero() &&
           (
-            <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>
-              <Translate value={`${prefix}.warning1`} />
-              <Link to='/wallet'><Translate value={`${prefix}.warning2`} /></Link>
-              <Translate value={`${prefix}.warning3`} />
-            </div>
+            <PollDepositWarningWidget />
           )}
+          {this.props.isFetched ? (
+            <div styleName='tabsFilterWrapper'>
+              <button
+                styleName={classnames('filterTab', { 'active': filter === 'ongoing' })}
+                onClick={this.handleViewOngoing}
+              >
+                <Translate value={`${prefix}.ongoingPolls`} />
+              </button>
+              <button
+                styleName={classnames('filterTab', { 'active': filter === 'ended' })}
+                onClick={this.handleViewEnded}
+              >
+                <Translate value={`${prefix}.pastPolls`} />
+              </button>
+            </div>
+          ) : <Preloader />}
           {this.props.isFetched && this.renderBody(polls)}
         </div>
       </div>

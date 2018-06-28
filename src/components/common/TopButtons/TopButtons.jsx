@@ -66,6 +66,9 @@ class TopButtons extends PureComponent {
         </div>
         {
           buttons.map((button, i) => {
+            if (button.component) {
+              return <button.component key={i} />
+            }
             const isIconButton = !!button.chronobankIcon && !button.title
             const isButtonWithIcon = !!button.chronobankIcon && !!button.title
 
