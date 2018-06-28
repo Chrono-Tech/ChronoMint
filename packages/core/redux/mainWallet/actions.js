@@ -20,7 +20,7 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import { history } from '@chronobank/core-dependencies/configureStore'
 import { push } from '@chronobank/core-dependencies/router'
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE, EVENT_UPDATE_TRANSACTION_MAINED } from '../../dao/AbstractTokenDAO'
+import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, FETCH_NEW_BALANCE, EVENT_UPDATE_TRANSACTION } from '../../dao/AbstractTokenDAO'
 import assetDonatorDAO from '../../dao/AssetDonatorDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
@@ -57,8 +57,9 @@ export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
 export const WALLET_BALANCE = 'mainWallet/BALANCE'
 export const WALLET_ALLOWANCE = 'mainWallet/ALLOWANCE'
 export const WALLET_ADDRESS = 'mainWallet/WALLET_ADDRESS'
+export const WALLET_CURRENT_BLOCK_HEIGHT = 'mainWallet/WALLET_CURRENT_BLOCK_HEIGHT'
 export const WALLET_TRANSACTIONS_FETCH = 'mainWallet/TRANSACTIONS_FETCH'
-export const WALLET_TRANSACTION_MAINED = 'mainWallet/TRANSACTION_MAINED'
+export const WALLET_TRANSACTION_UPDATED = 'mainWallet/TRANSACTION_UPDATED'
 export const WALLET_TRANSACTION = 'mainWallet/TRANSACTION'
 export const WALLET_TRANSACTIONS = 'mainWallet/TRANSACTIONS'
 export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
@@ -224,9 +225,9 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         }),
       })
     })
-    .on(EVENT_UPDATE_TRANSACTION_MAINED, ({ address, txList, blockNumber }) => {
+    .on(EVENT_UPDATE_TRANSACTION, ({ address, txList, blockNumber }) => {
       dispatch({
-        type: WALLET_TRANSACTION_MAINED,
+        type: WALLET_TRANSACTION_UPDATED,
         address,
         txList,
         blockNumber,

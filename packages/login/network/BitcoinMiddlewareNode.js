@@ -58,9 +58,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           `${this._socket.channels.transaction}.${address}`,
           (message) => {
             try {
-              console.log('_subscriptions[`transaction:${address}`]: ', address, JSON.stringify(message.body))
               const data = JSON.parse(message.body)
-              this.emit('transaction:mained', data)
+              this.emit('transaction', data)
               this.trace('Transaction Balance', data)
             } catch (e) {
               this.trace('Failed to decode message', e)
@@ -82,6 +81,15 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           )
         }
       })
+
+      // setTimeout(() => {
+      //   this.emit('transaction', {
+      //     address: 'mqDJV7TEZ1CCTJk7t2U7s7xvHX8GhXMsL7',
+      //     txList: [JSON.parse('{"timestamp":1530168947772,"blockNumber":15492,"hash":"3d66e705139fdb272d32e2808ab33a39242bb3543a9a2de4b9d99a35d696760c","inputs":[{"address":"mqDJV7TEZ1CCTJk7t2U7s7xvHX8GhXMsL7","value":"210000"}],"outputs":[{"address":"mo5jPfqwucmaQT1RjnhpMM3pJkBPah2gWW","value":"170000"}],"confirmations":1}')],
+      //     blockNumber: -1,
+      //   })
+      // }, 5000)
+
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -107,6 +115,16 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   disconnect () {
     if (this._socket) {
       this._ws.close()
+    }
+  }
+
+  async getCurrentBlockHeight () {
+    try {
+      const res = await this._api.get('blocks/height')
+      return res.data
+    } catch (e) {
+      this.trace(`getCurrentBlockHeight failed`, e)
+      throw e
     }
   }
 

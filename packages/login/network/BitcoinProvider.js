@@ -5,6 +5,8 @@
 
 import type BigNumber from 'bignumber.js'
 import bitcoin from 'bitcoinjs-lib'
+import TxModel from '@chronobank/core/models/TxModel'
+import Amount from '@chronobank/core/models/Amount'
 import AbstractProvider from './AbstractProvider'
 import { selectBCCNode, selectBTCNode, selectBTGNode, selectLTCNode } from './BitcoinNode'
 import { BitcoinTx, BitcoinBalance } from './BitcoinAbstractNode'
@@ -21,7 +23,7 @@ export class BitcoinProvider extends AbstractProvider {
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
-    this._handleTransactionMained = (address: String, txList: Array, blockNumber: Number) => this.onTransactionMained(address, txList, blockNumber)
+    this._handleTransactionUpdated = ( { address, txList, blockNumber }) => this.onTransactionUpdated(address, txList, blockNumber)
     this._id = id
   }
 
@@ -39,7 +41,7 @@ export class BitcoinProvider extends AbstractProvider {
     node.addListener('tx', this._handleTransaction) // send transaction
     node.addListener('balance', this._handleBalance)
     node.addListener('lastBlock', this._handleLastBlock)
-    node.addListener('transaction:mained', this._handleTransactionMained) // transaction mained.
+    node.addListener('transaction', this._handleTransactionUpdated) // transaction mained.
   }
 
   unsubscribe (engine) {
@@ -47,7 +49,7 @@ export class BitcoinProvider extends AbstractProvider {
     node.removeListener('tx', this._handleTransaction)
     node.removeListener('balance', this._handleBalance)
     node.removeListener('lastBlock', this._handleLastBlock)
-    node.removeListener('transaction:mained', this._handleTransactionMained)
+    node.removeListener('transaction', this._handleTransactionUpdated)
   }
 
   async getTransactionInfo (txid) {
@@ -63,6 +65,11 @@ export class BitcoinProvider extends AbstractProvider {
   async getFeeRate () {
     const node = this._selectNode(this._engine)
     return node.getFeeRate()
+  }
+
+  async getCurrentBlockHeight () {
+    const node = this._selectNode(this._engine)
+    return node.getCurrentBlockHeight()
   }
 
   async getAccountBalances (address) {
@@ -89,10 +96,29 @@ export class BitcoinProvider extends AbstractProvider {
     return node.send(from, tx.toHex())
   }
 
-  async onTransactionMained (address: String, txList: Array, blockNumber: Number) {
-    this.emit('transaction:mained', {
+  async onTransactionUpdated (address: String, txList: Array, blockNumber: Number) {
+    const node = this._selectNode(this._engine)
+    const tsList = txList.map((t) => {
+      const tx = node._createTxModel(t)
+      return new TxModel({
+        txHash: tx.txHash,
+        blockHash: tx.blockHash,
+        blockNumber: tx.blockNumber,
+        confirmations: tx.confirmations,
+        time: tx.time,
+        from: tx.from,
+        to: tx.to,
+        symbol: this._symbol,
+        value: new Amount(tx.value, this._symbol),
+        fee: new Amount(tx.fee, this._symbol),
+        blockchain: 'Bitcoin',
+      })
+    })
+
+    console.log('onTransactionUpdated Provider: ', address, txList, tsList, blockNumber)
+    this.emit('transaction', {
       address,
-      txList,
+      txList: tsList,
       blockNumber,
     })
   }

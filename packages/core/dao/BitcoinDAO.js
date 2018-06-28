@@ -20,10 +20,10 @@ import TokenModel from '../models/tokens/TokenModel'
 import TxModel from '../models/TxModel'
 import TransferExecModel from '../models/TransferExecModel'
 import { bitcoinAddress } from '../models/validator'
-import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK, EVENT_UPDATE_TRANSACTION_MAINED } from './AbstractTokenDAO'
+import { EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_LAST_BLOCK, EVENT_UPDATE_TRANSACTION } from './AbstractTokenDAO'
 
 const EVENT_TX = 'tx'
-const EVENT_TRANSACTION_MAINED = 'transaction:mained'
+const EVENT_TRANSACTION_MAINED = 'transaction'
 const EVENT_BALANCE = 'balance'
 const EVENT_LAST_BLOCK = 'lastBlock'
 
@@ -47,6 +47,10 @@ export default class BitcoinDAO extends EventEmitter {
   getInitAddress () {
     // BitcoinDAO is not a cntract DAO, bitcoin have no initial address, but it have a token name.
     return `Bitcoin/${this._symbol}`
+  }
+
+  getCurrentBlockHeight () {
+    return this._bitcoinProvider.getCurrentBlockHeight()
   }
 
   isInitialized () {
@@ -155,14 +159,14 @@ export default class BitcoinDAO extends EventEmitter {
     return Promise.all([
       this.watchTransfer(),
       this.watchBalance(),
-      this.watchTransactionMained(),
+      this.watchTransaction(),
     ])
   }
 
-  async watchTransactionMained () {
+  async watchTransaction () {
     this._bitcoinProvider.addListener(EVENT_TRANSACTION_MAINED, async ({ address, txList, blockNumber }) => {
       this.emit(
-        EVENT_UPDATE_TRANSACTION_MAINED,
+        EVENT_UPDATE_TRANSACTION,
         {
           address,
           txList,

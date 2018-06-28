@@ -65,13 +65,13 @@ export const tokensCountSelector = (blockchain: string) => createSelector(
   },
 )
 
-export const pendingTransactionsSelector = () => createSelector(
+export const pendingTransactionsSelector = (blockchain, address) => createSelector(
   [
     getMainWallet,
   ],
   (
     mainWallet,
   ) => {
-    return mainWallet.getAllPendingTransactions()
+    return mainWallet.getAllPendingTransactions(blockchain, address)
   },
 )
