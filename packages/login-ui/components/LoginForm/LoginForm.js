@@ -118,7 +118,6 @@ class LoginPage extends PureComponent {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting } = this.props
 
-    console.log('loginform', selectedWallet)
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>

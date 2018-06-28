@@ -49,6 +49,7 @@ export const NETWORK_SET_TEST_METAMASK = 'network/SET_TEST_METAMASK'
 export const NETWORK_SET_NETWORK = 'network/SET_NETWORK'
 export const NETWORK_SET_PROVIDER = 'network/SET_PROVIDER'
 export const NETWORK_SET_NEW_ACCOUNT_CREDENTIALS = 'network/SET_NEW_ACCOUNT_CREDENTIALS'
+export const NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS = 'network/RESET_NEW_ACCOUNT_CREDENTIALS'
 export const NETWORK_SET_NEW_MNEMONIC = 'network/SET_NEW_MNEMONIC'
 export const NETWORK_RESET_NEW_MNEMONIC = 'network/RESET_NEW_MNEMONIC'
 
@@ -110,8 +111,19 @@ export const initMnemonicPage = () => (dispatch, getState) => {
   }
 }
 
+export const resetAllLoginFlags = () => (dispatch) => {
+  dispatch({ type: NETWORK_RESET_IMPORT_PRIVATE_KEY })
+  dispatch({ type: NETWORK_RESET_IMPORT_WALLET_FILE })
+  dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
+  dispatch({ type: NETWORK_RESET_ACCOUNT_RECOVERY_MODE })
+  dispatch({ type: NETWORK_RESET_NEW_MNEMONIC })
+  dispatch({ type: NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS })
+}
+
 export const initLoginPage = () => (dispatch, getState) => {
   const state = getState()
+
+  dispatch(resetAllLoginFlags())
 
   const { selectedWallet } = state.get('persistAccount')
 
@@ -139,7 +151,7 @@ export const resetImportAccountMode = () => (dispatch) => {
 export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
   const state = getState()
 
-  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey } = state.get('network')
+  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get('network')
 
   const validateName = dispatch(validateAccountName(walletName))
 
@@ -151,7 +163,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
   if (importAccountMode){
     try {
-      let wallet = await dispatch (createAccount ({
+      let wallet = await dispatch(createAccount({
         name: walletName,
         password: walletPassword,
         mnemonic: newAccountMnemonic,
@@ -159,13 +171,17 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
         numberOfAccounts: 0,
       }))
 
-      dispatch (accountAdd (wallet))
+      dispatch(accountAdd(wallet))
 
-      dispatch (accountSelect (wallet))
+      dispatch(accountSelect(wallet))
 
-      dispatch (resetImportAccountMode ())
+      dispatch(resetImportAccountMode())
 
-      dispatch (navigateToLoginPage ())
+      if (walletFileImportMode){
+        dispatch(navigateToLoginPage())
+      } else {
+        dispatch(navigateToDownloadWalletPage())
+      }
     } catch(e){
       throw new SubmissionError({ _error: e && e.message })
     }

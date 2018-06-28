@@ -39,6 +39,7 @@ const initialState = {
   newAccountPrivateKey: null,
   isLoginSubmitting: false,
   accountRecoveryMode: false,
+  walletFileImportMode: false,
 }
 
 export default (state = initialState, action) => {
@@ -87,6 +88,12 @@ export default (state = initialState, action) => {
         ...state,
         newAccountName: action.walletName,
         newAccountPassword: action.walletPassword,
+      }
+    case actions.NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS:
+      return {
+        ...state,
+        newAccountName: null,
+        newAccountPassword: null,
       }
     case actions.NETWORK_SET_NEW_MNEMONIC:
       return {
@@ -137,6 +144,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         accountRecoveryMode: false,
+      }
+    case actions.NETWORK_SET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: true,
+      }
+    case actions.NETWORK_RESET_IMPORT_WALLET_FILE:
+      return {
+        ...state,
+        walletFileImportMode: false,
       }
 
     default:
