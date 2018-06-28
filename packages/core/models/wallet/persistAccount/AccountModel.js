@@ -1,14 +1,18 @@
-import { abstractModel } from './AbstractAccountModel'
+import PropTypes from 'prop-types'
+import AbstractAccountModel from './AbstractAccountModel'
+import AccountEntryModel from './AccountEntryModel'
 
-export default class AbstractModel extends abstractModel({
-  wallet: null,
-  entry: null,
-}) {
-  get wallet () {
-    return this.get('wallet')
-  }
+const schema = {
+  wallet: PropTypes.object,
+  entry: PropTypes.instanceOf(AccountEntryModel),
+}
 
-  get entry () {
-    return this.get('entry')
+class AccountModel extends AbstractAccountModel {
+  constructor (props) {
+    super(props, schema)
+    Object.assign(this, props)
+    Object.freeze(this)
   }
 }
+
+export default AccountModel

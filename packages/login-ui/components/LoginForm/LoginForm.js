@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider, CircularProgress } from 'material-ui'
+import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -25,6 +25,7 @@ import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderS
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
 import styles from 'layouts/Splash/styles'
+import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
 const STRATEGY_MANUAL = 'manual'
@@ -150,11 +151,14 @@ class LoginPage extends PureComponent {
                 buttonType='login'
                 type='submit'
                 label={isLoginSubmitting
-                  ? <CircularProgress
-                    style={{ verticalAlign: 'middle', marginTop: -2 }}
-                    size={24}
-                    thickness={1.5}
-                  /> : <Translate value='LoginForm.submitButton' />}
+                  ? <span styleName='spinner-wrapper'>
+                    <img
+                      src={spinner}
+                      alt=''
+                      width={24}
+                      height={24}
+                    />
+                  </span> : <Translate value='LoginForm.submitButton' />}
                 disabled={isLoginSubmitting}
               />
 

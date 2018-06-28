@@ -1,7 +1,10 @@
-import { Record as record } from 'immutable'
+import PropTypes from 'prop-types'
 
-export const abstractModel = (defaultValues) => class AbstractAccountModel extends record({
-  ...defaultValues,
-}){}
+class AbstractAccountModel {
+  constructor(props, schema){
+    PropTypes.checkPropTypes(schema, props, 'prop', '' + this.class)
+    Object.assign(this, props)
+  }
+}
 
-export default abstractModel()
+export default AbstractAccountModel

@@ -1,20 +1,23 @@
-import { abstractModel } from './AbstractAccountModel'
+import PropTypes from 'prop-types'
+import AbstractAccountModel from './AbstractAccountModel'
 
-export default class AccountEntryModel extends abstractModel({
-  key: '',
-  name: '',
-  encrypted: [],
-}) {
-  get key () {
-    return this.get('key')
-  }
+const schema = {
+  key: PropTypes.string,
+  name: PropTypes.string,
+  types: PropTypes.object,
+  encrypted: PropTypes.array,
+}
 
-  get name () {
-    return this.get('name')
-  }
-
-  get encrypted () {
-    return this.get('encrypted')
+class AccountEntryModel extends AbstractAccountModel {
+  constructor (props) {
+    super(props, schema)
+    Object.assign(this, {
+      key: '',
+      name: '',
+      types: {},
+    }, props)
+    Object.freeze(this)
   }
 }
 
+export default AccountEntryModel

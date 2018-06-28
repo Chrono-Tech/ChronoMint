@@ -5,12 +5,12 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { MuiThemeProvider, CircularProgress } from 'material-ui'
+import { MuiThemeProvider } from 'material-ui'
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
-import { UserRow, Button } from 'components'
+import { Button } from 'components'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import {
@@ -19,6 +19,7 @@ import {
   onSubmitWalletUploadFail,
   clearErrors,
   loading,
+  initLoginWithWallet,
 } from '@chronobank/login/redux/network/actions'
 
 import FileIcon from 'assets/img/icons/file-white.svg'
@@ -26,6 +27,7 @@ import DeleteIcon from 'assets/img/icons/delete-white.svg'
 import SpinnerGif from 'assets/img/spinningwheel.gif'
 import WarningIcon from 'assets/img/icons/warning.svg'
 import CheckIcon from 'assets/img/icons/check-green.svg'
+import spinner from 'assets/img/spinningwheel-1.gif'
 
 import styles from 'layouts/Splash/styles'
 import './LoginWithWallet.scss'
@@ -42,11 +44,11 @@ const mapDispatchToProps = (dispatch) => {
     loading: (isLoading) => dispatch(loading(isLoading)),
     onSubmit: async (values, dispatch, walletString) => {
       const password = values.get('password')
-      console.log('obsubmit', password, walletString)
 
       await dispatch(onSubmitWalletUpload(walletString, password))
     },
     onSubmitSuccess: () => dispatch(onSubmitWalletUploadSuccess()),
+    initLoginWithWallet: () => dispatch(initLoginWithWallet()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, dispatch, submitErrors)),
   }
 }
@@ -56,17 +58,21 @@ class LoginWithWallet extends Component {
     isLoading: PropTypes.bool,
     clearErrors: PropTypes.func,
     loading: PropTypes.func,
+    initLoginWithWallet: PropTypes.func,
   }
 
   constructor () {
     super()
     this.state = {
-      password: '',
       wallet: null,
       isUploaded: false,
       isUploading: false,
       fileName: '',
     }
+  }
+
+  componentWillMount(){
+    this.props.initLoginWithWallet()
   }
 
   handleFileUploaded = (e) => {
@@ -114,7 +120,6 @@ class LoginWithWallet extends Component {
   render () {
     const { isLoading, handleSubmit, onSubmit, error } = this.props
     const { isUploading, isUploaded, fileName } = this.state
-    console.log('error', error)
 
     return (
       <MuiThemeProvider>
@@ -183,11 +188,14 @@ class LoginWithWallet extends Component {
               buttonType='login'
               type='submit'
               disabled={isLoading || !isUploaded}
-              label={isLoading ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
-                size={24}
-                thickness={1.5}
-              /> : <Translate value='LoginWithWallet.login' />}
+              label={isLoading ? <span styleName='spinner-wrapper'>
+                <img
+                  src={spinner}
+                  alt=''
+                  width={24}
+                  height={24}
+                />
+              </span> : <Translate value='LoginWithWallet.login' />}
             />
             { error ? <div styleName='error'>{error}</div> : null }
             or&nbsp;<Link to='/login' href styleName='link'>Back</Link>

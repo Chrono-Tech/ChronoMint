@@ -55,6 +55,8 @@ export const NETWORK_RESET_NEW_MNEMONIC = 'network/RESET_NEW_MNEMONIC'
 export const NETWORK_SET_IMPORT_MNEMONIC = 'network/SET_IMPORT_MNEMONIC'
 export const NETWORK_SET_IMPORT_PRIVATE_KEY = 'network/SET_NEW_PRIVATE_KEY'
 export const NETWORK_RESET_IMPORT_PRIVATE_KEY = 'network/RESET_NEW_PRIVATE_KEY'
+export const NETWORK_SET_IMPORT_WALLET_FILE = 'network/SET_IMPORT_WALLET_FILE'
+export const NETWORK_RESET_IMPORT_WALLET_FILE = 'network/RESET_IMPORT_WALLET_FILE'
 export const NETWORK_SET_IMPORT_ACCOUNT_MODE = 'network/SET_IMPORT_ACCOUNT_MODE'
 export const NETWORK_RESET_IMPORT_ACCOUNT_MODE = 'network/RESET_IMPORT_ACCOUNT_MODE'
 export const NETWORK_SET_LOGIN_SUBMITTING = 'network/SET_LOGIN_SUBMITTING'
@@ -316,7 +318,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const { selectedWallet } = state.get('persistAccount')
 
   try {
-    let wallet = await dispatch (decryptAccount (selectedWallet, password))
+    let wallet = await dispatch (decryptAccount(selectedWallet.encrypted, password))
 
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
@@ -417,7 +419,6 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       delete restoredWalletJSON.Crypto
     }
 
-    console.log ('restoredWalletJSON', restoredWalletJSON)
     let wallet = await dispatch (decryptAccount([restoredWalletJSON], password))
 
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
@@ -428,12 +429,8 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       pk = pk.slice(2)
     }
 
-    console.log ('restoredWalletJSON private key', privateKey)
-
     dispatch ({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey: pk })
   } catch(e){
-    console.log('throw', e)
-    console.dir(e)
     throw new SubmissionError({ _error: e && e.message })
   }
 
@@ -447,6 +444,14 @@ export const onSubmitWalletUploadSuccess = () => (dispatch) => {
 export const onSubmitWalletUploadFail = (error, dispatch, submitError) => (dispatch) => {
   dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitError && submitError.errors))
 
+}
+
+export const initLoginWithWallet = () => (dispatch) => {
+  dispatch(setImportWalletFile())
+}
+
+export const setImportWalletFile = () => (dispatch) => {
+  dispatch({ type: NETWORK_SET_IMPORT_WALLET_FILE })
 }
 
 export const onWalletSelect = (wallet) => (dispatch) => {
