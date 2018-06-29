@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { PollEditForm } from 'components'
+import PollEditForm from 'components/voting/PollEditForm/PollEditForm'
 import React, { Component } from 'react'
 import './NewPollContent.scss'
 
