@@ -3,86 +3,133 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
-import { addError } from '@chronobank/login/redux/network/actions'
-import { CircularProgress, MenuItem, SelectField } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import { MuiThemeProvider } from 'material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import styles from '../../components/stylesLoginPage'
+import React, { PureComponent } from 'react'
+import { Link } from 'react-router'
+import { UserRow, Button } from 'components'
+import {
+  navigateToSelectImportMethod,
+  onWalletSelect,
+  initAccountsSignature,
+  initAccountsSelector,
+} from '@chronobank/login/redux/network/actions'
+import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+import {
+  AccountEntryModel,
+} from '@chronobank/core/models/wallet/persistAccount'
+
+import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'
-import { Button } from '../../settings'
 
-const mapStateToProps = (state) => ({
-  accounts: state.get('network').accounts,
-  selectedAccount: state.get('network').selectedAccount,
-  isLoading: state.get('network').isLoading,
-})
-
-const mapDispatchToProps = (dispatch) => ({
-  loadAccounts: () => networkService.loadAccounts(),
-  selectAccount: (value) => networkService.selectAccount(value),
-  addError: (error) => dispatch(addError(error)),
-})
-
-@connect(mapStateToProps, mapDispatchToProps)
-class AccountSelector extends PureComponent {
-  static propTypes = {
-    onSelectAccount: PropTypes.func,
-    loadAccounts: PropTypes.func,
-    selectAccount: PropTypes.func,
-    addError: PropTypes.func,
-    accounts: PropTypes.array,
-    selectedAccount: PropTypes.string,
-    isLoading: PropTypes.bool,
-  }
-
-  componentWillMount () {
-    this.props.loadAccounts().then(() => {
-    }).catch((e) => {
-      this.props.selectAccount(null)
-      this.props.addError(e.message)
-    })
-  }
-
-  handleSelect = () => {
-    this.props.onSelectAccount(this.props.selectedAccount)
-  }
-
-  handleChange = (event, index, value) => {
-    this.props.selectAccount(value)
-  }
-
-  render () {
-    const { accounts, selectedAccount, isLoading } = this.props
-    return (
-      <div>
-        <SelectField
-          floatingLabelText={<Translate value='AccountSelector.address' />}
-          value={selectedAccount}
-          onChange={this.handleChange}
-          fullWidth
-          {...styles.selectField}
-        >
-          {accounts && accounts.map((a) => <MenuItem key={a} value={a} primaryText={a} />)}
-        </SelectField>
-        <div styleName='actions'>
-          <div styleName='action'>
-            <Button
-              label={isLoading ? <CircularProgress
-                style={{ verticalAlign: 'middle', marginTop: -2 }}
-                size={24}
-                thickness={1.5}
-              /> : <Translate value='AccountSelector.selectAddress' />}
-              onClick={this.handleSelect}
-              disabled={!selectedAccount || isLoading}
-            />
-          </div>
-        </div>
-      </div>
-    )
+function mapDispatchToProps (dispatch) {
+  return {
+    navigateToSelectImportMethod: () => dispatch(navigateToSelectImportMethod()),
+    onWalletSelect: (wallet) => dispatch(onWalletSelect(wallet)),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
+    initAccountsSelector: () => dispatch(initAccountsSelector()),
   }
 }
 
-export default AccountSelector
+function mapStateToProps (state) {
+  return {
+    walletsList: state.get('persistAccount').walletsList.map(
+      (wallet) => new AccountEntryModel({...wallet})
+    ),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class SelectWalletPage extends PureComponent {
+  static propTypes = {
+    onWalletSelect: PropTypes.func,
+    walletsList: PropTypes.arrayOf(
+      PropTypes.instanceOf(AccountEntryModel)
+    ),
+    navigateToSelectImportMethod: PropTypes.func,
+    initAccountsSignature: PropTypes.func,
+    initAccountsSelector: PropTypes.func,
+  }
+
+  static defaultProps = {
+    onWalletSelect: () => {},
+    walletsList: [],
+  }
+
+  componentDidMount(){
+    this.props.initAccountsSelector()
+  }
+
+  renderWalletsList (){
+    const { onWalletSelect, walletsList } = this.props
+
+    if (!walletsList || !walletsList.length){
+      return (
+        <div styleName='empty-list'>
+          <Translate value='AccountSelector.emptyList' />
+        </div>
+      )
+    }
+
+    return (
+      <div styleName='wallets-list'>
+        {
+          walletsList ? walletsList.map((w, i) => (
+            <UserRow
+              key={i}
+              title={getAccountName(w)}
+              avatar={getAccountAvatar(w)}
+              actionIcon={arrow}
+              reverseIcon={true}
+              onClick={() => onWalletSelect(w)}
+            />
+          )) : null
+        }
+      </div>
+    )
+  }
+
+  render () {
+    return (
+      <MuiThemeProvider>
+        <div styleName='wrapper'>
+
+          <div styleName='page-title'>
+            <Translate value='AccountSelector.title' />
+          </div>
+
+          <div styleName='description'>
+            <Translate value='AccountSelector.description' />
+            <br />
+            <Translate value='AccountSelector.descriptionExtra' />
+          </div>
+
+          <div styleName='content'>
+            { this.renderWalletsList() }
+
+            <div styleName='actions'>
+              <Button
+                styleName='button'
+                buttonType='login'
+                onClick={this.props.navigateToSelectImportMethod}
+              >
+                <Translate value='AccountSelector.button' />
+              </Button>
+              <Translate value='AccountSelector.or' />
+              &nbsp;<br />
+              <Link to='/login/create-account' href styleName='link'>
+                <Translate value='AccountSelector.createAccount' />
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </MuiThemeProvider>
+    )
+  }
+}

@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { REHYDRATE } from 'redux-persist'
+import MainWalletModel from '../../models/wallet/MainWalletModel'
 import TransactionsCollection from '../../models/wallet/TransactionsCollection'
 import * as a from './actions'
 
@@ -37,6 +37,8 @@ export default (state = initialState, action) => {
       })
     case a.WALLET_TRANSACTION:
       return state.setTransaction(action.tx)
+    case a.WALLET_TRANSACTION_UPDATED:
+      return state.setTransaction(action.tx)
     case a.WALLET_TRANSACTIONS:
       return state.updateTransactionsGroup({
         blockchain: action.blockchain,
@@ -51,6 +53,7 @@ export default (state = initialState, action) => {
       ))
     case a.WALLET_SET_NAME:
       return state.names(state.names().set(`${action.blockchain}-${action.address}`, action.name))
+
     default:
       return state
   }

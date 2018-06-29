@@ -104,9 +104,9 @@ export default class WavesDAO extends EventEmitter {
         to,
         amount: new Amount(amount, token.symbol()),
         amountToken: token,
-	feeToken: this._wavesToken,
-	fee: new Amount(10000, this._wavesToken.symbol()),
-	feeMultiplier,
+        feeToken: this._wavesToken,
+        fee: new Amount(10000, this._wavesToken.symbol()),
+        feeMultiplier,
       }))
     })
   }

@@ -8,13 +8,18 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Button, TopButtons } from 'components'
 import { sidesPush } from 'redux/sides/actions'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
+import TxModel from '@chronobank/core/models/TxModel'
+
 import NotificationContent, { NOTIFICATION_PANEL_KEY } from 'layouts/partials/NotificationContent/NotificationContent'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
 
 import './HeaderPartial.scss'
 
 function mapStateToProps (state) {
-  return {}
+  return {
+    pendingTransactions: pendingTransactionsSelector()(state),
+  }
 }
 
 function mapDispatchToProps (dispatch) {
@@ -34,6 +39,7 @@ function mapDispatchToProps (dispatch) {
 export default class HeaderPartial extends PureComponent {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
+    pendingTransactions: PropTypes.arrayOf(TxModel),
     location: PropTypes.shape({
       action: PropTypes.string,
       hash: PropTypes.string,
@@ -45,7 +51,13 @@ export default class HeaderPartial extends PureComponent {
     }),
   }
 
+  getNotificationButtonClass = () => {
+    return this.props.pendingTransactions.length ? 'pending' : 'raised'
+  }
+
   render () {
+    const buttonClass = this.getNotificationButtonClass()
+
     return (
       <div styleName='root'>
         <div styleName='actions'>
@@ -53,8 +65,8 @@ export default class HeaderPartial extends PureComponent {
 
           <LocaleDropDown />
 
-          <Button styleName='action' onClick={this.props.handleNotificationTap}>
-            <i className='material-icons'>notifications_active</i>
+          <Button styleName='action' buttonType={buttonClass} onClick={this.props.handleNotificationTap}>
+            <i className='material-icons'>notifications</i>
           </Button>
         </div>
       </div>

@@ -5,8 +5,11 @@
 
 import classnames from 'classnames'
 import React, { PureComponent } from 'react'
+import { SPINNING_WHEEL } from 'assets'
 import PropTypes from 'prop-types'
 import './Button.scss'
+
+export const BUTTON_TYPE_PENDING = 'pending'
 
 export default class Button extends PureComponent {
   static propTypes = {
@@ -67,21 +70,24 @@ export default class Button extends PureComponent {
     if (flat) {
       buttonType = 'flat'
     }
+
+    const buttonClasses = classnames('button', buttonType)
+
     return (
       <div styleName='root' className={classnames('Button_root', this.props.className)}>
         <button
           ref={this.setRef}
           disabled={this.props.disabled}
-          styleName={classnames('button', buttonType)}
+          styleName={buttonClasses}
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
           {this.props.children
             ? this.props.children
             : <span>{this.props.label}</span>
-
           }
         </button>
+        { this.props.buttonType === BUTTON_TYPE_PENDING && <img styleName='spinning-image' src={SPINNING_WHEEL} alt='' /> }
       </div>
     )
   }

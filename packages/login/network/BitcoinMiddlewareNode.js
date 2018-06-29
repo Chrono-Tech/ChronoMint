@@ -8,10 +8,12 @@ import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstrac
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
-  constructor ({ feeRate, ...args }) {
+  constructor ({ feeRate, blockchain, symbol, ...args }) {
     super(args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
     this._feeRate = feeRate
+    this._blockchain = blockchain
+    this._symbol = symbol
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
@@ -54,6 +56,18 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
             }
           },
         )
+        this._subscriptions[`transaction:${address}`] = this._client.subscribe(
+          `${this._socket.channels.transaction}.${address}`,
+          (message) => {
+            try {
+              const data = JSON.parse(message.body)
+              this.emit('transaction', { tx: data, address, blockchain: this._blockchain, symbol: this._symbol })
+              this.trace('Transaction Transaction', data)
+            } catch (e) {
+              this.trace('Failed to decode message', e)
+            }
+          },
+        )
         if (!this._subscriptions[`lastBlock`]) {
           this._subscriptions[`lastBlock`] = this._client.subscribe(
             `${this._socket.channels.block}`,
@@ -69,6 +83,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           )
         }
       })
+
     } catch (e) {
       this.trace('Address subscription error', e)
     }
@@ -94,6 +109,16 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   disconnect () {
     if (this._socket) {
       this._ws.close()
+    }
+  }
+
+  async getCurrentBlockHeight () {
+    try {
+      const res = await this._api.get('blocks/height')
+      return res.data
+    } catch (e) {
+      this.trace(`getCurrentBlockHeight failed`, e)
+      throw e
     }
   }
 
@@ -186,8 +211,17 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
     }).join(',')
+      .split(',')
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .join(',')
     const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
-    let to = tx.outputs.filter((output) => output.address !== account).map((output) => `${output.address}`).join(',')
+    let to = tx.outputs.filter((output) => output.address !== account)
+      .map((output) => `${output.address}`)
+      .join(',')
+      .split(',')
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .join(',')
+
     if (!to) {
       to = account
     }
@@ -202,6 +236,7 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
       blockHash: tx.blockHash,
       blockNumber: tx.blockNumber,
       txHash: tx.hash || tx._id,
+      confirmations: tx.confirmations,
       time: tx.timestamp,
       from,
       to,

@@ -130,6 +130,8 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           tokenService.registerDAO(token, dao)
           dispatch({ type: TOKENS_FETCHED, token })
           dispatch(alternateTxHandlingFlow(dao))
+          const currentBlock = await dao.getCurrentBlockHeight()
+          dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, block: { blockNumber: currentBlock.currentBlock }, blockchain: token.blockchain() })
         } catch (e) {
           dispatch({ type: TOKENS_FAILED })
         }

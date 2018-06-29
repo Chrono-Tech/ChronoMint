@@ -4,8 +4,10 @@
  */
 
 export const en = {
-  loginWithMnemonic: 'Login with Mnemonic',
-  generateMnemonic: 'Generate Mnemonic',
-  wrongMnemonic: 'Wrong mnemonic',
-  mnemonicKey: 'Mnemonic key',
+  title: 'Mnemonic form',
+  description: 'Type or copy your mnemonic key into the box below',
+  mnemonic: 'Mnemonic',
+  login: 'Login',
+  or: 'or',
+  back: '',
 }
