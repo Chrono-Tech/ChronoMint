@@ -50,8 +50,6 @@ class Transactions extends PureComponent {
   render () {
     const { transactions, isFetching, endOfList } = this.props
 
-    console.log('transactions: ', transactions)
-
     return (
       <Paper style={globalStyles.paper} zDepth={1} rounded={false}>
         <h3 style={globalStyles.title}><Translate value='tx.transactions' /></h3>
