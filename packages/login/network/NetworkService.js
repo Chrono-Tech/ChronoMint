@@ -98,7 +98,6 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    console.log('check local session', providerURL)
     web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
@@ -258,7 +257,6 @@ class NetworkService extends EventEmitter {
 
   async checkTestRPC (providerUrl) {
     const web3 = new Web3()
-    console.log('checkTestRPC', providerUrl)
     web3.setProvider(new web3.providers.HttpProvider(providerUrl || TESTRPC_URL))
     const web3Provider = new Web3Provider(web3)
 

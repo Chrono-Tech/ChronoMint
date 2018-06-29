@@ -3,11 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Button } from 'components'
 import { TextField } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import menu from 'menu'
+import Button from 'components/common/ui/Button/Button'
 import BrandLogo from '../BrandLogo/BrandLogo'
 import styles from '../styles'
 
