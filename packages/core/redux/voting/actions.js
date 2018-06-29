@@ -16,7 +16,7 @@ import PollDetailsModel from '../../models/PollDetailsModel'
 import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
-import { getSelectedPollFromDuck } from './selectors/models'
+import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -101,9 +101,10 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  const state = getState()
   let poll = pollObject && pollObject.id
-    ? getState().get(DUCK_VOTING).list().item(pollObject.id)
-    : getSelectedPollFromDuck(getState())
+    ? getVoting(state).list().item(pollObject.id)
+    : getSelectedPollFromDuck(state)
   try {
     dispatch(handlePollRemoved(poll.id()))
     dispatch(goToVoting())
@@ -129,9 +130,10 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 }
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
+  const state = getState()
   let poll = pollObject && pollObject.id
-    ? getState().get(DUCK_VOTING).list().item(pollObject.id)
-    : getSelectedPollFromDuck(getState())
+    ? getVoting(state).list().item(pollObject.id)
+    : getSelectedPollFromDuck(state)
   try {
     dispatch(handlePollUpdated(poll
       .poll(poll.poll().active(true))
@@ -183,7 +185,7 @@ export const getNextPage = () => async (dispatch, getState) => {
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
 }
 
-export const estimateGasForVoting = async (mode: string, params, callback, gasPriseMultiplier = 1) => {
+export const estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
   let dao = null
   switch (mode) {
     case TX_CREATE_POLL:
@@ -192,13 +194,13 @@ export const estimateGasForVoting = async (mode: string, params, callback, gasPr
   }
   try {
     if (!dao) {
-      throw new Error('Dao is undefined')
+      callback(new Error('Dao is undefined'))
     }
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)

@@ -64,14 +64,3 @@ export const makeGetLastBlockForBlockchain = (symbol) => {
     },
   )
 }
-
-export const getTimeToken = createSelector(
-  [
-    getTokens,
-  ],
-  (
-    tokens,
-  ) => {
-    return tokens.item(TIME)
-  },
-)

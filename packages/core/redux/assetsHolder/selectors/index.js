@@ -4,18 +4,20 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { getAssetsFromAssetHolder, getAssetsHolderAssets } from './selectors/models'
-import Amount from '../../models/Amount'
-import { getTimeToken } from '../tokens/selectors'
+import { getAssetsHolderAssets } from './models'
+import Amount from '../../../models/Amount'
+import { getTokens } from '../../tokens/selectors'
+import { TIME } from '../../../dao/AssetHolderDAO'
 
-export { getAssetsFromAssetHolder, getAssetsHolderAssets }
+export { getAssetsHolderAssets }
 
 const getDepositFromDuck = createSelector(
   [
     getAssetsHolderAssets,
-    getTimeToken,
+    getTokens,
   ],
-  (assetsHolderAssets, timeToken) => {
+  (assetsHolderAssets, tokens) => {
+    const timeToken = tokens.item(TIME)
     if (timeToken.isFetched()) {
       return assetsHolderAssets.item(timeToken.address()).deposit()
     }
@@ -35,15 +37,15 @@ const createSectionsSelector = createSelectorCreator(
       return false
     }
 
-    let keysA = Object.keys(objA)
-    let keysB = Object.keys(objB)
+    const keysA = Object.keys(objA)
+    const keysB = Object.keys(objB)
 
     if (keysA.length !== keysB.length) {
       return false
     }
 
     // Test for A's keys different from B.
-    let bHasOwnProperty = hasOwnProperty.bind(objB)
+    const bHasOwnProperty = hasOwnProperty.bind(objB)
     for (let i = 0; i < keysA.length; i++) {
       if (!bHasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
         return false

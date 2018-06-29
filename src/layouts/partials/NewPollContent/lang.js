@@ -15,7 +15,7 @@ export default {
     newPoll: 'New Poll',
     warning1: 'Deposit TIME on ',
     warning2: 'Wallet page',
-    warning3: ', if you want get access this page.',
+    warning3: ', if you want get access to this page.',
   },
 }
 

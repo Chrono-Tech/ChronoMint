@@ -145,7 +145,7 @@ export default class PollEditForm extends Component {
             this.setState({ gasFee, gasPrice })
           } else {
             // eslint-disable-next-line
-            console.log(error)
+            console.error(error)
           }
         },
         feeMultiplier,

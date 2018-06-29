@@ -8,7 +8,7 @@ export const prefix = 'PublishPollDialog'
 export default {
   en: {
     title: 'Publish this poll?',
-    text: 'You\'re about to publish "%{name}" poll and make it visible to a public. Please confirm blow.',
+    text: 'You\'re about to publish "%{name}" poll and make it visible to a public. Please confirm below.',
     cancel: 'Cancel',
     confirm: 'Confirm',
   },

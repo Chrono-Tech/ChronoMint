@@ -21,6 +21,5 @@ export const getGasSliderCollection = (state) => {
 }
 
 export const getIsCBE = (state) => {
-  const { isCBE } = state.get(DUCK_SESSION)
-  return isCBE
+  return state.get(DUCK_SESSION).isCBE
 }

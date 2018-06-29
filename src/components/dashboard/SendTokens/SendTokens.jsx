@@ -31,7 +31,7 @@ function mapDispatchToProps (dispatch) {
     multisigTransfer: (wallet, token, amount, recipient, feeMultiplier) => dispatch(multisigTransfer(wallet, token, amount, recipient, feeMultiplier)),
     mainApprove: (token, amount, spender, feeMultiplier) => dispatch(mainApprove(token, amount, spender, feeMultiplier)),
     mainTransfer: (wallet, token, amount, recipient, feeMultiplier, advancedModeParams) => dispatch(mainTransfer(wallet, token, amount, recipient, feeMultiplier, advancedModeParams)),
-    estimateGas: (tokenId, params, callback, gasPriseMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier)),
     resetForm: () => {
       dispatch(change(FORM_SEND_TOKENS, 'recipient', ''))
       dispatch(change(FORM_SEND_TOKENS, 'amount', ''))

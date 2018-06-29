@@ -379,7 +379,7 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   })
 }
 
-export const estimateGasForDeposit = async (mode: string, params, callback, gasPriseMultiplier = 1) => {
+export const estimateGasForDeposit = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
   let dao = null
   switch (mode) {
     case TX_APPROVE:
@@ -397,8 +397,8 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)

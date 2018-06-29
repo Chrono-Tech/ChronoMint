@@ -9,7 +9,6 @@ export default {
   en: {
     title: 'Create New Poll',
     editPoll: 'Edit Poll',
-    newPoll: 'New Poll',
     pollTitle: 'Headline',
     pollDescription: 'Description',
     voteLimit: 'Vote Limit in TIME per option',
