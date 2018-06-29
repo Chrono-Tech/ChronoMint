@@ -427,7 +427,7 @@ export const initResetPasswordPage = () => (dispatch, getState) => {
   }
 }
 
-export const onSubmitResetAccountPasswordForm = (password) => async (dispatch, getState) => {
+export const onSubmitResetAccountPasswordForm = (password, confirmPassword) => async (dispatch, getState) => {
   const state = getState()
 
   const { newAccountMnemonic } = state.get('network')

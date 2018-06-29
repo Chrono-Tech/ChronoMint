@@ -25,7 +25,8 @@ import {
   initRecoverAccountPage,
 } from '@chronobank/login/redux/network/actions'
 
-import { Button, UserRow } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
 
 import styles from 'layouts/Splash/styles'
 import './RecoverAccount.scss'

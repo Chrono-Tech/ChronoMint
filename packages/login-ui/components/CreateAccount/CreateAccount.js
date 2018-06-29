@@ -12,7 +12,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitCreateAccountPage,
   onSubmitCreateAccountPageSuccess,

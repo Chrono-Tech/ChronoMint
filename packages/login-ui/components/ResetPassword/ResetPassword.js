@@ -23,7 +23,8 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { UserRow, Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
 
 import styles from 'layouts/Splash/styles'
 import validate from './validate'

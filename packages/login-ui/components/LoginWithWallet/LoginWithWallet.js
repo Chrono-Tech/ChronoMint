@@ -10,7 +10,7 @@ import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import {

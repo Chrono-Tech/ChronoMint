@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import css from './UserRow.scss'
 
-const DEFAULT_AVATAR = '/src/assets/img/profile-photo-1.jpg'
+import DEFAULT_AVATAR from 'assets/img/profile-photo-1.jpg'
+import actionIcon from 'assets/img/icons/list.svg'
+
+import css from './UserRow.scss'
 
 export default class UserRow extends React.Component {
   static propTypes = {
@@ -23,7 +25,7 @@ export default class UserRow extends React.Component {
     address: '',
     onClick: () => {},
     hideActionIcon: false,
-    actionIcon: '/src/assets/img/icons/list.svg',
+    actionIcon: actionIcon,
     actionIconClass: '',
     reverseIcon: false,
   }
