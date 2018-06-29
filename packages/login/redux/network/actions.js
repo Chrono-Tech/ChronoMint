@@ -582,7 +582,7 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
   const foundAccount = walletsList.find((account) => account.key === selectedWallet.key)
 
   if (foundAccount) {
-    dispatch (accountSelect(foundAccount))
+    dispatch(accountSelect(foundAccount))
   }
 }
 

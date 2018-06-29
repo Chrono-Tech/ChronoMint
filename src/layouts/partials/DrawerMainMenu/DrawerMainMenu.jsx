@@ -27,12 +27,19 @@ import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsMan
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
+import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+
 import './DrawerMainMenu.scss'
 
 function mapStateToProps (state, ownProps) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
+  const selectedAccount = state.get('persistAccount').selectedWallet
 
   return {
+    selectedAccount: selectedAccount,
     walletsCount: multisigWalletsSelector()(state, ownProps).length,
     isCBE,
     profile,
@@ -173,6 +180,7 @@ export default class DrawerMainMenu extends PureComponent {
   }
 
   render () {
+    const { selectedAccount } = this.props
 
     return (
       <div styleName='root' className='root-open'>
@@ -193,13 +201,13 @@ export default class DrawerMainMenu extends PureComponent {
                   <IPFSImage
                     styleName='avatar-icon-content'
                     multihash={this.props.profile.icon()}
-                    icon={<div styleName='emptyAvatar'><img src={profileImgJPG} alt='avatar' /></div>}
+                    icon={<div styleName='emptyAvatar'><img styleName='avatar-image' src={getAccountAvatar(selectedAccount)} alt='avatar' /></div>}
                   />
                 </div>
               </div>
               <div styleName='account-info-name'>
                 <div styleName='account-name-text'>
-                  {this.props.profile.name() || 'Account name'}
+                  {getAccountName(selectedAccount) || 'Account name'}
                 </div>
                 <div styleName='network-name-text'>
                   {this.props.networkName}
