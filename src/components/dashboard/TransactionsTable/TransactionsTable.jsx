@@ -58,11 +58,12 @@ export default class TransactionsTable extends PureComponent {
     const account = this.props.walletAddress || this.props.account
     const token: TokenModel = this.props.tokens.item(trx.symbol())
     const blockExplorerUrl = (txHash) => getBlockExplorerUrl(this.props.selectedNetworkId, this.props.selectedProviderId, txHash, token.blockchain())
+    const isFrom = trx.from().split(',').some((from) => from === account)
 
     const info = (
       <div styleName='info'>
-        <div styleName='title'><Translate value={`${prefix}.${trx.to() === account ? 'receiving' : 'sending'}`} /></div>
-        <div styleName='address'>{trx.to() === account ? trx.from() : trx.to()}</div>
+        <div styleName='title'><Translate value={`${prefix}.${isFrom ? 'sending' : 'receiving'}`} /></div>
+        <div styleName='address'>{isFrom ? trx.to() : trx.from()}</div>
       </div>
     )
 
@@ -76,7 +77,7 @@ export default class TransactionsTable extends PureComponent {
         }
 
         <div styleName='valuesWrapper'>
-          <div styleName={classnames('value', { 'receiving': trx.to() === account, 'sending': trx.from() === account })}>
+          <div styleName={classnames('value', { 'receiving': !isFrom, 'sending': isFrom })}>
             <TokenValue value={trx.value()} noRenderPrice />
           </div>
           <div styleName='confirmationsText'><TxConfirmations transaction={trx} textMode /></div>

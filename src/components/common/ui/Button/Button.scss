@@ -43,6 +43,40 @@
   }
 }
 
+.spinning-image {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 30px;
+  top: 30px;
+}
+
+.pending {
+  color: $color-white;
+  background-color: $button-color-1;
+  border-style: solid;
+  border-color: $button-color-5;
+  border-width: 0 0 1px;
+  &:hover, &:active {
+    background-color: $button-color-2;
+    border-color: $button-color-4;
+  }
+  &:disabled {
+    border: none;
+    color: $color-grey-7;
+    background-color: $color-grey-3;
+  }
+}
+
+@keyframes Rotate {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
 .flat {
   color: $button-color-1;
   background-color: transparent;

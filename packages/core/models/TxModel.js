@@ -3,15 +3,16 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FULL_DATE } from './constants'
 import BigNumber from 'bignumber.js'
 import moment from 'moment'
+import { FULL_DATE } from './constants'
 import { abstractModel } from './AbstractModel'
 
 class TxModel extends abstractModel({
   txHash: null,
   blockHash: null,
   blockNumber: null,
+  confirmations: null,
   transactionIndex: null,
   from: null,
   to: null,
@@ -40,6 +41,10 @@ class TxModel extends abstractModel({
 
   blockNumber (value) {
     return this._getSet('blockNumber', value)
+  }
+
+  confirmations () {
+    return +this.get('confirmations')
   }
 
   to () {
@@ -71,11 +76,11 @@ class TxModel extends abstractModel({
   }
 
   time () {
-    return moment.unix(this.get('time')).format(FULL_DATE)
+    return moment(this.get('time')).format(FULL_DATE)
   }
 
   date (format) {
-    return moment.unix(this.get('time')).format(format)
+    return moment(this.get('time')).format(format)
   }
 
   value (): BigNumber {

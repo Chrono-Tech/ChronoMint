@@ -16,6 +16,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
+import TxModel from '@chronobank/core/models/TxModel'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { getMainSymbolForBlockchain, getTokens } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
@@ -23,6 +24,7 @@ import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { getAccount } from '@chronobank/core/redux/session/selectors'
+import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -35,10 +37,13 @@ import WalletName from '../WalletName/WalletName'
 
 function makeMapStateToProps (state, ownProps) {
   const getWallet = getWalletInfo(ownProps.blockchain, ownProps.address)
+  const getTransactions = makeGetTxListForWallet(ownProps.blockchain, ownProps.address)
+
   const mapStateToProps = (ownState) => {
     const tokens = getTokens(ownState)
     return {
       wallet: getWallet(ownState),
+      pendingTransactions: getTransactions(ownState),
       token: tokens.item(getMainSymbolForBlockchain(ownProps.blockchain)),
       tokens: state.get(DUCK_TOKENS),
       account: getAccount(ownState),
@@ -83,6 +88,7 @@ export default class WalletWidget extends PureComponent {
     account: PropTypes.string,
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
+    pendingTransactions: PropTypes.arrayOf(TxModel),
     wallet: PTWallet,
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -163,6 +169,51 @@ export default class WalletWidget extends PureComponent {
     return this.props.wallet.isMultisig && !this.props.wallet.isTimeLocked && !this.props.wallet.is2FA
   }
 
+  renderLastIncomingIcon = () => {
+    if (!this.props.pendingTransactions.size()) {
+      return null
+    }
+
+    let incoming = null
+    this.props.pendingTransactions.items().map((t) => {
+      if (!incoming && t.from() !== this.props.address && t.confirmations() < 4) {
+        incoming = t
+      }
+    })
+
+    if (!incoming) {
+      return null
+    }
+
+    return (
+      <div styleName='receive-container'>
+        <div styleName='receive-icon' className='chronobank-icon'>{'circle-' + incoming.confirmations()}</div>
+      </div>)
+  }
+
+  renderLastSendingIcon = () => {
+    if (!this.props.pendingTransactions.size()) {
+      return null
+    }
+
+    let sending = null
+    this.props.pendingTransactions.items().map((t) => {
+
+      if (!sending && t.from() === this.props.address  && t.confirmations() < 4) {
+        sending = t
+      }
+    })
+
+    if (!sending) {
+      return null
+    }
+
+    return (
+      <div styleName='send-container'>
+        <div styleName='send-icon' className='chronobank-icon' >{'circle-' + sending.confirmations()}</div>
+      </div> )
+  }
+
   render () {
     const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
     const tokenIsFetched = (token && token.isFetched())
@@ -182,6 +233,8 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
               </div>
             )}
+            { this.renderLastIncomingIcon() }
+            { this.renderLastSendingIcon() }
             <div styleName='settings-container'>
               <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
               </div>

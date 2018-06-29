@@ -28,12 +28,54 @@
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
+.receive-container {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  right: 50px;
+  top: 20px;
+  color: $color-panel-bg-1;
+}
+
+.send-container {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  right: 80px;
+  top: 20px;
+  color: $color-band-0;
+}
+
 .settings-container {
   position: absolute;
   width: 30px;
   height: 30px;
   right: 20px;
   top: 20px;
+}
+
+.receive-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 32px;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.send-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 32px;
+  opacity: 0.5;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 1;
+  }
 }
 
 .settings-icon {
