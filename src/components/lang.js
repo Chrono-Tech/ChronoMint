@@ -33,6 +33,11 @@ import TwoFaConfirmModal from 'components/wallet/TwoFaConfirmModal/lang'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/lang'
 import WalletName from 'components/wallet/WalletName/lang'
 import DepositWarningWidget from 'components/Deposits/DepositWarningWidget/lang'
+import PollEditForm from 'components/voting/PollEditForm/lang'
+import Poll from 'components/voting/Poll/lang'
+import PollStatus from 'components/voting/PollStatus/lang'
+import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
+import PollDepositWarningWidget from 'components/voting/PollDepositWarningWidget/lang'
 
 export default {
   en: {
@@ -69,5 +74,10 @@ export default {
     WalletWidgetMini: WalletWidgetMini.en,
     WalletName: WalletName.en,
     DepositWarningWidget: DepositWarningWidget.en,
+    PollEditForm: PollEditForm.en,
+    Poll: Poll.en,
+    PollStatus: PollStatus.en,
+    PublishPollDialog: PublishPollDialog.en,
+    PollDepositWarningWidget: PollDepositWarningWidget.en,
   },
 }

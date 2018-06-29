@@ -390,7 +390,7 @@ export const getPendingData = (wallet, pending: MultisigWalletPendingTxModel) =>
   }
 }
 
-export const estimateGasFor2FAForm = async (account, gasPriseMultiplier = 1, callback) => {
+export const estimateGasFor2FAForm = async (account, gasPriceMultiplier = 1, callback) => {
   try {
     if (!walletsManagerDAO) {
       throw new Error('Dao is undefined')
@@ -398,8 +398,8 @@ export const estimateGasFor2FAForm = async (account, gasPriseMultiplier = 1, cal
     const { gasLimit, gasFee, gasPrice } = await walletsManagerDAO.estimateGas('create2FAWallet', [0], new BigNumber(0), account)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)

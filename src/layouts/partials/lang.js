@@ -17,6 +17,7 @@ import DepositsContent from 'layouts/partials/DepositsContent/lang'
 import WalletsContent from 'layouts/partials/WalletsContent/lang'
 import WalletContent from 'layouts/partials/WalletContent/lang'
 import AddWalletContent from 'layouts/partials/AddWalletContent/lang'
+import PollContent from 'layouts/partials/PollContent/lang'
 
 export default {
   en: {
@@ -34,5 +35,6 @@ export default {
     DepositsContent: DepositsContent.en,
     WalletsContent: WalletsContent.en,
     AddWalletContent: AddWalletContent.en,
+    PollContent: PollContent.en,
   },
 }

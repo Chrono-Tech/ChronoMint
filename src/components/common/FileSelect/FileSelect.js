@@ -18,6 +18,7 @@ import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import FileItem from './FileItem'
 
 import './FileSelect.scss'
+import Preloader from '../Preloader/Preloader'
 
 // defaults
 const DEFAULT_MAX_FILE_SIZE = 2 * 1024 * 1024 // 2Mb
@@ -39,8 +40,7 @@ class FileSelect extends PureComponent {
     // eslint-disable-next-line
     input: PropTypes.object,
     aspectRatio: PropTypes.number,
-    maxFiles: PropTypes.number,
-    returnCollection: PropTypes.bool,
+    maxFiles: PropTypes.number, returnCollection: PropTypes.bool,
     floatingLabelText: PropTypes.string,
   }
 
@@ -92,7 +92,7 @@ class FileSelect extends PureComponent {
       : new FileCollection()
     fileCollection = fileCollection.uploading(true)
     let fileModel
-    const uploadedFiles = [ ...e.target.files ].slice(0, this.getFilesLeft())
+    const uploadedFiles = [...e.target.files].slice(0, this.getFilesLeft())
     for (const file of uploadedFiles) {
       fileModel = new FileModel({
         file,
@@ -189,14 +189,6 @@ class FileSelect extends PureComponent {
       <div>
         {this.renderFiles()}
         <div styleName='attach'>
-          <div styleName='attachCounter'>
-            <Translate
-              value='fileSelect.filesLimit'
-              files={fileCollection.size()}
-              limit={config.maxFiles}
-            />
-          </div>
-          <div styleName='attachStatus'>{this.renderStatus()}</div>
           <div styleName='attachAction'>
             <Button
               flat
@@ -204,7 +196,7 @@ class FileSelect extends PureComponent {
               disabled={this.getFilesLeft() === 0}
             >
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Translate value={this.props.label || 'fileSelect.addAttachments'} />
+                <Translate value={this.props.label || 'fileSelect.attachNew'} />
               </div>
             </Button>
           </div>
@@ -243,7 +235,7 @@ class FileSelect extends PureComponent {
         {fileCollection.uploading()
           ? (
             <div styleName='spinner'>
-              <CircularProgress size={18} thickness={1.5} />
+              <Preloader size={18} thickness={1.5} />
             </div>
           )
           : (
@@ -264,17 +256,15 @@ class FileSelect extends PureComponent {
     const { multiple } = this.props
 
     return (
-      <div>
+      <div styleName='root'>
         {multiple
           ? this.renderMultiple()
           : this.renderSingle()
         }
 
         <input
-          // eslint-disable-next-line
           ref={(input) => this.input = input}
           type='file'
-          // eslint-disable-next-line
           onChange={(e) => this.handleChange(e)}
           styleName='hide'
           multiple={multiple}

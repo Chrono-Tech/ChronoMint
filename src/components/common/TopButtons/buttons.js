@@ -8,6 +8,9 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import { push } from 'react-router-redux'
 import { goBackForAddWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { changeWalletView } from 'redux/ui/actions'
+import RemovePollTopButton from 'components/voting/RemovePollTopButton/RemovePollTopButton'
+import ActivatePollTopButton from 'components/voting/ActivatePollTopButton/ActivatePollTopButton'
+import EndPollTopButton from 'components/voting/EndPollTopButton/EndPollTopButton'
 
 export default {
   '/deposits': {
@@ -47,5 +50,34 @@ export default {
   '/2fa': {
     title: 'nav.twoFa',
     backButton: true,
+  },
+  '/voting': {
+    title: 'nav.voting',
+    buttons: [
+      {
+        chronobankIcon: 'add',
+        title: 'addPoll',
+        action: () => push('/new-poll'),
+      },
+    ],
+  },
+  '/new-poll': {
+    title: 'nav.newPoll',
+    backButton: true,
+  },
+  '/poll': {
+    title: 'nav.poll',
+    backButton: true,
+    buttons: [
+      {
+        component: ActivatePollTopButton,
+      },
+      {
+        component: RemovePollTopButton,
+      },
+      {
+        component: EndPollTopButton,
+      },
+    ],
   },
 }

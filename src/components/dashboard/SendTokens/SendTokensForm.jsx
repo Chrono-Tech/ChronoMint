@@ -50,7 +50,7 @@ export const ACTION_APPROVE = 'action/approve'
 
 function mapDispatchToProps (dispatch) {
   return {
-    estimateGas: (tokenId, params, callback, gasPriseMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriseMultiplier, address)),
+    estimateGas: (tokenId, params, callback, gasPriceMultiplier, address) => dispatch(estimateGas(tokenId, params, callback, gasPriceMultiplier, address)),
     estimateFee: (params, callback) => dispatch(estimateBtcFee(params, callback)),
   }
 }

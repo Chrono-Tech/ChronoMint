@@ -10,7 +10,7 @@ import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 
 import { DUCK_TOKENS } from './actions'
-import { BCC, BTC, BTG, ETH, LTC, XEM, WAVES } from '../mainWallet/actions'
+import { BCC, BTC, BTG, ETH, LTC, XEM, WAVES, TIME } from '../mainWallet/actions'
 
 export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)

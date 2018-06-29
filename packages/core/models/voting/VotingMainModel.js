@@ -3,9 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
-import { abstractFetchingModel } from '../AbstractFetchingModel'
 import BigNumber from 'bignumber.js'
+import { abstractFetchingModel } from '../AbstractFetchingModel'
 import VotingCollection from './VotingCollection'
 
 export default class VotingMainModel extends abstractFetchingModel({
@@ -13,6 +12,7 @@ export default class VotingMainModel extends abstractFetchingModel({
   voteLimitInPercent: null,
   list: new VotingCollection(),
   lastPoll: new BigNumber(0),
+  selectedPoll: null,
 }) {
   list (value) {
     return this._getSet('list', value)
@@ -28,5 +28,9 @@ export default class VotingMainModel extends abstractFetchingModel({
 
   lastPoll (value) {
     return this._getSet('lastPoll', value)
+  }
+
+  selectedPoll (value) {
+    return this._getSet('selectedPoll', value)
   }
 }

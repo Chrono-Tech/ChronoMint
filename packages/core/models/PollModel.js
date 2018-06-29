@@ -15,7 +15,7 @@ class PollModel extends abstractFetchingModel({
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new Immutable.List([ 'Support', 'Decline' ]),
+  options: new Immutable.List(['Support', 'Decline']),
   files: null, // hash
   active: false,
   status: false,
@@ -81,6 +81,10 @@ class PollModel extends abstractFetchingModel({
 
   memberOption () {
     return this.get('memberOption')
+  }
+
+  owner () {
+    return this.get('owner')
   }
 
   txSummary () {

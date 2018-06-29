@@ -117,7 +117,7 @@ export default class TwoFaWalletForm extends PureComponent {
             this.setState({ gasFee, gasPrice, isFeeLoading: false })
           } else {
             // eslint-disable-next-line
-            console.log(error)
+            console.error(error)
           }
         },
         feeMultiplier,
