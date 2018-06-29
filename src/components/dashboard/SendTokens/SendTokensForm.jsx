@@ -32,6 +32,7 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
 import { walletDetailSelector, walletInfoSelector } from '@chronobank/core/redux/wallet/selectors'
 import { DUCK_TOKENS, estimateBtcFee, estimateGas } from '@chronobank/core/redux/tokens/actions'
+import { isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletModel'
 import inversedTheme from 'styles/themes/inversed'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
@@ -165,7 +166,7 @@ export default class SendTokensForm extends PureComponent {
       }
     }
 
-    if (this.isBTCLikeBlockchain(newProps.token.blockchain()) &&
+    if (isBTCLikeBlockchain(newProps.token.blockchain()) &&
       (newProps.formValues !== this.props.formValues || newProps.mode !== this.mode) &&
       newProps.amount > 0) {
       try {
@@ -181,7 +182,7 @@ export default class SendTokensForm extends PureComponent {
       }
     }
 
-    if (newProps.mode === MODE_SIMPLE && this.isBTCLikeBlockchain(this.props.token.blockchain()) &&
+    if (newProps.mode === MODE_SIMPLE && isBTCLikeBlockchain(this.props.token.blockchain()) &&
       newProps.feeMultiplier !== this.props.feeMultiplier) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'satPerByte', this.getFormFee(newProps)))
     }
@@ -307,7 +308,7 @@ export default class SendTokensForm extends PureComponent {
 
   getAdvancedFormFeeValue = (props = this.props) => {
     switch (true) {
-      case this.isBTCLikeBlockchain(props.token.blockchain()):
+      case isBTCLikeBlockchain(props.token.blockchain()):
         return props.satPerByte
       case props.token.blockchain() === BLOCKCHAIN_ETHEREUM:
         return props.gweiPerGas
@@ -345,7 +346,7 @@ export default class SendTokensForm extends PureComponent {
 
   getTransactionFeeDescription = () => {
 
-    if (this.isBTCLikeBlockchain(this.props.token.blockchain())) {
+    if (isBTCLikeBlockchain(this.props.token.blockchain())) {
       if (this.props.invalid) {
         return (
           <span styleName='description'>
@@ -424,17 +425,8 @@ export default class SendTokensForm extends PureComponent {
     return new BigNumber(satoshiAmount / 100000000)
   }
 
-  isBTCLikeBlockchain = (blockchain) => {
-    return [
-      BLOCKCHAIN_BITCOIN,
-      BLOCKCHAIN_BITCOIN_CASH,
-      BLOCKCHAIN_BITCOIN_GOLD,
-      BLOCKCHAIN_LITECOIN,
-    ].includes(blockchain)
-  }
-
   isTransactionFeeAvailable = (blockchain) => {
-    return this.isBTCLikeBlockchain(blockchain) || blockchain === BLOCKCHAIN_ETHEREUM
+    return isBTCLikeBlockchain(blockchain) || blockchain === BLOCKCHAIN_ETHEREUM
   }
 
   renderHead () {
@@ -557,7 +549,7 @@ export default class SendTokensForm extends PureComponent {
             </div>
           </div>
         )}
-        {mode === MODE_ADVANCED && this.isBTCLikeBlockchain(token.blockchain()) && (
+        {mode === MODE_ADVANCED && isBTCLikeBlockchain(token.blockchain()) && (
           <div styleName='advanced-mode-container'>
             <div styleName='field'>
               <Field
@@ -626,7 +618,7 @@ export default class SendTokensForm extends PureComponent {
 
         <div styleName='actions-row'>
           <div styleName='advanced-simple'>
-            {(this.isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
+            {(isBTCLikeBlockchain(token.blockchain()) || token.blockchain() === BLOCKCHAIN_ETHEREUM) && (
               <div onClick={this.handleChangeMode}>
                 <span styleName='advanced-text'>
                   <Translate value={mode === MODE_SIMPLE ? 'wallet.modeAdvanced' : 'wallet.modeSimple'} />

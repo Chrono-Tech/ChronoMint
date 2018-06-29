@@ -16,9 +16,9 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import Button from 'components/common/ui/Button/Button'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import ReceiveTokenModal from 'components/dashboard/ReceiveTokenModal/ReceiveTokenModal'
-import TxModel from '@chronobank/core/models/TxModel'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
-import { getMainSymbolForBlockchain, getTokens } from '@chronobank/core/redux/tokens/selectors'
+import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import TransactionsCollection from "@chronobank/core/models/wallet/TransactionsCollection"
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
@@ -88,7 +88,7 @@ export default class WalletWidget extends PureComponent {
     account: PropTypes.string,
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
-    pendingTransactions: PropTypes.arrayOf(TxModel),
+    pendingTransactions: PropTypes.instanceOf(TransactionsCollection),
     wallet: PTWallet,
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
@@ -170,7 +170,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastIncomingIcon = () => {
-    if (!this.props.pendingTransactions.size()) {
+    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
@@ -192,7 +192,7 @@ export default class WalletWidget extends PureComponent {
   }
 
   renderLastSendingIcon = () => {
-    if (!this.props.pendingTransactions.size()) {
+    if (!this.props.pendingTransactions.size() || !isBTCLikeBlockchain(this.props.blockchain)) {
       return null
     }
 
