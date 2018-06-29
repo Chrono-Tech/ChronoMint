@@ -136,7 +136,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         if (isMainWalletFrom || isMainWalletTo || tx.from() === account || tx.to() === account) { // for main wallet
           // add to table
           // TODO @dkchv: !!! restore after fix
-          dispatch({type: WALLET_TRANSACTION, tx})
+          dispatch({ type: WALLET_TRANSACTION, tx })
 
           if (!(tx.from() === account || tx.to() === account)) {
             return
@@ -153,9 +153,9 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         }
 
         if (walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to())) { // for derive wallets
-          const callback = async (wallet: DerivedWalletModel) => {
+          const setDerivedWalletBalance = async (wallet: DerivedWalletModel) => {
 
-            dispatch({type: MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx))})
+            dispatch({ type: MULTISIG_FETCHED, wallet: wallet.set('transactions', wallet.transactions().add(tx)) })
 
             const dao = tokenService.getDAO(token)
             const balance = await dao.getAccountBalance(wallet.address())
@@ -171,11 +171,11 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
 
           const walletFrom = getState().get(DUCK_MULTISIG_WALLET).item(tx.from())
           if (walletFrom && walletFrom.isFetched()) {
-            callback(walletFrom)
+            setDerivedWalletBalance(walletFrom)
           }
           const walletTo = getMultisigWallets(getState()).item(tx.to())
           if (walletTo && walletTo.isFetched()) {
-            callback(walletTo)
+            setDerivedWalletBalance(walletTo)
           }
         }
       }
@@ -251,8 +251,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         wallet: getState().get(DUCK_MAIN_WALLET),
         address: address.address(),
         blockchain: token.blockchain(),
-        forcedOffset: true })
-      )
+        forcedOffset: true,
+      }))
     }
   }
 }
