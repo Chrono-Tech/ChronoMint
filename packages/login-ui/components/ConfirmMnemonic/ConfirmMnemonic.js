@@ -12,7 +12,7 @@ import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import {
   initConfirmMnemonicPage,
   navigateToConfirmMnemonicPage,

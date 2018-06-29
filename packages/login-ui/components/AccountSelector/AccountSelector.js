@@ -9,7 +9,9 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
-import { UserRow, Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
+
 import {
   navigateToSelectImportMethod,
   onWalletSelect,

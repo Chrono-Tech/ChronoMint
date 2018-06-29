@@ -16,7 +16,7 @@ import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import classnames from 'classnames'
 
 import { Translate } from 'react-redux-i18n'

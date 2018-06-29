@@ -11,7 +11,9 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { UserRow, Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
+
 import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
