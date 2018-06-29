@@ -9,4 +9,6 @@ export const en = {
   descriptionExtra: 'If you have created an account before you may use Add an Existing Account option below.',
   button: 'Add an existing account',
   createAccount: 'Create New Account',
+  emptyList: 'Sorry, there are no accounts to display',
+  or: 'or',
 }

@@ -19,7 +19,6 @@ import {
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithMnemonic.scss'
-import bip39 from "bip39";
 
 export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
 

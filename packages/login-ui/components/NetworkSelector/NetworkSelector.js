@@ -57,7 +57,6 @@ export default class NetworkSelector extends PureComponent {
 
   resolveNetwork = () => {
     const web3 = new Web3()
-    console.log('resolve network', this.props.getProviderURL())
     web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
     web3Provider.resolve()
   }

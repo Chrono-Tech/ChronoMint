@@ -28,7 +28,6 @@ class PersistWrapper extends React.Component {
   renderLoader(){
     return (
       <div styleName='loadingMessage'>
-        {/*<div styleName='loadingMessageHeader'>Log In</div>*/}
         <img src={spinner} width='24' height='24' alt='' />
       </div>
     )

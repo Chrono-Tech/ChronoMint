@@ -278,7 +278,7 @@ export const getNetworksWithProviders = (withLocal = false) => {
 
       const networksProvider = getNetworksByProvider(provider && provider.id, withLocal)
         .map((network) => ({
-          provider: provider,
+          provider,
           network,
         }))
 

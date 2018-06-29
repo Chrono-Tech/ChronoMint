@@ -71,7 +71,7 @@ export default class SelectWalletPage extends PureComponent {
     if (!walletsList || !walletsList.length){
       return (
         <div styleName='empty-list'>
-          Sorry, there are no accounts to display
+          <Translate value='AccountSelector.emptyList' />
         </div>
       )
     }
@@ -120,7 +120,8 @@ export default class SelectWalletPage extends PureComponent {
               >
                 <Translate value='AccountSelector.button' />
               </Button>
-              or <br />
+              <Translate value='AccountSelector.or' />
+              &nbsp;<br />
               <Link to='/login/create-account' href styleName='link'>
                 <Translate value='AccountSelector.createAccount' />
               </Link>
