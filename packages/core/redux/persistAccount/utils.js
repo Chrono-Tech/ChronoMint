@@ -3,6 +3,8 @@ import {
   AccountProfileModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 
+import profileImgJPG from 'assets/img/profile-photo-1.jpg'
+
 export const replaceWallet = (wallet, walletList) => {
   let index = walletList.findIndex((item) => item.key === wallet.key)
 
@@ -39,9 +41,9 @@ export const getAccountName = (account: AccountEntryModel) => {
 }
 
 export const getAccountAvatar = (account: AccountEntryModel) => {
-  if (account && account.profile){
+  if (account && account.profile && account.profile.avatar){
     return account.profile.avatar
   }
 
-  return ''
+  return profileImgJPG
 }

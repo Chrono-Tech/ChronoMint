@@ -18,7 +18,7 @@ class AccountEntryModel extends AbstractAccountModel {
       name: '',
       types: {},
       encrypted: [],
-      profile: new AccountProfileModel(),
+      profile: null,
     }, props)
     Object.freeze(this)
   }

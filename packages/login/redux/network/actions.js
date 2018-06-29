@@ -296,11 +296,13 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
 }
 
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
-  if (!bip39.validateMnemonic(mnemonic)){
+  let mnemonicValue = (mnemonic || '').trim()
+
+  if (!bip39.validateMnemonic(mnemonicValue)){
     throw new Error('Invalid mnemonic')
   }
 
-  dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic })
+  dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic: mnemonicValue })
 
 }
 
@@ -314,7 +316,7 @@ export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
 }
 
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
-  let pk = privateKey || ''
+  let pk = (privateKey || '').trim()
 
   if (pk.slice(0, 2) === '0x'){
     pk = pk.slice(2)

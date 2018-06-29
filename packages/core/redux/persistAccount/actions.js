@@ -168,7 +168,7 @@ export const setProfilesForAccounts = (walletsList) => async () => {
     return data.map((profile) => {
       const account = walletsList.find((wallet) => getAccountAddress(wallet, true) === profile.address)
 
-      const profileModel = new AccountProfileModel(profile)
+      const profileModel = profile && new AccountProfileModel(profile) || null
       return new AccountEntryModel({
         ...account,
         profile: profileModel,
