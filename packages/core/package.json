@@ -1,6 +1,6 @@
 {
   "name": "@chronobank/core",
-  "version": "0.9.3",
+  "version": "1.0.0",
   "dependencies": {
     "axios": "^0.16.2",
     "bignumber.js": "^4.1.0",
