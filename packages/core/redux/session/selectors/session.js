@@ -6,7 +6,7 @@
 import { createSelector } from 'reselect'
 import { PROFILE_PANEL_TOKENS } from '../actions'
 import { selectMainWalletAddressesListStore } from '../../wallet/selectors'
-import { getGasSliderCollection } from './models'
+import { getGasSliderCollection, getIsCBE } from './models'
 import AddressModel from '../../../models/wallet/AddressModel'
 
 export const getGasPriceMultiplier = (blockchain) => createSelector([getGasSliderCollection],
@@ -39,4 +39,9 @@ export const getBlockchainAddressesList = () => createSelector(
       })
     return result
   },
+)
+
+export const isCBE = () => createSelector(
+  [getIsCBE],
+  (isCBE) => isCBE,
 )

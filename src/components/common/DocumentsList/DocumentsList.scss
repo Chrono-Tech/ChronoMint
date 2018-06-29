@@ -2,44 +2,34 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import '~styles/partials/variables';
 @import '~styles/partials/mixins';
 
 .root {
   position: relative;
-  float: left;
   width: 100%;
-  margin: 4px 0px;
   color: $color-primary-0;
-
   .documents-list {
     position: relative;
     display: flex;
     flex-wrap: wrap;
     .list-item {
       flex: 0 0 50%;
-      margin: 8px 0px;
+      margin: 8px 0;
       cursor: pointer;
       .item-icon {
         width: 24px;
         height: 24px;
       }
       .item-title {
-        font-size: 14px;
-        line-height: 24px;
+        font-size: 16px;
+        line-height: 38px;
         display: inline-block;
-        margin-left: 4px;
+        margin-left: 20px;
         vertical-align: top;
         color: $color-primary-0;
         max-width: 80%;
         @include ellipsis;
-      }
-
-      &:hover {
-        .item-title {
-          text-decoration: underline;
-        }
       }
     }
   }

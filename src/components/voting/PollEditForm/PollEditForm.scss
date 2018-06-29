@@ -1,0 +1,275 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+
+.root {
+  max-width: 587px;
+  .header {
+    min-height: 100px;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-color: $button-color-3;
+    background-color: $color-blue-4;
+    border-radius: 5px 5px 0 0;
+    font-size: 30px;
+    line-height: 36px;
+    color: $color-white;
+    font-weight: 500;
+    padding: 30px;
+  }
+}
+
+.content {
+  max-width: 928px;
+  background-color: $color-white;
+  border-radius: 0 0 5px 5px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.body {
+  color: $color-primary-0;
+  @include md-only {
+    display: block;
+  }
+}
+
+.column {
+  padding: 30px;
+  border-bottom: 1px solid $color-grey-7;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.column-title {
+  line-height: 24px;
+  font-size: 20px;
+  font-weight: 700;
+  color: $color-primary-3;
+}
+
+.column-description {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  color: $color-primary-0;
+  font-weight: 400;
+}
+
+.columnActions {
+  text-align: right;
+}
+
+.columnAction {
+  vertical-align: top;
+}
+
+.footer {
+  padding: 30px;
+  text-align: right;
+}
+
+.footerAction {
+  margin: 0 0 0 10px;
+}
+
+.optionsActions {
+  text-align: right;
+}
+
+.optionsAction {
+  vertical-align: top;
+}
+
+.optionsList {
+  position: relative;
+  width: 100%;
+  max-height: 252px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.listTable {
+  width: 100%;
+  position: relative;
+  display: table;
+  table-layout: fixed;
+}
+
+.tableItem {
+  display: table-row;
+  cursor: pointer;
+
+  &:hover {
+    background: $color-primary-light-1;
+  }
+
+  &.active {
+    background: $color-primary-light;
+  }
+}
+
+.itemLeft {
+  display: table-cell;
+  width: 48px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.symbol {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  box-sizing: border-box;
+  font-size: 14px;
+  display: inline-block;
+  font-weight: bold;
+
+  &.symbolFill {
+    color: $color-white;
+    background: $color-primary-1;
+  }
+
+  &.symbolStroke {
+    color: $color-primary-1;
+    border: 2px solid $color-primary-1;
+    line-height: 28px;
+  }
+}
+
+.itemMain {
+  display: table-cell;
+  width: 100%;
+  padding: 14px 8px;
+  color: $color-primary-0;
+  vertical-align: middle;
+}
+
+.mainTitle {
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1.2em;
+}
+
+.mainOption {
+  font-size: 16px;
+  line-height: 1.2em;
+  @include ellipsis;
+}
+
+.itemRight {
+  display: table-cell;
+  width: 100px;
+  white-space: nowrap;
+  text-align: right;
+  vertical-align: middle;
+}
+
+.labelWrap {
+  display: flex;
+  justify-content: space-between;
+  color: rgba($color-primary-0, 0.6);
+  margin-bottom: 25px;
+}
+
+.limitTitle {
+  margin-top: 38px;
+  color: $color-primary-0;
+  :global {
+    div {
+      display: inline-block;
+      margin-left: 5px;
+      line-height: 16px;
+    }
+  }
+}
+
+.voteLimitValue {
+  font-weight: 400;
+  color: $color-primary-0;
+  :global {
+    .TokenValue__integral, .TokenValue__fraction {
+      font-weight: 400;
+      color: $color-primary-0;
+    }
+  }
+}
+
+.option {
+  display: flex;
+  align-items: flex-end;
+  .number {
+    padding-right: 20px;
+    padding-bottom: 10px;
+    color: $color-primary-3;
+    font-weight: 700;
+  }
+}
+
+.optionsAction {
+  margin-top: 20px;
+  padding: 0 20px;
+}
+
+.sliderWrapper {
+  width: 370px;
+}
+
+.timeWrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.transactionsInfo {
+  padding-top: 10px;
+  font-size: 14px;
+  color: $color-primary-3;
+  > div {
+    padding-top: 10px;
+  }
+  .infoText {
+    span {
+      font-size: 14px;
+      color: $color-primary-3;
+      margin: 0;
+    }
+    :global {
+      .TokenValue__root {
+        div {
+          display: inline-block;
+          margin-left: 5px;
+          line-height: 16px;
+        }
+      }
+    }
+  }
+}
+
+.feeRate {
+  padding-top: 40px;
+  width: 370px;
+}
+
+.feeMultiplier {
+}
+
+.tagsWrap {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 7px;
+  color: $border-color;
+  font-weight: 400;
+  line-height: 19px;
+  font-size: 16px;
+}
+
+.tagDefault {
+}
+
+.optionsCountWarning {
+  color: $color-hover;
+  font-size: 14px;
+  margin-top: 15px;
+}

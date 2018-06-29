@@ -3,77 +3,74 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { Poll, PollEditDialog } from 'components'
-import Preloader from 'components/common/Preloader/Preloader'
-import { RaisedButton } from 'material-ui'
+import { Poll } from 'components'
 import Amount from '@chronobank/core/models/Amount'
-import PollModel from '@chronobank/core/models/PollModel'
 import PropTypes from 'prop-types'
+import classnames from 'classnames'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Link } from 'react-router'
-import { DUCK_ASSETS_HOLDER, initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
-import { modalsOpen } from 'redux/modals/actions'
-import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { DUCK_VOTING, listPolls } from '@chronobank/core/redux/voting/actions'
-import VotingCollection from '@chronobank/core/models/voting/VotingCollection'
-import getStatistics from '@chronobank/core/redux/voting/getters'
-import { Button } from 'components'
+import { getPollsDetailsList, getVotingFlags } from '@chronobank/core/redux/voting/selectors'
+import { initAssetsHolder } from '@chronobank/core/redux/assetsHolder/actions'
+import { listPolls } from '@chronobank/core/redux/voting/actions'
+import { isCBE, getAccount } from '@chronobank/core/redux/session/selectors'
+import { getDepositAmount } from '@chronobank/core/redux/assetsHolder/selectors'
+import { PTPoll } from '@chronobank/core/redux/voting/types'
+import PollDepositWarningWidget from 'components/voting/PollDepositWarningWidget/PollDepositWarningWidget'
+import Preloader from 'components/common/Preloader/Preloader'
+import { prefix } from './lang'
 
 import './VotingContent.scss'
 
-function prefix (token) {
-  return `layouts.partials.VotingContent.${token}`
-}
+function makeMapStateToProps (state) {
+  const getPolls = getPollsDetailsList()
+  const getIsCBE = isCBE()
+  const getFlags = getVotingFlags()
+  const getDeposit = getDepositAmount()
+  const userAccount = getAccount(state)
 
-function mapStateToProps (state) {
-  const voting = state.get(DUCK_VOTING)
-  const tokens = state.get(DUCK_TOKENS)
-
-  const timeToken = tokens.item('TIME')
-
-  return {
-    list: voting.list(),
-    tokens,
-    deposit: state.get(DUCK_ASSETS_HOLDER).assets().item(timeToken.address()).deposit(),
-    statistics: getStatistics(voting),
-    isCBE: state.get(DUCK_SESSION).isCBE,
-    isFetched: voting.isFetched(),
-    isFetching: voting.isFetching() && !voting.isFetched(),
+  const mapStateToProps = (ownState) => {
+    return {
+      polls: getPolls(ownState),
+      deposit: getDeposit(ownState),
+      isCBE: getIsCBE(ownState),
+      userAccount: userAccount,
+      ...getFlags(ownState),
+    }
   }
+  return mapStateToProps
 }
 
 function mapDispatchToProps (dispatch) {
   return {
     getList: () => dispatch(listPolls()),
     initAssetsHolder: () => dispatch(initAssetsHolder()),
-    handleNewPoll: async () => dispatch(modalsOpen({
-      component: PollEditDialog,
-      props: {
-        isModify: false,
-        initialValues: new PollModel(),
-      },
-    })),
   }
 }
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps, mapDispatchToProps)
 export default class VotingContent extends Component {
   static propTypes = {
+    userAccount: PropTypes.string,
+    polls: PropTypes.arrayOf(PTPoll),
     isCBE: PropTypes.bool,
     isFetched: PropTypes.bool,
     isFetching: PropTypes.bool,
-    list: PropTypes.instanceOf(VotingCollection),
-    statistics: PropTypes.objectOf(PropTypes.number),
     initAssetsHolder: PropTypes.func,
     getList: PropTypes.func,
     handleNewPoll: PropTypes.func,
     deposit: PropTypes.instanceOf(Amount),
   }
 
-  componentWillMount () {
+  constructor () {
+    super(...arguments)
+
+    this.state = {
+      filter: 'ongoing',
+    }
+  }
+
+  componentDidMount () {
     this.props.initAssetsHolder()
 
     if (!this.props.isFetched && !this.props.isFetching) {
@@ -81,127 +78,77 @@ export default class VotingContent extends Component {
     }
   }
 
-  renderHead () {
-    const { statistics, isFetching } = this.props
+  handleViewOngoing = () => {
+    this.setState({
+      filter: 'ongoing',
+    })
+  }
 
-    return (
-      <div styleName='head'>
-        <h3><Translate value={prefix('voting')} /></h3>
-        <div styleName='headInner'>
-          <div className='VotingContent__head'>
-            <div className='row'>
-              <div className='col-sm-1'>
-                <div styleName='contentStats'>
-                  <div styleName='contentStatsItem statsAll'>
-                    <div styleName='icon'>
-                      <i className='material-icons'>poll</i>
-                    </div>
-                    <div styleName='entry'>
-                      <span styleName='entryTitle'><Translate value={prefix('allPolls')} />:</span><br />
-                      <span styleName='entryValue'>{isFetching ? <Preloader /> : statistics.all}</span>
-                    </div>
-                  </div>
-                </div>
-                <div styleName='contentStats'>
-                  <div styleName='contentStatsItem statsCompleted'>
-                    <div styleName='icon'>
-                      <i className='material-icons'>check</i>
-                    </div>
-                    <div styleName='entry'>
-                      <span styleName='entryTitle'><Translate value={prefix('completedPolls')} />:</span><br />
-                      <span styleName='entryValue'>{isFetching ? <Preloader /> : statistics.completed}</span>
-                    </div>
-                  </div>
-                  <div styleName='contentStatsItem statsOutdated'>
-                    <div styleName='icon'>
-                      <i className='material-icons'>event_busy</i>
-                    </div>
-                    <div styleName='entry'>
-                      <span styleName='entryTitle'><Translate value={prefix('outdatedPolls')} />:</span><br />
-                      <span styleName='entryValue'>{isFetching ? <Preloader /> : statistics.outdated}</span>
-                    </div>
-                  </div>
-                </div>
-                <div styleName='contentStats'>
-                  <div styleName='contentStatsItem statsInactive'>
-                    <div styleName='icon'>
-                      <i className='material-icons'>error_outline</i>
-                    </div>
-                    <div styleName='entry'>
-                      <span styleName='entryTitle'><Translate value={prefix('inactivePolls')} />:</span><br />
-                      <span styleName='entryValue'>{isFetching ? <Preloader /> : statistics.inactive}</span>
-                    </div>
-                  </div>
-                  <div styleName='contentStatsItem statsOngoing'>
-                    <div styleName='icon'>
-                      <i className='material-icons'>access_time</i>
-                    </div>
-                    <div styleName='entry'>
-                      <span styleName='entryTitle'><Translate value={prefix('pollsOngoing')} />:</span><br />
-                      <span styleName='entryValue'>{isFetching ? <Preloader /> : statistics.ongoing}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-sm-1'>
-                <div styleName='contentAlignRight'>
-                  <div styleName='entries' />
-                  <div>
-                    <Button
-                      disabled={this.props.deposit.isZero()}
-                      label={<Translate value={prefix('newPoll')} />}
-                      styleName='action'
-                      onClick={this.props.handleNewPoll}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+  handleViewEnded = () => {
+    this.setState({
+      filter: 'ended',
+    })
   }
 
   renderBody (polls) {
+    const { filter } = this.state
+    const { userAccount, isCBE } = this.props
+    const filteredPolls = polls
+      .filter((poll) => {
+        if (filter === 'ongoing') {
+          return poll.active || (poll.status && !poll.active) || poll.id.includes('stub')
+        }
+        return !poll.status && !poll.active && !poll.id.includes('stub')
+      })
+      .sort((a: PTPoll, b: PTPoll) => {
+        return a.published > b.published ? -1 : a.published < b.published
+      })
+
     return (
-      <div styleName='body'>
-        <div styleName='bodyInner'>
-          <div className='VotingContent__body'>
-            <div className='row'>
-              {polls.items().map((poll) => (
-                <div className='col-sm-6 col-md-3' key={poll.id()}>
-                  <Poll
-                    model={poll}
-                    deposit={this.props.deposit}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      <div styleName='pollsContent'>
+        {filteredPolls.map((poll) => (
+          <Poll
+            key={poll.id}
+            isCBE={isCBE}
+            userAccount={userAccount}
+            poll={poll}
+            deposit={this.props.deposit}
+          />
+        ))}
       </div>
     )
   }
 
   render () {
     const polls = this.props.isFetched
-      ? this.props.list.reverse()
-      : new VotingCollection()
+      ? this.props.polls.reverse()
+      : []
+
+    const { filter } = this.state
 
     return (
       <div styleName='root'>
         <div styleName='content'>
-          {this.renderHead(polls)}
           {this.props.isFetched && this.props.deposit.isZero() &&
           (
-            <div styleName='accessDenied'>
-              <i className='material-icons' styleName='accessDeniedIcon'>warning</i>
-              <Translate value={prefix('warning1')} />
-              <Link to='/wallet'><Translate value={prefix('warning2')} /></Link>
-              <Translate value={prefix('warning3')} />
-            </div>
+            <PollDepositWarningWidget />
           )}
+          {this.props.isFetched ? (
+            <div styleName='tabsFilterWrapper'>
+              <button
+                styleName={classnames('filterTab', { 'active': filter === 'ongoing' })}
+                onClick={this.handleViewOngoing}
+              >
+                <Translate value={`${prefix}.ongoingPolls`} />
+              </button>
+              <button
+                styleName={classnames('filterTab', { 'active': filter === 'ended' })}
+                onClick={this.handleViewEnded}
+              >
+                <Translate value={`${prefix}.pastPolls`} />
+              </button>
+            </div>
+          ) : <Preloader />}
           {this.props.isFetched && this.renderBody(polls)}
         </div>
       </div>
