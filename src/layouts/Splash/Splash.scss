@@ -8,35 +8,22 @@
 $copyRightPadding: 200px;
 
 .root {
-  background-image: $bg-gradient-0;
+  background-color: #242045;
   position: relative;
-  padding-bottom: 130px; // for footer
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+  font-family: $font-proxima;
 
   @include md-only {
-    padding-bottom: 230px;
+    min-height: 100vh;
+    padding: 0;
   }
 
   &:after {
     // hack for preloading material icons and avoid FUOC on render
     content: '';
     font-family: 'Material Icons';
-  }
-}
-
-.content {
-  flex: 1;
-  width: 470px;
-  margin: 0 auto;
-  padding-top: 40px;
-
-  @include md-only {
-    padding-top: 80px;
-  }
-  @include xs-only {
-    width: 100vw;
   }
 }
 
@@ -55,11 +42,118 @@ $copyRightPadding: 200px;
   }
 }
 
+.header-container {
+  display: flex;
+  justify-content: center;
+  height: 340px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  position: relative;
+
+}
+
+.header-images {
+
+}
+
+.header-navigator {
+  position: absolute;
+  display: none;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 70px;
+  height: 70px;
+  padding-left: 20px;
+
+  @include xs-only {
+    display: flex;
+  }
+}
+
+.back-button {
+  background: transparent;
+  border:0;
+  cursor: pointer;
+  margin-right: 20px;
+
+  img {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+}
+
+.navigator-text {
+  color: #fff;
+  font-weight: 700;
+}
+
+.header-picture {
+  display: flex;
+  position: absolute;
+  height: 320px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.header-picture-crop {
+  display: flex;
+  position: absolute;
+  height: 400px;
+  top: -115px;
+  flex: 1;
+}
+
+.header-logos {
+  z-index: 100;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  top: 90px;
+  width: 300px;
+  height: 200px;
+}
+
+.chrono-wallet-logo-bright {
+  display: flex;
+  width: 114px;
+  height: 117px;
+  margin-bottom: 40px;
+}
+
+.chrono-wallet-text-bright {
+  display: flex;
+  height: 59px;
+  width: 282px;
+}
+
 .copyright {
   max-width: $copyRightPadding;
   font-size: 12px;
   font-weight: 300;
   color: white;
+}
+
+.create-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.create-title-description {
+  font-weight: 400;
+  color: $color-description;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+  width: 520px;
 }
 
 .links {
@@ -79,14 +173,64 @@ $copyRightPadding: 200px;
   }
 }
 
-.link {
+.actions {
   color: white;
+  text-align: center;
+  line-height: 30px;
+  margin-bottom: 45px;
+}
+
+.link {
+  color: $border-color;
   margin: auto 45px;
   text-decoration: none;
-  font-family: $font-family-main;
-  font-size: 18px;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
 
   @include md-only {
     margin: 0 0 10px;
   }
+}
+
+.fields-block {
+  margin: 0 auto 50px;
+  max-width: 300px;
+}
+
+.button {
+  margin-bottom: 25px;
+
+  button {
+    font: 700 16px $font-proxima;
+    line-height: 45px;
+    padding: 0 50px;
+    border-radius: 50px;
+    white-space: nowrap;
+  }
+}
+
+.selectors {
+  position: absolute;
+  top: 30px;
+  display: flex;
+  margin-left: 360px;
+
+  @include md-only {
+    margin: 0;
+    left: 0;
+    right: 0;
+    justify-content: flex-end;
+    padding-right: 20px;
+  }
+}
+
+.lang-selector {
+
+}
+
+.network-selector {
+  margin-right: 10px;
 }

@@ -85,6 +85,10 @@ class SidePanel extends PureComponent {
 
   render () {
     const Component = this.props.component
+    if (!Component){
+      return null
+    }
+
     return (
       <Drawer {...this.getDrawerProps(this.props.drawerProps)}>
         <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />

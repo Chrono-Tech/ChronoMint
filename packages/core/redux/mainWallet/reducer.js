@@ -53,6 +53,7 @@ export default (state = initialState, action) => {
       ))
     case a.WALLET_SET_NAME:
       return state.names(state.names().set(`${action.blockchain}-${action.address}`, action.name))
+
     default:
       return state
   }

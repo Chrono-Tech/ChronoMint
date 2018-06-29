@@ -14,7 +14,10 @@ import { logout } from '@chronobank/core/redux/session/actions'
 import { getBlockchainAddressesList } from '@chronobank/core/redux/session/selectors'
 import { FontIcon } from 'material-ui'
 import { modalsOpen } from 'redux/modals/actions'
-import { IPFSImage, QRIcon, PKIcon, CopyIcon, UpdateProfileDialog } from 'components'
+import { IPFSImage, UpdateProfileDialog } from 'components'
+import CopyIcon from 'components/dashboard/MicroIcon/CopyIcon'
+import QRIcon from 'components/dashboard/MicroIcon/QRIcon'
+import PKIcon from 'components/dashboard/MicroIcon/PKIcon'
 
 import GasSlider from 'components/common/GasSlider/GasSlider'
 
