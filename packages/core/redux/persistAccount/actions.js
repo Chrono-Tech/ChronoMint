@@ -56,8 +56,7 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (encrypted, password) => async (dispatch, getState) => {
-  const state = getState()
+export const decryptAccount = (encrypted, password) => async (dispatch) => {
 
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
@@ -100,6 +99,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
+
 
   let newWallet = {
     ...wallet,
@@ -147,10 +147,11 @@ export const downloadWallet = () => (dispatch, getState) => {
   const { selectedWallet } = state.get('persistAccount')
 
   if (selectedWallet) {
+    const walletName = selectedWallet.name || 'Wallet'
     const text = JSON.stringify(selectedWallet.encrypted.length > 1 ? selectedWallet.encrypted : selectedWallet.encrypted[0])
     const element = document.createElement('a')
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text))
-    element.setAttribute('download', `Wallet.wlt`)
+    element.setAttribute('download', `${walletName}.wlt`)
     element.style.display = 'none'
     document.body.appendChild(element)
     element.click()

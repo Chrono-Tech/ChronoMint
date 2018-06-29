@@ -2,6 +2,9 @@ import EventEmitter from 'events'
 import axios from 'axios'
 
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
+const GET_PERSONS_REST = '/api/v1/security/persons/query'
+const GET_SIGNATURE_REST = '/api/v1/security/signin/signature'
+const PURPOSE_VALUE = 'exchange-session'
 
 class ProfileService extends EventEmitter {
   connectStore (store) {
@@ -37,27 +40,31 @@ class ProfileService extends EventEmitter {
     }
   }
 
+  getPurposeData(){
+    return {'purpose': PURPOSE_VALUE}
+  }
+
+  getSignData(){
+    return JSON.stringify({
+      body: this.getPurposeData(),
+      url: GET_SIGNATURE_REST,
+    })
+  }
+
   async getProfile(signature){
     const service = this.getServerProvider()
 
-    const body = {"purpose":"exchange-session"}
+    const body = this.getPurposeData()
 
-    const headers = {
-      Authorization: `Signature ${signature}`,
-    }
+    const { data } = await service.post(GET_SIGNATURE_REST, body, this.withAuthorizaionSignature(signature))
 
-    const { data } = await service.post('/api/v1/security/signin/signature', body, headers)
-    console.log('getProfile', data)
+    return data
   }
 
   async getPersonInfo(addresses = []){
     const service = this.getServerProvider()
 
-    // const body = {
-    //   purpose: `exchange-session`,
-    // }
-
-    const personInfo = await service.post('/api/v1/security/persons/query', addresses)
+    const personInfo = await service.post(GET_PERSONS_REST, addresses)
 
     return personInfo
   }

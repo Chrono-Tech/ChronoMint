@@ -1,5 +1,6 @@
 import {
   AccountEntryModel,
+  AccountProfileModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 
 export const replaceWallet = (wallet, walletList) => {
@@ -26,4 +27,21 @@ export const getWalletsListAddresses = (walletsList = []) => {
 
 export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
   return walletsList.find((w) => getAccountAddress(w) === getAccountAddress(wallet))
+}
+
+
+export const getAccountName = (account: AccountEntryModel) => {
+  if (account && account.profile && account.profile.userName){
+    return account.profile.userName
+  }
+
+  return account && account.name || ''
+}
+
+export const getAccountAvatar = (account: AccountEntryModel) => {
+  if (account && account.profile){
+    return account.profile.avatar
+  }
+
+  return ''
 }

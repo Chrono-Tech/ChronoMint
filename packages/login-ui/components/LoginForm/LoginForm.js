@@ -22,6 +22,10 @@ import {
   navigateToSelectWallet,
   initAccountsSignature,
 } from '@chronobank/login/redux/network/actions'
+import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
 import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
 import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
@@ -87,58 +91,6 @@ class LoginPage extends PureComponent {
 
   handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
 
-  renderProviderSelector () {
-    switch (this.state.strategy) {
-      case STRATEGY_MANUAL:
-        return this.renderManualProviderSelector()
-      case STRATEGY_AUTOMATIC:
-        return this.renderAutomaticProviderSelector()
-      default:
-        return null
-    }
-  }
-
-  renderAutomaticProviderSelector () {
-    return (
-      <AutomaticProviderSelector
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
-  renderManualProviderSelector () {
-    return (
-      <ManualProviderSelector
-        show={this.state.isShowProvider}
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
-  getAccountName(){
-    const { selectedWallet } = this.props
-
-    if (!selectedWallet){
-      return
-    }
-
-    if (selectedWallet && selectedWallet.profile && selectedWallet.profile.userName){
-      return selectedWallet.profile.userName
-    }
-
-    return selectedWallet.name
-  }
-
-  getAccountAvatar(){
-    const { selectedWallet } = this.props
-
-    if (selectedWallet && selectedWallet.profile){
-      return selectedWallet.profile.avatar
-    }
-  }
-
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting } = this.props
@@ -153,8 +105,8 @@ class LoginPage extends PureComponent {
 
           <div styleName='user-row'>
             <UserRow
-              title={this.getAccountName(selectedWallet)}
-              avatar={this.getAccountAvatar(selectedWallet)}
+              title={getAccountName(selectedWallet)}
+              avatar={getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
             />
 

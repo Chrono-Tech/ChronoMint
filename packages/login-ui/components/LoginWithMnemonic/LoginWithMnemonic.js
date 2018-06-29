@@ -55,7 +55,6 @@ function mapDispatchToProps (dispatch) {
   return {
     onSubmit: (values) => {
       const confirmMnemonic = values.get('mnemonic')
-      console.log('bip39.mnemonicToSeedHex(mnemonic)', bip39.mnemonicToSeedHex(confirmMnemonic))
       dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),

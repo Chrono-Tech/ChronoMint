@@ -14,6 +14,10 @@ import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+import {
   onSubmitRecoverAccountForm,
   onSubmitRecoverAccountFormSuccess,
   onSubmitRecoverAccountFormFail,
@@ -64,13 +68,8 @@ class RecoverAccountPage extends PureComponent {
     this.props.initRecoverAccountPage()
   }
 
-  get getSelectedWalletName(){
-    const { selectedWallet } = this.props
-    return selectedWallet && selectedWallet.name || ''
-  }
-
   render () {
-    const { handleSubmit, selectedWallet } = this.props
+    const { handleSubmit, selectedWallet, error } = this.props
 
     const wordsArray = new Array(12).fill()
 
@@ -83,8 +82,8 @@ class RecoverAccountPage extends PureComponent {
 
           <div styleName='user-row'>
             <UserRow
-              title={this.getSelectedWalletName}
-              avatar={'/src/assets/img/profile-photo-1.jpg'}
+              title={getAccountName(selectedWallet)}
+              avatar={getAccountAvatar(selectedWallet)}
               hideActionIcon
             />
           </div>
@@ -113,6 +112,7 @@ class RecoverAccountPage extends PureComponent {
             >
               Reset password
             </Button>
+            { error && (<div styleName='form-error'>{error}</div>) }
             or<br />
             <Link to='/login' href styleName='link'>Back</Link>
           </div>

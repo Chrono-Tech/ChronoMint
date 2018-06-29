@@ -82,7 +82,6 @@ class LoginWithWallet extends Component {
       isUploaded: true,
       wallet: e.target.result,
     })
-    console.log('file', e.target.result)
   }
 
   handleUploadFile = (e) => {

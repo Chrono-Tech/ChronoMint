@@ -67,6 +67,7 @@ export const NETWORK_SET_LOGIN_SUBMITTING = 'network/SET_LOGIN_SUBMITTING'
 export const NETWORK_RESET_LOGIN_SUBMITTING = 'network/RESET_LOGIN_SUBMITTING'
 export const NETWORK_SET_ACCOUNT_RECOVERY_MODE = 'network/SET_ACCOUNT_RECOVERY_MODE'
 export const NETWORK_RESET_ACCOUNT_RECOVERY_MODE = 'network/RESET_ACCOUNT_RECOVERY_MODE'
+export const NETWORK_SET_PROFILE_SIGNATURE = 'network/SET_PROFILE_SIGNATURE'
 
 export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_LOADING'
 export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = 'network/ACCOUNTS_SIGNATURES_RESET_LOADING'
@@ -331,8 +332,22 @@ export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
 
 }
 
-export const getSignInSignature = () => async (dispatch, getState) => {
+export const setProfileSignature = (signature) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_PROFILE_SIGNATURE, signature })
+}
 
+export const getProfileSignature = (wallet) => async (dispatch) => {
+  if (!wallet){
+    return
+  }
+
+  let signDataString = profileService.getSignData()
+
+  let signData = wallet.sign(signDataString)
+
+  let profileSignature = await profileService.getProfile(signData.signature)
+
+  dispatch(setProfileSignature(profileSignature))
 }
 
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
@@ -347,9 +362,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
-    let signData = wallet && wallet[0] && wallet[0].sign({"purpose":"exchange-session"})
-
-    await profileService.getProfile(signData.signature)
+    dispatch(getProfileSignature(wallet[0]))
 
     if (privateKey) {
       await dispatch(handlePrivateKeyLogin(privateKey))
@@ -369,13 +382,14 @@ export const onSubmitLoginFormFail = (errors, dispatch, submitErrors) => (dispat
 
 }
 
-export const validateRecoveryForm = (mnemonic) => (dispatch, getState) => {
+export const validateRecoveryForm = (mnemonic) => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedWallet } = state.get('persistAccount')
 
-  return dispatch(validateMnemonicForAccount(selectedWallet, mnemonic))
+  const validateMnemonic = await dispatch(validateMnemonicForAccount(selectedWallet, mnemonic))
 
+  return validateMnemonic
 }
 
 export const initRecoverAccountPage = () => (dispatch) => {
@@ -383,8 +397,8 @@ export const initRecoverAccountPage = () => (dispatch) => {
   dispatch({ type: NETWORK_SET_ACCOUNT_RECOVERY_MODE })
 }
 
-export const onSubmitRecoverAccountForm = (mnemonic) => (dispatch) => {
-  const validForm = dispatch(validateRecoveryForm(mnemonic))
+export const onSubmitRecoverAccountForm = (mnemonic) => async (dispatch) => {
+  const validForm = await dispatch(validateRecoveryForm(mnemonic))
 
   if (!validForm) {
     throw new SubmissionError({ _error: 'Mnemonic incorrect for this wallet' })
@@ -397,9 +411,8 @@ export const onSubmitRecoverAccountFormSuccess = () => (dispatch) => {
   dispatch(navigateToResetPasswordPage())
 }
 
-export const onSubmitRecoverAccountFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_RECOVER_ACCOUNT, { pk: 'Wrong private key' }))
-
+export const onSubmitRecoverAccountFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_RECOVER_ACCOUNT, submitErrors && submitErrors.errors))
 }
 
 export const initResetPasswordPage = () => (dispatch, getState) => {
@@ -446,7 +459,7 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       delete restoredWalletJSON.Crypto
     }
 
-    let wallet = await dispatch (decryptAccount([restoredWalletJSON], password))
+    let wallet = await dispatch(decryptAccount([restoredWalletJSON], password))
 
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
@@ -456,7 +469,7 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       pk = pk.slice(2)
     }
 
-    dispatch ({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey: pk })
+    dispatch({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey: pk })
   } catch(e){
     throw new SubmissionError({ _error: e && e.message })
   }
@@ -561,12 +574,16 @@ export const resetLoadingAccountsSignatures = () => (dispatch) => {
   dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING })
 }
 
-export const resolveAccountsSignatures = (data) => (dispatch) => {
-  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_RESOLVE, data })
-}
+export const updateSelectedAccount = () => (dispatch, getState) => {
+  const state = getState()
 
-export const rejectAccountsSignatures = (data) => (dispatch) => {
-  dispatch({ type: NETWORK_ACCOUNTS_SIGNATURES_REJECT, data })
+  const { selectedWallet, walletsList } = state.get('persistAccount')
+
+  const foundAccount = walletsList.find((account) => account.key === selectedWallet.key)
+
+  if (foundAccount) {
+    dispatch (accountSelect(foundAccount))
+  }
 }
 
 export const initAccountsSignature = () => async (dispatch, getState) => {
@@ -584,6 +601,8 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
   const accounts = await dispatch(setProfilesForAccounts(walletsList))
 
   accounts.forEach((account) => dispatch(accountUpdate(account)))
+
+  dispatch(updateSelectedAccount())
 
   dispatch(resetLoadingAccountsSignatures())
 

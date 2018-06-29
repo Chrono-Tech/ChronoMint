@@ -16,6 +16,10 @@ import {
   initAccountsSelector,
 } from '@chronobank/login/redux/network/actions'
 import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+import {
   AccountEntryModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 
@@ -60,22 +64,6 @@ export default class SelectWalletPage extends PureComponent {
     this.props.initAccountsSelector()
   }
 
-  getAccountName(account){
-    if (account && account.profile && account.profile.userName){
-      return account.profile.userName
-    }
-
-    return account.name
-  }
-
-  getAccountAvatar(account){
-    if (account && account.profile){
-      return account.profile.avatar
-    }
-
-    return ''
-  }
-
   renderWalletsList (){
     const { onWalletSelect, walletsList } = this.props
 
@@ -93,8 +81,8 @@ export default class SelectWalletPage extends PureComponent {
           walletsList ? walletsList.map((w, i) => (
             <UserRow
               key={i}
-              title={this.getAccountName(w)}
-              avatar={this.getAccountAvatar(w)}
+              title={getAccountName(w)}
+              avatar={getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

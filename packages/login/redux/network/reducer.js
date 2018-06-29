@@ -41,6 +41,7 @@ const initialState = {
   accountSignaturesLoading: false,
   accountSignaturesData: null,
   accountSignaturesError: null,
+  profileSignature: null,
 }
 
 export default (state = initialState, action) => {
@@ -166,18 +167,10 @@ export default (state = initialState, action) => {
         ...state,
         loadingAccountSignatures: false,
       }
-    case actions.NETWORK_ACCOUNTS_SIGNATURES_RESOLVE:
+    case actions.NETWORK_SET_PROFILE_SIGNATURE:
       return {
         ...state,
-        loadingAccountSignatures: false,
-        accountSignaturesData: action.data,
-      }
-    case actions.NETWORK_ACCOUNTS_SIGNATURES_REJECT:
-      return {
-        ...state,
-        loadingAccountSignatures: false,
-        accountSignaturesData: null,
-        accountSignaturesError: action.error,
+        profileSignature: action.signature,
       }
 
     default:
