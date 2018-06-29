@@ -7,12 +7,15 @@ import axios from 'axios'
 import { networks } from 'bitcoinjs-lib'
 import BitcoinBlockexplorerNode from './BitcoinBlockexplorerNode'
 import BitcoinMiddlewareNode from './BitcoinMiddlewareNode'
+import { BLOCKCHAIN_BITCOIN, BLOCKCHAIN_LITECOIN } from '../network/BitcoinProvider'
 
 const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
   api: axios.create({
     baseURL: 'https://middleware-bitcoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
+  blockchain: BLOCKCHAIN_BITCOIN,
+  symbol: 'BTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
@@ -28,16 +31,19 @@ const BTC_MAINNET_NODE = new BitcoinMiddlewareNode({
 export const BTC_TESTNET_NODE = new BitcoinMiddlewareNode({
   feeRate: 200,
   api: axios.create({
-    baseURL: 'https://middleware-bitcoin-testnet-rest.chronobank.io',
+    baseURL: 'https://middleware-testnet-internal-bitcoin-rest.chronobank.io',
     timeout: 4000,
   }),
+  blockchain: BLOCKCHAIN_BITCOIN,
+  symbol: 'BTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
     password: '38309100024',
     channels: {
-      balance: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_balance',
-      block: '/exchange/events/testnet-bitcoin-middleware-chronobank-io_block',
+      balance: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_balance',
+      transaction: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_transaction',
+      block: '/exchange/events/internal-testnet-bitcoin-middleware-chronobank-io_block',
     },
   },
   trace: true,
@@ -81,6 +87,8 @@ export const LTC_MAINNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-litecoin-mainnet-rest.chronobank.io',
     timeout: 4000,
   }),
+  blockchain: BLOCKCHAIN_LITECOIN,
+  symbol: 'LTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',
@@ -99,6 +107,8 @@ export const LTC_TESTNET_NODE = new BitcoinMiddlewareNode({
     baseURL: 'https://middleware-litecoin-testnet-rest.chronobank.io',
     timeout: 4000,
   }),
+  blockchain: BLOCKCHAIN_LITECOIN,
+  symbol: 'LTC',
   socket: {
     baseURL: 'https://rabbitmq-webstomp.chronobank.io/stomp',
     user: 'rabbitmq_user',

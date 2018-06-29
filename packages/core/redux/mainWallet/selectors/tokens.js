@@ -5,6 +5,7 @@
 
 import { createSelector } from 'reselect'
 import { filteredBalancesAndTokens } from './balances'
+import { getMainWallet } from '../../wallet/selectors/models'
 
 export const tokensAndAmountsSelector = (blockchain: string, symbol: string) => createSelector(
   [
@@ -61,5 +62,16 @@ export const tokensCountSelector = (blockchain: string) => createSelector(
     balances,
   ) => {
     return balances.length
+  },
+)
+
+export const pendingTransactionsSelector = (blockchain, address) => createSelector(
+  [
+    getMainWallet,
+  ],
+  (
+    mainWallet,
+  ) => {
+    return mainWallet.getAllPendingTransactions(blockchain, address)
   },
 )

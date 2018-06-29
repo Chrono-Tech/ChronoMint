@@ -50,6 +50,8 @@ export default class WalletContent extends Component {
     selectedProviderId: PropTypes.number,
     goToWallets: PropTypes.func,
     getTransactions: PropTypes.func,
+    address: PropTypes.string,
+    blockchain: PropTypes.string,
     wallet: PTWallet,
   }
 

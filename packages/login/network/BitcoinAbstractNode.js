@@ -27,6 +27,7 @@ export class BitcoinTx {
     txHash,
     blockHash,
     blockNumber,
+    confirmations,
     time,
     from,
     to,
@@ -37,6 +38,7 @@ export class BitcoinTx {
     this.txHash = txHash
     this.blockHash = blockHash
     this.blockNumber = blockNumber
+    this.confirmations = confirmations
     this.time = time
     this.from = from
     this.to = to
