@@ -6,39 +6,104 @@
 @import "~styles/partials/variables";
 @import "~styles/partials/mixins";
 
-.root {
-  background-color: white;
-  border-radius: 2px;
-  color: $color-primary-0;
-  padding: 16px;
-  margin-top: 16px;
-  box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
-}
-
-.hint {
-  font-size: 18px;
-  margin-top: 5px;
-}
-
-.actions {
-  display: flex;
-  align-items: center;
-  margin-top: 32px;
-  justify-content: flex-end;
+.wrapper {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #fff;
 
   @include md-only {
-    flex-wrap: wrap;
+    padding: 0 20px;
   }
 }
 
-.actions {
-  margin-top: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
+.page-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
-.actionConfirm {
-  margin-right: 40px;
-  flex-grow: 1;
+.description {
+  margin-bottom: 50px;
+  color: $additionalData-color-1;
+  line-height: 22px;
+  font-weight: 400;
+
+  @include md-only {
+    margin-bottom: 20px;
+  }
+}
+
+.progress-block {
+  width: 50px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress-point {
+  background: $button-color-2;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &.progress-point-inactive {
+    background: $color-blue-4;
+  }
+}
+
+.row {
+  margin: 0 auto 50px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  color: #fff;
+  line-height: 30px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.submit {
+  margin-bottom: 25px;
+}
+
+.wallet-img {
+  width: 48px;
+  height: 48px;
+  display: block;
+  margin: 0 auto;
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 50px;
+
+  button {
+    font-size: 14px;
+    text-transform: none;
+    width: 110px;
+    height: 100px;
+    padding: 0;
+    border-radius: 3px;
+  }
+
+  img {
+    width: 50px;
+    margin-bottom: 5px;
+  }
 }

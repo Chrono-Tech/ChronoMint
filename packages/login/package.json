@@ -22,6 +22,7 @@
     "uport-connect": "^0.6.0",
     "web3-provider-engine": "^14.0.3",
     "web3": "^0.20.1",
-    "webstomp-client": "^1.2.0"
+    "webstomp-client": "^1.2.0",
+    "web3-eth-accounts": "^1.0.0-beta.34"
   }
 }

@@ -8,7 +8,7 @@ import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import AddressModel from '@chronobank/core/models/wallet/AddressModel'
 import MultisigWalletCollection from '@chronobank/core/models/wallet/MultisigWalletCollection'
-import { getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors'
+import { getMainWallet, getMultisigWallets } from '@chronobank/core/redux/wallet/selectors/models'
 
 // provides filtered list of addresses of MainWallets
 export const selectMainWalletsList = createSelector(

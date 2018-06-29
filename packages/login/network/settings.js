@@ -268,6 +268,30 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   }
 }
 
+export const getNetworksWithProviders = (withLocal = false) => {
+  let networks = []
+
+  Object.keys(providerMap)
+    .filter((key) => !providerMap[key].disabled)
+    .forEach((key) => {
+      const provider = providerMap[key]
+
+      const networksProvider = getNetworksByProvider(provider && provider.id, withLocal)
+        .map((network) => ({
+          provider,
+          network,
+        }))
+
+      networks = networks.concat(networksProvider)
+    })
+
+  return networks
+}
+
+export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
+  return `${getProviderById(providerId).name} - ${getNetworkById(networkId, providerId, withLocal).name}`
+}
+
 export const getProviderById = (providerId) => {
   return providerMap[Object.keys(providerMap).find((key) => providerMap[key].id === providerId)] || {}
 }

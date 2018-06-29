@@ -67,12 +67,15 @@ export default class Button extends PureComponent {
     if (flat) {
       buttonType = 'flat'
     }
+
+    const buttonClasses = classnames('button', buttonType)
+
     return (
       <div styleName='root' className={classnames('Button_root', this.props.className)}>
         <button
           ref={this.setRef}
           disabled={this.props.disabled}
-          styleName={classnames('button', buttonType)}
+          styleName={buttonClasses}
           type={this.props.type}
           onClick={this.handleTouchTap}
         >

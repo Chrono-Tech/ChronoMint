@@ -3,80 +3,121 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
-import { Checkbox, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
-import React, { PureComponent } from 'react'
+import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import theme from 'styles/themes/default'
-import BackButton from '../../components/BackButton/BackButton'
-import styles from '../../components/stylesLoginPage'
-import Warning from '../../components/Warning/Warning'
-import './GenerateMnemonic.scss'
+import { MuiThemeProvider } from 'material-ui'
+import React, { Component } from 'react'
 import { Button } from '../../settings'
+import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 
-class GenerateMnemonic extends PureComponent {
-  static propTypes = {
-    onBack: PropTypes.func,
-  }
+import PrintIcon from 'assets/img/icons/print-white.svg'
 
-  constructor () {
-    super()
-    this.state = {
-      isConfirmed: false,
-      mnemonicKey: mnemonicProvider.generateMnemonic(),
-    }
-  }
+import './GenerateMnemonic.scss'
 
-  componentWillMount () {
-    this.setState({ mnemonicKey: mnemonicProvider.generateMnemonic() })
-  }
+function mapStateToProps (state, ownProps) {
 
-  componentWillUnmount () {
-    this.setState({ mnemonicKey: '' })
-  }
-
-  handleCheckClick = (target, value) => {
-    this.setState({ isConfirmed: value })
-  }
-
-  render () {
-    const { isConfirmed, mnemonicKey } = this.state
-
-    return (
-      <div>
-        <BackButton
-          onClick={() => this.props.onBack()}
-          to='loginWithMnemonic'
-        />
-        <MuiThemeProvider muiTheme={theme}>
-          <div styleName='root'>
-            <div styleName='keyBox'>
-              <div styleName='keyLabel'><Translate value='GenerateMnemonic.generateMnemonic' /></div>
-              <div styleName='keyValue'>{mnemonicKey}</div>
-            </div>
-            <div styleName='message'><Translate value='GenerateMnemonic.warning' dangerousHTML /></div>
-            <Warning />
-            <div styleName='actions'>
-              <div styleName='actionConfirm'>
-                <Checkbox
-                  onCheck={this.handleCheckClick}
-                  label={<Translate value='GenerateMnemonic.iUnderstand' />}
-                  checked={isConfirmed}
-                  {...styles.checkbox}
-                />
-              </div>
-              <Button
-                label={<Translate value='GenerateMnemonic.continue' />}
-                disabled={!isConfirmed}
-                onClick={() => this.props.onBack()}
-              />
-            </div>
-          </div>
-        </MuiThemeProvider>
-      </div>
-    )
+  return {
+    mnemonic: state.get('network').newAccountMnemonic,
   }
 }
 
-export default GenerateMnemonic
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    initMnemonicPage: () => dispatch(initMnemonicPage()),
+    navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
+export default class MnemonicPage extends Component {
+  static propTypes = {
+    mnemonic: PropTypes.string,
+    initMnemonicPage: PropTypes.func,
+    navigateToConfirmPage: PropTypes.func,
+  }
+
+  static defaultProps = {
+    mnemonic: '',
+  }
+
+  componentDidMount(){
+    this.props.initMnemonicPage()
+  }
+
+  navigateToConfirmPage(){
+    this.props.navigateToConfirmPage()
+  }
+
+  render () {
+    return (
+      <MuiThemeProvider>
+        <div styleName='wrapper'>
+          <div>
+            <div styleName='page-title'>
+              <Translate value='GenerateMnemonic.title' />
+            </div>
+
+            <p styleName='description'>
+              <Translate value='GenerateMnemonic.description' />
+              <Translate value='GenerateMnemonic.descriptionExtra' />
+            </p>
+
+            <div styleName='passPhraseWrapper'>
+              <div styleName='passPhrase'>{ this.props.mnemonic }</div>
+              <div styleName='printButtonWrapper'>
+                <div styleName='printButton' onClick={() => {}}>
+                  <img src={PrintIcon} alt='' />
+                </div>
+              </div>
+            </div>
+
+            <div styleName='infoBlock'>
+              <div styleName='infoBlockHeader'>
+                <Translate value='GenerateMnemonic.infoHeader' />
+              </div>
+
+              <ol styleName='infoBlockList'>
+                <li>
+                  <p styleName='listItemContent'>
+                    <b>
+                      <Translate value='GenerateMnemonic.infoContentPart1' />
+                    </b>
+                    &nbsp;
+                    <Translate value='GenerateMnemonic.infoContentPart2' />
+                  </p>
+                </li>
+
+                <li>
+                  <p styleName='listItemContent'>
+                    <b>
+                      <Translate value='GenerateMnemonic.infoContentPart3' />
+                    </b>
+                    &nbsp;
+                    <Translate value='GenerateMnemonic.infoContentPart4' />
+                  </p>
+                </li>
+              </ol>
+            </div>
+
+            <div styleName='actions'>
+              <Button
+                styleName='submit'
+                buttonType='login'
+                onClick={this.navigateToConfirmPage.bind(this)}
+              >
+                <Translate value='GenerateMnemonic.login' />
+              </Button>
+            </div>
+
+            <div styleName='progressBlock'>
+              <div styleName='progressPoint' />
+              <div styleName='progressPoint' />
+              <div styleName='progressPoint progressPointInactive' />
+            </div>
+          </div>
+        </div>
+      </MuiThemeProvider>
+    )
+  }
+}

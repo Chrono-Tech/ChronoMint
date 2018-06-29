@@ -6,6 +6,10 @@
 import * as AccountSelector from './components/AccountSelector/lang'
 import * as BackButton from './components/BackButton/lang'
 import * as GenerateMnemonic from './components/GenerateMnemonic/lang'
+import * as ConfirmMnemonic from './components/ConfirmMnemonic/lang'
+import * as CreateAccount from './components/CreateAccount/lang'
+import * as RecoverAccount from './components/RecoverAccount/lang'
+import * as ResetPassword from './components/ResetPassword/lang'
 import * as GenerateWallet from './components/GenerateWallet/lang'
 import * as LoginForm from './components/LoginForm/lang'
 import * as LoginMetamask from './components/LoginMetamask/lang'
@@ -22,7 +26,11 @@ import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher
 import * as Warning from './components/Warning/lang'
 
 export const en = {
-  LoginPage: LoginForm.en,
+  ConfirmMnemonic: ConfirmMnemonic.en,
+  CreateAccount: CreateAccount.en,
+  RecoverAccount: RecoverAccount.en,
+  ResetPassword: ResetPassword.en,
+  LoginForm: LoginForm.en,
   LoginWithLedger: LoginWithLedger.en,
   LoginWithTrezor: LoginWithTrezor.en,
   LoginMetamask: LoginMetamask.en,

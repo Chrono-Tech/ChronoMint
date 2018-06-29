@@ -3,24 +3,35 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import networkService from '@chronobank/login/network/NetworkService'
-import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { MD5 } from 'crypto-js'
-import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
-import { MuiThemeProvider } from 'material-ui'
-import { yellow800 } from 'material-ui/styles/colors'
-import WarningIcon from 'material-ui/svg-icons/alert/warning'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import { MuiThemeProvider } from 'material-ui'
+import React, { PureComponent } from 'react'
+import { Link } from 'react-router'
+import { reduxForm, Field } from 'redux-form/immutable'
+import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { login } from '@chronobank/core/redux/session/actions'
-import inverted from 'styles/themes/inversed'
-import LoginWithOptions from '../LoginWithOptions/LoginWithOptions'
-import AutomaticProviderSelector from '../ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '../ProviderSelectorSwitcher/ManualProviderSelector'
+import { UserRow, Button } from 'components'
+import {
+  AccountEntryModel,
+} from '@chronobank/core/models/wallet/persistAccount'
+import {
+  onSubmitLoginForm,
+  onSubmitLoginFormFail,
+  initLoginPage,
+  navigateToSelectWallet,
+  initAccountsSignature,
+} from '@chronobank/login/redux/network/actions'
+import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
+import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
-import './LoginPage.scss'
+import styles from 'layouts/Splash/styles'
+import spinner from 'assets/img/spinningwheel-1.gif'
+import './LoginForm.scss'
 
 const STRATEGY_MANUAL = 'manual'
 const STRATEGY_AUTOMATIC = 'automatic'
@@ -30,135 +41,103 @@ const nextStrategy = {
   [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
 }
 
-const mapStateToProps = (state) => {
-  const network = state.get(DUCK_NETWORK)
+export const FORM_LOGIN_PAGE = 'FormLoginPage'
+
+function mapStateToProps (state) {
+  const selectedWallet = state.get('persistAccount').selectedWallet
+
   return {
-    errors: network.errors,
-    selectedAccount: network.selectedAccount,
-    selectedProviderId: network.selectedProviderId,
-    selectedNetworkId: network.selectedNetworkId,
-    isLoading: network.isLoading,
+    selectedWallet: selectedWallet,
+    isLoginSubmitting: state.get('network').isLoginSubmitting,
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  checkNetwork: () => networkService.checkNetwork(),
-  createNetworkSession: (account, provider, network) => networkService.createNetworkSession(account, provider, network),
-  login: (account) => dispatch(login(account)),
-  clearErrors: () => dispatch(clearErrors()),
-})
+function mapDispatchToProps (dispatch) {
+  return {
+    onSubmit: async (values) => {
+      const password = values.get('password')
 
-@connect(mapStateToProps, mapDispatchToProps)
-class LoginForm extends Component {
+      await dispatch(onSubmitLoginForm(password))
+    },
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
+    initLoginPage: async () => dispatch(initLoginPage()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
+    initAccountsSignature: () => dispatch(initAccountsSignature()),
+  }
+}
+
+class LoginPage extends PureComponent {
   static propTypes = {
-    clearErrors: PropTypes.func,
-    checkNetwork: PropTypes.func,
-    createNetworkSession: PropTypes.func,
-    login: PropTypes.func,
-    selectedAccount: PropTypes.string,
-    selectedProviderId: PropTypes.number,
-    selectedNetworkId: PropTypes.number,
-    errors: PropTypes.arrayOf(PropTypes.string),
+    initLoginPage: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
+    isLoginSubmitting: PropTypes.bool,
+    initAccountsSignature: PropTypes.func,
   }
 
-  constructor (props, context, updater) {
-    super(props, context, updater)
-
-    // TODO replace with async arrow when class properties will work correctly
-    this.handleLogin = this.handleLogin.bind(this)
-    this.state = {
-      isShowProvider: true,
-      strategy: STRATEGY_AUTOMATIC,
-    }
-  }
-
-  async handleLogin () {
-    this.props.clearErrors()
-    const isPassed = await this.props.checkNetwork(
-      this.props.selectedAccount,
-      this.props.selectedProviderId,
-      this.props.selectedNetworkId,
-    )
-    if (isPassed) {
-      this.props.createNetworkSession(
-        this.props.selectedAccount,
-        this.props.selectedProviderId,
-        this.props.selectedNetworkId,
-      )
-      this.props.login(this.props.selectedAccount)
-    }
-  }
-
-  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
-
-  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
-
-  renderError = (error) => (
-    <div styleName='error' key={MD5(error)}>
-      <div styleName='errorIcon'><WarningIcon color={yellow800} /></div>
-      <div styleName='errorText'>{error}</div>
-    </div>
-  )
-
-  renderProviderSelector () {
-    switch (this.state.strategy) {
-      case STRATEGY_MANUAL:
-        return this.renderManualProviderSelector()
-      case STRATEGY_AUTOMATIC:
-        return this.renderAutomaticProviderSelector()
-      default:
-        return null
-    }
-  }
-
-  renderAutomaticProviderSelector () {
-    return (
-      <AutomaticProviderSelector
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
-  }
-
-  renderManualProviderSelector () {
-    return (
-      <ManualProviderSelector
-        show={this.state.isShowProvider}
-        currentStrategy={this.state.strategy}
-        onSelectorSwitch={this.handleSelectorSwitch}
-      />
-    )
+  componentWillMount(){
+    this.props.initLoginPage()
   }
 
   render () {
-    const {
-      errors,
-    } = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
+      navigateToSelectWallet, isLoginSubmitting } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={inverted}>
-        <div styleName='form'>
-          <div styleName='title'><Translate value='LoginPage.title' /></div>
-          <div styleName='subtitle'><Translate value='LoginPage.subTitle' /></div>
-          {this.renderProviderSelector()}
-          <LoginWithOptions
-            onLogin={this.handleLogin}
-            onToggleProvider={this.handleToggleProvider}
-          />
-          {errors && (
-            <div styleName='errors'>
-              {errors.map(this.renderError)}
+      <MuiThemeProvider muiTheme={styles.inverted}>
+        <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
+
+          <div styleName='page-title'>
+            <Translate value='LoginForm.title' />
+          </div>
+
+          <div styleName='user-row'>
+            <UserRow
+              title={getAccountName(selectedWallet)}
+              avatar={getAccountAvatar(selectedWallet)}
+              onClick={navigateToSelectWallet}
+            />
+
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='password'
+                type='password'
+                floatingLabelText={<Translate value='LoginForm.enterPassword' />}
+                fullWidth
+                {...styles.textField}
+              />
             </div>
-          )}
-          <ul styleName='actions'>
-            <li>
-              <LocaleDropDown />
-            </li>
-          </ul>
-        </div>
+
+            <div styleName='actions'>
+              <Button
+                styleName='button'
+                buttonType='login'
+                type='submit'
+                label={isLoginSubmitting
+                  ? <span styleName='spinner-wrapper'>
+                    <img
+                      src={spinner}
+                      alt=''
+                      width={24}
+                      height={24}
+                    />
+                  </span> : <Translate value='LoginForm.submitButton' />}
+                disabled={isLoginSubmitting}
+              />
+
+              { error ? (<div styleName='form-error'>{error}</div>) : null }
+
+              <Link to='/login/recover-account' href styleName='link'>
+                <Translate value='LoginForm.forgotPassword' />
+              </Link>
+            </div>
+          </div>
+
+        </form>
       </MuiThemeProvider>
     )
   }
 }
 
-export default LoginForm
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
+export default connect(mapStateToProps, mapDispatchToProps)(form)
