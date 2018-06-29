@@ -8,10 +8,9 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { MuiThemeProvider } from 'material-ui'
 import React, { Component } from 'react'
-import { Button } from '../../settings'
 import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
-
 import PrintIcon from 'assets/img/icons/print-white.svg'
+import { Button } from '../../settings'
 
 import './GenerateMnemonic.scss'
 

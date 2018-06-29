@@ -11,7 +11,7 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import styles from 'layouts/Splash/styles'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitPrivateKeyLoginForm,
   onSubmitPrivateKeyLoginFormSuccess,

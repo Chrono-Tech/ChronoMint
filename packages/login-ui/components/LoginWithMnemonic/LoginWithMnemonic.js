@@ -11,7 +11,7 @@ import { Link } from 'react-router'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import styles from 'layouts/Splash/styles'
-import { Button } from 'components'
+import Button from 'components/common/ui/Button/Button'
 import {
   onSubmitMnemonicLoginForm,
   onSubmitMnemonicLoginFormSuccess,

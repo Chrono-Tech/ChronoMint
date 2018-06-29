@@ -7,7 +7,7 @@ const schema = {
   name: PropTypes.string,
   types: PropTypes.object,
   encrypted: PropTypes.array,
-  profile: PropTypes.instanceOf(AccountProfileModel),
+  profile: PropTypes.object,
 }
 
 class AccountEntryModel extends AbstractAccountModel {
