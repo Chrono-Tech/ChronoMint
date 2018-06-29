@@ -64,9 +64,9 @@ export default class PollActionMenu extends PureComponent {
 
     return (
       <div styleName='root'>
-        <div styleName='menuButton' onClick={this.handleClick}>
+        <button styleName='menuButton' onClick={this.handleClick}>
           <i styleName='icon' className='chronobank-icon'>more</i>
-        </div>
+        </button>
 
         <Popover
           open={this.state.open}

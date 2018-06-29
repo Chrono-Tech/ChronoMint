@@ -114,4 +114,13 @@
     text-transform: none;
     font-weight: 400;
   }
+  button {
+    background: none;
+    border: none;
+    box-shadow: none;
+
+    &:focus {
+      outline: 0;
+    }
+  }
 }

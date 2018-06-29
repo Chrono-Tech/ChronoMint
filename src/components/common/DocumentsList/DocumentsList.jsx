@@ -5,11 +5,11 @@
 
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
+import { List } from 'immutable'
 import { connect } from 'react-redux'
 import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNoticeModel'
 import { download } from 'redux/ui/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
-import FileIcon from 'components/common/FileSelect/FileIcon'
 
 import './DocumentsList.scss'
 
@@ -17,7 +17,11 @@ import './DocumentsList.scss'
 export default class DocumentsList extends PureComponent {
   static propTypes = {
     handleDownload: PropTypes.func,
-    documents: PropTypes.object, // immutable list
+    documents: PropTypes.instanceOf(List),
+  }
+
+  handleDownload = (file) => () => {
+    this.props.handleDownload(file.hash(), file.name())
   }
 
   render () {
@@ -28,11 +32,11 @@ export default class DocumentsList extends PureComponent {
     return (
       <div styleName='root'>
         <div styleName='documents-list'>
-          {documents.map((file, index) => (
-            <a key={index} styleName='list-item' onClick={() => this.props.handleDownload(file.hash(), file.name())}>
+          {documents.map((file) => (
+            <button key={file.id()} styleName='list-item' onClick={this.handleDownload(file)}>
               <i styleName='item-icon' className='chronobank-icon'>file</i>
               <span styleName='item-title'>{file.name()}</span>
-            </a>
+            </button>
           ))}
         </div>
       </div>

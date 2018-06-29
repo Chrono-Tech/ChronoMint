@@ -11,13 +11,24 @@
   color: $color-primary-0;
   .documents-list {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
     .list-item {
       flex: 0 0 50%;
       margin: 8px 0;
       cursor: pointer;
+      background: none;
+      border: none;
+      display: flex;
+      align-items: center;
+      &:hover {
+        .item-title {
+          text-decoration: underline;
+        }
+      }
+      &:focus {
+        outline: 0;
+      }
       .item-icon {
+        font-size: 30px;
         width: 24px;
         height: 24px;
       }
@@ -29,6 +40,7 @@
         vertical-align: top;
         color: $color-primary-0;
         max-width: 80%;
+        font-weight: 500;
         @include ellipsis;
       }
     }

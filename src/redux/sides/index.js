@@ -6,5 +6,5 @@
 import sides from './reducer'
 
 export {
-  sides
+  sides,
 }

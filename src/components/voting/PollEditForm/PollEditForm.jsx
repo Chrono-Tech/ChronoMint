@@ -104,6 +104,10 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_EDIT_POLL, validate })
 export default class PollEditForm extends Component {
+  static formatForDateField (value) {
+    return value === '' ? null : value
+  }
+
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,
@@ -265,7 +269,7 @@ export default class PollEditForm extends Component {
                 />
                 <Field
                   component={TimePicker}
-                  format={(value) => value === '' ? null : value}
+                  format={PollEditForm.formatForDateField}
                   cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadlineTime'
