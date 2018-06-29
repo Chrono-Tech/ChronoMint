@@ -123,11 +123,13 @@ class LoginWithWallet extends Component {
     return (
       <MuiThemeProvider>
         <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
-          <div styleName='page-title'>Upload a Wallet File</div>
+          <div styleName='page-title'>
+            <Translate value='LoginWithWallet.title' />
+          </div>
 
           <p styleName='description'>
-            Upload a wallet file to add the login information to your browser.
-            We provide the file on New Account Creation.
+            <Translate value='LoginWithWallet.description' />
+            <Translate value='LoginWithWallet.descriptionExtra' />
           </p>
 
           <div styleName='row'>
@@ -197,7 +199,10 @@ class LoginWithWallet extends Component {
               </span> : <Translate value='LoginWithWallet.login' />}
             />
             { error ? <div styleName='error'>{error}</div> : null }
-            or&nbsp;<Link to='/login' href styleName='link'>Back</Link>
+            <Translate value='LoginWithWallet.or' />&nbsp;
+            <Link to='/login' href styleName='link'>
+              <Translate value='LoginWithWallet.back' />
+            </Link>
           </div>
 
         </form>

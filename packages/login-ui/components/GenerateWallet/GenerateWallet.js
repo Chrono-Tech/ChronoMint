@@ -8,6 +8,7 @@ import classnames from 'classnames'
 import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import { Button } from 'components'
@@ -43,12 +44,13 @@ export default class MnemonicPage extends Component {
       <MuiThemeProvider>
         <div styleName='wrapper'>
           <div>
-            <div styleName='page-title'>Download a Wallet File</div>
+            <div styleName='page-title'>
+              <Translate value='GenerateWallet.title' />
+            </div>
 
             <p styleName='description'>
-              You can use this wallet file in password recovery option to
-              make your account available in another browser, for example.
-              The file is protected by the same password as your created before.
+              <Translate value='GenerateWallet.description' />
+              <Translate value='GenerateWallet.descriptionExtra' />
             </p>
 
             <div styleName='actions'>
@@ -58,7 +60,7 @@ export default class MnemonicPage extends Component {
               >
                 <img src={Wallet} alt='' />
                 <br />
-                Download
+                <Translate value='GenerateWallet.download' />
               </Button>
 
               <Button
@@ -66,7 +68,7 @@ export default class MnemonicPage extends Component {
                 buttonType='login'
                 onClick={navigateToLoginPage}
               >
-                Finish
+                <Translate value='GenerateWallet.finish' />
               </Button>
             </div>
 

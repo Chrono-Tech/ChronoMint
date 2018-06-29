@@ -18,8 +18,6 @@ import {
   onSubmitCreateAccountPageSuccess,
   onSubmitCreateAccountPageFail,
 } from '@chronobank/login/redux/network/actions'
-import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 import styles from 'layouts/Splash/styles'
 
 import validate from './validate'
@@ -61,12 +59,11 @@ class CreateAccountPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
           <div styleName='create-title'>
-            Create New Account
+            <Translate value='CreateAccount.title' />
           </div>
 
           <div styleName='create-title-description'>
-            Created wallet will be encrypted using given password and stored in your
-            browser&apos;s local storage.
+            <Translate value='CreateAccount.description' />
           </div>
 
           <div styleName='fields-block'>
@@ -104,11 +101,14 @@ class CreateAccountPage extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              Create new account
+              <Translate value='CreateAccount.login' />
             </Button>
             { error && (<div styleName='form-error'>{error}</div>) }
-            or<br />
-            <Link to='/login/select-account' href styleName='link'>Use an existing account</Link>
+            <Translate value='CreateAccount.or' />
+            <br />
+            <Link to='/login/select-account' href styleName='link'>
+              <Translate value='CreateAccount.useAccount' />
+            </Link>
           </div>
 
         </form>

@@ -4,7 +4,13 @@
  */
 
 export const en = {
+  title: 'Create New Account',
+  description: 'Created wallet will be encrypted using given password and stored in your\n' +
+    '            browser\'s local storage.',
   walletName: 'Wallet name',
   password: 'Password',
   confirmPassword: 'Confirm Password',
+  login: 'Create new account',
+  or: 'or',
+  useAccount: 'Use an existing account',
 }

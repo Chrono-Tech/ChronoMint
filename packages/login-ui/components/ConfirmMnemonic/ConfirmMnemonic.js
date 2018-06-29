@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { push } from 'react-router-redux'
 import { MuiThemeProvider } from 'material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -129,9 +130,13 @@ class ConfirmMnemonicPage extends Component {
       <MuiThemeProvider>
         <form styleName='form' name={FORM_CONFIRM_MNEMONIC} onSubmit={handleSubmit}>
           <div>
-            <div styleName='page-title'>Confirm back-up phrase</div>
+            <div styleName='page-title'>
+              <Translate value='ConfirmMnemonic.title' />
+            </div>
 
-            <p styleName='description'>Click on back-up phrase words in the correct order.</p>
+            <p styleName='description'>
+              <Translate value='ConfirmMnemonic.description' />
+            </p>
 
             <div styleName='passPhraseWrapper'>
               <div styleName='passPhrase'>{ this.getCurrentMnemonic() }</div>
@@ -153,16 +158,22 @@ class ConfirmMnemonicPage extends Component {
             </div>
 
             <div styleName='controlsBlock'>
-              <div styleName='control' onClick={this.clearMnemonic.bind(this)}>Start Over</div>
-              <div styleName='control' onClick={this.clearLastWord.bind(this)}>Undo</div>
+              <div styleName='control' onClick={this.clearMnemonic.bind(this)}>
+                <Translate value='ConfirmMnemonic.startOver' />
+              </div>
+              <div styleName='control' onClick={this.clearLastWord.bind(this)}>
+                <Translate value='ConfirmMnemonic.undo' />
+              </div>
             </div>
 
             <div styleName='actions'>
               <Button styleName='submit' type='submit' buttonType='login'>
-                Done
+                <Translate value='ConfirmMnemonic.done' />
               </Button>
 
-              <Link to='/login/mnemonic' href styleName='link'>Back</Link>
+              <Link to='/login/mnemonic' href styleName='link'>
+                <Translate value='ConfirmMnemonic.back' />
+              </Link>
             </div>
 
             <div styleName='progressBlock'>

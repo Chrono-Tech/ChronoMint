@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
+import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import {
   AccountEntryModel,
@@ -77,7 +78,7 @@ class RecoverAccountPage extends PureComponent {
       <MuiThemeProvider>
         <form styleName='form' name={FORM_RECOVER_ACCOUNT} onSubmit={handleSubmit}>
           <div styleName='title'>
-            Enter mnemonic to reset password
+            <Translate value='RecoverAccount.title' />
           </div>
 
           <div styleName='user-row'>
@@ -96,7 +97,7 @@ class RecoverAccountPage extends PureComponent {
                   styleName='field'
                   component={TextField}
                   name={`word-${i + 1}`}
-                  floatingLabelText={`Word ${i + 1}`}
+                  floatingLabelText={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
                   fullWidth
                   {...styles.textField}
                 />
@@ -110,11 +111,14 @@ class RecoverAccountPage extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              Reset password
+              <Translate value='RecoverAccount.resetPassword' />
             </Button>
             { error && (<div styleName='form-error'>{error}</div>) }
-            or<br />
-            <Link to='/login' href styleName='link'>Back</Link>
+            <Translate value='RecoverAccount.or' />
+            <br />
+            <Link to='/login' href styleName='link'>
+              <Translate value='RecoverAccount.back' />
+            </Link>
           </div>
 
         </form>

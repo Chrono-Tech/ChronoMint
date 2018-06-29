@@ -5,6 +5,7 @@
 
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { MuiThemeProvider } from 'material-ui'
 import React, { Component } from 'react'
 import { Button } from '../../settings'
@@ -53,13 +54,13 @@ export default class MnemonicPage extends Component {
       <MuiThemeProvider>
         <div styleName='wrapper'>
           <div>
-            <div styleName='page-title'>Write down back-up phrase</div>
+            <div styleName='page-title'>
+              <Translate value='GenerateMnemonic.title' />
+            </div>
 
             <p styleName='description'>
-              You can use this phrase to login and access your wallet,
-              even if you forgot your password. You may also print the key
-              which will be provided with a QR code. Use this QR code to
-              scan on phone on ChronoWallet recover page.
+              <Translate value='GenerateMnemonic.description' />
+              <Translate value='GenerateMnemonic.descriptionExtra' />
             </p>
 
             <div styleName='passPhraseWrapper'>
@@ -72,21 +73,28 @@ export default class MnemonicPage extends Component {
             </div>
 
             <div styleName='infoBlock'>
-              <div styleName='infoBlockHeader'>Important! Read the security guidelines</div>
+              <div styleName='infoBlockHeader'>
+                <Translate value='GenerateMnemonic.infoHeader' />
+              </div>
 
               <ol styleName='infoBlockList'>
                 <li>
                   <p styleName='listItemContent'>
-                    <b>Don&apos;t share your back-up phrase (mnemonic key) with someone you don&apos;t trust.</b>
-                    &nbsp;Double check services you&apos;re giving your mnemonic to and don&apos;t share your phrase with anyone.
+                    <b>
+                      <Translate value='GenerateMnemonic.infoContentPart1' />
+                    </b>
+                    &nbsp;
+                    <Translate value='GenerateMnemonic.infoContentPart2' />
                   </p>
                 </li>
 
                 <li>
                   <p styleName='listItemContent'>
-                    <b>Don&apos;t loose your back-up phrase (mnemonic key).</b>
-                    &nbsp;We do not store this information and Your account will be lost
-                    together with all your funds and history.
+                    <b>
+                      <Translate value='GenerateMnemonic.infoContentPart3' />
+                    </b>
+                    &nbsp;
+                    <Translate value='GenerateMnemonic.infoContentPart4' />
                   </p>
                 </li>
               </ol>
@@ -98,7 +106,7 @@ export default class MnemonicPage extends Component {
                 buttonType='login'
                 onClick={this.navigateToConfirmPage.bind(this)}
               >
-                Proceed
+                <Translate value='GenerateMnemonic.login' />
               </Button>
             </div>
 

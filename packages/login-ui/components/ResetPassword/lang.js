@@ -4,5 +4,8 @@
  */
 
 export const en = {
-
+  title: 'Reset password',
+  password: 'Enter New Password',
+  confirmPassword: 'Confirm New Password',
+  reset: 'Reset',
 }

@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Link } from 'react-router'
 import { TextField } from 'redux-form-material-ui'
+import { Translate } from 'react-redux-i18n'
 import styles from 'layouts/Splash/styles'
 import { Button } from 'components'
 import {
@@ -70,10 +71,12 @@ class LoginWithMnemonic extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>Mnemonic form</div>
+          <div styleName='page-title'>
+            <Translate value='LoginWithMnemonic.title' />
+          </div>
 
           <div styleName='description'>
-            Type or copy your mnemonic key into the box below
+            <Translate value='LoginWithMnemonic.description' />
           </div>
 
           <div styleName='field'>
@@ -81,7 +84,7 @@ class LoginWithMnemonic extends PureComponent {
               component={TextField}
               name='mnemonic'
               type='text'
-              hintText='Mnemonic'
+              hintText={<Translate value='LoginWithMnemonic.mnemonic' />}
               fullWidth
               multiLine
               rows={2}
@@ -97,10 +100,13 @@ class LoginWithMnemonic extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              Login
+              <Translate value='LoginWithMnemonic.login' />
             </Button>
-            or&nbsp;
-            <Link to='/login/import-methods' href styleName='link'>back</Link>
+            <Translate value='LoginWithMnemonic.or' />
+            &nbsp;
+            <Link to='/login/import-methods' href styleName='link'>
+              <Translate value='LoginWithMnemonic.back' />
+            </Link>
           </div>
 
         </form>

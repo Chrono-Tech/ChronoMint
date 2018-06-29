@@ -4,5 +4,9 @@
  */
 
 export const en = {
-
+  title: 'Enter mnemonic to reset password',
+  word: 'Word',
+  resetPassword: 'Reset password',
+  or: 'or',
+  back: 'Back',
 }

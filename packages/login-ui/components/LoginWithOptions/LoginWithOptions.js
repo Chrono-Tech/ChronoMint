@@ -8,6 +8,7 @@ import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { Button } from 'components'
 
 import {
@@ -68,7 +69,9 @@ export default class ImportMethodsPage extends PureComponent {
       <MuiThemeProvider>
         <div styleName='page'>
 
-          <div styleName='page-title'>Add an Existing Account</div>
+          <div styleName='page-title'>
+            <Translate value='LoginWithOptions.title' />
+          </div>
 
           <div styleName='methods'>
             <Button styleName='button button-trezor' disabled>
@@ -95,7 +98,7 @@ export default class ImportMethodsPage extends PureComponent {
             >
               <img src={Mnemonic} alt='' />
               <br />
-              Mnemonic
+              <Translate value='LoginWithOptions.mnemonicKey' />
             </Button>
 
             <Button
@@ -104,7 +107,7 @@ export default class ImportMethodsPage extends PureComponent {
             >
               <img src={Key} alt='' />
               <br />
-              Private Key
+              <Translate value='LoginWithOptions.privateKey' />
             </Button>
 
             <Button
@@ -113,7 +116,7 @@ export default class ImportMethodsPage extends PureComponent {
             >
               <img src={Wallet} alt='' />
               <br />
-              Wallet File
+              <Translate value='LoginWithOptions.walletFile' />
             </Button>
 
             <Button
@@ -127,8 +130,11 @@ export default class ImportMethodsPage extends PureComponent {
           </div>
 
           <div styleName='actions'>
-            or <br />
-            <Link to='/login/create-account' href styleName='link' onClick={this.handleCreateAccount}>Create New Account</Link>
+            <Translate value='LoginWithOptions.or' />
+            <br />
+            <Link to='/login/create-account' href styleName='link' onClick={this.handleCreateAccount}>
+              <Translate value='LoginWithOptions.createAccount' />
+            </Link>
           </div>
 
         </div>

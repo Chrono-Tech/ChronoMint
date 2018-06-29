@@ -74,22 +74,9 @@ class LoginPage extends PureComponent {
     initAccountsSignature: PropTypes.func,
   }
 
-  constructor(props){
-    super(props)
-
-    this.state = {
-      isShowProvider: true,
-      strategy: STRATEGY_AUTOMATIC,
-    }
-  }
-
   componentWillMount(){
     this.props.initLoginPage()
   }
-
-  handleToggleProvider = (isShowProvider) => this.setState({ isShowProvider })
-
-  handleSelectorSwitch = (currentStrategy) => this.setState({ strategy: nextStrategy[currentStrategy] })
 
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,

@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import uniqid from 'uniqid'
+import uuid from 'uuid/v1'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
@@ -128,7 +128,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
   wallet.add(account)
 
   const entry = new AccountEntryModel({
-    key: uniqid(),
+    key: uuid(),
     name,
     types,
     encrypted: wallet && wallet.encrypt(password),

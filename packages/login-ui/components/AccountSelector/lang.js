@@ -4,7 +4,9 @@
  */
 
 export const en = {
-  login: 'Login',
-  address: 'Ethereum address',
-  selectAddress: 'Select address',
+  title: 'My Accounts',
+  description: 'Browse account stored on your device.',
+  descriptionExtra: 'If you have created an account before you may use Add an Existing Account option below.',
+  button: 'Add an existing account',
+  createAccount: 'Create New Account',
 }

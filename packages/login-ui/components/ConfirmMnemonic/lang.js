@@ -4,5 +4,10 @@
  */
 
 export const en = {
-
+  title: 'Confirm back-up phrase',
+  description: 'Click on back-up phrase words in the correct order.',
+  startOver: 'Start Over',
+  undo: 'Undo',
+  done: 'Done',
+  back: 'Back',
 }

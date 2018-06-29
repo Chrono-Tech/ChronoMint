@@ -6,6 +6,7 @@
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import {
   AccountEntryModel,
@@ -71,7 +72,9 @@ class ResetPasswordPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>Reset password</div>
+          <div styleName='page-title'>
+            <Translate value='ResetPassword.title' />
+          </div>
 
           <div styleName='user-row'>
             <UserRow
@@ -86,7 +89,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='password'
               type='password'
-              floatingLabelText='Enter New Password'
+              floatingLabelText={<Translate value='ResetPassword.password' />}
               fullWidth
               {...styles.textField}
             />
@@ -94,7 +97,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='confirmPassword'
               type='password'
-              floatingLabelText='Confirm New Password'
+              floatingLabelText={<Translate value='ResetPassword.confirmPassword' />}
               fullWidth
               {...styles.textField}
             />
@@ -106,7 +109,7 @@ class ResetPasswordPage extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              Reset
+              <Translate value='ResetPassword.reset' />
             </Button>
           </div>
 

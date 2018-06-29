@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
+import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
 import styles from 'layouts/Splash/styles'
 import { Button } from 'components'
@@ -69,10 +70,12 @@ class MnemonicLoginPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
 
-          <div styleName='page-title'>Private key form</div>
+          <div styleName='page-title'>
+            <Translate value='LoginWithPrivateKey.title' />
+          </div>
 
           <div styleName='description'>
-            Type or copy your private key into the box below
+            <Translate value='LoginWithPrivateKey.description' />
           </div>
 
           <div styleName='field'>
@@ -80,7 +83,7 @@ class MnemonicLoginPage extends PureComponent {
               component={TextField}
               name='pk'
               type='text'
-              hintText='Private key'
+              hintText={<Translate value='LoginWithPrivateKey.privateKey' />}
               fullWidth
               multiLine
               rows={2}
@@ -96,10 +99,13 @@ class MnemonicLoginPage extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              Login
+              <Translate value='LoginWithPrivateKey.login' />
             </Button>
-            or&nbsp;
-            <Link to='/login/import-methods' href styleName='link'>back</Link>
+            <Translate value='LoginWithPrivateKey.or' />
+            &nbsp;
+            <Link to='/login/import-methods' href styleName='link'>
+              <Translate value='LoginWithPrivateKey.back' />
+            </Link>
           </div>
 
         </form>
