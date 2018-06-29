@@ -91,6 +91,7 @@
 }
 
 .amount-list-container {
+  margin-top: 30px;
   display: flex;
   flex: 4;
   border-top: 1px solid $button-color-3;
@@ -110,6 +111,10 @@
       line-height: 17px;
     }
   }
+}
+
+.amount-list-container + .tokens-list {
+  margin-top: 0;
 }
 
 .show-all {
@@ -151,6 +156,7 @@
 }
 
 .owners-amount {
+  margin-top: 30px;
   display: flex;
   flex-direction: row;
 }
@@ -261,6 +267,7 @@
 }
 
 .tokens-list {
+  margin-top: 30px;
   display: flex;
 }
 
@@ -322,7 +329,6 @@
 
 .token-amount {
   margin-top: 20px;
-  margin-bottom: 30px;
 }
 
 .crypto-amount {
@@ -358,7 +364,7 @@
   font-weight: 500;
   padding-top: 20px;
   font-size: 14px;
-  margin: 15px 0 10px;
+  margin: 30px 0 0;
 }
 
 .pendings-container {

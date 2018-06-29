@@ -203,7 +203,7 @@ class NetworkService extends EventEmitter {
   }
 
   setAccounts = (accounts) => {
-      this._accounts = accounts;
+    this._accounts = accounts;
   }
 
   getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
@@ -240,7 +240,7 @@ class NetworkService extends EventEmitter {
         try {
           if (isMetaMask) {
             this._dispatch({ type: NETWORK_SET_TEST_METAMASK })
-	    this.isMetamask = true
+            this.isMetamask = true
           }
         } catch (e) {
           // eslint-disable-next-line

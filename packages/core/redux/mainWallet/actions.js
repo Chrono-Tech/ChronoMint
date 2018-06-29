@@ -122,6 +122,9 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       const isMultiSigWalletsTo = tx.to().split(',').some((to) => walletsAccounts.includes(to))
 
       if (isMainWalletFrom || isMainWalletTo || isMultiSigWalletsFrom || isMultiSigWalletsTo || tx.from() === account || tx.to() === account) {
+      if (mainWalletAddresses.includes(tx.from()) || mainWalletAddresses.includes(tx.to()) ||
+        walletsAccounts.includes(tx.from()) || walletsAccounts.includes(tx.to()) ||
+        tx.from() === account || tx.to() === account) {
         dispatch(notify(new TransferNoticeModel({
           value: token.removeDecimals(tx.value()),
           symbol,
@@ -405,7 +408,7 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   })
 }
 
-export const estimateGasForDeposit = async (mode: string, params, callback, gasPriseMultiplier = 1) => {
+export const estimateGasForDeposit = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
   let dao = null
   switch (mode) {
     case TX_APPROVE:
@@ -423,8 +426,8 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)

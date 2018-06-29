@@ -30,7 +30,7 @@ export default class DocumentsList extends PureComponent {
         <div styleName='documents-list'>
           {documents.map((file, index) => (
             <a key={index} styleName='list-item' onClick={() => this.props.handleDownload(file.hash(), file.name())}>
-              <FileIcon styleName='item-icon' type={file.icon()} />
+              <i styleName='item-icon' className='chronobank-icon'>file</i>
               <span styleName='item-title'>{file.name()}</span>
             </a>
           ))}

@@ -49,8 +49,8 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
-    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
   }
 }
 
@@ -63,8 +63,8 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
-    const e = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
+    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
   }
 }
 
@@ -239,15 +239,15 @@ export const watchLatestBlock = () => async (dispatch) => {
 
 }
 
-export const estimateGas = (tokenId, params, callback, gasPriseMultiplier = 1, address) => async () => {
+export const estimateGas = (tokenId, params, callback, gasPriceMultiplier = 1, address) => async () => {
   const tokenDao = tokenService.getDAO(tokenId)
   const [to, amount, func] = params
   try {
     const { gasLimit, gasFee, gasPrice } = await tokenDao.estimateGas(func, [to, new BigNumber(amount)], new BigNumber(0), address)
     callback(null, {
       gasLimit,
-      gasFee: new Amount(gasFee.mul(gasPriseMultiplier), ETH),
-      gasPrice: new Amount(gasPrice.mul(gasPriseMultiplier), ETH),
+      gasFee: new Amount(gasFee.mul(gasPriceMultiplier), ETH),
+      gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), ETH),
     })
   } catch (e) {
     callback(e)

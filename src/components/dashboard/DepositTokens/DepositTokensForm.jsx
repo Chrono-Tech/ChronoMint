@@ -190,7 +190,7 @@ export default class DepositTokensForm extends PureComponent {
             this.setState({ gasFee, gasPrice })
           } else {
             // eslint-disable-next-line
-            console.log(error)
+            console.error(error)
           }
         },
         feeMultiplier,

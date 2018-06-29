@@ -23,7 +23,6 @@ export default class Button extends PureComponent {
       PropTypes.string,
       PropTypes.number,
     ]),
-    onClick: PropTypes.func,
     className: PropTypes.string,
     type: PropTypes.string,
   }

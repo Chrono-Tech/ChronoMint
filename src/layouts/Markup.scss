@@ -51,7 +51,7 @@
 }
 
 .middleSnackbarPanel {
-  @include position(absolute, 0, 0, auto, 0);
+  @include position(fixed, 0, 0, auto, 0);
   height: 20px;
   transition: transform 400ms $cubic-animation;
   &:empty {

@@ -64,7 +64,7 @@ export default class LocaleDropDown extends PureComponent {
   }
 
   render () {
-    const locales = Object.entries(i18n).map(([ name, dictionary ]) => ({
+    const locales = Object.entries(i18n).map(([name, dictionary]) => ({
       name,
       title: dictionary.title,
     }))

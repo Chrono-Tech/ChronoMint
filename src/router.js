@@ -18,12 +18,14 @@ import {
   RewardsPage,
   SettingsPage,
   VotingPage,
+  PollPage,
   WalletsPage,
   WalletPage,
   DepositsPage,
   DepositPage,
   AddWalletPage,
   TwoFAPage,
+  NewPollPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from './platform/utils/LocalStorage'
@@ -64,6 +66,8 @@ const router = (
         <Route path='exchange' component={ExchangePage} />
         <Route path='rewards' component={RewardsPage} />
         <Route path='voting' component={VotingPage} />
+        <Route path='poll' component={PollPage} />
+        <Route path='new-poll' component={NewPollPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={LOCPage} />

@@ -19,3 +19,7 @@ export const getGasSliderCollection = (state) => {
   const { gasPriceMultiplier } = state.get(DUCK_SESSION)
   return gasPriceMultiplier
 }
+
+export const getIsCBE = (state) => {
+  return state.get(DUCK_SESSION).isCBE
+}

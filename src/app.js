@@ -23,7 +23,7 @@ class App {
         <MuiThemeProvider muiTheme={themeDefault}>
           {router}
         </MuiThemeProvider>,
-        document.getElementById('react-root')
+        document.getElementById('react-root'),
       )
     })
   }

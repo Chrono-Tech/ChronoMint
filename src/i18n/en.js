@@ -9,7 +9,6 @@ import * as assetDonator from '@chronobank/core/dao/AssetDonatorDAO'
 import * as erc20 from '@chronobank/core/dao/ERC20DAO'
 import * as erc20Manager from '@chronobank/core/dao/ERC20ManagerDAO'
 import * as eth from '@chronobank/core/dao/EthereumDAO'
-import * as bitcoin from '@chronobank/login/network/BitcoinProvider'
 import * as exchange from '@chronobank/core/dao/ExchangeDAO'
 import * as loc from '@chronobank/core/dao/LOCManagerDAO'
 import * as operations from '@chronobank/core/dao/PendingManagerDAO'
@@ -55,6 +54,7 @@ export default {
     addWallet: 'Add wallet',
     exchange: 'Exchange',
     voting: 'Voting',
+    newPoll: 'Create new poll',
     rewards: 'Bonuses',
     assets: 'My assets',
     profile: 'Profile',
@@ -68,6 +68,7 @@ export default {
     pageNotFound: 'Page not found',
     backToMain: 'Back to main page',
     twoFa: 'Enable 2FA',
+    poll: 'Poll',
   },
   common: {
     name: 'Name',
@@ -551,6 +552,8 @@ export default {
     lowerThanOrEqual: 'Should be lower or equal than %{limit}',
     moreThan: 'Should be more than %{limit}',
     moreThanOrEqual: 'Should be more or equal than %{limit}',
+    countMoreThan: 'Count should be more than %{limit}',
+    countMoreThanOrEqual: 'Count should be more or equal than %{limit}',
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
@@ -720,7 +723,7 @@ export default {
     errors: {
       // TODO @dkchv: add errors
     },
-    addAttachments: 'Add attachments',
+    attachNew: 'Attach new',
     selectFile: 'Select File',
     filesLimit: '%{files} of %{limit}',
   },
@@ -804,26 +807,6 @@ export default {
       dividendsAccumulatedForPeriod: 'Dividends accumulated for period',
       yourApproximateRevenueForPeriod: 'Your approximate revenue for period',
     },
-    Poll: {
-      new: 'New',
-      ongoing: 'Ongoing',
-      daysLeft: 'days left',
-      daysLeft_1: 'day left',
-      finished: 'Finished',
-      timeHoldersAlreadyVoted: 'percent of TIME received',
-      no: 'No',
-      requiredVotes: 'Required TIME',
-      receivedVotes: 'Received TIME',
-      variants: 'Variants',
-      documents: 'Documents',
-      remove: 'Remove',
-      details: 'Details',
-      endPoll: 'End Poll',
-      activate: 'Activate',
-      vote: 'Vote',
-      published: 'Published',
-      endDate: 'End Date',
-    },
     locs: {
       PageTitle: {
         labourOfferingCompanies: 'Labour Offering Companies',
@@ -864,36 +847,6 @@ export default {
         addCbeAddress: 'Add CBE Address',
         cancel: 'Cancel',
         addAddress: 'Add Address',
-      },
-      PollEditDialog: {
-        editPoll: 'Edit Poll',
-        newPoll: 'New Poll',
-        pollTitle: 'Poll title',
-        pollDescription: 'Poll description',
-        voteLimit: 'Vote Limit in TIME per option',
-        finishedDate: 'Finished date',
-        addAttachments: 'Add Attachments',
-        option: 'Option',
-        optionIndex: 'Option #%{index}',
-        updatePoll: 'Update Poll',
-        createPoll: 'Create Poll',
-        addOption: 'Add Option',
-      },
-      PollDetailsDialog: {
-        published: 'Published',
-        finished: 'Finished',
-        no: 'No',
-        endDate: 'End date',
-        requiredVotes: 'Required TIME',
-        receivedVotes: 'Received TIME',
-        variants: 'Variants',
-        documents: 'Documents',
-        ongoing: 'Ongoing',
-        new: 'New',
-        timeHoldersAlreadyVoted: 'percent of TIME received',
-        optionNumber: 'Option #%{number}',
-        pollOptions: 'Poll options',
-        idxNumber: '#%{number}',
       },
       AddCurrencyDialog: {
         addToken: 'Add Token',
@@ -938,5 +891,8 @@ export default {
   topButtons: {
     addDeposit: 'Add deposit',
     addWallet: 'Add wallet',
+    addPoll: 'Add a Poll',
+    publish: 'Publish',
+    endPoll: 'End poll',
   },
 }

@@ -65,12 +65,20 @@ class TopButtons extends PureComponent {
           ) : null}
         </div>
         {
-          buttons.map((button, i) => (
-            <Button key={i} styleName={classnames('topButton', { 'iconButton': !!button.chronobankIcon })} onClick={this.handleAction(button.action)}>
-              {button.chronobankIcon && <i className='chronobank-icon'>{button.chronobankIcon}</i>}
-              {button.title && <Translate value={`topButtons.${button.title}`} />}
-            </Button>
-          ))
+          buttons.map((button, i) => {
+            if (button.component) {
+              return <button.component key={i} />
+            }
+            const isIconButton = !!button.chronobankIcon && !button.title
+            const isButtonWithIcon = !!button.chronobankIcon && !!button.title
+
+            return (
+              <Button key={i} styleName={classnames('topButton', { 'iconButton': isIconButton, 'buttonWithIcon': isButtonWithIcon })} onClick={this.handleAction(button.action)}>
+                {button.chronobankIcon && <i className='chronobank-icon'>{button.chronobankIcon}</i>}
+                {button.title && <Translate value={`topButtons.${button.title}`} />}
+              </Button>
+            )
+          })
         }
       </div>
     )
