@@ -58,7 +58,6 @@ class PrivateKeyProvider {
       nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
       waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
     }
-
   }
 
   createBitcoinWalletFromPK (privateKey, network) {

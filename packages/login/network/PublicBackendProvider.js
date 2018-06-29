@@ -8,7 +8,7 @@ export default class PublicBackendProvider {
     return PUBLIC_BACKEND_REST_URL || DEFAULT_BACKEND_HOST // PUBLIC_BACKEND_REST_URL - global CONST from Webpack
   }
 
-  async get(url) {
+  async get (url) {
     const result = await axios.get(this.getPublicHost() + url)
     return result ? result.data : null
   }

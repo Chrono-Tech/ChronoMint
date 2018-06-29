@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { prefix } from './lang'
-import './PollDepositWarningWidget.scss'
+import './styles.scss'
 
 export default class PollDepositWarningWidget extends PureComponent {
   render () {

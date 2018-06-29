@@ -306,6 +306,7 @@
 .footer {
   display: grid;
   grid-template-columns: 180px 1fr;
+  margin-top: 30px;
   margin-bottom: 40px;
   .pendingOperations {
     display: flex;

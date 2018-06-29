@@ -48,7 +48,7 @@ class TrezorProvider extends EventEmitter {
   setupAndStart (providerURL) {
     this._engine.addProvider(this._trezorSubprovider)
     this._engine.addProvider(new FilterSubprovider())
-    this._engine.addProvider(new RpcSubprovider({rpcUrl: providerURL}))
+    this._engine.addProvider(new RpcSubprovider({ rpcUrl: providerURL }))
     this._engine.start()
   }
 
@@ -71,7 +71,7 @@ class TrezorProvider extends EventEmitter {
     })
   }
 
-  setWallet(account) {
+  setWallet (account) {
     this._wallet = new HardwareWallet(account)
   }
 

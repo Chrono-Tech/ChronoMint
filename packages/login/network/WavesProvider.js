@@ -35,7 +35,7 @@ export class WavesProvider extends AbstractProvider {
 
   async getAssets () {
     const node = this._selectNode(this._engine)
-    const { balance, assets } = await node.getAddressInfo(this._engine.getAddress())
+    const { /*balance,*/ assets } = await node.getAddressInfo(this._engine.getAddress())
     return assets || []
   }
 
@@ -60,7 +60,7 @@ export class WavesProvider extends AbstractProvider {
   // eslint-disable-next-line
   async transfer (from: string, to: string, amount: BigNumber, asset) {
     const node = this._selectNode(this._engine)
-    const tx = await this._engine.createTransaction('TRANSFER', {to:to, amount:amount.toNumber(), asset:asset})
+    const tx = await this._engine.createTransaction('TRANSFER', { to: to, amount: amount.toNumber(), asset: asset })
     return node.send(from, tx)
   }
 

@@ -4,8 +4,8 @@
  */
 
 import axios from 'axios'
-import WavesMiddlewareNode from './WavesMiddlewareNode'
 import * as WavesApi from '@waves/waves-api'
+import WavesMiddlewareNode from './WavesMiddlewareNode'
 
 export const WAVES_MAINNET_NODE = new WavesMiddlewareNode({
   api: axios.create({
