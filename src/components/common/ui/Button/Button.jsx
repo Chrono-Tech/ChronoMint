@@ -5,6 +5,7 @@
 
 import classnames from 'classnames'
 import React, { PureComponent } from 'react'
+import { SPINNING_WHEEL } from 'assets'
 import PropTypes from 'prop-types'
 import './Button.scss'
 
@@ -79,13 +80,12 @@ export default class Button extends PureComponent {
           type={this.props.type}
           onClick={this.handleTouchTap}
         >
-          { this.props.buttonType === BUTTON_TYPE_PENDING && <div styleName={'pending-border'} /> }
           {this.props.children
             ? this.props.children
             : <span>{this.props.label}</span>
-
           }
         </button>
+        { this.props.buttonType === BUTTON_TYPE_PENDING && <img styleName='spinning-image' src={SPINNING_WHEEL} alt='' /> }
       </div>
     )
   }

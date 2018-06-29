@@ -23,7 +23,7 @@ export class BitcoinProvider extends AbstractProvider {
     this._handleTransaction = (tx) => this.onTransaction(tx)
     this._handleBalance = (balance) => this.onBalance(balance)
     this._handleLastBlock = (lastBlock) => this.onLastBlock(lastBlock)
-    this._handleTransactionUpdated = ( { address, txList, blockNumber }) => this.onTransactionUpdated(address, txList, blockNumber)
+    this._handleTransactionUpdated = ( { tx, address, blockchain, symbol }) => this.onTransactionUpdated(tx, address, blockchain, symbol)
     this._id = id
   }
 
@@ -96,30 +96,25 @@ export class BitcoinProvider extends AbstractProvider {
     return node.send(from, tx.toHex())
   }
 
-  async onTransactionUpdated (address: String, txList: Array, blockNumber: Number) {
+  async onTransactionUpdated (txData, address, blockchain, symbol) {
     const node = this._selectNode(this._engine)
-    const tsList = txList.map((t) => {
-      const tx = node._createTxModel(t)
-      return new TxModel({
-        txHash: tx.txHash,
-        blockHash: tx.blockHash,
-        blockNumber: tx.blockNumber,
-        confirmations: tx.confirmations,
-        time: tx.time,
-        from: tx.from,
-        to: tx.to,
-        symbol: this._symbol,
-        value: new Amount(tx.value, this._symbol),
-        fee: new Amount(tx.fee, this._symbol),
-        blockchain: 'Bitcoin',
-      })
+    const tx = node._createTxModel(txData, address)
+    const txModel = new TxModel({
+      txHash: tx.txHash,
+      blockHash: tx.blockHash,
+      blockNumber: tx.blockNumber,
+      confirmations: tx.confirmations,
+      time: tx.time,
+      from: tx.from,
+      to: tx.to,
+      symbol: symbol,
+      value: new Amount(tx.value, symbol),
+      fee: new Amount(tx.fee, symbol),
+      blockchain: blockchain,
     })
 
-    console.log('onTransactionUpdated Provider: ', address, txList, tsList, blockNumber)
     this.emit('transaction', {
-      address,
-      txList: tsList,
-      blockNumber,
+      tx: txModel,
     })
   }
 

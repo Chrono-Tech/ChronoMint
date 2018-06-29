@@ -225,12 +225,10 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
         }),
       })
     })
-    .on(EVENT_UPDATE_TRANSACTION, ({ address, txList, blockNumber }) => {
+    .on(EVENT_UPDATE_TRANSACTION, ({ tx }) => {
       dispatch({
         type: WALLET_TRANSACTION_UPDATED,
-        address,
-        txList,
-        blockNumber,
+        tx,
       })
     })
 

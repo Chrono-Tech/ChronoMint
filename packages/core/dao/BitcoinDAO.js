@@ -164,13 +164,14 @@ export default class BitcoinDAO extends EventEmitter {
   }
 
   async watchTransaction () {
-    this._bitcoinProvider.addListener(EVENT_TRANSACTION_MAINED, async ({ address, txList, blockNumber }) => {
+    this._bitcoinProvider.addListener(EVENT_TRANSACTION_MAINED, async ({ tx, address, bitcoin, symbol }) => {
       this.emit(
         EVENT_UPDATE_TRANSACTION,
         {
+          tx,
           address,
-          txList,
-          blockNumber,
+          bitcoin,
+          symbol,
         }
       )
     })

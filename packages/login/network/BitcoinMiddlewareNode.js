@@ -8,10 +8,12 @@ import BitcoinAbstractNode, { BitcoinBalance, BitcoinTx } from './BitcoinAbstrac
 import { DECIMALS } from './BitcoinEngine'
 
 export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
-  constructor ({ feeRate, ...args }) {
+  constructor ({ feeRate, blockchain, symbol, ...args }) {
     super(args)
     // TODO @ipavlenko: Remove it after the relevant REST be implemented on the Middleware
     this._feeRate = feeRate
+    this._blockchain = blockchain
+    this._symbol = symbol
     this._subscriptions = {}
     // TODO @dkchv: still can't combine async + arrow on class
     this.addListener('subscribe', (address) => this._handleSubscribe(address))
@@ -59,8 +61,8 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           (message) => {
             try {
               const data = JSON.parse(message.body)
-              this.emit('transaction', data)
-              this.trace('Transaction Balance', data)
+              this.emit('transaction', { tx: data, address, blockchain: this._blockchain, symbol: this._symbol })
+              this.trace('Transaction Transaction', data)
             } catch (e) {
               this.trace('Failed to decode message', e)
             }
@@ -81,14 +83,6 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
           )
         }
       })
-
-      // setTimeout(() => {
-      //   this.emit('transaction', {
-      //     address: 'mqDJV7TEZ1CCTJk7t2U7s7xvHX8GhXMsL7',
-      //     txList: [JSON.parse('{"timestamp":1530168947772,"blockNumber":15492,"hash":"3d66e705139fdb272d32e2808ab33a39242bb3543a9a2de4b9d99a35d696760c","inputs":[{"address":"mqDJV7TEZ1CCTJk7t2U7s7xvHX8GhXMsL7","value":"210000"}],"outputs":[{"address":"mo5jPfqwucmaQT1RjnhpMM3pJkBPah2gWW","value":"170000"}],"confirmations":1}')],
-      //     blockNumber: -1,
-      //   })
-      // }, 5000)
 
     } catch (e) {
       this.trace('Address subscription error', e)
@@ -216,9 +210,11 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
-    }).join(',')
+    }).join(',').split(',').filter((value, index, self) => self.indexOf(value) === index).join(',')
     const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
-    let to = tx.outputs.filter((output) => output.address !== account).map((output) => `${output.address}`).join(',')
+    let to = tx.outputs.filter((output) => output.address !== account).map((output) => `${output.address}`)
+      .join(',').split(',').filter((value, index, self) => self.indexOf(value) === index).join(',')
+
     if (!to) {
       to = account
     }

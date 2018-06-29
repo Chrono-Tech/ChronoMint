@@ -43,20 +43,12 @@
   }
 }
 
-.pending-border {
-  /* content: ''; */
+.spinning-image {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: transparent;
-  border-radius: 50%;
-  border: 2px dashed $color-white;
-  animation-name: Rotate;
-  animation-duration: 10s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  width: 40px;
+  height: 40px;
+  right: 30px;
+  top: 30px;
 }
 
 .pending {

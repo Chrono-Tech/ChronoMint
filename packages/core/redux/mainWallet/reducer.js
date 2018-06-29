@@ -38,9 +38,7 @@ export default (state = initialState, action) => {
     case a.WALLET_TRANSACTION:
       return state.setTransaction(action.tx)
     case a.WALLET_TRANSACTION_UPDATED:
-      console.log('Reducer Transaction updated: ', action)
-
-      return state
+      return state.setTransaction(action.tx)
     case a.WALLET_TRANSACTIONS:
       return state.updateTransactionsGroup({
         blockchain: action.blockchain,
