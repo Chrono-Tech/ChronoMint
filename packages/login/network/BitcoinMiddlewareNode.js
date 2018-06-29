@@ -210,10 +210,17 @@ export default class BitcoinMiddlewareNode extends BitcoinAbstractNode {
   _createTxModel (tx, account): BitcoinTx {
     const from = tx.isCoinBase ? 'coinbase' : tx.inputs.map((input) => {
       return Array.isArray(input.addresses) ? input.addresses.join(',') : `${input.address}`
-    }).join(',').split(',').filter((value, index, self) => self.indexOf(value) === index).join(',')
+    }).join(',')
+      .split(',')
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .join(',')
     const credited = tx.isCoinBase || !tx.inputs.filter((input) => input.address.indexOf(account) >= 0).length
-    let to = tx.outputs.filter((output) => output.address !== account).map((output) => `${output.address}`)
-      .join(',').split(',').filter((value, index, self) => self.indexOf(value) === index).join(',')
+    let to = tx.outputs.filter((output) => output.address !== account)
+      .map((output) => `${output.address}`)
+      .join(',')
+      .split(',')
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .join(',')
 
     if (!to) {
       to = account
