@@ -104,6 +104,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 @reduxForm({ form: FORM_EDIT_POLL, validate })
 export default class PollEditForm extends Component {
+
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,

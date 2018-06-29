@@ -5,8 +5,8 @@
 
 import { Paper } from 'material-ui'
 import React, { Component } from 'react'
-import { Tokens, CBEAddresses } from 'components'
-
+import Tokens from 'components/settings/Tokens'
+import CBEAddresses from 'components/settings/CBEAddresses'
 import './SettingsContent.scss'
 
 export default class SettingsContent extends Component {

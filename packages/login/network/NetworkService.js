@@ -61,7 +61,7 @@ class NetworkService extends EventEmitter {
     if (!account || !provider || !network) {
       throw new Error(`Wrong session arguments: account: ${account}, provider: ${provider}, network: ${network}`)
     }
-    const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
+    // const accounts = this._store.getState().get(DUCK_NETWORK).accounts || []
     //if (!accounts.includes(account)) {
     //  throw new Error('Account not registered')
     //}
@@ -98,7 +98,6 @@ class NetworkService extends EventEmitter {
     }
 
     const web3 = new Web3()
-    console.log('check local session', providerURL)
     web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
@@ -159,8 +158,9 @@ class NetworkService extends EventEmitter {
     dispatch({ type: NETWORK_SET_ACCOUNTS, accounts: [] })
     try {
       let accounts = this._accounts
-      if (accounts == null)
+      if (accounts == null) {
         accounts = await web3Provider.getAccounts()
+      }
       if (!accounts || accounts.length === 0) {
         throw new Error(ERROR_NO_ACCOUNTS)
       }
@@ -204,7 +204,7 @@ class NetworkService extends EventEmitter {
   }
 
   setAccounts = (accounts) => {
-    this._accounts = accounts;
+    this._accounts = accounts
   }
 
   getScanner = (networkId, providerId, api) => getScannerById(networkId, providerId, api)
@@ -257,7 +257,6 @@ class NetworkService extends EventEmitter {
 
   async checkTestRPC (providerUrl) {
     const web3 = new Web3()
-    console.log('checkTestRPC', providerUrl)
     web3.setProvider(new web3.providers.HttpProvider(providerUrl || TESTRPC_URL))
     const web3Provider = new Web3Provider(web3)
 

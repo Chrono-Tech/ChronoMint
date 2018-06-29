@@ -190,7 +190,7 @@ export default class PendingTxWidget extends PureComponent {
   render () {
     const { wallet, walletInfo } = this.props
 
-    if (!walletInfo || !walletInfo.isMultisig || !walletInfo.is2FA) {
+    if (!walletInfo || !walletInfo.isMultisig) {
       return null
     }
 

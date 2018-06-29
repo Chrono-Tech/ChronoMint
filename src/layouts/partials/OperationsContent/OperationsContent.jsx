@@ -14,7 +14,7 @@ function prefix (token) {
   return `layouts.partials.OperationsContent.${token}`
 }
 
-export default class SettingsContent extends Component {
+export default class OperationsContent extends Component {
   render () {
     return (
       <div styleName='root'>

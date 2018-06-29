@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
 import TokenModel from '../models/tokens/TokenModel'

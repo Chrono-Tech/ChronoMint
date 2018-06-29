@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router'
 import { prefix } from './lang'
-import './PollDepositWarningWidget.scss'
+import './styles.scss'
 
 export default class PollDepositWarningWidget extends PureComponent {
   render () {
@@ -17,7 +17,7 @@ export default class PollDepositWarningWidget extends PureComponent {
           <div styleName='accessDenied'>
             <i className='material-icons' styleName='accessDeniedIcon'>warning</i>
             <Translate value={`${prefix}.warning1`} />
-            <Link to='/deposit'><Translate value={`${prefix}.warning2`} /></Link>
+            <Link to='/deposits'><Translate value={`${prefix}.warning2`} /></Link>
             <Translate value={`${prefix}.warning3`} />
           </div>
         </div>

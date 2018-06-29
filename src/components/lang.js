@@ -37,7 +37,7 @@ import PollEditForm from 'components/voting/PollEditForm/lang'
 import Poll from 'components/voting/Poll/lang'
 import PollStatus from 'components/voting/PollStatus/lang'
 import PublishPollDialog from 'components/dialogs/PublishPollDialog/lang'
-import PollDepositWarningWidget from 'components/voting/PollDepositWarningWidget/lang'
+import VotingWarningWidgets from 'components/voting/VotingWarningWidgets/lang'
 
 export default {
   en: {
@@ -78,6 +78,6 @@ export default {
     Poll: Poll.en,
     PollStatus: PollStatus.en,
     PublishPollDialog: PublishPollDialog.en,
-    PollDepositWarningWidget: PollDepositWarningWidget.en,
+    VotingWarningWidgets: VotingWarningWidgets.en,
   },
 }

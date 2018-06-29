@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Button, TopButtons } from 'components'
@@ -36,7 +36,7 @@ function mapDispatchToProps (dispatch) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class HeaderPartial extends PureComponent {
+export default class HeaderPartial extends Component {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
     pendingTransactions: PropTypes.arrayOf(TxModel),

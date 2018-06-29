@@ -16,6 +16,15 @@ export const getTokens = (state) => {
   return state.get(DUCK_TOKENS)
 }
 
+export const isBTCLikeBlockchain = (blockchain) => {
+  return [
+    BLOCKCHAIN_BITCOIN,
+    BLOCKCHAIN_BITCOIN_CASH,
+    BLOCKCHAIN_BITCOIN_GOLD,
+    BLOCKCHAIN_LITECOIN,
+  ].includes(blockchain)
+}
+
 export const getMainSymbolForBlockchain = (blockchain) => {
   switch (blockchain) {
     case BLOCKCHAIN_BITCOIN:

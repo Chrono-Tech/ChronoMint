@@ -4,6 +4,7 @@
  */
 
 import { MuiThemeProvider } from 'material-ui'
+import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -32,7 +33,7 @@ const multiRowTextFieldStyle = {
     height: 62,
     margin: 0,
   },
-  underlineFocusStyle:{
+  underlineFocusStyle: {
     border: 'none',
   },
   underlineStyle: {
@@ -63,6 +64,10 @@ function mapDispatchToProps (dispatch) {
 }
 
 class LoginWithMnemonic extends PureComponent {
+  static propTypes = {
+    handleSubmit: PropTypes.func,
+  }
+
   render () {
     const { handleSubmit } = this.props
 

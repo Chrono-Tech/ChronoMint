@@ -3,9 +3,9 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-const WAIT_FOR_METAMASK = 100 // ms
-
 import EventEmitter from 'events'
+
+const WAIT_FOR_METAMASK = 100 // ms
 
 class metaMaskResolver extends EventEmitter {
   _resolver () {

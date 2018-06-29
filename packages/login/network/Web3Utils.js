@@ -15,7 +15,7 @@ export default class Web3Utils {
   static createStatusEngine (providerUrl) {
     const engine = new ProviderEngine()
 
-    engine.addProvider(new RpcSubprovider({rpcUrl: providerUrl}))
+    engine.addProvider(new RpcSubprovider({ rpcUrl: providerUrl }))
     engine.start()
 
     return engine
