@@ -8,6 +8,10 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/actions'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/actions'
+import TxExecModel from '@chronobank/core/models/TxExecModel'
+import TxModel from '@chronobank/core/models/TxModel'
+import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
+import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
 import Immutable from 'immutable'
 import { connect } from "react-redux"
 import React, { PureComponent } from 'react'
@@ -26,9 +30,12 @@ export const NOTIFICATION_PANEL_KEY = 'NotificationContent_panelKey'
 function mapStateToProps (state) {
   const { pendingTxs } = state.get(DUCK_WATCHER)
   const { list } = state.get(DUCK_NOTIFIER)
+  const btcTransactions = pendingTransactionsSelector()(state)
+
   return {
     noticesList: list,
-    transactionsList: pendingTxs,
+    ethTransactionsList: pendingTxs,
+    btcTransactionsList: btcTransactions,
   }
 }
 
@@ -41,7 +48,8 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 class NotificationContent extends PureComponent {
   static propTypes = {
-    transactionsList: PropTypes.instanceOf(Immutable.Map),
+    ethTransactionsList: PropTypes.instanceOf(Immutable.Map),
+    btcTransactionsList: PropTypes.arrayOf(TxModel),
     noticesList: PropTypes.instanceOf(Immutable.List),
     onClose: PropTypes.func,
   }
@@ -50,21 +58,70 @@ class NotificationContent extends PureComponent {
     this.props.onClose()
   }
 
-  renderTransaction (trx) {
-    const hash = trx.hash()
-    const details = trx.details()
+  getCurrentTransactionNotificationList = () => {
+    const { ethTransactionsList, btcTransactionsList } = this.props
+    const list = []
+
+    ethTransactionsList.map((item) => {
+      list.push(this.convertToCurrentTransactionNotification(item))
+    })
+    btcTransactionsList.map((item) => {
+      console.log('btcPendingTransactions: ', item, item.toJSON())
+      list.push(this.convertToCurrentTransactionNotification(item))
+    })
+
+    return list
+  }
+
+  convertToCurrentTransactionNotification (transaction) {
+
+    switch (true) {
+
+      // Eth transactions
+      case transaction instanceof TxExecModel:
+        console.log('transaction instanceof TxExecModel: ', transaction, transaction.toJSON())
+        return new CurrentTransactionNotificationModel({
+          id: transaction.hash(),
+          title: transaction.title(),
+          date: transaction.time(),
+          details: transaction.details(),
+        })
+
+      // BTC transactions
+      case transaction instanceof TxModel:
+        console.log('transaction instanceof TxExecModel: ', transaction, transaction.toJSON())
+        return new CurrentTransactionNotificationModel({
+          id: transaction.txHash(),
+          title: `${transaction.symbol()} Transfer`,
+          date: transaction.time(),
+          details: transaction.details(),
+        })
+
+      default:
+        console.log('Transactions default: ', transaction)
+        break
+
+    }
+
+  }
+
+  renderTransaction (notification: CurrentTransactionNotificationModel) {
+
+    const hash = notification.hash
+    const details = notification.details
 
     return (
-      <div key={trx.id()} styleName='tableItem'>
+      <div key={notification.id} styleName='tableItem'>
         <div styleName='itemLeft'>
           <img alt='' src={ReceivedTransactionSVG} />
         </div>
         <div styleName='itemInfo'>
           <div styleName='infoRow'>
-            <div styleName='infoTitle'>{trx.title()}</div>
+            <div styleName='infoTitle'>{notification.title}</div>
             {hash && <div styleName='info-address'>{hash}</div>}
           </div>
           {details && details.map((item, index) => {
+            console.log('details && details.map((item, index): ', item)
             return (
               <div key={index} styleName='infoRow'>
                 <div styleName='infoLabel'>{item.label}:</div>
@@ -110,7 +167,9 @@ class NotificationContent extends PureComponent {
 
   render () {
 
-    const transactionsList = this.props.transactionsList.valueSeq().sortBy((n) => n.time()).reverse()
+    const transactionsList = this.getCurrentTransactionNotificationList()
+    console.log('transactionsList: ', transactionsList)
+    // const transactionsList = this.props.ethTransactionsList.valueSeq().sortBy((n) => n.time()).reverse()
     const noticesList = this.props.noticesList.valueSeq().sortBy((n) => n.time()).reverse()
 
     return (
@@ -124,7 +183,7 @@ class NotificationContent extends PureComponent {
               </IconButton>
             </div>
           </div>
-          {transactionsList.isEmpty()
+          {!transactionsList.length
             ? (<div styleName='tableItem'><Translate value={`${prefix}.noTransactions`} /></div>)
             : transactionsList.map((item) => this.renderTransaction(item))
           }
