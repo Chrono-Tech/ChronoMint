@@ -2,8 +2,18 @@ import EventEmitter from 'events'
 import axios from 'axios'
 
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
-const GET_PERSONS_REST = '/api/v1/security/persons/query'
-const GET_SIGNATURE_REST = '/api/v1/security/signin/signature'
+const basePath = '/api/v1'
+const GET_PERSONS_REST = `${basePath}/security/persons/query`
+const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
+const UPDATE_LEVEL_1 = `${basePath}/security/me/profile/level1`
+const UPDATE_LEVEL_2 = `${basePath}/security/me/profile/level2`
+const UPDATE_LEVEL_3 = `${basePath}/security/me/profile/level3`
+const UPDATE_LEVEL_4 = `${basePath}/security/me/profile/level4`
+const CONFIRM_LEVEL_2 = `${basePath}/security/me/profile/level2/confirm`
+const VALIDATE_LEVEL_2_PHONE = `${basePath}/security/me/profile/level2/validate/phone`
+const VALIDATE_LEVEL_2_EMAIL = `${basePath}/security/me/profile/level2/validate/email`
+const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
+
 const PURPOSE_VALUE = 'exchange-session'
 
 class ProfileService extends EventEmitter {
@@ -67,6 +77,106 @@ class ProfileService extends EventEmitter {
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
 
     return personInfo
+  }
+
+  // state.token
+  async updateLevel1 ({ userName, birthDate, avatar }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_1, {
+      userName,
+      birthDate,
+      avatar,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async updateLevel2 ({ phone, email }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_2, {
+      phone,
+      email,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async confirmLevel2 ({ phoneCode, emailCode }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(CONFIRM_LEVEL_2, {
+      phoneCode,
+      emailCode,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async validateLevel2Phone (token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(
+      VALIDATE_LEVEL_2_PHONE,
+      null,
+      this.withAuthorization(token)
+    )
+
+    return data
+  }
+
+  async validateLevel2Email (token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(
+      VALIDATE_LEVEL_2_EMAIL,
+      null,
+      this.withAuthorization(token)
+    )
+
+    return data
+  }
+
+  async updateLevel3 ({ passport, expirationDate, attachments }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_3, {
+      passport,
+      expirationDate,
+      attachments,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async updateLevel4 ({ country, region, city, zip, addressLine1, addressLine2, attachments }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_4, {
+      country,
+      state: region,
+      city,
+      zip,
+      addressLine1,
+      addressLine2,
+      attachments,
+    }, this.withAuthorization(token))
+
+    return data
+  }
+
+  async toggleNotification ({ domain, type, name, value }, token) {
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(PROFILE_NOTIFICATIONS, {
+      domain,
+      type,
+      name,
+      value,
+    }, this.withAuthorization(token))
+
+    return data
   }
 
 }
