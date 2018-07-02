@@ -11,6 +11,8 @@ import {
   getNetworksWithProviders,
   getNetworkWithProviderNames,
   getProviderById,
+  LOCAL_ID,
+  LOCAL_PROVIDER_ID,
 } from '@chronobank/login/network/settings'
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -19,15 +21,13 @@ import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
 import classnames from 'classnames'
 
-import { Translate } from 'react-redux-i18n'
 import Web3 from 'web3'
 import './CommonNetworkSelector.scss'
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
   return {
-    providersList: getNetworksWithProviders(network.isLocal),
-    networkProviderName: getNetworkWithProviderNames(network.selectedProviderId, network.selectedNetworkId, network.isLocal),
+    providersList: getNetworksWithProviders(network.providers, network.isLocal),
     isLocal: network.isLocal,
     selectedNetworkId: network.selectedNetworkId,
     selectedProvider: getProviderById(network.selectedProviderId),
@@ -102,6 +102,10 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   getFullNetworkName(item){
+    if (item.provider.id === LOCAL_PROVIDER_ID && item.network.id === LOCAL_ID){
+      return 'TestRPC'
+    }
+
     return `${item.provider.name} - ${item.network.name}`
   }
 
@@ -127,7 +131,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   render () {
-    const { selectedNetworkId, selectedProvider, networks, isLoading, networkProviderName, providersList } = this.props
+    const { selectedNetworkId, selectedProvider, networks, isLoading, providersList } = this.props
 
     return (
       <div styleName='root'>

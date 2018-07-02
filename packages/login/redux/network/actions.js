@@ -37,6 +37,10 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
+import {
+  LOCAL_ID,
+  LOCAL_PROVIDER_ID,
+} from '../../network/settings'
 
 export const DUCK_NETWORK = 'network'
 
@@ -129,6 +133,14 @@ export const initLoginPage = () => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedWallet } = state.get('persistAccount')
+  const { selectedNetworkId, selectedProviderId } = state.get('network')
+
+  if (selectedNetworkId === LOCAL_ID && selectedProviderId === LOCAL_PROVIDER_ID){
+    networkService.loadAccounts().then(() => {
+    }).catch(() => {
+      networkService.selectAccount(null)
+    })
+  }
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
@@ -184,7 +196,7 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
       dispatch(resetImportAccountMode())
 
       if (walletFileImportMode){
-        dispatch(navigateToLoginPage())
+        dispatch(navigateToSelectWallet())
       } else {
         dispatch(navigateToDownloadWalletPage())
       }
@@ -439,7 +451,7 @@ export const onSubmitResetAccountPasswordForm = (password, confirmPassword) => a
 
 export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_ACCOUNT_RECOVERY_MODE })
-  dispatch(navigateToLoginPage())
+  dispatch(navigateToSelectWallet())
 
 }
 

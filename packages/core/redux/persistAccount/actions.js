@@ -57,7 +57,7 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (encrypted, password) => async (dispatch) => {
-
+console.log('decrypt', networkService.getProviderSettings().url)
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
