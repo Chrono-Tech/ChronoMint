@@ -80,4 +80,8 @@ export default {
       },
     ],
   },
+  '/vote-history': {
+    title: 'nav.voteHistory',
+    backButton: true,
+  },
 }

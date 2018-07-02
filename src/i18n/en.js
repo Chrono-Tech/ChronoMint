@@ -894,5 +894,6 @@ export default {
     addPoll: 'Add a Poll',
     publish: 'Publish',
     endPoll: 'End poll',
+    voteHistory: 'Changes History',
   },
 }
