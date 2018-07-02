@@ -125,7 +125,7 @@ class NotificationContent extends PureComponent {
             </div>
           </div>
           {transactionsList.isEmpty()
-            ? (<div styleName='tableItem'><Translate value={`${prefix}.noTransactions`} /></div>)
+            ? (<div styleName='tableItem'><Translate styleName='nothing' value={`${prefix}.noTransactions`} /></div>)
             : transactionsList.map((item) => this.renderTransaction(item))
           }
 
@@ -134,7 +134,7 @@ class NotificationContent extends PureComponent {
           </div>
 
           {noticesList.isEmpty()
-            ? (<div styleName='tableItem'><Translate value={`${prefix}.noNotices`} /></div>)
+            ? (<div styleName='tableItem'><Translate styleName='nothing' value={`${prefix}.noNotices`} /></div>)
             : noticesList.map((item) => this.renderNotice(item))
           }
         </div>

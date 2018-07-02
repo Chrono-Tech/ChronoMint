@@ -7,9 +7,9 @@
 
 .LocaleDropDown {
   border-radius: 20px;
-  border-top: 3px solid #E2A864;
+  border-top: 3px solid $color-orange-1;
   overflow: hidden;
-  background: #fff;
+  background: $color-white;
   margin-top: 10px;
 
   @include xs-only {
@@ -25,7 +25,7 @@
   cursor: pointer;
 
   &:hover, &.LocaleDropDownItemActive {
-    background: #F2F2F2;
+    background: $color-grey-3;
   }
 }
 
@@ -41,19 +41,20 @@
     height: 40px;
     margin: 5px;
     padding: 0;
+    font-size: 16px;
   }
 }
 
 .langButtonNewStyle {
   button {
-    color: #5DB3ED;
-    border:1px solid #5DB3ED;
+    color: $color-light-blue;
+    border: 1px solid $color-light-blue;
     background: transparent;
     font-size: 16px;
     text-transform: uppercase;
 
     &:hover {
-      color:#fff;
+      color: $color-white;
       border-color: transparent;
     }
   }
