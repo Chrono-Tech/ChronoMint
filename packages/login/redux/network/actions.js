@@ -298,8 +298,8 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
-  if (!bip39.validateMnemonic(mnemonicValue)){
-    throw new Error('Invalid mnemonic')
+  if (!mnemonicProvider.validateMnemonic(mnemonicValue)){
+    throw new SubmissionError({ _error: 'Invalid mnemonic' })
   }
 
   dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic: mnemonicValue })
@@ -310,13 +310,17 @@ export const onSubmitMnemonicLoginFormSuccess = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
 }
 
-export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_MNEMONIC_LOGIN_PAGE, { key: 'Wrong mnemonic' }))
+export const onSubmitMnemonicLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_MNEMONIC_LOGIN_PAGE, submitErrors && submitErrors.errors))
 
 }
 
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
   let pk = (privateKey || '').trim()
+
+  if (!privateKeyProvider.validatePrivateKey(pk)){
+    throw new SubmissionError({ _error: 'Invalid private key' })
+  }
 
   if (pk.slice(0, 2) === '0x'){
     pk = pk.slice(2)
@@ -329,8 +333,8 @@ export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
 }
 
-export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, { pk: 'Wrong private key' }))
+export const onSubmitPrivateKeyLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
 
 }
 
