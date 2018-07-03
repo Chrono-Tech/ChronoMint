@@ -3,15 +3,11 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-export const prefix = 'TimeLockedWalletForm'
+export const prefix = 'CustomWalletForm'
 
 export default {
   en: {
-    title: 'Time Lock Settings',
-    description: 'Make this wallet active for transactions on specific date and time.',
-    name: 'Enter wallet name',
-    date: 'Date',
-    time: 'Time',
+    name: 'Wallet name',
     addWallet: 'Add wallet',
   },
 }

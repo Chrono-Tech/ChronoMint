@@ -78,7 +78,7 @@ export default {
   },
   wallet: {
     modeAdvanced: 'Advanced',
-    modeSimple: 'Simple',
+    modeSimple: 'Basic',
     templateName: 'Template name',
     satPerByte: 'SAT / byte',
     gweiPerGas: 'GWEI 0 / gas',

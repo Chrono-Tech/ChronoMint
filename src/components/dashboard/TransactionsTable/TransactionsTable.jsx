@@ -100,7 +100,7 @@ export default class TransactionsTable extends PureComponent {
             ? (
               <div styleName='no-transactions-section'>
                 <div styleName='section-header'>
-                  <h5 styleName='no-transactions'>No transactions found.</h5>
+                  <h5 styleName='no-transactions'><Translate value={`${prefix}.noTransactionsFound`} /></h5>
                 </div>
               </div>
             )
