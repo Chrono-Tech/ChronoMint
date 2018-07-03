@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
+import classnames from 'classnames'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
@@ -13,6 +14,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
+import LoginLocal from '../LoginLocal/LoginLocal'
 import NetworkSelector from '@chronobank/login-ui/components/NetworkSelector/NetworkSelector'
 import ProviderSelector from '@chronobank/login-ui/components/ProviderSelector/ProviderSelector'
 
@@ -48,7 +50,6 @@ import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSele
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
-import classnames from "classnames";
 
 const STRATEGY_MANUAL = 'manual'
 const STRATEGY_AUTOMATIC = 'automatic'
@@ -66,7 +67,7 @@ function mapStateToProps (state) {
 
   return {
     selectedWallet: selectedWallet,
-    isLoginSubmitting: state.get('network').isLoginSubmitting,
+    isLoginSubmitting: network.isLoginSubmitting,
     selectedNetworkId: network.selectedNetworkId,
     selectedProvider: network.selectedProviderId,
     selectedAccount: network.selectedAccount,
@@ -114,102 +115,6 @@ class LoginPage extends PureComponent {
     this.props.initLoginPage()
   }
 
-  handleSelect = async () => {
-    const account = this.props.selectedAccount
-    const index = Math.max(this.props.accounts.indexOf(account), 0)
-    const provider = privateKeyProvider.getPrivateKeyProvider(LOCAL_PRIVATE_KEYS[index], networkService.getProviderSettings(), this.props.wallets)
-    await networkService.setup(provider)
-  }
-
-  handleChange = (event, index, value) => {
-    this.props.selectAccount(value)
-  }
-
-  defaultLoginFormFields(){
-    const { selectedWallet, navigateToSelectWallet } = this.props
-
-    return (
-      <div>
-        <UserRow
-          title={getAccountName(selectedWallet)}
-          avatar={getAccountAvatar(selectedWallet)}
-          onClick={navigateToSelectWallet}
-        />
-
-        <div styleName='field'>
-          <Field
-            component={TextField}
-            name='password'
-            type='password'
-            floatingLabelText={<Translate value='LoginForm.enterPassword' />}
-            fullWidth
-            {...styles.textField}
-          />
-        </div>
-      </div>
-    )
-  }
-
-  renderSelectRPCAccount(){
-    const { accounts } = this.props
-
-    return (
-      <div styleName='selectRPCAccount'>
-        <Button
-          styleName='langButton'
-          onClick={this.handleClickRPCSelectorButton}
-        >
-          { selectedProvider && selectedProvider.name }
-        </Button>
-
-        <Popover
-          open={this.state.open}
-          anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestRPCSelectorPopoverClose}
-          style={{
-            background: 'transparent'
-          }}
-        >
-          <ul styleName='providersList'>
-            {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
-          </ul>
-        </Popover>
-      </div>
-    )
-  }
-
-  renderRPCSelectorMenuItem(item, i){
-    const { selectedAccount } = this.props
-
-    return (
-      <li
-        styleName={classnames({providerItem: true, providerItemActive: checked })}
-        onClick={() => this.handleClick(item)}
-        key={i}
-      >
-        {this.getFullNetworkName(item)}
-      </li>
-    )
-  }
-
-  handleClickRPCSelectorButton = (event) => {
-    // This prevents ghost click.
-    event.preventDefault()
-
-    this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
-    })
-  }
-
-  handleRequestRPCSelectorPopoverClose = () => {
-    this.setState({
-      open: false,
-    })
-  }
-
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting, isTestRPC } = this.props
@@ -223,7 +128,22 @@ class LoginPage extends PureComponent {
           </div>
 
           <div styleName='user-row'>
-            { isTestRPC ? }
+            <UserRow
+              title={getAccountName(selectedWallet)}
+              avatar={getAccountAvatar(selectedWallet)}
+              onClick={navigateToSelectWallet}
+            />
+
+            <div styleName='field'>
+              <Field
+                component={TextField}
+                name='password'
+                type='password'
+                floatingLabelText={<Translate value='LoginForm.enterPassword' />}
+                fullWidth
+                {...styles.textField}
+              />
+            </div>
 
             <div styleName='actions'>
               <Button

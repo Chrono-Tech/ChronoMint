@@ -6,10 +6,15 @@
 import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import {
+  clearErrors,
+  DUCK_NETWORK,
+  selectProviderWithNetwork,
+  initCommonNetworkSelector,
+} from '@chronobank/login/redux/network/actions'
 import {
   getNetworksWithProviders,
-  getNetworkWithProviderNames,
+  isTestRPC,
   getProviderById,
   LOCAL_ID,
   LOCAL_PROVIDER_ID,
@@ -37,13 +42,11 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProviderWithNetwork: (networkId, providerId) => {
-    networkService.selectProvider(providerId)
-    networkService.selectNetwork(networkId)
-  },
+  selectProviderWithNetwork: (networkId, providerId) => dispatch(selectProviderWithNetwork(networkId, providerId)),
   selectNetwork: (network) => networkService.selectNetwork(network),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => networkService.getProviderURL(),
+  initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -51,6 +54,7 @@ export default class CommonNetworkSelector extends PureComponent {
   static propTypes = {
     clearErrors: PropTypes.func,
     selectNetwork: PropTypes.func,
+    initCommonNetworkSelector: PropTypes.func,
     selectProviderWithNetwork: PropTypes.func,
     getProviderURL: PropTypes.func,
     selectedNetworkId: PropTypes.number,
@@ -75,7 +79,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   componentDidMount(){
-    networkService.autoSelect()
+    this.props.initCommonNetworkSelector()
   }
 
   handleClick = (data) => {
@@ -102,7 +106,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   getFullNetworkName(item){
-    if (item.provider.id === LOCAL_PROVIDER_ID && item.network.id === LOCAL_ID){
+    if (isTestRPC(item.provider.id, item.network.id)){
       return 'TestRPC'
     }
 

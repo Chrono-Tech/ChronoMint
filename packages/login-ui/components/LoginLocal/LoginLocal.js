@@ -4,49 +4,100 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
-import { LOCAL_ID, TESTRPC_URL, LOCAL_PROVIDER_ID } from '@chronobank/login/network/settings'
+import {
+  LOCAL_ID,
+  TESTRPC_URL,
+  LOCAL_PROVIDER_ID
+} from '@chronobank/login/network/settings'
+import { MuiThemeProvider } from 'material-ui'
+import {
+  DUCK_NETWORK,
+  onSubmitLoginTestRPC,
+  onSubmitLoginTestRPCFail,
+  initLoginLocal,
+  selectProviderWithNetwork,
+  handleLoginLocalAccountClick,
+} from '@chronobank/login/redux/network/actions'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
+import Button from 'components/common/ui/Button/Button'
+import UserRow from 'components/common/ui/UserRow/UserRow'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import Web3 from 'web3'
-import AccountSelector from '../../components/AccountSelector/AccountSelector'
-import BackButton from '../../components/BackButton/BackButton'
+import { Translate } from 'react-redux-i18n'
+import classnames from 'classnames'
 
-const mapDispatchToProps = () => ({
-  selectNetwork: (networkId) => networkService.selectNetwork(networkId),
-  selectProvider: (id) => networkService.selectProvider(id),
+import styles from 'layouts/Splash/styles'
+import spinner from 'assets/img/spinningwheel-1.gif'
+import './LoginLocal.scss'
+
+export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
+
+const mapDispatchToProps = (dispatch) => ({
+  onSubmit: async (values) => {
+
+    await dispatch(onSubmitLoginTestRPC())
+  },
+  onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, dispatch, submitErrors)),
+  selectAccount: (value) => networkService.selectAccount(value),
+  initLoginLocal: () => dispatch(initLoginLocal()),
+  handleLoginLocalAccountClick: (account) => dispatch(handleLoginLocalAccountClick(account)),
 })
 
-@connect(null, mapDispatchToProps)
+const mapStateToProps = (state) => {
+  const network = state.get(DUCK_NETWORK)
+  return {
+    isLoginSubmitting: network.isLoginSubmitting,
+    accounts: network.accounts,
+  }
+}
+
+@connect(mapStateToProps, mapDispatchToProps)
 class LoginLocal extends PureComponent {
   static propTypes = {
-    selectNetwork: PropTypes.func,
     onLogin: PropTypes.func,
-    onBack: PropTypes.func.isRequired,
-    selectProvider: PropTypes.func,
+    selectAccount: PropTypes.func,
+    initLoginLocal: PropTypes.func,
+    handleLoginLocalAccountClick: PropTypes.func,
+    isLoginSubmitting: PropTypes.bool,
   }
 
-  componentWillMount () {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, new web3.providers.HttpProvider(TESTRPC_URL))
+  componentWillMount(){
+    this.props.initLoginLocal()
   }
 
-  handleSelectAccount = (account) => {
-    this.props.selectProvider(LOCAL_PROVIDER_ID)
-    this.props.selectNetwork(LOCAL_ID)
-    this.props.onLogin(account)
+  renderRPCSelectorMenuItem(item, i){
+    return (
+      <div
+        key={i}
+        onClick={() => this.props.handleLoginLocalAccountClick(item)}
+        styleName='account-item'
+      >
+        <div styleName='account-item-content'>
+          { item }
+        </div>
+        <div styleName='account-item-icon'>
+          <div className='chronobank-icon'>next</div>
+        </div>
+      </div>
+    )
   }
 
   render () {
+    const { handleSubmit, isLoginSubmitting, error, accounts, selectedAccount } = this.props
+
+    console.log('accounts', accounts)
     return (
-      <div>
-        <BackButton
-          onClick={this.props.onBack}
-          to='options'
-        />
-        <AccountSelector onSelectAccount={this.handleSelectAccount} />
-      </div>
+      <MuiThemeProvider muiTheme={styles.inverted}>
+        <div styleName='wrapper'>
+
+          <div styleName='page-title'>
+            <Translate value='LoginForm.title' />
+          </div>
+
+          {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
+        </div>
+      </MuiThemeProvider>
     )
   }
 }

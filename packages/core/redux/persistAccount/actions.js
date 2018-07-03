@@ -18,6 +18,8 @@ import {
 } from '@chronobank/core/redux/persistAccount/utils'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
+import web3Provider from '@chronobank/login/network/Web3Provider'
+import web3Utils from '@chronobank/login/network/Web3Utils'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -57,13 +59,13 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (encrypted, password) => async (dispatch) => {
-console.log('decrypt', networkService.getProviderSettings().url)
   const web3 = new Web3()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
 
+  console.log('decrypt', networkService.getProviderSettings().url, wallet)
   return wallet
 
 }
@@ -117,15 +119,22 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
 
-  let host = networkService.getProviderSettings().url
+  let settings = networkService.getProviderSettings()
+  let host = settings.url
 
   const web3 = new Web3()
+  web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
+  web3Provider.resolve()
+
+  console.log('create account: setting', settings, hex, privateKey, mnemonic, bip39.mnemonicToSeed(mnemonic) )
+
   const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 
   wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(`0x${hex}`)
   wallet.add(account)
+  console.log('create account', accounts, account, wallet)
 
   const entry = new AccountEntryModel({
     key: uuid(),

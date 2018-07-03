@@ -21,6 +21,7 @@ import {
   LoginWithWallet,
   LoginWithMnemonic,
   LoginWithPrivateKey,
+  LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -103,6 +104,7 @@ const router = (
         <Route path='/login/upload-wallet' component={LoginWithWallet} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+        <Route path='/login/local-login' component={LoginLocal} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

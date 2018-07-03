@@ -291,8 +291,6 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
       network: infuraLocalNetwork,
     })
   }
-  console.log('with', withLocal, providersArray, networks)
-
 
   return networks
 }

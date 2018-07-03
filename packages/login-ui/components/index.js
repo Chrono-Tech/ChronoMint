@@ -11,3 +11,4 @@ export { default as ConfirmMnemonic, FORM_CONFIRM_MNEMONIC } from './ConfirmMnem
 export { default as CommonNetworkSelector } from './CommonNetworkSelector/CommonNetworkSelector'
 export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'
 export { default as LoginWithWallet, FORM_WALLET_UPLOAD } from './LoginWithWallet/LoginWithWallet'
+export { default as LoginLocal, FORM_LOGIN_TEST_RPC } from './LoginLocal/LoginLocal'

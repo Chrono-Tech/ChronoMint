@@ -29,7 +29,7 @@ import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
-import { push } from 'react-router-redux'
+import { push, goBack } from 'react-router-redux'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
@@ -39,7 +39,9 @@ import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProv
 import { nemProvider } from '../../network/NemProvider'
 import {
   LOCAL_ID,
+  LOCAL_PRIVATE_KEYS,
   LOCAL_PROVIDER_ID,
+  isTestRPC,
 } from '../../network/settings'
 
 export const DUCK_NETWORK = 'network'
@@ -134,13 +136,6 @@ export const initLoginPage = () => async (dispatch, getState) => {
 
   const { selectedWallet } = state.get('persistAccount')
   const { selectedNetworkId, selectedProviderId } = state.get('network')
-
-  if (selectedNetworkId === LOCAL_ID && selectedProviderId === LOCAL_PROVIDER_ID){
-    networkService.loadAccounts().then(() => {
-    }).catch(() => {
-      networkService.selectAccount(null)
-    })
-  }
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
@@ -305,6 +300,14 @@ export const navigateToGenerateMnemonicPage = () => (dispatch) => {
 
 export const navigateToWalletUploadMethod = () => (dispatch) => {
   dispatch(push('/login/upload-wallet'))
+}
+
+export const navigateToLoginLocal = () => (dispatch) => {
+  dispatch(push('/login/local-login'))
+}
+
+export const navigateBack = () => (dispatch) => {
+  dispatch(goBack())
 }
 
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
@@ -624,6 +627,76 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
 
 export const initAccountsSelector = () => async (dispatch) => {
   dispatch(initAccountsSignature())
+}
+
+export const initLoginLocal = () => async (dispatch, getState) => {
+  const state = getState()
+
+  const { selectedNetworkId, selectedProviderId } = state.get('network')
+
+  if (isTestRPC(selectedProviderId, selectedNetworkId)){
+    await networkService.loadAccounts()
+  } else {
+    dispatch(navigateToLoginPage())
+  }
+}
+
+export const handleLoginLocalAccountClick = (account = '') => async (dispatch, getState) => {
+  let state = getState()
+
+  const { accounts } = state.get('network')
+  const wallets = state.get('multisigWallet')
+
+  const index = Math.max(accounts.indexOf(account), 0)
+  const provider = privateKeyProvider.getPrivateKeyProvider(
+    LOCAL_PRIVATE_KEYS[index],
+    networkService.getProviderSettings(),
+    wallets
+  )
+  networkService.selectAccount(account)
+  await networkService.setup(provider)
+
+  state = getState()
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+
+  dispatch(clearErrors())
+
+  const isPassed = await networkService.checkNetwork(
+    selectedAccount,
+    selectedProviderId,
+    selectedNetworkId,
+  )
+
+  if (isPassed) {
+    networkService.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    )
+    dispatch(login(selectedAccount))
+  }
+}
+
+export const initCommonNetworkSelector = () => (dispatch, getState) => {
+  const state = getState()
+
+  const { isLocal } = state.get('network')
+
+  networkService.autoSelect()
+
+  if (!isLocal){
+    networkService.checkTestRPC()
+  }
+
+}
+
+export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) => {
+  networkService.selectProvider(providerId)
+  networkService.selectNetwork(networkId)
+
+  if (isTestRPC(providerId, networkId)){
+    dispatch(navigateToLoginLocal())
+  }
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
