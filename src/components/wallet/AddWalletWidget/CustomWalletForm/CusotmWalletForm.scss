@@ -12,12 +12,12 @@ $gutter: 24px;
   background-color: $color-white;
   .body {
     .nameBlock {
-      border-bottom: 1px solid $color-grey300;
+      border-bottom: 1px solid $color-grey-3;
       color: $color-black;
       padding: 10px 30px 30px;
     }
     .block {
-      border-bottom: 1px solid $color-grey300;
+      border-bottom: 1px solid $color-grey-3;
       color: $color-black;
 
       &:last-child {

@@ -10,7 +10,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { TextField } from 'redux-form-material-ui'
-import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
+import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { createNewChildAddress, ETH, goToWallets, resetWalletsForm } from '@chronobank/core/redux/mainWallet/actions'
 import { getChronobankTokens } from '@chronobank/core/redux/settings/erc20/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
@@ -22,7 +22,9 @@ import TokensList from './TokensList'
 export const FORM_CUSTOM_WALLET_ADD = 'CustomWalletForm'
 
 function mapStateToProps (state) {
+  const selector = formValueSelector(FORM_CUSTOM_WALLET_ADD)
   return {
+    filter: selector(state, 'filter'),
     tokens: getChronobankTokens()(state),
     initialValues: {
       tokens: {
@@ -53,7 +55,7 @@ export default class CustomWalletForm extends PureComponent {
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, filter, tokens } = this.props
 
     return (
       <form styleName='root' onSubmit={handleSubmit}>
@@ -68,7 +70,7 @@ export default class CustomWalletForm extends PureComponent {
           </div>
           <div styleName='block'>
             <div styleName='tokensList'>
-              <TokensList />
+              <TokensList filter={filter} tokens={tokens} />
             </div>
           </div>
         </div>

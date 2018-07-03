@@ -36,8 +36,8 @@ export default {
       description: 'Make the wallet controlled by multiple owners.Advanced',
     },
     cw: {
-      title: 'Make the wallet',
-      description: 'with custom tokens.',
+      title: 'Custom tokens',
+      description: 'Make the wallet with ability to add custom tokens.',
     },
 
   },

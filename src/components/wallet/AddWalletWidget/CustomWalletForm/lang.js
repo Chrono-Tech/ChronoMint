@@ -9,6 +9,7 @@ export default {
   en: {
     name: 'Wallet name',
     addWallet: 'Add wallet',
+    filter: 'Search tokens',
   },
 }
 
