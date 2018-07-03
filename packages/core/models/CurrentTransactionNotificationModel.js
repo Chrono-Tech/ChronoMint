@@ -4,7 +4,7 @@ import AbstractModel from './AbstractJsModel'
 const schemaFactory = () => ({
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  hash: PropTypes.number.isRequired,
+  hash: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date),
   details: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string,

@@ -232,11 +232,12 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
     return
   }
   dispatch({ type: MULTISIG_INIT, isInited: true })
+  const { account } = getState().get(DUCK_SESSION)
 
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
   let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
-    if (wallet.isDerived()) {
+    if (wallet.owners().items().filter((owner) => owner.address() === account).length > 0 && wallet.isDerived()) {
       switch (wallet.blockchain()) {
         case BLOCKCHAIN_BITCOIN:
           btcProvider.createNewChildAddress(wallet.deriveNumber())
@@ -254,10 +255,11 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
           ltcProvider.createNewChildAddress(wallet.deriveNumber())
           ltcProvider.subscribeNewWallet(wallet.address())
           break
+        case BLOCKCHAIN_ETHEREUM:
+          dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address(), wallet.blockchain(), wallet.customTokens())))
+          break
         default:
       }
-
-      dispatch(subscribeOnTokens(getTokensBalancesAndWatch(wallet.address(), wallet.blockchain(), wallet.customTokens())))
     }
   })
 

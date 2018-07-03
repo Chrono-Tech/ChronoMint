@@ -135,7 +135,6 @@ class TxExecModel extends abstractModel({
 
     return list.entrySeq().map(([ key, value ]) =>
     {
-      console.log('list.entrySeq().map(([ key, value ]) : ', key, value, this.i18nFunc())
       return ({
         label: I18n.t(this.i18nFunc() + key),
         value,

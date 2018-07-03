@@ -49,7 +49,7 @@ function mapDispatchToProps (dispatch) {
 class NotificationContent extends PureComponent {
   static propTypes = {
     ethTransactionsList: PropTypes.instanceOf(Immutable.Map),
-    btcTransactionsList: PropTypes.arrayOf(TxModel),
+    btcTransactionsList: PropTypes.arrayOf(PropTypes.object),
     noticesList: PropTypes.instanceOf(Immutable.List),
     onClose: PropTypes.func,
   }
@@ -66,7 +66,6 @@ class NotificationContent extends PureComponent {
       list.push(this.convertToCurrentTransactionNotification(item))
     })
     btcTransactionsList.map((item) => {
-      console.log('btcPendingTransactions: ', item, item.toJSON())
       list.push(this.convertToCurrentTransactionNotification(item))
     })
 
@@ -74,12 +73,9 @@ class NotificationContent extends PureComponent {
   }
 
   convertToCurrentTransactionNotification (transaction) {
-
     switch (true) {
-
       // Eth transactions
       case transaction instanceof TxExecModel:
-        console.log('transaction instanceof TxExecModel: ', transaction, transaction.toJSON())
         return new CurrentTransactionNotificationModel({
           id: transaction.hash(),
           title: transaction.title(),
@@ -89,7 +85,6 @@ class NotificationContent extends PureComponent {
 
       // BTC transactions
       case transaction instanceof TxModel:
-        console.log('transaction instanceof TxExecModel: ', transaction, transaction.toJSON())
         return new CurrentTransactionNotificationModel({
           id: transaction.txHash(),
           title: `${transaction.symbol()} Transfer`,
@@ -98,7 +93,6 @@ class NotificationContent extends PureComponent {
         })
 
       default:
-        console.log('Transactions default: ', transaction)
         break
 
     }
@@ -121,7 +115,6 @@ class NotificationContent extends PureComponent {
             {hash && <div styleName='info-address'>{hash}</div>}
           </div>
           {details && details.map((item, index) => {
-            console.log('details && details.map((item, index): ', item)
             return (
               <div key={index} styleName='infoRow'>
                 <div styleName='infoLabel'>{item.label}:</div>
@@ -168,8 +161,6 @@ class NotificationContent extends PureComponent {
   render () {
 
     const transactionsList = this.getCurrentTransactionNotificationList()
-    console.log('transactionsList: ', transactionsList)
-    // const transactionsList = this.props.ethTransactionsList.valueSeq().sortBy((n) => n.time()).reverse()
     const noticesList = this.props.noticesList.valueSeq().sortBy((n) => n.time()).reverse()
 
     return (

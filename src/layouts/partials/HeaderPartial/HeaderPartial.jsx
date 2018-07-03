@@ -44,7 +44,7 @@ function mapDispatchToProps (dispatch) {
 export default class HeaderPartial extends Component {
   static propTypes = {
     handleNotificationTap: PropTypes.func,
-    btcPendingTransactions: PropTypes.arrayOf(TxModel),
+    btcPendingTransactions: PropTypes.arrayOf(PropTypes.object),
     ethPendingTransactions: PropTypes.instanceOf(Immutable.Map),
     location: PropTypes.shape({
       action: PropTypes.string,
