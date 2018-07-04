@@ -31,6 +31,7 @@ import {
   getAccountName,
   getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
+import profileService from '@chronobank/login/network/ProfileService'
 
 import './DrawerMainMenu.scss'
 

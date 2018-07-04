@@ -53,12 +53,12 @@ const multiRowTextFieldStyle = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const confirmMnemonic = values.get('mnemonic')
-      dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
+      await dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFail: () => dispatch(onSubmitMnemonicLoginFormFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, dispatch, submitErrors)),
   }
 }
 
@@ -68,7 +68,7 @@ class LoginWithMnemonic extends PureComponent {
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, error } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -105,6 +105,9 @@ class LoginWithMnemonic extends PureComponent {
             >
               <Translate value='LoginWithMnemonic.login' />
             </Button>
+
+            { error ? (<div styleName='form-error'>{error}</div>) : null }
+
             <Translate value='LoginWithMnemonic.or' />
             &nbsp;
             <Link to='/login/import-methods' href styleName='link'>

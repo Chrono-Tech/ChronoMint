@@ -52,9 +52,9 @@ const multiRowTextFieldStyle = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const privateKey = values.get('pk')
-      dispatch(onSubmitPrivateKeyLoginForm(privateKey))
+      await dispatch(onSubmitPrivateKeyLoginForm(privateKey))
     },
     onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, dispatch, submitErrors)),
@@ -63,7 +63,7 @@ function mapDispatchToProps (dispatch) {
 
 class MnemonicLoginPage extends PureComponent {
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, error } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -100,6 +100,9 @@ class MnemonicLoginPage extends PureComponent {
             >
               <Translate value='LoginWithPrivateKey.login' />
             </Button>
+
+            { error ? (<div styleName='form-error'>{error}</div>) : null }
+
             <Translate value='LoginWithPrivateKey.or' />
             &nbsp;
             <Link to='/login/import-methods' href styleName='link'>
