@@ -270,9 +270,8 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
 
 export const getNetworksWithProviders = (providers = [], withLocal = false) => {
   let networks = []
-  let providersArray = [...providers]
 
-  providersArray
+  providers
     .filter((provider) => provider && !provider.disabled)
     .forEach((provider) => {
 

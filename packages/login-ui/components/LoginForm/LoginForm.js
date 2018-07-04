@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
-import classnames from 'classnames'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
@@ -14,13 +13,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-import LoginLocal from '../LoginLocal/LoginLocal'
-import NetworkSelector from '@chronobank/login-ui/components/NetworkSelector/NetworkSelector'
-import ProviderSelector from '@chronobank/login-ui/components/ProviderSelector/ProviderSelector'
 
-import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
 import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
@@ -31,34 +24,16 @@ import {
   FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
-  getNetworksWithProviders,
-  getNetworkWithProviderNames,
-  getProviderById,
   isTestRPC,
-  LOCAL_ID,
-  LOCAL_PROVIDER_ID,
-  LOCAL_PRIVATE_KEYS,
 } from '@chronobank/login/network/settings'
 import {
   getAccountName,
   getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import networkService from '@chronobank/login/network/NetworkService'
-import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
-
-const STRATEGY_MANUAL = 'manual'
-const STRATEGY_AUTOMATIC = 'automatic'
-
-const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
-}
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)

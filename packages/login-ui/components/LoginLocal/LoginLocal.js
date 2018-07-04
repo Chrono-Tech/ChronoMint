@@ -7,7 +7,8 @@ import networkService from '@chronobank/login/network/NetworkService'
 import {
   LOCAL_ID,
   TESTRPC_URL,
-  LOCAL_PROVIDER_ID
+  LOCAL_PROVIDER_ID,
+  isTestRPC,
 } from '@chronobank/login/network/settings'
 import { MuiThemeProvider } from 'material-ui'
 import {
@@ -17,6 +18,7 @@ import {
   initLoginLocal,
   selectProviderWithNetwork,
   handleLoginLocalAccountClick,
+  navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
@@ -41,6 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, dispatch, submitErrors)),
   selectAccount: (value) => networkService.selectAccount(value),
   initLoginLocal: () => dispatch(initLoginLocal()),
+  navigateToLoginPage: () => dispatch(navigateToLoginPage()),
   handleLoginLocalAccountClick: (account) => dispatch(handleLoginLocalAccountClick(account)),
 })
 
@@ -49,6 +52,7 @@ const mapStateToProps = (state) => {
   return {
     isLoginSubmitting: network.isLoginSubmitting,
     accounts: network.accounts,
+    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
   }
 }
 
@@ -58,12 +62,20 @@ class LoginLocal extends PureComponent {
     onLogin: PropTypes.func,
     selectAccount: PropTypes.func,
     initLoginLocal: PropTypes.func,
+    navigateToLoginPage: PropTypes.func,
     handleLoginLocalAccountClick: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
+    isTestRPC: PropTypes.bool,
   }
 
   componentWillMount(){
     this.props.initLoginLocal()
+  }
+
+  componentWillReceiveProps(nextProps){
+    if (!nextProps.isTestRPC){
+      this.props.navigateToLoginPage()
+    }
   }
 
   renderRPCSelectorMenuItem(item, i){

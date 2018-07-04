@@ -153,7 +153,8 @@ export default class CommonNetworkSelector extends PureComponent {
           targetOrigin={{ horizontal: 'right', vertical: 'top' }}
           onRequestClose={this.handleRequestClose}
           style={{
-            background: 'transparent'
+            background: 'transparent',
+            borderRadius: 20,
           }}
         >
           <ul styleName='providersList'>
