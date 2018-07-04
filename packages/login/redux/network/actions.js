@@ -14,6 +14,7 @@ import {
   accountUpdate,
   setProfilesForAccounts,
 } from '@chronobank/core/redux/persistAccount/actions'
+import uuid from 'uuid/v1'
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
@@ -27,6 +28,7 @@ import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
+import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 export const DUCK_NETWORK = 'network'
 
@@ -63,6 +65,8 @@ export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_
 export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = 'network/ACCOUNTS_SIGNATURES_RESET_LOADING'
 export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = 'network/ACCOUNTS_SIGNATURES_RESOLVE'
 export const NETWORK_ACCOUNTS_SIGNATURES_REJECT = 'network/ACCOUNTS_SIGNATURES_REJECT'
+export const NETWORK_SET_WALLET_FILE_IMPORTED = 'network/SET_WALLET_FILE_IMPORTED'
+export const NETWORK_RESET_WALLET_FILE_IMPORTED = 'network/RESET_WALLET_FILE_IMPORTED'
 
 export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
@@ -120,6 +124,7 @@ export const resetAllLoginFlags = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_ACCOUNT_RECOVERY_MODE })
   dispatch({ type: NETWORK_RESET_NEW_MNEMONIC })
   dispatch({ type: NETWORK_RESET_NEW_ACCOUNT_CREDENTIALS })
+  dispatch({ type: NETWORK_RESET_WALLET_FILE_IMPORTED })
 }
 
 export const initLoginPage = () => async (dispatch, getState) => {
@@ -294,6 +299,10 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
   dispatch(push('/login/upload-wallet'))
 }
 
+export const navigateToAccountName = () => (dispatch) => {
+  dispatch(push('/login/account-name'))
+}
+
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
@@ -460,25 +469,66 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       delete restoredWalletJSON.Crypto
     }
 
-    let wallet = await dispatch(decryptAccount([restoredWalletJSON], password))
+    if (restoredWalletJSON && restoredWalletJSON.address){
+      const { data } = await profileService.getPersonInfo(restoredWalletJSON.address)
 
-    let privateKey = wallet && wallet[0] && wallet[0].privateKey
+      if (data && data.length){
+        const profile = data[0]
 
-    let pk = privateKey || ''
+        const account = new AccountEntryModel({
+          key: uuid(),
+          name: profile.userName,
+          encrypted: [restoredWalletJSON],
+          profile,
+        })
 
-    if (pk.slice(0, 2) === '0x'){
-      pk = pk.slice(2)
+        dispatch(accountAdd(account))
+
+        dispatch(accountSelect(account))
+
+        dispatch(navigateToLoginPage())
+
+      } else {
+        dispatch(setImportedWalletFile(restoredWalletJSON))
+
+        dispatch(navigateToAccountName())
+      }
     }
 
-    dispatch({ type: NETWORK_SET_IMPORT_PRIVATE_KEY, privateKey: pk })
   } catch(e){
     throw new SubmissionError({ _error: e && e.message })
   }
 
 }
 
+export const onSubmitAccountName = (name) => (dispatch, getState) => {
+  const state = getState()
+
+  const { walletFileImportObject } = state.get('network')
+
+  const account = new AccountEntryModel({
+    key: uuid(),
+    name: name,
+    encrypted: [walletFileImportObject],
+    profile: null,
+  })
+
+  dispatch(accountAdd(account))
+
+  dispatch(accountSelect(account))
+
+}
+
+export const onSubmitAccountNameSuccess = () => (dispatch) => {
+  dispatch(navigateToLoginPage())
+}
+
+export const onSubmitAccountNameFail = (errors, dispatch, submitErrors) => (dispatch) => {
+
+}
+
 export const onSubmitWalletUploadSuccess = () => (dispatch) => {
-  dispatch(navigateToCreateAccount())
+  dispatch(navigateToAccountName())
 
 }
 
@@ -582,9 +632,14 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 
   const foundAccount = walletsList.find((account) => account.key === selectedWallet.key)
 
+
   if (foundAccount) {
     dispatch(accountSelect(foundAccount))
   }
+}
+
+export const setImportedWalletFile = (wallet) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_WALLET_FILE_IMPORTED, data: wallet })
 }
 
 export const initAccountsSignature = () => async (dispatch, getState) => {
