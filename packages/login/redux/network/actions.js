@@ -14,16 +14,6 @@ import {
   accountUpdate,
   setProfilesForAccounts,
 } from '@chronobank/core/redux/persistAccount/actions'
-import {
-  FORM_CONFIRM_MNEMONIC,
-  FORM_MNEMONIC_LOGIN_PAGE,
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-  FORM_LOGIN_PAGE,
-  FORM_CREATE_ACCOUNT,
-  FORM_RECOVER_ACCOUNT,
-  FORM_RESET_PASSWORD,
-  FORM_WALLET_UPLOAD,
-} from '@chronobank/login-ui/components'
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
@@ -79,6 +69,15 @@ export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_
 export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = 'network/ACCOUNTS_SIGNATURES_RESET_LOADING'
 export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = 'network/ACCOUNTS_SIGNATURES_RESOLVE'
 export const NETWORK_ACCOUNTS_SIGNATURES_REJECT = 'network/ACCOUNTS_SIGNATURES_REJECT'
+
+export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
+export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
+export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'FormPrivateKeyLoginPage'
+export const FORM_LOGIN_PAGE = 'FormLoginPage'
+export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
+export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
+export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
+export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })

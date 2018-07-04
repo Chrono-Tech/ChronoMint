@@ -23,6 +23,7 @@ import {
   onSubmitRecoverAccountFormSuccess,
   onSubmitRecoverAccountFormFail,
   initRecoverAccountPage,
+  FORM_RECOVER_ACCOUNT,
 } from '@chronobank/login/redux/network/actions'
 
 import Button from 'components/common/ui/Button/Button'
@@ -30,8 +31,6 @@ import UserRow from 'components/common/ui/UserRow/UserRow'
 
 import styles from 'layouts/Splash/styles'
 import './RecoverAccount.scss'
-
-export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 
 function mapStateToProps (state) {
   const selectedWallet = state.get('persistAccount').selectedWallet

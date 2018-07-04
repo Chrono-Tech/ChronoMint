@@ -28,6 +28,7 @@ import {
   navigateToSelectWallet,
   initAccountsSignature,
   DUCK_NETWORK,
+  FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
   getNetworksWithProviders,
@@ -58,8 +59,6 @@ const nextStrategy = {
   [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
   [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
 }
-
-export const FORM_LOGIN_PAGE = 'FormLoginPage'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
@@ -100,15 +99,6 @@ class LoginPage extends PureComponent {
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
     isTestRPC: PropTypes.bool,
-  }
-
-  constructor(props){
-    super(props)
-
-    this.state = {
-      open: false,
-      anchorEl: null,
-    }
   }
 
   componentWillMount(){
