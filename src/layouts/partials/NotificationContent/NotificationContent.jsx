@@ -78,6 +78,7 @@ class NotificationContent extends PureComponent {
       case transaction instanceof TxExecModel:
         return new CurrentTransactionNotificationModel({
           id: transaction.hash(),
+          hash: transaction.hash(),
           title: transaction.title(),
           date: transaction.time(),
           details: transaction.details(),
@@ -87,6 +88,7 @@ class NotificationContent extends PureComponent {
       case transaction instanceof TxModel:
         return new CurrentTransactionNotificationModel({
           id: transaction.txHash(),
+          hash: transaction.txHash(),
           title: `${transaction.symbol()} Transfer`,
           date: transaction.time(),
           details: transaction.details(),
