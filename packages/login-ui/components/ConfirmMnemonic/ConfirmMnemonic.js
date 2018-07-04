@@ -19,11 +19,10 @@ import {
   onSubmitConfirmMnemonic,
   onSubmitConfirmMnemonicSuccess,
   onSubmitConfirmMnemonicFail,
+  FORM_CONFIRM_MNEMONIC,
 } from '@chronobank/login/redux/network/actions'
 
 import './ConfirmMnemonic.scss'
-
-export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
 
 function mapStateToProps (state) {
 
