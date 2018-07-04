@@ -207,11 +207,6 @@ export const providerMap = {
     name: 'ChronoBank',
     disabled: false,
   },
-  uport: {
-    id: 5,
-    name: 'UPort',
-    disabled: false,
-  },
   mew: {
     id: 6,
     name: 'MyEtherWallet',
@@ -220,6 +215,11 @@ export const providerMap = {
   giveth: {
     id: 7,
     name: 'Giveth',
+    disabled: false,
+  },
+  uport: {
+    id: 5,
+    name: 'UPort',
     disabled: false,
   },
   local: {
