@@ -86,7 +86,6 @@ class LoginLocal extends PureComponent {
   render () {
     const { handleSubmit, isLoginSubmitting, error, accounts, selectedAccount } = this.props
 
-    console.log('accounts', accounts)
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
         <div styleName='wrapper'>
