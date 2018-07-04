@@ -87,7 +87,12 @@ export default class Button extends PureComponent {
             : <span>{this.props.label}</span>
           }
         </button>
-        { this.props.buttonType === BUTTON_TYPE_PENDING && <img styleName='spinning-image' src={SPINNING_WHEEL} alt='' /> }
+        { this.props.buttonType === BUTTON_TYPE_PENDING && <img
+          styleName='spinning-image'
+          src={SPINNING_WHEEL}
+          alt=''
+          onClick={this.handleTouchTap}
+        /> }
       </div>
     )
   }

@@ -16,11 +16,10 @@ import {
   onSubmitPrivateKeyLoginForm,
   onSubmitPrivateKeyLoginFormSuccess,
   onSubmitPrivateKeyLoginFormFail,
+  FORM_PRIVATE_KEY_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithPrivateKey.scss'
-
-export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'FormPrivateKeyLoginPage'
 
 const multiRowTextFieldStyle = {
   textareaStyle: {

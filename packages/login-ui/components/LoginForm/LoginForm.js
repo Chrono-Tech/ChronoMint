@@ -23,6 +23,7 @@ import {
   initLoginPage,
   navigateToSelectWallet,
   initAccountsSignature,
+  FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
   getAccountName,
@@ -42,8 +43,6 @@ const nextStrategy = {
   [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
   [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
 }
-
-export const FORM_LOGIN_PAGE = 'FormLoginPage'
 
 function mapStateToProps (state) {
   const selectedWallet = state.get('persistAccount').selectedWallet
