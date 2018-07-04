@@ -10,7 +10,6 @@ import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
   AccountProfileModel,
-  AccountModel,
 } from '@chronobank/core/models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
