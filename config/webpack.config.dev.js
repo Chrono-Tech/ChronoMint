@@ -13,7 +13,7 @@ let HtmlWebpackPlugin = require('html-webpack-plugin')
 
 process.traceDeprecation = true
 
-let srcAppArg = process.argv.find(e => e.startsWith('--src-app='))
+let srcAppArg = process.argv.find((e) => e.startsWith('--src-app='))
 const srcApp = srcAppArg ? srcAppArg.substr('--src-app='.length) : 'index'
 
 module.exports = config.buildConfig(
@@ -39,7 +39,8 @@ module.exports = config.buildConfig(
         favicon: faviconPath,
       }),
       new webpack.ProvidePlugin({
-        'Web3': 'web3',
+        'Web3Legacy': 'web3legacy',
+        'Web3': 'web3_1beta',
       }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': `"${process.env.NODE_ENV}"`,

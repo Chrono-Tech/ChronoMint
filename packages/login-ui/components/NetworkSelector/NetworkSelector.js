@@ -12,8 +12,11 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
+import Web3 from 'web3_1'
 import styles from '../../components/stylesLoginPage'
+
+console.log('window.Web3LegacyWeb3Legacy: ', Web3Legacy, Web3)
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
@@ -56,7 +59,7 @@ export default class NetworkSelector extends PureComponent {
   }
 
   resolveNetwork = () => {
-    const web3 = new Web3()
+    const web3 = new Web3Legacy()
     web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
     web3Provider.resolve()
   }

@@ -5,7 +5,7 @@
 
 import uuid from 'uuid/v1'
 import bip39 from 'bip39'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
@@ -57,7 +57,7 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 export const decryptAccount = (encrypted, password) => async (dispatch) => {
 
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
   await accounts.wallet.clear()
 
@@ -78,7 +78,7 @@ export const validateAccountName = (name) => (dispatch, getState) => {
 export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
   let host = networkService.getProviderSettings().url
 
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 
@@ -93,12 +93,11 @@ export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
 export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispatch) => {
   let host = networkService.getProviderSettings().url
 
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
-
 
   let newWallet = {
     ...wallet,
@@ -118,7 +117,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   let host = networkService.getProviderSettings().url
 
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   const accounts = new Accounts(new web3.providers.HttpProvider(host))
   accounts.wallet.clear()
 

@@ -6,7 +6,8 @@
 import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import EventEmitter from 'events'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
+
 import {
   addError,
   clearErrors,
@@ -46,6 +47,7 @@ import web3Utils from './Web3Utils'
 const { web3Converter } = utils
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
+console.log('new Web3Legacy: ', Web3Legacy)
 
 class NetworkService extends EventEmitter {
   connectStore (store) {
@@ -97,8 +99,8 @@ class NetworkService extends EventEmitter {
       return false
     }
 
-    const web3 = new Web3()
-    web3Provider.reinit(web3, new web3.providers.HttpProvider(providerURL || TESTRPC_URL))
+    const web3 = new Web3Legacy()
+    web3Provider.reinit(web3, new Web3Legacy.providers.HttpProvider(providerURL || TESTRPC_URL))
     const accounts = await web3Provider.getAccounts()
 
     // account must be valid
@@ -187,7 +189,7 @@ class NetworkService extends EventEmitter {
   }
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-    const web3 = new Web3()
+    const web3 = new Web3Legacy()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
     ethereumProvider.setEngine(ethereum, nem, waves)
@@ -256,8 +258,8 @@ class NetworkService extends EventEmitter {
   }
 
   async checkTestRPC (providerUrl) {
-    const web3 = new Web3()
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl || TESTRPC_URL))
+    const web3 = new Web3Legacy()
+    web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
     const web3Provider = new Web3Provider(web3)
 
     const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
@@ -272,7 +274,7 @@ class NetworkService extends EventEmitter {
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
     const resolveNetwork = () => {
-      const web3 = new Web3()
+      const web3 = new Web3Legacy()
       web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
       web3Provider.resolve()
     }

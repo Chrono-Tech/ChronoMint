@@ -9,7 +9,7 @@ import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import AccountSelector from '../../components/AccountSelector/AccountSelector'
 import BackButton from '../../components/BackButton/BackButton'
 
@@ -28,7 +28,7 @@ class LoginLocal extends PureComponent {
   }
 
   componentWillMount () {
-    const web3 = new Web3()
+    const web3 = new Web3Legacy()
     web3Provider.reinit(web3, new web3.providers.HttpProvider(TESTRPC_URL))
   }
 

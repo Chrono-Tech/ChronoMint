@@ -17,9 +17,9 @@ class metaMaskResolver extends EventEmitter {
       this.emit('resolve', false)
     }, WAIT_FOR_METAMASK)
 
-    if (window.web3 !== undefined || window.hasOwnProperty('web3')) {
+    if (window.web3legacy !== undefined || window.hasOwnProperty('web3legacy')) {
       try {
-        if (window.web3.eth.accounts[0]) {
+        if (window.web3legacy.eth.accounts[0]) {
           clearTimeout(timer)
           return this.emit('resolve', true)
         }
@@ -30,7 +30,7 @@ class metaMaskResolver extends EventEmitter {
     }
 
     // wait for metamask
-    Object.defineProperty(window, 'web3', {
+    Object.defineProperty(window, 'web3legacy', {
       set: (web3) => {
         timer && clearTimeout(timer)
         metaMaskInstance = web3
