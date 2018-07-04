@@ -237,7 +237,8 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
   let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
-    if (wallet.owners().items().filter((owner) => owner.address() === account).length > 0 && wallet.isDerived()) {
+    const isOwner = wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+    if (wallet.isDerived() && isOwner) {
       switch (wallet.blockchain()) {
         case BLOCKCHAIN_BITCOIN:
           btcProvider.createNewChildAddress(wallet.deriveNumber())

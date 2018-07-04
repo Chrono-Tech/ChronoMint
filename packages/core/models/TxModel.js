@@ -7,8 +7,6 @@ import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import { FULL_DATE } from './constants'
 import { abstractModel } from './AbstractModel'
-import Immutable from "immutable";
-import {I18n} from "../../../src/platform/i18n";
 
 class TxModel extends abstractModel({
   txHash: null,
@@ -116,20 +114,20 @@ class TxModel extends abstractModel({
   }
 
   details () {
-    const list = []
-
-    list.push({
-      label: 'From',
-      value: this.from(),
-    })
-    list.push({
-      label: 'To',
-      value: this.to(),
-    })
-    list.push({
-      label: 'Value',
-      value: this.value(),
-    })
+    const list = [
+      {
+        label: 'From',
+        value: this.from(),
+      },
+      {
+        label: 'To',
+        value: this.to(),
+      },
+      {
+        label: 'Value',
+        value: this.value(),
+      },
+    ]
 
     return list
   }

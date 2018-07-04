@@ -94,24 +94,26 @@ class NotificationContent extends PureComponent {
 
       default:
         break
-
     }
 
   }
 
   renderTransaction (notification: CurrentTransactionNotificationModel) {
-
-    const hash = notification.hash
-    const details = notification.details
+    const {
+      hash,
+      details,
+      id,
+      title,
+    } = notification
 
     return (
-      <div key={notification.id} styleName='tableItem'>
+      <div key={id} styleName='tableItem'>
         <div styleName='itemLeft'>
           <img alt='' src={ReceivedTransactionSVG} />
         </div>
         <div styleName='itemInfo'>
           <div styleName='infoRow'>
-            <div styleName='infoTitle'>{notification.title}</div>
+            <div styleName='infoTitle'>{title}</div>
             {hash && <div styleName='info-address'>{hash}</div>}
           </div>
           {details && details.map((item, index) => {

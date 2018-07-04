@@ -1,5 +1,10 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import PropTypes from 'prop-types'
-import AbstractModel from './AbstractJsModel'
+import AbstractJsModel from './AbstractJsModel'
 
 const schemaFactory = () => ({
   id: PropTypes.string.isRequired,
@@ -12,7 +17,7 @@ const schemaFactory = () => ({
   })),
 })
 
-export default class CurrentTransactionNotificationModel extends AbstractModel {
+export default class CurrentTransactionNotificationModel extends AbstractJsModel {
   constructor (props) {
     super(props, schemaFactory())
     Object.assign(this, props)
