@@ -24,15 +24,17 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
+import NetworkCreateModal from 'components/dialogs/NetworkCreateModal/NetworkCreateModal'
+import { modalsOpen } from 'redux/modals/actions'
 import classnames from 'classnames'
-import { chronoBankTestnet } from '../../../login/network/settings'
-
 import Web3 from 'web3'
-import './CommonNetworkSelector.scss'
 
+import './CommonNetworkSelector.scss'
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
+  const persistAccount = state.get('persistAccount')
+
   return {
     providersList: getNetworksWithProviders(network.providers, network.isLocal),
     isLocal: network.isLocal,
@@ -40,6 +42,7 @@ const mapStateToProps = (state) => {
     selectedProvider: getProviderById(network.selectedProviderId),
     networks: network.networks,
     isLoading: network.isLoading,
+    customNetworksList: persistAccount.customNetworksList,
   }
 }
 
@@ -49,6 +52,10 @@ const mapDispatchToProps = (dispatch) => ({
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => networkService.getProviderURL(),
   initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
+  modalOpenAddNetwork: () => dispatch(modalsOpen({
+    component: NetworkCreateModal,
+    props: {},
+  })),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -70,6 +77,8 @@ export default class CommonNetworkSelector extends PureComponent {
     })),
     onSelect: PropTypes.func,
     isLoading: PropTypes.bool,
+    customNetworksList: PropTypes.array,
+    modalOpenAddNetwork: PropTypes.func,
   }
 
   constructor (props) {
@@ -140,7 +149,7 @@ export default class CommonNetworkSelector extends PureComponent {
         { this.renderCustomNetworksList() }
         <div
           styleName='providerItem'
-          onClick={() => {}}
+          onClick={this.props.modalOpenAddNetwork}
         >
           Add a Network ...
         </div>
