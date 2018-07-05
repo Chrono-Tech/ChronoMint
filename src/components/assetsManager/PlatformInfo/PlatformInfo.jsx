@@ -10,7 +10,6 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import { RaisedButton } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -225,7 +224,7 @@ export default class PlatformInfo extends PureComponent {
       return this.renderInstructions()
     }
 
-    const totalSupply = this.props.assets[ selectedToken.address() ].totalSupply
+    const totalSupply = this.props.assets[selectedToken.address()].totalSupply
     const isPaused = selectedToken.isPaused()
 
     return (
