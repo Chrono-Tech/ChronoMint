@@ -43,6 +43,7 @@ import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
 import web3Utils from './Web3Utils'
 
+
 const { web3Converter } = utils
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'

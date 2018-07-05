@@ -19,6 +19,7 @@ const initialState = {
   selectedWallet: null,
   decryptedWallet: null,
   rehydrated: false,
+  customNetworksList: [],
 }
 
 const persistAccount = (state = initialState, action) => {
@@ -60,6 +61,27 @@ const persistAccount = (state = initialState, action) => {
       return {
         ...state,
         walletsList: removeWallet(state.walletsList, action.name),
+      }
+
+    case a.CUSTOM_NETWORKS_LIST_ADD :
+      return {
+        ...state,
+        customNetworksList: [
+          ...state.customNetworksList,
+          action.network,
+        ],
+      }
+
+    case a.CUSTOM_NETWORKS_LIST_UPDATE :
+      return {
+        ...state,
+        customNetworksList: action.networksList,
+      }
+
+    case a.CUSTOM_NETWORKS_LIST_RESET :
+      return {
+        ...state,
+        customNetworksList: [],
       }
 
     default:

@@ -16,8 +16,8 @@ import {
   getNetworksWithProviders,
   isTestRPC,
   getProviderById,
-  LOCAL_ID,
-  LOCAL_PROVIDER_ID,
+  providerMap,
+  networkSelectorGroups,
 } from '@chronobank/login/network/settings'
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -25,9 +25,11 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
 import classnames from 'classnames'
+import { chronoBankTestnet } from '../../../login/network/settings'
 
 import Web3 from 'web3'
 import './CommonNetworkSelector.scss'
+
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
@@ -119,18 +121,78 @@ export default class CommonNetworkSelector extends PureComponent {
     })
   }
 
+  renderCustomNetworksList(){
+    const list = [{
+      title: 'Custom network',
+
+    }]
+    return (
+      <div>
+
+      </div>
+    )
+  }
+
+  renderCustomNetworksGroup(){
+    return (
+      <div>
+        { this.renderGroupHeader({ title: 'Custom networks' }) }
+        { this.renderCustomNetworksList() }
+        <div
+          styleName='providerItem'
+          onClick={() => {}}
+        >
+          Add a Network ...
+        </div>
+      </div>
+    )
+  }
+
+  renderNetworkGroups(){
+    return this.renderDefaultNetworksGroups()
+  }
+
+  renderGroupHeader(group){
+    return (
+      <div
+        styleName='providerGroupItem'
+      >
+        <div styleName='providerGroupItemTitle'>{group.title}</div>
+        <div styleName='providerGroupItemDescription'>{group.description ? group.description : null}</div>
+      </div>
+    )
+  }
+
+  renderDefaultNetworksGroups(){
+    return (
+      <div>
+        {
+          networkSelectorGroups.map((group, i) => (
+            <div key={i}>
+              <div>{this.renderGroupHeader(group)}</div>
+              <div>
+                { group.providers ? group.providers.map((item, i) => this.renderMenuItem(item, i)) : null }
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    )
+  }
+
   renderMenuItem(item, i){
+    console.log('render', item, i)
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.provider.id === selectedProvider.id && item.network.id === selectedNetworkId
 
     return (
-      <li
+      <div
         styleName={classnames({providerItem: true, providerItemActive: checked })}
         onClick={() => this.handleClick(item)}
         key={i}
       >
         {this.getFullNetworkName(item)}
-      </li>
+      </div>
     )
   }
 
@@ -157,9 +219,9 @@ export default class CommonNetworkSelector extends PureComponent {
             borderRadius: 20,
           }}
         >
-          <ul styleName='providersList'>
-            {providersList.map((item, i) => this.renderMenuItem(item, i))}
-          </ul>
+          <div styleName='providersList'>
+            { this.renderDefaultNetworksGroups() }
+          </div>
         </Popover>
       </div>
     )

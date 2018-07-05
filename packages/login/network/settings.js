@@ -110,73 +110,88 @@ export const MIDDLEWARE_MAP = {
 
 // --------- providers
 
+export const infuraMainnet =   {
+  ...MAINNET_BASE,
+  host: `mainnet.infura.io/${INFURA_TOKEN}`,
+}
+
+export const infuraTestnet =   {
+  ...RINKEBY_BASE,
+  host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+}
+
 export const infuraNetworkMap = [
-  {
-    ...MAINNET_BASE,
-    host: `mainnet.infura.io/${INFURA_TOKEN}`,
-  },
-  {
-    ...RINKEBY_BASE,
-    host: `rinkeby.infura.io/${INFURA_TOKEN}`,
-  },
+  infuraMainnet,
+  infuraTestnet,
 ]
+
+const mewMainnet = {
+  id: NETWORK_MAIN_ID,
+  protocol: 'https',
+  name: 'Mainnet (production MyEtherWallet)',
+  scanner: blockExplorersMap.Ethereum.mainnet,
+  bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
+  bitcoinGold: 'bitcoingold',
+  litecoin: 'litecoin',
+  nem: 'mainnet',
+  host: `api.myetherapi.com/eth`,
+}
 
 export const mewNetworkMap = [
-  {
-    id: NETWORK_MAIN_ID,
-    protocol: 'https',
-    name: 'Mainnet (production MyEtherWallet)',
-    scanner: blockExplorersMap.Ethereum.mainnet,
-    bitcoin: 'bitcoin',
-    bitcoinCash: 'bitcoin',
-    bitcoinGold: 'bitcoingold',
-    litecoin: 'litecoin',
-    nem: 'mainnet',
-    host: `api.myetherapi.com/eth`,
-  },
+  mewMainnet,
 ]
+
+const givethMainnet =   {
+  id: NETWORK_MAIN_ID,
+  protocol: 'https',
+  name: 'Mainnet (production Giveth)',
+  scanner: blockExplorersMap.Ethereum.mainnet,
+  bitcoin: 'bitcoin',
+  bitcoinCash: 'bitcoin',
+  bitcoinGold: 'bitcoingold',
+  litecoin: 'litecoin',
+  nem: 'mainnet',
+  waves: 'MAINNET_CONFIG',
+  host: `mew.giveth.io`,
+}
 
 export const givethNetworkMap = [
-  {
-    id: NETWORK_MAIN_ID,
-    protocol: 'https',
-    name: 'Mainnet (production Giveth)',
-    scanner: blockExplorersMap.Ethereum.mainnet,
-    bitcoin: 'bitcoin',
-    bitcoinCash: 'bitcoin',
-    bitcoinGold: 'bitcoingold',
-    litecoin: 'litecoin',
-    nem: 'mainnet',
-    waves: 'MAINNET_CONFIG',
-    host: `mew.giveth.io`,
-  },
+  givethMainnet,
 ]
 
-const chronoBankMap = [
-  {
-    ...MAINNET_BASE,
-    host: 'mainnet-full-parity-rpc.chronobank.io/',
-  },
-  {
-    ...RINKEBY_BASE,
-    host: 'rinkeby-full-geth-rpc.chronobank.io/',
-  },
+export const chronoBankMainnet =   {
+  ...MAINNET_BASE,
+  host: 'mainnet-full-parity-rpc.chronobank.io/',
+}
+
+export const chronoBankTestnet =   {
+  ...RINKEBY_BASE,
+  host: 'rinkeby-full-geth-rpc.chronobank.io/',
+}
+
+export const chronoBankMap = [
+  chronoBankMainnet,
+  chronoBankTestnet,
 ]
+
+
+export const chronoBankPrivate = {
+  id: 777,
+  protocol: 'https',
+  host: 'private.chronobank.io/',
+  name: 'Private (develop network)',
+  bitcoin: 'testnet',
+  bitcoinCash: 'testnet',
+  // bitcoinGold: 'bitcoingold_testnet',
+  litecoin: 'litecoin_testnet',
+  nem: 'testnet',
+  waves: 'TESTNET_CONFIG',
+}
 
 // dev only
 if (process.env.NODE_ENV === 'development') {
-  chronoBankMap.push({
-    id: 777,
-    protocol: 'https',
-    host: 'private.chronobank.io/',
-    name: 'Private (develop network)',
-    bitcoin: 'testnet',
-    bitcoinCash: 'testnet',
-    // bitcoinGold: 'bitcoingold_testnet',
-    litecoin: 'litecoin_testnet',
-    nem: 'testnet',
-    waves: 'TESTNET_CONFIG',
-  })
+  chronoBankMap.push(chronoBankPrivate)
 }
 
 // local only
@@ -347,3 +362,55 @@ export const isTestingNetwork = (networkId, providerId) => {
   const net = getNetworkById(networkId, providerId)
   return net.id !== NETWORK_MAIN_ID
 }
+
+export const networkSelectorGroups = [
+  {
+    title: 'Production networks',
+    description: 'Manage your funds',
+    providers: [
+      {
+        provider: providerMap.chronoBank,
+        network: chronoBankMainnet,
+      },
+      {
+        provider: providerMap.infura,
+        network: infuraMainnet,
+      },
+      {
+        provider: providerMap.mew,
+        network: mewMainnet,
+      },
+      {
+        provider: providerMap.giveth,
+        network: givethMainnet,
+      },
+    ],
+  },
+  {
+    title: 'Test networks',
+    description: 'Test networks with fake funds',
+    providers: [
+      {
+        provider: providerMap.chronoBank,
+        network: chronoBankTestnet,
+      },
+      {
+        provider: providerMap.infura,
+        network: infuraTestnet,
+      },
+    ],
+  },
+  {
+    title: 'Developer networks',
+    providers: [
+      {
+        provider: providerMap.local,
+        network: infuraLocalNetwork,
+      },
+      process.env.NODE_ENV === 'development' ? {
+        provider: providerMap.chronoBank,
+        network: chronoBankPrivate,
+      } : null,
+    ],
+  },
+]
