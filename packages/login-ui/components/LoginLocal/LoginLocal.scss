@@ -32,17 +32,17 @@
   display: flex;
   align-items: center;
   min-height: 82px;
-  border-bottom: 1px solid #E5E5E5;
-  background: #fff;
+  border-bottom: 1px solid $color-grey-1;
+  background: $color-white;
 
 
   &:hover, &.providerItemActive {
-    background: #F2F2F2;
+    background: $color-grey-3;
   }
 }
 
 .account-item-content {
-  color: #333;
+  color: $color-primary-3;
   text-overflow: ellipsis;
   min-width: 0;
   word-wrap: break-word;
@@ -52,7 +52,7 @@
 .account-item-icon {
   display: flex;
   align-items: center;
-  color: #BFBFBF;
+  color: $color-grey-7;
   font-size: 22px;
 }
 

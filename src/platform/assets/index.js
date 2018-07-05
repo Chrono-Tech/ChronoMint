@@ -1,1 +1,1 @@
-export profileImgJPG from 'platform/assets/img/profile-photo-1.jpg'
+export profileImgJPG from 'assets/img/profile-photo-1.jpg'
