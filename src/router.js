@@ -21,6 +21,7 @@ import {
   LoginWithWallet,
   LoginWithMnemonic,
   LoginWithPrivateKey,
+  LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -69,7 +70,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-      <Redirect from='/' to='/login' />
+      <Redirect from='/' to='/login/select-account' />
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -103,6 +104,7 @@ const router = (
         <Route path='/login/upload-wallet' component={LoginWithWallet} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+        <Route path='/login/local-login' component={LoginLocal} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

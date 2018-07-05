@@ -1,9 +1,10 @@
 import {
-  AccountEntryModel,
-  AccountProfileModel,
-} from '../../models/wallet/persistAccount'
+  profileImgJPG,
+} from '@chronobank/core-dependencies/assets'
 
-import profileImgJPG from 'assets/img/profile-photo-1.jpg'
+import {
+  AccountEntryModel,
+} from '../../models/wallet/persistAccount'
 
 export const replaceWallet = (wallet, walletList) => {
   let index = walletList.findIndex((item) => item.key === wallet.key)
@@ -30,7 +31,6 @@ export const getWalletsListAddresses = (walletsList = []) => {
 export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
   return walletsList.find((w) => getAccountAddress(w) === getAccountAddress(wallet))
 }
-
 
 export const getAccountName = (account: AccountEntryModel) => {
   if (account && account.profile && account.profile.userName){
