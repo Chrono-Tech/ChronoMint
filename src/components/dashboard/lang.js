@@ -4,12 +4,10 @@
  */
 
 import * as Rewards from './Rewards/lang'
-import * as Voting from './Voting/lang'
 import TransactionsTable from './TransactionsTable/lang'
 
 export default {
   en: {
-    Voting: Voting.en,
     Rewards: Rewards.en,
     TransactionsTable: TransactionsTable.en,
   },

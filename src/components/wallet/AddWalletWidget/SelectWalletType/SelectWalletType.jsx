@@ -56,13 +56,11 @@ export default class SelectWalletType extends PureComponent {
         blockchain: BLOCKCHAIN_BITCOIN,
         symbol: BTC,
         title: `${prefix}.btc`,
-        action: this.handleCreateWallet(BLOCKCHAIN_BITCOIN),
       },
       {
         blockchain: BLOCKCHAIN_LITECOIN,
         symbol: LTC,
         title: `${prefix}.ltc`,
-        action: this.handleCreateWallet(BLOCKCHAIN_LITECOIN),
       },
       {
         blockchain: BLOCKCHAIN_ETHEREUM,
@@ -77,7 +75,7 @@ export default class SelectWalletType extends PureComponent {
         disabled: true,
       },
       {
-	blockchain: BLOCKCHAIN_WAVES,
+        blockchain: BLOCKCHAIN_WAVES,
         symbol: WAVES,
         title: `${prefix}.waves`,
         disabled: true,
@@ -89,7 +87,7 @@ export default class SelectWalletType extends PureComponent {
         {
           wallets.map((type) => (
             <div key={type.blockchain} styleName={classnames('walletType', { 'disabled': type.disabled })} onClick={type.action || this.handleTouchTap(type)}>
-              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[ type.symbol ]} /></div>
+              <div styleName='icon'><IPFSImage fallback={TOKEN_ICONS[type.symbol]} /></div>
               <div styleName='title'>
                 <Translate value={type.title} />
                 {type.disabled && <div styleName='soon'><Translate value={`${prefix}.soon`} /></div>}
@@ -98,11 +96,6 @@ export default class SelectWalletType extends PureComponent {
             </div>
           ))
         }
-        <div styleName='walletType'>
-          <div styleName='icon' />
-          <div styleName='title'><Translate value={`${prefix}.lgo`} /></div>
-          <div styleName='arrow' />
-        </div>
       </div>
     )
   }

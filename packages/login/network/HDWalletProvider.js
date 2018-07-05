@@ -30,7 +30,7 @@ export default class HDWalletProvider {
 
     this.engine = new ProviderEngine()
     this.engine.addProvider(new WalletSubprovider(this.wallets, {}))
-    this.engine.addProvider(new FilterSubprovider())
+    this.engine.addProvider(new FilterSubprovider({ maxFilters: 0 }))
     this.engine.addProvider(new RpcSubprovider({ rpcUrl: provider_url }))
     this.engine.start() // Required by the provider engine.
   }

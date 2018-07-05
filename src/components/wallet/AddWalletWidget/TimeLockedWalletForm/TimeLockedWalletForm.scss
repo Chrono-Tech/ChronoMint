@@ -37,9 +37,11 @@ $gutter: 24px;
   border-bottom: 1px solid $color-grey300;
   padding: 30px;
   color: $color-black;
-
   &:last-child {
     border-bottom: none;
+  }
+  &.name {
+    padding-top: 10px;
   }
 }
 
@@ -70,7 +72,7 @@ $gutter: 24px;
 // fields
 
 .ownersList {
-  margin-top: 48px;
+  margin-top: 25px;
 }
 
 .timeLock {
@@ -86,7 +88,7 @@ $gutter: 24px;
 .actions {
   display: flex;
   justify-content: flex-end;
-  padding: 24px 16px 16px;
+  padding: 5px 30px 30px;
 }
 
 .action {

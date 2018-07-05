@@ -108,7 +108,7 @@ export default class MultisigWalletForm extends PureComponent {
     return (
       <form styleName='root' onSubmit={this.props.handleSubmit}>
         <div styleName='body'>
-          <div styleName='block'>
+          <div styleName='block name'>
             <Field
               component={TextField}
               name='name'
