@@ -558,7 +558,7 @@ export default {
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
     cantSentToYourself: 'Can\'t send tokens to yourself',
-    notEnoughTokens: 'The wallet has insufficient funds',
+    notTokens: 'The wallet has insufficient funds',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     greaterThanAllowed: 'Amount is greater than allowed',
@@ -892,5 +892,6 @@ export default {
     addPoll: 'Add a Poll',
     publish: 'Publish',
     endPoll: 'End poll',
+    addToken: 'Add a token',
   },
 }
