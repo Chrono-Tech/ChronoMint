@@ -12,7 +12,7 @@ import {
 
 export const NETWORK_MAIN_ID = 1
 export const LOCAL_ID = 9999999999
-export const LOCAL_PROVIDER_ID = 6
+export const LOCAL_PROVIDER_ID = 8
 // export const LOCAL_MNEMONIC = 'video visa alcohol fault earth naive army senior major inherit convince electric'
 export const LOCAL_PRIVATE_KEYS = [
   '6b9027372deb53f4ae973a5614d8a57024adf33126ece6b587d9e08ba901c0d2',
@@ -224,7 +224,7 @@ export const providerMap = {
   },
   local: {
     id: LOCAL_PROVIDER_ID,
-    name: 'Local',
+    name: 'TestRPC',
     disabled: true,
   },
 }
@@ -268,13 +268,12 @@ export const getNetworksByProvider = (providerId, withLocal = false) => {
   }
 }
 
-export const getNetworksWithProviders = (withLocal = false) => {
+export const getNetworksWithProviders = (providers = [], withLocal = false) => {
   let networks = []
 
-  Object.keys(providerMap)
-    .filter((key) => !providerMap[key].disabled)
-    .forEach((key) => {
-      const provider = providerMap[key]
+  providers
+    .filter((provider) => provider && !provider.disabled)
+    .forEach((provider) => {
 
       const networksProvider = getNetworksByProvider(provider && provider.id, withLocal)
         .map((network) => ({
@@ -285,11 +284,25 @@ export const getNetworksWithProviders = (withLocal = false) => {
       networks = networks.concat(networksProvider)
     })
 
+  if (withLocal){
+    networks.push({
+      provider: providerMap.local,
+      network: infuraLocalNetwork,
+    })
+  }
+
   return networks
 }
 
 export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
+  if (isTestRPC(providerId, networkId)){
+    return 'TestRPC'
+  }
   return `${getProviderById(providerId).name} - ${getNetworkById(networkId, providerId, withLocal).name}`
+}
+
+export const isTestRPC = (providerId, networkId) => {
+  return providerId === LOCAL_PROVIDER_ID && networkId === LOCAL_ID
 }
 
 export const getProviderById = (providerId) => {

@@ -164,7 +164,7 @@ export default class MenuTokensList extends PureComponent {
               <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>
                 <div styleName='addressName'>{token.title}</div>
                 <div styleName='address'>
-                  {token.address || <Translate value={`${prefix}.notAvailable`} />}
+                  <Translate value={`${prefix}.defaultWallet`} />{token.address || <Translate value={`${prefix}.notAvailable`} />}
                 </div>
               </div>
               <div

@@ -45,7 +45,7 @@ export default (values, props) => {
   if (!amountFormatError) {
     // validate only numbers
     const amountWithDecimals = token.addDecimals(amount)
-    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'errors.notEnoughTokens' : null)
+    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'errors.notTokens' : null)
   }
 
   const tokenDAO = tokenService.getDAO(token.id())

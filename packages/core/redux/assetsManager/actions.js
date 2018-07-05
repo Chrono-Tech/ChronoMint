@@ -69,7 +69,7 @@ export const getAssetsManagerData = () => async (dispatch, getState) => {
   const assetsManagerDao = await contractManager.getAssetsManagerDAO()
   const platforms = await assetsManagerDao.getPlatformList(account)
   const assets = await assetsManagerDao.getSystemAssetsForOwner(account)
-  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[ 1 ].symbol), [ account ])
+  const managers = await assetsManagerDao.getManagers(Object.entries(assets).map((item) => item[1].symbol), [account])
   const usersPlatforms = platforms.filter((platform) => platform.by === account)
 
   Object.values(assets).map((asset) => {
@@ -148,7 +148,7 @@ export const createAsset = (token: TokenModel) => async (dispatch, getState) => 
       txHash = await tokenManagementExtension.createAssetWithoutFee(token)
     }
     let assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    assets[ txHash ] = {
+    assets[txHash] = {
       address: txHash,
       platform: token.platform().address,
       totalSupply: token.totalSupply(),
@@ -174,7 +174,7 @@ export const getManagersForAssetSymbol = async (symbol: string, excludeAccounts:
 export const removeManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.removeAssetPartOwner(token.symbol(), owner)
   }
@@ -187,7 +187,7 @@ export const removeManager = (token: TokenModel, owner: string) => async (dispat
 export const addManager = (token: TokenModel, owner: string) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     return await chronoBankPlatformDAO.addAssetPartOwner(token.symbol(), owner)
   }
@@ -200,7 +200,7 @@ export const addManager = (token: TokenModel, owner: string) => async (dispatch,
 export const reissueAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.reissueAsset(token, amount)
   }
@@ -213,7 +213,7 @@ export const reissueAsset = (token: TokenModel, amount: number) => async (dispat
 export const revokeAsset = (token: TokenModel, amount: number) => async (dispatch, getState) => {
   try {
     const assets = getState().get(DUCK_ASSETS_MANAGER).assets()
-    const platform = token.platform() && token.platform().address || assets[ token.address() ].platform
+    const platform = token.platform() && token.platform().address || assets[token.address()].platform
     const chronoBankPlatformDAO = await contractManager.getChronoBankPlatformDAO(platform)
     await chronoBankPlatformDAO.revokeAsset(token, amount)
   }
@@ -297,7 +297,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   dispatch(getAssetsManagerData())
   dispatch(getTransactions())
   const { account } = getState().get(DUCK_SESSION)
-  const [ , chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO ] = await Promise.all([
+  const [, chronoBankPlatformDAO, platformTokenExtensionGatewayManagerEmitterDAO] = await Promise.all([
     contractManager.getAssetsManagerDAO(),
     contractManager.getChronoBankPlatformDAO(),
     contractManager.getPlatformTokenExtensionGatewayManagerEmitterDAO(),
@@ -317,7 +317,7 @@ export const watchInitTokens = () => async (dispatch, getState) => {
   const assetCallback = async (tx) => {
     const state = getState().get(DUCK_ASSETS_MANAGER)
     const assets = state.assets()
-    delete assets[ tx.transactionHash ]
+    delete assets[tx.transactionHash]
     dispatch({ type: SET_ASSETS, payload: { assets } })
     dispatch(setTx(tx))
   }
@@ -365,9 +365,9 @@ export const selectToken = (token: TokenModel) => async (dispatch, getState) => 
       .isReissuable(token.isReissuable().isFetching(true)),
   })
 
-  const [ managersList, isReissuable, fee, isPaused, blacklist ] = await Promise.all([
-    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [ account ]),
-    checkIsReissuable(token, assets[ token.address() ]),
+  const [managersList, isReissuable, fee, isPaused, blacklist] = await Promise.all([
+    getManagersForAssetSymbol(web3Converter.stringToBytesWithZeros(token.symbol()), [account]),
+    checkIsReissuable(token, assets[token.address()]),
     getFee(token),
     getPauseStatus(token.address()),
     getBlacklist(token.symbol()),
@@ -440,7 +440,7 @@ const getBlacklist = async (symbol: string) => {
 
 export const restrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
   const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
-  const tx = await chronoBankAssetDAO.restrict([ address ])
+  const tx = await chronoBankAssetDAO.restrict([address])
   if (tx.tx) {
     dispatch({
       type: TOKENS_FETCHED,
@@ -451,7 +451,7 @@ export const restrictUser = (token: TokenModel, address: string) => async (dispa
 
 export const unrestrictUser = (token: TokenModel, address: string) => async (dispatch): boolean => {
   const chronoBankAssetDAO = await contractManager.getChronoBankAssetDAO(token.address())
-  const tx = await chronoBankAssetDAO.unrestrict([ address ])
+  const tx = await chronoBankAssetDAO.unrestrict([address])
   if (tx.tx) {
     dispatch({
       type: TOKENS_FETCHED,
@@ -480,7 +480,7 @@ export const selectPlatform = (platformAddress) => async (dispatch, getState) =>
     if (token.address()) {
       dispatch({
         type: TOKENS_FETCHED,
-        token: token.isPaused(pauseResult[ i ]),
+        token: token.isPaused(pauseResult[i]),
       })
     }
   })

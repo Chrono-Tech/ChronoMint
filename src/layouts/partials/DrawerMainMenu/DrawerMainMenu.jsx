@@ -17,7 +17,6 @@ import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
-import profileImgJPG from 'assets/img/profile-photo-1.jpg'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
@@ -27,10 +26,7 @@ import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsMan
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
-import {
-  getAccountName,
-  getAccountAvatar,
-} from '@chronobank/core/redux/persistAccount/utils'
+import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
 import './DrawerMainMenu.scss'
 

@@ -2,7 +2,6 @@
  * Copyright 2017–2018, LaborX PTY
  * Licensed under the AGPL Version 3 license.
  */
-
 @import "~styles/partials/mixins";
 @import "~styles/partials/variables";
 
@@ -26,6 +25,7 @@
 
 .chronWalletLogo {
   display: flex;
+  height: 65px;
   img {
     width: 170px;
   }
@@ -33,6 +33,8 @@
 
 .subtitle {
   color: $color-white;
+  font-size: 12px;
+  line-height: 26px;
 }
 
 .menu {
@@ -170,6 +172,7 @@
 }
 
 .network-name-text {
+  font-size: 14px;
   color: $additionalData-color;
 }
 

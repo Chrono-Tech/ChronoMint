@@ -48,7 +48,7 @@ export default class UserActiveDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog title={<Translate value='UserActiveDialog.title' />}>
+      <ModalDialog title={<Translate value='UserActiveDialog.title' />} hideCloseIcon>
         <div styleName='content'>
           <div styleName='dialogBody'>
             <Translate value='UserActiveDialog.text' />

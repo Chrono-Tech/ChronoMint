@@ -7,11 +7,18 @@ import networkService from '@chronobank/login/network/NetworkService'
 import Web3Legacy from 'web3legacy'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
+import {
+  clearErrors,
+  DUCK_NETWORK,
+  selectProviderWithNetwork,
+  initCommonNetworkSelector,
+} from '@chronobank/login/redux/network/actions'
 import {
   getNetworksWithProviders,
-  getNetworkWithProviderNames,
+  isTestRPC,
   getProviderById,
+  LOCAL_ID,
+  LOCAL_PROVIDER_ID,
 } from '@chronobank/login/network/settings'
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
@@ -25,8 +32,7 @@ import './CommonNetworkSelector.scss'
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)
   return {
-    providersList: getNetworksWithProviders(network.isLocal),
-    networkProviderName: getNetworkWithProviderNames(network.selectedProviderId, network.selectedNetworkId, network.isLocal),
+    providersList: getNetworksWithProviders(network.providers, network.isLocal),
     isLocal: network.isLocal,
     selectedNetworkId: network.selectedNetworkId,
     selectedProvider: getProviderById(network.selectedProviderId),
@@ -36,13 +42,11 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  selectProviderWithNetwork: (networkId, providerId) => {
-    networkService.selectProvider(providerId)
-    networkService.selectNetwork(networkId)
-  },
+  selectProviderWithNetwork: (networkId, providerId) => dispatch(selectProviderWithNetwork(networkId, providerId)),
   selectNetwork: (network) => networkService.selectNetwork(network),
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => networkService.getProviderURL(),
+  initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
 })
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -50,6 +54,7 @@ export default class CommonNetworkSelector extends PureComponent {
   static propTypes = {
     clearErrors: PropTypes.func,
     selectNetwork: PropTypes.func,
+    initCommonNetworkSelector: PropTypes.func,
     selectProviderWithNetwork: PropTypes.func,
     getProviderURL: PropTypes.func,
     selectedNetworkId: PropTypes.number,
@@ -73,8 +78,8 @@ export default class CommonNetworkSelector extends PureComponent {
     }
   }
 
-  componentDidMount (){
-    networkService.autoSelect()
+  componentDidMount () {
+    this.props.initCommonNetworkSelector()
   }
 
   handleClick = (data) => {
@@ -94,13 +99,21 @@ export default class CommonNetworkSelector extends PureComponent {
     })
   }
 
+  getFullNetworkName (item){
+    if (isTestRPC(item.provider.id, item.network.id)){
+      return 'TestRPC'
+    }
+
+    return `${item.provider.name} - ${item.network.name}`
+  }
+
   handleRequestClose = () => {
     this.setState({
       open: false,
     })
   }
 
-  getFullNetworkName(item){
+  getFullNetworkName (item){
     return `${item.provider.name} - ${item.network.name}`
   }
 
@@ -145,6 +158,7 @@ export default class CommonNetworkSelector extends PureComponent {
           onRequestClose={this.handleRequestClose}
           style={{
             background: 'transparent',
+            borderRadius: 20,
           }}
         >
           <ul styleName='providersList'>
