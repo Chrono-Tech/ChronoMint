@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types'
 import AbstractAccountModel from './AbstractAccountModel'
-import AccountProfileModel from './AccountProfileModel'
 
 const schema = {
   key: PropTypes.string,
