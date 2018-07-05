@@ -14,26 +14,16 @@ import {
   accountUpdate,
   setProfilesForAccounts,
 } from '@chronobank/core/redux/persistAccount/actions'
-import {
-  FORM_CONFIRM_MNEMONIC,
-  FORM_MNEMONIC_LOGIN_PAGE,
-  FORM_PRIVATE_KEY_LOGIN_PAGE,
-  FORM_LOGIN_PAGE,
-  FORM_CREATE_ACCOUNT,
-  FORM_RECOVER_ACCOUNT,
-  FORM_RESET_PASSWORD,
-  FORM_WALLET_UPLOAD,
-} from '@chronobank/login-ui/components'
 import Web3 from 'web3'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import { push } from 'react-router-redux'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import networkService from '../../network/NetworkService'
+import profileService from '../../network/ProfileService'
+import privateKeyProvider from '../../network/privateKeyProvider'
+import mnemonicProvider from '../../network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
@@ -73,6 +63,15 @@ export const NETWORK_ACCOUNTS_SIGNATURES_LOADING = 'network/ACCOUNTS_SIGNATURES_
 export const NETWORK_ACCOUNTS_SIGNATURES_RESET_LOADING = 'network/ACCOUNTS_SIGNATURES_RESET_LOADING'
 export const NETWORK_ACCOUNTS_SIGNATURES_RESOLVE = 'network/ACCOUNTS_SIGNATURES_RESOLVE'
 export const NETWORK_ACCOUNTS_SIGNATURES_REJECT = 'network/ACCOUNTS_SIGNATURES_REJECT'
+
+export const FORM_CONFIRM_MNEMONIC = 'ConfirmMnemonicForm'
+export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
+export const FORM_PRIVATE_KEY_LOGIN_PAGE = 'FormPrivateKeyLoginPage'
+export const FORM_LOGIN_PAGE = 'FormLoginPage'
+export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
+export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
+export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
+export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })

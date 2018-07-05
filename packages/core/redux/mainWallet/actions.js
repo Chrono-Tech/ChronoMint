@@ -13,7 +13,7 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses, getMainWalletAddresses } from '@chronobank/core/redux/wallet/selectors'
+import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses, getMainWalletAddresses } from '../wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
@@ -467,7 +467,8 @@ export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }
   wallets
     .items()
     .map((wallet) => {
-      if (wallet.owners().items().filter((owner) => owner.address() === account).length > 0 && wallet instanceof DerivedWalletModel) {
+      const isOwner = wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+      if (wallet instanceof DerivedWalletModel && isOwner) {
         const deriveNumber = wallet.deriveNumber ? wallet.deriveNumber() : null
         if (!lastDeriveNumbers[wallet.blockchain()] || (lastDeriveNumbers[wallet.blockchain()] && lastDeriveNumbers[wallet.blockchain()] < deriveNumber)) {
           lastDeriveNumbers[wallet.blockchain()] = deriveNumber

@@ -66,11 +66,17 @@ export default class MainWalletModel extends abstractFetchingModel({
       .updateTransactionsGroup({ blockchain: tx.blockchain(), address: tx.to(), group: txGroupTo.add(tx) })
   }
 
-  getAllPendingTransactions (blockchain, address) {
+  getAllPendingTransactions () {
     let pendingTransactions = []
+    const addresses = []
+    this.addresses().items().map((a) => {
+      addresses.push(a.address())
+    })
+
     this.get('transactions').map((t, e) => {
-      if (blockchain && address && e !== `${blockchain}-${address}`) {
-        return null
+      const [ , transactionAddress ] = e.split('-')
+      if (!addresses.includes(transactionAddress)) {
+        return
       }
       pendingTransactions = pendingTransactions.concat(t.items().filter((tr) => {
         return tr.blockNumber() === -1 || tr.blockNumber() === null

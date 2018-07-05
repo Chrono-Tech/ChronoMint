@@ -1,7 +1,7 @@
 import {
   AccountEntryModel,
   AccountProfileModel,
-} from '@chronobank/core/models/wallet/persistAccount'
+} from '../../models/wallet/persistAccount'
 
 import profileImgJPG from 'assets/img/profile-photo-1.jpg'
 
