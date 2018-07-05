@@ -1,10 +1,9 @@
 import {
-  profileImgJPG
-} from 'platform/assets'
+  profileImgJPG,
+} from '@chronobank/core-dependencies/assets'
 
 import {
   AccountEntryModel,
-  AccountProfileModel,
 } from '../../models/wallet/persistAccount'
 
 export const replaceWallet = (wallet, walletList) => {

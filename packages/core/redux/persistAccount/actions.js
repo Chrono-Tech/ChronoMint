@@ -116,8 +116,8 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
 
-  let settings = networkService.getProviderSettings()
-  let host = settings.url
+  const settings = networkService.getProviderSettings()
+  const host = settings.url
 
   const web3 = new Web3()
   web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
