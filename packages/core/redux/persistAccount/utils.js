@@ -3,7 +3,7 @@ import {
   AccountProfileModel,
 } from '../../models/wallet/persistAccount'
 
-import profileImgJPG from 'assets/img/profile-photo-1.jpg'
+import profileImgJPG from 'platform/assets/img/profile-photo-1.jpg'
 
 export const replaceWallet = (wallet, walletList) => {
   let index = walletList.findIndex((item) => item.key === wallet.key)
@@ -30,7 +30,6 @@ export const getWalletsListAddresses = (walletsList = []) => {
 export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
   return walletsList.find((w) => getAccountAddress(w) === getAccountAddress(wallet))
 }
-
 
 export const getAccountName = (account: AccountEntryModel) => {
   if (account && account.profile && account.profile.userName){

@@ -7,19 +7,18 @@ import uuid from 'uuid/v1'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
+import networkService from '@chronobank/login/network/NetworkService'
+import profileService from '@chronobank/login/network/ProfileService'
+import web3Provider from '@chronobank/login/network/Web3Provider'
+import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
   AccountEntryModel,
   AccountProfileModel,
-  AccountModel,
 } from '../../models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
   getAccountAddress,
 } from '../../redux/persistAccount/utils'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
-import web3Provider from '@chronobank/login/network/Web3Provider'
-import web3Utils from '@chronobank/login/network/Web3Utils'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -100,7 +99,6 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
-
 
   let newWallet = {
     ...wallet,
