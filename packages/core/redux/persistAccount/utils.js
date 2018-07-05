@@ -1,9 +1,11 @@
 import {
+  profileImgJPG
+} from 'platform/assets'
+
+import {
   AccountEntryModel,
   AccountProfileModel,
 } from '../../models/wallet/persistAccount'
-
-import profileImgJPG from 'platform/assets/img/profile-photo-1.jpg'
 
 export const replaceWallet = (wallet, walletList) => {
   let index = walletList.findIndex((item) => item.key === wallet.key)

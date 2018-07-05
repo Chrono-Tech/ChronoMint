@@ -103,7 +103,7 @@ class LoginLocal extends PureComponent {
         <div styleName='wrapper'>
 
           <div styleName='page-title'>
-            <Translate value='LoginForm.title' />
+            <Translate value='LoginLocal.title' />
           </div>
 
           {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
