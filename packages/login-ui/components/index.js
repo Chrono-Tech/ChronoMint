@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export { default as GenerateMnemonic } from './GenerateMnemonic/GenerateMnemonic'
 export { default as LoginWithMnemonic } from './LoginWithMnemonic/LoginWithMnemonic'
 export { default as LoginWithPrivateKey } from './LoginWithPrivateKey/LoginWithPrivateKey'
