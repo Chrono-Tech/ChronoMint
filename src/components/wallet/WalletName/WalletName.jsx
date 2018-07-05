@@ -6,6 +6,7 @@
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
+import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { prefix } from './lang'
 
 export default class WalletName extends PureComponent {
@@ -38,7 +39,7 @@ export default class WalletName extends PureComponent {
         }
       }
     }
-    return <Translate value={`${prefix}.${key}`} />
+    return <Translate value={`${prefix}.${key}`} symbol={getMainSymbolForBlockchain(wallet.blockchain)} />
   }
 
   isMySharedWallet = () => {

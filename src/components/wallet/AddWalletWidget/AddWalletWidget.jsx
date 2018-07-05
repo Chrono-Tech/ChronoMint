@@ -21,6 +21,7 @@ import TimeLockedWalletForm from './TimeLockedWalletForm/TimeLockedWalletForm'
 import { prefix } from './lang'
 import CustomWalletForm from './CustomWalletForm/CustomWalletForm'
 import TwoFaWalletForm from '../TwoFaWalletForm/TwoFaWalletForm'
+import StandardWalletForm from './StandardWalletForm/StandardWalletForm'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_ADD_NEW_WALLET)
@@ -67,7 +68,13 @@ export default class AddWalletWidget extends PureComponent {
   renderEthWalletForm (ethWalletType) {
     let title = null
     let Component = null
+    let componentProps = {}
     switch (ethWalletType) {
+      case 'ST':
+        title = `${prefix}.createWallet`
+        Component = StandardWalletForm
+        componentProps = { initialValues: { blockchain: BLOCKCHAIN_ETHEREUM } }
+        break
       case 'MS':
         title = `${prefix}.multisignatureWallet`
         Component = MultisigWalletForm
@@ -86,8 +93,8 @@ export default class AddWalletWidget extends PureComponent {
     }
 
     return (
-      <WidgetContainer title={title}>
-        <Component />
+      <WidgetContainer title={title} blockchain={BLOCKCHAIN_ETHEREUM}>
+        <Component {...componentProps} />
       </WidgetContainer>
     )
   }
@@ -97,7 +104,17 @@ export default class AddWalletWidget extends PureComponent {
     if (blockchain) {
       switch (blockchain) {
         case BLOCKCHAIN_BITCOIN:
+          return (
+            <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_BITCOIN}>
+              <StandardWalletForm initialValues={{ blockchain: BLOCKCHAIN_BITCOIN }} />
+            </WidgetContainer>
+          )
         case BLOCKCHAIN_LITECOIN:
+          return (
+            <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_LITECOIN}>
+              <StandardWalletForm initialValues={{ blockchain: BLOCKCHAIN_LITECOIN }} />
+            </WidgetContainer>
+          )
         case BLOCKCHAIN_NEM:
           return (
             <div>soon</div>
@@ -107,7 +124,7 @@ export default class AddWalletWidget extends PureComponent {
             return this.renderEthWalletForm(ethWalletType)
           } else {
             return (
-              <WidgetContainer title={`${prefix}.createWallet`}>
+              <WidgetContainer title={`${prefix}.createWallet`} blockchain={BLOCKCHAIN_ETHEREUM}>
                 <SelectEthWallet handleTouchTap={this.onSelectWalletType} />
               </WidgetContainer>
             )

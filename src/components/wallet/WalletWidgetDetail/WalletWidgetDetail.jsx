@@ -93,7 +93,6 @@ export default class WalletWidgetDetail extends PureComponent {
 
     return (
       <div styleName='header-container' className='WalletWidgetDetail__root'>
-        <h1 styleName='header-text'><Translate value={`${prefix}.walletTitle`} title={wallet.blockchain} /></h1>
         <div styleName='wallet-list-container'>
           <div styleName='wallet-container'>
             <div styleName='body'>

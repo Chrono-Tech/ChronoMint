@@ -12,6 +12,6 @@ export default {
     lockedWallet: 'My Locked Wallet',
     customWallet: 'My custom Wallet',
     additionalStandardWallet: 'My additional standard Wallet',
-    standardWallet: 'My Wallet',
+    standardWallet: 'My %{symbol} Wallet',
   },
 }
