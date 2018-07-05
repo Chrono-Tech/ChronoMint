@@ -20,17 +20,15 @@ import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError } from 'redux-form'
 import { push, goBack } from 'platform/router'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
-import privateKeyProvider from '@chronobank/login/network/privateKeyProvider'
-import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
+import networkService from '../../network/NetworkService'
+import profileService from '../../network/ProfileService'
+import privateKeyProvider from '../../network/privateKeyProvider'
+import mnemonicProvider from '../../network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
 import { nemProvider } from '../../network/NemProvider'
 import {
-  LOCAL_ID,
   LOCAL_PRIVATE_KEYS,
-  LOCAL_PROVIDER_ID,
   isTestRPC,
 } from '../../network/settings'
 
@@ -134,7 +132,6 @@ export const initLoginPage = () => async (dispatch, getState) => {
   const state = getState()
 
   const { selectedWallet } = state.get('persistAccount')
-  const { selectedNetworkId, selectedProviderId } = state.get('network')
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
@@ -163,7 +160,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   const state = getState()
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get('network')
-  const { walletsList } = state.get('persistAccount')
 
   const validateName = dispatch(validateAccountName(walletName))
 
@@ -462,11 +458,7 @@ export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) =
 
 }
 
-export const onSubmitWalletUpload = (walletString, password) => async (dispatch, getState) => {
-  const state = getState()
-
-  const { selectedWallet } = state.get('persistAccount')
-
+export const onSubmitWalletUpload = (walletString, password) => async (dispatch) => {
   try {
     let restoredWalletJSON = JSON.parse(walletString)
 

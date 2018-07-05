@@ -11,11 +11,11 @@ import {
   AccountEntryModel,
   AccountProfileModel,
   AccountModel,
-} from '@chronobank/core/models/wallet/persistAccount'
+} from '../../models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from '@chronobank/core/redux/persistAccount/utils'
+} from '../../redux/persistAccount/utils'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 import web3Provider from '@chronobank/login/network/Web3Provider'

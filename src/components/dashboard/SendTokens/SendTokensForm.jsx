@@ -198,6 +198,10 @@ export default class SendTokensForm extends PureComponent {
     }
   }
 
+  componentDidCatch (/*error, info*/) {
+    clearTimeout(this.timeout)
+  }
+
   componentWillUnmount () {
     clearTimeout(this.timeout)
   }

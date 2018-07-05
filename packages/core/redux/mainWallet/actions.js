@@ -13,7 +13,7 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses, getMainWalletAddresses } from '@chronobank/core/redux/wallet/selectors'
+import { getMainWallet, getMultisigWallets, getDeriveWalletsAddresses, getMainWalletAddresses } from '../wallet/selectors'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import { change, formValueSelector } from 'redux-form/immutable'
 import { nemProvider } from '@chronobank/login/network/NemProvider'
