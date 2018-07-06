@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { TokenModel } from 'src/models/index'
+import { TokenModel } from '../../models/index'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ethDAO from './ETHDAO'
 

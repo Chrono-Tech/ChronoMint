@@ -1,16 +1,15 @@
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
-import { TokenModel } from 'src/models/index'
 
 export default class AbstractTokenDAO extends EventEmitter {
-  constructor (token: TokenModel) {
+  constructor (token) {
     super()
     // this.setMaxListeners(100)
     this.token = token
   }
 
   // eslint-disable-next-line no-unused-vars
-  async connect (web3, options): Promise<TokenModel> {
+  async connect (web3, options) {
     // do nothing in basic implementation
     return this.token
   }

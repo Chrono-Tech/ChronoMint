@@ -25,6 +25,7 @@ export default class MainWalletModel extends abstractFetchingModel({
   transactions: new Immutable.Map(),
   addresses: new AddressesCollection(),
   names: new Immutable.Map(),
+  web3: null,
 }) {
 
   address () {
@@ -74,7 +75,7 @@ export default class MainWalletModel extends abstractFetchingModel({
     })
 
     this.get('transactions').map((t, e) => {
-      const [ , transactionAddress ] = e.split('-')
+      const [, transactionAddress] = e.split('-')
       if (!addresses.includes(transactionAddress)) {
         return
       }

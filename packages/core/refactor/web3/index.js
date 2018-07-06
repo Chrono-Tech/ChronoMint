@@ -1,5 +1,5 @@
-import Web3 from 'web3'
-import { ethDAO } from 'packages/core/refactor/daos/index'
+import Web3 from 'web3_1'
+import { ethDAO } from '../daos/index'
 
 // TODO @ipavlenko: Move to config file
 const config = {
@@ -12,7 +12,7 @@ export default () => {
   const web3Provider =
     // Web3.givenProvider ||
     new Web3.providers.WebsocketProvider(config.blockchain.websocket)
-    // || new Web3.providers.HttpProvider(config.blockchain.rpc)
+  // || new Web3.providers.HttpProvider(config.blockchain.rpc)
   const web3 = new Web3(web3Provider)
   ethDAO.connect(web3)
   return web3

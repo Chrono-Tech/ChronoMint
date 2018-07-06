@@ -7,33 +7,35 @@ import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollecti
 import { REHYDRATE } from 'redux-persist'
 import * as a from './actions'
 
-const initialState = new MultisigWalletCollection()
+const getInitialState = ({ web3 }) => new MultisigWalletCollection(web3)
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case REHYDRATE:
-      const incoming = action.payload.multisigWallet
-      if (incoming && incoming instanceof MultisigWalletCollection) return incoming.twoFAConfirmed(null).isInited(false)
-      return state
-    case a.MULTISIG_INIT:
-      return state.isInited(action.isInited)
-    case a.MULTISIG_FETCHING:
-      return state.leftToFetch(action.count)
-    case a.MULTISIG_FETCHED:
-      return state.itemFetched(action.wallet)
-    case a.MULTISIG_UPDATE:
-      return state.update(action.wallet)
-    case a.MULTISIG_SELECT:
-      return state.selected(action.id)
-    case a.MULTISIG_REMOVE:
-      return state.remove(action.id)
-    case a.MULTISIG_BALANCE:
-      return state.balance(action.walletId, action.balance)
-    case a.MULTISIG_PENDING_TX:
-      return state.pending(action.walletId, action.pending)
-    case a.MULTISIG_2_FA_CONFIRMED:
-      return state.twoFAConfirmed(action.twoFAConfirmed)
-    default:
-      return state
+export default ({ web3 }) => {
+  return (state = getInitialState({ web3 }), action) => {
+    switch (action.type) {
+      case REHYDRATE:
+        const incoming = action.payload.multisigWallet
+        if (incoming && incoming instanceof MultisigWalletCollection) return incoming.twoFAConfirmed(null).isInited(false)
+        return state
+      case a.MULTISIG_INIT:
+        return state.isInited(action.isInited)
+      case a.MULTISIG_FETCHING:
+        return state.leftToFetch(action.count)
+      case a.MULTISIG_FETCHED:
+        return state.itemFetched(action.wallet)
+      case a.MULTISIG_UPDATE:
+        return state.update(action.wallet)
+      case a.MULTISIG_SELECT:
+        return state.selected(action.id)
+      case a.MULTISIG_REMOVE:
+        return state.remove(action.id)
+      case a.MULTISIG_BALANCE:
+        return state.balance(action.walletId, action.balance)
+      case a.MULTISIG_PENDING_TX:
+        return state.pending(action.walletId, action.pending)
+      case a.MULTISIG_2_FA_CONFIRMED:
+        return state.twoFAConfirmed(action.twoFAConfirmed)
+      default:
+        return state
+    }
   }
 }

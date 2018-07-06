@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { TokenModel } from 'src/models/index'
+import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 
 export default class ERC20TokenDAO extends AbstractTokenDAO {
@@ -8,7 +8,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     this.abi = abi
   }
 
-  async connect (web3, options) : Promise<TokenModel> {
+  async connect (web3, options): Promise<TokenModel> {
     if (this.isConnected) {
       this.disconnect()
     }

@@ -6,6 +6,7 @@
 import Immutable from 'immutable'
 import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
 import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
+import web3Factory from '@chronobank/core/refactor/web3/index'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
@@ -27,10 +28,14 @@ let i18nJson // declaration of a global var for the i18n object for a standalone
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
+const web3 = typeof window !== 'undefined'
+  ? web3Factory()
+  : null
+
 const getNestedReducers = (ducks) => {
   let reducers = {}
-  Object.keys(ducks).forEach((r) => {
-    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
+  Object.entries(ducks).forEach(([key, entry]) => {
+    reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
   })
   return reducers
 }
@@ -70,11 +75,13 @@ let logActions = process.env.NODE_ENV === 'development'
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
+  const nestedReducers = getNestedReducers(ducks)
   const appReducer = combineReducers({
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducks),
+    ...nestedReducers,
+    multisigWallet: nestedReducers.multisigWallet(web3),
   })
 
   const rootReducer = (state, action) => {
