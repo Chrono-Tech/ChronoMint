@@ -10,7 +10,7 @@ import { multisigBalanceSelector } from '@chronobank/core/redux/multisigWallet/s
 import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { connect } from 'react-redux'
-import { integerWithDelimiter } from 'platform/utils/formatter'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 
 function makeMapStateToProps (state, ownProps) {

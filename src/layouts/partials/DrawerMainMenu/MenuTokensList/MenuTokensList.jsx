@@ -4,7 +4,7 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
-import { I18n } from 'platform/i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Translate } from 'react-redux-i18n'
 import { NETWORK_STATUS_OFFLINE, NETWORK_STATUS_ONLINE, NETWORK_STATUS_UNKNOWN, SYNC_STATUS_SYNCED, SYNC_STATUS_SYNCING } from '@chronobank/login/network/MonitorService'
 import classnames from 'classnames'
