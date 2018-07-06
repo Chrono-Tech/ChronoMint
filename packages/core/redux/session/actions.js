@@ -8,6 +8,7 @@ import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import web3Factory from '@chronobank/core/refactor/web3/index'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
@@ -74,6 +75,10 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
+  const web3 = typeof window !== 'undefined'
+    ? web3Factory()
+    : null
+
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
@@ -89,7 +94,7 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
-  dispatch(watcher())
+  dispatch(watcher({ web3 }))
   isCBE && dispatch(cbeWatcher())
   dispatch(replace(ls.getLastURL() || defaultURL))
 }

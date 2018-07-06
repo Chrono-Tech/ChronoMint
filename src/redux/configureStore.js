@@ -16,6 +16,7 @@ import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from 'platform/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
+import daoReducer from '@chronobank/core/refactor/redux/daos/reducer'
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import ls from 'platform/utils/LocalStorage'
@@ -33,7 +34,7 @@ const web3 = typeof window !== 'undefined'
   : null
 
 const getNestedReducers = (ducks) => {
-  let reducers = {}
+  let reducers = { daoReducer }
   Object.entries(ducks).forEach(([key, entry]) => {
     reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
   })

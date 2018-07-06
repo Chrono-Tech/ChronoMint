@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { isArray, isObject, isMap, isSet, isEmpty, isString, isNil } from 'lodash'
 import { I18n } from 'react-redux-i18n'
 import wallet from 'ethereumjs-wallet'
