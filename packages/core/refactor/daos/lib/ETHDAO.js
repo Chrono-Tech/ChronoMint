@@ -29,7 +29,7 @@ export class ETHDAO extends EventEmitter {
     const block = await this.web3.eth.getBlock(data.hash, true)
     setImmediate(() => {
       this.emit('block', block)
-      if (block.transactions) {
+      if (block && block.transactions) {
         for (const tx of block.transactions) {
           this.emit('tx', tx)
         }

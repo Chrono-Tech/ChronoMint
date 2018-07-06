@@ -4,16 +4,18 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
-import { LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
+import { getNetworkById, LOCAL_ID, LOCAL_PROVIDER_ID, NETWORK_MAIN_ID } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import web3Factory from '@chronobank/core/refactor/web3/index'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { removeWatchersUserMonitor } from '../ui/actions'
 import { watchStopMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
+import { WEB3_SETUP } from '../web3/reducer'
 
 export const DUCK_SESSION = 'session'
 
@@ -69,10 +71,17 @@ export const logout = () => async (dispatch, getState) => {
 }
 
 export const login = (account) => async (dispatch, getState) => {
+  const { selectedNetworkId, selectedProviderId } = getState().get(DUCK_NETWORK)
   if (!getState().get(DUCK_SESSION).isSession) {
     // setup and check network first and create session
     throw new Error('Session has not been created')
   }
+
+  const network = getNetworkById(selectedNetworkId, selectedProviderId)
+
+  const web3 = typeof window !== 'undefined'
+    ? web3Factory(network)
+    : null
 
   const dao = await contractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile, memberId] = await Promise.all([
@@ -88,6 +97,9 @@ export const login = (account) => async (dispatch, getState) => {
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
+
+  // setup web3
+  dispatch({ type: WEB3_SETUP, web3 })
 
   dispatch(watcher())
   isCBE && dispatch(cbeWatcher())

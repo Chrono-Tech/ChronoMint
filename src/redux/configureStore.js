@@ -6,7 +6,6 @@
 import Immutable from 'immutable'
 import { globalWatcher } from '@chronobank/core/redux/watcher/actions'
 import { SESSION_DESTROY } from '@chronobank/core/redux/session/actions'
-import web3Factory from '@chronobank/core/refactor/web3/index'
 import { browserHistory, createMemoryHistory } from 'react-router'
 import { combineReducers } from 'redux-immutable'
 import { applyMiddleware, compose, createStore } from 'redux'
@@ -27,10 +26,6 @@ import transformer from './serialize'
 let i18nJson // declaration of a global var for the i18n object for a standalone version
 
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
-
-const web3 = typeof window !== 'undefined'
-  ? web3Factory()
-  : null
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
@@ -81,8 +76,6 @@ const configureStore = () => {
     i18n: i18nReducer,
     routing: routingReducer,
     ...nestedReducers,
-    multisigWallet: nestedReducers.multisigWallet(web3),
-    mainWallet: nestedReducers.mainWallet(web3),
   })
 
   const rootReducer = (state, action) => {

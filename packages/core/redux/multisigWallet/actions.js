@@ -82,40 +82,6 @@ export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => {
   }
 }
 
-const fetchBalanceForToken = (token, wallet) => async (dispatch) => {
-  if (!token.isERC20() && token.symbol() !== 'ETH') {
-    return
-  }
-
-  const tokenDao = tokenService.getDAO(token.id())
-
-  const balance = await tokenDao.getAccountBalance(wallet.address())
-  dispatch({
-    type: MULTISIG_BALANCE,
-    walletId: wallet.address(),
-    balance: new BalanceModel({
-      id: token.id(),
-      amount: new Amount(balance, token.symbol(), true),
-    }),
-  })
-}
-
-const handleToken = (token, wallet) => (dispatch) => {
-  dispatch(fetchBalanceForToken(token, wallet))
-  const tokenDAO = tokenService.getDAO(token.id())
-
-  tokenDAO
-    .on(FETCH_NEW_BALANCE, () => {
-      dispatch(fetchBalanceForToken(token, wallet))
-    })
-    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      if (!(tx.from() === wallet.address() || tx.to() === wallet.address())) {
-        return
-      }
-      dispatch(fetchBalanceForToken(token, wallet))
-    })
-}
-
 const subscribeOnWalletManager = () => (dispatch, getState) => {
   walletsManagerDAO
     .on(EE_MS_WALLET_ADDED, async (wallet: MultisigWalletModel) => {
@@ -142,7 +108,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
 
       await watchMultisigWallet(updatedWallet)
 
-      dispatch(subscribeOnTokens((token) => handleToken(token, wallet)))
       dispatch(selectWalletIfOne())
     })
     .on(EE_MS_WALLETS_COUNT, (count) => {
@@ -159,17 +124,6 @@ const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, 
   wallet = wallet.pendingTxList(pendingTxList)
   dispatch(updateWallet(wallet))
   await dispatch(getTransactionsForWallet({ wallet, address: wallet.address(), blockchain: wallet.blockchain(), forcedOffset: true }))
-
-  if (!multisigTransactionModel.symbol()) {
-    getTokens(getState()).items().map((token) => {
-      if (token.blockchain() === BLOCKCHAIN_ETHEREUM) {
-        dispatch(fetchBalanceForToken(token, wallet))
-      }
-    })
-    return
-  }
-  const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
-  dispatch(fetchBalanceForToken(token, wallet))
 }
 
 const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
@@ -215,11 +169,6 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       const wallet: MultisigWalletModel = getMultisigWallets(getState()).item(walletId)
       const pendingTxList = wallet.pendingTxList()
       dispatch(updateWallet(wallet.pendingTxList(pendingTxList.update(pendingTxModel))))
-    })
-    .on(EE_DEPOSIT, (walletId, symbol) => {
-      const wallet: MultisigWalletModel = getMultisigWallets(getState()).item(walletId)
-      const token = getState().get(DUCK_TOKENS).getBySymbol(symbol)
-      dispatch(fetchBalanceForToken(token, wallet))
     })
     .on(EE_REQUIREMENT_CHANGED, (walletId, required) => {
       const wallet: MultisigWalletModel = getMultisigWallets(getState()).item(walletId)

@@ -114,10 +114,12 @@ export const infuraNetworkMap = [
   {
     ...MAINNET_BASE,
     host: `mainnet.infura.io/${INFURA_TOKEN}`,
+    ws: 'wss://mainnet.infura.io/ws',
   },
   {
     ...RINKEBY_BASE,
     host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+    ws: 'wss://rinkeby.infura.io/ws',
   },
 ]
 
@@ -284,7 +286,7 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
       networks = networks.concat(networksProvider)
     })
 
-  if (withLocal){
+  if (withLocal) {
     networks.push({
       provider: providerMap.local,
       network: infuraLocalNetwork,
@@ -295,7 +297,7 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
 }
 
 export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
-  if (isTestRPC(providerId, networkId)){
+  if (isTestRPC(providerId, networkId)) {
     return 'TestRPC'
   }
   return `${getProviderById(providerId).name} - ${getNetworkById(networkId, providerId, withLocal).name}`
