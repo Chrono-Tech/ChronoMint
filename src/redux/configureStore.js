@@ -82,6 +82,7 @@ const configureStore = () => {
     routing: routingReducer,
     ...nestedReducers,
     multisigWallet: nestedReducers.multisigWallet(web3),
+    mainWallet: nestedReducers.mainWallet(web3),
   })
 
   const rootReducer = (state, action) => {

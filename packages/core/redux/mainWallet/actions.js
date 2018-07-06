@@ -612,3 +612,36 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
     dispatch({ type: MULTISIG_UPDATE, wallet: wallet.set('transactions', transactions.offset(newOffset).isFetching(false).isFetched(true)) })
   }
 }
+
+
+// export const POCKET_BALANCE_LOADED = 'balances/loaded'
+// export const POCKET_BALANCE_LOADING = 'balances/loading'
+// export const BALANCES_RESET = 'balances/reset'
+
+// export const updateBalance = ({ pocket }) => async (dispatch/*, getState*/) => {
+//   dispatch({
+//     type: POCKET_BALANCE_LOADING,
+//     pocket,
+//   })
+//   const balance = await pocket.token.dao.getBalance(pocket.address)
+//   dispatch({
+//     type: POCKET_BALANCE_LOADED,
+//     pocket,
+//     balance,
+//   })
+// }
+
+export const subscribeWallet = ({ wallet }) => async (dispatch/*, getState*/) => {
+  const listener = function (data) {
+    if (data.from.toLowerCase() === wallet.address.toLowerCase() || data.to.toLowerCase() === wallet.address.toLowerCase()) {
+      // dispatch(updateBalance({ wallet }))
+    }
+  }
+  wallet.token.dao.on('transfer', listener)
+  // dispatch(updateBalance({ wallet }))
+  return listener
+}
+
+export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, getState*/) => {
+  wallet.token.dao.removeListener('transfer', listener)
+}

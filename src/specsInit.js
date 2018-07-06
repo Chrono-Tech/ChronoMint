@@ -5,7 +5,7 @@
 
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import Reverter from 'chronobank-smart-contracts/test/helpers/reverter'
-import customSerializer from 'platform/utils/CustomSerializer'
+import customSerializer from '@chronobank/core-dependencies/utils/CustomSerializer'
 import Enzyme from 'enzyme'
 import Adapter from 'enzyme-adapter-react-15'
 import 'jest-enzyme'
@@ -16,9 +16,9 @@ import networkService from '@chronobank/login/network/NetworkService'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import Web3legacy from 'web3legacy'
-import AbstractContractDAO from '@chronobank/dao/AbstractContractDAO'
+import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import MarketSocket from '@chronobank/core/market/MarketSocket'
-import ls from './platform/utils/LocalStorage'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 
 Enzyme.configure({ adapter: new Adapter() })
 // we need enough time to test contract watch functionality
@@ -30,11 +30,11 @@ web3provider.reinit(Web3legacy, new Web3legacy.providers.HttpProvider('http://lo
 web3provider.resolve()
 export const accounts = Web3legacy.eth.accounts
 
-AbstractContractDAO.setup(accounts[ 0 ], [ resultCodes.OK, true ], resultCodes)
+AbstractContractDAO.setup(accounts[0], [resultCodes.OK, true], resultCodes)
 
 const reverter = new Reverter(web3provider.getWeb3instance())
 
-export const mockStore = configureMockStore([ thunk ])
+export const mockStore = configureMockStore([thunk])
 export let store = null
 
 beforeAll((done) => {
@@ -53,7 +53,7 @@ afterAll((done) => {
 
 beforeEach(() => {
   // NOTE: session is always as CBE
-  ls.createSession(accounts[ 0 ], LOCAL_ID, LOCAL_ID)
+  ls.createSession(accounts[0], LOCAL_ID, LOCAL_ID)
   store = mockStore()
   networkService.connectStore(store)
 })

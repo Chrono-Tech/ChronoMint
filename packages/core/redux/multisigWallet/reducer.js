@@ -7,10 +7,10 @@ import MultisigWalletCollection from '../../models/wallet/MultisigWalletCollecti
 import { REHYDRATE } from 'redux-persist'
 import * as a from './actions'
 
-const getInitialState = ({ web3 }) => new MultisigWalletCollection(web3)
+const getInitialState = (web3) => new MultisigWalletCollection({ web3 })
 
-export default ({ web3 }) => {
-  return (state = getInitialState({ web3 }), action) => {
+export default (web3) => {
+  return (state = getInitialState(web3), action) => {
     switch (action.type) {
       case REHYDRATE:
         const incoming = action.payload.multisigWallet
