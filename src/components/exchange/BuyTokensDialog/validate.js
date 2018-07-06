@@ -5,7 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import * as validator from '@chronobank/core/models/validator'
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 
 export default function validate (values, props) {
   const exchangeToken = props.tokens.item(props.exchange.symbol())

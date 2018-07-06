@@ -13,7 +13,7 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
 import { setRequiredSignatures } from '@chronobank/core/redux/operations/actions'
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import validator from '@chronobank/core/models/validator'
 
