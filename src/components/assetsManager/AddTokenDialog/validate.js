@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 
 const validateSmallestUnit = (value) => validator.between(value, 0, 20, true)

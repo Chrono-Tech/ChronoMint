@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 import tokenService from '@chronobank/core/services/TokenService'
 import { MODE_ADVANCED } from './SendTokensForm'

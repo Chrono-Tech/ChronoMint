@@ -4,4 +4,4 @@
  *
  * @flow
  */
-export { default } from 'platform/utils/SessionStorage'
+export { default } from './utils/SessionStorage'

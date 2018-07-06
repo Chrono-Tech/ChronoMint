@@ -4,7 +4,7 @@
  */
 
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { I18n } from 'platform/i18n/index'
+import { I18n } from '@chronobank/core-dependencies/i18n/index'
 import Button from 'components/common/ui/Button/Button'
 import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
