@@ -1,22 +1,22 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { subscribeWallet, unsubscribeWallet } from '@chronobank/core/redux/mainWallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
 function mapDispatchToProps (dispatch) {
   return {
-    async handleSubscribe ({ pocket }) {
-      return dispatch(subscribeWallet({ pocket }))
+    async handleSubscribe ({ wallet }) {
+      return dispatch(subscribeWallet({ wallet }))
     },
-    async handleUnsubscribe ({ pocket, listener }) {
-      await dispatch(unsubscribeWallet({ pocket, listener }))
+    async handleUnsubscribe ({ wallet, listener }) {
+      await dispatch(unsubscribeWallet({ wallet, listener }))
     },
   }
 }
 
-@connect(null, mapDispatchToProps)(BalanceSubscription)
-export default class BalanceSubscription extends React.Component {
+@connect(null, mapDispatchToProps)
+export default class BalanceSubscription extends Component {
   static propTypes = {
     handleSubscribe: PropTypes.func,
     handleUnsubscribe: PropTypes.func,
@@ -26,20 +26,23 @@ export default class BalanceSubscription extends React.Component {
 
   async componentDidMount () {
     const { wallet } = this.props
+
     if (wallet != null) {
+      const listener = await this.props.handleSubscribe({
+        wallet,
+      })
       this.subscription = {
         wallet,
-        listener: await this.props.handleSubscribe({
-          wallet,
-        }),
+        listener,
       }
+
     }
   }
 
   async componentWillUnmount () {
     if (this.subscription) {
-      const { pocket, listener } = this.subscription
-      await this.props.handleUnsubscribe({ pocket, listener })
+      const { wallet, listener } = this.subscription
+      await this.props.handleUnsubscribe({ wallet, listener })
       this.subscriptions = null
     }
   }

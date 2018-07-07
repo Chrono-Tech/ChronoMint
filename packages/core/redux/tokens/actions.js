@@ -85,6 +85,7 @@ export const initTokens = () => async (dispatch, getState) => {
   if (getState().get(DUCK_TOKENS).isInited()) {
     return
   }
+  const web3 = getState().get('web3')
   dispatch({ type: TOKENS_INIT, isInited: true })
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
@@ -100,12 +101,13 @@ export const initTokens = () => async (dispatch, getState) => {
       const eth: TokenModel = await ethereumDAO.getToken()
       if (eth) {
         dispatch({ type: TOKENS_FETCHED, token: eth })
+        ethereumDAO.connect(web3)
         tokenService.registerDAO(eth, ethereumDAO)
       }
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
-      tokenService.createDAO(token)
+      tokenService.createDAO(token, web3)
     })
     .fetchTokens()
 

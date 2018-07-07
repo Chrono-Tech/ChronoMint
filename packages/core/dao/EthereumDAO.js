@@ -51,6 +51,23 @@ export class EthereumDAO extends AbstractTokenDAO {
     this._contractName = 'Ethereum'
   }
 
+  connect (web3) {
+    if (this.isConnected) {
+      this.disconnect()
+    }
+    this.web3 = web3
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.web3 = null
+    }
+  }
+
+  get isConnected () {
+    return this.web3 != null // nil check
+  }
+
   watch (accounts: Array<string>): Promise {
     return Promise.all([
       this.watchTransfer(accounts),
@@ -66,7 +83,9 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   getAccountBalance (account): Promise {
-    return this._web3Provider.getBalance(account)
+    // eslint-disable-next-line
+    console.log('getAccountBalance', account)
+    return this.web3.eth.getBalance(account)
   }
 
   getContractName () {
@@ -196,7 +215,8 @@ export class EthereumDAO extends AbstractTokenDAO {
             return
           }
 
-          filter.stopWatching(() => {})
+          filter.stopWatching(() => {
+          })
           filter = null
 
           const [receipt, transaction] = await Promise.all([
