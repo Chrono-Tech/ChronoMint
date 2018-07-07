@@ -9,6 +9,7 @@ import {
   MultiEventsHistoryABI,
   ContractsManagerABI,
   AssetsManagerABI,
+  VotingManagerABI,
 } from '../../../core/dao/abi/'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
@@ -21,12 +22,13 @@ export { default as AbstractTokenDAO } from './lib/AbstractTokenDAO'
 export { default as ETHTokenDAO } from './lib/ETHTokenDAO'
 export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
 export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
+// export { default as VotingManagerDAO } from './lib/VotingManagerDAO'
 
 console.log('ContractsManagerABI.networks: ', ContractsManagerABI.networks)
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: "ContractsManager",
-  address: ContractsManagerABI.networks['4'].address,
+  address: ContractsManagerABI.networks['4'].address, // @todo Add Network selection
   abi: ContractsManagerABI,
   DAOClass: ContractsManagerDAO,
 })
@@ -36,6 +38,12 @@ export const ASSET_MANAGER_LIBRARY = new ContractModel({
   abi: AssetsManagerABI,
   DAOClass: AssetManagerLibraryDAO,
 })
+
+// export const VOTING_MANAGER_LIBRARY = new ContractModel({
+//   type: "VotingManagerLibrary",
+//   abi: VotingManagerABI,
+//   DAOClass: VotingManagerDAO,
+// })
 
 export const MULTI_EVENTS_HISTORY = new ContractModel({
   type: 'MultiEventsHistory',
