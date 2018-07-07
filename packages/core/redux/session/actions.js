@@ -77,8 +77,6 @@ export const login = (account) => async (dispatch, getState) => {
     throw new Error('Session has not been created')
   }
 
-  const network = getNetworkById(selectedNetworkId, selectedProviderId)
-
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
@@ -98,10 +96,10 @@ export const login = (account) => async (dispatch, getState) => {
 
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
 
-  // setup web3
-  dispatch({ type: WEB3_SETUP, web3 })
 
+  dispatch({ type: WEB3_SETUP, web3 })
   dispatch(watcher())
+
   isCBE && dispatch(cbeWatcher())
   dispatch(replace(ls.getLastURL() || defaultURL))
 }

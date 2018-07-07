@@ -15,6 +15,7 @@ import { DUCK_I18N, loadI18n } from 'redux/i18n/actions'
 import { I18n, i18nReducer, loadTranslations, setLocale } from '@chronobank/core-dependencies/i18n'
 import moment from 'moment'
 import saveAccountMiddleWare from '@chronobank/core/redux/session/saveAccountMiddleWare'
+import daoReducer from '@chronobank/core/refactor/redux/daos/reducer'
 import { routerMiddleware, syncHistoryWithStore } from 'react-router-redux'
 import thunk from 'redux-thunk'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
@@ -28,7 +29,7 @@ let i18nJson // declaration of a global var for the i18n object for a standalone
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
-  let reducers = {}
+  let reducers = { daoReducer }
   Object.entries(ducks).forEach(([key, entry]) => {
     reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
   })

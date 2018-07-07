@@ -18,6 +18,7 @@ import { watchInitOperations } from '../operations/actions'
 import { watchInitERC20Tokens } from '../settings/erc20/tokens/actions'
 import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
+import { initDAOs } from '../../refactor/redux/daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
@@ -73,10 +74,11 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch) => {
+export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
+  await dispatch(initDAOs({ web3 }))
   dispatch(initMainWallet())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
