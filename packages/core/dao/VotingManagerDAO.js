@@ -14,9 +14,9 @@ import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
 import { TIME } from '../redux/mainWallet/actions'
-import { MultiEventsHistoryABI, VotingManagerABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
 import votingService from '../services/VotingService'
+import { DUCK_DAO } from '../refactor/redux/daos/actions'
+import {daoByType} from "../refactor/redux/daos/selectors";
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -26,68 +26,120 @@ export const EVENT_POLL_CREATED = 'PollCreated'
 export const EVENT_POLL_UPDATED = 'PollUpdated'
 export const EVENT_POLL_REMOVED = 'PollRemoved'
 
-export default class VotingManagerDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
-    super(VotingManagerABI, at, MultiEventsHistoryABI)
+export default class VotingManagerDAO  {
+  constructor ({ address, history, abi }) {
+    this.address = address
+    this.history = history
+    this.abi = abi
+    this.assetHolderDAO = null
+    this.pollInterfaceDAO = null
+    console.log('VotingManagerDAO: ', address, history, abi)
+  }
+
+  connect (web3, options) {
+    if (this.isConnected) {
+      this.disconnect()
+    }
+    // eslint-disable-next-line no-console
+    console.log('[VotingManagerDAO] Connect', web3, this.abi.abi, this.address)
+    this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
+
+    // eslint-disable-next-line no-console
+    console.log('this.contract VotingManagerDAO: ', this.contract)
+
+    // this.transferEmitter = this.contract.events.Transfer({})
+    //   .on('data', this.handleTransferData.bind(this))
+    //   .on('changed', this.handleTransferChanged.bind(this))
+    //   .on('error', this.handleTransferError.bind(this))
+    // this.approvalEmitter = this.contract.events.Approval({})
+    //   .on('data', this.handleApprovalData.bind(this))
+    //   .on('changed', this.handleApprovalChanged.bind(this))
+    //   .on('error', this.handleApprovalError.bind(this))
+
+    return this.token
+  }
+
+  get isConnected () {
+    return this.contract != null
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.contract = null
+      this.history = null
+    }
   }
 
   getVoteLimit (): Promise {
     return this._call('getVoteLimit')
   }
 
+  setAssetHolderDAO (assetHolderDAO) {
+    this.assetHolderDAO = assetHolderDAO
+  }
+
+  setPollInterfaceDAO (pollInterfaceDAO) {
+    this.pollInterfaceDAO = pollInterfaceDAO
+  }
+
+  postStoreDispatchSetup (state) {
+    const daos = state.get(DUCK_DAO)
+    const assetHolderDAO = daoByType('AssetHolderLibrary')(state)
+    const pollInterfaceManager = daoByType('AssetHolderLibrary')(state)
+
+    console.log('postStoreDispatchSetup(state): ', state)
+  }
+
   async getPollsPaginated (startIndex, pageSize, account: string): Promise {
-    const addresses = await this._call('getPollsPaginated', [ startIndex, pageSize ])
+    const addresses = await this.contract.methods.getPollsPaginated(startIndex, pageSize).call()
     return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
-  async createPoll (poll: PollModel) {
-    // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
-    // a failure notice.
-    let hash
-    try {
-      hash = await ipfs.put({
-        title: poll.title(),
-        description: poll.description(),
-        files: poll.files(),
-        options: poll.options() && poll.options().toArray(),
-      })
-    } catch (e) {
-      // eslint-disable-next-line
-      console.error(e.message)
-    }
-
-    const voteLimitInTIME = poll.voteLimitInTIME()
-
-    const summary = poll.txSummary()
-    summary.voteLimitInTIME = new Amount(voteLimitInTIME, TIME)
-
-    const tx = await this._tx(TX_CREATE_POLL, [
-      poll.options().size,
-      this._c.ipfsHashToBytes32(hash),
-      new BigNumber(voteLimitInTIME),
-      poll.deadline().getTime(),
-    ], summary)
-    return tx.tx
-  }
-
-  removePoll () {
-    return this._tx(TX_REMOVE_POLL)
-  }
-
-  activatePoll () {
-    return this._multisigTx(TX_ACTIVATE_POLL)
-  }
+  // async createPoll (poll: PollModel) {
+  //   // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
+  //   // a failure notice.
+  //   let hash
+  //   try {
+  //     hash = await ipfs.put({
+  //       title: poll.title(),
+  //       description: poll.description(),
+  //       files: poll.files(),
+  //       options: poll.options() && poll.options().toArray(),
+  //     })
+  //   } catch (e) {
+  //     // eslint-disable-next-line
+  //     console.error(e.message)
+  //   }
+  //
+  //   const voteLimitInTIME = poll.voteLimitInTIME()
+  //
+  //   const summary = poll.txSummary()
+  //   summary.voteLimitInTIME = new Amount(voteLimitInTIME, TIME)
+  //
+  //   const tx = await this._tx(TX_CREATE_POLL, [
+  //     poll.options().size,
+  //     this._c.ipfsHashToBytes32(hash),
+  //     new BigNumber(voteLimitInTIME),
+  //     poll.deadline().getTime(),
+  //   ], summary)
+  //   return tx.tx
+  // }
+  //
+  // removePoll () {
+  //   return this._tx(TX_REMOVE_POLL)
+  // }
+  //
+  // activatePoll () {
+  //   return this._multisigTx(TX_ACTIVATE_POLL)
+  // }
 
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
-      const [ pollsDetails, assetHolderDAO ] = await Promise.all([
-        await this._call('getPollsDetails', [ pollsAddresses ]),
-        await contractsManagerDAO.getAssetHolderDAO(),
-      ])
+      const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses)
 
       const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
-      const shareholdersCount = await assetHolderDAO.shareholdersCount()
+      const shareholdersCount = await this.assetHolderDAO.shareholdersCount()
 
       let promises = []
       for (let i = 0; i < pollsAddresses.length; i++) {
@@ -164,41 +216,41 @@ export default class VotingManagerDAO extends AbstractMultisigContractDAO {
     return collection
   }
 
-  async getPoll (pollId: string, account: string): PollDetailsModel {
-    const votingManagerDAO = await contractsManagerDAO.getVotingManagerDAO()
-    const polls = await votingManagerDAO.getPollsDetails([ pollId ], account)
-    return polls.item(pollId)
-  }
-
-  getVoteLimitInPercent () {
-    return this._call('getVotesPercent')
-  }
-
-  /** @private */
-  _watchCallback = (callback, status, account: string) => async (result) => {
-    let notice = new PollNoticeModel({
-      pollId: result.args.pollAddress, // just a long
-      status,
-      transactionHash: result.transactionHash,
-    })
-
-    if (status !== IS_REMOVED) {
-      const poll = await this.getPoll(result.args.pollAddress, account)
-      notice = notice.poll(poll)
-    }
-
-    callback(notice)
-  }
-
-  watchCreated (callback, account) {
-    return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
-  }
-
-  watchUpdated (callback) {
-    return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
-  }
-
-  watchRemoved (callback) {
-    return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
-  }
+  // async getPoll (pollId: string, account: string): PollDetailsModel {
+  //   const votingManagerDAO = await contractsManagerDAO.getVotingManagerDAO()
+  //   const polls = await votingManagerDAO.getPollsDetails([ pollId ], account)
+  //   return polls.item(pollId)
+  // }
+  //
+  // getVoteLimitInPercent () {
+  //   return this._call('getVotesPercent')
+  // }
+  //
+  // /** @private */
+  // _watchCallback = (callback, status, account: string) => async (result) => {
+  //   let notice = new PollNoticeModel({
+  //     pollId: result.args.pollAddress, // just a long
+  //     status,
+  //     transactionHash: result.transactionHash,
+  //   })
+  //
+  //   if (status !== IS_REMOVED) {
+  //     const poll = await this.getPoll(result.args.pollAddress, account)
+  //     notice = notice.poll(poll)
+  //   }
+  //
+  //   callback(notice)
+  // }
+  //
+  // watchCreated (callback, account) {
+  //   return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
+  // }
+  //
+  // watchUpdated (callback) {
+  //   return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
+  // }
+  //
+  // watchRemoved (callback) {
+  //   return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
+  // }
 }

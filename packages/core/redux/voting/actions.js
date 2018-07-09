@@ -17,6 +17,7 @@ import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -179,7 +180,8 @@ export const listPolls = () => async (dispatch) => {
 }
 
 export const getNextPage = () => async (dispatch, getState) => {
-  const dao = await contractsManagerDAO.getVotingManagerDAO()
+  const dao = daoByType('VotingManagerLibrary')(getState())
+
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)

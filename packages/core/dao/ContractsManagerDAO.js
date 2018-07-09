@@ -204,6 +204,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   getPollInterfaceDAO (address): Promise<PollInterfaceDAO> {
+    console.log('getPollInterfaceDAO: ', address)
     return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 

@@ -3,22 +3,23 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Amount from '../models/Amount'
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from '../services/TokenService'
-import { AssetHolderABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
+import Amount from '../models/Amount'
 
 export const TX_DEPOSIT = 'deposit'
 export const TX_WITHDRAW_SHARES = 'withdrawShares'
 
 export const TIME = 'TIME'
 
-export default class AssetHolderDAO extends AbstractContractDAO {
-  constructor (at) {
-    super(AssetHolderABI, at)
+export default class AssetHolderDAO {
+  constructor ({ address, history, abi }) {
+    this.address = address
+    this.history = history
+    this.abi = abi
+
     this._okCodes = [
       resultCodes.OK,
       resultCodes.TIMEHOLDER_DEPOSIT_FAILED,

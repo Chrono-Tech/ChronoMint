@@ -9,13 +9,15 @@ import {
   MULTI_EVENTS_HISTORY,
   ASSET_MANAGER_LIBRARY,
   ERC20_MANAGER,
+  VOTING_MANAGER_LIBRARY,
+  ASSET_HOLDER_LIBRARY,
 } from '../../daos/index'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
 export const DAOS_INITIALIZED = 'daos/initialized'
 
-export const initDAOs = ({ web3 }) => async (dispatch) => {
+export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const contractManagerDAO = CONTRACTS_MANAGER.create()
   await contractManagerDAO.connect(web3)
 
@@ -32,7 +34,9 @@ export const initDAOs = ({ web3 }) => async (dispatch) => {
 
   const contracts = [
     ASSET_MANAGER_LIBRARY,
+    ASSET_HOLDER_LIBRARY,
     ERC20_MANAGER,
+    VOTING_MANAGER_LIBRARY,
   ]
 
   const models = await Promise.all(
@@ -56,6 +60,14 @@ export const initDAOs = ({ web3 }) => async (dispatch) => {
       type: DAOS_REGISTER,
       model,
     })
+  }
+
+  const state = getState()
+  // post registration setup
+  for (const model of models) {
+    if (typeof model.postStoreDispatchSetup === 'function') {
+      model.postStoreDispatchSetup(state)
+    }
   }
 
   dispatch({

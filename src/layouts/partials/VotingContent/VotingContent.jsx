@@ -74,6 +74,8 @@ export default class VotingContent extends Component {
   componentDidMount () {
     this.props.initAssetsHolder()
 
+    console.log('componentDidMount VotingContent: ', this.props)
+
     if (!this.props.isFetched && !this.props.isFetching) {
       this.props.getList()
     }

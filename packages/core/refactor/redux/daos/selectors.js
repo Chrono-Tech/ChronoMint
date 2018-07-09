@@ -26,5 +26,5 @@ export const daoByType = (type) => createSelector(
 
 export const isFrontendInitialized = () => createSelector(
   daosSelector(),
-  daos => daos.isInitialized,
+  (daos) => daos.isInitialized
 )
