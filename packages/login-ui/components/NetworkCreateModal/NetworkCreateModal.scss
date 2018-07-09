@@ -34,10 +34,9 @@
 .actions {
   text-align: center;
   margin-top: 10px;
-}
-
-.buttonCancel {
-  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .button {
@@ -47,7 +46,6 @@
 
   button {
     min-width: 0;
-    padding: 0 40px;
   }
 }
 
@@ -57,4 +55,31 @@
   text-align:center;
   color: $error-color;
   margin-bottom: 10px;
+}
+
+.delete {
+  font-size: 26px;
+}
+
+.buttonAdd {
+  button {
+    padding: 0 40px;
+
+  }
+}
+
+.buttonCancel {
+  margin-right: 20px;
+  button {
+    font-size: 16px;
+  }
+}
+
+.buttonDelete {
+  button {
+    padding: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+  }
 }

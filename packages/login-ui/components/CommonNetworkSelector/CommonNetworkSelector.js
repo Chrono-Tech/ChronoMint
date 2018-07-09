@@ -59,9 +59,9 @@ const mapDispatchToProps = (dispatch) => ({
   getProviderURL: () => networkService.getProviderURL(),
   initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
   customNetworksListAdd: (network) => dispatch(customNetworksListAdd(network)),
-  modalOpenAddNetwork: () => dispatch(modalsOpen({
+  modalOpenAddNetwork: (network = null) => dispatch(modalsOpen({
     component: NetworkCreateModal,
-    props: {},
+    props: { network },
   })),
 })
 
@@ -152,7 +152,7 @@ export default class CommonNetworkSelector extends PureComponent {
                 { network.name }
               </span>
               <span
-                onClick={() => {}}
+                onClick={this.openModalAddNetwork.bind(this, network)}
                 styleName='providerItemIcon'
                 className='chronobank-icon'>edit</span>
             </div>
@@ -162,19 +162,10 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  addNetwork(){
-    this.props.customNetworksListAdd(
-      new AccountCustomNetwork({
-        id: '000-000-001',
-        name: 'my network',
-        url: 'https://localhost',
-      })
-    )
-  }
-
-  openModalAddNetwork(){
+  openModalAddNetwork(network){
     this.handleRequestClose()
-    this.props.modalOpenAddNetwork()
+    const networkModel = new AccountCustomNetwork(network)
+    this.props.modalOpenAddNetwork(networkModel)
   }
 
   renderCustomNetworksGroup(){

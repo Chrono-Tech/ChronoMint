@@ -7,16 +7,23 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { modalsClose } from 'redux/modals/actions'
-import { handleSubmitCreateNetwork } from '@chronobank/login/redux/network/actions'
+import {
+  handleSubmitCreateNetwork,
+  handleSubmitEditNetwork,
+} from '@chronobank/login/redux/network/actions'
+import {
+  AccountCustomNetwork,
+} from '@chronobank/core/models/wallet/persistAccount'
 import { ModalDialog } from 'components'
 import NetworkCreateModalForm from './NetworkCreateModalForm'
+
 import './NetworkCreateModal.scss'
-import { prefix } from "../../../../src/components/wallet/TwoFaConfirmModal/lang";
 
 function mapDispatchToProps (dispatch) {
   return {
     handleCloseModal: () => dispatch(modalsClose()),
     handleSubmitCreateNetwork: (url, alias) => dispatch(handleSubmitCreateNetwork(url, alias)),
+    handleSubmitEditNetwork: (url, alias) => dispatch(handleSubmitEditNetwork(url, alias)),
   }
 }
 
@@ -25,24 +32,39 @@ export default class NetworkCreateModal extends PureComponent {
   static propTypes = {
     handleCloseModal: PropTypes.func,
     handleSubmitCreateNetwork: PropTypes.func,
+    network: PropTypes.instanceOf(AccountCustomNetwork),
+  }
+
+  static defaultProps = {
+    network: null,
   }
 
   handleSubmitSuccess = () => {
     this.props.handleCloseModal()
   }
 
-  handleSubmit({ url, alias }){
-    this.props.handleSubmitCreateNetwork(url, alias)
+  handleSubmit(values){
+    const { handleSubmitCreateNetwork, network } = this.props
+
+    const url = values.get('url')
+    const alias = values.get('alias')
+
+    if (network){
+
+    }
+    else {
+      handleSubmitCreateNetwork (url, alias)
+    }
   }
 
   render () {
-    console.log('createmodal')
     return (
       <ModalDialog title='Add a Network'>
         <NetworkCreateModalForm
-          onSubmit={this.handleSubmit}
-          onSubmitSuccess={this.handleSubmitSuccess}
+          onSubmit={this.handleSubmit.bind(this)}
+          onSubmitSuccess={this.handleSubmitSuccess.bind(this)}
           onCloseModal={this.props.handleCloseModal}
+          network={this.props.network}
         />
       </ModalDialog>
     )

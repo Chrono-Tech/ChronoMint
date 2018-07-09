@@ -30,6 +30,8 @@ export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD
 export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
 export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
 
+export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
+
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
 }
@@ -49,7 +51,7 @@ export const accountUpdateList = (walletList) => (dispatch) => {
 export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.get('persistAccount')
+  const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   let index = walletsList.findIndex((item) => item.key === wallet.key)
 
@@ -75,7 +77,7 @@ export const decryptAccount = (encrypted, password) => async () => {
 export const validateAccountName = (name) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.get('persistAccount')
+  const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   return !walletsList.find((item) => item.name === name)
 }
@@ -151,7 +153,7 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   if (selectedWallet) {
     const walletName = selectedWallet.name || 'Wallet'
@@ -199,9 +201,23 @@ export const customNetworkCreate = (url, alias) => (dispatch) => {
     url,
   })
 
-  console.log('network', network)
-
   dispatch(customNetworksListAdd(network))
+}
+
+export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, getState) => {
+  const state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
+
+  if (foundNetworkIndex !== -1){
+    let copyNetworksList = [...customNetworksList]
+
+    copyNetworksList.splice(foundNetworkIndex, 1, network)
+
+    dispatch(customNetworksListUpdate(copyNetworksList))
+  }
 }
 
 export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatch) => {

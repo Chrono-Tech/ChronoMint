@@ -13,7 +13,6 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case actions.MODALS_PUSH:
-      console.log('rerere', action, action.component)
       return {
         ...state,
         counter: state.counter + 1,

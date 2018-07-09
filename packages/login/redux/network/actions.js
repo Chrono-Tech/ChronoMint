@@ -13,7 +13,8 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
-  customNetworkCreate
+  customNetworkCreate,
+  customNetworkEdit,
 } from '@chronobank/core/redux/persistAccount/actions'
 import Web3 from 'web3'
 import bip39 from 'bip39'
@@ -77,6 +78,7 @@ export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
+export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -693,6 +695,10 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
 
 export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
   dispatch(customNetworkCreate(url, alias))
+}
+
+export const handleSubmitEditNetwork = (network) => (dispatch) => {
+  dispatch(customNetworkEdit(network))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

@@ -9,27 +9,15 @@ import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
-import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
 
 import {
-  onSubmitLoginForm,
-  onSubmitLoginFormFail,
-  initLoginPage,
-  navigateToSelectWallet,
-  initAccountsSignature,
-  DUCK_NETWORK,
-  FORM_LOGIN_PAGE,
+  FORM_NETWORK_CREATE,
 } from '../../../login/redux/network/actions'
-import {
-  getAccountName,
-  getAccountAvatar,
-} from '../../../core/redux/persistAccount/utils'
+import validate from './validate'
 
 import styles from 'layouts/Splash/styles'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import './NetworkCreateModal.scss'
 
 const textFieldStyles = {
@@ -45,18 +33,17 @@ const textFieldStyles = {
   style: {
     height: 62,
     marginBottom: 20,
-  }
+  },
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-    onSubmit: (values) => {
-      const url = values.get('url')
-      const alias = values.get('alias')
+const mapStateToProps = (state, ownProps) => {
+  const network = ownProps.network
 
-      dispatch(onSubmitLoginForm({ url, alias }))
+  return {
+    initialValues: {
+      url: network && network.url,
+      alias: network && network.alias,
     },
-    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
   }
 }
 
@@ -70,7 +57,7 @@ class NetworkCreateModalForm extends PureComponent {
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
-        <form styleName='form' name={'FORM_NETWORK_CREATE'} onSubmit={handleSubmit}>
+        <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>
 
           <Field
             component={TextField}
@@ -94,12 +81,17 @@ class NetworkCreateModalForm extends PureComponent {
 
           <div styleName='actions'>
             <Button
-              styleName='button'
+              styleName='button buttonDelete'
+              buttonType='login'
+              label={<div styleName='delete' className='chronobank-icon'>delete</div>}
+            />
+            <Button
+              styleName='button buttonCancel'
               buttonType='flat'
               label='Cancel'
             />
             <Button
-              styleName='button'
+              styleName='button buttonAdd'
               buttonType='login'
               type='submit'
               label='ADD'
@@ -114,5 +106,4 @@ class NetworkCreateModalForm extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_LOGIN_PAGE })(NetworkCreateModalForm)
-export default connect(null, mapDispatchToProps)(form)
+export default reduxForm({ form: FORM_NETWORK_CREATE, validate }, mapStateToProps)(NetworkCreateModalForm)
