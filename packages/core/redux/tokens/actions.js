@@ -17,7 +17,6 @@ import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import BigNumber from 'bignumber.js'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/NemDAO'
@@ -32,6 +31,7 @@ import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -86,14 +86,15 @@ export const initTokens = () => async (dispatch, getState) => {
     return
   }
   const web3 = getState().get('web3')
+  ethereumDAO.connect(web3)
   dispatch({ type: TOKENS_INIT, isInited: true })
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
 
-  const erc20: ERC20ManagerDAO = await contractsManagerDAO.getERC20ManagerDAO()
+  const erc20: ERC20ManagerDAO = daoByType('ERC20Manager')(getState())
+
   erc20
     .on(EVENT_ERC20_TOKENS_COUNT, async (count) => {
-
       const currentCount = getState().get(DUCK_TOKENS).leftToFetch()
       dispatch({ type: TOKENS_FETCHING, count: currentCount + count + 1 /*eth*/ })
 
@@ -101,7 +102,6 @@ export const initTokens = () => async (dispatch, getState) => {
       const eth: TokenModel = await ethereumDAO.getToken()
       if (eth) {
         dispatch({ type: TOKENS_FETCHED, token: eth })
-        ethereumDAO.connect(web3)
         tokenService.registerDAO(eth, ethereumDAO)
       }
     })

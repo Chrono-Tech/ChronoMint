@@ -6,11 +6,12 @@
 import BigNumber from 'bignumber.js'
 import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
+import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
 
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(token)
-    this.abi = abi
+    this.abi = abi || ERC20DAODefaultABI
   }
 
   async connect (web3, options): Promise<TokenModel> {
@@ -19,7 +20,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     }
     // eslint-disable-next-line no-console
     console.log('[ERC20TokenDAO] Connect')
-    this.contract = new web3.eth.Contract(this.abi.abi, this.token.address, options)
+    this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
 
     const [
       name,
@@ -32,9 +33,9 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     ])
 
     this.token = new TokenModel({
-      key: this.token.key,
+      id: this.token.id,
       name,
-      address: this.token.address,
+      address: this.token.address(),
       symbol,
       decimals,
     })
@@ -98,8 +99,22 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     return true
   }
 
+  /**
+   * getting balance for eth address
+   * @param address
+   * @returns {Promise<BigNumber>}
+   */
   async getBalance (address) {
     return new BigNumber(await this.contract.methods.balanceOf(address).call())
+  }
+
+  /**
+   * alias getBalance
+   * @param address
+   * @returns {Promise<BigNumber>}
+   */
+  getAccountBalance (address) {
+    return this.getBalance(address)
   }
 
   async getAllowance (owner, spender) {
@@ -110,7 +125,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     const data = this.contract.methods.transfer(recipient, amount).encodeABI()
     return {
       from: sender,
-      to: this.token.address,
+      to: this.token.address(),
       data,
     }
   }
@@ -119,7 +134,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     const data = this.contract.methods.approve(spender, amount).encodeABI()
     const tx = {
       from: owner,
-      to: this.token.address,
+      to: this.token.address(),
       data,
     }
     return tx

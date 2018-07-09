@@ -4,8 +4,15 @@
  */
 
 import EventEmitter from 'events'
+import web3Converter from '../../../utils/Web3Converter'
 
 export default class AbstractContractDAO extends EventEmitter {
+  /**
+   * @type Web3Converter
+   * @protected
+   */
+  _c = web3Converter
+
   constructor ({ address, history, abi }) {
     super()
     this.address = address

@@ -227,7 +227,8 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
+  // TODO Abdulov
+  // await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -429,8 +430,8 @@ export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Arr
   if (blockchain !== token.blockchain() || (token.symbol() !== ETH && customTokens && !customTokens.includes(token.symbol()))) {
     return null
   }
-  const dao = tokenService.getDAO(token)
-  await dao.watch(address)
+  // const dao = tokenService.getDAO(token)
+  // await dao.watch(address)
 }
 
 export const createNewChildAddress = ({ blockchain, tokens, name, deriveNumber }) => async (dispatch, getState) => {
@@ -598,34 +599,35 @@ export const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       const dao = tokenService.getDAO(token)
       let balance = await dao.getAccountBalance(wallet.address)
 
-      if (balance) {
-        if (wallet.isMain) {
-          dispatch({
-            type: WALLET_TOKEN_BALANCE,
-            balance: new BalanceModel({
-              id: token.id(),
-              amount: new Amount(balance, token.symbol()),
-            }),
-          })
-        } else {
-          dispatch({
-            type: MULTISIG_BALANCE,
-            walletId: wallet.address,
-            balance: new BalanceModel({
-              id: token.id(),
-              amount: new Amount(balance, token.symbol(), true),
-            }),
-          })
-        }
+      if (wallet.isMain) {
+        dispatch({
+          type: WALLET_TOKEN_BALANCE,
+          balance: new BalanceModel({
+            id: token.id(),
+            amount: new Amount(balance, token.symbol()),
+          }),
+        })
+      } else {
+        dispatch({
+          type: MULTISIG_BALANCE,
+          walletId: wallet.address,
+          balance: new BalanceModel({
+            id: token.id(),
+            amount: new Amount(balance, token.symbol(), true),
+          }),
+        })
       }
     }
   }
+
   dispatch(subscribeOnTokens(updateBalance))
 }
 
 export const subscribeWallet = ({ wallet }) => async (dispatch/*, getState*/) => {
   const listener = function (data) {
-    if (data.from.toLowerCase() === wallet.address.toLowerCase() || data.to.toLowerCase() === wallet.address.toLowerCase()) {
+    const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
+    const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
+    if (checkedFrom || checkedTo) {
       dispatch(updateWalletBalance({ wallet }))
     }
   }

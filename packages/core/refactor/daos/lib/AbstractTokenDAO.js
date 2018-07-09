@@ -26,13 +26,13 @@ export default class AbstractTokenDAO extends EventEmitter {
   addDecimals (amount) {
     return amount == null
       ? null
-      : amount.multipliedBy(new BigNumber(10).pow(this.token.decimals))
+      : amount.multipliedBy(new BigNumber(10).pow(this.token.decimals()))
   }
 
   removeDecimals (amount) {
     return amount == null
       ? null
-      : amount.dividedBy(new BigNumber(10).pow(this.token.decimals))
+      : amount.dividedBy(new BigNumber(10).pow(this.token.decimals()))
   }
 
   get isDepositSupported () {
