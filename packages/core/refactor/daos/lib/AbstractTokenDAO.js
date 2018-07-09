@@ -5,6 +5,7 @@
 
 import BigNumber from 'bignumber.js'
 import EventEmitter from 'events'
+import { address } from '../../../models/validator'
 
 export default class AbstractTokenDAO extends EventEmitter {
   constructor (token) {
@@ -60,12 +61,12 @@ export default class AbstractTokenDAO extends EventEmitter {
   }
 
   // eslint-disable-next-line no-unused-vars
-  getBalance (address) {
+  getAccountBalance (address) {
     throw new Error('Not implemented')
   }
 
   // eslint-disable-next-line no-unused-vars
-  getAllowance (owner, spender) {
+  getAccountAllowance (owner, spender) {
     throw new Error('Not implemented')
   }
 
@@ -76,5 +77,9 @@ export default class AbstractTokenDAO extends EventEmitter {
 
   describeTx (account, abi, eth, tx, data) {
     return eth.dao.describeTx(account, abi, eth, tx, data)
+  }
+
+  getAddressValidator () {
+    return address
   }
 }

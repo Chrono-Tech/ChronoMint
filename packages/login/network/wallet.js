@@ -3,32 +3,28 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-const inherits = require('util').inherits
-const HookedWalletEthTxSubprovider = require('web3-provider-engine/subproviders/hooked-wallet-ethtx.js')
+import HookedWalletEthTxSubprovider from 'web3-provider-engine/subproviders/hooked-wallet-ethtx'
 
-module.exports = WalletSubprovider
-
-inherits(WalletSubprovider, HookedWalletEthTxSubprovider)
-
-function WalletSubprovider (wallets, opts) {
-  let addresses
-  if (Array.isArray(wallets)) {
-    addresses = wallets.map((wallet) => wallet.getAddressString())
-  } else {
-    addresses = [wallets.getAddressString()]
-  }
-  opts.getAccounts = function (cb) {
-    cb(null, addresses)
-  }
-
-  opts.getPrivateKey = function (address, cb) {
-    let wallet = wallets[addresses.indexOf(address)]
-    if (wallet) {
-      cb(null, wallet.getPrivateKey())
+export default class WalletSubprovider extends HookedWalletEthTxSubprovider {
+  constructor (wallets, opts) {
+    super(wallets, opts)
+    let addresses
+    if (Array.isArray(wallets)) {
+      addresses = wallets.map((wallet) => wallet.getAddressString())
     } else {
-      return cb('Account not found')
+      addresses = [wallets.getAddressString()]
+    }
+    opts.getAccounts = function (cb) {
+      cb(null, addresses)
+    }
+
+    opts.getPrivateKey = function (address, cb) {
+      let wallet = wallets[addresses.indexOf(address)]
+      if (wallet) {
+        cb(null, wallet.getPrivateKey())
+      } else {
+        return cb('Account not found')
+      }
     }
   }
-
-  WalletSubprovider.super_.call(this, opts)
 }
