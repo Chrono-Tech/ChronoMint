@@ -19,15 +19,21 @@ import {
   providerMap,
   networkSelectorGroups,
 } from '@chronobank/login/network/settings'
+import {
+  AccountCustomNetwork,
+} from '@chronobank/core/models/wallet/persistAccount'
+import {
+  customNetworksListAdd,
+} from '@chronobank/core/redux/persistAccount/actions'
 import { Popover } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
-import NetworkCreateModal from 'components/dialogs/NetworkCreateModal/NetworkCreateModal'
 import { modalsOpen } from 'redux/modals/actions'
 import classnames from 'classnames'
 import Web3 from 'web3'
+import NetworkCreateModal from '../NetworkCreateModal/NetworkCreateModal'
 
 import './CommonNetworkSelector.scss'
 
@@ -52,6 +58,7 @@ const mapDispatchToProps = (dispatch) => ({
   clearErrors: () => dispatch(clearErrors()),
   getProviderURL: () => networkService.getProviderURL(),
   initCommonNetworkSelector: () => dispatch(initCommonNetworkSelector()),
+  customNetworksListAdd: (network) => dispatch(customNetworksListAdd(network)),
   modalOpenAddNetwork: () => dispatch(modalsOpen({
     component: NetworkCreateModal,
     props: {},
@@ -79,6 +86,7 @@ export default class CommonNetworkSelector extends PureComponent {
     isLoading: PropTypes.bool,
     customNetworksList: PropTypes.array,
     modalOpenAddNetwork: PropTypes.func,
+    customNetworksListAdd: PropTypes.func,
   }
 
   constructor (props) {
@@ -131,15 +139,42 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   renderCustomNetworksList(){
-    const list = [{
-      title: 'Custom network',
+    const { customNetworksList } = this.props
 
-    }]
     return (
       <div>
-
+        {
+          customNetworksList.map((network, i) => (
+            <div
+              key={i}
+              styleName='providerItem providerItemCustomNetwork'>
+              <span styleName='providerItemText'>
+                { network.name }
+              </span>
+              <span
+                onClick={() => {}}
+                styleName='providerItemIcon'
+                className='chronobank-icon'>edit</span>
+            </div>
+          ))
+        }
       </div>
     )
+  }
+
+  addNetwork(){
+    this.props.customNetworksListAdd(
+      new AccountCustomNetwork({
+        id: '000-000-001',
+        name: 'my network',
+        url: 'https://localhost',
+      })
+    )
+  }
+
+  openModalAddNetwork(){
+    this.handleRequestClose()
+    this.props.modalOpenAddNetwork()
   }
 
   renderCustomNetworksGroup(){
@@ -149,7 +184,7 @@ export default class CommonNetworkSelector extends PureComponent {
         { this.renderCustomNetworksList() }
         <div
           styleName='providerItem'
-          onClick={this.props.modalOpenAddNetwork}
+          onClick={this.openModalAddNetwork.bind(this)}
         >
           Add a Network ...
         </div>
@@ -185,12 +220,12 @@ export default class CommonNetworkSelector extends PureComponent {
             </div>
           ))
         }
+        { this.renderCustomNetworksGroup()}
       </div>
     )
   }
 
   renderMenuItem(item, i){
-    console.log('render', item, i)
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.provider.id === selectedProvider.id && item.network.id === selectedNetworkId
 

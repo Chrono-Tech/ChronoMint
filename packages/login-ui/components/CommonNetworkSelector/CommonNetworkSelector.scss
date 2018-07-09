@@ -21,6 +21,8 @@
 .providerItem {
   padding: 15px 20px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 
   &.providerItemActive {
     background: $color-grey-3;
@@ -32,10 +34,30 @@
   }
 }
 
+.providerItemCustomNetwork {
+  cursor: initial;
+}
+
+.providerItemText {
+  flex: 1;
+}
+
+.providerItemIcon {
+  font-size: 20px;
+  color: $color-grey-2;
+  cursor: pointer;
+
+  &:hover {
+    color: $color-primary-0;
+  }
+}
+
 .providerGroupItem {
   background-color: $color-grey-3;
   padding: 15px 20px;
   line-height: 17px;
+  border-top: 1px solid $color-white;
+  border-bottom: 1px solid $color-white;
 }
 
 .providerGroupItemTitle {

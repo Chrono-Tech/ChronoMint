@@ -14,6 +14,7 @@ import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
   AccountEntryModel,
   AccountProfileModel,
+  AccountCustomNetwork,
 } from '../../models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
@@ -191,7 +192,19 @@ export const logout = () => (dispatch) => {
   // Router.pushRoute('/')
 }
 
-export const customNetworksListAdd = (network) => (dispatch) => {
+export const customNetworkCreate = (url, alias) => (dispatch) => {
+  const network = new AccountCustomNetwork({
+    id: uuid(),
+    name: alias,
+    url,
+  })
+
+  console.log('network', network)
+
+  dispatch(customNetworksListAdd(network))
+}
+
+export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_ADD, network })
 }
 

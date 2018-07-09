@@ -13,6 +13,7 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
+  customNetworkCreate
 } from '@chronobank/core/redux/persistAccount/actions'
 import Web3 from 'web3'
 import bip39 from 'bip39'
@@ -688,6 +689,10 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   if (isTestRPC(providerId, networkId)){
     dispatch(navigateToLoginLocal())
   }
+}
+
+export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
+  dispatch(customNetworkCreate(url, alias))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

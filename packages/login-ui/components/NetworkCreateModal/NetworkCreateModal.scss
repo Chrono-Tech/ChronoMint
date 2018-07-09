@@ -9,6 +9,7 @@
 .form {
   margin:0 auto;
   width: 350px;
+  padding: 20px 30px 0;
 
   @include xs-only {
     width: 100%;
@@ -32,12 +33,22 @@
 
 .actions {
   text-align: center;
-  margin-bottom: 45px;
+  margin-top: 10px;
+}
+
+.buttonCancel {
+  margin-right: 20px;
 }
 
 .button {
   text-align: center;
   margin-bottom: 30px;
+  display: inline-block;
+
+  button {
+    min-width: 0;
+    padding: 0 40px;
+  }
 }
 
 .form-error {

@@ -22,34 +22,45 @@ import {
   initAccountsSignature,
   DUCK_NETWORK,
   FORM_LOGIN_PAGE,
-} from '@chronobank/login/redux/network/actions'
+} from '../../../login/redux/network/actions'
 import {
   getAccountName,
   getAccountAvatar,
-} from '@chronobank/core/redux/persistAccount/utils'
+} from '../../../core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './NetworkCreateModal.scss'
 
-function mapStateToProps (state) {
-  return {
-
-    }
+const textFieldStyles = {
+  floatingLabelStyle: {
+    color: '#A3A3CC',
+    top: 28,
+    left: 0,
+    right: 0,
+    margin: 'auto',
+    textAlign: 'left',
+    transformOrigin: 'center center',
+  },
+  style: {
+    height: 62,
+    marginBottom: 20,
+  }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: async (values) => {
-      const password = values.get('password')
+    onSubmit: (values) => {
+      const url = values.get('url')
+      const alias = values.get('alias')
 
-      await dispatch(onSubmitLoginForm(password))
+      dispatch(onSubmitLoginForm({ url, alias }))
     },
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginFormFail(errors, dispatch, submitErrors)),
   }
 }
 
-class LoginPage extends PureComponent {
+class NetworkCreateModalForm extends PureComponent {
   static propTypes = {
     onCloseModal: PropTypes.func,
   }
@@ -61,27 +72,37 @@ class LoginPage extends PureComponent {
       <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={'FORM_NETWORK_CREATE'} onSubmit={handleSubmit}>
 
-          <div styleName='title'>
-            Please, enter network url
-          </div>
+          <Field
+            component={TextField}
+            name='url'
+            type='text'
+            floatingLabelText='IP address or domain name'
+            fullWidth
+            {...styles.textField}
+            {...textFieldStyles}
+          />
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='url'
-              type='text'
-              floatingLabelText={<Translate value='LoginForm.Url' />}
-              fullWidth
-              {...styles.textField}
-            />
-          </div>
+          <Field
+            component={TextField}
+            name='alias'
+            type='text'
+            floatingLabelText='Alias'
+            fullWidth
+            {...styles.textField}
+            {...textFieldStyles}
+          />
 
           <div styleName='actions'>
             <Button
               styleName='button'
+              buttonType='flat'
+              label='Cancel'
+            />
+            <Button
+              styleName='button'
               buttonType='login'
               type='submit'
-              label={<Translate value='LoginForm.submitButton' />}
+              label='ADD'
             />
 
             { error ? (<div styleName='form-error'>{error}</div>) : null }
@@ -93,5 +114,5 @@ class LoginPage extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+const form = reduxForm({ form: FORM_LOGIN_PAGE })(NetworkCreateModalForm)
+export default connect(null, mapDispatchToProps)(form)
