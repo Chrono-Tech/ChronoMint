@@ -101,23 +101,20 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
 
   /**
    * getting balance for eth address
-   * @param address
+   * @param address {string}
    * @returns {Promise<BigNumber>}
    */
-  async getBalance (address) {
+  async getAccountBalance (address) {
     return new BigNumber(await this.contract.methods.balanceOf(address).call())
   }
 
   /**
-   * alias getBalance
-   * @param address
+   * getting allowance
+   * @param owner {string}
+   * @param spender {string}
    * @returns {Promise<BigNumber>}
    */
-  getAccountBalance (address) {
-    return this.getBalance(address)
-  }
-
-  async getAllowance (owner, spender) {
+  async getAccountAllowance (owner, spender) {
     return new BigNumber(await this.contract.methods.allowance(owner, spender).call())
   }
 
