@@ -5,15 +5,11 @@
 
 import { ContractModel } from '../models/index'
 
-import {
-  MultiEventsHistoryABI,
-  ContractsManagerABI,
-  AssetsManagerABI,
-  VotingManagerABI,
-} from '../../../core/dao/abi/'
+import { AssetsManagerABI, ContractsManagerABI, ERC20ManagerABI, MultiEventsHistoryABI } from '../../../core/dao/abi/'
 
 import ContractsManagerDAO from './lib/ContractsManagerDAO'
 import AssetManagerLibraryDAO from './lib/AssetManagerLibraryDAO'
+import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -27,23 +23,23 @@ export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
 console.log('ContractsManagerABI.networks: ', ContractsManagerABI.networks)
 
 export const CONTRACTS_MANAGER = new ContractModel({
-  type: "ContractsManager",
+  type: 'ContractsManager',
   address: ContractsManagerABI.networks['4'].address, // @todo Add Network selection
   abi: ContractsManagerABI,
   DAOClass: ContractsManagerDAO,
 })
 
 export const ASSET_MANAGER_LIBRARY = new ContractModel({
-  type: "AssetManagerLibrary",
+  type: 'AssetManagerLibrary',
   abi: AssetsManagerABI,
   DAOClass: AssetManagerLibraryDAO,
 })
 
-// export const VOTING_MANAGER_LIBRARY = new ContractModel({
-//   type: "VotingManagerLibrary",
-//   abi: VotingManagerABI,
-//   DAOClass: VotingManagerDAO,
-// })
+export const ERC20_MANAGER = new ContractModel({
+  type: 'ERC20Manager',
+  abi: ERC20ManagerABI,
+  DAOClass: ERC20ManagerDAO,
+})
 
 export const MULTI_EVENTS_HISTORY = new ContractModel({
   type: 'MultiEventsHistory',
@@ -52,7 +48,7 @@ export const MULTI_EVENTS_HISTORY = new ContractModel({
 })
 
 // export const ERC20_LIBRARY = new ContractModel({
-//   type: "ERC20Library",
+//   type: 'ERC20Library',
 //   abi: ERC20_LIBRARY_ABI,
 //   DAOClass: ERC20LibraryDAO,
 // })

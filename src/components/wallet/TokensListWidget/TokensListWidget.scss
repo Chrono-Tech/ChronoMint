@@ -39,6 +39,7 @@
             background-repeat: no-repeat;
             background-position: center center;
             margin-right: 20px;
+            flex-shrink: 0;
           }
         }
         .tokens-list-table-cell-amount {
@@ -74,6 +75,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
+            flex-shrink: 0;
           }
         }
         .tokens-list-table-cell-sort-amount {

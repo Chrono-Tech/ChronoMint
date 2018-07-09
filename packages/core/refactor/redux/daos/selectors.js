@@ -4,24 +4,27 @@
  */
 
 import { createSelector } from 'reselect'
+import { DUCK_DAO } from './actions'
 
-export const daosSelector = () => (state) => state.daos
+export const daosSelector = () => (state) => state.get(DUCK_DAO)
 
 export const daoByAddress = (address) => createSelector(
   daosSelector(),
   (daos) => (address in daos.byAddress)
     ? daos.byAddress[address].dao
-    : null
+    : null,
 )
 
 export const daoByType = (type) => createSelector(
   daosSelector(),
-  (daos) => (type in daos.byType)
-    ? daos.byType[type].dao
-    : null
+  (daos) => {
+    return (type in daos.byType)
+      ? daos.byType[type].dao
+      : null
+  },
 )
 
 export const isFrontendInitialized = () => createSelector(
   daosSelector(),
-  daos => daos.isInitialized
+  daos => daos.isInitialized,
 )

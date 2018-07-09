@@ -8,8 +8,10 @@ import {
   CONTRACTS_MANAGER,
   MULTI_EVENTS_HISTORY,
   ASSET_MANAGER_LIBRARY,
+  ERC20_MANAGER,
 } from '../../daos/index'
 
+export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
 export const DAOS_INITIALIZED = 'daos/initialized'
 
@@ -30,11 +32,12 @@ export const initDAOs = ({ web3 }) => async (dispatch) => {
 
   const contracts = [
     ASSET_MANAGER_LIBRARY,
+    ERC20_MANAGER,
   ]
 
   const models = await Promise.all(
     contracts.map(
-      async contract => {
+      async (contract) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
         const dao = contract.create(address, history)
         dao.connect(web3)
@@ -44,8 +47,8 @@ export const initDAOs = ({ web3 }) => async (dispatch) => {
           history,
           dao,
         })
-      }
-    )
+      },
+    ),
   )
 
   for (const model of models) {

@@ -4,8 +4,8 @@
  */
 
 import EventEmitter from 'events'
-import ERC20DAO from '../dao/ERC20DAO'
 import TokenModel from '../models/tokens/TokenModel'
+import ERC20TokenDAO from '../refactor/daos/lib/ERC20TokenDAO'
 
 export const EVENT_NEW_TOKEN = 'newToken'
 export const EVENT_TOKENS_FETCHED = 'tokensFetched'
@@ -25,7 +25,7 @@ class TokenService extends EventEmitter {
     if (!token.isERC20()) {
       return
     }
-    const dao = new ERC20DAO(token)
+    const dao = new ERC20TokenDAO(token)
     dao.connect(web3)
     this._cache [token.id()] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)

@@ -5,8 +5,7 @@
 
 import TokenNoticeModel from '../models/notices/TokenNoticeModel'
 import TokenModel from '../models/tokens/TokenModel'
-import { ERC20ManagerABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
 
 export const TX_ADD_TOKEN = 'addToken'
@@ -17,12 +16,19 @@ export const EVENT_NEW_ERC20_TOKEN = 'erc20/newToken'
 export const EVENT_ERC20_TOKENS_COUNT = 'erc20/count'
 
 export default class ERC20ManagerDAO extends AbstractContractDAO {
-  constructor (at = null) {
-    super(ERC20ManagerABI, at)
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
+  /**
+   * Tokens fetching and emmit token
+   * @param tokenAddresses
+   * @returns {Promise<void>}
+   */
   async fetchTokens (tokenAddresses = []) {
-    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = await this._call('getTokens', [tokenAddresses])
+    const res = await this.contract.methods.getTokens(tokenAddresses).call()
+    const [addresses, names, symbols, urls, decimalsArr, ipfsHashes] = Object.values(res)
+
     this.emit(EVENT_ERC20_TOKENS_COUNT, addresses.length)
     const feeRate = await ethereumDAO.getGasPrice()
 
@@ -33,7 +39,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
         name: this._c.bytesToString(names[i]),
         symbol,
         url: this._c.bytesToString(urls[i]),
-        decimals: decimalsArr[i].toNumber(),
+        decimals: parseInt(decimalsArr[i]),
         icon: this._c.bytes32ToIPFSHash(ipfsHashes[i]),
         isFetched: true,
         blockchain: BLOCKCHAIN_ETHEREUM,

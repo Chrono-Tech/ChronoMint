@@ -75,17 +75,18 @@ export const globalWatcher = () => async (dispatch) => {
 
 // for all logged in users
 export const watcher = ({ web3 }) => async (dispatch) => {
+  await dispatch(initDAOs({ web3 }))
   dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
-  await dispatch(initDAOs({ web3 }))
   dispatch(initMainWallet())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  dispatch(watchInitERC20Tokens())
+  // TODO @Abdulov fix it
+  // dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())
   dispatch({ type: WATCHER })

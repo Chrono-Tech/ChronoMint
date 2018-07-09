@@ -100,7 +100,7 @@ export const mainWalletTokenBalanceSelector = (blockchain: string) => createSele
   },
 )
 
-export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
+export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: string, notFilterZero: boolean = true) => createSelector(
   [
     filteredBalancesAndTokens(blockchain, symbol),
     selectMarketPricesSelectedCurrencyStore,
