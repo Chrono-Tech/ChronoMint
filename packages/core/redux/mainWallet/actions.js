@@ -293,7 +293,7 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
     const sendWallet = wallet || getMainWallet(getState())
     const tokenDAO = tokenService.getDAO(token.id())
     const tx: TxExecModel = await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, additionalOptions)
-    dispatch(sendNewtx(tx))
+    dispatch(sendNewtx(tx, tokenDAO))
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }

@@ -11,6 +11,7 @@ import TxExecModel from '../../models/TxExecModel'
 import { TX_TRANSFER } from '../../../dao/EthereumDAO'
 import Amount from '../../../models/Amount'
 
+export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(token)
@@ -206,25 +207,37 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @returns {TxExecModel}
    */
   transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): TxExecModel {
-
-    // if (!this.contract.hasOwnProperty(TX_TRANSFER)) {
-    //   throw this._error('_tx func not found', TX_TRANSFER)
-    // }
-
     const data = this.contract.methods.transfer(to, amount).encodeABI()
     const advancedParams = advancedOptions && typeof advancedOptions === 'object' ? advancedOptions : {}
     advancedParams.feeMultiplier = feeMultiplier
 
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func: TX_TRANSFER,
-      args: { from, to, amount, currency: amount.symbol() },
+    return {
+      func: 'transfer',
+      args: [],
+      from,
+      to,
+      feeMultiplier,
       value: new BigNumber(0),
-      params: [to, new BigNumber(amount)],
       data,
-      options: {
-        advancedParams,
-      },
-    })
+    }
+  }
+
+  getEstimateGasParams = async (tx): number | Object => {
+    return { to: tx.to, value: tx.value }
+    // TODO @abdulov change the method
+    // const { func, args = [], value = null, from } = tx
+    //
+    // const deployed = await this.contract
+    // if (!deployed.hasOwnProperty(func)) {
+    //   throw this._error('estimateGas func not found', func)
+    // }
+    //
+    // const estimatedGas = deployed[func].estimateGas(...args, {
+    //   from,
+    //   value,
+    //   gas: DEFAULT_GAS,
+    // })
+    // return estimatedGas
+
   }
 }

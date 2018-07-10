@@ -55,8 +55,20 @@ export class EthereumProvider extends AbstractProvider {
     return node.getTransactionsList(address, this._id, skip, offset)
   }
 
-  getPrivateKey () {
-    return this._engine ? this._engine.getPrivateKey() : null
+  getPrivateKey (address) {
+    if (address) {
+      let pk = null
+      this._engine
+        ? this._engine._engine.wallets.map((wallet) => {
+          if (wallet.getAddressString() === address) {
+            pk = wallet.privKey
+          }
+        })
+        : null
+      return pk
+    } else {
+      return this._engine ? this._engine.getPrivateKey() : null
+    }
   }
 
   getPublicKey () {

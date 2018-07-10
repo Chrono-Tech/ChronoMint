@@ -29,4 +29,12 @@ export default class TxExecModel extends AbstractModel {
     Object.assign(this, props)
     Object.freeze(this)
   }
+
+  get from () {
+    return this.args.from
+  }
+
+  get to () {
+    return this.args.to
+  }
 }

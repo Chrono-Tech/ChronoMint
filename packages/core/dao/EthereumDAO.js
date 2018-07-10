@@ -142,6 +142,10 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
+  getEstimateGasParams = (tx) => {
+    return { to: tx.to, value: tx.value }
+  }
+
   estimateGas = (func, args, value) => {
     const [to, amount] = args
     return this._estimateGas(to, value)
@@ -164,7 +168,9 @@ export class EthereumDAO extends AbstractTokenDAO {
       from,
       to,
       value,
+      feeMultiplier,
     }
+    return txData
 
     /** ESTIMATE GAS */
     const estimateGastransfer = (func, args, value) => {
