@@ -5,18 +5,17 @@
 
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import contractsManagerDAO from './ContractsManagerDAO'
-import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
-import PollModel from '../models/PollModel'
-import PollDetailsModel from '../models/PollDetailsModel'
-import FileModel from '../models/FileSelect/FileModel'
+// import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+// import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
+// import PollModel from '../models/PollModel'
+// import PollDetailsModel from '../models/PollDetailsModel'
+// import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
-import { TIME } from '../redux/mainWallet/actions'
+// import { TIME } from '../redux/mainWallet/actions'
 import votingService from '../services/VotingService'
-import { DUCK_DAO } from '../refactor/redux/daos/actions'
-import {daoByType} from "../refactor/redux/daos/selectors";
+import { daoByType } from '../refactor/redux/daos/selectors'
+import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -32,7 +31,7 @@ export default class VotingManagerDAO  {
     this.history = history
     this.abi = abi
     this.assetHolderDAO = null
-    this.pollInterfaceDAO = null
+    this.pollInterfaceManagerDAO = null
     console.log('VotingManagerDAO: ', address, history, abi)
   }
 
@@ -78,16 +77,15 @@ export default class VotingManagerDAO  {
     this.assetHolderDAO = assetHolderDAO
   }
 
-  setPollInterfaceDAO (pollInterfaceDAO) {
-    this.pollInterfaceDAO = pollInterfaceDAO
+  setPollInterfaceManagerDAO (pollInterfaceDAO) {
+    this.pollInterfaceManagerDAO = pollInterfaceDAO
   }
 
-  postStoreDispatchSetup (state) {
-    const daos = state.get(DUCK_DAO)
+  postStoreDispatchSetup (state, web3, history) {
     const assetHolderDAO = daoByType('AssetHolderLibrary')(state)
-    const pollInterfaceManager = daoByType('AssetHolderLibrary')(state)
-
-    console.log('postStoreDispatchSetup(state): ', state)
+    const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
+    this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
+    this.setAssetHolderDAO(assetHolderDAO)
   }
 
   async getPollsPaginated (startIndex, pageSize, account: string): Promise {
@@ -132,7 +130,7 @@ export default class VotingManagerDAO  {
   // activatePoll () {
   //   return this._multisigTx(TX_ACTIVATE_POLL)
   // }
-
+  //
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
@@ -145,32 +143,35 @@ export default class VotingManagerDAO  {
       for (let i = 0; i < pollsAddresses.length; i++) {
         promises.push(new Promise(async (resolve) => {
           try {
-            const pollId = pollsAddresses[ i ]
+            const pollAddress = pollsAddresses[ i ]
 
             try {
-              votingService.subscribeToPoll(pollId, account)
+              votingService.subscribeToPoll(pollAddress, account)
             } catch (e) {
               // eslint-disable-next-line
               console.error('watch error', e.message)
             }
 
-            const pollInterface = await contractsManagerDAO.getPollInterfaceDAO(pollId)
+            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO before: ')
+            const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
+            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO after: ', pollInterface)
             const [ votes, hasMember, memberOption ] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
               await pollInterface.memberOption(account),
             ])
+            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO after 22: ', votes, hasMember, memberOption)
 
             const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
             const { title, description, options, files } = await ipfs.get(hash)
             const poll = new PollModel({
-              id: pollId,
+              id: pollAddress,
               owner: owners[ i ],
               hash,
               votes,
               title,
               description,
-              voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], TIME),
+              voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], 'TIME'),
               deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
               published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
               status: statuses[ i ],
@@ -180,10 +181,10 @@ export default class VotingManagerDAO  {
               hasMember,
               memberOption,
             })
-            const pollFiles = poll && await ipfs.get(poll.files())
+            // const pollFiles = poll && await ipfs.get(poll.files())
 
             resolve(new PollDetailsModel({
-              id: pollId,
+              id: pollAddress,
               poll,
               votes,
               shareholdersCount,

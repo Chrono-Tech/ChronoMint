@@ -55,6 +55,8 @@ export const POLL_INTERFACE_MANAGER = new ContractModel({
   DAOClass: AssetHolderDAO,
 })
 
+console.log('VotingManagerDAO VotingManagerDAO: ', VotingManagerDAO)
+
 export const VOTING_MANAGER_LIBRARY = new ContractModel({
   type: 'VotingManagerLibrary',
   abi: VotingManagerABI,

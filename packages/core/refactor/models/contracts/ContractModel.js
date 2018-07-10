@@ -22,6 +22,7 @@ export default class ContractModel extends AbstractModel {
   }
 
   create (address = null, history = null) {
+    console.log('new this.DAOClass: ', this, this.DAOClass)
     return new this.DAOClass({
       address: address || this.address,
       history: history || this.history,

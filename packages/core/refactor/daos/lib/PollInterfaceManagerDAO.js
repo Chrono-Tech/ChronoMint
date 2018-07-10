@@ -4,29 +4,21 @@
  */
 
 import EventEmitter from 'events'
-import { PollInterfaceABI } from './abi'
+import PollInterfaceDAO from './PollInterfaceDAO'
 
-export default class ContractsManagerDAO extends EventEmitter {
-  constructor (web3) {
+export default class PollInterfaceManagerDAO extends EventEmitter {
+  constructor (web3, history) {
     super()
-
+    this.history = history
     this.web3 = web3
+    // eslint-disable-next-line no-console
+    console.log('[PollInterfaceManagerDAO] Created')
   }
 
-  disconnect () {
-    if (this.isConnected) {
-      // eslint-disable-next-line no-console
-      console.log('[ContractsManagerDAO] Disconnect')
-      this.contract = null
-      this.web3 = null
-    }
-  }
+  async getPollInterfaceDAO (address: String) {
+    const pollInterfaceDao = new PollInterfaceDAO({ address, history: this.history })
+    pollInterfaceDao.connect(this.web3)
 
-  async getPollInterfaceDAO (pollId) {
-    // todo create pollInterfaceDAO from pollId
-  }
-
-  async isExists (address: String) {
-    return this.contract.methods.isExists(address).call()
+    return pollInterfaceDao
   }
 }

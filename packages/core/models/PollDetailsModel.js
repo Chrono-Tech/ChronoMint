@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import moment from 'moment'
-import { TIME } from '../redux/mainWallet/actions'
+// import { TIME } from '../redux/mainWallet/actions'
 import { abstractFetchingModel } from './AbstractFetchingModel'
 import PollModel from './PollModel'
 import Amount from './Amount'
@@ -62,7 +62,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const votes = this.get('votes')
 
     return options.map((option, key) => {
-      return { option, count: votes.get(`${key + 1}`, new Amount(0, TIME)) }
+      return { option, count: votes.get(`${key + 1}`, new Amount(0, 'TIME')) }
     })
   }
 
@@ -72,7 +72,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const published = poll.published()
     const voteLimitInTIME = poll.voteLimitInTIME()
     const maxOptionTime = this.votes().max((a, b) => a.gt(b))
-    const received = new Amount(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)), TIME)
+    const received = new Amount(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)), 'TIME')
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
     const shareholdersCount = new BigNumber(this.shareholdersCount())
     const percents = voteLimitInTIME
@@ -114,7 +114,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
       votedCount,
       shareholdersCount,
       percents: percents.gt(100) ? new BigNumber(100) : percents,
-      maxOptionTime: maxOptionTime || new Amount(0, TIME),
+      maxOptionTime: maxOptionTime || new Amount(0, 'TIME'),
       memberOption: memberOption && memberOption.toNumber(),
       voteEntries,
     }
