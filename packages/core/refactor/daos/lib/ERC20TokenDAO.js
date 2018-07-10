@@ -7,6 +7,9 @@ import BigNumber from 'bignumber.js'
 import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
+import TxExecModel from '../../models/TxExecModel'
+import { TX_TRANSFER } from '../../../dao/EthereumDAO'
+import Amount from '../../../models/Amount'
 
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
@@ -191,5 +194,37 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
   handleApprovalError (error) {
     // eslint-disable-next-line no-console
     console.error('[ERC20TokenDAO] Error in Approval event subscription', error)
+  }
+
+  /**
+   * Create a tx execute model
+   * @param from {string} - address from
+   * @param to {string}  - address to
+   * @param amount {Amount} - amount of tokens
+   * @param feeMultiplier {number} - multiplier for gas price
+   * @param advancedOptions {object} - other options, maybe useless
+   * @returns {TxExecModel}
+   */
+  transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): TxExecModel {
+
+    // if (!this.contract.hasOwnProperty(TX_TRANSFER)) {
+    //   throw this._error('_tx func not found', TX_TRANSFER)
+    // }
+
+    const data = this.contract.methods.transfer(to, amount).encodeABI()
+    const advancedParams = advancedOptions && typeof advancedOptions === 'object' ? advancedOptions : {}
+    advancedParams.feeMultiplier = feeMultiplier
+
+    return new TxExecModel({
+      contract: this.abi.contractName,
+      func: TX_TRANSFER,
+      args: { from, to, amount, currency: amount.symbol() },
+      value: new BigNumber(0),
+      params: [to, new BigNumber(amount)],
+      data,
+      options: {
+        advancedParams,
+      },
+    })
   }
 }
