@@ -34,6 +34,7 @@ export default class AssetHolderDAO {
     // eslint-disable-next-line no-console
     console.log(`[${this.constructor.name}] Connect`)
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
+    console.log('AssetHolderDAO connected')
     this.history = this.history != null // nil check
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
       : this.contract
@@ -51,7 +52,7 @@ export default class AssetHolderDAO {
   }
 
   async getSharesContract (): Promise {
-    return this._call('getDefaultShares')
+    return this.contract.methods.getDefaultShares().call()
   }
 
   async getAssetDAO (): Promise<ERC20DAO> {
@@ -60,7 +61,7 @@ export default class AssetHolderDAO {
   }
 
   getWalletAddress (): Promise {
-    return this._call('wallet')
+    return this.contract.methods.wallet().call()
   }
 
   async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
@@ -76,7 +77,7 @@ export default class AssetHolderDAO {
   }
 
   shareholdersCount (): Promise {
-    return this._call('defaultShareholdersCount')
+    return this.contract.methods.defaultShareholdersCount().call()
   }
 
   async withdraw (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
@@ -92,6 +93,6 @@ export default class AssetHolderDAO {
   }
 
   getDeposit (tokenAddress: String, account: String): Promise {
-    return this._call('getDepositBalance', [ tokenAddress, account ])
+    return this.contract.methods.getDepositBalance(tokenAddress, account).call()
   }
 }

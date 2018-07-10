@@ -47,7 +47,6 @@ import web3Utils from './Web3Utils'
 const { web3Converter } = utils
 
 const ERROR_NO_ACCOUNTS = 'Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly.'
-console.log('new Web3Legacy: ', Web3Legacy)
 
 class NetworkService extends EventEmitter {
   connectStore (store) {

@@ -19,6 +19,7 @@ import AssetManagerLibraryDAO from './lib/AssetManagerLibraryDAO'
 import AssetHolderDAO from '../../dao/AssetHolderDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import VotingManagerDAO from '../../dao/VotingManagerDAO'
+import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -27,8 +28,6 @@ export { default as AbstractTokenDAO } from './lib/AbstractTokenDAO'
 export { default as ETHTokenDAO } from './lib/ETHTokenDAO'
 export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
 export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
-
-console.log('ContractsManagerABI.networks: ', VotingManagerDAO, ERC20ManagerDAO)
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
@@ -44,7 +43,7 @@ export const ASSET_MANAGER_LIBRARY = new ContractModel({
 })
 
 export const ASSET_HOLDER_LIBRARY = new ContractModel({
-  type: 'AssetHolderLibrary',
+  type: 'TimeHolder',
   abi: AssetHolderABI,
   DAOClass: AssetHolderDAO,
 })
@@ -52,13 +51,11 @@ export const ASSET_HOLDER_LIBRARY = new ContractModel({
 export const POLL_INTERFACE_MANAGER = new ContractModel({
   type: 'PollInterfaceManager',
   abi: AssetHolderABI,
-  DAOClass: AssetHolderDAO,
+  DAOClass: PollInterfaceDAO,
 })
 
-console.log('VotingManagerDAO VotingManagerDAO: ', VotingManagerDAO)
-
 export const VOTING_MANAGER_LIBRARY = new ContractModel({
-  type: 'VotingManagerLibrary',
+  type: 'VotingManager',
   abi: VotingManagerABI,
   DAOClass: VotingManagerDAO,
 })

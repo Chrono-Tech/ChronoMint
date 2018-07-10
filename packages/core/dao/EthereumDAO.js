@@ -83,8 +83,6 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   getAccountBalance (account): Promise {
-    // eslint-disable-next-line
-    console.log('getAccountBalance', account)
     return this.web3.eth.getBalance(account)
   }
 

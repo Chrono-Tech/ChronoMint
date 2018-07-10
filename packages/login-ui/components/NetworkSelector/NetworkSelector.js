@@ -13,10 +13,7 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Web3Legacy from 'web3legacy'
-import Web3 from 'web3_1'
 import styles from '../../components/stylesLoginPage'
-
-console.log('window.Web3LegacyWeb3Legacy: ', Web3Legacy, Web3)
 
 const mapStateToProps = (state) => {
   const network = state.get(DUCK_NETWORK)

@@ -153,7 +153,12 @@ class ContractsManagerDAO extends AbstractContractDAO {
     return this._getDAO(DAO_REWARDS)
   }
 
+  /**
+   * @deprecated Use selector daoByType instead
+   */
   getAssetHolderDAO (): Promise<AssetHolderDAO> {
+    // eslint-disable-next-line no-console
+    console.warn('getAssetHolderDAO is deprecated')
     return this._getDAO(DAO_ASSET_HOLDER)
   }
 
@@ -204,7 +209,6 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   getPollInterfaceDAO (address): Promise<PollInterfaceDAO> {
-    console.log('getPollInterfaceDAO: ', address)
     return this._getDAO(DAO_POLL_INTERFACE, address)
   }
 

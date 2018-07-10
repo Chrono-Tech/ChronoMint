@@ -5,11 +5,11 @@
 
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
-// import ipfs from '@chronobank/core-dependencies/utils/IPFS'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 // import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
-// import PollModel from '../models/PollModel'
-// import PollDetailsModel from '../models/PollDetailsModel'
-// import FileModel from '../models/FileSelect/FileModel'
+import PollModel from '../models/PollModel'
+import PollDetailsModel from '../models/PollDetailsModel'
+import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
 // import { TIME } from '../redux/mainWallet/actions'
@@ -32,7 +32,6 @@ export default class VotingManagerDAO  {
     this.abi = abi
     this.assetHolderDAO = null
     this.pollInterfaceManagerDAO = null
-    console.log('VotingManagerDAO: ', address, history, abi)
   }
 
   connect (web3, options) {
@@ -40,22 +39,9 @@ export default class VotingManagerDAO  {
       this.disconnect()
     }
     // eslint-disable-next-line no-console
-    console.log('[VotingManagerDAO] Connect', web3, this.abi.abi, this.address)
+    console.log('[VotingManagerDAO] Connected')
+
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-
-    // eslint-disable-next-line no-console
-    console.log('this.contract VotingManagerDAO: ', this.contract)
-
-    // this.transferEmitter = this.contract.events.Transfer({})
-    //   .on('data', this.handleTransferData.bind(this))
-    //   .on('changed', this.handleTransferChanged.bind(this))
-    //   .on('error', this.handleTransferError.bind(this))
-    // this.approvalEmitter = this.contract.events.Approval({})
-    //   .on('data', this.handleApprovalData.bind(this))
-    //   .on('changed', this.handleApprovalChanged.bind(this))
-    //   .on('error', this.handleApprovalError.bind(this))
-
-    return this.token
   }
 
   get isConnected () {
@@ -82,7 +68,7 @@ export default class VotingManagerDAO  {
   }
 
   postStoreDispatchSetup (state, web3, history) {
-    const assetHolderDAO = daoByType('AssetHolderLibrary')(state)
+    const assetHolderDAO = daoByType('TimeHolder')(state)
     const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
@@ -131,6 +117,7 @@ export default class VotingManagerDAO  {
   //   return this._multisigTx(TX_ACTIVATE_POLL)
   // }
   //
+
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
@@ -152,15 +139,12 @@ export default class VotingManagerDAO  {
               console.error('watch error', e.message)
             }
 
-            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO before: ')
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
-            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO after: ', pollInterface)
             const [ votes, hasMember, memberOption ] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
               await pollInterface.memberOption(account),
             ])
-            console.log('this.pollInterfaceManagerDAO.getPollInterfaceDAO after 22: ', votes, hasMember, memberOption)
 
             const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
             const { title, description, options, files } = await ipfs.get(hash)
@@ -181,7 +165,7 @@ export default class VotingManagerDAO  {
               hasMember,
               memberOption,
             })
-            // const pollFiles = poll && await ipfs.get(poll.files())
+            const pollFiles = poll && await ipfs.get(poll.files())
 
             resolve(new PollDetailsModel({
               id: pollAddress,
@@ -215,6 +199,10 @@ export default class VotingManagerDAO  {
     })
 
     return collection
+  }
+
+  isEmptyAddress (v): boolean {
+    return v === '0x0000000000000000000000000000000000000000'
   }
 
   // async getPoll (pollId: string, account: string): PollDetailsModel {

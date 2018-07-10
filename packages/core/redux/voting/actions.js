@@ -180,7 +180,7 @@ export const listPolls = () => async (dispatch) => {
 }
 
 export const getNextPage = () => async (dispatch, getState) => {
-  const dao = daoByType('VotingManagerLibrary')(getState())
+  const dao = daoByType('VotingManager')(getState())
 
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
