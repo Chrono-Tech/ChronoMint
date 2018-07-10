@@ -57,7 +57,7 @@
   margin-bottom: 10px;
 }
 
-.delete {
+.deleteIcon {
   font-size: 26px;
 }
 
@@ -69,13 +69,16 @@
 }
 
 .buttonCancel {
-  margin-right: 20px;
+  margin-right: 10px;
+
   button {
     font-size: 16px;
   }
 }
 
 .buttonDelete {
+  margin-right: 25px;
+
   button {
     padding: 0;
     width: 45px;

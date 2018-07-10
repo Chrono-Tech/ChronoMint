@@ -66,7 +66,7 @@ class MnemonicLoginPage extends PureComponent {
     const { handleSubmit } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_PRIVATE_KEY_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>

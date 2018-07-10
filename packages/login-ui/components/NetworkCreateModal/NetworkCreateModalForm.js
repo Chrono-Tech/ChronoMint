@@ -18,7 +18,7 @@ import {
 import validate from './validate'
 
 import styles from 'layouts/Splash/styles'
-import './NetworkCreateModal.scss'
+import './NetworkCreateModalForm.scss'
 
 const textFieldStyles = {
   floatingLabelStyle: {
@@ -28,35 +28,32 @@ const textFieldStyles = {
     right: 0,
     margin: 'auto',
     textAlign: 'left',
-    transformOrigin: 'center center',
+    transformOrigin: 'left',
   },
   style: {
     height: 62,
     marginBottom: 20,
   },
-}
-
-const mapStateToProps = (state, ownProps) => {
-  const network = ownProps.network
-
-  return {
-    initialValues: {
-      url: network && network.url,
-      alias: network && network.alias,
-    },
-  }
+  inputStyle: {
+    color: '#A3A3CC',
+    textAlign: 'left',
+    marginTop: 0,
+    paddingTop: 18,
+  },
 }
 
 class NetworkCreateModalForm extends PureComponent {
   static propTypes = {
     onCloseModal: PropTypes.func,
+    handleDeleteNetwork: PropTypes.func,
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit} = this.props
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, network,
+      handleDeleteNetwork, onCloseModal } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>
 
           <Field
@@ -80,21 +77,26 @@ class NetworkCreateModalForm extends PureComponent {
           />
 
           <div styleName='actions'>
-            <Button
-              styleName='button buttonDelete'
-              buttonType='login'
-              label={<div styleName='delete' className='chronobank-icon'>delete</div>}
-            />
+            { network ? (
+              <Button
+                styleName='button buttonDelete'
+                buttonType='login'
+                onClick={handleDeleteNetwork}
+                label={<div styleName='deleteIcon' className='chronobank-icon'>delete</div>}
+              />
+            ) : null }
+
             <Button
               styleName='button buttonCancel'
               buttonType='flat'
+              onClick={onCloseModal}
               label='Cancel'
             />
             <Button
               styleName='button buttonAdd'
               buttonType='login'
               type='submit'
-              label='ADD'
+              label={ network ? 'SAVE' : 'ADD' }
             />
 
             { error ? (<div styleName='form-error'>{error}</div>) : null }
@@ -106,4 +108,4 @@ class NetworkCreateModalForm extends PureComponent {
   }
 }
 
-export default reduxForm({ form: FORM_NETWORK_CREATE, validate }, mapStateToProps)(NetworkCreateModalForm)
+export default reduxForm({ form: FORM_NETWORK_CREATE, validate })(NetworkCreateModalForm)

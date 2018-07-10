@@ -75,7 +75,7 @@ const persistAccount = (state = initialState, action) => {
     case a.CUSTOM_NETWORKS_LIST_UPDATE :
       return {
         ...state,
-        customNetworksList: action.networksList,
+        customNetworksList: action.list,
       }
 
     case a.CUSTOM_NETWORKS_LIST_RESET :

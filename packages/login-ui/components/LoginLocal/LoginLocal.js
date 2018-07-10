@@ -99,7 +99,7 @@ class LoginLocal extends PureComponent {
     const { handleSubmit, isLoginSubmitting, error, accounts, selectedAccount } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <div styleName='wrapper'>
 
           <div styleName='page-title'>

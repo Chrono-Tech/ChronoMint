@@ -40,6 +40,10 @@
 
 .providerItemText {
   flex: 1;
+  padding-right: 10px;
+  text-overflow: ellipsis;
+  min-width: 0;
+  overflow: hidden ;
 }
 
 .providerItemIcon {

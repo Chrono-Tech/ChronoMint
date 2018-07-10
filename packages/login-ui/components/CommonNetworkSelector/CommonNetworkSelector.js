@@ -141,6 +141,10 @@ export default class CommonNetworkSelector extends PureComponent {
   renderCustomNetworksList(){
     const { customNetworksList } = this.props
 
+    if (!customNetworksList) {
+      return
+    }
+
     return (
       <div>
         {
@@ -152,7 +156,7 @@ export default class CommonNetworkSelector extends PureComponent {
                 { network.name }
               </span>
               <span
-                onClick={this.openModalAddNetwork.bind(this, network)}
+                onClick={() => this.openModalAddNetwork(network)}
                 styleName='providerItemIcon'
                 className='chronobank-icon'>edit</span>
             </div>
@@ -164,8 +168,12 @@ export default class CommonNetworkSelector extends PureComponent {
 
   openModalAddNetwork(network){
     this.handleRequestClose()
-    const networkModel = new AccountCustomNetwork(network)
-    this.props.modalOpenAddNetwork(networkModel)
+    if (network) {
+      const networkModel = new AccountCustomNetwork(network)
+      this.props.modalOpenAddNetwork(networkModel)
+    } else {
+      this.props.modalOpenAddNetwork()
+    }
   }
 
   renderCustomNetworksGroup(){
@@ -175,7 +183,7 @@ export default class CommonNetworkSelector extends PureComponent {
         { this.renderCustomNetworksList() }
         <div
           styleName='providerItem'
-          onClick={this.openModalAddNetwork.bind(this)}
+          onClick={() => this.openModalAddNetwork()}
         >
           Add a Network ...
         </div>

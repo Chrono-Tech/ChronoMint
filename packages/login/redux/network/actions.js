@@ -15,6 +15,7 @@ import {
   setProfilesForAccounts,
   customNetworkCreate,
   customNetworkEdit,
+  customNetworksDelete,
 } from '@chronobank/core/redux/persistAccount/actions'
 import Web3 from 'web3'
 import bip39 from 'bip39'
@@ -699,6 +700,10 @@ export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
 
 export const handleSubmitEditNetwork = (network) => (dispatch) => {
   dispatch(customNetworkEdit(network))
+}
+
+export const handleDeleteNetwork = (network) => (dispatch) => {
+  dispatch(customNetworksDelete(network))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

@@ -216,12 +216,24 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
 
     copyNetworksList.splice(foundNetworkIndex, 1, network)
 
+    console.log('copyNetwork', copyNetworksList)
+
     dispatch(customNetworksListUpdate(copyNetworksList))
   }
 }
 
 export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatch) => {
   dispatch({ type: CUSTOM_NETWORKS_LIST_ADD, network })
+}
+
+export const customNetworksDelete = (network) => (dispatch, getState) => {
+  const state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  const updatedNetworkList = customNetworksList.filter((item) => item.id !== network.id)
+
+  dispatch(customNetworksListUpdate(updatedNetworkList))
 }
 
 export const customNetworksListUpdate = (list) => (dispatch) => {
