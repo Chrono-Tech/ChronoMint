@@ -7,7 +7,11 @@ import BigNumber from 'bignumber.js'
 import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
+import TxExecModel from '../../models/TxExecModel'
+import { TX_TRANSFER } from '../../../dao/EthereumDAO'
+import Amount from '../../../models/Amount'
 
+export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(token)
@@ -21,6 +25,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     // eslint-disable-next-line no-console
     console.log('[ERC20TokenDAO] Connect')
     this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
+    this.web3 = web3
 
     const [
       name,
@@ -191,5 +196,51 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
   handleApprovalError (error) {
     // eslint-disable-next-line no-console
     console.error('[ERC20TokenDAO] Error in Approval event subscription', error)
+  }
+
+  /**
+   * Create a tx execute model
+   * @param from {string} - address from
+   * @param to {string}  - address to
+   * @param amount {Amount} - amount of tokens
+   * @param feeMultiplier {number} - multiplier for gas price
+   * @param advancedOptions {object} - other options, maybe useless
+   * @returns {TxExecModel}
+   */
+  transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
+    const data = this.contract.methods.transfer(to, amount).encodeABI()
+
+    // eslint-disable-next-line
+    console.log('transfer', this.contract)
+    return new TxExecModel({
+      func: 'transfer',
+      args: [to, amount],
+      from,
+      to: this.contract._address,
+      feeMultiplier,
+      value: new BigNumber(0),
+      data,
+      additionalOptions,
+    })
+  }
+
+  estimateGas = async (func, args, value, from, additionalOptions): Object => {
+    const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
+
+    const contract = await this.contract
+    if (!contract.methods.hasOwnProperty(func)) {
+      throw this._error('estimateGas func not found', func)
+    }
+
+    const [gasPrice, gasLimit] = await Promise.all([
+      this.web3.eth.getGasPrice(),
+      contract.methods[func](...args).estimateGas({ from, value, gas: DEFAULT_GAS }),
+    ])
+
+    const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)
+    const gasFeeBN = gasPriceBN.mul(gasLimit)
+    const gasLimitBN = new BigNumber(gasLimit)
+
+    return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 }

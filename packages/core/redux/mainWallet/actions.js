@@ -50,6 +50,8 @@ import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import { ethDAO } from '../../refactor/daos/index'
+import TxExecModel from '../../models/TxExecModel'
+import { sendNewTx } from '../../refactor/redux/transactions/actions'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -290,7 +292,8 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
   try {
     const sendWallet = wallet || getMainWallet(getState())
     const tokenDAO = tokenService.getDAO(token.id())
-    await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, token, feeMultiplier, additionalOptions)
+    const tx: TxExecModel = await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, feeMultiplier, additionalOptions)
+    dispatch(sendNewTx(tx, tokenDAO))
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }

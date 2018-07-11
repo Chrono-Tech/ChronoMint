@@ -11,6 +11,7 @@ import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
+import TxExecModel from '../models/TxExecModel'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
