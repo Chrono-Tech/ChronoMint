@@ -5,7 +5,7 @@
 
 import { Button } from 'components'
 import Immutable from 'immutable'
-import { CircularProgress, FlatButton, FontIcon } from 'material-ui'
+import { CircularProgress, FlatButton, FontIcon } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'

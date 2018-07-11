@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'

@@ -23,7 +23,7 @@ import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import styles from '../styles'
 
 import './ReceiveTokenModal.scss'

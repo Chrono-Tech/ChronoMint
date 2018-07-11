@@ -5,7 +5,7 @@
 
 import Points from 'components/common/Points/Points'
 import Immutable from 'immutable'
-import { FloatingActionButton, FontIcon } from 'material-ui'
+import { FloatingActionButton, FontIcon } from '@material-ui/core'
 import { Button } from 'components'
 import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'

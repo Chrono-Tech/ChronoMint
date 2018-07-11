@@ -8,7 +8,8 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Link } from 'react-router'
-
+import { withStyles } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
 import { Button } from 'components'
 import { TextField } from 'redux-form-material-ui'
 import LogoChronobankFull from 'assets/img/logo-chrono-bank-full.svg'
@@ -27,13 +28,13 @@ import styles from './styles'
 
 const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
 
-@reduxForm({ form: FORM_FOOTER_EMAIL_SUBSCRIPTION })
-export default class Footer extends Component {
+class Footer extends Component {
   static propTypes = {
     children: PropTypes.node,
   }
 
   render () {
+   const { classes } = this.props;
     return (
       <div styleName='footer'>
         <div styleName='footer-container'>
@@ -151,9 +152,11 @@ export default class Footer extends Component {
               <Field
                 component={TextField}
                 name='email'
-                floatingLabelText='Enter email to subscribe for newsletter'
+                label='Enter email to subscribe for newsletter'
                 fullWidth
-                {...styles.textField}
+	        InputProps={{ className: classes.input }}
+                InputLabelProps={{ className: classes.label }}
+                style={{ className: classes.hint }}
               />
             </div>
             <div styleName='subscription-button'>
@@ -177,3 +180,5 @@ export default class Footer extends Component {
     )
   }
 }
+const form = reduxForm({ form: FORM_FOOTER_EMAIL_SUBSCRIPTION })(Footer)
+export default withStyles(styles)(form)

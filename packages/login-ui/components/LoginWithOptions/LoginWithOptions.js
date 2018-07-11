@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { connect } from 'react-redux'
@@ -12,6 +12,9 @@ import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 
 import {
+  navigateToTrezorImportMethod,
+  navigateToLedgerImportMethod,
+  navigateToPluginImportMethod,
   navigateToMnemonicImportMethod,
   navigateToPrivateKeyImportMethod,
   navigateToCreateAccount,
@@ -33,6 +36,9 @@ import './LoginWithOptions.scss'
 
 function mapDispatchToProps (dispatch) {
   return {
+    navigateToTrezorImportMethod: () => dispatch(navigateToTrezorImportMethod()),
+    navigateToLedgerImportMethod: () => dispatch(navigateToLedgerImportMethod()),
+    navigateToPluginImportMethod: () => dispatch(navigateToPluginImportMethod()),
     navigateToMnemonicImportMethod: () => dispatch(navigateToMnemonicImportMethod()),
     navigateToPrivateKeyImportMethod: () => dispatch(navigateToPrivateKeyImportMethod()),
     navigateToCreateAccount: () => dispatch(navigateToCreateAccount()),
@@ -45,6 +51,9 @@ function mapDispatchToProps (dispatch) {
 @connect(null, mapDispatchToProps)
 export default class ImportMethodsPage extends PureComponent {
   static propTypes = {
+    navigateToTrezorImportMethod: PropTypes.func,
+    navigateToLedgerImportMethod: PropTypes.func,
+    navigateToPluginImportMethod: PropTypes.func,
     navigateToMnemonicImportMethod: PropTypes.func,
     navigateToPrivateKeyImportMethod: PropTypes.func,
     initImportMethodsPage: PropTypes.func,
@@ -55,6 +64,12 @@ export default class ImportMethodsPage extends PureComponent {
   componentWillMount(){
     this.props.initImportMethodsPage()
   }
+
+  handleTrezorLogin = () => this.props.navigateToTrezorImportMethod()
+
+  handleLedgerLogin = () => this.props.navigateToLedgerImportMethod()
+
+  handlePluginLogin = () => this.props.navigateToPluginImportMethod()
 
   handleMnemonicLogin = () => this.props.navigateToMnemonicImportMethod()
 
@@ -74,19 +89,19 @@ export default class ImportMethodsPage extends PureComponent {
           </div>
 
           <div styleName='methods'>
-            <Button styleName='button button-trezor' disabled>
+            <Button styleName='button button-trezor' onClick={this.handleTrezorLogin}>
               <img src={Trezor} alt='' />
               <br />
               Trezor
             </Button>
 
-            <Button styleName='button button-ledger' disabled>
+            <Button styleName='button button-ledger' onClick={this.handleLedgerLogin}>
               <img src={Ledger} alt='' />
               <br />
               LedgerNano
             </Button>
 
-            <Button styleName='button button-plugin' disabled>
+            <Button styleName='button button-plugin' onClick={this.handlePluginLogin}>
               <img src={Plugin} alt='' />
               <br />
               Browser Plugin

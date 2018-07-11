@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'

@@ -11,6 +11,7 @@ import {
   NotFoundPage,
   LoginForm,
   CreateAccount,
+  CreateHWAccount,
   AccountSelector,
   RecoverAccount,
   ResetPassword,
@@ -20,6 +21,9 @@ import {
   GenerateWallet,
   LoginWithWallet,
   LoginWithMnemonic,
+  LoginWithTrezor,
+  LoginWithLedger,
+  LoginWithPlugin,
   LoginWithPrivateKey,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
@@ -101,8 +105,12 @@ const router = (
         <Route path='/login/mnemonic' component={GenerateMnemonic} />
         <Route path='/login/download-wallet' component={GenerateWallet} />
         <Route path='/login/upload-wallet' component={LoginWithWallet} />
+        <Route path='/login/trezor-login' component={LoginWithTrezor} />
+        <Route path='/login/ledger-login' component={LoginWithLedger} />
+        <Route path='/login/plugin-login' component={LoginWithPlugin} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+        <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

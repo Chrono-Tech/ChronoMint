@@ -10,7 +10,7 @@ import AssetManagerDialog from 'components/assetsManager/AssetManagerDialog/Asse
 import CrowdsaleDialog from 'components/assetsManager/CrowdsaleDialog/CrowdsaleDialog'
 import RevokeDialog from 'components/assetsManager/RevokeDialog/RevokeDialog'
 import Preloader from 'components/common/Preloader/Preloader'
-import { RaisedButton } from 'material-ui'
+import { RaisedButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

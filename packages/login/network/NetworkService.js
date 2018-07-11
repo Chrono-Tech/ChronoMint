@@ -65,6 +65,8 @@ class NetworkService extends EventEmitter {
     //if (!accounts.includes(account)) {
     //  throw new Error('Account not registered')
     //}
+    console.log(account)
+    console.log(provider)
 
     web3Provider.resolve()
 

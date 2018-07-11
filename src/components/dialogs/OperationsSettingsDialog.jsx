@@ -4,7 +4,7 @@
  */
 
 import { Field, formPropTypes, reduxForm } from 'redux-form/immutable'
-import { FlatButton } from 'material-ui'
+import { FlatButton } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'

@@ -91,6 +91,11 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
 }
 
+export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_ACCOUNTS, address: address })
+  dispatch(navigateToCreateHWAccount())
+}
+
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
   const state = getState()
 
@@ -151,6 +156,42 @@ export const generateNewMnemonic = () => (dispatch) => {
 
 export const resetImportAccountMode = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
+}
+
+export const onSubmitCreateHWAccountPage = (walletName) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get('network')
+  const { walletsList } = state.get('persistAccount')
+
+  const validateName = dispatch(validateAccountName(walletName))
+
+  if (!validateName){
+    throw new SubmissionError({ walletName: 'Wrong wallet name' })
+  }
+
+  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletName })
+
+  if (importAccountMode){
+    try {
+      let wallet = await dispatch(createHWAccount({
+        name: walletName,
+        pupblicKey: newAccountPrivateKey,
+        numberOfAccounts: 0,
+      }))
+
+      dispatch(accountAdd(wallet))
+
+      dispatch(accountSelect(wallet))
+
+      dispatch(resetImportAccountMode())
+
+    } catch(e){
+      throw new SubmissionError({ _error: e && e.message })
+    }
+
+    return
+  }
 }
 
 export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
@@ -259,8 +300,25 @@ export const navigateToCreateAccount = () => (dispatch) => {
   dispatch(push('/login/create-account'))
 }
 
+export const navigateToCreateHWAccount = () => (dispatch) => {
+  dispatch(push('/login/create-hw-account'))
+}
+
+
 export const navigateToSelectImportMethod = () => (dispatch) => {
   dispatch(push('/login/import-methods'))
+}
+
+export const navigateToTrezorImportMethod = () => (dispatch) => {
+  dispatch(push('/login/trezor-login'))
+}
+
+export const navigateToLedgerImportMethod = () => (dispatch) => {
+  dispatch(push('/login/ledger-login'))
+}
+
+export const navigateToPluginImportMethod = () => (dispatch) => {
+  dispatch(push('/login/plugin-login'))
 }
 
 export const navigateToMnemonicImportMethod = () => (dispatch) => {
@@ -293,6 +351,11 @@ export const navigateToGenerateMnemonicPage = () => (dispatch) => {
 
 export const navigateToWalletUploadMethod = () => (dispatch) => {
   dispatch(push('/login/upload-wallet'))
+}
+
+export const handleLoginTrezorAccountClick = (address) => (dispatch) => {
+  console.log(address)
+  dispatch(navigateToCreateAccountFromHW(address))
 }
 
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {

@@ -32,13 +32,13 @@ const commonInputStyles = {
 const styles = {
   theme: stylesConfig.theme,
   colors: stylesConfig.colors,
-  selectField: {
+  selectfield: {
     ...commonInputStyles,
     iconStyle: {
       paddingRight: 0,
       right: -10,
     },
-    labelStyle: {
+    label: {
       color: stylesConfig.colors.colorWhite,
     },
     selectedMenuItemStyle: {

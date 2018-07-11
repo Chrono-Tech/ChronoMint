@@ -7,6 +7,7 @@ import uuid from 'uuid/v1'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
+//import Wallets from '../wallets'
 import {
   AccountEntryModel,
   AccountProfileModel,
@@ -117,10 +118,33 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
 
-  let host = networkService.getProviderSettings().url
+  const accounts = new Accounts()
+  accounts.wallet.clear()
 
-  const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  wallet = await accounts.wallet.create(numberOfAccounts)
+  const account = accounts.privateKeyToAccount(`0x${hex}`)
+  wallet.add(account)
+
+  const entry = new AccountEntryModel({
+    key: uuid(),
+    name,
+    types,
+    encrypted: wallet && wallet.encrypt(password),
+    profile: null,
+  })
+
+  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+
+  return newAccounts[0] || entry
+
+}
+
+export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
+  const state = getState()
+
+  let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
+
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   wallet = await accounts.wallet.create(numberOfAccounts)

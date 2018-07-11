@@ -12,7 +12,7 @@ import {
   getNetworkWithProviderNames,
   getProviderById,
 } from '@chronobank/login/network/settings'
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

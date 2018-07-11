@@ -4,7 +4,7 @@
  */
 
 import { Field, reduxForm } from 'redux-form/immutable'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import { Button } from 'components'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'

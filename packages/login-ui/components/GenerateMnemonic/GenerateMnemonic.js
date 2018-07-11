@@ -6,7 +6,7 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { Component } from 'react'
 import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 import PrintIcon from 'assets/img/icons/print-white.svg'
