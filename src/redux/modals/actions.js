@@ -3,6 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import ConfirmTxDialogNew from '../../components/dialogs/ConfirmTxDialogNew/ConfirmTxDialog'
+
 export const MODALS_PUSH = 'modals/PUSH'
 export const MODALS_REPLACE = 'modals/REPLACE'
 export const MODALS_POP = 'modals/POP'
@@ -21,3 +23,5 @@ export const modalsClear = () => (dispatch) => dispatch({ type: MODALS_CLEAR })
 export const modalsClose = modalsPop
 export const modalsOpen = modalsPush
 export const modalsShow = modalsPush
+
+export const modalsPushConfirmDialog = ({ props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component: ConfirmTxDialogNew, props })

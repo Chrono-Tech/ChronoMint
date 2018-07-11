@@ -159,8 +159,10 @@ export class EthereumDAO extends AbstractTokenDAO {
   async transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): Promise {
     const value = new BigNumber(amount)
     return new TxExecModel({
+      blockchain: this._contractName,
+      symbol: this._symbol,
       from,
-      args: { to, value },
+      args: [to, value],
       value,
       to,
       feeMultiplier,

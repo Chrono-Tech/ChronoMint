@@ -1,0 +1,124 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import '~styles/partials/mixins';
+@import '~styles/partials/variables';
+@import '~material-colors-scss/function';
+
+.root {
+  max-width: 700px;
+  min-width: 350px;
+  background-color: $color-white;
+  padding: 30px;
+
+  p {
+    line-height: 1.4em;
+  }
+}
+
+.header {
+  background-color: $color-primary-1;
+  padding: 20px 30px;
+}
+
+.headerHead {
+  display: block;
+  margin: 0;
+  padding: 0;
+  font-size: 34px;
+  font-weight: 300;
+  color: $color-white;
+}
+
+.content {
+  color: $color-primary-0;
+}
+
+.footer {
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.action {
+  margin: 0 0 0 10px;
+}
+
+.error {
+  background-color: #{material-color('red', '200')};
+  border-radius: 3px;
+  padding: 10px;
+  margin-top: 10px;
+  color: black;
+  text-align: center;
+}
+
+:global(.TokenValue__root) {
+  font-size: 18px;
+}
+
+.errorMessage {
+  padding: 10px 24px;
+  color: $color-error;
+}
+
+.gasSliderWrap {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 0;
+  font-size: 13px;
+  opacity: 1;
+  @include sm-only {
+    width: 60%;
+  }
+  @include xs-only {
+    width: 100%;
+  }
+  :global {
+    .GasSlider__root {
+      padding: 0;
+    }
+    .GasSlider__tagsWrap {
+      color: $color-primary-0;
+    }
+  }
+}
+
+.paramsList {
+  .param {
+    padding-bottom: 30px;
+    .label {
+      text-transform: capitalize;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 19px;
+      padding-bottom: 5px;
+    }
+    .value {
+      font-size: 16px;
+      line-height: 19px;
+      :global {
+        .Preloader__root {
+          display: flex;
+          justify-content: flex-start;
+        }
+      }
+      &.big {
+        :global {
+          .TokenValue__root {
+            color: $color-blue-4;
+            font-size: 30px;
+            line-height: 36px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+    .price {
+      color: $color-primary-0;
+      font-weight: 500;
+      font-size: 16px;
+    }
+  }
+}

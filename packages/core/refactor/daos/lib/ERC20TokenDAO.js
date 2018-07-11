@@ -43,6 +43,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       address: this.token.address(),
       symbol,
       decimals,
+      blockchain: 'Ethereum',
     })
 
     this.transferEmitter = this.contract.events.Transfer({})
@@ -214,6 +215,8 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     console.log('transfer', this.contract)
     return new TxExecModel({
       func: 'transfer',
+      blockchain: this.token.symbol(),
+      symbol: this.token.blockchain(),
       args: [to, amount],
       from,
       to: this.contract._address,

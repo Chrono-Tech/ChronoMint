@@ -4,6 +4,7 @@
  */
 
 import Tx from 'ethereumjs-tx'
+import { modalsPushConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import TxExecModel from '../../models/TxExecModel'
 
@@ -22,7 +23,13 @@ export const sendNewTx = (tx, dao) => async (dispatch) => {
   })
 
   dispatch({ type: TRANSACTIONS_NEW, tx: pricedTx })
-  dispatch(acceptConfirm(pricedTx))
+  dispatch(modalsPushConfirmDialog({
+    props: {
+      tx: pricedTx,
+      confirm: acceptConfirm,
+      reject: rejectConfirm,
+    },
+  }))
 }
 
 export const acceptConfirm = (tx) => (dispatch) => {
