@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import { push } from '@chronobank/core-dependencies/router'
 import Amount from '../../models/Amount'
 import { ETH } from '../../redux/mainWallet/actions'
@@ -58,18 +59,22 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
 }
 
-export const updateVoteLimit = () => async (dispatch) => {
-  const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
+export const updateVoteLimit = () => async (dispatch, getState) => {
+  // const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
+  const votingDAO = daoByType('VotingManager')(getState())
   const [voteLimitInTIME, voteLimitInPercent] = await Promise.all([
     votingDAO.getVoteLimit(),
     votingDAO.getVoteLimitInPercent(),
   ])
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: voteLimitInPercent.div(100) })
+  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: new BigNumber(voteLimitInPercent).div(100) })
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
   const callback = (notice) => dispatch(watchPoll(notice))
   const { account } = getState().get(DUCK_SESSION)
+  const votingManagerDAO = daoByType('VotingManager')(getState())
+  votingService
+    .setVotingManager(votingManagerDAO)
   votingService
     .subscribeToVoting(account)
 

@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import PollEmitter, { EVENT_POLL_ACTIVATED, EVENT_POLL_ENDED, EVENT_POLL_VOTED } from '../dao/PollEmitterDAO'
-import VotingManagerDAO, { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../dao/VotingManagerDAO'
+import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED } from '../dao/VotingManagerDAO'
 
 class VotingService extends EventEmitter {
 
@@ -21,9 +21,13 @@ class VotingService extends EventEmitter {
     return this._cache[ address ]
   }
 
+  setVotingManager (VotingManagerDAO) {
+    this._cache['VotingManager'] = VotingManagerDAO
+  }
+
   getVotingManager () {
     if (!this._cache[ 'VotingManager' ]) {
-      this._cache[ 'VotingManager' ] = new VotingManagerDAO()
+      throw Error('VotingManagerDAO is not found')
     }
     return this._cache[ 'VotingManager' ]
   }
