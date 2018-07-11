@@ -5,7 +5,6 @@
 
 import BigNumber from 'bignumber.js'
 import AbstractTokenDAO from './AbstractTokenDAO'
-import { TokenModel } from '../../models/index'
 import ethDAO from './ETHDAO'
 
 export default class ETHTokenDAO extends AbstractTokenDAO {

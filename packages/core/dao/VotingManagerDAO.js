@@ -81,6 +81,7 @@ export default class VotingManagerDAO  {
 
   postStoreDispatchSetup (state, web3, history) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
+    console.log('postStoreDispatchSetup: ', state, assetHolderDAO)
     const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
@@ -132,10 +133,16 @@ export default class VotingManagerDAO  {
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
-      const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses)
+      const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses).call()
+
+      console.log('pollsDetails: ', pollsDetails, this.assetHolderDAO)
 
       const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
       const shareholdersCount = await this.assetHolderDAO.shareholdersCount()
+
+      console.log('owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates: ', shareholdersCount, owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates)
+
+
 
       let promises = []
       for (let i = 0; i < pollsAddresses.length; i++) {
@@ -199,7 +206,7 @@ export default class VotingManagerDAO  {
       result = await Promise.all(promises)
     } catch (e) {
       // eslint-disable-next-line
-      console.error(e.message)
+      console.error('getPollsDetails error: ' + e.message)
     }
 
     let collection = new VotingCollection()

@@ -35,6 +35,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const contracts = [
     ASSET_MANAGER_LIBRARY,
     ASSET_HOLDER_LIBRARY,
+    // ASSET_DONATOR_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
   ]

@@ -8,7 +8,6 @@ import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
 import TxExecModel from '../../models/TxExecModel'
-import { TX_TRANSFER } from '../../../dao/EthereumDAO'
 import Amount from '../../../models/Amount'
 
 export const DEFAULT_GAS = 4700000
@@ -78,30 +77,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
   async getDecimals (): Promise<Number> {
     const response = await this.contract.methods.decimals().call()
     return Number(response.toString())
-  }
-
-  get isConnected () {
-    return this.contract != null // nil check
-  }
-
-  get isDepositSupported () {
-    return false
-  }
-
-  get isWithdrawSupported () {
-    return false
-  }
-
-  get isTradeSupported () {
-    return true
-  }
-
-  get isTransferSupported () {
-    return true
-  }
-
-  get isApproveSupported () {
-    return true
   }
 
   /**
