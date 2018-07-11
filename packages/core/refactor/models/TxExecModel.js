@@ -10,17 +10,15 @@ import AbstractModel from './AbstractModel'
 const schemaFactory = () => ({
   contract: PropTypes.string,
   func: PropTypes.string,
-  args: PropTypes.object,
+  args: PropTypes.array,
   value: PropTypes.instanceOf(BigNumber),
   gas: PropTypes.instanceOf(BigNumber),
-  isGasUsed: PropTypes.bool,
-  estimateGasLaxity: PropTypes.instanceOf(BigNumber),
   hash: PropTypes.string,
-  params: PropTypes.object,
   gasLimit: PropTypes.instanceOf(BigNumber),
   gasPrice: PropTypes.instanceOf(BigNumber),
-  options: PropTypes.object,
   data: PropTypes.string,
+  to: PropTypes.string,
+  feeMultiplier: PropTypes.number,
 })
 
 export default class TxExecModel extends AbstractModel {
@@ -28,13 +26,5 @@ export default class TxExecModel extends AbstractModel {
     super(props, schemaFactory())
     Object.assign(this, props)
     Object.freeze(this)
-  }
-
-  get from () {
-    return this.args.from
-  }
-
-  get to () {
-    return this.args.to
   }
 }

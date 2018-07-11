@@ -25,6 +25,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     // eslint-disable-next-line no-console
     console.log('[ERC20TokenDAO] Connect')
     this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
+    this.web3 = web3
 
     const [
       name,
@@ -206,38 +207,40 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @param advancedOptions {object} - other options, maybe useless
    * @returns {TxExecModel}
    */
-  transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): TxExecModel {
+  transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
     const data = this.contract.methods.transfer(to, amount).encodeABI()
-    const advancedParams = advancedOptions && typeof advancedOptions === 'object' ? advancedOptions : {}
-    advancedParams.feeMultiplier = feeMultiplier
 
-    return {
+    // eslint-disable-next-line
+    console.log('transfer', this.contract)
+    return new TxExecModel({
       func: 'transfer',
-      args: [],
+      args: [to, amount],
       from,
-      to,
+      to: this.contract._address,
       feeMultiplier,
       value: new BigNumber(0),
       data,
-    }
+      additionalOptions,
+    })
   }
 
-  getEstimateGasParams = async (tx): number | Object => {
-    return { to: tx.to, value: tx.value }
-    // TODO @abdulov change the method
-    // const { func, args = [], value = null, from } = tx
-    //
-    // const deployed = await this.contract
-    // if (!deployed.hasOwnProperty(func)) {
-    //   throw this._error('estimateGas func not found', func)
-    // }
-    //
-    // const estimatedGas = deployed[func].estimateGas(...args, {
-    //   from,
-    //   value,
-    //   gas: DEFAULT_GAS,
-    // })
-    // return estimatedGas
+  estimateGas = async (func, args, value, from, additionalOptions): Object => {
+    const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
 
+    const contract = await this.contract
+    if (!contract.methods.hasOwnProperty(func)) {
+      throw this._error('estimateGas func not found', func)
+    }
+
+    const [gasPrice, gasLimit] = await Promise.all([
+      this.web3.eth.getGasPrice(),
+      contract.methods[func](...args).estimateGas({ from, value, gas: DEFAULT_GAS }),
+    ])
+
+    const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)
+    const gasFeeBN = gasPriceBN.mul(gasLimit)
+    const gasLimitBN = new BigNumber(gasLimit)
+
+    return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 }

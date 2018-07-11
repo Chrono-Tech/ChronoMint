@@ -3,33 +3,26 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import BigNumber from 'bignumber.js'
 import Tx from 'ethereumjs-tx'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import TxExecModel from '../../models/TxExecModel'
 
 export const DUCK_TRANSACTIONS = 'transactions'
 export const TRANSACTIONS_NEW = 'transactions/new'
 export const TRANSACTIONS_REMOVE = 'transactions/remove'
 
-export const sendNewtx = (tx, dao) => async (dispatch, getState) => {
-  const web3 = getState().get('web3')
+export const sendNewTx = (tx, dao) => async (dispatch) => {
+  const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(tx.func, tx.args, tx.value, tx.from)
 
-  const params = dao.getEstimateGasParams(tx)
-
-  const [gasPrice, gasLimit] = await Promise.all([web3.eth.getGasPrice(), web3.eth.estimateGas(params)])
-
-  const gasPriceBN = new BigNumber(gasPrice * tx.feeMultiplier)
-  const gasFee = gasPriceBN.mul(gasLimit)
-
-  tx = {
+  const pricedTx = new TxExecModel({
     ...tx,
     gasLimit,
     gasFee,
-    gasPrice: gasPriceBN,
-  }
+    gasPrice,
+  })
 
-  dispatch({ type: TRANSACTIONS_NEW, tx })
-  dispatch(acceptConfirm(tx))
+  dispatch({ type: TRANSACTIONS_NEW, tx: pricedTx })
+  dispatch(acceptConfirm(pricedTx))
 }
 
 export const acceptConfirm = (tx) => (dispatch) => {
@@ -52,10 +45,10 @@ export const signTx = (execTx) => async (dispatch, getState) => {
   const nonce = await web3.eth.getTransactionCount(execTx.from)
 
   const txData = {
-    data: execTx.data,
+    data: execTx.data || '',
     nonce: web3.utils.toHex(nonce),
-    gasLimit: web3.utils.toHex(execTx.gasLimit || 25000), // TODO @abdulov remove hard code
-    gasPrice: web3.utils.toHex(execTx.gasPrice || 10e9), // 10 Gwei
+    gasLimit: web3.utils.toHex(execTx.gasLimit),
+    gasPrice: web3.utils.toHex(execTx.gasPrice),
     to: execTx.to,
     from: execTx.from,
     value: web3.utils.toHex(execTx.value.toString()),

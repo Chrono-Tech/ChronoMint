@@ -3,6 +3,4 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import transactions from './reducer'
-
-export { transactions }
+export transactions from './reducer'
