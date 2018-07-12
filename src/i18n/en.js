@@ -247,8 +247,9 @@ export default {
     noTransactions: 'No transactions',
     confirm: 'Confirm Transaction',
     fee: 'Fee',
-    balanceAfter: 'Balance after',
+    balanceAfter: '%{symbol} balance after',
     feeLeft: 'Transaction fee left',
+    notEnough: 'Not enough %{symbol}',
     TokenManagementInterface: {
       createAssetWithoutFee: {
         title: 'Confirm create token',
@@ -308,6 +309,7 @@ export default {
     Ethereum: {
       [eth.TX_TRANSFER]: {
         title: 'Transfer ETH',
+        to: 'Address to',
       },
     },
     /* eslint-disable global-require */
@@ -449,6 +451,7 @@ export default {
         title: 'Transfer tokens',
         account: 'Account',
         amount: 'Amount',
+        to: 'Address to',
       },
     },
     ExchangeManager: {

@@ -24,4 +24,4 @@ export const modalsClose = modalsPop
 export const modalsOpen = modalsPush
 export const modalsShow = modalsPush
 
-export const modalsPushConfirmDialog = ({ props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component: ConfirmTxDialogNew, props })
+export const modalsOpenConfirmDialog = ({ props }) => (dispatch) => dispatch({ type: MODALS_PUSH, component: ConfirmTxDialogNew, props })

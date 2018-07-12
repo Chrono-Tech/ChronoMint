@@ -14,21 +14,21 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { ETH } from '@chronobank/core/redux/mainWallet/actions'
 import { modalsClear, modalsClose } from 'redux/modals/actions'
 import { WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
-import GasSlider from 'components/common/GasSlider/GasSlider'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenPrice from 'components/common/TokenPrice/TokenPrice'
-import { getDataForConfirm } from '@chronobank/core/refactor/redux/transactions'
+import { getDataForConfirm } from '@chronobank/core/refactor/redux/transactions/selectors/selectors'
+import TxExecModel from '@chronobank/core/refactor/models/TxExecModel'
 
 import './ConfirmTxDialog.scss'
 
 const makeMapStateToProps = (state, ownProps) => {
   const { tx } = ownProps
-  return (ownState, ownProps) => {
+  const getData = getDataForConfirm(tx)
+  return (ownState) => {
     return ({
-      data: getDataForConfirm(tx)(state),
+      ...getData(ownState),
     })
   }
 }
@@ -44,68 +44,69 @@ function mapDispatchToProps (dispatch) {
 @connect(makeMapStateToProps, mapDispatchToProps)
 export default class ConfirmTxDialogNew extends PureComponent {
   static propTypes = {
+    amountBalanceAfter: PropTypes.instanceOf(Amount),
+    feeBalanceAfter: PropTypes.instanceOf(Amount),
+    mainSymbol: PropTypes.string,
     confirm: PropTypes.func.isRequired,
     reject: PropTypes.func.isRequired,
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
-    tx: PropTypes.object,
+    tx: PropTypes.instanceOf(TxExecModel),
     feeMultiplier: PropTypes.number,
   }
 
-  componentDidMount () {
-    this.handleRepeatAction()
-  }
-
   handleConfirm = () => {
-    this.props.modalsClear()
-    this.props.callback(true, this.props.tx)
+    // this.props.modalsClear()
+    // eslint-disable-next-line
+    console.log('handleConfirm', this.props.confirm)
+    this.props.confirm(this.props.tx)
   }
 
   handleClose = () => {
-    this.props.modalsClose()
-    this.props.callback(false, this.props.tx)
+    // this.props.modalsClose()
+    this.props.reject(false, this.props.tx)
   }
 
-  getKeyValueRows (args, tokenBase) {
-    return Object.keys(args).map((key) => {
-      const arg = args[key]
+  getKeyValueRows (fields) {
+    return Object.entries(fields).map(([key, field]) => {
 
-      if (key === 'value') {
+      if (key === 'value' || key === 'amount') {//TODO @Abdulov remove checking value
         return (
           <div styleName='param' key={key}>
-            <div styleName={classnames('value', { 'big': key === 'value' })}>
-              <Value value={arg} params={{ noRenderPrice: true }} />
+            <div styleName='value big'>
+              <Value value={field.value} params={{ noRenderPrice: true }} />
             </div>
-            <div styleName='price'>USD <TokenPrice value={new Amount(arg, ETH)} isRemoveDecimals /></div>
+            <div styleName='price'>USD <TokenPrice value={field.value} isRemoveDecimals /></div>
           </div>
         )
       }
 
       let value
-      if (arg === null || arg === undefined) return
+      const fieldValue = field.value
+      if (fieldValue === null || fieldValue === undefined) return
       // parse value
-      switch (arg.constructor.name) {
+      switch (fieldValue.constructor.name) {
         case 'Amount':
         case 'BigNumber':
-          value = <Value value={arg} />
+          value = <Value value={fieldValue} />
           break
         case 'Object':
-          if (React.isValidElement(arg)) {
-            value = arg
-          } else if (arg.isFetching && arg.isFetching()) {
+          if (React.isValidElement(fieldValue)) {
+            value = fieldValue
+          } else if (fieldValue.isFetching && fieldValue.isFetching()) {
             value = <Preloader />
           } else {
-            return this.getKeyValueRows(arg, tokenBase)
+            return this.getKeyValueRows(fieldValue)
           }
           break
         default:
-          value = <Value value={arg} />
+          value = <Value value={fieldValue} />
       }
 
       return (
         <div styleName='param' key={key}>
           <div styleName='label'>
-            <Translate value={tokenBase + key} />
+            <Translate value={`${this.props.tx.langPrefix}${field.description}`} />
           </div>
           <div styleName={classnames('value', { 'big': key === 'value' })}>
             {value}
@@ -116,68 +117,52 @@ export default class ConfirmTxDialogNew extends PureComponent {
   }
 
   render () {
-    // const { tx, balance, gasPriceMultiplier } = this.props
-    // eslint-disable-next-line
-    console.log('render', this.props)
+    const { tx, amountBalanceAfter, feeBalanceAfter, fields, mainSymbol } = this.props
 
-    return null
     return (
-      <ModalDialog hideCloseIcon title={<Translate value={tx.func()} />}>
+      <ModalDialog hideCloseIcon title={<Translate value={tx.funcTitle()} />}>
         <div styleName='root'>
           <div styleName='content'>
             <div styleName='paramsList'>
-              {this.getKeyValueRows(tx.args(), tx.i18nFunc())}
 
-              {additionalAction && additionalAction.isFetched() && this.getKeyValueRows(additionalAction.value(), tx.i18nFunc())}
+              {this.getKeyValueRows(fields, tx.i18nFunc())}
 
               <div styleName='param'>
                 <div styleName='label'>
                   <Translate value='tx.fee' />
                 </div>
                 <div styleName='value'>
-                  {gasFee.gt(0)
-                    ? <TokenValue value={new Amount(gasFee, ETH)} />
-                    : <Preloader size={16} thickness={1.5} />
-                  }
+                  <TokenValue value={tx.fee.gasFee} />
                 </div>
               </div>
+              {mainSymbol !== tx.symbol && (
+                <div styleName='param'>
+                  <div styleName='label'>
+                    <Translate value='tx.balanceAfter' symbol={tx.symbol} />
+                  </div>
+                  <div styleName='value'>
+                    <TokenValue value={amountBalanceAfter} />
+                  </div>
+                </div>
+              )}
               <div styleName='param'>
                 <div styleName='label'>
-                  <Translate value='tx.balanceAfter' />
+                  <Translate value='tx.balanceAfter' symbol={mainSymbol} />
                 </div>
                 <div styleName='value'>
-                  {gasFee.gt(0)
-                    ? <TokenValue value={new Amount(balanceAfter, ETH)} />
-                    : <Preloader size={16} thickness={1.5} />
-                  }
+                  <TokenValue value={feeBalanceAfter} />
                 </div>
               </div>
             </div>
-            {balanceAfter.lt(0) && <div styleName='error'>Not enough ETH</div>}
 
-            {additionalActionIsFailed && <div styleName='errorMessage'><Translate value={additionalAction.errorMessage()} /></div>}
-
-            {!tx.isSkipSlider() &&
-            <div styleName='gasSliderWrap'>
-              <GasSlider
-                isLocal
-                disabled={additionalActionIsFailed || !additionalActionIsFetched}
-                hideTitle
-                initialValue={gasPriceMultiplier}
-                onDragStop={this.handleChangeGasPrice}
-              />
-            </div>}
+            {feeBalanceAfter.lt(0) && (
+              <div styleName='error'>
+                <Translate value='tx.notEnough' symbol={mainSymbol} />
+              </div>
+            )}
 
           </div>
           <div styleName='footer'>
-            {additionalActionIsFailed &&
-            <Button
-              flat
-              styleName='action'
-              label={<Translate value={additionalAction.repeatButtonName()} />}
-              onClick={this.handleRepeatAction}
-            />
-            }
             <Button
               flat
               styleName='action'
@@ -187,7 +172,7 @@ export default class ConfirmTxDialogNew extends PureComponent {
             <Button
               styleName='action'
               label={<Translate value='terms.confirm' />}
-              disabled={gasFee.lte(0) || balanceAfter.lt(0) || balance.lt(0) || additionalActionIsFailed}
+              disabled={amountBalanceAfter.lte(0) || feeBalanceAfter.lt(0)}
               onClick={this.handleConfirm}
             />
           </div>
