@@ -81,7 +81,6 @@ export default class VotingManagerDAO  {
 
   postStoreDispatchSetup (state, web3, history) {
     const assetHolderDAO = daoByType('TimeHolder')(state)
-    console.log('postStoreDispatchSetup: ', state, assetHolderDAO)
     const pollsInterfaceManagerDAO = new PollInterfaceManagerDAO({ web3, history })
     this.setPollInterfaceManagerDAO(pollsInterfaceManagerDAO)
     this.setAssetHolderDAO(assetHolderDAO)
@@ -135,14 +134,14 @@ export default class VotingManagerDAO  {
     try {
       const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses).call()
 
-      console.log('pollsDetails: ', pollsDetails, this.assetHolderDAO)
-
-      const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
+      const owners = pollsDetails[0]
+      const bytesHashes = pollsDetails[1]
+      const voteLimits = pollsDetails[2]
+      const deadlines = pollsDetails[3]
+      const statuses = pollsDetails[4]
+      const activeStatuses = pollsDetails[5]
+      const publishedDates = pollsDetails[6]
       const shareholdersCount = await this.assetHolderDAO.shareholdersCount()
-
-      console.log('owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates: ', shareholdersCount, owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates)
-
-
 
       let promises = []
       for (let i = 0; i < pollsAddresses.length; i++) {
@@ -158,6 +157,7 @@ export default class VotingManagerDAO  {
             }
 
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
+            console.log('pollInterface: ', pollInterface)
             const [ votes, hasMember, memberOption ] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
@@ -196,6 +196,7 @@ export default class VotingManagerDAO  {
               .isFetched(true))
 
           } catch (e) {
+            console.log('PollDetailsModel error: ', e)
             // eslint-disable-next-line
             console.error(e.message)
             resolve(null) // return null

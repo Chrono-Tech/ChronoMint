@@ -16,8 +16,12 @@ export const TX_REMOVE_POLL = 'killPoll'
 export const TX_END_POLL = 'endPoll'
 
 export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
-  constructor (at) {
-    super(PollInterfaceABI, at, MultiEventsHistoryABI)
+  constructor ({ web3, history }) {
+    super()
+    this.history = history
+    this.web3 = web3
+    // eslint-disable-next-line no-console
+    console.log('[PollInterfaceManagerDAO] Created')
   }
 
   hasMember (address: string): boolean {

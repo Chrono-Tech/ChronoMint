@@ -4,11 +4,11 @@
  */
 
 import EventEmitter from 'events'
+import BigNumber from 'bignumber.js'
 import web3Converter from '../../../utils/Web3Converter'
-import TxExecModel from "../../models/TxExecModel";
-import {DEFAULT_GAS} from "./ERC20TokenDAO";
-import BigNumber from "bignumber.js/bignumber";
-import Amount from "../../../models/Amount";
+import TxExecModel from '../../models/TxExecModel'
+import { DEFAULT_GAS } from './ERC20TokenDAO'
+import Amount from '../../../models/Amount'
 
 export default class AbstractContractDAO extends EventEmitter {
   /**

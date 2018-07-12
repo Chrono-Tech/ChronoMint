@@ -66,8 +66,8 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const state = getState()
   // post registration setup
   for (const model of models) {
-    if (typeof model.postStoreDispatchSetup === 'function') {
-      model.postStoreDispatchSetup(state, web3, history)
+    if (typeof model.dao.postStoreDispatchSetup === 'function') {
+      model.dao.postStoreDispatchSetup(state, web3, history)
     }
   }
 
