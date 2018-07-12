@@ -6,55 +6,76 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
-import { TIME } from '../redux/mainWallet/actions'
-import { MultiEventsHistoryABI, PollInterfaceABI } from './abi'
-import AbstractMultisigContractDAO from './AbstractMultisigContractDAO'
+import { PollInterfaceABI } from '../../core/dao/abi'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const TX_ACTIVATE_POLL = 'activatePoll'
 export const TX_VOTE = 'vote'
 export const TX_REMOVE_POLL = 'killPoll'
 export const TX_END_POLL = 'endPoll'
 
-export default class PollInterfaceDAO extends AbstractMultisigContractDAO {
-  constructor ({ web3, history }) {
-    super()
+export default class PollInterfaceDAO  {
+  constructor ({ web3, address, history }) {
+    // super()
     this.history = history
-    this.web3 = web3
+    this.address = address
     // eslint-disable-next-line no-console
-    console.log('[PollInterfaceManagerDAO] Created')
+    console.log('[PollInterfaceDAO] Created')
+
+    this.contract = new web3.eth.Contract(PollInterfaceABI.abi, this.address)
+  }
+
+  connect () {
+    if (this.isConnected) {
+      this.disconnect()
+    }
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.logsEmitter.removeAllListeners()
+      this.logsEmitter = null
+      this.web3 = null
+    }
+  }
+
+  get isConnected () {
+    return this.web3 != null // nil check
   }
 
   hasMember (address: string): boolean {
     if (!address) {
       return false
     }
-    return this._call('hasMember', [address])
+    return this.contract.methods.hasMember(address).call()
   }
 
   memberOption (address: string) {
     if (!address) {
       return false
     }
-    return this._call('memberOptions', [address])
+    return this.contract.methods.memberOptions(address).call()
   }
 
   getDetails () {
-    return this._call('getDetails')
+    return this.contract.methods.getDetails().call()
   }
 
   async getVotesBalances () {
-    const [options, values] = await this._call('getVotesBalances') // [Array(options), Array(values)]
+    const result = await this.contract.methods.getVotesBalances().call()
+    const [options, values] = [result[0], result[1]] // [Array(options), Array(values)]
     let votes = new Immutable.Map()
     options.map((option, i) => {
-      if (!values[i].isZero()) {
-        votes = votes.set(option.toString(), new Amount(values[i] || 0, TIME))
+      const value = new BigNumber(values[i])
+      if (!value.isZero()) {
+        votes = votes.set(option.toString(), new Amount(value || 0, 'TIME'))
       }
     })
     return votes
   }
 
   activatePoll () {
-    return this._multisigTx(TX_ACTIVATE_POLL, [], null, {
+    return this._tx(TX_ACTIVATE_POLL, [], null, new BigNumber(0), {
       useDefaultGasLimit: true,
     })
   }

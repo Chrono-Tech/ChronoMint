@@ -118,7 +118,7 @@ const configureStore = () => {
 }
 
 export const store = configureStore()
-store.dispatch(globalWatcher())
+// store.dispatch(globalWatcher())
 
 const persistorConfig = {
   key: 'root',

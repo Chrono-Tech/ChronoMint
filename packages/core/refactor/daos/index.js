@@ -31,6 +31,8 @@ export { default as ETHTokenDAO } from './lib/ETHTokenDAO'
 export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
 export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
 
+console.log('VotingManagerDAO: ', VotingManagerDAO)
+
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
   address: ContractsManagerABI.networks['4'].address, // @todo Add Network selection

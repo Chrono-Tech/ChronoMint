@@ -96,7 +96,6 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
   const assetHolderDAO = daoByType('TimeHolder')(getState())
-  console.log('assetHolderDAO: ', assetHolderDAO)
   const [ wallet ] = await Promise.all([
     assetHolderDAO.getWalletAddress(),
   ])

@@ -36,6 +36,10 @@ export default class BitcoinDAO extends EventEmitter {
     this._decimals = 8
   }
 
+  getBlockchain () {
+    return this._name
+  }
+
   getAddressValidator () {
     return bitcoinAddress(this._bitcoinProvider.isAddressValid.bind(this._bitcoinProvider), this._name)
   }

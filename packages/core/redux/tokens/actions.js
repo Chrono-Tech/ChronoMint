@@ -126,7 +126,13 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
     btcLikeTokens
       .map(async (dao) => {
         try {
-          dao.on(EVENT_UPDATE_LAST_BLOCK, (block) => dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...block }))
+          dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
+            const blocks = getState().get(DUCK_TOKENS).latestBlocks()
+            const currentBlock = blocks[dao.getBlockchain()]
+            if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
+              dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...newBlock })
+            }
+          })
           await dao.watchLastBlock()
           const token = await dao.fetchToken()
           tokenService.registerDAO(token, dao)

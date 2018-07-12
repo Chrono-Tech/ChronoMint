@@ -5,16 +5,13 @@
 
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
-import web3Converter from '../../../utils/Web3Converter'
 import TxExecModel from '../../models/TxExecModel'
-import { DEFAULT_GAS } from './ERC20TokenDAO'
+// import { DEFAULT_GAS } from './ERC20TokenDAO'
 import Amount from '../../../models/Amount'
+import web3Converter from '../../../utils/Web3Converter'
 
 export default class AbstractContractDAO extends EventEmitter {
-  /**
-   * @type Web3Converter
-   * @protected
-   */
+
   _c = web3Converter
 
   constructor ({ address, history, abi }) {
@@ -149,7 +146,7 @@ export default class AbstractContractDAO extends EventEmitter {
 
     const [gasPrice, gasLimit] = await Promise.all([
       this.web3.eth.getGasPrice(),
-      contract.methods[func](...args).estimateGas({ from, value, gas: DEFAULT_GAS }),
+      contract.methods[func](...args).estimateGas({ from, value, gas: 47000000 }),
     ])
 
     const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)
