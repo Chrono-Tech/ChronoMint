@@ -36,8 +36,7 @@ export const signAndSend = (tx) => async (dispatch) => {
   const signedTx = await dispatch(signTx(tx))
   dispatch({
     type: WATCHER_TX_SET, tx: new CurrentTransactionNotificationModel({
-      id: tx.hash,
-      hash: tx.hash,
+      id: tx.id,
       title: tx.title(),
       date: tx.time,
       details: tx.details(),

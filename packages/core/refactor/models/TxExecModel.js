@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import { I18n } from '@chronobank/core-dependencies/i18n'
 import BigNumber from 'bignumber.js'
+import uuid from 'uuid/v1'
 import AbstractModel from './AbstractModel'
 
 const schemaFactory = () => ({
@@ -33,6 +34,7 @@ const schemaFactory = () => ({
 export default class TxExecModel extends AbstractModel {
   constructor (props) {
     super(props, schemaFactory())
+    this.id = props.id || uuid()
     Object.assign(this, props)
     Object.freeze(this)
   }
@@ -66,11 +68,13 @@ export default class TxExecModel extends AbstractModel {
   }
 
   details () {
+    let details = []
     Object.entries(this.fields).map(([, field]) => {
-      return {
-        label: `${this.i18nFunc()}${field.description}`,
+      details.push({
+        label: I18n.t(`${this.i18nFunc()}${field.description}`),
         value: field.value,
-      }
+      })
     })
+    return details
   }
 }
