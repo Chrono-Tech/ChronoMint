@@ -68,6 +68,8 @@ export default class ConfirmTxDialogNew extends PureComponent {
   }
 
   getKeyValueRows (fields) {
+    console.log('getKeyValueRows: ', fields)
+    return null
     return Object.entries(fields).map(([key, field]) => {
 
       if (key === 'value' || key === 'amount') {//TODO @Abdulov remove checking value
@@ -118,6 +120,7 @@ export default class ConfirmTxDialogNew extends PureComponent {
 
   render () {
     const { tx, amountBalanceAfter, feeBalanceAfter, fields, mainSymbol } = this.props
+    console.log('ConfirmTXDialogNew: ', this.props)
 
     return (
       <ModalDialog hideCloseIcon title={<Translate value={tx.funcTitle()} />}>

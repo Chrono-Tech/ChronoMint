@@ -52,6 +52,7 @@ import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import { ethDAO } from '../../refactor/daos/index'
 import TxExecModel from '../../models/TxExecModel'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -69,6 +70,7 @@ export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
 export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
+export const WALLET_ESTIMATE_GAS_FOR_DEPOSIT = 'mainWallet/ESTIMATE_GAS_FOR_DEPOSIT'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -403,21 +405,23 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   })
 }
 
-export const estimateGasForDeposit = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
+export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
   let dao = null
+  const web3 = getState('web3')
   switch (mode) {
     case TX_APPROVE:
-      dao = await tokenService.getDAO(TIME)
+      dao = await tokenService.getDAO(TIME, web3)
       break
     case TX_DEPOSIT:
     case TX_WITHDRAW_SHARES:
-      dao = await contractsManagerDAO.getAssetHolderDAO()
+      dao = daoByType('TimeHolder')(getState())
       break
   }
   try {
     if (!dao) {
       throw new Error('Dao is undefined')
     }
+    console.log('DAO actions: ', dao)
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
@@ -427,6 +431,7 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   } catch (e) {
     callback(e)
   }
+  dispatch({ type: WALLET_ESTIMATE_GAS_FOR_DEPOSIT })
 }
 
 export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {

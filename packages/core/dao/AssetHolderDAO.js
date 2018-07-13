@@ -6,6 +6,7 @@
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
 import tokenService from '../services/TokenService'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 import type ERC20DAO from './ERC20DAO'
 import Amount from '../models/Amount'
 
@@ -14,11 +15,9 @@ export const TX_WITHDRAW_SHARES = 'withdrawShares'
 
 export const TIME = 'TIME'
 
-export default class AssetHolderDAO {
+export default class AssetHolderDAO extends AbstractContractDAO {
   constructor ({ address, history, abi }) {
-    this.address = address
-    this.history = history
-    this.abi = abi
+    super({ address, history, abi })
 
     this._okCodes = [
       resultCodes.OK,
@@ -28,26 +27,7 @@ export default class AssetHolderDAO {
   }
 
   connect (web3, options) {
-    if (this.isConnected) {
-      this.disconnect()
-    }
-    // eslint-disable-next-line no-console
-    console.log(`[${this.constructor.name}] Connect`)
-    this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-    this.history = this.history != null // nil check
-      ? new web3.eth.Contract(this.abi.abi, this.history, options)
-      : this.contract
-  }
-
-  get isConnected () {
-    return this.contract != null
-  }
-
-  disconnect () {
-    if (this.isConnected) {
-      this.contract = null
-      this.history = null
-    }
+    super.connect(web3, options)
   }
 
   async getSharesContract (): Promise {
@@ -65,13 +45,18 @@ export default class AssetHolderDAO {
 
   async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
     return this._tx(TX_DEPOSIT, [
-      tokenAddress,
+      this.address,
       new BigNumber(amount),
-    ], {
-      amount,
-    }, new BigNumber(0), {
+    ], amount, new BigNumber(0), {
       feeMultiplier,
       advancedOptions,
+      from: tokenAddress,
+      fields: {
+        amount: {
+          value: amount,
+          description: 'amount',
+        },
+      },
     })
   }
 

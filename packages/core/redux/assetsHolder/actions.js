@@ -13,6 +13,8 @@ import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import TxExecModel from '../../models/TxExecModel'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
@@ -122,10 +124,12 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
     const assetHolderDAO = daoByType('TimeHolder')(getState())
-    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
+    const tx: TxExecModel = await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
+    console.log('depositAsset: ', tx)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
-    console.error('deposit error', e.message)
+    console.error('deposit error', e, e.message)
   }
 }
 

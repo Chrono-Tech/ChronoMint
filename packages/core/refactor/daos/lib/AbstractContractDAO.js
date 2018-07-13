@@ -5,10 +5,14 @@
 
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
-import TxExecModel from '../../models/TxExecModel'
+import TxExecModel from '../../../refactor/models/TxExecModel'
 // import { DEFAULT_GAS } from './ERC20TokenDAO'
-import Amount from '../../../models/Amount'
 import web3Converter from '../../../utils/Web3Converter'
+import Amount from "../../../models/Amount";
+
+export const DEFAULT_TX_OPTIONS = {
+  feeMultiplier: null,
+}
 
 export default class AbstractContractDAO extends EventEmitter {
 
@@ -27,6 +31,7 @@ export default class AbstractContractDAO extends EventEmitter {
     }
     // eslint-disable-next-line no-console
     console.log(`[${this.constructor.name}] Connect`)
+    this.web3 = web3
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
     this.history = this.history != null // nil check
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
@@ -41,6 +46,7 @@ export default class AbstractContractDAO extends EventEmitter {
     if (this.isConnected) {
       this.contract = null
       this.history = null
+      this.web3 = null
     }
   }
 
@@ -119,19 +125,36 @@ export default class AbstractContractDAO extends EventEmitter {
     console.error(`[${this.constructor.name}] Error in Approval event subscription`, error)
   }
 
-  _tx (func: string, from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
-    const data = this.contract.methods.transfer(to, amount).encodeABI()
+  async _tx (func: string, args: Array = [], amount: BigNumber = new BigNumber(0), value: BigNumber = new BigNumber(0), options: Object = {}, additionalOptions: Object = {}): TxExecModel {
+    console.log('Tx: ', func, args, options)
+    const data = this.contract.methods[func](...args).encodeABI()
+    console.log('Tx: ', data, this.contract._address)
 
-    // eslint-disable-next-line
-    console.log('Tx: ', func, from, to, this.contract)
+    const {
+      from,
+      feeMultiplier,
+      fields,
+    } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
+
+    console.log('Tx: bject.assign({}, DEFAULT_TX_OPTIONS, optio: ', from, feeMultiplier, fields)
+
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier })
+    console.log('Tx: gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
+
     return new TxExecModel({
       func,
-      args: [to, amount],
+      fields,
       from,
       to: this.contract._address,
       feeMultiplier,
-      value: new BigNumber(0),
+      value,
       data,
+      fee: {
+        gasLimit: new Amount(gasLimit, this._symbol),
+        gasFee: new Amount(gasFee, this._symbol),
+        gasPrice: new Amount(gasPrice, this._symbol),
+        feeMultiplier,
+      },
       additionalOptions,
     })
   }
@@ -143,6 +166,8 @@ export default class AbstractContractDAO extends EventEmitter {
     if (!contract.methods.hasOwnProperty(func)) {
       throw this._error('estimateGas func not found', func)
     }
+
+    console.log('estimateGas web3: ', { from, value, gas: 47000000 })
 
     const [gasPrice, gasLimit] = await Promise.all([
       this.web3.eth.getGasPrice(),

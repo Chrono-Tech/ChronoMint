@@ -154,7 +154,7 @@ class ContractsManagerDAO extends AbstractContractDAO {
   }
 
   /**
-   * @deprecated Use selector daoByType instead
+   * @deprecated Use selector daoByType('TimeHolder')(state) instead
    */
   getAssetHolderDAO (): Promise<AssetHolderDAO> {
     // eslint-disable-next-line no-console

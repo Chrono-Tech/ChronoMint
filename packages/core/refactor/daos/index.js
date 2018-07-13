@@ -32,6 +32,8 @@ export { default as ContractsManagerDAO } from './lib/ContractsManagerDAO'
 export { default as ERC20LibraryDAO } from './lib/ERC20LibraryDAO'
 
 console.log('VotingManagerDAO: ', VotingManagerDAO)
+console.log('AssetManagerLibraryDAO: ', AssetManagerLibraryDAO)
+console.log('AssetHolderDAO: ', AssetHolderDAO)
 
 export const CONTRACTS_MANAGER = new ContractModel({
   type: 'ContractsManager',
