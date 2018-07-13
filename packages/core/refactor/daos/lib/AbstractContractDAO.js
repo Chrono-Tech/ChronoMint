@@ -126,33 +126,32 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   async _tx (func: string, args: Array = [], amount: BigNumber = new BigNumber(0), value: BigNumber = new BigNumber(0), options: Object = {}, additionalOptions: Object = {}): TxExecModel {
-    console.log('Tx: ', func, args, options)
     const data = this.contract.methods[func](...args).encodeABI()
-    console.log('Tx: ', data, this.contract._address)
 
     const {
       from,
       feeMultiplier,
       fields,
+      symbol,
+      blockchain,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
-    console.log('Tx: bject.assign({}, DEFAULT_TX_OPTIONS, optio: ', from, feeMultiplier, fields)
-
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier })
-    console.log('Tx: gasLimit, gasFee, gasPrice: ', gasLimit, gasFee, gasPrice)
 
     return new TxExecModel({
       func,
       fields,
       from,
+      symbol,
+      blockchain,
       to: this.contract._address,
       feeMultiplier,
       value,
       data,
       fee: {
-        gasLimit: new Amount(gasLimit, this._symbol),
-        gasFee: new Amount(gasFee, this._symbol),
-        gasPrice: new Amount(gasPrice, this._symbol),
+        gasLimit: new Amount(gasLimit, 'ETH'),
+        gasFee: new Amount(gasFee, 'ETH'),
+        gasPrice: new Amount(gasPrice, 'ETH'),
         feeMultiplier,
       },
       additionalOptions,

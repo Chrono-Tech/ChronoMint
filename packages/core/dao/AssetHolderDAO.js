@@ -43,14 +43,16 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this.contract.methods.wallet().call()
   }
 
-  async deposit (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
+  async deposit (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
     return this._tx(TX_DEPOSIT, [
-      this.address,
+      token.address(),
       new BigNumber(amount),
     ], amount, new BigNumber(0), {
       feeMultiplier,
       advancedOptions,
-      from: tokenAddress,
+      from: advancedOptions && advancedOptions.account,
+      symbol: token.symbol(),
+      blockchain: token.blockchain(),
       fields: {
         amount: {
           value: amount,

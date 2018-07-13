@@ -124,8 +124,9 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
     const assetHolderDAO = daoByType('TimeHolder')(getState())
-    const tx: TxExecModel = await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
-    console.log('depositAsset: ', tx)
+    const { account } = getState().get(DUCK_SESSION)
+    advancedOptions['account'] = account
+    const tx: TxExecModel = await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
     dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
