@@ -26,7 +26,7 @@ export const acceptConfirm = (tx) => (dispatch) => {
   dispatch(signAndSend(tx))
 }
 
-export const rejectConfirm = () => (dispatch) => {
+export const rejectConfirm = (tx) => (dispatch) => {
   dispatch({ type: TRANSACTIONS_REMOVE })
 }
 
@@ -44,8 +44,8 @@ export const signTx = (execTx) => async (dispatch, getState) => {
   const txData = {
     data: execTx.data || '',
     nonce: web3.utils.toHex(nonce),
-    gasLimit: web3.utils.toHex(execTx.gasLimit),
-    gasPrice: web3.utils.toHex(execTx.gasPrice),
+    gasLimit: web3.utils.toHex(execTx.fee.gasLimit.toString()),
+    gasPrice: web3.utils.toHex(execTx.fee.gasPrice.toString()),
     to: execTx.to,
     from: execTx.from,
     value: web3.utils.toHex(execTx.value.toString()),

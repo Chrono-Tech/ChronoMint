@@ -180,11 +180,12 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @param from {string} - address from
    * @param to {string}  - address to
    * @param amount {Amount} - amount of tokens
+   * @param token {TokenModel} - token
    * @param feeMultiplier {number} - multiplier for gas price
    * @param advancedOptions {object} - other options, maybe useless
    * @returns {TxExecModel}
    */
-  async transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
+  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
 
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas('transfer', [to, amount], new BigNumber(0), from, { feeMultiplier })
     const data = this.contract.methods.transfer(to, amount).encodeABI()
