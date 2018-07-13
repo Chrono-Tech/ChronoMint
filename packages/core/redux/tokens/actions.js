@@ -129,7 +129,7 @@ export const initBtcLikeTokens = () => async (dispatch, getState) => {
           dao.on(EVENT_UPDATE_LAST_BLOCK, (newBlock) => {
             const blocks = getState().get(DUCK_TOKENS).latestBlocks()
             const currentBlock = blocks[dao.getBlockchain()]
-            if (currentBlock && currentBlock.blockNumber < newBlock.block.blockNumber) {
+            if (currentBlock && newBlock.block.blockNumber > currentBlock.blockNumber) {
               dispatch({ type: TOKENS_UPDATE_LATEST_BLOCK, ...newBlock })
             }
           })

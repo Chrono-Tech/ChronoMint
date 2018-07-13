@@ -4,10 +4,10 @@
  */
 
 import EventEmitter from 'events'
-import PollInterfaceDAO from './PollInterfaceDAO'
+import PollInterfaceDAO from '../../../../core/dao/PollInterfaceDAO'
 
 export default class PollInterfaceManagerDAO extends EventEmitter {
-  constructor (web3, history) {
+  constructor ({ web3, history }) {
     super()
     this.history = history
     this.web3 = web3
@@ -16,7 +16,7 @@ export default class PollInterfaceManagerDAO extends EventEmitter {
   }
 
   async getPollInterfaceDAO (address: String) {
-    const pollInterfaceDao = new PollInterfaceDAO({ address, history: this.history })
+    const pollInterfaceDao = new PollInterfaceDAO({ web3: this.web3, address, history: this.history })
     pollInterfaceDao.connect(this.web3)
 
     return pollInterfaceDao

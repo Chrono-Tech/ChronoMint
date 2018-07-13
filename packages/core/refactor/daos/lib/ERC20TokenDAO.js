@@ -81,30 +81,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     return Number(response.toString())
   }
 
-  get isConnected () {
-    return this.contract != null // nil check
-  }
-
-  get isDepositSupported () {
-    return false
-  }
-
-  get isWithdrawSupported () {
-    return false
-  }
-
-  get isTradeSupported () {
-    return true
-  }
-
-  get isTransferSupported () {
-    return true
-  }
-
-  get isApproveSupported () {
-    return true
-  }
-
   /**
    * getting balance for eth address
    * @param address {string}

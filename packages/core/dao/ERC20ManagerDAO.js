@@ -20,6 +20,26 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     super({ address, history, abi })
   }
 
+  // watchAdd (callback) {
+  //   return this._watch('LogAddToken', this._watchCallback(callback))
+  // }
+  //
+  // watchModify (callback, account) {
+  //   return this._watch('LogTokenChange', this._watchCallback(callback, false, false), { from: account })
+  // }
+  //
+  // watchRemove (callback, account) {
+  //   return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
+  // }
+
+  addWatchers = (callback) => {
+    // need to add filter for events { from: account } probably. Research about it
+    this.logsEmitter = this.contract.events.LogAddToken({})
+      .on('data', () => this._watchCallback(callback))
+      .on('changed', () => this._watchCallback(callback, false, false))
+      .on('error', () => this._watchCallback(callback, true))
+  }
+
   /**
    * Tokens fetching and emmit token
    * @param tokenAddresses
@@ -126,15 +146,4 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     ))
   }
 
-  watchAdd (callback) {
-    return this._watch('LogAddToken', this._watchCallback(callback))
-  }
-
-  watchModify (callback, account) {
-    return this._watch('LogTokenChange', this._watchCallback(callback, false, false), { from: account })
-  }
-
-  watchRemove (callback, account) {
-    return this._watch('LogRemoveToken', this._watchCallback(callback, true), { from: account })
-  }
 }

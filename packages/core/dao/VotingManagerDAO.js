@@ -18,11 +18,11 @@ import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'
 import VotingCollection from '../models/voting/VotingCollection'
 import Amount from '../models/Amount'
-// import { TIME } from '../redux/mainWallet/actions'
 import votingService from '../services/VotingService'
 import { daoByType } from '../refactor/redux/daos/selectors'
 import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
+import web3Converter from '../utils/Web3Converter'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -32,13 +32,14 @@ export const EVENT_POLL_CREATED = 'PollCreated'
 export const EVENT_POLL_UPDATED = 'PollUpdated'
 export const EVENT_POLL_REMOVED = 'PollRemoved'
 
-export const EVENT_POLL_VOTED = 'PollVoted'
-export const EVENT_POLL_ACTIVATED = 'PollActivated'
-export const EVENT_POLL_ENDED = 'PollEnded'
-
 export default class VotingManagerDAO  {
+  /**
+   * @type Web3Converter
+   * @protected
+   */
+  _c = web3Converter
+
   constructor ({ address, history, abi }) {
-    console.log('VotingManagerDAO: ', address, history, abi)
     this.address = address
     this.history = history
     this.abi = abi
@@ -132,9 +133,15 @@ export default class VotingManagerDAO  {
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
-      const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses)
+      const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses).call()
 
-      const [ owners, bytesHashes, voteLimits, deadlines, statuses, activeStatuses, publishedDates ] = pollsDetails
+      const owners = pollsDetails[0].map((o) => o.toLowerCase()) // @todo need to find out why addresses have upper registry chars. It's invalid
+      const bytesHashes = pollsDetails[1]
+      const voteLimits = pollsDetails[2].map((l) => new BigNumber(l))
+      const deadlines = pollsDetails[3].map((l) => new BigNumber(l))
+      const statuses = pollsDetails[4]
+      const activeStatuses = pollsDetails[5]
+      const publishedDates = pollsDetails[6].map((l) => new BigNumber(l))
       const shareholdersCount = await this.assetHolderDAO.shareholdersCount()
 
       let promises = []
@@ -151,14 +158,16 @@ export default class VotingManagerDAO  {
             }
 
             const pollInterface = await this.pollInterfaceManagerDAO.getPollInterfaceDAO(pollAddress)
-            const [ votes, hasMember, memberOption ] = await Promise.all([
+            let [ votes, hasMember, memberOption ] = await Promise.all([
               await pollInterface.getVotesBalances(),
               await pollInterface.hasMember(account),
               await pollInterface.memberOption(account),
             ])
+            memberOption = new BigNumber(memberOption)
 
-            const hash = this._c.bytes32ToIPFSHash(bytesHashes[ i ])
-            const { title, description, options, files } = await ipfs.get(hash)
+            const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
+            const result = await ipfs.get(hash)
+            const { title, description, options, files } = result
             const poll = new PollModel({
               id: pollAddress,
               owner: owners[ i ],
@@ -189,6 +198,7 @@ export default class VotingManagerDAO  {
               .isFetched(true))
 
           } catch (e) {
+            console.log('PollDetailsModel error: ', e)
             // eslint-disable-next-line
             console.error(e.message)
             resolve(null) // return null
@@ -199,7 +209,7 @@ export default class VotingManagerDAO  {
       result = await Promise.all(promises)
     } catch (e) {
       // eslint-disable-next-line
-      console.error(e.message)
+      console.error('getPollsDetails error: ' + e.message)
     }
 
     let collection = new VotingCollection()

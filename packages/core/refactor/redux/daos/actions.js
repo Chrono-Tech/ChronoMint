@@ -35,6 +35,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const contracts = [
     ASSET_MANAGER_LIBRARY,
     ASSET_HOLDER_LIBRARY,
+    // ASSET_DONATOR_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
   ]
@@ -65,8 +66,8 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const state = getState()
   // post registration setup
   for (const model of models) {
-    if (typeof model.postStoreDispatchSetup === 'function') {
-      model.postStoreDispatchSetup(state, web3, history)
+    if (typeof model.dao.postStoreDispatchSetup === 'function') {
+      model.dao.postStoreDispatchSetup(state, web3, history)
     }
   }
 
