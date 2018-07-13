@@ -176,7 +176,7 @@ export default class BitcoinDAO extends EventEmitter {
           address,
           bitcoin,
           symbol,
-        }
+        },
       )
     })
   }

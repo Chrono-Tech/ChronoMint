@@ -10,6 +10,7 @@ import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
 import TxExecModel from '../../models/TxExecModel'
 import Amount from '../../../models/Amount'
 
+const ETH = 'ETH'
 export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
@@ -42,6 +43,7 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       address: this.token.address(),
       symbol,
       decimals,
+      blockchain: 'Ethereum',
     })
 
     this.transferEmitter = this.contract.events.Transfer({})
@@ -182,20 +184,36 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @param advancedOptions {object} - other options, maybe useless
    * @returns {TxExecModel}
    */
-  transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
+  async transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
+
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('transfer', [to, amount], new BigNumber(0), from, { feeMultiplier })
     const data = this.contract.methods.transfer(to, amount).encodeABI()
 
-    // eslint-disable-next-line
-    console.log('transfer', this.contract)
     return new TxExecModel({
+      contract: this.abi.contractName,
       func: 'transfer',
-      args: [to, amount],
+      blockchain: this.token.blockchain(),
+      symbol: this.token.symbol(),
       from,
       to: this.contract._address,
-      feeMultiplier,
-      value: new BigNumber(0),
+      fields: {
+        to: {
+          value: to,
+          description: 'to',
+        },
+        amount: {
+          value: new Amount(amount, this.token.symbol()),
+          description: 'amount',
+        },
+      },
+      fee: {
+        gasLimit: new Amount(gasLimit, ETH),
+        gasFee: new Amount(gasFee, ETH),
+        gasPrice: new Amount(gasPrice, ETH),
+        feeMultiplier,
+      },
+      value: new Amount(0, ETH),
       data,
-      additionalOptions,
     })
   }
 

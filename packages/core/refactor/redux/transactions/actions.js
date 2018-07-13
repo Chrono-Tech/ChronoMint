@@ -4,25 +4,22 @@
  */
 
 import Tx from 'ethereumjs-tx'
+import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
-import TxExecModel from '../../models/TxExecModel'
 
 export const DUCK_TRANSACTIONS = 'transactions'
 export const TRANSACTIONS_NEW = 'transactions/new'
 export const TRANSACTIONS_REMOVE = 'transactions/remove'
 
-export const sendNewTx = (tx, dao) => async (dispatch) => {
-  const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(tx.func, tx.args, tx.value, tx.from)
-
-  const pricedTx = new TxExecModel({
-    ...tx,
-    gasLimit,
-    gasFee,
-    gasPrice,
-  })
-
-  dispatch({ type: TRANSACTIONS_NEW, tx: pricedTx })
-  dispatch(acceptConfirm(pricedTx))
+export const sendNewTx = (tx) => async (dispatch) => {
+  dispatch({ type: TRANSACTIONS_NEW, tx })
+  dispatch(modalsOpenConfirmDialog({
+    props: {
+      tx,
+      confirm: acceptConfirm,
+      reject: rejectConfirm,
+    },
+  }))
 }
 
 export const acceptConfirm = (tx) => (dispatch) => {
