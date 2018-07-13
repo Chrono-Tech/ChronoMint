@@ -229,8 +229,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
       })
     })
 
-  // TODO Abdulov
-  // await tokenDAO.watch([...getDeriveWalletsAddresses(getState(), token.blockchain()), account])
+  dispatch(fetchTokenBalance(token, account))
 
   dispatch(addMarketToken(token.symbol()))
 
@@ -292,8 +291,19 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
   try {
     const sendWallet = wallet || getMainWallet(getState())
     const tokenDAO = tokenService.getDAO(token.id())
-    const tx: TxExecModel = await tokenDAO.transfer(sendWallet.addresses().item(token.blockchain()).address(), recipient, amount, feeMultiplier, additionalOptions)
-    dispatch(sendNewTx(tx))
+
+    const tx: TxExecModel = await tokenDAO.transfer(
+      sendWallet.addresses().item(token.blockchain()).address(),
+      recipient,
+      amount,
+      token,
+      feeMultiplier,
+      additionalOptions,
+    )
+
+    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      dispatch(sendNewTx(tx))
+    }
   } catch (e) {
     dispatch(notifyError(e, 'mainTransfer'))
   }
@@ -637,7 +647,6 @@ export const subscribeWallet = ({ wallet }) => async (dispatch/*, getState*/) =>
   switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
       ethDAO.on('tx', listener)
-      dispatch(updateWalletBalance({ wallet }))
       return listener
     default:
       dispatch(updateWalletBalance({ wallet }))

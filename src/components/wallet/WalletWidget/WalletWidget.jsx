@@ -265,7 +265,7 @@ export default class WalletWidget extends PureComponent {
 
                 {this.isMySharedWallet() && this.getOwnersList()}
 
-                {token && token.isFetched() && <WalletTokensList wallet={wallet} />}
+                <WalletTokensList wallet={wallet} />
 
                 {wallet.isTimeLocked && (
                   <div styleName='unlockDateWrapper'>

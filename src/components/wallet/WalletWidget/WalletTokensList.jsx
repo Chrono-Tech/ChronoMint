@@ -20,6 +20,7 @@ import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './WalletWidget.scss'
 import { prefix } from './lang'
+import { getMainSymbolForBlockchain } from '../../../../packages/core/redux/tokens/selectors'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
@@ -32,6 +33,7 @@ function makeMapStateToProps (state, props) {
   const mapStateToProps = (ownState) => {
     const { selectedCurrency } = getMarket(state)
     return {
+      mainSymbol: getMainSymbolForBlockchain(wallet.blockchain),
       selectedCurrency,
       tokensBalances: getAmount(ownState),
       tokens: ownState.get(DUCK_TOKENS),
@@ -43,6 +45,7 @@ function makeMapStateToProps (state, props) {
 @connect(makeMapStateToProps)
 export default class WalletTokensList extends PureComponent {
   static propTypes = {
+    mainSymbol: PropTypes.string,
     selectedCurrency: PropTypes.string,
     tokens: PropTypes.instanceOf(TokensCollection),
     tokensBalances: PropTypes.arrayOf(PropTypes.shape({
@@ -76,21 +79,21 @@ export default class WalletTokensList extends PureComponent {
   }
 
   render () {
-    const { tokensBalances } = this.props
+    const { tokensBalances, mainSymbol } = this.props
 
     return (
       <div>
-        {tokensBalances.length >= 3 &&
-        <div styleName='amount-list-container'>
-          <div styleName='amount-list'>
-            <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={tokensBalances.length} /></span>
+        {tokensBalances.length >= 3 && (
+          <div styleName='amount-list-container'>
+            <div styleName='amount-list'>
+              <span styleName='amount-text'><Translate value={`${prefix}.tokensTitle`} count={tokensBalances.length} /></span>
+            </div>
+            <div styleName='show-all'>
+              <span styleName='show-all-a' onClick={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
+            </div>
           </div>
-          <div styleName='show-all'>
-            <span styleName='show-all-a' onClick={this.handleChangeShowAll}>{!this.state.isShowAll ? 'Show All' : 'Show less'}</span>
-          </div>
-        </div>}
-
-        {this.getTokensList().length > 1 && (
+        )}
+        {this.getTokensList().length > 1 || (this.getTokensList()[0] && this.getTokensList()[0].symbol !== mainSymbol) ? (
           <div styleName='tokens-list'>
             <div styleName='tokens-list-table'>
               {this.getTokensList()
@@ -116,7 +119,7 @@ export default class WalletTokensList extends PureComponent {
                 })}
             </div>
           </div>
-        )}
+        ) : null}
 
         {this.isMySharedWallet() && this.getTokensList().length <= 0 && (<div styleName='separator' />)}
       </div>
