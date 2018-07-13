@@ -16,6 +16,7 @@ const schemaFactory = () => ({
   from: PropTypes.string,
   to: PropTypes.string,
   value: PropTypes.instanceOf(BigNumber),
+  hash: PropTypes.string,
   fields: PropTypes.objectOf(PropTypes.shape({
     value: PropTypes.any,
     description: PropTypes.string,
@@ -62,5 +63,14 @@ export default class TxExecModel extends AbstractModel {
 
   title () {
     return I18n.t(this.func)
+  }
+
+  details () {
+    Object.entries(this.fields).map(([, field]) => {
+      return {
+        label: `${this.i18nFunc()}${field.description}`,
+        value: field.value,
+      }
+    })
   }
 }
