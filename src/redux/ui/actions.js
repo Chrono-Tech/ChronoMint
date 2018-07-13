@@ -11,7 +11,6 @@ import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
 import ConfirmTxDialog from 'components/dialogs/ConfirmTxDialog/ConfirmTxDialog'
-import ConfirmTransferDialog from 'components/dialogs/ConfirmTransferDialog/ConfirmTransferDialog'
 import UserActiveDialog from 'components/dialogs/UserActiveDialog/UserActiveDialog'
 import { CHANGE_WALLET_VIEW } from './reducer'
 
@@ -29,7 +28,7 @@ export const watchInitUserMonitor = () => (dispatch) => {
 
 export const showConfirmTransferModal = (dao, tx) => (dispatch) => {
   dispatch(modalsOpen({
-    component: ConfirmTransferDialog,
+    component: ConfirmTxDialog,
     props: {
       tx,
       dao,

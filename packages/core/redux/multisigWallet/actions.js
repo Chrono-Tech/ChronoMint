@@ -16,7 +16,6 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/MultisigWalletsManagerDAO'
@@ -25,17 +24,15 @@ import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeMo
 import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import TxExecModel from '../../models/TxExecModel'
-import type TxModel from '../../models/TxModel'
 import type MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
-  EE_DEPOSIT,
   EE_MULTI_TRANSACTION,
   EE_OWNER_ADDED,
   EE_OWNER_REMOVED,
@@ -45,9 +42,10 @@ import multisigWalletService, {
 } from '../../services/MultisigWalletService'
 import tokenService from '../../services/TokenService'
 import { ETH, getTokensBalancesAndWatch, getTransactionsForWallet } from '../mainWallet/actions'
-import { getTokens } from '../tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { getMultisigWallets } from '../wallet/selectors/models'
+import { getWallets } from './selectors/models'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -69,6 +67,10 @@ export const MULTISIG_PENDING_TX = 'multisigWallet/PENDING_TX'
 export const MULTISIG_2_FA_CONFIRMED = 'multisigWallet/2_FA_CONFIRMED'
 
 let walletsManagerDAO
+
+const isOwner = (wallet: MultisigWalletModel | DerivedWalletModel, account) => {
+  return wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+}
 
 const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => dispatch({ type: MULTISIG_UPDATE, wallet })
 export const selectMultisigWallet = (id) => (dispatch) => dispatch({ type: MULTISIG_SELECT, id })
@@ -116,6 +118,30 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
       dispatch({ type: MULTISIG_REMOVE, id: walletId })
     })
+
+  const wallets = getWallets(getState())
+  wallets.items().map((wallet: DerivedWalletModel) => {
+    const { account } = getState().get(DUCK_SESSION)
+
+    const handleToken = (token: TokenModel) => async (dispatch) => {
+      if (token.blockchain() === wallet.blockchain()) {
+        const dao = tokenService.getDAO(token)
+        let balance = await dao.getAccountBalance(wallet.address())
+        dispatch({
+          type: MULTISIG_BALANCE,
+          walletId: wallet.address(),
+          balance: new BalanceModel({
+            id: token.id(),
+            amount: new Amount(balance, token.symbol(), true),
+          }),
+        })
+      }
+    }
+
+    if (isOwner(wallet, account)) {
+      dispatch(subscribeOnTokens(handleToken))
+    }
+  })
 }
 
 const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {
@@ -186,8 +212,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
   let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
-    const isOwner = wallet.owners().items().filter((owner) => owner.address() === account).length > 0
-    if (wallet.isDerived() && isOwner) {
+    if (wallet.isDerived() && isOwner(wallet, account)) {
       switch (wallet.blockchain()) {
         case BLOCKCHAIN_BITCOIN:
           btcProvider.createNewChildAddress(wallet.deriveNumber())

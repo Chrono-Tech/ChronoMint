@@ -156,7 +156,7 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, feeMultiplier: Number = 1, additionalOptions): Promise {
+  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): Promise {
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(null, [to, amount], amount, from, { feeMultiplier })
     const value = new Amount(amount, this._symbol)
 

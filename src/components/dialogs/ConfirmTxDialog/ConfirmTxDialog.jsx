@@ -33,22 +33,26 @@ const makeMapStateToProps = (state, ownProps) => {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps (dispatch, props) {
   return {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     handleUpdateTx: (tx) => dispatch({ type: WATCHER_TX_SET, tx }),
+    handleConfirm: (tx) => dispatch(props.confirm(tx)),
+    handleReject: (tx) => dispatch(props.reject(tx)),
   }
 }
 
 @connect(makeMapStateToProps, mapDispatchToProps)
-export default class ConfirmTxDialogNew extends PureComponent {
+export default class ConfirmTxDialog extends PureComponent {
   static propTypes = {
     amountBalanceAfter: PropTypes.instanceOf(Amount),
     feeBalanceAfter: PropTypes.instanceOf(Amount),
     mainSymbol: PropTypes.string,
     confirm: PropTypes.func.isRequired,
+    handleConfirm: PropTypes.func,
     reject: PropTypes.func.isRequired,
+    handleReject: PropTypes.func,
     modalsClear: PropTypes.func.isRequired,
     modalsClose: PropTypes.func.isRequired,
     tx: PropTypes.instanceOf(TxExecModel),
@@ -56,33 +60,21 @@ export default class ConfirmTxDialogNew extends PureComponent {
   }
 
   handleConfirm = () => {
-    // this.props.modalsClear()
-    // eslint-disable-next-line
-    console.log('handleConfirm', this.props.confirm)
-    this.props.confirm(this.props.tx)
+    this.props.modalsClear()
+    this.props.handleConfirm(this.props.tx)
   }
 
   handleClose = () => {
-    // this.props.modalsClose()
-    this.props.reject(false, this.props.tx)
+    this.props.modalsClear()
+    this.props.handleReject(this.props.tx)
   }
 
   getKeyValueRows (fields) {
-    return Object.entries(fields).map(([key, field]) => {
+    const getValue = ([key, field]) => {
 
-      if (key === 'value' || key === 'amount') {//TODO @Abdulov remove checking value
-        return (
-          <div styleName='param' key={key}>
-            <div styleName='value big'>
-              <Value value={field.value} params={{ noRenderPrice: true }} />
-            </div>
-            <div styleName='price'>USD <TokenPrice value={field.value} isRemoveDecimals /></div>
-          </div>
-        )
-      }
-
-      let value
       const fieldValue = field.value
+      let value = <Value value={fieldValue} />
+
       if (fieldValue === null || fieldValue === undefined) return
       // parse value
       switch (fieldValue.constructor.name) {
@@ -99,8 +91,6 @@ export default class ConfirmTxDialogNew extends PureComponent {
             return this.getKeyValueRows(fieldValue)
           }
           break
-        default:
-          value = <Value value={fieldValue} />
       }
 
       return (
@@ -113,6 +103,22 @@ export default class ConfirmTxDialogNew extends PureComponent {
           </div>
         </div>
       )
+    }
+    return Object.entries(fields).map(([key, field]) => {
+
+      if (key === 'value' || key === 'amount') {//TODO @Abdulov remove checking value
+        return (
+          <div styleName='param' key={key}>
+            <div styleName='value big'>
+              <Value value={field.value} params={{ noRenderPrice: true }} />
+            </div>
+            <div styleName='price'>USD <TokenPrice value={field.value} isRemoveDecimals /></div>
+          </div>
+        )
+      } else {
+        return getValue([key, field])
+      }
+
     })
   }
 
