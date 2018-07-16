@@ -66,15 +66,23 @@ export default class AssetHolderDAO extends AbstractContractDAO {
     return this.contract.methods.defaultShareholdersCount().call()
   }
 
-  async withdraw (tokenAddress: String, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
+  async withdraw (token, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined) {
     return this._tx(TX_WITHDRAW_SHARES, [
-      tokenAddress,
+      token.address(),
       new BigNumber(amount),
-    ], {
-      amount,
-    }, new BigNumber(0), {
+    ], amount, new BigNumber(0), {
       feeMultiplier,
       advancedOptions,
+      from: advancedOptions && advancedOptions.account,
+      symbol: token.symbol(),
+      blockchain: token.blockchain(),
+      fields: {
+        amount: {
+          value: amount,
+          description: 'withdraw',
+          mark: 'plus',
+        },
+      },
     })
   }
 

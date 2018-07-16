@@ -265,7 +265,7 @@ export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch
   })
 }
 
-export const initMainWallet = () => async (dispatch, getState) => {
+export const initMainWallet = () => async (dispatch) => {
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))
@@ -313,10 +313,14 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
   const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
+  const { account } = getState().get(DUCK_SESSION)
+
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+    additionalOptions['from'] = account
+    const tx = await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     dispatch(notifyError(e, 'mainApprove'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
@@ -325,10 +329,13 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
   const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
+  const { account } = getState().get(DUCK_SESSION)
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+    additionalOptions['account'] = account
+    const tx = await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })

@@ -29,6 +29,7 @@ class TokenService extends EventEmitter {
     dao.connect(web3)
     this._cache [token.id()] = dao
     this.emit(EVENT_NEW_TOKEN, token, dao)
+    return dao
   }
 
   // TODO @ipavlenko: TokenService should not handle state, redux should. Move DAOs collection to redux

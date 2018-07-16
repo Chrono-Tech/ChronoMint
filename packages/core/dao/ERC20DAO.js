@@ -11,7 +11,6 @@ import { TXS_PER_PAGE } from '../models/wallet/TransactionsCollection'
 import ERC20DAODefaultABI from './abi/ERC20DAODefaultABI'
 import AbstractTokenDAO, { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from './AbstractTokenDAO'
 import { BLOCKCHAIN_ETHEREUM } from './EthereumDAO'
-import TxExecModel from '../models/TxExecModel'
 
 export const TX_TRANSFER = 'transfer'
 export const TX_APPROVE = 'approve'
@@ -39,34 +38,6 @@ export default class ERC20DAO extends AbstractTokenDAO {
     console.log('[ERC20TokenDAO] Connect')
     this.contract = new web3.eth.Contract(this.abi.abi, this.getInitAddress(), options)
 
-    // const [
-    //   name,
-    //   symbol,
-    //   decimals,
-    // ] = await Promise.all([
-    //   this.getName(),
-    //   this.getSymbol(),
-    //   this.getDecimals(),
-    // ])
-    //
-    // this.token = new TokenModel({
-    //   key: this.token.key,
-    //   name,
-    //   address: this.token.address,
-    //   symbol,
-    //   decimals,
-    // })
-    //
-    // this.transferEmitter = this.contract.events.Transfer({})
-    //   .on('data', this.handleTransferData.bind(this))
-    //   .on('changed', this.handleTransferChanged.bind(this))
-    //   .on('error', this.handleTransferError.bind(this))
-    // this.approvalEmitter = this.contract.events.Approval({})
-    //   .on('data', this.handleApprovalData.bind(this))
-    //   .on('changed', this.handleApprovalChanged.bind(this))
-    //   .on('error', this.handleApprovalError.bind(this))
-    //
-    // return this.token
   }
 
   disconnect () {

@@ -20,7 +20,9 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
     const balances = wallet.balances()
     const amountBalance = balances.item(tx.symbol)
     const feeBalance = balances.item(mainSymbol)
-    let amountBalanceAfter = amountBalance.amount().minus(tx.fields.amount.value)
+    let amountBalanceAfter = tx.fields.amount.mark === 'plus' ?
+      amountBalance.amount().plus(tx.fields.amount.value) :
+      amountBalance.amount().minus(tx.fields.amount.value)
     let feeBalanceAfter = null
 
     if (mainSymbol === tx.symbol) {

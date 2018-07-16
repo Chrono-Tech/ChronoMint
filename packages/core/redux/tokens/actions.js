@@ -29,9 +29,10 @@ import { notify } from '../notifier/actions'
 import { showConfirmTransferModal } from '../ui/actions'
 import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
-import { ETH } from '../mainWallet/actions'
+import {ETH, fetchTokenBalance} from '../mainWallet/actions'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import {DUCK_SESSION} from "../session/actions";
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
