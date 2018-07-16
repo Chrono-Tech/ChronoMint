@@ -21,6 +21,7 @@ import { initDAOs } from '../../refactor/redux/daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
+import { initWallets } from '../wallets/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -79,6 +80,7 @@ export const watcher = ({ web3 }) => async (dispatch) => {
   dispatch(watchInitProfile())
   dispatch(initTokens())
   dispatch(initMainWallet())
+  dispatch(initWallets())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
