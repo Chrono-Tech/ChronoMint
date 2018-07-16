@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import uuid from 'uuid/v1'
 import {
   BLOCKCHAIN_BITCOIN,
   BLOCKCHAIN_BITCOIN_CASH,
@@ -11,6 +12,7 @@ import {
 } from './BitcoinProvider'
 
 export const NETWORK_MAIN_ID = 1
+export const CUSTOM_PROVIDER_ID = 'CustomProviderID'
 export const LOCAL_ID = 9999999999
 export const LOCAL_PROVIDER_ID = 8
 // export const LOCAL_MNEMONIC = 'video visa alcohol fault earth naive army senior major inherit convince electric'
@@ -244,6 +246,14 @@ export const providerMap = {
   },
 }
 
+export const createNetworkProvider = (name, disabled = false) => {
+  return {
+    id: uuid(),
+    name,
+    disabled,
+  }
+}
+
 export const getNetworksByProvider = (providerId, withLocal = false) => {
   switch (providerId) {
     case providerMap.uport.id:
@@ -310,13 +320,13 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
 }
 
 export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
-  if (isTestRPC(providerId, networkId)){
-    return 'TestRPC'
+  if (isLocalNode(providerId, networkId)){
+    return 'localNode'
   }
   return `${getProviderById(providerId).name} - ${getNetworkById(networkId, providerId, withLocal).name}`
 }
 
-export const isTestRPC = (providerId, networkId) => {
+export const isLocalNode = (providerId, networkId) => {
   return providerId === LOCAL_PROVIDER_ID && networkId === LOCAL_ID
 }
 

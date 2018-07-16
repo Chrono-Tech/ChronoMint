@@ -14,9 +14,9 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import {
   getNetworksWithProviders,
-  isTestRPC,
+  isLocalNode,
   getProviderById,
-  providerMap,
+  createNetworkProvider,
   networkSelectorGroups,
   getNetworkWithProviderNames,
 } from '@chronobank/login/network/settings'
@@ -49,7 +49,6 @@ const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props}) =>
   <div
     styleName={classnames({
       providerItem: true,
-      providerItemCustomNetwork: true,
       providerItemActive: checked,
     })}
     {...props}
@@ -66,7 +65,10 @@ const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props}) =>
 
 const MenuDefaultItem = ({ checked, children, ...props}) => (
   <div
-    styleName={classnames({providerItem: true, providerItemActive: checked })}
+    styleName={classnames({
+      providerItem: true,
+      providerItemActive: checked
+    })}
     {...props}
   >
     {children}
@@ -141,14 +143,6 @@ export default class CommonNetworkSelector extends PureComponent {
     this.props.initCommonNetworkSelector()
   }
 
-  getFullNetworkName(item){
-    if (isTestRPC(item.provider.id, item.network.id)){
-      return 'TestRPC'
-    }
-
-    return `${item.provider.name} - ${item.network.name}`
-  }
-
   resolveNetwork(providerUrl){
     const web3 = new Web3()
     web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
@@ -164,7 +158,7 @@ export default class CommonNetworkSelector extends PureComponent {
 
   handleClickCustomNetwork(data){
     this.props.clearErrors()
-    this.props.selectProviderWithNetwork(data.id, null)
+    this.props.selectProviderWithNetwork(data.id, data.id)
     this.resolveNetwork(data.url)
     this.handleRequestClose()
   }
@@ -183,6 +177,14 @@ export default class CommonNetworkSelector extends PureComponent {
     this.setState({
       open: false,
     })
+  }
+
+  getFullNetworkName(item){
+    if (isLocalNode(item.provider.id, item.network.id)){
+      return 'localNode'
+    }
+
+    return `${item.provider.name} - ${item.network.name}`
   }
 
   renderCustomNetworksList(){
@@ -265,8 +267,6 @@ export default class CommonNetworkSelector extends PureComponent {
 
   getSelectedNetwork(){
     const { selectedNetworkId, selectedProviderId, selectedProvider, customNetworksList } = this.props
-
-    console.log('selected', selectedNetworkId, selectedProvider, customNetworksList)
 
     const foundCustomSelectedNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 

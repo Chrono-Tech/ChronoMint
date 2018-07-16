@@ -5,6 +5,8 @@
 
 import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
+import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
 import Web3 from 'web3'
 import {
@@ -42,7 +44,6 @@ import {
 import uportProvider, { UPortAddress } from './uportProvider'
 import web3Provider, { Web3Provider } from './Web3Provider'
 import web3Utils from './Web3Utils'
-
 
 const { web3Converter } = utils
 
@@ -212,9 +213,24 @@ class NetworkService extends EventEmitter {
 
   getProviderSettings = () => {
     const state = this._store.getState()
+
+    const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
     const { selectedNetworkId, selectedProviderId, isLocal } = state.get(DUCK_NETWORK)
     const network = getNetworkById(selectedNetworkId, selectedProviderId, isLocal)
+
     const { protocol, host } = network
+
+    console.log('network', network, customNetworksList)
+    if (!host){
+
+      const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
+
+      console.log('customnetwork', customNetwork)
+      return {
+        network: customNetwork,
+        url: customNetwork && customNetwork.url,
+      }
+    }
 
     return {
       network,
