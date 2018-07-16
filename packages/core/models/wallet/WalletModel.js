@@ -12,7 +12,7 @@ const schemaFactory = () => ({
   name: PropTypes.string,
   balances: PropTypes.object,
   transactions: PropTypes.object,
-  owners: PropTypes.object,
+  owners: PropTypes.arrayOf(PropTypes.string),
   requiredSignatures: PropTypes.number,
   pendingTxList: PropTypes.object,
   releaseTime: PropTypes.instanceOf(Date),
@@ -25,7 +25,7 @@ const schemaFactory = () => ({
 const defaultProps = {
   balances: {},
   transactions: {},
-  owners: {},
+  owners: [],
   pendingTxList: null,
   customTokens: null,
 }

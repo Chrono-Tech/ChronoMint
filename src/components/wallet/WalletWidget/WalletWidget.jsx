@@ -30,7 +30,7 @@ import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
-import { getWalletInfo } from '../WalletWidgetMini/selectors'
+import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
@@ -254,18 +254,18 @@ export default class WalletWidget extends PureComponent {
                     <span styleName='address-address'>{address}</span>
                   </div>
 
-                  {token && token.isFetched()
+                  {/*token && token.isFetched()
                     ? <WalletMainCoinBalance wallet={wallet} />
                     : (
                       <span styleName='noToken'>
                         <Translate value={`${prefix}.tokenNotAvailable`} />
                       </span>
-                    )}
+                    )*/}
                 </Link>
 
                 {this.isMySharedWallet() && this.getOwnersList()}
 
-                <WalletTokensList wallet={wallet} />
+                {/*<WalletTokensList wallet={wallet} />*/}
 
                 {wallet.isTimeLocked && (
                   <div styleName='unlockDateWrapper'>

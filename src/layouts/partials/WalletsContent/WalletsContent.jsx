@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getIsHave2FAWallets } from '@chronobank/core/redux/wallet/selectors'
+import { isHave2FAWallets, getTwoFaChecked } from '@chronobank/core/redux/wallets/selectors'
 import { WalletWidget } from 'components'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -11,20 +11,18 @@ import { connect } from 'react-redux'
 import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import TwoFAWarningWidget from 'components/wallet/TwoFAWarningWidget/TwoFAWarningWidget'
-import { DUCK_MULTISIG_WALLET } from '@chronobank/core/redux/multisigWallet/actions'
 import WalletWidgetMini from 'components/wallet/WalletWidgetMini/WalletWidgetMini'
 import { getBalance } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_UI } from 'redux/ui/reducer'
+import { sectionsSelector } from '@chronobank/core/redux/wallets/selectors/wallets'
 import './WalletsContent.scss'
-import { sectionsSelector } from './selectors'
 
 const mapStateToProps = (state) => {
-  const check2FAChecked = state.get(DUCK_MULTISIG_WALLET).twoFAConfirmed()
   const { isCompactWalletView } = state.get(DUCK_UI)
   return {
     isCompactWalletView,
-    check2FAChecked,
-    isHave2FAWallets: getIsHave2FAWallets(state),
+    check2FAChecked: getTwoFaChecked(state),
+    isHave2FAWallets: isHave2FAWallets(state),
     walletsList: sectionsSelector(state),
   }
 }

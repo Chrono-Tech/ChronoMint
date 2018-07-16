@@ -29,12 +29,29 @@ import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/MultisigWalletsManagerDAO'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 
+export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
 export const WALLETS_UPDATE_BALANCE = 'wallet/updateBalance'
+export const WALLETS_TWO_FA_CONFIRMED = 'wallet/twoFaConfirmed'
 
 let walletsManagerDAO
 const isOwner = (wallet, account) => {
   return wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+}
+
+export const get2FAEncodedKey = (callback) => () => {
+  return ethereumProvider.get2FAEncodedKey(callback)
+}
+
+export const check2FAChecked = () => async (dispatch) => {
+  const result = await dispatch(get2FAEncodedKey())
+  let twoFAConfirmed
+  if (typeof result === 'object' && result.code) {
+    twoFAConfirmed = true
+  } else {
+    twoFAConfirmed = false
+  }
+  dispatch({ type: WALLETS_TWO_FA_CONFIRMED, twoFAConfirmed })
 }
 
 export const initWallets = () => (dispatch) => {
@@ -138,7 +155,7 @@ export const initMultisigWallets = () => async (dispatch) => {
   // dispatch(subscribeOnMultisigWalletService())
 
   // TODO implement this method
-  // dispatch(check2FAChecked())
+  dispatch(check2FAChecked())
 
   // all ready, start fetching
   walletsManagerDAO.fetchWallets()

@@ -8,6 +8,7 @@ import WalletModel from '../../models/wallet/WalletModel'
 
 const initialState = {
   list: {},
+  twoFAConfirmed: null,
 }
 
 export default (state = initialState, action) => {
@@ -33,6 +34,11 @@ export default (state = initialState, action) => {
             },
           }),
         },
+      }
+    case a.WALLETS_TWO_FA_CONFIRMED:
+      return {
+        ...state,
+        twoFAConfirmed: action.twoFAConfirmed,
       }
     default:
       return state
