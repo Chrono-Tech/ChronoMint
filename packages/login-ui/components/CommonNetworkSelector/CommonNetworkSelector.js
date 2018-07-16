@@ -272,9 +272,17 @@ export default class CommonNetworkSelector extends PureComponent {
 
     if (foundCustomSelectedNetwork){
       return foundCustomSelectedNetwork.name
-    } else {
-      return getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
     }
+
+    const baseNetworkNames = getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
+
+    if (!baseNetworkNames){
+      networkService.autoSelect()
+
+      return ''
+    }
+
+    return baseNetworkNames
   }
 
   render () {

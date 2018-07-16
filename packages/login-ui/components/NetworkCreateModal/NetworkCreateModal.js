@@ -6,6 +6,7 @@
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 import { modalsClose } from 'redux/modals/actions'
 import {
   handleSubmitCreateNetwork,
@@ -16,10 +17,7 @@ import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
 import { ModalDialog } from 'components'
-import NetworkCreateModalForm from './NetworkCreateModalForm'
-import web3Utils from "../../../login/network/Web3Utils";
-import Web3 from "web3";
-import web3Provider from "../../../login/network/Web3Provider";
+import NetworkCreateModalForm from '../NetworkCreateModalForm/NetworkCreateModalForm'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -44,12 +42,6 @@ export default class NetworkCreateModal extends PureComponent {
     network: null,
   }
 
-  resolveNetwork(){
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
-  }
-
   handleSubmitSuccess = () => {
     this.props.handleCloseModal()
   }
@@ -60,7 +52,6 @@ export default class NetworkCreateModal extends PureComponent {
     const url = values.get('url')
     const alias = values.get('alias')
 
-    console.log('handle', values, url, alias, network)
     if (network){
 
       const networkModel = new AccountCustomNetwork({
@@ -89,7 +80,11 @@ export default class NetworkCreateModal extends PureComponent {
     const { network } = this.props
 
     return (
-      <ModalDialog title='Add a Network'>
+      <ModalDialog title={
+        network ? (
+          <Translate value='NetworkCreateModal.titleEditMode' />
+        ) : (<Translate value='NetworkCreateModal.titleAddMode' />)
+      }>
         <NetworkCreateModalForm
           onSubmit={this.handleSubmit.bind(this)}
           onSubmitSuccess={this.handleSubmitSuccess.bind(this)}

@@ -216,8 +216,6 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
 
     copyNetworksList.splice(foundNetworkIndex, 1, network)
 
-    console.log('copyNetwork', copyNetworksList)
-
     dispatch(customNetworksListUpdate(copyNetworksList))
   }
 }

@@ -49,7 +49,7 @@ class NetworkCreateModalForm extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, network,
+    const { handleSubmit, pristine, valid, isImportMode, error, network,
       handleDeleteNetwork, onCloseModal } = this.props
 
     return (
@@ -60,7 +60,9 @@ class NetworkCreateModalForm extends PureComponent {
             component={TextField}
             name='url'
             type='text'
-            floatingLabelText='IP address or domain name'
+            floatingLabelText={
+              <Translate value='NetworkCreateModalForm.address' />
+            }
             fullWidth
             {...styles.textField}
             {...textFieldStyles}
@@ -70,7 +72,9 @@ class NetworkCreateModalForm extends PureComponent {
             component={TextField}
             name='alias'
             type='text'
-            floatingLabelText='Alias'
+            floatingLabelText={
+              <Translate value='NetworkCreateModalForm.alias' />
+            }
             fullWidth
             {...styles.textField}
             {...textFieldStyles}
@@ -90,13 +94,19 @@ class NetworkCreateModalForm extends PureComponent {
               styleName='button buttonCancel'
               buttonType='flat'
               onClick={onCloseModal}
-              label='Cancel'
+              label={
+                <Translate value='NetworkCreateModalForm.cancel' />
+              }
             />
             <Button
               styleName='button buttonAdd'
               buttonType='login'
               type='submit'
-              label={ network ? 'SAVE' : 'ADD' }
+              label={ network ? (
+                <Translate value='NetworkCreateModalForm.save' />
+              ) : (
+                <Translate value='NetworkCreateModalForm.add' />
+              ) }
             />
 
             { error ? (<div styleName='form-error'>{error}</div>) : null }

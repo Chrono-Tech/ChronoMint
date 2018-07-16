@@ -323,7 +323,15 @@ export const getNetworkWithProviderNames = (providerId, networkId, withLocal = f
   if (isLocalNode(providerId, networkId)){
     return 'localNode'
   }
-  return `${getProviderById(providerId).name} - ${getNetworkById(networkId, providerId, withLocal).name}`
+
+  const provider = getProviderById(providerId)
+  const network = getNetworkById(networkId, providerId, withLocal)
+
+  if (!provider.name && !network.name){
+    return ''
+  }
+
+  return `${provider.name} - ${network.name}`
 }
 
 export const isLocalNode = (providerId, networkId) => {
