@@ -160,16 +160,13 @@ class LoginWithWallet extends Component {
                 <Button styleName='button' buttonType='login' disabled>
                   <img styleName='before-img' src={CheckIcon} alt='' />
                   <span styleName='button-text'>{fileName}</span>
-                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                  <span
+                    styleName='removeButton'
+                    onClick={() => this.handleRemoveWallet()}
+                  >
+                    <img styleName='after-img' src={DeleteIcon} alt='' />
+                  </span>
                 </Button>
-                <Field
-                  component={TextField}
-                  name='password'
-                  type='password'
-                  floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-                  fullWidth
-                  {...styles.textField}
-                />
               </div>
             )}
 

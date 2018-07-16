@@ -78,10 +78,11 @@ class LoginPage extends PureComponent {
 
           <p styleName='description'>
             <Translate value='AccountName.description' />
+            <br />
             <Translate value='AccountName.descriptionExtra' />
           </p>
 
-          <div styleName='user-row'>
+          <div styleName='content'>
 
             <div styleName='field'>
               <Field

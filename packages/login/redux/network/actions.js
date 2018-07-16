@@ -358,6 +358,8 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
   let profileSignature = await profileService.getProfile(signData.signature)
 
   dispatch(setProfileSignature(profileSignature))
+
+  return profileSignature
 }
 
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
@@ -461,43 +463,60 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
 
   const { selectedWallet } = state.get('persistAccount')
 
+  let restoredWalletJSON
+
   try {
-    let restoredWalletJSON = JSON.parse(walletString)
+    restoredWalletJSON = JSON.parse(walletString)
 
     if ('Crypto' in restoredWalletJSON){
       restoredWalletJSON.crypto = restoredWalletJSON.Crypto
       delete restoredWalletJSON.Crypto
     }
 
-    if (restoredWalletJSON && restoredWalletJSON.address){
-      const { data } = await profileService.getPersonInfo(restoredWalletJSON.address)
-
-      if (data && data.length){
-        const profile = data[0]
-
-        const account = new AccountEntryModel({
-          key: uuid(),
-          name: profile.userName,
-          encrypted: [restoredWalletJSON],
-          profile,
-        })
-
-        dispatch(accountAdd(account))
-
-        dispatch(accountSelect(account))
-
-        dispatch(navigateToLoginPage())
-
-      } else {
-        dispatch(setImportedWalletFile(restoredWalletJSON))
-
-        dispatch(navigateToAccountName())
-      }
-    }
-
   } catch(e){
-    throw new SubmissionError({ _error: e && e.message })
+    throw new SubmissionError({ _error: 'Broken wallet file' })
   }
+
+  if (restoredWalletJSON && restoredWalletJSON.address){
+    let response
+
+    try {
+      response = await profileService.getPersonInfo(restoredWalletJSON.address)
+    } catch(e){}
+
+    if (response && response.data && response.data.length){
+      const profile = response.data[0]
+
+      const account = new AccountEntryModel({
+        key: uuid(),
+        name: profile.userName,
+        encrypted: [restoredWalletJSON],
+        profile,
+      })
+
+      dispatch(accountAdd(account))
+
+      dispatch(accountSelect(account))
+
+      dispatch(navigateToLoginPage())
+
+    } else {
+      dispatch(setImportedWalletFile(restoredWalletJSON))
+
+      dispatch(navigateToAccountName())
+
+    }
+  }
+
+}
+
+export const onSubmitWalletUploadSuccess = () => (dispatch) => {
+  dispatch(navigateToAccountName())
+
+}
+
+export const onSubmitWalletUploadFail = (error, dispatch, submitError) => (dispatch) => {
+  dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitError && submitError.errors))
 
 }
 
@@ -524,16 +543,6 @@ export const onSubmitAccountNameSuccess = () => (dispatch) => {
 }
 
 export const onSubmitAccountNameFail = (errors, dispatch, submitErrors) => (dispatch) => {
-
-}
-
-export const onSubmitWalletUploadSuccess = () => (dispatch) => {
-  dispatch(navigateToAccountName())
-
-}
-
-export const onSubmitWalletUploadFail = (error, dispatch, submitError) => (dispatch) => {
-  dispatch(stopSubmit(FORM_WALLET_UPLOAD, submitError && submitError.errors))
 
 }
 

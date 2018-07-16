@@ -24,6 +24,7 @@ import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as ProviderSelector from './components/ProviderSelector/lang'
 import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher/lang'
 import * as Warning from './components/Warning/lang'
+import * as AccountName from './components/AccountName/lang'
 
 export const en = {
   ConfirmMnemonic: ConfirmMnemonic.en,
@@ -47,4 +48,5 @@ export const en = {
   Warning: Warning.en,
   LoginUPort: LoginUPort.en,
   AccountSelector: AccountSelector.en,
+  AccountName: AccountName.en,
 }
