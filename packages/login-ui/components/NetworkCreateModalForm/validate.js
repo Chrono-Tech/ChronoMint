@@ -4,7 +4,7 @@
  */
 
 import ErrorList from 'platform/ErrorList'
-import * as validator from '../../../core/models/validator'
+import * as validator from '@chronobank/core/models/validator'
 
 export default (values) => {
   const alias = values.get('alias')

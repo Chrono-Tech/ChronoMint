@@ -377,20 +377,16 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   try {
     wallet = await dispatch(decryptAccount(selectedWallet.encrypted, password))
 
-    console.log('decrypt ok')
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
+
+    dispatch(getProfileSignature(wallet[0]))
 
     if (privateKey) {
       await dispatch(handlePrivateKeyLogin(privateKey))
-      console.log('ok login')
     }
 
   } catch(e){
     throw new SubmissionError({ password: e && e.message })
-  }
-
-  if (wallet) {
-    dispatch(getProfileSignature(wallet[0]))
   }
 
 }
