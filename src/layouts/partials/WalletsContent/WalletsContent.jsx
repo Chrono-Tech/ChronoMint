@@ -52,10 +52,6 @@ export default class WalletsContent extends Component {
     getBalance: PropTypes.func,
   }
 
-  componentDidMount () {
-    // this.props.getBalance()
-  }
-
   render () {
     const Component = this.props.isCompactWalletView ? WalletWidgetMini : WalletWidget
     return (

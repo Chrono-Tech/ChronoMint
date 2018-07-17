@@ -6,13 +6,16 @@
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
 import { getWallets } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
+import { getAccount } from '../../session/selectors/models'
 
 export const selectWalletsList = createSelector(
   [
+    getAccount,
     getWallets,
   ],
-  (wallets) => {
+  (account, wallets) => {
     return Object.values(wallets)
+      .filter((wallet: WalletModel) => wallet.isDerived || wallet.isMultisig ? wallet.owners.includes(account) : true)
       .map((wallet: WalletModel) => {
         const jsWallet = Object.create(null)
         jsWallet['address'] = wallet.address

@@ -21,6 +21,7 @@ export const selectWallet = (blockchain, address) => createSelector(
     const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
     return {
       ...wallet,
+      id: wallet.id,
       amount: balance,
     }
   },

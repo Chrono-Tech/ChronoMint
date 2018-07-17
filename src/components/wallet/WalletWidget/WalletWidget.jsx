@@ -219,10 +219,6 @@ export default class WalletWidget extends PureComponent {
     const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
     const tokenIsFetched = (token && token.isFetched())
 
-    if (Array.isArray(wallet.owners) && !wallet.owners.includes(account)) {
-      return null
-    }
-
     return (
       <BalanceSubscription wallet={wallet}>
         <div styleName='header-container'>
@@ -254,18 +250,18 @@ export default class WalletWidget extends PureComponent {
                     <span styleName='address-address'>{address}</span>
                   </div>
 
-                  {/*token && token.isFetched()
+                  {token && token.isFetched()
                     ? <WalletMainCoinBalance wallet={wallet} />
                     : (
                       <span styleName='noToken'>
                         <Translate value={`${prefix}.tokenNotAvailable`} />
                       </span>
-                    )*/}
+                    )}
                 </Link>
 
                 {this.isMySharedWallet() && this.getOwnersList()}
 
-                {/*<WalletTokensList wallet={wallet} />*/}
+                <WalletTokensList wallet={wallet} />
 
                 {wallet.isTimeLocked && (
                   <div styleName='unlockDateWrapper'>

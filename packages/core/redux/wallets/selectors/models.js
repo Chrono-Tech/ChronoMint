@@ -5,6 +5,10 @@
 
 import { DUCK_WALLETS } from '../actions'
 
+export const getWallet = (walletId) => (state) => {
+  return state.get(DUCK_WALLETS).list[walletId]
+}
+
 export const getWallets = (state) => {
   return state.get(DUCK_WALLETS).list
 }
