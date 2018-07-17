@@ -21,6 +21,7 @@ import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chr
 import TransactionsCollection from "@chronobank/core/models/wallet/TransactionsCollection"
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
+import SendTokensNew from 'components/dashboard/SendTokensNew/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { getAccount } from '@chronobank/core/redux/session/selectors'
@@ -63,6 +64,18 @@ function mapDispatchToProps (dispatch) {
         blockchain: wallet.blockchain,
         address: wallet.address,
       }, SendTokens))
+    },
+    sendNew: (token, wallet) => {
+      // eslint-disable-next-line
+      console.log('sendNew', wallet)
+      dispatch(modalsOpen({
+        component: SendTokensNew,
+        props: {
+          wallet,
+          isModal: true,
+          token,
+        },
+      }))
     },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
@@ -108,6 +121,10 @@ export default class WalletWidget extends PureComponent {
 
   handleSend = (wallet) => () => {
     this.props.send(this.props.token.id(), wallet)
+  }
+
+  handleSendNew = (wallet) => () => {
+    this.props.sendNew(this.props.token.id(), wallet)
   }
 
   handleReceive = () => {
@@ -276,6 +293,12 @@ export default class WalletWidget extends PureComponent {
                       type='submit'
                       label={<Translate value={`${prefix}.sendButton`} />}
                       onClick={this.handleSend(wallet)}
+                    />
+                    <Button
+                      disabled={!tokenIsFetched}
+                      type='submit'
+                      label={<Translate value={`${prefix}.sendButtonNew`} />}
+                      onClick={this.handleSendNew(wallet)}
                     />
                   </div>
                   <div styleName='action'>

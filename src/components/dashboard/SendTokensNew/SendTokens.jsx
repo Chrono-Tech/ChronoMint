@@ -9,7 +9,6 @@ import {
   BLOCKCHAIN_BITCOIN_CASH, BLOCKCHAIN_BITCOIN_GOLD,
   BLOCKCHAIN_LITECOIN,
 } from '@chronobank/login/network/BitcoinProvider'
-import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from 'components/dashboard/SendTokens/SendTokensForm'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import PropTypes from 'prop-types'
@@ -25,6 +24,7 @@ import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'
 import DerivedWalletModel from '@chronobank/core/models/wallet/DerivedWalletModel'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
+import SendTokensForm, { ACTION_APPROVE, ACTION_TRANSFER, FORM_SEND_TOKENS, MODE_ADVANCED, MODE_SIMPLE } from './SendTokensForm'
 import { PTWallet } from '../../../../packages/core/redux/wallet/types'
 
 function mapStateToProps (state) {
@@ -131,8 +131,7 @@ export default class SendTokens extends PureComponent {
             onSubmit={this.handleSubmit}
             onSubmitSuccess={this.handleSubmitSuccess}
             token={this.props.token}
-            blockchain={this.props.blockchain}
-            address={this.props.address}
+            wallet={this.props.wallet}
           />
         </ModalDialog>
       )
@@ -144,8 +143,7 @@ export default class SendTokens extends PureComponent {
         onSubmit={this.handleSubmit}
         onSubmitSuccess={this.handleSubmitSuccess}
         token={this.props.token}
-        blockchain={this.props.blockchain}
-        address={this.props.address}
+        wallet={this.props.wallet}
       />
     )
   }
