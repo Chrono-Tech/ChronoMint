@@ -4,7 +4,7 @@ import axios from 'axios'
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const GET_PERSONS_REST = '/api/v1/security/persons/query'
 const GET_SIGNATURE_REST = '/api/v1/security/signin/signature'
-const PURPOSE_VALUE = 'exchange-session'
+const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
   connectStore (store) {

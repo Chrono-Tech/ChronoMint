@@ -461,8 +461,6 @@ export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) =
 export const onSubmitWalletUpload = (walletString, password) => async (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
-
   let restoredWalletJSON
 
   try {
@@ -481,11 +479,13 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
     let response
 
     try {
-      response = await profileService.getPersonInfo(restoredWalletJSON.address)
+      const address = `0x${restoredWalletJSON.address}`
+      response = await profileService.getPersonInfo([address])
     } catch(e){}
 
-    if (response && response.data && response.data.length){
-      const profile = response.data[0]
+    const profile = response && response.data && response.data[0]
+
+    if (profile && profile.userName){
 
       const account = new AccountEntryModel({
         key: uuid(),
@@ -506,12 +506,13 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       dispatch(navigateToAccountName())
 
     }
+  } else {
+    throw new SubmissionError({ _error: 'Wrong wallet address' })
   }
 
 }
 
 export const onSubmitWalletUploadSuccess = () => (dispatch) => {
-  dispatch(navigateToAccountName())
 
 }
 
@@ -670,6 +671,10 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
   dispatch(updateSelectedAccount())
 
   dispatch(resetLoadingAccountsSignatures())
+
+}
+
+export const initAccountNamePage = () => (dispatch) => {
 
 }
 

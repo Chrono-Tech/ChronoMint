@@ -17,9 +17,7 @@ import {
   onSubmitAccountName,
   onSubmitAccountNameSuccess,
   onSubmitAccountNameFail,
-  initLoginPage,
-  navigateToSelectWallet,
-  initAccountsSignature,
+  initAccountNamePage,
   FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 import validate from './validate'
@@ -40,36 +38,31 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
-      const password = values.get('password')
+      const accountName = values.get('accountName')
 
-      await dispatch(onSubmitAccountName(password))
+      await dispatch(onSubmitAccountName(accountName))
     },
-    onSubmitSuccess: () => dispatch(onSubmitAccountName()),
+    onSubmitSuccess: () => dispatch(onSubmitAccountNameSuccess()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitAccountNameFail(errors, dispatch, submitErrors)),
-    initLoginPage: async () => dispatch(initLoginPage()),
-    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
-    initAccountsSignature: () => dispatch(initAccountsSignature()),
+    initAccountNamePage: () => dispatch(initAccountNamePage()),
   }
 }
 
 class LoginPage extends PureComponent {
   static propTypes = {
-    initLoginPage: PropTypes.func,
-    navigateToSelectWallet: PropTypes.func,
+    initAccountNamePage: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
-    initAccountsSignature: PropTypes.func,
   }
 
   componentWillMount(){
-    this.props.initLoginPage()
+    this.props.initAccountNamePage()
   }
 
   render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting } = this.props
+    const { handleSubmit, error, isLoginSubmitting } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
@@ -88,8 +81,7 @@ class LoginPage extends PureComponent {
               <Field
                 component={TextField}
                 name='accountName'
-                type='text'
-                hintText={<Translate value='AccountName.accountNamePlaceholder' />}
+                floatingLabelText={<Translate value='AccountName.accountNamePlaceholder' />}
                 fullWidth
                 {...styles.textField}
               />

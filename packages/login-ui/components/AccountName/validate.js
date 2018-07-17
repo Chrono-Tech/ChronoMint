@@ -3,17 +3,17 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 
 export default (values) => {
 
-  const password = values.get('accountName')
+  const accountName = values.get('accountName')
 
-  let passwordErrors = new ErrorList()
-  passwordErrors.add(validator.required(password))
+  let accountNameErrors = new ErrorList()
+  accountNameErrors.add(validator.required(accountName))
 
   return {
-    accountName: passwordErrors.getErrors(),
+    accountName: accountNameErrors.getErrors(),
   }
 }
