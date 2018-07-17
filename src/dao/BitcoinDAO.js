@@ -65,7 +65,7 @@ export default class BitcoinDAO extends EventEmitter {
   async getAccountBalances (address) {
     const { balance0, balance6 } = await this._bitcoinProvider.getAccountBalances(address)
     return {
-      balance: balance0 || balance6,
+      balance: balance0.gt(0) ? balance0 : balance6,
     }
   }
 
