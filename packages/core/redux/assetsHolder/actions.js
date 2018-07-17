@@ -29,7 +29,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     return
   }
 
-  const holderAccount = assetHolder.account()
   const holderWallet = assetHolder.wallet()
 
   // set symbol for asset
@@ -40,7 +39,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   const tokenDAO = tokenService.getDAO(token.id())
   tokenDAO
     .on('approval', (results) => {
-      if (results.from === holderWallet || results.to === holderWallet) {
+      if (results.from === holderWallet || results.spender === holderWallet) {
         dispatch(fetchAssetAllowance(token))
       }
     })
@@ -53,6 +52,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     })
 
   // need to be uncomment
+  // const holderAccount = assetHolder.account()
   // await tokenDAO.watch(holderAccount)
 
   // fetch deposit and allowance
@@ -97,11 +97,11 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
   const assetHolderDAO = daoByType('TimeHolder')(getState())
-  const [ wallet ] = await Promise.all([
+  const [ walletAddress ] = await Promise.all([
     assetHolderDAO.getWalletAddress(),
   ])
 
-  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet })
+  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
 
   // get assets list
   const [ timeAddress ] = await Promise.all([
@@ -112,7 +112,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
     dispatch({
       type: ASSET_HOLDER_ASSET_UPDATE,
       asset: new AssetModel({
-        address,
+        address: address.toLowerCase(),
       }),
     })
   })

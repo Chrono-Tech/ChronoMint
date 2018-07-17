@@ -12,8 +12,6 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case a.ASSET_HOLDER_INIT:
       return state.isInited(true)
-    // case a.ASSET_HOLDER_TIME_ADDRESS:
-    //   return state.assetAddress(action.address)
     case a.ASSET_HOLDER_ADDRESS:
       return state
         .account(action.account)

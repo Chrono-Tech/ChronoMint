@@ -322,6 +322,8 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
     const tx = await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
     dispatch(sendNewTx(tx))
   } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }
@@ -333,10 +335,12 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    additionalOptions['account'] = account
+    additionalOptions['from'] = account
     const tx = await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
     dispatch(sendNewTx(tx))
   } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke error: ', e)
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }

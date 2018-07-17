@@ -120,44 +120,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     return tx
   }
 
-  async approve (spender: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
-
-    const {
-      from,
-      fields,
-    } = Object.assign({}, DEFAULT_TX_OPTIONS, advancedOptions)
-
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, amount], new BigNumber(0), spender, { feeMultiplier })
-    const data = this.contract.methods.approve(spender, amount).encodeABI()
-
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func: 'approve',
-      blockchain: this.token.blockchain(),
-      symbol: this.token.symbol(),
-      from,
-      to: this.contract._address,
-      fields: {
-        to: {
-          value: this.contract._address,
-          description: 'to',
-        },
-        amount: {
-          value: new Amount(amount, this.token.symbol()),
-          description: 'amount',
-        },
-      },
-      fee: {
-        gasLimit: new Amount(gasLimit, ETH),
-        gasFee: new Amount(gasFee, ETH),
-        gasPrice: new Amount(gasPrice, ETH),
-        feeMultiplier,
-      },
-      value: new Amount(0, ETH),
-      data,
-    })
-  }
-
   handleTransferData (data) {
     // eslint-disable-next-line no-console
     console.log('[ERC20TokenDAO] Transfer occurred', data)
@@ -167,9 +129,9 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
         key: `${data.transactionHash}/${data.logIndex}`,
         token: this.token,
         // eslint-disable-next-line no-underscore-dangle
-        from: returnValues.from,
+        from: returnValues.from.toLowerCase(),
         // eslint-disable-next-line no-underscore-dangle
-        to: returnValues.to,
+        to: returnValues.to.toLowerCase(),
         value: new BigNumber(returnValues.value),
       })
     })
@@ -193,8 +155,8 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       this.emit('approval', {
         key: `${data.transactionHash}/${data.logIndex}`,
         token: this.token,
-        owner: returnValues.from,
-        spender: returnValues.to,
+        owner: returnValues.from.toLowerCase(),
+        spender: returnValues.spender.toLowerCase(),
         value: new BigNumber(returnValues.value),
       })
     })
@@ -239,6 +201,79 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
         },
         amount: {
           value: new Amount(amount, this.token.symbol()),
+          description: 'amount',
+        },
+      },
+      fee: {
+        gasLimit: new Amount(gasLimit, ETH),
+        gasFee: new Amount(gasFee, ETH),
+        gasPrice: new Amount(gasPrice, ETH),
+        feeMultiplier,
+      },
+      value: new Amount(0, ETH),
+      data,
+    })
+  }
+
+  async approve (spender: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
+
+    const {
+      from,
+    } = Object.assign({}, DEFAULT_TX_OPTIONS, advancedOptions)
+
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, amount], new BigNumber(0), from, { feeMultiplier })
+    const data = this.contract.methods.approve(spender, amount).encodeABI()
+
+    return new TxExecModel({
+      contract: this.abi.contractName,
+      func: 'approve',
+      blockchain: this.token.blockchain(),
+      symbol: this.token.symbol(),
+      from,
+      to: this.contract._address.toLowerCase(),
+      fields: {
+        to: {
+          value: this.contract._address,
+          description: 'to',
+        },
+        amount: {
+          value: new Amount(amount, this.token.symbol()),
+          description: 'amount',
+        },
+      },
+      fee: {
+        gasLimit: new Amount(gasLimit, ETH),
+        gasFee: new Amount(gasFee, ETH),
+        gasPrice: new Amount(gasPrice, ETH),
+        feeMultiplier,
+      },
+      value: new Amount(0, ETH),
+      data,
+    })
+  }
+
+  async revoke (spender: string, symbol: String, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
+    const {
+      from,
+    } = Object.assign({}, DEFAULT_TX_OPTIONS, advancedOptions)
+
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, 0], new BigNumber(0), from, { feeMultiplier })
+    const data = this.contract.methods.approve(spender, new Amount(0, symbol)).encodeABI()
+
+    return new TxExecModel({
+      contract: this.abi.contractName,
+      func: 'approve',
+      blockchain: this.token.blockchain(),
+      symbol: this.token.symbol(),
+      from,
+      to: this.contract._address.toLowerCase(),
+      fields: {
+        to: {
+          value: this.contract._address,
+          description: 'to',
+        },
+        amount: {
+          value: new Amount(0, this.token.symbol()),
           description: 'amount',
         },
       },
