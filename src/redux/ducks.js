@@ -24,6 +24,7 @@ import * as persistAccount from '@chronobank/core/redux/persistAccount'
 import * as web3 from '@chronobank/core/redux/web3'
 import * as dao from '@chronobank/core/refactor/redux/daos'
 import * as transactions from '@chronobank/core/refactor/redux/transactions'
+import * as wallets from '@chronobank/core/redux/wallets'
 import * as drawer from './drawer'
 import * as modals from './modals'
 import * as sides from './sides'
@@ -54,5 +55,6 @@ export default {
   web3,
   dao,
   transactions,
+  wallets,
   ...Login,
 }

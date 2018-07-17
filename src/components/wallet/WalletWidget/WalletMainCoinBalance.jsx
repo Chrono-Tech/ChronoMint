@@ -7,9 +7,8 @@ import PropTypes from 'prop-types'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { balanceSelector, mainWalletBalanceSelector } from '@chronobank/core/redux/mainWallet/selectors'
-import { multisigBalanceSelector, multisigWalletBalanceSelector } from '@chronobank/core/redux/multisigWallet/selectors'
 import { getMainSymbolForBlockchain } from '@chronobank/core/redux/tokens/selectors'
+import { walletAmountSelector, walletBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
 import { getMarket } from '@chronobank/core/redux/market/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './WalletWidget.scss'
@@ -19,19 +18,14 @@ function makeMapStateToProps (state, props) {
   const mainSymbol = getMainSymbolForBlockchain(wallet.blockchain)
   let getAmount
   let getBalance
-  if (wallet.isMain) {
-    getAmount = balanceSelector(wallet.blockchain, mainSymbol)
-    getBalance = mainWalletBalanceSelector(wallet.blockchain, mainSymbol)
-  } else {
-    getAmount = multisigBalanceSelector(wallet.address, mainSymbol)
-    getBalance = multisigWalletBalanceSelector(wallet.address, mainSymbol)
-  }
+  getAmount = walletAmountSelector(wallet.id, mainSymbol)
+  getBalance = walletBalanceSelector(wallet.id, mainSymbol)
   const mapStateToProps = (ownState) => {
     const { selectedCurrency } = getMarket(ownState)
     return {
       mainSymbol,
-      amountCurrency: getAmount(ownState),
       balance: getBalance(ownState),
+      amount: getAmount(ownState),
       selectedCurrency,
     }
   }
@@ -42,22 +36,22 @@ function makeMapStateToProps (state, props) {
 export default class WalletMainCoinBalance extends PureComponent {
   static propTypes = {
     mainSymbol: PropTypes.string,
-    amountCurrency: PropTypes.number,
     balance: PropTypes.number,
+    amount: PropTypes.number,
     selectedCurrency: PropTypes.string,
     wallet: PTWallet,
   }
 
   render () {
-    const { selectedCurrency, mainSymbol, amountCurrency, balance } = this.props
+    const { selectedCurrency, mainSymbol, balance, amount } = this.props
 
     return (
       <div styleName='token-amount' className='WalletMainCoinBalance__root'>
         <div styleName='crypto-amount'>
-          {mainSymbol} {balance !== null ? integerWithDelimiter(balance, true, null) : '--'}
+          {mainSymbol} {amount !== null ? integerWithDelimiter(amount, true, null) : '--'}
         </div>
         <div styleName='usd-amount' className='WalletMainCoinBalance__usd-amount'>
-          {selectedCurrency} {integerWithDelimiter(amountCurrency.toFixed(2), true)}
+          {selectedCurrency} {integerWithDelimiter(balance.toFixed(2), true)}
         </div>
       </div>
     )

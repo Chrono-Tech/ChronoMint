@@ -34,6 +34,11 @@ class TokenValueSimple extends PureComponent {
 
   render () {
     const { value, tokens, withFraction, fractionPrecision } = this.props
+
+    if (!value) {
+      return null
+    }
+
     const token = tokens.item(value.symbol())
 
     if (token.isFetched()) {

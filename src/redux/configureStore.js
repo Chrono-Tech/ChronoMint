@@ -28,7 +28,7 @@ let i18nJson // declaration of a global var for the i18n object for a standalone
 const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistory() : browserHistory
 
 const getNestedReducers = (ducks) => {
-  let reducers = { }
+  let reducers = {}
   Object.entries(ducks).forEach(([key, entry]) => {
     reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
   })
@@ -122,7 +122,7 @@ export const store = configureStore()
 
 const persistorConfig = {
   key: 'root',
-  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount'],
+  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
   transforms: [transformer()],
 }
 store.__persistor = persistStore(store, persistorConfig)

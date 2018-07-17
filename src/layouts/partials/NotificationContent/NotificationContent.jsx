@@ -93,7 +93,8 @@ class NotificationContent extends PureComponent {
           date: transaction.time(),
           details: transaction.details(),
         })
-
+      case transaction instanceof CurrentTransactionNotificationModel:
+        return transaction
       default:
         break
     }
