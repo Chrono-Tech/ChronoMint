@@ -141,9 +141,9 @@ export const walletTokensAmountSelector = (walletId: string) => createSelector(
   },
 )
 
-export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: string, notFilterZero: boolean) => createSelector(
+export const tokensCountBalanceAndPriceSelector = (walletId: string, symbol: string, notFilterZero: boolean) => createSelector(
   [
-    filteredBalancesAndTokens(blockchain, symbol),
+    filteredBalancesAndTokens(walletId, symbol),
     selectMarketPricesSelectedCurrencyStore,
     selectMarketPricesListStore,
   ],
@@ -152,7 +152,6 @@ export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: s
     selectedCurrency,
     priceList,
   ) => {
-
     return balancesInfo
       .map((info) => {
         const symbol = info.balance.symbol()
@@ -160,24 +159,34 @@ export const tokensCountBalanceAndPriceSelector = (blockchain: string, symbol: s
 
         return {
           'symbol': symbol,
-          'value': info.token.removeDecimals(info.balance.amount()).toNumber(),
-          'valueUsd': info.token.removeDecimals(info.balance.amount()).mul(tokenPrice || 0).toNumber(),
+          'value': info.token.removeDecimals(info.balance).toNumber(),
+          'valueUsd': info.token.removeDecimals(info.balance).mul(tokenPrice || 0).toNumber(),
         }
       })
       .filter((balance) => {
         return notFilterZero ? true : balance.value > 0
       })
-      .toArray()
   },
 )
 
-export const walletTokenBalanceWithPriceSelector = (wallet: PTWallet) => createSelector(
+export const walletTokensAmountAndBalanceSelector = (wallet: PTWallet) => createSelector(
   [
-    tokensCountBalanceAndPriceSelector(wallet),
+    tokensCountBalanceAndPriceSelector(wallet, null, true),
   ],
   (
     balancesInfo,
   ) => {
     return balancesInfo
+  },
+)
+
+export const tokensCountSelector = (walletId: string) => createSelector(
+  [
+    tokensCountBalanceSelector(walletId),
+  ],
+  (
+    balances,
+  ) => {
+    return balances.length
   },
 )

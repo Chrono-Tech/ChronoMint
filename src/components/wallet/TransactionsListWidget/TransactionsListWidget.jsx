@@ -9,8 +9,7 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
-import { makeGetTxListForWallet } from '@chronobank/core/redux/wallet/selectors'
-import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
+import { getTxListForWallet } from '@chronobank/core/redux/wallets/selectors/transactions'
 import { formatDataAndGetTransactionsForWallet } from '@chronobank/core/redux/mainWallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
@@ -19,7 +18,7 @@ import './TransactionsListWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  const getTransactions = makeGetTxListForWallet(wallet.blockchain, wallet.address)
+  const getTransactions = getTxListForWallet(wallet.id)
 
   const mapStateToProps = (ownState) => {
     return {
@@ -44,7 +43,7 @@ export default class TransactionsListWidget extends PureComponent {
     getPendingData: PropTypes.func,
     tokens: PropTypes.instanceOf(TokensCollection),
     locale: PropTypes.string,
-    transactions: PropTypes.instanceOf(TransactionsCollection),
+    transactions: PropTypes.array,
     getTransactions: PropTypes.func,
   }
 

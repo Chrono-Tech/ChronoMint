@@ -23,8 +23,7 @@ import { prefix } from './lang'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  let getAmount
-  getAmount = walletTokensAmountSelector(wallet.id)
+  let getAmount = walletTokensAmountSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     const { selectedCurrency } = getMarket(state)
     return {

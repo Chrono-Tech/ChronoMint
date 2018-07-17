@@ -13,6 +13,11 @@ export const getWallets = (state) => {
   return state.get(DUCK_WALLETS).list
 }
 
+export const getWalletTransactions = (walletId) => (state) => {
+  const wallet = getWallet(walletId)(state)
+  return wallet.transactions
+}
+
 export const getTwoFaCheckedFromState = (state) => {
   return state.get(DUCK_WALLETS).twoFAConfirmed
 }
