@@ -25,12 +25,12 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { getAccount } from '@chronobank/core/redux/session/selectors'
 import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
+import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import WalletSettingsForm from '../AddWalletWidget/WalletSettingsForm/WalletSettingsForm'
-import { getWalletInfo } from '../WalletWidgetMini/selectors'
 import WalletMainCoinBalance from './WalletMainCoinBalance'
 import WalletTokensList from './WalletTokensList'
 import WalletName from '../WalletName/WalletName'
@@ -218,10 +218,6 @@ export default class WalletWidget extends PureComponent {
   render () {
     const { address, token, blockchain, wallet, showGroupTitle, account } = this.props
     const tokenIsFetched = (token && token.isFetched())
-
-    if (Array.isArray(wallet.owners) && !wallet.owners.includes(account)) {
-      return null
-    }
 
     return (
       <BalanceSubscription wallet={wallet}>

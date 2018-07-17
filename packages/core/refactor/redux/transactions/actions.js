@@ -6,6 +6,8 @@
 import Tx from 'ethereumjs-tx'
 import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
 import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
+import { WATCHER_TX_SET } from '../../../redux/watcher/actions'
+import CurrentTransactionNotificationModel from '../../../models/CurrentTransactionNotificationModel'
 
 export const DUCK_TRANSACTIONS = 'transactions'
 export const TRANSACTIONS_NEW = 'transactions/new'
@@ -32,9 +34,15 @@ export const rejectConfirm = (tx) => (dispatch) => {
 
 export const signAndSend = (tx) => async (dispatch) => {
   const signedTx = await dispatch(signTx(tx))
+  dispatch({
+    type: WATCHER_TX_SET, tx: new CurrentTransactionNotificationModel({
+      id: tx.id,
+      title: tx.title(),
+      date: tx.time,
+      details: tx.details(),
+    }),
+  })
   const hash = await dispatch(sendTx(signedTx))
-  // eslint-disable-next-line
-  console.log('hash', hash)
 }
 
 export const signTx = (execTx) => async (dispatch, getState) => {
