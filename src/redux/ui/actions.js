@@ -4,9 +4,9 @@
  */
 
 import moment from 'moment'
-import { setLocale } from 'platform/i18n'
-import ls from 'platform/utils/LocalStorage'
-import ipfs from 'platform/utils/IPFS'
+import { setLocale } from '@chronobank/core-dependencies/i18n'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
+import ipfs from '@chronobank/core-dependencies/utils/IPFS'
 import userMonitorService from 'user/monitorService'
 import { modalsOpen } from 'redux/modals/actions'
 import { DUCK_WATCHER, WATCHER_TX_SET } from '@chronobank/core/redux/watcher/actions'
