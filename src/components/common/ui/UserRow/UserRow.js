@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { Link } from 'react-router'
 
 import DEFAULT_AVATAR from 'assets/img/profile-photo-1.jpg'
 import actionIcon from 'assets/img/icons/list.svg'
@@ -16,6 +17,7 @@ export default class UserRow extends React.Component {
     hideActionIcon: PropTypes.bool,
     actionIcon: PropTypes.string,
     actionIconClass: PropTypes.string,
+    linkTitle: PropTypes.string,
     reverseIcon: PropTypes.bool,
   }
 
@@ -27,6 +29,7 @@ export default class UserRow extends React.Component {
     hideActionIcon: false,
     actionIcon: actionIcon,
     actionIconClass: '',
+    linkTitle: '',
     reverseIcon: false,
   }
 
@@ -41,6 +44,7 @@ export default class UserRow extends React.Component {
       hideActionIcon,
       title,
       subtitle,
+      linkTitle,
       onClick,
       reverseIcon,
     } = this.props
@@ -64,9 +68,13 @@ export default class UserRow extends React.Component {
         </div>
         { !hideActionIcon ? (
           <div styleName={classnames('actionWrapper')}>
-            <span styleName={classnames('actionListTrigger', onClick ? '' : 'actionListTriggerDisabled')}>
+            <Link
+              styleName={classnames('actionListTrigger', onClick ? '' : 'actionListTriggerDisabled')}
+              onClick={onClick ? onClick : () => {}}
+              title={linkTitle}
+            >
               <img styleName={classnames(reverseIcon ? 'reverseIcon' : '')} src={actionIcon} alt='' />
-            </span>
+            </Link>
           </div>
         ) : null}
       </div>

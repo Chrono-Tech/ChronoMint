@@ -29,6 +29,7 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
@@ -95,8 +96,10 @@ class LoginPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
               avatar={getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
+              linkTitle='My Accounts'
             />
 
             <div styleName='field'>

@@ -78,7 +78,7 @@ class Footer extends Component {
               <img styleName='navigation-chrono-logo' src={LogoChronobankFull} />
             </div>
 
-            <ul styleName='navigation-list' >
+            <ul styleName='navigation-menu navigation-list' >
               <li>
                 <Link to='/' href styleName='footerLink'>
                   Home
@@ -212,6 +212,7 @@ class Footer extends Component {
               { submitting ? (
                 <img
                   src={spinner}
+                  styleName='spinner'
                   alt=''
                   width={24}
                   height={24}
