@@ -14,7 +14,9 @@ import {
   accountUpdate,
   setProfilesForAccounts,
 } from '@chronobank/core/redux/persistAccount/actions'
+import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import Web3 from 'web3'
+import axios from 'axios'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
@@ -76,6 +78,7 @@ export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
+export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -688,6 +691,35 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   if (isTestRPC(providerId, networkId)){
     dispatch(navigateToLoginLocal())
   }
+}
+
+export const onSubmitSubscribeNewsletter = (email) => async (dispatch) => {
+  const publicBackendProvider = new PublicBackendProvider()
+
+  const subscriptionsService = await axios.create({
+    baseURL: publicBackendProvider.getPublicHost(),
+  })
+
+  try {
+    await subscriptionsService.options ('/api/v1/subscriptions')
+
+    await subscriptionsService.post('/api/v1/subscriptions', {
+      email,
+    })
+  } catch(e){
+    throw new SubmissionError({ _error: e && e.message })
+
+  }
+
+}
+
+export const onSubmitSubscribeNewsletterFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors ))
+
+}
+
+export const onSubmitSubscribeNewsletterSuccess = () => (dispatch) => {
+
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {
