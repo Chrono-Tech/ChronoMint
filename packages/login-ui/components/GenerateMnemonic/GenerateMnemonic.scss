@@ -165,3 +165,55 @@
   }
 }
 
+:global #generate-mnemonic-container {
+  display: none;
+  margin: 4cm 3cm;
+  padding: 3mm;
+
+}
+@page {
+  size: auto;
+  margin: 0;
+}
+
+@media print {
+  :global #react-root {
+    display: none;
+  }
+
+  :global #generate-mnemonic-container {
+    display: block;
+  }
+
+}
+
+.print-wrapper {
+  background: #ccc;
+}
+
+.print-logo {
+  width: 5cm;
+  margin-bottom: 1.7cm;
+  display: block;
+}
+
+.print-title {
+  font-size: 1.05cm;
+  font-weight: bold;
+  line-height: 120%;
+  margin-bottom: 0.7cm;
+}
+
+.print-mnemonic {
+  font-size: 0.40cm;
+  font-weight: bold;
+  word-spacing: 0.15cm;
+  margin-bottom: 1.4cm;
+}
+
+.print-qr-description {
+  font-size: 0.55cm;
+  font-weight: bold;
+  line-height: 130%;
+  margin-bottom: 0.8cm;
+}
