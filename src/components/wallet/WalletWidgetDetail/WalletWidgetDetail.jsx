@@ -45,10 +45,10 @@ function mapDispatchToProps (dispatch) {
         },
       }))
     },
-    receive: (blockchain) => dispatch(modalsOpen({
+    receive: (wallet) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
       props: {
-        blockchain,
+        wallet,
       },
     })),
     deposit: (props) => dispatch(modalsOpen({ component: DepositTokensModal, props })),
@@ -80,7 +80,7 @@ export default class WalletWidgetDetail extends PureComponent {
   }
 
   handleReceive = () => {
-    this.props.receive(this.props.wallet.blockchain)
+    this.props.receive(this.props.wallet)
   }
 
   handleDeposit = () => {
