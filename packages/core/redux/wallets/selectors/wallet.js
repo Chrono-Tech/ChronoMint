@@ -19,11 +19,10 @@ export const selectWallet = (blockchain, address) => createSelector(
     const mainSymbol = getMainSymbolForBlockchain(blockchain)
 
     const balance: Amount = wallet ? wallet.balances[mainSymbol] : new Amount(0, mainSymbol)
-    return {
+    return new WalletModel({
       ...wallet,
-      id: wallet.id,
       amount: balance,
-    }
+    })
   },
 )
 

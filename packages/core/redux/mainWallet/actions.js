@@ -52,6 +52,7 @@ import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
 import { ethDAO } from '../../refactor/daos/index'
 import TxExecModel from '../../models/TxExecModel'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import WalletModel from '../../models/wallet/WalletModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -287,13 +288,12 @@ export const initMainWallet = () => async (dispatch, getState) => {
   })
 }
 
-export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch, getState) => {
+export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amount, recipient: string, feeMultiplier: Number = 1, additionalOptions = {}) => async (dispatch) => {
   try {
-    const sendWallet = wallet || getMainWallet(getState())
     const tokenDAO = tokenService.getDAO(token.id())
 
     const tx: TxExecModel = await tokenDAO.transfer(
-      sendWallet.addresses().item(token.blockchain()).address(),
+      wallet.address,
       recipient,
       amount,
       token,
@@ -301,10 +301,12 @@ export const mainTransfer = (wallet: DerivedWalletModel, token: TokenModel, amou
       additionalOptions,
     )
 
-    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+    if (tx && tx.blockchain === BLOCKCHAIN_ETHEREUM) {
       dispatch(sendNewTx(tx))
     }
   } catch (e) {
+    // eslint-disable-next-line
+    console.error('e', e)
     dispatch(notifyError(e, 'mainTransfer'))
   }
 }

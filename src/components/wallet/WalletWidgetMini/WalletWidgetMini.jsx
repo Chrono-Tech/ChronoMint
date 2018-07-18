@@ -10,13 +10,11 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
-import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { getMainSymbolForBlockchain, getTokens } from '@chronobank/core/redux/tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import SendTokens from 'components/dashboard/SendTokens/SendTokens'
 import TokenValueSimple from 'components/common/TokenValueSimple/TokenValueSimple'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import './WalletWidgetMini.scss'
@@ -40,18 +38,6 @@ function makeMapStateToProps (state, ownProps) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    send: (tokenId, blockchain, address, wallet) => {
-      dispatch(modalsOpen({
-        component: SendTokens,
-        props: {
-          wallet,
-          isModal: true,
-          token: tokenId,
-          blockchain,
-          address,
-        },
-      }))
-    },
     selectWallet: (blockchain, address) => dispatch(selectWallet(blockchain, address)),
   }
 }
@@ -63,7 +49,6 @@ export default class WalletWidgetMini extends PureComponent {
     wallet: PTWallet,
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
-    send: PropTypes.func,
     selectWallet: PropTypes.func,
     showGroupTitle: PropTypes.bool,
   }

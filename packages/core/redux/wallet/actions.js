@@ -33,19 +33,3 @@ export const getCurrentWallet = (state) => {
 export const selectWallet = (blockchain: string, address: string) => (dispatch) => {
   dispatch({ type: WALLET_SELECT_WALLET, blockchain, address })
 }
-
-export const openSendForm = (formProps, Component) => (dispatch, getState) => {
-  let wallet
-  if (formProps.wallet.isMain) {
-    wallet = getMainWallet(getState())
-  } else {
-    wallet = getMultisigWallets(getState()).item(formProps.wallet.address)
-  }
-  formProps.wallet = wallet
-
-  dispatch(modalsOpen({
-    component: Component,
-    props: formProps,
-  }))
-
-}

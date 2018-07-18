@@ -55,8 +55,6 @@ export const getWalletTokens = (walletId: string, isAmountGt: boolean) => {
           }
         })
 
-      // eslint-disable-next-line
-      console.log('walletTokensAndBalanceByAddress', walletTokensAndBalanceByAddress)
       const arrWalletTokensAndBalanceByAddress = [...walletTokensAndBalanceByAddress.values()]
       return arrWalletTokensAndBalanceByAddress
         .reduce((accumulator, tokenKeyValuePair) => {

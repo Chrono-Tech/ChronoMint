@@ -8,7 +8,7 @@ import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { Link } from 'react-router'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { openSendForm, selectWallet } from '@chronobank/core/redux/wallet/actions'
+import { selectWallet } from '@chronobank/core/redux/wallet/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import { Translate } from 'react-redux-i18n'
 import { TOKEN_ICONS } from 'assets'
@@ -21,12 +21,11 @@ import { getMainSymbolForBlockchain, getTokens, isBTCLikeBlockchain } from '@chr
 import TransactionsCollection from "@chronobank/core/models/wallet/TransactionsCollection"
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import SendTokens from 'components/dashboard/SendTokens/SendTokens'
-import SendTokensNew from 'components/dashboard/SendTokensNew/SendTokens'
 import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokensModal'
-import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import { getAccount } from '@chronobank/core/redux/session/selectors'
 import { makeGetTxListForWallet } from "@chronobank/core/redux/wallet/selectors"
 import { getWalletInfo } from '@chronobank/core/redux/wallets/selectors/wallet'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import './WalletWidget.scss'
 import { prefix } from './lang'
 import Moment from '../../common/Moment'
@@ -57,19 +56,8 @@ function makeMapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
-      dispatch(openSendForm({
-        wallet,
-        isModal: true,
-        token,
-        blockchain: wallet.blockchain,
-        address: wallet.address,
-      }, SendTokens))
-    },
-    sendNew: (token, wallet) => {
-      // eslint-disable-next-line
-      console.log('sendNew', wallet)
       dispatch(modalsOpen({
-        component: SendTokensNew,
+        component: SendTokens,
         props: {
           wallet,
           isModal: true,
@@ -103,7 +91,7 @@ export default class WalletWidget extends PureComponent {
     setWalletName: PropTypes.func,
     blockchain: PropTypes.string,
     pendingTransactions: PropTypes.instanceOf(TransactionsCollection),
-    wallet: PTWallet,
+    wallet: PropTypes.instanceOf(WalletModel),
     address: PropTypes.string,
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -121,10 +109,6 @@ export default class WalletWidget extends PureComponent {
 
   handleSend = (wallet) => () => {
     this.props.send(this.props.token.id(), wallet)
-  }
-
-  handleSendNew = (wallet) => () => {
-    this.props.sendNew(this.props.token.id(), wallet)
   }
 
   handleReceive = () => {
@@ -293,12 +277,6 @@ export default class WalletWidget extends PureComponent {
                       type='submit'
                       label={<Translate value={`${prefix}.sendButton`} />}
                       onClick={this.handleSend(wallet)}
-                    />
-                    <Button
-                      disabled={!tokenIsFetched}
-                      type='submit'
-                      label={<Translate value={`${prefix}.sendButtonNew`} />}
-                      onClick={this.handleSendNew(wallet)}
                     />
                   </div>
                   <div styleName='action'>

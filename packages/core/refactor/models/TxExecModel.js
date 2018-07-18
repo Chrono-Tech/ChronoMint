@@ -10,8 +10,8 @@ import uuid from 'uuid/v1'
 import AbstractModel from './AbstractModel'
 
 const schemaFactory = () => ({
-  contract: '',
-  func: '',
+  contract: PropTypes.string,
+  func: PropTypes.string,
   blockchain: PropTypes.string,
   symbol: PropTypes.string,
   from: PropTypes.string,

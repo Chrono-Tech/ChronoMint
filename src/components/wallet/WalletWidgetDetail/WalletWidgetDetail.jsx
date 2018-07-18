@@ -20,7 +20,6 @@ import DepositTokensModal from 'components/dashboard/DepositTokens/DepositTokens
 import EditManagersDialog from 'components/dialogs/wallet/EditOwnersDialog/EditOwnersDialog'
 import EditSignaturesDialog from 'components/dialogs/wallet/EditSignaturesDialog/EditSignaturesDialog'
 import Moment from 'components/common/Moment'
-import { openSendForm } from '@chronobank/core/redux/wallet/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 import SubIconForWallet from '../SubIconForWallet/SubIconForWallet'
 import './WalletWidgetDetail.scss'
@@ -37,13 +36,14 @@ function mapStateToProps (state, ownProps) {
 function mapDispatchToProps (dispatch) {
   return {
     send: (token, wallet) => {
-      dispatch(openSendForm({
-        wallet,
-        isModal: true,
-        token,
-        blockchain: wallet.blockchain,
-        address: wallet.address,
-      }, SendTokens))
+      dispatch(modalsOpen({
+        component: SendTokens,
+        props: {
+          wallet,
+          isModal: true,
+          token,
+        },
+      }))
     },
     receive: (blockchain) => dispatch(modalsOpen({
       component: ReceiveTokenModal,
