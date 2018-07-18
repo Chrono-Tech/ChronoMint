@@ -148,7 +148,7 @@ export default class VotingManagerDAO  {
       for (let i = 0; i < pollsAddresses.length; i++) {
         promises.push(new Promise(async (resolve) => {
           try {
-            const pollAddress = pollsAddresses[ i ]
+            const pollAddress = pollsAddresses[i]
 
             try {
               votingService.subscribeToPoll(pollAddress, account)
@@ -167,38 +167,45 @@ export default class VotingManagerDAO  {
 
             const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
             const result = await ipfs.get(hash)
+            if (!result) {
+              throw new Error(`ipfs hash [${hash}] for voting is invalid`)
+            }
             const { title, description, options, files } = result
+
             const poll = new PollModel({
               id: pollAddress,
-              owner: owners[ i ],
+              owner: owners[i],
               hash,
               votes,
               title,
               description,
-              voteLimitInTIME: voteLimits[ i ].equals(new BigNumber(0)) ? null : new Amount(voteLimits[ i ], 'TIME'),
-              deadline: deadlines[ i ].toNumber() ? new Date(deadlines[ i ].toNumber()) : null, // deadline is just a timestamp
-              published: publishedDates[ i ].toNumber() ? new Date(publishedDates[ i ].toNumber() * 1000) : null, // published is just a timestamp
-              status: statuses[ i ],
-              active: activeStatuses[ i ],
+              voteLimitInTIME: voteLimits[i].equals(new BigNumber(0)) ? null : new Amount(voteLimits[i], 'TIME'),
+              deadline: deadlines[i].toNumber() ? new Date(deadlines[i].toNumber()) : null, // deadline is just a timestamp
+              published: publishedDates[i].toNumber() ? new Date(publishedDates[i].toNumber() * 1000) : null, // published is just a timestamp
+              status: statuses[i],
+              active: activeStatuses[i],
               options: new Immutable.List(options || []),
               files,
               hasMember,
               memberOption,
             })
+
             const pollFiles = poll && await ipfs.get(poll.files)
 
-            resolve(new PollDetailsModel({
+            const pollDetailModel = new PollDetailsModel({
               id: pollAddress,
               poll,
               votes,
               shareholdersCount,
+              isFetched: true,
+              isFetching: false,
               files: new Immutable.List((pollFiles && pollFiles.links || [])
                 .map((item) => FileModel.createFromLink(item))),
             })
-              .isFetched(true))
+
+            resolve(pollDetailModel)
 
           } catch (e) {
-            console.log('PollDetailsModel error: ', e)
             // eslint-disable-next-line
             console.error(e.message)
             resolve(null) // return null

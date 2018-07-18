@@ -4,9 +4,10 @@
  */
 
 import Immutable from 'immutable'
+import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
-import { abstractFetchingModel } from './AbstractFetchingModel'
 import AbstractModel from '../refactor/models/AbstractModel'
+import Amount from '../../core/models/Amount'
 
 /**
  * Copyright 2017–2018, LaborX PTY
@@ -17,18 +18,18 @@ const schemaFactory = () => ({
   id: PropTypes.string,
   hash: PropTypes.string,
   owner: PropTypes.string,
-  title: PropTypes.any,
-  description: PropTypes.any,
-  published: PropTypes.any,
-  voteLimitInTIME: PropTypes.any,
-  deadline: PropTypes.any,
-  options: PropTypes.any,
-  files: PropTypes.any, // hash
-  active: PropTypes.any,
-  status: PropTypes.any,
-  isTransaction: PropTypes.any,
-  hasMember: PropTypes.any,
-  memberOption: PropTypes.any,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  published: PropTypes.instanceOf(Date),
+  voteLimitInTIME: PropTypes.instanceOf(Amount),
+  deadline: PropTypes.instanceOf(Date),
+  options: PropTypes.any, // Immutable list
+  files: PropTypes.string, // hash
+  active: PropTypes.bool,
+  status: PropTypes.bool,
+  isTransaction: PropTypes.bool,
+  hasMember: PropTypes.bool,
+  memberOption: PropTypes.instanceOf(BigNumber),
 })
 
 const defaultProps = {
@@ -75,97 +76,5 @@ class PollModel extends AbstractModel {
     }
   }
 }
-
-// class PollModel extends abstractFetchingModel({
-//   id: null,
-//   hash: null,
-//   owner: null,
-//   title: '',
-//   description: '',
-//   published: null,
-//   voteLimitInTIME: null,
-//   deadline: null,
-//   options: new Immutable.List(['Support', 'Decline']),
-//   files: null, // hash
-//   active: false,
-//   status: false,
-//   isTransaction: false,
-//   hasMember: false,
-//   memberOption: null,
-// }) {
-//   constructor (data = {}) {
-//     super({
-//       ...data,
-//       published: data.published || new Date(new Date().getTime()),
-//       deadline: data.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
-//     })
-//   }
-//
-//   id (value) {
-//     return this._getSet('id', value)
-//   }
-//
-//   hash () {
-//     return this.get('hash')
-//   }
-//
-//   title () {
-//     return this.get('title')
-//   }
-//
-//   description () {
-//     return this.get('description')
-//   }
-//
-//   options () {
-//     return this.get('options')
-//   }
-//
-//   files () {
-//     return this.get('files')
-//   }
-//
-//   active (value) {
-//     return this._getSet('active', value)
-//   }
-//
-//   status () {
-//     return this.get('status')
-//   }
-//
-//   voteLimitInTIME () {
-//     return this.get('voteLimitInTIME')
-//   }
-//
-//   published () {
-//     return this.get('published')
-//   }
-//
-//   deadline () {
-//     return this.get('deadline')
-//   }
-//
-//   hasMember () {
-//     return this.get('hasMember')
-//   }
-//
-//   memberOption () {
-//     return this.get('memberOption')
-//   }
-//
-//   owner () {
-//     return this.get('owner')
-//   }
-//
-//   txSummary () {
-//     return {
-//       title: this.title(),
-//       description: this.description(),
-//       options: this.options().toArray(),
-//       voteLimit: this.voteLimitInTIME(),
-//       finishedDate: this.deadline(),
-//     }
-//   }
-// }
 
 export default PollModel

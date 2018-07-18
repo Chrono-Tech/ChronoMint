@@ -11,4 +11,8 @@ export default class AbstractModel {
     PropTypes.checkPropTypes(schema, props, 'prop', '' + this.class)
     Object.assign(this, props)
   }
+
+  transform () {
+    return { ...this }
+  }
 }
