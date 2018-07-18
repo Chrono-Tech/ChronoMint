@@ -6,9 +6,8 @@
 import EventEmitter from 'events'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../../../refactor/models/TxExecModel'
-// import { DEFAULT_GAS } from './ERC20TokenDAO'
 import web3Converter from '../../../utils/Web3Converter'
-import Amount from "../../../models/Amount";
+import Amount from '../../../models/Amount'
 
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,
@@ -160,13 +159,13 @@ export default class AbstractContractDAO extends EventEmitter {
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
+    // eslint-disable-next-line no-console
+    console.log('Abstract ContractDAO estimate GAS: ', func, args, value, from, additionalOptions)
 
     const contract = await this.contract
     if (!contract.methods.hasOwnProperty(func)) {
       throw this._error('estimateGas func not found', func)
     }
-
-    console.log('estimateGas web3: ', { from, value, gas: 47000000 })
 
     const [gasPrice, gasLimit] = await Promise.all([
       this.web3.eth.getGasPrice(),

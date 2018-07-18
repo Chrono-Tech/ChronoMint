@@ -18,9 +18,11 @@ import { Translate } from 'react-redux-i18n'
 import { DatePicker, Slider, TextField, TimePicker } from 'redux-form-material-ui'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
-import { modalsClose } from 'redux/modals/actions'
+import { daoByType } from '@chronobank/core/refactor/redux/daos/selectors'
+import VotingManagerDAO, { TX_CREATE_POLL } from '@chronobank/core/dao/VotingManagerDAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
-import { createPoll, DUCK_VOTING, estimateGasForVoting } from '@chronobank/core/redux/voting/actions'
+import { createPoll, DUCK_VOTING } from '@chronobank/core/redux/voting/actions'
+import { modalsClose } from 'redux/modals/actions'
 import Amount from '@chronobank/core/models/Amount'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { FEE_RATE_MULTIPLIER, TIME } from '@chronobank/core/redux/mainWallet/actions'
@@ -28,7 +30,6 @@ import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
 import { Button } from 'components/index'
-import { TX_CREATE_POLL } from '@chronobank/core/dao/VotingManagerDAO'
 import './PollEditForm.scss'
 import validate from './validate'
 import { prefix } from './lang'
@@ -45,9 +46,11 @@ const createDeadlineDate = (deadline, deadlineTime) => {
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_EDIT_POLL)
   const formErrors = getFormSyncErrors(FORM_EDIT_POLL)(state)
+  const votingDao = daoByType('VotingManager')(state)
 
   return {
     formErrors,
+    votingDao,
     feeMultiplier: selector(state, 'feeMultiplier'),
     deadline: selector(state, 'deadline'),
     deadlineTime: selector(state, 'deadlineTime'),
@@ -108,6 +111,7 @@ export default class PollEditForm extends Component {
   static propTypes = {
     isModify: PropTypes.bool,
     account: PropTypes.string,
+    votingDao: PropTypes.instanceOf(VotingManagerDAO),
     voteLimit: PropTypes.objectOf(BigNumber),
     timeToken: PropTypes.instanceOf(TokenModel),
     maxVoteLimitInTIME: PropTypes.instanceOf(BigNumber),
@@ -125,7 +129,7 @@ export default class PollEditForm extends Component {
   componentWillReceiveProps (newProps) {
     const { options, voteLimitInTIME, deadline, deadlineTime, feeMultiplier } = newProps
     const newOptionsSize = options.size
-    const oldOptionsSize = this.props.options && this.props.options.size
+    const oldOptionsSize = this.props.options && this.props.options.length
     const newDeadline = createDeadlineDate(deadline, deadlineTime)
     const oldDeadline = createDeadlineDate(this.props.deadline, this.props.deadlineTime)
 
@@ -138,10 +142,12 @@ export default class PollEditForm extends Component {
 
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      estimateGasForVoting(
+      this.props.votingDao.estimateGasForVoting(
         action,
         [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0)],
-        (error, { gasFee, gasPrice }) => {
+        (error, result) => {
+          console.log('estimateGas price: ', error, result)
+          const { gasFee, gasPrice } = result
           if (!error) {
             this.setState({ gasFee, gasPrice })
           } else {

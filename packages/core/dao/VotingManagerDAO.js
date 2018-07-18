@@ -23,6 +23,7 @@ import { daoByType } from '../refactor/redux/daos/selectors'
 import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
 import contractsManagerDAO from './ContractsManagerDAO'
 import web3Converter from '../utils/Web3Converter'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const TX_CREATE_POLL = 'createPoll'
 export const TX_REMOVE_POLL = 'removePoll'
@@ -32,7 +33,7 @@ export const EVENT_POLL_CREATED = 'PollCreated'
 export const EVENT_POLL_UPDATED = 'PollUpdated'
 export const EVENT_POLL_REMOVED = 'PollRemoved'
 
-export default class VotingManagerDAO  {
+export default class VotingManagerDAO extends AbstractContractDAO {
   /**
    * @type Web3Converter
    * @protected
@@ -40,32 +41,10 @@ export default class VotingManagerDAO  {
   _c = web3Converter
 
   constructor ({ address, history, abi }) {
-    this.address = address
-    this.history = history
-    this.abi = abi
+    super({ address, history, abi })
+
     this.assetHolderDAO = null
     this.pollInterfaceManagerDAO = null
-  }
-
-  connect (web3, options) {
-    if (this.isConnected) {
-      this.disconnect()
-    }
-    // eslint-disable-next-line no-console
-    console.log('[VotingManagerDAO] Connected')
-
-    this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
-  }
-
-  get isConnected () {
-    return this.contract != null
-  }
-
-  disconnect () {
-    if (this.isConnected) {
-      this.contract = null
-      this.history = null
-    }
   }
 
   getVoteLimit (): Promise {
@@ -101,7 +80,7 @@ export default class VotingManagerDAO  {
         title: poll.title,
         description: poll.description,
         files: poll.files,
-        options: poll.options && poll.options.toArray(),
+        options: poll.options,
       })
     } catch (e) {
       // eslint-disable-next-line
@@ -114,7 +93,7 @@ export default class VotingManagerDAO  {
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
 
     const tx = await this._tx(TX_CREATE_POLL, [
-      poll.options.size,
+      poll.options.length,
       this._c.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
@@ -168,7 +147,7 @@ export default class VotingManagerDAO  {
             const hash = this._c.bytes32ToIPFSHash(bytesHashes[i])
             const result = await ipfs.get(hash)
             if (!result) {
-              throw new Error(`ipfs hash [${hash}] for voting is invalid`)
+              throw new Error(`ipfs hash [${hash}] for voting is outdated`)
             }
             const { title, description, options, files } = result
 
@@ -294,5 +273,18 @@ export default class VotingManagerDAO  {
 
   async watchEnded (callback, filter) {
     // return this._watch(EVENT_POLL_ENDED, this._watchCallback(callback, IS_ENDED), filter)
+  }
+
+  estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
+    try {
+      const { gasLimit, gasFee, gasPrice } = await this.estimateGas(...params)
+      callback(null, {
+        gasLimit,
+        gasFee: new Amount(gasFee.mul(gasPriceMultiplier), 'ETH'),
+        gasPrice: new Amount(gasPrice.mul(gasPriceMultiplier), 'ETH'),
+      })
+    } catch (e) {
+      callback(e)
+    }
   }
 }

@@ -23,7 +23,7 @@ const schemaFactory = () => ({
   published: PropTypes.instanceOf(Date),
   voteLimitInTIME: PropTypes.instanceOf(Amount),
   deadline: PropTypes.instanceOf(Date),
-  options: PropTypes.any, // Immutable list
+  options: PropTypes.instanceOf(Array),
   files: PropTypes.string, // hash
   active: PropTypes.bool,
   status: PropTypes.bool,
@@ -41,7 +41,7 @@ const defaultProps = {
   published: null,
   voteLimitInTIME: null,
   deadline: null,
-  options: new Immutable.List(['Support', 'Decline']),
+  options: ['Support', 'Decline'],
   files: null, // hash
   active: false,
   status: false,
@@ -70,7 +70,7 @@ class PollModel extends AbstractModel {
     return {
       title: this.title,
       description: this.description,
-      options: this.options.toArray(),
+      options: this.options,
       voteLimit: this.voteLimitInTIME,
       finishedDate: this.deadline,
     }
