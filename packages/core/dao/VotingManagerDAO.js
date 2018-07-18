@@ -98,10 +98,10 @@ export default class VotingManagerDAO  {
     let hash
     try {
       hash = await ipfs.put({
-        title: poll.title(),
-        description: poll.description(),
-        files: poll.files(),
-        options: poll.options() && poll.options().toArray(),
+        title: poll.title,
+        description: poll.description,
+        files: poll.files,
+        options: poll.options && poll.options.toArray(),
       })
     } catch (e) {
       // eslint-disable-next-line
@@ -114,10 +114,10 @@ export default class VotingManagerDAO  {
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
 
     const tx = await this._tx(TX_CREATE_POLL, [
-      poll.options().size,
+      poll.options.size,
       this._c.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
-      poll.deadline().getTime(),
+      poll.deadline.getTime(),
     ], summary)
     return tx.tx
   }
@@ -135,7 +135,7 @@ export default class VotingManagerDAO  {
     try {
       const pollsDetails = await this.contract.methods.getPollsDetails(pollsAddresses).call()
 
-      const owners = pollsDetails[0].map((o) => o.toLowerCase()) // @todo need to find out why addresses have upper registry chars. It's invalid
+      const owners = pollsDetails[0].map((o) => o.toLowerCase())
       const bytesHashes = pollsDetails[1]
       const voteLimits = pollsDetails[2].map((l) => new BigNumber(l))
       const deadlines = pollsDetails[3].map((l) => new BigNumber(l))
@@ -185,7 +185,7 @@ export default class VotingManagerDAO  {
               hasMember,
               memberOption,
             })
-            const pollFiles = poll && await ipfs.get(poll.files())
+            const pollFiles = poll && await ipfs.get(poll.files)
 
             resolve(new PollDetailsModel({
               id: pollAddress,

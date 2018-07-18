@@ -55,7 +55,7 @@ export default class ERC20ManagerDAO extends AbstractContractDAO {
     addresses.forEach((address, i) => {
       const symbol = this._c.bytesToString(symbols[i]).toUpperCase()
       const model = new TokenModel({
-        address,
+        address: address.toLowerCase(),
         name: this._c.bytesToString(names[i]),
         symbol,
         url: this._c.bytesToString(urls[i]),

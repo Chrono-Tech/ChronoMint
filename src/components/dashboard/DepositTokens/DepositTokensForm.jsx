@@ -99,6 +99,7 @@ function mapDispatchToProps (dispatch) {
     mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier, {
       skipSlider: true,
     })),
+    dispatch: dispatch,
     requireTIME: () => dispatch(requireTIME()),
     receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, blockchain } })),
   }
@@ -120,6 +121,7 @@ export default class DepositTokensForm extends PureComponent {
     selectedToken: PropTypes.string,
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
+    dispatch: PropTypes.func,
     mainApprove: PropTypes.func,
     mainRevoke: PropTypes.func,
     feeMultiplier: PropTypes.number,
@@ -182,10 +184,11 @@ export default class DepositTokensForm extends PureComponent {
   handleGetGasPrice = (action: string, amount: number, feeMultiplier: number, spender: string) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      estimateGasForDeposit(
+      this.props.dispatch(estimateGasForDeposit(
         action,
         [action, [spender, new BigNumber(amount)]],
-        (error, { gasFee, gasPrice }) => {
+        (error, r) => {
+          const { gasFee, gasPrice } = r
           if (!error) {
             this.setState({ gasFee, gasPrice })
           } else {
@@ -194,7 +197,7 @@ export default class DepositTokensForm extends PureComponent {
           }
         },
         feeMultiplier,
-      )
+      ))
     }, 1000)
   }
 

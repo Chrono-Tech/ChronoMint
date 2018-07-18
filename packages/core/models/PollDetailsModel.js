@@ -24,10 +24,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
     if (value) {
       return this
         .set('id', value)
-        .poll(this
-          .poll()
-          .id(value),
-        )
+        .poll(new PollModel({ ...this.poll(), id: value }))
     } else {
       return this.get('transactionHash') || this.get('id')
     }
@@ -58,7 +55,7 @@ export default class PollDetailsModel extends abstractFetchingModel({
   }
 
   voteEntries () {
-    const options = this.get('poll').options()
+    const options = this.get('poll').options
     const votes = this.get('votes')
 
     return options.map((option, key) => {
@@ -68,9 +65,9 @@ export default class PollDetailsModel extends abstractFetchingModel({
 
   details () {
     const poll = this.get('poll')
-    const endDate = poll.deadline()
-    const published = poll.published()
-    const voteLimitInTIME = poll.voteLimitInTIME()
+    const endDate = poll.deadline
+    const published = poll.published
+    const voteLimitInTIME = poll.voteLimitInTIME
     const maxOptionTime = this.votes().max((a, b) => a.gt(b))
     const received = new Amount(this.votes().reduce((total, v) => total.add(v), new BigNumber(0)), 'TIME')
     const votedCount = this.statistics().reduce((count, v) => count.add(v), new BigNumber(0))
@@ -78,15 +75,15 @@ export default class PollDetailsModel extends abstractFetchingModel({
     const percents = voteLimitInTIME
       ? (maxOptionTime || new BigNumber(0)).mul(100).div(voteLimitInTIME).round(0)
       : new BigNumber(100)
-    const memberOption = poll.memberOption()
+    const memberOption = poll.memberOption
     const id = this.id()
-    const title = poll.title()
-    const description = poll.description()
+    const title = poll.title
+    const description = poll.description
     const isFetched = this.isFetched()
     const isFetching = this.isFetching()
-    const hasMember = poll.hasMember()
+    const hasMember = poll.hasMember
     const voteEntries = this.voteEntries().toArray()
-    const owner = poll.owner()
+    const owner = poll.owner
 
     return {
       id,
@@ -99,10 +96,10 @@ export default class PollDetailsModel extends abstractFetchingModel({
       endDate,
       published,
       voteLimitInTIME,
-      options: poll.options(),
+      options: poll.options,
       files: this.files(),
-      active: poll.active(),
-      status: poll.status(),
+      active: poll.active,
+      status: poll.status,
       daysLeft: Math.max(moment(endDate).diff(moment(0, 'HH'), 'days'), 0),
       daysTotal: Math.max(moment(endDate).diff(moment({
         y: published.getFullYear(),

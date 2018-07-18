@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER } from '../../dao/AbstractTokenDAO'
 import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
@@ -13,6 +12,8 @@ import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import TxExecModel from '../../models/TxExecModel'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
@@ -28,7 +29,6 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     return
   }
 
-  const holderAccount = assetHolder.account()
   const holderWallet = assetHolder.wallet()
 
   // set symbol for asset
@@ -38,13 +38,13 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
   // subscribe to token
   const tokenDAO = tokenService.getDAO(token.id())
   tokenDAO
-    .on(EVENT_APPROVAL_TRANSFER, (results) => {
+    .on('approval', (results) => {
       if (results.from === holderWallet || results.spender === holderWallet) {
         dispatch(fetchAssetAllowance(token))
       }
     })
-    .on(EVENT_NEW_TRANSFER, (tx) => {
-      if (!(tx.from() === holderWallet || tx.to() === holderWallet)) {
+    .on('transfer', (data) => {
+      if (!(data.from === holderWallet || data.to === holderWallet)) {
         return
       }
       dispatch(fetchAssetDeposit(token))
@@ -52,6 +52,7 @@ const handleToken = (token: TokenModel) => async (dispatch, getState) => {
     })
 
   // need to be uncomment
+  // const holderAccount = assetHolder.account()
   // await tokenDAO.watch(holderAccount)
 
   // fetch deposit and allowance
@@ -96,11 +97,11 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
   const assetHolderDAO = daoByType('TimeHolder')(getState())
-  const [ wallet ] = await Promise.all([
+  const [ walletAddress ] = await Promise.all([
     assetHolderDAO.getWalletAddress(),
   ])
 
-  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet })
+  dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
 
   // get assets list
   const [ timeAddress ] = await Promise.all([
@@ -111,7 +112,7 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
     dispatch({
       type: ASSET_HOLDER_ASSET_UPDATE,
       asset: new AssetModel({
-        address,
+        address: address.toLowerCase(),
       }),
     })
   })
@@ -122,19 +123,25 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
 export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
     const assetHolderDAO = daoByType('TimeHolder')(getState())
-    await assetHolderDAO.deposit(token.address(), amount, feeMultiplier, advancedOptions)
+    const { account } = getState().get(DUCK_SESSION)
+    advancedOptions['account'] = account
+    const tx: TxExecModel = await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
-    console.error('deposit error', e.message)
+    console.error('deposit error', e)
   }
 }
 
 export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: Number = 1, advancedOptions = undefined) => async (dispatch, getState) => {
   try {
     const assetHolderDAO = daoByType('TimeHolder')(getState())
-    await assetHolderDAO.withdraw(token.address(), amount, feeMultiplier, advancedOptions)
+    const { account } = getState().get(DUCK_SESSION)
+    advancedOptions['account'] = account
+    const tx: TxExecModel = await assetHolderDAO.withdraw(token, amount, feeMultiplier, advancedOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
-    console.error('withdraw error', e.message)
+    console.error('withdraw error', e)
   }
 }

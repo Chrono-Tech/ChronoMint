@@ -38,7 +38,6 @@ import { DUCK_SESSION } from '../session/actions'
 import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import type TxModel from '../../models/TxModel'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '../../dao/AssetHolderDAO'
 import { TX_APPROVE } from '../../dao/ERC20DAO'
 import OwnerCollection from '../../models/wallet/OwnerCollection'
@@ -53,6 +52,7 @@ import { ethDAO } from '../../refactor/daos/index'
 import TxExecModel from '../../models/TxExecModel'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import WalletModel from '../../models/wallet/WalletModel'
+import { daoByType } from '../../refactor/redux/daos/selectors'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -70,6 +70,7 @@ export const WALLET_IS_TIME_REQUIRED = 'mainWallet/IS_TIME_REQUIRED'
 export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
 export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
+export const WALLET_ESTIMATE_GAS_FOR_DEPOSIT = 'mainWallet/ESTIMATE_GAS_FOR_DEPOSIT'
 
 export const ETH = ethereumDAO.getSymbol()
 export const TIME = 'TIME'
@@ -264,7 +265,7 @@ export const fetchTokenBalance = (token: TokenModel, account) => async (dispatch
   })
 }
 
-export const initMainWallet = () => async (dispatch, getState) => {
+export const initMainWallet = () => async (dispatch) => {
   dispatch({ type: WALLET_INIT, isInited: true })
 
   dispatch(subscribeOnTokens(handleToken))
@@ -313,11 +314,17 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
   const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
+  const { account } = getState().get(DUCK_SESSION)
+
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+    additionalOptions['from'] = account
+    const tx = await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }
@@ -325,11 +332,16 @@ export const mainApprove = (token: TokenModel, amount: Amount, spender: string, 
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
   const allowance = getMainWallet(getState()).allowances().item(spender, token.id())
+  const { account } = getState().get(DUCK_SESSION)
   try {
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
-    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+    additionalOptions['from'] = account
+    const tx = await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    // eslint-disable-next-line
+    console.log('mainRevoke error: ', e)
     dispatch(notifyError(e, 'mainRevoke'))
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(false) })
   }
@@ -415,21 +427,23 @@ export const getSpendersAllowance = (tokenId: string, spender: string) => async 
   })
 }
 
-export const estimateGasForDeposit = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
+export const estimateGasForDeposit = (mode: string, params, callback, gasPriceMultiplier = 1) => async (dispatch, getState) => {
   let dao = null
+  const web3 = getState('web3')
   switch (mode) {
     case TX_APPROVE:
-      dao = await tokenService.getDAO(TIME)
+      dao = await tokenService.getDAO(TIME, web3)
       break
     case TX_DEPOSIT:
     case TX_WITHDRAW_SHARES:
-      dao = await contractsManagerDAO.getAssetHolderDAO()
+      dao = daoByType('TimeHolder')(getState())
       break
   }
   try {
     if (!dao) {
       throw new Error('Dao is undefined')
     }
+    console.log('DAO actions: ', dao)
     const { gasLimit, gasFee, gasPrice } = await dao.estimateGas(...params)
     callback(null, {
       gasLimit,
@@ -439,6 +453,7 @@ export const estimateGasForDeposit = async (mode: string, params, callback, gasP
   } catch (e) {
     callback(e)
   }
+  dispatch({ type: WALLET_ESTIMATE_GAS_FOR_DEPOSIT })
 }
 
 export const getTokensBalancesAndWatch = (address, blockchain, customTokens: Array<string>) => (token) => async (dispatch) => {
