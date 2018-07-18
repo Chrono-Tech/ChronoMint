@@ -92,6 +92,11 @@ ul.actions {
     padding: 0;
     text-transform: none;
     border-radius: 3px;
+
+    &:disabled{
+      background: $background-color-1;
+
+    }
   }
 
   img {

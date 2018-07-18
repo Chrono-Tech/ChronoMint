@@ -78,16 +78,12 @@ class LoginWithMnemonic extends PureComponent {
             <Translate value='LoginWithMnemonic.title' />
           </div>
 
-          <div styleName='description'>
-            <Translate value='LoginWithMnemonic.description' />
-          </div>
-
           <div styleName='field'>
             <Field
+              styleName='mnemonicField'
               component={TextField}
               name='mnemonic'
               type='text'
-              hintText={<Translate value='LoginWithMnemonic.mnemonic' />}
               fullWidth
               multiLine
               rows={2}
@@ -103,10 +99,10 @@ class LoginWithMnemonic extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              <Translate value='LoginWithMnemonic.login' />
+              <Translate value='LoginWithMnemonic.submit' />
             </Button>
             <Translate value='LoginWithMnemonic.or' />
-            &nbsp;
+            <br />
             <Link to='/login/import-methods' href styleName='link'>
               <Translate value='LoginWithMnemonic.back' />
             </Link>

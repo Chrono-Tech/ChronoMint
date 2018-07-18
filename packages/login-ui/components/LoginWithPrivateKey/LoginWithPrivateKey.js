@@ -23,7 +23,7 @@ import './LoginWithPrivateKey.scss'
 
 const multiRowTextFieldStyle = {
   textareaStyle: {
-    background: 'rgba(0,0,0,.2)',
+    background: 'transparent',
     borderRadius: 3,
     color: '#FFB54E',
     padding: 8,
@@ -73,16 +73,12 @@ class MnemonicLoginPage extends PureComponent {
             <Translate value='LoginWithPrivateKey.title' />
           </div>
 
-          <div styleName='description'>
-            <Translate value='LoginWithPrivateKey.description' />
-          </div>
-
           <div styleName='field'>
             <Field
+              styleName='pkField'
               component={TextField}
               name='pk'
               type='text'
-              hintText={<Translate value='LoginWithPrivateKey.privateKey' />}
               fullWidth
               multiLine
               rows={2}
@@ -98,10 +94,10 @@ class MnemonicLoginPage extends PureComponent {
               buttonType='login'
               type='submit'
             >
-              <Translate value='LoginWithPrivateKey.login' />
+              <Translate value='LoginWithPrivateKey.submit' />
             </Button>
             <Translate value='LoginWithPrivateKey.or' />
-            &nbsp;
+            <br />
             <Link to='/login/import-methods' href styleName='link'>
               <Translate value='LoginWithPrivateKey.back' />
             </Link>
