@@ -25,7 +25,7 @@ export default class UserRow extends React.Component {
     avatar: DEFAULT_AVATAR,
     name: '',
     address: '',
-    onClick: () => {},
+    onClick: null,
     hideActionIcon: false,
     actionIcon: actionIcon,
     actionIconClass: '',

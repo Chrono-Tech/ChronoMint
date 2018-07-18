@@ -13,6 +13,7 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
+  DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/actions'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import Web3 from 'web3'
@@ -100,7 +101,7 @@ export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
   const state = getState()
 
-  const { newAccountMnemonic } = state.get('network')
+  const { newAccountMnemonic } = state.get(DUCK_NETWORK)
 
   if (!newAccountMnemonic){
     dispatch(navigateToCreateAccount())
@@ -111,7 +112,7 @@ export const initConfirmMnemonicPage = () => (dispatch, getState) => {
 export const initMnemonicPage = () => (dispatch, getState) => {
   const state = getState()
 
-  const { newAccountName, newAccountPassword } = state.get('network')
+  const { newAccountName, newAccountPassword } = state.get(DUCK_NETWORK)
 
   const emptyAccountCredentials = !newAccountName || !newAccountPassword
 
@@ -134,11 +135,15 @@ export const initLoginPage = () => async (dispatch, getState) => {
 
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
+  const { selectedWallet, walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
   dispatch(initAccountsSignature())
+
+  if (walletsList && !walletsList.length){
+    dispatch(navigateToCreateAccount())
+  }
 
   if (!selectedWallet){
     dispatch(navigateToSelectWallet())
@@ -162,7 +167,7 @@ export const resetImportAccountMode = () => (dispatch) => {
 export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
   const state = getState()
 
-  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get('network')
+  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get(DUCK_NETWORK)
 
   const validateName = dispatch(validateAccountName(walletName))
 
@@ -221,7 +226,7 @@ export const initImportMethodsPage = () => (dispatch) => {
 export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState) => {
   const state = getState()
 
-  const { newAccountMnemonic } = state.get('network')
+  const { newAccountMnemonic } = state.get(DUCK_NETWORK)
 
   if (confirmMnemonic !== newAccountMnemonic){
     throw new SubmissionError({ _error: 'Please enter correct mnemonic phrase'  })
@@ -232,7 +237,7 @@ export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState)
 export const onSubmitConfirmMnemonicSuccess = () => async (dispatch, getState) => {
   const state = getState()
 
-  const { newAccountMnemonic, newAccountName, newAccountPassword } = state.get('network')
+  const { newAccountMnemonic, newAccountName, newAccountPassword } = state.get(DUCK_NETWORK)
 
   let wallet = await dispatch(createAccount({
     name: newAccountName,
@@ -370,7 +375,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
 
   dispatch({ type: NETWORK_SET_LOGIN_SUBMITTING })
 
-  const { selectedWallet } = state.get('persistAccount')
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   try {
     let wallet = await dispatch (decryptAccount(selectedWallet.encrypted, password))
@@ -400,7 +405,7 @@ export const onSubmitLoginFormFail = (errors, dispatch, submitErrors) => (dispat
 export const validateRecoveryForm = (mnemonic) => async (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   const validateMnemonic = await dispatch(validateMnemonicForAccount(selectedWallet, mnemonic))
 
@@ -433,7 +438,7 @@ export const onSubmitRecoverAccountFormFail = (errors, dispatch, submitErrors) =
 export const initResetPasswordPage = () => (dispatch, getState) => {
   const state = getState()
 
-  const { accountRecoveryMode } = state.get('network')
+  const { accountRecoveryMode } = state.get(DUCK_NETWORK)
 
   if (!accountRecoveryMode){
     dispatch(navigateToRecoverAccountPage())
@@ -443,8 +448,8 @@ export const initResetPasswordPage = () => (dispatch, getState) => {
 export const onSubmitResetAccountPasswordForm = (password, confirmPassword) => async (dispatch, getState) => {
   const state = getState()
 
-  const { newAccountMnemonic } = state.get('network')
-  const { selectedWallet } = state.get('persistAccount')
+  const { newAccountMnemonic } = state.get(DUCK_NETWORK)
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   await dispatch(resetPasswordAccount(selectedWallet, newAccountMnemonic, password))
 
@@ -505,8 +510,18 @@ export const setImportWalletFile = () => (dispatch) => {
   dispatch({ type: NETWORK_SET_IMPORT_WALLET_FILE })
 }
 
-export const onWalletSelect = (wallet) => (dispatch) => {
+export const onWalletSelect = (wallet) => (dispatch, getState) => {
+  let state = getState()
+
+  const { accountRecoveryMode } = state.get(DUCK_NETWORK)
+
   dispatch(accountSelect(wallet))
+
+  if (accountRecoveryMode){
+    dispatch(navigateToRecoverAccountPage())
+
+    return
+  }
 
   dispatch(navigateToLoginPage())
 }
@@ -588,7 +603,7 @@ export const resetLoadingAccountsSignatures = () => (dispatch) => {
 export const updateSelectedAccount = () => (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet, walletsList } = state.get('persistAccount')
+  const { selectedWallet, walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   const foundAccount = walletsList.find((account) => account.key === selectedWallet.key)
 
@@ -600,8 +615,8 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 export const initAccountsSignature = () => async (dispatch, getState) => {
   const state = getState()
 
-  const { loadingAccountSignatures } = state.get('network')
-  const { walletsList } = state.get('persistAccount')
+  const { loadingAccountSignatures } = state.get(DUCK_NETWORK)
+  const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   if (loadingAccountSignatures || !walletsList.length){
     return
@@ -626,7 +641,7 @@ export const initAccountsSelector = () => async (dispatch) => {
 export const initLoginLocal = () => async (dispatch, getState) => {
   const state = getState()
 
-  const { selectedNetworkId, selectedProviderId } = state.get('network')
+  const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   if (isTestRPC(selectedProviderId, selectedNetworkId)){
     await networkService.loadAccounts()
@@ -638,7 +653,7 @@ export const initLoginLocal = () => async (dispatch, getState) => {
 export const handleLoginLocalAccountClick = (account = '') => async (dispatch, getState) => {
   let state = getState()
 
-  const { accounts } = state.get('network')
+  const { accounts } = state.get(DUCK_NETWORK)
   const wallets = state.get('multisigWallet')
 
   const index = Math.max(accounts.indexOf(account), 0)
@@ -674,7 +689,7 @@ export const handleLoginLocalAccountClick = (account = '') => async (dispatch, g
 export const initCommonNetworkSelector = () => (dispatch, getState) => {
   const state = getState()
 
-  const { isLocal } = state.get('network')
+  const { isLocal } = state.get(DUCK_NETWORK)
 
   networkService.autoSelect()
 

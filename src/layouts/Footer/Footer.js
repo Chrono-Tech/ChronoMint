@@ -221,6 +221,7 @@ class Footer extends Component {
               <Button
                 styleName='button'
                 type='submit'
+                disabled={submitting}
                 label={<Translate value='subscribe' />}
               />
             </div>
