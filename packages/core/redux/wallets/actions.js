@@ -28,6 +28,7 @@ import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import { EE_MS_WALLET_ADDED } from '../../dao/MultisigWalletsManagerDAO'
 import MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
+import { ethDAO } from '../../refactor/daos/index'
 
 export const DUCK_WALLETS = 'wallets'
 export const WALLETS_SET = 'wallet/set'
@@ -75,6 +76,7 @@ const initWalletsFromKeys = () => (dispatch) => {
     const wallet = new WalletModel({
       address: provider.getAddress(),
       blockchain: provider.id(),
+      isMain: true,
     })
 
     dispatch({ type: WALLETS_SET, wallet })
@@ -167,14 +169,43 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
       const dao = tokenService.getDAO(token)
       let balance = await dao.getAccountBalance(wallet.address)
 
-      dispatch({
-        type: WALLETS_UPDATE_BALANCE,
-        walletId: wallet.id,
-        balance: new Amount(balance, token.symbol(), true),
-      })
+      if (balance) {
+        dispatch({
+          type: WALLETS_UPDATE_BALANCE,
+          walletId: wallet.id,
+          balance: new Amount(balance, token.symbol(), true),
+        })
+      }
     }
   }
 
   dispatch(subscribeOnTokens(updateBalance))
 }
 
+export const subscribeWallet = ({ wallet }) => async (dispatch) => {
+  const listener = function (data) {
+    const checkedFrom = data.from ? data.from.toLowerCase() === wallet.address.toLowerCase() : false
+    const checkedTo = data.to ? data.to.toLowerCase() === wallet.address.toLowerCase() : false
+    if (checkedFrom || checkedTo) {
+      dispatch(updateWalletBalance({ wallet }))
+    }
+  }
+  switch (wallet.blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      ethDAO.on('tx', listener)
+      return listener
+    default:
+      return
+  }
+
+}
+
+export const unsubscribeWallet = ({ wallet, listener }) => async (/*dispatch, getState*/) => {
+  switch (wallet.blockchain) {
+    case BLOCKCHAIN_ETHEREUM:
+      ethDAO.removeListener('tx', listener)
+      return listener
+    default:
+      return
+  }
+}

@@ -126,16 +126,17 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
 
     const handleToken = (token: TokenModel) => async (dispatch) => {
       if (token.blockchain() === wallet.blockchain()) {
-        const dao = tokenService.getDAO(token)
-        let balance = await dao.getAccountBalance(wallet.address())
-        dispatch({
-          type: MULTISIG_BALANCE,
-          walletId: wallet.address(),
-          balance: new BalanceModel({
-            id: token.id(),
-            amount: new Amount(balance, token.symbol(), true),
-          }),
-        })
+        // TODO fix this handle
+        // const dao = tokenService.getDAO(token)
+        // let balance = await dao.getAccountBalance(wallet.address())
+        // dispatch({
+        //   type: MULTISIG_BALANCE,
+        //   walletId: wallet.address(),
+        //   balance: new BalanceModel({
+        //     id: token.id(),
+        //     amount: new Amount(balance, token.symbol(), true),
+        //   }),
+        // })
       }
     }
 
