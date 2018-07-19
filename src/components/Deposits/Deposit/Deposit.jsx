@@ -39,7 +39,7 @@ function mapStateToProps (state) {
     account,
     deposit: getDeposit(TIME)(state),
     token: tokens.item(TIME),
-    transactions: wallet.transactions,
+    transactions: wallet.transactions.transactions,
   }
 }
 
@@ -69,8 +69,8 @@ export default class Deposit extends PureComponent {
   }
 
   handleGetTransactions = () => {
-    const { wallet, spender } = this.props
-    this.props.getTransactions({ wallet, address: spender, blockchain: BLOCKCHAIN_ETHEREUM })
+    const { wallet } = this.props
+    this.props.getTransactions({ wallet })
   }
 
   handleAddDeposit = () => {

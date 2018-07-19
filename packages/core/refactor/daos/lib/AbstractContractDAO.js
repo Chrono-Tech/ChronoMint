@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js'
 import TxExecModel from '../../../refactor/models/TxExecModel'
 import web3Converter from '../../../utils/Web3Converter'
 import Amount from '../../../models/Amount'
+import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
 
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,
@@ -124,7 +125,14 @@ export default class AbstractContractDAO extends EventEmitter {
     console.error(`[${this.constructor.name}] Error in Approval event subscription`, error)
   }
 
-  async _tx (func: string, args: Array = [], amount: BigNumber = new BigNumber(0), value: BigNumber = new BigNumber(0), options: Object = {}, additionalOptions: Object = {}): TxExecModel {
+  async _tx (
+    func: string,
+    args: Array = [],
+    amount: BigNumber = new BigNumber(0),
+    value: BigNumber = new BigNumber(0),
+    options: Object = {},
+    additionalOptions: Object = {},
+  ): TxExecModel {
     const data = this.contract.methods[func](...args).encodeABI()
 
     const {
@@ -132,17 +140,17 @@ export default class AbstractContractDAO extends EventEmitter {
       feeMultiplier,
       fields,
       symbol,
-      blockchain,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
-    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier })
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
     return new TxExecModel({
+      contract: this.abi.contractName,
       func,
-      fields,
+      fields: fields || {},
       from,
       symbol,
-      blockchain,
+      blockchain: BLOCKCHAIN_ETHEREUM,
       to: this.contract._address,
       feeMultiplier,
       value,
@@ -159,8 +167,6 @@ export default class AbstractContractDAO extends EventEmitter {
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
     const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
-    // eslint-disable-next-line no-console
-    console.log('Abstract ContractDAO estimate GAS: ', func, args, value, from, additionalOptions)
 
     const contract = await this.contract
     if (!contract.methods.hasOwnProperty(func)) {

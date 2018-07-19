@@ -373,6 +373,7 @@ export default {
     AssetDonator: {
       [assetDonator.TX_REQUIRE_TIME]: {
         title: 'Require TIME',
+        donation: 'Donation',
       },
     },
     PlatformsManager: {

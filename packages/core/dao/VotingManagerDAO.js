@@ -6,13 +6,7 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import PollNoticeModel, {
-  IS_ACTIVATED,
-  IS_CREATED,
-  IS_ENDED,
-  IS_REMOVED,
-  IS_UPDATED, IS_VOTED
-} from '../models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_REMOVED } from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
 import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'

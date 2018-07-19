@@ -5,7 +5,7 @@
 
 import uuid from 'uuid/v1'
 import PropTypes from 'prop-types'
-import AbstractModel from '../AbstractModel'
+import AbstractModel from '../../refactor/models/AbstractModel'
 
 const schemaFactory = () => ({
   key: PropTypes.string,

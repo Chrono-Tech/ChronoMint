@@ -4,31 +4,29 @@
  */
 
 import { createSelector } from 'reselect'
-import MainWalletModel from '../../../../models/wallet/MainWalletModel'
-import MultisigWalletModel from '../../../../models/wallet/MultisigWalletModel'
-import DerivedWalletModel from '../../../../models/wallet/DerivedWalletModel'
 import TxExecModel from '../../../models/TxExecModel'
 import { getWallet } from '../../../../redux/wallets/selectors/models'
 import { getMainSymbolForBlockchain } from '../../../../redux/tokens/selectors'
+import WalletModel from '../../../../models/wallet/WalletModel'
 
 export const getDataForConfirm = (tx: TxExecModel) => createSelector(
   [
-    getWallet(tx.from),
+    getWallet(`${tx.blockchain}-${tx.from}`),
   ],
-  (wallet: MainWalletModel | MultisigWalletModel | DerivedWalletModel) => {
+  (wallet: WalletModel) => {
     const mainSymbol = getMainSymbolForBlockchain(tx.blockchain)
-    const balances = wallet.balances()
-    const amountBalance = balances.item(tx.symbol)
-    const feeBalance = balances.item(mainSymbol)
-    let amountBalanceAfter = tx.fields.amount.mark === 'plus' ?
-      amountBalance.amount().plus(tx.fields.amount.value) :
-      amountBalance.amount().minus(tx.fields.amount.value)
+    const balances = wallet.balances
+    const amountBalance = balances[tx.symbol]
+    const feeBalance = balances[mainSymbol]
+    let amountBalanceAfter = tx.fields.amount && tx.fields.amount.mark === 'plus' ?
+      amountBalance.plus(tx.fields.amount.value) :
+      amountBalance.minus(tx.fields.amount.value)
     let feeBalanceAfter = null
 
     if (mainSymbol === tx.symbol) {
       feeBalanceAfter = amountBalanceAfter = amountBalanceAfter.minus(tx.fee.gasFee)
     } else {
-      feeBalanceAfter = feeBalance.amount().minus(tx.fee.gasFee)
+      feeBalanceAfter = feeBalance.minus(tx.fee.gasFee)
     }
 
     return {
