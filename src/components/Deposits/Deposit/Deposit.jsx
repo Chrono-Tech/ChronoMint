@@ -8,9 +8,8 @@ import PropTypes from 'prop-types'
 import Amount from '@chronobank/core/models/Amount'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
-import { DUCK_MAIN_WALLET, getTransactionsForWallet, TIME } from '@chronobank/core/redux/mainWallet/actions'
+import { getTransactionsForWallet, TIME } from '@chronobank/core/redux/mainWallet/actions'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import { getDeposit } from '@chronobank/core/redux/mainWallet/selectors'
 import { Button, IPFSImage, TokenValue } from 'components'
@@ -22,6 +21,8 @@ import { TOKEN_ICONS } from 'assets'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
 import TransactionsTable from 'components/dashboard/TransactionsTable/TransactionsTable'
 import TransactionsCollection from '@chronobank/core/models/wallet/TransactionsCollection'
+import { getWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 
 import { prefix } from './lang'
 import './Deposit.scss'
@@ -30,7 +31,7 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const spender = assetHolder.wallet()
-  const wallet = state.get(DUCK_MAIN_WALLET)
+  const wallet = getWallet(state)
   const { account } = state.get(DUCK_SESSION)
   return {
     wallet,
@@ -38,7 +39,7 @@ function mapStateToProps (state) {
     account,
     deposit: getDeposit(TIME)(state),
     token: tokens.item(TIME),
-    transactions: wallet.transactions({ blockchain: BLOCKCHAIN_ETHEREUM, address: spender }),
+    transactions: wallet.transactions,
   }
 }
 
@@ -52,7 +53,7 @@ function mapDispatchToProps (dispatch) {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class Deposit extends PureComponent {
   static propTypes = {
-    wallet: PropTypes.instanceOf(MainWalletModel),
+    wallet: PropTypes.instanceOf(WalletModel),
     deposit: PropTypes.instanceOf(Amount),
     token: PropTypes.instanceOf(TokenModel),
     transactions: PropTypes.instanceOf(TransactionsCollection),

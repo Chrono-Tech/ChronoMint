@@ -52,6 +52,8 @@ import TxExecModel from '../../models/TxExecModel'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import TxHistoryModel from '../../models/wallet/TxHistoryModel'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -557,16 +559,23 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
 }
 
 export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOffset }) => async (dispatch, getState) => {
-  if (!wallet || !address || !blockchain) {
-    return null
-  }
+  // TODO
+  // if (!wallet || !address || !blockchain) {
+  return null
+  // }
   const tokens = getState().get(DUCK_TOKENS)
 
-  if (wallet instanceof MainWalletModel) {
-    dispatch({ type: WALLET_TRANSACTIONS_FETCH, address, blockchain })
-  } else {
-    dispatch({ type: MULTISIG_UPDATE, wallet: wallet.set('transactions', wallet.transactions().isFetching(true)) })
-  }
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      ...wallet,
+      transactions: new TxHistoryModel(
+        {
+          ...wallet.transactions,
+          isFetching: true,
+        }),
+    }),
+  })
 
   let transactions: TransactionsCollection = wallet.transactions({ blockchain, address }) || new TransactionsCollection()
   const offset = forcedOffset ? 0 : (transactions.size() || 0)

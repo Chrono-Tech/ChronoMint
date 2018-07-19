@@ -35,6 +35,14 @@ export default (state = initialState, action) => {
           }),
         },
       }
+    case a.WALLETS_UPDATE_WALLET:
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.walletId]: new WalletModel({ ...action.wallet }),
+        },
+      }
     case a.WALLETS_TWO_FA_CONFIRMED:
       return {
         ...state,
