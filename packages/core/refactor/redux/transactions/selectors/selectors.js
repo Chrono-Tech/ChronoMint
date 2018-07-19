@@ -4,16 +4,16 @@
  */
 
 import { createSelector } from 'reselect'
-import { getWalletByAddress } from '../../../../redux/wallet/selectors/balances'
 import MainWalletModel from '../../../../models/wallet/MainWalletModel'
 import MultisigWalletModel from '../../../../models/wallet/MultisigWalletModel'
 import DerivedWalletModel from '../../../../models/wallet/DerivedWalletModel'
-import { getMainSymbolForBlockchain } from '../../../../redux/tokens/selectors'
 import TxExecModel from '../../../models/TxExecModel'
+import { getWallet } from '../../../../redux/wallets/selectors/models'
+import { getMainSymbolForBlockchain } from '../../../../redux/tokens/selectors'
 
 export const getDataForConfirm = (tx: TxExecModel) => createSelector(
   [
-    getWalletByAddress(tx.from),
+    getWallet(tx.from),
   ],
   (wallet: MainWalletModel | MultisigWalletModel | DerivedWalletModel) => {
     const mainSymbol = getMainSymbolForBlockchain(tx.blockchain)

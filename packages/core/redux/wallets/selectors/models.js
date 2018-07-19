@@ -4,6 +4,7 @@
  */
 
 import { DUCK_WALLETS } from '../actions'
+import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
 
 export const getWallet = (walletId) => (state) => {
   return state.get(DUCK_WALLETS).list[walletId]
@@ -11,6 +12,22 @@ export const getWallet = (walletId) => (state) => {
 
 export const getWallets = (state) => {
   return state.get(DUCK_WALLETS).list
+}
+
+export const getMainEthWallet = (state) => {
+  const wallets = getWallets(state)
+  return Object.values(wallets).find((wallet) => wallet.isMain && wallet.blockchain === BLOCKCHAIN_ETHEREUM)
+}
+
+export const getMainAddresses = (state) => {
+  const wallets = getWallets(state)
+  let addresses = []
+  Object.values(wallets).map((wallet) => {
+    if (wallet.isMain) {
+      addresses.push(wallet.address)
+    }
+  })
+  return addresses
 }
 
 export const getWalletTransactions = (walletId) => (state) => {

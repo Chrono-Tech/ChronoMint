@@ -105,21 +105,22 @@ export default class TokensListWidget extends PureComponent {
         <div styleName='tokens-list'>
           <div styleName='tokens-list-table'>
             <div styleName='tokens-list-table-tr'>
-              <div styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
+              <button styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
                 <Translate value={`${prefix}.token`} />&nbsp;
                 {this.renderDirection('symbol')}
-              </div>
-              <div styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
+              </button>
+              <button styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
                 <Translate value={`${prefix}.amount`} />&nbsp;
                 {this.renderDirection('value')}
-              </div>
-              <div styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
+              </button>
+              <button styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
                 <Translate value={`${prefix}.fiat`} />&nbsp;
                 {this.renderDirection('valueUsd')}
-              </div>
+              </button>
             </div>
             {this.getTokensList().length && this.getTokensList().map((balanceInfo) => {
               const token = this.props.tokens.item(balanceInfo.symbol)
+
               return (
                 <div styleName='tokens-list-table-tr' key={token.id()}>
                   <div styleName='tokens-list-table-cell-icon'>

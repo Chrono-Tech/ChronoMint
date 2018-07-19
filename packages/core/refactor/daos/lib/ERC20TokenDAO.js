@@ -16,6 +16,7 @@ export const DEFAULT_GAS = 4700000
 export default class ERC20TokenDAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(token)
+    this.token = token
     this.abi = abi || ERC20DAODefaultABI
   }
 
@@ -28,25 +29,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     this.contract = new web3.eth.Contract(this.abi.abi, this.token.address(), options)
     this.web3 = web3
 
-    const [
-      name,
-      symbol,
-      decimals,
-    ] = await Promise.all([
-      this.getName(),
-      this.getSymbol(),
-      this.getDecimals(),
-    ])
-
-    this.token = new TokenModel({
-      id: this.token.id,
-      name,
-      address: this.token.address(),
-      symbol,
-      decimals,
-      blockchain: 'Ethereum',
-    })
-
     this.transferEmitter = this.contract.events.Transfer({})
       .on('data', this.handleTransferData.bind(this))
       .on('changed', this.handleTransferChanged.bind(this))
@@ -55,8 +37,6 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
       .on('data', this.handleApprovalData.bind(this))
       .on('changed', this.handleApprovalChanged.bind(this))
       .on('error', this.handleApprovalError.bind(this))
-
-    return this.token
   }
 
   disconnect () {

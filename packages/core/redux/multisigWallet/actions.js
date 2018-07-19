@@ -46,6 +46,7 @@ import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { getMultisigWallets } from '../wallet/selectors/models'
 import { getWallets } from './selectors/models'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import WalletModel from '../../models/wallet/WalletModel'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -125,16 +126,17 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
 
     const handleToken = (token: TokenModel) => async (dispatch) => {
       if (token.blockchain() === wallet.blockchain()) {
-        const dao = tokenService.getDAO(token)
-        let balance = await dao.getAccountBalance(wallet.address())
-        dispatch({
-          type: MULTISIG_BALANCE,
-          walletId: wallet.address(),
-          balance: new BalanceModel({
-            id: token.id(),
-            amount: new Amount(balance, token.symbol(), true),
-          }),
-        })
+        // TODO fix this handle
+        // const dao = tokenService.getDAO(token)
+        // let balance = await dao.getAccountBalance(wallet.address())
+        // dispatch({
+        //   type: MULTISIG_BALANCE,
+        //   walletId: wallet.address(),
+        //   balance: new BalanceModel({
+        //     id: token.id(),
+        //     amount: new Amount(balance, token.symbol(), true),
+        //   }),
+        // })
       }
     }
 
@@ -310,14 +312,14 @@ export const removeOwner = (wallet, ownerAddress) => async (/*dispatch*/) => {
   }
 }
 
-export const multisigTransfer = (wallet, token, amount, recipient, feeMultiplier) => async () => {
+export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, feeMultiplier) => async () => {
   try {
     let value
-    if (wallet.is2FA()) {
+    if (wallet.is2FA) {
       const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
       value = await walletsManagerDAO.getOraclePrice()
     }
-    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
+    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     await dao.transfer(wallet, token, amount, recipient, feeMultiplier, value)
   } catch (e) {
     // eslint-disable-next-line

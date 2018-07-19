@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { subscribeWallet, unsubscribeWallet } from '@chronobank/core/redux/mainWallet/actions'
+import { subscribeWallet, unsubscribeWallet } from '@chronobank/core/redux/wallets/actions'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
 function mapDispatchToProps (dispatch) {

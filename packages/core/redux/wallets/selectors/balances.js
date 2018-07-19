@@ -22,7 +22,13 @@ export const filteredBalancesAndTokens = (walletId, symbol) => createSelector(
       return []
     }
     return Object.values(wallet.balances)
-      .filter((balance) => symbol ? balance.symbol() === symbol : true)
+      .filter((balance) => {
+        if (tokens.item(balance.symbol()).isFetched()) {
+          return symbol ? balance.symbol() === symbol : true
+        } else {
+          return false
+        }
+      })
       .map((balance) => {
         return {
           balance: balance,
