@@ -79,7 +79,7 @@ class PollDetailsModel extends AbstractModel {
     const isFetched = this.isFetched
     const isFetching = this.isFetching
     const hasMember = poll.hasMember
-    const voteEntries = this.voteEntries().toArray()
+    const voteEntries = this.voteEntries()
     const owner = poll.owner
 
     return {

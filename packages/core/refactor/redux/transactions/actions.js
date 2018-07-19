@@ -13,26 +13,27 @@ export const DUCK_TRANSACTIONS = 'transactions'
 export const TRANSACTIONS_NEW = 'transactions/new'
 export const TRANSACTIONS_REMOVE = 'transactions/remove'
 
-export const sendNewTx = (tx) => async (dispatch) => {
+export const sendNewTx = (tx, acceptCallback) => async (dispatch) => {
   dispatch({ type: TRANSACTIONS_NEW, tx })
   dispatch(modalsOpenConfirmDialog({
     props: {
       tx,
-      confirm: acceptConfirm,
+      acceptCallback,
+      confirm: acceptConfirm(acceptCallback),
       reject: rejectConfirm,
     },
   }))
 }
 
-export const acceptConfirm = (tx) => (dispatch) => {
-  dispatch(signAndSend(tx))
+export const acceptConfirm = (acceptCallback) => (tx) => (dispatch) => {
+  dispatch(signAndSend(tx, acceptCallback))
 }
 
 export const rejectConfirm = (tx) => (dispatch) => {
   dispatch({ type: TRANSACTIONS_REMOVE })
 }
 
-export const signAndSend = (tx) => async (dispatch) => {
+export const signAndSend = (tx, acceptCallback) => async (dispatch) => {
   const signedTx = await dispatch(signTx(tx))
   dispatch({
     type: WATCHER_TX_SET, tx: new CurrentTransactionNotificationModel({
@@ -43,6 +44,9 @@ export const signAndSend = (tx) => async (dispatch) => {
     }),
   })
   const hash = await dispatch(sendTx(signedTx))
+  if (typeof acceptCallback === 'function') {
+    acceptCallback(hash, tx)
+  }
 }
 
 export const signTx = (execTx) => async (dispatch, getState) => {

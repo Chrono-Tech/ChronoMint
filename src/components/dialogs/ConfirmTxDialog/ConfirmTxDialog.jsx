@@ -4,7 +4,6 @@
  */
 
 import TokenValue from 'components/common/TokenValue/TokenValue'
-import BigNumber from 'bignumber.js'
 import Value from 'components/common/Value/Value'
 import ModalDialog from 'components/dialogs/ModalDialog'
 import Amount from '@chronobank/core/models/Amount'

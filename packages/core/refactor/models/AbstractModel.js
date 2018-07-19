@@ -15,4 +15,8 @@ export default class AbstractModel {
   transform () {
     return { ...this }
   }
+
+  mutate (values: Object) {
+    return new this.constructor({ ...this, ...values })
+  }
 }
