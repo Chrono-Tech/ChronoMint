@@ -198,7 +198,10 @@ export default class CommonNetworkSelector extends PureComponent {
       <div>
         {customNetworksList.map((network, i) => (
           <MenuCustomItem
-            onClickEdit={() => this.openModalAddNetwork(network)}
+            onClickEdit={(e) => {
+              e.stopPropagation()
+              this.openModalAddNetwork(network)
+            }}
             onClick={() => this.handleClickCustomNetwork(network)}
             checked={selectedNetworkId === (network && network.id)}
             key={i}

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { modalsClose } from 'redux/modals/actions'
+import { modalsClose, modalsOpen } from 'redux/modals/actions'
 import {
   handleSubmitCreateNetwork,
   handleSubmitEditNetwork,
@@ -17,7 +17,8 @@ import {
   AccountCustomNetwork,
 } from '@chronobank/core/models/wallet/persistAccount'
 import { ModalDialog } from 'components'
-import NetworkCreateModalForm from '../NetworkCreateModalForm/NetworkCreateModalForm'
+import NetworkCreateModalForm from './NetworkCreateModalForm/NetworkCreateModalForm'
+import NetworkDeleteModal from './NetworkDeleteModal/NetworkDeleteModal'
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -25,6 +26,10 @@ function mapDispatchToProps (dispatch) {
     handleSubmitCreateNetwork: (url, alias) => dispatch(handleSubmitCreateNetwork(url, alias)),
     handleSubmitEditNetwork: (network) => dispatch(handleSubmitEditNetwork(network)),
     handleDeleteNetwork: (network) => dispatch(handleDeleteNetwork(network)),
+    openConfirmDeleteModal: (network = null) => dispatch(modalsOpen({
+      component: NetworkDeleteModal,
+      props: { network },
+    })),
   }
 }
 
@@ -35,6 +40,7 @@ export default class NetworkCreateModal extends PureComponent {
     handleSubmitCreateNetwork: PropTypes.func,
     handleSubmitEditNetwork: PropTypes.func,
     handleDeleteNetwork: PropTypes.func,
+    openConfirmDeleteModal: PropTypes.func,
     network: PropTypes.instanceOf(AccountCustomNetwork),
   }
 
@@ -67,13 +73,14 @@ export default class NetworkCreateModal extends PureComponent {
   }
 
   handleDeleteNetwork(){
-    const { network, handleDeleteNetwork } = this.props
+    const { network, openConfirmDeleteModal, handleCloseModal } = this.props
 
     if (network){
-      handleDeleteNetwork(network)
+      handleCloseModal()
+      openConfirmDeleteModal(network)
     }
 
-    this.props.handleCloseModal()
+    // this.props.handleCloseModal()
   }
 
   render () {

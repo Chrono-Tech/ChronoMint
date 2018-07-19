@@ -80,6 +80,7 @@ export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
+export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })

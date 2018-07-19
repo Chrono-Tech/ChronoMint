@@ -192,7 +192,7 @@ export const chronoBankPrivate = {
 }
 
 // dev only
-if (process.env.NODE_ENV === 'development') {
+if (process.env['NODE_ENV'] === 'development') {
   chronoBankMap.push(chronoBankPrivate)
 }
 
@@ -425,7 +425,7 @@ export const networkSelectorGroups = [
         provider: providerMap.local,
         network: infuraLocalNetwork,
       },
-      process.env.NODE_ENV === 'development' ? {
+      process.env['NODE_ENV'] === 'development' ? {
         provider: providerMap.chronoBank,
         network: chronoBankPrivate,
       } : null,

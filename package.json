@@ -89,6 +89,7 @@
     "chronobank-smart-contracts": "1.1.47",
     "classnames": "^2.2.5",
     "d3": "^4.10.0",
+    "davidshimjs-qrcodejs": "^0.0.2",
     "debug": "^3.1.0",
     "ganache-cli": "6.1.0",
     "immutable": ">=3",

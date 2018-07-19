@@ -14,7 +14,7 @@ import Button from 'components/common/ui/Button/Button'
 
 import {
   FORM_NETWORK_CREATE,
-} from '../../../login/redux/network/actions'
+} from '@chronobank/login/redux/network/actions'
 import validate from './validate'
 
 import styles from 'layouts/Splash/styles'
