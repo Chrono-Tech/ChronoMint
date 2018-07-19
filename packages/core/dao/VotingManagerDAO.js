@@ -277,6 +277,8 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
   estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
     try {
+      const estimateParams = params[1]
+      estimateParams[1] = this.web3.utils.asciiToHex(new String(estimateParams[1]))
       const { gasLimit, gasFee, gasPrice } = await this.estimateGas(...params)
       callback(null, {
         gasLimit,

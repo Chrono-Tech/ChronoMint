@@ -139,14 +139,14 @@ export default class PollEditForm extends Component {
   }
 
   handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadline: Date, feeMultiplier: number) => {
+    const { account } = this.props
 
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.props.votingDao.estimateGasForVoting(
         action,
-        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0)],
+        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0), account],
         (error, result) => {
-          console.log('estimateGas price: ', error, result)
           const { gasFee, gasPrice } = result
           if (!error) {
             this.setState({ gasFee, gasPrice })
