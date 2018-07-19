@@ -111,3 +111,12 @@ ul.actions {
   display: flex;
   justify-content: center;
 }
+
+.success-message {
+  background: $color-green-1;
+  padding: 20px 30px;
+  color: $color-white;
+  font-weight: 500;
+  border-radius: 2px;
+  margin-bottom: 45px;
+}

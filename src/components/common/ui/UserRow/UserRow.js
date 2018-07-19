@@ -22,7 +22,7 @@ export default class UserRow extends React.Component {
   }
 
   static defaultProps = {
-    avatar: DEFAULT_AVATAR,
+    avatar: '',
     name: '',
     address: '',
     onClick: null,
@@ -31,6 +31,28 @@ export default class UserRow extends React.Component {
     actionIconClass: '',
     linkTitle: '',
     reverseIcon: false,
+  }
+
+  renderDefaultAvatar(){
+    return (
+      <div styleName='default-avatar-wrapper'>
+        <span styleName='default-avatar' className='chronobank-icon'>
+          profile-circle
+        </span>
+      </div>
+    )
+  }
+
+  renderAvatar(){
+    const { avatar } = this.props
+
+    if (!avatar){
+      return this.renderDefaultAvatar()
+    }
+
+    return (
+      <img styleName='userAvatar' src={avatar} alt='' />
+    )
   }
 
   render () {
@@ -53,7 +75,7 @@ export default class UserRow extends React.Component {
       <div styleName={classnames('userBlock', onClick ? '' : 'userBlockSingle')} onClick={onClick ? onClick : () => {}}>
         <div styleName={classnames('userBlockInner')}>
           <div styleName={classnames('userBlockAvatar')}>
-            <img styleName={classnames('userAvatar')} src={avatar || DEFAULT_AVATAR} alt='' />
+            { this.renderAvatar() }
           </div>
           <div styleName={classnames('userBlockInfo')}>
             { title ? (

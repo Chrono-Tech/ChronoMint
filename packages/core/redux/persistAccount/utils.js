@@ -50,5 +50,5 @@ export const getAccountAvatar = (account: AccountEntryModel) => {
     return account.profile.avatar
   }
 
-  return profileImgJPG
+  return ''
 }

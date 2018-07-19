@@ -20,6 +20,7 @@ import {
   FORM_MNEMONIC_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 
+import validate from './validate'
 import './LoginWithMnemonic.scss'
 
 const multiRowTextFieldStyle = {
@@ -29,7 +30,7 @@ const multiRowTextFieldStyle = {
     color: '#FFB54E',
     padding: 8,
     fontWeight: 700,
-    height: 62,
+    minHeight: 62,
     margin: 0,
   },
   underlineFocusStyle: {
@@ -49,6 +50,9 @@ const multiRowTextFieldStyle = {
     alignItems: 'center',
     color: '#A3A3CC',
   },
+  inputStyle: {
+    height: 'auto',
+  },
 }
 
 function mapDispatchToProps (dispatch) {
@@ -58,7 +62,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
-    onSubmitFail: () => dispatch(onSubmitMnemonicLoginFormFail()),
+    onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, dispatch, submitErrors)),
   }
 }
 
@@ -68,10 +72,10 @@ class LoginWithMnemonic extends PureComponent {
   }
 
   render () {
-    const { handleSubmit } = this.props
+    const { handleSubmit, error } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
@@ -101,6 +105,9 @@ class LoginWithMnemonic extends PureComponent {
             >
               <Translate value='LoginWithMnemonic.submit' />
             </Button>
+
+            { error ? (<div styleName='form-error'>{error}</div>) : null }
+
             <Translate value='LoginWithMnemonic.or' />
             <br />
             <Link to='/login/import-methods' href styleName='link'>
@@ -114,5 +121,5 @@ class LoginWithMnemonic extends PureComponent {
   }
 }
 
-const form = reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE })(LoginWithMnemonic)
+const form = reduxForm({ form: FORM_MNEMONIC_LOGIN_PAGE, validate })(LoginWithMnemonic)
 export default connect(null, mapDispatchToProps)(form)

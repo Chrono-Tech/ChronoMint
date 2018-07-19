@@ -21,7 +21,7 @@ import axios from 'axios'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
-import { stopSubmit, SubmissionError } from 'redux-form'
+import { stopSubmit, SubmissionError, change } from 'redux-form'
 import { push, goBack } from '@chronobank/core-dependencies/router'
 import networkService from '../../network/NetworkService'
 import profileService from '../../network/ProfileService'
@@ -80,6 +80,8 @@ export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
+
+export const FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE = 'LoginPageFieldSuccessMessage'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -313,11 +315,11 @@ export const navigateBack = () => (dispatch) => {
   dispatch(goBack())
 }
 
-export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
+export const onSubmitMnemonicLoginForm = (mnemonic) => (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
-  if (!bip39.validateMnemonic(mnemonicValue)){
-    throw new Error('Invalid mnemonic')
+  if (!mnemonicProvider.validateMnemonic(mnemonicValue)){
+    throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
   }
 
   dispatch({ type: NETWORK_SET_NEW_MNEMONIC, mnemonic: mnemonicValue })
@@ -328,13 +330,17 @@ export const onSubmitMnemonicLoginFormSuccess = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
 }
 
-export const onSubmitMnemonicLoginFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_MNEMONIC_LOGIN_PAGE, { key: 'Wrong mnemonic' }))
+export const onSubmitMnemonicLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_MNEMONIC_LOGIN_PAGE, submitErrors && submitErrors.errors))
 
 }
 
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
   let pk = (privateKey || '').trim()
+
+  if (!privateKeyProvider.validatePrivateKey(privateKey)){
+    throw new SubmissionError({ pk: 'Wrong private key' })
+  }
 
   if (pk.slice(0, 2) === '0x'){
     pk = pk.slice(2)
@@ -347,8 +353,8 @@ export const onSubmitPrivateKeyLoginFormSuccess = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
 }
 
-export const onSubmitPrivateKeyLoginFormFail = () => (dispatch) => {
-  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, { pk: 'Wrong private key' }))
+export const onSubmitPrivateKeyLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
+  dispatch(stopSubmit(FORM_PRIVATE_KEY_LOGIN_PAGE, submitErrors && submitErrors.errors))
 
 }
 
@@ -457,7 +463,12 @@ export const onSubmitResetAccountPasswordForm = (password, confirmPassword) => a
 
 export const onSubmitResetAccountPasswordSuccess = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_ACCOUNT_RECOVERY_MODE })
-  dispatch(navigateToSelectWallet())
+  dispatch(navigateToLoginPage())
+  dispatch(change(
+    FORM_LOGIN_PAGE,
+    FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
+    'Your password has been reset.',
+  ))
 
 }
 

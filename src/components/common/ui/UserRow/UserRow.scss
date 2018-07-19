@@ -92,3 +92,13 @@
 .reverseIcon {
   transform: matrix(-1,0,0,-1,0,0);
 }
+
+.default-avatar-wrapper {
+  margin: 0 20px 0 2px;
+  width: 40px;
+}
+
+.default-avatar {
+  font-size: 60px;
+  color: $additionalData-color-1;
+}
