@@ -75,19 +75,22 @@ export default class NemDAO extends EventEmitter {
   }
 
   async getAccountBalances () {
-    const { confirmed, unconfirmed, vested } = await this._nemProvider.getAccountBalances(this._namespace)
-    return {
-      confirmed,
-      unconfirmed: unconfirmed != null
-        ? unconfirmed
-        : confirmed,
-      vested,
+    const balance = await this._nemProvider.getAccountBalances(this._namespace)
+    if (balance) {
+      const { confirmed, unconfirmed, vested } = balance
+      return {
+        confirmed,
+        unconfirmed: unconfirmed != null
+          ? unconfirmed
+          : confirmed,
+        vested,
+      }
     }
   }
 
   async getAccountBalance () {
-    const { unconfirmed } = await this.getAccountBalances()
-    return unconfirmed
+    const balance = await this.getAccountBalances()
+    return balance ? balance.unconfirmed : null
   }
 
   accept (transfer: TransferExecModel) {

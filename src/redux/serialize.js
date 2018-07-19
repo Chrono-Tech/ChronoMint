@@ -25,7 +25,7 @@ import AllowanceCollection from '@chronobank/core/models/wallet/AllowanceCollect
 import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import AccountModel from '@chronobank/core/models/wallet/persistAccount/AccountModel'
-import WalletModel from '../../packages/core/models/wallet/WalletModel'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 
 function mark (data, type, transformMethod) {
   return {

@@ -5,7 +5,6 @@
 
 import { Button, IPFSImage } from 'components'
 import iconTokenDefaultSVG from 'assets/img/avaToken.svg'
-import { DUCK_MAIN_WALLET } from '@chronobank/core/redux/mainWallet/actions'
 import BigNumber from 'bignumber.js'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import Immutable from 'immutable'
@@ -22,6 +21,7 @@ import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import BalancesCollection from '@chronobank/core/models/tokens/BalancesCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import Amount from '@chronobank/core/models/Amount'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
 import './BuyTokensDialog.scss'
 import validate from './validate'
 
@@ -35,7 +35,8 @@ function mapStateToProps (state) {
   const tokens = state.get(DUCK_TOKENS)
   const selector = formValueSelector(FORM_EXCHANGE_BUY_TOKENS)
   const invalidSelector = isInvalid(FORM_EXCHANGE_BUY_TOKENS)
-  const wallet = state.get(DUCK_MAIN_WALLET)
+  const wallet = getMainEthWallet(state)
+
   return {
     tokens,
     balances: wallet.balances(),

@@ -57,7 +57,7 @@ export default (values, props) => {
     recipient: new ErrorList()
       .add(validator.required(recipient))
       .add(addressValidator(recipient, true, token.blockchain()))
-      .add(recipient === wallet.address() ? 'errors.cantSentToYourself' : null)
+      .add(recipient === wallet.address ? 'errors.cantSentToYourself' : null)
       .getErrors(),
     amount: amountErrors.getErrors(),
     satPerByte: satPerByteErrors.getErrors(),

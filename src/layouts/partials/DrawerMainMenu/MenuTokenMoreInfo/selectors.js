@@ -10,7 +10,7 @@ import OwnerModel from '@chronobank/core/models/wallet/OwnerModel'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import AddressModel from '@chronobank/core/models/wallet/AddressModel'
-import { DUCK_MAIN_WALLET } from '@chronobank/core/redux/mainWallet/actions'
+import { getMainAddresses } from '@chronobank/core/redux/wallets/selectors/models'
 
 // provides filtered list of addresses of MainWallets
 export const selectWallet = () => createSelector(
@@ -93,7 +93,7 @@ export const getSelectedToken = () => createWalletSelector(
 
 const getWalletAddress = (state, props) => {
   const { selectedToken } = props
-  const addresses = state.get(DUCK_MAIN_WALLET).addresses()
+  const addresses = getMainAddresses(state)
   return selectedToken && selectedToken.blockchain ? addresses.item(selectedToken.blockchain) : new AddressModel()
 }
 

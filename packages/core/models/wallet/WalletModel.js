@@ -5,6 +5,7 @@
 
 import PropTypes from 'prop-types'
 import AbstractModel from '../../refactor/models/AbstractModel'
+import Amount from '../Amount'
 
 const schemaFactory = () => ({
   address: PropTypes.string.isRequired,
@@ -20,6 +21,8 @@ const schemaFactory = () => ({
   deriveNumber: PropTypes.number,
   is2FA: PropTypes.bool,
   isMultisig: PropTypes.bool,
+  amount: PropTypes.instanceOf(Amount),
+  isTimeLocked: PropTypes.bool,
 })
 
 const defaultProps = {
