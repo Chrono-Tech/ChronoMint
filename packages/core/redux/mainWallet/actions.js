@@ -76,7 +76,7 @@ export const WALLET_INIT = 'mainWallet/INIT'
 export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
 export const WALLET_ESTIMATE_GAS_FOR_DEPOSIT = 'mainWallet/ESTIMATE_GAS_FOR_DEPOSIT'
 
-export const ETH = ethereumDAO.getSymbol()
+export const ETH = 'ETH'
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 export const BTC = 'BTC'
