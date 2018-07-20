@@ -45,6 +45,7 @@ import {
   AddWalletPage,
   TwoFAPage,
   NewPollPage,
+  VoteHistoryPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
@@ -88,6 +89,7 @@ const router = (
         <Route path='voting' component={VotingPage} />
         <Route path='poll' component={PollPage} />
         <Route path='new-poll' component={NewPollPage} />
+        <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={LOCPage} />
