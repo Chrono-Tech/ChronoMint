@@ -12,17 +12,24 @@ export default {
     },
     input: {
       color: '#9997B2',
-      textAlign: 'center',
+      textAlign: 'left',
       marginTop: 0,
       paddingTop: 18,
     },
     label: {
       color: '#A3A3CC',
       top: 28,
-      left: 0,
-      right: 0,
+      margin: 'auto',
+      textAlign: 'left',
+    },
+    hintStyle: {
+      color: '#A3A3CC',
       margin: 'auto',
       textAlign: 'center',
-      transformOrigin: 'center center',
+    },
+    errorStyle: {
+      bottom: 0,
+      marginTop: 5,
+      textAlign: 'center',
     },
 }

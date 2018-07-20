@@ -60,13 +60,15 @@ $copyRightPadding: 200px;
   .subscription {
     position: absolute;
     display: flex;
-    bottom: 0;
-    left: 335px;
+    bottom: 10px;
+    left: 340px;
+    flex-wrap: wrap;
   }
 
   .subscription-input {
     width: 280px;
     display: flex;
+
   }
 
   .subscription-button {
@@ -92,7 +94,7 @@ $copyRightPadding: 200px;
 
   .copyright {
     display: flex;
-    margin-top: 30px;
+    margin-top: 50px;
     width: 870px;
     z-index: 2;
 
@@ -147,6 +149,10 @@ $copyRightPadding: 200px;
     flex-direction: column;
     list-style-type: none;
 
+    &.navigation-menu li {
+      margin-top: 17px;
+    }
+
     li {
       display: flex;
       color: $color-light-blue;
@@ -180,14 +186,19 @@ $copyRightPadding: 200px;
     padding-left: 30px;
     padding-right: 30px;
 
-    .market-logo-container {
+    .ios-market-logo-container {
       display: block;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .android-market-logo-container {
+      display: block;
+      margin-bottom: 12px;
     }
 
     .ios-market-logo {
       display: block;
-      width: 125px;
+      width: 110px;
     }
 
     .android-market-logo {
@@ -208,14 +219,14 @@ $copyRightPadding: 200px;
     .logos-container {
       display: flex;
       width: 125px;
-      height: 130px;
+      height: 112px;
       flex-direction: row;
       justify-content: space-between;
       flex-wrap: wrap;
+      margin-bottom: 10px;
     }
 
-    .logo {
-      display: flex;
+    .logo-wrapper {
     }
 
     .img-logo {
@@ -233,6 +244,21 @@ $copyRightPadding: 200px;
 
 }
 
+.resource-link {
+  cursor: pointer;
+
+  &:hover .resource-img {
+    opacity: 1;
+  }
+}
+
+.resource-img {
+  width: 32px;
+  height: 32px;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
 .background {
   position: absolute;
   bottom: 0;
@@ -248,4 +274,16 @@ $copyRightPadding: 200px;
 .footerLink {
   color: $color-light-blue;
   text-decoration: none;
+}
+
+.subscriptionSubmitSucceeded {
+  color: $color-green-1;
+}
+
+.subscriptionSubmitError {
+  color: $color-red;
+}
+
+.spinner {
+  margin-right: 5px;
 }

@@ -9,7 +9,7 @@ import compose from 'recompose/compose';
 import { withStyles } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm, Field, formValueSelector } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -25,6 +25,7 @@ import {
   initAccountsSignature,
   DUCK_NETWORK,
   FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
   isLocalNode,
@@ -32,15 +33,18 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
+
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get('persistAccount').selectedWallet
+  const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
     selectedWallet: selectedWallet,
@@ -83,6 +87,20 @@ class LoginPage extends React.Component {
     this.props.initLoginPage()
   }
 
+  renderSuccessMessage(){
+    const { successMessage } = this.props
+
+    if (!successMessage){
+      return null
+    }
+
+    return (
+      <div styleName='success-message'>
+        {successMessage}
+      </div>
+    )
+  }
+
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
       navigateToSelectWallet, isLoginSubmitting, isLocalNode } = this.props
@@ -94,11 +112,17 @@ class LoginPage extends React.Component {
             <Translate value='LoginForm.title' />
           </div>
 
+          { this.renderSuccessMessage() }
+
+          <input type='hidden' name={FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE} />
+
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
               avatar={getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
+              linkTitle='My Accounts'
             />
 
             <div styleName='field'>

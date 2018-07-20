@@ -1,3 +1,5 @@
+import variables from 'styles/themes/variables'
+
 export default {
 //  textField: {
     underline: {
@@ -8,8 +10,8 @@ export default {
       borderColor: '#FFB54E',
       bottom: 0,
     },
-    input: {
-      color: '#A3A3CC',
+    inputStyle: {
+      color: variables.colorWhite,
       textAlign: 'center',
       marginTop: 100,
       paddingTop: 18,

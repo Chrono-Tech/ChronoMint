@@ -50,7 +50,6 @@ export default class MnemonicPage extends Component {
 
             <p styleName='description'>
               <Translate value='GenerateWallet.description' />
-              <Translate value='GenerateWallet.descriptionExtra' />
             </p>
 
             <div styleName='actions'>
