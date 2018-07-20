@@ -4,7 +4,7 @@
  */
 
 import { createSelector, createSelectorCreator, defaultMemoize } from 'reselect'
-import { getWallets } from './models'
+import { getWallets, getWalletsLengthFromState } from './models'
 import WalletModel from '../../../models/wallet/WalletModel'
 import { getAccount } from '../../session/selectors/models'
 
@@ -73,4 +73,11 @@ export const sectionsSelector = createSectionsSelector(
 
     return Object.values(sectionsObject)
   },
+)
+
+export const getWalletsLength = createSelector(
+  [
+    getWalletsLengthFromState,
+  ],
+  (length) => length,
 )
