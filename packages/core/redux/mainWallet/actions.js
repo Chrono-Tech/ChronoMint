@@ -67,7 +67,7 @@ export const WALLET_TOKEN_BALANCE = 'mainWallet/TOKEN_BALANCE'
 export const WALLET_INIT = 'mainWallet/INIT'
 export const WALLET_SET_NAME = 'mainWallet/SET_NAME'
 
-export const ETH = ethereumDAO.getSymbol()
+export const ETH = 'ETH'
 export const TIME = 'TIME'
 export const LHT = 'LHT'
 export const BTC = 'BTC'
