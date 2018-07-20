@@ -16,7 +16,6 @@ import {
   getWalletsListAddresses,
   getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
-export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 import web3Provider from '@chronobank/login/network/Web3Provider'

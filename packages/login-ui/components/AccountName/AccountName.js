@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -69,7 +68,6 @@ class LoginPage extends PureComponent {
       navigateToSelectWallet, isLoginSubmitting } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
@@ -123,7 +121,6 @@ class LoginPage extends PureComponent {
           </div>
 
         </form>
-      </MuiThemeProvider>
     )
   }
 }

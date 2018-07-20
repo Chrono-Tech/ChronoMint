@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from '@material-ui/core/styles'
-import compose from 'recompose/compose';
+import compose from 'recompose/compose'
 import { withStyles } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
@@ -103,10 +103,9 @@ class LoginPage extends React.Component {
 
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting, isLocalNode } = this.props
+      navigateToSelectWallet, isLoginSubmitting, isLocalNode, classes } = this.props
 
     return (
-      <MuiThemeProvider>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
           <div styleName='page-title'>
             <Translate value='LoginForm.title' />
@@ -132,7 +131,7 @@ class LoginPage extends React.Component {
                 type='password'
                 label={<Translate value='LoginForm.enterPassword' />}
                 fullWidth
-	        InputProps={{ className: classes.input }}
+                InputProps={{ className: classes.input }}
                 InputLabelProps={{ className: classes.floatingLabel }}
                 style={{ className: classes.hint }}
               />
@@ -164,7 +163,7 @@ class LoginPage extends React.Component {
           </div>
 
         </form>
-    )
+        )
   }
 }
 

@@ -7,7 +7,6 @@ import networkService from '@chronobank/login/network/NetworkService'
 import {
   isLocalNode,
 } from '@chronobank/login/network/settings'
-import { MuiThemeProvider } from 'material-ui'
 import {
   DUCK_NETWORK,
   onSubmitLoginTestRPC,
@@ -89,7 +88,6 @@ class LoginLocal extends PureComponent {
     const { accounts } = this.props
 
     return (
-      <MuiThemeProvider>
         <div styleName='wrapper'>
 
           <div styleName='page-title'>
@@ -97,7 +95,6 @@ class LoginLocal extends PureComponent {
           </div>
           {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
         </div>
-      </MuiThemeProvider>
     )
   }
 }

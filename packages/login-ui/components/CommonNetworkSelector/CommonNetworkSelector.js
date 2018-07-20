@@ -27,7 +27,7 @@ import {
 import {
   customNetworksListAdd,
 } from '@chronobank/core/redux/persistAccount/actions'
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
