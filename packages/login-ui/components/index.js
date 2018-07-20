@@ -17,3 +17,4 @@ export { default as CommonNetworkSelector } from './CommonNetworkSelector/Common
 export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'
 export { default as LoginWithWallet } from './LoginWithWallet/LoginWithWallet'
 export { default as LoginLocal } from './LoginLocal/LoginLocal'
+export { default as AccountName } from './AccountName/AccountName'

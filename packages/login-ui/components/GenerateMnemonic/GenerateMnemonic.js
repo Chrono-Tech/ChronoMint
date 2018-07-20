@@ -6,10 +6,12 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { MuiThemeProvider } from 'material-ui'
+import ReactDOM from 'react-dom'
 import React, { Component } from 'react'
+import QRCode from 'davidshimjs-qrcodejs'
 import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 import PrintIcon from 'assets/img/icons/print-white.svg'
+import LogoPrintVersion from 'assets/img/logo-chrono-wallet-bw.svg'
 import { Button } from '../../settings'
 
 import './GenerateMnemonic.scss'
@@ -48,9 +50,58 @@ export default class MnemonicPage extends Component {
     this.props.navigateToConfirmPage()
   }
 
+  showMnemonicPrintVersion(){
+    const element = (
+      <div styleName='print-wrapper'>
+        <img styleName='print-logo' src={LogoPrintVersion} alt='' />
+        <div styleName='print-title'>Your back-up phrase<br/>(Mnemonic Key)</div>
+        <div styleName='print-mnemonic' >
+          radio cat potato tree android rotor influence chrono
+          adelaide chrome collective fire
+        </div>
+        <div styleName='print-qr-description'>
+          Scan this QR code to speed up
+          <br/>
+          entering process
+        </div>
+        <div id='print-qr-code'></div>
+      </div>
+    )
+
+    this.renderPrintVersionContent(element)
+    new QRCode(document.getElementById('print-qr-code'), {
+      text: 'radio cat potato tree android rotor influence chrono adelaide chrome collective fire',
+      width: 230,
+      height: 230,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+    });
+
+    window.print()
+  }
+
+  onAfterPrint(){
+    var elem = document.getElementById(id);
+    return elem.parentNode.removeChild(elem);
+  }
+
+  renderPrintVersionContent(content){
+    const printVersionContainerId = 'generate-mnemonic-container'
+    let printVersionWrapper = document.createElement('div')
+    printVersionWrapper.setAttribute('id', printVersionContainerId)
+
+    document.body.appendChild(printVersionWrapper)
+
+    window.onafterprint = () => {
+      printVersionWrapper.parentNode.removeChild(printVersionWrapper)
+    }
+
+    ReactDOM.render(content, document.getElementById(printVersionContainerId))
+  }
+
   render () {
     return (
-      <MuiThemeProvider>
         <div styleName='wrapper'>
           <div>
             <div styleName='page-title'>
@@ -65,7 +116,7 @@ export default class MnemonicPage extends Component {
             <div styleName='passPhraseWrapper'>
               <div styleName='passPhrase'>{ this.props.mnemonic }</div>
               <div styleName='printButtonWrapper'>
-                <div styleName='printButton' onClick={() => {}}>
+                <div styleName='printButton' onClick={() => this.showMnemonicPrintVersion()}>
                   <img src={PrintIcon} alt='' />
                 </div>
               </div>
@@ -116,7 +167,6 @@ export default class MnemonicPage extends Component {
             </div>
           </div>
         </div>
-      </MuiThemeProvider>
     )
   }
 }

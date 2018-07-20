@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -14,6 +14,7 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   onSubmitResetAccountPasswordForm,
@@ -69,7 +70,7 @@ class ResetPasswordPage extends PureComponent {
     const { handleSubmit, selectedWallet } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider >
         <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
@@ -80,7 +81,7 @@ class ResetPasswordPage extends PureComponent {
             <UserRow
               title={getAccountName(selectedWallet)}
               avatar={getAccountAvatar(selectedWallet)}
-              onClick={() => {}}
+              subtitle={getAccountAddress(selectedWallet, true)}
             />
           </div>
 

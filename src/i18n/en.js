@@ -885,5 +885,6 @@ export default {
     publish: 'Publish',
     endPoll: 'End poll',
     addToken: 'Add a token',
+    voteHistory: 'Changes History',
   },
 }

@@ -8,7 +8,7 @@ import { ModalStack, SideStack, Snackbar } from 'components'
 import BUTTONS from 'components/common/TopButtons/buttons'
 import menu from 'menu'
 import classnames from 'classnames'
-import { IconButton, MuiThemeProvider } from 'material-ui'
+import { IconButton, MuiThemeProvider } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -100,7 +100,7 @@ export default class Markup extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider muiTheme={theme}>
+      <MuiThemeProvider theme={theme}>
         <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />

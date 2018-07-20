@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from 'material-ui/svg-icons'
-import { CircularProgress, IconButton, TextField } from 'material-ui'
+import { ActionDone, AlertError, EditorAttachFile, NavigationClose } from '@material-ui/core'
+import { CircularProgress, IconButton, TextField } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import Immutable from 'immutable'
 import PropTypes from 'prop-types'

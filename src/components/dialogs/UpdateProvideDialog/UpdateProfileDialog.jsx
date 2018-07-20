@@ -5,7 +5,7 @@
 
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { FontIcon } from 'material-ui'
+import { FontIcon } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -23,13 +23,22 @@ import ModalDialog from '../ModalDialog'
 import validate from './validate'
 import './UpdateProfileDialog.scss'
 import { prefix } from './lang'
+import {
+  getAccountName,
+  getAccountAvatar,
+} from '@chronobank/core/redux/persistAccount/utils'
+import profileService from '@chronobank/login/network/ProfileService'
+
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
 
 function mapStateToProps (state) {
   const selector = formValueSelector(FORM_UPDATE_PROFILE_DIALOG)
   const session = state.get(DUCK_SESSION)
+  const selectedAccount = state.get('persistAccount').selectedWallet
+
   return {
+    selectedAccount: selectedAccount,
     company: selector(state, 'company'),
     name: selector(state, 'name'),
     icon: selector(state, 'icon'),
@@ -59,6 +68,8 @@ export default class UpdateProfileDialog extends PureComponent {
   }
 
   render () {
+    const { selectedAccount } = this.props
+
     return (
       <ModalDialog title={<Translate value={`${prefix}.title`} />}>
         <div styleName='root'>
@@ -81,7 +92,7 @@ export default class UpdateProfileDialog extends PureComponent {
                 </div>
               </div>
               <div styleName='right'>
-                <div styleName='name'>{this.props.name || <Translate value={`${prefix}.yourName`} />}</div>
+                <div styleName='name'>{getAccountName(selectedAccount) || <Translate value={`${prefix}.yourName`} />}</div>
                 <div styleName='company'>{this.props.company || <Translate value={`${prefix}.yourCompany`} />}</div>
                 <div styleName='account'>{this.props.account || <Translate value={`${prefix}.accountAddress`} />}</div>
                 <div styleName='micros'>

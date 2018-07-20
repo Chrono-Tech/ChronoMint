@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { blue600 } from 'material-ui/styles/colors'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import { blue600 } from '@material-ui/core/colors/blue'
+import { createMuiTheme } from '@material-ui/core/styles'
 
-const themeDefault = getMuiTheme({
+const themeDefault = createMuiTheme({
   palette: {
     accent1Color: '#17579c',
     textColor: '#161240',

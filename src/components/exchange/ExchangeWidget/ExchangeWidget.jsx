@@ -6,7 +6,7 @@
 import { Button } from 'components'
 import { change, Field, formValueSelector, reduxForm } from 'redux-form/immutable'
 import Preloader from 'components/common/Preloader/Preloader'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React from 'react'
 import Immutable from 'immutable'

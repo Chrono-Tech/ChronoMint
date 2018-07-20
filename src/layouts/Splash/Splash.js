@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import {CommonNetworkSelector} from '@chronobank/login-ui/components'
 import LocaleDropDown from 'layouts/partials/LocaleDropDown/LocaleDropDown'
+import { ModalStack } from 'components'
 
 import WalletTitleBG from 'assets/img/wallet-title-bg.png'
 import StripesToCrop from 'assets/img/stripes-2-crop.jpg'
@@ -75,6 +76,8 @@ export default class Splash extends Component {
         </PersistWrapper>
 
         {!window.isMobile && (<Footer />)}
+
+        <ModalStack />
       </div>
     )
   }

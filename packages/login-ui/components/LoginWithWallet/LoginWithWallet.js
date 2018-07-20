@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core/styles'
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
@@ -160,16 +160,13 @@ class LoginWithWallet extends Component {
                 <Button styleName='button' buttonType='login' disabled>
                   <img styleName='before-img' src={CheckIcon} alt='' />
                   <span styleName='button-text'>{fileName}</span>
-                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                  <span
+                    styleName='removeButton'
+                    onClick={() => this.handleRemoveWallet()}
+                  >
+                    <img styleName='after-img' src={DeleteIcon} alt='' />
+                  </span>
                 </Button>
-                <Field
-                  component={TextField}
-                  name='password'
-                  type='password'
-                  floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-                  fullWidth
-                  {...styles.textField}
-                />
               </div>
             )}
 

@@ -4,7 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
@@ -21,6 +21,7 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   AccountEntryModel,
@@ -85,6 +86,7 @@ export default class SelectWalletPage extends PureComponent {
             <UserRow
               key={i}
               title={getAccountName(w)}
+              subtitle={getAccountAddress(w, true)}
               avatar={getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon={true}

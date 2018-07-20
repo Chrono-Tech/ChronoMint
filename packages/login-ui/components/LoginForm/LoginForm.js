@@ -4,15 +4,18 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
+import { withStyles } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm, Field, formValueSelector } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
+import inverted from 'styles/themes/inversed'
 
 import {
   onSubmitLoginForm,
@@ -22,22 +25,26 @@ import {
   initAccountsSignature,
   DUCK_NETWORK,
   FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
-  isTestRPC,
+  isLocalNode,
 } from '@chronobank/login/network/settings'
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
+
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get('persistAccount').selectedWallet
+  const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
     selectedWallet: selectedWallet,
@@ -46,7 +53,7 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedAccount: network.selectedAccount,
     accounts: network.accounts,
-    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
+    isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
   }
 }
 
@@ -64,7 +71,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class LoginPage extends PureComponent {
+class LoginPage extends React.Component {
   static propTypes = {
     initLoginPage: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
@@ -73,30 +80,48 @@ class LoginPage extends PureComponent {
     accounts: PropTypes.array,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
-    isTestRPC: PropTypes.bool,
+    isLocalNode: PropTypes.bool,
   }
 
   componentWillMount(){
     this.props.initLoginPage()
   }
 
-  render () {
-    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting, isTestRPC } = this.props
+  renderSuccessMessage(){
+    const { successMessage } = this.props
+
+    if (!successMessage){
+      return null
+    }
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
-        <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
+      <div styleName='success-message'>
+        {successMessage}
+      </div>
+    )
+  }
 
+  render () {
+    const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
+      navigateToSelectWallet, isLoginSubmitting, isLocalNode, classes } = this.props
+
+    return (
+        <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
           <div styleName='page-title'>
             <Translate value='LoginForm.title' />
           </div>
 
+          { this.renderSuccessMessage() }
+
+          <input type='hidden' name={FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE} />
+
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
               avatar={getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
+              linkTitle='My Accounts'
             />
 
             <div styleName='field'>
@@ -104,9 +129,11 @@ class LoginPage extends PureComponent {
                 component={TextField}
                 name='password'
                 type='password'
-                floatingLabelText={<Translate value='LoginForm.enterPassword' />}
+                label={<Translate value='LoginForm.enterPassword' />}
                 fullWidth
-                {...styles.textField}
+                InputProps={{ className: classes.input }}
+                InputLabelProps={{ className: classes.floatingLabel }}
+                style={{ className: classes.hint }}
               />
             </div>
 
@@ -136,10 +163,9 @@ class LoginPage extends PureComponent {
           </div>
 
         </form>
-      </MuiThemeProvider>
-    )
+        )
   }
 }
 
 const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default compose(withStyles(styles),connect(mapStateToProps, mapDispatchToProps))(form)

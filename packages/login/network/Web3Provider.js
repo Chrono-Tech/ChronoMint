@@ -90,7 +90,7 @@ export class Web3Provider {
       this[func] = promisify(web3.eth[func])
     })
     // hack due to web3.isConnected is in sync mode only
-    this.isConnected = promisify(web3.net.getListening)
+    this.isConnected = web3.isConnected//promisify(web3.net.getListening)
   }
 
   _getWeb3Promise () {
@@ -130,7 +130,7 @@ export class Web3Provider {
     }
     // reset filters
     if (this._web3instance) {
-      this._web3instance.reset(false)
+      //this._web3instance.reset(false)
     }
 
     // create new instance

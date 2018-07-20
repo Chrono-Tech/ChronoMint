@@ -1,23 +1,22 @@
+import variables from 'styles/themes/variables'
+
 export default {
-  textField: {
-    style: {
-      height: 62,
-    },
-    underlineStyle: {
+//  textField: {
+    underline: {
       borderColor: '#424066',
       bottom: 0,
     },
-    underlineFocusStyle: {
+    focused: {
       borderColor: '#FFB54E',
       bottom: 0,
     },
     inputStyle: {
-      color: '#A3A3CC',
+      color: variables.colorWhite,
       textAlign: 'center',
-      marginTop: 0,
+      marginTop: 100,
       paddingTop: 18,
     },
-    floatingLabelStyle: {
+    floatingLabel: {
       color: '#A3A3CC',
       top: 28,
       left: 0,
@@ -26,15 +25,15 @@ export default {
       textAlign: 'center',
       transformOrigin: 'center center',
     },
-    hintStyle: {
+    hint: {
       color: '#A3A3CC',
       margin: 'auto',
       textAlign: 'center',
     },
-    errorStyle: {
+    error: {
       bottom: 0,
       marginTop: 5,
       textAlign: 'center',
     },
-  },
+//  },
 }

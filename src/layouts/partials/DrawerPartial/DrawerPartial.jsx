@@ -4,7 +4,7 @@
  */
 
 import { Link } from 'react-router'
-import { List, ListItem, IconButton, FontIcon } from 'material-ui'
+import { List, ListItem, IconButton, FontIcon } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'

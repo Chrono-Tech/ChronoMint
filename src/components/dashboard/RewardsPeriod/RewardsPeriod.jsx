@@ -6,7 +6,7 @@
 import Moment from 'components/common/Moment'
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import ProgressSection from 'components/dashboard/ProgressSection/ProgressSection'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import Amount from '@chronobank/core/models/Amount'
 import { SHORT_DATE } from '@chronobank/core/models/constants'
 import RewardsCollection from '@chronobank/core/models/rewards/RewardsCollection'

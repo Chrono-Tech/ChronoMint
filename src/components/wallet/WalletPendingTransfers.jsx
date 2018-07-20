@@ -5,7 +5,7 @@
 
 import { Button } from 'components'
 import Preloader from 'components/common/Preloader/Preloader'
-import { Paper } from 'material-ui'
+import { Paper } from '@material-ui/core'
 import Amount from '@chronobank/core/models/Amount'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import MultisigWalletModel from '@chronobank/core/models/wallet/MultisigWalletModel'

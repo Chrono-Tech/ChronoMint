@@ -5,7 +5,7 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import { clearErrors } from '@chronobank/login/redux/network/actions'
-import { MenuItem, SelectField } from 'material-ui'
+import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
