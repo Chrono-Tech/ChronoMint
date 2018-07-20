@@ -4,5 +4,5 @@
  */
 
 export const en = {
-  title: 'Select a Local node Address',
+  title: 'Delete an Address',
 }

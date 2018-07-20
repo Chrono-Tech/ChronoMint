@@ -71,7 +71,7 @@ class LoginWithMnemonic extends PureComponent {
     const { handleSubmit } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_MNEMONIC_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>

@@ -13,6 +13,9 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
+  customNetworkCreate,
+  customNetworkEdit,
+  customNetworksDelete,
 } from '@chronobank/core/redux/persistAccount/actions'
 import Web3Legacy from 'web3legacy'
 import bip39 from 'bip39'
@@ -29,7 +32,7 @@ import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProv
 import { nemProvider } from '../../network/NemProvider'
 import {
   LOCAL_PRIVATE_KEYS,
-  isTestRPC,
+  isLocalNode,
 } from '../../network/settings'
 
 export const DUCK_NETWORK = 'network'
@@ -76,6 +79,8 @@ export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
+export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
+export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -427,13 +432,14 @@ export const getProfileSignature = (wallet) => async (dispatch) => {
 
 export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   const state = getState()
+  let wallet
 
   dispatch({ type: NETWORK_SET_LOGIN_SUBMITTING })
 
   const { selectedWallet } = state.get('persistAccount')
 
   try {
-    let wallet = await dispatch (decryptAccount(selectedWallet.encrypted, password))
+    wallet = await dispatch(decryptAccount(selectedWallet.encrypted, password))
 
     let privateKey = wallet && wallet[0] && wallet[0].privateKey
 
@@ -446,6 +452,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
   } catch(e){
     throw new SubmissionError({ password: e && e.message })
   }
+
 }
 
 export const onSubmitLoginFormSuccess = () => () => {
@@ -576,7 +583,11 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
   dispatch(loading())
   dispatch(clearErrors())
-  const provider = privateKeyProvider.getPrivateKeyProvider(privateKey.slice(2), networkService.getProviderSettings(), state.get('multisigWallet'))
+  const provider = privateKeyProvider.getPrivateKeyProvider(
+    privateKey.slice(2),
+    networkService.getProviderSettings(),
+    state.get('multisigWallet')
+  )
 
   networkService.selectAccount(provider.ethereum.getAddress())
   await networkService.setup(provider)
@@ -586,45 +597,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
   dispatch(clearErrors())
 
-  const isPassed = await networkService.checkNetwork(
-    selectedAccount,
-    selectedProviderId,
-    selectedNetworkId,
-  )
-
-  if (isPassed) {
-    networkService.createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    )
-    dispatch(login(selectedAccount))
-  }
-
-}
-
-export const handleMnemonicLogin = (mnemonic) => async (dispatch, getState) => {
-  const web3 = new Web3Legacy()
-  const accounts = new Accounts(networkService.getProviderSettings().url)
-  await accounts.wallet.clear()
-
-  dispatch(loading())
-  dispatch(clearErrors())
-  const provider = mnemonicProvider.getMnemonicProvider(mnemonic, networkService.getProviderSettings())
-  networkService.selectAccount(provider.ethereum.getAddress())
-  await networkService.setup(provider)
-
-  const state = getState()
-
-  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
-
-  dispatch(clearErrors())
-
-  const isPassed = await networkService.checkNetwork(
-    selectedAccount,
-    selectedProviderId,
-    selectedNetworkId,
-  )
+  const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
     networkService.createNetworkSession(
@@ -688,7 +661,7 @@ export const initLoginLocal = () => async (dispatch, getState) => {
 
   const { selectedNetworkId, selectedProviderId } = state.get('network')
 
-  if (isTestRPC(selectedProviderId, selectedNetworkId)){
+  if (isLocalNode(selectedProviderId, selectedNetworkId)){
     await networkService.loadAccounts()
   } else {
     dispatch(navigateToLoginPage())
@@ -748,9 +721,21 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   networkService.selectProvider(providerId)
   networkService.selectNetwork(networkId)
 
-  if (isTestRPC(providerId, networkId)){
+  if (isLocalNode(providerId, networkId)){
     dispatch(navigateToLoginLocal())
   }
+}
+
+export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
+  dispatch(customNetworkCreate(url, alias))
+}
+
+export const handleSubmitEditNetwork = (network) => (dispatch) => {
+  dispatch(customNetworkEdit(network))
+}
+
+export const handleDeleteNetwork = (network) => (dispatch) => {
+  dispatch(customNetworksDelete(network))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

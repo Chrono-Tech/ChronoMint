@@ -5,7 +5,7 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import {
-  isTestRPC,
+  isLocalNode,
 } from '@chronobank/login/network/settings'
 import { MuiThemeProvider } from 'material-ui'
 import {
@@ -42,7 +42,7 @@ const mapStateToProps = (state) => {
   return {
     isLoginSubmitting: network.isLoginSubmitting,
     accounts: network.accounts,
-    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
+    isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
   }
 }
 
@@ -55,15 +55,15 @@ class LoginLocal extends PureComponent {
     navigateToLoginPage: PropTypes.func,
     handleLoginLocalAccountClick: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
-    isTestRPC: PropTypes.bool,
+    isLocalNode: PropTypes.bool,
   }
 
   componentWillMount (){
     this.props.initLoginLocal()
   }
 
-  componentWillReceiveProps (nextProps){
-    if (!nextProps.isTestRPC){
+  componentWillReceiveProps(nextProps){
+    if (!nextProps.isLocalNode){
       this.props.navigateToLoginPage()
     }
   }
@@ -89,7 +89,7 @@ class LoginLocal extends PureComponent {
     const { accounts } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <div styleName='wrapper'>
 
           <div styleName='page-title'>

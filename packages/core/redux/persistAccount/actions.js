@@ -10,6 +10,7 @@ import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
   AccountProfileModel,
+  AccountCustomNetwork,
 } from '../../models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
@@ -21,6 +22,11 @@ export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
 export const WALLETS_LOAD = 'persistAccount/WALLETS_LOAD'
 export const WALLETS_UPDATE_LIST = 'persistAccount/WALLETS_UPDATE_LIST'
 export const WALLETS_REMOVE = 'persistAccount/WALLETS_REMOVE'
+export const CUSTOM_NETWORKS_LIST_ADD = 'persistAccount/CUSTOM_NETWORKS_LIST_ADD'
+export const CUSTOM_NETWORKS_LIST_UPDATE = 'persistAccount/CUSTOM_NETWORKS_LIST_UPDATE'
+export const CUSTOM_NETWORKS_LIST_RESET = 'persistAccount/CUSTOM_NETWORKS_LIST_RESET'
+
+export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
 
 export const accountAdd = (wallet) => (dispatch) => {
   dispatch({ type: WALLETS_ADD, wallet })
@@ -41,7 +47,7 @@ export const accountUpdateList = (walletList) => (dispatch) => {
 export const accountUpdate = (wallet) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.get('persistAccount')
+  const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   let index = walletsList.findIndex((item) => item.key === wallet.key)
 
@@ -67,7 +73,7 @@ export const decryptAccount = (encrypted, password) => async () => {
 export const validateAccountName = (name) => (dispatch, getState) => {
   const state = getState()
 
-  const { walletsList } = state.get('persistAccount')
+  const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
   return !walletsList.find((item) => item.name === name)
 }
@@ -162,7 +168,7 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
 export const downloadWallet = () => (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
+  const { selectedWallet } = state.get(DUCK_PERSIST_ACCOUNT)
 
   if (selectedWallet) {
     const walletName = selectedWallet.name || 'Wallet'
@@ -201,4 +207,52 @@ export const logout = () => (dispatch) => {
   dispatch(accountSelect(null))
   dispatch(accountLoad(null))
   // Router.pushRoute('/')
+}
+
+export const customNetworkCreate = (url, alias) => (dispatch) => {
+  const network = new AccountCustomNetwork({
+    id: uuid(),
+    name: alias,
+    url,
+  })
+
+  dispatch(customNetworksListAdd(network))
+}
+
+export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, getState) => {
+  const state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
+
+  if (foundNetworkIndex !== -1){
+    let copyNetworksList = [...customNetworksList]
+
+    copyNetworksList.splice(foundNetworkIndex, 1, network)
+
+    dispatch(customNetworksListUpdate(copyNetworksList))
+  }
+}
+
+export const customNetworksListAdd = (network: AccountCustomNetwork) => (dispatch) => {
+  dispatch({ type: CUSTOM_NETWORKS_LIST_ADD, network })
+}
+
+export const customNetworksDelete = (network) => (dispatch, getState) => {
+  const state = getState()
+
+  const { customNetworksList } = state.get(DUCK_PERSIST_ACCOUNT)
+
+  const updatedNetworkList = customNetworksList.filter((item) => item.id !== network.id)
+
+  dispatch(customNetworksListUpdate(updatedNetworkList))
+}
+
+export const customNetworksListUpdate = (list) => (dispatch) => {
+  dispatch({ type: CUSTOM_NETWORKS_LIST_UPDATE, list })
+}
+
+export const customNetworksListReset = () => (dispatch) => {
+  dispatch({ type: CUSTOM_NETWORKS_LIST_RESET })
 }
