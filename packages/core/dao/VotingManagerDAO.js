@@ -62,6 +62,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
   async getPollsPaginated (startIndex, pageSize, account: string): Promise {
     const addresses = await this.contract.methods.getPollsPaginated(startIndex, pageSize).call()
+    console.log('Polls addresses: ', addresses)
     return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
@@ -122,7 +123,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       for (let i = 0; i < pollsAddresses.length; i++) {
         promises.push(new Promise(async (resolve) => {
           try {
-            const pollAddress = pollsAddresses[i]
+            const pollAddress = pollsAddresses[i].toLowerCase()
 
             try {
               votingService.subscribeToPoll(pollAddress, account)

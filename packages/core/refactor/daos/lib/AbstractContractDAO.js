@@ -33,6 +33,7 @@ export default class AbstractContractDAO extends EventEmitter {
     console.log(`[${this.constructor.name}] Connect`)
     this.web3 = web3
     this.contract = new web3.eth.Contract(this.abi.abi, this.address, options)
+
     this.history = this.history != null // nil check
       ? new web3.eth.Contract(this.abi.abi, this.history, options)
       : this.contract
