@@ -1,0 +1,146 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.wrapper {
+  margin:0 auto;
+
+  @include xs-only {
+    padding: 0 20px;
+  }
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 350px;
+}
+
+.page-title {
+  color: $color-white;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 42px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.wallets-list {
+  border-top: 1px solid $color-purpule;
+  margin-bottom: 45px;
+  color: #fff;
+}
+
+.empty-list {
+  border-top: 1px solid $color-purpule;
+  border-bottom: 1px solid $color-purpule;
+  padding: 18px 0;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #fff;
+
+  @include xs-only {
+    width: 100%;
+  }
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+  line-height: 30px;
+  color: #fff;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 22px;
+
+  button {
+    padding: 0 30px;
+  }
+}
+
+.actionIcon {
+  transform: matrix(-1,0,0,-1,0,0);
+}
+
+.description {
+  font-weight: 400;
+  color: $additionalData-color-1;
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.form {
+  margin:0 auto;
+
+  @include xs-only {
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+.user-row {
+  border-top: 1px solid $color-purpule;
+}
+
+.field {
+  margin-bottom: 50px;
+}
+
+.button {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.actions {
+  text-align: center;
+  margin-bottom: 45px;
+}
+
+.link {
+  color: $border-color;
+  margin:  0 auto 45px;
+  text-decoration: none;
+  font: 700 16px $font-proxima;
+
+  &:hover {
+    color: #FFB54E;
+  }
+
+  @include md-only {
+    margin: 0 0 10px;
+  }
+}
+
+.form-error {
+  font-size: 12px;
+  line-height: 12px;
+  text-align:center;
+  color: $error-color;
+  margin-bottom: 10px;
+}
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+}

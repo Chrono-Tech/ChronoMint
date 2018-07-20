@@ -111,8 +111,12 @@ const router = (
         <Route path='/login/plugin-login' component={LoginWithPlugin} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+<<<<<<< HEAD
         <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='/login/local-login' component={LoginLocal} />
+=======
+        <Route path='/login/account-name' component={AccountName} />
+>>>>>>> pr/upstream/707
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>
