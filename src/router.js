@@ -25,6 +25,7 @@ import {
   LoginWithLedger,
   LoginWithPlugin,
   LoginWithPrivateKey,
+  LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -45,7 +46,7 @@ import {
   NewPollPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
-import ls from './platform/utils/LocalStorage'
+import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import './styles/themes/default.scss'
 
 const requireAuth = (nextState, replace) => {
@@ -73,7 +74,7 @@ function hashLinkScroll () {
 const router = (
   <Provider store={store}>
     <Router history={history} onUpdate={hashLinkScroll}>
-      <Redirect from='/' to='/login' />
+      <Redirect from='/' to='/login/select-account' />
       <Route component={Markup} onEnter={requireAuth}>
         <Route path='2fa' component={TwoFAPage} />
         <Route path='wallets' component={WalletsPage} />
@@ -111,6 +112,7 @@ const router = (
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
         <Route path='/login/create-hw-account' component={CreateHWAccount} />
+        <Route path='/login/local-login' component={LoginLocal} />
         <Route path='*' component={NotFoundPage} />
       </Route>
     </Router>

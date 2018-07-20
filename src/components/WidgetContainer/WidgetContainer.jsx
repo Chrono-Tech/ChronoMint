@@ -12,13 +12,14 @@ export default class WidgetContainer extends PureComponent {
   static propTypes = {
     title: PropTypes.string,
     children: PropTypes.node,
+    blockchain: PropTypes.string,
   }
 
   render () {
-    const { title, children } = this.props
+    const { title, children, blockchain } = this.props
     return (
       <div styleName='root' className='WidgetContainer__root'>
-        {title && <div styleName='title'><Translate value={title} /></div>}
+        {title && <div styleName='title'><Translate value={title} blockchain={blockchain} /></div>}
         <div styleName='body'>
           {children}
         </div>

@@ -7,7 +7,7 @@ import ipfsAPI from 'ipfs-api'
 import promisify from 'promisify-node-callback'
 import FileCollection from '@chronobank/core/models/FileSelect/FileCollection'
 import FileModel, { fileConfig } from '@chronobank/core/models/FileSelect/FileModel'
-import { imageValidator, FileReader } from 'platform/imageValidator'
+import { imageValidator, FileReader } from '../imageValidator'
 
 const DEFAULT_CONFIG = {
   host: 'ipfs.chronobank.io',

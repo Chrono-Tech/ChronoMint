@@ -20,6 +20,7 @@ import {
   onSubmitResetAccountPasswordSuccess,
   onSubmitResetAccountPasswordFail,
   initResetPasswordPage,
+  FORM_RESET_PASSWORD,
 } from '@chronobank/login/redux/network/actions'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
@@ -29,8 +30,6 @@ import UserRow from 'components/common/ui/UserRow/UserRow'
 import styles from 'layouts/Splash/styles'
 import validate from './validate'
 import './ResetPassword.scss'
-
-export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 
 function mapStateToProps (state) {
   const selectedWallet = state.get('persistAccount').selectedWallet

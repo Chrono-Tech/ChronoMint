@@ -1,15 +1,19 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export { default as GenerateMnemonic } from './GenerateMnemonic/GenerateMnemonic'
-export { default as LoginWithMnemonic, FORM_MNEMONIC_LOGIN_PAGE } from './LoginWithMnemonic/LoginWithMnemonic'
-export { default as LoginWithTrezor } from './LoginWithTrezor/LoginWithTrezor'
-export { default as LoginWithPrivateKey, FORM_PRIVATE_KEY_LOGIN_PAGE } from './LoginWithPrivateKey/LoginWithPrivateKey'
-export { default as LoginForm, FORM_LOGIN_PAGE } from './LoginForm/LoginForm'
+export { default as LoginWithMnemonic } from './LoginWithMnemonic/LoginWithMnemonic'
+export { default as LoginWithPrivateKey } from './LoginWithPrivateKey/LoginWithPrivateKey'
+export { default as LoginForm } from './LoginForm/LoginForm'
 export { default as LoginWithOptions } from './LoginWithOptions/LoginWithOptions'
 export { default as AccountSelector } from './AccountSelector/AccountSelector'
-export { default as RecoverAccount, FORM_RECOVER_ACCOUNT } from './RecoverAccount/RecoverAccount'
-export { default as ResetPassword, FORM_RESET_PASSWORD } from './ResetPassword/ResetPassword'
-export { default as CreateAccount, FORM_CREATE_ACCOUNT } from './CreateAccount/CreateAccount'
-export { default as CreateHWAccount, FORM_CREATE_HW_ACCOUNT } from './CreateHWAccount/CreateHWAccount'
-export { default as ConfirmMnemonic, FORM_CONFIRM_MNEMONIC } from './ConfirmMnemonic/ConfirmMnemonic'
+export { default as RecoverAccount } from './RecoverAccount/RecoverAccount'
+export { default as ResetPassword } from './ResetPassword/ResetPassword'
+export { default as CreateAccount } from './CreateAccount/CreateAccount'
+export { default as ConfirmMnemonic } from './ConfirmMnemonic/ConfirmMnemonic'
 export { default as CommonNetworkSelector } from './CommonNetworkSelector/CommonNetworkSelector'
 export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'
-export { default as LoginWithWallet, FORM_WALLET_UPLOAD } from './LoginWithWallet/LoginWithWallet'
+export { default as LoginWithWallet } from './LoginWithWallet/LoginWithWallet'
+export { default as LoginLocal } from './LoginLocal/LoginLocal'

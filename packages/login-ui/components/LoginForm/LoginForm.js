@@ -18,42 +18,38 @@ import UserRow from 'components/common/ui/UserRow/UserRow'
 import inverted from 'styles/themes/inversed'
 
 import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
-import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
   initLoginPage,
   navigateToSelectWallet,
   initAccountsSignature,
+  DUCK_NETWORK,
+  FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
+import {
+  isTestRPC,
+} from '@chronobank/login/network/settings'
 import {
   getAccountName,
   getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
-import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
-const STRATEGY_MANUAL = 'manual'
-const STRATEGY_AUTOMATIC = 'automatic'
-
-const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
-}
-
-export const FORM_LOGIN_PAGE = 'FormLoginPage'
-
 function mapStateToProps (state) {
+  const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get('persistAccount').selectedWallet
 
   return {
     selectedWallet: selectedWallet,
-    isLoginSubmitting: state.get('network').isLoginSubmitting,
+    isLoginSubmitting: network.isLoginSubmitting,
+    selectedNetworkId: network.selectedNetworkId,
+    selectedProvider: network.selectedProviderId,
+    selectedAccount: network.selectedAccount,
+    accounts: network.accounts,
+    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
   }
 }
 
@@ -77,6 +73,10 @@ class LoginPage extends React.Component {
     navigateToSelectWallet: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
     initAccountsSignature: PropTypes.func,
+    accounts: PropTypes.array,
+    selectedAccount: PropTypes.string,
+    selectedWallet: PropTypes.object,
+    isTestRPC: PropTypes.bool,
   }
 
   componentWillMount(){
@@ -85,9 +85,8 @@ class LoginPage extends React.Component {
 
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting } = this.props
-   const { classes } = this.props;
-
+      navigateToSelectWallet, isLoginSubmitting, isTestRPC } = this.props
+    const { classes } = this.props;
     return (
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
           <div styleName='page-title'>

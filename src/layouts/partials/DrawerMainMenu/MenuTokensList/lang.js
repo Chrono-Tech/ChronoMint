@@ -12,6 +12,6 @@ export default {
     synced: 'Synced: %{network}',
     syncing: 'Syncing: %{network}',
     offline: 'Offline',
-
+    defaultWallet: 'Default wallet address: ',
   },
 }

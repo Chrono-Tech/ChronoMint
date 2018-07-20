@@ -91,7 +91,7 @@ export default class AddTokenDialog extends PureComponent {
 
   render () {
     return (
-      <ModalDialog styleName='root'>
+      <ModalDialog styleName='root' hideCloseIcon>
         <form styleName='content' onSubmit={this.props.handleSubmit}>
           <div styleName='header'>
             <div styleName='left'>

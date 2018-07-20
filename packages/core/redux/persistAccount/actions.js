@@ -7,18 +7,14 @@ import uuid from 'uuid/v1'
 import bip39 from 'bip39'
 import Web3 from 'web3'
 import Accounts from 'web3-eth-accounts'
-//import Wallets from '../wallets'
 import {
   AccountEntryModel,
   AccountProfileModel,
-  AccountModel,
-} from '@chronobank/core/models/wallet/persistAccount'
+} from '../../models/wallet/persistAccount'
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from '@chronobank/core/redux/persistAccount/utils'
-import networkService from '@chronobank/login/network/NetworkService'
-import profileService from '@chronobank/login/network/ProfileService'
+} from '../../redux/persistAccount/utils'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -57,10 +53,9 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 
 }
 
-export const decryptAccount = (encrypted, password) => async (dispatch) => {
-
+export const decryptAccount = (encrypted, password) => async () => {
   const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(networkService.getProviderSettings().url))
+  const accounts = new Accounts(networkService.getProviderSettings().url)
   await accounts.wallet.clear()
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
@@ -81,7 +76,7 @@ export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
   let host = networkService.getProviderSettings().url
 
   const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  const accounts = new Accounts(host)
   accounts.wallet.clear()
 
   const addressFromWallet = wallet && getAccountAddress(wallet, true)
@@ -96,11 +91,10 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
   let host = networkService.getProviderSettings().url
 
   const web3 = new Web3()
-  const accounts = new Accounts(new web3.providers.HttpProvider(host))
+  const accounts = new Accounts(host)
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
-
 
   let newWallet = {
     ...wallet,

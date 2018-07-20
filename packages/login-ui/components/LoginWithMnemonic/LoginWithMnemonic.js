@@ -17,11 +17,10 @@ import {
   onSubmitMnemonicLoginForm,
   onSubmitMnemonicLoginFormSuccess,
   onSubmitMnemonicLoginFormFail,
+  FORM_MNEMONIC_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithMnemonic.scss'
-
-export const FORM_MNEMONIC_LOGIN_PAGE = 'FormMnemonicLoginPage'
 
 const multiRowTextFieldStyle = {
   textareaStyle: {

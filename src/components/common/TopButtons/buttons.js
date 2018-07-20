@@ -11,6 +11,7 @@ import { changeWalletView } from 'redux/ui/actions'
 import RemovePollTopButton from 'components/voting/RemovePollTopButton/RemovePollTopButton'
 import ActivatePollTopButton from 'components/voting/ActivatePollTopButton/ActivatePollTopButton'
 import EndPollTopButton from 'components/voting/EndPollTopButton/EndPollTopButton'
+import AddCustomTokenTopButton from 'components/wallet/AddWalletWidget/AddCustomTokenTopButton/AddCustomTokenTopButton'
 
 export default {
   '/deposits': {
@@ -46,6 +47,11 @@ export default {
     title: 'nav.addWallet',
     backButton: true,
     backButtonAction: () => goBackForAddWalletsForm(),
+    buttons: [
+      {
+        component: AddCustomTokenTopButton,
+      },
+    ],
   },
   '/2fa': {
     title: 'nav.twoFa',

@@ -199,7 +199,7 @@ export default class WalletWidget extends PureComponent {
     let sending = null
     this.props.pendingTransactions.items().map((t) => {
 
-      if (!sending && t.from() === this.props.address  && t.confirmations() < 4) {
+      if (!sending && t.from() === this.props.address && t.confirmations() < 4) {
         sending = t
       }
     })
@@ -210,8 +210,8 @@ export default class WalletWidget extends PureComponent {
 
     return (
       <div styleName='send-container'>
-        <div styleName='send-icon' className='chronobank-icon' >{'circle-' + sending.confirmations()}</div>
-      </div> )
+        <div styleName='send-icon' className='chronobank-icon'>{'circle-' + sending.confirmations()}</div>
+      </div>)
   }
 
   render () {
@@ -233,8 +233,8 @@ export default class WalletWidget extends PureComponent {
                 <div styleName='pendings-icon'><Translate value={`${prefix}.pending`} count={wallet.pendingCount} /></div>
               </div>
             )}
-            { this.renderLastIncomingIcon() }
-            { this.renderLastSendingIcon() }
+            {this.renderLastIncomingIcon()}
+            {this.renderLastSendingIcon()}
             <div styleName='settings-container'>
               <div styleName='settings-icon' className='chronobank-icon' onClick={this.handleOpenSettings}>settings
               </div>

@@ -51,7 +51,6 @@ export default class SelectEthWallet extends PureComponent {
         type: 'ST',
         icon: 'wallet-circle',
         description: `${prefix}.st.description`,
-        action: this.handleCreateWallet,
       },
       {
         title: `${prefix}.tl.title`,
