@@ -19,6 +19,7 @@ import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../da
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import { sendNewTx } from '../../refactor/redux/transactions/actions'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -90,19 +91,24 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   ])
 }
 
-export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
   const id = `stub_${--counter}`
-  const stub = poll.id(id).isFetching(true)
+  const stub = poll.mutate({ id: id, isFetching: true })
+  const votingDAO = daoByType('VotingManager')(getState())
 
   try {
     dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
-    const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll.poll())
-    dispatch(handlePollRemoved(stub.id()))
-    dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
+    const tx = await votingDAO.createPoll(poll.poll, { from: account })
+    dispatch(sendNewTx(tx, (transactionHash) => {
+      dispatch(handlePollRemoved(stub.id))
+      dispatch(handlePollUpdated(stub.mutate({ transactionHash: transactionHash })))
+    }))
+
   } catch (e) {
-    dispatch(handlePollRemoved(stub.id()))
+    console.log('Voting error: ', e)
+    dispatch(handlePollRemoved(stub.id))
   }
 }
 

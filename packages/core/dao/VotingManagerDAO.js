@@ -65,7 +65,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     return this.getPollsDetails(addresses.filter((address) => !this.isEmptyAddress(address)), account)
   }
 
-  async createPoll (poll: PollModel) {
+  async createPoll (poll: PollModel, options) {
     // TODO @ipavlenko: It may be suitable to handle IPFS error and dispatch
     // a failure notice.
     let hash
@@ -81,18 +81,19 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       console.error(e.message)
     }
 
-    const voteLimitInTIME = poll.voteLimitInTIME()
-
-    const summary = poll.txSummary()
+    const voteLimitInTIME = poll.voteLimitInTIME
+    let summary = poll.txSummary()
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
+    summary = { ...poll.txSummary(), ...options }
 
     const tx = await this._tx(TX_CREATE_POLL, [
       poll.options.length,
       this._c.ipfsHashToBytes32(hash),
       new BigNumber(voteLimitInTIME),
       poll.deadline.getTime(),
-    ], summary)
-    return tx.tx
+    ], new BigNumber(0), new BigNumber(0), summary)
+
+    return tx
   }
 
   removePoll () {
@@ -271,6 +272,8 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
   estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {
     try {
+      const estimateParams = params[1]
+      estimateParams[1] = this.web3.utils.asciiToHex(new String(estimateParams[1]))
       const { gasLimit, gasFee, gasPrice } = await this.estimateGas(...params)
       callback(null, {
         gasLimit,

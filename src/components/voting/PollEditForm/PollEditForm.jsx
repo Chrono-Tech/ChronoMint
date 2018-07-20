@@ -88,7 +88,7 @@ function mapDispatchToProps (dispatch) {
         deadline,
         files: filesCollection && filesCollection.hash(),
         voteLimitInTIME: new Amount(limitInTIME, TIME),
-        options: new Immutable.List(values.get('options').toArray().filter((option) => option.length > 0)),
+        options: values.get('options').toArray().filter((option) => option.length > 0),
         owner: props.account,
       })
 
@@ -129,7 +129,7 @@ export default class PollEditForm extends Component {
   componentWillReceiveProps (newProps) {
     const { options, voteLimitInTIME, deadline, deadlineTime, feeMultiplier } = newProps
     const newOptionsSize = options.size
-    const oldOptionsSize = this.props.options && this.props.options.length
+    const oldOptionsSize = this.props.options && this.props.options.size
     const newDeadline = createDeadlineDate(deadline, deadlineTime)
     const oldDeadline = createDeadlineDate(this.props.deadline, this.props.deadlineTime)
 
@@ -139,20 +139,20 @@ export default class PollEditForm extends Component {
   }
 
   handleGetGasPrice = (action: string, optionsSize: number, voteLimitInTIME, newDeadline: Date, feeMultiplier: number) => {
+    const { account } = this.props
 
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
       this.props.votingDao.estimateGasForVoting(
         action,
-        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0)],
+        [action, [optionsSize, 'hashStub', new BigNumber(voteLimitInTIME), newDeadline.getTime()], new BigNumber(0), account],
         (error, result) => {
-          console.log('estimateGas price: ', error, result)
-          const { gasFee, gasPrice } = result
           if (!error) {
+            const { gasFee, gasPrice } = result
             this.setState({ gasFee, gasPrice })
           } else {
             // eslint-disable-next-line
-            console.error(error)
+            console.error('estimateGasPrice: ', error)
           }
         },
         feeMultiplier,

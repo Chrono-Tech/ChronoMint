@@ -3,16 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import PropTypes from 'prop-types'
 import AbstractModel from '../refactor/models/AbstractModel'
 import Amount from '../../core/models/Amount'
-
-/**
- * Copyright 2017–2018, LaborX PTY
- * Licensed under the AGPL Version 3 license.
- */
 
 const schemaFactory = () => ({
   id: PropTypes.string,
@@ -25,6 +19,7 @@ const schemaFactory = () => ({
   deadline: PropTypes.instanceOf(Date),
   options: PropTypes.instanceOf(Array),
   files: PropTypes.string, // hash
+  transactionHash: PropTypes.string,
   active: PropTypes.bool,
   status: PropTypes.bool,
   isTransaction: PropTypes.bool,
@@ -40,6 +35,7 @@ const defaultProps = {
   description: '',
   published: null,
   voteLimitInTIME: null,
+  transactionHash: null,
   deadline: null,
   options: ['Support', 'Decline'],
   files: null, // hash
@@ -58,7 +54,6 @@ class PollModel extends AbstractModel {
       published: props.published || new Date(new Date().getTime()),
       deadline: props.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
     }, schemaFactory())
-    Object.assign(this, props)
     Object.freeze(this)
   }
 

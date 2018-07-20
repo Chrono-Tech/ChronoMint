@@ -166,11 +166,11 @@ export default class AbstractContractDAO extends EventEmitter {
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {
-    const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
-
+    const feeMultiplier = additionalOptions && additionalOptions.feeMultiplier ? additionalOptions.feeMultiplier : 1
+    // eslint-disable-next-line no-console
     const contract = await this.contract
     if (!contract.methods.hasOwnProperty(func)) {
-      throw this._error('estimateGas func not found', func)
+      throw new Error('estimateGas func not found', func)
     }
 
     const [gasPrice, gasLimit] = await Promise.all([
