@@ -32,7 +32,7 @@ export const getMainAddresses = (state) => {
 
 export const getWalletTransactions = (walletId) => (state) => {
   const wallet = getWallet(walletId)(state)
-  return wallet.transactions
+  return wallet.transactions.transactions
 }
 
 export const getTwoFaCheckedFromState = (state) => {

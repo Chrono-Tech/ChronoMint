@@ -14,6 +14,10 @@ import tokenService from '../../services/TokenService'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import TxExecModel from '../../models/TxExecModel'
+import { getWallet } from '../wallets/selectors/models'
+import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import WalletModel from '../../models/wallet/WalletModel'
+import AllowanceCollection from '../../refactor/models/AllowanceCollection'
 
 export const DUCK_ASSETS_HOLDER = 'assetsHolder'
 
@@ -79,13 +83,25 @@ export const fetchAssetAllowance = (token: TokenModel) => async (dispatch, getSt
   const tokenDAO = tokenService.getDAO(token.id())
   const assetHolderWalletAllowance = await tokenDAO.getAccountAllowance(account, holderWallet)
 
+  const wallet = getWallet(`Ethereum-${account}`)(getState())
+  const allowance = new AllowanceModel({
+    amount: new Amount(assetHolderWalletAllowance, token.id()),
+    spender: holderWallet,
+    token: token.id(),
+    isFetching: false,
+    isFetched: true,
+  })
+
   dispatch({
-    type: WALLET_ALLOWANCE, allowance: new AllowanceModel({
-      amount: new Amount(assetHolderWalletAllowance, token.id()),
-      spender: holderWallet,
-      token: token.id(),
-      isFetching: false,
-      isFetched: true,
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      ...wallet,
+      allowances: new AllowanceCollection({
+        list: {
+          ...wallet.allowances.list,
+          [allowance.id()]: allowance,
+        },
+      }),
     }),
   })
 }
@@ -97,17 +113,17 @@ export const initAssetsHolder = () => async (dispatch, getState) => {
   dispatch({ type: ASSET_HOLDER_INIT, inInited: true })
 
   const assetHolderDAO = daoByType('TimeHolder')(getState())
-  const [ walletAddress ] = await Promise.all([
+  const [walletAddress] = await Promise.all([
     assetHolderDAO.getWalletAddress(),
   ])
 
   dispatch({ type: ASSET_HOLDER_ADDRESS, account: assetHolderDAO.address, wallet: walletAddress.toLowerCase() })
 
   // get assets list
-  const [ timeAddress ] = await Promise.all([
+  const [timeAddress] = await Promise.all([
     assetHolderDAO.getSharesContract(),
   ])
-  const assets = [ timeAddress ]
+  const assets = [timeAddress]
   assets.forEach((address) => {
     dispatch({
       type: ASSET_HOLDER_ASSET_UPDATE,

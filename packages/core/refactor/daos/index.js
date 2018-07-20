@@ -8,7 +8,7 @@ import { ContractModel } from '../models/index'
 import {
   AssetsManagerABI,
   AssetHolderABI,
-  // AssetDonatorABI,
+  AssetDonatorABI,
   ContractsManagerABI,
   ERC20ManagerABI,
   MultiEventsHistoryABI,
@@ -21,7 +21,7 @@ import AssetHolderDAO from '../../dao/AssetHolderDAO'
 import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import VotingManagerDAO from '../../dao/VotingManagerDAO'
 import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
-// import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
+import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -44,11 +44,11 @@ export const ASSET_MANAGER_LIBRARY = new ContractModel({
   DAOClass: AssetManagerLibraryDAO,
 })
 
-// export const ASSET_DONATOR_LIBRARY = new ContractModel({
-//   type: 'AssetDonator',
-//   abi: AssetDonatorABI,
-//   DAOClass: AssetDonatorDAO,
-// })
+export const ASSET_DONATOR_LIBRARY = new ContractModel({
+  type: 'AssetDonator',
+  abi: AssetDonatorABI,
+  DAOClass: AssetDonatorDAO,
+})
 
 export const ASSET_HOLDER_LIBRARY = new ContractModel({
   type: 'TimeHolder',

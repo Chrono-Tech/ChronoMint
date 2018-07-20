@@ -52,6 +52,11 @@ import TxExecModel from '../../models/TxExecModel'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
+import TxHistoryModel from '../../models/wallet/TxHistoryModel'
+import { getMainEthWallet, getWallet } from '../wallets/selectors/models'
+import { DUCK_DAO } from '../../refactor/redux/daos/actions'
+import { getAccount } from '../session/selectors/models'
 
 export const DUCK_MAIN_WALLET = 'mainWallet'
 export const FORM_ADD_NEW_WALLET = 'FormAddNewWallet'
@@ -356,9 +361,12 @@ export const updateIsTIMERequired = () => async (dispatch, getState) => {
   }
 }
 
-export const requireTIME = () => async () => {
+export const requireTIME = () => async (dispatch, getState) => {
   try {
-    await assetDonatorDAO.requireTIME()
+    const account = getAccount(getState())
+    const assetDonatorDAO = daoByType('AssetDonator')(getState())
+    const tx = await assetDonatorDAO.requireTIME(account)
+    dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
     console.error('require time error', e.message)
@@ -556,26 +564,36 @@ export const formatDataAndGetTransactionsForWallet = ({ wallet, address, blockch
   return dispatch(getTransactionsForWallet({ wallet: walletModel, address, blockchain }))
 }
 
-export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOffset }) => async (dispatch, getState) => {
-  if (!wallet || !address || !blockchain) {
+export const getTransactionsForWallet = ({ wallet, forcedOffset }) => async (dispatch, getState) => {
+  // TODO remove if
+  if (wallet instanceof MainWalletModel) {
+    return null
+  }
+  if (!wallet) {
     return null
   }
   const tokens = getState().get(DUCK_TOKENS)
 
-  if (wallet instanceof MainWalletModel) {
-    dispatch({ type: WALLET_TRANSACTIONS_FETCH, address, blockchain })
-  } else {
-    dispatch({ type: MULTISIG_UPDATE, wallet: wallet.set('transactions', wallet.transactions().isFetching(true)) })
-  }
+  dispatch({
+    type: WALLETS_UPDATE_WALLET,
+    wallet: new WalletModel({
+      ...wallet,
+      transactions: new TxHistoryModel(
+        {
+          ...wallet.transactions,
+          isFetching: true,
+        }),
+    }),
+  })
 
-  let transactions: TransactionsCollection = wallet.transactions({ blockchain, address }) || new TransactionsCollection()
+  let transactions: TxHistoryModel = new TxHistoryModel({ ...wallet.transactions, isFetched: true, isFetching: false }) || new TxHistoryModel()
   const offset = forcedOffset ? 0 : (transactions.size() || 0)
   const newOffset = offset + TXS_PER_PAGE
 
   let txList = []
   let dao
 
-  switch (blockchain) {
+  switch (wallet.blockchain) {
     case BLOCKCHAIN_ETHEREUM:
       dao = tokenService.getDAO(ETH)
       break
@@ -600,7 +618,7 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
   }
 
   if (dao) {
-    txList = await dao.getTransfer(address, address, offset, TXS_PER_PAGE, tokens)
+    txList = await dao.getTransfer(wallet.address, wallet.address, offset, TXS_PER_PAGE, tokens)
 
     txList.sort((a, b) => b.get('time') - a.get('time'))
 
@@ -615,9 +633,6 @@ export const getTransactionsForWallet = ({ wallet, address, blockchain, forcedOf
     }
   }
 
-  if (wallet instanceof MainWalletModel) {
-    dispatch({ type: WALLET_TRANSACTIONS, address, blockchain, group: transactions })
-  } else {
-    dispatch({ type: MULTISIG_UPDATE, wallet: wallet.set('transactions', transactions.offset(newOffset).isFetching(false).isFetched(true)) })
-  }
+  const newWallet = getWallet(wallet.id)(getState())
+  dispatch({ type: WALLETS_UPDATE_WALLET, wallet: new WalletModel({ ...newWallet, transactions }) })
 }

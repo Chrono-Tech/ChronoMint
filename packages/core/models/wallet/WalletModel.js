@@ -6,13 +6,15 @@
 import PropTypes from 'prop-types'
 import AbstractModel from '../../refactor/models/AbstractModel'
 import Amount from '../Amount'
+import TxHistoryModel from './TxHistoryModel'
+import AllowanceCollection from '../../refactor/models/AllowanceCollection'
 
 const schemaFactory = () => ({
   address: PropTypes.string.isRequired,
   blockchain: PropTypes.string.isRequired,
   name: PropTypes.string,
   balances: PropTypes.object,
-  transactions: PropTypes.object,
+  transactions: PropTypes.instanceOf(TxHistoryModel),
   owners: PropTypes.arrayOf(PropTypes.string),
   requiredSignatures: PropTypes.number,
   pendingTxList: PropTypes.object,
@@ -23,14 +25,18 @@ const schemaFactory = () => ({
   isMultisig: PropTypes.bool,
   amount: PropTypes.instanceOf(Amount),
   isTimeLocked: PropTypes.bool,
+  isTIMERequired: PropTypes.bool,
+  allowances: PropTypes.instanceOf(AllowanceCollection),
 })
 
 const defaultProps = {
   balances: {},
-  transactions: {},
+  transactions: new TxHistoryModel(),
   owners: [],
   pendingTxList: null,
   customTokens: null,
+  isTIMERequired: false,
+  allowances: new AllowanceCollection(),
 }
 
 export default class WalletModel extends AbstractModel {
