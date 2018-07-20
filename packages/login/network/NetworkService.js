@@ -223,7 +223,7 @@ class NetworkService extends EventEmitter {
 
     const { protocol, host } = network
 
-    if (!host){
+    if (!host) {
 
       const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 
