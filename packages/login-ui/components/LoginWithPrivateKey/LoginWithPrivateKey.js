@@ -56,9 +56,9 @@ const multiRowTextFieldStyle = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const privateKey = values.get('pk')
-      dispatch(onSubmitPrivateKeyLoginForm(privateKey))
+      await dispatch(onSubmitPrivateKeyLoginForm(privateKey))
     },
     onSubmitSuccess: () => dispatch(onSubmitPrivateKeyLoginFormSuccess()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitPrivateKeyLoginFormFail(errors, dispatch, submitErrors)),

@@ -57,9 +57,9 @@ const multiRowTextFieldStyle = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       const confirmMnemonic = values.get('mnemonic')
-      dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
+      await dispatch(onSubmitMnemonicLoginForm(confirmMnemonic))
     },
     onSubmitSuccess: () => dispatch(onSubmitMnemonicLoginFormSuccess()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitMnemonicLoginFormFail(errors, dispatch, submitErrors)),

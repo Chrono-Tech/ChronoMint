@@ -15,9 +15,13 @@ import {
 import {
   getWalletsListAddresses,
   getAccountAddress,
-} from '../../redux/persistAccount/utils'
-
+} from '@chronobank/core/redux/persistAccount/utils'
 export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
+import networkService from '@chronobank/login/network/NetworkService'
+import profileService from '@chronobank/login/network/ProfileService'
+import web3Provider from '@chronobank/login/network/Web3Provider'
+import web3Utils from '@chronobank/login/network/Web3Utils'
+import mnemonicProvider from '../../../login/network/mnemonicProvider'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -62,12 +66,12 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (encrypted, password) => async () => {
-  const web3 = new Web3Legacy()
-  const accounts = new Accounts(networkService.getProviderSettings().url)
+  const accounts = new Accounts()
   await accounts.wallet.clear()
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
 
+  console.log('decrypt', networkService.getProviderSettings().url, wallet)
   return wallet
 
 }
@@ -81,10 +85,7 @@ export const validateAccountName = (name) => (dispatch, getState) => {
 }
 
 export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
-  let host = networkService.getProviderSettings().url
-
-  const web3 = new Web3Legacy()
-  const accounts = new Accounts(host)
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   const addressFromWallet = wallet && getAccountAddress(wallet, true)
@@ -96,10 +97,7 @@ export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
 }
 
 export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispatch) => {
-  let host = networkService.getProviderSettings().url
-
-  const web3 = new Web3Legacy()
-  const accounts = new Accounts(host)
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
@@ -118,7 +116,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   const state = getState()
 
-  let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
+  let wallet, hex = ''
 
   const accounts = new Accounts()
   accounts.wallet.clear()
@@ -150,8 +148,9 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
   accounts.wallet.clear()
 
   wallet = await accounts.wallet.create(numberOfAccounts)
-  const account = accounts.privateKeyToAccount(`0x${hex}`)
+  const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
+  console.log('create account', accounts, account, wallet)
 
   const entry = new AccountEntryModel({
     key: uuid(),
