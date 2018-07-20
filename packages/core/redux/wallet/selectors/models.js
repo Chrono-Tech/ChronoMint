@@ -8,7 +8,6 @@ import { DUCK_MAIN_WALLET } from '../../mainWallet/actions'
 import { DUCK_MULTISIG_WALLET } from '../../multisigWallet/actions'
 import { DUCK_MARKET } from '../../market/actions'
 import { DUCK_TOKENS } from '../../tokens/actions'
-import { getCurrentWallet } from '../actions'
 
 /**
  * SIMPLE SELECTORS
@@ -26,11 +25,6 @@ export const getMultisigWallets = (state) => {
 export const getMainWalletBalance = (symbol) => createSelector(
   [getMainWallet],
   (mainWallet) => mainWallet.balances().item(symbol),
-)
-
-export const getCurrentWalletBalance = (symbol) => createSelector(
-  [getCurrentWallet],
-  (currentWallet) => currentWallet.balances().item(symbol),
 )
 
 export const getMainWalletAddresses = (state) => {

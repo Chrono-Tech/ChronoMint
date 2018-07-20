@@ -4,6 +4,7 @@
  */
 
 export { getWallet } from './selectors/models'
+export { getWalletAddresses } from './selectors/models'
 export { getWalletAddress } from './selectors/models'
 export { getDeposit } from './selectors/models'
 export { filteredBalances } from './selectors/balances'

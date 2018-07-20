@@ -5,7 +5,7 @@
 
 import EventEmitter from 'events'
 import LedgerWalletSubproviderFactory from 'ledger-wallet-provider'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
@@ -40,7 +40,7 @@ class LedgerProvider extends EventEmitter {
     }
     try {
       this._engine = new ProviderEngine()
-      this._web3 = new Web3(this._engine)
+      this._web3 = new Web3Legacy(this._engine)
       this._ledgerSubprovider = await LedgerWalletSubproviderFactory(this._derivationPath, this._web3, 'ledger')
       this._ledger = this._ledgerSubprovider.ledger
       this._isInited = true

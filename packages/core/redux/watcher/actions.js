@@ -15,12 +15,13 @@ import { initMainWallet } from '../mainWallet/actions'
 import { watchInitMarket } from '../market/actions'
 import { notify } from '../notifier/actions'
 import { watchInitOperations } from '../operations/actions'
-import { watchInitERC20Tokens } from '../settings/erc20/tokens/actions'
 import { watchInitCBE } from '../settings/user/cbe/actions'
 import { initTokens } from '../tokens/actions'
+import { initDAOs } from '../../refactor/redux/daos/actions'
 import { watchInitPolls } from '../voting/actions'
 import { watchInitProfile } from '../session/actions'
 import { initMultisigWalletManager } from '../multisigWallet/actions'
+import { initWallets } from '../wallets/actions'
 
 export const DUCK_WATCHER = 'watcher'
 
@@ -73,17 +74,20 @@ export const globalWatcher = () => async (dispatch) => {
 }
 
 // for all logged in users
-export const watcher = () => async (dispatch) => {
+export const watcher = ({ web3 }) => async (dispatch) => {
+  await dispatch(initDAOs({ web3 }))
   dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
   dispatch(initMainWallet())
+  dispatch(initWallets())
   dispatch(watchPlatformManager())
   dispatch(watchInitTokens())
   dispatch(watchInitMonitor())
   dispatch(watchInitUserMonitor())
   dispatch(watchInitMarket())
-  dispatch(watchInitERC20Tokens())
+  // TODO @Abdulov fix it
+  // dispatch(watchInitERC20Tokens())
   dispatch(watchInitPolls())
   dispatch(txHandlingFlow())
   dispatch({ type: WATCHER })

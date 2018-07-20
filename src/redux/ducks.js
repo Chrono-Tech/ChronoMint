@@ -21,6 +21,10 @@ import * as voting from '@chronobank/core/redux/voting'
 import * as wallet from '@chronobank/core/redux/wallet'
 import * as watcher from '@chronobank/core/redux/watcher'
 import * as persistAccount from '@chronobank/core/redux/persistAccount'
+import * as web3 from '@chronobank/core/redux/web3'
+import * as dao from '@chronobank/core/refactor/redux/daos'
+import * as transactions from '@chronobank/core/refactor/redux/transactions'
+import * as wallets from '@chronobank/core/redux/wallets'
 import * as drawer from './drawer'
 import * as modals from './modals'
 import * as sides from './sides'
@@ -48,5 +52,9 @@ export default {
   tokens,
   assetsHolder,
   persistAccount,
+  web3,
+  dao,
+  transactions,
+  wallets,
   ...Login,
 }

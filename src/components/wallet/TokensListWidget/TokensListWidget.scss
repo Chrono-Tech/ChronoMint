@@ -39,6 +39,7 @@
             background-repeat: no-repeat;
             background-position: center center;
             margin-right: 20px;
+            flex-shrink: 0;
           }
         }
         .tokens-list-table-cell-amount {
@@ -61,6 +62,7 @@
           cursor: pointer;
           padding: 10px 30px;
           display: flex;
+          font-size: 16px;
           align-items: center;
           vertical-align: middle;
           &:hover {
@@ -74,6 +76,7 @@
             background-size: contain;
             background-repeat: no-repeat;
             background-position: center center;
+            flex-shrink: 0;
           }
         }
         .tokens-list-table-cell-sort-amount {
@@ -81,7 +84,7 @@
           padding: 10px 30px;
           display: flex;
           align-items: center;
-          font-size: 14px;
+          font-size: 16px;
           line-height: 17px;
           color: $color-primary-3;
           border-right: 1px solid $button-color-3;
@@ -98,7 +101,7 @@
           display: flex;
           align-items: center;
           color: $color-primary-3;
-          font-size: 14px;
+          font-size: 16px;
           line-height: 17px;
           &:hover {
             padding-top: 10px;

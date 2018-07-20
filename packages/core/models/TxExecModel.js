@@ -24,6 +24,7 @@ class TxExecModel extends abstractModel({
   gasLimit: null,
   gasPrice: null,
   options: {},
+  data: null,
 }) {
   constructor (data) {
     super({
@@ -133,8 +134,7 @@ class TxExecModel extends abstractModel({
     const args = this.args()
     const list = new Immutable.Map(Object.entries(args))
 
-    return list.entrySeq().map(([ key, value ]) =>
-    {
+    return list.entrySeq().map(([key, value]) => {
       return ({
         label: I18n.t(this.i18nFunc() + key),
         value,

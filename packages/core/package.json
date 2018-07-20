@@ -22,7 +22,8 @@
     "socket.io-client": "^2.0.3",
     "truffle-contract": "^3.0.5",
     "uuid": "^3.3.0",
-    "web3": "^0.20.1"
+    "web3legacy": "npm:web3@0.20.1",
+    "web3_1": "npm:web3@1.0.0-beta.33"
   },
   "peerDependencies": {
     "@chronobank/core-dependencies": "*"

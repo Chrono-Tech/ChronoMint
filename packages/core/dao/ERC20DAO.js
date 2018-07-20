@@ -21,11 +21,37 @@ const EVENT_APPROVAL = 'Approval'
 export default class ERC20DAO extends AbstractTokenDAO {
   constructor (token: TokenModel, abi) {
     super(abi || ERC20DAODefaultABI, token.address())
+    this.abi = abi || ERC20DAODefaultABI
+    this.token = token
     if (token.decimals() > 20) {
       throw new Error(`decimals for token ${token.id()} must be lower than 20`)
     }
     this._decimals = token.decimals()
     this._symbol = token.symbol()
+  }
+
+  async connect (web3, options): Promise<TokenModel> {
+    if (this.isConnected) {
+      this.disconnect()
+    }
+    // eslint-disable-next-line no-console
+    console.log('[ERC20TokenDAO] Connect')
+    this.contract = new web3.eth.Contract(this.abi.abi, this.getInitAddress(), options)
+
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      // this.transferEmitter.removeAllListeners()
+      // this.approvalEmitter.removeAllListeners()
+      // this.transferEmitter = null
+      // this.approvalEmitter = null
+      this.contract = null
+    }
+  }
+
+  get isConnected () {
+    return this.contract != null // nil check
   }
 
   /**
@@ -36,11 +62,11 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   getSymbolFromContract () {
-    return this._call('symbol')
+    return this.contract.methods.symbol().call()
   }
 
   getDecimalsFromContract () {
-    return this._call('decimals')
+    return this.contract.methods.decimals().call()
   }
 
   addDecimals (amount: BigNumber): BigNumber {
@@ -57,15 +83,15 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   totalSupply (): Promise {
-    return this._call('totalSupply')
+    return this.contract.methods.totalSupply().call()
   }
 
-  getAccountBalance (account): Promise {
-    return this._call('balanceOf', [account])
+  getAccountBalance (address): Promise {
+    return this.contract.methods.balanceOf(address).call()
   }
 
   getAccountAllowance (account, spender): Promise {
-    return this._call('allowance', [account, spender])
+    return this.contract.methods.allowance(account, spender).call()
   }
 
   approve (account: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
@@ -153,10 +179,10 @@ export default class ERC20DAO extends AbstractTokenDAO {
   }
 
   watch (accounts: Array<string>): Promise {
-    return Promise.all([
-      this.watchTransfer(accounts),
-      this.watchApproval(accounts),
-    ])
+    // return Promise.all([
+    //   this.watchTransfer(accounts),
+    //   this.watchApproval(accounts),
+    // ])
   }
 
   watchApproval (accounts) {

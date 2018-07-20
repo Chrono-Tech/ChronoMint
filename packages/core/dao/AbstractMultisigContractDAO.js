@@ -5,8 +5,8 @@
 
 import BigNumber from 'bignumber.js'
 import resultCodes from 'chronobank-smart-contracts/common/errors'
-import type PendingManagerDAO from './PendingManagerDAO'
 import ethABI from 'ethereumjs-abi'
+import type PendingManagerDAO from './PendingManagerDAO'
 import type AbstractModel from '../models/AbstractModel'
 import TxError from '../models/TxError'
 import TxExecModel from '../models/TxExecModel'

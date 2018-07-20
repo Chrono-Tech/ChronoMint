@@ -4,6 +4,7 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
+import Web3Legacy from 'web3legacy'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
@@ -26,7 +27,6 @@ import { connect } from 'react-redux'
 import Button from 'components/common/ui/Button/Button'
 import classnames from 'classnames'
 
-import Web3 from 'web3'
 import './CommonNetworkSelector.scss'
 
 const mapStateToProps = (state) => {
@@ -78,7 +78,7 @@ export default class CommonNetworkSelector extends PureComponent {
     }
   }
 
-  componentDidMount(){
+  componentDidMount () {
     this.props.initCommonNetworkSelector()
   }
 
@@ -87,12 +87,6 @@ export default class CommonNetworkSelector extends PureComponent {
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
     this.resolveNetwork()
     this.handleRequestClose()
-  }
-
-  resolveNetwork = () => {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
   }
 
   handleClickButton = (event) => {
@@ -105,7 +99,7 @@ export default class CommonNetworkSelector extends PureComponent {
     })
   }
 
-  getFullNetworkName(item){
+  getFullNetworkName (item){
     if (isTestRPC(item.provider.id, item.network.id)){
       return 'TestRPC'
     }
@@ -119,13 +113,23 @@ export default class CommonNetworkSelector extends PureComponent {
     })
   }
 
-  renderMenuItem(item, i){
+  getFullNetworkName (item){
+    return `${item.provider.name} - ${item.network.name}`
+  }
+
+  resolveNetwork = () => {
+    const web3 = new Web3Legacy()
+    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.resolve()
+  }
+
+  renderMenuItem (item, i){
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.provider.id === selectedProvider.id && item.network.id === selectedNetworkId
 
     return (
       <li
-        styleName={classnames({providerItem: true, providerItemActive: checked })}
+        styleName={classnames({ providerItem: true, providerItemActive: checked })}
         onClick={() => this.handleClick(item)}
         key={i}
       >
@@ -135,7 +139,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   render () {
-    const { selectedNetworkId, selectedProvider, networks, isLoading, providersList } = this.props
+    const { selectedProvider, providersList } = this.props
 
     return (
       <div styleName='root'>

@@ -5,9 +5,6 @@
 
 import networkService from '@chronobank/login/network/NetworkService'
 import {
-  LOCAL_ID,
-  TESTRPC_URL,
-  LOCAL_PROVIDER_ID,
   isTestRPC,
 } from '@chronobank/login/network/settings'
 import { MuiThemeProvider } from 'material-ui'
@@ -16,28 +13,21 @@ import {
   onSubmitLoginTestRPC,
   onSubmitLoginTestRPCFail,
   initLoginLocal,
-  selectProviderWithNetwork,
   handleLoginLocalAccountClick,
   navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
-import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import classnames from 'classnames'
 
 import styles from 'layouts/Splash/styles'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginLocal.scss'
 
 export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
 
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: async (values) => {
-
+  onSubmit: async () => {
     await dispatch(onSubmitLoginTestRPC())
   },
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, dispatch, submitErrors)),
@@ -68,17 +58,17 @@ class LoginLocal extends PureComponent {
     isTestRPC: PropTypes.bool,
   }
 
-  componentWillMount(){
+  componentWillMount (){
     this.props.initLoginLocal()
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps (nextProps){
     if (!nextProps.isTestRPC){
       this.props.navigateToLoginPage()
     }
   }
 
-  renderRPCSelectorMenuItem(item, i){
+  renderRPCSelectorMenuItem (item, i){
     return (
       <div
         key={i}
@@ -96,7 +86,7 @@ class LoginLocal extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, isLoginSubmitting, error, accounts, selectedAccount } = this.props
+    const { accounts } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -105,7 +95,6 @@ class LoginLocal extends PureComponent {
           <div styleName='page-title'>
             <Translate value='LoginLocal.title' />
           </div>
-
           {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
         </div>
       </MuiThemeProvider>

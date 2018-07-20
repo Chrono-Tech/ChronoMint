@@ -14,7 +14,7 @@ import {
   accountUpdate,
   setProfilesForAccounts,
 } from '@chronobank/core/redux/persistAccount/actions'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
@@ -604,7 +604,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 }
 
 export const handleMnemonicLogin = (mnemonic) => async (dispatch, getState) => {
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   const accounts = new Accounts(networkService.getProviderSettings().url)
   await accounts.wallet.clear()
 

@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import tokenService from '../../services/TokenService'
 import BigNumber from 'bignumber.js'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import Immutable from 'immutable'
+import tokenService from '../../services/TokenService'
+import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import ExchangeOrderModel from '../../models/exchange/ExchangeOrderModel'
 import { DUCK_SESSION } from '../session/actions'
 import exchangeService from '../../services/ExchangeService'
@@ -209,7 +209,7 @@ export const watchExchanges = () => async (dispatch, getState) => {
     if (account === tx.args.user) {
       const exchangeManageDAO = await contractsManagerDAO.getExchangeManagerDAO()
       const exchangeAddress = tx.args.exchange
-      const exchangeData = await exchangeManageDAO.getExchangeData([ exchangeAddress ], getState().get(DUCK_TOKENS))
+      const exchangeData = await exchangeManageDAO.getExchangeData([exchangeAddress], getState().get(DUCK_TOKENS))
       const exchange = exchangeData.item(exchangeAddress)
       dispatch(getAssetsSymbols())
       dispatch(subscribeOnTokens((token: TokenModel) => () => {
@@ -258,8 +258,9 @@ export const watchExchanges = () => async (dispatch, getState) => {
   exchangeService.on('Sell', async (tx) => {
     const state = getState().get(DUCK_EXCHANGE)
     const tokens = getState().get(DUCK_TOKENS)
+    const { account } = getState().get(DUCK_SESSION)
     const exchange = getExchangeFromState(state, tx.exchange)
-    dispatch(fetchTokenBalance(tokens.item('ETH')))
+    dispatch(fetchTokenBalance(tokens.item('ETH'), account))
     dispatch(updateExchange(exchange
       .ethBalance(exchange.ethBalance().minus(tx.ethAmount)),
     ))

@@ -3,6 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import BigNumber from 'bignumber.js'
 import { push } from '@chronobank/core-dependencies/router'
 import Amount from '../../models/Amount'
 import { ETH } from '../../redux/mainWallet/actions'
@@ -17,6 +18,8 @@ import { notify } from '../notifier/actions'
 import { EVENT_POLL_CREATED, EVENT_POLL_REMOVED, TX_CREATE_POLL } from '../../dao/VotingManagerDAO'
 import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
+import { daoByType } from '../../refactor/redux/daos/selectors'
+import { sendNewTx } from '../../refactor/redux/transactions/actions'
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -57,18 +60,22 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
   dispatch(notify(notice))
 }
 
-export const updateVoteLimit = () => async (dispatch) => {
-  const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
+export const updateVoteLimit = () => async (dispatch, getState) => {
+  // const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
+  const votingDAO = daoByType('VotingManager')(getState())
   const [voteLimitInTIME, voteLimitInPercent] = await Promise.all([
     votingDAO.getVoteLimit(),
     votingDAO.getVoteLimitInPercent(),
   ])
-  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: voteLimitInPercent.div(100) })
+  dispatch({ type: POLLS_VOTE_LIMIT, voteLimitInTIME, voteLimitInPercent: new BigNumber(voteLimitInPercent).div(100) })
 }
 
 export const watchInitPolls = () => async (dispatch, getState) => {
   const callback = (notice) => dispatch(watchPoll(notice))
   const { account } = getState().get(DUCK_SESSION)
+  const votingManagerDAO = daoByType('VotingManager')(getState())
+  votingService
+    .setVotingManager(votingManagerDAO)
   votingService
     .subscribeToVoting(account)
 
@@ -84,19 +91,24 @@ export const watchInitPolls = () => async (dispatch, getState) => {
   ])
 }
 
-export const createPoll = (poll: PollDetailsModel) => async (dispatch) => {
+export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState) => {
+  const { account } = getState().get(DUCK_SESSION)
   const id = `stub_${--counter}`
-  const stub = poll.id(id).isFetching(true)
+  const stub = poll.mutate({ id: id, isFetching: true })
+  const votingDAO = daoByType('VotingManager')(getState())
 
   try {
     dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
-    const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const transactionHash = await dao.createPoll(poll.poll())
-    dispatch(handlePollRemoved(stub.id()))
-    dispatch(handlePollUpdated(stub.transactionHash(transactionHash)))
+    const tx = await votingDAO.createPoll(poll.poll, { from: account })
+    dispatch(sendNewTx(tx, (transactionHash) => {
+      dispatch(handlePollRemoved(stub.id))
+      dispatch(handlePollUpdated(stub.mutate({ transactionHash: transactionHash })))
+    }))
+
   } catch (e) {
-    dispatch(handlePollRemoved(stub.id()))
+    console.log('Voting error: ', e)
+    dispatch(handlePollRemoved(stub.id))
   }
 }
 
@@ -179,7 +191,8 @@ export const listPolls = () => async (dispatch) => {
 }
 
 export const getNextPage = () => async (dispatch, getState) => {
-  const dao = await contractsManagerDAO.getVotingManagerDAO()
+  const dao = daoByType('VotingManager')(getState())
+
   const votingState = getState().get(DUCK_VOTING)
   const { account } = getState().get(DUCK_SESSION)
   return dao.getPollsPaginated(votingState.lastPoll(), PAGE_SIZE, account)
