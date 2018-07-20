@@ -12,7 +12,6 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-import { multisigWalletsSelector } from '@chronobank/core/redux/wallet/selectors'
 import { drawerHide, drawerToggle } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
@@ -22,21 +21,22 @@ import exitSvg from 'assets/img/exit-white.svg'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
 import { modalsOpen } from 'redux/modals/actions'
 import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
+import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
-import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
 import './DrawerMainMenu.scss'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
   const { isCBE, profile } = state.get(DUCK_SESSION)
   const selectedAccount = state.get('persistAccount').selectedWallet
 
   return {
     selectedAccount: selectedAccount,
-    walletsCount: multisigWalletsSelector()(state, ownProps).length,
+    walletsCount: getWalletsLength(state),
     isCBE,
     profile,
     isDrawerOpen: state.get('drawer').isOpen,

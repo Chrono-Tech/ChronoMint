@@ -40,13 +40,24 @@ export default (state = initialState, action) => {
         ...state,
         list: {
           ...state.list,
-          [action.walletId]: new WalletModel({ ...action.wallet }),
+          [action.wallet.id]: new WalletModel({ ...action.wallet }),
         },
       }
     case a.WALLETS_TWO_FA_CONFIRMED:
       return {
         ...state,
         twoFAConfirmed: action.twoFAConfirmed,
+      }
+    case a.WALLETS_SET_IS_TIME_REQUIRED:
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [action.walletId]: new WalletModel({
+            ...state.list[action.walletId],
+            isTIMERequired: action.isTIMERequired,
+          }),
+        },
       }
     default:
       return state
