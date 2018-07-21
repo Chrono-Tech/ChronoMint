@@ -4,10 +4,10 @@
  */
 
 export const en = {
-  title: 'Private key form',
+  title: 'Enter a Private Key',
   description: 'Type or copy your private key into the box below',
   privateKey: 'Private key',
-  login: 'Login',
+  submit: 'Submit',
   or: 'or',
   back: 'back',
 

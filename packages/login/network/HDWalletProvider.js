@@ -7,7 +7,7 @@ import hdkey from 'ethereumjs-wallet/hdkey'
 import ProviderEngine from 'web3-provider-engine'
 import FilterSubprovider from 'web3-provider-engine/subproviders/filters'
 import RpcSubprovider from 'web3-provider-engine/subproviders/rpc'
-import WalletSubprovider from './wallet'
+import WalletSubprovider from './WalletSubprovider'
 import { WALLET_HD_PATH } from './mnemonicProvider'
 
 ProviderEngine.prototype.changeProvider = function (source, idx) {

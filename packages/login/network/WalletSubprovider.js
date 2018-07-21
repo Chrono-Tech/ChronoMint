@@ -7,7 +7,6 @@ import HookedWalletEthTxSubprovider from 'web3-provider-engine/subproviders/hook
 
 export default class WalletSubprovider extends HookedWalletEthTxSubprovider {
   constructor (wallets, opts) {
-    super(wallets, opts)
     let addresses
     if (Array.isArray(wallets)) {
       addresses = wallets.map((wallet) => wallet.getAddressString())
@@ -26,5 +25,6 @@ export default class WalletSubprovider extends HookedWalletEthTxSubprovider {
         return cb('Account not found')
       }
     }
+    super(opts)
   }
 }

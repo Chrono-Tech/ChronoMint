@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
@@ -17,6 +17,7 @@ import {
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   onSubmitRecoverAccountForm,
@@ -24,6 +25,7 @@ import {
   onSubmitRecoverAccountFormFail,
   initRecoverAccountPage,
   FORM_RECOVER_ACCOUNT,
+  navigateToSelectWallet,
 } from '@chronobank/login/redux/network/actions'
 
 import Button from 'components/common/ui/Button/Button'
@@ -56,6 +58,7 @@ function mapDispatchToProps (dispatch,) {
     onSubmitSuccess: () => dispatch(onSubmitRecoverAccountFormSuccess()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitRecoverAccountFormFail(errors, dispatch, submitErrors)),
     initRecoverAccountPage: () => dispatch(initRecoverAccountPage()),
+    navigateToSelectWallet: () => dispatch(navigateToSelectWallet()),
   }
 }
 
@@ -63,6 +66,7 @@ class RecoverAccountPage extends PureComponent {
   static propTypes = {
     selectedWallet: PropTypes.instanceOf(AccountEntryModel),
     initRecoverAccountPage: PropTypes.func,
+    navigateToSelectWallet: PropTypes.func,
   }
 
   componentWillMount(){
@@ -70,7 +74,7 @@ class RecoverAccountPage extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, selectedWallet, error } = this.props
+    const { handleSubmit, selectedWallet, navigateToSelectWallet, error } = this.props
 
     const wordsArray = new Array(12).fill()
 
@@ -85,7 +89,8 @@ class RecoverAccountPage extends PureComponent {
             <UserRow
               title={getAccountName(selectedWallet)}
               avatar={getAccountAvatar(selectedWallet)}
-              hideActionIcon
+              subtitle={getAccountAddress(selectedWallet, true)}
+              onClick={navigateToSelectWallet}
             />
           </div>
 

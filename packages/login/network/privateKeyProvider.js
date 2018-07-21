@@ -26,6 +26,7 @@ import {
   COIN_TYPE_LTC_TESTNET,
   WALLET_HD_PATH,
 } from './mnemonicProvider'
+import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
@@ -112,12 +113,7 @@ class PrivateKeyProvider {
   }
 
   createEthereumWallet (privateKey) {
-    if (privateKey.length <= 64) {
-      return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-    }
-
-    const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
-    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
+    return EthereumWallet.createWallet({ type: 'memory', pk: privateKey })
   }
 
   validatePrivateKey (privateKey: string): boolean {

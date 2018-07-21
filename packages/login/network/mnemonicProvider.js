@@ -21,6 +21,7 @@ import { createWAVESEngine } from './WavesUtils'
 import EthereumEngine from './EthereumEngine'
 import NemWallet from './NemWallet'
 import WavesWallet from './WavesWallet'
+import EthereumWallet from './EthereumWallet'
 
 // coin_types 8, 9, 16, 17 used, but they are not standardized
 export const COIN_TYPE_ETH = 60
@@ -80,8 +81,7 @@ class MnemonicProvider {
   }
 
   createEthereumWallet (mnemonic) {
-    const hdWallet = hdKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic))
-    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
+    return EthereumWallet.createWallet({ type: 'memory', mnemonic })
   }
 
   createBitcoinWallet (mnemonic, network) {

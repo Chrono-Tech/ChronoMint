@@ -4,27 +4,16 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
-
-import {
-  navigateToSelectImportMethod,
-  onWalletSelect,
-  initAccountsSignature,
-  initAccountsSelector,
-} from '@chronobank/login/redux/network/actions'
-import {
-  getAccountName,
-  getAccountAvatar,
-} from '@chronobank/core/redux/persistAccount/utils'
-import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
+import { initAccountsSelector, initAccountsSignature, navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
+import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
 import './AccountSelector.scss'
@@ -41,7 +30,7 @@ function mapDispatchToProps (dispatch) {
 function mapStateToProps (state) {
   return {
     walletsList: state.get('persistAccount').walletsList.map(
-      (wallet) => new AccountEntryModel({...wallet})
+      (wallet) => new AccountEntryModel({ ...wallet }),
     ),
   }
 }
@@ -51,7 +40,7 @@ export default class SelectWalletPage extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
-      PropTypes.instanceOf(AccountEntryModel)
+      PropTypes.instanceOf(AccountEntryModel),
     ),
     navigateToSelectImportMethod: PropTypes.func,
     initAccountsSignature: PropTypes.func,
@@ -59,18 +48,19 @@ export default class SelectWalletPage extends PureComponent {
   }
 
   static defaultProps = {
-    onWalletSelect: () => {},
+    onWalletSelect: () => {
+    },
     walletsList: [],
   }
 
-  componentDidMount(){
+  componentDidMount () {
     this.props.initAccountsSelector()
   }
 
-  renderWalletsList (){
+  renderWalletsList () {
     const { onWalletSelect, walletsList } = this.props
 
-    if (!walletsList || !walletsList.length){
+    if (!walletsList || !walletsList.length) {
       return (
         <div styleName='empty-list'>
           <Translate value='AccountSelector.emptyList' />
@@ -85,6 +75,7 @@ export default class SelectWalletPage extends PureComponent {
             <UserRow
               key={i}
               title={getAccountName(w)}
+              subtitle={getAccountAddress(w, true)}
               avatar={getAccountAvatar(w)}
               actionIcon={arrow}
               reverseIcon={true}
@@ -112,7 +103,7 @@ export default class SelectWalletPage extends PureComponent {
           </div>
 
           <div styleName='content'>
-            { this.renderWalletsList() }
+            {this.renderWalletsList()}
 
             <div styleName='actions'>
               <Button

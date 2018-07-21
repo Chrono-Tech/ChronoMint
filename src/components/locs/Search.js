@@ -6,7 +6,7 @@
 // TODO MINT-266 New LOC
 /* eslint-disable */
 import React, { PureComponent } from 'react'
-import TextField from 'material-ui/TextField'
+import TextField from '@material-ui/core'
 import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import { updateLOCFilter } from '@chronobank/core/redux/locs/actions'

@@ -6,7 +6,7 @@
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
-import { Drawer } from 'material-ui'
+import { Drawer } from '@material-ui/core'
 import { SIDES_TOGGLE } from 'redux/sides/actions'
 
 function mapStateToProps () {

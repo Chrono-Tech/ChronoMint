@@ -8,7 +8,6 @@ import { ModalStack, SideStack, Snackbar } from 'components'
 import BUTTONS from 'components/common/TopButtons/buttons'
 import menu from 'menu'
 import classnames from 'classnames'
-import { IconButton, MuiThemeProvider } from 'material-ui'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -17,6 +16,8 @@ import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
 import theme from 'styles/themes/default'
 import { DUCK_SIDES, SIDES_TOGGLE_MAIN_MENU } from 'redux/sides/actions'
 import { DUCK_MODALS } from 'redux/modals/actions'
+import MuiThemeProvider from '@material-ui/core/es/styles/MuiThemeProvider'
+import IconButton from '@material-ui/core/es/IconButton/IconButton'
 import './Markup.scss'
 import { DrawerMainMenu, HeaderPartial } from './partials'
 
@@ -100,7 +101,7 @@ export default class Markup extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider muiTheme={theme}>
+      <MuiThemeProvider theme={theme}>
         <div styleName={classnames('root', { 'noScroll': this.props.modalStackSize > 0 })}>
           <div styleName={classnames('mainMenu', { 'open': this.props.mainMenuIsOpen })}>
             <DrawerMainMenu onSelectLink={this.handleToggleMainMenuAndScroll} />
