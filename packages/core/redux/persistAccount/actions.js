@@ -20,6 +20,8 @@ import {
   getAccountAddress,
 } from '../../redux/persistAccount/utils'
 
+export const DUCK_PERSIST_ACCOUNT = 'persistAccount'
+
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
 export const WALLETS_LOAD = 'persistAccount/WALLETS_LOAD'
