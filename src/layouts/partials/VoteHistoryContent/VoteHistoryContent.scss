@@ -1,0 +1,76 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+@import "~styles/partials/variables";
+@import "~styles/partials/mixins";
+
+.root {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  .head {
+    width: 587px;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    border-color: $color-grey-1;
+    background-color: $background-color-1;
+    border-radius: 2px 2px 0 0;
+    line-height: 36px;
+    font-size: 30px;
+    color: $color-white;
+    font-weight: 500;
+    position: relative;
+    margin: 0 auto;
+    .mainTitle {
+      padding: 30px;
+      border-bottom: 1px solid $color-purpule;
+    }
+    .content {
+      width: 100%;
+      display: flex;
+      .pollTitle {
+        padding: 20px 30px;
+        font-size: 16px;
+      }
+    }
+  }
+  .body {
+    width: 587px;
+    margin: 0 auto;
+    color: $color-primary-0;
+    background-color: $color-white;
+    border-radius: 0 0 2px 2px;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
+    padding-bottom: 30px;
+    border-width: 0;
+    .block {
+      padding-top: 30px;
+      display: flex;
+      .blockDate {
+        flex-grow: 0;
+        flex-shrink: 0;
+        width: 140px;
+        padding: 0 30px;
+        font-weight: 700;
+        line-height: 22px;
+      }
+      .blockContent {
+        flex-grow: 1;
+        flex-shrink: 1;
+        padding: 0 30px 0 0;
+        .blockTitle {
+          font-weight: 700;
+          line-height: 22px;
+          padding-bottom: 10px;
+        }
+        .blockText {
+        }
+        .blockActions {
+          padding: 30px 0;
+        }
+      }
+    }
+  }
+}

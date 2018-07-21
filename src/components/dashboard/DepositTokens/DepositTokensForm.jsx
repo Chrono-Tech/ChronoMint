@@ -17,14 +17,13 @@ import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { change, Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
 import { DUCK_ASSETS_HOLDER } from '@chronobank/core/redux/assetsHolder/actions'
-import { DUCK_MAIN_WALLET, estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevoke, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
+import { estimateGasForDeposit, ETH, FEE_RATE_MULTIPLIER, mainApprove, mainRevoke, requireTIME } from '@chronobank/core/redux/mainWallet/actions'
 import { TX_DEPOSIT, TX_WITHDRAW_SHARES } from '@chronobank/core/dao/AssetHolderDAO'
 import { TX_APPROVE } from '@chronobank/core/dao/ERC20DAO'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
@@ -33,9 +32,11 @@ import AllowanceModel from '@chronobank/core/models/wallet/AllowanceModel'
 import classnames from 'classnames'
 import { BLOCKCHAIN_ETHEREUM } from '@chronobank/core/dao/EthereumDAO'
 import { getGasPriceMultiplier } from '@chronobank/core/redux/session/selectors'
+import { getMainEthWallet } from '@chronobank/core/redux/wallets/selectors/models'
+import WalletModel from '@chronobank/core/models/wallet/WalletModel'
+import ReceiveTokenModal from '../ReceiveTokenModal/ReceiveTokenModal'
 import './DepositTokensForm.scss'
 import validate from './validate'
-import ReceiveTokenModal from '../ReceiveTokenModal/ReceiveTokenModal'
 
 export const FORM_DEPOSIT_TOKENS = 'FormDepositTokens'
 
@@ -59,16 +60,15 @@ function mapStateToProps (state) {
   const feeMultiplier = selector(state, 'feeMultiplier')
 
   // state
-  const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
+  const wallet: WalletModel = getMainEthWallet(state)
   const assetHolder = state.get(DUCK_ASSETS_HOLDER)
   const tokens = state.get(DUCK_TOKENS)
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
   const token = tokens.item(tokenId)
   const isTesting = isTestingNetwork(selectedNetworkId, selectedProviderId)
-  const balance = wallet.balances().item(tokenId).amount()
-  const balanceEth = wallet.balances().item(ETH).amount()
-
+  const balance = wallet.balances[tokenId]
+  const balanceEth = wallet.balances[ETH]
   const assets = assetHolder.assets()
   const spender = assetHolder.wallet()
 
@@ -76,14 +76,14 @@ function mapStateToProps (state) {
     balance,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
-    allowance: wallet.allowances().item(spender, token.id()),
+    allowance: wallet.allowances[`${spender}-${token.id()}`] || new AllowanceModel(),
     spender,
     amount: Number.parseFloat(amount) || 0,
     token,
     feeMultiplier,
     tokens,
     assets,
-    isShowTIMERequired: isTesting && !wallet.isTIMERequired() && balance.isZero() && token.symbol() === 'TIME',
+    isShowTIMERequired: isTesting && !wallet.isTIMERequired && balance && balance.isZero() && token.symbol() === 'TIME',
     account: state.get(DUCK_SESSION).account,
     initialValues: {
       feeMultiplier: getGasPriceMultiplier(BLOCKCHAIN_ETHEREUM)(state),
@@ -99,8 +99,9 @@ function mapDispatchToProps (dispatch) {
     mainRevoke: (token, spender, feeMultiplier) => dispatch(mainRevoke(token, spender, feeMultiplier, {
       skipSlider: true,
     })),
+    dispatch: dispatch,
     requireTIME: () => dispatch(requireTIME()),
-    receiveToken: (tokenId, blockchain) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, blockchain } })),
+    receiveToken: (tokenId, wallet) => dispatch(modalsOpen({ component: ReceiveTokenModal, props: { tokenId, wallet } })),
   }
 }
 
@@ -115,11 +116,12 @@ export default class DepositTokensForm extends PureComponent {
     isShowTIMERequired: PropTypes.bool,
     token: PropTypes.instanceOf(TokenModel),
     account: PropTypes.string,
-    wallet: PropTypes.instanceOf(MainWalletModel),
+    wallet: PropTypes.instanceOf(WalletModel),
     tokens: PropTypes.instanceOf(TokensCollection),
     selectedToken: PropTypes.string,
     assets: PropTypes.instanceOf(AssetsCollection),
     requireTIME: PropTypes.func,
+    dispatch: PropTypes.func,
     mainApprove: PropTypes.func,
     mainRevoke: PropTypes.func,
     feeMultiplier: PropTypes.number,
@@ -132,7 +134,7 @@ export default class DepositTokensForm extends PureComponent {
     super(props)
 
     let step = DEPOSIT_FIRST
-    if (this.props.allowance.amount().gt(0)) {
+    if (this.props.allowance && this.props.allowance.amount().gt(0)) {
       step = DEPOSIT_SECOND
     }
     if (this.props.isWithdraw) {
@@ -182,10 +184,11 @@ export default class DepositTokensForm extends PureComponent {
   handleGetGasPrice = (action: string, amount: number, feeMultiplier: number, spender: string) => {
     clearTimeout(this.timeout)
     this.timeout = setTimeout(() => {
-      estimateGasForDeposit(
+      this.props.dispatch(estimateGasForDeposit(
         action,
         [action, [spender, new BigNumber(amount)]],
-        (error, { gasFee, gasPrice }) => {
+        (error, r) => {
+          const { gasFee, gasPrice } = r
           if (!error) {
             this.setState({ gasFee, gasPrice })
           } else {
@@ -194,7 +197,7 @@ export default class DepositTokensForm extends PureComponent {
           }
         },
         feeMultiplier,
-      )
+      ))
     }, 1000)
   }
 
@@ -230,9 +233,9 @@ export default class DepositTokensForm extends PureComponent {
     this.props.requireTIME()
   }
 
-  handleReceiveToken = (tokenId, blockchain) => () => {
+  handleReceiveToken = (tokenId, wallet) => () => {
     this.props.onCloseModal()
-    this.props.receiveToken(tokenId, blockchain)
+    this.props.receiveToken(tokenId, wallet)
   }
 
   getIsLockValid (amount) {
@@ -361,7 +364,7 @@ export default class DepositTokensForm extends PureComponent {
             <Translate value={prefix('noteText')} />
           </div>)}
         <div styleName='notesWrapper'>
-          {balanceEth.lte(0) && (
+          {balanceEth && balanceEth.lte(0) && (
             <div styleName='note'>
               <div styleName='icon'>
                 <i className='chronobank-icon'>warning</i>
@@ -369,7 +372,7 @@ export default class DepositTokensForm extends PureComponent {
               <Translate value={prefix('noteEth')} />
             </div>
           )}
-          {balance.lte(0) && (
+          {balance && balance.lte(0) && (
             <div styleName='note'>
               <div styleName='icon'>
                 <i className='chronobank-icon'>warning</i>
@@ -383,7 +386,20 @@ export default class DepositTokensForm extends PureComponent {
   }
 
   renderFoot () {
-    const { isShowTIMERequired, balanceEth, amount, balance, deposit, token, allowance, pristine, invalid, handleSubmit } = this.props
+    const {
+      isShowTIMERequired,
+      balanceEth,
+      amount,
+      balance,
+      deposit,
+      token,
+      allowance,
+      pristine,
+      invalid,
+      handleSubmit,
+      wallet,
+    } = this.props
+
     const isInvalid = pristine || invalid
     const amountWithDecimals = isInvalid
       ? new BigNumber(0)
@@ -391,6 +407,17 @@ export default class DepositTokensForm extends PureComponent {
 
     const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
     const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
+    // eslint-disable-next-line
+    console.log('renderFoot', balance, allowance, balanceEth)
+    if (isApproveDisabled) {
+      // eslint-disable-next-line
+      console.log('renderFoot',
+        isInvalid,
+        balance ? balance.lt(amountWithDecimals) : null,
+        allowance ? allowance.isFetching() : null,
+        allowance ? !allowance.isFetched() : null,
+        balanceEth ? balanceEth.lte(0) : null)
+    }
     const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
     const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals) || balanceEth.lte(0)
 
@@ -401,7 +428,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('receiveEth')} />}
-              onClick={this.handleReceiveToken(ETH, BLOCKCHAIN_ETHEREUM)}
+              onClick={this.handleReceiveToken(ETH, wallet)}
             />
           </div>
         )}
@@ -410,7 +437,7 @@ export default class DepositTokensForm extends PureComponent {
             <Button
               styleName='actionButton'
               label={<Translate value={prefix('buyTime')} />}
-              onClick={this.handleReceiveToken(token.id(), token.blockchain())}
+              onClick={this.handleReceiveToken(token.id(), wallet)}
             />
           </div>
         )}

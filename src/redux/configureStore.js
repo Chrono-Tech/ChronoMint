@@ -29,8 +29,8 @@ const historyEngine = process.env.NODE_ENV === 'standalone' ? createMemoryHistor
 
 const getNestedReducers = (ducks) => {
   let reducers = {}
-  Object.keys(ducks).forEach((r) => {
-    reducers = { ...reducers, ...(typeof (ducks[r]) === 'function' ? { [r]: ducks[r] } : getNestedReducers(ducks[r])) }
+  Object.entries(ducks).forEach(([key, entry]) => {
+    reducers = { ...reducers, ...(typeof (entry) === 'function' ? { [key]: entry } : getNestedReducers(entry)) }
   })
   return reducers
 }
@@ -70,11 +70,12 @@ let logActions = process.env.NODE_ENV === 'development'
 const configureStore = () => {
   const initialState = new Immutable.Map()
 
+  const nestedReducers = getNestedReducers(ducks)
   const appReducer = combineReducers({
     form: formReducer,
     i18n: i18nReducer,
     routing: routingReducer,
-    ...getNestedReducers(ducks),
+    ...nestedReducers,
   })
 
   const rootReducer = (state, action) => {
@@ -117,11 +118,11 @@ const configureStore = () => {
 }
 
 export const store = configureStore()
-store.dispatch(globalWatcher())
+// store.dispatch(globalWatcher())
 
 const persistorConfig = {
   key: 'root',
-  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount'],
+  whitelist: ['multisigWallet', 'mainWallet', 'persistAccount', 'wallets'],
   transforms: [transformer()],
 }
 store.__persistor = persistStore(store, persistorConfig)

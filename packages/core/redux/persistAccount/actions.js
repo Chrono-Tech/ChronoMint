@@ -5,7 +5,7 @@
 
 import uuid from 'uuid/v1'
 import bip39 from 'bip39'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
@@ -66,8 +66,7 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 }
 
 export const decryptAccount = (encrypted, password) => async () => {
-  const web3 = new Web3()
-  const accounts = new Accounts(networkService.getProviderSettings().url)
+  const accounts = new Accounts()
   await accounts.wallet.clear()
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
@@ -85,10 +84,7 @@ export const validateAccountName = (name) => (dispatch, getState) => {
 }
 
 export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
-  let host = networkService.getProviderSettings().url
-
-  const web3 = new Web3()
-  const accounts = new Accounts(host)
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   const addressFromWallet = wallet && getAccountAddress(wallet, true)
@@ -100,10 +96,7 @@ export const validateMnemonicForAccount = (wallet, mnemonic) => async () => {
 }
 
 export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispatch) => {
-  let host = networkService.getProviderSettings().url
-
-  const web3 = new Web3()
-  const accounts = new Accounts(host)
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   const newCopy = await dispatch(createAccount({ name: wallet.name, mnemonic, password }))
@@ -124,6 +117,8 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   let wallet, hex = ''
 
+  const accounts = new Accounts()
+  accounts.wallet.clear()
   if (privateKey){
     hex = `0x${privateKey}`
   }
@@ -133,14 +128,30 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     hex = hdWallet.getPrivateKeyString()
   }
 
-  let settings = networkService.getProviderSettings()
-  let host = settings.url
-
-  const web3 = new Web3()
+  const web3 = new Web3Legacy()
   web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
   web3Provider.resolve()
 
-  const accounts = new Accounts(host)
+  const entry = new AccountEntryModel({
+    key: uuid(),
+    name,
+    types,
+    encrypted: wallet && wallet.encrypt(password),
+    profile: null,
+  })
+
+  const newAccounts = await dispatch(setProfilesForAccounts([entry]))
+
+  return newAccounts[0] || entry
+
+}
+
+export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
+  const state = getState()
+
+  let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
+
+  const accounts = new Accounts()
   accounts.wallet.clear()
 
   wallet = await accounts.wallet.create(numberOfAccounts)

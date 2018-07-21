@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field } from 'redux-form/immutable'
@@ -53,7 +52,6 @@ class NetworkCreateModalForm extends PureComponent {
       handleDeleteNetwork, onCloseModal } = this.props
 
     return (
-      <MuiThemeProvider>
         <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>
 
           <Field
@@ -113,7 +111,6 @@ class NetworkCreateModalForm extends PureComponent {
           </div>
 
         </form>
-      </MuiThemeProvider>
     )
   }
 }

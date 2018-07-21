@@ -3,22 +3,39 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { AssetDonatorABI } from './abi'
-import AbstractContractDAO from './AbstractContractDAO'
+import BigNumber from 'bignumber.js'
+import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
+import Amount from '../models/Amount'
 
 export const TX_REQUIRE_TIME = 'sendTime'
 
-class AssetDonatorDAO extends AbstractContractDAO {
-  constructor () {
-    super(AssetDonatorABI)
+export default class AssetDonatorDAO extends AbstractContractDAO {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
-  requireTIME () {
-    return this._tx(TX_REQUIRE_TIME)
+  requireTIME (from) {
+    return this._tx(
+      TX_REQUIRE_TIME,
+      [],
+      new BigNumber(0),
+      new BigNumber(0),
+      {
+        from: from,
+        symbol: 'TIME',
+        fields: {
+          amount: {
+            value: new Amount(1000000000, 'TIME'),
+            description: 'donation',
+            mark: 'plus',
+          },
+        },
+      },
+    )
   }
 
   isTIMERequired (account): Promise {
-    return this._call('timeDonations', [ account ])
+    return this.contract.methods.timeDonations(account).call()
   }
 
   subscribeOnReset () {
@@ -31,5 +48,3 @@ class AssetDonatorDAO extends AbstractContractDAO {
     }
   }
 }
-
-export default new AssetDonatorDAO()

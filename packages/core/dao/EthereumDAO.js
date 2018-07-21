@@ -8,11 +8,11 @@ import solidityEvent from 'web3/lib/web3/event'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
 import TokenModel from '../models/tokens/TokenModel'
-import TxError from '../models/TxError'
-import TxExecModel from '../models/TxExecModel'
+import TxExecModel from '../refactor/models/TxExecModel'
 import TxModel from '../models/TxModel'
-import AbstractContractDAO, { DEFAULT_GAS, EVENT_NEW_BLOCK, TX_FRONTEND_ERROR_CODES } from './AbstractContractDAO'
-import AbstractTokenDAO, { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import AbstractContractDAO, { EVENT_NEW_BLOCK } from './AbstractContractDAO'
+import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from './AbstractTokenDAO'
+import AbstractTokenDAO from '../refactor/daos/lib/AbstractTokenDAO'
 
 const transferSignature = '0x940c4b3549ef0aaff95807dc27f62d88ca15532d1bf535d7d63800f40395d16c'
 const signatureDefinition = {
@@ -51,6 +51,23 @@ export class EthereumDAO extends AbstractTokenDAO {
     this._contractName = 'Ethereum'
   }
 
+  connect (web3) {
+    if (this.isConnected) {
+      this.disconnect()
+    }
+    this.web3 = web3
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.web3 = null
+    }
+  }
+
+  get isConnected () {
+    return this.web3 != null // nil check
+  }
+
   watch (accounts: Array<string>): Promise {
     return Promise.all([
       this.watchTransfer(accounts),
@@ -58,15 +75,15 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   getGasPrice (): Promise {
-    return this._web3Provider.getGasPrice()
+    return this.web3.eth.getGasPrice()
   }
 
   getBlockNumber (): Promise {
-    return this._web3Provider.getBlockNumber()
+    return this.web3.eth.getBlockNumber()
   }
 
   getAccountBalance (account): Promise {
-    return this._web3Provider.getBalance(account)
+    return this.web3.eth.getBalance(account)
   }
 
   getContractName () {
@@ -94,7 +111,7 @@ export class EthereumDAO extends AbstractTokenDAO {
       blockchain: BLOCKCHAIN_ETHEREUM,
       decimals: this._decimals,
       isERC20: false,
-      feeRate: this._c.toWei(this._c.fromWei(feeRate), 'gwei'), // gas price in gwei
+      feeRate: this.web3.utils.toWei(this.web3.utils.fromWei(feeRate), 'gwei'), // gas price in gwei
     })
   }
 
@@ -123,112 +140,56 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  estimateGas = (func, args, value) => {
+  estimateGas = async (func, args, value, from, additionalOptions): Object => {
+    const feeMultiplier = additionalOptions ? additionalOptions.feeMultiplier : 1
     const [to, amount] = args
-    return this._estimateGas(to, value)
-  }
 
-  _estimateGas = async (to, value) => {
     const [gasPrice, gasLimit] = await Promise.all([
-      this._web3Provider.getGasPrice(),
-      this._web3Provider.estimateGas({ to, value }),
+      this.web3.eth.getGasPrice(),
+      this.web3.eth.estimateGas({ to, value: amount }),
     ])
-    const gasPriceBN = new BigNumber(gasPrice)
-    const gasFee = gasPriceBN.mul(gasLimit)
 
-    return { gasLimit, gasFee, gasPrice: gasPriceBN }
+    const gasPriceBN = new BigNumber(gasPrice).mul(feeMultiplier)
+    const gasFeeBN = gasPriceBN.mul(gasLimit)
+    const gasLimitBN = new BigNumber(gasLimit)
+
+    return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token: TokenModel, feeMultiplier: Number, advancedModeParam): Promise {
-    const value = new BigNumber(amount)
-    const txData = {
+  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): Promise {
+    const { gasLimit, gasFee, gasPrice } = await this.estimateGas(null, [to, amount], amount, from, { feeMultiplier })
+    const value = new Amount(amount, this._symbol)
+
+    return new TxExecModel({
+      contract: this._contractName,
+      func: 'transfer',
+      blockchain: this._contractName,
+      symbol: this._symbol,
       from,
+      fields: {
+        to: {
+          value: to,
+          description: 'to',
+        },
+        amount: {
+          value: new Amount(amount, this._symbol),
+          description: 'amount',
+        },
+      },
+      value,
       to,
-      value,
-    }
-
-    /** ESTIMATE GAS */
-    const estimateGastransfer = (func, args, value) => {
-      return this._estimateGas(args.to, value)
-    }
-
-    let tx = new TxExecModel({
-      contract: this.getContractName(),
-      func: TX_TRANSFER,
-      value,
-      gas: new BigNumber(0), // if gasMultiplier set in sendForm
-      args: {
-        from,
-        to,
-        value: amount,
-        // value,
+      additionalOptions,
+      fee: {
+        gasLimit: new Amount(gasLimit, this._symbol),
+        gasFee: new Amount(gasFee, this._symbol),
+        gasPrice: new Amount(gasPrice, this._symbol),
+        feeMultiplier,
       },
-      params: {
-        to,
-      },
-      options: {
-        advancedParams: advancedModeParam,
-      },
-    })
-    AbstractContractDAO.txGas(tx)
-
-    return new Promise(async (resolve, reject) => {
-      try {
-        tx = await AbstractContractDAO.txStart(tx, estimateGastransfer, feeMultiplier)
-
-        if (tx.isAdvancedFeeMode()) {
-          txData.gas = advancedModeParam.gasLimit
-          txData.gasPrice = advancedModeParam.gweiPerGas
-        } else {
-          txData.gas = process.env.NODE_ENV === 'development' ? DEFAULT_GAS : tx.gasLimit()
-          txData.gasPrice = tx.gasPrice()
-        }
-
-        let txHash
-        const web3 = await this._web3Provider.getWeb3()
-        let filter = web3.eth.filter('latest', async (e, blockHash) => {
-          if (!filter) { // to prevent excess filter callbacks when we already caught tx
-            return
-          }
-          const block = await this._web3Provider.getBlock(blockHash)
-          const txs = block.transactions || []
-          if (!txs.includes(txHash)) {
-            return
-          }
-
-          filter.stopWatching(() => {})
-          filter = null
-
-          const [receipt, transaction] = await Promise.all([
-            this._web3Provider.getTransactionReceipt(txHash),
-            this._web3Provider.getTransaction(txHash),
-          ])
-
-          const gasUsed = transaction.gasPrice.mul(receipt.gasUsed)
-          tx = tx.setGas(gasUsed, true)
-          AbstractContractDAO.txEnd(tx)
-
-          resolve(true)
-        }, (e) => {
-          throw new TxError(e.message, TX_FRONTEND_ERROR_CODES.FRONTEND_WEB3_FILTER_FAILED)
-        })
-
-        txHash = await this._web3Provider.sendTransaction(txData)
-        tx = tx.set('hash', txHash)
-      } catch (e) {
-        const error = this._txErrorDefiner(e)
-        if (e.code !== TX_FRONTEND_ERROR_CODES.FRONTEND_CANCELLED) {
-          // eslint-disable-next-line
-          console.warn('Ethereum transfer error', error)
-        }
-        AbstractContractDAO.txEnd(tx, error)
-        reject(error)
-      }
     })
   }
 
   async watchTransfer (accounts) {
-    const web3 = await this._web3Provider.getWeb3()
+    const web3 = await this.web3.eth.getWeb3()
     const filter = web3.eth.filter('latest')
     const startTime = AbstractContractDAO._eventsWatchStartTime
     this._addFilterEvent(filter)
@@ -238,7 +199,7 @@ export class EthereumDAO extends AbstractTokenDAO {
         console.error('EthereumDAO watchTransfer', e)
         return
       }
-      const block = await this._web3Provider.getBlock(r, true)
+      const block = await this.web3.eth.getBlock(r, true)
 
       this.emit(EVENT_NEW_BLOCK, { blockNumber: block.blockNumber || block.number })
 
@@ -314,14 +275,14 @@ export class EthereumDAO extends AbstractTokenDAO {
    * @private
    */
   async _getTransferFromBlocks (account, id): Array<TxModel> {
-    let [i, limit] = this._getFilterCache(id) || [await this._web3Provider.getBlockNumber(), 0]
+    let [i, limit] = this._getFilterCache(id) || [await this.web3.eth.getBlockNumber(), 0]
     if (limit === 0) {
       limit = Math.max(i - 150, 0)
     }
     const result = []
     while (i >= limit) {
       try {
-        const block = await this._web3Provider.getBlock(i, true)
+        const block = await this.web3.eth.getBlock(i, true)
         const txs = block.transactions || []
         txs.forEach((tx) => {
           if ((tx.to === account || tx.from === account) && tx.value > 0) {
@@ -339,7 +300,7 @@ export class EthereumDAO extends AbstractTokenDAO {
   }
 
   subscribeOnReset () {
-    this._web3Provider.onResetPermanent(() => this.handleWeb3Reset())
+    this.web3.eth.onResetPermanent(() => this.handleWeb3Reset())
   }
 
   handleWeb3Reset () {

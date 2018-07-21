@@ -4,7 +4,9 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
+import { withStyles } from '@material-ui/core/styles'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
 import { reduxForm, Field, formValueSelector } from 'redux-form/immutable'
@@ -69,7 +71,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-class LoginPage extends PureComponent {
+class LoginPage extends React.Component {
   static propTypes = {
     initLoginPage: PropTypes.func,
     navigateToSelectWallet: PropTypes.func,
@@ -101,12 +103,10 @@ class LoginPage extends PureComponent {
 
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting, isLocalNode } = this.props
+      navigateToSelectWallet, isLoginSubmitting, isLocalNode, classes } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
-
           <div styleName='page-title'>
             <Translate value='LoginForm.title' />
           </div>
@@ -129,9 +129,11 @@ class LoginPage extends PureComponent {
                 component={TextField}
                 name='password'
                 type='password'
-                floatingLabelText={<Translate value='LoginForm.enterPassword' />}
+                label={<Translate value='LoginForm.enterPassword' />}
                 fullWidth
-                {...styles.textField}
+                InputProps={{ className: classes.input }}
+                InputLabelProps={{ className: classes.floatingLabel }}
+                style={{ className: classes.hint }}
               />
             </div>
 
@@ -161,10 +163,9 @@ class LoginPage extends PureComponent {
           </div>
 
         </form>
-      </MuiThemeProvider>
-    )
+        )
   }
 }
 
 const form = reduxForm({ form: FORM_LOGIN_PAGE })(LoginPage)
-export default connect(mapStateToProps, mapDispatchToProps)(form)
+export default compose(withStyles(styles),connect(mapStateToProps, mapDispatchToProps))(form)

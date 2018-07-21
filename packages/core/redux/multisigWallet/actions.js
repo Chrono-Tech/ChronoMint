@@ -16,7 +16,6 @@ import {
   btgProvider,
   ltcProvider,
 } from '@chronobank/login/network/BitcoinProvider'
-import { EVENT_NEW_TRANSFER, FETCH_NEW_BALANCE } from '../../dao/AbstractTokenDAO'
 import contractsManagerDAO from '../../dao/ContractsManagerDAO'
 import type MultisigWalletDAO from '../../dao/MultisigWalletDAO'
 import { EE_MS_WALLET_ADDED, EE_MS_WALLET_REMOVED, EE_MS_WALLETS_COUNT } from '../../dao/MultisigWalletsManagerDAO'
@@ -25,17 +24,15 @@ import WalletNoticeModel, { statuses } from '../../models/notices/WalletNoticeMo
 import BalanceModel from '../../models/tokens/BalanceModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import TxExecModel from '../../models/TxExecModel'
-import type TxModel from '../../models/TxModel'
 import type MultisigWalletModel from '../../models/wallet/MultisigWalletModel'
 import type MultisigWalletPendingTxModel from '../../models/wallet/MultisigWalletPendingTxModel'
 import OwnerModel from '../../models/wallet/OwnerModel'
 import { notify, notifyError } from '../notifier/actions'
 import { DUCK_SESSION } from '../session/actions'
-import { DUCK_TOKENS, subscribeOnTokens } from '../tokens/actions'
+import { subscribeOnTokens } from '../tokens/actions'
 import multisigWalletService, {
   EE_CONFIRMATION,
   EE_CONFIRMATION_NEEDED,
-  EE_DEPOSIT,
   EE_MULTI_TRANSACTION,
   EE_OWNER_ADDED,
   EE_OWNER_REMOVED,
@@ -45,9 +42,11 @@ import multisigWalletService, {
 } from '../../services/MultisigWalletService'
 import tokenService from '../../services/TokenService'
 import { ETH, getTokensBalancesAndWatch, getTransactionsForWallet } from '../mainWallet/actions'
-import { getTokens } from '../tokens/selectors'
 import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import { getMultisigWallets } from '../wallet/selectors/models'
+import { getWallets } from './selectors/models'
+import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
+import WalletModel from '../../models/wallet/WalletModel'
 
 export const FORM_2FA_WALLET = 'Form2FAWallet'
 export const FORM_2FA_STEPS = [
@@ -70,6 +69,10 @@ export const MULTISIG_2_FA_CONFIRMED = 'multisigWallet/2_FA_CONFIRMED'
 
 let walletsManagerDAO
 
+const isOwner = (wallet: MultisigWalletModel | DerivedWalletModel, account) => {
+  return wallet.owners().items().filter((owner) => owner.address() === account).length > 0
+}
+
 const updateWallet = (wallet: MultisigWalletModel) => (dispatch) => dispatch({ type: MULTISIG_UPDATE, wallet })
 export const selectMultisigWallet = (id) => (dispatch) => dispatch({ type: MULTISIG_SELECT, id })
 
@@ -80,40 +83,6 @@ export const watchMultisigWallet = (wallet: MultisigWalletModel): Promise => {
     // eslint-disable-next-line
     console.error('watch error', e.message)
   }
-}
-
-const fetchBalanceForToken = (token, wallet) => async (dispatch) => {
-  if (!token.isERC20() && token.symbol() !== 'ETH') {
-    return
-  }
-
-  const tokenDao = tokenService.getDAO(token.id())
-
-  const balance = await tokenDao.getAccountBalance(wallet.address())
-  dispatch({
-    type: MULTISIG_BALANCE,
-    walletId: wallet.address(),
-    balance: new BalanceModel({
-      id: token.id(),
-      amount: new Amount(balance, token.symbol(), true),
-    }),
-  })
-}
-
-const handleToken = (token, wallet) => (dispatch) => {
-  dispatch(fetchBalanceForToken(token, wallet))
-  const tokenDAO = tokenService.getDAO(token.id())
-
-  tokenDAO
-    .on(FETCH_NEW_BALANCE, () => {
-      dispatch(fetchBalanceForToken(token, wallet))
-    })
-    .on(EVENT_NEW_TRANSFER, (tx: TxModel) => {
-      if (!(tx.from() === wallet.address() || tx.to() === wallet.address())) {
-        return
-      }
-      dispatch(fetchBalanceForToken(token, wallet))
-    })
 }
 
 const subscribeOnWalletManager = () => (dispatch, getState) => {
@@ -142,7 +111,6 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
 
       await watchMultisigWallet(updatedWallet)
 
-      dispatch(subscribeOnTokens((token) => handleToken(token, wallet)))
       dispatch(selectWalletIfOne())
     })
     .on(EE_MS_WALLETS_COUNT, (count) => {
@@ -151,6 +119,31 @@ const subscribeOnWalletManager = () => (dispatch, getState) => {
     .on(EE_MS_WALLET_REMOVED, (walletId) => {
       dispatch({ type: MULTISIG_REMOVE, id: walletId })
     })
+
+  const wallets = getWallets(getState())
+  wallets.items().map((wallet: DerivedWalletModel) => {
+    const { account } = getState().get(DUCK_SESSION)
+
+    const handleToken = (token: TokenModel) => async (dispatch) => {
+      if (token.blockchain() === wallet.blockchain()) {
+        // TODO fix this handle
+        // const dao = tokenService.getDAO(token)
+        // let balance = await dao.getAccountBalance(wallet.address())
+        // dispatch({
+        //   type: MULTISIG_BALANCE,
+        //   walletId: wallet.address(),
+        //   balance: new BalanceModel({
+        //     id: token.id(),
+        //     amount: new Amount(balance, token.symbol(), true),
+        //   }),
+        // })
+      }
+    }
+
+    if (isOwner(wallet, account)) {
+      dispatch(subscribeOnTokens(handleToken))
+    }
+  })
 }
 
 const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, getState) => {
@@ -159,17 +152,6 @@ const handleTransfer = (walletId, multisigTransactionModel) => async (dispatch, 
   wallet = wallet.pendingTxList(pendingTxList)
   dispatch(updateWallet(wallet))
   await dispatch(getTransactionsForWallet({ wallet, address: wallet.address(), blockchain: wallet.blockchain(), forcedOffset: true }))
-
-  if (!multisigTransactionModel.symbol()) {
-    getTokens(getState()).items().map((token) => {
-      if (token.blockchain() === BLOCKCHAIN_ETHEREUM) {
-        dispatch(fetchBalanceForToken(token, wallet))
-      }
-    })
-    return
-  }
-  const token: TokenModel = getState().get(DUCK_TOKENS).getBySymbol(multisigTransactionModel.symbol())
-  dispatch(fetchBalanceForToken(token, wallet))
 }
 
 const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
@@ -216,11 +198,6 @@ const subscribeOnMultisigWalletService = () => (dispatch, getState) => {
       const pendingTxList = wallet.pendingTxList()
       dispatch(updateWallet(wallet.pendingTxList(pendingTxList.update(pendingTxModel))))
     })
-    .on(EE_DEPOSIT, (walletId, symbol) => {
-      const wallet: MultisigWalletModel = getMultisigWallets(getState()).item(walletId)
-      const token = getState().get(DUCK_TOKENS).getBySymbol(symbol)
-      dispatch(fetchBalanceForToken(token, wallet))
-    })
     .on(EE_REQUIREMENT_CHANGED, (walletId, required) => {
       const wallet: MultisigWalletModel = getMultisigWallets(getState()).item(walletId)
       dispatch(updateWallet(wallet.requiredSignatures(required)))
@@ -237,8 +214,7 @@ export const initMultisigWalletManager = () => async (dispatch, getState) => {
   walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
   let wallets = getState().get(DUCK_MULTISIG_WALLET)
   wallets.items().map((wallet) => {
-    const isOwner = wallet.owners().items().filter((owner) => owner.address() === account).length > 0
-    if (wallet.isDerived() && isOwner) {
+    if (wallet.isDerived() && isOwner(wallet, account)) {
       switch (wallet.blockchain()) {
         case BLOCKCHAIN_BITCOIN:
           btcProvider.createNewChildAddress(wallet.deriveNumber())
@@ -336,14 +312,14 @@ export const removeOwner = (wallet, ownerAddress) => async (/*dispatch*/) => {
   }
 }
 
-export const multisigTransfer = (wallet, token, amount, recipient, feeMultiplier) => async () => {
+export const multisigTransfer = (wallet: WalletModel, token, amount, recipient, feeMultiplier) => async () => {
   try {
     let value
-    if (wallet.is2FA()) {
+    if (wallet.is2FA) {
       const walletsManagerDAO = await contractsManagerDAO.getWalletsManagerDAO()
       value = await walletsManagerDAO.getOraclePrice()
     }
-    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address())
+    const dao: MultisigWalletDAO = multisigWalletService.getWalletDAO(wallet.address)
     await dao.transfer(wallet, token, amount, recipient, feeMultiplier, value)
   } catch (e) {
     // eslint-disable-next-line

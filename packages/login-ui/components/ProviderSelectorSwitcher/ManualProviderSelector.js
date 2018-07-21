@@ -4,7 +4,7 @@
  */
 
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { Toggle } from 'material-ui'
+import { Toggle } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'

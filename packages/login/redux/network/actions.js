@@ -13,12 +13,13 @@ import {
   accountSelect,
   accountUpdate,
   setProfilesForAccounts,
-  DUCK_PERSIST_ACCOUNT,
   customNetworkCreate,
   customNetworkEdit,
   customNetworksDelete,
+  DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/actions'
 import uuid from 'uuid/v1'
+import Web3Legacy from 'web3legacy'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 import Web3 from 'web3'
 import axios from 'axios'
@@ -86,11 +87,11 @@ export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
-export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
 
-export const FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE = 'LoginPageFieldSuccessMessage'
 export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
 export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
+export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
+export const FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE = 'LoginPageFieldSuccessMessage'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -107,6 +108,11 @@ export const clearErrors = () => (dispatch) => {
 export const navigateToCreateAccountWithoutImport = () => (dispatch) => {
   dispatch(navigateToCreateAccount())
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
+}
+
+export const navigateToCreateAccountFromHW = (address) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_ACCOUNTS, address: address })
+  dispatch(navigateToCreateHWAccount())
 }
 
 export const initConfirmMnemonicPage = () => (dispatch, getState) => {
@@ -174,6 +180,42 @@ export const generateNewMnemonic = () => (dispatch) => {
 
 export const resetImportAccountMode = () => (dispatch) => {
   dispatch({ type: NETWORK_RESET_IMPORT_ACCOUNT_MODE })
+}
+
+export const onSubmitCreateHWAccountPage = (walletName) => async (dispatch, getState) => {
+  const state = getState()
+
+  const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get('network')
+  const { walletsList } = state.get('persistAccount')
+
+  const validateName = dispatch(validateAccountName(walletName))
+
+  if (!validateName){
+    throw new SubmissionError({ walletName: 'Wrong wallet name' })
+  }
+
+  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletName })
+
+  if (importAccountMode){
+    try {
+      let wallet = await dispatch(createHWAccount({
+        name: walletName,
+        pupblicKey: newAccountPrivateKey,
+        numberOfAccounts: 0,
+      }))
+
+      dispatch(accountAdd(wallet))
+
+      dispatch(accountSelect(wallet))
+
+      dispatch(resetImportAccountMode())
+
+    } catch(e){
+      throw new SubmissionError({ _error: e && e.message })
+    }
+
+    return
+  }
 }
 
 export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (dispatch, getState) => {
@@ -281,8 +323,25 @@ export const navigateToCreateAccount = () => (dispatch) => {
   dispatch(push('/login/create-account'))
 }
 
+export const navigateToCreateHWAccount = () => (dispatch) => {
+  dispatch(push('/login/create-hw-account'))
+}
+
+
 export const navigateToSelectImportMethod = () => (dispatch) => {
   dispatch(push('/login/import-methods'))
+}
+
+export const navigateToTrezorImportMethod = () => (dispatch) => {
+  dispatch(push('/login/trezor-login'))
+}
+
+export const navigateToLedgerImportMethod = () => (dispatch) => {
+  dispatch(push('/login/ledger-login'))
+}
+
+export const navigateToPluginImportMethod = () => (dispatch) => {
+  dispatch(push('/login/plugin-login'))
 }
 
 export const navigateToMnemonicImportMethod = () => (dispatch) => {
@@ -319,6 +378,11 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
 
 export const navigateToAccountName = () => (dispatch) => {
   dispatch(push('/login/account-name'))
+}
+
+export const handleLoginTrezorAccountClick = (address) => (dispatch) => {
+  console.log(address)
+  dispatch(navigateToCreateAccountFromHW(address))
 }
 
 export const navigateToLoginLocal = () => (dispatch) => {
@@ -653,14 +717,9 @@ export const updateSelectedAccount = () => (dispatch, getState) => {
 
   const foundAccount = walletsList.find((account) => account.key === selectedWallet.key)
 
-
   if (foundAccount) {
     dispatch(accountSelect(foundAccount))
   }
-}
-
-export const setImportedWalletFile = (wallet) => (dispatch) => {
-  dispatch({ type: NETWORK_SET_WALLET_FILE_IMPORTED, data: wallet })
 }
 
 export const initAccountsSignature = () => async (dispatch, getState) => {
@@ -763,6 +822,22 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   }
 }
 
+export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
+  dispatch(customNetworkCreate(url, alias))
+}
+
+export const setImportedWalletFile = (wallet) => (dispatch) => {
+  dispatch({ type: NETWORK_SET_WALLET_FILE_IMPORTED, data: wallet })
+}
+
+export const handleSubmitEditNetwork = (network) => (dispatch) => {
+  dispatch(customNetworkEdit(network))
+}
+
+export const handleDeleteNetwork = (network) => (dispatch) => {
+  dispatch(customNetworksDelete(network))
+}
+
 export const onSubmitSubscribeNewsletter = (email) => async (dispatch) => {
   const publicBackendProvider = new PublicBackendProvider()
 
@@ -790,18 +865,6 @@ export const onSubmitSubscribeNewsletterFail = (errors, dispatch, submitErrors) 
 
 export const onSubmitSubscribeNewsletterSuccess = () => (dispatch) => {
 
-}
-
-export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
-  dispatch(customNetworkCreate(url, alias))
-}
-
-export const handleSubmitEditNetwork = (network) => (dispatch) => {
-  dispatch(customNetworkEdit(network))
-}
-
-export const handleDeleteNetwork = (network) => (dispatch) => {
-  dispatch(customNetworksDelete(network))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

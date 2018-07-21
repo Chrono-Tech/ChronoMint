@@ -3,8 +3,8 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { grey600, greenA400, redA400 } from 'material-ui/styles/colors'
-import { typography } from 'material-ui/styles'
+import { grey600, greenA400, redA400 } from '@material-ui/core/colors'
+import typography from '@material-ui/core/Typography'
 
 const status = {
   block: {

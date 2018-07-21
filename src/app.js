@@ -5,7 +5,7 @@
 
 import 'flexboxgrid/css/flexboxgrid.css'
 import networkService from '@chronobank/login/network/NetworkService'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider'
 import React from 'react'
 import { render } from 'react-dom'
 import injectTapEventPlugin from 'react-tap-event-plugin'
@@ -20,7 +20,7 @@ class App {
     injectTapEventPlugin()
     store.dispatch(bootstrap()).then(() => {
       render(
-        <MuiThemeProvider muiTheme={themeDefault}>
+        <MuiThemeProvider theme={themeDefault}>
           {router}
         </MuiThemeProvider>,
         document.getElementById('react-root'),

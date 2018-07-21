@@ -113,8 +113,24 @@
       font-size: 16px;
       line-height: 22px;
     }
-    .filesList {
-      padding: 0 30px 15px;
+    .wrapper {
+      display: flex;
+      .filesList {
+        padding: 0 30px 15px;
+        flex-grow: 1;
+      }
+      .historyLinkWrapper {
+        text-align: right;
+        padding: 10px 30px 0 0;
+        width: 180px;
+        a {
+          white-space: nowrap;
+          text-decoration: none;
+          color: $border-color;
+          font-size: 16px;
+          font-weight: 700;
+        }
+      }
     }
     .cast {
       background-color: transparent;

@@ -15,15 +15,14 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import ModalDialog from 'components/dialogs/ModalDialog'
-import { DUCK_MAIN_WALLET, TIME } from '@chronobank/core/redux/mainWallet/actions'
-import MainWalletModel from '@chronobank/core/models/wallet/MainWalletModel'
+import { TIME } from '@chronobank/core/redux/mainWallet/actions'
 import HITBTC_PNG from 'assets/img/marketsLogos/hitbtc.png'
 import LIVECOIN_PNG from 'assets/img/marketsLogos/livecoin.png'
 import LIQUI_PNG from 'assets/img/marketsLogos/liqui.png'
 import KUCOIN_PNG from 'assets/img/marketsLogos/kucoin.png'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import { getTokensForBlockchain } from '@chronobank/core/redux/tokens/selectors'
-import { MenuItem } from 'material-ui'
+import { MenuItem } from '@material-ui/core'
 import styles from '../styles'
 
 import './ReceiveTokenModal.scss'
@@ -58,25 +57,20 @@ function prefix (token) {
 export const FORM_RECEIVE_TOKENS = 'FormReceiveTokens'
 
 function mapStateToProps (state, ownProps) {
-  const wallet: MainWalletModel = state.get(DUCK_MAIN_WALLET)
   const selector = formValueSelector(FORM_RECEIVE_TOKENS)
-  const tokens = getTokensForBlockchain(ownProps.blockchain)(state)
+  const tokens = getTokensForBlockchain(ownProps.wallet.blockchain)(state)
 
   return {
     token: state.get(DUCK_TOKENS).item(selector(state, 'tokenId') || ownProps.tokenId),
     tokens,
-    address: wallet.addresses().item(ownProps.blockchain).address(),
+    address: ownProps.wallet.address,
     initialValues: {
       tokenId: ownProps.tokenId || tokens[0].id(),
     },
   }
 }
 
-function mapDispatchToProps (dispatch) {
-  return {}
-}
-
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps)
 @reduxForm({ form: FORM_RECEIVE_TOKENS })
 export default class ReceiveTokenModal extends PureComponent {
   static propTypes = {
@@ -84,7 +78,6 @@ export default class ReceiveTokenModal extends PureComponent {
     token: PropTypes.instanceOf(TokenModel),
     tokens: PropTypes.arrayOf(PropTypes.instanceOf(TokenModel)),
     address: PropTypes.string,
-    blockchain: PropTypes.string.isRequired,
     dispatch: PropTypes.func,
     ...formPropTypes,
   }

@@ -5,7 +5,10 @@
 
 import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
-import { reduxForm } from 'redux-form/immutable'
+import classnames from 'classnames'
+import { MuiThemeProvider } from '@material-ui/core/styles'
+import { TextField } from 'redux-form-material-ui'
+import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
@@ -27,6 +30,7 @@ import WarningIcon from 'assets/img/icons/warning.svg'
 import CheckIcon from 'assets/img/icons/check-green.svg'
 import spinner from 'assets/img/spinningwheel-1.gif'
 
+import styles from 'layouts/Splash/styles'
 import './LoginWithWallet.scss'
 
 const mapStateToProps = (state) => ({

@@ -7,34 +7,26 @@ import networkService from '@chronobank/login/network/NetworkService'
 import {
   isLocalNode,
 } from '@chronobank/login/network/settings'
-import { MuiThemeProvider } from 'material-ui'
 import {
   DUCK_NETWORK,
   onSubmitLoginTestRPC,
   onSubmitLoginTestRPCFail,
   initLoginLocal,
-  selectProviderWithNetwork,
   handleLoginLocalAccountClick,
   navigateToLoginPage,
 } from '@chronobank/login/redux/network/actions'
-import web3Provider from '@chronobank/login/network/Web3Provider'
 import PropTypes from 'prop-types'
-import Button from 'components/common/ui/Button/Button'
-import UserRow from 'components/common/ui/UserRow/UserRow'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import classnames from 'classnames'
 
 import styles from 'layouts/Splash/styles'
-import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginLocal.scss'
 
 export const FORM_LOGIN_TEST_RPC = 'FormLoginTestRPCPage'
 
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: async (values) => {
-
+  onSubmit: async () => {
     await dispatch(onSubmitLoginTestRPC())
   },
   onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitLoginTestRPCFail(errors, dispatch, submitErrors)),
@@ -65,7 +57,7 @@ class LoginLocal extends PureComponent {
     isLocalNode: PropTypes.bool,
   }
 
-  componentWillMount(){
+  componentWillMount (){
     this.props.initLoginLocal()
   }
 
@@ -75,7 +67,7 @@ class LoginLocal extends PureComponent {
     }
   }
 
-  renderRPCSelectorMenuItem(item, i){
+  renderRPCSelectorMenuItem (item, i){
     return (
       <div
         key={i}
@@ -93,19 +85,16 @@ class LoginLocal extends PureComponent {
   }
 
   render () {
-    const { handleSubmit, isLoginSubmitting, error, accounts, selectedAccount } = this.props
+    const { accounts } = this.props
 
     return (
-      <MuiThemeProvider>
         <div styleName='wrapper'>
 
           <div styleName='page-title'>
             <Translate value='LoginLocal.title' />
           </div>
-
           {accounts.map((item, i) => this.renderRPCSelectorMenuItem(item, i))}
         </div>
-      </MuiThemeProvider>
     )
   }
 }

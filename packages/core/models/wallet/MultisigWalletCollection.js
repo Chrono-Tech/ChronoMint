@@ -10,6 +10,7 @@ import type MultisigWalletPendingTxModel from './MultisigWalletPendingTxModel'
 
 export default class MultisigWalletCollection extends abstractFetchingCollection({
   twoFAConfirmed: true,
+  web3: null,
 }) {
   twoFAConfirmed (value) {
     return this._getSet('twoFAConfirmed', value)

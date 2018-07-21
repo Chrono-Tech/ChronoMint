@@ -5,7 +5,7 @@
 
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { FontIcon } from 'material-ui'
+import { FontIcon } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'

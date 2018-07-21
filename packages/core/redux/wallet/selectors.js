@@ -20,7 +20,6 @@ import {
   selectMarketPricesSelectedCurrencyStore,
   selectTokensStore,
   getMainWalletBalance,
-  getCurrentWalletBalance,
   getMainWalletAddresses,
 } from './selectors/models'
 
@@ -28,7 +27,6 @@ export {
   getMainWallet,
   getMultisigWallets,
   getMainWalletBalance,
-  getCurrentWalletBalance,
   selectMainWalletBalancesListStore,
   selectTokensStore,
   getMainWalletAddresses,

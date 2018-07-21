@@ -4,6 +4,7 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
+import Web3Legacy from 'web3legacy'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import {
@@ -26,7 +27,7 @@ import {
 import {
   customNetworksListAdd,
 } from '@chronobank/core/redux/persistAccount/actions'
-import { Popover } from 'material-ui'
+import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -139,7 +140,7 @@ export default class CommonNetworkSelector extends PureComponent {
     }
   }
 
-  componentDidMount(){
+  componentDidMount () {
     this.props.initCommonNetworkSelector()
   }
 
@@ -253,7 +254,17 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  renderMenuItem(item, i){
+  getFullNetworkName (item){
+    return `${item.provider.name} - ${item.network.name}`
+  }
+
+  resolveNetwork = () => {
+    const web3 = new Web3Legacy()
+    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
+    web3Provider.resolve()
+  }
+
+  renderMenuItem (item, i){
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.network.id === selectedNetworkId && item.provider.id === (selectedProvider && selectedProvider.id)
 
@@ -289,7 +300,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   render () {
-    const { selectedNetworkId, selectedProvider, networks, isLoading, providersList } = this.props
+    const { selectedProvider, providersList } = this.props
 
     return (
       <div styleName='root'>

@@ -10,11 +10,15 @@ import { getTokens } from '../../tokens/selectors'
 import { DUCK_MAIN_WALLET } from '../actions'
 
 export const getWallet = (state) => {
+  return state.get(DUCK_MAIN_WALLET)
+}
+
+export const getWalletAddresses = (state) => {
   return state.get(DUCK_MAIN_WALLET).addresses()
 }
 
 export const getWalletAddress = (blockchain: string) => createSelector(
-  [getWallet],
+  [getWalletAddresses],
   (addresses) => {
     return blockchain ? addresses.item(blockchain) : new AddressModel()
   },

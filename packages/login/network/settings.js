@@ -309,7 +309,7 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
       networks = networks.concat(networksProvider)
     })
 
-  if (withLocal){
+  if (withLocal) {
     networks.push({
       provider: providerMap.local,
       network: infuraLocalNetwork,

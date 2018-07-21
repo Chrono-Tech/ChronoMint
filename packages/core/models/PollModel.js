@@ -3,10 +3,31 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Immutable from 'immutable'
-import { abstractFetchingModel } from './AbstractFetchingModel'
+import BigNumber from 'bignumber.js'
+import PropTypes from 'prop-types'
+import AbstractModel from '../refactor/models/AbstractModel'
+import Amount from '../../core/models/Amount'
 
-class PollModel extends abstractFetchingModel({
+const schemaFactory = () => ({
+  id: PropTypes.string,
+  hash: PropTypes.string,
+  owner: PropTypes.string,
+  title: PropTypes.string,
+  description: PropTypes.string,
+  published: PropTypes.instanceOf(Date),
+  voteLimitInTIME: PropTypes.instanceOf(Amount),
+  deadline: PropTypes.instanceOf(Date),
+  options: PropTypes.instanceOf(Array),
+  files: PropTypes.string, // hash
+  transactionHash: PropTypes.string,
+  active: PropTypes.bool,
+  status: PropTypes.bool,
+  isTransaction: PropTypes.bool,
+  hasMember: PropTypes.bool,
+  memberOption: PropTypes.instanceOf(BigNumber),
+})
+
+const defaultProps = {
   id: null,
   hash: null,
   owner: null,
@@ -14,86 +35,39 @@ class PollModel extends abstractFetchingModel({
   description: '',
   published: null,
   voteLimitInTIME: null,
+  transactionHash: null,
   deadline: null,
-  options: new Immutable.List(['Support', 'Decline']),
+  options: ['Support', 'Decline'],
   files: null, // hash
   active: false,
   status: false,
   isTransaction: false,
   hasMember: false,
   memberOption: null,
-}) {
-  constructor (data = {}) {
+}
+
+class PollModel extends AbstractModel {
+  constructor (ownProps) {
+    const props = { ...defaultProps, ...ownProps }
     super({
-      ...data,
-      published: data.published || new Date(new Date().getTime()),
-      deadline: data.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
-    })
+      ...props,
+      published: props.published || new Date(new Date().getTime()),
+      deadline: props.deadline || new Date(new Date().getTime() + (1000 * 60 * 60 * 24 * 7)), // +7 days
+    }, schemaFactory())
+    Object.freeze(this)
   }
 
-  id (value) {
-    return this._getSet('id', value)
-  }
-
-  hash () {
-    return this.get('hash')
-  }
-
-  title () {
-    return this.get('title')
-  }
-
-  description () {
-    return this.get('description')
-  }
-
-  options () {
-    return this.get('options')
-  }
-
-  files () {
-    return this.get('files')
-  }
-
-  active (value) {
-    return this._getSet('active', value)
-  }
-
-  status () {
-    return this.get('status')
-  }
-
-  voteLimitInTIME () {
-    return this.get('voteLimitInTIME')
-  }
-
-  published () {
-    return this.get('published')
-  }
-
-  deadline () {
-    return this.get('deadline')
-  }
-
-  hasMember () {
-    return this.get('hasMember')
-  }
-
-  memberOption () {
-    return this.get('memberOption')
-  }
-
-  owner () {
-    return this.get('owner')
+  transform () {
+    return { ...this }
   }
 
   txSummary () {
     return {
-      title: this.title(),
-      description: this.description(),
-      options: this.options().toArray(),
-      voteLimit: this.voteLimitInTIME(),
-      finishedDate: this.deadline(),
+      title: this.title,
+      description: this.description,
+      options: this.options,
+      voteLimit: this.voteLimitInTIME,
+      finishedDate: this.deadline,
     }
   }
 }

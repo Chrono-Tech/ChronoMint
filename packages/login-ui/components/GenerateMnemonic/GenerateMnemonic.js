@@ -6,7 +6,6 @@
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { MuiThemeProvider } from 'material-ui'
 import ReactDOM from 'react-dom'
 import React, { Component } from 'react'
 import QRCode from 'davidshimjs-qrcodejs'
@@ -103,7 +102,6 @@ export default class MnemonicPage extends Component {
 
   render () {
     return (
-      <MuiThemeProvider>
         <div styleName='wrapper'>
           <div>
             <div styleName='page-title'>
@@ -169,7 +167,6 @@ export default class MnemonicPage extends Component {
             </div>
           </div>
         </div>
-      </MuiThemeProvider>
     )
   }
 }

@@ -3,10 +3,10 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { getMuiTheme } from 'material-ui/styles'
+import { createMuiTheme } from '@material-ui/core/styles'
 import variables from './variables'
 
-export default getMuiTheme({
+export default createMuiTheme({
   raisedButton: {
     primaryColor: variables.colorAccent2,
     primaryTextColor: variables.colorWhite,

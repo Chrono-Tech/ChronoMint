@@ -20,7 +20,7 @@ import Value from 'components/common/Value/Value'
 import AbstractNoticeModel from '@chronobank/core/models/notices/AbstractNoticeModel'
 import Moment from 'components/common/Moment'
 import { FULL_DATE } from '@chronobank/core/models/constants'
-import { IconButton } from 'material-ui'
+import { IconButton } from '@material-ui/core'
 import { SIDES_CLOSE_ALL } from 'redux/sides/actions'
 import { prefix } from './lang'
 import './NotificationContent.scss'
@@ -93,7 +93,8 @@ class NotificationContent extends PureComponent {
           date: transaction.time(),
           details: transaction.details(),
         })
-
+      case transaction instanceof CurrentTransactionNotificationModel:
+        return transaction
       default:
         break
     }

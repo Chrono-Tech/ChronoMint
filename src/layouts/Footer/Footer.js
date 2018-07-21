@@ -10,6 +10,8 @@ import { connect } from 'react-redux'
 import classnames from 'classnames'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { Link } from 'react-router'
+import { withStyles } from '@material-ui/core/styles'
+import compose from 'recompose/compose'
 import {
   onSubmitSubscribeNewsletter,
   onSubmitSubscribeNewsletterSuccess,
@@ -68,6 +70,7 @@ class Footer extends Component {
   }
 
   render () {
+    const { classes } = this.props;
     const { submitSucceeded, handleSubmit, submitting, error } = this.props
 
     return (
@@ -203,7 +206,9 @@ class Footer extends Component {
                     name='email'
                     floatingLabelText='Enter email to subscribe for newsletter'
                     fullWidth
-                    {...styles.textField}
+	            InputProps={{ className: classes.input }}
+                    InputLabelProps={{ className: classes.label }}
+                    style={{ className: classes.hint }}
                   />
                 )
               }
@@ -243,4 +248,4 @@ class Footer extends Component {
 }
 
 const form = reduxForm({ form: FORM_FOOTER_EMAIL_SUBSCRIPTION, validate })(Footer)
-export default connect(null, mapDispatchToProps)(form)
+export default compose(withStyles(styles),connect(null, mapDispatchToProps))(form)

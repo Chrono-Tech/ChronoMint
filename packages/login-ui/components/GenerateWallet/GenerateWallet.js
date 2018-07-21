@@ -5,7 +5,7 @@
 
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
-import { MuiThemeProvider } from 'material-ui'
+import { MuiThemeProvider } from '@material-ui/core'
 import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'

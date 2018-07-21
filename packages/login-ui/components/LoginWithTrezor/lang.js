@@ -4,7 +4,10 @@
  */
 
 export const en = {
+  title: 'Import account from Trezor',
   login: 'Login',
+  or: 'or',
+  back: '',
   ethAddress: 'Ethereum address',
   isHttps: {
     successTitle: 'HTTPS protocol provided',
@@ -21,9 +24,9 @@ export const en = {
     errorTitle: 'Ethereum application is not opened',
     errorTip: 'Open \'Ethereum\' application on your Trezor and set \'Browser Support\' to \'yes\' in \'Settings\'',
   },
-  isFetched: {
-    successTitle: 'Ethereum address fetched successfully',
-    errorTitle: 'Confirm Ethereum address on Trezor',
-    errorTip: 'Open Ethereum application and confirm address',
+  isConnected: {
+    successTitle: 'Trezor plugged',
+    errorTitle: 'Plug in your device',
+    errorTip: 'In order to continue please plug in your Trezor device.',
   },
 }

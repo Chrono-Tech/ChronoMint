@@ -7,12 +7,12 @@ import networkService from '@chronobank/login/network/NetworkService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors, DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
-import { MenuItem, SelectField } from 'material-ui'
+import { MenuItem, SelectField } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import Web3 from 'web3'
+import Web3Legacy from 'web3legacy'
 import styles from '../../components/stylesLoginPage'
 
 const mapStateToProps = (state) => {
@@ -56,7 +56,7 @@ export default class NetworkSelector extends PureComponent {
   }
 
   resolveNetwork = () => {
-    const web3 = new Web3()
+    const web3 = new Web3Legacy()
     web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
     web3Provider.resolve()
   }

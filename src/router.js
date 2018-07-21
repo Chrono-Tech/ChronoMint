@@ -11,6 +11,7 @@ import {
   NotFoundPage,
   LoginForm,
   CreateAccount,
+  CreateHWAccount,
   AccountSelector,
   RecoverAccount,
   ResetPassword,
@@ -20,9 +21,13 @@ import {
   GenerateWallet,
   LoginWithWallet,
   LoginWithMnemonic,
+  LoginWithTrezor,
+  LoginWithLedger,
+  LoginWithPlugin,
   LoginWithPrivateKey,
   AccountName,
   LoginLocal,
+  AccountName,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
@@ -41,6 +46,7 @@ import {
   AddWalletPage,
   TwoFAPage,
   NewPollPage,
+  VoteHistoryPage,
 } from 'pages/lib'
 import { store, history } from './redux/configureStore'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
@@ -84,6 +90,7 @@ const router = (
         <Route path='voting' component={VotingPage} />
         <Route path='poll' component={PollPage} />
         <Route path='new-poll' component={NewPollPage} />
+        <Route path='vote-history' component={VoteHistoryPage} />
         <Route path='assets' component={AssetsPage} />
         <Route path='cbe'>
           <Route path='locs' component={LOCPage} />
@@ -103,8 +110,12 @@ const router = (
         <Route path='/login/mnemonic' component={GenerateMnemonic} />
         <Route path='/login/download-wallet' component={GenerateWallet} />
         <Route path='/login/upload-wallet' component={LoginWithWallet} />
+        <Route path='/login/trezor-login' component={LoginWithTrezor} />
+        <Route path='/login/ledger-login' component={LoginWithLedger} />
+        <Route path='/login/plugin-login' component={LoginWithPlugin} />
         <Route path='/login/mnemonic-login' component={LoginWithMnemonic} />
         <Route path='/login/private-key-login' component={LoginWithPrivateKey} />
+        <Route path='/login/create-hw-account' component={CreateHWAccount} />
         <Route path='/login/local-login' component={LoginLocal} />
         <Route path='/login/account-name' component={AccountName} />
         <Route path='*' component={NotFoundPage} />

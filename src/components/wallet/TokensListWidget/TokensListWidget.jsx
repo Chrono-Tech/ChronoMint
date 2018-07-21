@@ -8,13 +8,12 @@ import { Translate } from 'react-redux-i18n'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { TOKEN_ICONS } from 'assets'
-import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import IPFSImage from 'components/common/IPFSImage/IPFSImage'
 import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import TokensCollection from '@chronobank/core/models/tokens/TokensCollection'
 import { Button } from 'components'
-import { mainWalletTokenBalanceWithPriceSelector } from '@chronobank/core/redux/mainWallet/selectors'
-import { multisigWalletTokenBalanceWithPriceSelector } from '@chronobank/core/redux/multisigWallet/selectors'
+import { walletTokensAmountAndBalanceSelector } from '@chronobank/core/redux/wallets/selectors/balances'
+import { getTokens } from '@chronobank/core/redux/tokens/selectors'
 import { PTWallet } from '@chronobank/core/redux/wallet/types'
 
 import { prefix } from './lang'
@@ -22,26 +21,17 @@ import './TokensListWidget.scss'
 
 function makeMapStateToProps (state, props) {
   const { wallet } = props
-  let getAmount
-  if (wallet.isMain) {
-    getAmount = mainWalletTokenBalanceWithPriceSelector(wallet.blockchain)
-  } else {
-    getAmount = multisigWalletTokenBalanceWithPriceSelector(wallet.address)
-  }
+  let getTokensBalances = walletTokensAmountAndBalanceSelector(wallet.id)
   const mapStateToProps = (ownState) => {
     return {
-      tokensBalances: getAmount(ownState),
-      tokens: ownState.get(DUCK_TOKENS),
+      tokensBalances: getTokensBalances(ownState),
+      tokens: getTokens(ownState),
     }
   }
   return mapStateToProps
 }
 
-function mapDispatchToProps (dispatch) {
-  return {}
-}
-
-@connect(makeMapStateToProps, mapDispatchToProps)
+@connect(makeMapStateToProps)
 export default class TokensListWidget extends PureComponent {
   static propTypes = {
     tokens: PropTypes.instanceOf(TokensCollection),
@@ -70,15 +60,19 @@ export default class TokensListWidget extends PureComponent {
 
   getTokensList = () => {
     const { sortBy, direction } = this.state
-    const tokens = this.props.tokensBalances.sort((a, b) => {
-      if (a[sortBy] < b[sortBy]) {
-        return direction
-      }
+    let tokens = this.props.tokensBalances.sort((a, b) => {
       if (a[sortBy] > b[sortBy]) {
-        return !direction
+        return 1
+      }
+      if (a[sortBy] < b[sortBy]) {
+        return -1
       }
       return 0
     })
+
+    if (!direction) {
+      tokens = tokens.reverse()
+    }
     return this.state.isShowAll ? tokens : tokens.slice(0, 2)
   }
 
@@ -90,7 +84,7 @@ export default class TokensListWidget extends PureComponent {
 
   renderDirection (sortBy) {
     if (sortBy === this.state.sortBy) {
-      return <i className='chronobank-icon'>{this.state.direction ? 'down' : 'up'}</i>
+      return <i className='chronobank-icon'>{this.state.direction ? 'up' : 'down'}</i>
     }
     return null
   }
@@ -111,32 +105,33 @@ export default class TokensListWidget extends PureComponent {
         <div styleName='tokens-list'>
           <div styleName='tokens-list-table'>
             <div styleName='tokens-list-table-tr'>
-              <div styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
+              <button styleName='tokens-list-table-cell-sort-token' onClick={this.setSort('symbol')}>
                 <Translate value={`${prefix}.token`} />&nbsp;
                 {this.renderDirection('symbol')}
-              </div>
-              <div styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
+              </button>
+              <button styleName='tokens-list-table-cell-sort-amount' onClick={this.setSort('value')}>
                 <Translate value={`${prefix}.amount`} />&nbsp;
                 {this.renderDirection('value')}
-              </div>
-              <div styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
+              </button>
+              <button styleName='tokens-list-table-cell-sort-usd' onClick={this.setSort('valueUsd')}>
                 <Translate value={`${prefix}.fiat`} />&nbsp;
                 {this.renderDirection('valueUsd')}
-              </div>
+              </button>
             </div>
-            {this.getTokensList().length && this.getTokensList().map((tokenMap) => {
-              const token = this.props.tokens.item(tokenMap.symbol)
+            {this.getTokensList().length && this.getTokensList().map((balanceInfo) => {
+              const token = this.props.tokens.item(balanceInfo.symbol)
+
               return (
                 <div styleName='tokens-list-table-tr' key={token.id()}>
                   <div styleName='tokens-list-table-cell-icon'>
                     <IPFSImage styleName='table-image' multihash={token.icon()} fallback={TOKEN_ICONS[token.symbol()] || TOKEN_ICONS.DEFAULT} />
-                    {tokenMap.symbol}
+                    {balanceInfo.symbol}
                   </div>
                   <div styleName='tokens-list-table-cell-amount'>
-                    {integerWithDelimiter(tokenMap.value, true, null)}
+                    {integerWithDelimiter(balanceInfo.value, true, null)}
                   </div>
                   <div styleName='tokens-list-table-cell-usd'>
-                    {integerWithDelimiter(tokenMap.valueUsd.toFixed(2), true)}
+                    {integerWithDelimiter(balanceInfo.valueUsd.toFixed(2), true)}
                   </div>
                 </div>
               )
