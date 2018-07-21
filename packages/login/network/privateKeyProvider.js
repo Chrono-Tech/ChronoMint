@@ -113,10 +113,6 @@ class PrivateKeyProvider {
   }
 
   createEthereumWallet (privateKey) {
-    // TODO @abdulov remove console.log
-    console.log('createEthereumWallet')
-    // TODO @abdulov remove console.log
-    console.log('new wallet', EthereumWallet.createWallet({ type: 'memory', pk: privateKey }))
     return EthereumWallet.createWallet({ type: 'memory', pk: privateKey })
   }
 

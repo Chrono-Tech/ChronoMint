@@ -322,7 +322,7 @@ class NetworkService extends EventEmitter {
     }
 
     const runNextChecker = () => {
-      if (this.checkerIndex <= this.checkers.length) {
+      if (this.checkerIndex < this.checkers.length) {
         web3Provider.beforeReset()
         web3Provider.afterReset()
         this.checkers[this.checkerIndex]()
