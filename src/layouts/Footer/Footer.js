@@ -112,24 +112,24 @@ export default class Footer extends Component {
               <span styleName='title'>{'Connect with us'}</span>
             </div>
             <div styleName='logos-container'>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={facebook} />
-              </div>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={twitter} />
-              </div>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={instagram} />
-              </div>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={reddit} />
-              </div>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={telegramm} />
-              </div>
-              <div styleName='logo'>
-                <img styleName='img-logo' src={github} />
-              </div>
+              <Link href='https://www.facebook.com/ChronoBank.io' styleName='resource-link'>
+                <img styleName='resource-img' src={facebook} />
+              </Link>
+              <Link href='https://twitter.com/ChronobankNews' styleName='resource-link'>
+                <img styleName='resource-img' src={twitter} />
+              </Link>
+              <Link href='https://www.instagram.com/chronobank.io/' styleName='resource-link'>
+                <img styleName='resource-img' src={instagram} />
+              </Link>
+              <Link href='https://www.reddit.com/r/ChronoBank/' styleName='resource-link'>
+                <img styleName='resource-img' src={reddit} />
+              </Link>
+              <Link href='https://telegram.me/chronobank' styleName='resource-link'>
+                <img styleName='resource-img' src={telegramm} />
+              </Link>
+              <Link href='https://github.com/ChronoBank' styleName='resource-link'>
+                <img styleName='resource-img' src={github} />
+              </Link>
             </div>
 
             <ul styleName='navigation-list' >

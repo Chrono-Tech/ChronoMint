@@ -31,7 +31,6 @@ export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
   return walletsList.find((w) => getAccountAddress(w) === getAccountAddress(wallet))
 }
 
-
 export const getAccountName = (account: AccountEntryModel) => {
   if (account && account.profile && account.profile.userName){
     return account.profile.userName

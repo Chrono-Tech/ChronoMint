@@ -113,6 +113,25 @@ class TxModel extends abstractModel({
     return this.from() === '0x0000000000000000000000000000000000000000'
   }
 
+  details () {
+    const list = [
+      {
+        label: 'From',
+        value: this.from(),
+      },
+      {
+        label: 'To',
+        value: this.to(),
+      },
+      {
+        label: 'Value',
+        value: this.value(),
+      },
+    ]
+
+    return list
+  }
+
   /**
    * @deprecated
    */

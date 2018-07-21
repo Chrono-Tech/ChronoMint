@@ -38,6 +38,7 @@ const initialState = {
   isLoginSubmitting: false,
   accountRecoveryMode: false,
   walletFileImportMode: false,
+  walletFileImportObject: null,
   accountSignaturesLoading: false,
   accountSignaturesData: null,
   accountSignaturesError: null,
@@ -171,6 +172,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         profileSignature: action.signature,
+      }
+    case actions.NETWORK_SET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: action.data,
+      }
+    case actions.NETWORK_RESET_WALLET_FILE_IMPORTED:
+      return {
+        ...state,
+        walletFileImportObject: null,
       }
 
     default:

@@ -233,6 +233,21 @@ $copyRightPadding: 200px;
 
 }
 
+.resource-link {
+  cursor: pointer;
+}
+
+.resource-img {
+  width: 32px;
+  height: 32px;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
 .background {
   position: absolute;
   bottom: 0;

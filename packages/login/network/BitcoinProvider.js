@@ -41,7 +41,7 @@ export class BitcoinProvider extends AbstractProvider {
     node.addListener('tx', this._handleTransaction) // send transaction
     node.addListener('balance', this._handleBalance)
     node.addListener('lastBlock', this._handleLastBlock)
-    node.addListener('transaction', this._handleTransactionUpdated) // transaction mained.
+    node.addListener('transaction', this._handleTransactionUpdated) // transaction mained & added to pool.
   }
 
   unsubscribe (engine) {

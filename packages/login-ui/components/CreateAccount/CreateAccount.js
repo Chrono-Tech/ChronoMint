@@ -17,6 +17,7 @@ import {
   onSubmitCreateAccountPage,
   onSubmitCreateAccountPageSuccess,
   onSubmitCreateAccountPageFail,
+  FORM_CREATE_ACCOUNT,
 } from '@chronobank/login/redux/network/actions'
 import styles from 'layouts/Splash/styles'
 
@@ -24,8 +25,6 @@ import validate from './validate'
 
 import fieldStyles from './styles'
 import './CreateAccount.scss'
-
-export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 
 function mapStateToProps (state) {
 

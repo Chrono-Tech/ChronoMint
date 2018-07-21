@@ -4,10 +4,8 @@
  */
 
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { MuiThemeProvider } from 'material-ui'
-import { TextField } from 'redux-form-material-ui'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
@@ -15,11 +13,11 @@ import { Translate } from 'react-redux-i18n'
 import { connect } from 'react-redux'
 import {
   onSubmitWalletUpload,
-  onSubmitWalletUploadSuccess,
   onSubmitWalletUploadFail,
   clearErrors,
   loading,
   initLoginWithWallet,
+  FORM_WALLET_UPLOAD,
 } from '@chronobank/login/redux/network/actions'
 
 import FileIcon from 'assets/img/icons/file-white.svg'
@@ -29,10 +27,7 @@ import WarningIcon from 'assets/img/icons/warning.svg'
 import CheckIcon from 'assets/img/icons/check-green.svg'
 import spinner from 'assets/img/spinningwheel-1.gif'
 
-import styles from 'layouts/Splash/styles'
 import './LoginWithWallet.scss'
-
-export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 
 const mapStateToProps = (state) => ({
   isLoading: state.get('network').isLoading,
@@ -47,7 +42,6 @@ const mapDispatchToProps = (dispatch) => {
 
       await dispatch(onSubmitWalletUpload(walletString, password))
     },
-    onSubmitSuccess: () => dispatch(onSubmitWalletUploadSuccess()),
     initLoginWithWallet: () => dispatch(initLoginWithWallet()),
     onSubmitFail: (errors, dispatch, submitErrors) => dispatch(onSubmitWalletUploadFail(errors, dispatch, submitErrors)),
   }
@@ -161,16 +155,13 @@ class LoginWithWallet extends Component {
                 <Button styleName='button' buttonType='login' disabled>
                   <img styleName='before-img' src={CheckIcon} alt='' />
                   <span styleName='button-text'>{fileName}</span>
-                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                  <span
+                    styleName='removeButton'
+                    onClick={() => this.handleRemoveWallet()}
+                  >
+                    <img styleName='after-img' src={DeleteIcon} alt='' />
+                  </span>
                 </Button>
-                <Field
-                  component={TextField}
-                  name='password'
-                  type='password'
-                  floatingLabelText={<Translate value='LoginWithWallet.enterPassword' />}
-                  fullWidth
-                  {...styles.textField}
-                />
               </div>
             )}
 
