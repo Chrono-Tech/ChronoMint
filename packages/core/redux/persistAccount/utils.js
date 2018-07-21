@@ -26,7 +26,7 @@ export const removeWallet = (walletsList, name) => {
 }
 
 export const getAccountAddress = (account: AccountEntryModel, hexFormat = false) => {
-  return account.encrypted && account.encrypted[0] && `${ hexFormat ? '0x' : ''}${account.encrypted[0].address}` || ''
+  return account && account.encrypted && account.encrypted[0] && `${ hexFormat ? '0x' : ''}${account.encrypted[0].address}` || ''
 }
 
 export const getWalletsListAddresses = (walletsList = []) => {

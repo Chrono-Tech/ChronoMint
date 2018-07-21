@@ -21,6 +21,7 @@
 
   .userBlockInner {
     display: flex;
+    overflow: hidden;
 
     .userBlockAvatar {
       .userAvatar {
@@ -52,7 +53,10 @@
         font-size: 12px;
         line-height: 17px;
         min-width: 0;
-        word-break: break-all;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        padding-right: 10px;
       }
     }
   }
