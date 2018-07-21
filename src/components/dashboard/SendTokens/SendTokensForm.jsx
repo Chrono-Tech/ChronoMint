@@ -432,7 +432,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderHead () {
-    const { token, isMultiToken, walletInfo, wallet tokenInfo } = this.props
+    const { token, isMultiToken, walletInfo, wallet, tokenInfo } = this.props
 
     return (
       <div styleName='head'>
@@ -509,7 +509,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier wallet } = this.props
+    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
     const isTimeLocked = wallet.isTimeLocked
 
     return (
