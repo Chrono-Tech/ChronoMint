@@ -24,7 +24,7 @@ import {
   FORM_LOGIN_PAGE,
 } from '@chronobank/login/redux/network/actions'
 import {
-  isTestRPC,
+  isLocalNode,
 } from '@chronobank/login/network/settings'
 import {
   getAccountName,
@@ -46,7 +46,7 @@ function mapStateToProps (state) {
     selectedProvider: network.selectedProviderId,
     selectedAccount: network.selectedAccount,
     accounts: network.accounts,
-    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
+    isLocalNode: isLocalNode(network.selectedProviderId, network.selectedNetworkId),
   }
 }
 
@@ -73,7 +73,7 @@ class LoginPage extends PureComponent {
     accounts: PropTypes.array,
     selectedAccount: PropTypes.string,
     selectedWallet: PropTypes.object,
-    isTestRPC: PropTypes.bool,
+    isLocalNode: PropTypes.bool,
   }
 
   componentWillMount(){
@@ -82,10 +82,10 @@ class LoginPage extends PureComponent {
 
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting, isTestRPC } = this.props
+      navigateToSelectWallet, isLoginSubmitting, isLocalNode } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider>
         <form styleName='form' name={FORM_LOGIN_PAGE} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>

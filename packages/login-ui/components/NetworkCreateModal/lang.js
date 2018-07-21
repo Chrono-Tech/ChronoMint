@@ -4,5 +4,6 @@
  */
 
 export const en = {
-  title: 'Select a Local node Address',
+  titleAddMode: 'Add a Network',
+  titleEditMode: 'Edit a Network',
 }

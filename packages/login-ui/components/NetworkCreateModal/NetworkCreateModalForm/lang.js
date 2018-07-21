@@ -4,5 +4,9 @@
  */
 
 export const en = {
-  title: 'Select a Local node Address',
+  address: 'IP address or domain name',
+  alias: 'Alias',
+  cancel: 'Cancel',
+  save: 'Save',
+  add: 'Add',
 }
