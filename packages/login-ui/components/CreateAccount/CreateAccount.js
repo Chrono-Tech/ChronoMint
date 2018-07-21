@@ -55,7 +55,6 @@ class CreateAccountPage extends PureComponent {
     const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
     return (
-      <MuiThemeProvider >
         <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
           <div styleName='create-title'>
             <Translate value='CreateAccount.title' />
@@ -69,28 +68,22 @@ class CreateAccountPage extends PureComponent {
             <Field
               component={TextField}
               name='walletName'
-              floatingLabelText={<Translate value='CreateAccount.walletName' />}
+              label={<Translate value='CreateAccount.walletName' />}
               fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
             />
             <Field
               component={TextField}
               name='password'
               type='password'
-              floatingLabelText={<Translate value='CreateAccount.password' />}
+              label={<Translate value='CreateAccount.password' />}
               fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
             />
             <Field
               component={TextField}
               name='confirmPassword'
               type='password'
-              floatingLabelText={<Translate value='CreateAccount.confirmPassword' />}
+              label={<Translate value='CreateAccount.confirmPassword' />}
               fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
             />
           </div>
 
@@ -102,7 +95,7 @@ class CreateAccountPage extends PureComponent {
             >
               <Translate value='CreateAccount.login' />
             </Button>
-            { error && (<div styleName='form-error'>{error}</div>) }
+            {error && (<div styleName='form-error'>{error}</div>)}
             <Translate value='CreateAccount.or' />
             <br />
             <Link to='/login/select-account' href styleName='link'>
@@ -112,7 +105,6 @@ class CreateAccountPage extends PureComponent {
 
         </form>
 
-      </MuiThemeProvider>
     )
   }
 }

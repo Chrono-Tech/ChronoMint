@@ -117,87 +117,87 @@ class LoginWithWallet extends Component {
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
-        <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
-          <div styleName='page-title'>
-            <Translate value='LoginWithWallet.title' />
-          </div>
+      <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
+        <div styleName='page-title'>
+          <Translate value='LoginWithWallet.title' />
+        </div>
 
-          <p styleName='description'>
-            <Translate value='LoginWithWallet.description' />
-            <Translate value='LoginWithWallet.descriptionExtra' />
-          </p>
+        <p styleName='description'>
+          <Translate value='LoginWithWallet.description' />
+          <Translate value='LoginWithWallet.descriptionExtra' />
+        </p>
 
-          <div styleName='row'>
-            {!isUploaded && !isUploading && (
-              <Button
-                styleName='button'
-                buttonType='login'
-                onClick={() => this.walletFileUploadInput.click()}
-              >
-                <img styleName='before-img' src={FileIcon} alt='' />
-                <span styleName='button-text'>
-                  <Translate value='LoginWithWallet.uploadWalletFile' />
-                </span>
-              </Button>
-            )}
-
-            {isUploading && (
-              <Button styleName='button' buttonType='login' disabled>
-                <img styleName='before-img' src={SpinnerGif} alt='' />
-                <span styleName='button-text'>
-                  <Translate value='LoginWithWallet.uploading' />
-                </span>
-                <img styleName='after-img' src={DeleteIcon} alt='' />
-              </Button>
-            )}
-
-            {isUploaded && (
-              <div styleName='password-wrapper'>
-                <Button styleName='button' buttonType='login' disabled>
-                  <img styleName='before-img' src={CheckIcon} alt='' />
-                  <span styleName='button-text'>{fileName}</span>
-                  <span
-                    styleName='removeButton'
-                    onClick={() => this.handleRemoveWallet()}
-                  >
-                    <img styleName='after-img' src={DeleteIcon} alt='' />
-                  </span>
-                </Button>
-              </div>
-            )}
-
-            <input
-              onChange={this.handleUploadFile}
-              ref={(input) => this.walletFileUploadInput = input}
-              type='file'
-              styleName='hide'
-            />
-
-          </div>
-
-          <div styleName='actions'>
+        <div styleName='row'>
+          {!isUploaded && !isUploading && (
             <Button
-              styleName='submit'
+              styleName='button buttonWallet'
               buttonType='login'
-              type='submit'
-              disabled={isLoading || !isUploaded}
-              label={isLoading ? <span styleName='spinner-wrapper'>
-                <img
-                  src={spinner}
-                  alt=''
-                  width={24}
-                  height={24}
-                />
-              </span> : <Translate value='LoginWithWallet.login' />}
-            />
-            { error ? <div styleName='error'>{error}</div> : null }
-            <Translate value='LoginWithWallet.or' />&nbsp;
-            <Link to='/login' href styleName='link'>
-              <Translate value='LoginWithWallet.back' />
-            </Link>
-          </div>
+              onClick={() => this.walletFileUploadInput.click()}
+            >
+              <img styleName='before-img' src={FileIcon} alt='' />
+              <span styleName='button-text'>
+                <Translate value='LoginWithWallet.uploadWalletFile' />
+              </span>
+            </Button>
+          )}
 
-        </form>
+          {isUploading && (
+            <Button styleName='button' buttonType='login' disabled>
+              <img styleName='before-img' src={SpinnerGif} alt='' />
+              <span styleName='button-text'>
+                <Translate value='LoginWithWallet.uploading' />
+              </span>
+              <img styleName='after-img' src={DeleteIcon} alt='' />
+            </Button>
+          )}
+
+          {isUploaded && (
+            <div styleName='password-wrapper'>
+              <Button styleName='button' buttonType='login' disabled>
+                <img styleName='before-img' src={CheckIcon} alt='' />
+                <span styleName='button-text'>{fileName}</span>
+                <span
+                  styleName='removeButton'
+                  onClick={() => this.handleRemoveWallet()}
+                >
+                  <img styleName='after-img' src={DeleteIcon} alt='' />
+                </span>
+              </Button>
+            </div>
+          )}
+
+          <input
+            onChange={this.handleUploadFile}
+            ref={(input) => this.walletFileUploadInput = input}
+            type='file'
+            styleName='hide'
+          />
+
+        </div>
+
+        <div styleName='actions'>
+          <Button
+            styleName='submit'
+            buttonType='login'
+            type='submit'
+            disabled={isLoading || !isUploaded}
+            label={isLoading ? <span styleName='spinner-wrapper'>
+              <img
+                src={spinner}
+                alt=''
+                width={24}
+                height={24}
+              />
+            </span> : <Translate value='LoginWithWallet.login' />}
+          />
+          { error ? <div styleName='error'>{error}</div> : null }
+          <Translate value='LoginWithWallet.or' />&nbsp;
+          <Link to='/login' href styleName='link'>
+            <Translate value='LoginWithWallet.back' />
+          </Link>
+        </div>
+
+      </form>
     )
   }
 }

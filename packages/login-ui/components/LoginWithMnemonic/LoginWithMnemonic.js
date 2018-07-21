@@ -23,38 +23,6 @@ import {
 import validate from './validate'
 import './LoginWithMnemonic.scss'
 
-const multiRowTextFieldStyle = {
-  textareaStyle: {
-    background: 'rgba(0,0,0,.2)',
-    borderRadius: 3,
-    color: '#FFB54E',
-    padding: 8,
-    fontWeight: 700,
-    minHeight: 62,
-    margin: 0,
-  },
-  underlineFocusStyle: {
-    border: 'none',
-  },
-  underlineStyle: {
-    border: 'none',
-  },
-  hintStyle: {
-    margin: 'auto',
-    textAlign: 'center',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: '#A3A3CC',
-  },
-  inputStyle: {
-    height: 'auto',
-  },
-}
-
 function mapDispatchToProps (dispatch) {
   return {
     onSubmit: async (values) => {
@@ -89,11 +57,12 @@ class LoginWithMnemonic extends PureComponent {
               name='mnemonic'
               type='text'
               fullWidth
-              multiLine
+              multiline
+              InputProps={{
+                disableUnderline: true,
+              }}
               rows={2}
               rowsMax={2}
-              {...styles.textField}
-              {...multiRowTextFieldStyle}
             />
           </div>
 

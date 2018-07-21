@@ -58,7 +58,7 @@ class NetworkCreateModalForm extends PureComponent {
             component={TextField}
             name='url'
             type='text'
-            floatingLabelText={
+            label={
               <Translate value='NetworkCreateModalForm.address' />
             }
             fullWidth
@@ -70,7 +70,7 @@ class NetworkCreateModalForm extends PureComponent {
             component={TextField}
             name='alias'
             type='text'
-            floatingLabelText={
+            label={
               <Translate value='NetworkCreateModalForm.alias' />
             }
             fullWidth

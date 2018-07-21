@@ -60,7 +60,7 @@ $copyRightPadding: 200px;
   .subscription {
     position: absolute;
     display: flex;
-    bottom: 10px;
+    top: -60px;
     left: 340px;
     flex-wrap: wrap;
   }
@@ -74,8 +74,9 @@ $copyRightPadding: 200px;
   .subscription-button {
     width: 280px;
     margin-left: 30px;
+    margin-top: 20px;
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
 
     .button {
       button {
@@ -116,6 +117,7 @@ $copyRightPadding: 200px;
     display: flex;
     z-index: 2;
     position: relative;
+    flex-direction: column;
 
     @include md-only {
       display: none;
@@ -286,4 +288,16 @@ $copyRightPadding: 200px;
 
 .spinner {
   margin-right: 5px;
+}
+
+.flex {
+  display: flex;
+}
+
+.subscription-form-wrapper {
+  position: relative;
+}
+
+.emailField {
+  text-align: left !important;
 }

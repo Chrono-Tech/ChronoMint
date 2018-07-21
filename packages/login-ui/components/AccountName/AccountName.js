@@ -79,7 +79,7 @@ class LoginPage extends PureComponent {
               <Field
                 component={TextField}
                 name='accountName'
-                floatingLabelText={<Translate value='AccountName.accountNamePlaceholder' />}
+                label={<Translate value='AccountName.accountNamePlaceholder' />}
                 fullWidth
                 {...styles.textField}
               />

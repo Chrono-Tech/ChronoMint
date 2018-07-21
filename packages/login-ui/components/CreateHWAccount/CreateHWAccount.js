@@ -69,7 +69,7 @@ class CreateHWAccountPage extends PureComponent {
             <Field
               component={TextField}
               name='walletName'
-              floatingLabelText={<Translate value='CreateAccount.walletName' />}
+              label={<Translate value='CreateAccount.walletName' />}
               fullWidth
               {...styles.textField}
               {...fieldStyles.textField}
