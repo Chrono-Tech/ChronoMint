@@ -139,7 +139,7 @@ export default class ConfirmTxDialog extends PureComponent {
                   <TokenValue value={tx.fee.gasFee} />
                 </div>
               </div>
-              {mainSymbol !== tx.symbol && (
+              {mainSymbol !== tx.symbol && amountBalanceAfter && (
                 <div styleName='param'>
                   <div styleName='label'>
                     <Translate value='tx.balanceAfter' symbol={tx.symbol} />
@@ -176,7 +176,7 @@ export default class ConfirmTxDialog extends PureComponent {
             <Button
               styleName='action'
               label={<Translate value='terms.confirm' />}
-              disabled={amountBalanceAfter.lt(0) || feeBalanceAfter.lt(0)}
+              disabled={(amountBalanceAfter !== null && amountBalanceAfter.lt(0)) || feeBalanceAfter.lt(0)}
               onClick={this.handleConfirm}
             />
           </div>

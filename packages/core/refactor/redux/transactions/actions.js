@@ -44,6 +44,9 @@ export const signAndSend = (tx, acceptCallback) => async (dispatch) => {
     }),
   })
   const hash = await dispatch(sendTx(signedTx))
+  // eslint-disable-next-line no-console
+  console.log('signAndSend transaction: ', hash, signedTx)
+
   if (typeof acceptCallback === 'function') {
     acceptCallback(hash, tx)
   }

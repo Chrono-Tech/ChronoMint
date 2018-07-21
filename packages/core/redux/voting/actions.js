@@ -20,6 +20,7 @@ import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import PollModel from "../../models/PollModel";
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -145,6 +146,7 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
     const tx = await dao.vote(choice, options.get(choice), { from: account, symbol: 'TIME' })
     dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
     throw e
   }
@@ -160,12 +162,13 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
     : getSelectedPollFromDuck(state)
 
   try {
-    dispatch(handlePollUpdated(poll
-      .poll(poll.poll.mutate({ active: true, isFetching: true }))))
+    dispatch(handlePollUpdated(poll.mutate({ poll: new PollModel({ ...poll.poll, active: true, isFetching: true }) })))
 
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    await dao.activatePoll({ from: account, symbol: 'TIME' })
+    const tx = await dao.activatePoll({ from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
@@ -183,8 +186,10 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
         isFetching: true,
       }))))
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    await dao.endPoll({ from: account, symbol: 'TIME' })
+    const tx = await dao.endPoll({ from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('End poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
