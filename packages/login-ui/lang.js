@@ -23,6 +23,9 @@ import * as LoginWithWallet from './components/LoginWithWallet/lang'
 import * as NetworkSelector from './components/NetworkSelector/lang'
 import * as ProviderSelector from './components/ProviderSelector/lang'
 import * as ProviderSelectorSwitcher from './components/ProviderSelectorSwitcher/lang'
+import * as NetworkCreateModal from './components/NetworkCreateModal/lang'
+import * as NetworkCreateModalForm from './components/NetworkCreateModal/NetworkCreateModalForm/lang'
+import * as NetworkDeleteModal from './components/NetworkCreateModal/NetworkDeleteModal/lang'
 import * as Warning from './components/Warning/lang'
 import * as AccountName from './components/AccountName/lang'
 
@@ -48,5 +51,8 @@ export const en = {
   Warning: Warning.en,
   LoginUPort: LoginUPort.en,
   AccountSelector: AccountSelector.en,
+  NetworkCreateModal: NetworkCreateModal.en,
+  NetworkCreateModalForm: NetworkCreateModalForm.en,
+  NetworkDeleteModal: NetworkDeleteModal.en,
   AccountName: AccountName.en,
 }

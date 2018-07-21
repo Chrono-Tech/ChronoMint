@@ -14,6 +14,9 @@ import {
   accountUpdate,
   setProfilesForAccounts,
   DUCK_PERSIST_ACCOUNT,
+  customNetworkCreate,
+  customNetworkEdit,
+  customNetworksDelete,
 } from '@chronobank/core/redux/persistAccount/actions'
 import uuid from 'uuid/v1'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
@@ -33,7 +36,7 @@ import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProv
 import { nemProvider } from '../../network/NemProvider'
 import {
   LOCAL_PRIVATE_KEYS,
-  isTestRPC,
+  isLocalNode,
 } from '../../network/settings'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
@@ -86,6 +89,8 @@ export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
 export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
 
 export const FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE = 'LoginPageFieldSuccessMessage'
+export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
+export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
 
 export const loading = (isLoading = true) => (dispatch) => {
   dispatch({ type: NETWORK_LOADING, isLoading })
@@ -606,7 +611,11 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
   dispatch(loading())
   dispatch(clearErrors())
-  const provider = privateKeyProvider.getPrivateKeyProvider(privateKey.slice(2), networkService.getProviderSettings(), state.get('multisigWallet'))
+  const provider = privateKeyProvider.getPrivateKeyProvider(
+    privateKey.slice(2),
+    networkService.getProviderSettings(),
+    state.get('multisigWallet')
+  )
 
   networkService.selectAccount(provider.ethereum.getAddress())
   await networkService.setup(provider)
@@ -616,45 +625,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
 
   dispatch(clearErrors())
 
-  const isPassed = await networkService.checkNetwork(
-    selectedAccount,
-    selectedProviderId,
-    selectedNetworkId,
-  )
-
-  if (isPassed) {
-    networkService.createNetworkSession(
-      selectedAccount,
-      selectedProviderId,
-      selectedNetworkId,
-    )
-    dispatch(login(selectedAccount))
-  }
-
-}
-
-export const handleMnemonicLogin = (mnemonic) => async (dispatch, getState) => {
-  const web3 = new Web3()
-  const accounts = new Accounts(networkService.getProviderSettings().url)
-  await accounts.wallet.clear()
-
-  dispatch(loading())
-  dispatch(clearErrors())
-  const provider = mnemonicProvider.getMnemonicProvider(mnemonic, networkService.getProviderSettings())
-  networkService.selectAccount(provider.ethereum.getAddress())
-  await networkService.setup(provider)
-
-  const state = getState()
-
-  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
-
-  dispatch(clearErrors())
-
-  const isPassed = await networkService.checkNetwork(
-    selectedAccount,
-    selectedProviderId,
-    selectedNetworkId,
-  )
+  const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
     networkService.createNetworkSession(
@@ -727,7 +698,7 @@ export const initLoginLocal = () => async (dispatch, getState) => {
 
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
-  if (isTestRPC(selectedProviderId, selectedNetworkId)){
+  if (isLocalNode(selectedProviderId, selectedNetworkId)){
     await networkService.loadAccounts()
   } else {
     dispatch(navigateToLoginPage())
@@ -787,7 +758,7 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   networkService.selectProvider(providerId)
   networkService.selectNetwork(networkId)
 
-  if (isTestRPC(providerId, networkId)){
+  if (isLocalNode(providerId, networkId)){
     dispatch(navigateToLoginLocal())
   }
 }
@@ -819,6 +790,18 @@ export const onSubmitSubscribeNewsletterFail = (errors, dispatch, submitErrors) 
 
 export const onSubmitSubscribeNewsletterSuccess = () => (dispatch) => {
 
+}
+
+export const handleSubmitCreateNetwork = (url, alias) => (dispatch) => {
+  dispatch(customNetworkCreate(url, alias))
+}
+
+export const handleSubmitEditNetwork = (network) => (dispatch) => {
+  dispatch(customNetworkEdit(network))
+}
+
+export const handleDeleteNetwork = (network) => (dispatch) => {
+  dispatch(customNetworksDelete(network))
 }
 
 export const getPrivateKeyFromBlockchain = (blockchain: string) => {

@@ -70,7 +70,7 @@ class ResetPasswordPage extends PureComponent {
     const { handleSubmit, selectedWallet } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
+      <MuiThemeProvider >
         <form styleName='form' name={FORM_RESET_PASSWORD} onSubmit={handleSubmit}>
 
           <div styleName='page-title'>
