@@ -113,9 +113,7 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 }
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
-  const state = getState()
-
-  let wallet, hex = ''
+  let wallet, hex = privateKey || bip39.mnemonicToSeedHex(mnemonic) || ''
 
   const accounts = new Accounts()
   accounts.wallet.clear()
@@ -128,9 +126,10 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
     hex = hdWallet.getPrivateKeyString()
   }
 
-  const web3 = new Web3Legacy()
-  web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
-  web3Provider.resolve()
+
+  wallet = await accounts.wallet.create(numberOfAccounts)
+  const account = accounts.privateKeyToAccount(hex)
+  wallet.add(account)
 
   const entry = new AccountEntryModel({
     key: uuid(),
@@ -233,7 +232,7 @@ export const customNetworkEdit = (network: AccountCustomNetwork) => (dispatch, g
 
   const foundNetworkIndex = customNetworksList.findIndex((item) => network.id === item.id)
 
-  if (foundNetworkIndex !== -1){
+  if (foundNetworkIndex !== -1) {
     let copyNetworksList = [...customNetworksList]
 
     copyNetworksList.splice(foundNetworkIndex, 1, network)

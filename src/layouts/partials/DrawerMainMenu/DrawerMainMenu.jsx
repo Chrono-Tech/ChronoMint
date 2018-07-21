@@ -26,12 +26,10 @@ import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsMan
 import { MENU_TOKEN_MORE_INFO_PANEL_KEY } from './MenuTokenMoreInfo/MenuTokenMoreInfo'
 import MenuTokensList from './MenuTokensList/MenuTokensList'
 import { prefix } from './lang'
-import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import {
   getAccountName,
   getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
-import profileService from '@chronobank/login/network/ProfileService'
 
 import './DrawerMainMenu.scss'
 

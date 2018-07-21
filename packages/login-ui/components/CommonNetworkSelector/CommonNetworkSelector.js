@@ -7,26 +7,10 @@ import networkService from '@chronobank/login/network/NetworkService'
 import Web3Legacy from 'web3legacy'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import {
-  clearErrors,
-  DUCK_NETWORK,
-  selectProviderWithNetwork,
-  initCommonNetworkSelector,
-} from '@chronobank/login/redux/network/actions'
-import {
-  getNetworksWithProviders,
-  isLocalNode,
-  getProviderById,
-  createNetworkProvider,
-  networkSelectorGroups,
-  getNetworkWithProviderNames,
-} from '@chronobank/login/network/settings'
-import {
-  AccountCustomNetwork,
-} from '@chronobank/core/models/wallet/persistAccount'
-import {
-  customNetworksListAdd,
-} from '@chronobank/core/redux/persistAccount/actions'
+import { clearErrors, DUCK_NETWORK, initCommonNetworkSelector, selectProviderWithNetwork } from '@chronobank/login/redux/network/actions'
+import { getNetworksWithProviders, getNetworkWithProviderNames, getProviderById, isLocalNode, networkSelectorGroups } from '@chronobank/login/network/settings'
+import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
+import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'
 import { Popover } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -37,16 +21,16 @@ import classnames from 'classnames'
 import Web3 from 'web3'
 import NetworkCreateModal from '../NetworkCreateModal/NetworkCreateModal'
 
-import './CommonNetworkSelector.scss'
+import styles from './CommonNetworkSelector.scss'
 
-const HeaderGroup = ({group, ...props}) => (
+const HeaderGroup = ({ group, ...props }) => (
   <div styleName='providerGroupItem' {...props}>
     <div styleName='providerGroupItemTitle'>{group.title}</div>
     <div styleName='providerGroupItemDescription'>{group.description ? group.description : null}</div>
   </div>
 )
 
-const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props}) => (
+const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props }) => (
   <div
     styleName={classnames({
       providerItem: true,
@@ -55,20 +39,17 @@ const MenuCustomItem = ({ network, onClickEdit, children, checked, ...props}) =>
     {...props}
   >
     <span styleName='providerItemText'>
-      { children }
+      {children}
     </span>
-    <span
-      onClick={onClickEdit}
-      styleName='providerItemIcon'
-      className='chronobank-icon'>edit</span>
+    <span onClick={onClickEdit} styleName='providerItemIcon' className='chronobank-icon'>edit</span>
   </div>
 )
 
-const MenuDefaultItem = ({ checked, children, ...props}) => (
+const MenuDefaultItem = ({ checked, children, ...props }) => (
   <div
     styleName={classnames({
       providerItem: true,
-      providerItemActive: checked
+      providerItemActive: checked,
     })}
     {...props}
   >
@@ -133,7 +114,7 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   constructor (props) {
-    super (props)
+    super(props)
 
     this.state = {
       open: false,
@@ -144,20 +125,14 @@ export default class CommonNetworkSelector extends PureComponent {
     this.props.initCommonNetworkSelector()
   }
 
-  resolveNetwork(providerUrl){
-    const web3 = new Web3()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
-    web3Provider.resolve()
-  }
-
-  handleClickDefaultNetwork(data) {
+  handleClickDefaultNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.network.id, data.provider.id)
     this.resolveNetwork(this.props.getProviderURL())
     this.handleRequestClose()
   }
 
-  handleClickCustomNetwork(data){
+  handleClickCustomNetwork (data) {
     this.props.clearErrors()
     this.props.selectProviderWithNetwork(data.id, data.id)
     this.resolveNetwork(data.url)
@@ -180,15 +155,15 @@ export default class CommonNetworkSelector extends PureComponent {
     })
   }
 
-  getFullNetworkName(item){
-    if (isLocalNode(item.provider.id, item.network.id)){
+  getFullNetworkName (item) {
+    if (isLocalNode(item.provider.id, item.network.id)) {
       return 'localNode'
     }
 
     return `${item.provider.name} - ${item.network.name}`
   }
 
-  renderCustomNetworksList(){
+  renderCustomNetworksList () {
     const { customNetworksList, selectedNetworkId } = this.props
 
     if (!customNetworksList) {
@@ -207,14 +182,14 @@ export default class CommonNetworkSelector extends PureComponent {
             checked={selectedNetworkId === (network && network.id)}
             key={i}
           >
-            { network && network.name }
+            {network && network.name}
           </MenuCustomItem>
         ))}
       </div>
     )
   }
 
-  openModalAddNetwork(network){
+  openModalAddNetwork (network) {
     this.handleRequestClose()
     if (network) {
       const networkModel = new AccountCustomNetwork(network)
@@ -224,11 +199,11 @@ export default class CommonNetworkSelector extends PureComponent {
     }
   }
 
-  renderCustomNetworksGroup(){
+  renderCustomNetworksGroup () {
     return (
       <div>
-        <HeaderGroup group={{title: 'Custom networks'}} />
-        { this.renderCustomNetworksList() }
+        <HeaderGroup group={{ title: 'Custom networks' }} />
+        {this.renderCustomNetworksList()}
         <div
           styleName='providerItem'
           onClick={() => this.openModalAddNetwork()}
@@ -239,14 +214,14 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  renderDefaultNetworksGroups(){
+  renderDefaultNetworksGroups () {
     return (
       <div>
         {
           networkSelectorGroups.map((group, i) => (
             <div key={i}>
               <HeaderGroup group={group} />
-              { group.providers ? group.providers.map((item, i) => this.renderMenuItem(item, i)) : null }
+              {group.providers ? group.providers.map((item, i) => this.renderMenuItem(item, i)) : null}
             </div>
           ))
         }
@@ -254,17 +229,8 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  getFullNetworkName (item){
-    return `${item.provider.name} - ${item.network.name}`
-  }
 
-  resolveNetwork = () => {
-    const web3 = new Web3Legacy()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
-  }
-
-  renderMenuItem (item, i){
+  renderMenuItem (item, i) {
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.network.id === selectedNetworkId && item.provider.id === (selectedProvider && selectedProvider.id)
 
@@ -279,24 +245,30 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  getSelectedNetwork(){
+  getSelectedNetwork () {
     const { selectedNetworkId, selectedProviderId, selectedProvider, customNetworksList } = this.props
 
     const foundCustomSelectedNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 
-    if (foundCustomSelectedNetwork){
+    if (foundCustomSelectedNetwork) {
       return foundCustomSelectedNetwork.name
     }
 
     const baseNetworkNames = getNetworkWithProviderNames(selectedProviderId, selectedNetworkId)
 
-    if (!baseNetworkNames){
+    if (!baseNetworkNames) {
       networkService.autoSelect()
 
       return ''
     }
 
     return baseNetworkNames
+  }
+
+  resolveNetwork (providerUrl) {
+    const web3 = new Web3()
+    web3Provider.reinit(web3, web3Utils.createStatusEngine(providerUrl))
+    web3Provider.resolve()
   }
 
   render () {
@@ -308,23 +280,21 @@ export default class CommonNetworkSelector extends PureComponent {
           styleName='langButton'
           onClick={this.handleClickButton}
         >
-          { this.getSelectedNetwork() }
+          {this.getSelectedNetwork()}
         </Button>
 
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
-          style={{
-            background: 'transparent',
-            borderRadius: 20,
+          onClose={this.handleRequestClose}
+          classes={{
+            paper: styles.popover,
           }}
         >
           <div styleName='providersList'>
-            { this.renderDefaultNetworksGroups() }
-            { this.renderCustomNetworksGroup()}
+            {this.renderDefaultNetworksGroups()}
+            {this.renderCustomNetworksGroup()}
           </div>
         </Popover>
       </div>

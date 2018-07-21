@@ -4,9 +4,7 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from 'material-ui'
 import classnames from 'classnames'
-import { MuiThemeProvider } from '@material-ui/core/styles'
 import { TextField } from 'redux-form-material-ui'
 import { reduxForm, Field } from 'redux-form/immutable'
 import React, { Component } from 'react'
@@ -119,7 +117,6 @@ class LoginWithWallet extends Component {
     const { isUploading, isUploaded, fileName } = this.state
 
     return (
-      <MuiThemeProvider>
         <form styleName='wrapper' name={FORM_WALLET_UPLOAD} onSubmit={handleSubmit(this.handleSubmitForm.bind(this))}>
           <div styleName='page-title'>
             <Translate value='LoginWithWallet.title' />
@@ -201,7 +198,6 @@ class LoginWithWallet extends Component {
           </div>
 
         </form>
-      </MuiThemeProvider>
     )
   }
 }

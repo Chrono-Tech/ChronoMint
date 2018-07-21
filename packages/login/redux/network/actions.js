@@ -18,15 +18,16 @@ import {
   customNetworksDelete,
   DUCK_PERSIST_ACCOUNT,
 } from '@chronobank/core/redux/persistAccount/actions'
-import uuid from 'uuid/v1'
 import Web3Legacy from 'web3legacy'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
+import uuid from 'uuid/v1'
 import Web3 from 'web3'
 import axios from 'axios'
 import bip39 from 'bip39'
 import Accounts from 'web3-eth-accounts'
 import { login } from '@chronobank/core/redux/session/actions'
 import { stopSubmit, SubmissionError, change } from 'redux-form'
+import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 import { push, goBack } from '@chronobank/core-dependencies/router'
 import networkService from '../../network/NetworkService'
 import profileService from '../../network/ProfileService'
@@ -39,7 +40,6 @@ import {
   LOCAL_PRIVATE_KEYS,
   isLocalNode,
 } from '../../network/settings'
-import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 export const DUCK_NETWORK = 'network'
 
@@ -120,7 +120,7 @@ export const initConfirmMnemonicPage = () => (dispatch, getState) => {
 
   const { newAccountMnemonic } = state.get(DUCK_NETWORK)
 
-  if (!newAccountMnemonic){
+  if (!newAccountMnemonic) {
     dispatch(navigateToCreateAccount())
   }
 
@@ -133,7 +133,7 @@ export const initMnemonicPage = () => (dispatch, getState) => {
 
   const emptyAccountCredentials = !newAccountName || !newAccountPassword
 
-  if (emptyAccountCredentials){
+  if (emptyAccountCredentials) {
     dispatch(navigateToCreateAccount())
   }
 }
@@ -159,11 +159,11 @@ export const initLoginPage = () => async (dispatch, getState) => {
 
   dispatch(initAccountsSignature())
 
-  if (walletsList && !walletsList.length){
+  if (walletsList && !walletsList.length) {
     dispatch(navigateToCreateAccount())
   }
 
-  if (!selectedWallet){
+  if (!selectedWallet) {
     dispatch(navigateToSelectWallet())
   }
 
@@ -190,13 +190,13 @@ export const onSubmitCreateHWAccountPage = (walletName) => async (dispatch, getS
 
   const validateName = dispatch(validateAccountName(walletName))
 
-  if (!validateName){
+  if (!validateName) {
     throw new SubmissionError({ walletName: 'Wrong wallet name' })
   }
 
-  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletName })
+  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS, walletName, walletName })
 
-  if (importAccountMode){
+  if (importAccountMode) {
     try {
       let wallet = await dispatch(createHWAccount({
         name: walletName,
@@ -210,7 +210,7 @@ export const onSubmitCreateHWAccountPage = (walletName) => async (dispatch, getS
 
       dispatch(resetImportAccountMode())
 
-    } catch(e){
+    } catch (e) {
       throw new SubmissionError({ _error: e && e.message })
     }
 
@@ -222,16 +222,18 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   const state = getState()
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get(DUCK_NETWORK)
+  // TODO @abdulov remove console.log
+  console.log('importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode', importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode)
 
   const validateName = dispatch(validateAccountName(walletName))
 
-  if (!validateName){
+  if (!validateName) {
     throw new SubmissionError({ walletName: 'Wrong wallet name' })
   }
 
-  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS,  walletName, walletPassword })
+  dispatch({ type: NETWORK_SET_NEW_ACCOUNT_CREDENTIALS, walletName, walletPassword })
 
-  if (importAccountMode){
+  if (importAccountMode) {
     try {
       let wallet = await dispatch(createAccount({
         name: walletName,
@@ -247,12 +249,12 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
 
       dispatch(resetImportAccountMode())
 
-      if (walletFileImportMode){
+      if (walletFileImportMode) {
         dispatch(navigateToSelectWallet())
       } else {
         dispatch(navigateToDownloadWalletPage())
       }
-    } catch(e){
+    } catch (e) {
       throw new SubmissionError({ _error: e && e.message })
     }
 
@@ -262,7 +264,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   dispatch(generateNewMnemonic())
 
   dispatch(navigateToGenerateMnemonicPage())
-
 }
 
 export const onSubmitCreateAccountPageSuccess = () => (dispatch) => {
@@ -282,8 +283,8 @@ export const onSubmitConfirmMnemonic = (confirmMnemonic) => (dispatch, getState)
 
   const { newAccountMnemonic } = state.get(DUCK_NETWORK)
 
-  if (confirmMnemonic !== newAccountMnemonic){
-    throw new SubmissionError({ _error: 'Please enter correct mnemonic phrase'  })
+  if (confirmMnemonic !== newAccountMnemonic) {
+    throw new SubmissionError({ _error: 'Please enter correct mnemonic phrase' })
   }
 
 }
@@ -396,7 +397,7 @@ export const navigateBack = () => (dispatch) => {
 export const onSubmitMnemonicLoginForm = (mnemonic) => (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
-  if (!mnemonicProvider.validateMnemonic(mnemonicValue)){
+  if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
     throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
   }
 
@@ -416,11 +417,11 @@ export const onSubmitMnemonicLoginFormFail = (errors, dispatch, submitErrors) =>
 export const onSubmitPrivateKeyLoginForm = (privateKey) => (dispatch) => {
   let pk = (privateKey || '').trim()
 
-  if (!privateKeyProvider.validatePrivateKey(privateKey)){
+  if (!privateKeyProvider.validatePrivateKey(privateKey)) {
     throw new SubmissionError({ pk: 'Wrong private key' })
   }
 
-  if (pk.slice(0, 2) === '0x'){
+  if (pk.slice(0, 2) === '0x') {
     pk = pk.slice(2)
   }
 
@@ -441,7 +442,7 @@ export const setProfileSignature = (signature) => (dispatch) => {
 }
 
 export const getProfileSignature = (wallet) => async (dispatch) => {
-  if (!wallet){
+  if (!wallet) {
     return
   }
 
@@ -474,7 +475,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
       await dispatch(handlePrivateKeyLogin(privateKey))
     }
 
-  } catch(e){
+  } catch (e) {
     throw new SubmissionError({ password: e && e.message })
   }
 }
@@ -483,7 +484,7 @@ export const onSubmitLoginFormSuccess = () => () => {
 }
 
 export const onSubmitLoginFormFail = (errors, dispatch, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors ))
+  dispatch(stopSubmit(FORM_LOGIN_PAGE, submitErrors && submitErrors.errors))
   dispatch({ type: NETWORK_RESET_LOGIN_SUBMITTING })
 
 }
@@ -526,7 +527,7 @@ export const initResetPasswordPage = () => (dispatch, getState) => {
 
   const { accountRecoveryMode } = state.get(DUCK_NETWORK)
 
-  if (!accountRecoveryMode){
+  if (!accountRecoveryMode) {
     dispatch(navigateToRecoverAccountPage())
   }
 }
@@ -565,26 +566,25 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
   try {
     restoredWalletJSON = JSON.parse(walletString)
 
-    if ('Crypto' in restoredWalletJSON){
+    if ('Crypto' in restoredWalletJSON) {
       restoredWalletJSON.crypto = restoredWalletJSON.Crypto
       delete restoredWalletJSON.Crypto
     }
 
-  } catch(e){
+  } catch (e) {
     throw new SubmissionError({ _error: 'Broken wallet file' })
   }
 
-  if (restoredWalletJSON && restoredWalletJSON.address){
+  if (restoredWalletJSON && restoredWalletJSON.address) {
     let response
 
     try {
-      const address = `0x${restoredWalletJSON.address}`
-      response = await profileService.getPersonInfo([address])
-    } catch(e){}
+      response = await profileService.getPersonInfo(restoredWalletJSON.address)
+    } catch (e) {
+    }
 
-    const profile = response && response.data && response.data[0]
-
-    if (profile && profile.userName){
+    if (response && response.data && response.data.length) {
+      const profile = response.data[0]
 
       const account = new AccountEntryModel({
         key: uuid(),
@@ -661,7 +661,7 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
 
   dispatch(accountSelect(wallet))
 
-  if (accountRecoveryMode){
+  if (accountRecoveryMode) {
     dispatch(navigateToRecoverAccountPage())
 
     return
@@ -678,7 +678,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   const provider = privateKeyProvider.getPrivateKeyProvider(
     privateKey.slice(2),
     networkService.getProviderSettings(),
-    state.get('multisigWallet')
+    state.get('multisigWallet'),
   )
 
   networkService.selectAccount(provider.ethereum.getAddress())
@@ -728,7 +728,7 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
   const { loadingAccountSignatures } = state.get(DUCK_NETWORK)
   const { walletsList } = state.get(DUCK_PERSIST_ACCOUNT)
 
-  if (loadingAccountSignatures || !walletsList.length){
+  if (loadingAccountSignatures || !walletsList.length) {
     return
   }
 
@@ -757,7 +757,7 @@ export const initLoginLocal = () => async (dispatch, getState) => {
 
   const { selectedNetworkId, selectedProviderId } = state.get(DUCK_NETWORK)
 
-  if (isLocalNode(selectedProviderId, selectedNetworkId)){
+  if (isLocalNode(selectedProviderId, selectedNetworkId)) {
     await networkService.loadAccounts()
   } else {
     dispatch(navigateToLoginPage())
@@ -774,7 +774,7 @@ export const handleLoginLocalAccountClick = (account = '') => async (dispatch, g
   const provider = privateKeyProvider.getPrivateKeyProvider(
     LOCAL_PRIVATE_KEYS[index],
     networkService.getProviderSettings(),
-    wallets
+    wallets,
   )
   networkService.selectAccount(account)
   await networkService.setup(provider)
@@ -807,7 +807,7 @@ export const initCommonNetworkSelector = () => (dispatch, getState) => {
 
   networkService.autoSelect()
 
-  if (!isLocal){
+  if (!isLocal) {
     networkService.checkTestRPC()
   }
 
@@ -817,7 +817,7 @@ export const selectProviderWithNetwork = (networkId, providerId) => (dispatch) =
   networkService.selectProvider(providerId)
   networkService.selectNetwork(networkId)
 
-  if (isLocalNode(providerId, networkId)){
+  if (isLocalNode(providerId, networkId)) {
     dispatch(navigateToLoginLocal())
   }
 }
@@ -846,12 +846,12 @@ export const onSubmitSubscribeNewsletter = (email) => async (dispatch) => {
   })
 
   try {
-    await subscriptionsService.options ('/api/v1/subscriptions')
+    await subscriptionsService.options('/api/v1/subscriptions')
 
     await subscriptionsService.post('/api/v1/subscriptions', {
       email,
     })
-  } catch(e){
+  } catch (e) {
     throw new SubmissionError({ _error: e && e.message })
 
   }
@@ -859,7 +859,7 @@ export const onSubmitSubscribeNewsletter = (email) => async (dispatch) => {
 }
 
 export const onSubmitSubscribeNewsletterFail = (errors, dispatch, submitErrors) => (dispatch) => {
-  dispatch(stopSubmit(FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors ))
+  dispatch(stopSubmit(FORM_FOOTER_EMAIL_SUBSCRIPTION, submitErrors && submitErrors.errors))
 
 }
 

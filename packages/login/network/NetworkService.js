@@ -223,7 +223,7 @@ class NetworkService extends EventEmitter {
 
     const { protocol, host } = network
 
-    if (!host){
+    if (!host) {
 
       const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 
@@ -295,6 +295,7 @@ class NetworkService extends EventEmitter {
       web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
+      console.log('select', networkId, providerId)
       this.selectProvider(providerId)
       this.selectNetwork(networkId)
       resolveNetwork()
@@ -322,7 +323,7 @@ class NetworkService extends EventEmitter {
     }
 
     const runNextChecker = () => {
-      if (this.checkerIndex <= this.checkers.length) {
+      if (this.checkerIndex < this.checkers.length) {
         web3Provider.beforeReset()
         web3Provider.afterReset()
         this.checkers[this.checkerIndex]()

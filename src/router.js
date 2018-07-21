@@ -27,7 +27,6 @@ import {
   LoginWithPrivateKey,
   AccountName,
   LoginLocal,
-  AccountName,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {
