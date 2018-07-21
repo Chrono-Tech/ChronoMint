@@ -10,7 +10,7 @@ export default {
     sendButton: 'SEND',
     receiveButton: 'RECEIVE',
     depositButton: 'DEPOSIT',
-    walletTitle: '%{title} wallet',
+    walletTitle: '%{title} wallets',
     unlockDate: 'Unlocks on ',
     pending: '%{count} pending',
     twoFAWallet: 'My 2FA Wallet',

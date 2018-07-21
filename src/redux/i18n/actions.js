@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { loadTranslations, setLocale } from 'platform/i18n'
+import { loadTranslations, setLocale } from '@chronobank/core-dependencies/i18n'
 import { merge } from 'lodash'
 import PublicBackendProvider from '@chronobank/login/network/PublicBackendProvider'
 

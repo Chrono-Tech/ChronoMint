@@ -1,3 +1,5 @@
+import variables from 'styles/themes/variables'
+
 export default {
   textField: {
     style: {
@@ -12,7 +14,7 @@ export default {
       bottom: 0,
     },
     inputStyle: {
-      color: '#A3A3CC',
+      color: variables.colorWhite,
       textAlign: 'center',
       marginTop: 0,
       paddingTop: 18,

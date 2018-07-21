@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import ErrorList from 'platform/ErrorList'
+import ErrorList from '@chronobank/core-dependencies/ErrorList'
 import * as validator from '@chronobank/core/models/validator'
 import tokenService from '@chronobank/core/services/TokenService'
 import { MODE_ADVANCED } from './SendTokensForm'
@@ -45,7 +45,7 @@ export default (values, props) => {
   if (!amountFormatError) {
     // validate only numbers
     const amountWithDecimals = token.addDecimals(amount)
-    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'errors.notEnoughTokens' : null)
+    amountErrors.add(balance.minus(amountWithDecimals).lt(0) ? 'errors.notTokens' : null)
   }
 
   const tokenDAO = tokenService.getDAO(token.id())

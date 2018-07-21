@@ -78,7 +78,7 @@ export default {
   },
   wallet: {
     modeAdvanced: 'Advanced',
-    modeSimple: 'Simple',
+    modeSimple: 'Basic',
     templateName: 'Template name',
     satPerByte: 'SAT / byte',
     gweiPerGas: 'GWEI 0 / gas',
@@ -557,10 +557,8 @@ export default {
     invalidLatinString: 'String must have only Latin characters (A-z)',
     mustBeUnique: 'Value must be unique',
     invalidConfirm2FACode: 'Should be a 6-digit code',
-
-    // TODO @bshevchenko: errors domain only for common cases. Move out entries below to the appropriate domains
     cantSentToYourself: 'Can\'t send tokens to yourself',
-    notEnoughTokens: 'Not enough tokens',
+    notTokens: 'The wallet has insufficient funds',
     platformNotEnoughTokens: 'Platform doesn\'t have enough tokens to sell you',
     invalidCurrencyNumber: 'Should have maximum %{decimals} decimal places',
     greaterThanAllowed: 'Amount is greater than allowed',
@@ -890,9 +888,10 @@ export default {
   },
   topButtons: {
     addDeposit: 'Add deposit',
-    addWallet: 'Add wallet',
+    addWallet: 'Add a wallet',
     addPoll: 'Add a Poll',
     publish: 'Publish',
     endPoll: 'End poll',
+    addToken: 'Add a token',
   },
 }

@@ -21,6 +21,7 @@
 
   .userBlockInner {
     display: flex;
+    overflow: hidden;
 
     .userBlockAvatar {
       .userAvatar {
@@ -52,7 +53,10 @@
         font-size: 12px;
         line-height: 17px;
         min-width: 0;
-        word-break: break-all;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        padding-right: 10px;
       }
     }
   }
@@ -87,4 +91,14 @@
 
 .reverseIcon {
   transform: matrix(-1,0,0,-1,0,0);
+}
+
+.default-avatar-wrapper {
+  margin: 0 20px 0 2px;
+  width: 40px;
+}
+
+.default-avatar {
+  font-size: 60px;
+  color: $additionalData-color-1;
 }

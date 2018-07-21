@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { I18n } from 'platform/i18n'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -11,7 +11,7 @@ import ArbitraryNoticeModel from '@chronobank/core/models/notices/ArbitraryNotic
 import { modalsOpen } from 'redux/modals/actions'
 import { notify } from '@chronobank/core/redux/notifier/actions'
 import CopyDialog from 'components/dialogs/CopyDialog/CopyDialog'
-import clipboard from 'platform/utils/clipboard'
+import clipboard from '@chronobank/core-dependencies/utils/clipboard'
 
 import './MicroIcon.scss'
 

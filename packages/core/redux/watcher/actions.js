@@ -4,7 +4,7 @@
  */
 
 import { watchInitMonitor } from '@chronobank/login/redux/monitor/actions'
-import { showConfirmTxModal, watchInitUserMonitor } from '@chronobank/core/redux/ui/actions'
+import { showConfirmTxModal, watchInitUserMonitor } from '../ui/actions'
 import AbstractContractDAO, { TX_FRONTEND_ERROR_CODES } from '../../dao/AbstractContractDAO'
 import TransactionErrorNoticeModel from '../../models/notices/TransactionErrorNoticeModel'
 import TxError from '../../models/TxError'

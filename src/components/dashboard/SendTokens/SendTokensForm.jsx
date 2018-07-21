@@ -21,7 +21,7 @@ import * as validators from '@chronobank/core/models/validator'
 import { CircularProgress, MenuItem, MuiThemeProvider, Paper } from 'material-ui'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'
 import PropTypes from 'prop-types'
-import { integerWithDelimiter } from 'platform/utils/formatter'
+import { integerWithDelimiter } from '@chronobank/core-dependencies/utils/formatter'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -196,6 +196,10 @@ export default class SendTokensForm extends PureComponent {
     if (!this.props.gasLimit && this.state.gasLimit && this.props.gasLimit !== this.state.gasLimit) {
       this.props.dispatch(change(FORM_SEND_TOKENS, 'gasLimit', this.state.gasLimit))
     }
+  }
+
+  componentDidCatch (/*error, info*/) {
+    clearTimeout(this.timeout)
   }
 
   componentWillUnmount () {
@@ -436,7 +440,7 @@ export default class SendTokensForm extends PureComponent {
       <div styleName='head'>
         <div styleName='head-token-icon'>
           <IPFSImage
-            styleName='content'
+            styleName='icon'
             multihash={token.icon()}
             fallback={TOKEN_ICONS[token.symbol()]}
           />
@@ -507,7 +511,7 @@ export default class SendTokensForm extends PureComponent {
   }
 
   renderBody () {
-    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet, dispatch } = this.props
+    const { invalid, mode, pristine, token, handleSubmit, feeMultiplier, wallet } = this.props
     const isTimeLocked = wallet.isTimeLocked()
 
     return (
@@ -535,17 +539,17 @@ export default class SendTokensForm extends PureComponent {
         {mode === MODE_SIMPLE && feeMultiplier && token.feeRate() && (
           <div styleName='row'>
             <div styleName='feeRate'>
+              <div styleName='tagsWrap'>
+                <div><Translate value={`${prefix}.slowTransaction`} /></div>
+                <div><Translate value={`${prefix}.fast`} /></div>
+              </div>
+
               <Field
                 component={Slider}
                 sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
               />
-              <div styleName='tagsWrap'>
-                <div><Translate value={`${prefix}.slow`} /></div>
-                <div styleName='tagDefault' />
-                <div><Translate value={`${prefix}.fast`} /></div>
-              </div>
             </div>
           </div>
         )}

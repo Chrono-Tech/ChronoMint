@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { MuiThemeProvider } from 'material-ui'
 import React, { PureComponent } from 'react'
 import { Link } from 'react-router'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { reduxForm, Field, formValueSelector } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
@@ -15,41 +15,43 @@ import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 
 import {
-  AccountEntryModel,
-} from '@chronobank/core/models/wallet/persistAccount'
-import {
   onSubmitLoginForm,
   onSubmitLoginFormFail,
   initLoginPage,
   navigateToSelectWallet,
   initAccountsSignature,
+  DUCK_NETWORK,
   FORM_LOGIN_PAGE,
+  FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE,
 } from '@chronobank/login/redux/network/actions'
+import {
+  isTestRPC,
+} from '@chronobank/login/network/settings'
 import {
   getAccountName,
   getAccountAvatar,
+  getAccountAddress,
 } from '@chronobank/core/redux/persistAccount/utils'
-import AutomaticProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/AutomaticProviderSelector'
-import ManualProviderSelector from '@chronobank/login-ui/components/ProviderSelectorSwitcher/ManualProviderSelector'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
-const STRATEGY_MANUAL = 'manual'
-const STRATEGY_AUTOMATIC = 'automatic'
-
-const nextStrategy = {
-  [STRATEGY_AUTOMATIC]: STRATEGY_MANUAL,
-  [STRATEGY_MANUAL]: STRATEGY_AUTOMATIC,
-}
 
 function mapStateToProps (state) {
+  const network = state.get(DUCK_NETWORK)
   const selectedWallet = state.get('persistAccount').selectedWallet
+  const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
     selectedWallet: selectedWallet,
-    isLoginSubmitting: state.get('network').isLoginSubmitting,
+    isLoginSubmitting: network.isLoginSubmitting,
+    selectedNetworkId: network.selectedNetworkId,
+    selectedProvider: network.selectedProviderId,
+    selectedAccount: network.selectedAccount,
+    accounts: network.accounts,
+    isTestRPC: isTestRPC(network.selectedProviderId, network.selectedNetworkId),
+    successMessage: formSelector(state, FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE),
   }
 }
 
@@ -73,15 +75,33 @@ class LoginPage extends PureComponent {
     navigateToSelectWallet: PropTypes.func,
     isLoginSubmitting: PropTypes.bool,
     initAccountsSignature: PropTypes.func,
+    accounts: PropTypes.array,
+    selectedAccount: PropTypes.string,
+    selectedWallet: PropTypes.object,
+    isTestRPC: PropTypes.bool,
   }
 
   componentWillMount(){
     this.props.initLoginPage()
   }
 
+  renderSuccessMessage(){
+    const { successMessage } = this.props
+
+    if (!successMessage){
+      return null
+    }
+
+    return (
+      <div styleName='success-message'>
+        {successMessage}
+      </div>
+    )
+  }
+
   render () {
     const { handleSubmit, pristine, valid, initialValues, isImportMode, error, onSubmit, selectedWallet,
-      navigateToSelectWallet, isLoginSubmitting } = this.props
+      navigateToSelectWallet, isLoginSubmitting, isTestRPC, successMessage } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
@@ -91,11 +111,17 @@ class LoginPage extends PureComponent {
             <Translate value='LoginForm.title' />
           </div>
 
+          { this.renderSuccessMessage() }
+
+          <input type='hidden' name={FORM_LOGIN_PAGE_FIELD_SUCCESS_MESSAGE} />
+
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
+              subtitle={getAccountAddress(selectedWallet, true)}
               avatar={getAccountAvatar(selectedWallet)}
               onClick={navigateToSelectWallet}
+              linkTitle='My Accounts'
             />
 
             <div styleName='field'>

@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 export { default as GenerateMnemonic } from './GenerateMnemonic/GenerateMnemonic'
 export { default as LoginWithMnemonic } from './LoginWithMnemonic/LoginWithMnemonic'
 export { default as LoginWithPrivateKey } from './LoginWithPrivateKey/LoginWithPrivateKey'
@@ -12,3 +17,4 @@ export { default as CommonNetworkSelector } from './CommonNetworkSelector/Common
 export { default as GenerateWallet } from './GenerateWallet/GenerateWallet'
 export { default as LoginWithWallet } from './LoginWithWallet/LoginWithWallet'
 export { default as AccountName } from './AccountName/AccountName'
+export { default as LoginLocal } from './LoginLocal/LoginLocal'

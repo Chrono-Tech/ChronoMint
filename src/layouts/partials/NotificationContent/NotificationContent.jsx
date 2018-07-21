@@ -78,6 +78,7 @@ class NotificationContent extends PureComponent {
       case transaction instanceof TxExecModel:
         return new CurrentTransactionNotificationModel({
           id: transaction.hash(),
+          hash: transaction.hash(),
           title: transaction.title(),
           date: transaction.time(),
           details: transaction.details(),
@@ -87,6 +88,7 @@ class NotificationContent extends PureComponent {
       case transaction instanceof TxModel:
         return new CurrentTransactionNotificationModel({
           id: transaction.txHash(),
+          hash: transaction.txHash(),
           title: `${transaction.symbol()} Transfer`,
           date: transaction.time(),
           details: transaction.details(),
@@ -177,7 +179,7 @@ class NotificationContent extends PureComponent {
             </div>
           </div>
           {!transactionsList.length
-            ? (<div styleName='tableItem'><Translate value={`${prefix}.noTransactions`} /></div>)
+            ? (<div styleName='tableItem'><Translate styleName='nothing' value={`${prefix}.noTransactions`} /></div>)
             : transactionsList.map((item) => this.renderTransaction(item))
           }
 
@@ -186,7 +188,7 @@ class NotificationContent extends PureComponent {
           </div>
 
           {noticesList.isEmpty()
-            ? (<div styleName='tableItem'><Translate value={`${prefix}.noNotices`} /></div>)
+            ? (<div styleName='tableItem'><Translate styleName='nothing' value={`${prefix}.noNotices`} /></div>)
             : noticesList.map((item) => this.renderNotice(item))
           }
         </div>

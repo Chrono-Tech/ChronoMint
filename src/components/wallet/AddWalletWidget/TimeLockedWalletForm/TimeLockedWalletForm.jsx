@@ -94,7 +94,7 @@ export default class TimeLockedWalletForm extends PureComponent {
     return (
       <form styleName='root' onSubmit={handleSubmit}>
         <div styleName='body'>
-          <div styleName='block'>
+          <div styleName='block name'>
             <Field
               component={TextField}
               name='name'

@@ -8,7 +8,7 @@ export const prefix = 'WalletSettingsForm'
 export default {
   en: {
     title: 'Wallet Settings',
-    name: 'Enter wallet name',
+    name: 'Wallet name',
     setName: 'setName',
   },
 }
