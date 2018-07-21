@@ -154,6 +154,10 @@
   dependencies:
     recompose "^0.26.0 || ^0.27.0"
 
+"@material-ui/lab@^1.0.0-alpha.6":
+  version "1.0.0-alpha.6"
+  resolved "https://registry.yarnpkg.com/@material-ui/lab/-/lab-1.0.0-alpha.6.tgz#ee5c03a8577a9cbc4e41b2bfbdfc15b561822749"
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -176,8 +180,8 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
 "@types/jss@^9.5.3":
-  version "9.5.3"
-  resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.3.tgz#0c106de3fe0b324cd4173fac7dab26c12cda624e"
+  version "9.5.4"
+  resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.4.tgz#89a4ee32a14a8d2937187b1a7f443750e964a74d"
   dependencies:
     csstype "^2.0.0"
     indefinite-observable "^1.0.1"
@@ -771,7 +775,7 @@ async-eventemitter@^0.2.2:
   dependencies:
     async "^2.4.0"
 
-"async-eventemitter@github:ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c":
+async-eventemitter@ahultgren/async-eventemitter#fa06e39e56786ba541c180061dbf2c0a5bbf951c:
   version "0.2.3"
   resolved "https://codeload.github.com/ahultgren/async-eventemitter/tar.gz/fa06e39e56786ba541c180061dbf2c0a5bbf951c"
   dependencies:
@@ -6318,8 +6322,8 @@ ipld-dag-cbor@~0.12.0:
     traverse "~0.6.6"
 
 ipld-dag-pb@~0.14.4:
-  version "0.14.5"
-  resolved "https://registry.yarnpkg.com/ipld-dag-pb/-/ipld-dag-pb-0.14.5.tgz#bec6417401b32a80818190636a08edc0048dccec"
+  version "0.14.6"
+  resolved "https://registry.yarnpkg.com/ipld-dag-pb/-/ipld-dag-pb-0.14.6.tgz#1b0357c7db8c1a75f8eef6e89505ddc614a7faaa"
   dependencies:
     async "^2.6.1"
     bs58 "^4.0.1"
@@ -7535,12 +7539,14 @@ lcov-parse@0.0.10:
   version "1.15.6"
   resolved "https://codeload.github.com/mikefluff/ledger-wallet-provider/tar.gz/2ce0e474fe00ca69b6511758afc1811d87b37d8e"
   dependencies:
-    "@ledgerhq/hw-app-eth" "^4.14.0"
-    "@ledgerhq/hw-transport-u2f" "^4.13.0"
+    "@ledgerhq/hw-app-eth" "^4.7.3"
+    "@ledgerhq/hw-transport-u2f" "^4.7.3"
     babel-runtime "^6.23.0"
-    ethereumjs-wallet "github:mikefluff/ethereumjs-wallet"
+    ethereumjs-wallet "0.6.0"
+    npm "^6.1.0"
     promise-timeout "^1.1.1"
     strip-hex-prefix "^1.0.0"
+    web3-provider-engine "^14.0.3"
 
 left-pad@^1.2.0:
   version "1.3.0"
@@ -12623,7 +12629,7 @@ truffle-error@^0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/truffle-error/-/truffle-error-0.0.3.tgz#4bf55242e14deee1c7194932709182deff2c97ca"
 
-"truffle-hdwallet-provider@github:mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014":
+truffle-hdwallet-provider@mikefluff/truffle-hdwallet-provider#7a2eccca1ba17c235a3ef258914ca74ea5f13014:
   version "0.0.5"
   resolved "https://codeload.github.com/mikefluff/truffle-hdwallet-provider/tar.gz/7a2eccca1ba17c235a3ef258914ca74ea5f13014"
   dependencies:

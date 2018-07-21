@@ -32,6 +32,7 @@ import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import TxExecModel from '../../refactor/models/TxExecModel'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -43,7 +44,7 @@ export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
 // It is not a redux action
-const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     await dispatch(showConfirmTransferModal(dao, tx))
   } catch (e) {
@@ -55,7 +56,7 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 }
 
 // It is not a redux action
-const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     const txOptions = tx.options()
     // TODO @ipavlenko: Pass arguments
@@ -69,7 +70,7 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 }
 
 // It is not a redux action
-const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
   dispatch(notify(new TransferErrorNoticeModel(tx, e)))
 }
@@ -87,6 +88,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   const web3 = getState().get('web3')
   ethereumDAO.connect(web3)
+  dispatch(alternateTxHandlingFlow(ethereumDAO))
   dispatch({ type: TOKENS_INIT, isInited: true })
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
