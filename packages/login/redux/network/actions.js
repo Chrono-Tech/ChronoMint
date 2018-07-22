@@ -473,8 +473,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     dispatch(getProfileSignature(wallet[0]))
 
     if (privateKey) {
-      //await dispatch(handleWalletLogin(selectedWallet.encrypted, password))
-      await dispatch(handlePrivateKeyLogin(privateKey))
+      await dispatch(handleWalletLogin(selectedWallet.encrypted, password))
+      //await dispatch(handlePrivateKeyLogin(privateKey))
     }
 
   } catch (e) {
