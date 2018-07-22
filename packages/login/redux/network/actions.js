@@ -31,6 +31,7 @@ import { push, goBack } from '@chronobank/core-dependencies/router'
 import networkService from '../../network/NetworkService'
 import profileService from '../../network/ProfileService'
 import privateKeyProvider from '../../network/privateKeyProvider'
+import walletProvider from '../../network/walletProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
@@ -471,7 +472,7 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     dispatch(getProfileSignature(wallet[0]))
 
     if (privateKey) {
-      await dispatch(handlePrivateKeyLogin(privateKey))
+      await dispatch(handleWalletLogin(selectedWallet.encrypted, password))
     }
 
   } catch(e){
@@ -669,6 +670,40 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
 
   dispatch(navigateToLoginPage())
 }
+
+export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
+  let state = getState()
+  console.log(wallet[0])
+  console.log(password)
+  dispatch(loading())
+  dispatch(clearErrors())
+  const provider = walletProvider.getProvider(
+    wallet[0],
+    password,
+    networkService.getProviderSettings(),
+  )
+
+  networkService.selectAccount(provider.ethereum.getAddress())
+  await networkService.setup(provider)
+
+  state = getState()
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+
+  dispatch(clearErrors())
+
+  const isPassed = await networkService.checkNetwork()
+
+  if (isPassed) {
+    networkService.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    )
+    dispatch(login(selectedAccount))
+  }
+
+}
+
 
 export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
   let state = getState()

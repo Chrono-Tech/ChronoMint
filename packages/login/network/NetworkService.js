@@ -8,7 +8,7 @@ import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import EventEmitter from 'events'
-import Web3Legacy from 'web3legacy'
+import Web3 from 'web3'
 
 import {
   addError,
@@ -102,9 +102,9 @@ class NetworkService extends EventEmitter {
       return false
     }
 
-    const web3 = new Web3Legacy()
-    web3Provider.reinit(web3, new Web3Legacy.providers.HttpProvider(providerURL || TESTRPC_URL))
-    const accounts = await web3Provider.getAccounts()
+    //const web3 = new Web3Legacy()
+    //web3Provider.reinit(web3, new Web3Legacy.providers.HttpProvider(providerURL || TESTRPC_URL))
+    //const accounts = await web3Provider.getAccounts()
 
     // account must be valid
     if (!accounts.includes(account)) {
@@ -192,7 +192,7 @@ class NetworkService extends EventEmitter {
   }
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-    const web3 = new Web3Legacy()
+    const web3 = new Web3()
     web3Provider.reinit(web3, ethereum.getProvider())
     networkProvider.setNetworkCode(networkCode)
     ethereumProvider.setEngine(ethereum, nem, waves)

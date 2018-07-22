@@ -19,22 +19,26 @@ class WalletProvider {
   getProvider (walletJson, password, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = Wallet.fromV3(walletJson, password, true)
-    const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoin])
-    const bcc = network && network.bitcoinCash && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinCash])
-    const btg = network && network.bitcoinGold && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinGold])
-    const ltc = network && network.litecoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.litecoin])
-    const nem = network && network.nem && NemWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), nemSdk.model.network.data[network.nem])
-    const waves = network && network.waves && WavesWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), WavesApi[network.waves])
+    console.log(ethereumWallet)
+    const engine = new EthereumEngine(ethereumWallet, network, url)
+    console.log(engine)
+    console.log('wallet')
+    //const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoin])
+    //const bcc = network && network.bitcoinCash && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinCash])
+    //const btg = network && network.bitcoinGold && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinGold])
+    //const ltc = network && network.litecoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.litecoin])
+    //const nem = network && network.nem && NemWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), nemSdk.model.network.data[network.nem])
+    //const waves = network && network.waves && WavesWallet.fromPrivateKey(ethereumWallet.privKey.toString('hex'), WavesApi[network.waves])
 
     return {
       networkCode,
-      ethereum: new EthereumEngine(ethereumWallet, network, url),
-      btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
-      bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
-      btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
-      ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
-      nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
-      waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
+      ethereum: engine //new EthereumEngine(ethereumWallet, network, url),
+      //btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
+      //bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
+      //btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
+      //ltc: network && network.litecoin && createLTCEngine(ltc, bitcoin.networks[network.litecoin]),
+      //nem: network && network.nem && createNEMEngine(nem, nemSdk.model.network.data[network.nem]),
+      //waves: network && network.waves && createWAVESEngine(waves, WavesApi[network.waves]),
     }
   }
 }
