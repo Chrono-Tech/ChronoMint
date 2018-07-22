@@ -5,13 +5,11 @@
 
 import 'flexboxgrid/css/flexboxgrid.css'
 import networkService from '@chronobank/login/network/NetworkService'
-import injectTapEventPlugin from 'react-tap-event-plugin'
 import { bootstrap } from '@chronobank/core/redux/session/actions'
 import { store } from 'redux/configureStore'
 import i18n from './i18n'
 
 networkService.connectStore(store)
-injectTapEventPlugin()
 store.dispatch(bootstrap()).then(() => {
   document.getElementById('react-root').innerText = JSON.stringify(i18n)
 })

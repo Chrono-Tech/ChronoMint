@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import ReactDOM from 'react-dom'
 import React, { Component } from 'react'
-import QRCode from 'davidshimjs-qrcodejs'
 import { initMnemonicPage, navigateToConfirmMnemonicPage } from '@chronobank/login/redux/network/actions'
 import PrintIcon from 'assets/img/icons/print-white.svg'
 import LogoPrintVersion from 'assets/img/logo-chrono-wallet-bw.svg'
@@ -69,14 +68,6 @@ export default class MnemonicPage extends Component {
     )
 
     this.renderPrintVersionContent(element)
-    new QRCode(document.getElementById('print-qr-code'), {
-      text: 'radio cat potato tree android rotor influence chrono adelaide chrome collective fire',
-      width: 230,
-      height: 230,
-      colorDark : "#000000",
-      colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
 
     window.print()
   }

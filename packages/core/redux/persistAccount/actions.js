@@ -5,7 +5,6 @@
 
 import uuid from 'uuid/v1'
 import bip39 from 'bip39'
-import Web3Legacy from 'web3legacy'
 import Accounts from 'web3-eth-accounts'
 import {
   AccountEntryModel,
@@ -119,10 +118,6 @@ export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAc
 
   const accounts = new Accounts()
   accounts.wallet.clear()
-
-  const web3 = new Web3Legacy()
-  web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
-  web3Provider.resolve()
 
   const entry = new AccountEntryModel({
     key: uuid(),
