@@ -9,6 +9,9 @@ import { WALLET_HD_PATH } from './mnemonicProvider'
 
 export default class HDWalletProvider {
   constructor (wallet, provider_url, address_index = 0, num_addresses = 0) {
+    console.log(wallet)
+    console.log('wwalet')
+    console.log(wallet.getAddressString())
     this.hdwallet = hdkey.fromMasterSeed(wallet.getPrivateKey())
     this.wallet_hdpath = WALLET_HD_PATH
     this.wallets = [wallet]

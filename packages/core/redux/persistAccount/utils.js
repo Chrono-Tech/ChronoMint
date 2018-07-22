@@ -38,7 +38,7 @@ export const walletAddressExistInWalletsList = (wallet, walletsList = []) => {
 }
 
 export const getAccountName = (account: AccountEntryModel) => {
-  if (account && account.profile && account.profile.userName){
+  if (account && account.profile && account.profile.userName) {
     return account.profile.userName
   }
 
@@ -46,9 +46,9 @@ export const getAccountName = (account: AccountEntryModel) => {
 }
 
 export const getAccountAvatar = (account: AccountEntryModel) => {
-  if (account && account.profile && account.profile.avatar){
+  if (account && account.profile && account.profile.avatar) {
     return account.profile.avatar
   }
 
-  return ''
+  return profileImgJPG
 }

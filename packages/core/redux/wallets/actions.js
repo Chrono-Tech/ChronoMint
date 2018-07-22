@@ -35,6 +35,7 @@ export const WALLETS_SET = 'wallet/set'
 export const WALLETS_UPDATE_BALANCE = 'wallet/updateBalance'
 export const WALLETS_TWO_FA_CONFIRMED = 'wallet/twoFaConfirmed'
 export const WALLETS_UPDATE_WALLET = 'wallet/updateWallet'
+export const WALLETS_SET_IS_TIME_REQUIRED = 'wallet/isTimeRequired'
 
 let walletsManagerDAO
 const isOwner = (wallet, account) => {
@@ -169,9 +170,8 @@ const updateWalletBalance = ({ wallet }) => async (dispatch) => {
     if (token.blockchain() === wallet.blockchain) {
       const dao = tokenService.getDAO(token)
       let balance = await dao.getAccountBalance(wallet.address)
-
       if (balance) {
-        dispatch({
+        await dispatch({
           type: WALLETS_UPDATE_BALANCE,
           walletId: wallet.id,
           balance: new Amount(balance, token.symbol(), true),

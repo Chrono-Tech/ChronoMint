@@ -115,11 +115,13 @@ export const MIDDLEWARE_MAP = {
 export const infuraMainnet =   {
   ...MAINNET_BASE,
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
+  ws: 'wss://mainnet.infura.io/ws',
 }
 
 export const infuraTestnet =   {
   ...RINKEBY_BASE,
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
+  ws: 'wss://rinkeby.infura.io/ws',
 }
 
 export const infuraNetworkMap = [

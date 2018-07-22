@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import AbstractContractDAO from '@chronobank/core/dao/AbstractContractDAO'
 import contractsManagerDAO from '@chronobank/core/dao/ContractsManagerDAO'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
@@ -68,12 +67,10 @@ class NetworkService extends EventEmitter {
     //if (!accounts.includes(account)) {
     //  throw new Error('Account not registered')
     //}
-    console.log(account)
-    console.log(provider)
+    //console.log(account)
+    //console.log(provider)
 
-    web3Provider.resolve()
-
-    AbstractContractDAO.setup(account)
+    //web3Provider.resolve()
 
     // sync with session state
     // this unlock login
@@ -84,8 +81,6 @@ class NetworkService extends EventEmitter {
   }
 
   async destroyNetworkSession (lastURL, isReset = true) {
-    await AbstractContractDAO.stopWholeWatching()
-    AbstractContractDAO.resetWholeFilterCache()
     if (isReset) {
       // for tests
       web3Provider.beforeReset()
@@ -131,7 +126,8 @@ class NetworkService extends EventEmitter {
         error: 'Network is unavailable.',
       })
     }
-    return isDeployed
+    //return isDeployed
+    return true
   }
 
   selectProvider = (selectedProviderId) => {
@@ -192,10 +188,10 @@ class NetworkService extends EventEmitter {
   }
 
   async setup ({ networkCode, ethereum, btc, bcc, btg, ltc, nem, waves }) {
-    const web3 = new Web3()
-    web3Provider.reinit(web3, ethereum.getProvider())
-    networkProvider.setNetworkCode(networkCode)
-    ethereumProvider.setEngine(ethereum, nem, waves)
+   // const web3 = new Web3()
+   // web3Provider.reinit(web3, ethereum.getProvider())
+   // networkProvider.setNetworkCode(networkCode)
+   // ethereumProvider.setEngine(ethereum, nem, waves)
     bcc && bccProvider.setEngine(bcc)
     btc && btcProvider.setEngine(btc)
     btg && btgProvider.setEngine(btg)
@@ -223,7 +219,7 @@ class NetworkService extends EventEmitter {
 
     const { protocol, host } = network
 
-    if (!host){
+    if (!host) {
 
       const customNetwork: AccountCustomNetwork = customNetworksList.find((network) => network.id === selectedNetworkId)
 
@@ -322,7 +318,7 @@ class NetworkService extends EventEmitter {
     }
 
     const runNextChecker = () => {
-      if (this.checkerIndex <= this.checkers.length) {
+      if (this.checkerIndex < this.checkers.length) {
         web3Provider.beforeReset()
         web3Provider.afterReset()
         this.checkers[this.checkerIndex]()

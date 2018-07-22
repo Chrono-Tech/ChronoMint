@@ -76,7 +76,7 @@ function mapStateToProps (state) {
     balance,
     balanceEth,
     deposit: assets.item(token.address()).deposit(),
-    allowance: wallet.allowances[`${spender}-${token.id()}`] || new AllowanceModel(),
+    allowance: wallet.allowances.list[`${spender}-${token.id()}`] || new AllowanceModel(),
     spender,
     amount: Number.parseFloat(amount) || 0,
     token,
@@ -405,25 +405,14 @@ export default class DepositTokensForm extends PureComponent {
       ? new BigNumber(0)
       : token.addDecimals(amount || 0)
 
-    const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
-    const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
-    // eslint-disable-next-line
-    console.log('renderFoot', balance, allowance, balanceEth)
-    if (isApproveDisabled) {
-      // eslint-disable-next-line
-      console.log('renderFoot',
-        isInvalid,
-        balance ? balance.lt(amountWithDecimals) : null,
-        allowance ? allowance.isFetching() : null,
-        allowance ? !allowance.isFetched() : null,
-        balanceEth ? balanceEth.lte(0) : null)
-    }
-    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || balanceEth.lte(0)
-    const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals) || balanceEth.lte(0)
+    const isRevokeDisabled = allowance.isFetching() || !allowance.isFetched() || !balanceEth || balanceEth.lte(0)
+    const isApproveDisabled = isInvalid || balance.lt(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || !balanceEth || balanceEth.lte(0)
+    const isLockDisabled = isInvalid || !this.getIsLockValid(amountWithDecimals) || allowance.isFetching() || !allowance.isFetched() || !balanceEth || balanceEth.lte(0)
+    const isWithdrawDisabled = isInvalid || deposit.lt(amountWithDecimals) || !balanceEth || balanceEth.lte(0)
 
     return (
       <div styleName='actions'>
-        {balanceEth.lte(0) && (
+        {balanceEth && balanceEth.lte(0) && (
           <div styleName='action'>
             <Button
               styleName='actionButton'

@@ -4,20 +4,13 @@
  */
 
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { MuiThemeProvider } from '@material-ui/core'
-import { reduxForm, Field } from 'redux-form/immutable'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
-import {
-  downloadWallet,
-} from '@chronobank/core/redux/persistAccount/actions'
-import {
-  navigateToLoginPage,
-} from '@chronobank/login/redux/network/actions'
+import { downloadWallet } from '@chronobank/core/redux/persistAccount/actions'
+import { navigateToLoginPage } from '@chronobank/login/redux/network/actions'
 
 import Wallet from 'assets/img/icons/wallet-white.svg'
 

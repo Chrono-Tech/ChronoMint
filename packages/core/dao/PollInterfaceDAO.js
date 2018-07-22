@@ -6,7 +6,6 @@
 import Immutable from 'immutable'
 import BigNumber from 'bignumber.js'
 import Amount from '../models/Amount'
-import { PollInterfaceABI } from '../../core/dao/abi'
 import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
 export const TX_ACTIVATE_POLL = 'activatePoll'
@@ -14,33 +13,9 @@ export const TX_VOTE = 'vote'
 export const TX_REMOVE_POLL = 'killPoll'
 export const TX_END_POLL = 'endPoll'
 
-export default class PollInterfaceDAO  {
-  constructor ({ web3, address, history }) {
-    // super()
-    this.history = history
-    this.address = address
-    // eslint-disable-next-line no-console
-    console.log('[PollInterfaceDAO] Created')
-
-    this.contract = new web3.eth.Contract(PollInterfaceABI.abi, this.address)
-  }
-
-  connect () {
-    if (this.isConnected) {
-      this.disconnect()
-    }
-  }
-
-  disconnect () {
-    if (this.isConnected) {
-      this.logsEmitter.removeAllListeners()
-      this.logsEmitter = null
-      this.web3 = null
-    }
-  }
-
-  get isConnected () {
-    return this.web3 != null // nil check
+export default class PollInterfaceDAO extends AbstractContractDAO  {
+  constructor ({ address, history, abi }) {
+    super({ address, history, abi })
   }
 
   hasMember (address: string): boolean {
@@ -74,27 +49,29 @@ export default class PollInterfaceDAO  {
     return votes
   }
 
-  activatePoll () {
-    return this._tx(TX_ACTIVATE_POLL, [], null, new BigNumber(0), {
-      useDefaultGasLimit: true,
-    })
+  async activatePoll (options) {
+    const txOptions = { useDefaultGasLimit: true, ...options }
+
+    const tx = await this._tx(TX_ACTIVATE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+    return tx
   }
 
-  vote (choice, choiceText) {
-    return this._tx(TX_VOTE, [choice + 1], { choice: choiceText.option }) // choice +1, because in SC, numbering starts from 1
+  vote (choice, choiceText, options) {
+    return this._tx(TX_VOTE, [choice + 1], new BigNumber(0), new BigNumber(0), { choice: choiceText.option, ...options }) // choice +1, because in SC, numbering starts from 1
   }
 
-  removePoll () {
-    return this._tx(TX_REMOVE_POLL, [], null, new BigNumber(0), {
-      allowNoReturn: true,
-      useDefaultGasLimit: true,
-    }) // allow no return (since there would be a selfdestruct call)
+  async removePoll (options) {
+    const txOptions = { allowNoReturn: true, useDefaultGasLimit: true, ...options }
+
+    const tx = await this._tx(TX_REMOVE_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+    return tx
   }
 
-  endPoll () {
-    return this._multisigTx(TX_END_POLL, [], null, {
-      useDefaultGasLimit: true,
-    })
+  async endPoll (options) {
+    const txOptions = { useDefaultGasLimit: true, ...options }
+
+    const tx = await this._tx(TX_END_POLL, [], new BigNumber(0), new BigNumber(0), txOptions)
+    return tx
   }
 
 }

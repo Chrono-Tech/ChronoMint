@@ -7,19 +7,18 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { push } from 'react-router-redux'
 import { MuiThemeProvider } from '@material-ui/core'
-import { reduxForm, Field } from 'redux-form/immutable'
+import { Field, reduxForm } from 'redux-form/immutable'
 import React, { Component } from 'react'
 import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import {
+  FORM_CONFIRM_MNEMONIC,
   initConfirmMnemonicPage,
   navigateToConfirmMnemonicPage,
   onSubmitConfirmMnemonic,
-  onSubmitConfirmMnemonicSuccess,
   onSubmitConfirmMnemonicFail,
-  FORM_CONFIRM_MNEMONIC,
+  onSubmitConfirmMnemonicSuccess,
 } from '@chronobank/login/redux/network/actions'
 
 import './ConfirmMnemonic.scss'

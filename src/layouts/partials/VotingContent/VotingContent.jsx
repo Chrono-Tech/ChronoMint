@@ -95,12 +95,12 @@ export default class VotingContent extends Component {
     const { filter } = this.state
     const { userAccount, isCBE } = this.props
     const filteredPolls = polls
-      .filter((poll) => {
-        if (filter === 'ongoing') {
-          return poll.active || (poll.status && !poll.active) || poll.id.includes('stub')
-        }
-        return !poll.status && !poll.active && !poll.id.includes('stub')
-      })
+      // .filter((poll) => {
+      //   if (filter === 'ongoing') {
+      //     return poll.active || (poll.status && !poll.active) || poll.id.includes('stub')
+      //   }
+      //   return !poll.status && !poll.active && !poll.id.includes('stub')
+      // })
       .sort((a: PTPoll, b: PTPoll) => {
         return a.published > b.published ? -1 : a.published < b.published
       })

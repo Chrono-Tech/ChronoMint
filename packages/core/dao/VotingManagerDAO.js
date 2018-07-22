@@ -6,7 +6,7 @@
 import BigNumber from 'bignumber.js'
 import Immutable from 'immutable'
 import ipfs from '@chronobank/core-dependencies/utils/IPFS'
-import PollNoticeModel, { IS_REMOVED } from '../models/notices/PollNoticeModel'
+import PollNoticeModel, { IS_CREATED, IS_REMOVED, IS_UPDATED } from '../models/notices/PollNoticeModel'
 import PollModel from '../models/PollModel'
 import PollDetailsModel from '../models/PollDetailsModel'
 import FileModel from '../models/FileSelect/FileModel'
@@ -39,6 +39,54 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
     this.assetHolderDAO = null
     this.pollInterfaceManagerDAO = null
+  }
+
+  connect (web3, options) {
+    super.connect(web3, options)
+
+    this.pollCreatedEmitter = this.contract.events.pollCreated({})
+      .on('data', this.handlePollCreatedData.bind(this))
+      .on('changed', this.handlePollCreatedChanged.bind(this))
+      .on('error', this.handlePollCreatedError.bind(this))
+
+    this.pollRemovedEmitter = this.contract.events.PollRemoved({})
+      .on('data', this.handlePollRemovedData.bind(this))
+      .on('changed', this.handlePollChangedData.bind(this))
+      .on('error', this.handlePollChangedError.bind(this))
+  }
+
+  disconnect () {
+    if (this.isConnected) {
+      this.pollCreatedEmitter.removeAllListeners()
+      this.pollRemovedEmitter.removeAllListeners()
+      this.contract = null
+      this.history = null
+      this.web3 = null
+    }
+  }
+
+  handlePollCreatedData (data) {
+    console.log('handlePollCreatedData: ', data)
+  }
+
+  handlePollCreatedChanged (data) {
+    console.log('handlePollCreatedChanged: ', data)
+  }
+
+  handlePollCreatedError (data) {
+    console.log('handlePollCreatedError: ', data)
+  }
+
+  handlePollRemovedData (data) {
+    console.log('handlePollRemovedData: ', data)
+  }
+
+  handlePollChangedData (data) {
+    console.log('handlePollChangedData: ', data)
+  }
+
+  handlePollChangedError (data) {
+    console.log('handlePollChangedError: ', data)
   }
 
   getVoteLimit (): Promise {
@@ -96,14 +144,6 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     return tx
   }
 
-  removePoll () {
-    return this._tx(TX_REMOVE_POLL)
-  }
-
-  activatePoll () {
-    return this._multisigTx(TX_ACTIVATE_POLL)
-  }
-
   async getPollsDetails (pollsAddresses: Array<string>, account: string) {
     let result = []
     try {
@@ -122,7 +162,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       for (let i = 0; i < pollsAddresses.length; i++) {
         promises.push(new Promise(async (resolve) => {
           try {
-            const pollAddress = pollsAddresses[i]
+            const pollAddress = pollsAddresses[i].toLowerCase()
 
             try {
               votingService.subscribeToPoll(pollAddress, account)
@@ -233,15 +273,15 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   watchCreated (callback, account) {
-    // return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
+    return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
   }
 
   watchUpdated (callback) {
-    // return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
+    return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
   watchRemoved (callback) {
-    // return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
+    return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
   }
 
   /** @private */
@@ -256,18 +296,6 @@ export default class VotingManagerDAO extends AbstractContractDAO {
       status,
       transactionHash: result.transactionHash,
     }))
-  }
-
-  async watchVoted (callback, filter, account) {
-    // return this._watch(EVENT_POLL_VOTED, this._watchCallback(callback, IS_VOTED, account), filter)
-  }
-
-  async watchActivated (callback, filter) {
-    // return this._watch(EVENT_POLL_ACTIVATED, this._watchCallback(callback, IS_ACTIVATED), filter)
-  }
-
-  async watchEnded (callback, filter) {
-    // return this._watch(EVENT_POLL_ENDED, this._watchCallback(callback, IS_ENDED), filter)
   }
 
   estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {

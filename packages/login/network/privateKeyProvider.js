@@ -26,6 +26,7 @@ import {
   COIN_TYPE_LTC_TESTNET,
   WALLET_HD_PATH,
 } from './mnemonicProvider'
+import EthereumWallet from './EthereumWallet'
 
 class PrivateKeyProvider {
   getPrivateKeyProvider (privateKey, { url, network } = {}, wallets) {
@@ -39,6 +40,9 @@ class PrivateKeyProvider {
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
     let lastDeriveNumbers = 0
+    const engine = new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers)
+    console.log(ethereumWallet)
+    console.log(engine)
 
     wallets && wallets
       .items()
@@ -50,7 +54,7 @@ class PrivateKeyProvider {
 
     return {
       networkCode,
-      ethereum: new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
+      ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),
@@ -112,12 +116,7 @@ class PrivateKeyProvider {
   }
 
   createEthereumWallet (privateKey) {
-    if (privateKey.length <= 64) {
-      return wallet.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-    }
-
-    const hdWallet = hdKey.fromMasterSeed(Buffer.from(privateKey, 'hex'))
-    return hdWallet.derivePath(WALLET_HD_PATH).getWallet()
+    return EthereumWallet.createWallet({ type: 'memory', pk: privateKey })
   }
 
   validatePrivateKey (privateKey: string): boolean {
