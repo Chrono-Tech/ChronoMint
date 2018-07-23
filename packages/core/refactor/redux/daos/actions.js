@@ -13,6 +13,7 @@ import {
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
 } from '../../daos/index'
+import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
@@ -47,6 +48,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
         const dao = contract.create(address.toLowerCase(), history)
         dao.connect(web3)
+        dispatch(alternateTxHandlingFlow(dao))
         return new ContractDAOModel({
           contract,
           address,

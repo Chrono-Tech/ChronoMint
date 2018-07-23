@@ -7,12 +7,10 @@ import Amount from '../../models/Amount'
 import AssetModel from '../../models/assetHolder/AssetModel'
 import TokenModel from '../../models/tokens/TokenModel'
 import AllowanceModel from '../../models/wallet/AllowanceModel'
-import { WALLET_ALLOWANCE } from '../mainWallet/actions'
 import { DUCK_SESSION } from '../session/actions'
 import { subscribeOnTokens } from '../tokens/actions'
 import tokenService from '../../services/TokenService'
 import { daoByType } from '../../refactor/redux/daos/selectors'
-import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import TxExecModel from '../../models/TxExecModel'
 import { getWallet } from '../wallets/selectors/models'
 import { WALLETS_UPDATE_WALLET } from '../wallets/actions'
@@ -141,8 +139,7 @@ export const depositAsset = (amount: Amount, token: TokenModel, feeMultiplier: N
     const assetHolderDAO = daoByType('TimeHolder')(getState())
     const { account } = getState().get(DUCK_SESSION)
     advancedOptions['account'] = account
-    const tx: TxExecModel = await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
-    dispatch(sendNewTx(tx))
+    await assetHolderDAO.deposit(token, amount, feeMultiplier, advancedOptions)
   } catch (e) {
     // eslint-disable-next-line
     console.error('deposit error', e)
@@ -155,7 +152,6 @@ export const withdrawAsset = (amount: Amount, token: TokenModel, feeMultiplier: 
     const { account } = getState().get(DUCK_SESSION)
     advancedOptions['account'] = account
     const tx: TxExecModel = await assetHolderDAO.withdraw(token, amount, feeMultiplier, advancedOptions)
-    dispatch(sendNewTx(tx))
   } catch (e) {
     // eslint-disable-next-line
     console.error('withdraw error', e)
