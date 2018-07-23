@@ -384,3 +384,9 @@
   width: 50% !important;
   margin: 0 30px;
 }
+
+:global {
+  #menu-symbol {
+    z-index: 9999;
+  }
+}

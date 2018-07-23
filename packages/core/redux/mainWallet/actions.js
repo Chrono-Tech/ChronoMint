@@ -297,7 +297,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   try {
     const tokenDAO = tokenService.getDAO(token.id())
 
-    const tx: TxExecModel = await tokenDAO.transfer(
+    await tokenDAO.transfer(
       wallet.address,
       recipient,
       amount,
@@ -305,10 +305,6 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
       feeMultiplier,
       additionalOptions,
     )
-
-    if (tx && tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      dispatch(sendNewTx(tx))
-    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('e', e)

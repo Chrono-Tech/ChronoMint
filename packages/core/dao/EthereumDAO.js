@@ -206,10 +206,9 @@ export class EthereumDAO extends AbstractTokenDAO {
     })
   }
 
-  async immediateTransfer (from: string, to: string, amount: BigNumber, token: TokenModel, feeMultiplier: Number = 1, advancedParams = undefined) {
+  async immediateTransfer (tx: TxExecModel) {
     try {
-      const tokenRate = advancedParams && advancedParams.satPerByte ? advancedParams.satPerByte : feeMultiplier * token.feeRate()
-      return await this._bitcoinProvider.transfer(from, to, amount, tokenRate)
+      return await ethereumProvider.transfer(tx, this.web3)
     } catch (e) {
       // eslint-disable-next-line
       console.log('Transfer failed', e)

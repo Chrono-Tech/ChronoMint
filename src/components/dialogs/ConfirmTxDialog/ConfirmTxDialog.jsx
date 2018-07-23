@@ -37,8 +37,6 @@ function mapDispatchToProps (dispatch, props) {
     modalsClear: () => dispatch(modalsClear()),
     modalsClose: () => dispatch(modalsClose()),
     handleUpdateTx: (tx) => dispatch({ type: WATCHER_TX_SET, tx }),
-    handleConfirm: (tx) => dispatch(props.confirm(tx)),
-    handleReject: (tx) => dispatch(props.reject(tx)),
   }
 }
 
@@ -49,7 +47,6 @@ export default class ConfirmTxDialog extends PureComponent {
     feeBalanceAfter: PropTypes.instanceOf(Amount),
     mainSymbol: PropTypes.string,
     confirm: PropTypes.func.isRequired,
-    handleConfirm: PropTypes.func,
     reject: PropTypes.func.isRequired,
     handleReject: PropTypes.func,
     modalsClear: PropTypes.func.isRequired,
@@ -60,12 +57,12 @@ export default class ConfirmTxDialog extends PureComponent {
 
   handleConfirm = () => {
     this.props.modalsClear()
-    this.props.handleConfirm(this.props.tx)
+    this.props.confirm(this.props.tx)
   }
 
   handleClose = () => {
     this.props.modalsClear()
-    this.props.handleReject(this.props.tx)
+    this.props.reject(this.props.tx)
   }
 
   getKeyValueRows (fields) {

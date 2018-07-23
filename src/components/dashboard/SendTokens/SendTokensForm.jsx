@@ -459,7 +459,7 @@ export default class SendTokensForm extends PureComponent {
                     component={Select}
                     name='symbol'
                     styleName='symbolSelector'
-                    fullWidth
+                    menu-symbol='symbolSelectorMenu'
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {
@@ -467,13 +467,7 @@ export default class SendTokensForm extends PureComponent {
                         if (token.isLocked()) {
                           return null
                         }
-                        return (
-                          <MenuItem
-                            key={token.id()}
-                            value={token.id()}
-                            primaryText={token.symbol()}
-                          />
-                        )
+                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()} </MenuItem>)
                       })}
                   </Field>
                 )

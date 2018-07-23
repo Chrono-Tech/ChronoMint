@@ -3,11 +3,13 @@
  * Licensed under the AGPL Version 3 license.
  */
 
+import Tx from 'ethereumjs-tx'
 import networkService from './NetworkService'
 import AbstractProvider from './AbstractProvider'
 import EthereumEngine from './EthereumEngine'
 import selectEthereumNode from './EthereumNode'
 import web3Provider from './Web3Provider'
+import TxExecModel from '../../core/refactor/models/TxExecModel'
 
 export class EthereumProvider extends AbstractProvider {
   constructor () {
@@ -134,6 +136,30 @@ export class EthereumProvider extends AbstractProvider {
 
   getEngine () {
     return this._engine
+  }
+
+  async transfer (tx: TxExecModel, web3) {
+    const signedTx = await this.createTransaction(tx, web3)
+    const serializedTx = signedTx.serialize().toString('hex')
+    return web3.eth.sendSignedTransaction('0x' + serializedTx)
+  }
+
+  async createTransaction (tx, web3) {
+    const nonce = await web3.eth.getTransactionCount(tx.from)
+    const txData = {
+      data: tx.data || '',
+      nonce: web3.utils.toHex(nonce),
+      gasLimit: web3.utils.toHex(tx.fee.gasLimit.toString()),
+      gasPrice: web3.utils.toHex(tx.fee.gasPrice.toString()),
+      to: tx.to,
+      from: tx.from,
+      value: web3.utils.toHex(tx.value.toString()),
+    }
+
+    const pk = this.getPrivateKey(tx.from)
+    const transaction = new Tx(txData)
+    transaction.sign(pk)
+    return transaction
   }
 }
 
