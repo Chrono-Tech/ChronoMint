@@ -84,6 +84,7 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "@material-ui/lab": "^1.0.0-alpha.6",
+    "material-ui-pickers": "^1.0.0-rc.11",
     "axios": "^0.16.2",
     "babel-plugin-react-css-modules": "^2.7.1",
     "bignumber.js": "^4.1.0",

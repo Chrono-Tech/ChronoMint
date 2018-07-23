@@ -116,7 +116,6 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   let wallet, hex = privateKey || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
-  console.log(hex)
 
   // const web3 = new Web3()
   // web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
