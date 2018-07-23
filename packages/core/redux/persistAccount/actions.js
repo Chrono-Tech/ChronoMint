@@ -70,6 +70,7 @@ export const accountUpdate = (wallet) => (dispatch, getState) => {
 export const decryptAccount = (encrypted, password) => async () => {
   const accounts = new Accounts()
   await accounts.wallet.clear()
+  console.log('en', encrypted, password)
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
 
@@ -115,17 +116,20 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 }
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
-  let wallet, hex = privateKey || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
+  let wallet, hex = privateKey ? `0x${privateKey}`: null || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
 
   // const web3 = new Web3()
   // web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
   // web3Provider.resolve()
+  console.log('hex', hex, mnemonic, privateKey, password)
+
 
   const accounts = new Accounts()
 
   wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
+  console.log('hex', hex, account)
   console.log(wallet.encrypt(password))
 
   const entry = new AccountEntryModel({
@@ -192,15 +196,22 @@ export const setProfilesForAccounts = (walletsList) => async () => {
   const { data } = await profileService.getPersonInfo(addresses)
 
   if (Array.isArray(data)) {
-    return data.map((profile) => {
-      const account = walletsList.find((wallet) => getAccountAddress(wallet, true) === profile.address)
+    return data.reduce((prev, profile) => {
 
-      const profileModel = profile && new AccountProfileModel(profile) || null
-      return new AccountEntryModel({
-        ...account,
-        profile: profileModel,
-      })
-    })
+      const updatedProfileAccounts =
+        walletsList
+          .filter((wallet) => getAccountAddress(wallet, true) === profile.address)
+          .map((account) => {
+            const profileModel = profile && new AccountProfileModel(profile) || null
+            return new AccountEntryModel({
+              ...account,
+              profile: profileModel,
+            })
+
+          })
+
+      return [].concat(prev, updatedProfileAccounts)
+    }, [])
   } else {
     return walletsList
   }

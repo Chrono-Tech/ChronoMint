@@ -22,20 +22,25 @@ export default createMuiTheme({
       inputMultiline: {
         height: 62,
         marginTop: 0,
+        padding: 6,
+        textAlign: 'left',
         '&:before': {
           display: 'none',
         },
       },
       underline: {
-        '&:not($disabled):after': {
-          borderBottom: `1px solid #A3A3CC`,
+        '&:after': {
+          borderBottom: '1px solid #424066',
           transform: 'none',
         },
         '&:not($disabled):$focused:after': {
-          borderBottomColor: `#E2A864`,
+          borderBottom: '1px solid #E2A864',
         },
         '&:hover:not($disabled):not($focused):not($error):after': {
           borderBottomColor: `#E2A864`,
+        },
+        '&$focused:after': {
+          borderBottom: '1px solid #E2A864',
         },
       },
     },

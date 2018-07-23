@@ -12,7 +12,7 @@ import { Link } from 'react-router'
 import Button from 'components/common/ui/Button/Button'
 import UserRow from 'components/common/ui/UserRow/UserRow'
 import { initAccountsSelector, initAccountsSignature, navigateToSelectImportMethod, onWalletSelect } from '@chronobank/login/redux/network/actions'
-import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { getAccountAddress, getAccountAvatar, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { AccountEntryModel } from '@chronobank/core/models/wallet/persistAccount'
 
 import arrow from 'assets/img/icons/prev-white.svg'
@@ -76,7 +76,7 @@ export default class SelectWalletPage extends PureComponent {
               key={i}
               title={getAccountName(w)}
               subtitle={getAccountAddress(w, true)}
-              avatar={getAccountAvatar(w)}
+              avatar={getAccountAvatarImg(w)}
               actionIcon={arrow}
               reverseIcon={true}
               onClick={() => onWalletSelect(w)}

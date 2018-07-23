@@ -27,7 +27,7 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
-import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { getAccountAddress, getAccountAvatar, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
@@ -115,7 +115,7 @@ class LoginPage extends React.Component {
           <UserRow
             title={getAccountName(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
-            avatar={getAccountAvatar(selectedWallet)}
+            avatar={getAccountAvatarImg(selectedWallet)}
             onClick={navigateToSelectWallet}
             linkTitle='My Accounts'
           />

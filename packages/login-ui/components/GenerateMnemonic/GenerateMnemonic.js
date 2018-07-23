@@ -16,14 +16,14 @@ import { Button } from '../../settings'
 
 import './GenerateMnemonic.scss'
 
-function mapStateToProps (state, ownProps) {
+function mapStateToProps (state) {
 
   return {
     mnemonic: state.get('network').newAccountMnemonic,
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps (dispatch) {
   return {
     initMnemonicPage: () => dispatch(initMnemonicPage()),
     navigateToConfirmPage: () => dispatch(navigateToConfirmMnemonicPage()),
@@ -42,6 +42,14 @@ export default class MnemonicPage extends Component {
     mnemonic: '',
   }
 
+  constructor(){
+    super()
+
+    this.state = {
+      qrData: null,
+    }
+  }
+
   componentDidMount () {
     this.props.initMnemonicPage()
   }
@@ -51,39 +59,66 @@ export default class MnemonicPage extends Component {
   }
 
   showMnemonicPrintVersion () {
+    const { mnemonic } = this.props
+    const qrCodeDivId = 'print-qr-code'
+    let qr
+    //
+    // QRCode.toDataURL(mnemonic, {
+    //   errorCorrectionLevel: 'H',
+    //   type: 'image/jpeg',
+    //   margin: 0,
+    //   width: 230
+    // }, (err, qrData) => {
+    //   qr = qrData
+    //   this.setState({
+    //     qrData,
+    //   })
+    // })
+
+    console.log('showmnem', qr, this.state.qrData)
+
     const element = (
       <div styleName='print-wrapper'>
-        <img styleName='print-logo' src={LogoPrintVersion} alt='' />
+        <img styleName='print-logo' src={LogoPrintVersion} alt='Logo' />
         <div styleName='print-title'>Your back-up phrase<br />(Mnemonic Key)</div>
         <div styleName='print-mnemonic'>
-          radio cat potato tree android rotor influence chrono
-          adelaide chrome collective fire
+          { mnemonic }
         </div>
         <div styleName='print-qr-description'>
           Scan this QR code to speed up
           <br />
           entering process
         </div>
-        <div id='print-qr-code'></div>
+        <canvas id={qrCodeDivId} width='230' height='230' />
       </div>
     )
 
     this.renderPrintVersionContent(element)
-    new QRCode(document.getElementById('print-qr-code'), {
-      text: 'radio cat potato tree android rotor influence chrono adelaide chrome collective fire',
-      width: 230,
-      height: 230,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
+
+    QRCode.toCanvas(
+      document.getElementById(qrCodeDivId),
+      mnemonic,
+      {
+        errorCorrectionLevel: 'H',
+        type: 'image/jpeg',
+        margin: 0,
+        width: 230,
+      },
+      function (error) {
+        if (error) console.error(error)
+        console.log('success!')
+      })
+
+    // new QRCode(document.getElementById('print-qr-code'), {
+    //   text: mnemonic,
+    //   width: 230,
+    //   height: 230,
+    //   colorDark: "#000000",
+    //   colorLight: "#ffffff",
+    //   correctLevel: 'H',
+    // })
 
     window.print()
-  }
-
-  onAfterPrint () {
-    var elem = document.getElementById(id);
-    return elem.parentNode.removeChild(elem);
   }
 
   renderPrintVersionContent (content) {
@@ -94,7 +129,7 @@ export default class MnemonicPage extends Component {
     document.body.appendChild(printVersionWrapper)
 
     window.onafterprint = () => {
-      printVersionWrapper.parentNode.removeChild(printVersionWrapper)
+      // printVersionWrapper.parentNode.removeChild(printVersionWrapper)
     }
 
     ReactDOM.render(content, document.getElementById(printVersionContainerId))
