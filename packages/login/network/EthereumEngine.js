@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import Web3Legacy from 'web3legacy'
+import Web3 from 'web3'
 import hdKey from 'ethereumjs-wallet/hdkey'
 import Web3Utils from './Web3Utils'
 import { WALLET_HD_PATH } from './mnemonicProvider'
@@ -12,11 +12,11 @@ export default class EthereumEngine {
   constructor (wallet, network, url, engine, deriveNumber) {
     this._wallet = wallet
     this._network = network
-    const web3 = engine && new Web3Legacy(engine)
+    const web3 = engine && new Web3(engine)
     try {
       this._address = engine && web3.eth.accounts[0]
     } catch (e) {
-      //dispatch(addError(e.message))
+      dispatch(addError(e.message))
     }
     this._engine = engine || Web3Utils.createEngine(wallet, url, deriveNumber)
   }
@@ -26,6 +26,7 @@ export default class EthereumEngine {
   }
 
   getAddress () {
+    console.log('get address')
     return this._address || this._wallet.getAddressString()
   }
 

@@ -185,7 +185,7 @@ export default class PollEditForm extends Component {
                 component={TextField}
                 name='description'
                 fullWidth
-                multiLine
+                multiline
                 floatingLabelText={<Translate value={`${prefix}.pollDescription`} />}
               />
 

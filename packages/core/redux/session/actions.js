@@ -9,7 +9,7 @@ import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import { push, replace } from '@chronobank/core-dependencies/router'
 import ls from '@chronobank/core-dependencies/utils/LocalStorage'
 import web3Factory from '@chronobank/core/refactor/web3/index'
-import contractsManagerDAO from '../../dao/ContractsManagerDAO'
+import contractsManagerDAO from '../../refactor/daos/lib/ContractsManagerDAO'
 import ProfileModel from '../../models/ProfileModel'
 import { cbeWatcher, watcher } from '../watcher/actions'
 import { removeWatchersUserMonitor } from '../ui/actions'
@@ -78,11 +78,13 @@ export const login = (account) => async (dispatch, getState) => {
   }
 
   const network = getNetworkById(selectedNetworkId, selectedProviderId)
+  console.log(network)
   const web3 = typeof window !== 'undefined'
     ? web3Factory(network)
     : null
-
-  const dao = await contractsManagerDAO.getUserManagerDAO()
+  console.log(web3)
+  const isCBE = false
+  /*const dao = await contractsManagerDAO.getUserManagerDAO()
   const [isCBE, profile, memberId] = await Promise.all([
     dao.isCBE(account),
     dao.getMemberProfile(account),
@@ -94,9 +96,9 @@ export const login = (account) => async (dispatch, getState) => {
   pmDAO.setMemberId(memberId)
 
   dispatch({ type: SESSION_PROFILE, profile, isCBE })
-
+*/
   const defaultURL = isCBE ? DEFAULT_CBE_URL : DEFAULT_USER_URL
-
+  
   dispatch({ type: WEB3_SETUP, web3 })
   dispatch(watcher({ web3 }))
 
