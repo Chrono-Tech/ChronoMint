@@ -41,8 +41,6 @@ class PrivateKeyProvider {
 
     let lastDeriveNumbers = 0
     const engine = new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers)
-    console.log(ethereumWallet)
-    console.log(engine)
 
     wallets && wallets
       .items()

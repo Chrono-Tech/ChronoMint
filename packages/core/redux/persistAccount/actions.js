@@ -155,7 +155,6 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
   wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
-  console.log('create account', accounts, account, wallet)
 
   const entry = new AccountEntryModel({
     key: uuid(),

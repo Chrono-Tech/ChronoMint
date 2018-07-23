@@ -34,11 +34,11 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const history = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
 
   const contracts = [
-//    ASSET_MANAGER_LIBRARY,
-//    ASSET_HOLDER_LIBRARY,
-//    ASSET_DONATOR_LIBRARY,
+    ASSET_MANAGER_LIBRARY,
+    ASSET_HOLDER_LIBRARY,
+    ASSET_DONATOR_LIBRARY,
     ERC20_MANAGER,
-//    VOTING_MANAGER_LIBRARY,
+    VOTING_MANAGER_LIBRARY,
   ]
 
   const models = await Promise.all(
@@ -56,7 +56,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
       },
     ),
   )
-  console.log('we are here')
+
   for (const model of models) {
     dispatch({
       type: DAOS_REGISTER,

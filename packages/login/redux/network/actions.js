@@ -222,9 +222,6 @@ export const onSubmitCreateAccountPage = (walletName, walletPassword) => async (
   const state = getState()
 
   const { importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode } = state.get(DUCK_NETWORK)
-  // TODO @abdulov remove console.log
-  console.log('importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode', importAccountMode, newAccountMnemonic, newAccountPrivateKey, walletFileImportMode)
-
   const validateName = dispatch(validateAccountName(walletName))
 
   if (!validateName) {
@@ -378,7 +375,6 @@ export const navigateToWalletUploadMethod = () => (dispatch) => {
 }
 
 export const handleLoginTrezorAccountClick = (address) => (dispatch) => {
-  console.log(address)
   dispatch(navigateToCreateAccountFromHW(address))
 }
 
@@ -676,8 +672,6 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
 
 export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
   let state = getState()
-  console.log(wallet[0])
-  console.log(password)
   dispatch(loading())
   dispatch(clearErrors())
   const provider = walletProvider.getProvider(
@@ -718,22 +712,18 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
     networkService.getProviderSettings(),
     state.get('multisigWallet'),
   )
- console.log(provider.ethereum.getAddress())
 
   networkService.selectAccount(provider.ethereum.getAddress())
   await networkService.setup(provider)
-  console.log('network service setup')
 
   state = getState()
   const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
-  console.log(selectedAccount)
 
   dispatch(clearErrors())
 
   const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
-  console.log('create network session')
     networkService.createNetworkSession(
       selectedAccount,
       selectedProviderId,
