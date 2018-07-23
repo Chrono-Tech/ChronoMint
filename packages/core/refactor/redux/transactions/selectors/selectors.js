@@ -14,14 +14,18 @@ export const getDataForConfirm = (tx: TxExecModel) => createSelector(
     getWallet(`${tx.blockchain}-${tx.from}`),
   ],
   (wallet: WalletModel) => {
+    let amountBalanceAfter = null
+    let feeBalanceAfter = null
+
     const mainSymbol = getMainSymbolForBlockchain(tx.blockchain)
     const balances = wallet.balances
     const amountBalance = balances[tx.symbol]
     const feeBalance = balances[mainSymbol]
-    let amountBalanceAfter = tx.fields.amount && tx.fields.amount.mark === 'plus' ?
-      amountBalance.plus(tx.fields.amount.value) :
-      amountBalance.minus(tx.fields.amount.value)
-    let feeBalanceAfter = null
+    if (tx.fields && tx.fields.amount) {
+      amountBalanceAfter = tx.fields.amount && tx.fields.amount.mark === 'plus' ?
+        amountBalance.plus(tx.fields.amount.value) :
+        amountBalance.minus(tx.fields.amount.value)
+    }
 
     if (mainSymbol === tx.symbol) {
       feeBalanceAfter = amountBalanceAfter = amountBalanceAfter.minus(tx.fee.gasFee)

@@ -20,6 +20,7 @@ import { PTPoll } from './types'
 import { getSelectedPollFromDuck, getVoting } from './selectors/models'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import { sendNewTx } from '../../refactor/redux/transactions/actions'
+import PollModel from "../../models/PollModel";
 
 export const POLLS_VOTE_LIMIT = 'voting/POLLS_LIMIT'
 export const POLLS_LOAD = 'voting/POLLS_LOAD'
@@ -107,21 +108,26 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
     }))
 
   } catch (e) {
-    console.log('Voting error: ', e)
     dispatch(handlePollRemoved(stub.id))
   }
 }
 
 export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
   const state = getState()
+  const { account } = state.get(DUCK_SESSION)
+  const votingDAO = daoByType('VotingManager')(getState())
+
   let poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
+
   try {
-    dispatch(handlePollRemoved(poll.id()))
+    dispatch(handlePollRemoved(poll.id))
     dispatch(goToVoting())
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.removePoll()
+    const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
+
+    const tx = await dao.removePoll({ from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
     dispatch(handlePollCreated(poll))
     throw e
@@ -130,12 +136,17 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
 
 export const vote = (choice: Number) => async (dispatch, getState) => {
   const poll = getSelectedPollFromDuck(getState())
+  const { account } = getState().get(DUCK_SESSION)
+  const votingDAO = daoByType('VotingManager')(getState())
+
   try {
     dispatch(handlePollUpdated(poll.isFetching(true)))
     const options = poll.voteEntries()
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.vote(choice, options.get(choice))
+    const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
+    const tx = await dao.vote(choice, options.get(choice), { from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
     throw e
   }
@@ -143,31 +154,42 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
 
 export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) => {
   const state = getState()
+  const { account } = getState().get(DUCK_SESSION)
+  const votingDAO = daoByType('VotingManager')(getState())
+
   let poll = pollObject && pollObject.id
     ? getVoting(state).list().item(pollObject.id)
     : getSelectedPollFromDuck(state)
+
   try {
-    dispatch(handlePollUpdated(poll
-      .poll(poll.poll().active(true))
-      .isFetching(true)))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.activatePoll()
+    dispatch(handlePollUpdated(poll.mutate({ poll: new PollModel({ ...poll.poll, active: true, isFetching: true }) })))
+
+    const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
+    const tx = await dao.activatePoll({ from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
 
 export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
   const poll = getState().get(DUCK_VOTING).list().item(pollObject.id)
+  const { account } = getState().get(DUCK_SESSION)
+  const votingDAO = daoByType('VotingManager')(getState())
+
   try {
     dispatch(handlePollUpdated(poll
-      .set('poll', poll.poll()
-        .set('active', false)
-        .set('status', false))
-      .isFetching(true)))
-    const dao = await contractsManagerDAO.getPollInterfaceDAO(poll.id())
-    await dao.endPoll()
+      .set('poll', poll.poll.mutate({
+        active: false,
+        status: false,
+        isFetching: true,
+      }))))
+    const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
+    const tx = await dao.endPoll({ from: account, symbol: 'TIME' })
+    dispatch(sendNewTx(tx))
   } catch (e) {
+    console.log('End poll error: ', e)
     dispatch(handlePollUpdated(poll))
   }
 }
