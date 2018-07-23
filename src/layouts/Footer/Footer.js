@@ -206,7 +206,7 @@ class Footer extends Component {
                     name='email'
                     floatingLabelText='Enter email to subscribe for newsletter'
                     fullWidth
-	            InputProps={{ className: classes.input }}
+                    InputProps={{ className: classes.input }}
                     InputLabelProps={{ className: classes.label }}
                     style={{ className: classes.hint }}
                   />
