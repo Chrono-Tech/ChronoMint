@@ -12,7 +12,7 @@ import { Button } from 'components'
 import { changeMomentLocale } from 'redux/ui/actions'
 import classnames from 'classnames'
 
-import './LocaleDropDown.scss'
+import styles from './LocaleDropDown.scss'
 
 function mapStateToProps (state) {
   return {
@@ -90,9 +90,9 @@ export default class LocaleDropDown extends PureComponent {
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
           targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
-          style={{
-            background: 'transparent',
+          onClose={this.handleRequestClose}
+          classes={{
+            paper: styles.popover,
           }}
         >
           <ul styleName='LocaleDropDown'>

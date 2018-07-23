@@ -8,12 +8,12 @@ import * as validator from '@chronobank/core/models/validator'
 
 export default (values) => {
 
-  const password = values.get('accountName')
+  const accountName = values.get('accountName')
 
-  let passwordErrors = new ErrorList()
-  passwordErrors.add(validator.required(password))
+  let accountNameErrors = new ErrorList()
+  accountNameErrors.add(validator.required(accountName))
 
   return {
-    accountName: passwordErrors.getErrors(),
+    accountName: accountNameErrors.getErrors(),
   }
 }

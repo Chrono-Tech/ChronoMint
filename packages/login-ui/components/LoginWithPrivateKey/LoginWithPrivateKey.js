@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from '@material-ui/core'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -21,38 +21,6 @@ import {
 
 import validate from './validate'
 import './LoginWithPrivateKey.scss'
-
-const multiRowTextFieldStyle = {
-  textareaStyle: {
-    background: 'transparent',
-    borderRadius: 3,
-    color: '#FFB54E',
-    padding: 8,
-    fontWeight: 700,
-    minHeight: 62,
-    margin: 0,
-  },
-  underlineFocusStyle:{
-    border: 'none',
-  },
-  underlineStyle: {
-    border: 'none',
-  },
-  hintStyle: {
-    margin: 'auto',
-    textAlign: 'center',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: '#A3A3CC',
-  },
-  inputStyle: {
-    height: 'auto',
-  },
-}
 
 function mapDispatchToProps (dispatch) {
   return {
@@ -84,11 +52,12 @@ class MnemonicLoginPage extends PureComponent {
               name='pk'
               type='text'
               fullWidth
-              multiLine
+              multiline
+              InputProps={{
+                disableUnderline: true,
+              }}
               rows={2}
               rowsMax={2}
-              {...styles.textField}
-              {...multiRowTextFieldStyle}
             />
           </div>
 

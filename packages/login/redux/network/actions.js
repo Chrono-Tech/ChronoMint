@@ -88,6 +88,7 @@ export const FORM_CREATE_ACCOUNT = 'CreateAccountForm'
 export const FORM_RECOVER_ACCOUNT = 'RecoverAccountPage'
 export const FORM_RESET_PASSWORD = 'ResetPasswordPage'
 export const FORM_WALLET_UPLOAD = 'FormWalletUploadPage'
+
 export const FORM_NETWORK_CREATE = 'FormNetworkCreate'
 export const FORM_NETWORK_CONFIRM_DELETE = 'FormNetworkConfirmDelete'
 export const FORM_FOOTER_EMAIL_SUBSCRIPTION = 'FooterEmailSubscriptionForm'
@@ -393,7 +394,7 @@ export const navigateToAccountName = () => (dispatch) => {
 export const onSubmitMnemonicLoginForm = (mnemonic) => async (dispatch) => {
   let mnemonicValue = (mnemonic || '').trim()
 
-  if (!mnemonicProvider.validateMnemonic(mnemonicValue)) {
+  if (!mnemonicProvider.validateMnemonic(mnemonicValue)){
     throw new SubmissionError({ mnemonic: 'Invalid mnemonic' })
   }
 
@@ -560,8 +561,6 @@ export const onSubmitResetAccountPasswordFail = (error, dispatch, submitError) =
 export const onSubmitWalletUpload = (walletString, password) => async (dispatch, getState) => {
   const state = getState()
 
-  const { selectedWallet } = state.get('persistAccount')
-
   let restoredWalletJSON
 
   try {
@@ -606,12 +605,13 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
       dispatch(navigateToAccountName())
 
     }
+  } else {
+    throw new SubmissionError({ _error: 'Wrong wallet address' })
   }
 
 }
 
 export const onSubmitWalletUploadSuccess = () => (dispatch) => {
-  dispatch(navigateToAccountName())
 
 }
 
@@ -710,7 +710,7 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   const provider = privateKeyProvider.getPrivateKeyProvider(
     privateKey.slice(2),
     networkService.getProviderSettings(),
-    state.get('multisigWallet'),
+    state.get('multisigWallet')
   )
 
   networkService.selectAccount(provider.ethereum.getAddress())
@@ -773,6 +773,10 @@ export const initAccountsSignature = () => async (dispatch, getState) => {
   dispatch(updateSelectedAccount())
 
   dispatch(resetLoadingAccountsSignatures())
+
+}
+
+export const initAccountNamePage = () => (dispatch) => {
 
 }
 

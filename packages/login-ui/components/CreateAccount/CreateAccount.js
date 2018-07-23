@@ -55,64 +55,56 @@ class CreateAccountPage extends PureComponent {
     const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
     return (
-      <MuiThemeProvider>
-        <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
-          <div styleName='create-title'>
-            <Translate value='CreateAccount.title' />
-          </div>
+      <form styleName='form' name={FORM_CREATE_ACCOUNT} onSubmit={handleSubmit}>
+        <div styleName='create-title'>
+          <Translate value='CreateAccount.title' />
+        </div>
 
-          <div styleName='create-title-description'>
-            <Translate value='CreateAccount.description' />
-          </div>
+        <div styleName='create-title-description'>
+          <Translate value='CreateAccount.description' />
+        </div>
 
-          <div styleName='fields-block'>
-            <Field
-              component={TextField}
-              name='walletName'
-              floatingLabelText={<Translate value='CreateAccount.walletName' />}
-              fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
-            />
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              floatingLabelText={<Translate value='CreateAccount.password' />}
-              fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
-            />
-            <Field
-              component={TextField}
-              name='confirmPassword'
-              type='password'
-              floatingLabelText={<Translate value='CreateAccount.confirmPassword' />}
-              fullWidth
-              {...styles.textField}
-              {...fieldStyles.textField}
-            />
-          </div>
+        <div styleName='fields-block'>
+          <Field
+            component={TextField}
+            name='walletName'
+            label={<Translate value='CreateAccount.walletName' />}
+            fullWidth
+          />
+          <Field
+            component={TextField}
+            name='password'
+            type='password'
+            label={<Translate value='CreateAccount.password' />}
+            fullWidth
+          />
+          <Field
+            component={TextField}
+            name='confirmPassword'
+            type='password'
+            label={<Translate value='CreateAccount.confirmPassword' />}
+            fullWidth
+          />
+        </div>
 
-          <div styleName='actions'>
-            <Button
-              styleName='button'
-              buttonType='login'
-              type='submit'
-            >
-              <Translate value='CreateAccount.login' />
-            </Button>
-            {error && (<div styleName='form-error'>{error}</div>)}
-            <Translate value='CreateAccount.or' />
-            <br />
-            <Link to='/login/select-account' href styleName='link'>
-              <Translate value='CreateAccount.useAccount' />
-            </Link>
-          </div>
+        <div styleName='actions'>
+          <Button
+            styleName='button'
+            buttonType='login'
+            type='submit'
+          >
+            <Translate value='CreateAccount.login' />
+          </Button>
+          {error && (<div styleName='form-error'>{error}</div>)}
+          <Translate value='CreateAccount.or' />
+          <br />
+          <Link to='/login/select-account' href styleName='link'>
+            <Translate value='CreateAccount.useAccount' />
+          </Link>
+        </div>
 
-        </form>
+      </form>
 
-      </MuiThemeProvider>
     )
   }
 }

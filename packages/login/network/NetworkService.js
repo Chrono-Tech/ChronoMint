@@ -291,6 +291,7 @@ class NetworkService extends EventEmitter {
       web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
+      console.log('select', networkId, providerId)
       this.selectProvider(providerId)
       this.selectNetwork(networkId)
       resolveNetwork()
