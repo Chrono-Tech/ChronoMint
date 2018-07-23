@@ -102,7 +102,7 @@ class RecoverAccountPage extends PureComponent {
                   styleName='field'
                   component={TextField}
                   name={`word-${i + 1}`}
-                  floatingLabelText={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
+                  label={<div><Translate value='RecoverAccount.word' />&nbsp;{ i + 1 }</div>}
                   fullWidth
                   {...styles.textField}
                 />

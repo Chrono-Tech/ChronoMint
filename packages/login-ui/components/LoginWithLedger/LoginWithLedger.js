@@ -121,7 +121,7 @@ class LoginLedger extends PureComponent {
   _buildItem(item, index) {
     return <MenuItem value={index} key={index} primaryText={item}/>
   }
-	
+
   handleChange = (event, index, value) => {this.setState({value}); ledgerProvider.setWallet(this.props.account[index]); networkService.selectAccount(this.props.account[index]);}
 
   render () {
@@ -140,7 +140,7 @@ class LoginLedger extends PureComponent {
 
         {ledger.isFetched && (
           <div styleName='account'>
-            <SelectField floatingLabelText="Select address"
+            <SelectField label="Select address"
                          autoWidth={true}
                          fullWidth={true}
                          floatingLabelStyle={{ color: 'white' }}

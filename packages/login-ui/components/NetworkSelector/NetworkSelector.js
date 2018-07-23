@@ -67,7 +67,7 @@ export default class NetworkSelector extends PureComponent {
     const { selectedNetworkId, networks, isLoading } = this.props
     return (
       <SelectField
-        floatingLabelText={<Translate value='NetworkSelector.network' />}
+        label={<Translate value='NetworkSelector.network' />}
         onChange={this.handleChange}
         value={selectedNetworkId}
         fullWidth

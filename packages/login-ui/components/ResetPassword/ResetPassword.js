@@ -90,7 +90,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='password'
               type='password'
-              floatingLabelText={<Translate value='ResetPassword.password' />}
+              label={<Translate value='ResetPassword.password' />}
               fullWidth
               {...styles.textField}
             />
@@ -98,7 +98,7 @@ class ResetPasswordPage extends PureComponent {
               component={TextField}
               name='confirmPassword'
               type='password'
-              floatingLabelText={<Translate value='ResetPassword.confirmPassword' />}
+              label={<Translate value='ResetPassword.confirmPassword' />}
               fullWidth
               {...styles.textField}
             />

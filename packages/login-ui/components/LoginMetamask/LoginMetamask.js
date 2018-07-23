@@ -45,7 +45,7 @@ class LoginMetamask extends PureComponent {
     const web3 = new Web3Legacy(window.Web3Legacy.currentProvider)
     web3Provider.reinit(web3, window.Web3Legacy.currentProvider)
     const engine = new EthereumEngine(null,{ id: web3.version.network },null,window.Web3Legacy.currentProvider,null)
-    ethereumProvider.setEngine(engine, null) 
+    ethereumProvider.setEngine(engine, null)
     window.Web3Legacy.version.getNetwork((error, currentNetworkId) => {
       if (error) {
         this.props.addError(<Translate value='LoginMetamask.wrongMetaMask' />)
@@ -65,7 +65,7 @@ class LoginMetamask extends PureComponent {
           to='options'
         />
         <TextField
-          floatingLabelText={<Translate value='LoginMetamask.network' />}
+          label={<Translate value='LoginMetamask.network' />}
           value={name}
           fullWidth
           {...styles.textField}

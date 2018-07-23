@@ -21,7 +21,7 @@ import classnames from 'classnames'
 import Web3 from 'web3'
 import NetworkCreateModal from '../NetworkCreateModal/NetworkCreateModal'
 
-import './CommonNetworkSelector.scss'
+import styles from './CommonNetworkSelector.scss'
 
 const HeaderGroup = ({ group, ...props }) => (
   <div styleName='providerGroupItem' {...props}>
@@ -229,16 +229,6 @@ export default class CommonNetworkSelector extends PureComponent {
     )
   }
 
-  getFullNetworkName (item) {
-    return `${item.provider.name} - ${item.network.name}`
-  }
-
-  resolveNetwork = () => {
-    const web3 = new Web3Legacy()
-    web3Provider.reinit(web3, web3Utils.createStatusEngine(this.props.getProviderURL()))
-    web3Provider.resolve()
-  }
-
   renderMenuItem (item, i) {
     const { selectedNetworkId, selectedProvider } = this.props
     const checked = item.network.id === selectedNetworkId && item.provider.id === (selectedProvider && selectedProvider.id)
@@ -296,11 +286,9 @@ export default class CommonNetworkSelector extends PureComponent {
           open={this.state.open}
           anchorEl={this.state.anchorEl}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'right', vertical: 'top' }}
-          onRequestClose={this.handleRequestClose}
-          style={{
-            background: 'transparent',
-            borderRadius: 20,
+          onClose={this.handleRequestClose}
+          classes={{
+            paper: styles.popover,
           }}
         >
           <div styleName='providersList'>
