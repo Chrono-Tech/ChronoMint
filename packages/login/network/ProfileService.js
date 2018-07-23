@@ -9,7 +9,7 @@ import axios from 'axios'
 const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
-const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
+const GET_SIGNATURE_REST = `${basePath}/security/signin/signature/chronomint`
 const UPDATE_LEVEL_1 = `${basePath}/security/me/profile/level1`
 const UPDATE_LEVEL_2 = `${basePath}/security/me/profile/level2`
 const UPDATE_LEVEL_3 = `${basePath}/security/me/profile/level3`
@@ -27,15 +27,15 @@ class ProfileService extends EventEmitter {
     this._dispatch = store.dispatch
   }
 
-  getProfileHost(){
+  getProfileHost () {
     return PROFILE_BACKEND_REST_URL
   }
 
-  getServerProvider(){
+  getServerProvider () {
     return axios.create({ baseURL: this.getProfileHost() })
   }
 
-  withAuthorization(authorization, config = {})  {
+  withAuthorization (authorization, config = {}) {
     return {
       ...config,
       headers: {
@@ -45,7 +45,7 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  withAuthorizaionSignature(signature, config = {}) {
+  withAuthorizaionSignature (signature, config = {}) {
     return {
       ...config,
       headers: {
@@ -55,18 +55,18 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  getPurposeData(){
-    return {'purpose': PURPOSE_VALUE}
+  getPurposeData () {
+    return { 'purpose': PURPOSE_VALUE }
   }
 
-  getSignData(){
+  getSignData () {
     return JSON.stringify({
       body: this.getPurposeData(),
       url: GET_SIGNATURE_REST,
     })
   }
 
-  async getProfile(signature){
+  async getProfile (signature) {
     const service = this.getServerProvider()
 
     const body = this.getPurposeData()
@@ -76,7 +76,7 @@ class ProfileService extends EventEmitter {
     return data
   }
 
-  async getPersonInfo(addresses = []){
+  async getPersonInfo (addresses = []) {
     const service = this.getServerProvider()
 
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
@@ -125,7 +125,7 @@ class ProfileService extends EventEmitter {
     const { data } = await service.post(
       VALIDATE_LEVEL_2_PHONE,
       null,
-      this.withAuthorization(token)
+      this.withAuthorization(token),
     )
 
     return data
@@ -137,7 +137,7 @@ class ProfileService extends EventEmitter {
     const { data } = await service.post(
       VALIDATE_LEVEL_2_EMAIL,
       null,
-      this.withAuthorization(token)
+      this.withAuthorization(token),
     )
 
     return data

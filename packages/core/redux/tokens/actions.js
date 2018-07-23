@@ -75,7 +75,9 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
     } else {
       const txOptions = tx.options()
       // TODO @ipavlenko: Pass arguments
-      await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
+      const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
+      // TODO @abdulov remove console.log
+      console.log('hash', hash)
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -125,7 +127,8 @@ export const initTokens = () => async (dispatch, getState) => {
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
-      tokenService.createDAO(token, web3)
+      const dao = tokenService.createDAO(token, web3)
+      dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()
 
