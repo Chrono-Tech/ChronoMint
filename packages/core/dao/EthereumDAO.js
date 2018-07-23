@@ -156,36 +156,64 @@ export class EthereumDAO extends AbstractTokenDAO {
     return { gasLimit: gasLimitBN, gasFee: gasFeeBN, gasPrice: gasPriceBN }
   }
 
-  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): Promise {
+  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, advancedParams): Promise {
+    this.submit(from, to, amount, token, feeMultiplier, advancedParams)
+  }
+
+  accept (transfer: TxExecModel) {
+    setImmediate(() => {
+      this.emit('accept', transfer)
+    })
+  }
+
+  reject (transfer: TxExecModel) {
+    setImmediate(() => {
+      this.emit('reject', transfer)
+    })
+  }
+
+  async submit (from, to, amount, token, feeMultiplier, advancedParams) {
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(null, [to, amount], amount, from, { feeMultiplier })
     const value = new Amount(amount, this._symbol)
 
-    return new TxExecModel({
-      contract: this._contractName,
-      func: 'transfer',
-      blockchain: this._contractName,
-      symbol: this._symbol,
-      from,
-      fields: {
-        to: {
-          value: to,
-          description: 'to',
+    setImmediate(async () => {
+      this.emit('submit', new TxExecModel({
+        contract: this._contractName,
+        func: 'transfer',
+        blockchain: this._contractName,
+        symbol: this._symbol,
+        from,
+        fields: {
+          to: {
+            value: to,
+            description: 'to',
+          },
+          amount: {
+            value: new Amount(amount, this._symbol),
+            description: 'amount',
+          },
         },
-        amount: {
-          value: new Amount(amount, this._symbol),
-          description: 'amount',
+        value,
+        to,
+        additionalOptions: advancedParams,
+        fee: {
+          gasLimit: new Amount(gasLimit, this._symbol),
+          gasFee: new Amount(gasFee, this._symbol),
+          gasPrice: new Amount(gasPrice, this._symbol),
+          feeMultiplier,
         },
-      },
-      value,
-      to,
-      additionalOptions,
-      fee: {
-        gasLimit: new Amount(gasLimit, this._symbol),
-        gasFee: new Amount(gasFee, this._symbol),
-        gasPrice: new Amount(gasPrice, this._symbol),
-        feeMultiplier,
-      },
+      }))
     })
+  }
+
+  async immediateTransfer (tx: TxExecModel) {
+    try {
+      return await ethereumProvider.transfer(tx, this.web3)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   async watchTransfer (accounts) {

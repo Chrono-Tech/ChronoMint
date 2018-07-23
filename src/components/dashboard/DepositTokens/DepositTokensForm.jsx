@@ -4,7 +4,8 @@
  */
 
 import { Button, IPFSImage } from 'components'
-import { Slider, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+
 import { isTestingNetwork } from '@chronobank/login/network/settings'
 import { DUCK_NETWORK } from '@chronobank/login/redux/network/actions'
 import web3Converter from '@chronobank/core/utils/Web3Converter'
@@ -13,6 +14,7 @@ import { modalsOpen } from 'redux/modals/actions'
 import BigNumber from 'bignumber.js'
 import Preloader from 'components/common/Preloader/Preloader'
 import TokenValue from 'components/common/TokenValue/TokenValue'
+import Slider from 'components/common/Slider'
 import Amount from '@chronobank/core/models/Amount'
 import AssetsCollection from '@chronobank/core/models/assetHolder/AssetsCollection'
 import TokenModel from '@chronobank/core/models/tokens/TokenModel'

@@ -4,6 +4,7 @@
  */
 
 import BigNumber from 'bignumber.js'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import TokenModel from '../../../models/tokens/TokenModel'
 import AbstractTokenDAO from './AbstractTokenDAO'
 import ERC20DAODefaultABI from '../../../dao/abi/ERC20DAODefaultABI'
@@ -162,37 +163,64 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
    * @param advancedOptions {object} - other options, maybe useless
    * @returns {TxExecModel}
    */
-  async transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): TxExecModel {
+  transfer (from: string, to: string, amount: Amount, token, feeMultiplier: Number = 1, additionalOptions): Promise {
+    this.submit(from, to, amount, token, feeMultiplier, additionalOptions)
+  }
 
+  accept (transfer: TxExecModel) {
+    setImmediate(() => {
+      this.emit('accept', transfer)
+    })
+  }
+
+  reject (transfer: TxExecModel) {
+    setImmediate(() => {
+      this.emit('reject', transfer)
+    })
+  }
+
+  async submit (from, to, amount, token, feeMultiplier, advancedParams) {
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas('transfer', [to, amount], new BigNumber(0), from, { feeMultiplier })
     const data = this.contract.methods.transfer(to, amount).encodeABI()
 
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func: 'transfer',
-      blockchain: this.token.blockchain(),
-      symbol: this.token.symbol(),
-      from,
-      to: this.contract._address,
-      fields: {
-        to: {
-          value: to,
-          description: 'to',
+    setImmediate(async () => {
+      this.emit('submit', new TxExecModel({
+        contract: this.abi.contractName,
+        func: 'transfer',
+        blockchain: this.token.blockchain(),
+        symbol: this.token.symbol(),
+        from,
+        to: this.contract._address,
+        fields: {
+          to: {
+            value: to,
+            description: 'to',
+          },
+          amount: {
+            value: new Amount(amount, this.token.symbol()),
+            description: 'amount',
+          },
         },
-        amount: {
-          value: new Amount(amount, this.token.symbol()),
-          description: 'amount',
+        fee: {
+          gasLimit: new Amount(gasLimit, ETH),
+          gasFee: new Amount(gasFee, ETH),
+          gasPrice: new Amount(gasPrice, ETH),
+          feeMultiplier,
         },
-      },
-      fee: {
-        gasLimit: new Amount(gasLimit, ETH),
-        gasFee: new Amount(gasFee, ETH),
-        gasPrice: new Amount(gasPrice, ETH),
-        feeMultiplier,
-      },
-      value: new Amount(0, ETH),
-      data,
+        value: new Amount(0, ETH),
+        data,
+      }))
     })
+  }
+
+  async immediateTransfer (tx: TxExecModel) {
+    try {
+      return await ethereumProvider.transfer(tx, this.web3)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   async approve (spender: string, amount: Amount, feeMultiplier: Number = 1, advancedOptions = undefined): Promise {
@@ -204,31 +232,33 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, amount], new BigNumber(0), from, { feeMultiplier })
     const data = this.contract.methods.approve(spender, amount).encodeABI()
 
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func: 'approve',
-      blockchain: this.token.blockchain(),
-      symbol: this.token.symbol(),
-      from,
-      to: this.contract._address.toLowerCase(),
-      fields: {
-        to: {
-          value: this.contract._address,
-          description: 'to',
+    setImmediate(async () => {
+      this.emit('submit', new TxExecModel({
+        contract: this.abi.contractName,
+        func: 'approve',
+        blockchain: this.token.blockchain(),
+        symbol: this.token.symbol(),
+        from,
+        to: this.contract._address.toLowerCase(),
+        fields: {
+          to: {
+            value: this.contract._address,
+            description: 'to',
+          },
+          amount: {
+            value: new Amount(amount, this.token.symbol()),
+            description: 'amount',
+          },
         },
-        amount: {
-          value: new Amount(amount, this.token.symbol()),
-          description: 'amount',
+        fee: {
+          gasLimit: new Amount(gasLimit, ETH),
+          gasFee: new Amount(gasFee, ETH),
+          gasPrice: new Amount(gasPrice, ETH),
+          feeMultiplier,
         },
-      },
-      fee: {
-        gasLimit: new Amount(gasLimit, ETH),
-        gasFee: new Amount(gasFee, ETH),
-        gasPrice: new Amount(gasPrice, ETH),
-        feeMultiplier,
-      },
-      value: new Amount(0, ETH),
-      data,
+        value: new Amount(0, ETH),
+        data,
+      }))
     })
   }
 
@@ -240,31 +270,33 @@ export default class ERC20TokenDAO extends AbstractTokenDAO {
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas('approve', [spender, 0], new BigNumber(0), from, { feeMultiplier })
     const data = this.contract.methods.approve(spender, new Amount(0, symbol)).encodeABI()
 
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func: 'approve',
-      blockchain: this.token.blockchain(),
-      symbol: this.token.symbol(),
-      from,
-      to: this.contract._address.toLowerCase(),
-      fields: {
-        to: {
-          value: this.contract._address,
-          description: 'to',
+    setImmediate(async () => {
+      this.emit('submit', new TxExecModel({
+        contract: this.abi.contractName,
+        func: 'approve',
+        blockchain: this.token.blockchain(),
+        symbol: this.token.symbol(),
+        from,
+        to: this.contract._address.toLowerCase(),
+        fields: {
+          to: {
+            value: this.contract._address,
+            description: 'to',
+          },
+          amount: {
+            value: new Amount(0, this.token.symbol()),
+            description: 'amount',
+          },
         },
-        amount: {
-          value: new Amount(0, this.token.symbol()),
-          description: 'amount',
+        fee: {
+          gasLimit: new Amount(gasLimit, ETH),
+          gasFee: new Amount(gasFee, ETH),
+          gasPrice: new Amount(gasPrice, ETH),
+          feeMultiplier,
         },
-      },
-      fee: {
-        gasLimit: new Amount(gasLimit, ETH),
-        gasFee: new Amount(gasFee, ETH),
-        gasPrice: new Amount(gasPrice, ETH),
-        feeMultiplier,
-      },
-      value: new Amount(0, ETH),
-      data,
+        value: new Amount(0, ETH),
+        data,
+      }))
     })
   }
 

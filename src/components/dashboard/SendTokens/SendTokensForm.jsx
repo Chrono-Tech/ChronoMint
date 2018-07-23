@@ -24,7 +24,9 @@ import WalletModel from '@chronobank/core/models/wallet/WalletModel'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { SelectField, Slider, TextField } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import Select from 'redux-form-material-ui/es/Select'
+import Slider from 'components/common/Slider'
 import { change, Field, formPropTypes, formValueSelector, getFormSyncErrors, getFormValues, reduxForm } from 'redux-form/immutable'
 import { ETH, FEE_RATE_MULTIPLIER, getSpendersAllowance } from '@chronobank/core/redux/mainWallet/actions'
 import { DUCK_SESSION } from '@chronobank/core/redux/session/actions'
@@ -454,24 +456,18 @@ export default class SendTokensForm extends PureComponent {
                 ? <Preloader />
                 : (
                   <Field
-                    component={SelectField}
+                    component={Select}
                     name='symbol'
-                    fullWidth
-                    {...styles}
+                    styleName='symbolSelector'
+                    menu-symbol='symbolSelectorMenu'
                   >
                     {walletInfo.tokens
                       .map((tokenData) => {
                         const token: TokenModel = this.props.tokens.item(tokenData.symbol)
                         if (token.isLocked()) {
-                          return
+                          return null
                         }
-                        return (
-                          <MenuItem
-                            key={token.id()}
-                            value={token.id()}
-                            primaryText={token.symbol()}
-                          />
-                        )
+                        return (<MenuItem key={token.id()} value={token.id()}>{token.symbol()} </MenuItem>)
                       })}
                   </Field>
                 )
@@ -494,11 +490,11 @@ export default class SendTokensForm extends PureComponent {
 
         <div styleName='balance'>
           <div styleName='value-amount'>
-            {tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}
+            {/*{tokenInfo.symbol} {integerWithDelimiter(tokenInfo.amount, true, null)}*/}
           </div>
           <div styleName='value'>
             <span styleName='price-value'>
-              ≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}
+              {/*≈{this.props.selectedCurrency} {integerWithDelimiter(tokenInfo.amountPrice.toFixed(2), true, null)}*/}
             </span>
           </div>
         </div>
@@ -542,7 +538,6 @@ export default class SendTokensForm extends PureComponent {
 
               <Field
                 component={Slider}
-                sliderStyle={{ marginBottom: 0, marginTop: 5 }}
                 name='feeMultiplier'
                 {...FEE_RATE_MULTIPLIER}
               />

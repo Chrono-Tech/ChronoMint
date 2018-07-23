@@ -32,6 +32,8 @@ import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
 import { daoByType } from '../../refactor/redux/daos/selectors'
+import TxExecModel from '../../refactor/models/TxExecModel'
+import { modalsOpenConfirmDialog } from '../../../../src/redux/modals/actions'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -43,9 +45,20 @@ export const TOKENS_REMOVE = 'tokens/remove'
 export const TOKENS_FAILED = 'tokens/failed'
 
 // It is not a redux action
-const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    await dispatch(showConfirmTransferModal(dao, tx))
+    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      dispatch(modalsOpenConfirmDialog({
+        props: {
+          tx,
+          dao,
+          confirm: (tx) => dao.accept(tx),
+          reject: (tx) => dao.reject(tx),
+        },
+      }))
+    } else {
+      await dispatch(showConfirmTransferModal(dao, tx))
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
@@ -55,11 +68,17 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 }
 
 // It is not a redux action
-const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
-    const txOptions = tx.options()
-    // TODO @ipavlenko: Pass arguments
-    await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
+    if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      await dao.immediateTransfer(tx)
+    } else {
+      const txOptions = tx.options()
+      // TODO @ipavlenko: Pass arguments
+      const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
+      // TODO @abdulov remove console.log
+      console.log('hash', hash)
+    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('Transfer error', e)
@@ -69,7 +88,7 @@ const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
 }
 
 // It is not a redux action
-const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel) => {
+const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
   dispatch(notify(new TransferErrorNoticeModel(tx, e)))
 }
@@ -87,6 +106,7 @@ export const initTokens = () => async (dispatch, getState) => {
   }
   const web3 = getState().get('web3')
   ethereumDAO.connect(web3)
+  dispatch(alternateTxHandlingFlow(ethereumDAO))
   dispatch({ type: TOKENS_INIT, isInited: true })
 
   dispatch({ type: TOKENS_FETCHING, count: 0 })
@@ -107,7 +127,8 @@ export const initTokens = () => async (dispatch, getState) => {
     })
     .on(EVENT_NEW_ERC20_TOKEN, (token: TokenModel) => {
       dispatch({ type: TOKENS_FETCHED, token })
-      tokenService.createDAO(token, web3)
+      const dao = tokenService.createDAO(token, web3)
+      dispatch(alternateTxHandlingFlow(dao))
     })
     .fetchTokens()
 
