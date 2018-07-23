@@ -44,7 +44,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   connect (web3, options) {
     super.connect(web3, options)
 
-    this.pollCreatedEmitter = this.contract.events.PollCreated({})
+    this.pollCreatedEmitter = this.contract.events.pollCreated({})
       .on('data', this.handlePollCreatedData.bind(this))
       .on('changed', this.handlePollCreatedChanged.bind(this))
       .on('error', this.handlePollCreatedError.bind(this))

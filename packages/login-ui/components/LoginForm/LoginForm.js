@@ -123,7 +123,7 @@ class LoginPage extends React.Component {
               type='password'
               label={<Translate value='LoginForm.enterPassword' />}
               fullWidth
-              InputProps={{ className: classes.input }}
+              InputProps={{ className: classes.inputStyle }}
               InputLabelProps={{ className: classes.floatingLabel }}
               style={{ className: classes.hint }}
             />

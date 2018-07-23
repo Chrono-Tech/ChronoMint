@@ -40,6 +40,9 @@ class PrivateKeyProvider {
     const waves = network && network.waves && WavesWallet.fromPrivateKey(privateKey, WavesApi[network.waves])
 
     let lastDeriveNumbers = 0
+    const engine = new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers)
+    console.log(ethereumWallet)
+    console.log(engine)
 
     wallets && wallets
       .items()
@@ -51,7 +54,7 @@ class PrivateKeyProvider {
 
     return {
       networkCode,
-      ethereum: new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
+      ethereum: engine,//new EthereumEngine(ethereumWallet, network, url, null, lastDeriveNumbers),
       btc: network && network.bitcoin && createBTCEngine(btc, bitcoin.networks[network.bitcoin]),
       bcc: network && network.bitcoinCash && createBCCEngine(bcc, bitcoin.networks[network.bitcoinCash]),
       btg: network && network.bitcoinGold && createBTGEngine(btg, bitcoin.networks[network.bitcoinGold]),

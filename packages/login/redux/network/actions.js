@@ -32,6 +32,7 @@ import { push, goBack } from '@chronobank/core-dependencies/router'
 import networkService from '../../network/NetworkService'
 import profileService from '../../network/ProfileService'
 import privateKeyProvider from '../../network/privateKeyProvider'
+import walletProvider from '../../network/walletProvider'
 import mnemonicProvider from '../../network/mnemonicProvider'
 import { ethereumProvider } from '../../network/EthereumProvider'
 import { btcProvider, ltcProvider, btgProvider } from '../../network/BitcoinProvider'
@@ -472,7 +473,8 @@ export const onSubmitLoginForm = (password) => async (dispatch, getState) => {
     dispatch(getProfileSignature(wallet[0]))
 
     if (privateKey) {
-      await dispatch(handlePrivateKeyLogin(privateKey))
+      await dispatch(handleWalletLogin(selectedWallet.encrypted, password))
+      //await dispatch(handlePrivateKeyLogin(privateKey))
     }
 
   } catch (e) {
@@ -672,15 +674,16 @@ export const onWalletSelect = (wallet) => (dispatch, getState) => {
   dispatch(navigateToLoginPage())
 }
 
-export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
+export const handleWalletLogin = (wallet, password) => async (dispatch, getState) => {
   let state = getState()
-
+  console.log(wallet[0])
+  console.log(password)
   dispatch(loading())
   dispatch(clearErrors())
-  const provider = privateKeyProvider.getPrivateKeyProvider(
-    privateKey.slice(2),
+  const provider = walletProvider.getProvider(
+    wallet[0],
+    password,
     networkService.getProviderSettings(),
-    state.get('multisigWallet'),
   )
 
   networkService.selectAccount(provider.ethereum.getAddress())
@@ -694,6 +697,43 @@ export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) 
   const isPassed = await networkService.checkNetwork()
 
   if (isPassed) {
+    networkService.createNetworkSession(
+      selectedAccount,
+      selectedProviderId,
+      selectedNetworkId,
+    )
+    dispatch(login(selectedAccount))
+  }
+
+}
+
+
+export const handlePrivateKeyLogin = (privateKey) => async (dispatch, getState) => {
+  let state = getState()
+
+  dispatch(loading())
+  dispatch(clearErrors())
+  const provider = privateKeyProvider.getPrivateKeyProvider(
+    privateKey.slice(2),
+    networkService.getProviderSettings(),
+    state.get('multisigWallet'),
+  )
+ console.log(provider.ethereum.getAddress())
+
+  networkService.selectAccount(provider.ethereum.getAddress())
+  await networkService.setup(provider)
+  console.log('network service setup')
+
+  state = getState()
+  const { selectedAccount, selectedProviderId, selectedNetworkId } = state.get(DUCK_NETWORK)
+  console.log(selectedAccount)
+
+  dispatch(clearErrors())
+
+  const isPassed = await networkService.checkNetwork()
+
+  if (isPassed) {
+  console.log('create network session')
     networkService.createNetworkSession(
       selectedAccount,
       selectedProviderId,

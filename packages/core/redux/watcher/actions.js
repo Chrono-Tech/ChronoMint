@@ -75,7 +75,9 @@ export const globalWatcher = () => async (dispatch) => {
 
 // for all logged in users
 export const watcher = ({ web3 }) => async (dispatch) => {
+  console.log('DAOs init')
   await dispatch(initDAOs({ web3 }))
+  console.log('DAOs inited')
   dispatch(initMultisigWalletManager())
   dispatch(watchInitProfile())
   dispatch(initTokens())
