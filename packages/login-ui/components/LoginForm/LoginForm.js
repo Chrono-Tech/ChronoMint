@@ -26,6 +26,7 @@ import {
   onSubmitLoginFormFail,
 } from '@chronobank/login/redux/network/actions'
 import { isLocalNode } from '@chronobank/login/network/settings'
+import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
 import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
 import styles from 'layouts/Splash/styles'
@@ -34,7 +35,7 @@ import './LoginForm.scss'
 
 function mapStateToProps (state) {
   const network = state.get(DUCK_NETWORK)
-  const selectedWallet = state.get('persistAccount').selectedWallet
+  const selectedWallet = state.get(DUCK_PERSIST_ACCOUNT).selectedWallet
   const formSelector = formValueSelector(FORM_LOGIN_PAGE)
 
   return {
@@ -119,18 +120,6 @@ class LoginPage extends React.Component {
             linkTitle='My Accounts'
           />
 
-          <div styleName='field'>
-            <Field
-              component={TextField}
-              name='password'
-              type='password'
-              label={<Translate value='LoginForm.enterPassword' />}
-              fullWidth
-              InputProps={{ className: classes.inputStyle }}
-              InputLabelProps={{ className: classes.floatingLabel }}
-              style={{ className: classes.hint }}
-            />
-          </div>
           <div styleName='field'>
             <Field
               component={TextField}
