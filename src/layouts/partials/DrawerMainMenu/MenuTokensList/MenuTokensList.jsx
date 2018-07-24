@@ -47,26 +47,25 @@ function mapDispatchToProps (dispatch) {
       panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + token.blockchain,
       isOpened: false,
     })),
-    handleTokenMoreInfo: (selectedToken, handleClose) => {
+    handleTokenMoreInfo: (selectedToken, handleClose, isClose) => {
       dispatch({ type: SIDES_CLOSE_ALL })
-      dispatch(sidesPush({
-        component: MenuTokenMoreInfo,
-        panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + selectedToken.blockchain,
-        isOpened: true,
-        direction: 'left',
-        preCloseAction: handleClose,
-        componentProps: {
-          selectedToken,
-        },
-        drawerProps: {
-          containerClassName: 'containerTokenSideMenu',
-          overlayClassName: 'overlayTokenSideMenu',
-          containerStyle: {
-            width: '300px',
+      if (!isClose) {
+        dispatch(sidesPush({
+          component: MenuTokenMoreInfo,
+          panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY + '_' + selectedToken.blockchain,
+          isOpened: true,
+          anchor: 'left',
+          preCloseAction: handleClose,
+          componentProps: {
+            selectedToken,
           },
-          width: 300,
-        },
-      }))
+          drawerProps: {
+            width: 300,
+          },
+        }))
+      } else {
+        handleClose()
+      }
     },
   }
 }
@@ -100,12 +99,12 @@ export default class MenuTokensList extends PureComponent {
     })
   }
 
-  handleSelectToken = (selectedToken) => {
+  handleSelectToken = (selectedToken, isClose) => {
     const handleClose = () => {
       this.setState({ selectedToken: null })
     }
     this.setState({ selectedToken })
-    this.props.handleTokenMoreInfo(selectedToken, handleClose)
+    this.props.handleTokenMoreInfo(selectedToken, handleClose, isClose)
   }
 
   handleScrollToBlockchain = (blockchain) => {
@@ -141,10 +140,10 @@ export default class MenuTokensList extends PureComponent {
   }
 
   render () {
-    const setToken = (token) => {
+    const setToken = (token, isClose) => {
       return () => {
         if (token.address) {
-          this.handleSelectToken(token)
+          this.handleSelectToken(token, isClose)
         }
       }
     }
@@ -153,29 +152,31 @@ export default class MenuTokensList extends PureComponent {
     return (
       <div styleName='root'>
         {this.props.tokens
-          .map((token) => (
-            <div styleName='item' key={token.blockchain}>
-              <div styleName='syncIcon'>
-                <span
-                  styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
-                  title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
-                />
-              </div>
-              <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>
-                <div styleName='addressName'>{token.title}</div>
-                <div styleName='address'>
-                  <Translate value={`${prefix}.defaultWallet`} />{token.address || <Translate value={`${prefix}.notAvailable`} />}
+          .map((token) => {
+            const isSelect = selectedToken && selectedToken.title === token.title
+            return (
+              <div styleName='item' key={token.blockchain}>
+                <div styleName='syncIcon'>
+                  <span
+                    styleName={classnames('icon', { 'status-synced': !!token.address, 'status-offline': !token.address })}
+                    title={I18n.t(`${prefix}.${token.address ? 'synced' : 'offline'}`, { network: this.props.networkName })}
+                  />
+                </div>
+                <div styleName='addressTitle' onClick={this.handleTouchTitle(token.blockchain)}>
+                  <div styleName='addressName'>{token.title}</div>
+                  <div styleName='address'>
+                    <Translate value={`${prefix}.defaultWallet`} />{token.address || <Translate value={`${prefix}.notAvailable`} />}
+                  </div>
+                </div>
+                <div
+                  styleName={classnames('itemMenu', { 'hover': !!token.address, 'selected': isSelect })}
+                  onClick={setToken(token, isSelect)}
+                >
+                  <i className='material-icons'>more_vert</i>
                 </div>
               </div>
-              <div
-                styleName={classnames('itemMenu', { 'hover': !!token.address, 'selected': selectedToken && selectedToken.title === token.title })}
-                onClick={setToken(token)}
-              >
-                <i className='material-icons'>more_vert</i>
-              </div>
-            </div>),
-          )
-        }
+            )
+          })}
       </div>
     )
   }

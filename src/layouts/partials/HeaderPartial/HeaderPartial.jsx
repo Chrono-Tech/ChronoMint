@@ -33,7 +33,12 @@ function mapDispatchToProps (dispatch) {
         component: NotificationContent,
         panelKey: NOTIFICATION_PANEL_KEY,
         isOpened: true,
-        direction: 'right',
+        className: 'notifications',
+        drawerProps: {
+          variant: 'temporary',
+          anchor: 'right',
+          width: 300,
+        },
       }))
     },
   }

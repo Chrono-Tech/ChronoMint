@@ -13,29 +13,17 @@ const initialState = {
   isProfilePanelOpen: false,
   mainMenuIsOpen: false,
   stack: {
-    [ PROFILE_SIDE_PANEL_KEY ]: {
-      component: ProfileContent,
-      panelKey: PROFILE_SIDE_PANEL_KEY,
-      isOpened: false,
-      direction: 'right',
-      drawerProps: {
-        containerStyle: {
-          width: '300px',
-        },
-        width: 300,
-      },
-    },
-    [ NOTIFICATION_PANEL_KEY ]: {
+    [NOTIFICATION_PANEL_KEY]: {
       component: NotificationContent,
       panelKey: NOTIFICATION_PANEL_KEY,
       isOpened: false,
-      direction: 'right',
+      anchor: 'right',
     },
-    [ MENU_ASSETS_MANAGER_PANEL_KEY ]: {
+    [MENU_ASSETS_MANAGER_PANEL_KEY]: {
       component: MenuAssetsManagerMoreInfo,
       panelKey: MENU_ASSETS_MANAGER_PANEL_KEY,
       isOpened: false,
-      direction: 'left',
+      anchor: 'left',
     },
   },
 }
@@ -47,12 +35,13 @@ export default (state = initialState, action) => {
         ...state,
         stack: {
           ...state.stack,
-          [ action.panelKey ]: {
+          [action.panelKey]: {
             panelKey: action.panelKey,
             component: action.component,
             componentProps: action.componentProps,
+            className: action.className,
             isOpened: action.isOpened,
-            direction: action.direction,
+            anchor: action.anchor,
             drawerProps: action.drawerProps,
             preCloseAction: action.preCloseAction,
           },
@@ -63,8 +52,8 @@ export default (state = initialState, action) => {
         ...state,
         stack: {
           ...state.stack,
-          [ action.panelKey ]: {
-            ...state.stack[ action.panelKey ],
+          [action.panelKey]: {
+            ...state.stack[action.panelKey],
             isOpened: action.isOpened,
           },
         },
@@ -72,7 +61,7 @@ export default (state = initialState, action) => {
     case actions.SIDES_CLOSE_ALL:
       let newStackToClose = { ...state.stack }
       Object.keys(state.stack).map((key) => {
-        newStackToClose[ key ].isOpened = false
+        newStackToClose[key].isOpened = false
       })
       return {
         ...state,
@@ -82,7 +71,7 @@ export default (state = initialState, action) => {
       }
     case actions.SIDES_POP:
       let newStack = { ...state.stack }
-      delete newStack[ action.panelKey ]
+      delete newStack[action.panelKey]
 
       return {
         ...state,

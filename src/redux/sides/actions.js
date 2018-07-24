@@ -12,13 +12,14 @@ export const SIDES_TOGGLE_MAIN_MENU = 'sides/TOGGLE_MAIN_MENU'
 
 export const DUCK_SIDES = 'sides'
 
-export const sidesPush = ({ component, panelKey, isOpened, componentProps, direction, drawerProps, preCloseAction }) => (dispatch) => dispatch({
+export const sidesPush = ({ component, panelKey, isOpened, className, componentProps, anchor, drawerProps, preCloseAction }) => (dispatch) => dispatch({
   type: SIDES_PUSH,
   component,
   panelKey,
+  className,
   isOpened,
   componentProps,
-  direction,
+  anchor,
   drawerProps,
   preCloseAction,
 })

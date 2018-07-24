@@ -12,15 +12,13 @@ import { Translate } from 'react-redux-i18n'
 import classnames from 'classnames'
 import { connect } from 'react-redux'
 import menu from 'menu'
-import { drawerHide, drawerToggle } from 'redux/drawer/actions'
+import { drawerHide } from 'redux/drawer/actions'
 import { DUCK_SESSION, logout } from '@chronobank/core/redux/session/actions'
 import chronWalletLogoSVG from 'assets/img/chronowallettext-white.svg'
 import ProfileModel from '@chronobank/core/models/ProfileModel'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
-import { modalsOpen } from 'redux/modals/actions'
-import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
@@ -46,24 +44,17 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleDrawerToggle: () => dispatch(drawerToggle()),
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
-    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
     handle: (handleClose) => {
       dispatch({ type: SIDES_CLOSE_ALL })
       dispatch(sidesPush({
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
-        direction: 'left',
+        anchor: 'left',
         preCloseAction: handleClose,
         drawerProps: {
-          containerClassName: 'containerTokenSideMenu',
-          overlayClassName: 'overlayTokenSideMenu',
-          containerStyle: {
-            width: '300px',
-          },
           width: 300,
         },
       }))
@@ -75,14 +66,9 @@ function mapDispatchToProps (dispatch) {
         component: MenuAssetsManagerMoreInfo,
         panelKey: MENU_TOKEN_MORE_INFO_PANEL_KEY,
         isOpened: true,
-        direction: 'left',
+        anchor: 'left',
         preCloseAction: handleClose,
         drawerProps: {
-          containerClassName: 'containerTokenSideMenu',
-          overlayClassName: 'overlayTokenSideMenu',
-          containerStyle: {
-            width: '300px',
-          },
           width: 300,
         },
       }))
@@ -94,8 +80,6 @@ function mapDispatchToProps (dispatch) {
 export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
-    handleDrawerToggle: PropTypes.func,
-    handleProfileEdit: PropTypes.func,
     handleDrawerHide: PropTypes.func,
     profile: PropTypes.instanceOf(ProfileModel),
     networkName: PropTypes.string,
@@ -193,7 +177,7 @@ export default class DrawerMainMenu extends PureComponent {
 
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
-                <div styleName='avatar-icon' onClick={this.props.handleProfileEdit}>
+                <div styleName='avatar-icon'>
                   <IPFSImage
                     styleName='avatar-icon-content'
                     multihash={this.props.profile.icon()}
