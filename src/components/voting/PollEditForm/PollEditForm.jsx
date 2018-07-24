@@ -15,7 +15,10 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { DatePicker, Slider, TextField, TimePicker } from 'redux-form-material-ui'
+import { TextField } from 'redux-form-material-ui'
+import Slider from 'components/common/Slider'
+import DatePicker from 'components/common/DatePicker'
+import TimePicker from 'components/common/TimePicker'
 import { DUCK_I18N } from 'redux/i18n/actions'
 import { DUCK_TOKENS } from '@chronobank/core/redux/tokens/actions'
 import { daoByType } from '@chronobank/core/refactor/redux/daos/selectors'
@@ -29,6 +32,7 @@ import { FEE_RATE_MULTIPLIER, TIME } from '@chronobank/core/redux/mainWallet/act
 import TokenValue from 'components/common/TokenValue/TokenValue'
 import PollDetailsModel from '@chronobank/core/models/PollDetailsModel'
 import FileModel from '@chronobank/core/models/FileSelect/FileModel'
+import { I18n } from '@chronobank/core-dependencies/i18n'
 import { Button } from 'components/index'
 import './PollEditForm.scss'
 import validate from './validate'
@@ -179,14 +183,15 @@ export default class PollEditForm extends Component {
                 component={TextField}
                 name='title'
                 fullWidth
-                floatingLabelText={<Translate value={`${prefix}.pollTitle`} />}
+                placeholder={I18n.t(`${prefix}.pollTitle`)}
               />
               <Field
                 component={TextField}
                 name='description'
                 fullWidth
                 multiline
-                floatingLabelText={<Translate value={`${prefix}.pollDescription`} />}
+                rowsMax='4'
+                placeholder={I18n.t(`${prefix}.pollDescription`)}
               />
 
               <Field
@@ -212,7 +217,7 @@ export default class PollEditForm extends Component {
                     component={TextField}
                     name={`options[${i}]`}
                     fullWidth
-                    floatingLabelText={<Translate value={`${prefix}.option`} />}
+                    placeholder={I18n.t(`${prefix}.option`)}
                   />
                 </div>
               ))}
@@ -262,12 +267,12 @@ export default class PollEditForm extends Component {
                 <Field
                   component={DatePicker}
                   locale={this.props.locale}
-                  DateTimeFormat={Intl.DateTimeFormat}
+                  dateTimeFormat={Intl.DateTimeFormat}
                   cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadline'
                   fullWidth
-                  floatingLabelText={<Translate value={`${prefix}.finishedDate`} />}
+                  placeholder={<Translate value={`${prefix}.finishedDate`} />}
                   style={{ width: '165px' }}
                 />
                 <Field
@@ -277,7 +282,7 @@ export default class PollEditForm extends Component {
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadlineTime'
                   fullWidth
-                  floatingLabelText={<Translate value={`${prefix}.finishedTime`} />}
+                  placeholder={<Translate value={`${prefix}.finishedTime`} />}
                   style={{ width: '165px', marginLeft: '40px' }}
                 />
               </div>

@@ -5,13 +5,14 @@
 
 import { ContractDAOModel } from '../../models/index'
 import {
-  CONTRACTS_MANAGER,
-  MULTI_EVENTS_HISTORY,
-  ASSET_MANAGER_LIBRARY,
-  ERC20_MANAGER,
-  VOTING_MANAGER_LIBRARY,
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
+  ASSET_MANAGER_LIBRARY,
+  CONTRACTS_MANAGER,
+  ERC20_MANAGER,
+  USER_MANAGER_LIBRARY,
+  MULTI_EVENTS_HISTORY,
+  VOTING_MANAGER_LIBRARY,
 } from '../../daos/index'
 import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
 
@@ -38,6 +39,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
     ASSET_MANAGER_LIBRARY,
     ASSET_HOLDER_LIBRARY,
     ASSET_DONATOR_LIBRARY,
+    USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
     VOTING_MANAGER_LIBRARY,
   ]

@@ -71,13 +71,19 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      await dao.immediateTransfer(tx)
+      const hash = await dao.immediateTransfer(tx)
+      // eslint-disable-next-line
+      console.log('hash', hash)
+
+      dao.emit('mained', hash, tx)
     } else {
       const txOptions = tx.options()
       // TODO @ipavlenko: Pass arguments
       const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
-      // TODO @abdulov remove console.log
+      // eslint-disable-next-line
       console.log('hash', hash)
+
+      dao.emit('mained', hash, tx)
     }
   } catch (e) {
     // eslint-disable-next-line
@@ -93,11 +99,20 @@ const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
   dispatch(notify(new TransferErrorNoticeModel(tx, e)))
 }
 
+// It is not a redux action
+const mainedTxHandler = (dao, dispatch) => async (hash: string, tx: TransferExecModel | TxExecModel) => {
+  console.log('mainedTxHandler: ', hash, tx, dao)
+  if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+    //console.log('mainedTxHandler: ', hash, tx, dao)
+  }
+}
+
 export const alternateTxHandlingFlow = (dao) => (dispatch) => {
   dao
     .on('submit', submitTxHandler(dao, dispatch))
     .on('accept', acceptTxHandler(dao, dispatch))
     .on('reject', rejectTxHandler(dao, dispatch))
+    .on('mained', mainedTxHandler(dao, dispatch))
 }
 
 export const initTokens = () => async (dispatch, getState) => {

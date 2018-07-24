@@ -126,8 +126,7 @@ export const removePoll = (pollObject: PTPoll) => async (dispatch, getState) => 
     dispatch(goToVoting())
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
 
-    const tx = await dao.removePoll({ from: account, symbol: 'TIME' })
-    dispatch(sendNewTx(tx))
+    await dao.removePoll({ from: account, symbol: 'TIME' })
   } catch (e) {
     dispatch(handlePollCreated(poll))
     throw e
@@ -143,8 +142,7 @@ export const vote = (choice: Number) => async (dispatch, getState) => {
     dispatch(handlePollUpdated(poll.isFetching(true)))
     const options = poll.voteEntries()
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    const tx = await dao.vote(choice, options.get(choice), { from: account, symbol: 'TIME' })
-    dispatch(sendNewTx(tx))
+    await dao.vote(choice, options.get(choice), { from: account, symbol: 'TIME' })
   } catch (e) {
     console.log('Vote poll error: ', e)
     dispatch(handlePollUpdated(poll))
@@ -165,8 +163,7 @@ export const activatePoll = (pollObject: PTPoll) => async (dispatch, getState) =
     dispatch(handlePollUpdated(poll.mutate({ poll: new PollModel({ ...poll.poll, active: true, isFetching: true }) })))
 
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    const tx = await dao.activatePoll({ from: account, symbol: 'TIME' })
-    dispatch(sendNewTx(tx))
+    await dao.activatePoll({ from: account, symbol: 'TIME' })
   } catch (e) {
     console.log('Active poll error: ', e)
     dispatch(handlePollUpdated(poll))
@@ -186,8 +183,7 @@ export const endPoll = (pollObject: PTPoll) => async (dispatch, getState) => {
         isFetching: true,
       }))))
     const dao = await votingDAO.pollInterfaceManagerDAO.getPollInterfaceDAO(poll.id)
-    const tx = await dao.endPoll({ from: account, symbol: 'TIME' })
-    dispatch(sendNewTx(tx))
+    await dao.endPoll({ from: account, symbol: 'TIME' })
   } catch (e) {
     console.log('End poll error: ', e)
     dispatch(handlePollUpdated(poll))

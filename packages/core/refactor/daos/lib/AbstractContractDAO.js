@@ -10,6 +10,7 @@ import TxExecModel from '../../../refactor/models/TxExecModel'
 import web3Converter from '../../../utils/Web3Converter'
 import Amount from '../../../models/Amount'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
+import ipfs from '../../../../core-dependencies/utils/IPFS'
 
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,
@@ -165,6 +166,16 @@ export default class AbstractContractDAO extends EventEmitter {
     setImmediate(() => {
       this.emit('reject', tx)
     })
+  }
+
+  /** @protected */
+  async _ipfs (bytes): any {
+    return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
+  }
+
+  /** @protected */
+  async _ipfsPut (data): string {
+    return this._c.ipfsHashToBytes32(await ipfs.put(data))
   }
 
   /**
