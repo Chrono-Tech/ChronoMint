@@ -36,7 +36,7 @@ function mapStateToProps (state) {
 }
 
 @connect(mapStateToProps, mapDispatchToProps)
-export default class SelectWalletPage extends PureComponent {
+export default class AccountSelector extends PureComponent {
   static propTypes = {
     onWalletSelect: PropTypes.func,
     walletsList: PropTypes.arrayOf(
@@ -89,40 +89,38 @@ export default class SelectWalletPage extends PureComponent {
 
   render () {
     return (
-      <MuiThemeProvider>
-        <div styleName='wrapper'>
+      <div styleName='wrapper'>
 
-          <div styleName='page-title'>
-            <Translate value='AccountSelector.title' />
-          </div>
-
-          <div styleName='description'>
-            <Translate value='AccountSelector.description' />
-            <br />
-            <Translate value='AccountSelector.descriptionExtra' />
-          </div>
-
-          <div styleName='content'>
-            {this.renderWalletsList()}
-
-            <div styleName='actions'>
-              <Button
-                styleName='button'
-                buttonType='login'
-                onClick={this.props.navigateToSelectImportMethod}
-              >
-                <Translate value='AccountSelector.button' />
-              </Button>
-              <Translate value='AccountSelector.or' />
-              &nbsp;<br />
-              <Link to='/login/create-account' href styleName='link'>
-                <Translate value='AccountSelector.createAccount' />
-              </Link>
-            </div>
-          </div>
-
+        <div styleName='page-title'>
+          <Translate value='AccountSelector.title' />
         </div>
-      </MuiThemeProvider>
+
+        <div styleName='description'>
+          <Translate value='AccountSelector.description' />
+          <br />
+          <Translate value='AccountSelector.descriptionExtra' />
+        </div>
+
+        <div styleName='content'>
+          {this.renderWalletsList()}
+
+          <div styleName='actions'>
+            <Button
+              styleName='button'
+              buttonType='login'
+              onClick={this.props.navigateToSelectImportMethod}
+            >
+              <Translate value='AccountSelector.button' />
+            </Button>
+            <Translate value='AccountSelector.or' />
+            &nbsp;<br />
+            <Link to='/login/create-account' href styleName='link'>
+              <Translate value='AccountSelector.createAccount' />
+            </Link>
+          </div>
+        </div>
+
+      </div>
     )
   }
 }

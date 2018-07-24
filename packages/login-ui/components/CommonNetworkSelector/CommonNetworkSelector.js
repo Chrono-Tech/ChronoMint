@@ -4,11 +4,10 @@
  */
 
 import networkService from '@chronobank/login/network/NetworkService'
-import Web3Legacy from 'web3legacy'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
 import { clearErrors, DUCK_NETWORK, initCommonNetworkSelector, selectProviderWithNetwork } from '@chronobank/login/redux/network/actions'
-import { getNetworksWithProviders, getNetworkWithProviderNames, getProviderById, isLocalNode, networkSelectorGroups } from '@chronobank/login/network/settings'
+import { getNetworkWithProviderNames, getProviderById, isLocalNode, getNetworksSelectorGroup } from '@chronobank/login/network/settings'
 import { AccountCustomNetwork } from '@chronobank/core/models/wallet/persistAccount'
 import { customNetworksListAdd } from '@chronobank/core/redux/persistAccount/actions'
 import { Popover } from '@material-ui/core'
@@ -62,7 +61,7 @@ const mapStateToProps = (state) => {
   const persistAccount = state.get('persistAccount')
 
   return {
-    providersList: getNetworksWithProviders(network.providers, network.isLocal),
+    providersList: getNetworksSelectorGroup(network.isLocal),
     isLocal: network.isLocal,
     selectedNetworkId: network.selectedNetworkId,
     selectedProviderId: network.selectedProviderId,
@@ -121,8 +120,8 @@ export default class CommonNetworkSelector extends PureComponent {
     }
   }
 
-  componentDidMount () {
-    this.props.initCommonNetworkSelector()
+  async componentDidMount () {
+    await this.props.initCommonNetworkSelector()
   }
 
   handleClickDefaultNetwork (data) {
@@ -215,10 +214,12 @@ export default class CommonNetworkSelector extends PureComponent {
   }
 
   renderDefaultNetworksGroups () {
+    const { providersList } = this.props
+
     return (
       <div>
         {
-          networkSelectorGroups.map((group, i) => (
+          providersList.map((group, i) => (
             <div key={i}>
               <HeaderGroup group={group} />
               {group.providers ? group.providers.map((item, i) => this.renderMenuItem(item, i)) : null}
@@ -231,6 +232,7 @@ export default class CommonNetworkSelector extends PureComponent {
 
   renderMenuItem (item, i) {
     const { selectedNetworkId, selectedProvider } = this.props
+
     const checked = item.network.id === selectedNetworkId && item.provider.id === (selectedProvider && selectedProvider.id)
 
     return (

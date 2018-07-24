@@ -124,6 +124,7 @@ class LoginWithWallet extends Component {
 
         <p styleName='description'>
           <Translate value='LoginWithWallet.description' />
+          <br />
           <Translate value='LoginWithWallet.descriptionExtra' />
         </p>
 

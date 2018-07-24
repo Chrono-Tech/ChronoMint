@@ -586,7 +586,7 @@ export const onSubmitWalletUpload = (walletString, password) => async (dispatch,
     } catch (e) {
     }
 
-    if (response && response.data && response.data.length) {
+    if (response && response.data && response.data[0] && response.data[0].userName) {
       const profile = response.data[0]
 
       const account = new AccountEntryModel({

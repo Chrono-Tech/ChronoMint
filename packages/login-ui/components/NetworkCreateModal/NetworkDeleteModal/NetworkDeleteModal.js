@@ -77,7 +77,7 @@ export default class NetworkCreateModal extends PureComponent {
       <ModalDialog title={<Translate value='NetworkDeleteModal.title' />}>
         <div styleName='form' >
           <div styleName='description'>
-            You&quot;re about to delete <br />
+            You&apos;re about to delete <br />
             {this.renderNetworkAddress()}
             <b>Are you sure?</b>
           </div>

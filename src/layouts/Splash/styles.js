@@ -1,3 +1,8 @@
+/**
+ * Copyright 2017–2018, LaborX PTY
+ * Licensed under the AGPL Version 3 license.
+ */
+
 import { createMuiTheme } from '@material-ui/core/styles'
 
 export default createMuiTheme({
@@ -13,8 +18,8 @@ export default createMuiTheme({
       input: {
         color: '#fff',
         textAlign: 'center',
-        marginTop: 16,
-        paddingTop: 0,
+        marginTop: 0,
+        paddingTop: 18,
         paddingBottom: 0,
         font: '16px proxima nova, sans-serif',
         height: 'auto !important',
@@ -29,8 +34,11 @@ export default createMuiTheme({
         },
       },
       underline: {
+        '&:before': {
+          display: 'none',
+        },
         '&:after': {
-          borderBottom: '1px solid #424066',
+          borderBottom: '1px solid #A3A3CC',
           transform: 'none',
         },
         '&:not($disabled):$focused:after': {
@@ -44,24 +52,28 @@ export default createMuiTheme({
         },
       },
     },
-    MuiFormLabel: {
+    MuiInputLabel: {
       root: {
-        '&$focused': {
-          color: '#A3A3CC',
-        },
         '&$shrink': {
-          top: 0,
+          color: '#A3A3CC',
         },
         color: '#A3A3CC',
         margin: 'auto',
         right: 0,
         left: 0,
-        top: '7px !important',
+        top: 7,
         textAlign: 'center',
-        transformOrigin: 'top center !important',
+        transformOrigin: 'top center',
+      },
+      shrink: {
+        top: 8,
+        transformOrigin: 'top center',
+      },
+      formControl: {
+        top: 7,
       },
       error: {
-        color: '#A3A3CC !important',
+        color: '#A3A3CC',
       },
     },
     MuiFormHelperText: {

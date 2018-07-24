@@ -10,36 +10,16 @@ import { reduxForm, Field } from 'redux-form/immutable'
 import { TextField } from 'redux-form-material-ui'
 import { Translate } from 'react-redux-i18n'
 import Button from 'components/common/ui/Button/Button'
+import compose from 'recompose/compose'
+import { withStyles } from '@material-ui/core/styles/index'
 
 import {
   FORM_NETWORK_CREATE,
 } from '@chronobank/login/redux/network/actions'
 import validate from './validate'
 
-import styles from 'layouts/Splash/styles'
-import './NetworkCreateModalForm.scss'
-
-const textFieldStyles = {
-  floatingLabelStyle: {
-    color: '#A3A3CC',
-    top: 28,
-    left: 0,
-    right: 0,
-    margin: 'auto',
-    textAlign: 'left',
-    transformOrigin: 'left',
-  },
-  style: {
-    height: 62,
-    marginBottom: 20,
-  },
-  inputStyle: {
-    color: '#A3A3CC',
-    textAlign: 'left',
-    marginTop: 0,
-    paddingTop: 18,
-  },
-}
+import styles from './styles'
+import scss from './NetworkCreateModalForm.scss'
 
 class NetworkCreateModalForm extends PureComponent {
   static propTypes = {
@@ -49,70 +29,74 @@ class NetworkCreateModalForm extends PureComponent {
 
   render () {
     const { handleSubmit, pristine, valid, isImportMode, error, network,
-      handleDeleteNetwork, onCloseModal } = this.props
+      handleDeleteNetwork, onCloseModal, classes } = this.props
 
     return (
-        <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>
+      <form styleName='form' name={FORM_NETWORK_CREATE} onSubmit={handleSubmit}>
 
-          <Field
-            component={TextField}
-            name='url'
-            type='text'
-            label={
-              <Translate value='NetworkCreateModalForm.address' />
-            }
-            fullWidth
-            {...styles.textField}
-            {...textFieldStyles}
-          />
+        <Field
+          component={TextField}
+          name='url'
+          type='text'
+          label={
+            <Translate value='NetworkCreateModalForm.address' />
+          }
+          fullWidth
+          inputProps={{ className: classes.inputStyle }}
+          InputLabelProps={{ className: classes.label }}
+          className={classes.style}
+        />
 
-          <Field
-            component={TextField}
-            name='alias'
-            type='text'
-            label={
-              <Translate value='NetworkCreateModalForm.alias' />
-            }
-            fullWidth
-            {...styles.textField}
-            {...textFieldStyles}
-          />
+        <Field
+          component={TextField}
+          name='alias'
+          type='text'
+          styleName='field'
+          label={
+            <Translate value='NetworkCreateModalForm.alias' />
+          }
+          fullWidth
+          inputProps={{ className: classes.inputStyle }}
+          InputLabelProps={{ className: classes.label }}
+          className={classes.style}
+        />
 
-          <div styleName='actions'>
-            { network ? (
-              <Button
-                styleName='button buttonDelete'
-                buttonType='login'
-                onClick={handleDeleteNetwork}
-                label={<div styleName='deleteIcon' className='chronobank-icon'>delete</div>}
-              />
-            ) : null }
-
+        <div styleName='actions'>
+          { network ? (
             <Button
-              styleName='button buttonCancel'
-              buttonType='flat'
-              onClick={onCloseModal}
-              label={
-                <Translate value='NetworkCreateModalForm.cancel' />
-              }
-            />
-            <Button
-              styleName='button buttonAdd'
+              styleName='button buttonDelete'
               buttonType='login'
-              type='submit'
-              label={ network ? (
-                <Translate value='NetworkCreateModalForm.save' />
-              ) : (
-                <Translate value='NetworkCreateModalForm.add' />
-              ) }
+              onClick={handleDeleteNetwork}
+              label={<div styleName='deleteIcon' className='chronobank-icon'>delete</div>}
             />
+          ) : null }
 
-            { error ? (<div styleName='form-error'>{error}</div>) : null }
-          </div>
+          <Button
+            styleName='button buttonCancel'
+            buttonType='flat'
+            onClick={onCloseModal}
+            label={
+              <Translate value='NetworkCreateModalForm.cancel' />
+            }
+          />
+          <Button
+            styleName='button buttonAdd'
+            buttonType='login'
+            type='submit'
+            label={ network ? (
+              <Translate value='NetworkCreateModalForm.save' />
+            ) : (
+              <Translate value='NetworkCreateModalForm.add' />
+            ) }
+          />
 
-        </form>
+          { error ? (<div styleName='form-error'>{error}</div>) : null }
+        </div>
+
+      </form>
     )
   }
 }
 
-export default reduxForm({ form: FORM_NETWORK_CREATE, validate })(NetworkCreateModalForm)
+const form = reduxForm({ form: FORM_NETWORK_CREATE, validate })(NetworkCreateModalForm)
+export default compose(withStyles(styles))(form)

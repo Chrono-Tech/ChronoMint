@@ -88,8 +88,8 @@ export default class LocaleDropDown extends PureComponent {
         <Popover
           open={this.state.open}
           anchorEl={this.state.anchorEl}
-          anchorOrigin={{ horizontal: 'middle', vertical: 'bottom' }}
-          targetOrigin={{ horizontal: 'middle', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+          targetOrigin={{ horizontal: 'center', vertical: 'top' }}
           onClose={this.handleRequestClose}
           classes={{
             paper: styles.popover,
