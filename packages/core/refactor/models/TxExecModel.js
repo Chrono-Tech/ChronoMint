@@ -34,9 +34,14 @@ const schemaFactory = () => ({
 export default class TxExecModel extends AbstractModel {
   constructor (props) {
     super(props, schemaFactory())
-    this.id = props.id || uuid()
+    this._id = props._id || uuid()
+    this.time = new Date().getTime()
     Object.assign(this, props)
     Object.freeze(this)
+  }
+
+  id () {
+    return this._id
   }
 
   get args () {
