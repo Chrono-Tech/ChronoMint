@@ -7,7 +7,8 @@ import { createSelector } from 'reselect'
 import { DUCK_MULTISIG_WALLET } from '../multisigWallet/actions'
 import DerivedWalletModel from '../../models/wallet/DerivedWalletModel'
 import Amount from '../../models/Amount'
-import { getMainWallet, getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'
+import { getMultisigWallets, selectMarketPricesListStore, selectMarketPricesSelectedCurrencyStore, selectTokensStore } from './selectors/models'
+import { getWallet } from '../wallets/selectors/models'
 
 export {
   getMultisigWallets,
@@ -38,23 +39,6 @@ export const getIsHave2FAWallets = (state) => {
     })
 }
 
-export const getWallet = (blockchain, address) => createSelector(
-  [
-    getMainWallet,
-    getMultisigWallets,
-  ],
-  (mainWallet, multisigWallets) => {
-    const multisigWallet = multisigWallets.item(address)
-    if (multisigWallet) {
-      return multisigWallet
-    }
-    else {
-      return mainWallet
-    }
-
-  },
-)
-
 const priceCalculator = (symbol: string) => createSelector(
   [
     selectMarketPricesSelectedCurrencyStore,
@@ -81,23 +65,15 @@ export const priceTokenSelector = (value: Amount) => createSelector(
 
 export const makeGetTxListForWallet = (blockchain: string, address: string) => createSelector(
   [
-    getMainWallet,
-    getMultisigWallets,
+    getWallet(`${blockchain}-${address}`),
   ],
-  (
-    mainWalletState,
-    multisigWalletsCollection,
-  ) => {
-    if (multisigWalletsCollection.item(address)) {
-      return multisigWalletsCollection.item(address).transactions()
-    } else {
-      return mainWalletState.transactions({ blockchain, address })
-    }
+  (wallet) => {
+    return wallet.transactions.transactions
   },
 )
 
 export const getWalletBalanceForSymbol = (address, blockchain, symbol) => createSelector(
-  [getWallet(blockchain, address)],
+  [getWallet(`${blockchain}-${address}`)],
   (currentWallet) => {
     return currentWallet.balances().item(symbol)
   },

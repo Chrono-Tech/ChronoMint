@@ -12,30 +12,22 @@ const schemaFactory = () => ({
   isLoading: PropTypes.bool.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   address: PropTypes.string.isRequired,
-  blocks: PropTypes.arrayOf(PropTypes.object),
+  blocks: PropTypes.objectOf(PropTypes.object),
   lastBlock: PropTypes.number,
   cache: PropTypes.any,
 })
 
 export default class TxHistoryModel extends AbstractModel {
   constructor (data, options) {
-    super(
-      Object.assign(
-        {
-          address: '',
-          blocks: [],
-          cache: {},
-          firstBlock: null,
-          isLoaded: false,
-          isLoading: false,
-          key: uuid(),
-          lastBlock: null,
-        },
-        data
-      ),
-      schemaFactory(),
-      options
-    )
+    super(Object.assign({
+      key: uuid(),
+      isLoading: false,
+      isLoaded: false,
+      blocks: {},
+      lastBlock: null,
+      firstBlock: null,
+      cache: {},
+    }, data), schemaFactory(), options)
     Object.freeze(this)
   }
 
@@ -72,9 +64,10 @@ export default class TxHistoryModel extends AbstractModel {
 
   get transactions () {
     const array = []
-    for (const block of this.blocks) {
-      array.push(...block.transactions)
-    }
+    Object.entries(this.blocks)
+      .map(([, block]) => {
+        array.push(...block.transactions)
+      })
     return array
   }
 
