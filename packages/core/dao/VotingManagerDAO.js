@@ -15,7 +15,6 @@ import Amount from '../models/Amount'
 import votingService from '../services/VotingService'
 import { daoByType } from '../refactor/redux/daos/selectors'
 import PollInterfaceManagerDAO from '../refactor/daos/lib/PollInterfaceManagerDAO'
-import contractsManagerDAO from './ContractsManagerDAO'
 import web3Converter from '../utils/Web3Converter'
 import AbstractContractDAO from '../refactor/daos/lib/AbstractContractDAO'
 
@@ -51,8 +50,8 @@ export default class VotingManagerDAO extends AbstractContractDAO {
 
     this.pollRemovedEmitter = this.contract.events.PollRemoved({})
       .on('data', this.handlePollRemovedData.bind(this))
-      .on('changed', this.handlePollChangedData.bind(this))
-      .on('error', this.handlePollChangedError.bind(this))
+      .on('changed', this.handlePollRemovedChanged.bind(this))
+      .on('error', this.handlePollRemovedError.bind(this))
   }
 
   disconnect () {
@@ -66,7 +65,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   handlePollCreatedData (data) {
-    console.log('handlePollCreatedData: ', data)
+    this.emit('PollCreated', data)
   }
 
   handlePollCreatedChanged (data) {
@@ -74,19 +73,19 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   handlePollCreatedError (data) {
-    console.log('handlePollCreatedError: ', data)
+    this.emit('PollCreated_error', data)
   }
 
   handlePollRemovedData (data) {
-    console.log('handlePollRemovedData: ', data)
+    this.emit('PollRemoved', data)
   }
 
-  handlePollChangedData (data) {
-    console.log('handlePollChangedData: ', data)
+  handlePollRemovedChanged (data) {
+    console.log('handlePollRemovedChanged: ', data)
   }
 
-  handlePollChangedError (data) {
-    console.log('handlePollChangedError: ', data)
+  handlePollRemovedError (data) {
+    this.emit('PollRemoved_error', data)
   }
 
   getVoteLimit (): Promise {
@@ -132,7 +131,7 @@ export default class VotingManagerDAO extends AbstractContractDAO {
     const voteLimitInTIME = poll.voteLimitInTIME
     let summary = poll.txSummary()
     summary.voteLimitInTIME = new Amount(voteLimitInTIME, 'TIME')
-    summary = { ...poll.txSummary(), ...options }
+    summary = { ...poll.txSummary(), ...options, blockchain: 'Ethereum' }
 
     const tx = await this._tx(TX_CREATE_POLL, [
       poll.options.length,
@@ -273,29 +272,15 @@ export default class VotingManagerDAO extends AbstractContractDAO {
   }
 
   watchCreated (callback, account) {
-    return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
+    // return this._watch(EVENT_POLL_CREATED, this._watchCallback(callback, IS_CREATED, account))
   }
 
   watchUpdated (callback) {
-    return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
+    // return this._watch(EVENT_POLL_UPDATED, this._watchCallback(callback, IS_UPDATED))
   }
 
   watchRemoved (callback) {
-    return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
-  }
-
-  /** @private */
-  _watchCallback = (callback, status, account: string) => async (result) => {
-
-    const dao = await contractsManagerDAO.getVotingManagerDAO()
-    const poll = await dao.getPoll(result.args.self, account)
-
-    callback(new PollNoticeModel({
-      pollId: result.args.self, // just a long
-      poll,
-      status,
-      transactionHash: result.transactionHash,
-    }))
+    // return this._watch(EVENT_POLL_REMOVED, this._watchCallback(callback, IS_REMOVED))
   }
 
   estimateGasForVoting = async (mode: string, params, callback, gasPriceMultiplier = 1) => {

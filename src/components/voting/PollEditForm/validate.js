@@ -15,6 +15,7 @@ export default function validate (values, props) {
   const deadline = values.get('deadline')
   const options = values.get('options').toArray().filter((optionText) => optionText.length > 0)
   const filesCollection = values.get('files')
+
   return {
     title: ErrorList.toTranslate(validator.required(values.get('title'))),
     voteLimitInTIME: new ErrorList()

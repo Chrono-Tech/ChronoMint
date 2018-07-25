@@ -62,7 +62,6 @@ export const watchPoll = (notice: PollNoticeModel) => async (dispatch) => {
 }
 
 export const updateVoteLimit = () => async (dispatch, getState) => {
-  // const votingDAO = await contractsManagerDAO.getVotingManagerDAO()
   const votingDAO = daoByType('VotingManager')(getState())
   const [voteLimitInTIME, voteLimitInPercent] = await Promise.all([
     votingDAO.getVoteLimit(),
@@ -101,12 +100,14 @@ export const createPoll = (poll: PollDetailsModel) => async (dispatch, getState)
   try {
     dispatch(handlePollCreated(stub))
     dispatch(goToVoting())
-    const tx = await votingDAO.createPoll(poll.poll, { from: account })
-    dispatch(sendNewTx(tx, (transactionHash) => {
-      dispatch(handlePollRemoved(stub.id))
-      dispatch(handlePollUpdated(stub.mutate({ transactionHash: transactionHash })))
-    }))
-
+    await votingDAO.createPoll(poll.poll, { from: account })
+    votingDAO.on('CreatePoll', (data) => {
+      console.log('votingDAO.on(: ', data)
+      // dispatch(sendNewTx(tx, (transactionHash) => {
+      //   dispatch(handlePollRemoved(stub.id))
+      //   dispatch(handlePollUpdated(stub.mutate({ transactionHash: transactionHash })))
+      // }))
+    })
   } catch (e) {
     dispatch(handlePollRemoved(stub.id))
   }

@@ -171,6 +171,7 @@ export default class PollEditForm extends Component {
   render () {
     const { isModify, handleSubmit, pristine, invalid, voteLimitInTIME, maxVoteLimitInPercent, options, feeMultiplier, formErrors } = this.props
     const limitInTIME = this.props.maxVoteLimitInTIME.div(100).mul(voteLimitInTIME || 1)
+
     return (
       <div styleName='root'>
         <div styleName='header'>
@@ -278,11 +279,11 @@ export default class PollEditForm extends Component {
                 <Field
                   component={TimePicker}
                   format={(value) => value === '' ? null : value}
-                  cancelLabel={<Translate value='materialUi.DatePicker.cancelLabel' />}
+                  cancelLabel={I18n.t('materialUi.DatePicker.cancelLabel')}
                   okLabel={<Translate value='materialUi.DatePicker.okLabel' />}
                   name='deadlineTime'
                   fullWidth
-                  placeholder={<Translate value={`${prefix}.finishedTime`} />}
+                  placeholder={I18n.t(`${prefix}.finishedTime`)}
                   style={{ width: '165px', marginLeft: '40px' }}
                 />
               </div>
