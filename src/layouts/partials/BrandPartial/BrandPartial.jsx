@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { FontIcon, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
@@ -44,7 +44,7 @@ export default class BrandPartial extends PureComponent {
             iconStyle={styles.brand.toggle.iconStyle}
             onClick={() => this.handleToggle()}
           >
-            <FontIcon className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</FontIcon>
+            <i className='material-icons'>{open ? 'arrow_upward' : 'arrow_downward'}</i>
           </IconButton>
         </div>
       </div>

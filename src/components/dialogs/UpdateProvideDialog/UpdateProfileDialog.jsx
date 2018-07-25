@@ -5,7 +5,6 @@
 
 import { Translate } from 'react-redux-i18n'
 import { Field, formPropTypes, formValueSelector, reduxForm } from 'redux-form/immutable'
-import { FontIcon } from '@material-ui/core'
 import Button from 'components/common/ui/Button/Button'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
@@ -27,7 +26,6 @@ import {
   getAccountName,
   getAccountAvatar,
 } from '@chronobank/core/redux/persistAccount/utils'
-import profileService from '@chronobank/login/network/ProfileService'
 
 
 const FORM_UPDATE_PROFILE_DIALOG = 'UpdateProfileDialog'
@@ -81,12 +79,12 @@ export default class UpdateProfileDialog extends PureComponent {
                     styleName='iconImage'
                     multihash={this.props.icon}
                     icon={(
-                      <FontIcon
-                        style={{ fontSize: 96 }}
+                      <span
+                        styleName='default-icon'
                         color='white'
                         className='material-icons'
                       >account_circle
-                      </FontIcon>
+                      </span>
                     )}
                   />
                 </div>
@@ -109,10 +107,30 @@ export default class UpdateProfileDialog extends PureComponent {
                 floatingLabelText={`${prefix}.fileTitle`}
                 accept={ACCEPT_IMAGES}
               />
-              <Field component={TextField} name='name' fullWidth floatingLabelText={<Translate value={`${prefix}.name`} />} />
-              <Field component={TextField} name='company' fullWidth floatingLabelText={<Translate value={`${prefix}.company`} />} />
-              <Field component={TextField} name='url' fullWidth floatingLabelText={<Translate value={`${prefix}.website`} />} />
-              <Field component={TextField} name='email' fullWidth floatingLabelText={<Translate value={`${prefix}.email`} />} />
+              <Field
+                component={TextField}
+                name='name'
+                fullWidth
+                label={<Translate value={`${prefix}.name`} />}
+              />
+              <Field
+                component={TextField}
+                name='company'
+                fullWidth
+                label={<Translate value={`${prefix}.company`} />}
+              />
+              <Field
+                component={TextField}
+                name='url'
+                fullWidth
+                label={<Translate value={`${prefix}.website`} />}
+              />
+              <Field
+                component={TextField}
+                name='email'
+                fullWidth
+                label={<Translate value={`${prefix}.email`} />}
+              />
             </div>
             <div styleName='footer'>
               <Button

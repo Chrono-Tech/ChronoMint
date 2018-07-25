@@ -5,7 +5,7 @@
 
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Slider } from '@material-ui/lab'
+import Slider from '@material-ui/lab/Slider'
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { GAS_SLIDER_MULTIPLIER_CHANGE } from '@chronobank/core/redux/session/actions'

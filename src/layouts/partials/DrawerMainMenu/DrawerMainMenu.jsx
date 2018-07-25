@@ -19,6 +19,8 @@ import ProfileModel from '@chronobank/core/models/ProfileModel'
 import { IPFSImage } from 'components'
 import exitSvg from 'assets/img/exit-white.svg'
 import { SIDES_CLOSE_ALL, sidesPush } from 'redux/sides/actions'
+import { modalsOpen } from 'redux/modals/actions'
+import UpdateProfileDialog from 'components/dialogs/UpdateProvideDialog/UpdateProfileDialog'
 import { getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 import { getWalletsLength } from '@chronobank/core/redux/wallets/selectors/wallets'
 import MenuAssetsManagerMoreInfo from './MenuAssetsManagerMoreInfo/MenuAssetsManagerMoreInfo'
@@ -46,6 +48,7 @@ function mapDispatchToProps (dispatch) {
   return {
     handleDrawerHide: () => dispatch(drawerHide()),
     handleLogout: () => dispatch(logout()),
+    handleProfileEdit: () => dispatch(modalsOpen({ component: UpdateProfileDialog })),
     handle: (handleClose) => {
       dispatch({ type: SIDES_CLOSE_ALL })
       dispatch(sidesPush({
@@ -80,6 +83,7 @@ function mapDispatchToProps (dispatch) {
 export default class DrawerMainMenu extends PureComponent {
   static propTypes = {
     isCBE: PropTypes.bool,
+    handleProfileEdit: PropTypes.func,
     handleDrawerHide: PropTypes.func,
     profile: PropTypes.instanceOf(ProfileModel),
     networkName: PropTypes.string,
@@ -177,7 +181,7 @@ export default class DrawerMainMenu extends PureComponent {
 
             <div styleName={classnames('account-info', 'item')}>
               <div styleName='account-info-avatar'>
-                <div styleName='avatar-icon'>
+                <div styleName='avatar-icon' onClick={this.props.handleProfileEdit}>
                   <IPFSImage
                     styleName='avatar-icon-content'
                     multihash={this.props.profile.icon()}
