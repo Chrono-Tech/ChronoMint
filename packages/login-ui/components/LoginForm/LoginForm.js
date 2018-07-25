@@ -27,9 +27,9 @@ import {
 } from '@chronobank/login/redux/network/actions'
 import { isLocalNode } from '@chronobank/login/network/settings'
 import { DUCK_PERSIST_ACCOUNT } from '@chronobank/core/redux/persistAccount/actions'
-import { getAccountAddress, getAccountAvatar, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
+import { getAccountAddress, getAccountAvatarImg, getAccountName } from '@chronobank/core/redux/persistAccount/utils'
 
-import styles from 'layouts/Splash/styles'
+import styles from './styles'
 import spinner from 'assets/img/spinningwheel-1.gif'
 import './LoginForm.scss'
 
@@ -115,7 +115,7 @@ class LoginPage extends React.Component {
           <UserRow
             title={getAccountName(selectedWallet)}
             subtitle={getAccountAddress(selectedWallet, true)}
-            avatar={getAccountAvatar(selectedWallet)}
+            avatar={getAccountAvatarImg(selectedWallet)}
             onClick={navigateToSelectWallet}
             linkTitle='My Accounts'
           />
@@ -127,9 +127,7 @@ class LoginPage extends React.Component {
               type='password'
               label={<Translate value='LoginForm.enterPassword' />}
               fullWidth
-              InputProps={{ className: classes.inputStyle }}
-              InputLabelProps={{ className: classes.floatingLabel }}
-              style={{ className: classes.hint }}
+              InputProps={{ className: classes.input }}
             />
           </div>
 

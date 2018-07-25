@@ -4,7 +4,6 @@
  */
 
 import PropTypes from 'prop-types'
-import { MuiThemeProvider } from '@material-ui/core'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
@@ -55,7 +54,6 @@ class CreateHWAccountPage extends PureComponent {
     const { handleSubmit, pristine, valid, initialValues, error, isImportMode } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
         <form styleName='form' name={FORM_CREATE_HW_ACCOUNT} onSubmit={handleSubmit}>
           <div styleName='create-title'>
             <Translate value='CreateAccount.title' />
@@ -93,8 +91,6 @@ class CreateHWAccountPage extends PureComponent {
           </div>
 
         </form>
-
-      </MuiThemeProvider>
     )
   }
 }

@@ -12,9 +12,11 @@ import { bootstrap } from '@chronobank/core/redux/session/actions'
 import { store } from './redux/configureStore'
 import router from './router'
 import themeDefault from './themeDefault'
+import LogRocket from 'logrocket'
 
 class App {
   start () {
+    LogRocket.init('c1vf8w/chronobank')
     networkService.connectStore(store)
     store.dispatch(bootstrap()).then(() => {
       render(

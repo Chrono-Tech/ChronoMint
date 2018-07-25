@@ -3,7 +3,6 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { MuiThemeProvider } from '@material-ui/core'
 import styles from 'layouts/Splash/styles'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { Link } from 'react-router'
@@ -115,7 +114,6 @@ class LoginTrezor extends PureComponent {
     const { trezor } = this.props
 
     return (
-      <MuiThemeProvider muiTheme={styles.inverted}>
         <div styleName='form'>
           <div styleName='page-title'>
             <Translate value='LoginWithTrezor.title' />
@@ -141,7 +139,6 @@ class LoginTrezor extends PureComponent {
             </Link>
           </div>
         </div>
-      </MuiThemeProvider>
     )
   }
 }

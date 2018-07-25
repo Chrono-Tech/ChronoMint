@@ -15,6 +15,7 @@ import {
   getAccountName,
   getAccountAvatar,
   getAccountAddress,
+  getAccountAvatarImg,
 } from '@chronobank/core/redux/persistAccount/utils'
 import {
   onSubmitResetAccountPasswordForm,
@@ -80,7 +81,7 @@ class ResetPasswordPage extends PureComponent {
           <div styleName='user-row'>
             <UserRow
               title={getAccountName(selectedWallet)}
-              avatar={getAccountAvatar(selectedWallet)}
+              avatar={getAccountAvatarImg(selectedWallet)}
               subtitle={getAccountAddress(selectedWallet, true)}
             />
           </div>

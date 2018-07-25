@@ -17,10 +17,10 @@ export default class EthereumWallet extends Wallet {
     let hdWallet
     let hdkey
     switch (true) {
-      case type === 'memory' && pk && pk.length <= 64:
+      case type === 'memory' && pk && pk.length == 32:
         return new EthereumWallet(Buffer.from(pk, 'hex'), null, type)
-      case type === 'memory' && !!pk:
-        hdWallet = hdKey.fromMasterSeed(Buffer.from(pk, 'hex'))
+      case type === 'memory' && pk.startsWith(xpriv):
+        hdWallet = hdKey.fromExtendedPrivateKey(pk)
         hdkey = hdWallet.derivePath(WALLET_HD_PATH)._hdkey
         if (hdkey._privateKey) {
           return new EthereumWallet(hdkey._privateKey, null, type)
