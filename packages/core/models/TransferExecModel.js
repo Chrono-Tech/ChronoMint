@@ -97,6 +97,10 @@ export default class TransferExecModel extends abstractModel({
     return this._getSet('hash', value)
   }
 
+  funcTitle () {
+    return this.title()
+  }
+
   txSummary () {
     // Property path should be used to find proper i18n strings
     // Place here only contract-related data

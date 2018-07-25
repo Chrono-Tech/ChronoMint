@@ -16,24 +16,24 @@ import {
 import { nemProvider } from '@chronobank/login/network/NemProvider'
 import { wavesProvider } from '@chronobank/login/network/WavesProvider'
 import BigNumber from 'bignumber.js'
+import { modalsOpenConfirmDialog } from '@chronobank/core-dependencies/redux/modals/actions'
+import { showConfirmTransferModal } from '@chronobank/core-dependencies/redux/ui/actions'
 import { bccDAO, btcDAO, btgDAO, ltcDAO } from '../../dao/BitcoinDAO'
 import ERC20ManagerDAO, { EVENT_ERC20_TOKENS_COUNT, EVENT_NEW_ERC20_TOKEN } from '../../dao/ERC20ManagerDAO'
 import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import NemDAO, { NEM_DECIMALS, NEM_XEM_NAME, NEM_XEM_SYMBOL } from '../../dao/NemDAO'
 import TokenModel from '../../models/tokens/TokenModel'
-import TransferErrorNoticeModel from '../../models/notices/TransferErrorNoticeModel'
 import type TransferExecModel from '../../models/TransferExecModel'
-import TransferError, { TRANSFER_CANCELLED, TRANSFER_UNKNOWN } from '../../models/TransferError'
+import TransferError, { TRANSFER_CANCELLED } from '../../models/TransferError'
 import tokenService, { EVENT_NEW_TOKEN } from '../../services/TokenService'
-import { notify } from '../notifier/actions'
-import { showConfirmTransferModal } from '../ui/actions'
+import { notifyError } from '../notifier/actions'
 import { EVENT_NEW_BLOCK } from '../../dao/AbstractContractDAO'
 import Amount from '../../models/Amount'
 import { ETH } from '../mainWallet/actions'
 import { EVENT_UPDATE_LAST_BLOCK } from '../../dao/AbstractTokenDAO'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import TxExecModel from '../../refactor/models/TxExecModel'
-import { modalsOpenConfirmDialog } from '../../../../src/redux/modals/actions'
+import { WATCHER_TX_END, WATCHER_TX_SET } from '../watcher/actions'
 
 export const DUCK_TOKENS = 'tokens'
 export const TOKENS_UPDATE = 'tokens/update'
@@ -60,10 +60,7 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
       await dispatch(showConfirmTransferModal(dao, tx))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.error('Transfer error', e)
-    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
+    dispatch(notifyError(e, tx.funcTitle()))
   }
 }
 
@@ -71,39 +68,31 @@ const submitTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExec
 const acceptTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   try {
     if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
+      dispatch({ type: WATCHER_TX_SET, tx })
       const hash = await dao.immediateTransfer(tx)
-      // eslint-disable-next-line
-      console.log('hash', hash)
-
-      dao.emit('mained', hash, tx)
+      dao.emit('mained', new TxExecModel({ ...tx, hash }))
     } else {
       const txOptions = tx.options()
       // TODO @ipavlenko: Pass arguments
       const hash = await dao.immediateTransfer(tx.from(), tx.to(), tx.amount(), tx.amountToken(), tx.feeMultiplier(), txOptions.advancedParams)
       // eslint-disable-next-line
       console.log('hash', hash)
-
-      dao.emit('mained', hash, tx)
+      dao.emit('mained', hash, new TransferExecModel({ ...tx, hash }))
     }
   } catch (e) {
-    // eslint-disable-next-line
-    console.error('Transfer error', e)
-    const err = new TransferError(e.message, TRANSFER_UNKNOWN)
-    dispatch(notify(new TransferErrorNoticeModel(tx, err)))
+    dispatch(notifyError(e, tx.funcTitle()))
   }
 }
 
-// It is not a redux action
 const rejectTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   const e = new TransferError('Rejected', TRANSFER_CANCELLED)
-  dispatch(notify(new TransferErrorNoticeModel(tx, e)))
+  dispatch(notifyError(e, tx.funcTitle()))
 }
 
-// It is not a redux action
-const mainedTxHandler = (dao, dispatch) => async (hash: string, tx: TransferExecModel | TxExecModel) => {
-  console.log('mainedTxHandler: ', hash, tx, dao)
+const mainedTxHandler = (dao, dispatch) => async (tx: TransferExecModel | TxExecModel) => {
   if (tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-    //console.log('mainedTxHandler: ', hash, tx, dao)
+    console.log('mainedTxHandler: ', tx, dao)
+    dispatch({ type: WATCHER_TX_END, tx })
   }
 }
 

@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import PropTypes from 'prop-types'
 import { DUCK_WATCHER } from '@chronobank/core/redux/watcher/actions'
 import { DUCK_NOTIFIER } from '@chronobank/core/redux/notifier/actions'
-import TxExecModel from '@chronobank/core/models/TxExecModel'
+import TxExecModel from '@chronobank/core/refactor/models/TxExecModel'
 import TxModel from '@chronobank/core/models/TxModel'
 import CurrentTransactionNotificationModel from '@chronobank/core/models/CurrentTransactionNotificationModel'
 import { pendingTransactionsSelector } from '@chronobank/core/redux/mainWallet/selectors/tokens'
@@ -77,10 +77,10 @@ class NotificationContent extends PureComponent {
       // Eth transactions
       case transaction instanceof TxExecModel:
         return new CurrentTransactionNotificationModel({
-          id: transaction.hash(),
-          hash: transaction.hash(),
+          id: transaction.id(),
+          hash: transaction.hash,
           title: transaction.title(),
-          date: transaction.time(),
+          date: transaction.time,
           details: transaction.details(),
         })
 
