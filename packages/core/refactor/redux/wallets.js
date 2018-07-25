@@ -3,7 +3,12 @@ import Accounts from 'web3-eth-accounts'
 import uniqid from 'uniqid'
 import { remove } from 'lodash'
 import { WalletEntryModel, SignerMemoryModel, SignerDeviceModel, SignerPluginModel, WalletModel } from '@laborx/exchange.core'
-import { DEVICES, PLUGINS } from 'src/services'
+
+// Lines below are stubbed for further development.
+// Info: Igor, Michail
+// import { DEVICES, PLUGINS } from 'src/services'
+const DEVICES = {}
+const PLUGINS = {}
 
 export const WALLETS_CREATE = 'wallets/create'
 export const WALLETS_SELECT = 'wallets/select'
