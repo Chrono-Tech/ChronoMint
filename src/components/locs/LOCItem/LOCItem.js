@@ -3,7 +3,7 @@
  * Licensed under the AGPL Version 3 license.
  */
 
-import { CircularProgress, FontIcon } from '@material-ui/core'
+import { CircularProgress } from '@material-ui/core'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { Translate } from 'react-redux-i18n'
@@ -54,12 +54,12 @@ class LOCItem extends PureComponent {
       <div styleName='root'>
         <div styleName='header'>
           <div styleName='icon'>
-            <FontIcon
+            <i
               style={{ fontSize: 40 }}
               color='rgba(14, 74, 149, 0.5)'
               className='material-icons'
             >account_circle
-            </FontIcon>
+            </i>
             <div styleName='subIconBox'>
               <div styleName='subIconImg' />
             </div>
@@ -84,12 +84,12 @@ class LOCItem extends PureComponent {
           />)}
 
         {loc.isFailed() && (
-          <FontIcon
+          <i
             style={warningStyle}
             color='redA700'
             className='material-icons'
           >error
-          </FontIcon>)
+          </i>)
         }
 
         <table styleName='table'>

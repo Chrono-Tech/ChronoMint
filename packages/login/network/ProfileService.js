@@ -6,7 +6,7 @@
 import EventEmitter from 'events'
 import axios from 'axios'
 
-const PROFILE_BACKEND_REST_URL = 'https://backend.profile.tp.ntr1x.com'
+const PROFILE_BACKEND_REST_URL = 'http://localhost:3000'
 const basePath = '/api/v1'
 const GET_PERSONS_REST = `${basePath}/security/persons/query`
 const GET_SIGNATURE_REST = `${basePath}/security/signin/signature`
@@ -82,6 +82,18 @@ class ProfileService extends EventEmitter {
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
 
     return personInfo
+  }
+
+  async updateUserProfile({ avatar, userName, email }, token){
+    const service = this.getServerProvider()
+
+    const { data } = await service.post(UPDATE_LEVEL_1, {
+      avatar,
+      userName,
+      email,
+    }, this.withAuthorization(token))
+
+    return data
   }
 
   // state.token
