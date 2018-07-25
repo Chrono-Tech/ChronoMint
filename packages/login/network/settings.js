@@ -112,13 +112,13 @@ export const MIDDLEWARE_MAP = {
 
 // --------- providers
 
-export const infuraMainnet =   {
+export const infuraMainnet = {
   ...MAINNET_BASE,
   host: `mainnet.infura.io/${INFURA_TOKEN}`,
   ws: 'wss://mainnet.infura.io/ws',
 }
 
-export const infuraTestnet =   {
+export const infuraTestnet = {
   ...RINKEBY_BASE,
   host: `rinkeby.infura.io/${INFURA_TOKEN}`,
   ws: 'wss://rinkeby.infura.io/ws',
@@ -146,7 +146,7 @@ export const mewNetworkMap = [
   mewMainnet,
 ]
 
-const givethMainnet =   {
+const givethMainnet = {
   id: NETWORK_MAIN_ID,
   protocol: 'https',
   name: 'Mainnet (production Giveth)',
@@ -164,12 +164,12 @@ export const givethNetworkMap = [
   givethMainnet,
 ]
 
-export const chronoBankMainnet =   {
+export const chronoBankMainnet = {
   ...MAINNET_BASE,
   host: 'mainnet-full-parity-rpc.chronobank.io/',
 }
 
-export const chronoBankTestnet =   {
+export const chronoBankTestnet = {
   ...RINKEBY_BASE,
   host: 'rinkeby-full-geth-rpc.chronobank.io/',
 }
@@ -322,14 +322,14 @@ export const getNetworksWithProviders = (providers = [], withLocal = false) => {
 }
 
 export const getNetworkWithProviderNames = (providerId, networkId, withLocal = false) => {
-  if (isLocalNode(providerId, networkId)){
+  if (isLocalNode(providerId, networkId)) {
     return 'localNode'
   }
 
   const provider = getProviderById(providerId)
   const network = getNetworkById(networkId, providerId, withLocal)
 
-  if (!provider.name && !network.name){
+  if (!provider.name && !network.name) {
     return ''
   }
 

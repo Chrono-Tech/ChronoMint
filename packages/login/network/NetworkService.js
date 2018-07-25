@@ -270,27 +270,30 @@ class NetworkService extends EventEmitter {
   }
 
   async checkTestRPC (providerUrl) {
-    const web3 = new Web3Legacy()
-    web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
-    const web3Provider = new Web3Provider(web3)
+    // const web3 = new Web3Legacy()
+    // web3.setProvider(new Web3Legacy.providers.HttpProvider(providerUrl || TESTRPC_URL))
+    // const web3Provider = new Web3Provider(web3)
+    //
+    // const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
+    // if (!isDeployed) {
+    //   return false
+    // }
+    //
+    // this._dispatch({ type: NETWORK_SET_TEST_RPC })
+    // return true
 
-    const isDeployed = await contractsManagerDAO.isDeployed(web3Provider)
-    if (!isDeployed) {
-      return false
-    }
-
-    this._dispatch({ type: NETWORK_SET_TEST_RPC })
-    return true
+    return false
   }
 
   async autoSelect () {
     const { priority, preferMainnet } = this._store.getState().get(DUCK_NETWORK)
     const resolveNetwork = () => {
-      const web3 = new Web3Legacy()
-      web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
-      web3Provider.resolve()
+      // const web3 = new Web3()
+      // web3Provider.reinit(web3, web3Utils.createStatusEngine(this.getProviderURL()))
+      // web3Provider.resolve()
     }
     const selectAndResolve = (networkId, providerId) => {
+      console.log('select', networkId, providerId)
       this.selectProvider(providerId)
       this.selectNetwork(networkId)
       resolveNetwork()

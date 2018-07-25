@@ -9,6 +9,7 @@ import {
   AssetsManagerABI,
   AssetHolderABI,
   AssetDonatorABI,
+  UserManagerABI,
   ContractsManagerABI,
   ERC20ManagerABI,
   MultiEventsHistoryABI,
@@ -22,6 +23,7 @@ import ERC20ManagerDAO from '../../dao/ERC20ManagerDAO'
 import VotingManagerDAO from '../../dao/VotingManagerDAO'
 import PollInterfaceDAO from '../../dao/PollInterfaceDAO'
 import AssetDonatorDAO from '../../dao/AssetDonatorDAO'
+import UserManagerDAO from '../../../core/dao/UserManagerDAO'
 
 export { default as ethDAO } from './lib/ETHDAO'
 export { default as AbstractContractDAO } from './lib/AbstractContractDAO'
@@ -54,6 +56,12 @@ export const ASSET_HOLDER_LIBRARY = new ContractModel({
   type: 'TimeHolder',
   abi: AssetHolderABI,
   DAOClass: AssetHolderDAO,
+})
+
+export const USER_MANAGER_LIBRARY = new ContractModel({
+  type: 'UserManager',
+  abi: UserManagerABI,
+  DAOClass: UserManagerDAO,
 })
 
 export const POLL_INTERFACE_MANAGER = new ContractModel({

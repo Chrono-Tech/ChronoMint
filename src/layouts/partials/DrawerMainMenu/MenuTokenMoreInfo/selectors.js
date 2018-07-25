@@ -100,7 +100,7 @@ const getWalletAddress = (state, props) => {
       selectedAddress = wallet.address
     }
   })
-  return selectedAddress || new AddressModel()
+  return selectedAddress
 }
 
 export const getSelectedWalletAddress = () => createSelector(

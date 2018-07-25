@@ -28,6 +28,10 @@
   box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.15);
 }
 
+.input {
+  text-align: left;
+}
+
 .body {
   color: $color-primary-0;
   @include md-only {

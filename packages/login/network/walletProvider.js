@@ -19,10 +19,7 @@ class WalletProvider {
   getProvider (walletJson, password, { url, network } = {}) {
     const networkCode = byEthereumNetwork(network)
     const ethereumWallet = Wallet.fromV3(walletJson, password, true)
-    console.log(ethereumWallet)
     const engine = new EthereumEngine(ethereumWallet, network, url)
-    console.log(engine)
-    console.log('wallet')
     const btc = network && network.bitcoin && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoin])
     const bcc = network && network.bitcoinCash && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinCash])
     const btg = network && network.bitcoinGold && bitcoin.HDNode.fromSeedBuffer(ethereumWallet.privKey, bitcoin.networks[network.bitcoinGold])

@@ -25,8 +25,8 @@ import {
   LoginWithLedger,
   LoginWithPlugin,
   LoginWithPrivateKey,
-  LoginLocal,
   AccountName,
+  LoginLocal,
 } from '@chronobank/login-ui/components'
 import Splash from 'layouts/Splash/Splash'
 import {

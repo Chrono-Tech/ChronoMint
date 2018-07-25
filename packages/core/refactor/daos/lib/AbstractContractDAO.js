@@ -4,11 +4,13 @@
  */
 
 import EventEmitter from 'events'
+import { ethereumProvider } from '@chronobank/login/network/EthereumProvider'
 import BigNumber from 'bignumber.js'
 import TxExecModel from '../../../refactor/models/TxExecModel'
 import web3Converter from '../../../utils/Web3Converter'
 import Amount from '../../../models/Amount'
 import { BLOCKCHAIN_ETHEREUM } from '../../../dao/EthereumDAO'
+import ipfs from '../../../../core-dependencies/utils/IPFS'
 
 export const DEFAULT_TX_OPTIONS = {
   feeMultiplier: null,
@@ -128,14 +130,65 @@ export default class AbstractContractDAO extends EventEmitter {
     console.error(`[${this.constructor.name}] Error in Approval event subscription`, error)
   }
 
-  async _tx (
+  /**
+   * Send contract tx
+   * @param func - string
+   * @param args - Array<any>
+   * @param amount - Amount
+   * @param value - Amount
+   * @param options - Object<any>
+   * @param additionalOptions - Object<any>
+   */
+  _tx (
     func: string,
     args: Array = [],
     amount: BigNumber = new BigNumber(0),
     value: BigNumber = new BigNumber(0),
     options: Object = {},
     additionalOptions: Object = {},
-  ): TxExecModel {
+  ): Promise {
+    this.submit(func, args, amount, value, options, additionalOptions)
+  }
+
+  /**
+   * @param tx - TxExecModel
+   */
+  accept (tx: TxExecModel) {
+    setImmediate(() => {
+      this.emit('accept', tx)
+    })
+  }
+
+  /**
+   * @param tx - TxExecModel
+   */
+  reject (tx: TxExecModel) {
+    setImmediate(() => {
+      this.emit('reject', tx)
+    })
+  }
+
+  /** @protected */
+  async _ipfs (bytes): any {
+    return ipfs.get(this._c.bytes32ToIPFSHash(bytes))
+  }
+
+  /** @protected */
+  async _ipfsPut (data): string {
+    return this._c.ipfsHashToBytes32(await ipfs.put(data))
+  }
+
+  /**
+   * Create tx model
+   * @param func
+   * @param args
+   * @param amount
+   * @param value
+   * @param options
+   * @param additionalOptions
+   * @returns {Promise<TxExecModel>}
+   */
+  async submit (func, args, amount, value, options, additionalOptions) {
     const data = this.contract.methods[func](...args).encodeABI()
 
     const {
@@ -145,29 +198,39 @@ export default class AbstractContractDAO extends EventEmitter {
       symbol,
     } = Object.assign({}, DEFAULT_TX_OPTIONS, options)
 
-    console.log('Tx abstract: ', func, args, amount, value, options)
-
     const { gasLimit, gasFee, gasPrice } = await this.estimateGas(func, args, value, from, { feeMultiplier: feeMultiplier || 1 })
 
-    return new TxExecModel({
-      contract: this.abi.contractName,
-      func,
-      fields: fields || {},
-      from,
-      symbol,
-      blockchain: BLOCKCHAIN_ETHEREUM,
-      to: this.contract._address,
-      feeMultiplier,
-      value,
-      data,
-      fee: {
-        gasLimit: new Amount(gasLimit, 'ETH'),
-        gasFee: new Amount(gasFee, 'ETH'),
-        gasPrice: new Amount(gasPrice, 'ETH'),
+    setImmediate(async () => {
+      this.emit('submit', new TxExecModel({
+        contract: this.abi.contractName,
+        func,
+        fields: fields || {},
+        from,
+        symbol,
+        blockchain: BLOCKCHAIN_ETHEREUM,
+        to: this.contract._address,
         feeMultiplier,
-      },
-      additionalOptions,
+        value,
+        data,
+        fee: {
+          gasLimit: new Amount(gasLimit, 'ETH'),
+          gasFee: new Amount(gasFee, 'ETH'),
+          gasPrice: new Amount(gasPrice, 'ETH'),
+          feeMultiplier,
+        },
+        additionalOptions,
+      }))
     })
+  }
+
+  async immediateTransfer (tx: TxExecModel) {
+    try {
+      return await ethereumProvider.transfer(tx, this.web3)
+    } catch (e) {
+      // eslint-disable-next-line
+      console.log('Transfer failed', e)
+      throw e
+    }
   }
 
   estimateGas = async (func, args, value, from, additionalOptions): Object => {

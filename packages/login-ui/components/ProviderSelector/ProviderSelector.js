@@ -46,7 +46,7 @@ class ProviderSelector extends PureComponent {
 
     return (
       <SelectField
-        floatingLabelText={<Translate value='ProviderSelector.provider' />}
+        label={<Translate value='ProviderSelector.provider' />}
         onChange={this.handleChange}
         value={selectedProviderId}
         fullWidth

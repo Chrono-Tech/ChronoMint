@@ -5,14 +5,16 @@
 
 import { ContractDAOModel } from '../../models/index'
 import {
-  CONTRACTS_MANAGER,
-  MULTI_EVENTS_HISTORY,
-  ASSET_MANAGER_LIBRARY,
-  ERC20_MANAGER,
-  VOTING_MANAGER_LIBRARY,
   ASSET_HOLDER_LIBRARY,
   ASSET_DONATOR_LIBRARY,
+  ASSET_MANAGER_LIBRARY,
+  CONTRACTS_MANAGER,
+  ERC20_MANAGER,
+  USER_MANAGER_LIBRARY,
+  MULTI_EVENTS_HISTORY,
+  VOTING_MANAGER_LIBRARY,
 } from '../../daos/index'
+import { alternateTxHandlingFlow } from '../../../redux/tokens/actions'
 
 export const DUCK_DAO = 'dao'
 export const DAOS_REGISTER = 'daos/register'
@@ -34,9 +36,10 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
   const history = await contractManagerDAO.getContractAddressByType(MULTI_EVENTS_HISTORY.type)
 
   const contracts = [
-//    ASSET_MANAGER_LIBRARY,
-//    ASSET_HOLDER_LIBRARY,
-//    ASSET_DONATOR_LIBRARY,
+    ASSET_MANAGER_LIBRARY,
+    ASSET_HOLDER_LIBRARY,
+    ASSET_DONATOR_LIBRARY,
+    USER_MANAGER_LIBRARY,
     ERC20_MANAGER,
 //    VOTING_MANAGER_LIBRARY,
   ]
@@ -47,6 +50,7 @@ export const initDAOs = ({ web3 }) => async (dispatch, getState) => {
         const address = await contractManagerDAO.getContractAddressByType(contract.type)
         const dao = contract.create(address.toLowerCase(), history)
         dao.connect(web3)
+        dispatch(alternateTxHandlingFlow(dao))
         return new ContractDAOModel({
           contract,
           address,

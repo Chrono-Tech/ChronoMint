@@ -70,11 +70,11 @@
     &:disabled {
       background: $background-color-1;
     }
-  }
 
-  &:hover {
-    background-color: $button-color-2;
-    color: $background-color-1;
+    &:hover:not(:disabled) {
+      background-color: $button-color-2;
+      color: $background-color-1;
+    }
   }
 
   @include md-only {

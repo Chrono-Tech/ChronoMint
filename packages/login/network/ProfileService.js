@@ -19,7 +19,7 @@ const VALIDATE_LEVEL_2_PHONE = `${basePath}/security/me/profile/level2/validate/
 const VALIDATE_LEVEL_2_EMAIL = `${basePath}/security/me/profile/level2/validate/email`
 const PROFILE_NOTIFICATIONS = `${basePath}/security/me/profile/notifications`
 
-const PURPOSE_VALUE = 'exchange-session'
+const PURPOSE_VALUE = 'exchange'
 
 class ProfileService extends EventEmitter {
   connectStore (store) {
@@ -27,15 +27,15 @@ class ProfileService extends EventEmitter {
     this._dispatch = store.dispatch
   }
 
-  getProfileHost(){
+  getProfileHost () {
     return PROFILE_BACKEND_REST_URL
   }
 
-  getServerProvider(){
+  getServerProvider () {
     return axios.create({ baseURL: this.getProfileHost() })
   }
 
-  withAuthorization(authorization, config = {})  {
+  withAuthorization (authorization, config = {}) {
     return {
       ...config,
       headers: {
@@ -45,7 +45,7 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  withAuthorizaionSignature(signature, config = {}) {
+  withAuthorizaionSignature (signature, config = {}) {
     return {
       ...config,
       headers: {
@@ -55,18 +55,18 @@ class ProfileService extends EventEmitter {
     }
   }
 
-  getPurposeData(){
-    return {'purpose': PURPOSE_VALUE}
+  getPurposeData () {
+    return { 'purpose': PURPOSE_VALUE }
   }
 
-  getSignData(){
+  getSignData () {
     return JSON.stringify({
       body: this.getPurposeData(),
       url: GET_SIGNATURE_REST,
     })
   }
 
-  async getProfile(signature){
+  async getProfile (signature) {
     const service = this.getServerProvider()
 
     const body = this.getPurposeData()
@@ -76,7 +76,7 @@ class ProfileService extends EventEmitter {
     return data
   }
 
-  async getPersonInfo(addresses = []){
+  async getPersonInfo (addresses = []) {
     const service = this.getServerProvider()
 
     const personInfo = await service.post(GET_PERSONS_REST, addresses)
@@ -125,7 +125,7 @@ class ProfileService extends EventEmitter {
     const { data } = await service.post(
       VALIDATE_LEVEL_2_PHONE,
       null,
-      this.withAuthorization(token)
+      this.withAuthorization(token),
     )
 
     return data
@@ -137,7 +137,7 @@ class ProfileService extends EventEmitter {
     const { data } = await service.post(
       VALIDATE_LEVEL_2_EMAIL,
       null,
-      this.withAuthorization(token)
+      this.withAuthorization(token),
     )
 
     return data

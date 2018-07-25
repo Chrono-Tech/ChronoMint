@@ -5,25 +5,20 @@
 
 import { MuiThemeProvider } from '@material-ui/core'
 import styles from 'layouts/Splash/styles'
-import trezorProvider from '@chronobank/login/network/TrezorProvider'
 import { fetchAccount, startTrezorSync, stopTrezorSync } from '@chronobank/login/redux/trezor/actions'
 import { Link } from 'react-router'
-import ListSubheader from '@material-ui/core/ListSubheader';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
-import Typography from '@material-ui/core/Typography';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import networkService from '@chronobank/login/network/NetworkService'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Divider from '@material-ui/core/Divider'
+import Typography from '@material-ui/core/Typography'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 import PropTypes from 'prop-types'
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import Button from 'components/common/ui/Button/Button'
 import {
-  handleLoginTrezorAccountClick
+  handleLoginTrezorAccountClick,
 } from '@chronobank/login/redux/network/actions'
 
 import './LoginWithTrezor.scss'
@@ -42,7 +37,7 @@ const mapStateToProps = (state) => {
   return {
     trezor: state.get('trezor'),
     isLoading: network.isLoading,
-    account: network.accounts
+    account: network.accounts,
   }
 }
 
@@ -65,13 +60,14 @@ class LoginTrezor extends PureComponent {
     onLogin: PropTypes.func,
     trezor: PropTypes.object,
     isLoading: PropTypes.bool,
-    account: PropTypes.array,
+    account: PropTypes.instanceOf(Array),
+    handleLoginTrezorAccountClick: PropTypes.func,
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps (props, state) {
     if (!props.trezor.isFetched && !props.trezor.isFetching) {
-    props.startTrezorSync()
-    props.fetchAccount()
+      props.startTrezorSync()
+      props.fetchAccount()
     }
   }
 
@@ -97,49 +93,54 @@ class LoginTrezor extends PureComponent {
       ))
   }
 
-  handleChange = (index, value) => {console.log(index,value); this.setState({value}); }
+  handleChange = (index, value) => {
+    console.log(index, value)
+    this.setState({ value })
+  }
 
   _buildItem = (item, index) => {
-           return (<div key={index}><ListItem button type="submit" name="address" value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.handleLoginTrezorAccountClick(item)}> 
-	      <ListItemText style={{ paddingLeft:"10px" }} disableTypography
-              primary={<Typography type="body2" style={{ color: 'black', fontWeight: 'bold' }}>{item}</Typography>} secondary="eth 0" />
-             <ChevronRight />
-           </ListItem>
-	   <Divider light />
-           </div>
-           )
+    return (
+      <div key={index}>
+        <ListItem button type='submit' name='address' value={item} component="button" disableGutters={true} style={{ margin: 0 }} onClick={() => this.props.handleLoginTrezorAccountClick(item)}>
+          <ListItemText style={{ paddingLeft:"10px" }} disableTypography
+            primary={<Typography type='body2' style={{ color: 'black', fontWeight: 'bold' }}>{item}</Typography>} secondary='eth 0' />
+          <ChevronRight />
+        </ListItem>
+        <Divider light />
+      </div>
+    )
   }
 
   render () {
-    const { isLoading, trezor, account } = this.props
+    const { trezor } = this.props
 
     return (
       <MuiThemeProvider muiTheme={styles.inverted}>
-        <div styleName="form">
+        <div styleName='form'>
           <div styleName='page-title'>
             <Translate value='LoginWithTrezor.title' />
           </div>
 
-        <div styleName='states'>
-          {this.renderStates()}
-        </div>
-
-        {trezor.isFetched && (
-          <div styleName='account'>
-	    <List component="nav" className="list"> 
-              {this.props.account.map(this._buildItem)}
-            </List>
+          <div styleName='states'>
+            {this.renderStates()}
           </div>
-         )}
 
-	  <div styleName='actions'>
+          {trezor.isFetched && (
+            <div styleName='account'>
+              <List component='nav' className='list'>
+                {this.props.account.map(this._buildItem)}
+              </List>
+            </div>
+          )}
+
+          <div styleName='actions'>
             <Translate value='LoginWithMnemonic.or' />
             <br />
             <Link to='/login/import-methods' href styleName='link'>
               <Translate value='LoginWithMnemonic.back' />
             </Link>
-          </div> 
-	</div>
+          </div>
+        </div>
       </MuiThemeProvider>
     )
   }

@@ -21,7 +21,7 @@ import { history } from '@chronobank/core-dependencies/configureStore'
 import { push } from '@chronobank/core-dependencies/router'
 import { EVENT_APPROVAL_TRANSFER, EVENT_NEW_TRANSFER, EVENT_UPDATE_BALANCE, EVENT_UPDATE_TRANSACTION } from '../../dao/AbstractTokenDAO'
 import { getDeriveWalletsAddresses, getMultisigWallets } from '../wallet/selectors'
-import ethereumDAO, { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
+import { BLOCKCHAIN_ETHEREUM } from '../../dao/EthereumDAO'
 import Amount from '../../models/Amount'
 import ApprovalNoticeModel from '../../models/notices/ApprovalNoticeModel'
 import TransferNoticeModel from '../../models/notices/TransferNoticeModel'
@@ -47,8 +47,6 @@ import AddressesCollection from '../../models/wallet/AddressesCollection'
 import MainWalletModel from '../../models/wallet/MainWalletModel'
 import { BLOCKCHAIN_NEM } from '../../dao/NemDAO'
 import { BLOCKCHAIN_WAVES } from '../../dao/WavesDAO'
-import TxExecModel from '../../models/TxExecModel'
-import { sendNewTx } from '../../refactor/redux/transactions/actions'
 import WalletModel from '../../models/wallet/WalletModel'
 import { daoByType } from '../../refactor/redux/daos/selectors'
 import { WALLETS_SET_IS_TIME_REQUIRED, WALLETS_UPDATE_WALLET } from '../wallets/actions'
@@ -297,7 +295,7 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
   try {
     const tokenDAO = tokenService.getDAO(token.id())
 
-    const tx: TxExecModel = await tokenDAO.transfer(
+    await tokenDAO.transfer(
       wallet.address,
       recipient,
       amount,
@@ -305,10 +303,6 @@ export const mainTransfer = (wallet: WalletModel, token: TokenModel, amount: Amo
       feeMultiplier,
       additionalOptions,
     )
-
-    if (tx && tx.blockchain === BLOCKCHAIN_ETHEREUM) {
-      dispatch(sendNewTx(tx))
-    }
   } catch (e) {
     // eslint-disable-next-line
     console.error('e', e)
@@ -336,26 +330,25 @@ const updateAllowance = (allowance) => (dispatch, getState) => {
 
 export const mainApprove = (token: TokenModel, amount: Amount, spender: string, feeMultiplier: Number, additionalOptions = undefined) => async (dispatch, getState) => {
   const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances[`${spender}-${token.id()}`]
+  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   const { account } = getState().get(DUCK_SESSION)
 
   try {
-    dispatch(updateAllowance(allowance.isFetching(true)))
+    allowance && dispatch(updateAllowance(allowance.isFetching(true)))
     const tokenDAO = tokenService.getDAO(token)
     additionalOptions['from'] = account
-    const tx = await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
-    dispatch(sendNewTx(tx))
+    await tokenDAO.approve(spender, amount, feeMultiplier, additionalOptions)
   } catch (e) {
     // eslint-disable-next-line
     console.log('mainRevoke approve: ', e)
     dispatch(notifyError(e, 'mainApprove'))
-    dispatch(updateAllowance(allowance.isFetching(false)))
+    allowance && dispatch(updateAllowance(allowance.isFetching(false)))
   }
 }
 
 export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Number = 1, additionalOptions = undefined) => async (dispatch, getState) => {
   const wallet = getMainEthWallet(getState())
-  const allowance = wallet.allowances[`${spender}-${token.id()}`]
+  const allowance = wallet.allowances.list[`${spender}-${token.id()}`]
   dispatch(updateAllowance(allowance.isFetching(true)))
 
   const { account } = getState().get(DUCK_SESSION)
@@ -363,8 +356,7 @@ export const mainRevoke = (token: TokenModel, spender: string, feeMultiplier: Nu
     dispatch({ type: WALLET_ALLOWANCE, allowance: allowance.isFetching(true) })
     const tokenDAO = tokenService.getDAO(token)
     additionalOptions['from'] = account
-    const tx = await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
-    dispatch(sendNewTx(tx))
+    await tokenDAO.revoke(spender, token.symbol(), feeMultiplier, additionalOptions)
   } catch (e) {
     // eslint-disable-next-line
     console.log('mainRevoke error: ', e)
@@ -394,8 +386,7 @@ export const requireTIME = () => async (dispatch, getState) => {
   try {
     const account = getAccount(getState())
     const assetDonatorDAO = daoByType('AssetDonator')(getState())
-    const tx = await assetDonatorDAO.requireTIME(account)
-    dispatch(sendNewTx(tx))
+    await assetDonatorDAO.requireTIME(account)
   } catch (e) {
     // eslint-disable-next-line
     console.error('require time error', e.message)

@@ -6,8 +6,9 @@
 import { connect } from "react-redux"
 import PropTypes from "prop-types"
 import React, { PureComponent } from 'react'
-import { Drawer } from '@material-ui/core'
+import Drawer from '@material-ui/core/Drawer'
 import { SIDES_TOGGLE } from 'redux/sides/actions'
+import styles from './SidePanel.scss'
 
 function mapStateToProps () {
   return {}
@@ -24,13 +25,14 @@ class SidePanel extends PureComponent {
 
   static propTypes = {
     isOpened: PropTypes.bool,
-    direction: PropTypes.oneOf([ 'left', 'right' ]),
+    direction: PropTypes.oneOf(['left', 'right']),
     handlePanelClose: PropTypes.func,
     panelKey: PropTypes.string,
     component: PropTypes.func,
     componentProps: PropTypes.object,
     drawerProps: PropTypes.object,
     preCloseAction: PropTypes.func,
+    className: PropTypes.string,
   }
 
   static defaultProps = {
@@ -42,12 +44,11 @@ class SidePanel extends PureComponent {
   constructor (props) {
     super(props)
 
-    this.state = { isReadyToClose: true }
+    this.state = {
+      isReadyToClose: true,
+    }
   }
 
-  // Due to material-ui bug. Immediate close on mobile devices.
-  // @see https://github.com/mui-org/material-ui/issues/6634
-  // Going to be fixed in 1.00 version.
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.isOpened && !this.props.isOpened) {
       this.setState({ isReadyToClose: false }, () => {
@@ -71,26 +72,31 @@ class SidePanel extends PureComponent {
   getDrawerProps = (componentDrawerProps) => {
 
     const defaultDrawerProps = {
-      openSecondary: this.props.direction === 'right',
       open: this.props.isOpened,
-      onRequestChange: this.handleProfileClose,
-      containerStyle: { width: '360px' },
-      disableSwipeToOpen: true,
-      width: 360,
-      docked: false,
+      variant: 'persistent',
+      anchor: 'left',
     }
 
     return { ...defaultDrawerProps, ...componentDrawerProps }
   }
 
+  toggleDrawer = (panelId) => () => {
+    this.props.handlePanelClose(panelId)
+  }
+
   render () {
     const Component = this.props.component
-    if (!Component){
+    if (!Component) {
       return null
     }
 
+    const drawerProps = this.getDrawerProps(this.props.drawerProps)
     return (
-      <Drawer {...this.getDrawerProps(this.props.drawerProps)}>
+      <Drawer
+        {...drawerProps}
+        onClose={this.toggleDrawer(this.props.panelKey)}
+        PaperProps={{ className: styles[this.props.className || 'left'] }}
+      >
         <Component onProfileClose={this.handleProfileClose} {...this.props.componentProps} />
       </Drawer>
     )

@@ -35,7 +35,8 @@ import StripesToCropFooter from 'assets/img/stripes-2-crop-footer.jpg'
 import spinner from 'assets/img/spinningwheel-1.gif'
 
 import validate from './validate'
-import './Footer.scss'
+import scssStyles from './Footer.scss'
+import theme from 'layouts/Splash/styles'
 import styles from './styles'
 
 const mapDispatchToProps = (dispatch) => {
@@ -70,168 +71,174 @@ class Footer extends Component {
   }
 
   render () {
-    const { classes } = this.props;
-    const { submitSucceeded, handleSubmit, submitting, error } = this.props
+    const { submitSucceeded, handleSubmit, submitting, error, classes } = this.props
 
+    console.log('footer', classes)
     return (
       <div styleName='footer'>
         <div styleName='footer-container'>
-          <div styleName='navigation'>
-            <div styleName='navigation-chrono-logo-container'>
-              <img styleName='navigation-chrono-logo' src={LogoChronobankFull} />
+          <div styleName='flex'>
+            <div styleName='navigation'>
+              <div styleName='navigation-chrono-logo-container'>
+                <img styleName='navigation-chrono-logo' src={LogoChronobankFull} />
+              </div>
+
+              <ul styleName='navigation-menu navigation-list' >
+                <li>
+                  <Link to='/' href styleName='footerLink'>
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://chronobank.io/products/laborx' styleName='footerLink'>
+                    LaborX
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://chronobank.io/team' styleName='footerLink'>
+                    Team
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://chronobank.io/faq' styleName='footerLink'>
+                    FAQ
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://blog.chronobank.io/' styleName='footerLink'>
+                    Blog
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://chronobank.io/files/business_outline.pdf' styleName='footerLink'>
+                    Business Outline
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://chronobank.io/files/dev_plan.pdf' styleName='footerLink'>
+                    Development Plan
+                  </Link>
+                </li>
+                <li>
+                  <Link href='https://files.chronobank.io/files/Chronobank_WP.pdf' styleName='footerLink'>
+                    White Paper
+                  </Link>
+                </li>
+              </ul>
+
             </div>
 
-            <ul styleName='navigation-menu navigation-list' >
-              <li>
-                <Link to='/' href styleName='footerLink'>
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href='https://chronobank.io/products/laborx' styleName='footerLink'>
-                  LaborX
-                </Link>
-              </li>
-              <li>
-                <Link href='https://chronobank.io/team' styleName='footerLink'>
-                  Team
-                </Link>
-              </li>
-              <li>
-                <Link href='https://chronobank.io/faq' styleName='footerLink'>
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href='https://blog.chronobank.io/' styleName='footerLink'>
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href='https://chronobank.io/files/business_outline.pdf' styleName='footerLink'>
-                  Business Outline
-                </Link>
-              </li>
-              <li>
-                <Link href='https://chronobank.io/files/dev_plan.pdf' styleName='footerLink'>
-                  Development Plan
-                </Link>
-              </li>
-              <li>
-                <Link href='https://files.chronobank.io/files/Chronobank_WP.pdf' styleName='footerLink'>
-                  White Paper
-                </Link>
-              </li>
-            </ul>
+            <div styleName='downloads'>
+              <div styleName='title-container'>
+                <span styleName='title'>Downloads</span>
+              </div>
 
+              <div styleName='ios-market-logo-container'>
+                <img styleName='ios-market-logo ' src={AppstoreWhite} />
+              </div>
+
+              <div styleName='android-market-logo-container'>
+                <img styleName='android-market-logo ' src={PlayWhite} />
+              </div>
+
+              <ul styleName='navigation-list' >
+                <li>Desktop App (Windows)</li>
+                <li>Desktop App (MacOS)</li>
+              </ul>
+
+            </div>
+
+            <div styleName='connect'>
+              <div styleName='title-container'>
+                <span styleName='title'>{'Connect with us'}</span>
+              </div>
+              <div styleName='logos-container'>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://www.facebook.com/ChronoBank.io' styleName='resource-link'>
+                    <img styleName='resource-img' src={facebook} />
+                  </Link>
+                </div>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://twitter.com/ChronobankNews' styleName='resource-link'>
+                    <img styleName='resource-img' src={twitter} />
+                  </Link>
+                </div>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://www.instagram.com/chronobank.io/' styleName='resource-link'>
+                    <img styleName='resource-img' src={instagram} />
+                  </Link>
+                </div>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://www.reddit.com/r/ChronoBank/' styleName='resource-link'>
+                    <img styleName='resource-img' src={reddit} />
+                  </Link>
+                </div>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://telegram.me/chronobank' styleName='resource-link'>
+                    <img styleName='resource-img' src={telegramm} />
+                  </Link>
+                </div>
+                <div styleName='logo-wrapper'>
+                  <Link href='https://github.com/ChronoBank' styleName='resource-link'>
+                    <img styleName='resource-img' src={github} />
+                  </Link>
+                </div>
+              </div>
+
+              <ul styleName='navigation-list' >
+                <li styleName='first'>
+                  <Link href='mailto:info@chronobank.io' styleName='footerLink'>
+                    info@chronobank.io
+                  </Link>
+                </li>
+                <li>
+                  <Link href='mailto:support@chronobank.io' styleName='footerLink'>
+                    support@chronobank.io
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div styleName='downloads'>
-            <div styleName='title-container'>
-              <span styleName='title'>Downloads</span>
-            </div>
+          <div styleName='subscription-form-wrapper'>
 
-            <div styleName='ios-market-logo-container'>
-              <img styleName='ios-market-logo ' src={AppstoreWhite} />
-            </div>
-
-            <div styleName='android-market-logo-container'>
-              <img styleName='android-market-logo ' src={PlayWhite} />
-            </div>
-
-            <ul styleName='navigation-list' >
-              <li>Desktop App (Windows)</li>
-              <li>Desktop App (MacOS)</li>
-            </ul>
-
-          </div>
-
-          <div styleName='connect'>
-            <div styleName='title-container'>
-              <span styleName='title'>{'Connect with us'}</span>
-            </div>
-            <div styleName='logos-container'>
-              <div styleName='logo-wrapper'>
-                <Link href='https://www.facebook.com/ChronoBank.io' styleName='resource-link'>
-                  <img styleName='resource-img' src={facebook} />
-                </Link>
+            <form name={FORM_FOOTER_EMAIL_SUBSCRIPTION} styleName='subscription' onSubmit={handleSubmit}>
+              <div styleName='subscription-input'>
+                {
+                  (submitSucceeded || error) ? this.renderFormMessage(): (
+                    <Field
+                      component={TextField}
+                      name='email'
+                      inputProps={{
+                        className: scssStyles.emailField
+                      }}
+                      placeholder='Enter email to subscribe for newsletter'
+                      fullWidth
+                    />
+                  )
+                }
               </div>
-              <div styleName='logo-wrapper'>
-                <Link href='https://twitter.com/ChronobankNews' styleName='resource-link'>
-                  <img styleName='resource-img' src={twitter} />
-                </Link>
-              </div>
-              <div styleName='logo-wrapper'>
-                <Link href='https://www.instagram.com/chronobank.io/' styleName='resource-link'>
-                  <img styleName='resource-img' src={instagram} />
-                </Link>
-              </div>
-              <div styleName='logo-wrapper'>
-                <Link href='https://www.reddit.com/r/ChronoBank/' styleName='resource-link'>
-                  <img styleName='resource-img' src={reddit} />
-                </Link>
-              </div>
-              <div styleName='logo-wrapper'>
-                <Link href='https://telegram.me/chronobank' styleName='resource-link'>
-                  <img styleName='resource-img' src={telegramm} />
-                </Link>
-              </div>
-              <div styleName='logo-wrapper'>
-                <Link href='https://github.com/ChronoBank' styleName='resource-link'>
-                  <img styleName='resource-img' src={github} />
-                </Link>
-              </div>
-            </div>
-
-            <ul styleName='navigation-list' >
-              <li styleName='first'>
-                <Link href='mailto:info@chronobank.io' styleName='footerLink'>
-                  info@chronobank.io
-                </Link>
-              </li>
-              <li>
-                <Link href='mailto:support@chronobank.io' styleName='footerLink'>
-                  support@chronobank.io
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <form name={FORM_FOOTER_EMAIL_SUBSCRIPTION} styleName='subscription' onSubmit={handleSubmit}>
-            <div styleName='subscription-input'>
-              {
-                (submitSucceeded || error) ? this.renderFormMessage(): (
-                  <Field
-                    component={TextField}
-                    name='email'
-                    floatingLabelText='Enter email to subscribe for newsletter'
-                    fullWidth
-	            InputProps={{ className: classes.input }}
-                    InputLabelProps={{ className: classes.label }}
-                    style={{ className: classes.hint }}
+              <div styleName='subscription-button'>
+                { submitting ? (
+                  <img
+                    src={spinner}
+                    styleName='spinner'
+                    alt=''
+                    width={24}
+                    height={24}
                   />
-                )
-              }
-            </div>
-            <div styleName='subscription-button'>
-              { submitting ? (
-                <img
-                  src={spinner}
-                  styleName='spinner'
-                  alt=''
-                  width={24}
-                  height={24}
+                ) : (null)}
+                <Button
+                  styleName='button'
+                  type='submit'
+                  disabled={submitting}
+                  label={<Translate value='subscribe' />}
                 />
-              ) : (null)}
-              <Button
-                styleName='button'
-                type='submit'
-                disabled={submitting}
-                label={<Translate value='subscribe' />}
-              />
-            </div>
+              </div>
 
-          </form>
+            </form>
+
+          </div>
 
         </div>
         <div styleName='copyright'>

@@ -20,7 +20,7 @@ import networkService from '@chronobank/login/network/NetworkService'
 import profileService from '@chronobank/login/network/ProfileService'
 import web3Provider from '@chronobank/login/network/Web3Provider'
 import web3Utils from '@chronobank/login/network/Web3Utils'
-import mnemonicProvider from '../../../login/network/mnemonicProvider'
+import mnemonicProvider from '@chronobank/login/network/mnemonicProvider'
 
 export const WALLETS_ADD = 'persistAccount/WALLETS_ADD'
 export const WALLETS_SELECT = 'persistAccount/WALLETS_SELECT'
@@ -73,7 +73,6 @@ export const decryptAccount = (encrypted, password) => async () => {
 
   let wallet = await accounts.wallet.decrypt(encrypted, password)
 
-  console.log('decrypt', networkService.getProviderSettings().url, wallet)
   return wallet
 
 }
@@ -117,7 +116,6 @@ export const resetPasswordAccount = (wallet, mnemonic, password) => async (dispa
 
 export const createAccount = ({ name, password, privateKey, mnemonic, numberOfAccounts = 0, types = {} }) => async (dispatch, getState) => {
   let wallet, hex = privateKey || hdkey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).derivePath(WALLET_HD_PATH).getWallet().getPrivateKeyString() || ''
-  console.log(hex)
 
   // const web3 = new Web3()
   // web3Provider.reinit(web3, web3Utils.createStatusEngine(settings))
@@ -155,7 +153,6 @@ export const createHWAccount = ({ name, password, privateKey, mnemonic, numberOf
   wallet = await accounts.wallet.create(numberOfAccounts)
   const account = accounts.privateKeyToAccount(hex)
   wallet.add(account)
-  console.log('create account', accounts, account, wallet)
 
   const entry = new AccountEntryModel({
     key: uuid(),
